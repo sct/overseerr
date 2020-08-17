@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon -e ts -x ts-node --project tsconfig.server.json server/index.ts",
-    "build:server": "tsc --project tsconfig.server.json",
+    "dev": "nodemon -e ts -x ts-node --project server/tsconfig.json server/index.ts",
+    "build:server": "tsc --project server/tsconfig.json",
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
     "start": "NODE_ENV=production node dist/server/index.js"
@@ -14,6 +14,7 @@
     "next": "9.5.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.0.0",
     "typeorm": "^0.2.25"
   },
