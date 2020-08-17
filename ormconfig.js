@@ -3,11 +3,11 @@ const devConfig = {
   database: 'db/db.sqlite3',
   synchronize: true,
   logging: true,
-  entities: ['src/entity/**/*.ts'],
-  migrations: ['src/migration/**/*.ts'],
+  entities: ['server/entity/**/*.ts'],
+  migrations: ['server/migration/**/*.ts'],
   cli: {
-    entitiesDir: 'src/entity',
-    migrationsDir: 'src/migration',
+    entitiesDir: 'server/entity',
+    migrationsDir: 'server/migration',
   },
 };
 
@@ -16,12 +16,12 @@ const prodConfig = {
   database: 'db/db.sqlite3',
   synchronize: false,
   logging: false,
-  entities: ['dist/entity/**/*.js'],
-  migrations: ['dist/migration/**/*.js'],
+  entities: ['dist/server/entity/**/*.js'],
+  migrations: ['dist/server/migration/**/*.js'],
   migrationsRun: true,
   cli: {
-    entitiesDir: 'dist/entity',
-    migrationsDir: 'dist/migration',
+    entitiesDir: 'dist/server/entity',
+    migrationsDir: 'dist/server/migration',
   },
 };
 
