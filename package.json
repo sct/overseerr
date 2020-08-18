@@ -3,13 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon -e ts -x ts-node --project server/tsconfig.json server/index.ts",
+    "dev": "nodemon -e ts --watch server -x ts-node --project server/tsconfig.json server/index.ts",
     "build:server": "tsc --project server/tsconfig.json",
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
     "start": "NODE_ENV=production node dist/server/index.js"
   },
   "dependencies": {
+    "@tailwindcss/ui": "^0.5.0",
+    "axios": "^0.19.2",
+    "bowser": "^2.10.0",
     "express": "^4.17.1",
     "next": "9.5.2",
     "react": "16.13.1",
