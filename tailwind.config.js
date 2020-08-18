@@ -1,8 +1,14 @@
 /* eslint-disable */
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   purge: ['./pages/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+      },
+    },
   },
   variants: {},
   plugins: [
