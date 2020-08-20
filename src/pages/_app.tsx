@@ -2,15 +2,20 @@ import React from 'react';
 import '../styles/globals.css';
 import App from 'next/app';
 import Layout from '../components/Layout';
+import LoginPage from './login';
 
 class CoreApp extends App {
   public render(): JSX.Element {
-    const { Component, pageProps } = this.props;
-    return (
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    );
+    const { Component, pageProps, router } = this.props;
+    if (router.asPath == '/login') {
+      return <LoginPage />;
+    } else {
+      return (
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      );
+    }
   }
 }
 

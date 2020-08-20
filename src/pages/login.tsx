@@ -3,11 +3,7 @@ import { NextPage } from 'next';
 import Login from '../components/Login';
 
 const LoginPage: NextPage = () => {
-  return (
-    <div className="w-full">
-      <Login />
-    </div>
-  );
+  return <Login />;
 };
 
 export default LoginPage;

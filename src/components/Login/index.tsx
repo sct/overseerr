@@ -3,7 +3,7 @@ import PlexLoginButton from '../PlexLoginButton';
 
 const Login: React.FC = () => {
   return (
-    <div className="w-full">
+    <div className="w-full pt-10">
       <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="flex justify-center text-gray-900 font-bold text-xl mb-2">
           Overseerr
