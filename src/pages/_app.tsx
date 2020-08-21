@@ -8,7 +8,7 @@ class CoreApp extends App {
   public render(): JSX.Element {
     const { Component, pageProps, router } = this.props;
     if (router.asPath == '/login') {
-      return <LoginPage />;
+      return <LoginPage {...pageProps} />;
     } else {
       return (
         <Layout>
