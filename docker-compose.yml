@@ -1,0 +1,12 @@
+version: '3'
+services:
+  overseerr:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app:rw,cached
+      - /app/node_modules
+      - /app/.next
