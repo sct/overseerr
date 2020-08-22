@@ -19,9 +19,6 @@ const Login: React.FC = () => {
           />
         </div>
       </form>
-      <p className="text-center text-gray-500 text-xs">
-        &copy;2020 Overseerr. All rights reserved.
-      </p>
     </div>
   );
 };
