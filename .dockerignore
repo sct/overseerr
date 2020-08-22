@@ -1,0 +1,8 @@
+**/node_modules
+**/.next
+.git
+.gitconfig
+.gitignore
+.github
+**/README.md
+**/.vscode
