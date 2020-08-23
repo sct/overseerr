@@ -8,13 +8,12 @@ class CoreApp extends App {
     const { Component, pageProps, router } = this.props;
     if (router.asPath === '/login') {
       return <Component {...pageProps} />;
-    } else {
-      return (
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      );
     }
+    return (
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    );
   }
 }
 
