@@ -7,5 +7,6 @@
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
-  }
+  },
+  "include": ["**/*.ts", "**/*.tsx"]
 }

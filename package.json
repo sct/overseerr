@@ -8,7 +8,7 @@
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
     "lint": "eslint \"./server/**/*.{ts,tsx}\" \"./src/**/*.{ts,tsx}\"",
-    "start": "NODE_ENV=production node dist/server/index.js"
+    "start": "NODE_ENV=production node dist/index.js"
   },
   "dependencies": {
     "@tailwindcss/ui": "^0.5.0",
