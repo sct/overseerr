@@ -1,0 +1,25 @@
+name: Overseerr CI
+
+on:
+  pull_request:
+    branches:
+      - "*"
+  push:
+    branches:
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    container: node:12.18-alpine
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        env:
+          HUSKY_SKIP_INSTALL: 1
+        run: yarn
+      - name: lint
+        run: npm run lint
+      - name: build
+        run: yarn build

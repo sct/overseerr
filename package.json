@@ -7,6 +7,7 @@
     "build:server": "tsc --project server/tsconfig.json",
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
+    "lint": "eslint \"./server/**/*.{ts,tsx}\" \"./src/**/*.{ts,tsx}\"",
     "start": "NODE_ENV=production node dist/server/index.js"
   },
   "dependencies": {
