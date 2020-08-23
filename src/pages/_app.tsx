@@ -5,7 +5,10 @@ import Layout from '../components/Layout';
 
 class CoreApp extends App {
   public render(): JSX.Element {
-    const { Component, pageProps } = this.props;
+    const { Component, pageProps, router } = this.props;
+    if (router.asPath === '/login') {
+      return <Component {...pageProps} />;
+    }
     return (
       <Layout>
         <Component {...pageProps} />
