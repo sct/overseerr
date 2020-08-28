@@ -6,7 +6,8 @@
     "noEmit": false,
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "typeRoots": ["types"]
   },
   "include": ["**/*.ts", "**/*.tsx"]
 }

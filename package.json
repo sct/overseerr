@@ -13,8 +13,12 @@
   "dependencies": {
     "@tailwindcss/ui": "^0.5.0",
     "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
     "bowser": "^2.10.0",
+    "connect-typeorm": "^1.1.4",
+    "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "next": "9.5.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -26,7 +30,10 @@
   "devDependencies": {
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^9.1.2",
+    "@types/body-parser": "^1.19.0",
+    "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.7",
+    "@types/express-session": "^1.17.0",
     "@types/node": "^14.0.27",
     "@types/react": "^16.9.46",
     "@types/react-transition-group": "^4.4.0",
