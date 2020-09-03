@@ -1,6 +1,6 @@
 const devConfig = {
   type: 'sqlite',
-  database: 'db/db.sqlite3',
+  database: 'config/db/db.sqlite3',
   synchronize: true,
   logging: true,
   entities: ['server/entity/**/*.ts'],
@@ -13,7 +13,7 @@ const devConfig = {
 
 const prodConfig = {
   type: 'sqlite',
-  database: 'db/db.sqlite3',
+  database: 'config/db/db.sqlite3',
   synchronize: false,
   logging: false,
   entities: ['dist/server/entity/**/*.js'],

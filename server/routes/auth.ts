@@ -2,8 +2,25 @@ import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
 import PlexTvAPI from '../api/plextv';
+import { isAuthenticated } from '../middleware/auth';
 
 const authRoutes = Router();
+
+authRoutes.get('/me', isAuthenticated, async (req, res) => {
+  const userRepository = getRepository(User);
+  if (!req.user) {
+    return res.status(500).json({
+      status: 500,
+      error:
+        'Requsted user endpoint withuot valid authenticated user in session',
+    });
+  }
+  const user = await userRepository.findOneOrFail({
+    where: { id: req.user.id },
+  });
+
+  return res.status(200).json(user.filter());
+});
 
 authRoutes.post('/login', async (req, res) => {
   const userRepository = getRepository(User);

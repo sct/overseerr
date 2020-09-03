@@ -32,7 +32,8 @@ yarn-error.log*
 .vercel
 
 # database
-db/db.sqlite3
+config/db/db.sqlite3
+config/settings.json
 
 # dist files
 dist
