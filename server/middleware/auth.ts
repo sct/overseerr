@@ -1,6 +1,5 @@
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
-import { Middleware } from '../types/express';
 
 export const checkUser: Middleware = async (req, _res, next) => {
   if (req.session?.userId) {

@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
 
   const users = await userRepository.find();
 
-  return res.status(200).json(users);
+  return res.status(200).json(User.filterMany(users));
 });
 
 export default router;

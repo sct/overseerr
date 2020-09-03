@@ -12,10 +12,10 @@ declare global {
       user?: User;
     }
   }
-}
 
-export type Middleware = <ParamsDictionary, any, any>(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => Promise<void | NextFunction> | void | NextFunction;
+  export type Middleware = <ParamsDictionary, any, any>(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => Promise<void | NextFunction> | void | NextFunction;
+}

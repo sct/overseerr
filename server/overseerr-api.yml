@@ -1,0 +1,482 @@
+openapi: '3.0.2'
+info:
+  title: 'Overseerr API'
+  version: '1.0.0'
+servers:
+  - url: /api/v1
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: 'hey@itsme.com'
+        plexToken:
+          type: string
+        createdAt:
+          type: string
+          example: '2020-09-02T05:02:23.000Z'
+        updatedAt:
+          type: string
+          example: '2020-09-02T05:02:23.000Z'
+      required:
+        - id
+        - email
+        - createdAt
+        - updatedAt
+    MainSettings:
+      type: object
+      properties:
+        apiKey:
+          type: string
+          example: 'anapikey'
+      required:
+        - apiKey
+    PlexLibrary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: Movies
+        enabled:
+          type: boolean
+          example: false
+      required:
+        - id
+        - name
+        - enabled
+    PlexSettings:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Main Server'
+        machineId:
+          type: string
+          example: '1234-1234-1234-1234'
+        ip:
+          type: string
+          example: '127.0.0.1'
+        port:
+          type: number
+          example: 32400
+        libraries:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlexLibrary'
+      required:
+        - name
+        - machineId
+        - ip
+        - port
+    RadarrSettings:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 0
+          readOnly: true
+        name:
+          type: string
+          example: 'Radarr Main'
+        hostname:
+          type: string
+          example: '127.0.0.1'
+        port:
+          type: number
+          example: 7878
+        apiKey:
+          type: string
+          example: 'exampleapikey'
+        useSsl:
+          type: boolean
+          example: false
+        baseUrl:
+          type: string
+        activeProfile:
+          type: string
+          example: '1080p'
+        activeDirectory:
+          type: string
+          example: '/movies'
+        is4k:
+          type: boolean
+          example: false
+        minimumAvailability:
+          type: string
+          example: 'In Cinema'
+      required:
+        - name
+        - hostname
+        - port
+        - apiKey
+        - useSsl
+        - activeProfile
+        - activeDirectory
+        - is4k
+        - minimumAvailability
+    SonarrSettings:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 0
+          readOnly: true
+        name:
+          type: string
+          example: 'Sonarr Main'
+        hostname:
+          type: string
+          example: '127.0.0.1'
+        port:
+          type: number
+          example: 8989
+        apiKey:
+          type: string
+          example: 'exampleapikey'
+        useSsl:
+          type: boolean
+          example: false
+        baseUrl:
+          type: string
+        activeProfile:
+          type: string
+          example: '1080p'
+        activeDirectory:
+          type: string
+          example: '/movies'
+        activeAnimeProfile:
+          type: string
+          nullable: true
+        activeAnimeDirectory:
+          type: string
+          nullable: true
+        is4k:
+          type: boolean
+          example: false
+        enableSeasonFolders:
+          type: boolean
+          example: false
+      required:
+        - name
+        - hostname
+        - port
+        - apiKey
+        - useSsl
+        - activeProfile
+        - activeDirectory
+        - is4k
+        - enableSeasonFolders
+    AllSettings:
+      type: object
+      properties:
+        main:
+          $ref: '#/components/schemas/MainSettings'
+        plex:
+          $ref: '#/components/schemas/PlexSettings'
+        radarr:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadarrSettings'
+        sonarr:
+          type: array
+          items:
+            $ref: '#/components/schemas/SonarrSettings'
+      required:
+        - main
+        - plex
+        - radarr
+        - sonarr
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      name: connect.sid
+      in: cookie
+
+paths:
+  /settings/main:
+    get:
+      summary: Returns main settings
+      description: Retreives all main settings in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MainSettings'
+    post:
+      summary: Update main settings
+      description: Update current main settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MainSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MainSettings'
+  /settings/plex:
+    get:
+      summary: Returns plex settings
+      description: Retrieves current Plex settings
+      tags:
+        - settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSettings'
+    post:
+      summary: Update plex settings
+      description: Update the current plex settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlexSettings'
+      responses:
+        '200':
+          description: 'Values were successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSettings'
+  /settings/radarr:
+    get:
+      summary: Get all radarr settings
+      description: Returns all radarr settings in a JSON array
+      tags:
+        - settings
+      responses:
+        '200':
+          description: 'Values were returned'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RadarrSettings'
+    post:
+      summary: Create new radarr instance
+      description: Creates a new radarr instance from the request body
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RadarrSettings'
+      responses:
+        '201':
+          description: 'New Radarr instance created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadarrSettings'
+  /settings/radarr/{radarrId}:
+    put:
+      summary: Update existing radarr instance
+      description: Updates an existing radarr instance with values from request body
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: radarrId
+          required: true
+          schema:
+            type: integer
+          description: Radarr instance ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RadarrSettings'
+      responses:
+        '200':
+          description: 'Radarr instance updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadarrSettings'
+    delete:
+      summary: Delete existing radarr instance
+      description: Deletes an existing radarr instance based on id parameter
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: radarrId
+          required: true
+          schema:
+            type: integer
+          description: Radarr Instance ID
+      responses:
+        '200':
+          description: 'Radarr instance updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadarrSettings'
+  /settings/sonarr:
+    get:
+      summary: Get all sonarr settings
+      description: Returns all sonarr settings in a JSON array
+      tags:
+        - settings
+      responses:
+        '200':
+          description: 'Values were returned'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SonarrSettings'
+    post:
+      summary: Create new Sonarr instance
+      description: Creates a new Sonarr instance from the request body
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SonarrSettings'
+      responses:
+        '201':
+          description: 'New Sonarr instance created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SonarrSettings'
+  /settings/sonarr/{sonarrId}:
+    put:
+      summary: Update existing sonarr instance
+      description: Updates an existing sonarr instance with values from request body
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: sonarrId
+          required: true
+          schema:
+            type: integer
+          description: Sonarr instance ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SonarrSettings'
+      responses:
+        '200':
+          description: 'Sonarr instance updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SonarrSettings'
+    delete:
+      summary: Delete existing sonarr instance
+      description: Deletes an existing sonarr instance based on id parameter
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: sonarrId
+          required: true
+          schema:
+            type: integer
+          description: Sonarr Instance ID
+      responses:
+        '200':
+          description: 'Sonarr instance updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SonarrSettings'
+  /auth/me:
+    get:
+      summary: Returns the currently logged in user
+      description: Returns the currently logged in user
+      tags:
+        - auth
+        - users
+      responses:
+        '200':
+          description: Object containing the logged in user in JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /auth/login:
+    post:
+      summary: Login using a plex auth token
+      description: Takes an `authToken` (plex token) to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main plex server, they will also have an account created, but without any permissions.
+      security: []
+      tags:
+        - auth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                authToken:
+                  type: string
+              required:
+                - authToken
+
+  /user:
+    get:
+      summary: Returns a list of all users
+      description: Requests all users and returns them in a large array
+      tags:
+        - users
+      responses:
+        '200':
+          description: A JSON array of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+security:
+  - cookieAuth: []
