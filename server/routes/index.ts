@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, NextFunction, Response } from 'express';
 import user from './user';
 import authRoutes from './auth';
 import { checkUser, isAuthenticated } from '../middleware/auth';
