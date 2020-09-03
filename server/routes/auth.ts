@@ -3,10 +3,11 @@ import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
 import PlexTvAPI from '../api/plextv';
 import { isAuthenticated } from '../middleware/auth';
+import { Permission } from '../lib/permissions';
 
 const authRoutes = Router();
 
-authRoutes.get('/me', isAuthenticated, async (req, res) => {
+authRoutes.get('/me', isAuthenticated(), async (req, res) => {
   const userRepository = getRepository(User);
   if (!req.user) {
     return res.status(500).json({
@@ -54,7 +55,7 @@ authRoutes.post('/login', async (req, res) => {
         user = new User({
           email: account.email,
           plexToken: account.authToken,
-          // TODO: When we add permissions in #52, set admin here
+          permissions: Permission.ADMIN,
         });
         await userRepository.save(user);
       }

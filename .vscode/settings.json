@@ -12,7 +12,7 @@
       "previewLimit": 50,
       "driver": "SQLite",
       "name": "Local SQLite",
-      "database": "./db/db.sqlite3"
+      "database": "./config/db/db.sqlite3"
     }
   ]
 }
