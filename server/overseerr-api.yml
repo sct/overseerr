@@ -13,20 +13,28 @@ components:
         id:
           type: integer
           example: 1
+          readOnly: true
         email:
           type: string
           example: 'hey@itsme.com'
         plexToken:
           type: string
+          readOnly: true
+        permissions:
+          type: number
+          example: 0
         createdAt:
           type: string
           example: '2020-09-02T05:02:23.000Z'
+          readOnly: true
         updatedAt:
           type: string
           example: '2020-09-02T05:02:23.000Z'
+          readOnly: true
       required:
         - id
         - email
+        - permissions
         - createdAt
         - updatedAt
     MainSettings:
@@ -478,5 +486,94 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+    post:
+      summary: Create a new user
+      description: |
+        Creates a new user. Should under normal circumstances never be called as you will not have a valid authToken to provide for the user.
+
+        In the future when Plex auth is not required, this will be used to create accounts.
+
+        Requires the `MANAGE_USERS` permission.
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: The created user in JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/{userId}:
+    get:
+      summary: Retrieve a user by ID
+      description: |
+        Retrieve user details in JSON format. Requires the `MANAGE_USERS` permission.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Users details in JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      summary: Update a user by user ID
+      description: |
+        Update a user with provided values in request body. You cannot update a users plex token through this request.
+
+        Requires the `MANAGE_USERS` permission.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successfully updated user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      summary: Delete a user by user ID
+      description: Deletes a user by provided user ID. Requires the `MANAGE_USERS` permission.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
 security:
   - cookieAuth: []

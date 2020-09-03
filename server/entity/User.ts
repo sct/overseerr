@@ -5,12 +5,15 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Permission, hasPermission } from '../lib/permissions';
 
 @Entity()
 export class User {
   public static filterMany(users: User[]): Partial<User>[] {
     return users.map((u) => u.filter());
   }
+
+  static readonly filteredFields: string[] = ['plexToken'];
 
   @PrimaryGeneratedColumn()
   public id: number;
@@ -20,6 +23,9 @@ export class User {
 
   @Column({ nullable: true })
   public plexToken?: string;
+
+  @Column({ type: 'integer', default: 0 })
+  public permissions = 0;
 
   @CreateDateColumn()
   public createdAt: Date;
@@ -32,11 +38,17 @@ export class User {
   }
 
   public filter(): Partial<User> {
-    return {
-      id: this.id,
-      email: this.email,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-    };
+    const filtered: Partial<User> = Object.assign(
+      {},
+      ...(Object.keys(this) as (keyof User)[])
+        .filter((k) => !User.filteredFields.includes(k))
+        .map((k) => ({ [k]: this[k] }))
+    );
+
+    return filtered;
+  }
+
+  public hasPermission(permissions: Permission | Permission[]): boolean {
+    return !!hasPermission(permissions, this.permissions);
   }
 }
