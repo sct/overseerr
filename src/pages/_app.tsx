@@ -7,6 +7,9 @@ import { UserContext } from '../context/UserContext';
 import axios from 'axios';
 import { User } from '../hooks/useUser';
 
+// Custom types so we can correctly type our GetInitialProps function
+// with our combined user prop
+// This is specific to _app.tsx. Other pages will not need to do this!
 type NextAppComponentType = typeof App;
 type GetInitialPropsFn = NextAppComponentType['getInitialProps'];
 
@@ -16,18 +19,23 @@ interface AppProps {
 
 class CoreApp extends App<AppProps> {
   public static getInitialProps: GetInitialPropsFn = async (initialProps) => {
+    // Run the default getInitialProps for the main nextjs initialProps
     const appInitialProps: AppInitialProps = await App.getInitialProps(
       initialProps
     );
     const { ctx, router } = initialProps;
     let user = undefined;
     try {
+      // Attempt to get the user by running a request to the local api
       const response = await axios.get<User>(
         `http://localhost:${process.env.PORT || 3000}/api/v1/auth/me`,
         { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
       );
       user = response.data;
     } catch (e) {
+      // If there is no user, and ctx.res is set (to check if we are on the server side)
+      // _AND_ we are not already on the login or setup route, redirect to /login with a 307
+      // before anything actually renders
       if (ctx.res && !router.pathname.match(/(login|setup)/)) {
         ctx.res.writeHead(307, {
           Location: '/login',

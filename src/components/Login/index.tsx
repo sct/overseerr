@@ -9,6 +9,9 @@ const Login: React.FC = () => {
   const { user, revalidate } = useUser();
   const router = useRouter();
 
+  // Effect that is triggered when the `authToken` comes back from the Plex OAuth
+  // We take the token and attempt to login. If we get a success message, we will
+  // ask swr to revalidate the user which _shouid_ come back with a valid user.
   useEffect(() => {
     const login = async () => {
       const response = await axios.post('/api/v1/auth/login', { authToken });
@@ -22,6 +25,8 @@ const Login: React.FC = () => {
     }
   }, [authToken, revalidate]);
 
+  // Effect that is triggered whenever `useUser`'s user changes. If we get a new
+  // valid user, we redirect the user to the home page as the login was successful.
   useEffect(() => {
     if (user) {
       router.push('/');
