@@ -23,7 +23,7 @@ class CoreApp extends App<AppProps> {
     let user = undefined;
     try {
       const response = await axios.get<User>(
-        'http://localhost:3000/api/v1/auth/me',
+        `http://localhost:${process.env.PORT || 3000}/api/v1/auth/me`,
         { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
       );
       user = response.data;
