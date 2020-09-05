@@ -27,6 +27,7 @@
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.0.0",
     "swagger-ui-express": "^4.1.4",
+    "swr": "^0.3.2",
     "typeorm": "^0.2.25",
     "yamljs": "^0.3.0"
   },
@@ -40,9 +41,9 @@
     "@types/node": "^14.6.3",
     "@types/react": "^16.9.49",
     "@types/react-transition-group": "^4.4.0",
-    "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@types/swagger-ui-express": "^4.1.2",
     "@types/yamljs": "^0.2.31",
+    "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/parser": "^3.10.1",
     "commitizen": "^4.2.1",
     "cz-conventional-changelog": "^3.3.0",

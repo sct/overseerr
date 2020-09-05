@@ -35,6 +35,7 @@ app
     // Setup sessions
     const sessionRespository = getRepository(Session);
     server.use(
+      '/api',
       session({
         secret: 'verysecret',
         resave: false,
