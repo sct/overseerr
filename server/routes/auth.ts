@@ -75,13 +75,26 @@ authRoutes.post('/login', async (req, res) => {
       req.session.userId = user.id;
     }
 
-    return res.status(200).json({ status: 'ok' });
+    return res.status(200).json(user?.filter() ?? {});
   } catch (e) {
     console.error(e);
     res
       .status(500)
       .json({ error: 'Something went wrong. Is your auth token valid?' });
   }
+});
+
+authRoutes.get('/logout', (req, res, next) => {
+  req.session?.destroy((err) => {
+    if (err) {
+      return next({
+        status: 500,
+        message: 'Something went wrong while attempting to logout',
+      });
+    }
+
+    return res.status(200).json({ status: 'ok' });
+  });
 });
 
 export default authRoutes;

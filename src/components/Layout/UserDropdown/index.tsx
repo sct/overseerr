@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
 import Transition from '../../Transition';
 import { useUser } from '../../../hooks/useUser';
+import axios from 'axios';
 
 const UserDropdown: React.FC = () => {
-  const { user } = useUser();
+  const { user, revalidate } = useUser();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const logout = async () => {
+    const response = await axios.get('/api/v1/auth/logout');
+
+    if (response.data?.status === 'ok') {
+      revalidate();
+    }
+  };
 
   return (
     <div className="ml-3 relative">
@@ -53,6 +62,7 @@ const UserDropdown: React.FC = () => {
               href="#"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
               role="menuitem"
+              onClick={() => logout()}
             >
               Sign out
             </a>

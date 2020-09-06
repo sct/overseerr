@@ -25,22 +25,24 @@ class CoreApp extends App<AppProps> {
     );
     const { ctx, router } = initialProps;
     let user = undefined;
-    try {
-      // Attempt to get the user by running a request to the local api
-      const response = await axios.get<User>(
-        `http://localhost:${process.env.PORT || 3000}/api/v1/auth/me`,
-        { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
-      );
-      user = response.data;
-    } catch (e) {
-      // If there is no user, and ctx.res is set (to check if we are on the server side)
-      // _AND_ we are not already on the login or setup route, redirect to /login with a 307
-      // before anything actually renders
-      if (ctx.res && !router.pathname.match(/(login|setup)/)) {
-        ctx.res.writeHead(307, {
-          Location: '/login',
-        });
-        ctx.res.end();
+    if (ctx.res) {
+      try {
+        // Attempt to get the user by running a request to the local api
+        const response = await axios.get<User>(
+          `http://localhost:${process.env.PORT || 3000}/api/v1/auth/me`,
+          { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
+        );
+        user = response.data;
+      } catch (e) {
+        // If there is no user, and ctx.res is set (to check if we are on the server side)
+        // _AND_ we are not already on the login or setup route, redirect to /login with a 307
+        // before anything actually renders
+        if (!router.pathname.match(/(login|setup)/)) {
+          ctx.res.writeHead(307, {
+            Location: '/login',
+          });
+          ctx.res.end();
+        }
       }
     }
 

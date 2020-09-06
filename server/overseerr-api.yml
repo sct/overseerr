@@ -457,10 +457,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
+                $ref: '#/components/schemas/User'
       requestBody:
         required: true
         content:
@@ -472,7 +469,23 @@ paths:
                   type: string
               required:
                 - authToken
-
+  /auth/logout:
+    get:
+      summary: Logout and clear session cookie
+      description: This endpoint will completely clear the session cookie and associated values, logging out the user
+      tags:
+        - auth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'ok'
   /user:
     get:
       summary: Returns a list of all users
