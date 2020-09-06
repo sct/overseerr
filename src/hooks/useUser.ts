@@ -21,7 +21,12 @@ export const useUser = ({
   const initialRef = useRef(initialData);
   const { data, error, revalidate } = useSwr<User>(
     id ? `/api/v1/user/${id}` : `/api/v1/auth/me`,
-    { initialData: initialRef.current }
+    {
+      initialData: initialRef.current,
+      refreshInterval: 30000,
+      errorRetryInterval: 30000,
+      shouldRetryOnError: false,
+    }
   );
 
   return {

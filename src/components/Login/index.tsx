@@ -16,7 +16,7 @@ const Login: React.FC = () => {
     const login = async () => {
       const response = await axios.post('/api/v1/auth/login', { authToken });
 
-      if (response.data?.status === 'OK') {
+      if (response.data?.email) {
         revalidate();
       }
     };

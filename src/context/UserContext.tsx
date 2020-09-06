@@ -15,7 +15,7 @@ export const UserContext: React.FC<UserContextProps> = ({
   initialUser,
   children,
 }) => {
-  const { user, revalidate } = useUser({ initialData: initialUser });
+  const { user, error, revalidate } = useUser({ initialData: initialUser });
   const router = useRouter();
 
   useEffect(() => {
@@ -23,10 +23,17 @@ export const UserContext: React.FC<UserContextProps> = ({
   }, [router.pathname, revalidate]);
 
   useEffect(() => {
-    if (!router.pathname.match(/(setup|login)/) && !user) {
-      router.push('/login');
+    let routing = false;
+
+    if (
+      !router.pathname.match(/(setup|login)/) &&
+      (!user || error) &&
+      !routing
+    ) {
+      routing = true;
+      location.href = '/login';
     }
-  }, [router, user]);
+  }, [router, user, error]);
 
   return <>{children}</>;
 };
