@@ -46,6 +46,9 @@ authRoutes.post('/login', async (req, res) => {
         user.plexToken = body.authToken;
         await userRepository.save(user);
       }
+
+      // Update the users avatar with their plex thumbnail (incase it changed)
+      user.avatar = account.thumb;
     } else {
       // Here we check if it's the first user. If it is, we create the user with no check
       // and give them admin permissions
@@ -56,6 +59,7 @@ authRoutes.post('/login', async (req, res) => {
           email: account.email,
           plexToken: account.authToken,
           permissions: Permission.ADMIN,
+          avatar: account.thumb,
         });
         await userRepository.save(user);
       }
