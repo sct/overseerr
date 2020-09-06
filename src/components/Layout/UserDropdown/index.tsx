@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Transition from '../../Transition';
+import { useUser } from '../../../hooks/useUser';
 
 const UserDropdown: React.FC = () => {
+  const { user } = useUser();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   return (
@@ -14,11 +16,7 @@ const UserDropdown: React.FC = () => {
           aria-haspopup="true"
           onClick={() => setDropdownOpen((state) => !state)}
         >
-          <img
-            className="h-8 w-8 rounded-full"
-            src="https://avatars1.githubusercontent.com/u/234213?s=460&u=7f30f76bd7bbdab45bab7544ebd80aa88ea11caf&v=4"
-            alt=""
-          />
+          <img className="h-8 w-8 rounded-full" src={user?.avatar} alt="" />
         </button>
       </div>
       <Transition

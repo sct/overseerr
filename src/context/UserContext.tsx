@@ -15,8 +15,12 @@ export const UserContext: React.FC<UserContextProps> = ({
   initialUser,
   children,
 }) => {
-  const { user } = useUser({ initialData: initialUser });
+  const { user, revalidate } = useUser({ initialData: initialUser });
   const router = useRouter();
+
+  useEffect(() => {
+    revalidate();
+  }, [router.pathname, revalidate]);
 
   useEffect(() => {
     if (!router.pathname.match(/(setup|login)/) && !user) {

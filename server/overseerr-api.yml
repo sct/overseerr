@@ -23,6 +23,8 @@ components:
         permissions:
           type: number
           example: 0
+        avatar:
+          type: string
         createdAt:
           type: string
           example: '2020-09-02T05:02:23.000Z'

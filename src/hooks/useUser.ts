@@ -3,6 +3,8 @@ import { useRef } from 'react';
 export interface User {
   id: number;
   email: string;
+  avatar: string;
+  permissions: number;
 }
 
 interface UserHookResponse {

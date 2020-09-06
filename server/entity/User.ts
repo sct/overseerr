@@ -27,6 +27,9 @@ export class User {
   @Column({ type: 'integer', default: 0 })
   public permissions = 0;
 
+  @Column()
+  public avatar: string;
+
   @CreateDateColumn()
   public createdAt: Date;
 
