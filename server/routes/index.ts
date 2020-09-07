@@ -4,6 +4,7 @@ import authRoutes from './auth';
 import { checkUser, isAuthenticated } from '../middleware/auth';
 import settingsRoutes from './settings';
 import { Permission } from '../lib/permissions';
+import { getSettings } from '../lib/settings';
 
 const router = Router();
 
@@ -16,7 +17,13 @@ router.use(
 );
 router.use('/auth', authRoutes);
 
-router.get('/', (req, res) => {
+router.get('/settings/public', (_req, res) => {
+  const settings = getSettings();
+
+  return res.status(200).json(settings.public);
+});
+
+router.get('/', (_req, res) => {
   return res.status(200).json({
     api: 'Overseerr API',
     version: '1.0',

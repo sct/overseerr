@@ -42,11 +42,16 @@ interface MainSettings {
   apiKey: string;
 }
 
+interface PublicSettings {
+  initialized: boolean;
+}
+
 interface AllSettings {
   main: MainSettings;
   plex: PlexSettings;
   radarr: RadarrSettings[];
   sonarr: SonarrSettings[];
+  public: PublicSettings;
 }
 
 const SETTINGS_PATH = path.join(__dirname, '../../config/settings.json');
@@ -68,6 +73,9 @@ class Settings {
       },
       radarr: [],
       sonarr: [],
+      public: {
+        initialized: false,
+      },
     };
     if (initialSettings) {
       Object.assign<AllSettings, AllSettings>(this.data, initialSettings);
@@ -106,6 +114,14 @@ class Settings {
     this.data.sonarr = data;
   }
 
+  get public(): PublicSettings {
+    return this.data.public;
+  }
+
+  set public(data: PublicSettings) {
+    this.data.public = data;
+  }
+
   /**
    * Settings Load
    *
@@ -126,7 +142,7 @@ class Settings {
     const data = fs.readFileSync(SETTINGS_PATH, 'utf-8');
 
     if (data) {
-      this.data = JSON.parse(data);
+      this.data = Object.assign(this.data, JSON.parse(data));
     }
     return this.data;
   }
