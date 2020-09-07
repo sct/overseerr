@@ -30,17 +30,17 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onMouseEnter={() => setShowDetail((state) => !state)}
         onMouseLeave={() => setShowDetail((state) => !state)}
       >
-        <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0">
+        <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0 overflow-hidden">
           <Transition
             show={showDetail}
-            enter="transition ease-in-out duration-300 transform"
-            enterFrom="translate-y-full"
-            enterTo="translate-y-0"
-            leave="transition ease-in-out duration-300 transform"
-            leaveFrom="translate-y-0"
-            leaveTo="translate-y-full"
+            enter="transition ease-in-out duration-300 transform opacity-0"
+            enterFrom="translate-y-full opacity-0"
+            enterTo="translate-y-0 opacity-100"
+            leave="transition ease-in-out duration-300 transform opacity-100"
+            leaveFrom="translate-y-0 opacity-100"
+            leaveTo="translate-y-full opacity-0"
           >
-            <div className="relative -mt-16 bg-white rounded-lg shadow-lg">
+            <div className="absolute w-full bottom-0 bg-white rounded-lg shadow-lg">
               <div className="p-5">
                 <div className="text-blue-800 text-sm font-bold leading-4 ">
                   {year}
