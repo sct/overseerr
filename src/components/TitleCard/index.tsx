@@ -2,21 +2,23 @@ import React, { useState } from 'react';
 import Transition from '../Transition';
 
 interface TitleCardProps {
-  image?: string;
-  summary?: string;
-  year?: string;
-  title?: string;
-  userScore?: number;
-  status?: string;
+  image: string;
+  summary: string;
+  year: string;
+  title: string;
+  userScore: number;
+
+  //TODO - change to ENUM
+  status: string;
 }
 
 const TitleCard: React.FC<TitleCardProps> = ({
   image,
-  summary = 'Test summary of movie that will be the greatest movie of all time since it is Reiwa',
-  year = '2020',
-  title = 'Sample Title',
-  userScore = 99,
-  status = 'Not Requested',
+  summary,
+  year,
+  title,
+  userScore,
+  status,
 }) => {
   const [showDetail, setShowDetail] = useState(false);
 
@@ -27,8 +29,8 @@ const TitleCard: React.FC<TitleCardProps> = ({
         style={{
           backgroundImage: `url(//${image})`,
         }}
-        onMouseEnter={() => setShowDetail((state) => !state)}
-        onMouseLeave={() => setShowDetail((state) => !state)}
+        onMouseEnter={() => setShowDetail(true)}
+        onMouseLeave={() => setShowDetail(false)}
       >
         <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0 overflow-hidden">
           <Transition
@@ -40,7 +42,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
             leaveFrom="translate-y-0 opacity-100"
             leaveTo="translate-y-full opacity-0"
           >
-            <div className="absolute w-full bottom-0 bg-white rounded-lg shadow-lg">
+            <div className="absolute w-full bottom-0 bg-white rounded-lg overflow-hidden">
               <div className="p-5">
                 <div className="text-blue-800 text-sm font-bold leading-4 ">
                   {year}
@@ -63,7 +65,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   </span>
                 </div>
               </div>
-              <div className="border-t border-gray-200">
+              <div className="border-t border-gray-200 rounded-b-lg">
                 <div className="-mt-px flex">
                   <div className="w-0 flex-1 flex border-r border-gray-200">
                     <a
