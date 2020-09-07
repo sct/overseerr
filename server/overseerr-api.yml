@@ -184,6 +184,12 @@ components:
         - activeDirectory
         - is4k
         - enableSeasonFolders
+    PublicSettings:
+      type: object
+      properties:
+        initialized:
+          type: boolean
+          example: false
     AllSettings:
       type: object
       properties:
@@ -199,11 +205,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SonarrSettings'
+        public:
+          $ref: '#/components/schemas/PublicSettings'
       required:
         - main
         - plex
         - radarr
         - sonarr
+        - public
 
   securitySchemes:
     cookieAuth:
@@ -430,6 +439,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SonarrSettings'
+  /settings/public:
+    get:
+      summary: Returns public settings
+      description: Returns settings that are not protected or sensitive. Mainly used to determine if the app has been configured for the first time.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Public Settings returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicSettings'
   /auth/me:
     get:
       summary: Returns the currently logged in user
