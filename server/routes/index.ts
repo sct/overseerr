@@ -5,6 +5,7 @@ import { checkUser, isAuthenticated } from '../middleware/auth';
 import settingsRoutes from './settings';
 import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
+import searchRoutes from './search';
 
 const router = Router();
 
@@ -15,6 +16,7 @@ router.use(
   isAuthenticated(Permission.MANAGE_SETTINGS),
   settingsRoutes
 );
+router.use('/search', isAuthenticated(), searchRoutes);
 router.use('/auth', authRoutes);
 
 router.get('/settings/public', (_req, res) => {
