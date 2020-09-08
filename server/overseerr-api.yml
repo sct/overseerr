@@ -213,6 +213,114 @@ components:
         - radarr
         - sonarr
         - public
+    MovieResult:
+      type: object
+      required:
+        - id
+        - mediaType
+        - title
+      properties:
+        id:
+          type: number
+          example: 1234
+        mediaType:
+          type: string
+        popularity:
+          type: number
+          example: 10
+        posterPath:
+          type: string
+        backdropPath:
+          type: string
+        voteCount:
+          type: number
+        voteAverage:
+          type: number
+        genreIds:
+          type: array
+          items:
+            type: number
+        overview:
+          type: string
+          example: 'Overview of the movie'
+        originalLanguage:
+          type: string
+          example: 'en'
+        title:
+          type: string
+          example: Movie Title
+        originalTitle:
+          type: string
+          example: Original Movie Title
+        releaseDate:
+          type: string
+        adult:
+          type: boolean
+          example: false
+        video:
+          type: boolean
+          example: false
+    TvResult:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1234
+        mediaType:
+          type: string
+        popularity:
+          type: number
+          example: 10
+        posterPath:
+          type: string
+        backdropPath:
+          type: string
+        voteCount:
+          type: number
+        voteAverage:
+          type: number
+        genreIds:
+          type: array
+          items:
+            type: number
+        overview:
+          type: string
+          example: 'Overview of the movie'
+        originalLanguage:
+          type: string
+          example: 'en'
+        name:
+          type: string
+          example: TV Show Name
+        originalName:
+          type: string
+          example: Original TV Show Name
+        originCountry:
+          type: array
+          items:
+            type: string
+        firstAirDate:
+          type: string
+    PersonResult:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 12345
+        profilePath:
+          type: string
+        adult:
+          type: boolean
+          example: false
+        mediaType:
+          type: string
+          default: 'person'
+        knownFor:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/MovieResult'
+              - $ref: '#/components/schemas/TvResult'
 
   securitySchemes:
     cookieAuth:
@@ -611,6 +719,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+  /search:
+    get:
+      summary: Search for movies/tv shows/people
+      description: Returns a list of movies/tv shows/people in JSON format
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+            example: 'Mulan'
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      anyOf:
+                        - $ref: '#/components/schemas/MovieResult'
+                        - $ref: '#/components/schemas/TvResult'
+                        - $ref: '#/components/schemas/PersonResult'
 
 security:
   - cookieAuth: []
