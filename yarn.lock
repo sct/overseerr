@@ -4019,12 +4019,12 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express-openapi-validator@^3.16.11:
-  version "3.16.11"
-  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-3.16.11.tgz#18be9f0a3b8b5684a12dfa606344c4f2734baba8"
-  integrity sha512-ZZuCcFhJWNl/bWxo42oOfhnJRYaqGuef4E2Drvj5rEuOJqXdbrUsBFKQFDswuk/v43qn2Ulner3HfZNGPjrI3Q==
+express-openapi-validator@^3.16.15:
+  version "3.16.15"
+  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-3.16.15.tgz#f382c2de474b373cadc0ce5ed5a2e7a4f1d5629f"
+  integrity sha512-Xd+lZ84iyV68KKk45ZQgkANtlDnpJ0KYcUgen8ASaS25svb5V/KF35zlzsqTNYz5KcpMDBHnueYFdCTzvIRxUA==
   dependencies:
-    ajv "^6.12.3"
+    ajv "^6.12.4"
     content-type "^1.0.4"
     js-yaml "^3.14.0"
     json-schema-ref-parser "^9.0.6"
