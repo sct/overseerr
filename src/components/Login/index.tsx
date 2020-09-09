@@ -3,6 +3,7 @@ import PlexLoginButton from '../PlexLoginButton';
 import { useUser } from '../../hooks/useUser';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
+import Logo from '../../assets/logo.svg';
 
 const Login: React.FC = () => {
   const [authToken, setAuthToken] = useState<string | undefined>(undefined);
@@ -34,20 +35,20 @@ const Login: React.FC = () => {
   }, [user, router]);
 
   return (
-    <div className="w-full pt-10">
-      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div className="flex justify-center text-gray-900 font-bold text-xl mb-2">
-          Overseerr
-        </div>
-        <div className="flex justify-center text-gray-900 text-sm pb-6 mb-2">
-          would like to sign in to your Plex account
-        </div>
-        <div className="flex items-center justify-center">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <Logo className="mx-auto max-h-32 w-auto" />
+        <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900">
+          Log in to continue
+        </h2>
+      </div>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <PlexLoginButton
             onAuthToken={(authToken) => setAuthToken(authToken)}
           />
         </div>
-      </form>
+      </div>
     </div>
   );
 };
