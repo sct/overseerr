@@ -6,3 +6,8 @@
   @apply inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 transition ease-in-out duration-150;
   background-color: #cc7b19;
 }
+
+.titleCard {
+  @apply relative bg-cover rounded-lg;
+  padding-bottom: 150%;
+}

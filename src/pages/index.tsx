@@ -1,12 +1,19 @@
 import React from 'react';
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
+import TitleCard from '../components/TitleCard';
 
 const Index: NextPage = () => {
   return (
-    <div className="bg-blue-700 mx-4 my-2 px-4 py-2 w-64">
-      <h1 className="text-xl">Overseer</h1>
-      <p className="py-4">Here is some text</p>
-    </div>
+    <>
+      <TitleCard
+        image="image.tmdb.org/t/p/w600_and_h900_bestv2/iZf0KyrE25z1sage4SYFLCCrMi9.jpg"
+        year="2019"
+        summary="Greatest movie ever"
+        title="1918"
+        userScore={98}
+        status="Not Requested"
+      />
+    </>
   );
 };
 
