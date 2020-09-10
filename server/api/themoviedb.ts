@@ -91,11 +91,11 @@ interface TmdbSearchMultiResponse extends TmdbPaginatedResponse {
   results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[];
 }
 
-interface TmdbDiscoverMovieResponse extends TmdbPaginatedResponse {
+interface TmdbSearchMovieResponse extends TmdbPaginatedResponse {
   results: TmdbMovieResult[];
 }
 
-interface TmdbDiscoverTvResponse extends TmdbPaginatedResponse {
+interface TmdbSearchTvResponse extends TmdbPaginatedResponse {
   results: TmdbTvResult[];
 }
 
@@ -289,9 +289,9 @@ class TheMovieDb {
     page = 1,
     includeAdult = false,
     language = 'en-US',
-  }: DiscoverMovieOptions = {}): Promise<TmdbDiscoverMovieResponse> => {
+  }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
-      const response = await this.axios.get<TmdbDiscoverMovieResponse>(
+      const response = await this.axios.get<TmdbSearchMovieResponse>(
         '/discover/movie',
         {
           params: {
@@ -313,9 +313,9 @@ class TheMovieDb {
     sortBy = 'popularity.desc',
     page = 1,
     language = 'en-US',
-  }: DiscoverTvOptions = {}): Promise<TmdbDiscoverTvResponse> => {
+  }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
-      const response = await this.axios.get<TmdbDiscoverTvResponse>(
+      const response = await this.axios.get<TmdbSearchTvResponse>(
         '/discover/tv',
         {
           params: {
@@ -329,6 +329,72 @@ class TheMovieDb {
       return response.data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch discover tv: ${e.message}`);
+    }
+  };
+
+  public getAllTrending = async ({
+    page = 1,
+    timeWindow = 'day',
+  }: { page?: number; timeWindow?: 'day' | 'week' } = {}): Promise<
+    TmdbSearchMultiResponse
+  > => {
+    try {
+      const response = await this.axios.get<TmdbSearchMultiResponse>(
+        `/trending/all/${timeWindow}`,
+        {
+          params: {
+            page,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
+    }
+  };
+
+  public getMovieTrending = async ({
+    page = 1,
+    timeWindow = 'day',
+  }: { page?: number; timeWindow?: 'day' | 'week' } = {}): Promise<
+    TmdbSearchMovieResponse
+  > => {
+    try {
+      const response = await this.axios.get<TmdbSearchMovieResponse>(
+        `/trending/movie/${timeWindow}`,
+        {
+          params: {
+            page,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
+    }
+  };
+
+  public getTvTrending = async ({
+    page = 1,
+    timeWindow = 'day',
+  }: { page?: number; timeWindow?: 'day' | 'week' } = {}): Promise<
+    TmdbSearchTvResponse
+  > => {
+    try {
+      const response = await this.axios.get<TmdbSearchTvResponse>(
+        `/trending/tv/${timeWindow}`,
+        {
+          params: {
+            page,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
     }
   };
 }
