@@ -6,6 +6,41 @@ interface SearchOptions {
   includeAdult?: boolean;
 }
 
+interface DiscoverMovieOptions {
+  page?: number;
+  includeAdult?: boolean;
+  language?: string;
+  sortBy?:
+    | 'popularity.asc'
+    | 'popularity.desc'
+    | 'release_date.asc'
+    | 'release_date.desc'
+    | 'revenue.asc'
+    | 'revenue.desc'
+    | 'primary_release_date.asc'
+    | 'primary_release_date.desc'
+    | 'original_title.asc'
+    | 'original_title.desc'
+    | 'vote_average.asc'
+    | 'vote_average.desc'
+    | 'vote_count.asc'
+    | 'vote_count.desc';
+}
+
+interface DiscoverTvOptions {
+  page?: number;
+  language?: string;
+  sortBy?:
+    | 'popularity.asc'
+    | 'popularity.desc'
+    | 'vote_average.asc'
+    | 'vote_average.desc'
+    | 'vote_count.asc'
+    | 'vote_count.desc'
+    | 'first_air_date.asc'
+    | 'first_air_date.desc';
+}
+
 interface TmdbMediaResult {
   id: number;
   media_type: string;
@@ -46,11 +81,22 @@ export interface TmdbPersonResult {
   known_for: (TmdbMovieResult | TmdbTvResult)[];
 }
 
-interface TmdbSearchMultiResponse {
+interface TmdbPaginatedResponse {
   page: number;
   total_results: number;
   total_pages: number;
+}
+
+interface TmdbSearchMultiResponse extends TmdbPaginatedResponse {
   results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[];
+}
+
+interface TmdbDiscoverMovieResponse extends TmdbPaginatedResponse {
+  results: TmdbMovieResult[];
+}
+
+interface TmdbDiscoverTvResponse extends TmdbPaginatedResponse {
+  results: TmdbTvResult[];
 }
 
 interface TmdbMovieDetails {
@@ -235,6 +281,54 @@ class TheMovieDb {
       return response.data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch tv show details: ${e.message}`);
+    }
+  };
+
+  public getDiscoverMovies = async ({
+    sortBy = 'popularity.desc',
+    page = 1,
+    includeAdult = false,
+    language = 'en-US',
+  }: DiscoverMovieOptions = {}): Promise<TmdbDiscoverMovieResponse> => {
+    try {
+      const response = await this.axios.get<TmdbDiscoverMovieResponse>(
+        '/discover/movie',
+        {
+          params: {
+            sort_by: sortBy,
+            page,
+            include_adult: includeAdult,
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch discover movies: ${e.message}`);
+    }
+  };
+
+  public getDiscoverTv = async ({
+    sortBy = 'popularity.desc',
+    page = 1,
+    language = 'en-US',
+  }: DiscoverTvOptions = {}): Promise<TmdbDiscoverTvResponse> => {
+    try {
+      const response = await this.axios.get<TmdbDiscoverTvResponse>(
+        '/discover/tv',
+        {
+          params: {
+            sort_by: sortBy,
+            page,
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch discover tv: ${e.message}`);
     }
   };
 }
