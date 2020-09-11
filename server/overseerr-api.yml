@@ -732,6 +732,12 @@ paths:
           schema:
             type: string
             example: 'Mulan'
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
       responses:
         '200':
           description: Results
@@ -756,6 +762,74 @@ paths:
                         - $ref: '#/components/schemas/MovieResult'
                         - $ref: '#/components/schemas/TvResult'
                         - $ref: '#/components/schemas/PersonResult'
+  /discover/movies:
+    get:
+      summary: Discover movies
+      description: Returns a list of movies in JSON format
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieResult'
+  /discover/tv:
+    get:
+      summary: Discover TV shows
+      description: Returns a list of tv shows in JSON format
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TvResult'
 
 security:
   - cookieAuth: []

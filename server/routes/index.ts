@@ -6,6 +6,7 @@ import settingsRoutes from './settings';
 import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import searchRoutes from './search';
+import discoverRoutes from './discover';
 
 const router = Router();
 
@@ -17,6 +18,7 @@ router.use(
   settingsRoutes
 );
 router.use('/search', isAuthenticated(), searchRoutes);
+router.use('/discover', isAuthenticated(), discoverRoutes);
 router.use('/auth', authRoutes);
 
 router.get('/settings/public', (_req, res) => {
