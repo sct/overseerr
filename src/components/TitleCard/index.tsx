@@ -61,7 +61,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   </span>
 
                   <span className="mt-3 text-purple-800 text-sm font-semibold leading-4 ">
-                    User Score: {userScore}/100
+                    User Score: {userScore}
                   </span>
                 </div>
               </div>
