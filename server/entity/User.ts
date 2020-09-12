@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { Permission, hasPermission } from '../lib/permissions';
+import { MediaRequest } from './MediaRequest';
 
 @Entity()
 export class User {
@@ -21,7 +23,13 @@ export class User {
   @Column({ unique: true })
   public email: string;
 
-  @Column({ nullable: true })
+  @Column()
+  public username: string;
+
+  @Column({ select: false })
+  public plexId: number;
+
+  @Column({ nullable: true, select: false })
   public plexToken?: string;
 
   @Column({ type: 'integer', default: 0 })
@@ -29,6 +37,9 @@ export class User {
 
   @Column()
   public avatar: string;
+
+  @OneToMany(() => MediaRequest, (request) => request.requestedBy)
+  public requests: MediaRequest;
 
   @CreateDateColumn()
   public createdAt: Date;

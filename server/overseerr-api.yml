@@ -260,6 +260,8 @@ components:
         video:
           type: boolean
           example: false
+        request:
+          $ref: '#/components/schemas/MediaRequest'
     TvResult:
       type: object
       properties:
@@ -301,6 +303,8 @@ components:
             type: string
         firstAirDate:
           type: string
+        request:
+          $ref: '#/components/schemas/MediaRequest'
     PersonResult:
       type: object
       properties:
@@ -321,6 +325,44 @@ components:
             oneOf:
               - $ref: '#/components/schemas/MovieResult'
               - $ref: '#/components/schemas/TvResult'
+    MediaRequest:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+          readOnly: true
+        mediaId:
+          type: number
+          example: 123
+          description: TMDB Movie ID
+        mediaType:
+          type: string
+          enum: [movie, tv]
+        status:
+          type: number
+          example: 0
+          description: Status of the request. 0 = PENDING APPROVAL, 1 = APPROVED, 2 = DECLINED, 3 = AVAILABLE
+          readOnly: true
+        createdAt:
+          type: string
+          example: '2020-09-12T10:00:27.000Z'
+          readOnly: true
+        updatedAt:
+          type: string
+          example: '2020-09-12T10:00:27.000Z'
+          readOnly: true
+        requestedBy:
+          $ref: '#/components/schemas/User'
+          readOnly: true
+        modifiedBy:
+          $ref: '#/components/schemas/User'
+          readOnly: true
+      required:
+        - id
+        - mediaId
+        - mediaType
+        - status
 
   securitySchemes:
     cookieAuth:

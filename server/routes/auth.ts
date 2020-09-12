@@ -37,7 +37,7 @@ authRoutes.post('/login', async (req, res) => {
 
     // Next let's see if the user already exists
     let user = await userRepository.findOne({
-      where: { email: account.email },
+      where: { plexId: account.id },
     });
 
     if (user) {
@@ -49,6 +49,8 @@ authRoutes.post('/login', async (req, res) => {
 
       // Update the users avatar with their plex thumbnail (incase it changed)
       user.avatar = account.thumb;
+      user.email = account.email;
+      user.username = account.username;
     } else {
       // Here we check if it's the first user. If it is, we create the user with no check
       // and give them admin permissions
@@ -57,6 +59,8 @@ authRoutes.post('/login', async (req, res) => {
       if (totalUsers === 0) {
         user = new User({
           email: account.email,
+          username: account.username,
+          plexId: account.id,
           plexToken: account.authToken,
           permissions: Permission.ADMIN,
           avatar: account.thumb,
