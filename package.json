@@ -30,7 +30,7 @@
     "sqlite3": "^5.0.0",
     "swagger-ui-express": "^4.1.4",
     "swr": "^0.3.2",
-    "typeorm": "^0.2.25",
+    "typeorm": "^0.2.26",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
