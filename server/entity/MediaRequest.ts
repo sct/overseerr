@@ -16,7 +16,7 @@ export enum Status {
 }
 
 @Entity()
-class Request {
+export class MediaRequest {
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -45,5 +45,3 @@ class Request {
     Object.assign(this, init);
   }
 }
-
-export default Request;

@@ -2,13 +2,13 @@ import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
 import { mapSearchResults } from '../models/Search';
 import { getRepository, In } from 'typeorm';
-import Request from '../entity/Request';
+import { MediaRequest } from '../entity/MediaRequest';
 
 const searchRoutes = Router();
 
 searchRoutes.get('/', async (req, res) => {
   const tmdb = new TheMovieDb();
-  const requestRepository = getRepository(Request);
+  const requestRepository = getRepository(MediaRequest);
 
   const results = await tmdb.searchMulti({
     query: req.query.query as string,

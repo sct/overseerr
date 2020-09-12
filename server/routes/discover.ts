@@ -2,13 +2,13 @@ import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
 import { mapMovieResult, mapTvResult } from '../models/Search';
 import { getRepository, In } from 'typeorm';
-import Request from '../entity/Request';
+import { MediaRequest } from '../entity/MediaRequest';
 
 const discoverRoutes = Router();
 
 discoverRoutes.get('/movies', async (req, res) => {
   const tmdb = new TheMovieDb();
-  const requestRepository = getRepository(Request);
+  const requestRepository = getRepository(MediaRequest);
 
   const data = await tmdb.getDiscoverMovies({ page: Number(req.query.page) });
 
@@ -33,7 +33,7 @@ discoverRoutes.get('/movies', async (req, res) => {
 
 discoverRoutes.get('/tv', async (req, res) => {
   const tmdb = new TheMovieDb();
-  const requestRepository = getRepository(Request);
+  const requestRepository = getRepository(MediaRequest);
 
   const data = await tmdb.getDiscoverTv({ page: Number(req.query.page) });
 

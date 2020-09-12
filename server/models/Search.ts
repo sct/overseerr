@@ -4,7 +4,7 @@ import type {
   TmdbTvResult,
 } from '../api/themoviedb';
 import { getRepository } from 'typeorm';
-import Request from '../entity/Request';
+import { MediaRequest } from '../entity/MediaRequest';
 
 export type MediaType = 'tv' | 'movie' | 'person';
 
@@ -19,7 +19,7 @@ interface SearchResult {
   genreIds: number[];
   overview: string;
   originalLanguage: string;
-  request?: Request;
+  request?: MediaRequest;
 }
 
 export interface MovieResult extends SearchResult {
@@ -29,7 +29,7 @@ export interface MovieResult extends SearchResult {
   releaseDate: string;
   adult: boolean;
   video: boolean;
-  request?: Request;
+  request?: MediaRequest;
 }
 
 export interface TvResult extends SearchResult {
@@ -54,7 +54,7 @@ export type Results = MovieResult | TvResult | PersonResult;
 
 export const mapMovieResult = (
   movieResult: TmdbMovieResult,
-  request?: Request
+  request?: MediaRequest
 ): MovieResult => ({
   id: movieResult.id,
   mediaType: 'movie',
@@ -76,7 +76,7 @@ export const mapMovieResult = (
 
 export const mapTvResult = (
   tvResult: TmdbTvResult,
-  request?: Request
+  request?: MediaRequest
 ): TvResult => ({
   id: tvResult.id,
   firstAirDate: tvResult.first_air_Date,
@@ -115,7 +115,7 @@ export const mapPersonResult = (
 
 export const mapSearchResults = (
   results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[],
-  requests?: Request[]
+  requests?: MediaRequest[]
 ): Results[] =>
   results.map((result) => {
     switch (result.media_type) {

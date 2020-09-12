@@ -261,7 +261,7 @@ components:
           type: boolean
           example: false
         request:
-          $ref: '#/components/schemas/Request'
+          $ref: '#/components/schemas/MediaRequest'
     TvResult:
       type: object
       properties:
@@ -304,7 +304,7 @@ components:
         firstAirDate:
           type: string
         request:
-          $ref: '#/components/schemas/Request'
+          $ref: '#/components/schemas/MediaRequest'
     PersonResult:
       type: object
       properties:
@@ -325,7 +325,7 @@ components:
             oneOf:
               - $ref: '#/components/schemas/MovieResult'
               - $ref: '#/components/schemas/TvResult'
-    Request:
+    MediaRequest:
       type: object
       properties:
         id:

@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Permission, hasPermission } from '../lib/permissions';
-import Request from './Request';
+import { MediaRequest } from './MediaRequest';
 
 @Entity()
 export class User {
@@ -38,8 +38,8 @@ export class User {
   @Column()
   public avatar: string;
 
-  @OneToMany(() => Request, (request) => request.requestedBy)
-  public requests: Request;
+  @OneToMany(() => MediaRequest, (request) => request.requestedBy)
+  public requests: MediaRequest;
 
   @CreateDateColumn()
   public createdAt: Date;
