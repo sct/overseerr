@@ -3,6 +3,8 @@ import type {
   TmdbPersonResult,
   TmdbTvResult,
 } from '../api/themoviedb';
+import { getRepository } from 'typeorm';
+import Request from '../entity/Request';
 
 export type MediaType = 'tv' | 'movie' | 'person';
 
@@ -17,6 +19,7 @@ interface SearchResult {
   genreIds: number[];
   overview: string;
   originalLanguage: string;
+  request?: Request;
 }
 
 export interface MovieResult extends SearchResult {
@@ -26,6 +29,7 @@ export interface MovieResult extends SearchResult {
   releaseDate: string;
   adult: boolean;
   video: boolean;
+  request?: Request;
 }
 
 export interface TvResult extends SearchResult {
@@ -48,7 +52,10 @@ export interface PersonResult {
 
 export type Results = MovieResult | TvResult | PersonResult;
 
-export const mapMovieResult = (movieResult: TmdbMovieResult): MovieResult => ({
+export const mapMovieResult = (
+  movieResult: TmdbMovieResult,
+  request?: Request
+): MovieResult => ({
   id: movieResult.id,
   mediaType: 'movie',
   adult: movieResult.adult,
@@ -64,9 +71,13 @@ export const mapMovieResult = (movieResult: TmdbMovieResult): MovieResult => ({
   voteCount: movieResult.vote_count,
   backdropPath: movieResult.backdrop_path,
   posterPath: movieResult.poster_path,
+  request,
 });
 
-export const mapTvResult = (tvResult: TmdbTvResult): TvResult => ({
+export const mapTvResult = (
+  tvResult: TmdbTvResult,
+  request?: Request
+): TvResult => ({
   id: tvResult.id,
   firstAirDate: tvResult.first_air_Date,
   genreIds: tvResult.genre_ids,
@@ -81,6 +92,7 @@ export const mapTvResult = (tvResult: TmdbTvResult): TvResult => ({
   voteCount: tvResult.vote_count,
   backdropPath: tvResult.backdrop_path,
   posterPath: tvResult.poster_path,
+  request,
 });
 
 export const mapPersonResult = (
@@ -102,14 +114,21 @@ export const mapPersonResult = (
 });
 
 export const mapSearchResults = (
-  results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[]
+  results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[],
+  requests?: Request[]
 ): Results[] =>
   results.map((result) => {
     switch (result.media_type) {
       case 'movie':
-        return mapMovieResult(result);
+        return mapMovieResult(
+          result,
+          requests?.find((req) => req.mediaId === result.id)
+        );
       case 'tv':
-        return mapTvResult(result);
+        return mapTvResult(
+          result,
+          requests?.find((req) => req.mediaId === result.id)
+        );
       default:
         return mapPersonResult(result);
     }

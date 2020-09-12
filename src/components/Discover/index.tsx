@@ -37,10 +37,6 @@ const Discover: React.FC = () => {
     return <div>{error}</div>;
   }
 
-  if (!data && !error) {
-    return <div>loading!</div>;
-  }
-
   const titles = data?.reduce(
     (a, v) => [...a, ...v.results],
     [] as MovieResult[]
