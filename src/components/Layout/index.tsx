@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Search from '../Search';
+import SearchInput from './SearchInput';
 import UserDropdown from './UserDropdown';
 import Sidebar from './Sidebar';
 import Notifications from './Notifications';
@@ -33,7 +33,7 @@ const Layout: React.FC = ({ children }) => {
             </svg>
           </button>
           <div className="flex-1 px-4 flex justify-between">
-            <Search />
+            <SearchInput />
             <div className="ml-4 flex items-center md:ml-6">
               <Notifications />
               <UserDropdown />
