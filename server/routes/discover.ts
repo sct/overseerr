@@ -1,22 +1,18 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
 import { mapMovieResult, mapTvResult } from '../models/Search';
-import { getRepository, In } from 'typeorm';
 import { MediaRequest } from '../entity/MediaRequest';
 
 const discoverRoutes = Router();
 
 discoverRoutes.get('/movies', async (req, res) => {
   const tmdb = new TheMovieDb();
-  const requestRepository = getRepository(MediaRequest);
 
   const data = await tmdb.getDiscoverMovies({ page: Number(req.query.page) });
 
-  const resultIds = data.results.map((result) => result.id);
-
-  const requests = await requestRepository.find({
-    mediaId: In(resultIds),
-  });
+  const requests = await MediaRequest.getRelatedRequests(
+    data.results.map((result) => result.id)
+  );
 
   return res.status(200).json({
     page: data.page,
@@ -33,15 +29,12 @@ discoverRoutes.get('/movies', async (req, res) => {
 
 discoverRoutes.get('/tv', async (req, res) => {
   const tmdb = new TheMovieDb();
-  const requestRepository = getRepository(MediaRequest);
 
   const data = await tmdb.getDiscoverTv({ page: Number(req.query.page) });
 
-  const resultIds = data.results.map((result) => result.id);
-
-  const requests = await requestRepository.find({
-    mediaId: In(resultIds),
-  });
+  const requests = await MediaRequest.getRelatedRequests(
+    data.results.map((result) => result.id)
+  );
 
   return res.status(200).json({
     page: data.page,

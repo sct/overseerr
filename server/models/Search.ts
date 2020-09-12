@@ -3,7 +3,6 @@ import type {
   TmdbPersonResult,
   TmdbTvResult,
 } from '../api/themoviedb';
-import { getRepository } from 'typeorm';
 import { MediaRequest } from '../entity/MediaRequest';
 
 export type MediaType = 'tv' | 'movie' | 'person';

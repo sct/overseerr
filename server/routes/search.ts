@@ -1,25 +1,21 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
 import { mapSearchResults } from '../models/Search';
-import { getRepository, In } from 'typeorm';
 import { MediaRequest } from '../entity/MediaRequest';
 
 const searchRoutes = Router();
 
 searchRoutes.get('/', async (req, res) => {
   const tmdb = new TheMovieDb();
-  const requestRepository = getRepository(MediaRequest);
 
   const results = await tmdb.searchMulti({
     query: req.query.query as string,
     page: Number(req.query.page),
   });
 
-  const resultIds = results.results.map((result) => result.id);
-
-  const requests = await requestRepository.find({
-    mediaId: In(resultIds),
-  });
+  const requests = await MediaRequest.getRelatedRequests(
+    results.results.map((result) => result.id)
+  );
 
   return res.status(200).json({
     page: results.page,

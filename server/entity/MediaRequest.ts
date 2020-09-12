@@ -5,6 +5,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  getRepository,
+  In,
 } from 'typeorm';
 import { User } from './User';
 
@@ -17,6 +19,28 @@ export enum Status {
 
 @Entity()
 export class MediaRequest {
+  public static async getRelatedRequests(
+    mediaIds: number | number[]
+  ): Promise<MediaRequest[]> {
+    const requestRepository = getRepository(MediaRequest);
+
+    try {
+      let finalIds: number[];
+      if (!Array.isArray(mediaIds)) {
+        finalIds = [mediaIds];
+      } else {
+        finalIds = mediaIds;
+      }
+
+      const requests = await requestRepository.find({ mediaId: In(finalIds) });
+
+      return requests;
+    } catch (e) {
+      console.error(e.messaage);
+      return [];
+    }
+  }
+
   @PrimaryGeneratedColumn()
   public id: number;
 
