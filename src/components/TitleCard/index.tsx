@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Transition from '../Transition';
+import { withProperties } from '../../utils/typeHelpers';
+import Placeholder from './Placeholder';
 
 interface TitleCardProps {
   image: string;
@@ -93,4 +95,4 @@ const TitleCard: React.FC<TitleCardProps> = ({
   );
 };
 
-export default TitleCard;
+export default withProperties(TitleCard, { Placeholder });

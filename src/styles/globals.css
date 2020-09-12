@@ -16,6 +16,6 @@ body {
 }
 
 .titleCard {
-  @apply relative bg-cover rounded-lg;
+  @apply relative bg-cover rounded-lg bg-cool-gray-800;
   padding-bottom: 150%;
 }

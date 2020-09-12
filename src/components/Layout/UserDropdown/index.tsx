@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Transition from '../../Transition';
 import { useUser } from '../../../hooks/useUser';
 import axios from 'axios';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 const UserDropdown: React.FC = () => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, revalidate } = useUser();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  useClickOutside(dropdownRef, () => setDropdownOpen(false));
 
   const logout = async () => {
     const response = await axios.get('/api/v1/auth/logout');
@@ -37,7 +40,10 @@ const UserDropdown: React.FC = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
+        <div
+          className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg"
+          ref={dropdownRef}
+        >
           <div
             className="py-1 rounded-md bg-white shadow-xs"
             role="menu"

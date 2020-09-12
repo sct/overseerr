@@ -73,7 +73,10 @@ const Discover: React.FC = () => {
       </div>
       <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {titles?.map((title) => (
-          <li key={title.id} className="col-span-1 flex flex-col text-center">
+          <li
+            key={title.id}
+            className="col-span-1 flex flex-col text-center items-center"
+          >
             <TitleCard
               image={`image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
               status={'Not Requested'}
@@ -84,6 +87,16 @@ const Discover: React.FC = () => {
             />
           </li>
         ))}
+        {(isLoadingInitialData ||
+          (isLoadingMore && (titles?.length ?? 0) > 0)) &&
+          [...Array(8)].map((_item, i) => (
+            <li
+              key={`placeholder-${i}`}
+              className="col-span-1 flex flex-col text-center items-center"
+            >
+              <TitleCard.Placeholder />
+            </li>
+          ))}
       </ul>
     </>
   );
