@@ -7,10 +7,11 @@ import {
   UpdateDateColumn,
   getRepository,
   In,
+  Index,
 } from 'typeorm';
 import { User } from './User';
 
-export enum Status {
+export enum MediaRequestStatus {
   PENDING,
   APPROVED,
   DECLINED,
@@ -44,14 +45,15 @@ export class MediaRequest {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column()
+  @Column({ unique: true })
+  @Index()
   public mediaId: number;
 
   @Column()
   public mediaType: 'movie' | 'tv';
 
   @Column({ type: 'integer' })
-  public status: Status;
+  public status: MediaRequestStatus;
 
   @ManyToOne(() => User, (user) => user.requests, { eager: true })
   public requestedBy: User;
@@ -65,7 +67,7 @@ export class MediaRequest {
   @UpdateDateColumn()
   public updatedAt: Date;
 
-  constructor(init?: Partial<User>) {
+  constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
   }
 }
