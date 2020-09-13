@@ -99,7 +99,7 @@ interface TmdbSearchTvResponse extends TmdbPaginatedResponse {
   results: TmdbTvResult[];
 }
 
-interface TmdbMovieDetails {
+export interface TmdbMovieDetails {
   id: number;
   imdb_id?: string;
   adult: boolean;
@@ -154,7 +154,7 @@ interface TmdbTvEpisodeDetails {
   vote_cuont: number;
 }
 
-interface TmdbTvDetails {
+export interface TmdbTvDetails {
   id: number;
   backdrop_path?: string;
   created_by: {

@@ -356,8 +356,10 @@ components:
           $ref: '#/components/schemas/User'
           readOnly: true
         modifiedBy:
-          $ref: '#/components/schemas/User'
-          readOnly: true
+          anyOf:
+            - $ref: '#/components/schemas/User'
+            - type: string
+              nullable: true
       required:
         - id
         - mediaId
@@ -872,6 +874,123 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/TvResult'
+  /request:
+    get:
+      summary: Get all requests
+      description: |
+        Returns all requests if the user has the `ADMIN` or `MANAGE_REQUESTS` permissions. Otherwise, only the logged in users requests are returned.
+      tags:
+        - request
+      responses:
+        '200':
+          description: Requests returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaRequest'
+    post:
+      summary: Create a new request
+      description: |
+        Creates a new request with the provided media id and type. The `REQUEST` permission is required.
+
+        If the user has the `ADMIN` or `AUTO_APPROVE` permissions, their request will be auomatically approved.
+      tags:
+        - request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mediaType:
+                  type: string
+                  enum: [movie, tv]
+                  example: movie
+                mediaId:
+                  type: number
+                  example: 123
+      responses:
+        '201':
+          description: Succesfully created the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaRequest'
+  /request/{requestId}:
+    get:
+      summary: Requests a specific MediaRequest
+      description: Returns a MediaRequest in JSON format
+      tags:
+        - request
+      parameters:
+        - in: path
+          name: requestId
+          description: Request ID
+          required: true
+          example: 1
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesfully returns request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaRequest'
+    delete:
+      summary: Delete a request
+      description: Removes a request. If the user has the `MANAGE_REQUESTS` permission, then any request can be removed. Otherwise, only pending requests can be removed.
+      tags:
+        - request
+      parameters:
+        - in: path
+          name: requestId
+          description: Request ID
+          required: true
+          example: 1
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesfully removed request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaRequest'
+  /request/{requestId}/{status}:
+    get:
+      summary: Update a requests status
+      description: |
+        Updates a requests status to approved or declined. Also returns the request in JSON format
+
+        Requires the `MANAGE_REQUESTS` permission or `ADMIN`
+      tags:
+        - request
+      parameters:
+        - in: path
+          name: requestId
+          description: Request ID
+          required: true
+          schema:
+            type: string
+            example: 1
+        - in: path
+          name: status
+          description: New status
+          required: true
+          schema:
+            type: string
+            enum: [pending, approve, decline, available]
+      responses:
+        '200':
+          description: Request status changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaRequest'
 
 security:
   - cookieAuth: []

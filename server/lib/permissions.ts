@@ -6,6 +6,7 @@ export enum Permission {
   MANAGE_REQUESTS = 16,
   REQUEST = 32,
   VOTE = 64,
+  AUTO_APPROVE = 128,
 }
 
 /**
