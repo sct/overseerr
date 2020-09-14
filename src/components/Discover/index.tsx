@@ -67,7 +67,7 @@ const Discover: React.FC = () => {
           </span>
         </div>
       </div>
-      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {titles?.map((title) => (
           <li
             key={title.id}
@@ -80,6 +80,7 @@ const Discover: React.FC = () => {
               title={title.title}
               userScore={title.voteAverage}
               year={title.releaseDate}
+              mediaType={title.mediaType}
             />
           </li>
         ))}
