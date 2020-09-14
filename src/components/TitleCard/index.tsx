@@ -14,9 +14,14 @@ interface TitleCardProps {
   title: string;
   userScore: number;
   mediaType: MediaType;
+  status?: MediaRequestStatus;
+}
 
-  //TODO - change to ENUM
-  status: string;
+enum MediaRequestStatus {
+  PENDING,
+  APPROVED,
+  DECLINED,
+  AVAILABLE,
 }
 
 const TitleCard: React.FC<TitleCardProps> = ({
@@ -66,9 +71,13 @@ const TitleCard: React.FC<TitleCardProps> = ({
               right: '-1px',
             }}
           >
-            {status === 'Available' && <Available className="rounded-tr-md" />}
-            {status === 'Requested' && <Requested className="rounded-tr-md" />}
-            {status === 'Not Requested' && (
+            {status === MediaRequestStatus.AVAILABLE && (
+              <Available className="rounded-tr-md" />
+            )}
+            {status === MediaRequestStatus.PENDING && (
+              <Requested className="rounded-tr-md" />
+            )}
+            {status === MediaRequestStatus.APPROVED && (
               <Unavailable className="rounded-tr-md" />
             )}
           </div>

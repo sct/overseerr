@@ -75,7 +75,7 @@ const Discover: React.FC = () => {
           >
             <TitleCard
               image={`image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
-              status={'Not Requested'}
+              status={title.request?.status}
               summary={title.overview}
               title={title.title}
               userScore={title.voteAverage}
