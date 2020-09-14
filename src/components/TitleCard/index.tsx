@@ -8,7 +8,7 @@ import Transition from '../Transition';
 import Placeholder from './Placeholder';
 
 interface TitleCardProps {
-  image: string;
+  image?: string;
   summary: string;
   year: string;
   title: string;
@@ -49,12 +49,12 @@ const TitleCard: React.FC<TitleCardProps> = ({
       <div
         className="titleCard"
         style={{
-          backgroundImage: `url(//${image})`,
+          backgroundImage: `url(//image.tmdb.org/t/p/w600_and_h900_bestv2${image})`,
         }}
         onMouseEnter={() => setShowDetail(true)}
         onMouseLeave={() => setShowDetail(false)}
       >
-        <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0 overflow-hidden">
+        <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0 overflow-hidden shadow-md">
           <div
             className={`absolute left-0 top-0 rounded-tl-md rounded-br-md z-50 ${
               mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
@@ -83,7 +83,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
           </div>
 
           <Transition
-            show={showDetail}
+            show={!image || showDetail}
             enter="transition ease-in-out duration-300 transform opacity-0"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -104,7 +104,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
 
                   <h1 className="text-xl leading-tight">{title}</h1>
                   <div
-                    className="text-xs"
+                    className="text-xs whitespace-normal"
                     style={{
                       WebkitLineClamp: 3,
                       display: '-webkit-box',
