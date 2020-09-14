@@ -10,7 +10,9 @@ module.exports = {
       },
     },
   },
-  variants: {},
+  variants: {
+    padding: ['first', 'last'],
+  },
   plugins: [
     require('@tailwindcss/ui')({
       layout: 'sidebar',

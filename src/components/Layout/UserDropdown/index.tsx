@@ -26,7 +26,7 @@ const UserDropdown: React.FC = () => {
           id="user-menu"
           aria-label="User menu"
           aria-haspopup="true"
-          onClick={() => setDropdownOpen((state) => !state)}
+          onClick={() => setDropdownOpen(true)}
         >
           <img className="h-8 w-8 rounded-full" src={user?.avatar} alt="" />
         </button>
@@ -45,28 +45,28 @@ const UserDropdown: React.FC = () => {
           ref={dropdownRef}
         >
           <div
-            className="py-1 rounded-md bg-white shadow-xs"
+            className="py-1 rounded-md bg-cool-gray-700 shadow-xs"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
             <a
               href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+              className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition ease-in-out duration-150"
               role="menuitem"
             >
               Your Profile
             </a>
             <a
               href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+              className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition ease-in-out duration-150"
               role="menuitem"
             >
               Settings
             </a>
             <a
               href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+              className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition ease-in-out duration-150"
               role="menuitem"
               onClick={() => logout()}
             >

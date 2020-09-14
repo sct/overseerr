@@ -14,7 +14,7 @@ const Layout: React.FC = ({ children }) => {
       <div className="flex flex-col w-0 flex-1 md:ml-64 relative mb-16">
         <div className="z-10 flex-shrink-0 flex h-16 bg-cool-gray-600 shadow fixed right-0 left-0 md:left-64">
           <button
-            className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600 md:hidden"
+            className="px-4 border-r border-gray-800 text-gray-200 focus:outline-none focus:bg-gray-300 focus:text-gray-600 md:hidden"
             aria-label="Open sidebar"
             onClick={() => setSidebarOpen(true)}
           >
@@ -46,7 +46,7 @@ const Layout: React.FC = ({ children }) => {
           tabIndex={0}
         >
           <div className="pt-2 pb-6 md:py-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+            <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
               {children}
             </div>
           </div>

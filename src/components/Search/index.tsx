@@ -53,9 +53,9 @@ const Search: React.FC = () => {
 
   return (
     <>
-      <div className="md:flex md:items-center md:justify-between mb-8 mt-8">
+      <div className="md:flex md:items-center md:justify-between mb-8 mt-6">
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-white sm:text-3xl sm:leading-9 sm:truncate">
+          <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
             Search Results
           </h2>
         </div>
@@ -81,7 +81,7 @@ const Search: React.FC = () => {
           No Results
         </div>
       )}
-      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {titles?.map((title) => {
           let titleCard: React.ReactNode;
 
@@ -89,7 +89,7 @@ const Search: React.FC = () => {
             case 'movie':
               titleCard = (
                 <TitleCard
-                  image={`image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
+                  image={title.posterPath}
                   status={title.request?.status}
                   summary={title.overview}
                   title={title.title}
@@ -102,7 +102,7 @@ const Search: React.FC = () => {
             case 'tv':
               titleCard = (
                 <TitleCard
-                  image={`image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
+                  image={title.posterPath}
                   status={title.request?.status}
                   summary={title.overview}
                   title={title.name}
@@ -128,7 +128,7 @@ const Search: React.FC = () => {
         })}
         {(isLoadingInitialData ||
           (isLoadingMore && (titles?.length ?? 0) > 0)) &&
-          [...Array(8)].map((_item, i) => (
+          [...Array(10)].map((_item, i) => (
             <li
               key={`placeholder-${i}`}
               className="col-span-1 flex flex-col text-center items-center"
