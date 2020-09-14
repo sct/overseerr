@@ -90,11 +90,12 @@ const Search: React.FC = () => {
               titleCard = (
                 <TitleCard
                   image={`image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
-                  status={'Not Requested'}
+                  status={title.request?.status}
                   summary={title.overview}
                   title={title.title}
                   userScore={title.voteAverage}
                   year={title.releaseDate}
+                  mediaType={title.mediaType}
                 />
               );
               break;
@@ -102,11 +103,12 @@ const Search: React.FC = () => {
               titleCard = (
                 <TitleCard
                   image={`image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
-                  status={'Not Requested'}
+                  status={title.request?.status}
                   summary={title.overview}
                   title={title.name}
                   userScore={title.voteAverage}
                   year={title.firstAirDate}
+                  mediaType={title.mediaType}
                 />
               );
               break;
