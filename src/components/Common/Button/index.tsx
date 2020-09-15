@@ -1,7 +1,14 @@
 import React, { ButtonHTMLAttributes } from 'react';
 
+export type ButtonType =
+  | 'default'
+  | 'primary'
+  | 'danger'
+  | 'warning'
+  | 'success';
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  buttonType?: 'default' | 'primary' | 'danger' | 'warning' | 'success';
+  buttonType?: ButtonType;
   buttonSize?: 'default' | 'lg' | 'md' | 'sm';
 }
 
@@ -38,7 +45,7 @@ const Button: React.FC<ButtonProps> = ({
       break;
     default:
       buttonStyle.push(
-        'border-gray-300 leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50'
+        'leading-5 font-medium rounded-md text-gray-200 bg-cool-gray-500 hover:bg-cool-gray-400 hover:text-white focus:border-blue-300 focus:shadow-outline-blue active:text-gray-200 active:bg-cool-gray-400'
       );
   }
 

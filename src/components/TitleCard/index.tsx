@@ -6,8 +6,13 @@ import Unavailable from '../../assets/unavailable.svg';
 import { withProperties } from '../../utils/typeHelpers';
 import Transition from '../Transition';
 import Placeholder from './Placeholder';
+import Modal from '../Common/Modal';
+import { useUser, Permission } from '../../hooks/useUser';
+import axios from 'axios';
+import { MediaRequest } from '../../../server/entity/MediaRequest';
 
 interface TitleCardProps {
+  id: number;
   image?: string;
   summary: string;
   year: string;
@@ -25,6 +30,7 @@ enum MediaRequestStatus {
 }
 
 const TitleCard: React.FC<TitleCardProps> = ({
+  id,
   image,
   summary,
   year,
@@ -32,7 +38,21 @@ const TitleCard: React.FC<TitleCardProps> = ({
   status,
   mediaType,
 }) => {
+  const [currentStatus, setCurrentStatus] = useState(status);
+  const { hasPermission } = useUser();
   const [showDetail, setShowDetail] = useState(false);
+  const [showRequestModal, setShowRequestModal] = useState(false);
+
+  const request = async () => {
+    const response = await axios.post<MediaRequest>('/api/v1/request', {
+      mediaId: id,
+      mediaType,
+    });
+
+    if (response.data) {
+      setCurrentStatus(response.data.status);
+    }
+  };
 
   // Just to get the year from the date
   if (year) {
@@ -46,6 +66,34 @@ const TitleCard: React.FC<TitleCardProps> = ({
         height: 270,
       }}
     >
+      <Modal
+        visible={showRequestModal}
+        backgroundClickable
+        onCancel={() => setShowRequestModal(false)}
+        onOk={() => request()}
+        title={`Request ${title}`}
+        okText="Request"
+        iconSvg={
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+            />
+          </svg>
+        }
+      >
+        {hasPermission(Permission.MANAGE_REQUESTS)
+          ? 'Your request will be immediately approved. Do you wish to continue?'
+          : undefined}
+      </Modal>
       <div
         className="titleCard"
         style={{
@@ -71,19 +119,19 @@ const TitleCard: React.FC<TitleCardProps> = ({
               right: '-1px',
             }}
           >
-            {status === MediaRequestStatus.AVAILABLE && (
+            {currentStatus === MediaRequestStatus.AVAILABLE && (
               <Available className="rounded-tr-md" />
             )}
-            {status === MediaRequestStatus.PENDING && (
+            {currentStatus === MediaRequestStatus.PENDING && (
               <Requested className="rounded-tr-md" />
             )}
-            {status === MediaRequestStatus.APPROVED && (
+            {currentStatus === MediaRequestStatus.APPROVED && (
               <Unavailable className="rounded-tr-md" />
             )}
           </div>
 
           <Transition
-            show={!image || showDetail}
+            show={!image || showDetail || showRequestModal}
             enter="transition ease-in-out duration-300 transform opacity-0"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -138,7 +186,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       />
                     </svg>
                   </button>
-                  <button className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+                  <button
+                    onClick={() => setShowRequestModal(true)}
+                    className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                  >
                     <svg
                       className="w-4 mx-auto"
                       fill="none"

@@ -89,6 +89,7 @@ const Search: React.FC = () => {
             case 'movie':
               titleCard = (
                 <TitleCard
+                  id={title.id}
                   image={title.posterPath}
                   status={title.request?.status}
                   summary={title.overview}
@@ -102,6 +103,7 @@ const Search: React.FC = () => {
             case 'tv':
               titleCard = (
                 <TitleCard
+                  id={title.id}
                   image={title.posterPath}
                   status={title.request?.status}
                   summary={title.overview}
