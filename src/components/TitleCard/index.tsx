@@ -6,10 +6,9 @@ import Unavailable from '../../assets/unavailable.svg';
 import { withProperties } from '../../utils/typeHelpers';
 import Transition from '../Transition';
 import Placeholder from './Placeholder';
-import Modal from '../Common/Modal';
-import { useUser, Permission } from '../../hooks/useUser';
 import axios from 'axios';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
+import MovieRequestModal from '../RequestModal/MovieRequestModal';
 
 interface TitleCardProps {
   id: number;
@@ -41,7 +40,6 @@ const TitleCard: React.FC<TitleCardProps> = ({
   requestId,
 }) => {
   const [currentStatus, setCurrentStatus] = useState(status);
-  const { hasPermission } = useUser();
   const [showDetail, setShowDetail] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -79,68 +77,35 @@ const TitleCard: React.FC<TitleCardProps> = ({
         height: 270,
       }}
     >
-      <Modal
+      <MovieRequestModal
+        type="request"
         visible={showRequestModal}
-        backgroundClickable
+        title={title}
         onCancel={() => setShowRequestModal(false)}
         onOk={() => request()}
-        title={`Request ${title}`}
-        okText="Request"
-        iconSvg={
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-        }
-      >
-        {hasPermission(Permission.MANAGE_REQUESTS)
-          ? 'Your request will be immediately approved. Do you wish to continue?'
-          : undefined}
-      </Modal>
-      <Modal
+      />
+      <MovieRequestModal
+        type="cancel"
         visible={showCancelModal}
-        backgroundClickable
+        title={title}
         onCancel={() => setShowCancelModal(false)}
         onOk={() => cancelRequest()}
-        title={`Cancel request`}
-        okText="Remove Request"
-        okButtonType="danger"
-        iconSvg={
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-        }
-      >
-        This will remove your request. Are you sure you want to continue?
-      </Modal>
+      />
       <div
-        className="titleCard"
+        className="titleCard outline-none"
         style={{
           backgroundImage: `url(//image.tmdb.org/t/p/w600_and_h900_bestv2${image})`,
         }}
         onMouseEnter={() => setShowDetail(true)}
         onMouseLeave={() => setShowDetail(false)}
+        onClick={() => setShowDetail(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            setShowDetail(true);
+          }
+        }}
+        role="link"
+        tabIndex={0}
       >
         <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0 overflow-hidden shadow-md">
           <div
@@ -284,6 +249,24 @@ const TitleCard: React.FC<TitleCardProps> = ({
                           strokeLinejoin="round"
                           strokeWidth={2}
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                  {currentStatus === MediaRequestStatus.AVAILABLE && (
+                    <button className="w-full h-7 text-center text-white bg-green-400 rounded-sm ml-1">
+                      <svg
+                        className="w-4 mx-auto"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
                         />
                       </svg>
                     </button>
