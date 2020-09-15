@@ -1,13 +1,47 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Transition from '../../Transition';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface SidebarProps {
   open?: boolean;
   setClosed: () => void;
 }
 
+interface SidebarLinkProps {
+  href: string;
+  svgIcon: ReactNode;
+  name: string;
+  activeRegExp: RegExp;
+  as?: string;
+}
+
+const SidebarLinks: SidebarLinkProps[] = [
+  {
+    href: '/',
+    name: 'Dashboard',
+    svgIcon: (
+      <svg
+        className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+        />
+      </svg>
+    ),
+    activeRegExp: /^\/(discover\/?(movies|tv)?)?$/,
+  },
+];
+
 const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
+  const router = useRouter();
   return (
     <>
       <div className="md:hidden">
@@ -63,25 +97,30 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                       </span>
                     </div>
                     <nav className="mt-5 px-2 space-y-1">
-                      <Link href="/">
-                        <a className="group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white bg-gray-900 focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150">
-                          <svg
-                            className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
+                      {SidebarLinks.map((sidebarLink) => {
+                        return (
+                          <Link
+                            key={`mobile-${sidebarLink.name}`}
+                            href={sidebarLink.href}
+                            as={sidebarLink.as}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                            />
-                          </svg>
-                          Dashboard
-                        </a>
-                      </Link>
+                            <a
+                              className={`group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
+                                ${
+                                  router.pathname.match(
+                                    sidebarLink.activeRegExp
+                                  )
+                                    ? 'bg-gray-900'
+                                    : ''
+                                }
+                              `}
+                            >
+                              {sidebarLink.svgIcon}
+                              {sidebarLink.name}
+                            </a>
+                          </Link>
+                        );
+                      })}
                     </nav>
                   </div>
                 </div>
@@ -102,25 +141,30 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                 <span className="text-2xl text-cool-gray-50">Overseerr</span>
               </div>
               <nav className="mt-5 flex-1 px-2 bg-gray-800 space-y-1">
-                <Link href="/">
-                  <a className="group flex items-center px-2 py-2 text-sm leading-5 font-medium text-white rounded-md bg-gray-900 focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150">
-                    <svg
-                      className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                {SidebarLinks.map((sidebarLink) => {
+                  return (
+                    <Link
+                      key={`desktop-${sidebarLink.name}`}
+                      href={sidebarLink.href}
+                      as={sidebarLink.as}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                      />
-                    </svg>
-                    Dashboard
-                  </a>
-                </Link>
+                      <a
+                        className={`group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
+                                ${
+                                  router.pathname.match(
+                                    sidebarLink.activeRegExp
+                                  )
+                                    ? 'bg-gray-900'
+                                    : ''
+                                }
+                              `}
+                      >
+                        {sidebarLink.svgIcon}
+                        {sidebarLink.name}
+                      </a>
+                    </Link>
+                  );
+                })}
               </nav>
             </div>
           </div>
