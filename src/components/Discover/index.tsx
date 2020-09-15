@@ -52,6 +52,7 @@ const Discover: React.FC = () => {
               userScore={title.voteAverage}
               year={title.releaseDate}
               mediaType={title.mediaType}
+              requestId={title.request?.id}
             />
           </div>
         ))}
@@ -91,6 +92,7 @@ const Discover: React.FC = () => {
               userScore={title.voteAverage}
               year={title.firstAirDate}
               mediaType={title.mediaType}
+              requestId={title.request?.id}
             />
           </div>
         ))}

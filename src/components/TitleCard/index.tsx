@@ -20,10 +20,11 @@ interface TitleCardProps {
   userScore: number;
   mediaType: MediaType;
   status?: MediaRequestStatus;
+  requestId?: number;
 }
 
 enum MediaRequestStatus {
-  PENDING,
+  PENDING = 1,
   APPROVED,
   DECLINED,
   AVAILABLE,
@@ -37,11 +38,13 @@ const TitleCard: React.FC<TitleCardProps> = ({
   title,
   status,
   mediaType,
+  requestId,
 }) => {
   const [currentStatus, setCurrentStatus] = useState(status);
   const { hasPermission } = useUser();
   const [showDetail, setShowDetail] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   const request = async () => {
     const response = await axios.post<MediaRequest>('/api/v1/request', {
@@ -51,6 +54,16 @@ const TitleCard: React.FC<TitleCardProps> = ({
 
     if (response.data) {
       setCurrentStatus(response.data.status);
+    }
+  };
+
+  const cancelRequest = async () => {
+    const response = await axios.delete<MediaRequest>(
+      `/api/v1/request/${requestId}`
+    );
+
+    if (response.data.id) {
+      setCurrentStatus(undefined);
     }
   };
 
@@ -94,6 +107,33 @@ const TitleCard: React.FC<TitleCardProps> = ({
           ? 'Your request will be immediately approved. Do you wish to continue?'
           : undefined}
       </Modal>
+      <Modal
+        visible={showCancelModal}
+        backgroundClickable
+        onCancel={() => setShowCancelModal(false)}
+        onOk={() => cancelRequest()}
+        title={`Cancel request`}
+        okText="Remove Request"
+        okButtonType="danger"
+        iconSvg={
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+        }
+      >
+        This will remove your request. Are you sure you want to continue?
+      </Modal>
       <div
         className="titleCard"
         style={{
@@ -131,7 +171,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
           </div>
 
           <Transition
-            show={!image || showDetail || showRequestModal}
+            show={!image || showDetail || showRequestModal || showCancelModal}
             enter="transition ease-in-out duration-300 transform opacity-0"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -150,7 +190,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 <div className="px-2 text-white">
                   <div className="text-sm">{year}</div>
 
-                  <h1 className="text-xl leading-tight">{title}</h1>
+                  <h1 className="text-xl leading-tight whitespace-normal">
+                    {title}
+                  </h1>
                   <div
                     className="text-xs whitespace-normal"
                     style={{
@@ -186,25 +228,66 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       />
                     </svg>
                   </button>
-                  <button
-                    onClick={() => setShowRequestModal(true)}
-                    className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                  >
-                    <svg
-                      className="w-4 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                  {!currentStatus && (
+                    <button
+                      onClick={() => setShowRequestModal(true)}
+                      className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      />
-                    </svg>
-                  </button>
+                      <svg
+                        className="w-4 mx-auto"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                  {currentStatus === MediaRequestStatus.PENDING && (
+                    <button
+                      onClick={() => setShowCancelModal(true)}
+                      className="w-full h-7 text-center text-white bg-orange-400 hover:bg-orange-300 rounded-sm ml-1 focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition ease-in-out duration-150"
+                    >
+                      <svg
+                        className="w-4 mx-auto"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                  {currentStatus === MediaRequestStatus.APPROVED && (
+                    <button className="w-full h-7 text-center text-white bg-red-500 rounded-sm ml-1">
+                      <svg
+                        className="w-4 mx-auto"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

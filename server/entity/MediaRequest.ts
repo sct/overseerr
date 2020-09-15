@@ -12,7 +12,7 @@ import {
 import { User } from './User';
 
 export enum MediaRequestStatus {
-  PENDING,
+  PENDING = 1,
   APPROVED,
   DECLINED,
   AVAILABLE,
