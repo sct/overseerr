@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useToasts } from 'react-toast-notifications';
 import type { MediaType } from '../../../server/models/Search';
 import Available from '../../assets/available.svg';
 import Requested from '../../assets/requested.svg';
@@ -39,12 +40,15 @@ const TitleCard: React.FC<TitleCardProps> = ({
   mediaType,
   requestId,
 }) => {
+  const { addToast } = useToasts();
+  const [isUpdating, setIsUpdating] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(status);
   const [showDetail, setShowDetail] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   const request = async () => {
+    setIsUpdating(true);
     const response = await axios.post<MediaRequest>('/api/v1/request', {
       mediaId: id,
       mediaType,
@@ -52,7 +56,14 @@ const TitleCard: React.FC<TitleCardProps> = ({
 
     if (response.data) {
       setCurrentStatus(response.data.status);
+      addToast(
+        <span>
+          <strong>{title}</strong> succesfully requested!
+        </span>,
+        { appearance: 'success', autoDismiss: true }
+      );
     }
+    setIsUpdating(false);
   };
 
   const cancelRequest = async () => {
@@ -134,6 +145,32 @@ const TitleCard: React.FC<TitleCardProps> = ({
               <Unavailable className="rounded-tr-md" />
             )}
           </div>
+          <Transition
+            show={isUpdating}
+            enter="transition ease-in-out duration-300 transform opacity-0"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition ease-in-out duration-300 transform opacity-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="absolute top-0 left-0 right-0 bottom-0 bg-cool-gray-800 bg-opacity-75 z-40 text-white flex items-center justify-center rounded-lg">
+              <svg
+                className="w-10 h-10 animate-spin"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            </div>
+          </Transition>
 
           <Transition
             show={!image || showDetail || showRequestModal || showCancelModal}

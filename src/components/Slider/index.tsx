@@ -2,13 +2,18 @@ import React from 'react';
 import TitleCard from '../TitleCard';
 
 interface SliderProps {
-  key: string;
+  sliderKey: string;
   items?: JSX.Element[];
   isLoading: boolean;
   isEmpty: boolean;
 }
 
-const Slider: React.FC<SliderProps> = ({ key, items, isLoading, isEmpty }) => {
+const Slider: React.FC<SliderProps> = ({
+  sliderKey,
+  items,
+  isLoading,
+  isEmpty,
+}) => {
   return (
     <div
       className="overflow-x-scroll whitespace-no-wrap hide-scrollbar scrolling-touch overscroll-x-contain -ml-4 -mr-4"
@@ -16,7 +21,7 @@ const Slider: React.FC<SliderProps> = ({ key, items, isLoading, isEmpty }) => {
     >
       {items?.map((item, index) => (
         <div
-          key={`${key}-${index}`}
+          key={`${sliderKey}-${index}`}
           className="first:px-4 last:px-4 px-2 inline-block"
         >
           {item}

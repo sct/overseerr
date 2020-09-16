@@ -2,6 +2,7 @@ import React from 'react';
 import '../styles/globals.css';
 import App, { AppInitialProps } from 'next/app';
 import { SWRConfig } from 'swr';
+import { ToastProvider } from 'react-toast-notifications';
 import Layout from '../components/Layout';
 import { UserContext } from '../context/UserContext';
 import axios from 'axios';
@@ -70,7 +71,9 @@ class CoreApp extends App<AppProps> {
           fetcher: (url) => axios.get(url).then((res) => res.data),
         }}
       >
-        <UserContext initialUser={user}>{component}</UserContext>
+        <ToastProvider>
+          <UserContext initialUser={user}>{component}</UserContext>
+        </ToastProvider>
       </SWRConfig>
     );
   }

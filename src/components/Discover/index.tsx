@@ -42,7 +42,7 @@ const Discover: React.FC = () => {
         </div>
       </div>
       <Slider
-        key="requests"
+        sliderKey="requests"
         isLoading={!requests && !requestError}
         isEmpty={!!requests && !requestError && requests.length === 0}
         items={requests?.map((request) => (
@@ -61,7 +61,7 @@ const Discover: React.FC = () => {
         </div>
       </div>
       <Slider
-        key="movies"
+        sliderKey="movies"
         isLoading={!movieData && !movieError}
         isEmpty={false}
         items={movieData?.results.map((title) => (
@@ -87,7 +87,7 @@ const Discover: React.FC = () => {
         </div>
       </div>
       <Slider
-        key="tv"
+        sliderKey="tv"
         isLoading={!tvData && !tvError}
         isEmpty={false}
         items={tvData?.results.map((title) => (
