@@ -1,12 +1,6 @@
 import { TmdbMovieDetails } from '../api/themoviedb';
 import { MediaRequest } from '../entity/MediaRequest';
-
-interface ProductionCompany {
-  id: number;
-  logoPath?: string;
-  originCountry: string;
-  name: string;
-}
+import { ProductionCompany, Genre } from './common';
 
 export interface MovieDetails {
   id: number;
@@ -14,10 +8,7 @@ export interface MovieDetails {
   adult: boolean;
   backdropPath?: string;
   budget: number;
-  genres: {
-    id: number;
-    name: string;
-  }[];
+  genres: Genre[];
   homepage?: string;
   originalLanguage: string;
   originalTitle: string;

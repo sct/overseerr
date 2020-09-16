@@ -421,7 +421,135 @@ components:
           type: number
         request:
           $ref: '#/components/schemas/MediaRequest'
-
+    Episode:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        airDate:
+          type: string
+        episodeNumber:
+          type: number
+        overview:
+          type: string
+        productionCode:
+          type: string
+        seasonNumber:
+          type: string
+        showId:
+          type: number
+        stillPath:
+          type: string
+        voteAverage:
+          type: number
+        voteCount:
+          type: number
+    Season:
+      type: object
+      properties:
+        id:
+          type: number
+        airDate:
+          type: string
+        episodeCount:
+          type: number
+        name:
+          type: string
+        overview:
+          type: string
+        posterPath:
+          type: string
+        seasonNumber:
+          type: number
+    TvDetails:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+        backdropPath:
+          type: string
+        posterPath:
+          type: string
+        createdBy:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              name:
+                type: string
+              gender:
+                type: number
+              profilePath:
+                type: string
+        episodeRunTime:
+          type: array
+          items:
+            type: number
+        firstAirDate:
+          type: string
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/Genre'
+        homepage:
+          type: string
+        inProduction:
+          type: boolean
+        languages:
+          type: array
+          items:
+            type: string
+        lastAirDate:
+          type: string
+        lastEpisodeToAir:
+          $ref: '#/components/schemas/Episode'
+        name:
+          type: string
+        nextEpisodeToAir:
+          $ref: '#/components/schemas/Episode'
+        networks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductionCompany'
+        numberOfEpisodes:
+          type: number
+        numberOfSeason:
+          type: number
+        originCountry:
+          type: array
+          items:
+            type: string
+        originalLanguage:
+          type: string
+        originalName:
+          type: string
+        overview:
+          type: string
+        popularity:
+          type: number
+        productionCompanies:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductionCompany'
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Season'
+        status:
+          type: string
+        type:
+          type: string
+        voteAverage:
+          type: number
+        voteCount:
+          type: number
+        request:
+          $ref: '#/components/schemas/MediaRequest'
     MediaRequest:
       type: object
       properties:
@@ -1108,6 +1236,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MovieDetails'
+  /tv/{tvId}:
+    get:
+      summary: Request tv details
+      description: Returns back full tv details in JSON format
+      tags:
+        - tv
+      parameters:
+        - in: path
+          name: tvId
+          required: true
+          schema:
+            type: number
+            example: 76479
+      responses:
+        '200':
+          description: TV details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TvDetails'
 
 security:
   - cookieAuth: []

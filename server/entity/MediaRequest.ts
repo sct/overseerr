@@ -38,7 +38,9 @@ export class MediaRequest {
         finalIds = mediaIds;
       }
 
-      const requests = await requestRepository.find({ mediaId: In(finalIds) });
+      const requests = await requestRepository.find({
+        mediaId: In(finalIds),
+      });
 
       return requests;
     } catch (e) {
@@ -54,7 +56,7 @@ export class MediaRequest {
 
     try {
       const request = await requestRepository.findOneOrFail({
-        where: { tmdbId: id },
+        where: { mediaId: id },
       });
 
       return request;

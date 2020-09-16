@@ -140,7 +140,7 @@ export interface TmdbMovieDetails {
   vote_count: number;
 }
 
-interface TmdbTvEpisodeDetails {
+export interface TmdbTvEpisodeDetails {
   id: number;
   air_date: string;
   episode_number: number;
@@ -152,6 +152,16 @@ interface TmdbTvEpisodeDetails {
   still_path: string;
   vote_average: number;
   vote_cuont: number;
+}
+
+export interface TmdbTvSeasonDetails {
+  id: number;
+  air_date: string;
+  episode_count: number;
+  name: string;
+  overview: string;
+  poster_path: string;
+  season_number: number;
 }
 
 export interface TmdbTvDetails {
@@ -197,15 +207,7 @@ export interface TmdbTvDetails {
     name: string;
     origin_country: string;
   }[];
-  seasons: {
-    id: number;
-    air_date: string;
-    episode_count: number;
-    name: string;
-    overview: string;
-    poster_path: string;
-    season_number: number;
-  }[];
+  seasons: TmdbTvSeasonDetails[];
   status: string;
   type: string;
   vote_average: number;
