@@ -2,6 +2,8 @@ import React from 'react';
 import useSWR from 'swr';
 import type { MovieResult, TvResult } from '../../../server/models/Search';
 import TitleCard from '../TitleCard';
+import { MediaRequest } from '../../../server/entity/MediaRequest';
+import RequestCard from '../TitleCard/RequestCard';
 
 interface MovieDiscoverResult {
   page: number;
@@ -25,8 +27,47 @@ const Discover: React.FC = () => {
     '/api/v1/discover/tv'
   );
 
+  const { data: requests, error: requestError } = useSWR<MediaRequest[]>(
+    '/api/v1/request'
+  );
+
   return (
     <>
+      <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
+            Recent Requests
+          </h2>
+        </div>
+      </div>
+      <div
+        className="overflow-x-scroll whitespace-no-wrap hide-scrollbar scrolling-touch overscroll-x-contain -ml-4 -mr-4"
+        style={{ height: 295 }}
+      >
+        {requests?.map((request) => (
+          <div
+            key={request.id}
+            className="first:px-4 last:px-4 px-2 inline-block"
+          >
+            <RequestCard tmdbId={request.mediaId} type={request.mediaType} />
+          </div>
+        ))}
+        {!requests &&
+          !requestError &&
+          [...Array(10)].map((_item, i) => (
+            <div
+              key={`placeholder-${i}`}
+              className="first:px-4 last:px-4 px-2 inline-block"
+            >
+              <TitleCard.Placeholder />
+            </div>
+          ))}
+        {requests && !requestError && requests.length === 0 && (
+          <div className="text-center text-white mt-32">
+            No Requests found :(
+          </div>
+        )}
+      </div>
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
           <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">

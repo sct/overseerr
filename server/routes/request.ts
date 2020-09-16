@@ -11,9 +11,18 @@ requestRoutes.get('/', async (req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
   try {
     const requests = req.user?.hasPermission(Permission.MANAGE_REQUESTS)
-      ? await requestRepository.find()
+      ? await requestRepository.find({
+          order: {
+            id: 'DESC',
+          },
+          take: 20,
+        })
       : await requestRepository.find({
           where: { requestedBy: { id: req.user?.id } },
+          order: {
+            id: 'DESC',
+          },
+          take: 20,
         });
 
     return res.status(200).json(requests);

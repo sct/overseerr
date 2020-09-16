@@ -13,7 +13,7 @@ import MovieRequestModal from '../RequestModal/MovieRequestModal';
 interface TitleCardProps {
   id: number;
   image?: string;
-  summary: string;
+  summary?: string;
   year: string;
   title: string;
   userScore: number;
