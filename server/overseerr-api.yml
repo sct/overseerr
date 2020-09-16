@@ -325,6 +325,103 @@ components:
             oneOf:
               - $ref: '#/components/schemas/MovieResult'
               - $ref: '#/components/schemas/TvResult'
+    Genre:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: Adventure
+    ProductionCompany:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        logoPath:
+          type: string
+        originCountry:
+          type: string
+        name:
+          type: string
+    MovieDetails:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+          readOnly: true
+        imdbId:
+          type: string
+          example: 123
+        adult:
+          type: boolean
+        backdropPath:
+          type: string
+        posterPath:
+          type: string
+        budget:
+          type: number
+          example: 1000000
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/Genre'
+        homepage:
+          type: string
+        originalLanguage:
+          type: string
+        originalTitle:
+          type: string
+        overview:
+          type: string
+        popularity:
+          type: number
+        productionCompanies:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductionCompany'
+        productionCountries:
+          type: array
+          items:
+            type: object
+            properties:
+              iso_3166_1:
+                type: string
+              name:
+                type: string
+        releaseDate:
+          type: string
+        revenue:
+          type: string
+        runtime:
+          type: number
+        spokenLanguages:
+          type: array
+          items:
+            type: object
+            properties:
+              iso_639_1:
+                type: string
+              name:
+                type: string
+        status:
+          type: string
+        tagline:
+          type: string
+        title:
+          type: string
+        video:
+          type: boolean
+        voteAverage:
+          type: number
+        voteCount:
+          type: number
+        request:
+          $ref: '#/components/schemas/MediaRequest'
+
     MediaRequest:
       type: object
       properties:
@@ -991,6 +1088,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaRequest'
+  /movie/{movieId}:
+    get:
+      summary: Request movie details
+      description: Returns back full movie details in JSON format
+      tags:
+        - movies
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: number
+            example: 337401
+      responses:
+        '200':
+          description: Movie details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieDetails'
 
 security:
   - cookieAuth: []

@@ -47,6 +47,23 @@ export class MediaRequest {
     }
   }
 
+  public static async getRequest(
+    id: number
+  ): Promise<MediaRequest | undefined> {
+    const requestRepository = getRepository(MediaRequest);
+
+    try {
+      const request = await requestRepository.findOneOrFail({
+        where: { tmdbId: id },
+      });
+
+      return request;
+    } catch (e) {
+      console.error(e.messaage);
+      return undefined;
+    }
+  }
+
   @PrimaryGeneratedColumn()
   public id: number;
 

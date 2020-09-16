@@ -8,6 +8,7 @@ import { getSettings } from '../lib/settings';
 import searchRoutes from './search';
 import discoverRoutes from './discover';
 import requestRoutes from './request';
+import movieRoutes from './movie';
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use(
 router.use('/search', isAuthenticated(), searchRoutes);
 router.use('/discover', isAuthenticated(), discoverRoutes);
 router.use('/request', isAuthenticated(), requestRoutes);
+router.use('/movie', isAuthenticated(), movieRoutes);
 router.use('/auth', authRoutes);
 
 router.get('/settings/public', (_req, res) => {
