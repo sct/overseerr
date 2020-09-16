@@ -23,7 +23,7 @@ interface DVRSettings {
   apiKey: string;
   useSsl: boolean;
   baseUrl?: string;
-  activeProfile: string;
+  activeProfileId: number;
   activeDirectory: string;
   is4k: boolean;
 }

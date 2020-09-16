@@ -8,8 +8,13 @@ import {
   getRepository,
   In,
   Index,
+  AfterUpdate,
+  AfterInsert,
 } from 'typeorm';
 import { User } from './User';
+import RadarrAPI from '../api/radarr';
+import { getSettings } from '../lib/settings';
+import TheMovieDb from '../api/themoviedb';
 
 export enum MediaRequestStatus {
   PENDING = 1,
@@ -60,7 +65,6 @@ export class MediaRequest {
 
   @ManyToOne(() => User, { nullable: true })
   public modifiedBy?: User;
-
   @CreateDateColumn()
   public createdAt: Date;
 
@@ -69,5 +73,50 @@ export class MediaRequest {
 
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
+  }
+
+  @AfterUpdate()
+  @AfterInsert()
+  private async sendToRadarr() {
+    if (
+      this.mediaType === 'movie' &&
+      this.status === MediaRequestStatus.APPROVED
+    ) {
+      try {
+        const settings = getSettings();
+        if (settings.radarr.length === 0 && !settings.radarr[0]) {
+          console.log(
+            '[MediaRequest] Skipped radarr request as there is no radarr configured'
+          );
+          return;
+        }
+
+        const tmdb = new TheMovieDb();
+        const radarrSettings = settings.radarr[0];
+        const radarr = new RadarrAPI({
+          apiKey: radarrSettings.apiKey,
+          url: `${radarrSettings.useSsl ? 'https' : 'http'}://${
+            radarrSettings.hostname
+          }:${radarrSettings.port}/api`,
+        });
+        const movie = await tmdb.getMovie({ movieId: this.mediaId });
+
+        await radarr.addMovie({
+          profileId: radarrSettings.activeProfileId,
+          qualityProfileId: radarrSettings.activeProfileId,
+          rootFolderPath: radarrSettings.activeDirectory,
+          title: movie.title,
+          tmdbId: movie.id,
+          year: Number(movie.release_date.slice(0, 4)),
+          monitored: true,
+          searchNow: true,
+        });
+        console.log('[MediaRequest] Sent request to Radarr');
+      } catch (e) {
+        throw new Error(
+          `[MediaRequest] Request failed to send to radarr: ${e.message}`
+        );
+      }
+    }
   }
 }
