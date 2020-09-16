@@ -12,6 +12,7 @@ module.exports = {
   },
   variants: {
     padding: ['first', 'last'],
+    borderWidth: ['first', 'last'],
   },
   plugins: [
     require('@tailwindcss/ui')({

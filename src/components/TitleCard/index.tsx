@@ -10,6 +10,7 @@ import Placeholder from './Placeholder';
 import axios from 'axios';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
 import MovieRequestModal from '../RequestModal/MovieRequestModal';
+import Link from 'next/link';
 
 interface TitleCardProps {
   id: number;
@@ -208,28 +209,30 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   </div>
                 </div>
                 <div className="flex justify-between left-0 bottom-0 right-0 top-0 px-2 py-2">
-                  <button className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm mr-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
-                    <svg
-                      className="w-4 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  </button>
+                  <Link href={`/movie/${id}`}>
+                    <a className="cursor-pointer flex w-full h-7 text-center text-white bg-indigo-500 rounded-sm mr-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+                      <svg
+                        className="w-4 mx-auto"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                    </a>
+                  </Link>
                   {!currentStatus && (
                     <button
                       onClick={() => setShowRequestModal(true)}
