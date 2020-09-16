@@ -110,9 +110,9 @@ components:
           example: false
         baseUrl:
           type: string
-        activeProfile:
-          type: string
-          example: '1080p'
+        activeProfileId:
+          type: number
+          example: 1
         activeDirectory:
           type: string
           example: '/movies'
