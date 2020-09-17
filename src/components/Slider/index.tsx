@@ -19,7 +19,7 @@ const Slider: React.FC<SliderProps> = ({
       {items?.map((item, index) => (
         <div
           key={`${sliderKey}-${index}`}
-          className="first:px-4 last:px-4 px-2 inline-block"
+          className="first:pl-4 last:pr-4 px-2 inline-block"
         >
           {item}
         </div>
@@ -28,7 +28,7 @@ const Slider: React.FC<SliderProps> = ({
         [...Array(10)].map((_item, i) => (
           <div
             key={`placeholder-${i}`}
-            className="first:px-4 last:px-4 px-2 inline-block"
+            className="first:pl-4 last:pr-4 px-2 inline-block"
           >
             <TitleCard.Placeholder />
           </div>

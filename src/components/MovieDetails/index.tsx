@@ -67,7 +67,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   }
   return (
     <div
-      className="bg-cover bg-center -mx-4 -mt-2 px-8 pt-4 "
+      className="bg-cover bg-center -mx-4 -mt-2 px-4 sm:px-8 pt-4 "
       style={{
         height: 493,
         backgroundImage: `linear-gradient(180deg, rgba(45, 55, 72, 0.47) 0%, #1A202E 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,

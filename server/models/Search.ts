@@ -80,7 +80,8 @@ export const mapTvResult = (
   id: tvResult.id,
   firstAirDate: tvResult.first_air_Date,
   genreIds: tvResult.genre_ids,
-  mediaType: tvResult.media_type,
+  // Some results from tmdb dont return the mediaType so we force it here!
+  mediaType: tvResult.media_type || 'tv',
   name: tvResult.name,
   originCountry: tvResult.origin_country,
   originalLanguage: tvResult.original_language,
