@@ -235,26 +235,26 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           <p className="pt-2 text-sm md:text-base">{data.overview}</p>
         </div>
         <div className="w-full md:w-80 mt-8 md:mt-0">
-          <div className="bg-cool-gray-900 rounded-lg shadow border border-cool-gray-700">
-            <div className="flex px-4 py-2 border-b border-cool-gray-700 last:border-b-0">
+          <div className="bg-cool-gray-900 rounded-lg shadow border border-cool-gray-800">
+            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
               <span className="text-sm">Status</span>
               <span className="flex-1 text-right text-cool-gray-400 text-sm">
                 {data.status}
               </span>
             </div>
-            <div className="flex px-4 py-2 border-b border-cool-gray-700 last:border-b-0">
+            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
               <span className="text-sm">Revenue</span>
               <span className="flex-1 text-right text-cool-gray-400 text-sm">
                 {data.revenue}
               </span>
             </div>
-            <div className="flex px-4 py-2 border-b border-cool-gray-700 last:border-b-0">
+            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
               <span className="text-sm">Budget</span>
               <span className="flex-1 text-right text-cool-gray-400 text-sm">
                 {data.budget}
               </span>
             </div>
-            <div className="flex px-4 py-2 border-b border-cool-gray-700 last:border-b-0">
+            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
               <span className="text-sm">Original Language</span>
               <span className="flex-1 text-right text-cool-gray-400 text-sm">
                 {data.originalLanguage}

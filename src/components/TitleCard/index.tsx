@@ -83,12 +83,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
   }
 
   return (
-    <div
-      style={{
-        width: 180,
-        height: 270,
-      }}
-    >
+    <div className="w-36 sm:w-36 md:w-44">
       <MovieRequestModal
         type="request"
         visible={showRequestModal}

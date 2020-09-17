@@ -81,7 +81,7 @@ const Search: React.FC = () => {
           No Results
         </div>
       )}
-      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {titles?.map((title) => {
           let titleCard: React.ReactNode;
 

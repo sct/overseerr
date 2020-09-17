@@ -5,6 +5,7 @@ import TitleCard from '../TitleCard';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
 import RequestCard from '../TitleCard/RequestCard';
 import Slider from '../Slider';
+import Link from 'next/link';
 
 interface MovieDiscoverResult {
   page: number;
@@ -36,9 +37,25 @@ const Discover: React.FC = () => {
     <>
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
-          <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
-            Recent Requests
-          </h2>
+          <Link href="/requests">
+            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+              <span>Recent Requests</span>
+              <svg
+                className="w-6 h-6 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </a>
+          </Link>
         </div>
       </div>
       <Slider
@@ -55,9 +72,25 @@ const Discover: React.FC = () => {
       />
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
-          <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
-            Popular Movies
-          </h2>
+          <Link href="/discover/movies">
+            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+              <span>Popular Movies</span>
+              <svg
+                className="w-6 h-6 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </a>
+          </Link>
         </div>
       </div>
       <Slider
@@ -81,9 +114,25 @@ const Discover: React.FC = () => {
       />
       <div className="md:flex md:items-center md:justify-between mb-4 mt-4">
         <div className="flex-1 min-w-0">
-          <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
-            Popular TV Shows
-          </h2>
+          <Link href="/discover/tv">
+            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+              <span>Popular TV Shows</span>
+              <svg
+                className="w-6 h-6 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </a>
+          </Link>
         </div>
       </div>
       <Slider

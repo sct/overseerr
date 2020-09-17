@@ -15,10 +15,7 @@ const Slider: React.FC<SliderProps> = ({
   isEmpty,
 }) => {
   return (
-    <div
-      className="overflow-x-scroll whitespace-no-wrap hide-scrollbar scrolling-touch overscroll-x-contain -ml-4 -mr-4"
-      style={{ height: 295 }}
-    >
+    <div className="overflow-x-scroll whitespace-no-wrap hide-scrollbar scrolling-touch overscroll-x-contain -ml-4 -mr-4">
       {items?.map((item, index) => (
         <div
           key={`${sliderKey}-${index}`}
