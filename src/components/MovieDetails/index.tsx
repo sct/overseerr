@@ -11,6 +11,7 @@ import type { MovieResult } from '../../../server/models/Search';
 import Link from 'next/link';
 import Slider from '../Slider';
 import TitleCard from '../TitleCard';
+import PersonCard from '../PersonCard';
 
 interface MovieDetailsProps {
   movie?: MovieDetailsType;
@@ -280,6 +281,42 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </div>
         </div>
       </div>
+      <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
+        <div className="flex-1 min-w-0">
+          <Link href="/movie/[movieId]/cast" as={`/movie/${data.id}/cast`}>
+            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+              <span>Cast</span>
+              <svg
+                className="w-6 h-6 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </a>
+          </Link>
+        </div>
+      </div>
+      <Slider
+        sliderKey="cast"
+        isLoading={!data && !error}
+        isEmpty={false}
+        items={data?.credits.cast.slice(0, 20).map((person) => (
+          <PersonCard
+            key={`cast-item-${person.id}`}
+            name={person.name}
+            subName={person.character}
+            profilePath={person.profilePath}
+          />
+        ))}
+      />
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
           <Link

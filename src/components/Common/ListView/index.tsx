@@ -6,6 +6,7 @@ import {
 } from '../../../../server/models/Search';
 import TitleCard from '../../TitleCard';
 import useVerticalScroll from '../../../hooks/useVerticalScroll';
+import PersonCard from '../../PersonCard';
 
 interface ListViewProps {
   items?: (TvResult | MovieResult | PersonResult)[];
@@ -64,7 +65,9 @@ const ListView: React.FC<ListViewProps> = ({
               );
               break;
             case 'person':
-              titleCard = <div>{title.name}</div>;
+              titleCard = (
+                <PersonCard name={title.name} profilePath={title.profilePath} />
+              );
               break;
           }
 

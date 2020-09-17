@@ -99,6 +99,27 @@ interface TmdbSearchTvResponse extends TmdbPaginatedResponse {
   results: TmdbTvResult[];
 }
 
+export interface TmdbCreditCast {
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  gender?: number;
+  id: number;
+  name: string;
+  order: number;
+  profile_path?: string;
+}
+
+export interface TmdbCreditCrew {
+  credit_id: string;
+  gender?: number;
+  id: number;
+  name: string;
+  profile_path?: string;
+  job: string;
+  department: string;
+}
+
 export interface TmdbMovieDetails {
   id: number;
   imdb_id?: string;
@@ -138,6 +159,10 @@ export interface TmdbMovieDetails {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  credits: {
+    cast: TmdbCreditCast[];
+    crew: TmdbCreditCrew[];
+  };
 }
 
 export interface TmdbTvEpisodeDetails {
@@ -258,7 +283,7 @@ class TheMovieDb {
       const response = await this.axios.get<TmdbMovieDetails>(
         `/movie/${movieId}`,
         {
-          params: { language },
+          params: { language, append_to_response: 'credits' },
         }
       );
 

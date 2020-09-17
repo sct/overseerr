@@ -99,7 +99,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onOk={() => cancelRequest()}
       />
       <div
-        className="titleCard outline-none"
+        className="titleCard outline-none cursor-default"
         style={{
           backgroundImage: `url(//image.tmdb.org/t/p/w600_and_h900_bestv2${image})`,
         }}
@@ -114,7 +114,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
         role="link"
         tabIndex={0}
       >
-        <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0 overflow-hidden shadow-md">
+        <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0 overflow-hidden shadow-xl">
           <div
             className={`absolute left-0 top-0 rounded-tl-md rounded-br-md z-50 ${
               mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
@@ -204,7 +204,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   </div>
                 </div>
                 <div className="flex justify-between left-0 bottom-0 right-0 top-0 px-2 py-2">
-                  <Link href={`/movie/${id}`}>
+                  <Link
+                    href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}
+                  >
                     <a className="cursor-pointer flex w-full h-7 text-center text-white bg-indigo-500 rounded-sm mr-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
                       <svg
                         className="w-4 mx-auto"

@@ -419,6 +419,17 @@ components:
           type: number
         voteCount:
           type: number
+        credits:
+          type: object
+          properties:
+            cast:
+              type: array
+              items:
+                $ref: '#/components/schemas/Cast'
+            crew:
+              type: array
+              items:
+                $ref: '#/components/schemas/Crew'
         request:
           $ref: '#/components/schemas/MediaRequest'
     Episode:
@@ -590,6 +601,48 @@ components:
         - mediaId
         - mediaType
         - status
+    Cast:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+        castId:
+          type: number
+          example: 1
+        character:
+          type: string
+          example: Some Character Name
+        creditId:
+          type: string
+        gender:
+          type: number
+        name:
+          type: string
+          example: Some Persons Name
+        order:
+          type: number
+        profilePath:
+          type: string
+    Crew:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+        creditId:
+          type: string
+        gender:
+          type: number
+        name:
+          type: string
+          example: Some Persons Name
+        job:
+          type: string
+        department:
+          type: string
+        profilePath:
+          type: string
 
   securitySchemes:
     cookieAuth:
