@@ -286,6 +286,58 @@ class TheMovieDb {
     }
   };
 
+  public async getMovieRecommendations({
+    movieId,
+    page = 1,
+    language = 'en-US',
+  }: {
+    movieId: number;
+    page?: number;
+    language?: string;
+  }): Promise<TmdbSearchMovieResponse> {
+    try {
+      const response = await this.axios.get<TmdbSearchMovieResponse>(
+        `/movie/${movieId}/recommendations`,
+        {
+          params: {
+            page,
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch discover movies: ${e.message}`);
+    }
+  }
+
+  public async getMovieSimilar({
+    movieId,
+    page = 1,
+    language = 'en-US',
+  }: {
+    movieId: number;
+    page?: number;
+    language?: string;
+  }): Promise<TmdbSearchMovieResponse> {
+    try {
+      const response = await this.axios.get<TmdbSearchMovieResponse>(
+        `/movie/${movieId}/similar`,
+        {
+          params: {
+            page,
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch discover movies: ${e.message}`);
+    }
+  }
+
   public getDiscoverMovies = async ({
     sortBy = 'popularity.desc',
     page = 1,

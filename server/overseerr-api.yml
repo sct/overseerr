@@ -1236,6 +1236,86 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MovieDetails'
+  /movie/{movieId}/recommendations:
+    get:
+      summary: Request recommended movies
+      description: Returns list of recommended movies based on provided movie ID in JSON format
+      tags:
+        - movies
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: number
+            example: 337401
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieResult'
+  /movie/{movieId}/similar:
+    get:
+      summary: Request similar movies
+      description: Returns list of similar movies based on provided movie ID in JSON format
+      tags:
+        - movies
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: number
+            example: 337401
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieResult'
   /tv/{tvId}:
     get:
       summary: Request tv details
