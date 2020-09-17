@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import useSWR from 'swr';
 import type { MovieResult, TvResult } from '../../../server/models/Search';
 import TitleCard from '../TitleCard';
@@ -6,6 +6,14 @@ import { MediaRequest } from '../../../server/entity/MediaRequest';
 import RequestCard from '../TitleCard/RequestCard';
 import Slider from '../Slider';
 import Link from 'next/link';
+import { defineMessages, FormattedMessage } from 'react-intl';
+import { LanguageContext } from '../../context/LanguageContext';
+
+const messages = defineMessages({
+  recentrequests: 'Recent Requests',
+  popularmovies: 'Popular Movies',
+  populartv: 'Popular Series',
+});
 
 interface MovieDiscoverResult {
   page: number;
@@ -22,11 +30,12 @@ interface TvDiscoverResult {
 }
 
 const Discover: React.FC = () => {
+  const { locale } = useContext(LanguageContext);
   const { data: movieData, error: movieError } = useSWR<MovieDiscoverResult>(
-    '/api/v1/discover/movies'
+    `/api/v1/discover/movies?language=${locale}`
   );
   const { data: tvData, error: tvError } = useSWR<TvDiscoverResult>(
-    '/api/v1/discover/tv'
+    `/api/v1/discover/tv?language=${locale}`
   );
 
   const { data: requests, error: requestError } = useSWR<MediaRequest[]>(
@@ -39,7 +48,9 @@ const Discover: React.FC = () => {
         <div className="flex-1 min-w-0">
           <Link href="/requests">
             <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
-              <span>Recent Requests</span>
+              <span>
+                <FormattedMessage {...messages.recentrequests} />
+              </span>
               <svg
                 className="w-6 h-6 ml-2"
                 fill="none"
@@ -74,7 +85,9 @@ const Discover: React.FC = () => {
         <div className="flex-1 min-w-0">
           <Link href="/discover/movies">
             <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
-              <span>Popular Movies</span>
+              <span>
+                <FormattedMessage {...messages.popularmovies} />
+              </span>
               <svg
                 className="w-6 h-6 ml-2"
                 fill="none"
@@ -116,7 +129,9 @@ const Discover: React.FC = () => {
         <div className="flex-1 min-w-0">
           <Link href="/discover/tv">
             <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
-              <span>Popular TV Shows</span>
+              <span>
+                <FormattedMessage {...messages.populartv} />
+              </span>
               <svg
                 className="w-6 h-6 ml-2"
                 fill="none"

@@ -4,6 +4,7 @@ interface SearchOptions {
   query: string;
   page?: number;
   includeAdult?: boolean;
+  language?: string;
 }
 
 interface DiscoverMovieOptions {
@@ -260,10 +261,11 @@ class TheMovieDb {
     query,
     page = 1,
     includeAdult = false,
+    language = 'en-US',
   }: SearchOptions): Promise<TmdbSearchMultiResponse> => {
     try {
       const response = await this.axios.get('/search/multi', {
-        params: { query, page, include_adult: includeAdult },
+        params: { query, page, include_adult: includeAdult, language },
       });
 
       return response.data;

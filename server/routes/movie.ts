@@ -9,7 +9,10 @@ const movieRoutes = Router();
 movieRoutes.get('/:id', async (req, res) => {
   const tmdb = new TheMovieDb();
 
-  const movie = await tmdb.getMovie({ movieId: Number(req.params.id) });
+  const movie = await tmdb.getMovie({
+    movieId: Number(req.params.id),
+    language: req.query.language as string,
+  });
 
   const request = await MediaRequest.getRequest(movie.id);
 
@@ -22,6 +25,7 @@ movieRoutes.get('/:id/recommendations', async (req, res) => {
   const results = await tmdb.getMovieRecommendations({
     movieId: Number(req.params.id),
     page: Number(req.query.page),
+    language: req.query.language as string,
   });
 
   const requests = await MediaRequest.getRelatedRequests(
@@ -47,6 +51,7 @@ movieRoutes.get('/:id/similar', async (req, res) => {
   const results = await tmdb.getMovieSimilar({
     movieId: Number(req.params.id),
     page: Number(req.query.page),
+    language: req.query.language as string,
   });
 
   const requests = await MediaRequest.getRelatedRequests(

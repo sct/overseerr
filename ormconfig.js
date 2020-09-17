@@ -2,7 +2,7 @@ const devConfig = {
   type: 'sqlite',
   database: 'config/db/db.sqlite3',
   synchronize: true,
-  logging: true,
+  logging: false,
   entities: ['server/entity/**/*.ts'],
   migrations: ['server/migration/**/*.ts'],
   cli: {

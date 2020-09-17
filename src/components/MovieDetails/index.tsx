@@ -1,4 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import {
+  FormattedMessage,
+  defineMessages,
+  FormattedNumber,
+  FormattedDate,
+} from 'react-intl';
 import type { MovieDetails as MovieDetailsType } from '../../../server/models/Movie';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
@@ -12,6 +18,19 @@ import Link from 'next/link';
 import Slider from '../Slider';
 import TitleCard from '../TitleCard';
 import PersonCard from '../PersonCard';
+import { LanguageContext } from '../../context/LanguageContext';
+
+const messages = defineMessages({
+  releasedate: 'Release Date',
+  userrating: 'User Rating',
+  status: 'Status',
+  revenue: 'Revenue',
+  budget: 'Budget',
+  originallanguage: 'Original Language',
+  overview: 'Overview',
+  runtime: '{minutes} minutes',
+  cast: 'Cast',
+});
 
 interface MovieDetailsProps {
   movie?: MovieDetailsType;
@@ -33,20 +52,21 @@ enum MediaRequestStatus {
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const router = useRouter();
+  const { locale } = useContext(LanguageContext);
   const { addToast } = useToasts();
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const { data, error, revalidate } = useSWR<MovieDetailsType>(
-    `/api/v1/movie/${router.query.movieId}`,
+    `/api/v1/movie/${router.query.movieId}?language=${locale}`,
     {
       initialData: movie,
     }
   );
   const { data: recommended, error: recommendedError } = useSWR<SearchResult>(
-    `/api/v1/movie/${router.query.movieId}/recommendations`
+    `/api/v1/movie/${router.query.movieId}/recommendations?language=${locale}`
   );
   const { data: similar, error: similarError } = useSWR<SearchResult>(
-    `/api/v1/movie/${router.query.movieId}/similar`
+    `/api/v1/movie/${router.query.movieId}/similar?language=${locale}`
   );
 
   const request = async () => {
@@ -110,7 +130,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           <img
             src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
             alt=""
-            className="rounded shadow md:shadow-2xl w-32 md:w-52"
+            className="rounded md:rounded-lg shadow md:shadow-2xl w-32 md:w-52"
           />
         </div>
         <div className="text-white flex flex-col mr-4 mt-4 md:mt-0 text-center md:text-left">
@@ -119,7 +139,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </span>
           <h1 className="text-2xl md:text-4xl">{data.title}</h1>
           <span className="text-xs md:text-base mt-1 md:mt-0">
-            {data.runtime} minutes | {data.genres.map((g) => g.name).join(', ')}
+            <FormattedMessage
+              {...messages.runtime}
+              values={{ minutes: data.runtime }}
+            />{' '}
+            | {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
         <div className="flex-1 flex justify-end mt-4 md:mt-0">
@@ -249,31 +273,70 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       </div>
       <div className="flex pt-8 text-white flex-col md:flex-row pb-4">
         <div className="flex-1 md:mr-8">
-          <h2 className="text-xl md:text-2xl">Overview</h2>
+          <h2 className="text-xl md:text-2xl">
+            <FormattedMessage {...messages.overview} />
+          </h2>
           <p className="pt-2 text-sm md:text-base">{data.overview}</p>
         </div>
         <div className="w-full md:w-80 mt-8 md:mt-0">
           <div className="bg-cool-gray-900 rounded-lg shadow border border-cool-gray-800">
             <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
-              <span className="text-sm">Status</span>
+              <span className="text-sm">
+                <FormattedMessage {...messages.userrating} />
+              </span>
+              <span className="flex-1 text-right text-cool-gray-400 text-sm">
+                {data.voteAverage}/10
+              </span>
+            </div>
+            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+              <span className="text-sm">
+                <FormattedMessage {...messages.releasedate} />
+              </span>
+              <span className="flex-1 text-right text-cool-gray-400 text-sm">
+                <FormattedDate
+                  value={new Date(data.releaseDate)}
+                  year="numeric"
+                  month="long"
+                  day="numeric"
+                />
+              </span>
+            </div>
+            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+              <span className="text-sm">
+                <FormattedMessage {...messages.status} />
+              </span>
               <span className="flex-1 text-right text-cool-gray-400 text-sm">
                 {data.status}
               </span>
             </div>
             <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
-              <span className="text-sm">Revenue</span>
+              <span className="text-sm">
+                <FormattedMessage {...messages.revenue} />
+              </span>
               <span className="flex-1 text-right text-cool-gray-400 text-sm">
-                {data.revenue}
+                <FormattedNumber
+                  currency="USD"
+                  style="currency"
+                  value={data.revenue}
+                />
               </span>
             </div>
             <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
-              <span className="text-sm">Budget</span>
+              <span className="text-sm">
+                <FormattedMessage {...messages.budget} />
+              </span>
               <span className="flex-1 text-right text-cool-gray-400 text-sm">
-                {data.budget}
+                <FormattedNumber
+                  currency="USD"
+                  style="currency"
+                  value={data.budget}
+                />
               </span>
             </div>
             <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
-              <span className="text-sm">Original Language</span>
+              <span className="text-sm">
+                <FormattedMessage {...messages.originallanguage} />
+              </span>
               <span className="flex-1 text-right text-cool-gray-400 text-sm">
                 {data.originalLanguage}
               </span>
@@ -285,7 +348,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         <div className="flex-1 min-w-0">
           <Link href="/movie/[movieId]/cast" as={`/movie/${data.id}/cast`}>
             <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
-              <span>Cast</span>
+              <span>
+                <FormattedMessage {...messages.cast} />
+              </span>
               <svg
                 className="w-6 h-6 ml-2"
                 fill="none"

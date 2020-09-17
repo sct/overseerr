@@ -1060,6 +1060,11 @@ paths:
             type: number
             example: 1
             default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
       responses:
         '200':
           description: Results
@@ -1097,6 +1102,11 @@ paths:
             type: number
             example: 1
             default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
       responses:
         '200':
           description: Results
@@ -1131,6 +1141,11 @@ paths:
             type: number
             example: 1
             default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
       responses:
         '200':
           description: Results
@@ -1282,6 +1297,11 @@ paths:
           schema:
             type: number
             example: 337401
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
       responses:
         '200':
           description: Movie details
@@ -1308,6 +1328,11 @@ paths:
             type: number
             example: 1
             default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
       responses:
         '200':
           description: List of movies
@@ -1348,6 +1373,11 @@ paths:
             type: number
             example: 1
             default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
       responses:
         '200':
           description: List of movies

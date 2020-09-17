@@ -1,0 +1,15 @@
+{
+  "components.Discover.popularmovies": "人気映画",
+  "components.Discover.populartv": "人気テレビ番組",
+  "components.Discover.recentrequests": "最近のリクエスト",
+  "components.Layout.LanguagePicker.changelanguage": "言語",
+  "components.MovieDetails.budget": "興行収入",
+  "components.MovieDetails.cast": "キャスト",
+  "components.MovieDetails.originallanguage": "言語",
+  "components.MovieDetails.overview": "ストーリー",
+  "components.MovieDetails.releasedate": "公開日",
+  "components.MovieDetails.revenue": "製作費",
+  "components.MovieDetails.runtime": "{minutes}分",
+  "components.MovieDetails.status": "状態",
+  "components.MovieDetails.userrating": "ユーザー評価"
+}

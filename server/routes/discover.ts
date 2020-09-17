@@ -8,7 +8,10 @@ const discoverRoutes = Router();
 discoverRoutes.get('/movies', async (req, res) => {
   const tmdb = new TheMovieDb();
 
-  const data = await tmdb.getDiscoverMovies({ page: Number(req.query.page) });
+  const data = await tmdb.getDiscoverMovies({
+    page: Number(req.query.page),
+    language: req.query.language as string,
+  });
 
   const requests = await MediaRequest.getRelatedRequests(
     data.results.map((result) => result.id)
@@ -30,7 +33,10 @@ discoverRoutes.get('/movies', async (req, res) => {
 discoverRoutes.get('/tv', async (req, res) => {
   const tmdb = new TheMovieDb();
 
-  const data = await tmdb.getDiscoverTv({ page: Number(req.query.page) });
+  const data = await tmdb.getDiscoverTv({
+    page: Number(req.query.page),
+    language: req.query.language as string,
+  });
 
   const requests = await MediaRequest.getRelatedRequests(
     data.results.map((result) => result.id)

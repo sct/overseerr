@@ -29,6 +29,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
     '@typescript-eslint/explicit-function-return-type': 'off',
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'formatjs/no-offset': 'error',
   },
   overrides: [
     {
@@ -38,7 +39,7 @@ module.exports = {
       },
     },
   ],
-  plugins: ['jsx-a11y', 'prettier', 'react-hooks'],
+  plugins: ['jsx-a11y', 'prettier', 'react-hooks', 'formatjs'],
   settings: {
     react: {
       pragma: 'React',

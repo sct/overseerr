@@ -3,6 +3,7 @@ import SearchInput from './SearchInput';
 import UserDropdown from './UserDropdown';
 import Sidebar from './Sidebar';
 import Notifications from './Notifications';
+import LanguagePicker from './LanguagePicker';
 
 const Layout: React.FC = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -35,6 +36,7 @@ const Layout: React.FC = ({ children }) => {
           <div className="flex-1 px-4 flex justify-between">
             <SearchInput />
             <div className="ml-4 flex items-center md:ml-6">
+              <LanguagePicker />
               <Notifications />
               <UserDropdown />
             </div>
