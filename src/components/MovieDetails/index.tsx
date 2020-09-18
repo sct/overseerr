@@ -143,11 +143,16 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </span>
           <h1 className="text-2xl md:text-4xl">{data.title}</h1>
           <span className="text-xs md:text-base mt-1 md:mt-0">
-            <FormattedMessage
-              {...messages.runtime}
-              values={{ minutes: data.runtime }}
-            />{' '}
-            | {data.genres.map((g) => g.name).join(', ')}
+            {(data.runtime ?? 0) > 0 && (
+              <>
+                <FormattedMessage
+                  {...messages.runtime}
+                  values={{ minutes: data.runtime }}
+                />{' '}
+                |{' '}
+              </>
+            )}
+            {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
         <div className="flex-1 flex justify-end mt-4 md:mt-0">
