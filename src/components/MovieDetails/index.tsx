@@ -19,6 +19,7 @@ import Slider from '../Slider';
 import TitleCard from '../TitleCard';
 import PersonCard from '../PersonCard';
 import { LanguageContext } from '../../context/LanguageContext';
+import LoadingSpinner from '../Common/LoadingSpinner';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -99,12 +100,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   };
 
   if (!data && !error) {
-    return <div>loading!</div>;
+    return <LoadingSpinner />;
   }
 
   if (!data) {
-    return <div>Unknwon?</div>;
+    return <div>Broken?</div>;
   }
+
   return (
     <div
       className="bg-cover bg-center -mx-4 -mt-2 px-4 sm:px-8 pt-4 "
