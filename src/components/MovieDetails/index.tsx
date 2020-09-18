@@ -30,6 +30,8 @@ const messages = defineMessages({
   overview: 'Overview',
   runtime: '{minutes} minutes',
   cast: 'Cast',
+  recommendations: 'Recommendations',
+  similar: 'Similar Titles',
 });
 
 interface MovieDetailsProps {
@@ -280,14 +282,16 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         </div>
         <div className="w-full md:w-80 mt-8 md:mt-0">
           <div className="bg-cool-gray-900 rounded-lg shadow border border-cool-gray-800">
-            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
-              <span className="text-sm">
-                <FormattedMessage {...messages.userrating} />
-              </span>
-              <span className="flex-1 text-right text-cool-gray-400 text-sm">
-                {data.voteAverage}/10
-              </span>
-            </div>
+            {data.voteCount > 0 && (
+              <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.userrating} />
+                </span>
+                <span className="flex-1 text-right text-cool-gray-400 text-sm">
+                  {data.voteAverage}/10
+                </span>
+              </div>
+            )}
             <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
               <span className="text-sm">
                 <FormattedMessage {...messages.releasedate} />
@@ -309,30 +313,34 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 {data.status}
               </span>
             </div>
-            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
-              <span className="text-sm">
-                <FormattedMessage {...messages.revenue} />
-              </span>
-              <span className="flex-1 text-right text-cool-gray-400 text-sm">
-                <FormattedNumber
-                  currency="USD"
-                  style="currency"
-                  value={data.revenue}
-                />
-              </span>
-            </div>
-            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
-              <span className="text-sm">
-                <FormattedMessage {...messages.budget} />
-              </span>
-              <span className="flex-1 text-right text-cool-gray-400 text-sm">
-                <FormattedNumber
-                  currency="USD"
-                  style="currency"
-                  value={data.budget}
-                />
-              </span>
-            </div>
+            {data.revenue > 0 && (
+              <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.revenue} />
+                </span>
+                <span className="flex-1 text-right text-cool-gray-400 text-sm">
+                  <FormattedNumber
+                    currency="USD"
+                    style="currency"
+                    value={data.revenue}
+                  />
+                </span>
+              </div>
+            )}
+            {data.budget > 0 && (
+              <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.budget} />
+                </span>
+                <span className="flex-1 text-right text-cool-gray-400 text-sm">
+                  <FormattedNumber
+                    currency="USD"
+                    style="currency"
+                    value={data.budget}
+                  />
+                </span>
+              </div>
+            )}
             <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
               <span className="text-sm">
                 <FormattedMessage {...messages.originallanguage} />
@@ -389,7 +397,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             as={`/movie/${data.id}/recommendations`}
           >
             <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
-              <span>Recommendations</span>
+              <span>
+                <FormattedMessage {...messages.recommendations} />
+              </span>
               <svg
                 className="w-6 h-6 ml-2"
                 fill="none"
@@ -434,7 +444,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             as={`/movie/${data.id}/similar`}
           >
             <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
-              <span>Similar Titles</span>
+              <span>
+                <FormattedMessage {...messages.similar} />
+              </span>
               <svg
                 className="w-6 h-6 ml-2"
                 fill="none"
@@ -454,7 +466,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         </div>
       </div>
       <Slider
-        sliderKey="recommendations"
+        sliderKey="similar"
         isLoading={!similar && !similarError}
         isEmpty={false}
         items={similar?.results.map((title) => (

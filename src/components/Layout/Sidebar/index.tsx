@@ -2,6 +2,13 @@ import React, { ReactNode } from 'react';
 import Transition from '../../Transition';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { defineMessages, FormattedMessage } from 'react-intl';
+
+const messages = defineMessages({
+  dashboard: 'Dashboard',
+  requests: 'Requests',
+  settings: 'Settings',
+});
 
 interface SidebarProps {
   open?: boolean;
@@ -11,7 +18,7 @@ interface SidebarProps {
 interface SidebarLinkProps {
   href: string;
   svgIcon: ReactNode;
-  name: string;
+  messagesKey: keyof typeof messages;
   activeRegExp: RegExp;
   as?: string;
 }
@@ -19,7 +26,7 @@ interface SidebarLinkProps {
 const SidebarLinks: SidebarLinkProps[] = [
   {
     href: '/',
-    name: 'Dashboard',
+    messagesKey: 'dashboard',
     svgIcon: (
       <svg
         className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
@@ -40,7 +47,7 @@ const SidebarLinks: SidebarLinkProps[] = [
   },
   {
     href: '/requests',
-    name: 'Requests',
+    messagesKey: 'requests',
     svgIcon: (
       <svg
         className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
@@ -61,7 +68,7 @@ const SidebarLinks: SidebarLinkProps[] = [
   },
   {
     href: '/settings',
-    name: 'Settings',
+    messagesKey: 'settings',
     svgIcon: (
       <svg
         className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
@@ -148,11 +155,19 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                       {SidebarLinks.map((sidebarLink) => {
                         return (
                           <Link
-                            key={`mobile-${sidebarLink.name}`}
+                            key={`mobile-${sidebarLink.messagesKey}`}
                             href={sidebarLink.href}
                             as={sidebarLink.as}
                           >
                             <a
+                              onClick={() => setClosed()}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  setClosed();
+                                }
+                              }}
+                              role="button"
+                              tabIndex={0}
                               className={`group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
                                 ${
                                   router.pathname.match(
@@ -164,7 +179,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                               `}
                             >
                               {sidebarLink.svgIcon}
-                              {sidebarLink.name}
+                              <FormattedMessage
+                                {...messages[sidebarLink.messagesKey]}
+                              />
                             </a>
                           </Link>
                         );
@@ -192,7 +209,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                 {SidebarLinks.map((sidebarLink) => {
                   return (
                     <Link
-                      key={`desktop-${sidebarLink.name}`}
+                      key={`desktop-${sidebarLink.messagesKey}`}
                       href={sidebarLink.href}
                       as={sidebarLink.as}
                     >
@@ -208,7 +225,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                               `}
                       >
                         {sidebarLink.svgIcon}
-                        {sidebarLink.name}
+                        <FormattedMessage
+                          {...messages[sidebarLink.messagesKey]}
+                        />
                       </a>
                     </Link>
                   );

@@ -2,6 +2,14 @@ import React from 'react';
 import Modal from '../Common/Modal';
 import { useUser } from '../../hooks/useUser';
 import { Permission } from '../../../server/lib/permissions';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  requestadmin:
+    'Your request will be immediately approved. Do you wish to continue?',
+  cancelrequest:
+    'This will remove your request. Are you sure you want to continue?',
+});
 
 interface RequestModalProps {
   type: 'request' | 'cancel';
@@ -18,14 +26,15 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   onOk,
   title,
 }) => {
+  const intl = useIntl();
   const { hasPermission } = useUser();
 
   let text = hasPermission(Permission.MANAGE_REQUESTS)
-    ? 'Your request will be immediately approved. Do you wish to continue?'
+    ? intl.formatMessage(messages.requestadmin)
     : undefined;
 
   if (type === 'cancel') {
-    text = 'This will remove your request. Are you sure you want to continue?';
+    text = intl.formatMessage(messages.cancelrequest);
   }
 
   return (

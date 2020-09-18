@@ -1,15 +1,25 @@
 {
-  "components.Discover.popularmovies": "人気映画",
-  "components.Discover.populartv": "人気テレビ番組",
+  "components.Discover.discovermovies": "人気の映画",
+  "components.Discover.discovertv": "人気のテレビ番組",
+  "components.Discover.popularmovies": "人気の映画",
+  "components.Discover.populartv": "人気のテレビ番組",
   "components.Discover.recentrequests": "最近のリクエスト",
   "components.Layout.LanguagePicker.changelanguage": "言語",
+  "components.Layout.SearchInput.searchPlaceholder": "作品名で検索",
+  "components.Layout.Sidebar.dashboard": "ホーム",
+  "components.Layout.Sidebar.requests": "リクエスト",
+  "components.Layout.Sidebar.settings": "設定",
   "components.MovieDetails.budget": "興行収入",
   "components.MovieDetails.cast": "キャスト",
   "components.MovieDetails.originallanguage": "言語",
   "components.MovieDetails.overview": "ストーリー",
+  "components.MovieDetails.recommendations": "オススメの作品",
   "components.MovieDetails.releasedate": "公開日",
   "components.MovieDetails.revenue": "製作費",
   "components.MovieDetails.runtime": "{minutes}分",
+  "components.MovieDetails.similar": "関連作品",
   "components.MovieDetails.status": "状態",
-  "components.MovieDetails.userrating": "ユーザー評価"
+  "components.MovieDetails.userrating": "ユーザー評価",
+  "components.RequestModal.cancelrequest": "このリクエストをキャンセルしてよろしいですか？",
+  "components.RequestModal.requestadmin": "このリクエストが今すぐ承認致します。よろしいですか？"
 }

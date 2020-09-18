@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useRouter } from 'next/router';
 import {
   TvResult,
@@ -7,6 +7,7 @@ import {
 } from '../../../server/models/Search';
 import { useSWRInfinite } from 'swr';
 import ListView from '../Common/ListView';
+import { LanguageContext } from '../../context/LanguageContext';
 
 interface SearchResult {
   page: number;
@@ -16,6 +17,7 @@ interface SearchResult {
 }
 
 const Search: React.FC = () => {
+  const { locale } = useContext(LanguageContext);
   const router = useRouter();
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
@@ -25,7 +27,7 @@ const Search: React.FC = () => {
 
       return `/api/v1/search/?query=${router.query.query}&page=${
         pageIndex + 1
-      }`;
+      }&language=${locale}`;
     },
     {
       initialSize: 3,

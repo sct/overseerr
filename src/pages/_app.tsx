@@ -85,22 +85,12 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 };
 
 CoreApp.getInitialProps = async (initialProps) => {
-  // Run the default getInitialProps for the main nextjs initialProps
-  const appInitialProps: AppInitialProps = await App.getInitialProps(
-    initialProps
-  );
   const { ctx, router } = initialProps;
   let user = undefined;
 
   let locale = 'en';
 
   if (ctx.res) {
-    const cookies = parseCookies(ctx);
-
-    if (cookies.locale) {
-      locale = cookies.locale;
-    }
-
     try {
       // Attempt to get the user by running a request to the local api
       const response = await axios.get<User>(
@@ -126,7 +116,18 @@ CoreApp.getInitialProps = async (initialProps) => {
         ctx.res.end();
       }
     }
+
+    const cookies = parseCookies(ctx);
+
+    if (!!cookies.locale) {
+      locale = cookies.locale;
+    }
   }
+
+  // Run the default getInitialProps for the main nextjs initialProps
+  const appInitialProps: AppInitialProps = await App.getInitialProps(
+    initialProps
+  );
 
   const messages = await loadLocaleData(locale);
 

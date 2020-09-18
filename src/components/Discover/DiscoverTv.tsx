@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSWRInfinite } from 'swr';
 import { TvResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
+import { defineMessages, FormattedMessage } from 'react-intl';
+import { LanguageContext } from '../../context/LanguageContext';
+
+const messages = defineMessages({
+  discovertv: 'Discover Series',
+});
 
 interface SearchResult {
   page: number;
@@ -11,13 +17,14 @@ interface SearchResult {
 }
 
 const DiscoverTv: React.FC = () => {
+  const { locale } = useContext(LanguageContext);
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
         return null;
       }
 
-      return `/api/v1/discover/tv?page=${pageIndex + 1}`;
+      return `/api/v1/discover/tv?page=${pageIndex + 1}&language=${locale}`;
     },
     {
       initialSize: 3,
@@ -44,7 +51,7 @@ const DiscoverTv: React.FC = () => {
       <div className="md:flex md:items-center md:justify-between mb-8 mt-6">
         <div className="flex-1 min-w-0">
           <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
-            Discover Series
+            <FormattedMessage {...messages.discovertv} />
           </h2>
         </div>
       </div>

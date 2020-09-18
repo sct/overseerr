@@ -1,15 +1,25 @@
 {
+  "components.Discover.discovermovies": "Discover Movies",
+  "components.Discover.discovertv": "Discover Series",
   "components.Discover.popularmovies": "Popular Movies",
   "components.Discover.populartv": "Popular Series",
   "components.Discover.recentrequests": "Recent Requests",
   "components.Layout.LanguagePicker.changelanguage": "Change Language",
+  "components.Layout.SearchInput.searchPlaceholder": "Search Movies & TV",
+  "components.Layout.Sidebar.dashboard": "Dashboard",
+  "components.Layout.Sidebar.requests": "Requests",
+  "components.Layout.Sidebar.settings": "Settings",
   "components.MovieDetails.budget": "Budget",
   "components.MovieDetails.cast": "Cast",
   "components.MovieDetails.originallanguage": "Original Language",
   "components.MovieDetails.overview": "Overview",
+  "components.MovieDetails.recommendations": "Recommendations",
   "components.MovieDetails.releasedate": "Release Date",
   "components.MovieDetails.revenue": "Revenue",
   "components.MovieDetails.runtime": "{minutes} minutes",
+  "components.MovieDetails.similar": "Similar Titles",
   "components.MovieDetails.status": "Status",
-  "components.MovieDetails.userrating": "User Rating"
+  "components.MovieDetails.userrating": "User Rating",
+  "components.RequestModal.cancelrequest": "This will remove your request. Are you sure you want to continue?",
+  "components.RequestModal.requestadmin": "Your request will be immediately approved. Do you wish to continue?"
 }

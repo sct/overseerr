@@ -19,8 +19,12 @@ MoviePage.getInitialProps = async (ctx) => {
     const response = await axios.get<MovieDetailsType>(
       `http://localhost:${process.env.PORT || 3000}/api/v1/movie/${
         ctx.query.movieId
-      }?language=${cookies.locale}`,
-      { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
+      }${cookies.locale ? `?language=${cookies.locale}` : ''}`,
+      {
+        headers: ctx.req?.headers?.cookie
+          ? { cookie: ctx.req.headers.cookie }
+          : undefined,
+      }
     );
 
     return {
