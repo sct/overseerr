@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import { getSettings, RadarrSettings, SonarrSettings } from '../lib/settings';
+import { getRepository } from 'typeorm';
+import { User } from '../entity/User';
+import PlexAPI from '../api/plexapi';
 
 const settingsRoutes = Router();
 
@@ -24,11 +27,33 @@ settingsRoutes.get('/plex', (_req, res) => {
   res.status(200).json(settings.plex);
 });
 
-settingsRoutes.post('/plex', (req, res) => {
+settingsRoutes.post('/plex', async (req, res, next) => {
+  const userRepository = getRepository(User);
   const settings = getSettings();
+  try {
+    const admin = await userRepository.findOneOrFail({
+      select: ['id', 'plexToken'],
+      order: { id: 'ASC' },
+    });
 
-  settings.plex = req.body;
-  settings.save();
+    Object.assign(settings.plex, req.body);
+
+    const plexClient = new PlexAPI({ plexToken: admin.plexToken });
+
+    const result = await plexClient.getStatus();
+
+    if (result?.MediaContainer?.machineIdentifier) {
+      settings.plex.machineId = result.MediaContainer.machineIdentifier;
+      settings.plex.name = result.MediaContainer.friendlyName;
+
+      settings.save();
+    }
+  } catch (e) {
+    return next({
+      status: 500,
+      message: `Failed to connect to Plex: ${e.message}`,
+    });
+  }
 
   return res.status(200).json(settings.plex);
 });

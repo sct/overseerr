@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Library {
   id: string;
@@ -47,6 +48,7 @@ interface PublicSettings {
 }
 
 interface AllSettings {
+  clientId?: string;
   main: MainSettings;
   plex: PlexSettings;
   radarr: RadarrSettings[];
@@ -120,6 +122,15 @@ class Settings {
 
   set public(data: PublicSettings) {
     this.data.public = data;
+  }
+
+  get clientId(): string {
+    if (!this.data.clientId) {
+      this.data.clientId = uuidv4();
+      this.save();
+    }
+
+    return this.data.clientId;
   }
 
   /**

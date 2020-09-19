@@ -68,9 +68,11 @@ components:
         name:
           type: string
           example: 'Main Server'
+          readOnly: true
         machineId:
           type: string
-          example: '1234-1234-1234-1234'
+          example: '1234123412341234'
+          readOnly: true
         ip:
           type: string
           example: '127.0.0.1'
@@ -79,6 +81,7 @@ components:
           example: 32400
         libraries:
           type: array
+          readOnly: true
           items:
             $ref: '#/components/schemas/PlexLibrary'
       required:
