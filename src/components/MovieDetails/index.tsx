@@ -4,6 +4,7 @@ import {
   defineMessages,
   FormattedNumber,
   FormattedDate,
+  useIntl,
 } from 'react-intl';
 import type { MovieDetails as MovieDetailsType } from '../../../server/models/Movie';
 import useSWR from 'swr';
@@ -20,6 +21,8 @@ import TitleCard from '../TitleCard';
 import PersonCard from '../PersonCard';
 import { LanguageContext } from '../../context/LanguageContext';
 import LoadingSpinner from '../Common/LoadingSpinner';
+import { useUser, Permission } from '../../hooks/useUser';
+import PendingRequest from '../PendingRequest';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -33,6 +36,12 @@ const messages = defineMessages({
   cast: 'Cast',
   recommendations: 'Recommendations',
   similar: 'Similar Titles',
+  cancelrequest: 'Cancel Request',
+  available: 'Available',
+  unavailable: 'Unavailable',
+  request: 'Request',
+  pending: 'Pending',
+  overviewunavailable: 'Overview unavailable',
 });
 
 interface MovieDetailsProps {
@@ -54,7 +63,9 @@ enum MediaRequestStatus {
 }
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
+  const { user, hasPermission } = useUser();
   const router = useRouter();
+  const intl = useIntl();
   const { locale } = useContext(LanguageContext);
   const { addToast } = useToasts();
   const [showRequestModal, setShowRequestModal] = useState(false);
@@ -175,13 +186,16 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                 />
               </svg>
-              Request
+              <FormattedMessage {...messages.request} />
             </Button>
           )}
           {data.request?.status === MediaRequestStatus.PENDING && (
             <Button
               buttonType="warning"
-              onClick={() => setShowCancelModal(true)}
+              onClick={() => {
+                if (data.request?.requestedBy.id === user?.id)
+                  setShowCancelModal(true);
+              }}
             >
               <svg
                 className="w-4 mr-2"
@@ -197,7 +211,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                 />
               </svg>
-              Pending
+              {data.request?.requestedBy.id === user?.id
+                ? intl.formatMessage(messages.cancelrequest)
+                : intl.formatMessage(messages.pending)}
             </Button>
           )}
           {data.request?.status === MediaRequestStatus.APPROVED && (
@@ -216,7 +232,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              Unavailable
+              <FormattedMessage {...messages.unavailable} />
             </Button>
           )}
           {data.request?.status === MediaRequestStatus.AVAILABLE && (
@@ -235,7 +251,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              Available
+              <FormattedMessage {...messages.available} />
             </Button>
           )}
           <Button buttonType="danger" className="ml-2">
@@ -255,37 +271,50 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               />
             </svg>
           </Button>
-          <Button buttonType="default" className="ml-2">
-            <svg
-              className="w-5"
-              style={{ height: 20 }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-          </Button>
+          {hasPermission(Permission.MANAGE_REQUESTS) && (
+            <Button buttonType="default" className="ml-2">
+              <svg
+                className="w-5"
+                style={{ height: 20 }}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </Button>
+          )}
         </div>
       </div>
       <div className="flex pt-8 text-white flex-col md:flex-row pb-4">
         <div className="flex-1 md:mr-8">
+          {data.request?.status === MediaRequestStatus.PENDING &&
+            hasPermission(Permission.MANAGE_REQUESTS) && (
+              <PendingRequest
+                request={data.request}
+                onUpdate={() => revalidate()}
+              />
+            )}
           <h2 className="text-xl md:text-2xl">
             <FormattedMessage {...messages.overview} />
           </h2>
-          <p className="pt-2 text-sm md:text-base">{data.overview}</p>
+          <p className="pt-2 text-sm md:text-base">
+            {data.overview
+              ? data.overview
+              : intl.formatMessage(messages.overviewunavailable)}
+          </p>
         </div>
         <div className="w-full md:w-80 mt-8 md:mt-0">
           <div className="bg-cool-gray-900 rounded-lg shadow border border-cool-gray-800">
