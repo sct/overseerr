@@ -70,8 +70,22 @@ authRoutes.post('/login', async (req, res) => {
 
       // If we get to this point, the user does not already exist so we need to create the
       // user _assuming_ they have access to the plex server
-      // (We cant do this until we finish the settings sytem and actually
-      // store the user token in ticket #55)
+      const mainUser = await userRepository.findOneOrFail({
+        select: ['id', 'plexToken'],
+        order: { id: 'ASC' },
+      });
+      const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
+      if (await mainPlexTv.checkUserAccess(account)) {
+        user = new User({
+          email: account.email,
+          username: account.username,
+          plexId: account.id,
+          plexToken: account.authToken,
+          permissions: Permission.REQUEST,
+          avatar: account.thumb,
+        });
+        await userRepository.save(user);
+      }
     }
 
     // Set logged in session

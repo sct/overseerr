@@ -10,7 +10,7 @@ interface Library {
 
 interface PlexSettings {
   name: string;
-  machineId: string;
+  machineId?: string;
   ip: string;
   port: number;
   libraries: Library[];
@@ -67,10 +67,9 @@ class Settings {
         apiKey: 'temp',
       },
       plex: {
-        name: 'Main Server',
+        name: '',
         ip: '127.0.0.1',
         port: 32400,
-        machineId: '',
         libraries: [],
       },
       radarr: [],

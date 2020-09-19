@@ -1,4 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
+import xml2js from 'xml2js';
+import { getSettings } from '../lib/settings';
 
 interface PlexAccountResponse {
   user: PlexUser;
@@ -24,6 +26,33 @@ interface PlexUser {
     roles: string[];
   };
   entitlements: string[];
+}
+
+interface ServerResponse {
+  $: {
+    id: string;
+    serverId: string;
+    machineIdentifier: string;
+    name: string;
+    lastSeenAt: string;
+    numLibraries: string;
+    owned: string;
+  };
+}
+
+interface FriendResponse {
+  MediaContainer: {
+    User: {
+      $: {
+        id: string;
+        title: string;
+        username: string;
+        email: string;
+        thumb: string;
+      };
+      Server: ServerResponse[];
+    }[];
+  };
 }
 
 class PlexTvAPI {
@@ -55,6 +84,48 @@ class PlexTvAPI {
         e.message
       );
       throw new Error('Invalid auth token');
+    }
+  }
+
+  public async getFriends(): Promise<FriendResponse> {
+    const response = await this.axios.get('/pms/friends/all', {
+      transformResponse: [],
+      responseType: 'text',
+    });
+
+    const parsedXml = (await xml2js.parseStringPromise(
+      response.data
+    )) as FriendResponse;
+
+    return parsedXml;
+  }
+
+  public async checkUserAccess(authUser: PlexUser): Promise<boolean> {
+    const settings = getSettings();
+
+    try {
+      if (!settings.plex.machineId) {
+        throw new Error('Plex is not configured!');
+      }
+
+      const friends = await this.getFriends();
+
+      const users = friends.MediaContainer.User;
+
+      const user = users.find((u) => Number(u.$.id) === authUser.id);
+
+      if (!user) {
+        throw new Error(
+          'This user does not exist on the main plex accounts shared list'
+        );
+      }
+
+      return !!user.Server.find(
+        (server) => server.$.machineIdentifier === settings.plex.machineId
+      );
+    } catch (e) {
+      console.log(`Error checking user access: ${e.message}`);
+      return false;
     }
   }
 }
