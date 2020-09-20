@@ -7,6 +7,8 @@ import {
   Crew,
   mapCast,
   mapCrew,
+  ExternalIds,
+  mapExternalIds,
 } from './common';
 
 export interface MovieDetails {
@@ -45,6 +47,7 @@ export interface MovieDetails {
     crew: Crew[];
   };
   request?: MediaRequest;
+  externalIds: ExternalIds;
 }
 
 export const mapMovieDetails = (
@@ -84,5 +87,6 @@ export const mapMovieDetails = (
     cast: movie.credits.cast.map(mapCast),
     crew: movie.credits.crew.map(mapCrew),
   },
+  externalIds: mapExternalIds(movie.external_ids),
   request,
 });

@@ -5,6 +5,8 @@ import {
   Crew,
   mapCast,
   mapCrew,
+  ExternalIds,
+  mapExternalIds,
 } from './common';
 import { MediaRequest } from '../entity/MediaRequest';
 import {
@@ -75,6 +77,7 @@ export interface TvDetails {
     cast: Cast[];
     crew: Crew[];
   };
+  externalIds: ExternalIds;
   request?: MediaRequest;
 }
 
@@ -155,5 +158,6 @@ export const mapTvDetails = (
     cast: show.credits.cast.map(mapCast),
     crew: show.credits.crew.map(mapCrew),
   },
+  externalIds: mapExternalIds(show.external_ids),
   request,
 });

@@ -73,6 +73,13 @@ export class MediaRequest {
   @Index()
   public mediaId: number;
 
+  @Column({ unique: true, nullable: true })
+  @Index()
+  public tvdbId: number;
+
+  @Column({ nullable: true })
+  public seasons?: string;
+
   @Column()
   public mediaType: 'movie' | 'tv';
 

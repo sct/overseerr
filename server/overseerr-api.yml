@@ -433,6 +433,8 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Crew'
+        externalIds:
+          $ref: '#/components/schemas/ExternalIds'
         request:
           $ref: '#/components/schemas/MediaRequest'
     Episode:
@@ -573,6 +575,8 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Crew'
+        externalIds:
+          $ref: '#/components/schemas/ExternalIds'
         request:
           $ref: '#/components/schemas/MediaRequest'
     MediaRequest:
@@ -656,6 +660,25 @@ components:
         department:
           type: string
         profilePath:
+          type: string
+    ExternalIds:
+      type: object
+      properties:
+        facebookId:
+          type: string
+        freebaseId:
+          type: string
+        freebaseMid:
+          type: string
+        imdbId:
+          type: string
+        instagramId:
+          type: string
+        tvdbId:
+          type: string
+        tvrageId:
+          type: string
+        twitterId:
           type: string
 
   securitySchemes:
@@ -1219,6 +1242,16 @@ paths:
                 mediaId:
                   type: number
                   example: 123
+                tvdbId:
+                  type: number
+                  example: 123
+                seasons:
+                  type: array
+                  items:
+                    type: number
+              required:
+                - mediaType
+                - mediaId
       responses:
         '201':
           description: Succesfully created the request

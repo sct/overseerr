@@ -121,6 +121,17 @@ export interface TmdbCreditCrew {
   department: string;
 }
 
+export interface TmdbExternalIds {
+  imdb_id?: string;
+  freebase_mid?: string;
+  freebase_id?: string;
+  tvdb_id?: number;
+  tvrage_id?: string;
+  facebook_id?: string;
+  instagram_id?: string;
+  twitter_id?: string;
+}
+
 export interface TmdbMovieDetails {
   id: number;
   imdb_id?: string;
@@ -164,6 +175,7 @@ export interface TmdbMovieDetails {
     cast: TmdbCreditCast[];
     crew: TmdbCreditCrew[];
   };
+  external_ids: TmdbExternalIds;
 }
 
 export interface TmdbTvEpisodeDetails {
@@ -242,6 +254,7 @@ export interface TmdbTvDetails {
     cast: TmdbCreditCast[];
     crew: TmdbCreditCrew[];
   };
+  external_ids: TmdbExternalIds;
 }
 
 class TheMovieDb {
@@ -289,7 +302,7 @@ class TheMovieDb {
       const response = await this.axios.get<TmdbMovieDetails>(
         `/movie/${movieId}`,
         {
-          params: { language, append_to_response: 'credits' },
+          params: { language, append_to_response: 'credits,external_ids' },
         }
       );
 
@@ -308,7 +321,7 @@ class TheMovieDb {
   }): Promise<TmdbTvDetails> => {
     try {
       const response = await this.axios.get<TmdbTvDetails>(`/tv/${tvId}`, {
-        params: { language, append_to_response: 'credits' },
+        params: { language, append_to_response: 'credits,external_ids' },
       });
 
       return response.data;
