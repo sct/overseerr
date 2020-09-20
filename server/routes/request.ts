@@ -2,8 +2,12 @@ import { Router } from 'express';
 import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
 import { getRepository } from 'typeorm';
-import { MediaRequest, MediaRequestStatus } from '../entity/MediaRequest';
+import { MediaRequest } from '../entity/MediaRequest';
 import TheMovieDb from '../api/themoviedb';
+import Media from '../entity/Media';
+import MovieRequest from '../entity/MovieRequest';
+import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
+import TvRequest from '../entity/TvRequest';
 
 const requestRoutes = Router();
 
@@ -15,10 +19,12 @@ requestRoutes.get('/', async (req, res, next) => {
           order: {
             id: 'DESC',
           },
+          relations: ['media'],
           take: 20,
         })
       : await requestRepository.find({
           where: { requestedBy: { id: req.user?.id } },
+          relations: ['media'],
           order: {
             id: 'DESC',
           },
@@ -36,26 +42,59 @@ requestRoutes.post(
   isAuthenticated(Permission.REQUEST),
   async (req, res, next) => {
     const tmdb = new TheMovieDb();
-    const requestRepository = getRepository(MediaRequest);
+    const mediaRepository = getRepository(Media);
 
     try {
-      const media =
+      const tmdbMedia =
         req.body.mediaType === 'movie'
           ? await tmdb.getMovie({ movieId: req.body.mediaId })
           : await tmdb.getTvShow({ tvId: req.body.mediaId });
-      const request = new MediaRequest({
-        mediaId: media.id,
-        mediaType: req.body.mediaType,
-        requestedBy: req.user,
-        // If the user is an admin or has the "auto approve" permission, automatically approve the request
-        status: req.user?.hasPermission(Permission.AUTO_APPROVE)
-          ? MediaRequestStatus.APPROVED
-          : MediaRequestStatus.PENDING,
+
+      let media = await mediaRepository.findOne({
+        where: { tmdbId: req.body.mediaId },
       });
 
-      await requestRepository.save(request);
+      if (!media) {
+        media = new Media({
+          tmdbId: tmdbMedia.id,
+          tvdbId: tmdbMedia.external_ids.tvdb_id,
+          status: MediaStatus.PENDING,
+          mediaType: req.body.mediaType,
+        });
+        await mediaRepository.save(media);
+      }
 
-      return res.status(201).json(request);
+      if (req.body.mediaType === 'movie') {
+        const requestRepository = getRepository(MovieRequest);
+
+        const request = new MovieRequest({
+          media,
+          requestedBy: req.user,
+          // If the user is an admin or has the "auto approve" permission, automatically approve the request
+          status: req.user?.hasPermission(Permission.AUTO_APPROVE)
+            ? MediaRequestStatus.APPROVED
+            : MediaRequestStatus.PENDING,
+        });
+
+        await requestRepository.save(request);
+        return res.status(201).json(request);
+      } else if (req.body.mediaType === 'tv') {
+        const requestRepository = getRepository(TvRequest);
+
+        const request = new TvRequest({
+          media,
+          requestedBy: req.user,
+          // If the user is an admin or has the "auto approve" permission, automatically approve the request
+          status: req.user?.hasPermission(Permission.AUTO_APPROVE)
+            ? MediaRequestStatus.APPROVED
+            : MediaRequestStatus.PENDING,
+        });
+
+        await requestRepository.save(request);
+        return res.status(201).json(request);
+      }
+
+      next({ status: 500, message: 'Invalid media type' });
     } catch (e) {
       next({ message: e.message, status: 500 });
     }
@@ -96,7 +135,7 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
       });
     }
 
-    requestRepository.delete(request.id);
+    await requestRepository.delete(request.id);
 
     return res.status(200).json(request);
   } catch (e) {
@@ -106,7 +145,7 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
 
 requestRoutes.get<{
   requestId: string;
-  status: 'pending' | 'approve' | 'decline' | 'available';
+  status: 'pending' | 'approve' | 'decline';
 }>(
   '/:requestId/:status',
   isAuthenticated(Permission.MANAGE_REQUESTS),
@@ -130,9 +169,6 @@ requestRoutes.get<{
           break;
         case 'decline':
           newStatus = MediaRequestStatus.DECLINED;
-          break;
-        case 'available':
-          newStatus = MediaRequestStatus.AVAILABLE;
           break;
       }
 

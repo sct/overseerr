@@ -3,6 +3,7 @@ import TheMovieDb from '../api/themoviedb';
 import { mapMovieDetails } from '../models/Movie';
 import { MediaRequest } from '../entity/MediaRequest';
 import { mapMovieResult } from '../models/Search';
+import Media from '../entity/Media';
 
 const movieRoutes = Router();
 
@@ -14,9 +15,9 @@ movieRoutes.get('/:id', async (req, res) => {
     language: req.query.language as string,
   });
 
-  const request = await MediaRequest.getRequest(movie.id);
+  const media = await Media.getMedia(movie.id);
 
-  return res.status(200).json(mapMovieDetails(movie, request));
+  return res.status(200).json(mapMovieDetails(movie, media));
 });
 
 movieRoutes.get('/:id/recommendations', async (req, res) => {
@@ -28,7 +29,7 @@ movieRoutes.get('/:id/recommendations', async (req, res) => {
     language: req.query.language as string,
   });
 
-  const requests = await MediaRequest.getRelatedRequests(
+  const media = await Media.getRelatedMedia(
     results.results.map((result) => result.id)
   );
 
@@ -39,7 +40,7 @@ movieRoutes.get('/:id/recommendations', async (req, res) => {
     results: results.results.map((result) =>
       mapMovieResult(
         result,
-        requests.find((req) => req.mediaId === result.id)
+        media.find((req) => req.tmdbId === result.id)
       )
     ),
   });
@@ -54,7 +55,7 @@ movieRoutes.get('/:id/similar', async (req, res) => {
     language: req.query.language as string,
   });
 
-  const requests = await MediaRequest.getRelatedRequests(
+  const media = await Media.getRelatedMedia(
     results.results.map((result) => result.id)
   );
 
@@ -65,7 +66,7 @@ movieRoutes.get('/:id/similar', async (req, res) => {
     results: results.results.map((result) =>
       mapMovieResult(
         result,
-        requests.find((req) => req.mediaId === result.id)
+        media.find((req) => req.tmdbId === result.id)
       )
     ),
   });

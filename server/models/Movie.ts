@@ -10,6 +10,7 @@ import {
   ExternalIds,
   mapExternalIds,
 } from './common';
+import Media from '../entity/Media';
 
 export interface MovieDetails {
   id: number;
@@ -46,13 +47,13 @@ export interface MovieDetails {
     cast: Cast[];
     crew: Crew[];
   };
-  request?: MediaRequest;
+  mediaInfo?: Media;
   externalIds: ExternalIds;
 }
 
 export const mapMovieDetails = (
   movie: TmdbMovieDetails,
-  request?: MediaRequest
+  media?: Media
 ): MovieDetails => ({
   id: movie.id,
   adult: movie.adult,
@@ -88,5 +89,5 @@ export const mapMovieDetails = (
     crew: movie.credits.crew.map(mapCrew),
   },
   externalIds: mapExternalIds(movie.external_ids),
-  request,
+  mediaInfo: media,
 });

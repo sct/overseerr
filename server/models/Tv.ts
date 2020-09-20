@@ -8,12 +8,12 @@ import {
   ExternalIds,
   mapExternalIds,
 } from './common';
-import { MediaRequest } from '../entity/MediaRequest';
 import {
   TmdbTvEpisodeDetails,
   TmdbTvSeasonDetails,
   TmdbTvDetails,
 } from '../api/themoviedb';
+import type Media from '../entity/Media';
 
 interface Episode {
   id: number;
@@ -78,7 +78,7 @@ export interface TvDetails {
     crew: Crew[];
   };
   externalIds: ExternalIds;
-  request?: MediaRequest;
+  mediaInfo?: Media;
 }
 
 const mapEpisodeDetails = (episode: TmdbTvEpisodeDetails): Episode => ({
@@ -107,7 +107,7 @@ const mapSeasonDetails = (season: TmdbTvSeasonDetails): Season => ({
 
 export const mapTvDetails = (
   show: TmdbTvDetails,
-  request?: MediaRequest
+  media?: Media
 ): TvDetails => ({
   createdBy: show.created_by,
   episodeRunTime: show.episode_run_time,
@@ -159,5 +159,5 @@ export const mapTvDetails = (
     crew: show.credits.crew.map(mapCrew),
   },
   externalIds: mapExternalIds(show.external_ids),
-  request,
+  mediaInfo: media,
 });

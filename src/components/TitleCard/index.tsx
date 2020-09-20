@@ -11,6 +11,7 @@ import axios from 'axios';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
 import MovieRequestModal from '../RequestModal/MovieRequestModal';
 import Link from 'next/link';
+import { MediaStatus } from '../../../server/constants/media';
 
 interface TitleCardProps {
   id: number;
@@ -20,15 +21,8 @@ interface TitleCardProps {
   title: string;
   userScore: number;
   mediaType: MediaType;
-  status?: MediaRequestStatus;
+  status?: MediaStatus;
   requestId?: number;
-}
-
-enum MediaRequestStatus {
-  PENDING = 1,
-  APPROVED,
-  DECLINED,
-  AVAILABLE,
 }
 
 const TitleCard: React.FC<TitleCardProps> = ({
@@ -56,7 +50,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
     });
 
     if (response.data) {
-      setCurrentStatus(response.data.status);
+      setCurrentStatus(response.data.media.status);
       addToast(
         <span>
           <strong>{title}</strong> succesfully requested!
@@ -131,13 +125,13 @@ const TitleCard: React.FC<TitleCardProps> = ({
               right: '-1px',
             }}
           >
-            {currentStatus === MediaRequestStatus.AVAILABLE && (
+            {currentStatus === MediaStatus.AVAILABLE && (
               <Available className="rounded-tr-md" />
             )}
-            {currentStatus === MediaRequestStatus.PENDING && (
+            {currentStatus === MediaStatus.PENDING && (
               <Requested className="rounded-tr-md" />
             )}
-            {currentStatus === MediaRequestStatus.APPROVED && (
+            {currentStatus === MediaStatus.PROCESSING && (
               <Unavailable className="rounded-tr-md" />
             )}
           </div>
@@ -251,7 +245,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       </svg>
                     </button>
                   )}
-                  {currentStatus === MediaRequestStatus.PENDING && (
+                  {currentStatus === MediaStatus.PENDING && (
                     <button
                       onClick={() => setShowCancelModal(true)}
                       className="w-full h-7 text-center text-white bg-orange-400 hover:bg-orange-300 rounded-sm ml-1 focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition ease-in-out duration-150"
@@ -272,7 +266,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       </svg>
                     </button>
                   )}
-                  {currentStatus === MediaRequestStatus.APPROVED && (
+                  {currentStatus === MediaStatus.AVAILABLE && (
                     <button className="w-full h-7 text-center text-white bg-red-500 rounded-sm ml-1">
                       <svg
                         className="w-4 mx-auto"
@@ -290,7 +284,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       </svg>
                     </button>
                   )}
-                  {currentStatus === MediaRequestStatus.AVAILABLE && (
+                  {currentStatus === MediaStatus.AVAILABLE && (
                     <button className="w-full h-7 text-center text-white bg-green-400 rounded-sm ml-1">
                       <svg
                         className="w-4 mx-auto"

@@ -76,8 +76,8 @@ const Discover: React.FC = () => {
         items={requests?.map((request) => (
           <RequestCard
             key={`request-slider-item-${request.id}`}
-            tmdbId={request.mediaId}
-            type={request.mediaType}
+            tmdbId={request.media.tmdbId}
+            type={request.media.mediaType}
           />
         ))}
       />
@@ -115,13 +115,12 @@ const Discover: React.FC = () => {
             key={`popular-movie-slider-${title.id}`}
             id={title.id}
             image={title.posterPath}
-            status={title.request?.status}
+            status={title.mediaInfo?.status}
             summary={title.overview}
             title={title.title}
             userScore={title.voteAverage}
             year={title.releaseDate}
             mediaType={title.mediaType}
-            requestId={title.request?.id}
           />
         ))}
       />
@@ -159,13 +158,12 @@ const Discover: React.FC = () => {
             key={`popular-tv-slider-${title.id}`}
             id={title.id}
             image={title.posterPath}
-            status={title.request?.status}
+            status={title.mediaInfo?.status}
             summary={title.overview}
             title={title.name}
             userScore={title.voteAverage}
             year={title.firstAirDate}
             mediaType={title.mediaType}
-            requestId={title.request?.id}
           />
         ))}
       />

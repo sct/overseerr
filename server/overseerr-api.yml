@@ -263,8 +263,8 @@ components:
         video:
           type: boolean
           example: false
-        request:
-          $ref: '#/components/schemas/MediaRequest'
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
     TvResult:
       type: object
       properties:
@@ -306,8 +306,8 @@ components:
             type: string
         firstAirDate:
           type: string
-        request:
-          $ref: '#/components/schemas/MediaRequest'
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
     PersonResult:
       type: object
       properties:
@@ -435,8 +435,8 @@ components:
                 $ref: '#/components/schemas/Crew'
         externalIds:
           $ref: '#/components/schemas/ExternalIds'
-        request:
-          $ref: '#/components/schemas/MediaRequest'
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
     Episode:
       type: object
       properties:
@@ -577,8 +577,8 @@ components:
                 $ref: '#/components/schemas/Crew'
         externalIds:
           $ref: '#/components/schemas/ExternalIds'
-        request:
-          $ref: '#/components/schemas/MediaRequest'
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
     MediaRequest:
       type: object
       properties:
@@ -586,18 +586,13 @@ components:
           type: number
           example: 123
           readOnly: true
-        mediaId:
-          type: number
-          example: 123
-          description: TMDB Movie ID
-        mediaType:
-          type: string
-          enum: [movie, tv]
         status:
           type: number
           example: 0
-          description: Status of the request. 0 = PENDING APPROVAL, 1 = APPROVED, 2 = DECLINED, 3 = AVAILABLE
+          description: Status of the request. 1 = PENDING APPROVAL, 2 = APPROVED, 3 = DECLINED, 4 = AVAILABLE
           readOnly: true
+        media:
+          $ref: '#/components/schemas/MediaInfo'
         createdAt:
           type: string
           example: '2020-09-12T10:00:27.000Z'
@@ -616,9 +611,34 @@ components:
               nullable: true
       required:
         - id
-        - mediaId
-        - mediaType
         - status
+    MediaInfo:
+      type: object
+      properties:
+        id:
+          type: number
+          readOnly: true
+        tmdbId:
+          type: number
+          readOnly: true
+        tvdbId:
+          type: number
+          readOnly: true
+        status:
+          type: number
+        requests:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/MediaRequest'
+        createdAt:
+          type: string
+          example: '2020-09-12T10:00:27.000Z'
+          readOnly: true
+        updatedAt:
+          type: string
+          example: '2020-09-12T10:00:27.000Z'
+          readOnly: true
     Cast:
       type: object
       properties:

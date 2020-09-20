@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
 import { mapMovieResult, mapTvResult } from '../models/Search';
-import { MediaRequest } from '../entity/MediaRequest';
+import Media from '../entity/Media';
 
 const discoverRoutes = Router();
 
@@ -13,7 +13,7 @@ discoverRoutes.get('/movies', async (req, res) => {
     language: req.query.language as string,
   });
 
-  const requests = await MediaRequest.getRelatedRequests(
+  const media = await Media.getRelatedMedia(
     data.results.map((result) => result.id)
   );
 
@@ -24,7 +24,7 @@ discoverRoutes.get('/movies', async (req, res) => {
     results: data.results.map((result) =>
       mapMovieResult(
         result,
-        requests.find((req) => req.mediaId === result.id)
+        media.find((req) => req.tmdbId === result.id)
       )
     ),
   });
@@ -38,7 +38,7 @@ discoverRoutes.get('/tv', async (req, res) => {
     language: req.query.language as string,
   });
 
-  const requests = await MediaRequest.getRelatedRequests(
+  const media = await Media.getRelatedMedia(
     data.results.map((result) => result.id)
   );
 
@@ -49,7 +49,7 @@ discoverRoutes.get('/tv', async (req, res) => {
     results: data.results.map((result) =>
       mapTvResult(
         result,
-        requests.find((req) => req.mediaId === result.id)
+        media.find((req) => req.tmdbId === result.id)
       )
     ),
   });

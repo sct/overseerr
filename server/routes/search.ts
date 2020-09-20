@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
 import { mapSearchResults } from '../models/Search';
-import { MediaRequest } from '../entity/MediaRequest';
+import Media from '../entity/Media';
 
 const searchRoutes = Router();
 
@@ -14,7 +14,7 @@ searchRoutes.get('/', async (req, res) => {
     language: req.query.language as string,
   });
 
-  const requests = await MediaRequest.getRelatedRequests(
+  const media = await Media.getRelatedMedia(
     results.results.map((result) => result.id)
   );
 
@@ -22,7 +22,7 @@ searchRoutes.get('/', async (req, res) => {
     page: results.page,
     totalPages: results.total_pages,
     totalResults: results.total_results,
-    results: mapSearchResults(results.results, requests),
+    results: mapSearchResults(results.results, media),
   });
 });
 

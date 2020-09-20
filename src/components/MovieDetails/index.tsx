@@ -23,6 +23,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import { useUser, Permission } from '../../hooks/useUser';
 import PendingRequest from '../PendingRequest';
+import { MediaStatus } from '../../../server/constants/media';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -101,13 +102,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   };
 
   const cancelRequest = async () => {
-    const response = await axios.delete<MediaRequest>(
-      `/api/v1/request/${data?.request?.id}`
-    );
-
-    if (response.data.id) {
-      revalidate();
-    }
+    // fix this
   };
 
   if (!data && !error) {
@@ -167,7 +162,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </span>
         </div>
         <div className="flex-1 flex justify-end mt-4 md:mt-0">
-          {!data.request && (
+          {(!data.mediaInfo ||
+            data.mediaInfo?.status === MediaStatus.UNKNOWN) && (
             <Button
               buttonType="primary"
               onClick={() => setShowRequestModal(true)}
@@ -189,14 +185,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <FormattedMessage {...messages.request} />
             </Button>
           )}
-          {data.request?.status === MediaRequestStatus.PENDING && (
-            <Button
-              buttonType="warning"
-              onClick={() => {
-                if (data.request?.requestedBy.id === user?.id)
-                  setShowCancelModal(true);
-              }}
-            >
+          {data.mediaInfo?.status === MediaStatus.PENDING && (
+            <Button buttonType="warning">
               <svg
                 className="w-4 mr-2"
                 fill="none"
@@ -211,12 +201,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                 />
               </svg>
-              {data.request?.requestedBy.id === user?.id
-                ? intl.formatMessage(messages.cancelrequest)
-                : intl.formatMessage(messages.pending)}
+              <FormattedMessage {...messages.pending} />
             </Button>
           )}
-          {data.request?.status === MediaRequestStatus.APPROVED && (
+          {data.mediaInfo?.status === MediaStatus.PROCESSING && (
             <Button buttonType="danger">
               <svg
                 className="w-5 mr-1"
@@ -235,7 +223,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <FormattedMessage {...messages.unavailable} />
             </Button>
           )}
-          {data.request?.status === MediaRequestStatus.AVAILABLE && (
+          {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
             <Button buttonType="success">
               <svg
                 className="w-5 mr-1"
@@ -300,13 +288,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       </div>
       <div className="flex pt-8 text-white flex-col md:flex-row pb-4">
         <div className="flex-1 md:mr-8">
-          {data.request?.status === MediaRequestStatus.PENDING &&
+          {/* {data.mediaInfo?.status === MediaStatus.PENDING &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
               <PendingRequest
                 request={data.request}
                 onUpdate={() => revalidate()}
               />
-            )}
+            )} */}
           <h2 className="text-xl md:text-2xl">
             <FormattedMessage {...messages.overview} />
           </h2>
@@ -463,13 +451,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             key={`recommended-${title.id}`}
             id={title.id}
             image={title.posterPath}
-            status={title.request?.status}
+            status={title.mediaInfo?.status}
             summary={title.overview}
             title={title.title}
             userScore={title.voteAverage}
             year={title.releaseDate}
             mediaType={title.mediaType}
-            requestId={title.request?.id}
           />
         ))}
       />
@@ -510,13 +497,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             key={`recommended-${title.id}`}
             id={title.id}
             image={title.posterPath}
-            status={title.request?.status}
+            status={title.mediaInfo?.status}
             summary={title.overview}
             title={title.title}
             userScore={title.voteAverage}
             year={title.releaseDate}
             mediaType={title.mediaType}
-            requestId={title.request?.id}
           />
         ))}
       />

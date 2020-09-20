@@ -3,6 +3,7 @@ import TheMovieDb from '../api/themoviedb';
 import { MediaRequest } from '../entity/MediaRequest';
 import { mapTvDetails } from '../models/Tv';
 import { mapTvResult } from '../models/Search';
+import Media from '../entity/Media';
 
 const tvRoutes = Router();
 
@@ -14,9 +15,9 @@ tvRoutes.get('/:id', async (req, res) => {
     language: req.query.language as string,
   });
 
-  const request = await MediaRequest.getRequest(tv.id);
+  const media = await Media.getMedia(tv.id);
 
-  return res.status(200).json(mapTvDetails(tv, request));
+  return res.status(200).json(mapTvDetails(tv, media));
 });
 
 tvRoutes.get('/:id/recommendations', async (req, res) => {
@@ -28,7 +29,7 @@ tvRoutes.get('/:id/recommendations', async (req, res) => {
     language: req.query.language as string,
   });
 
-  const requests = await MediaRequest.getRelatedRequests(
+  const media = await Media.getRelatedMedia(
     results.results.map((result) => result.id)
   );
 
@@ -39,7 +40,7 @@ tvRoutes.get('/:id/recommendations', async (req, res) => {
     results: results.results.map((result) =>
       mapTvResult(
         result,
-        requests.find((req) => req.mediaId === result.id)
+        media.find((req) => req.tmdbId === result.id)
       )
     ),
   });
@@ -54,7 +55,7 @@ tvRoutes.get('/:id/similar', async (req, res) => {
     language: req.query.language as string,
   });
 
-  const requests = await MediaRequest.getRelatedRequests(
+  const media = await Media.getRelatedMedia(
     results.results.map((result) => result.id)
   );
 
@@ -65,7 +66,7 @@ tvRoutes.get('/:id/similar', async (req, res) => {
     results: results.results.map((result) =>
       mapTvResult(
         result,
-        requests.find((req) => req.mediaId === result.id)
+        media.find((req) => req.tmdbId === result.id)
       )
     ),
   });

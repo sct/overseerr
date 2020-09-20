@@ -34,25 +34,23 @@ const RequestCard: React.FC<TmdbTitleCardProps> = ({ tmdbId, type }) => {
     <TitleCard
       id={title.id}
       image={title.posterPath}
-      status={title.request?.status}
+      status={title.mediaInfo?.status}
       summary={title.overview}
       title={title.title}
       userScore={title.voteAverage}
       year={title.releaseDate}
       mediaType={'movie'}
-      requestId={title.request?.id}
     />
   ) : (
     <TitleCard
       id={title.id}
       image={title.posterPath}
-      status={title.request?.status}
+      status={title.mediaInfo?.status}
       summary={title.overview}
       title={title.name}
       userScore={title.voteAverage}
       year={title.firstAirDate}
       mediaType={'tv'}
-      requestId={title.request?.id}
     />
   );
 };
