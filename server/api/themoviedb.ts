@@ -238,6 +238,10 @@ export interface TmdbTvDetails {
   type: string;
   vote_average: number;
   vote_count: number;
+  credits: {
+    cast: TmdbCreditCast[];
+    crew: TmdbCreditCrew[];
+  };
 }
 
 class TheMovieDb {
@@ -304,7 +308,7 @@ class TheMovieDb {
   }): Promise<TmdbTvDetails> => {
     try {
       const response = await this.axios.get<TmdbTvDetails>(`/tv/${tvId}`, {
-        params: { language },
+        params: { language, append_to_response: 'credits' },
       });
 
       return response.data;
@@ -362,6 +366,60 @@ class TheMovieDb {
       return response.data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch discover movies: ${e.message}`);
+    }
+  }
+
+  public async getTvRecommendations({
+    tvId,
+    page = 1,
+    language = 'en-US',
+  }: {
+    tvId: number;
+    page?: number;
+    language?: string;
+  }): Promise<TmdbSearchTvResponse> {
+    try {
+      const response = await this.axios.get<TmdbSearchTvResponse>(
+        `/tv/${tvId}/recommendations`,
+        {
+          params: {
+            page,
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(
+        `[TMDB] Failed to fetch tv recommendations: ${e.message}`
+      );
+    }
+  }
+
+  public async getTvSimilar({
+    tvId,
+    page = 1,
+    language = 'en-US',
+  }: {
+    tvId: number;
+    page?: number;
+    language?: string;
+  }): Promise<TmdbSearchTvResponse> {
+    try {
+      const response = await this.axios.get<TmdbSearchTvResponse>(
+        `/tv/${tvId}/similar`,
+        {
+          params: {
+            page,
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch tv similar: ${e.message}`);
     }
   }
 

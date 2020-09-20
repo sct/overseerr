@@ -1,31 +1,13 @@
-import {
-  TmdbMovieDetails,
-  TmdbCreditCast,
-  TmdbCreditCrew,
-} from '../api/themoviedb';
+import { TmdbMovieDetails } from '../api/themoviedb';
 import { MediaRequest } from '../entity/MediaRequest';
-import { ProductionCompany, Genre } from './common';
-
-export interface Cast {
-  id: number;
-  castId: number;
-  character: string;
-  creditId: string;
-  gender?: number;
-  name: string;
-  order: number;
-  profilePath?: string;
-}
-
-export interface Crew {
-  id: number;
-  creditId: string;
-  department: string;
-  gender?: number;
-  job: string;
-  name: string;
-  profilePath?: string;
-}
+import {
+  ProductionCompany,
+  Genre,
+  Cast,
+  Crew,
+  mapCast,
+  mapCrew,
+} from './common';
 
 export interface MovieDetails {
   id: number;
@@ -64,27 +46,6 @@ export interface MovieDetails {
   };
   request?: MediaRequest;
 }
-
-const mapCast = (person: TmdbCreditCast): Cast => ({
-  castId: person.cast_id,
-  character: person.character,
-  creditId: person.credit_id,
-  id: person.id,
-  name: person.name,
-  order: person.order,
-  gender: person.gender,
-  profilePath: person.profile_path,
-});
-
-const mapCrew = (person: TmdbCreditCrew): Crew => ({
-  creditId: person.credit_id,
-  department: person.department,
-  id: person.id,
-  job: person.job,
-  name: person.name,
-  gender: person.gender,
-  profilePath: person.profile_path,
-});
 
 export const mapMovieDetails = (
   movie: TmdbMovieDetails,

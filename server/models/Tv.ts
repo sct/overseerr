@@ -1,4 +1,11 @@
-import { Genre, ProductionCompany } from './common';
+import {
+  Genre,
+  ProductionCompany,
+  Cast,
+  Crew,
+  mapCast,
+  mapCrew,
+} from './common';
 import { MediaRequest } from '../entity/MediaRequest';
 import {
   TmdbTvEpisodeDetails,
@@ -64,6 +71,10 @@ export interface TvDetails {
   type: string;
   voteAverage: number;
   voteCount: number;
+  credits: {
+    cast: Cast[];
+    crew: Crew[];
+  };
   request?: MediaRequest;
 }
 
@@ -140,5 +151,9 @@ export const mapTvDetails = (
     ? mapEpisodeDetails(show.next_episode_to_air)
     : undefined,
   posterPath: show.poster_path,
+  credits: {
+    cast: show.credits.cast.map(mapCast),
+    crew: show.credits.crew.map(mapCrew),
+  },
   request,
 });

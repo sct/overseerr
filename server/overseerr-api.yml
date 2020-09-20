@@ -562,6 +562,17 @@ components:
           type: number
         voteCount:
           type: number
+        credits:
+          type: object
+          properties:
+            cast:
+              type: array
+              items:
+                $ref: '#/components/schemas/Cast'
+            crew:
+              type: array
+              items:
+                $ref: '#/components/schemas/Crew'
         request:
           $ref: '#/components/schemas/MediaRequest'
     MediaRequest:
@@ -1415,6 +1426,11 @@ paths:
           schema:
             type: number
             example: 76479
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
       responses:
         '200':
           description: TV details
@@ -1422,6 +1438,96 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TvDetails'
+  /tv/{tvId}/recommendations:
+    get:
+      summary: Request recommended tv series
+      description: Returns list of recommended tv series based on provided tv ID in JSON format
+      tags:
+        - tv
+      parameters:
+        - in: path
+          name: tvId
+          required: true
+          schema:
+            type: number
+            example: 76479
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: List of tv series
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TvResult'
+  /tv/{tvId}/similar:
+    get:
+      summary: Request similar tv series
+      description: Returns list of similar tv series based on provided movie ID in JSON format
+      tags:
+        - tv
+      parameters:
+        - in: path
+          name: tvId
+          required: true
+          schema:
+            type: number
+            example: 76479
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: List of tv series
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TvResult'
 
 security:
   - cookieAuth: []
