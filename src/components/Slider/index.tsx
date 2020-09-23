@@ -1,4 +1,5 @@
-import React, { SyntheticEvent, useRef, useState } from 'react';
+import { debounce } from 'lodash';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSpring } from 'react-spring';
 import TitleCard from '../TitleCard';
 
@@ -20,27 +21,58 @@ const Slider: React.FC<SliderProps> = ({
   isLoading,
   isEmpty,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [scrollPos, setScrollPos] = useState({ isStart: true, isEnd: false });
 
-  const onScroll = (e: SyntheticEvent<HTMLDivElement>) => {
-    const scrollPosition = e.currentTarget.scrollLeft;
+  const handleScroll = useCallback(() => {
+    const scrollWidth = containerRef.current?.scrollWidth ?? 0;
     const clientWidth =
       containerRef.current?.getBoundingClientRect().width ?? 0;
-    if (scrollPosition === 0) {
-      setScrollPos({ isStart: true, isEnd: false });
+    const scrollPosition = containerRef.current?.scrollLeft ?? 0;
+
+    if (!items || items?.length === 0) {
+      setScrollPos({ isStart: true, isEnd: true });
+    } else if (clientWidth >= scrollWidth) {
+      setScrollPos({ isStart: true, isEnd: true });
     } else if (
       scrollPosition >=
       (containerRef.current?.scrollWidth ?? 0) - clientWidth
     ) {
       setScrollPos({ isStart: false, isEnd: true });
-    } else {
+    } else if (scrollPosition > 0) {
       setScrollPos({ isStart: false, isEnd: false });
+    } else {
+      setScrollPos({ isStart: true, isEnd: false });
     }
+  }, [items]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedScroll = useCallback(
+    debounce(() => handleScroll(), 50),
+    [handleScroll]
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      debouncedScroll();
+    };
+
+    window.addEventListener('resize', handleResize, { passive: true });
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [debouncedScroll]);
+
+  useEffect(() => {
+    handleScroll();
+  }, [items, handleScroll]);
+
+  const onScroll = () => {
+    debouncedScroll();
   };
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const [x, setX] = useSpring(() => ({
+  const [, setX] = useSpring(() => ({
     from: { x: 0 },
     to: { x: 0 },
     onFrame: (props: { x: number }) => {
@@ -176,7 +208,7 @@ const Slider: React.FC<SliderProps> = ({
             </div>
           ))}
         {isEmpty && (
-          <div className="text-center text-white mt-32">No Results</div>
+          <div className="text-center text-white mt-16 mb-16">No Results</div>
         )}
       </div>
     </div>
