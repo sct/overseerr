@@ -85,15 +85,12 @@ const LanguagePicker: React.FC = () => {
                 onBlur={(e) =>
                   setLocale && setLocale(e.target.value as AvailableLocales)
                 }
+                defaultValue={locale}
               >
                 {(Object.keys(
                   availableLanguages
                 ) as (keyof typeof availableLanguages)[]).map((key) => (
-                  <option
-                    key={key}
-                    value={availableLanguages[key].code}
-                    selected={locale === availableLanguages[key].code}
-                  >
+                  <option key={key} value={availableLanguages[key].code}>
                     {availableLanguages[key].display}
                   </option>
                 ))}

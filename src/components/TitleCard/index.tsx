@@ -199,7 +199,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 </div>
                 <div className="flex justify-between left-0 bottom-0 right-0 top-0 px-2 py-2">
                   <Link
-                    href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}
+                    href={
+                      mediaType === 'movie' ? '/movie/[movieId]' : '/tv/[tvId]'
+                    }
+                    as={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}
                   >
                     <a className="cursor-pointer flex w-full h-7 text-center text-white bg-indigo-500 rounded-sm mr-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
                       <svg

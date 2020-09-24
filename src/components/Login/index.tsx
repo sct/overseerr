@@ -3,7 +3,7 @@ import PlexLoginButton from '../PlexLoginButton';
 import { useUser } from '../../hooks/useUser';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
-import Logo from '../../assets/logo.svg';
+import ImageFader from '../Common/ImageFader';
 
 const Login: React.FC = () => {
   const [authToken, setAuthToken] = useState<string | undefined>(undefined);
@@ -35,15 +35,30 @@ const Login: React.FC = () => {
   }, [user, router]);
 
   return (
-    <div className="min-h-screen bg-cool-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Logo className="mx-auto max-h-32 w-auto" />
-        <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-cool-gray-100">
+    <div className="min-h-screen bg-cool-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+      <ImageFader
+        backgroundImages={[
+          '/images/rotate1.jpg',
+          '/images/rotate2.jpg',
+          '/images/rotate3.jpg',
+          '/images/rotate4.jpg',
+        ]}
+      />
+      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-md relative z-50">
+        <img
+          src="/logo.png"
+          className="mx-auto max-h-32 w-auto"
+          alt="Overseerr Logo"
+        />
+        <h2 className="mt-2 text-center text-3xl leading-9 font-extrabold text-cool-gray-100">
           Log in to continue
         </h2>
       </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-cool-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-50">
+        <div
+          className="bg-cool-gray-800 bg-opacity-50 py-8 px-4 shadow sm:rounded-lg sm:px-10"
+          style={{ backdropFilter: 'blur(5px)' }}
+        >
           <PlexLoginButton
             onAuthToken={(authToken) => setAuthToken(authToken)}
           />
