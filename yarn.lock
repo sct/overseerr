@@ -4665,10 +4665,10 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express-openapi-validator@^3.16.15:
-  version "3.16.15"
-  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-3.16.15.tgz#f382c2de474b373cadc0ce5ed5a2e7a4f1d5629f"
-  integrity sha512-Xd+lZ84iyV68KKk45ZQgkANtlDnpJ0KYcUgen8ASaS25svb5V/KF35zlzsqTNYz5KcpMDBHnueYFdCTzvIRxUA==
+express-openapi-validator@^3.17.2:
+  version "3.17.2"
+  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-3.17.2.tgz#8b968be4c850bffb05f8958a6fe9dc1836bb88b1"
+  integrity sha512-MPOPy3OpMBCavEcR0HcvthqXKN1Y2H92hRcoFo30f/lkahfS/3jtUerbObRhVUPtf3PWfOtIVfFHaYRATIZ2Yg==
   dependencies:
     ajv "^6.12.4"
     content-type "^1.0.4"
