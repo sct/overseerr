@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-interface Library {
+export interface Library {
   id: string;
   name: string;
   enabled: boolean;

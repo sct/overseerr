@@ -4,6 +4,7 @@ import TheMovieDb from '../api/themoviedb';
 import RadarrAPI from '../api/radarr';
 import { getSettings } from '../lib/settings';
 import { MediaType, MediaRequestStatus } from '../constants/media';
+import logger from '../logger';
 
 @ChildEntity(MediaType.MOVIE)
 class MovieRequest extends MediaRequest {
@@ -18,8 +19,9 @@ class MovieRequest extends MediaRequest {
       try {
         const settings = getSettings();
         if (settings.radarr.length === 0 && !settings.radarr[0]) {
-          console.log(
-            '[MediaRequest] Skipped radarr request as there is no radarr configured'
+          logger.info(
+            'Skipped radarr request as there is no radarr configured',
+            { label: 'Media Request' }
           );
           return;
         }
@@ -44,7 +46,7 @@ class MovieRequest extends MediaRequest {
           monitored: true,
           searchNow: true,
         });
-        console.log('[MediaRequest] Sent request to Radarr');
+        logger.info('Sent request to Radarr', { label: 'Media Request' });
       } catch (e) {
         throw new Error(
           `[MediaRequest] Request failed to send to radarr: ${e.message}`

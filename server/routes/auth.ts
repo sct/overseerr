@@ -4,6 +4,7 @@ import { User } from '../entity/User';
 import PlexTvAPI from '../api/plextv';
 import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
+import logger from '../logger';
 
 const authRoutes = Router();
 
@@ -95,7 +96,7 @@ authRoutes.post('/login', async (req, res) => {
 
     return res.status(200).json(user?.filter() ?? {});
   } catch (e) {
-    console.error(e);
+    logger.error(e.message, { label: 'Auth' });
     res
       .status(500)
       .json({ error: 'Something went wrong. Is your auth token valid?' });

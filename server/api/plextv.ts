@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import xml2js from 'xml2js';
 import { getSettings } from '../lib/settings';
+import logger from '../logger';
 
 interface PlexAccountResponse {
   user: PlexUser;
@@ -79,9 +80,9 @@ class PlexTvAPI {
 
       return account.data.user;
     } catch (e) {
-      console.error(
-        'Something broke when getting account from plex.tv',
-        e.message
+      logger.error(
+        `Something went wrong getting the account from plex.tv: ${e.message}`,
+        { label: 'Plex.tv API' }
       );
       throw new Error('Invalid auth token');
     }
@@ -124,7 +125,7 @@ class PlexTvAPI {
         (server) => server.$.machineIdentifier === settings.plex.machineId
       );
     } catch (e) {
-      console.log(`Error checking user access: ${e.message}`);
+      logger.error(`Error checking user access: ${e.message}`);
       return false;
     }
   }

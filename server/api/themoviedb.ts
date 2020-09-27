@@ -100,6 +100,11 @@ interface TmdbSearchTvResponse extends TmdbPaginatedResponse {
   results: TmdbTvResult[];
 }
 
+interface TmdbExternalIdResponse {
+  movie_results: TmdbMovieResult[];
+  tv_results: TmdbTvResult[];
+}
+
 export interface TmdbCreditCast {
   cast_id: number;
   character: string;
@@ -549,6 +554,70 @@ class TheMovieDb {
       throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
     }
   };
+
+  public async getByExternalId({
+    externalId,
+    type,
+    language = 'en-US',
+  }:
+    | {
+        externalId: string;
+        type: 'imdb';
+        language?: string;
+      }
+    | {
+        externalId: number;
+        type: 'tvdb';
+        language?: string;
+      }): Promise<TmdbExternalIdResponse> {
+    try {
+      const response = await this.axios.get<TmdbExternalIdResponse>(
+        `/find/${externalId}`,
+        {
+          params: {
+            external_source: type === 'imdb' ? 'imdb_id' : 'tvdb_id',
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to find by external ID: ${e.message}`);
+    }
+  }
+
+  public async getMovieByImdbId({
+    imdbId,
+    language = 'en-US',
+  }: {
+    imdbId: string;
+    language?: string;
+  }): Promise<TmdbMovieDetails> {
+    try {
+      const extResponse = await this.getByExternalId({
+        externalId: imdbId,
+        type: 'imdb',
+      });
+
+      if (extResponse.movie_results[0]) {
+        const movie = await this.getMovie({
+          movieId: extResponse.movie_results[0].id,
+          language,
+        });
+
+        return movie;
+      }
+
+      throw new Error(
+        '[TMDB] Failed to find a title with the provided IMDB id'
+      );
+    } catch (e) {
+      throw new Error(
+        `[TMDB] Failed to get movie by external imdb ID: ${e.message}`
+      );
+    }
+  }
 }
 
 export default TheMovieDb;

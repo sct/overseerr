@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { MediaRequest } from './MediaRequest';
 import { MediaStatus, MediaType } from '../constants/media';
+import logger from '../logger';
 
 @Entity()
 class Media {
@@ -33,7 +34,7 @@ class Media {
 
       return media;
     } catch (e) {
-      console.error(e.messaage);
+      logger.error(e.message);
       return [];
     }
   }
@@ -48,7 +49,7 @@ class Media {
 
       return media;
     } catch (e) {
-      console.error(e.messaage);
+      logger.error(e.messaage);
       return undefined;
     }
   }
@@ -65,7 +66,11 @@ class Media {
 
   @Column({ unique: true, nullable: true })
   @Index()
-  public tvdbId: number;
+  public tvdbId?: number;
+
+  @Column({ unique: true, nullable: true })
+  @Index()
+  public imdbId?: string;
 
   @Column({ type: 'int', default: MediaStatus.UNKNOWN })
   public status: MediaStatus;

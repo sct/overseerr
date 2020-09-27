@@ -1,8 +1,14 @@
 import { Router } from 'express';
-import { getSettings, RadarrSettings, SonarrSettings } from '../lib/settings';
+import {
+  getSettings,
+  RadarrSettings,
+  SonarrSettings,
+  Library,
+} from '../lib/settings';
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
-import PlexAPI from '../api/plexapi';
+import PlexAPI, { PlexLibrary } from '../api/plexapi';
+import jobPlexSync from '../job/plexsync';
 
 const settingsRoutes = Router();
 
@@ -56,6 +62,55 @@ settingsRoutes.post('/plex', async (req, res, next) => {
   }
 
   return res.status(200).json(settings.plex);
+});
+
+settingsRoutes.get('/plex/library', async (req, res) => {
+  const settings = getSettings();
+
+  if (req.query.sync) {
+    const userRepository = getRepository(User);
+    const admin = await userRepository.findOneOrFail({
+      select: ['id', 'plexToken'],
+      order: { id: 'ASC' },
+    });
+    const plexapi = new PlexAPI({ plexToken: admin.plexToken });
+
+    const libraries = await plexapi.getLibraries();
+
+    const newLibraries: Library[] = libraries.map((library) => {
+      const existing = settings.plex.libraries.find(
+        (l) => l.id === library.key
+      );
+
+      return {
+        id: library.key,
+        name: library.title,
+        enabled: existing?.enabled ?? false,
+      };
+    });
+
+    settings.plex.libraries = newLibraries;
+  }
+
+  const enabledLibraries = req.query.enable
+    ? (req.query.enable as string).split(',')
+    : [];
+  settings.plex.libraries = settings.plex.libraries.map((library) => ({
+    ...library,
+    enabled: enabledLibraries.includes(library.id),
+  }));
+  settings.save();
+  return res.status(200).json(settings.plex.libraries);
+});
+
+settingsRoutes.get('/plex/sync', (req, res) => {
+  if (req.query.cancel) {
+    jobPlexSync.cancel();
+  } else {
+    jobPlexSync.run();
+  }
+
+  return res.status(200).json(jobPlexSync.status());
 });
 
 settingsRoutes.get('/radarr', (req, res) => {

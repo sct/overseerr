@@ -10,6 +10,7 @@ import axios from 'axios';
 import { User } from '../hooks/useUser';
 import { IntlProvider } from 'react-intl';
 import { LanguageContext, AvailableLocales } from '../context/LanguageContext';
+import Head from 'next/head';
 
 const loadLocaleData = (locale: string) => {
   switch (locale) {
@@ -76,6 +77,9 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
           messages={loadedMessages}
         >
           <ToastProvider>
+            <Head>
+              <title>Overseerr</title>
+            </Head>
             <UserContext initialUser={user}>{component}</UserContext>
           </ToastProvider>
         </IntlProvider>

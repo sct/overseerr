@@ -12,6 +12,7 @@ import swaggerUi from 'swagger-ui-express';
 import { OpenApiValidator } from 'express-openapi-validator';
 import { Session } from './entity/Session';
 import { getSettings } from './lib/settings';
+import logger from './logger';
 
 const API_SPEC_PATH = path.join(__dirname, 'overseerr-api.yml');
 
@@ -40,9 +41,12 @@ app
         secret: 'verysecret',
         resave: false,
         saveUninitialized: false,
+        cookie: {
+          maxAge: 1000 * 60 * 60 * 24 * 30,
+        },
         store: new TypeormStore({
           cleanupLimit: 2,
-          ttl: 86400,
+          ttl: 1000 * 60 * 60 * 24 * 30,
         }).connect(sessionRespository),
       })
     );
@@ -87,10 +91,12 @@ app
       if (err) {
         throw err;
       }
-      console.log(`Ready to do stuff http://localhost:${port}`);
+      logger.info(`Server ready on port ${port}`, {
+        label: 'SERVER',
+      });
     });
   })
   .catch((err) => {
-    console.error(err.stack);
+    logger.error(err.stack);
     process.exit(1);
   });
