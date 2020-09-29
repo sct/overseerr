@@ -3,14 +3,7 @@ import type { ToastProps } from 'react-toast-notifications';
 
 const Toast: React.FC<ToastProps> = ({ appearance, children, onDismiss }) => {
   return (
-<<<<<<< HEAD
     <div className="toast flex items-end justify-center px-2 py-2 pointer-events-none sm:p-6 sm:items-start sm:justify-end">
-=======
-    <div
-      style={{ width: 360 }}
-      className="flex w-32 items-end justify-center px-2 py-2 pointer-events-none sm:p-6 sm:items-start sm:justify-end"
-    >
->>>>>>> feat(frontend): custom toast
       <div className="max-w-sm w-full bg-cool-gray-700 shadow-lg rounded-lg pointer-events-auto">
         <div className="rounded-lg shadow-xs overflow-hidden">
           <div className="p-4">
