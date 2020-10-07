@@ -12,6 +12,7 @@ import { MediaRequest } from '../../../server/entity/MediaRequest';
 import MovieRequestModal from '../RequestModal/MovieRequestModal';
 import Link from 'next/link';
 import { MediaStatus } from '../../../server/constants/media';
+import RequestModal from '../RequestModal';
 
 interface TitleCardProps {
   id: number;
@@ -35,41 +36,11 @@ const TitleCard: React.FC<TitleCardProps> = ({
   mediaType,
   requestId,
 }) => {
-  const { addToast } = useToasts();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(status);
   const [showDetail, setShowDetail] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-
-  const request = async () => {
-    setIsUpdating(true);
-    const response = await axios.post<MediaRequest>('/api/v1/request', {
-      mediaId: id,
-      mediaType,
-    });
-
-    if (response.data) {
-      setCurrentStatus(response.data.media.status);
-      addToast(
-        <span>
-          <strong>{title}</strong> succesfully requested!
-        </span>,
-        { appearance: 'success', autoDismiss: true }
-      );
-    }
-    setIsUpdating(false);
-  };
-
-  const cancelRequest = async () => {
-    const response = await axios.delete<MediaRequest>(
-      `/api/v1/request/${requestId}`
-    );
-
-    if (response.data.id) {
-      setCurrentStatus(undefined);
-    }
-  };
 
   // Just to get the year from the date
   if (year) {
@@ -78,19 +49,14 @@ const TitleCard: React.FC<TitleCardProps> = ({
 
   return (
     <div className="w-36 sm:w-36 md:w-44">
-      <MovieRequestModal
-        type="request"
-        visible={showRequestModal}
-        title={title}
+      <RequestModal
+        tmdbId={id}
+        show={showRequestModal}
+        type={mediaType === 'movie' ? 'movie' : 'tv'}
+        requestId={requestId}
+        onComplete={(newStatus) => setCurrentStatus(newStatus)}
+        onUpdating={(status) => setIsUpdating(status)}
         onCancel={() => setShowRequestModal(false)}
-        onOk={() => request()}
-      />
-      <MovieRequestModal
-        type="cancel"
-        visible={showCancelModal}
-        title={title}
-        onCancel={() => setShowCancelModal(false)}
-        onOk={() => cancelRequest()}
       />
       <div
         className="titleCard outline-none cursor-default"

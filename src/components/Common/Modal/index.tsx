@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Button, { ButtonType } from '../Button';
 import { useTransition, animated } from 'react-spring';
 import { useLockBodyScroll } from '../../../hooks/useLockBodyScroll';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface ModalProps {
   title?: string;
@@ -16,6 +17,7 @@ interface ModalProps {
   disableScrollLock?: boolean;
   backgroundClickable?: boolean;
   iconSvg?: ReactNode;
+  loading?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -31,6 +33,7 @@ const Modal: React.FC<ModalProps> = ({
   disableScrollLock,
   backgroundClickable = true,
   iconSvg,
+  loading = false,
 }) => {
   useLockBodyScroll(!!visible, disableScrollLock);
   const transitions = useTransition(visible, null, {
@@ -39,7 +42,13 @@ const Modal: React.FC<ModalProps> = ({
     leave: { opacity: 0 },
     config: { tension: 500, velocity: 40, friction: 60 },
   });
-  const containerTransitions = useTransition(visible, null, {
+  const containerTransitions = useTransition(visible && !loading, null, {
+    from: { opacity: 0, transform: 'scale(0.5)' },
+    enter: { opacity: 1, transform: 'scale(1)' },
+    leave: { opacity: 0, transform: 'scale(0.5)' },
+    config: { tension: 500, velocity: 40, friction: 60 },
+  });
+  const loadingTransitions = useTransition(visible && loading, null, {
     from: { opacity: 0, transform: 'scale(0.5)' },
     enter: { opacity: 1, transform: 'scale(1)' },
     leave: { opacity: 0, transform: 'scale(0.5)' },
@@ -72,6 +81,14 @@ const Modal: React.FC<ModalProps> = ({
                 }
               }}
             >
+              {loadingTransitions.map(
+                ({ props, item, key }) =>
+                  item && (
+                    <animated.div style={props} key={key}>
+                      <LoadingSpinner />
+                    </animated.div>
+                  )
+              )}
               {containerTransitions.map(
                 ({ props, item, key }) =>
                   item && (

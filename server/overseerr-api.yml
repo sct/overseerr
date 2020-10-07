@@ -479,6 +479,10 @@ components:
           type: string
         seasonNumber:
           type: number
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Episode'
     TvDetails:
       type: object
       properties:
@@ -1554,6 +1558,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TvDetails'
+  /tv/{tvId}/season/{seasonId}:
+    get:
+      summary: Return season details with episode list
+      description: Returns back season details with a list of episodes
+      tags:
+        - tv
+      parameters:
+        - in: path
+          name: tvId
+          required: true
+          schema:
+            type: number
+            example: 76479
+        - in: path
+          name: seasonId
+          required: true
+          schema:
+            type: number
+            example: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en-US
+      responses:
+        '200':
+          description: TV details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Season'
   /tv/{tvId}/recommendations:
     get:
       summary: Request recommended tv series

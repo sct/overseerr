@@ -3,6 +3,12 @@ import Modal from '../Common/Modal';
 import { useUser } from '../../hooks/useUser';
 import { Permission } from '../../../server/lib/permissions';
 import { defineMessages, useIntl } from 'react-intl';
+import { MediaRequest } from '../../../server/entity/MediaRequest';
+import useSWR from 'swr';
+import { MovieDetails } from '../../../server/models/Movie';
+import { useToasts } from 'react-toast-notifications';
+import axios from 'axios';
+import type { MediaStatus } from '../../../server/constants/media';
 
 const messages = defineMessages({
   requestadmin:
@@ -12,42 +18,72 @@ const messages = defineMessages({
 });
 
 interface RequestModalProps {
-  type: 'request' | 'cancel';
+  request?: MediaRequest;
+  tmdbId: number;
   visible?: boolean;
-  onCancel: () => void;
-  onOk: () => void;
-  title: string;
+  onCancel?: () => void;
+  onComplete?: (newStatus: MediaStatus) => void;
+  onUpdating?: (isUpdating: boolean) => void;
 }
 
 const MovieRequestModal: React.FC<RequestModalProps> = ({
-  type,
   visible,
   onCancel,
-  onOk,
-  title,
+  onComplete,
+  request,
+  tmdbId,
+  onUpdating,
 }) => {
+  const { addToast } = useToasts();
+  const { data, error } = useSWR<MovieDetails>(`/api/v1/movie/${tmdbId}`);
   const intl = useIntl();
   const { hasPermission } = useUser();
+
+  const sendRequest = async () => {
+    if (onUpdating) {
+      onUpdating(true);
+    }
+    const response = await axios.post<MediaRequest>('/api/v1/request', {
+      mediaId: data?.id,
+      mediaType: 'movie',
+    });
+
+    if (response.data) {
+      if (onComplete) {
+        onComplete(response.data.media.status);
+      }
+      addToast(
+        <span>
+          <strong>{data?.title}</strong> succesfully requested!
+        </span>,
+        { appearance: 'success', autoDismiss: true }
+      );
+      if (onUpdating) {
+        onUpdating(false);
+      }
+    }
+  };
 
   let text = hasPermission(Permission.MANAGE_REQUESTS)
     ? intl.formatMessage(messages.requestadmin)
     : undefined;
 
-  if (type === 'cancel') {
+  if (request) {
     text = intl.formatMessage(messages.cancelrequest);
   }
 
   return (
     <Modal
       visible={visible}
+      loading={!data && !error}
       backgroundClickable
       onCancel={onCancel}
-      onOk={onOk}
-      title={type === 'request' ? `Request ${title}` : 'Cancel Request'}
-      okText={type === 'request' ? 'Request' : 'Cancel Request'}
-      okButtonType={type === 'cancel' ? 'danger' : 'primary'}
+      onOk={() => sendRequest()}
+      title={!request ? `Request ${data?.title}` : 'Cancel Request'}
+      okText={!request ? 'Request' : 'Cancel Request'}
+      okButtonType={!!request ? 'danger' : 'primary'}
       iconSvg={
-        type === 'request' ? (
+        !request ? (
           <svg
             className="w-6 h-6"
             fill="none"

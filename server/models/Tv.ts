@@ -9,9 +9,10 @@ import {
   mapExternalIds,
 } from './common';
 import {
-  TmdbTvEpisodeDetails,
-  TmdbTvSeasonDetails,
+  TmdbTvEpisodeResult,
+  TmdbTvSeasonResult,
   TmdbTvDetails,
+  TmdbSeasonWithEpisodes,
 } from '../api/themoviedb';
 import type Media from '../entity/Media';
 
@@ -37,6 +38,11 @@ interface Season {
   overview: string;
   posterPath?: string;
   seasonNumber: number;
+}
+
+interface SeasonWithEpisodes extends Season {
+  episodes: Episode[];
+  externalIds: ExternalIds;
 }
 
 export interface TvDetails {
@@ -81,7 +87,7 @@ export interface TvDetails {
   mediaInfo?: Media;
 }
 
-const mapEpisodeDetails = (episode: TmdbTvEpisodeDetails): Episode => ({
+const mapEpisodeResult = (episode: TmdbTvEpisodeResult): Episode => ({
   id: episode.id,
   airDate: episode.air_date,
   episodeNumber: episode.episode_number,
@@ -95,9 +101,23 @@ const mapEpisodeDetails = (episode: TmdbTvEpisodeDetails): Episode => ({
   stillPath: episode.still_path,
 });
 
-const mapSeasonDetails = (season: TmdbTvSeasonDetails): Season => ({
+const mapSeasonResult = (season: TmdbTvSeasonResult): Season => ({
   airDate: season.air_date,
   episodeCount: season.episode_count,
+  id: season.id,
+  name: season.name,
+  overview: season.overview,
+  seasonNumber: season.season_number,
+  posterPath: season.poster_path,
+});
+
+export const mapSeasonWithEpisodes = (
+  season: TmdbSeasonWithEpisodes
+): SeasonWithEpisodes => ({
+  airDate: season.air_date,
+  episodeCount: season.episode_count,
+  episodes: season.episodes.map(mapEpisodeResult),
+  externalIds: mapExternalIds(season.external_ids),
   id: season.id,
   name: season.name,
   overview: season.overview,
@@ -141,17 +161,17 @@ export const mapTvDetails = (
     originCountry: company.origin_country,
     logoPath: company.logo_path,
   })),
-  seasons: show.seasons.map(mapSeasonDetails),
+  seasons: show.seasons.map(mapSeasonResult),
   status: show.status,
   type: show.type,
   voteAverage: show.vote_average,
   voteCount: show.vote_count,
   backdropPath: show.backdrop_path,
   lastEpisodeToAir: show.last_episode_to_air
-    ? mapEpisodeDetails(show.last_episode_to_air)
+    ? mapEpisodeResult(show.last_episode_to_air)
     : undefined,
   nextEpisodeToAir: show.next_episode_to_air
-    ? mapEpisodeDetails(show.next_episode_to_air)
+    ? mapEpisodeResult(show.next_episode_to_air)
     : undefined,
   posterPath: show.poster_path,
   credits: {

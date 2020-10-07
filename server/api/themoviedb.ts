@@ -183,7 +183,7 @@ export interface TmdbMovieDetails {
   external_ids: TmdbExternalIds;
 }
 
-export interface TmdbTvEpisodeDetails {
+export interface TmdbTvEpisodeResult {
   id: number;
   air_date: string;
   episode_number: number;
@@ -197,13 +197,13 @@ export interface TmdbTvEpisodeDetails {
   vote_cuont: number;
 }
 
-export interface TmdbTvSeasonDetails {
+export interface TmdbTvSeasonResult {
   id: number;
   air_date: string;
   episode_count: number;
   name: string;
   overview: string;
-  poster_path: string;
+  poster_path?: string;
   season_number: number;
 }
 
@@ -227,9 +227,9 @@ export interface TmdbTvDetails {
   in_production: boolean;
   languages: string[];
   last_air_date: string;
-  last_episode_to_air?: TmdbTvEpisodeDetails;
+  last_episode_to_air?: TmdbTvEpisodeResult;
   name: string;
-  next_episode_to_air?: TmdbTvEpisodeDetails;
+  next_episode_to_air?: TmdbTvEpisodeResult;
   networks: {
     id: number;
     name: string;
@@ -250,7 +250,7 @@ export interface TmdbTvDetails {
     name: string;
     origin_country: string;
   }[];
-  seasons: TmdbTvSeasonDetails[];
+  seasons: TmdbTvSeasonResult[];
   status: string;
   type: string;
   vote_average: number;
@@ -259,6 +259,11 @@ export interface TmdbTvDetails {
     cast: TmdbCreditCast[];
     crew: TmdbCreditCrew[];
   };
+  external_ids: TmdbExternalIds;
+}
+
+export interface TmdbSeasonWithEpisodes extends TmdbTvSeasonResult {
+  episodes: TmdbTvEpisodeResult[];
   external_ids: TmdbExternalIds;
 }
 
@@ -328,6 +333,32 @@ class TheMovieDb {
       const response = await this.axios.get<TmdbTvDetails>(`/tv/${tvId}`, {
         params: { language, append_to_response: 'credits,external_ids' },
       });
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch tv show details: ${e.message}`);
+    }
+  };
+
+  public getTvSeason = async ({
+    tvId,
+    seasonNumber,
+    language,
+  }: {
+    tvId: number;
+    seasonNumber: number;
+    language?: string;
+  }): Promise<TmdbSeasonWithEpisodes> => {
+    try {
+      const response = await this.axios.get<TmdbSeasonWithEpisodes>(
+        `/tv/${tvId}/season/${seasonNumber}`,
+        {
+          params: {
+            language,
+            append_to_response: 'external_ids',
+          },
+        }
+      );
 
       return response.data;
     } catch (e) {

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
 import { MediaRequest } from '../entity/MediaRequest';
-import { mapTvDetails } from '../models/Tv';
+import { mapTvDetails, mapSeasonWithEpisodes } from '../models/Tv';
 import { mapTvResult } from '../models/Search';
 import Media from '../entity/Media';
 
@@ -18,6 +18,18 @@ tvRoutes.get('/:id', async (req, res) => {
   const media = await Media.getMedia(tv.id);
 
   return res.status(200).json(mapTvDetails(tv, media));
+});
+
+tvRoutes.get('/:id/season/:seasonNumber', async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const season = await tmdb.getTvSeason({
+    tvId: Number(req.params.id),
+    seasonNumber: Number(req.params.seasonNumber),
+    language: req.query.language as string,
+  });
+
+  return res.status(200).json(mapSeasonWithEpisodes(season));
 });
 
 tvRoutes.get('/:id/recommendations', async (req, res) => {

@@ -6,7 +6,6 @@ import Media from '../entity/Media';
 import { MediaStatus, MediaType } from '../constants/media';
 import logger from '../logger';
 import { getSettings, Library } from '../lib/settings';
-import { resolve } from 'dns';
 
 const BUNDLE_SIZE = 10;
 

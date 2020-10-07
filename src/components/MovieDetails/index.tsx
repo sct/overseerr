@@ -9,11 +9,7 @@ import {
 import type { MovieDetails as MovieDetailsType } from '../../../server/models/Movie';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
-import { useToasts } from 'react-toast-notifications';
 import Button from '../Common/Button';
-import MovieRequestModal from '../RequestModal/MovieRequestModal';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import axios from 'axios';
 import type { MovieResult } from '../../../server/models/Search';
 import Link from 'next/link';
 import Slider from '../Slider';
@@ -22,8 +18,8 @@ import PersonCard from '../PersonCard';
 import { LanguageContext } from '../../context/LanguageContext';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import { useUser, Permission } from '../../hooks/useUser';
-import PendingRequest from '../PendingRequest';
 import { MediaStatus } from '../../../server/constants/media';
+import RequestModal from '../RequestModal';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -64,13 +60,11 @@ enum MediaRequestStatus {
 }
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
-  const { user, hasPermission } = useUser();
+  const { hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
-  const { addToast } = useToasts();
   const [showRequestModal, setShowRequestModal] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
   const { data, error, revalidate } = useSWR<MovieDetailsType>(
     `/api/v1/movie/${router.query.movieId}?language=${locale}`,
     {
@@ -83,27 +77,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const { data: similar, error: similarError } = useSWR<SearchResult>(
     `/api/v1/movie/${router.query.movieId}/similar?language=${locale}`
   );
-
-  const request = async () => {
-    const response = await axios.post<MediaRequest>('/api/v1/request', {
-      mediaId: data?.id,
-      mediaType: 'movie',
-    });
-
-    if (response.data) {
-      revalidate();
-      addToast(
-        <span>
-          <strong>{data?.title}</strong> succesfully requested!
-        </span>,
-        { appearance: 'success', autoDismiss: true }
-      );
-    }
-  };
-
-  const cancelRequest = async () => {
-    // fix this
-  };
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -121,19 +94,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         backgroundImage: `linear-gradient(180deg, rgba(45, 55, 72, 0.47) 0%, #1A202E 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
-      <MovieRequestModal
-        type="request"
-        visible={showRequestModal}
-        title={data.title}
+      <RequestModal
+        tmdbId={data.id}
+        show={showRequestModal}
+        type="movie"
+        requestId={data.mediaInfo?.requests?.[0]?.id}
+        onComplete={() => revalidate()}
         onCancel={() => setShowRequestModal(false)}
-        onOk={() => request()}
-      />
-      <MovieRequestModal
-        type="cancel"
-        visible={showCancelModal}
-        title={data.title}
-        onCancel={() => setShowCancelModal(false)}
-        onOk={() => cancelRequest()}
       />
       <div className="flex flex-col items-center md:flex-row md:items-end pt-4">
         <div className="mr-4 flex-shrink-0">
