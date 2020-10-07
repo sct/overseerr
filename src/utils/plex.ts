@@ -182,8 +182,10 @@ class PlexOAuth {
       : screen.height;
     const left = width / 2 - w / 2 + dualScreenLeft;
     const top = height / 2 - h / 2 + dualScreenTop;
+
+    //Set url to login/plex/loading so browser doesn't block popup
     const newWindow = window.open(
-      url,
+      '/login/plex/loading',
       title,
       'scrollbars=yes, width=' +
         w +
@@ -197,6 +199,9 @@ class PlexOAuth {
     if (newWindow) {
       newWindow.focus();
       this.popup = newWindow;
+      setTimeout(() => {
+        newWindow.location.href = url;
+      }, 1500);
       return this.popup;
     }
   }
