@@ -2,11 +2,7 @@ import React, { useState, useContext } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
-import { useToasts } from 'react-toast-notifications';
 import Button from '../Common/Button';
-import MovieRequestModal from '../RequestModal/MovieRequestModal';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import axios from 'axios';
 import type { TvResult } from '../../../server/models/Search';
 import Link from 'next/link';
 import Slider from '../Slider';
@@ -15,9 +11,9 @@ import PersonCard from '../PersonCard';
 import { LanguageContext } from '../../context/LanguageContext';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import { useUser, Permission } from '../../hooks/useUser';
-import PendingRequest from '../PendingRequest';
 import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
 import { MediaStatus } from '../../../server/constants/media';
+import RequestModal from '../RequestModal';
 
 const messages = defineMessages({
   userrating: 'User Rating',
@@ -54,13 +50,11 @@ enum MediaRequestStatus {
 }
 
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
-  const { user, hasPermission } = useUser();
+  const { hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
-  const { addToast } = useToasts();
   const [showRequestModal, setShowRequestModal] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
   const { data, error, revalidate } = useSWR<TvDetailsType>(
     `/api/v1/tv/${router.query.tvId}?language=${locale}`,
     {
@@ -73,27 +67,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const { data: similar, error: similarError } = useSWR<SearchResult>(
     `/api/v1/tv/${router.query.tvId}/similar?language=${locale}`
   );
-
-  const request = async () => {
-    const response = await axios.post<MediaRequest>('/api/v1/request', {
-      mediaId: data?.id,
-      mediaType: 'tv',
-    });
-
-    if (response.data) {
-      revalidate();
-      addToast(
-        <span>
-          <strong>{data?.name}</strong> succesfully requested!
-        </span>,
-        { appearance: 'success', autoDismiss: true }
-      );
-    }
-  };
-
-  const cancelRequest = async () => {
-    // fix me
-  };
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -111,19 +84,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         backgroundImage: `linear-gradient(180deg, rgba(45, 55, 72, 0.47) 0%, #1A202E 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
-      <MovieRequestModal
-        type="request"
-        visible={showRequestModal}
-        title={data.name}
+      <RequestModal
+        tmdbId={data.id}
+        show={showRequestModal}
+        type="tv"
+        requestId={data.mediaInfo?.requests?.[0]?.id}
+        onComplete={() => revalidate()}
         onCancel={() => setShowRequestModal(false)}
-        onOk={() => request()}
-      />
-      <MovieRequestModal
-        type="cancel"
-        visible={showCancelModal}
-        title={data.name}
-        onCancel={() => setShowCancelModal(false)}
-        onOk={() => cancelRequest()}
       />
       <div className="flex flex-col items-center md:flex-row md:items-end pt-4">
         <div className="mr-4 flex-shrink-0">
