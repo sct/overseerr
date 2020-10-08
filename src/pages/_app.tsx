@@ -11,6 +11,7 @@ import { User } from '../hooks/useUser';
 import { IntlProvider } from 'react-intl';
 import { LanguageContext, AvailableLocales } from '../context/LanguageContext';
 import Head from 'next/head';
+import Toast from '../components/Toast';
 
 const loadLocaleData = (locale: string) => {
   switch (locale) {
@@ -76,7 +77,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
           defaultLocale="en"
           messages={loadedMessages}
         >
-          <ToastProvider>
+          <ToastProvider components={{ Toast }}>
             <Head>
               <title>Overseerr</title>
             </Head>
