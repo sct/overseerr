@@ -67,7 +67,7 @@
     "babel-plugin-react-intl-auto": "^3.3.0",
     "commitizen": "^4.2.1",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^7.8.1",
+    "eslint": "^7.10.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-formatjs": "^2.7.10",
     "eslint-plugin-jsx-a11y": "^6.3.1",
