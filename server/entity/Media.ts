@@ -43,13 +43,13 @@ class Media {
     const mediaRepository = getRepository(Media);
 
     try {
-      const media = await mediaRepository.findOneOrFail({
+      const media = await mediaRepository.findOne({
         where: { tmdbId: id },
       });
 
       return media;
     } catch (e) {
-      logger.error(e.messaage);
+      logger.error(e.message);
       return undefined;
     }
   }
@@ -76,7 +76,7 @@ class Media {
   public status: MediaStatus;
 
   @OneToMany(() => MediaRequest, (request) => request.media)
-  public requests: MediaRequest;
+  public requests: MediaRequest[];
 
   @CreateDateColumn()
   public createdAt: Date;
