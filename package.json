@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@svgr/webpack": "^5.4.0",
-    "@tailwindcss/ui": "^0.6.0",
+    "@tailwindcss/ui": "^0.6.2",
     "axios": "^0.20.0",
     "body-parser": "^1.19.0",
     "bowser": "^2.11.0",
