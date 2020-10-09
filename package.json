@@ -72,7 +72,7 @@
     "eslint-plugin-formatjs": "^2.7.10",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react": "^7.21.3",
     "eslint-plugin-react-hooks": "^4.1.2",
     "extract-react-intl-messages": "^4.1.1",
     "husky": "^4.3.0",
