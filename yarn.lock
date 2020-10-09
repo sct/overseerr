@@ -1411,12 +1411,13 @@
     intl-messageformat-parser "^6.0.9"
     tslib "^2.0.1"
 
-"@formatjs/ts-transformer@^2.10.0", "@formatjs/ts-transformer@^2.6.0":
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/@formatjs/ts-transformer/-/ts-transformer-2.10.0.tgz#06f292b6cbcea661e2cecf7b8945ac59f21b7c93"
-  integrity sha512-ff+gIzsbd5WEm6mLn1x0A1gD4oJomst8pF7NEjrI0Egn+82v8PEEZeYrsGjUzRt3jyOaRguQUYJGHiw+5d84dQ==
+"@formatjs/ts-transformer@^2.10.0", "@formatjs/ts-transformer@^2.11.2", "@formatjs/ts-transformer@^2.6.0":
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/@formatjs/ts-transformer/-/ts-transformer-2.11.2.tgz#49cb570a3ea1a0fdd73b1e72e6b3cf7de9d4d7e5"
+  integrity sha512-4e+nmJWNqSGHpt1jcdKuRyOS7l39LghmKuA17tKycHHgLqM4B050n3CoDWEf/SBSPwQPm5hvIeCtXvgZkhvYpA==
   dependencies:
-    intl-messageformat-parser "^6.0.6"
+    intl-messageformat-parser "^6.0.9"
+    tslib "^2.0.1"
     typescript "^4.0"
 
 "@fullhuman/postcss-purgecss@^2.1.2":
@@ -1760,7 +1761,7 @@
     "@types/react" "*"
     hoist-non-react-statics "^3.3.0"
 
-"@types/json-schema@*", "@types/json-schema@^7.0.5":
+"@types/json-schema@*", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.6":
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
@@ -2255,6 +2256,16 @@ ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.3, ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+ajv@^6.12.5:
+  version "6.12.5"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.5.tgz#19b0e8bae8f476e5ba666300387775fb1a00a4da"
+  integrity sha512-lRF8RORchjpKG50/WFf8xmg7sgCLFiYNNnqdKflk63whMQcWR5ngGjiSXkL9bjxy6B2npOK2HSMN49jEBMSkag==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
+
 ally.js@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/ally.js/-/ally.js-1.4.1.tgz#9fb7e6ba58efac4ee9131cb29aa9ee3b540bcf1e"
@@ -2644,19 +2655,20 @@ babel-plugin-react-intl@^7.0.0:
     intl-messageformat-parser "^5.3.7"
     schema-utils "^2.6.6"
 
-babel-plugin-react-intl@^8.2.2:
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/babel-plugin-react-intl/-/babel-plugin-react-intl-8.2.2.tgz#fcaab15a4f481f64405795a915cce7fab520dc6d"
-  integrity sha512-lFq03ZdEX8ggSCKAxVCJKwFE+m9VhpGEK/Q0P7lAPfdYUTNlT5abirDOV3kolrZ9keqlYY00B+4hPUQoHpPVrw==
+babel-plugin-react-intl@^8.2.6:
+  version "8.2.6"
+  resolved "https://registry.yarnpkg.com/babel-plugin-react-intl/-/babel-plugin-react-intl-8.2.6.tgz#400ce6b2b89c1838a7c9ecb612eae18696364e44"
+  integrity sha512-d3aR/DHX2313jIalgKN/jP43IfuonsYsI87URAx7bj+8PZ7QfgVPD5d5nw3WW23XUOWjr6PJ7YCgeummcXM6ig==
   dependencies:
     "@babel/core" "^7.9.0"
     "@babel/helper-plugin-utils" "^7.8.3"
     "@babel/types" "^7.9.5"
-    "@formatjs/ts-transformer" "^2.10.0"
+    "@formatjs/ts-transformer" "^2.11.2"
     "@types/babel__core" "^7.1.7"
     "@types/schema-utils" "^2.4.0"
-    intl-messageformat-parser "^6.0.6"
-    schema-utils "^2.6.6"
+    intl-messageformat-parser "^6.0.9"
+    schema-utils "^3.0.0"
+    tslib "^2.0.1"
 
 babel-plugin-syntax-jsx@6.18.0, babel-plugin-syntax-jsx@^6.18.0:
   version "6.18.0"
@@ -8973,7 +8985,16 @@ scheduler@^0.19.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-schema-utils@*, schema-utils@2.7.1, schema-utils@^2.6.6, schema-utils@^2.7.1:
+schema-utils@*, schema-utils@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-3.0.0.tgz#67502f6aa2b66a2d4032b4279a2944978a0913ef"
+  integrity sha512-6D82/xSzO094ajanoOSbe4YvXWMfn2A//8Y1+MUqFAJul5Bs+yn36xbK9OtNDcRVSBJ9jjeoXftM6CfztsjOAA==
+  dependencies:
+    "@types/json-schema" "^7.0.6"
+    ajv "^6.12.5"
+    ajv-keywords "^3.5.2"
+
+schema-utils@2.7.1, schema-utils@^2.6.6, schema-utils@^2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-2.7.1.tgz#1ca4f32d1b24c590c203b8e7a50bf0ea4cd394d7"
   integrity sha512-SHiNtMOUGWBQJwzISiVYKu82GiV4QYGePp3odlY1tuKO7gPtphAT5R/py0fA6xtbgLL/RvtJZnU9b8s0F1q0Xg==
