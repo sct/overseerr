@@ -55,7 +55,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
     setCookie(null, 'locale', currentLocale, { path: '/' });
   }, [currentLocale]);
 
-  if (router.asPath === '/login') {
+  if (router.pathname.match(/(login|setup)/)) {
     component = <Component {...pageProps} />;
   } else {
     component = (
