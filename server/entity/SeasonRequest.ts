@@ -6,8 +6,8 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import TvRequest from './TvRequest';
 import { MediaRequestStatus } from '../constants/media';
+import { MediaRequest } from './MediaRequest';
 
 @Entity()
 class SeasonRequest {
@@ -20,8 +20,8 @@ class SeasonRequest {
   @Column({ type: 'int', default: MediaRequestStatus.PENDING })
   public status: MediaRequestStatus;
 
-  @ManyToOne(() => TvRequest, (request) => request.seasons)
-  public request: TvRequest;
+  @ManyToOne(() => MediaRequest, (request) => request.seasons)
+  public request: MediaRequest;
 
   @CreateDateColumn()
   public createdAt: Date;

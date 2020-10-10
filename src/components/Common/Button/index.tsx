@@ -25,7 +25,7 @@ const Button: React.FC<ButtonProps> = ({
   switch (buttonType) {
     case 'primary':
       buttonStyle.push(
-        'text-white bg-indigo-600 hover:bg-indigo-500 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700'
+        'text-white bg-indigo-600 hover:bg-indigo-500 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 disabled:opacity-50'
       );
       break;
     case 'danger':

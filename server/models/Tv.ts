@@ -40,7 +40,7 @@ interface Season {
   seasonNumber: number;
 }
 
-interface SeasonWithEpisodes extends Season {
+export interface SeasonWithEpisodes extends Season {
   episodes: Episode[];
   externalIds: ExternalIds;
 }

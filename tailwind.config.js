@@ -13,6 +13,8 @@ module.exports = {
   variants: {
     padding: ['first', 'last'],
     borderWidth: ['first', 'last'],
+    boxShadow: ['group-focus'],
+    opacity: ['disabled'],
   },
   plugins: [
     require('@tailwindcss/ui')({

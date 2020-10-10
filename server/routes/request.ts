@@ -5,9 +5,8 @@ import { getRepository } from 'typeorm';
 import { MediaRequest } from '../entity/MediaRequest';
 import TheMovieDb from '../api/themoviedb';
 import Media from '../entity/Media';
-import MovieRequest from '../entity/MovieRequest';
 import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
-import TvRequest from '../entity/TvRequest';
+import SeasonRequest from '../entity/SeasonRequest';
 
 const requestRoutes = Router();
 
@@ -43,6 +42,7 @@ requestRoutes.post(
   async (req, res, next) => {
     const tmdb = new TheMovieDb();
     const mediaRepository = getRepository(Media);
+    const requestRepository = getRepository(MediaRequest);
 
     try {
       const tmdbMedia =
@@ -52,6 +52,7 @@ requestRoutes.post(
 
       let media = await mediaRepository.findOne({
         where: { tmdbId: req.body.mediaId },
+        relations: ['requests'],
       });
 
       if (!media) {
@@ -65,9 +66,8 @@ requestRoutes.post(
       }
 
       if (req.body.mediaType === 'movie') {
-        const requestRepository = getRepository(MovieRequest);
-
-        const request = new MovieRequest({
+        const request = new MediaRequest({
+          type: MediaType.MOVIE,
           media,
           requestedBy: req.user,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
@@ -79,15 +79,50 @@ requestRoutes.post(
         await requestRepository.save(request);
         return res.status(201).json(request);
       } else if (req.body.mediaType === 'tv') {
-        const requestRepository = getRepository(TvRequest);
+        const requestedSeasons = req.body.seasons as number[];
+        let existingSeasons: number[] = [];
 
-        const request = new TvRequest({
+        // We need to check existing requests on this title to make sure we don't double up on seasons that were
+        // already requested. In the case they were, we just throw out any duplicates but still approve the request.
+        // (Unless there are no seasons, in which case we abort)
+        if (media.requests) {
+          existingSeasons = media.requests.reduce((seasons, request) => {
+            const combinedSeasons = request.seasons.map(
+              (season) => season.seasonNumber
+            );
+
+            return [...seasons, ...combinedSeasons];
+          }, [] as number[]);
+        }
+
+        const finalSeasons = requestedSeasons.filter(
+          (rs) => !existingSeasons.includes(rs)
+        );
+
+        if (finalSeasons.length === 0) {
+          return next({
+            status: 500,
+            message: 'No seasons available to request',
+          });
+        }
+
+        const request = new MediaRequest({
+          type: MediaType.TV,
           media,
           requestedBy: req.user,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
           status: req.user?.hasPermission(Permission.AUTO_APPROVE)
             ? MediaRequestStatus.APPROVED
             : MediaRequestStatus.PENDING,
+          seasons: finalSeasons.map(
+            (sn) =>
+              new SeasonRequest({
+                seasonNumber: sn,
+                status: req.user?.hasPermission(Permission.AUTO_APPROVE)
+                  ? MediaRequestStatus.APPROVED
+                  : MediaRequestStatus.PENDING,
+              })
+          ),
         });
 
         await requestRepository.save(request);
