@@ -72,6 +72,10 @@ class PlexOAuth {
     }
   }
 
+  public preparePopup(): void {
+    this.openPopup({ title: 'Plex Auth', w: 600, h: 700 });
+  }
+
   public async login(): Promise<string> {
     try {
       this.initializeHeaders();
@@ -98,12 +102,12 @@ class PlexOAuth {
         'context[device][layout]': 'desktop',
         code: this.pin.code,
       };
-      this.openPopup({
-        url: `https://app.plex.tv/auth/#!?${this.encodeData(params)}`,
-        title: 'Plex Auth',
-        w: 600,
-        h: 700,
-      });
+
+      if (this.popup) {
+        this.popup.location.href = `https://app.plex.tv/auth/#!?${this.encodeData(
+          params
+        )}`;
+      }
 
       return this.pinPoll();
     } catch (e) {
@@ -150,12 +154,10 @@ class PlexOAuth {
   }
 
   private openPopup({
-    url,
     title,
     w,
     h,
   }: {
-    url: string;
     title: string;
     w: number;
     h: number;
@@ -199,9 +201,6 @@ class PlexOAuth {
     if (newWindow) {
       newWindow.focus();
       this.popup = newWindow;
-      setTimeout(() => {
-        newWindow.location.href = url;
-      }, 1500);
       return this.popup;
     }
   }

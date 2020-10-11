@@ -31,7 +31,10 @@ const PlexLoginButton: React.FC<PlexLoginButtonProps> = ({
     <span className="block w-full rounded-md shadow-sm">
       <button
         type="button"
-        onClick={() => getPlexLogin()}
+        onClick={() => {
+          plexOAuth.preparePopup();
+          setTimeout(() => getPlexLogin(), 1500);
+        }}
         disabled={loading}
         className="plex-button"
       >
