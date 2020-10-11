@@ -14,17 +14,16 @@ import { Session } from './entity/Session';
 import { getSettings } from './lib/settings';
 import logger from './logger';
 
-const API_SPEC_PATH = path.join(__dirname, 'overseerr-api.yml');
+const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-createConnection();
-
 app
   .prepare()
   .then(async () => {
+    await createConnection();
     // Load Settings
     getSettings().load();
 

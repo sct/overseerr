@@ -16,12 +16,12 @@ const prodConfig = {
   database: 'config/db/db.sqlite3',
   synchronize: false,
   logging: false,
-  entities: ['dist/server/entity/**/*.js'],
-  migrations: ['dist/server/migration/**/*.js'],
+  entities: ['dist/entity/**/*.js'],
+  migrations: ['dist/migration/**/*.js'],
   migrationsRun: true,
   cli: {
-    entitiesDir: 'dist/server/entity',
-    migrationsDir: 'dist/server/migration',
+    entitiesDir: 'dist/entity',
+    migrationsDir: 'dist/migration',
   },
 };
 
