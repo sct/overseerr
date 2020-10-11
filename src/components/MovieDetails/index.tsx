@@ -99,7 +99,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         show={showRequestModal}
         type="movie"
         requestId={data.mediaInfo?.requests?.[0]?.id}
-        onComplete={() => revalidate()}
+        onComplete={() => {
+          revalidate();
+          setShowRequestModal(false);
+        }}
         onCancel={() => setShowRequestModal(false)}
       />
       <div className="flex flex-col items-center md:flex-row md:items-end pt-4">

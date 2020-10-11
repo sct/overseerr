@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useToasts } from 'react-toast-notifications';
 import type { MediaType } from '../../../server/models/Search';
 import Available from '../../assets/available.svg';
 import Requested from '../../assets/requested.svg';
@@ -7,9 +6,6 @@ import Unavailable from '../../assets/unavailable.svg';
 import { withProperties } from '../../utils/typeHelpers';
 import Transition from '../Transition';
 import Placeholder from './Placeholder';
-import axios from 'axios';
-import { MediaRequest } from '../../../server/entity/MediaRequest';
-import MovieRequestModal from '../RequestModal/MovieRequestModal';
 import Link from 'next/link';
 import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
@@ -40,7 +36,6 @@ const TitleCard: React.FC<TitleCardProps> = ({
   const [currentStatus, setCurrentStatus] = useState(status);
   const [showDetail, setShowDetail] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
 
   // Just to get the year from the date
   if (year) {
@@ -54,7 +49,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
         show={showRequestModal}
         type={mediaType === 'movie' ? 'movie' : 'tv'}
         requestId={requestId}
-        onComplete={(newStatus) => setCurrentStatus(newStatus)}
+        onComplete={(newStatus) => {
+          setCurrentStatus(newStatus);
+          setShowRequestModal(false);
+        }}
         onUpdating={(status) => setIsUpdating(status)}
         onCancel={() => setShowRequestModal(false)}
       />
@@ -129,7 +127,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
           </Transition>
 
           <Transition
-            show={!image || showDetail || showRequestModal || showCancelModal}
+            show={!image || showDetail || showRequestModal}
             enter="transition ease-in-out duration-300 transform opacity-0"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -215,10 +213,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     </button>
                   )}
                   {currentStatus === MediaStatus.PENDING && (
-                    <button
-                      onClick={() => setShowCancelModal(true)}
-                      className="w-full h-7 text-center text-white bg-orange-400 hover:bg-orange-300 rounded-sm ml-1 focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition ease-in-out duration-150"
-                    >
+                    <button className="w-full h-7 text-center text-white bg-orange-400 hover:bg-orange-300 rounded-sm ml-1 focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition ease-in-out duration-150">
                       <svg
                         className="w-4 mx-auto"
                         fill="none"
