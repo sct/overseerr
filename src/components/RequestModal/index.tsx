@@ -6,7 +6,6 @@ import type { MediaStatus } from '../../../server/constants/media';
 import TvRequestModal from './TvRequestModal';
 
 interface RequestModalProps {
-  requestId?: number;
   show: boolean;
   type: 'movie' | 'tv';
   tmdbId: number;
@@ -18,7 +17,6 @@ interface RequestModalProps {
 
 const RequestModal: React.FC<RequestModalProps> = ({
   type,
-  requestId,
   show,
   tmdbId,
   onComplete,
@@ -26,16 +24,12 @@ const RequestModal: React.FC<RequestModalProps> = ({
   onUpdating,
   onCancel,
 }) => {
-  const { data } = useSWR<MediaRequest>(
-    requestId ? `/api/v1/request/${requestId}` : null
-  );
   if (type === 'tv') {
     return (
       <TvRequestModal
         onComplete={onComplete}
         onCancel={onCancel}
         visible={show}
-        request={data}
         tmdbId={tmdbId}
         onUpdating={onUpdating}
       />
@@ -47,7 +41,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
       onComplete={onComplete}
       onCancel={onCancel}
       visible={show}
-      request={data}
       tmdbId={tmdbId}
       onUpdating={onUpdating}
     />

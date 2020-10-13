@@ -108,7 +108,9 @@ requestRoutes.post(
 
         const request = new MediaRequest({
           type: MediaType.TV,
-          media,
+          media: {
+            id: media.id,
+          } as Media,
           requestedBy: req.user,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
           status: req.user?.hasPermission(Permission.AUTO_APPROVE)

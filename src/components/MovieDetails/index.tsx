@@ -20,6 +20,7 @@ import LoadingSpinner from '../Common/LoadingSpinner';
 import { useUser, Permission } from '../../hooks/useUser';
 import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
+import Badge from '../Common/Badge';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -98,7 +99,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         tmdbId={data.id}
         show={showRequestModal}
         type="movie"
-        requestId={data.mediaInfo?.requests?.[0]?.id}
         onComplete={() => {
           revalidate();
           setShowRequestModal(false);
@@ -114,10 +114,21 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           />
         </div>
         <div className="text-white flex flex-col mr-4 mt-4 md:mt-0 text-center md:text-left">
-          <span className="md:text-2xl md:leading-none">
-            {data.releaseDate.slice(0, 4)}
-          </span>
-          <h1 className="text-2xl md:text-4xl">{data.title}</h1>
+          <div className="mb-2 md:mb-0">
+            {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
+              <Badge badgeType="success">Available</Badge>
+            )}
+            {data.mediaInfo?.status === MediaStatus.PROCESSING && (
+              <Badge badgeType="danger">Unavailable</Badge>
+            )}
+            {data.mediaInfo?.status === MediaStatus.PENDING && (
+              <Badge badgeType="warning">Pending</Badge>
+            )}
+          </div>
+          <h1 className="text-2xl md:text-4xl">
+            {data.title}{' '}
+            <span className="text-2xl">({data.releaseDate.slice(0, 4)})</span>
+          </h1>
           <span className="text-xs md:text-base mt-1 md:mt-0">
             {(data.runtime ?? 0) > 0 && (
               <>

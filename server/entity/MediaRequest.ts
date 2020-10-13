@@ -27,7 +27,9 @@ export class MediaRequest {
   @Column({ type: 'integer' })
   public status: MediaRequestStatus;
 
-  @ManyToOne(() => Media, (media) => media.requests, { eager: true })
+  @ManyToOne(() => Media, (media) => media.requests, {
+    eager: true,
+  })
   public media: Media;
 
   @ManyToOne(() => User, (user) => user.requests, { eager: true })

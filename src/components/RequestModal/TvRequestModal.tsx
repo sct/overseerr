@@ -7,8 +7,13 @@ import { MediaRequest } from '../../../server/entity/MediaRequest';
 import useSWR from 'swr';
 import { useToasts } from 'react-toast-notifications';
 import axios from 'axios';
-import type { MediaStatus } from '../../../server/constants/media';
+import {
+  MediaStatus,
+  MediaRequestStatus,
+} from '../../../server/constants/media';
 import { TvDetails, SeasonWithEpisodes } from '../../../server/models/Tv';
+import type SeasonRequest from '../../../server/entity/SeasonRequest';
+import Badge from '../Common/Badge';
 
 const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',
@@ -71,11 +76,24 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     }
   };
 
+  const getAllRequestedSeasons = (): number[] =>
+    (data?.mediaInfo?.requests ?? []).reduce((requestedSeasons, request) => {
+      return [
+        ...requestedSeasons,
+        ...request.seasons.map((sr) => sr.seasonNumber),
+      ];
+    }, [] as number[]);
+
   const isSelectedSeason = (seasonNumber: number): boolean => {
     return selectedSeasons.includes(seasonNumber);
   };
 
   const toggleSeason = (seasonNumber: number): void => {
+    // If this season already has a pending request, don't allow it to be toggled
+    if (getAllRequestedSeasons().includes(seasonNumber)) {
+      return;
+    }
+
     if (selectedSeasons.includes(seasonNumber)) {
       setSelectedSeasons((seasons) =>
         seasons.filter((sn) => sn !== seasonNumber)
@@ -90,11 +108,18 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       data &&
       selectedSeasons.length >= 0 &&
       selectedSeasons.length <
-        data?.seasons.filter((season) => season.seasonNumber !== 0).length
+        data?.seasons
+          .filter((season) => season.seasonNumber !== 0)
+          .filter(
+            (season) => !getAllRequestedSeasons().includes(season.seasonNumber)
+          ).length
     ) {
       setSelectedSeasons(
         data.seasons
           .filter((season) => season.seasonNumber !== 0)
+          .filter(
+            (season) => !getAllRequestedSeasons().includes(season.seasonNumber)
+          )
           .map((season) => season.seasonNumber)
       );
     } else {
@@ -108,13 +133,34 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     }
     return (
       selectedSeasons.length ===
-      data.seasons.filter((season) => season.seasonNumber !== 0).length
+      data.seasons
+        .filter((season) => season.seasonNumber !== 0)
+        .filter(
+          (season) => !getAllRequestedSeasons().includes(season.seasonNumber)
+        ).length
     );
   };
 
   const text = hasPermission(Permission.MANAGE_REQUESTS)
     ? intl.formatMessage(messages.requestadmin)
     : undefined;
+
+  const getSeasonRequest = (
+    seasonNumber: number
+  ): SeasonRequest | undefined => {
+    let seasonRequest: SeasonRequest | undefined;
+    if (data?.mediaInfo && (data.mediaInfo.requests || []).length > 0) {
+      data.mediaInfo.requests.forEach((request) => {
+        if (!seasonRequest) {
+          seasonRequest = request.seasons.find(
+            (season) => season.seasonNumber === seasonNumber
+          );
+        }
+      });
+    }
+
+    return seasonRequest;
+  };
 
   return (
     <Modal
@@ -196,54 +242,76 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                 <tbody className="bg-cool-gray-600 divide-y">
                   {data?.seasons
                     .filter((season) => season.seasonNumber !== 0)
-                    .map((season) => (
-                      <tr key={`season-${season.id}`}>
-                        <td className="px-4 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-100">
-                          <span
-                            role="checkbox"
-                            tabIndex={0}
-                            aria-checked={isSelectedSeason(season.seasonNumber)}
-                            onClick={() => toggleSeason(season.seasonNumber)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === 'Space') {
-                                toggleSeason(season.seasonNumber);
+                    .map((season) => {
+                      const seasonRequest = getSeasonRequest(
+                        season.seasonNumber
+                      );
+                      return (
+                        <tr key={`season-${season.id}`}>
+                          <td className="px-4 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-100">
+                            <span
+                              role="checkbox"
+                              tabIndex={0}
+                              aria-checked={
+                                !!seasonRequest ||
+                                isSelectedSeason(season.seasonNumber)
                               }
-                            }}
-                            className="group relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none"
-                          >
-                            <span
-                              aria-hidden="true"
-                              className={`${
-                                isSelectedSeason(season.seasonNumber)
-                                  ? 'bg-indigo-500'
-                                  : 'bg-gray-800'
-                              } absolute h-4 w-9 mx-auto rounded-full transition-colors ease-in-out duration-200`}
-                            ></span>
-                            <span
-                              aria-hidden="true"
-                              className={`${
-                                isSelectedSeason(season.seasonNumber)
-                                  ? 'translate-x-5'
-                                  : 'translate-x-0'
-                              } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow transform group-focus:shadow-outline group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
-                            ></span>
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-100">
-                          {season.seasonNumber === 0
-                            ? 'Extras'
-                            : `Season ${season.seasonNumber}`}
-                        </td>
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-200">
-                          {season.episodeCount}
-                        </td>
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-200">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-400 text-green-800">
-                            Available
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                              onClick={() => toggleSeason(season.seasonNumber)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === 'Space') {
+                                  toggleSeason(season.seasonNumber);
+                                }
+                              }}
+                              className={`group relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none ${
+                                seasonRequest ? 'opacity-50' : ''
+                              }`}
+                            >
+                              <span
+                                aria-hidden="true"
+                                className={`${
+                                  !!seasonRequest ||
+                                  isSelectedSeason(season.seasonNumber)
+                                    ? 'bg-indigo-500'
+                                    : 'bg-gray-800'
+                                } absolute h-4 w-9 mx-auto rounded-full transition-colors ease-in-out duration-200`}
+                              ></span>
+                              <span
+                                aria-hidden="true"
+                                className={`${
+                                  !!seasonRequest ||
+                                  isSelectedSeason(season.seasonNumber)
+                                    ? 'translate-x-5'
+                                    : 'translate-x-0'
+                                } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow transform group-focus:shadow-outline group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
+                              ></span>
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-100">
+                            {season.seasonNumber === 0
+                              ? 'Extras'
+                              : `Season ${season.seasonNumber}`}
+                          </td>
+                          <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-200">
+                            {season.episodeCount}
+                          </td>
+                          <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-200">
+                            {!seasonRequest && <Badge>Not Requested</Badge>}
+                            {seasonRequest?.status ===
+                              MediaRequestStatus.PENDING && (
+                              <Badge badgeType="warning">Pending</Badge>
+                            )}
+                            {seasonRequest?.status ===
+                              MediaRequestStatus.APPROVED && (
+                              <Badge badgeType="danger">Unavailable</Badge>
+                            )}
+                            {seasonRequest?.status ===
+                              MediaRequestStatus.AVAILABLE && (
+                              <Badge badgeType="success">Available</Badge>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
             </div>

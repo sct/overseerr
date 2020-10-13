@@ -14,6 +14,7 @@ import { useUser, Permission } from '../../hooks/useUser';
 import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
 import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
+import Badge from '../Common/Badge';
 
 const messages = defineMessages({
   userrating: 'User Rating',
@@ -88,7 +89,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         tmdbId={data.id}
         show={showRequestModal}
         type="tv"
-        requestId={data.mediaInfo?.requests?.[0]?.id}
         onComplete={() => {
           revalidate();
           setShowRequestModal(false);
@@ -104,17 +104,31 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           />
         </div>
         <div className="text-white flex flex-col mr-4 mt-4 md:mt-0 text-center md:text-left">
-          <span className="md:text-2xl md:leading-none">
-            {data.firstAirDate.slice(0, 4)}
-          </span>
-          <h1 className="text-2xl md:text-4xl">{data.name}</h1>
+          <div className="mb-2 md:mb-0">
+            {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
+              <Badge badgeType="success">Available</Badge>
+            )}
+            {data.mediaInfo?.status === MediaStatus.PARTIALLY_AVAILABLE && (
+              <Badge badgeType="success">Partially Available</Badge>
+            )}
+            {data.mediaInfo?.status === MediaStatus.PROCESSING && (
+              <Badge badgeType="danger">Unavailable</Badge>
+            )}
+            {data.mediaInfo?.status === MediaStatus.PENDING && (
+              <Badge badgeType="warning">Pending</Badge>
+            )}
+          </div>
+          <h1 className="text-2xl md:text-4xl">
+            {data.name}{' '}
+            <span className="text-2xl">({data.firstAirDate.slice(0, 4)})</span>
+          </h1>
           <span className="text-xs md:text-base mt-1 md:mt-0">
             {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
         <div className="flex-1 flex justify-end mt-4 md:mt-0">
           {(!data.mediaInfo ||
-            data.mediaInfo.status === MediaStatus.UNKNOWN) && (
+            data.mediaInfo.status !== MediaStatus.AVAILABLE) && (
             <Button
               buttonType="primary"
               onClick={() => setShowRequestModal(true)}
@@ -134,63 +148,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 />
               </svg>
               <FormattedMessage {...messages.request} />
-            </Button>
-          )}
-          {data.mediaInfo?.status === MediaStatus.PENDING && (
-            <Button buttonType="warning">
-              <svg
-                className="w-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-              <FormattedMessage {...messages.pending} />
-            </Button>
-          )}
-          {data.mediaInfo?.status === MediaStatus.PROCESSING && (
-            <Button buttonType="danger">
-              <svg
-                className="w-5 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <FormattedMessage {...messages.unavailable} />
-            </Button>
-          )}
-          {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
-            <Button buttonType="success">
-              <svg
-                className="w-5 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              <FormattedMessage {...messages.available} />
             </Button>
           )}
           <Button buttonType="danger" className="ml-2">

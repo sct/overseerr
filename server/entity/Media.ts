@@ -45,6 +45,7 @@ class Media {
     try {
       const media = await mediaRepository.findOne({
         where: { tmdbId: id },
+        relations: ['requests'],
       });
 
       return media;
@@ -75,7 +76,7 @@ class Media {
   @Column({ type: 'int', default: MediaStatus.UNKNOWN })
   public status: MediaStatus;
 
-  @OneToMany(() => MediaRequest, (request) => request.media)
+  @OneToMany(() => MediaRequest, (request) => request.media, { cascade: true })
   public requests: MediaRequest[];
 
   @CreateDateColumn()
