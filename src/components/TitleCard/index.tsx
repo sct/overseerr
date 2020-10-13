@@ -48,7 +48,6 @@ const TitleCard: React.FC<TitleCardProps> = ({
         tmdbId={id}
         show={showRequestModal}
         type={mediaType === 'movie' ? 'movie' : 'tv'}
-        requestId={requestId}
         onComplete={(newStatus) => {
           setCurrentStatus(newStatus);
           setShowRequestModal(false);
