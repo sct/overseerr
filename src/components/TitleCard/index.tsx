@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { MediaType } from '../../../server/models/Search';
 import Available from '../../assets/available.svg';
 import Requested from '../../assets/requested.svg';
@@ -42,18 +42,27 @@ const TitleCard: React.FC<TitleCardProps> = ({
     year = year.slice(0, 4);
   }
 
+  const requestComplete = useCallback((newStatus: MediaStatus) => {
+    setCurrentStatus(newStatus);
+    setShowRequestModal(false);
+  }, []);
+
+  const requestUpdating = useCallback(
+    (status: boolean) => setIsUpdating(status),
+    []
+  );
+
+  const closeModal = useCallback(() => setShowRequestModal(false), []);
+
   return (
     <div className="w-36 sm:w-36 md:w-44">
       <RequestModal
         tmdbId={id}
         show={showRequestModal}
         type={mediaType === 'movie' ? 'movie' : 'tv'}
-        onComplete={(newStatus) => {
-          setCurrentStatus(newStatus);
-          setShowRequestModal(false);
-        }}
-        onUpdating={(status) => setIsUpdating(status)}
-        onCancel={() => setShowRequestModal(false)}
+        onComplete={requestComplete}
+        onUpdating={requestUpdating}
+        onCancel={closeModal}
       />
       <div
         className="titleCard outline-none cursor-default"

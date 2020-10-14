@@ -14,10 +14,10 @@ const Badge: React.FC<BadgeProps> = ({ badgeType = 'default', children }) => {
       badgeStyle.push('bg-red-600 text-red-100');
       break;
     case 'warning':
-      badgeStyle.push('bg-orange-400 text-orange-100');
+      badgeStyle.push('bg-orange-500 text-orange-100');
       break;
     case 'success':
-      badgeStyle.push('bg-green-500 text-green-100');
+      badgeStyle.push('bg-green-400 text-green-100');
       break;
     default:
       badgeStyle.push('bg-indigo-500 text-indigo-100');

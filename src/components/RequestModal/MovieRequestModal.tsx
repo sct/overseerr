@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Modal from '../Common/Modal';
 import { useUser } from '../../hooks/useUser';
 import { Permission } from '../../../server/lib/permissions';
@@ -8,7 +8,11 @@ import useSWR from 'swr';
 import { MovieDetails } from '../../../server/models/Movie';
 import { useToasts } from 'react-toast-notifications';
 import axios from 'axios';
-import type { MediaStatus } from '../../../server/constants/media';
+import {
+  MediaStatus,
+  MediaRequestStatus,
+} from '../../../server/constants/media';
+import DownloadIcon from '../../assets/download.svg';
 
 const messages = defineMessages({
   requestadmin:
@@ -17,29 +21,28 @@ const messages = defineMessages({
     'This will remove your request. Are you sure you want to continue?',
 });
 
-interface RequestModalProps {
-  request?: MediaRequest;
+interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   tmdbId: number;
-  visible?: boolean;
   onCancel?: () => void;
   onComplete?: (newStatus: MediaStatus) => void;
   onUpdating?: (isUpdating: boolean) => void;
 }
 
 const MovieRequestModal: React.FC<RequestModalProps> = ({
-  visible,
   onCancel,
   onComplete,
-  request,
   tmdbId,
   onUpdating,
+  ...props
 }) => {
   const { addToast } = useToasts();
-  const { data, error } = useSWR<MovieDetails>(`/api/v1/movie/${tmdbId}`);
+  const { data, error } = useSWR<MovieDetails>(`/api/v1/movie/${tmdbId}`, {
+    revalidateOnMount: true,
+  });
   const intl = useIntl();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
 
-  const sendRequest = async () => {
+  const sendRequest = useCallback(async () => {
     if (onUpdating) {
       onUpdating(true);
     }
@@ -62,59 +65,76 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         onUpdating(false);
       }
     }
+  }, [data, onComplete, onUpdating, addToast]);
+
+  const activeRequest = data?.mediaInfo?.requests?.[0];
+
+  console.log(activeRequest);
+
+  const cancelRequest = async () => {
+    if (onUpdating) {
+      onUpdating(true);
+    }
+    const response = await axios.delete<MediaRequest>(
+      `/api/v1/request/${activeRequest?.id}`
+    );
+
+    if (response.data) {
+      if (onComplete) {
+        onComplete(MediaStatus.UNKNOWN);
+      }
+      addToast(
+        <span>
+          <strong>{data?.title}</strong> request cancelled!
+        </span>,
+        { appearance: 'success', autoDismiss: true }
+      );
+      if (onUpdating) {
+        onUpdating(false);
+      }
+    }
   };
 
-  let text = hasPermission(Permission.MANAGE_REQUESTS)
+  const isOwner = activeRequest
+    ? activeRequest.requestedBy.id === user?.id ||
+      hasPermission(Permission.MANAGE_REQUESTS)
+    : false;
+
+  const text = hasPermission(Permission.MANAGE_REQUESTS)
     ? intl.formatMessage(messages.requestadmin)
     : undefined;
 
-  if (request) {
-    text = intl.formatMessage(messages.cancelrequest);
+  if (activeRequest?.status === MediaRequestStatus.PENDING) {
+    return (
+      <Modal
+        loading={!data && !error}
+        backgroundClickable
+        onCancel={onCancel}
+        onOk={isOwner ? () => cancelRequest() : undefined}
+        title={`Pending request for ${data?.title}`}
+        okText={'Cancel Request'}
+        okButtonType={'danger'}
+        cancelText="Close"
+        iconSvg={<DownloadIcon className="w-6 h-6" />}
+        {...props}
+      >
+        There is currently a pending request from{' '}
+        <strong>{activeRequest.requestedBy.username}</strong>.
+      </Modal>
+    );
   }
 
   return (
     <Modal
-      visible={visible}
       loading={!data && !error}
       backgroundClickable
       onCancel={onCancel}
-      onOk={() => sendRequest()}
-      title={!request ? `Request ${data?.title}` : 'Cancel Request'}
-      okText={!request ? 'Request' : 'Cancel Request'}
-      okButtonType={!!request ? 'danger' : 'primary'}
-      iconSvg={
-        !request ? (
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-        ) : (
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-        )
-      }
+      onOk={sendRequest}
+      title={`Request ${data?.title}`}
+      okText={'Request'}
+      okButtonType={'primary'}
+      iconSvg={<DownloadIcon className="w-6 h-6" />}
+      {...props}
     >
       {text}
     </Modal>

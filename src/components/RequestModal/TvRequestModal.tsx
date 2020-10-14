@@ -21,27 +21,22 @@ const messages = defineMessages({
     'This will remove your request. Are you sure you want to continue?',
 });
 
-interface RequestModalProps {
-  request?: MediaRequest;
+interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   tmdbId: number;
-  visible?: boolean;
   onCancel?: () => void;
   onComplete?: (newStatus: MediaStatus) => void;
   onUpdating?: (isUpdating: boolean) => void;
 }
 
 const TvRequestModal: React.FC<RequestModalProps> = ({
-  visible,
   onCancel,
   onComplete,
-  request,
   tmdbId,
   onUpdating,
+  ...props
 }) => {
   const { addToast } = useToasts();
-  const { data, error } = useSWR<TvDetails>(
-    visible ? `/api/v1/tv/${tmdbId}` : null
-  );
+  const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${tmdbId}`);
   const [selectedSeasons, setSelectedSeasons] = useState<number[]>([]);
   const intl = useIntl();
   const { hasPermission } = useUser();
@@ -164,7 +159,6 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
 
   return (
     <Modal
-      visible={visible}
       loading={!data && !error}
       backgroundClickable
       onCancel={onCancel}
@@ -193,6 +187,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           />
         </svg>
       }
+      {...props}
     >
       <div className="flex flex-col">
         <div className="-mx-4 sm:mx-0 overflow-auto max-h-96">

@@ -38,6 +38,7 @@ const messages = defineMessages({
   available: 'Available',
   unavailable: 'Unavailable',
   request: 'Request',
+  viewrequest: 'View Request',
   pending: 'Pending',
   overviewunavailable: 'Overview unavailable',
 });
@@ -51,13 +52,6 @@ interface SearchResult {
   totalResults: number;
   totalPages: number;
   results: MovieResult[];
-}
-
-enum MediaRequestStatus {
-  PENDING = 1,
-  APPROVED,
-  DECLINED,
-  AVAILABLE,
 }
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
@@ -86,6 +80,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   if (!data) {
     return <div>Broken?</div>;
   }
+
+  console.log(MediaStatus);
+  console.log(data);
+
+  const activeRequest = data?.mediaInfo?.requests?.[0];
 
   return (
     <div
@@ -144,102 +143,46 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         </div>
         <div className="flex-1 flex justify-end mt-4 md:mt-0">
           {(!data.mediaInfo ||
-            data.mediaInfo?.status === MediaStatus.UNKNOWN) && (
+            data.mediaInfo?.status === MediaStatus.UNKNOWN ||
+            activeRequest) && (
             <Button
               buttonType="primary"
               onClick={() => setShowRequestModal(true)}
             >
-              <svg
-                className="w-4 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              <FormattedMessage {...messages.request} />
-            </Button>
-          )}
-          {data.mediaInfo?.status === MediaStatus.PENDING && (
-            <Button buttonType="warning">
-              <svg
-                className="w-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-              <FormattedMessage {...messages.pending} />
-            </Button>
-          )}
-          {data.mediaInfo?.status === MediaStatus.PROCESSING && (
-            <Button buttonType="danger">
-              <svg
-                className="w-5 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <FormattedMessage {...messages.unavailable} />
-            </Button>
-          )}
-          {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
-            <Button buttonType="success">
-              <svg
-                className="w-5 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              <FormattedMessage {...messages.available} />
-            </Button>
-          )}
-          <Button buttonType="danger" className="ml-2">
-            <svg
-              className="w-5"
-              style={{ height: 20 }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              {activeRequest ? (
+                <svg
+                  className="w-4 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="w-4 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+              )}
+              <FormattedMessage
+                {...(activeRequest ? messages.viewrequest : messages.request)}
               />
-            </svg>
-          </Button>
+            </Button>
+          )}
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button buttonType="default" className="ml-2">
               <svg
