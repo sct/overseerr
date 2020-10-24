@@ -1381,12 +1381,8 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: Succesfully removed request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MediaRequest'
   /request/{requestId}/{status}:
     get:
       summary: Update a requests status

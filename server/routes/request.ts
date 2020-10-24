@@ -7,6 +7,7 @@ import TheMovieDb from '../api/themoviedb';
 import Media from '../entity/Media';
 import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
 import SeasonRequest from '../entity/SeasonRequest';
+import logger from '../logger';
 
 const requestRoutes = Router();
 
@@ -63,6 +64,11 @@ requestRoutes.post(
           mediaType: req.body.mediaType,
         });
         await mediaRepository.save(media);
+      } else {
+        if (media.status === MediaStatus.UNKNOWN) {
+          media.status = MediaStatus.PENDING;
+          await mediaRepository.save(media);
+        }
       }
 
       if (req.body.mediaType === 'movie') {
@@ -164,7 +170,8 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
 
     if (
       !req.user?.hasPermission(Permission.MANAGE_REQUESTS) &&
-      (request.requestedBy.id !== req.user?.id || request.status > 0)
+      request.requestedBy.id !== req.user?.id &&
+      request.status !== 1
     ) {
       return next({
         status: 401,
@@ -172,10 +179,11 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
       });
     }
 
-    await requestRepository.delete(request.id);
+    await requestRepository.remove(request);
 
-    return res.status(200).json(request);
+    return res.status(204).send();
   } catch (e) {
+    logger.error(e.message);
     next({ status: 404, message: 'Request not found' });
   }
 });

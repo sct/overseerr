@@ -9,6 +9,7 @@ import {
   AfterInsert,
   getRepository,
   OneToMany,
+  AfterRemove,
 } from 'typeorm';
 import { User } from './User';
 import Media from './Media';
@@ -63,6 +64,15 @@ export class MediaRequest {
     const mediaRepository = getRepository(Media);
     if (this.status === MediaRequestStatus.APPROVED) {
       this.media.status = MediaStatus.PROCESSING;
+      mediaRepository.save(this.media);
+    }
+  }
+
+  @AfterRemove()
+  private async handleRemoveParentUpdate() {
+    const mediaRepository = getRepository(Media);
+    if (!this.media.requests || this.media.requests.length === 0) {
+      this.media.status = MediaStatus.UNKNOWN;
       mediaRepository.save(this.media);
     }
   }

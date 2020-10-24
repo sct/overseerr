@@ -176,7 +176,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     }
                     as={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}
                   >
-                    <a className="cursor-pointer flex w-full h-7 text-center text-white bg-indigo-500 rounded-sm mr-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+                    <a className="cursor-pointer flex w-full h-7 text-center text-white bg-indigo-500 rounded-sm hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
                       <svg
                         className="w-4 mx-auto"
                         fill="none"
@@ -202,7 +202,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   {!currentStatus && (
                     <button
                       onClick={() => setShowRequestModal(true)}
-                      className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-1 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                      className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-2 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                     >
                       <svg
                         className="w-4 mx-auto"
@@ -221,7 +221,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     </button>
                   )}
                   {currentStatus === MediaStatus.PENDING && (
-                    <button className="w-full h-7 text-center text-white bg-orange-400 hover:bg-orange-300 rounded-sm ml-1 focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition ease-in-out duration-150">
+                    <button className="w-full h-7 text-center text-white bg-orange-400 hover:bg-orange-300 rounded-sm ml-2 focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition ease-in-out duration-150">
                       <svg
                         className="w-4 mx-auto"
                         fill="none"
@@ -239,7 +239,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     </button>
                   )}
                   {currentStatus === MediaStatus.PROCESSING && (
-                    <button className="w-full h-7 text-center text-white bg-red-500 rounded-sm ml-1">
+                    <button className="w-full h-7 text-center text-white bg-red-500 rounded-sm ml-2">
                       <svg
                         className="w-4 mx-auto"
                         fill="none"
@@ -257,7 +257,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     </button>
                   )}
                   {currentStatus === MediaStatus.AVAILABLE && (
-                    <button className="w-full h-7 text-center text-white bg-green-400 rounded-sm ml-1">
+                    <button className="w-full h-7 text-center text-white bg-green-400 rounded-sm ml-2">
                       <svg
                         className="w-4 mx-auto"
                         fill="none"

@@ -69,8 +69,6 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
 
   const activeRequest = data?.mediaInfo?.requests?.[0];
 
-  console.log(activeRequest);
-
   const cancelRequest = async () => {
     if (onUpdating) {
       onUpdating(true);
@@ -79,7 +77,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       `/api/v1/request/${activeRequest?.id}`
     );
 
-    if (response.data) {
+    if (response.status === 204) {
       if (onComplete) {
         onComplete(MediaStatus.UNKNOWN);
       }
