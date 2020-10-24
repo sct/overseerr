@@ -32,3 +32,7 @@ body {
 .toast {
   width: 360px;
 }
+
+.error-message {
+  @apply flex items-center justify-center text-center text-gray-300 relative top-0 left-0 bottom-0 right-0 h-screen flex-col;
+}
