@@ -1366,6 +1366,13 @@
   dependencies:
     tslib "^2.0.1"
 
+"@formatjs/ecma402-abstract@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@formatjs/ecma402-abstract/-/ecma402-abstract-1.2.6.tgz#8929525dcb49af31f348fcb4789263743872b57f"
+  integrity sha512-5/wUWuOFEaZeHhDvc+xgkFZxjYcij9/CjyUHngTfWhx+NwYqo8/xusVYv9SnTYDHAahek3OSCP93tzcv4M+7Xw==
+  dependencies:
+    tslib "^2.0.1"
+
 "@formatjs/intl-displaynames@^3.3.11":
   version "3.3.11"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-displaynames/-/intl-displaynames-3.3.11.tgz#433fc8cdc1c5d655b1e016122d33356ef621fa0b"
@@ -1411,12 +1418,13 @@
     intl-messageformat-parser "^6.0.9"
     tslib "^2.0.1"
 
-"@formatjs/ts-transformer@^2.10.0", "@formatjs/ts-transformer@^2.6.0":
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/@formatjs/ts-transformer/-/ts-transformer-2.10.0.tgz#06f292b6cbcea661e2cecf7b8945ac59f21b7c93"
-  integrity sha512-ff+gIzsbd5WEm6mLn1x0A1gD4oJomst8pF7NEjrI0Egn+82v8PEEZeYrsGjUzRt3jyOaRguQUYJGHiw+5d84dQ==
+"@formatjs/ts-transformer@^2.10.0", "@formatjs/ts-transformer@^2.11.4", "@formatjs/ts-transformer@^2.6.0":
+  version "2.11.4"
+  resolved "https://registry.yarnpkg.com/@formatjs/ts-transformer/-/ts-transformer-2.11.4.tgz#ff0a8d0ff58248bbfdd723d7a4ca068c4cdb6c7c"
+  integrity sha512-pYFEh7o3JrlcYIVzplqgW/8krvNf5VW38i6UD4wAbj6x4IZLTOV0P3XuICd8su+JOrdGaf/+WxQ521kIlCbvxQ==
   dependencies:
-    intl-messageformat-parser "^6.0.6"
+    intl-messageformat-parser "^6.0.11"
+    tslib "^2.0.1"
     typescript "^4.0"
 
 "@fullhuman/postcss-purgecss@^2.1.2":
@@ -1760,7 +1768,7 @@
     "@types/react" "*"
     hoist-non-react-statics "^3.3.0"
 
-"@types/json-schema@*", "@types/json-schema@^7.0.5":
+"@types/json-schema@*", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.6":
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
@@ -2255,6 +2263,16 @@ ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.3, ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+ajv@^6.12.5:
+  version "6.12.6"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
+  integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
+
 ally.js@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/ally.js/-/ally.js-1.4.1.tgz#9fb7e6ba58efac4ee9131cb29aa9ee3b540bcf1e"
@@ -2644,19 +2662,20 @@ babel-plugin-react-intl@^7.0.0:
     intl-messageformat-parser "^5.3.7"
     schema-utils "^2.6.6"
 
-babel-plugin-react-intl@^8.2.2:
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/babel-plugin-react-intl/-/babel-plugin-react-intl-8.2.2.tgz#fcaab15a4f481f64405795a915cce7fab520dc6d"
-  integrity sha512-lFq03ZdEX8ggSCKAxVCJKwFE+m9VhpGEK/Q0P7lAPfdYUTNlT5abirDOV3kolrZ9keqlYY00B+4hPUQoHpPVrw==
+babel-plugin-react-intl@^8.2.8:
+  version "8.2.8"
+  resolved "https://registry.yarnpkg.com/babel-plugin-react-intl/-/babel-plugin-react-intl-8.2.8.tgz#c7023a1745e7b4dadd577daa3b5e36ef492ff6f0"
+  integrity sha512-TLY+9iGmlGH5cdYA+i+XolrnwZIyTnNRz+BRDtReOdrvQbHkT0tc4ck2mhpEVeJlOE2TO4PnUPk+JmxdSiMP3w==
   dependencies:
     "@babel/core" "^7.9.0"
     "@babel/helper-plugin-utils" "^7.8.3"
     "@babel/types" "^7.9.5"
-    "@formatjs/ts-transformer" "^2.10.0"
+    "@formatjs/ts-transformer" "^2.11.4"
     "@types/babel__core" "^7.1.7"
     "@types/schema-utils" "^2.4.0"
-    intl-messageformat-parser "^6.0.6"
-    schema-utils "^2.6.6"
+    intl-messageformat-parser "^6.0.11"
+    schema-utils "^3.0.0"
+    tslib "^2.0.1"
 
 babel-plugin-syntax-jsx@6.18.0, babel-plugin-syntax-jsx@^6.18.0:
   version "6.18.0"
@@ -5779,12 +5798,12 @@ intl-messageformat-parser@^5.3.7:
   dependencies:
     "@formatjs/intl-numberformat" "^5.5.2"
 
-intl-messageformat-parser@^6.0.6, intl-messageformat-parser@^6.0.9:
-  version "6.0.9"
-  resolved "https://registry.yarnpkg.com/intl-messageformat-parser/-/intl-messageformat-parser-6.0.9.tgz#323b3631afc8202276243134507c1ee11d206c80"
-  integrity sha512-cWYP9l/3/zgs90wZf8lBPWDxBwJSa86j0QFXVTsvuFUsS0pdPweZhvLx5KV78vXQgN3WOQYzdS6/R87A8mZcVw==
+intl-messageformat-parser@^6.0.11, intl-messageformat-parser@^6.0.6, intl-messageformat-parser@^6.0.9:
+  version "6.0.11"
+  resolved "https://registry.yarnpkg.com/intl-messageformat-parser/-/intl-messageformat-parser-6.0.11.tgz#b5769990f9eb8c015ef726cf4d782a9445544993"
+  integrity sha512-0avgk5LN8KGpH6CC8OsDAttzkTtR/6Oy50dYaUpbulnNUDrSxPFMc79IJRktN8PT+HwOzhk26vvfJHXyPdf6ZA==
   dependencies:
-    "@formatjs/ecma402-abstract" "^1.2.4"
+    "@formatjs/ecma402-abstract" "^1.2.6"
     tslib "^2.0.1"
 
 intl-messageformat@^9.3.10:
@@ -8973,7 +8992,16 @@ scheduler@^0.19.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-schema-utils@*, schema-utils@2.7.1, schema-utils@^2.6.6, schema-utils@^2.7.1:
+schema-utils@*, schema-utils@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-3.0.0.tgz#67502f6aa2b66a2d4032b4279a2944978a0913ef"
+  integrity sha512-6D82/xSzO094ajanoOSbe4YvXWMfn2A//8Y1+MUqFAJul5Bs+yn36xbK9OtNDcRVSBJ9jjeoXftM6CfztsjOAA==
+  dependencies:
+    "@types/json-schema" "^7.0.6"
+    ajv "^6.12.5"
+    ajv-keywords "^3.5.2"
+
+schema-utils@2.7.1, schema-utils@^2.6.6, schema-utils@^2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-2.7.1.tgz#1ca4f32d1b24c590c203b8e7a50bf0ea4cd394d7"
   integrity sha512-SHiNtMOUGWBQJwzISiVYKu82GiV4QYGePp3odlY1tuKO7gPtphAT5R/py0fA6xtbgLL/RvtJZnU9b8s0F1q0Xg==
