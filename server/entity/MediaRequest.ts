@@ -62,9 +62,55 @@ export class MediaRequest {
   @AfterInsert()
   private async updateParentStatus() {
     const mediaRepository = getRepository(Media);
+    const media = await mediaRepository.findOne({
+      where: { id: this.media.id },
+      relations: ['requests'],
+    });
+    if (!media) {
+      logger.error('No parent media!', { label: 'Media Request' });
+      return;
+    }
+    const seasonRequestRepository = getRepository(SeasonRequest);
     if (this.status === MediaRequestStatus.APPROVED) {
       this.media.status = MediaStatus.PROCESSING;
       mediaRepository.save(this.media);
+    }
+
+    if (
+      this.media.mediaType === MediaType.MOVIE &&
+      this.status === MediaRequestStatus.DECLINED
+    ) {
+      this.media.status = MediaStatus.UNKNOWN;
+      mediaRepository.save(this.media);
+    }
+
+    /**
+     * If the media type is TV, and we are declining a request,
+     * we must check if its the only pending request and that
+     * there the current media status is just pending (meaning no
+     * other requests have yet to be approved)
+     */
+    if (
+      media.mediaType === MediaType.TV &&
+      this.status === MediaRequestStatus.DECLINED &&
+      media.requests.filter(
+        (request) => request.status === MediaRequestStatus.PENDING
+      ).length === 0 &&
+      media.status === MediaStatus.PENDING
+    ) {
+      media.status = MediaStatus.UNKNOWN;
+      mediaRepository.save(media);
+    }
+
+    // Approve child seasons if parent is approved
+    if (
+      media.mediaType === MediaType.TV &&
+      this.status === MediaRequestStatus.APPROVED
+    ) {
+      this.seasons.forEach((season) => {
+        season.status = MediaRequestStatus.APPROVED;
+        seasonRequestRepository.save(season);
+      });
     }
   }
 

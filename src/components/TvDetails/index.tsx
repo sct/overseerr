@@ -15,6 +15,8 @@ import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
 import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
 import Badge from '../Common/Badge';
+import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import axios from 'axios';
 
 const messages = defineMessages({
   userrating: 'User Rating',
@@ -28,8 +30,13 @@ const messages = defineMessages({
   available: 'Available',
   unavailable: 'Unavailable',
   request: 'Request',
+  requestmore: 'Request More',
   pending: 'Pending',
   overviewunavailable: 'Overview unavailable',
+  approverequests:
+    'Approve {requestCount} {requestCount, plural, one {Request} other {Requests}}',
+  declinerequests:
+    'Decline {requestCount} {requestCount, plural, one {Request} other {Requests}}',
 });
 
 interface TvDetailsProps {
@@ -51,7 +58,7 @@ enum MediaRequestStatus {
 }
 
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
@@ -76,6 +83,24 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   if (!data) {
     return <div>Broken?</div>;
   }
+
+  const activeRequests = data.mediaInfo?.requests?.filter(
+    (request) => request.status === MediaRequestStatus.PENDING
+  );
+
+  const modifyRequests = async (type: 'approve' | 'decline'): Promise<void> => {
+    if (!activeRequests) {
+      return;
+    }
+
+    await Promise.all(
+      activeRequests.map(async (request) => {
+        return axios.get(`/api/v1/request/${request.id}/${type}`);
+      })
+    );
+
+    revalidate();
+  };
 
   return (
     <div
@@ -128,7 +153,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
         <div className="flex-1 flex justify-end mt-4 md:mt-0">
           {(!data.mediaInfo ||
-            data.mediaInfo.status !== MediaStatus.AVAILABLE) && (
+            data.mediaInfo.status === MediaStatus.UNKNOWN) && (
             <Button
               buttonType="primary"
               onClick={() => setShowRequestModal(true)}
@@ -150,6 +175,91 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               <FormattedMessage {...messages.request} />
             </Button>
           )}
+          {data.mediaInfo &&
+            data.mediaInfo.status !== MediaStatus.UNKNOWN &&
+            data.mediaInfo.status !== MediaStatus.AVAILABLE && (
+              <ButtonWithDropdown
+                dropdownIcon={
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                }
+                text={
+                  <>
+                    <svg
+                      className="w-4 mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <FormattedMessage {...messages.requestmore} />
+                  </>
+                }
+                onClick={() => setShowRequestModal(true)}
+              >
+                {hasPermission(Permission.MANAGE_REQUESTS) &&
+                  activeRequests &&
+                  activeRequests.length > 0 && (
+                    <>
+                      <ButtonWithDropdown.Item
+                        onClick={() => modifyRequests('approve')}
+                      >
+                        <svg
+                          className="w-4 mr-1"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <FormattedMessage
+                          {...messages.approverequests}
+                          values={{ requestCount: activeRequests.length }}
+                        />
+                      </ButtonWithDropdown.Item>
+                      <ButtonWithDropdown.Item
+                        onClick={() => modifyRequests('decline')}
+                      >
+                        <svg
+                          className="w-4 mr-1"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <FormattedMessage
+                          {...messages.declinerequests}
+                          values={{ requestCount: activeRequests.length }}
+                        />
+                      </ButtonWithDropdown.Item>
+                    </>
+                  )}
+              </ButtonWithDropdown>
+            )}
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button buttonType="default" className="ml-2">
               <svg
@@ -179,13 +289,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       </div>
       <div className="flex pt-8 text-white flex-col md:flex-row pb-4">
         <div className="flex-1 md:mr-8">
-          {/* {data.mediaInfo?.status === MediaStatus.PENDING &&
-            hasPermission(Permission.MANAGE_REQUESTS) && (
-              <PendingRequest
-                request={data.request}
-                onUpdate={() => revalidate()}
-              />
-            )} */}
           <h2 className="text-xl md:text-2xl">
             <FormattedMessage {...messages.overview} />
           </h2>

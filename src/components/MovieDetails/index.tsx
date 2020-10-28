@@ -18,10 +18,15 @@ import PersonCard from '../PersonCard';
 import { LanguageContext } from '../../context/LanguageContext';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import { useUser, Permission } from '../../hooks/useUser';
-import { MediaStatus } from '../../../server/constants/media';
+import {
+  MediaStatus,
+  MediaRequestStatus,
+} from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
 import Badge from '../Common/Badge';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import axios from 'axios';
+import SlideOver from '../Common/SlideOver';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -61,6 +66,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [showManager, setShowManager] = useState(false);
   const { data, error, revalidate } = useSWR<MovieDetailsType>(
     `/api/v1/movie/${router.query.movieId}?language=${locale}`,
     {
@@ -82,7 +88,19 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     return <div>Broken?</div>;
   }
 
-  const activeRequest = data?.mediaInfo?.requests?.[0];
+  const activeRequest = data?.mediaInfo?.requests?.find(
+    (request) => request.status === MediaRequestStatus.PENDING
+  );
+
+  const modifyRequest = async (type: 'approve' | 'decline') => {
+    const response = await axios.get(
+      `/api/v1/request/${activeRequest?.id}/${type}`
+    );
+
+    if (response) {
+      revalidate();
+    }
+  };
 
   return (
     <div
@@ -102,6 +120,94 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         }}
         onCancel={() => setShowRequestModal(false)}
       />
+      <SlideOver
+        show={showManager}
+        title="Manage Movie"
+        onClose={() => setShowManager(false)}
+        subText={data.title}
+      >
+        <h3 className="text-xl mb-2">Requests</h3>
+        <div className="bg-cool-gray-600 shadow overflow-hidden rounded-md">
+          <ul>
+            {data.mediaInfo?.requests?.map((request) => (
+              <li key={`manage-request-${request.id}`}>
+                <div className="block">
+                  <div className="px-4 py-4 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <div className="mr-6 flex items-center text-sm leading-5 text-gray-300">
+                        <svg
+                          className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        {request.requestedBy.username}
+                      </div>
+                      <div className="ml-2 flex-shrink-0 flex">
+                        <Button buttonSize="sm" buttonType="danger">
+                          <svg
+                            className="w-3 h-3"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="mt-2 sm:flex sm:justify-between">
+                      <div className="sm:flex">
+                        <div className="mr-6 flex items-center text-sm leading-5 text-gray-300">
+                          {request.status === MediaRequestStatus.AVAILABLE && (
+                            <Badge badgeType="success">Available</Badge>
+                          )}
+                          {request.status === MediaRequestStatus.APPROVED && (
+                            <Badge badgeType="success">Approved</Badge>
+                          )}
+                          {request.status === MediaRequestStatus.DECLINED && (
+                            <Badge badgeType="danger">Declined</Badge>
+                          )}
+                          {request.status === MediaRequestStatus.PENDING && (
+                            <Badge badgeType="warning">Pending</Badge>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mt-2 flex items-center text-sm leading-5 text-gray-300 sm:mt-0">
+                        <svg
+                          className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span>
+                          <FormattedDate value={request.createdAt} />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </SlideOver>
       <div className="flex flex-col items-center md:flex-row md:items-end pt-4">
         <div className="mr-4 flex-shrink-0">
           <img
@@ -215,7 +321,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             >
               {hasPermission(Permission.MANAGE_REQUESTS) && (
                 <>
-                  <ButtonWithDropdown.Item>
+                  <ButtonWithDropdown.Item
+                    onClick={() => modifyRequest('approve')}
+                  >
                     <svg
                       className="w-4 mr-1"
                       fill="currentColor"
@@ -230,7 +338,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     </svg>
                     Approve
                   </ButtonWithDropdown.Item>
-                  <ButtonWithDropdown.Item>
+                  <ButtonWithDropdown.Item
+                    onClick={() => modifyRequest('decline')}
+                  >
                     <svg
                       className="w-4 mr-1"
                       fill="currentColor"
@@ -250,7 +360,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             </ButtonWithDropdown>
           )}
           {hasPermission(Permission.MANAGE_REQUESTS) && (
-            <Button buttonType="default" className="ml-2">
+            <Button
+              buttonType="default"
+              className="ml-2"
+              onClick={() => setShowManager(true)}
+            >
               <svg
                 className="w-5"
                 style={{ height: 20 }}
@@ -278,13 +392,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       </div>
       <div className="flex pt-8 text-white flex-col md:flex-row pb-4">
         <div className="flex-1 md:mr-8">
-          {/* {data.mediaInfo?.status === MediaStatus.PENDING &&
-            hasPermission(Permission.MANAGE_REQUESTS) && (
-              <PendingRequest
-                request={data.request}
-                onUpdate={() => revalidate()}
-              />
-            )} */}
           <h2 className="text-xl md:text-2xl">
             <FormattedMessage {...messages.overview} />
           </h2>

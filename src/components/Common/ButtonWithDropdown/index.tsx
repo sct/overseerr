@@ -34,19 +34,17 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const buttonRef = useRef<HTMLSpanElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   useClickOutside(buttonRef, () => setIsOpen(false));
 
   return (
-    <span
-      className="relative z-0 inline-flex shadow-sm rounded-md"
-      ref={buttonRef}
-    >
+    <span className="relative z-0 inline-flex shadow-sm rounded-md">
       <button
         type="button"
         className={`relative inline-flex items-center px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-500 text-sm leading-5 font-medium hover:text-white focus:shadow-outline-indigo active:bg-indigo-700 focus:z-10 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 ${
           children ? 'rounded-l-md' : 'rounded-md'
         }`}
+        ref={buttonRef}
         {...props}
       >
         {text}

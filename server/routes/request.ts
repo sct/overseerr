@@ -222,6 +222,10 @@ requestRoutes.get<{
 
       return res.status(200).json(request);
     } catch (e) {
+      logger.error('Error processing request update', {
+        label: 'Media Request',
+        message: e.message,
+      });
       next({ status: 404, message: 'Request not found' });
     }
   }

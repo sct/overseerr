@@ -82,7 +82,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
       >
         <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0 overflow-hidden shadow-xl">
           <div
-            className={`absolute left-0 top-0 rounded-tl-md rounded-br-md z-50 ${
+            className={`absolute left-0 top-0 rounded-tl-md rounded-br-md z-40 ${
               mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
             }`}
           >
@@ -92,7 +92,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
           </div>
 
           <div
-            className="absolute right-0 top-0 z-50"
+            className="absolute right-0 top-0 z-40"
             style={{
               right: '-1px',
             }}
