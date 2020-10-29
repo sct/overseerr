@@ -9,7 +9,9 @@
     "build": "yarn build:next && yarn build:server",
     "lint": "eslint \"./server/**/*.{ts,tsx}\" \"./src/**/*.{ts,tsx}\"",
     "start": "NODE_ENV=production node dist/index.js",
-    "i18n:extract": "extract-messages -l=en,ja -o src/i18n/locale -d en --flat true './src/**/!(*.test).{ts,tsx}'"
+    "i18n:extract": "extract-messages -l=en,ja -o src/i18n/locale -d en --flat true './src/**/!(*.test).{ts,tsx}'",
+    "migration:generate": "ts-node --project server/tsconfig.json ./node_modules/.bin/typeorm migration:generate",
+    "migration:run": "ts-node --project server/tsconfig.json ./node_modules/.bin/typeorm migration:run"
   },
   "dependencies": {
     "@svgr/webpack": "^5.4.0",

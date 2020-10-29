@@ -25,6 +25,8 @@ jobs:
         run: yarn build
   build_and_push:
     name: Build and push Docker image to Docker Hub
+    needs: test
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: checkout
