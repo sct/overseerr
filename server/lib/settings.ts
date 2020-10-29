@@ -34,7 +34,7 @@ export interface RadarrSettings extends DVRSettings {
 }
 
 export interface SonarrSettings extends DVRSettings {
-  activeAnimeProfile?: string;
+  activeAnimeProfileId?: number;
   activeAnimeDirectory?: string;
   enableSeasonFolders: boolean;
 }

@@ -19,6 +19,7 @@ import TheMovieDb from '../api/themoviedb';
 import RadarrAPI from '../api/radarr';
 import logger from '../logger';
 import SeasonRequest from './SeasonRequest';
+import SonarrAPI from '../api/sonarr';
 
 @Entity()
 export class MediaRequest {
@@ -164,6 +165,65 @@ export class MediaRequest {
       } catch (e) {
         throw new Error(
           `[MediaRequest] Request failed to send to radarr: ${e.message}`
+        );
+      }
+    }
+  }
+
+  @AfterUpdate()
+  @AfterInsert()
+  private async sendToSonarr() {
+    if (
+      this.status === MediaRequestStatus.APPROVED &&
+      this.type === MediaType.TV
+    ) {
+      try {
+        const mediaRepository = getRepository(Media);
+        const settings = getSettings();
+        if (settings.sonarr.length === 0 && !settings.sonarr[0]) {
+          logger.info(
+            'Skipped sonarr request as there is no sonarr configured',
+            { label: 'Media Request' }
+          );
+          return;
+        }
+
+        const media = await mediaRepository.findOne({
+          where: { id: this.media.id },
+          relations: ['requests'],
+        });
+
+        if (!media) {
+          throw new Error('Media data is missing');
+        }
+
+        const tmdb = new TheMovieDb();
+        const sonarrSettings = settings.sonarr[0];
+        const sonarr = new SonarrAPI({
+          apiKey: sonarrSettings.apiKey,
+          url: `${sonarrSettings.useSsl ? 'https' : 'http'}://${
+            sonarrSettings.hostname
+          }:${sonarrSettings.port}/api`,
+        });
+        const series = await tmdb.getTvShow({ tvId: media.tmdbId });
+
+        if (!series.external_ids.tvdb_id) {
+          throw new Error('Series was missing tvdb id');
+        }
+
+        await sonarr.addSeries({
+          profileId: sonarrSettings.activeProfileId,
+          rootFolderPath: sonarrSettings.activeDirectory,
+          title: series.name,
+          tvdbid: series.external_ids.tvdb_id,
+          seasons: this.seasons.map((season) => season.seasonNumber),
+          monitored: true,
+          searchNow: true,
+        });
+        logger.info('Sent request to Sonarr', { label: 'Media Request' });
+      } catch (e) {
+        throw new Error(
+          `[MediaRequest] Request failed to send to sonarr: ${e.message}`
         );
       }
     }
