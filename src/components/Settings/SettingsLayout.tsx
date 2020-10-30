@@ -45,7 +45,7 @@ const SettingsLayout: React.FC = ({ children }) => {
                 regex: /^\/settings(\/main)?$/,
               })}
               {settingsLink({
-                text: 'Plex Settings',
+                text: 'Plex',
                 route: '/settings/plex',
                 regex: /^\/settings\/plex/,
               })}

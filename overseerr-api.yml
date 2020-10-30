@@ -816,6 +816,11 @@ paths:
           schema:
             type: boolean
             example: false
+        - in: query
+          name: start
+          schema:
+            type: boolean
+            example: false
       responses:
         '200':
           description: Status of Plex Sync

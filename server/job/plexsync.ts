@@ -13,6 +13,14 @@ const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);
 const plexRegex = new RegExp(/plex:\/\//);
 
+export interface SyncStatus {
+  running: boolean;
+  progress: number;
+  total: number;
+  currentLibrary: Library;
+  libraries: Library[];
+}
+
 class JobPlexSync {
   private tmdb: TheMovieDb;
   private plexClient: PlexAPI;
@@ -161,7 +169,7 @@ class JobPlexSync {
     }
   }
 
-  public status() {
+  public status(): SyncStatus {
     return {
       running: this.running,
       progress: this.progress,

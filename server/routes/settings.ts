@@ -106,7 +106,7 @@ settingsRoutes.get('/plex/library', async (req, res) => {
 settingsRoutes.get('/plex/sync', (req, res) => {
   if (req.query.cancel) {
     jobPlexSync.cancel();
-  } else {
+  } else if (req.query.start) {
     jobPlexSync.run();
   }
 
