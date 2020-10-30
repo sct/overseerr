@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import type { PlexSettings } from '../../../server/lib/settings';
-import type { SyncStatus } from '../../../server/job/plexsync';
 import useSWR from 'swr';
 import { useFormik } from 'formik';
 import Button from '../Common/Button';
@@ -34,6 +33,20 @@ const messages = defineMessages({
   startscan: 'Start Scan',
   cancelscan: 'Cancel Scan',
 });
+
+interface Library {
+  id: string;
+  name: string;
+  enabled: boolean;
+}
+
+interface SyncStatus {
+  running: boolean;
+  progress: number;
+  total: number;
+  currentLibrary: Library;
+  libraries: Library[];
+}
 
 const SettingsPlex: React.FC = () => {
   const intl = useIntl();

@@ -13,7 +13,7 @@ const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);
 const plexRegex = new RegExp(/plex:\/\//);
 
-export interface SyncStatus {
+interface SyncStatus {
   running: boolean;
   progress: number;
   total: number;
