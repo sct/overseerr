@@ -789,6 +789,8 @@ paths:
             nullable: true
         - in: query
           name: enable
+          explode: false
+          allowReserved: true
           description: Comma separated list of libraries to enable. Any libraries not passed will be disabled!
           schema:
             type: string

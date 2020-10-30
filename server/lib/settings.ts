@@ -8,7 +8,7 @@ export interface Library {
   enabled: boolean;
 }
 
-interface PlexSettings {
+export interface PlexSettings {
   name: string;
   machineId?: string;
   ip: string;
