@@ -3,6 +3,7 @@ import Transition from '../../Transition';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { useUser, Permission } from '../../../hooks/useUser';
 
 const messages = defineMessages({
   dashboard: 'Dashboard',
@@ -21,6 +22,7 @@ interface SidebarLinkProps {
   messagesKey: keyof typeof messages;
   activeRegExp: RegExp;
   as?: string;
+  requiredPermission?: Permission | Permission[];
 }
 
 const SidebarLinks: SidebarLinkProps[] = [
@@ -92,11 +94,13 @@ const SidebarLinks: SidebarLinkProps[] = [
       </svg>
     ),
     activeRegExp: /^\/settings/,
+    requiredPermission: Permission.MANAGE_SETTINGS,
   },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
   const router = useRouter();
+  const { hasPermission } = useUser();
   return (
     <>
       <div className="md:hidden">
@@ -156,7 +160,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                       </span>
                     </div>
                     <nav className="mt-5 px-2 space-y-1">
-                      {SidebarLinks.map((sidebarLink) => {
+                      {SidebarLinks.filter((link) =>
+                        link.requiredPermission
+                          ? hasPermission(link.requiredPermission)
+                          : true
+                      ).map((sidebarLink) => {
                         return (
                           <Link
                             key={`mobile-${sidebarLink.messagesKey}`}
@@ -216,7 +224,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                 </span>
               </div>
               <nav className="mt-5 flex-1 px-2 bg-gray-800 space-y-1">
-                {SidebarLinks.map((sidebarLink) => {
+                {SidebarLinks.filter((link) =>
+                  link.requiredPermission
+                    ? hasPermission(link.requiredPermission)
+                    : true
+                ).map((sidebarLink) => {
                   return (
                     <Link
                       key={`desktop-${sidebarLink.messagesKey}`}
