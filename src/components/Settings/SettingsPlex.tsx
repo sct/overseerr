@@ -19,6 +19,7 @@ const SettingsPlex: React.FC = () => {
       hostname: data?.ip,
       port: data?.port,
     },
+    enableReinitialize: true,
     onSubmit: async (values) => {
       setIsUpdating(true);
       try {
