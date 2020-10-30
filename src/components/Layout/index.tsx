@@ -4,9 +4,11 @@ import UserDropdown from './UserDropdown';
 import Sidebar from './Sidebar';
 import Notifications from './Notifications';
 import LanguagePicker from './LanguagePicker';
+import { useRouter } from 'next/router';
 
 const Layout: React.FC = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="min-h-full h-full flex bg-cool-gray-900">
@@ -49,6 +51,43 @@ const Layout: React.FC = ({ children }) => {
         >
           <div className="pt-2 pb-6 md:py-6">
             <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
+              {router.pathname === '/' && (
+                <div className="rounded-md bg-indigo-700 p-4 mt-2">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg
+                        className="h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-3 flex-1 md:flex md:justify-between">
+                      <p className="text-sm leading-5 text-white">
+                        This is ALPHA software. Almost everything is bound to be
+                        nearly broken or unstable. Please report issues to the
+                        Overseerr Github!
+                      </p>
+                      <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
+                        <a
+                          href="http://github.com/sct/overseerr"
+                          className="whitespace-no-wrap font-medium text-indigo-100 hover:text-white transition ease-in-out duration-150"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Github &rarr;
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
               {children}
             </div>
           </div>
