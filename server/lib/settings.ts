@@ -39,7 +39,7 @@ export interface SonarrSettings extends DVRSettings {
   enableSeasonFolders: boolean;
 }
 
-interface MainSettings {
+export interface MainSettings {
   apiKey: string;
 }
 
