@@ -9,6 +9,9 @@ import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
 import PlexAPI, { PlexLibrary } from '../api/plexapi';
 import jobPlexSync from '../job/plexsync';
+import SonarrAPI from '../api/sonarr';
+import RadarrAPI from '../api/radarr';
+import logger from '../logger';
 
 const settingsRoutes = Router();
 
@@ -132,6 +135,35 @@ settingsRoutes.post('/radarr', (req, res) => {
   return res.status(201).json(newRadarr);
 });
 
+settingsRoutes.post('/radarr/test', async (req, res, next) => {
+  try {
+    const radarr = new RadarrAPI({
+      apiKey: req.body.apiKey,
+      url: `${req.body.useSsl ? 'https' : 'http'}://${req.body.hostname}:${
+        req.body.port
+      }${req.body.baseUrl ?? ''}/api`,
+    });
+
+    const profiles = await radarr.getProfiles();
+    const folders = await radarr.getRootFolders();
+
+    return res.status(200).json({
+      profiles,
+      rootFolders: folders.map((folder) => ({
+        id: folder.id,
+        path: folder.path,
+      })),
+    });
+  } catch (e) {
+    logger.error('Failed to test Radarr', {
+      label: 'Radarr',
+      message: e.message,
+    });
+
+    next({ status: 500, message: 'Failed to connect to Radarr' });
+  }
+});
+
 settingsRoutes.put<{ id: string }>('/radarr/:id', (req, res) => {
   const settings = getSettings();
 
@@ -152,6 +184,36 @@ settingsRoutes.put<{ id: string }>('/radarr/:id', (req, res) => {
   settings.save();
 
   return res.status(200).json(settings.radarr[radarrIndex]);
+});
+
+settingsRoutes.get<{ id: string }>('/radarr/:id/profiles', async (req, res) => {
+  const settings = getSettings();
+
+  const radarrSettings = settings.radarr.find(
+    (r) => r.id === Number(req.params.id)
+  );
+
+  if (!radarrSettings) {
+    return res
+      .status(404)
+      .json({ status: '404', message: 'Settings instance not found' });
+  }
+
+  const radarr = new RadarrAPI({
+    apiKey: radarrSettings.apiKey,
+    url: `${radarrSettings.useSsl ? 'https' : 'http'}://${
+      radarrSettings.hostname
+    }:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}/api`,
+  });
+
+  const profiles = await radarr.getProfiles();
+
+  return res.status(200).json(
+    profiles.map((profile) => ({
+      id: profile.id,
+      name: profile.name,
+    }))
+  );
 });
 
 settingsRoutes.delete<{ id: string }>('/radarr/:id', (req, res) => {

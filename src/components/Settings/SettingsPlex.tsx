@@ -285,10 +285,10 @@ const SettingsPlex: React.FC = () => {
         </p>
         <div className="mt-6">
           <div className="bg-cool-gray-800 p-4 rounded-md">
-            <div className="w-full h-8 rounded-full bg-cool-gray-600 mb-6 relative">
+            <div className="w-full h-8 rounded-full bg-cool-gray-600 mb-6 relative overflow-hidden">
               {dataSync?.running && (
                 <div
-                  className="h-8 rounded-full bg-indigo-600 transition-all ease-in-out duration-200"
+                  className="h-8 bg-indigo-600 transition-all ease-in-out duration-200"
                   style={{
                     width: `${Math.round(
                       (dataSync.progress / dataSync.total) * 100

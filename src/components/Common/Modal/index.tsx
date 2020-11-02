@@ -103,7 +103,7 @@ const Modal: React.FC<ModalProps> = ({
               item && (
                 <animated.div
                   style={props}
-                  className="inline-block align-bottom bg-cool-gray-700 sm:rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full sm:p-6"
+                  className="inline-block align-bottom bg-cool-gray-700 sm:rounded-lg px-4 pt-5 pb-4 text-left overflow-auto shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full sm:p-6 max-h-full"
                   role="dialog"
                   aria-modal="true"
                   aria-labelledby="modal-headline"
@@ -116,7 +116,7 @@ const Modal: React.FC<ModalProps> = ({
                         {iconSvg}
                       </div>
                     )}
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <div className="mt-3 text-center sm:mt-0 sm:text-left mb-6">
                       {title && (
                         <h3
                           className="text-lg leading-6 font-medium text-white"
@@ -128,10 +128,8 @@ const Modal: React.FC<ModalProps> = ({
                     </div>
                   </div>
                   {children && (
-                    <div className="mt-4">
-                      <p className="text-sm leading-5 text-cool-gray-300">
-                        {children}
-                      </p>
+                    <div className="mt-4 text-sm leading-5 text-cool-gray-300">
+                      {children}
                     </div>
                   )}
                   {(onCancel || onOk || onSecondary || onTertiary) && (

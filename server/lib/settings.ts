@@ -25,8 +25,10 @@ interface DVRSettings {
   useSsl: boolean;
   baseUrl?: string;
   activeProfileId: number;
+  activeProfileName: string;
   activeDirectory: string;
   is4k: boolean;
+  isDefault: boolean;
 }
 
 export interface RadarrSettings extends DVRSettings {
@@ -35,6 +37,7 @@ export interface RadarrSettings extends DVRSettings {
 
 export interface SonarrSettings extends DVRSettings {
   activeAnimeProfileId?: number;
+  activeAnimeProfileName?: string;
   activeAnimeDirectory?: string;
   enableSeasonFolders: boolean;
 }

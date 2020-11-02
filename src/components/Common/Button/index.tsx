@@ -5,7 +5,8 @@ export type ButtonType =
   | 'primary'
   | 'danger'
   | 'warning'
-  | 'success';
+  | 'success'
+  | 'ghost';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   buttonType?: ButtonType;
@@ -30,22 +31,27 @@ const Button: React.FC<ButtonProps> = ({
       break;
     case 'danger':
       buttonStyle.push(
-        'text-white bg-red-600 hover:bg-red-500 focus:border-red-700 focus:shadow-outline-red active:bg-red-700'
+        'text-white bg-red-600 hover:bg-red-500 focus:border-red-700 focus:shadow-outline-red active:bg-red-700 disabled:opacity-50'
       );
       break;
     case 'warning':
       buttonStyle.push(
-        'text-white bg-orange-500 hover:bg-orange-400 focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700'
+        'text-white bg-orange-500 hover:bg-orange-400 focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 disabled:opacity-50'
       );
       break;
     case 'success':
       buttonStyle.push(
-        'text-white bg-green-400 hover:bg-green-300 focus:border-green-700 focus:shadow-outline-green active:bg-green-700'
+        'text-white bg-green-400 hover:bg-green-300 focus:border-green-700 focus:shadow-outline-green active:bg-green-700 disabled:opacity-50'
+      );
+      break;
+    case 'ghost':
+      buttonStyle.push(
+        'text-white bg-transaprent border border-cool-gray-600 hover:border-cool-gray-200 focus:border-cool-gray-100 active:border-cool-gray-100 disabled:opacity-50'
       );
       break;
     default:
       buttonStyle.push(
-        'leading-5 font-medium rounded-md text-gray-200 bg-cool-gray-500 hover:bg-cool-gray-400 hover:text-white focus:border-blue-300 focus:shadow-outline-blue active:text-gray-200 active:bg-cool-gray-400'
+        'leading-5 font-medium rounded-md text-gray-200 bg-cool-gray-500 hover:bg-cool-gray-400 hover:text-white focus:border-blue-300 focus:shadow-outline-blue active:text-gray-200 active:bg-cool-gray-400 disabled:opacity-50'
       );
   }
 

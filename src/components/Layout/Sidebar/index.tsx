@@ -8,6 +8,7 @@ import { useUser, Permission } from '../../../hooks/useUser';
 const messages = defineMessages({
   dashboard: 'Dashboard',
   requests: 'Requests',
+  users: 'Users',
   settings: 'Settings',
 });
 
@@ -67,6 +68,22 @@ const SidebarLinks: SidebarLinkProps[] = [
       </svg>
     ),
     activeRegExp: /^\/requests/,
+  },
+  {
+    href: '/users',
+    messagesKey: 'users',
+    svgIcon: (
+      <svg
+        className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+      </svg>
+    ),
+    activeRegExp: /^\/users/,
+    requiredPermission: Permission.MANAGE_USERS,
   },
   {
     href: '/settings',
