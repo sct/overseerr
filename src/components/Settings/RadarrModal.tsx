@@ -129,6 +129,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
           baseUrl: radarr?.baseUrl,
           activeProfileId: radarr?.activeProfileId,
           rootFolder: radarr?.activeDirectory,
+          minimumAvailability: radarr?.minimumAvailability,
           isDefault: radarr?.isDefault ?? false,
           is4k: radarr?.is4k ?? false,
         }}
@@ -150,7 +151,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               activeProfileName: profileName,
               activeDirectory: values.rootFolder,
               is4k: values.is4k,
-              minimumAvailability: 'In Cinema',
+              minimumAvailability: values.minimumAvailability,
               isDefault: values.isDefault,
             };
             if (!radarr) {
@@ -206,13 +207,13 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               okDisabled={!isValidated || isSubmitting || isTesting}
               onOk={() => handleSubmit()}
               title={
-                !radarr ? 'Create New Radarr Instance' : 'Edit Radarr Instance'
+                !radarr ? 'Create New Radarr Server' : 'Edit Radarr Server'
               }
             >
               <div className="mb-6">
                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="port"
+                    htmlFor="isDefault"
                     className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
                   >
                     Default Server
@@ -304,7 +305,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="port"
+                    htmlFor="ssl"
                     className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
                   >
                     SSL
@@ -324,7 +325,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
-                    htmlFor="name"
+                    htmlFor="apiKey"
                     className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
                   >
                     API Key
@@ -350,7 +351,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
-                    htmlFor="name"
+                    htmlFor="baseUrl"
                     className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
                   >
                     Base URL
@@ -361,7 +362,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="baseUrl"
                         name="baseUrl"
                         type="input"
-                        placeholder="Example: /sonarr"
+                        placeholder="Example: /radarr"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
@@ -376,7 +377,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
-                    htmlFor="name"
+                    htmlFor="activeProfileId"
                     className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
                   >
                     Quality Profile
@@ -400,14 +401,16 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           ))}
                       </Field>
                     </div>
-                    {errors.baseUrl && touched.baseUrl && (
-                      <div className="text-red-500 mt-2">{errors.baseUrl}</div>
+                    {errors.activeProfileId && touched.activeProfileId && (
+                      <div className="text-red-500 mt-2">
+                        {errors.activeProfileId}
+                      </div>
                     )}
                   </div>
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
-                    htmlFor="name"
+                    htmlFor="rootFolder"
                     className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
                   >
                     Root Folder
@@ -431,14 +434,44 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           ))}
                       </Field>
                     </div>
-                    {errors.baseUrl && touched.baseUrl && (
-                      <div className="text-red-500 mt-2">{errors.baseUrl}</div>
+                    {errors.rootFolder && touched.rootFolder && (
+                      <div className="text-red-500 mt-2">
+                        {errors.rootFolder}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                  <label
+                    htmlFor="minimumAvailability"
+                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                  >
+                    Minimum Availability
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg flex rounded-md shadow-sm">
+                      <Field
+                        as="select"
+                        id="minimumAvailability"
+                        name="minimumAvailability"
+                        className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 bg-cool-gray-700 border-cool-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-cool-gray-500 sm:text-sm sm:leading-5"
+                      >
+                        <option value="announced">Announced</option>
+                        <option value="inCinemas">In Cinemas</option>
+                        <option value="released">Released</option>
+                        <option value="preDB">PreDB</option>
+                      </Field>
+                    </div>
+                    {errors.rootFolder && touched.rootFolder && (
+                      <div className="text-red-500 mt-2">
+                        {errors.rootFolder}
+                      </div>
                     )}
                   </div>
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="port"
+                    htmlFor="is4k"
                     className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
                   >
                     Ultra HD Server

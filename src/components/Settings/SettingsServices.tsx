@@ -9,6 +9,9 @@ import type {
 } from '../../../server/lib/settings';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import RadarrModal from './RadarrModal';
+import Modal from '../Common/Modal';
+import Transition from '../Transition';
+import axios from 'axios';
 
 interface ServerInstanceProps {
   name: string;
@@ -119,6 +122,19 @@ const SettingsServices: React.FC = () => {
     open: false,
     radarr: null,
   });
+  const [deleteRadarrModal, setDeleteRadarrModal] = useState<{
+    open: boolean;
+    radarrId: number | null;
+  }>({
+    open: false,
+    radarrId: null,
+  });
+
+  const deleteServer = async (radarrId: number) => {
+    await axios.delete(`/api/v1/settings/radarr/${radarrId}`);
+    setDeleteRadarrModal({ open: false, radarrId: null });
+    revalidateRadarr();
+  };
 
   return (
     <>
@@ -143,6 +159,25 @@ const SettingsServices: React.FC = () => {
           }}
         />
       )}
+      <Transition
+        show={deleteRadarrModal.open}
+        enter="transition ease-in-out duration-300 transform opacity-0"
+        enterFrom="opacity-0"
+        enterTo="opacuty-100"
+        leave="transition ease-in-out duration-300 transform opacity-100"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        <Modal
+          okText="Delete"
+          okButtonType="danger"
+          onOk={() => deleteServer(deleteRadarrModal.radarrId ?? 0)}
+          onCancel={() => setDeleteRadarrModal({ open: false, radarrId: null })}
+          title="Delete Server"
+        >
+          Are you sure you want to delete this Radarr server?
+        </Modal>
+      </Transition>
       <div className="mt-6 sm:mt-5">
         {!radarrData && !radarrError && <LoadingSpinner />}
         {radarrData && !radarrError && (
@@ -157,7 +192,9 @@ const SettingsServices: React.FC = () => {
                 isDefault={radarr.isDefault && !radarr.is4k}
                 isDefault4K={radarr.is4k && radarr.isDefault}
                 onEdit={() => setEditRadarrModal({ open: true, radarr })}
-                onDelete={() => console.log('delete clicked')}
+                onDelete={() =>
+                  setDeleteRadarrModal({ open: true, radarrId: radarr.id })
+                }
               />
             ))}
             <li className="col-span-1 border-2 border-dashed border-cool-gray-400 rounded-lg shadow h-32 sm:h-32">
