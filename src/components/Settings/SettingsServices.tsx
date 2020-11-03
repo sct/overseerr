@@ -12,6 +12,7 @@ import RadarrModal from './RadarrModal';
 import Modal from '../Common/Modal';
 import Transition from '../Transition';
 import axios from 'axios';
+import SonarrModal from './SonarrModal';
 
 interface ServerInstanceProps {
   name: string;
@@ -112,9 +113,11 @@ const SettingsServices: React.FC = () => {
     error: radarrError,
     revalidate: revalidateRadarr,
   } = useSWR<RadarrSettings[]>('/api/v1/settings/radarr');
-  const { data: sonarrData, error: sonarrError } = useSWR<SonarrSettings[]>(
-    '/api/v1/settings/sonarr'
-  );
+  const {
+    data: sonarrData,
+    error: sonarrError,
+    revalidate: revalidateSonarr,
+  } = useSWR<SonarrSettings[]>('/api/v1/settings/sonarr');
   const [editRadarrModal, setEditRadarrModal] = useState<{
     open: boolean;
     radarr: RadarrSettings | null;
@@ -122,18 +125,30 @@ const SettingsServices: React.FC = () => {
     open: false,
     radarr: null,
   });
-  const [deleteRadarrModal, setDeleteRadarrModal] = useState<{
+  const [editSonarrModal, setEditSonarrModal] = useState<{
     open: boolean;
-    radarrId: number | null;
+    sonarr: SonarrSettings | null;
   }>({
     open: false,
-    radarrId: null,
+    sonarr: null,
+  });
+  const [deleteServerModal, setDeleteServerModal] = useState<{
+    open: boolean;
+    type: 'radarr' | 'sonarr';
+    serverId: number | null;
+  }>({
+    open: false,
+    type: 'radarr',
+    serverId: null,
   });
 
-  const deleteServer = async (radarrId: number) => {
-    await axios.delete(`/api/v1/settings/radarr/${radarrId}`);
-    setDeleteRadarrModal({ open: false, radarrId: null });
+  const deleteServer = async () => {
+    await axios.delete(
+      `/api/v1/settings/${deleteServerModal.type}/${deleteServerModal.serverId}`
+    );
+    setDeleteServerModal({ open: false, serverId: null, type: 'radarr' });
     revalidateRadarr();
+    revalidateSonarr();
   };
 
   return (
@@ -159,8 +174,18 @@ const SettingsServices: React.FC = () => {
           }}
         />
       )}
+      {editSonarrModal.open && (
+        <SonarrModal
+          sonarr={editSonarrModal.sonarr}
+          onClose={() => setEditSonarrModal({ open: false, sonarr: null })}
+          onSave={() => {
+            revalidateSonarr();
+            setEditSonarrModal({ open: false, sonarr: null });
+          }}
+        />
+      )}
       <Transition
-        show={deleteRadarrModal.open}
+        show={deleteServerModal.open}
         enter="transition ease-in-out duration-300 transform opacity-0"
         enterFrom="opacity-0"
         enterTo="opacuty-100"
@@ -171,11 +196,17 @@ const SettingsServices: React.FC = () => {
         <Modal
           okText="Delete"
           okButtonType="danger"
-          onOk={() => deleteServer(deleteRadarrModal.radarrId ?? 0)}
-          onCancel={() => setDeleteRadarrModal({ open: false, radarrId: null })}
+          onOk={() => deleteServer()}
+          onCancel={() =>
+            setDeleteServerModal({
+              open: false,
+              serverId: null,
+              type: 'radarr',
+            })
+          }
           title="Delete Server"
         >
-          Are you sure you want to delete this Radarr server?
+          Are you sure you want to delete this server?
         </Modal>
       </Transition>
       <div className="mt-6 sm:mt-5">
@@ -193,7 +224,11 @@ const SettingsServices: React.FC = () => {
                 isDefault4K={radarr.is4k && radarr.isDefault}
                 onEdit={() => setEditRadarrModal({ open: true, radarr })}
                 onDelete={() =>
-                  setDeleteRadarrModal({ open: true, radarrId: radarr.id })
+                  setDeleteServerModal({
+                    open: true,
+                    serverId: radarr.id,
+                    type: 'radarr',
+                  })
                 }
               />
             ))}
@@ -244,10 +279,19 @@ const SettingsServices: React.FC = () => {
                 key={`sonarr-config-${sonarr.id}`}
                 name={sonarr.name}
                 address={sonarr.hostname}
-                profileName={sonarr.activeProfileId.toString()}
+                profileName={sonarr.activeProfileName}
                 isSSL={sonarr.useSsl}
-                onEdit={() => console.log('nada')}
-                onDelete={() => console.log('delete clicked')}
+                isSonarr
+                isDefault4K={sonarr.isDefault && sonarr.is4k}
+                isDefault={sonarr.isDefault && !sonarr.is4k}
+                onEdit={() => setEditSonarrModal({ open: true, sonarr })}
+                onDelete={() =>
+                  setDeleteServerModal({
+                    open: true,
+                    serverId: sonarr.id,
+                    type: 'sonarr',
+                  })
+                }
               />
             ))}
             <li className="col-span-1 border-2 border-dashed border-cool-gray-400 rounded-lg shadow h-32 sm:h-32">
@@ -255,7 +299,7 @@ const SettingsServices: React.FC = () => {
                 <Button
                   buttonType="ghost"
                   onClick={() =>
-                    setEditRadarrModal({ open: true, radarr: null })
+                    setEditSonarrModal({ open: true, sonarr: null })
                   }
                 >
                   <svg

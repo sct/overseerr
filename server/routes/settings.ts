@@ -254,6 +254,35 @@ settingsRoutes.post('/sonarr', (req, res) => {
   return res.status(201).json(newSonarr);
 });
 
+settingsRoutes.post('/sonarr/test', async (req, res, next) => {
+  try {
+    const sonarr = new SonarrAPI({
+      apiKey: req.body.apiKey,
+      url: `${req.body.useSsl ? 'https' : 'http'}://${req.body.hostname}:${
+        req.body.port
+      }${req.body.baseUrl ?? ''}/api`,
+    });
+
+    const profiles = await sonarr.getProfiles();
+    const folders = await sonarr.getRootFolders();
+
+    return res.status(200).json({
+      profiles,
+      rootFolders: folders.map((folder) => ({
+        id: folder.id,
+        path: folder.path,
+      })),
+    });
+  } catch (e) {
+    logger.error('Failed to test Sonarr', {
+      label: 'Sonarr',
+      message: e.message,
+    });
+
+    next({ status: 500, message: 'Failed to connect to Sonarr' });
+  }
+});
+
 settingsRoutes.put<{ id: string }>('/sonarr/:id', (req, res) => {
   const settings = getSettings();
 

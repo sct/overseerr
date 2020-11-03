@@ -155,6 +155,7 @@ export class MediaRequest {
           profileId: radarrSettings.activeProfileId,
           qualityProfileId: radarrSettings.activeProfileId,
           rootFolderPath: radarrSettings.activeDirectory,
+          minimumAvailability: radarrSettings.minimumAvailability,
           title: movie.title,
           tmdbId: movie.id,
           year: Number(movie.release_date.slice(0, 4)),

@@ -3,6 +3,7 @@ import Axios, { AxiosInstance } from 'axios';
 interface RadarrMovieOptions {
   title: string;
   qualityProfileId: number;
+  minimumAvailability: string;
   profileId: number;
   year: number;
   rootFolderPath: string;
@@ -83,6 +84,7 @@ class RadarrAPI {
         qualityProfileId: options.qualityProfileId,
         profileId: options.profileId,
         titleSlug: options.tmdbId.toString(),
+        minimumAvailability: options.minimumAvailability,
         tmdbId: options.tmdbId,
         year: options.year,
         rootFolderPath: options.rootFolderPath,

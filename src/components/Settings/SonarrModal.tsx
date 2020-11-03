@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Transition from '../Transition';
 import Modal from '../Common/Modal';
 import { Formik, Field } from 'formik';
-import type { RadarrSettings } from '../../../server/lib/settings';
+import type { SonarrSettings } from '../../../server/lib/settings';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
@@ -18,26 +18,26 @@ interface TestResponse {
   }[];
 }
 
-interface RadarrModalProps {
-  radarr: RadarrSettings | null;
+interface SonarrModalProps {
+  sonarr: SonarrSettings | null;
   onClose: () => void;
   onSave: () => void;
 }
 
-const RadarrModal: React.FC<RadarrModalProps> = ({
+const SonarrModal: React.FC<SonarrModalProps> = ({
   onClose,
-  radarr,
+  sonarr,
   onSave,
 }) => {
   const initialLoad = useRef(false);
   const { addToast } = useToasts();
-  const [isValidated, setIsValidated] = useState(radarr ? true : false);
+  const [isValidated, setIsValidated] = useState(sonarr ? true : false);
   const [isTesting, setIsTesting] = useState(false);
   const [testResponse, setTestResponse] = useState<TestResponse>({
     profiles: [],
     rootFolders: [],
   });
-  const RadarrSettingsSchema = Yup.object().shape({
+  const SonarrSettingsSchema = Yup.object().shape({
     hostname: Yup.string().required('You must provide a hostname/IP'),
     port: Yup.number().required('You must provide a port'),
     apiKey: Yup.string().required('You must provide an API Key'),
@@ -62,7 +62,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
       setIsTesting(true);
       try {
         const response = await axios.post<TestResponse>(
-          '/api/v1/settings/radarr/test',
+          '/api/v1/settings/sonarr/test',
           {
             hostname,
             apiKey,
@@ -75,7 +75,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
         setIsValidated(true);
         setTestResponse(response.data);
         if (initialLoad.current) {
-          addToast('Radarr connection established!', {
+          addToast('Sonarr connection established!', {
             appearance: 'success',
             autoDismiss: true,
           });
@@ -83,7 +83,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
       } catch (e) {
         setIsValidated(false);
         if (initialLoad.current) {
-          addToast('Failed to connect to Radarr server', {
+          addToast('Failed to connect to Sonarr server', {
             appearance: 'error',
             autoDismiss: true,
           });
@@ -97,16 +97,16 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
   );
 
   useEffect(() => {
-    if (radarr) {
+    if (sonarr) {
       testConnection({
-        apiKey: radarr.apiKey,
-        hostname: radarr.hostname,
-        port: radarr.port,
-        baseUrl: radarr.baseUrl,
-        useSsl: radarr.useSsl,
+        apiKey: sonarr.apiKey,
+        hostname: sonarr.hostname,
+        port: sonarr.port,
+        baseUrl: sonarr.baseUrl,
+        useSsl: sonarr.useSsl,
       });
     }
-  }, [radarr, testConnection]);
+  }, [sonarr, testConnection]);
 
   return (
     <Transition
@@ -121,19 +121,19 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     >
       <Formik
         initialValues={{
-          name: radarr?.name,
-          hostname: radarr?.hostname,
-          port: radarr?.port,
-          ssl: radarr?.useSsl ?? false,
-          apiKey: radarr?.apiKey,
-          baseUrl: radarr?.baseUrl,
-          activeProfileId: radarr?.activeProfileId,
-          rootFolder: radarr?.activeDirectory,
-          minimumAvailability: radarr?.minimumAvailability,
-          isDefault: radarr?.isDefault ?? false,
-          is4k: radarr?.is4k ?? false,
+          name: sonarr?.name,
+          hostname: sonarr?.hostname,
+          port: sonarr?.port,
+          ssl: sonarr?.useSsl ?? false,
+          apiKey: sonarr?.apiKey,
+          baseUrl: sonarr?.baseUrl,
+          activeProfileId: sonarr?.activeProfileId,
+          rootFolder: sonarr?.activeDirectory,
+          isDefault: sonarr?.isDefault ?? false,
+          is4k: sonarr?.is4k ?? false,
+          enableSeasonFolders: sonarr?.enableSeasonFolders ?? false,
         }}
-        validationSchema={RadarrSettingsSchema}
+        validationSchema={SonarrSettingsSchema}
         onSubmit={async (values) => {
           try {
             const profileName = testResponse.profiles.find(
@@ -151,14 +151,14 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               activeProfileName: profileName,
               activeDirectory: values.rootFolder,
               is4k: values.is4k,
-              minimumAvailability: values.minimumAvailability,
               isDefault: values.isDefault,
+              enableSeasonFolders: values.enableSeasonFolders,
             };
-            if (!radarr) {
-              await axios.post('/api/v1/settings/radarr', submission);
+            if (!sonarr) {
+              await axios.post('/api/v1/settings/sonarr', submission);
             } else {
               await axios.put(
-                `/api/v1/settings/radarr/${radarr.id}`,
+                `/api/v1/settings/sonarr/${sonarr.id}`,
                 submission
               );
             }
@@ -184,7 +184,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               okText={
                 isSubmitting
                   ? 'Saving...'
-                  : !!radarr
+                  : !!sonarr
                   ? 'Save Changes'
                   : 'Create Instance'
               }
@@ -207,7 +207,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               okDisabled={!isValidated || isSubmitting || isTesting}
               onOk={() => handleSubmit()}
               title={
-                !radarr ? 'Create New Radarr Server' : 'Edit Radarr Server'
+                !sonarr ? 'Create New Sonarr Server' : 'Edit Sonarr Server'
               }
             >
               <div className="mb-6">
@@ -240,7 +240,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="name"
                         name="name"
                         type="input"
-                        placeholder="A Radarr Server"
+                        placeholder="A Sonarr Server"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('name', e.target.value);
@@ -291,7 +291,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       id="port"
                       name="port"
                       type="input"
-                      placeholder="7878"
+                      placeholder="8989"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setIsValidated(false);
                         setFieldValue('port', e.target.value);
@@ -336,7 +336,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="apiKey"
                         name="apiKey"
                         type="input"
-                        placeholder="Your Radarr API Key"
+                        placeholder="Your Sonarr API Key"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('apiKey', e.target.value);
@@ -362,7 +362,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="baseUrl"
                         name="baseUrl"
                         type="input"
-                        placeholder="Example: /radarr"
+                        placeholder="Example: /sonarr"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
@@ -390,6 +390,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         name="activeProfileId"
                         className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 bg-cool-gray-700 border-cool-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-cool-gray-500 sm:text-sm sm:leading-5"
                       >
+                        <option value="">Select a Quality Profile</option>
                         {testResponse.profiles.length > 0 &&
                           testResponse.profiles.map((profile) => (
                             <option
@@ -423,6 +424,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         name="rootFolder"
                         className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 bg-cool-gray-700 border-cool-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-cool-gray-500 sm:text-sm sm:leading-5"
                       >
+                        <option value="">Select a Root Folder</option>
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
                             <option
@@ -441,29 +443,6 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
-                  <label
-                    htmlFor="minimumAvailability"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
-                  >
-                    Minimum Availability
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg flex rounded-md shadow-sm">
-                      <Field
-                        as="select"
-                        id="minimumAvailability"
-                        name="minimumAvailability"
-                        className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 bg-cool-gray-700 border-cool-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-cool-gray-500 sm:text-sm sm:leading-5"
-                      >
-                        <option value="announced">Announced</option>
-                        <option value="inCinemas">In Cinemas</option>
-                        <option value="released">Released</option>
-                        <option value="preDB">PreDB</option>
-                      </Field>
-                    </div>
-                  </div>
-                </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
                     htmlFor="is4k"
@@ -480,6 +459,22 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     />
                   </div>
                 </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                  <label
+                    htmlFor="enableSeasonFolders"
+                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                  >
+                    Season Folders
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="enableSeasonFolders"
+                      name="enableSeasonFolders"
+                      className="form-checkbox h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
+                    />
+                  </div>
+                </div>
               </div>
             </Modal>
           );
@@ -489,4 +484,4 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
   );
 };
 
-export default RadarrModal;
+export default SonarrModal;
