@@ -186,7 +186,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   ? 'Saving...'
                   : !!sonarr
                   ? 'Save Changes'
-                  : 'Create Instance'
+                  : 'Add Server'
               }
               secondaryButtonType="warning"
               secondaryText={isTesting ? 'Testing...' : 'Test'}

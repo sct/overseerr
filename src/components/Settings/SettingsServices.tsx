@@ -252,7 +252,7 @@ const SettingsServices: React.FC = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Add New Radarr Instance
+                  Add Radarr Server
                 </Button>
               </div>
             </li>
@@ -314,7 +314,7 @@ const SettingsServices: React.FC = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Add New Sonarr Instance
+                  Add Sonarr Server
                 </Button>
               </div>
             </li>

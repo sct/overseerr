@@ -186,7 +186,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   ? 'Saving...'
                   : !!radarr
                   ? 'Save Changes'
-                  : 'Create Instance'
+                  : 'Add Server'
               }
               secondaryButtonType="warning"
               secondaryText={isTesting ? 'Testing...' : 'Test'}

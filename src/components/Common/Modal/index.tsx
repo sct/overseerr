@@ -116,7 +116,11 @@ const Modal: React.FC<ModalProps> = ({
                         {iconSvg}
                       </div>
                     )}
-                    <div className="mt-3 text-center sm:mt-0 sm:text-left mb-6">
+                    <div
+                      className={`mt-3 text-center sm:mt-0 sm:text-left ${
+                        iconSvg ? 'sm:ml-4' : 'mb-6'
+                      }`}
+                    >
                       {title && (
                         <h3
                           className="text-lg leading-6 font-medium text-white"
