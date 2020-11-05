@@ -67,7 +67,8 @@ class JobPlexSync {
         existing.status = MediaStatus.AVAILABLE;
         mediaRepository.save(existing);
         this.log(
-          `Request for ${metadata.title} exists. Setting status AVAILABLE`
+          `Request for ${metadata.title} exists. Setting status AVAILABLE`,
+          'info'
         );
       } else {
         newMedia.status = MediaStatus.AVAILABLE;
@@ -90,7 +91,8 @@ class JobPlexSync {
           existing.status = MediaStatus.AVAILABLE;
           await mediaRepository.save(existing);
           this.log(
-            `Request for ${plexitem.title} exists. Setting status AVAILABLE`
+            `Request for ${plexitem.title} exists. Setting status AVAILABLE`,
+            'info'
           );
         } else if (tmdbMovie) {
           const newMedia = new Media();
@@ -139,8 +141,11 @@ class JobPlexSync {
     }
   }
 
-  private log(message: string): void {
-    logger.info(message, { label: 'Plex Sync' });
+  private log(
+    message: string,
+    level: 'info' | 'error' | 'debug' = 'debug'
+  ): void {
+    logger[level](message, { label: 'Plex Sync' });
   }
 
   public async run(): Promise<void> {
@@ -160,7 +165,7 @@ class JobPlexSync {
 
       for (const library of this.libraries) {
         this.currentLibrary = library;
-        this.log(`Beginning to process library: ${library.name}`);
+        this.log(`Beginning to process library: ${library.name}`, 'info');
         this.items = await this.plexClient.getLibraryContents(library.id);
         await this.loop();
       }

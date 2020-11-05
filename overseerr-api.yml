@@ -33,6 +33,10 @@ components:
           type: string
           example: '2020-09-02T05:02:23.000Z'
           readOnly: true
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaRequest'
       required:
         - id
         - email

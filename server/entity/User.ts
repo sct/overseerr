@@ -39,7 +39,7 @@ export class User {
   public avatar: string;
 
   @OneToMany(() => MediaRequest, (request) => request.requestedBy)
-  public requests: MediaRequest;
+  public requests: MediaRequest[];
 
   @CreateDateColumn()
   public createdAt: Date;

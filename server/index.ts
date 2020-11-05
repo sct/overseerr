@@ -13,6 +13,7 @@ import { OpenApiValidator } from 'express-openapi-validator';
 import { Session } from './entity/Session';
 import { getSettings } from './lib/settings';
 import logger from './logger';
+import { startJobs } from './job/schedule';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -26,6 +27,9 @@ app
     await createConnection();
     // Load Settings
     getSettings().load();
+
+    // Start Jobs
+    startJobs();
 
     const server = express();
     server.use(cookieParser());

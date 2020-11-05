@@ -7,7 +7,7 @@ const router = Router();
 router.get('/', async (req, res) => {
   const userRepository = getRepository(User);
 
-  const users = await userRepository.find();
+  const users = await userRepository.find({ relations: ['requests'] });
 
   return res.status(200).json(User.filterMany(users));
 });
