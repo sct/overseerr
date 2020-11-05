@@ -1,109 +1,101 @@
-import React from 'react';
-import PlexLoginButton from '../PlexLoginButton';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import Button from '../Common/Button';
+import ImageFader from '../Common/ImageFader';
+import SettingsPlex from '../Settings/SettingsPlex';
+import SettingsServices from '../Settings/SettingsServices';
+import LoginWithPlex from './LoginWithPlex';
+import SetupSteps from './SetupSteps';
 
 const Setup: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [plexSettingsComplete, setPlexSettingsComplete] = useState(false);
+  const router = useRouter();
+
   return (
-    <div className="w-full pt-10">
-      <nav>
-        <ul className="border border-gray-300 rounded-md divide-y divide-gray-300 md:flex md:divide-y-0">
-          <li className="relative md:flex-1 md:flex">
-            {/* <!-- Completed Step --> */}
-
-            <div className="px-6 py-4 flex items-center text-sm leading-5 font-medium space-x-4">
-              <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center border-2 border-indigo-600 rounded-full">
-                <p className="text-indigo-600">01</p>
-              </div>
-              <p className="text-sm leading-5 font-medium text-indigo-600">
-                Login with Plex
-              </p>
-            </div>
-
-            <div className="hidden md:block absolute top-0 right-0 h-full w-5">
-              <svg
-                className="h-full w-full text-gray-300"
-                viewBox="0 0 22 80"
-                fill="none"
-                preserveAspectRatio="none"
-              >
-                <path
-                  d="M0 -2L20 40L0 82"
-                  vectorEffect="non-scaling-stroke"
-                  stroke="currentcolor"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          </li>
-
-          <li className="relative md:flex-1 md:flex">
-            {/* <!-- Completed Step --> */}
-
-            <a href="#" className="group flex items-center">
-              <div className="px-6 py-4 flex items-center text-sm leading-5 font-medium space-x-4">
-                <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-full group-hover:border-gray-400 transition ease-in-out duration-150">
-                  <span className="text-gray-500 group-hover:text-gray-900 transition ease-in-out duration-150">
-                    02
+    <div className="min-h-screen bg-cool-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+      <ImageFader
+        backgroundImages={[
+          '/images/rotate1.jpg',
+          '/images/rotate2.jpg',
+          '/images/rotate3.jpg',
+          '/images/rotate4.jpg',
+        ]}
+      />
+      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-2xl relative z-50">
+        <img
+          src="/logo.png"
+          className="mx-auto max-h-32 w-auto mb-10"
+          alt="Overseerr Logo"
+        />
+        <nav className="relative z-50">
+          <ul
+            className=" bg-cool-gray-800 bg-opacity-50 border border-cool-gray-600 rounded-md divide-y divide-cool-gray-600 md:flex md:divide-y-0"
+            style={{ backdropFilter: 'blur(5px)' }}
+          >
+            <SetupSteps
+              stepNumber={1}
+              description={'Login with Plex'}
+              active={currentStep === 1}
+              completed={currentStep > 1}
+            />
+            <SetupSteps
+              stepNumber={2}
+              description={'Configure Plex'}
+              active={currentStep === 2}
+              completed={currentStep > 2}
+            />
+            <SetupSteps
+              stepNumber={3}
+              description={'Configure Services'}
+              active={currentStep === 3}
+              isLastStep
+            />
+          </ul>
+        </nav>
+        <div className="w-full mt-10 p-4 text-white bg-cool-gray-800 bg-opacity-50 border border-cool-gray-600 rounded-md">
+          {currentStep === 1 && (
+            <LoginWithPlex onComplete={() => setCurrentStep(2)} />
+          )}
+          {currentStep === 2 && (
+            <div>
+              <SettingsPlex onComplete={() => setPlexSettingsComplete(true)} />
+              <div className="mt-8 border-t border-cool-gray-700 pt-5">
+                <div className="flex justify-end">
+                  <span className="ml-3 inline-flex rounded-md shadow-sm">
+                    <Button
+                      buttonType="primary"
+                      disabled={!plexSettingsComplete}
+                      onClick={() => setCurrentStep(3)}
+                    >
+                      Continue
+                    </Button>
                   </span>
                 </div>
-                <p className="text-sm leading-5 font-medium text-gray-500 group-hover:text-gray-900 transition ease-in-out duration-150">
-                  Configure Plex
-                </p>
               </div>
-              <div className="hidden md:block absolute top-0 right-0 h-full w-5">
-                <svg
-                  className="h-full w-full text-gray-300"
-                  viewBox="0 0 22 80"
-                  fill="none"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d="M0 -2L20 40L0 82"
-                    vectorEffect="non-scaling-stroke"
-                    stroke="currentcolor"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            </a>
-          </li>
-
-          <li className="relative md:flex-1 md:flex">
-            {/* <!-- Completed Step --> */}
-
-            <a href="#" className="group flex items-center">
-              <div className="px-6 py-4 flex items-center text-sm leading-5 font-medium space-x-4">
-                <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-full group-hover:border-gray-400 transition ease-in-out duration-150">
-                  <span className="text-gray-500 group-hover:text-gray-900 transition ease-in-out duration-150">
-                    03
+            </div>
+          )}
+          {currentStep === 3 && (
+            <div>
+              <SettingsServices />
+              <div className="mt-8 border-t border-cool-gray-700 pt-5">
+                <div className="flex justify-end">
+                  <span className="ml-3 inline-flex rounded-md shadow-sm">
+                    <Button
+                      buttonType="primary"
+                      onClick={() => router.push('/')}
+                    >
+                      Finish Setup
+                    </Button>
                   </span>
                 </div>
-                <p className="text-sm leading-5 font-medium text-gray-500 group-hover:text-gray-900 transition ease-in-out duration-150">
-                  Configure Radarr and Sonarr
-                </p>
               </div>
-            </a>
-          </li>
-        </ul>
-      </nav>
-      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div className="flex justify-center text-gray-900 font-bold text-xl mb-2">
-          Welcome to Overseerr
+            </div>
+          )}
         </div>
-        <div className="flex justify-center text-gray-900 text-sm pb-6 mb-2">
-          Get started by logging in with your Plex account
-        </div>
-        <div className="flex items-center justify-center">
-          <PlexLoginButton
-            onAuthToken={(authToken) =>
-              console.log(`auth token is: ${authToken}`)
-            }
-          />
-        </div>
-      </form>
+      </div>
     </div>
   );
 };
 
 export default Setup;
-
-//current issues: onclick it fills it in gray for whatever reason. maybe dont want it to do anything when clicking? or maybe prevturn to previous steps only?
