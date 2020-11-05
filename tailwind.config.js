@@ -13,6 +13,7 @@ module.exports = {
   variants: {
     padding: ['first', 'last'],
     borderWidth: ['first', 'last'],
+    margin: ['first', 'last', 'responsive'],
     boxShadow: ['group-focus'],
     opacity: ['disabled'],
   },
