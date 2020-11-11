@@ -23,7 +23,7 @@ export const startJobs = (): void => {
   // Run full plex sync every 6 hours
   scheduledJobs.push({
     name: 'Plex Full Library Sync',
-    job: schedule.scheduleJob('* * */6 * * *', () => {
+    job: schedule.scheduleJob('0 0 */6 * * *', () => {
       logger.info('Starting scheduled job: Plex Full Sync', { label: 'Jobs' });
       jobPlexFullSync.run();
     }),
