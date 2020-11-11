@@ -8,10 +8,11 @@ import {
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
 import PlexAPI, { PlexLibrary } from '../api/plexapi';
-import jobPlexSync from '../job/plexsync';
+import { jobPlexFullSync } from '../job/plexsync';
 import SonarrAPI from '../api/sonarr';
 import RadarrAPI from '../api/radarr';
 import logger from '../logger';
+import { scheduledJobs } from '../job/schedule';
 
 const settingsRoutes = Router();
 
@@ -108,12 +109,12 @@ settingsRoutes.get('/plex/library', async (req, res) => {
 
 settingsRoutes.get('/plex/sync', (req, res) => {
   if (req.query.cancel) {
-    jobPlexSync.cancel();
+    jobPlexFullSync.cancel();
   } else if (req.query.start) {
-    jobPlexSync.run();
+    jobPlexFullSync.run();
   }
 
-  return res.status(200).json(jobPlexSync.status());
+  return res.status(200).json(jobPlexFullSync.status());
 });
 
 settingsRoutes.get('/radarr', (req, res) => {
@@ -322,6 +323,15 @@ settingsRoutes.delete<{ id: string }>('/sonarr/:id', (req, res) => {
   settings.save();
 
   return res.status(200).json(removed[0]);
+});
+
+settingsRoutes.get('/jobs', (req, res) => {
+  return res.status(200).json(
+    scheduledJobs.map((job) => ({
+      name: job.name,
+      nextExecutionTime: job.job.nextInvocation(),
+    }))
+  );
 });
 
 export default settingsRoutes;

@@ -12,6 +12,7 @@ import {
 import { MediaRequest } from './MediaRequest';
 import { MediaStatus, MediaType } from '../constants/media';
 import logger from '../logger';
+import Season from './Season';
 
 @Entity()
 class Media {
@@ -78,6 +79,12 @@ class Media {
 
   @OneToMany(() => MediaRequest, (request) => request.media, { cascade: true })
   public requests: MediaRequest[];
+
+  @OneToMany(() => Season, (season) => season.media, {
+    cascade: true,
+    eager: true,
+  })
+  public seasons: Season[];
 
   @CreateDateColumn()
   public createdAt: Date;

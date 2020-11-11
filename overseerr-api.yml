@@ -1155,6 +1155,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicSettings'
+  /settings/jobs:
+    get:
+      summary: Returns list of scheduled jobs
+      description: Returns list of all scheduled jobs and details about their next execution time
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Scheduled jobs returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: A Job Name
+                    nextExecutionTime:
+                      type: string
+                      example: '2020-09-02T05:02:23.000Z'
+
   /auth/me:
     get:
       summary: Returns the currently logged in user

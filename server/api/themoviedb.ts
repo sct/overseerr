@@ -649,6 +649,38 @@ class TheMovieDb {
       );
     }
   }
+
+  public async getShowByTvdbId({
+    tvdbId,
+    language = 'en-US',
+  }: {
+    tvdbId: number;
+    language?: string;
+  }): Promise<TmdbTvDetails> {
+    try {
+      const extResponse = await this.getByExternalId({
+        externalId: tvdbId,
+        type: 'tvdb',
+      });
+
+      if (extResponse.tv_results[0]) {
+        const tvshow = await this.getTvShow({
+          tvId: extResponse.tv_results[0].id,
+          language,
+        });
+
+        return tvshow;
+      }
+
+      throw new Error(
+        `[TMDB] Failed to find a tv show with the provided TVDB id: ${tvdbId}`
+      );
+    } catch (e) {
+      throw new Error(
+        `[TMDB] Failed to get tv show by external tvdb ID: ${e.message}`
+      );
+    }
+  }
 }
 
 export default TheMovieDb;

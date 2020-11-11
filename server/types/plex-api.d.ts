@@ -16,6 +16,7 @@ declare module 'plex-api' {
         deviceName: string;
         platform: string;
       };
+      requestOptions?: Record<string, string | number>;
     });
 
     query: <T extends Record<string, any>>(endpoint: string) => Promise<T>;

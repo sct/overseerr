@@ -1,16 +1,19 @@
 import { getRepository } from 'typeorm';
-import { User } from '../entity/User';
-import PlexAPI, { PlexLibraryItem } from '../api/plexapi';
-import TheMovieDb from '../api/themoviedb';
-import Media from '../entity/Media';
-import { MediaStatus, MediaType } from '../constants/media';
-import logger from '../logger';
-import { getSettings, Library } from '../lib/settings';
+import { User } from '../../entity/User';
+import PlexAPI, { PlexLibraryItem } from '../../api/plexapi';
+import TheMovieDb, { TmdbTvDetails } from '../../api/themoviedb';
+import Media from '../../entity/Media';
+import { MediaStatus, MediaType } from '../../constants/media';
+import logger from '../../logger';
+import { getSettings, Library } from '../../lib/settings';
+import Season from '../../entity/Season';
 
 const BUNDLE_SIZE = 10;
 
 const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);
+const tvdbRegex = new RegExp(/tvdb:\/\/([0-9]+)/);
+const tmdbShowRegex = new RegExp(/themoviedb:\/\/([0-9]+)/);
 const plexRegex = new RegExp(/plex:\/\//);
 
 interface SyncStatus {
@@ -29,9 +32,11 @@ class JobPlexSync {
   private libraries: Library[];
   private currentLibrary: Library;
   private running = false;
+  private isRecentOnly = false;
 
-  constructor() {
+  constructor({ isRecentOnly }: { isRecentOnly?: boolean } = {}) {
     this.tmdb = new TheMovieDb();
+    this.isRecentOnly = isRecentOnly ?? false;
   }
 
   private async getExisting(tmdbId: number) {
@@ -107,11 +112,116 @@ class JobPlexSync {
     }
   }
 
+  private async processShow(plexitem: PlexLibraryItem) {
+    const mediaRepository = getRepository(Media);
+
+    let tvShow: TmdbTvDetails | null = null;
+
+    try {
+      const metadata = await this.plexClient.getMetadata(
+        plexitem.parentRatingKey ?? plexitem.ratingKey,
+        { includeChildren: true }
+      );
+      if (metadata.guid.match(tvdbRegex)) {
+        const matchedtvdb = metadata.guid.match(tvdbRegex);
+
+        // If we can find a tvdb Id, use it to get the full tmdb show details
+        if (matchedtvdb?.[1]) {
+          tvShow = await this.tmdb.getShowByTvdbId({
+            tvdbId: Number(matchedtvdb[1]),
+          });
+        }
+      } else if (metadata.guid.match(tmdbShowRegex)) {
+        const matchedtmdb = metadata.guid.match(tmdbShowRegex);
+
+        if (matchedtmdb?.[1]) {
+          tvShow = await this.tmdb.getTvShow({ tvId: Number(matchedtmdb[1]) });
+        }
+      }
+
+      if (tvShow && metadata) {
+        // Lets get the available seasons from plex
+        const seasons = tvShow.seasons;
+        const media = await mediaRepository.findOne({
+          where: { tmdbId: tvShow.id, mediaType: MediaType.TV },
+        });
+
+        const availableSeasons: Season[] = [];
+
+        seasons.forEach((season) => {
+          const matchedPlexSeason = metadata.Children?.Metadata.find(
+            (md) => Number(md.index) === season.season_number
+          );
+
+          // Check if we found the matching season and it has all the available episodes
+          if (
+            matchedPlexSeason &&
+            Number(matchedPlexSeason.leafCount) === season.episode_count
+          ) {
+            availableSeasons.push(
+              new Season({
+                seasonNumber: season.season_number,
+                status: MediaStatus.AVAILABLE,
+              })
+            );
+          } else if (matchedPlexSeason) {
+            availableSeasons.push(
+              new Season({
+                seasonNumber: season.season_number,
+                status: MediaStatus.PARTIALLY_AVAILABLE,
+              })
+            );
+          }
+        });
+
+        // Remove extras season. We dont count it for determining availability
+        const filteredSeasons = tvShow.seasons.filter(
+          (season) => season.season_number !== 0
+        );
+
+        const isAllSeasons = availableSeasons.length >= filteredSeasons.length;
+
+        if (media) {
+          // Update existing
+          media.seasons = availableSeasons;
+          media.status = isAllSeasons
+            ? MediaStatus.AVAILABLE
+            : MediaStatus.PARTIALLY_AVAILABLE;
+          await mediaRepository.save(media);
+          this.log(`Updating existing title: ${tvShow.name}`);
+        } else {
+          const newMedia = new Media({
+            mediaType: MediaType.TV,
+            seasons: availableSeasons,
+            tmdbId: tvShow.id,
+            tvdbId: tvShow.external_ids.tvdb_id,
+            status: isAllSeasons
+              ? MediaStatus.AVAILABLE
+              : MediaStatus.PARTIALLY_AVAILABLE,
+          });
+          await mediaRepository.save(newMedia);
+          this.log(`Saved ${tvShow.name}`);
+        }
+      } else {
+        this.log(`failed show: ${plexitem.guid}`);
+      }
+    } catch (e) {
+      this.log(
+        `Failed to process plex item. ratingKey: ${
+          plexitem.parentRatingKey ?? plexitem.ratingKey
+        }`,
+        'error'
+      );
+    }
+  }
+
   private async processItems(slicedItems: PlexLibraryItem[]) {
     await Promise.all(
       slicedItems.map(async (plexitem) => {
         if (plexitem.type === 'movie') {
           await this.processMovie(plexitem);
+        } else if (plexitem.type === 'show') {
+          await this.processShow(plexitem);
         }
       })
     );
@@ -159,15 +269,26 @@ class JobPlexSync {
       });
 
       this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
-      this.libraries = settings.plex.libraries.filter(
-        (library) => library.enabled
-      );
-
-      for (const library of this.libraries) {
-        this.currentLibrary = library;
-        this.log(`Beginning to process library: ${library.name}`, 'info');
-        this.items = await this.plexClient.getLibraryContents(library.id);
+      if (this.isRecentOnly) {
+        this.currentLibrary = {
+          id: '0',
+          name: 'Recently Added',
+          enabled: true,
+        };
+        this.log(`Beginning to process recently added`, 'info');
+        this.items = await this.plexClient.getRecentlyAdded();
         await this.loop();
+      } else {
+        this.libraries = settings.plex.libraries.filter(
+          (library) => library.enabled
+        );
+
+        for (const library of this.libraries) {
+          this.currentLibrary = library;
+          this.log(`Beginning to process library: ${library.name}`, 'info');
+          this.items = await this.plexClient.getLibraryContents(library.id);
+          await this.loop();
+        }
       }
       this.running = false;
       this.log('complete');
@@ -189,6 +310,5 @@ class JobPlexSync {
   }
 }
 
-const jobPlexSync = new JobPlexSync();
-
-export default jobPlexSync;
+export const jobPlexFullSync = new JobPlexSync();
+export const jobPlexRecentSync = new JobPlexSync({ isRecentOnly: true });

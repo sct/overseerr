@@ -40,3 +40,6 @@ config/logs/*.log
 
 # dist files
 dist
+
+# sqlite journal
+config/db/db.sqlite3-journal

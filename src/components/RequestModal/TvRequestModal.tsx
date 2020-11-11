@@ -71,17 +71,31 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     }
   };
 
-  const getAllRequestedSeasons = (): number[] =>
-    (data?.mediaInfo?.requests ?? []).reduce((requestedSeasons, request) => {
-      return [
-        ...requestedSeasons,
-        ...request.seasons.map((sr) => sr.seasonNumber),
-      ];
-    }, [] as number[]);
+  const getAllRequestedSeasons = (): number[] => {
+    const requestedSeasons = (data?.mediaInfo?.requests ?? []).reduce(
+      (requestedSeasons, request) => {
+        return [
+          ...requestedSeasons,
+          ...request.seasons.map((sr) => sr.seasonNumber),
+        ];
+      },
+      [] as number[]
+    );
 
-  const isSelectedSeason = (seasonNumber: number): boolean => {
-    return selectedSeasons.includes(seasonNumber);
+    const availableSeasons = (data?.mediaInfo?.seasons ?? [])
+      .filter(
+        (season) =>
+          (season.status === MediaStatus.AVAILABLE ||
+            season.status === MediaStatus.PARTIALLY_AVAILABLE) &&
+          !requestedSeasons.includes(season.seasonNumber)
+      )
+      .map((season) => season.seasonNumber);
+
+    return [...requestedSeasons, ...availableSeasons];
   };
+
+  const isSelectedSeason = (seasonNumber: number): boolean =>
+    selectedSeasons.includes(seasonNumber);
 
   const toggleSeason = (seasonNumber: number): void => {
     // If this season already has a pending request, don't allow it to be toggled
@@ -241,6 +255,9 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                       const seasonRequest = getSeasonRequest(
                         season.seasonNumber
                       );
+                      const mediaSeason = data?.mediaInfo?.seasons.find(
+                        (sn) => sn.seasonNumber === season.seasonNumber
+                      );
                       return (
                         <tr key={`season-${season.id}`}>
                           <td className="px-4 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-100">
@@ -248,6 +265,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                               role="checkbox"
                               tabIndex={0}
                               aria-checked={
+                                !!mediaSeason ||
                                 !!seasonRequest ||
                                 isSelectedSeason(season.seasonNumber)
                               }
@@ -258,12 +276,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                 }
                               }}
                               className={`group relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none ${
-                                seasonRequest ? 'opacity-50' : ''
+                                mediaSeason || seasonRequest ? 'opacity-50' : ''
                               }`}
                             >
                               <span
                                 aria-hidden="true"
                                 className={`${
+                                  !!mediaSeason ||
                                   !!seasonRequest ||
                                   isSelectedSeason(season.seasonNumber)
                                     ? 'bg-indigo-500'
@@ -273,6 +292,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                               <span
                                 aria-hidden="true"
                                 className={`${
+                                  !!mediaSeason ||
                                   !!seasonRequest ||
                                   isSelectedSeason(season.seasonNumber)
                                     ? 'translate-x-5'
@@ -290,17 +310,25 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                             {season.episodeCount}
                           </td>
                           <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-200">
-                            {!seasonRequest && <Badge>Not Requested</Badge>}
-                            {seasonRequest?.status ===
-                              MediaRequestStatus.PENDING && (
-                              <Badge badgeType="warning">Pending</Badge>
+                            {!seasonRequest && !mediaSeason && (
+                              <Badge>Not Requested</Badge>
                             )}
-                            {seasonRequest?.status ===
-                              MediaRequestStatus.APPROVED && (
-                              <Badge badgeType="danger">Unavailable</Badge>
-                            )}
-                            {seasonRequest?.status ===
-                              MediaRequestStatus.AVAILABLE && (
+                            {!mediaSeason &&
+                              seasonRequest?.status ===
+                                MediaRequestStatus.PENDING && (
+                                <Badge badgeType="warning">Pending</Badge>
+                              )}
+                            {!mediaSeason &&
+                              seasonRequest?.status ===
+                                MediaRequestStatus.APPROVED && (
+                                <Badge badgeType="danger">Unavailable</Badge>
+                              )}
+                            {!mediaSeason &&
+                              seasonRequest?.status ===
+                                MediaRequestStatus.AVAILABLE && (
+                                <Badge badgeType="success">Available</Badge>
+                              )}
+                            {mediaSeason?.status === MediaStatus.AVAILABLE && (
                               <Badge badgeType="success">Available</Badge>
                             )}
                           </td>

@@ -1,14 +1,32 @@
 import schedule from 'node-schedule';
-import jobPlexSync from './plexsync';
+import { jobPlexFullSync, jobPlexRecentSync } from './plexsync';
 import logger from '../logger';
 
-export const scheduledJobs: Record<string, schedule.Job> = {};
+interface ScheduledJob {
+  job: schedule.Job;
+  name: string;
+}
+
+export const scheduledJobs: ScheduledJob[] = [];
 
 export const startJobs = (): void => {
+  // Run recently added plex sync every 5 minutes
+  scheduledJobs.push({
+    name: 'Plex Recently Added Sync',
+    job: schedule.scheduleJob('0 */10 * * * *', () => {
+      logger.info('Starting scheduled job: Plex Recently Added Sync', {
+        label: 'Jobs',
+      });
+      jobPlexRecentSync.run();
+    }),
+  });
   // Run full plex sync every 6 hours
-  scheduledJobs.plexFullSync = schedule.scheduleJob('* */6 * * *', () => {
-    logger.info('Starting scheduled job: Plex Full Sync', { label: 'Jobs' });
-    jobPlexSync.run();
+  scheduledJobs.push({
+    name: 'Plex Full Library Sync',
+    job: schedule.scheduleJob('* * */6 * * *', () => {
+      logger.info('Starting scheduled job: Plex Full Sync', { label: 'Jobs' });
+      jobPlexFullSync.run();
+    }),
   });
 
   logger.info('Scheduled jobs loaded', { label: 'Jobs' });

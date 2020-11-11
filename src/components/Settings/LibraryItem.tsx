@@ -18,7 +18,6 @@ const LibraryItem: React.FC<LibraryItemProps> = ({
           {name}
         </div>
         <div className="flex-shrink-0 pr-2">
-          {/* <!-- On: "bg-indigo-600", Off: "bg-gray-200" --> */}
           <span
             role="checkbox"
             tabIndex={0}
@@ -33,14 +32,12 @@ const LibraryItem: React.FC<LibraryItemProps> = ({
               isEnabled ? 'bg-indigo-600' : 'bg-cool-gray-700'
             } relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline`}
           >
-            {/* <!-- On: "translate-x-5", Off: "translate-x-0" --> */}
             <span
               aria-hidden="true"
               className={`${
                 isEnabled ? 'translate-x-5' : 'translate-x-0'
               } relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200`}
             >
-              {/* <!-- On: "opacity-0 ease-out duration-100", Off: "opacity-100 ease-in duration-200" --> */}
               <span
                 className={`${
                   isEnabled
@@ -62,7 +59,6 @@ const LibraryItem: React.FC<LibraryItemProps> = ({
                   />
                 </svg>
               </span>
-              {/* <!-- On: "opacity-100 ease-in duration-200", Off: "opacity-0 ease-out duration-100" --> */}
               <span
                 className={`${
                   isEnabled

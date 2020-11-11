@@ -32,11 +32,10 @@ export const useUser = ({
   id,
   initialData,
 }: { id?: number; initialData?: User } = {}): UserHookResponse => {
-  const initialRef = useRef(initialData);
   const { data, error, revalidate } = useSwr<User>(
     id ? `/api/v1/user/${id}` : `/api/v1/auth/me`,
     {
-      initialData: initialRef.current,
+      initialData,
       refreshInterval: 30000,
       errorRetryInterval: 30000,
       shouldRetryOnError: false,

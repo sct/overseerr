@@ -7,8 +7,10 @@ import { FormattedDate } from 'react-intl';
 import Button from '../Common/Button';
 import { hasPermission } from '../../../server/lib/permissions';
 import { Permission } from '../../hooks/useUser';
+import { useRouter } from 'next/router';
 
 const UserList: React.FC = () => {
+  const router = useRouter();
   const { data, error } = useSWR<User[]>('/api/v1/user');
 
   if (!data && !error) {
@@ -94,7 +96,13 @@ const UserList: React.FC = () => {
                         <FormattedDate value={user.updatedAt} />
                       </td>
                       <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
-                        <Button buttonType="warning" className="mr-2">
+                        <Button
+                          buttonType="warning"
+                          className="mr-2"
+                          onClick={() =>
+                            router.push('/users/[userId]', `/users/${user.id}`)
+                          }
+                        >
                           Edit
                         </Button>
                         <Button buttonType="danger">Delete</Button>

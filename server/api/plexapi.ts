@@ -3,9 +3,11 @@ import { getSettings } from '../lib/settings';
 
 export interface PlexLibraryItem {
   ratingKey: string;
+  parentRatingKey?: string;
   title: string;
   guid: string;
-  type: 'movie' | 'show';
+  parentGuid?: string;
+  type: 'movie' | 'show' | 'season';
 }
 
 interface PlexLibraryResponse {
@@ -28,12 +30,21 @@ interface PlexLibrariesResponse {
 
 export interface PlexMetadata {
   ratingKey: string;
+  parentRatingKey?: string;
   guid: string;
-  type: 'movie' | 'show';
+  type: 'movie' | 'show' | 'season';
   title: string;
   Guid: {
     id: string;
   }[];
+  Children?: {
+    size: 12;
+    Metadata: PlexMetadata[];
+  };
+  index: number;
+  parentIndex?: number;
+  leafCount: number;
+  viewedLeafCount: number;
 }
 
 interface PlexMetadataResponse {
@@ -63,6 +74,9 @@ class PlexAPI {
           cb(undefined, plexToken);
         },
       },
+      // requestOptions: {
+      //   includeChildren: 1,
+      // },
       options: {
         identifier: settings.clientId,
         product: 'Overseerr',
@@ -92,18 +106,25 @@ class PlexAPI {
     return response.MediaContainer.Metadata;
   }
 
-  public async getMetadata(key: string): Promise<PlexMetadata> {
+  public async getMetadata(
+    key: string,
+    options: { includeChildren?: boolean } = {}
+  ): Promise<PlexMetadata> {
     const response = await this.plexClient.query<PlexMetadataResponse>(
-      `/library/metadata/${key}`
+      `/library/metadata/${key}${
+        options.includeChildren ? '?includeChildren=1' : ''
+      }`
     );
 
     return response.MediaContainer.Metadata[0];
   }
 
-  public async getRecentlyAdded() {
-    const response = await this.plexClient.query('/library/recentlyAdded');
+  public async getRecentlyAdded(): Promise<PlexLibraryItem[]> {
+    const response = await this.plexClient.query<PlexLibraryResponse>(
+      '/library/recentlyAdded'
+    );
 
-    return response;
+    return response.MediaContainer.Metadata;
   }
 }
 

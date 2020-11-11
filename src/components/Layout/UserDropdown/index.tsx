@@ -54,20 +54,6 @@ const UserDropdown: React.FC = () => {
               href="#"
               className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition ease-in-out duration-150"
               role="menuitem"
-            >
-              Your Profile
-            </a>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition ease-in-out duration-150"
-              role="menuitem"
-            >
-              Settings
-            </a>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition ease-in-out duration-150"
-              role="menuitem"
               onClick={() => logout()}
             >
               Sign out
