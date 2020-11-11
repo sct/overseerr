@@ -20,7 +20,8 @@ requestRoutes.get('/', async (req, res, next) => {
             id: 'DESC',
           },
           relations: ['media'],
-          take: 20,
+          take: Number(req.query.take) ?? 20,
+          skip: Number(req.query.skip) ?? 0,
         })
       : await requestRepository.find({
           where: { requestedBy: { id: req.user?.id } },
@@ -28,7 +29,8 @@ requestRoutes.get('/', async (req, res, next) => {
           order: {
             id: 'DESC',
           },
-          take: 20,
+          take: Number(req.query.limit) ?? 20,
+          skip: Number(req.query.skip) ?? 0,
         });
 
     return res.status(200).json(requests);

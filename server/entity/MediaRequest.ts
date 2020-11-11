@@ -151,7 +151,8 @@ export class MediaRequest {
         });
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
 
-        await radarr.addMovie({
+        // Run this asynchronously so we don't wait for it on the UI side
+        radarr.addMovie({
           profileId: radarrSettings.activeProfileId,
           qualityProfileId: radarrSettings.activeProfileId,
           rootFolderPath: radarrSettings.activeDirectory,
@@ -212,7 +213,8 @@ export class MediaRequest {
           throw new Error('Series was missing tvdb id');
         }
 
-        await sonarr.addSeries({
+        // Run this asynchronously so we don't wait for it on the UI side
+        sonarr.addSeries({
           profileId: sonarrSettings.activeProfileId,
           rootFolderPath: sonarrSettings.activeDirectory,
           title: series.name,

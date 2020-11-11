@@ -10,6 +10,7 @@ import discoverRoutes from './discover';
 import requestRoutes from './request';
 import movieRoutes from './movie';
 import tvRoutes from './tv';
+import mediaRoutes from './media';
 
 const router = Router();
 
@@ -25,6 +26,7 @@ router.use('/discover', isAuthenticated(), discoverRoutes);
 router.use('/request', isAuthenticated(), requestRoutes);
 router.use('/movie', isAuthenticated(), movieRoutes);
 router.use('/tv', isAuthenticated(), tvRoutes);
+router.use('/media', isAuthenticated(), mediaRoutes);
 router.use('/auth', authRoutes);
 
 router.get('/settings/public', (_req, res) => {

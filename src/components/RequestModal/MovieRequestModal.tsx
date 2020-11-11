@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Modal from '../Common/Modal';
 import { useUser } from '../../hooks/useUser';
 import { Permission } from '../../../server/lib/permissions';
@@ -35,6 +35,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   onUpdating,
   ...props
 }) => {
+  const [isUpdating, setIsUpdating] = useState(false);
   const { addToast } = useToasts();
   const { data, error } = useSWR<MovieDetails>(`/api/v1/movie/${tmdbId}`, {
     revalidateOnMount: true,
@@ -42,10 +43,14 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   const intl = useIntl();
   const { user, hasPermission } = useUser();
 
-  const sendRequest = useCallback(async () => {
+  useEffect(() => {
     if (onUpdating) {
-      onUpdating(true);
+      onUpdating(isUpdating);
     }
+  }, [isUpdating, onUpdating]);
+
+  const sendRequest = useCallback(async () => {
+    setIsUpdating(true);
     const response = await axios.post<MediaRequest>('/api/v1/request', {
       mediaId: data?.id,
       mediaType: 'movie',
@@ -61,18 +66,14 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         </span>,
         { appearance: 'success', autoDismiss: true }
       );
-      if (onUpdating) {
-        onUpdating(false);
-      }
+      setIsUpdating(false);
     }
-  }, [data, onComplete, onUpdating, addToast]);
+  }, [data, onComplete, addToast]);
 
   const activeRequest = data?.mediaInfo?.requests?.[0];
 
   const cancelRequest = async () => {
-    if (onUpdating) {
-      onUpdating(true);
-    }
+    setIsUpdating(true);
     const response = await axios.delete<MediaRequest>(
       `/api/v1/request/${activeRequest?.id}`
     );
@@ -87,9 +88,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         </span>,
         { appearance: 'success', autoDismiss: true }
       );
-      if (onUpdating) {
-        onUpdating(false);
-      }
+      setIsUpdating(false);
     }
   };
 
@@ -109,8 +108,9 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         backgroundClickable
         onCancel={onCancel}
         onOk={isOwner ? () => cancelRequest() : undefined}
+        okDisabled={isUpdating}
         title={`Pending request for ${data?.title}`}
-        okText={'Cancel Request'}
+        okText={isUpdating ? 'Cancelling...' : 'Cancel Request'}
         okButtonType={'danger'}
         cancelText="Close"
         iconSvg={<DownloadIcon className="w-6 h-6" />}
@@ -128,8 +128,9 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       backgroundClickable
       onCancel={onCancel}
       onOk={sendRequest}
+      okDisabled={isUpdating}
       title={`Request ${data?.title}`}
-      okText={'Request'}
+      okText={isUpdating ? 'Requesting...' : 'Request'}
       okButtonType={'primary'}
       iconSvg={<DownloadIcon className="w-6 h-6" />}
       {...props}

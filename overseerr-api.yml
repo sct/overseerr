@@ -736,6 +736,21 @@ components:
         name:
           type: string
           example: 720p/1080p
+    PageInfo:
+      type: object
+      properties:
+        page:
+          type: number
+          example: 1
+        pages:
+          type: number
+          example: 10
+        pageSize:
+          type: number
+          example: 10
+        results:
+          type: number
+          example: 100
 
   securitySchemes:
     cookieAuth:
@@ -1847,6 +1862,45 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/TvResult'
+  /media:
+    get:
+      summary: Return all media
+      description: Returns all media (can be filtered and limited) in JSON format
+      tags:
+        - media
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 20
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+        - in: query
+          name: filter
+          schema:
+            type: string
+            nullable: true
+            enum: [all, available, partial, processing, pending]
+      responses:
+        '200':
+          description: Returned media
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaInfo'
 
 security:
   - cookieAuth: []

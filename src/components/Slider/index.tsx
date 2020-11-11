@@ -2,12 +2,18 @@ import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSpring } from 'react-spring';
 import TitleCard from '../TitleCard';
+import { defineMessages, FormattedMessage } from 'react-intl';
+
+const messages = defineMessages({
+  noresults: 'No Results',
+});
 
 interface SliderProps {
   sliderKey: string;
   items?: JSX.Element[];
   isLoading: boolean;
   isEmpty: boolean;
+  emptyMessage?: string;
 }
 
 enum Direction {
@@ -20,6 +26,7 @@ const Slider: React.FC<SliderProps> = ({
   items,
   isLoading,
   isEmpty,
+  emptyMessage,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollPos, setScrollPos] = useState({ isStart: true, isEnd: false });
@@ -208,7 +215,13 @@ const Slider: React.FC<SliderProps> = ({
             </div>
           ))}
         {isEmpty && (
-          <div className="text-center text-white mt-16 mb-16">No Results</div>
+          <div className="text-center text-white mt-16 mb-16">
+            {emptyMessage ? (
+              emptyMessage
+            ) : (
+              <FormattedMessage {...messages.noresults} />
+            )}
+          </div>
         )}
       </div>
     </div>
