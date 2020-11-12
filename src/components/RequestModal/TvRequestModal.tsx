@@ -328,6 +328,12 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                 MediaRequestStatus.AVAILABLE && (
                                 <Badge badgeType="success">Available</Badge>
                               )}
+                            {mediaSeason?.status ===
+                              MediaStatus.PARTIALLY_AVAILABLE && (
+                              <Badge badgeType="success">
+                                Partially Available
+                              </Badge>
+                            )}
                             {mediaSeason?.status === MediaStatus.AVAILABLE && (
                               <Badge badgeType="success">Available</Badge>
                             )}

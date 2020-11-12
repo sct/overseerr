@@ -97,7 +97,8 @@ const TitleCard: React.FC<TitleCardProps> = ({
               right: '-1px',
             }}
           >
-            {currentStatus === MediaStatus.AVAILABLE && (
+            {(currentStatus === MediaStatus.AVAILABLE ||
+              currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
               <Available className="rounded-tr-md" />
             )}
             {currentStatus === MediaStatus.PENDING && (
@@ -256,7 +257,8 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       </svg>
                     </button>
                   )}
-                  {currentStatus === MediaStatus.AVAILABLE && (
+                  {(currentStatus === MediaStatus.AVAILABLE ||
+                    currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
                     <button className="w-full h-7 text-center text-white bg-green-400 rounded-sm ml-2">
                       <svg
                         className="w-4 mx-auto"
