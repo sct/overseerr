@@ -48,7 +48,11 @@ interface SyncStatus {
   libraries: Library[];
 }
 
-const SettingsPlex: React.FC = () => {
+interface SettingsPlexProps {
+  onComplete?: () => void;
+}
+
+const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   const intl = useIntl();
   const { data, error, revalidate } = useSWR<PlexSettings>(
     '/api/v1/settings/plex'
@@ -78,6 +82,9 @@ const SettingsPlex: React.FC = () => {
         } as PlexSettings);
 
         revalidate();
+        if (onComplete) {
+          onComplete();
+        }
       } catch (e) {
         setSubmitError(e.response.data.message);
       } finally {

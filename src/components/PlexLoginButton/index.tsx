@@ -18,8 +18,8 @@ const PlexLoginButton: React.FC<PlexLoginButtonProps> = ({
     setLoading(true);
     try {
       const authToken = await plexOAuth.login();
-      onAuthToken(authToken);
       setLoading(false);
+      onAuthToken(authToken);
     } catch (e) {
       if (onError) {
         onError(e.message);
