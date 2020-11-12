@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getRepository, FindOperator } from 'typeorm';
+import { getRepository, FindOperator, FindOneOptions } from 'typeorm';
 import Media from '../entity/Media';
 import { MediaStatus } from '../constants/media';
 
@@ -43,11 +43,21 @@ mediaRoutes.get('/', async (req, res, next) => {
       statusFilter = undefined;
   }
 
+  let sortFilter: FindOneOptions<Media>['order'] = {
+    id: 'DESC',
+  };
+
+  switch (req.query.sort) {
+    case 'modified':
+      sortFilter = {
+        updatedAt: 'DESC',
+      };
+      break;
+  }
+
   try {
     const [media, mediaCount] = await mediaRepository.findAndCount({
-      order: {
-        id: 'DESC',
-      },
+      order: sortFilter,
       where: {
         status: statusFilter,
       },

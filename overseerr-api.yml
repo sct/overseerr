@@ -1160,7 +1160,21 @@ paths:
   /settings/public:
     get:
       summary: Returns public settings
+      security: []
       description: Returns settings that are not protected or sensitive. Mainly used to determine if the app has been configured for the first time.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Public Settings returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicSettings'
+  /settings/initialize:
+    get:
+      summary: Set the application as initialized
+      description: Sets the app as initalized and allows the user to navigate to pages other than the setup page
       tags:
         - settings
       responses:
@@ -1887,6 +1901,12 @@ paths:
             type: string
             nullable: true
             enum: [all, available, partial, processing, pending]
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [added, modified]
+            default: added
       responses:
         '200':
           description: Returned media

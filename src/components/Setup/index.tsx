@@ -6,11 +6,32 @@ import SettingsPlex from '../Settings/SettingsPlex';
 import SettingsServices from '../Settings/SettingsServices';
 import LoginWithPlex from './LoginWithPlex';
 import SetupSteps from './SetupSteps';
+import axios from 'axios';
+import { defineMessages, FormattedMessage } from 'react-intl';
+
+const messages = defineMessages({
+  finish: 'Finish Setup',
+  finishing: 'Finishing...',
+  continue: 'Continue',
+});
 
 const Setup: React.FC = () => {
+  const [isUpdating, setIsUpdating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [plexSettingsComplete, setPlexSettingsComplete] = useState(false);
   const router = useRouter();
+
+  const finishSetup = async () => {
+    setIsUpdating(false);
+    const response = await axios.get<{ initialized: boolean }>(
+      '/api/v1/settings/initialize'
+    );
+
+    setIsUpdating(false);
+    if (response.data.initialized) {
+      router.push('/');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-cool-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
@@ -68,7 +89,7 @@ const Setup: React.FC = () => {
                       disabled={!plexSettingsComplete}
                       onClick={() => setCurrentStep(3)}
                     >
-                      Continue
+                      <FormattedMessage {...messages.continue} />
                     </Button>
                   </span>
                 </div>
@@ -83,9 +104,14 @@ const Setup: React.FC = () => {
                   <span className="ml-3 inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
-                      onClick={() => router.push('/')}
+                      onClick={() => finishSetup()}
+                      disabled={isUpdating}
                     >
-                      Finish Setup
+                      {isUpdating ? (
+                        <FormattedMessage {...messages.finishing} />
+                      ) : (
+                        <FormattedMessage {...messages.finish} />
+                      )}
                     </Button>
                   </span>
                 </div>

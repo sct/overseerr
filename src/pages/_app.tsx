@@ -96,29 +96,47 @@ CoreApp.getInitialProps = async (initialProps) => {
   let locale = 'en';
 
   if (ctx.res) {
-    try {
-      // Attempt to get the user by running a request to the local api
-      const response = await axios.get<User>(
-        `http://localhost:${process.env.PORT || 3000}/api/v1/auth/me`,
-        { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
-      );
-      user = response.data;
+    // Check if app is initialized and redirect if necessary
+    let initialized = true;
 
-      if (router.pathname.match(/login/)) {
+    const response = await axios.get<{ initialized: boolean }>(
+      `http://localhost:${process.env.PORT || 3000}/api/v1/settings/public`
+    );
+
+    initialized = response.data.initialized;
+
+    if (!initialized) {
+      if (!router.pathname.match(/(setup|login\/plex)/)) {
         ctx.res.writeHead(307, {
-          Location: '/',
+          Location: '/setup',
         });
         ctx.res.end();
       }
-    } catch (e) {
-      // If there is no user, and ctx.res is set (to check if we are on the server side)
-      // _AND_ we are not already on the login or setup route, redirect to /login with a 307
-      // before anything actually renders
-      if (!router.pathname.match(/(login|setup)/)) {
-        ctx.res.writeHead(307, {
-          Location: '/login',
-        });
-        ctx.res.end();
+    } else {
+      try {
+        // Attempt to get the user by running a request to the local api
+        const response = await axios.get<User>(
+          `http://localhost:${process.env.PORT || 3000}/api/v1/auth/me`,
+          { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
+        );
+        user = response.data;
+
+        if (router.pathname.match(/login/)) {
+          ctx.res.writeHead(307, {
+            Location: '/',
+          });
+          ctx.res.end();
+        }
+      } catch (e) {
+        // If there is no user, and ctx.res is set (to check if we are on the server side)
+        // _AND_ we are not already on the login or setup route, redirect to /login with a 307
+        // before anything actually renders
+        if (!router.pathname.match(/(login|setup)/)) {
+          ctx.res.writeHead(307, {
+            Location: '/login',
+          });
+          ctx.res.end();
+        }
       }
     }
 

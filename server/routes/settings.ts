@@ -13,6 +13,8 @@ import SonarrAPI from '../api/sonarr';
 import RadarrAPI from '../api/radarr';
 import logger from '../logger';
 import { scheduledJobs } from '../job/schedule';
+import { Permission } from '../lib/permissions';
+import { isAuthenticated } from '../middleware/auth';
 
 const settingsRoutes = Router();
 
@@ -333,5 +335,18 @@ settingsRoutes.get('/jobs', (req, res) => {
     }))
   );
 });
+
+settingsRoutes.get(
+  '/initialize',
+  isAuthenticated(Permission.ADMIN),
+  (req, res) => {
+    const settings = getSettings();
+
+    settings.public.initialized = true;
+    settings.save();
+
+    return res.status(200).json(settings.public);
+  }
+);
 
 export default settingsRoutes;

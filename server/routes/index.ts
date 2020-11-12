@@ -16,6 +16,11 @@ const router = Router();
 
 router.use(checkUser);
 router.use('/user', isAuthenticated(Permission.MANAGE_USERS), user);
+router.get('/settings/public', (_req, res) => {
+  const settings = getSettings();
+
+  return res.status(200).json(settings.public);
+});
 router.use(
   '/settings',
   isAuthenticated(Permission.MANAGE_SETTINGS),
@@ -28,12 +33,6 @@ router.use('/movie', isAuthenticated(), movieRoutes);
 router.use('/tv', isAuthenticated(), tvRoutes);
 router.use('/media', isAuthenticated(), mediaRoutes);
 router.use('/auth', authRoutes);
-
-router.get('/settings/public', (_req, res) => {
-  const settings = getSettings();
-
-  return res.status(200).json(settings.public);
-});
 
 router.get('/', (_req, res) => {
   return res.status(200).json({
