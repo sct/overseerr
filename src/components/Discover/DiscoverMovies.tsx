@@ -49,6 +49,10 @@ const DiscoverMovies: React.FC = () => {
     [] as MovieResult[]
   );
 
+  const isEmpty = !isLoadingInitialData && titles?.length === 0;
+  const isReachingEnd =
+    isEmpty || (data && data[data.length - 1]?.results.length < 20);
+
   return (
     <>
       <div className="md:flex md:items-center md:justify-between mb-8 mt-6">
@@ -60,10 +64,11 @@ const DiscoverMovies: React.FC = () => {
       </div>
       <ListView
         items={titles}
-        isEmpty={!isLoadingInitialData && titles?.length === 0}
+        isEmpty={isEmpty}
         isLoading={
           isLoadingInitialData || (isLoadingMore && (titles?.length ?? 0) > 0)
         }
+        isReachingEnd={isReachingEnd}
         onScrollBottom={fetchMore}
       />
     </>

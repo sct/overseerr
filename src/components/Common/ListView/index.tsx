@@ -12,6 +12,7 @@ interface ListViewProps {
   items?: (TvResult | MovieResult | PersonResult)[];
   isEmpty?: boolean;
   isLoading?: boolean;
+  isReachingEnd?: boolean;
   onScrollBottom: () => void;
 }
 
@@ -20,8 +21,9 @@ const ListView: React.FC<ListViewProps> = ({
   isEmpty,
   isLoading,
   onScrollBottom,
+  isReachingEnd,
 }) => {
-  useVerticalScroll(onScrollBottom, !isLoading);
+  useVerticalScroll(onScrollBottom, !isLoading && !isEmpty && !isReachingEnd);
   return (
     <>
       {isEmpty && (
@@ -79,6 +81,7 @@ const ListView: React.FC<ListViewProps> = ({
           );
         })}
         {isLoading &&
+          !isReachingEnd &&
           [...Array(10)].map((_item, i) => (
             <li
               key={`placeholder-${i}`}
