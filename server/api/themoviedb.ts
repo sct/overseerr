@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import { number } from 'yup';
 
 interface SearchOptions {
   query: string;
@@ -98,6 +99,14 @@ interface TmdbSearchMovieResponse extends TmdbPaginatedResponse {
 
 interface TmdbSearchTvResponse extends TmdbPaginatedResponse {
   results: TmdbTvResult[];
+}
+
+interface TmdbUpcomingMoviesResponse extends TmdbPaginatedResponse {
+  dates: {
+    maximum: string;
+    minimum: string;
+  };
+  results: TmdbMovieResult[];
 }
 
 interface TmdbExternalIdResponse {
@@ -517,6 +526,30 @@ class TheMovieDb {
       return response.data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch discover tv: ${e.message}`);
+    }
+  };
+
+  public getUpcomingMovies = async ({
+    page = 1,
+    language = 'en-US',
+  }: {
+    page: number;
+    language: string;
+  }): Promise<TmdbUpcomingMoviesResponse> => {
+    try {
+      const response = await this.axios.get<TmdbUpcomingMoviesResponse>(
+        '/movie/upcoming',
+        {
+          params: {
+            page,
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch upcoming movies: ${e.message}`);
     }
   };
 

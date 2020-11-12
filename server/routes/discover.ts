@@ -30,6 +30,31 @@ discoverRoutes.get('/movies', async (req, res) => {
   });
 });
 
+discoverRoutes.get('/movies/upcoming', async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const data = await tmdb.getUpcomingMovies({
+    page: Number(req.query.page),
+    language: req.query.language as string,
+  });
+
+  const media = await Media.getRelatedMedia(
+    data.results.map((result) => result.id)
+  );
+
+  return res.status(200).json({
+    page: data.page,
+    totalPages: data.total_pages,
+    totalResults: data.total_results,
+    results: data.results.map((result) =>
+      mapMovieResult(
+        result,
+        media.find((req) => req.tmdbId === result.id)
+      )
+    ),
+  });
+});
+
 discoverRoutes.get('/tv', async (req, res) => {
   const tmdb = new TheMovieDb();
 

@@ -17,6 +17,7 @@ const messages = defineMessages({
   populartv: 'Popular Series',
   recentlyAdded: 'Recently Added',
   nopending: 'No Pending Requests',
+  upcoming: 'Upcoming Movies',
 });
 
 interface MovieDiscoverResult {
@@ -42,6 +43,10 @@ const Discover: React.FC = () => {
   const { data: tvData, error: tvError } = useSWR<TvDiscoverResult>(
     `/api/v1/discover/tv?language=${locale}`
   );
+
+  const { data: movieUpcomingData, error: movieUpcomingError } = useSWR<
+    MovieDiscoverResult
+  >(`/api/v1/discover/movies/upcoming?language=${locale}`);
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
     '/api/v1/media?filter=available&take=20&sort=modified'
@@ -127,6 +132,49 @@ const Discover: React.FC = () => {
           />
         ))}
         emptyMessage={intl.formatMessage(messages.nopending)}
+      />
+      <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
+        <div className="flex-1 min-w-0">
+          <Link href="/discover/movies/upcoming">
+            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+              <span>
+                <FormattedMessage {...messages.upcoming} />
+              </span>
+              <svg
+                className="w-6 h-6 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </a>
+          </Link>
+        </div>
+      </div>
+      <Slider
+        sliderKey="movies"
+        isLoading={!movieUpcomingData && !movieUpcomingError}
+        isEmpty={false}
+        items={movieUpcomingData?.results.map((title) => (
+          <TitleCard
+            key={`upcoming-movie-slider-${title.id}`}
+            id={title.id}
+            image={title.posterPath}
+            status={title.mediaInfo?.status}
+            summary={title.overview}
+            title={title.title}
+            userScore={title.voteAverage}
+            year={title.releaseDate}
+            mediaType={title.mediaType}
+          />
+        ))}
       />
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
