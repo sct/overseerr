@@ -1,7 +1,12 @@
 import React, { useContext } from 'react';
 import useSWR from 'swr';
-import type { MovieResult, TvResult } from '../../../server/models/Search';
+import type {
+  MovieResult,
+  TvResult,
+  PersonResult,
+} from '../../../server/models/Search';
 import TitleCard from '../TitleCard';
+import PersonCard from '../PersonCard';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
 import RequestCard from '../TitleCard/RequestCard';
 import Slider from '../Slider';
@@ -18,6 +23,7 @@ const messages = defineMessages({
   recentlyAdded: 'Recently Added',
   nopending: 'No Pending Requests',
   upcoming: 'Upcoming Movies',
+  trending: 'Trending',
 });
 
 interface MovieDiscoverResult {
@@ -34,6 +40,13 @@ interface TvDiscoverResult {
   results: TvResult[];
 }
 
+interface MixedResult {
+  page: number;
+  totalResults: number;
+  totalPages: number;
+  results: (TvResult | MovieResult | PersonResult)[];
+}
+
 const Discover: React.FC = () => {
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
@@ -47,6 +60,10 @@ const Discover: React.FC = () => {
   const { data: movieUpcomingData, error: movieUpcomingError } = useSWR<
     MovieDiscoverResult
   >(`/api/v1/discover/movies/upcoming?language=${locale}`);
+
+  const { data: trendingData, error: trendingError } = useSWR<MixedResult>(
+    `/api/v1/discover/trending?language=${locale}`
+  );
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
     '/api/v1/media?filter=available&take=20&sort=modified'
@@ -84,7 +101,7 @@ const Discover: React.FC = () => {
         </div>
       </div>
       <Slider
-        sliderKey="requests"
+        sliderKey="media"
         isLoading={!media && !mediaError}
         isEmpty={!!media && !mediaError && media.results.length === 0}
         items={media?.results?.map((item) => (
@@ -159,7 +176,7 @@ const Discover: React.FC = () => {
         </div>
       </div>
       <Slider
-        sliderKey="movies"
+        sliderKey="upcoming"
         isLoading={!movieUpcomingData && !movieUpcomingError}
         isEmpty={false}
         items={movieUpcomingData?.results.map((title) => (
@@ -175,6 +192,70 @@ const Discover: React.FC = () => {
             mediaType={title.mediaType}
           />
         ))}
+      />
+      <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
+        <div className="flex-1 min-w-0">
+          <Link href="/discover/trending">
+            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+              <span>
+                <FormattedMessage {...messages.trending} />
+              </span>
+              <svg
+                className="w-6 h-6 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </a>
+          </Link>
+        </div>
+      </div>
+      <Slider
+        sliderKey="trending"
+        isLoading={!trendingData && !trendingError}
+        isEmpty={false}
+        items={trendingData?.results.map((title) => {
+          switch (title.mediaType) {
+            case 'movie':
+              return (
+                <TitleCard
+                  id={title.id}
+                  image={title.posterPath}
+                  status={title.mediaInfo?.status}
+                  summary={title.overview}
+                  title={title.title}
+                  userScore={title.voteAverage}
+                  year={title.releaseDate}
+                  mediaType={title.mediaType}
+                />
+              );
+            case 'tv':
+              return (
+                <TitleCard
+                  id={title.id}
+                  image={title.posterPath}
+                  status={title.mediaInfo?.status}
+                  summary={title.overview}
+                  title={title.name}
+                  userScore={title.voteAverage}
+                  year={title.firstAirDate}
+                  mediaType={title.mediaType}
+                />
+              );
+            case 'person':
+              return (
+                <PersonCard name={title.name} profilePath={title.profilePath} />
+              );
+          }
+        })}
       />
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">

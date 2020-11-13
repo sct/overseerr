@@ -556,15 +556,19 @@ class TheMovieDb {
   public getAllTrending = async ({
     page = 1,
     timeWindow = 'day',
-  }: { page?: number; timeWindow?: 'day' | 'week' } = {}): Promise<
-    TmdbSearchMultiResponse
-  > => {
+    language = 'en-US',
+  }: {
+    page?: number;
+    timeWindow?: 'day' | 'week';
+    language?: string;
+  } = {}): Promise<TmdbSearchMultiResponse> => {
     try {
       const response = await this.axios.get<TmdbSearchMultiResponse>(
         `/trending/all/${timeWindow}`,
         {
           params: {
             page,
+            language,
           },
         }
       );
