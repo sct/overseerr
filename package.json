@@ -22,7 +22,7 @@
     "connect-typeorm": "^1.1.4",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
-    "express-openapi-validator": "^3.16.15",
+    "express-openapi-validator": "^4.7.0",
     "express-session": "^1.17.1",
     "formik": "^2.2.1",
     "intl": "^1.2.5",
