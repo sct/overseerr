@@ -31,7 +31,7 @@ const ListView: React.FC<ListViewProps> = ({
           No Results
         </div>
       )}
-      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7">
         {items?.map((title) => {
           let titleCard: React.ReactNode;
 
@@ -47,6 +47,7 @@ const ListView: React.FC<ListViewProps> = ({
                   userScore={title.voteAverage}
                   year={title.releaseDate}
                   mediaType={title.mediaType}
+                  canExpand
                 />
               );
               break;
@@ -61,12 +62,17 @@ const ListView: React.FC<ListViewProps> = ({
                   userScore={title.voteAverage}
                   year={title.firstAirDate}
                   mediaType={title.mediaType}
+                  canExpand
                 />
               );
               break;
             case 'person':
               titleCard = (
-                <PersonCard name={title.name} profilePath={title.profilePath} />
+                <PersonCard
+                  name={title.name}
+                  profilePath={title.profilePath}
+                  canExpand
+                />
               );
               break;
           }
@@ -82,12 +88,12 @@ const ListView: React.FC<ListViewProps> = ({
         })}
         {isLoading &&
           !isReachingEnd &&
-          [...Array(10)].map((_item, i) => (
+          [...Array(20)].map((_item, i) => (
             <li
               key={`placeholder-${i}`}
               className="col-span-1 flex flex-col text-center items-center"
             >
-              <TitleCard.Placeholder />
+              <TitleCard.Placeholder canExpand />
             </li>
           ))}
       </ul>

@@ -19,7 +19,7 @@ interface TitleCardProps {
   userScore: number;
   mediaType: MediaType;
   status?: MediaStatus;
-  requestId?: number;
+  canExpand?: boolean;
 }
 
 const TitleCard: React.FC<TitleCardProps> = ({
@@ -30,7 +30,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
   title,
   status,
   mediaType,
-  requestId,
+  canExpand = false,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(status);
@@ -55,7 +55,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
   const closeModal = useCallback(() => setShowRequestModal(false), []);
 
   return (
-    <div className="w-36 sm:w-36 md:w-44">
+    <div className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}>
       <RequestModal
         tmdbId={id}
         show={showRequestModal}

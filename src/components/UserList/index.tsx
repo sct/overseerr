@@ -8,6 +8,7 @@ import Button from '../Common/Button';
 import { hasPermission } from '../../../server/lib/permissions';
 import { Permission } from '../../hooks/useUser';
 import { useRouter } from 'next/router';
+import Header from '../Common/Header';
 
 const UserList: React.FC = () => {
   const router = useRouter();
@@ -19,13 +20,7 @@ const UserList: React.FC = () => {
 
   return (
     <>
-      <div className="md:flex md:items-center md:justify-between mt-8 mb-6">
-        <div className="flex-1 min-w-0 mx-4">
-          <h2 className="text-2xl font-bold leading-7 text-cool-gray-100 sm:text-3xl sm:leading-9 sm:truncate">
-            User List
-          </h2>
-        </div>
-      </div>
+      <Header extraMargin={4}>User List</Header>
       <div className="flex flex-col">
         <div className="my-2 overflow-x-auto -mx-6 sm:-mx-6 md:mx-4 lg:mx-4">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">

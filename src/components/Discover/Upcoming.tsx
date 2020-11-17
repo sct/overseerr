@@ -1,23 +1,23 @@
 import React, { useContext } from 'react';
 import { useSWRInfinite } from 'swr';
-import type { TvResult } from '../../../server/models/Search';
+import type { MovieResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
-import { defineMessages, FormattedMessage } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
+import { defineMessages, FormattedMessage } from 'react-intl';
 import Header from '../Common/Header';
 
 const messages = defineMessages({
-  discovertv: 'Popular Series',
+  upcomingmovies: 'Upcoming Movies',
 });
 
 interface SearchResult {
   page: number;
   totalResults: number;
   totalPages: number;
-  results: TvResult[];
+  results: MovieResult[];
 }
 
-const DiscoverTv: React.FC = () => {
+const UpcomingMovies: React.FC = () => {
   const { locale } = useContext(LanguageContext);
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
@@ -25,7 +25,9 @@ const DiscoverTv: React.FC = () => {
         return null;
       }
 
-      return `/api/v1/discover/tv?page=${pageIndex + 1}&language=${locale}`;
+      return `/api/v1/discover/movies/upcoming?page=${
+        pageIndex + 1
+      }&language=${locale}`;
     },
     {
       initialSize: 3,
@@ -45,7 +47,10 @@ const DiscoverTv: React.FC = () => {
     return <div>{error}</div>;
   }
 
-  const titles = data?.reduce((a, v) => [...a, ...v.results], [] as TvResult[]);
+  const titles = data?.reduce(
+    (a, v) => [...a, ...v.results],
+    [] as MovieResult[]
+  );
 
   const isEmpty = !isLoadingInitialData && titles?.length === 0;
   const isReachingEnd =
@@ -54,19 +59,19 @@ const DiscoverTv: React.FC = () => {
   return (
     <>
       <Header>
-        <FormattedMessage {...messages.discovertv} />
+        <FormattedMessage {...messages.upcomingmovies} />
       </Header>
       <ListView
         items={titles}
         isEmpty={isEmpty}
-        isReachingEnd={isReachingEnd}
         isLoading={
           isLoadingInitialData || (isLoadingMore && (titles?.length ?? 0) > 0)
         }
+        isReachingEnd={isReachingEnd}
         onScrollBottom={fetchMore}
       />
     </>
   );
 };
 
-export default DiscoverTv;
+export default UpcomingMovies;

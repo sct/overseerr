@@ -4,15 +4,21 @@ interface PersonCardProps {
   name: string;
   subName?: string;
   profilePath?: string;
+  canExpand?: boolean;
 }
 
 const PersonCard: React.FC<PersonCardProps> = ({
   name,
   subName,
   profilePath,
+  canExpand = false,
 }) => {
   return (
-    <div className="relative w-36 sm:w-36 md:w-44 bg-cool-gray-600 rounded-lg text-white shadow-lg hover:bg-cool-gray-500 transition ease-in-out duration-150 cursor-pointer">
+    <div
+      className={`relative ${
+        canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'
+      } bg-cool-gray-600 rounded-lg text-white shadow-lg hover:bg-cool-gray-500 transition ease-in-out duration-150 cursor-pointer`}
+    >
       <div style={{ paddingBottom: '150%' }}>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {profilePath && (

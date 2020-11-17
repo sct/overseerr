@@ -7,6 +7,7 @@ import Button from '../Common/Button';
 import { useIntl, defineMessages, FormattedMessage } from 'react-intl';
 import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
+import Header from '../Common/Header';
 
 const messages = defineMessages({
   edituser: 'Edit User',
@@ -143,184 +144,183 @@ const UserEdit: React.FC = () => {
   ];
 
   return (
-    <div className="py-6 px-4 space-y-6 sm:p-6 lg:pb-8">
-      <div className="md:flex md:items-center md:justify-between mt-8 mb-6">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-cool-gray-100 sm:text-3xl sm:leading-9 sm:truncate">
-            <FormattedMessage {...messages.edituser} />
-          </h2>
-        </div>
-      </div>
-
-      <div className="flex flex-col space-y-6 lg:flex-row lg:space-y-0 lg:space-x-6 text-white">
-        <div className="flex-grow space-y-6">
-          <div className="space-y-1">
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium leading-5 text-cool-gray-400"
-            >
-              <FormattedMessage {...messages.username} />
-            </label>
-            <div className="rounded-md shadow-sm flex">
-              <input
-                id="username"
-                className="form-input flex-grow block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
-                value={user?.username}
-                readOnly
-              />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium leading-5 text-cool-gray-400"
-            >
-              <FormattedMessage {...messages.email} />
-            </label>
-            <div className="rounded-md shadow-sm flex">
-              <input
-                id="email"
-                className="form-input flex-grow block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
-                value={user?.email}
-                readOnly
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-grow space-y-1 lg:flex-grow-0 lg:flex-shrink-0">
-          <p
-            className="block text-sm leading-5 font-medium text-cool-gray-400"
-            aria-hidden="true"
-          >
-            <FormattedMessage {...messages.avatar} />
-          </p>
-          <div className="lg:hidden">
-            <div className="flex items-center">
-              <div
-                className="flex-shrink-0 inline-block rounded-full overflow-hidden h-12 w-12"
-                aria-hidden="true"
+    <>
+      <Header extraMargin={4}>Edit User</Header>
+      <div className="px-4 space-y-6 sm:p-6 lg:pb-8">
+        <div className="flex flex-col space-y-6 lg:flex-row lg:space-y-0 lg:space-x-6 text-white">
+          <div className="flex-grow space-y-6">
+            <div className="space-y-1">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium leading-5 text-cool-gray-400"
               >
-                <img
-                  className="rounded-full h-full w-full"
-                  src={user?.avatar}
-                  alt=""
+                <FormattedMessage {...messages.username} />
+              </label>
+              <div className="rounded-md shadow-sm flex">
+                <input
+                  id="username"
+                  className="form-input flex-grow block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                  value={user?.username}
+                  readOnly
+                />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-5 text-cool-gray-400"
+              >
+                <FormattedMessage {...messages.email} />
+              </label>
+              <div className="rounded-md shadow-sm flex">
+                <input
+                  id="email"
+                  className="form-input flex-grow block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                  value={user?.email}
+                  readOnly
                 />
               </div>
             </div>
           </div>
 
-          <div className="hidden relative rounded-full overflow-hidden lg:block transition duration-150 ease-in-out">
-            <img
-              className="relative rounded-full w-40 h-40"
-              src={user?.avatar}
-              alt=""
-            />
-          </div>
-        </div>
-      </div>
-      <div className="text-white">
-        <div className="sm:border-t sm:border-gray-200 sm:pt-5">
-          <div role="group" aria-labelledby="label-permissions">
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
-              <div>
+          <div className="flex-grow space-y-1 lg:flex-grow-0 lg:flex-shrink-0">
+            <p
+              className="block text-sm leading-5 font-medium text-cool-gray-400"
+              aria-hidden="true"
+            >
+              <FormattedMessage {...messages.avatar} />
+            </p>
+            <div className="lg:hidden">
+              <div className="flex items-center">
                 <div
-                  className="text-base leading-6 font-medium sm:text-sm sm:leading-5"
-                  id="label-permissions"
+                  className="flex-shrink-0 inline-block rounded-full overflow-hidden h-12 w-12"
+                  aria-hidden="true"
                 >
-                  <FormattedMessage {...messages.permissions} />
+                  <img
+                    className="rounded-full h-full w-full"
+                    src={user?.avatar}
+                    alt=""
+                  />
                 </div>
               </div>
-              <div className="mt-4 sm:mt-0 sm:col-span-2">
-                <div className="max-w-lg">
-                  {permissionList.map((permissionOption) => (
-                    <div
-                      className={`relative flex items-start first:mt-0 mt-4 ${
-                        (permissionOption.permission !== Permission.ADMIN &&
-                          hasPermission(Permission.ADMIN, currentPermission)) ||
-                        (currentUser?.id !== 1 &&
-                          permissionOption.permission === Permission.ADMIN) ||
-                        (!currentHasPermission(Permission.MANAGE_SETTINGS) &&
-                          permissionOption.permission ===
-                            Permission.MANAGE_SETTINGS)
-                          ? 'opacity-50'
-                          : ''
-                      }`}
-                      key={`permission-option-${permissionOption.id}`}
-                    >
-                      <div className="flex items-center h-5">
-                        <input
-                          id={permissionOption.id}
-                          name="permissions"
-                          type="checkbox"
-                          className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                          disabled={
-                            (permissionOption.permission !== Permission.ADMIN &&
-                              hasPermission(
-                                Permission.ADMIN,
-                                currentPermission
-                              )) ||
-                            (currentUser?.id !== 1 &&
-                              permissionOption.permission ===
-                                Permission.ADMIN) ||
-                            (!currentHasPermission(
-                              Permission.MANAGE_SETTINGS
-                            ) &&
-                              permissionOption.permission ===
-                                Permission.MANAGE_SETTINGS)
-                          }
-                          onClick={() => {
-                            setCurrentPermission((current) =>
-                              hasPermission(
-                                permissionOption.permission,
-                                currentPermission
-                              )
-                                ? current - permissionOption.permission
-                                : current + permissionOption.permission
-                            );
-                          }}
-                          checked={hasPermission(
-                            permissionOption.permission,
-                            currentPermission
-                          )}
-                        />
+            </div>
+
+            <div className="hidden relative rounded-full overflow-hidden lg:block transition duration-150 ease-in-out">
+              <img
+                className="relative rounded-full w-40 h-40"
+                src={user?.avatar}
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+        <div className="text-white">
+          <div className="sm:border-t sm:border-gray-200 sm:pt-5">
+            <div role="group" aria-labelledby="label-permissions">
+              <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                <div>
+                  <div
+                    className="text-base leading-6 font-medium sm:text-sm sm:leading-5"
+                    id="label-permissions"
+                  >
+                    <FormattedMessage {...messages.permissions} />
+                  </div>
+                </div>
+                <div className="mt-4 sm:mt-0 sm:col-span-2">
+                  <div className="max-w-lg">
+                    {permissionList.map((permissionOption) => (
+                      <div
+                        className={`relative flex items-start first:mt-0 mt-4 ${
+                          (permissionOption.permission !== Permission.ADMIN &&
+                            hasPermission(
+                              Permission.ADMIN,
+                              currentPermission
+                            )) ||
+                          (currentUser?.id !== 1 &&
+                            permissionOption.permission === Permission.ADMIN) ||
+                          (!currentHasPermission(Permission.MANAGE_SETTINGS) &&
+                            permissionOption.permission ===
+                              Permission.MANAGE_SETTINGS)
+                            ? 'opacity-50'
+                            : ''
+                        }`}
+                        key={`permission-option-${permissionOption.id}`}
+                      >
+                        <div className="flex items-center h-5">
+                          <input
+                            id={permissionOption.id}
+                            name="permissions"
+                            type="checkbox"
+                            className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                            disabled={
+                              (permissionOption.permission !==
+                                Permission.ADMIN &&
+                                hasPermission(
+                                  Permission.ADMIN,
+                                  currentPermission
+                                )) ||
+                              (currentUser?.id !== 1 &&
+                                permissionOption.permission ===
+                                  Permission.ADMIN) ||
+                              (!currentHasPermission(
+                                Permission.MANAGE_SETTINGS
+                              ) &&
+                                permissionOption.permission ===
+                                  Permission.MANAGE_SETTINGS)
+                            }
+                            onClick={() => {
+                              setCurrentPermission((current) =>
+                                hasPermission(
+                                  permissionOption.permission,
+                                  currentPermission
+                                )
+                                  ? current - permissionOption.permission
+                                  : current + permissionOption.permission
+                              );
+                            }}
+                            checked={hasPermission(
+                              permissionOption.permission,
+                              currentPermission
+                            )}
+                          />
+                        </div>
+                        <div className="ml-3 text-sm leading-5">
+                          <label
+                            htmlFor={permissionOption.id}
+                            className="font-medium"
+                          >
+                            {permissionOption.name}
+                          </label>
+                          <p className="text-gray-500">
+                            {permissionOption.description}
+                          </p>
+                        </div>
                       </div>
-                      <div className="ml-3 text-sm leading-5">
-                        <label
-                          htmlFor={permissionOption.id}
-                          className="font-medium"
-                        >
-                          {permissionOption.name}
-                        </label>
-                        <p className="text-gray-500">
-                          {permissionOption.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="mt-8 border-t border-cool-gray-700 pt-5">
-          <div className="flex justify-end">
-            <span className="ml-3 inline-flex rounded-md shadow-sm">
-              <Button
-                buttonType="primary"
-                type="submit"
-                disabled={isUpdating}
-                onClick={() => updateUser()}
-              >
-                {isUpdating
-                  ? intl.formatMessage(messages.saving)
-                  : intl.formatMessage(messages.save)}
-              </Button>
-            </span>
+          <div className="mt-8 border-t border-cool-gray-700 pt-5">
+            <div className="flex justify-end">
+              <span className="ml-3 inline-flex rounded-md shadow-sm">
+                <Button
+                  buttonType="primary"
+                  type="submit"
+                  disabled={isUpdating}
+                  onClick={() => updateUser()}
+                >
+                  {isUpdating
+                    ? intl.formatMessage(messages.saving)
+                    : intl.formatMessage(messages.save)}
+                </Button>
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
