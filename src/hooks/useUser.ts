@@ -1,24 +1,16 @@
 import useSwr from 'swr';
 import { useRef } from 'react';
-import { hasPermission } from '../../server/lib/permissions';
+import { hasPermission, Permission } from '../../server/lib/permissions';
 
 export interface User {
   id: number;
+  username: string;
   email: string;
   avatar: string;
   permissions: number;
 }
 
-export enum Permission {
-  NONE = 0,
-  ADMIN = 2,
-  MANAGE_SETTINGS = 4,
-  MANAGE_USERS = 8,
-  MANAGE_REQUESTS = 16,
-  REQUEST = 32,
-  VOTE = 64,
-  AUTO_APPROVE = 128,
-}
+export { Permission };
 
 interface UserHookResponse {
   user?: User;

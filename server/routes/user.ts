@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
+import { hasPermission, Permission } from '../lib/permissions';
 
 const router = Router();
 
@@ -49,6 +50,36 @@ router.put<{ id: string }>('/:id', async (req, res, next) => {
     const user = await userRepository.findOneOrFail({
       where: { id: Number(req.params.id) },
     });
+
+    // Only let the owner user modify themselves
+    if (user.id === 1 && req.user?.id !== 1) {
+      return next({
+        status: 403,
+        message: 'You do not have permission to modify this user',
+      });
+    }
+
+    // Only let the owner grant admin privileges
+    if (
+      hasPermission(Permission.ADMIN, req.body.permissions) &&
+      req.user?.id !== 1
+    ) {
+      return next({
+        status: 403,
+        message: 'You do not have permission to grant this level of access',
+      });
+    }
+
+    // Only let users with the manage settings permission, grant the same permission
+    if (
+      hasPermission(Permission.MANAGE_SETTINGS, req.body.permissions) &&
+      !hasPermission(Permission.MANAGE_SETTINGS, req.user?.permissions ?? 0)
+    ) {
+      return next({
+        status: 403,
+        message: 'You do not have permission to grant this level of access',
+      });
+    }
 
     Object.assign(user, req.body);
     await userRepository.save(user);

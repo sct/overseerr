@@ -35,6 +35,7 @@ components:
           readOnly: true
         requests:
           type: array
+          readOnly: true
           items:
             $ref: '#/components/schemas/MediaRequest'
       required:

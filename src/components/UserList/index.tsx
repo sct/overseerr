@@ -100,7 +100,10 @@ const UserList: React.FC = () => {
                           buttonType="warning"
                           className="mr-2"
                           onClick={() =>
-                            router.push('/users/[userId]', `/users/${user.id}`)
+                            router.push(
+                              '/users/[userId]/edit',
+                              `/users/${user.id}/edit`
+                            )
                           }
                         >
                           Edit

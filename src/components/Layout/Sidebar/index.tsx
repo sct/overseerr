@@ -6,7 +6,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { useUser, Permission } from '../../../hooks/useUser';
 
 const messages = defineMessages({
-  dashboard: 'Dashboard',
+  dashboard: 'Discover',
   requests: 'Requests',
   users: 'Users',
   settings: 'Settings',

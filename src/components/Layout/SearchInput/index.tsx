@@ -11,7 +11,7 @@ const SearchInput: React.FC = () => {
   const { searchValue, setSearchValue, setIsOpen } = useSearchInput();
   return (
     <div className="flex-1 flex">
-      <form className="w-full flex md:ml-0" action="#" method="GET">
+      <div className="w-full flex md:ml-0">
         <label htmlFor="search_field" className="sr-only">
           Search
         </label>
@@ -36,7 +36,7 @@ const SearchInput: React.FC = () => {
             onBlur={() => setIsOpen(false)}
           />
         </div>
-      </form>
+      </div>
     </div>
   );
 };
