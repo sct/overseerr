@@ -1,9 +1,17 @@
 import React, { useContext } from 'react';
-import { useSWRInfinite } from 'swr';
-import { MovieResult } from '../../../server/models/Search';
+import useSWR, { useSWRInfinite } from 'swr';
+import type { MovieResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
 import { useRouter } from 'next/router';
 import { LanguageContext } from '../../context/LanguageContext';
+import { useIntl, defineMessages, FormattedMessage } from 'react-intl';
+import type { TvDetails } from '../../../server/models/Tv';
+import Header from '../Common/Header';
+
+const messages = defineMessages({
+  similar: 'Similar Series',
+  similarsubtext: 'Other series similar to {title}',
+});
 
 interface SearchResult {
   page: number;
@@ -14,7 +22,11 @@ interface SearchResult {
 
 const TvSimilar: React.FC = () => {
   const router = useRouter();
+  const intl = useIntl();
   const { locale } = useContext(LanguageContext);
+  const { data: tvData, error: tvError } = useSWR<TvDetails>(
+    `/api/v1/tv/${router.query.tvId}?language=${locale}`
+  );
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
@@ -54,13 +66,17 @@ const TvSimilar: React.FC = () => {
 
   return (
     <>
-      <div className="md:flex md:items-center md:justify-between mb-8 mt-6">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
-            Similar Series
-          </h2>
-        </div>
-      </div>
+      <Header
+        subtext={
+          tvData && !tvError
+            ? intl.formatMessage(messages.similarsubtext, {
+                title: tvData.name,
+              })
+            : undefined
+        }
+      >
+        <FormattedMessage {...messages.similar} />
+      </Header>
       <ListView
         items={titles}
         isEmpty={isEmpty}

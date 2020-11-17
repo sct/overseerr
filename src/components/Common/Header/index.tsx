@@ -2,9 +2,14 @@ import React from 'react';
 
 interface HeaderProps {
   extraMargin?: number;
+  subtext?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ children, extraMargin = 0 }) => {
+const Header: React.FC<HeaderProps> = ({
+  children,
+  extraMargin = 0,
+  subtext,
+}) => {
   return (
     <div className="md:flex md:items-center md:justify-between mt-8 mb-8">
       <div className={`flex-1 min-w-0 mx-${extraMargin}`}>
@@ -13,6 +18,7 @@ const Header: React.FC<HeaderProps> = ({ children, extraMargin = 0 }) => {
             {children}
           </span>
         </h2>
+        {subtext && <div className="text-cool-gray-400 mt-2">{subtext}</div>}
       </div>
     </div>
   );

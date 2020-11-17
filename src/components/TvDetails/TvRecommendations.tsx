@@ -1,9 +1,17 @@
 import React, { useContext } from 'react';
-import { useSWRInfinite } from 'swr';
+import useSWR, { useSWRInfinite } from 'swr';
 import type { TvResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
 import { useRouter } from 'next/router';
 import { LanguageContext } from '../../context/LanguageContext';
+import Header from '../Common/Header';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { TvDetails } from '../../../server/models/Tv';
+
+const messages = defineMessages({
+  recommendations: 'Recommendations',
+  recommendationssubtext: 'If you liked {title}, you might also like...',
+});
 
 interface SearchResult {
   page: number;
@@ -13,8 +21,12 @@ interface SearchResult {
 }
 
 const TvRecommendations: React.FC = () => {
-  const { locale } = useContext(LanguageContext);
   const router = useRouter();
+  const intl = useIntl();
+  const { locale } = useContext(LanguageContext);
+  const { data: tvData, error: tvError } = useSWR<TvDetails>(
+    `/api/v1/tv/${router.query.tvId}?language=${locale}`
+  );
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
@@ -51,13 +63,17 @@ const TvRecommendations: React.FC = () => {
 
   return (
     <>
-      <div className="md:flex md:items-center md:justify-between mb-8 mt-6">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
-            Recommendations
-          </h2>
-        </div>
-      </div>
+      <Header
+        subtext={
+          tvData && !tvError
+            ? intl.formatMessage(messages.recommendationssubtext, {
+                title: tvData.name,
+              })
+            : ''
+        }
+      >
+        <FormattedMessage {...messages.recommendations} />
+      </Header>
       <ListView
         items={titles}
         isEmpty={isEmpty}

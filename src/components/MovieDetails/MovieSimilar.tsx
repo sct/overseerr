@@ -1,8 +1,17 @@
-import React from 'react';
-import { useSWRInfinite } from 'swr';
-import { MovieResult } from '../../../server/models/Search';
+import React, { useContext } from 'react';
+import useSWR, { useSWRInfinite } from 'swr';
+import type { MovieResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
 import { useRouter } from 'next/router';
+import Header from '../Common/Header';
+import { LanguageContext } from '../../context/LanguageContext';
+import type { MovieDetails } from '../../../server/models/Movie';
+import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
+
+const messages = defineMessages({
+  similar: 'Similar Titles',
+  similarsubtext: 'Other movies similar to {title}',
+});
 
 interface SearchResult {
   page: number;
@@ -13,6 +22,11 @@ interface SearchResult {
 
 const MovieSimilar: React.FC = () => {
   const router = useRouter();
+  const intl = useIntl();
+  const { locale } = useContext(LanguageContext);
+  const { data: movieData, error: movieError } = useSWR<MovieDetails>(
+    `/api/v1/movie/${router.query.movieId}?language=${locale}`
+  );
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
@@ -52,13 +66,17 @@ const MovieSimilar: React.FC = () => {
 
   return (
     <>
-      <div className="md:flex md:items-center md:justify-between mb-8 mt-6">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
-            Similar Titles
-          </h2>
-        </div>
-      </div>
+      <Header
+        subtext={
+          movieData && !movieError
+            ? intl.formatMessage(messages.similarsubtext, {
+                title: movieData.title,
+              })
+            : undefined
+        }
+      >
+        <FormattedMessage {...messages.similar} />
+      </Header>
       <ListView
         items={titles}
         isEmpty={isEmpty}
