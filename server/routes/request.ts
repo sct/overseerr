@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
-import { getRepository } from 'typeorm';
+import { getRepository, FindOperator, FindOneOptions, In } from 'typeorm';
 import { MediaRequest } from '../entity/MediaRequest';
 import TheMovieDb from '../api/themoviedb';
 import Media from '../entity/Media';
@@ -14,21 +14,55 @@ const requestRoutes = Router();
 requestRoutes.get('/', async (req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
   try {
+    let statusFilter:
+      | MediaRequestStatus
+      | FindOperator<MediaRequestStatus>
+      | undefined = undefined;
+
+    switch (req.query.filter) {
+      case 'available':
+        statusFilter = MediaRequestStatus.AVAILABLE;
+        break;
+      case 'approved':
+        statusFilter = MediaRequestStatus.APPROVED;
+        break;
+      case 'pending':
+        statusFilter = MediaRequestStatus.PENDING;
+        break;
+      case 'unavailable':
+        statusFilter = In([
+          MediaRequestStatus.PENDING,
+          MediaRequestStatus.APPROVED,
+        ]);
+        break;
+      default:
+        statusFilter = In(Object.values(MediaRequestStatus));
+    }
+
+    let sortFilter: FindOneOptions<MediaRequest>['order'] = {
+      id: 'DESC',
+    };
+
+    switch (req.query.sort) {
+      case 'modified':
+        sortFilter = {
+          updatedAt: 'DESC',
+        };
+        break;
+    }
+
     const requests = req.user?.hasPermission(Permission.MANAGE_REQUESTS)
       ? await requestRepository.find({
-          order: {
-            id: 'DESC',
-          },
+          order: sortFilter,
           relations: ['media'],
+          where: { status: statusFilter },
           take: Number(req.query.take) ?? 20,
           skip: Number(req.query.skip) ?? 0,
         })
       : await requestRepository.find({
-          where: { requestedBy: { id: req.user?.id } },
+          where: { requestedBy: { id: req.user?.id }, status: statusFilter },
           relations: ['media'],
-          order: {
-            id: 'DESC',
-          },
+          order: sortFilter,
           take: Number(req.query.limit) ?? 20,
           skip: Number(req.query.skip) ?? 0,
         });

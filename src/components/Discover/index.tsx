@@ -70,7 +70,7 @@ const Discover: React.FC = () => {
   );
 
   const { data: requests, error: requestError } = useSWR<MediaRequest[]>(
-    '/api/v1/request'
+    '/api/v1/request?filter=unavailable&take=20&sort=modified&skip=0'
   );
 
   return (

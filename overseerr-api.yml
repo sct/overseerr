@@ -1581,6 +1581,31 @@ paths:
         Returns all requests if the user has the `ADMIN` or `MANAGE_REQUESTS` permissions. Otherwise, only the logged in users requests are returned.
       tags:
         - request
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 20
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+        - in: query
+          name: filter
+          schema:
+            type: string
+            nullable: true
+            enum: [all, available, approved, pending, unavailable]
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [added, modified]
+            default: added
       responses:
         '200':
           description: Requests returned
