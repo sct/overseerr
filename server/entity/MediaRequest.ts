@@ -37,7 +37,7 @@ export class MediaRequest {
   @ManyToOne(() => User, (user) => user.requests, { eager: true })
   public requestedBy: User;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User, { nullable: true, cascade: true, eager: true })
   public modifiedBy?: User;
 
   @CreateDateColumn()
@@ -118,8 +118,11 @@ export class MediaRequest {
   @AfterRemove()
   private async handleRemoveParentUpdate() {
     const mediaRepository = getRepository(Media);
-    if (!this.media.requests || this.media.requests.length === 0) {
-      this.media.status = MediaStatus.UNKNOWN;
+    const fullMedia = await mediaRepository.findOneOrFail({
+      where: { id: this.media.id },
+    });
+    if (!fullMedia.requests || fullMedia.requests.length === 0) {
+      fullMedia.status = MediaStatus.UNKNOWN;
       mediaRepository.save(this.media);
     }
   }

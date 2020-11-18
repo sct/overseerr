@@ -54,14 +54,14 @@ requestRoutes.get('/', async (req, res, next) => {
     const requests = req.user?.hasPermission(Permission.MANAGE_REQUESTS)
       ? await requestRepository.find({
           order: sortFilter,
-          relations: ['media'],
+          relations: ['media', 'modifiedBy'],
           where: { status: statusFilter },
           take: Number(req.query.take) ?? 20,
           skip: Number(req.query.skip) ?? 0,
         })
       : await requestRepository.find({
           where: { requestedBy: { id: req.user?.id }, status: statusFilter },
-          relations: ['media'],
+          relations: ['media', 'modifiedBy'],
           order: sortFilter,
           take: Number(req.query.limit) ?? 20,
           skip: Number(req.query.skip) ?? 0,
@@ -116,6 +116,9 @@ requestRoutes.post(
           status: req.user?.hasPermission(Permission.AUTO_APPROVE)
             ? MediaRequestStatus.APPROVED
             : MediaRequestStatus.PENDING,
+          modifiedBy: req.user?.hasPermission(Permission.AUTO_APPROVE)
+            ? req.user
+            : undefined,
         });
 
         await requestRepository.save(request);
@@ -158,6 +161,9 @@ requestRoutes.post(
           status: req.user?.hasPermission(Permission.AUTO_APPROVE)
             ? MediaRequestStatus.APPROVED
             : MediaRequestStatus.PENDING,
+          modifiedBy: req.user?.hasPermission(Permission.AUTO_APPROVE)
+            ? req.user
+            : undefined,
           seasons: finalSeasons.map(
             (sn) =>
               new SeasonRequest({
@@ -254,6 +260,7 @@ requestRoutes.get<{
       }
 
       request.status = newStatus;
+      request.modifiedBy = req.user;
       await requestRepository.save(request);
 
       return res.status(200).json(request);

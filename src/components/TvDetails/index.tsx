@@ -17,6 +17,9 @@ import RequestModal from '../RequestModal';
 import Badge from '../Common/Badge';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import axios from 'axios';
+import SlideOver from '../Common/SlideOver';
+import RequestBlock from '../RequestBlock';
+import Error from '../../pages/_error';
 
 const messages = defineMessages({
   userrating: 'User Rating',
@@ -58,11 +61,12 @@ enum MediaRequestStatus {
 }
 
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
-  const { user, hasPermission } = useUser();
+  const { hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [showManager, setShowManager] = useState(false);
   const { data, error, revalidate } = useSWR<TvDetailsType>(
     `/api/v1/tv/${router.query.tvId}?language=${locale}`,
     {
@@ -81,7 +85,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   }
 
   if (!data) {
-    return <div>Broken?</div>;
+    return <Error statusCode={404} />;
   }
 
   const activeRequests = data.mediaInfo?.requests?.filter(
@@ -120,6 +124,31 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         }}
         onCancel={() => setShowRequestModal(false)}
       />
+      <SlideOver
+        show={showManager}
+        title="Manage Series"
+        onClose={() => setShowManager(false)}
+        subText={data.name}
+      >
+        <h3 className="text-xl mb-2">Requests</h3>
+        <div className="bg-cool-gray-600 shadow overflow-hidden rounded-md">
+          <ul>
+            {data.mediaInfo?.requests?.map((request) => (
+              <li
+                key={`manage-request-${request.id}`}
+                className="border-b last:border-b-0 border-cool-gray-700"
+              >
+                <RequestBlock request={request} onUpdate={() => revalidate()} />
+              </li>
+            ))}
+            {(data.mediaInfo?.requests ?? []).length === 0 && (
+              <li className="text-center py-4 text-cool-gray-400">
+                No requests
+              </li>
+            )}
+          </ul>
+        </div>
+      </SlideOver>
       <div className="flex flex-col items-center md:flex-row md:items-end pt-4">
         <div className="mr-4 flex-shrink-0">
           <img
@@ -259,7 +288,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             </ButtonWithDropdown>
           )}
           {hasPermission(Permission.MANAGE_REQUESTS) && (
-            <Button buttonType="default" className="ml-2">
+            <Button
+              buttonType="default"
+              className="ml-2"
+              onClick={() => setShowManager(true)}
+            >
               <svg
                 className="w-5"
                 style={{ height: 20 }}

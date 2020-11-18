@@ -20,7 +20,9 @@ class SeasonRequest {
   @Column({ type: 'int', default: MediaRequestStatus.PENDING })
   public status: MediaRequestStatus;
 
-  @ManyToOne(() => MediaRequest, (request) => request.seasons)
+  @ManyToOne(() => MediaRequest, (request) => request.seasons, {
+    onDelete: 'CASCADE',
+  })
   public request: MediaRequest;
 
   @CreateDateColumn()
