@@ -5,16 +5,7 @@ import { MediaStatus } from '../constants/media';
 import logger from '../logger';
 import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
-
-export interface MediaResultsResponse {
-  pageInfo: {
-    pages: number;
-    page: number;
-    results: number;
-    pageSize: number;
-  };
-  results: Media[];
-}
+import { MediaResultsResponse } from '../interfaces/api/mediaInterfaces';
 
 const mediaRoutes = Router();
 

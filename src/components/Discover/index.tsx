@@ -14,7 +14,7 @@ import Link from 'next/link';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
 import type Media from '../../../server/entity/Media';
-import type { MediaResultsResponse } from '../../../server/routes/media';
+import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 
 const messages = defineMessages({
   recentrequests: 'Recent Requests',
