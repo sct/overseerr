@@ -4,6 +4,7 @@ import { MediaRequest } from '../entity/MediaRequest';
 import { mapTvDetails, mapSeasonWithEpisodes } from '../models/Tv';
 import { mapTvResult } from '../models/Search';
 import Media from '../entity/Media';
+import RottenTomatoes from '../api/rottentomatoes';
 
 const tvRoutes = Router();
 
@@ -82,6 +83,30 @@ tvRoutes.get('/:id/similar', async (req, res) => {
       )
     ),
   });
+});
+
+tvRoutes.get('/:id/ratings', async (req, res, next) => {
+  const tmdb = new TheMovieDb();
+  const rtapi = new RottenTomatoes();
+
+  const tv = await tmdb.getTvShow({
+    tvId: Number(req.params.id),
+  });
+
+  if (!tv) {
+    return next({ status: 404, message: 'TV Show does not exist' });
+  }
+
+  const rtratings = await rtapi.getTVRatings(
+    tv.name,
+    Number(tv.first_air_date.slice(0, 4))
+  );
+
+  if (!rtratings) {
+    return next({ status: 404, message: 'Unable to retrieve ratings' });
+  }
+
+  return res.status(200).json(rtratings);
 });
 
 export default tvRoutes;

@@ -4,6 +4,7 @@ import { mapMovieDetails } from '../models/Movie';
 import { MediaRequest } from '../entity/MediaRequest';
 import { mapMovieResult } from '../models/Search';
 import Media from '../entity/Media';
+import RottenTomatoes from '../api/rottentomatoes';
 
 const movieRoutes = Router();
 
@@ -70,6 +71,30 @@ movieRoutes.get('/:id/similar', async (req, res) => {
       )
     ),
   });
+});
+
+movieRoutes.get('/:id/ratings', async (req, res, next) => {
+  const tmdb = new TheMovieDb();
+  const rtapi = new RottenTomatoes();
+
+  const movie = await tmdb.getMovie({
+    movieId: Number(req.params.id),
+  });
+
+  if (!movie) {
+    return next({ status: 404, message: 'Movie does not exist' });
+  }
+
+  const rtratings = await rtapi.getMovieRatings(
+    movie.title,
+    Number(movie.release_date.slice(0, 4))
+  );
+
+  if (!rtratings) {
+    return next({ status: 404, message: 'Unable to retrieve ratings' });
+  }
+
+  return res.status(200).json(rtratings);
 });
 
 export default movieRoutes;

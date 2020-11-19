@@ -1837,6 +1837,48 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MovieResult'
+  /movie/{movieId}/ratings:
+    get:
+      summary: Get ratings for the provided movie id
+      description: Returns ratings based on provided movie ID in JSON format
+      tags:
+        - movies
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: number
+            example: 337401
+      responses:
+        '200':
+          description: Ratings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    example: Mulan
+                  year:
+                    type: number
+                    example: 2020
+                  url:
+                    type: string
+                    example: "http://www.rottentomatoes.com/m/mulan_2020/"
+                  criticsScore:
+                    type: number
+                    example: 85
+                  criticsRating:
+                    type: string
+                    enum: ['Rotten', 'Fresh', 'Certified Fresh']
+                  audienceScore:
+                    type: number
+                    example: 65
+                  audienceRating:
+                    type: string
+                    enum: ['Spilled', 'Upright']
   /tv/{tvId}:
     get:
       summary: Request tv details
@@ -1983,6 +2025,42 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/TvResult'
+  /tv/{tvId}/ratings:
+    get:
+      summary: Get ratings for the provided tv id
+      description: Returns ratings based on provided tv ID in JSON format
+      tags:
+        - tv
+      parameters:
+        - in: path
+          name: tvId
+          required: true
+          schema:
+            type: number
+            example: 76479
+      responses:
+        '200':
+          description: Ratings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    example: The Boys
+                  year:
+                    type: number
+                    example: 2019
+                  url:
+                    type: string
+                    example: "http://www.rottentomatoes.com/m/mulan_2020/"
+                  criticsScore:
+                    type: number
+                    example: 85
+                  criticsRating:
+                    type: string
+                    enum: ['Rotten', 'Fresh']
   /media:
     get:
       summary: Return all media

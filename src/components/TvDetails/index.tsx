@@ -20,6 +20,12 @@ import axios from 'axios';
 import SlideOver from '../Common/SlideOver';
 import RequestBlock from '../RequestBlock';
 import Error from '../../pages/_error';
+import TmdbLogo from '../../assets/tmdb_logo.svg';
+import RTFresh from '../../assets/rt_fresh.svg';
+import RTRotten from '../../assets/rt_rotten.svg';
+import RTAudFresh from '../../assets/rt_aud_fresh.svg';
+import RTAudRotten from '../../assets/rt_aud_rotten.svg';
+import type { RTRating } from '../../../server/api/rottentomatoes';
 
 const messages = defineMessages({
   userrating: 'User Rating',
@@ -78,6 +84,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   );
   const { data: similar, error: similarError } = useSWR<SearchResult>(
     `/api/v1/tv/${router.query.tvId}/similar?language=${locale}`
+  );
+
+  const { data: ratingData } = useSWR<RTRating>(
+    `/api/v1/tv/${router.query.tvId}/ratings`
   );
 
   if (!data && !error) {
@@ -331,14 +341,46 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
         <div className="w-full md:w-80 mt-8 md:mt-0">
           <div className="bg-cool-gray-900 rounded-lg shadow border border-cool-gray-800">
-            {data.voteCount > 0 && (
-              <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
-                <span className="text-sm">
-                  <FormattedMessage {...messages.userrating} />
-                </span>
-                <span className="flex-1 text-right text-cool-gray-400 text-sm">
-                  {data.voteAverage}/10
-                </span>
+            {(data.voteCount > 0 || ratingData) && (
+              <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0 items-center justify-center">
+                {ratingData?.criticsRating && (
+                  <>
+                    <span className="text-sm">
+                      {ratingData.criticsRating === 'Rotten' ? (
+                        <RTRotten className="w-6 mr-1" />
+                      ) : (
+                        <RTFresh className="w-6 mr-1" />
+                      )}
+                    </span>
+                    <span className="text-cool-gray-400 text-sm mr-4 last:mr-0">
+                      {ratingData.criticsScore}%
+                    </span>
+                  </>
+                )}
+                {ratingData?.audienceRating && (
+                  <>
+                    <span className="text-sm">
+                      {ratingData.audienceRating === 'Spilled' ? (
+                        <RTAudRotten className="w-6 mr-1" />
+                      ) : (
+                        <RTAudFresh className="w-6 mr-1" />
+                      )}
+                    </span>
+                    <span className="text-cool-gray-400 text-sm mr-4 last:mr-0">
+                      {ratingData.audienceScore}%
+                    </span>
+                  </>
+                )}
+                {data.voteCount > 0 && (
+                  <>
+                    <span className="text-sm">
+                      <TmdbLogo className="w-6 mr-2" />
+                    </span>
+                    <span className="text-cool-gray-400 text-sm">
+                      {data.voteAverage}/10
+                    </span>
+                  </>
+                )}
               </div>
             )}
             <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
