@@ -21,7 +21,7 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const buttonStyle = [
-    'inline-flex items-center border border-transparent leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150',
+    'inline-flex items-center justify-center border border-transparent leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150',
   ];
   switch (buttonType) {
     case 'primary':
@@ -73,7 +73,7 @@ const Button: React.FC<ButtonProps> = ({
   }
   return (
     <button className={buttonStyle.join(' ')} {...props}>
-      {children}
+      <span className="flex items-center">{children}</span>
     </button>
   );
 };

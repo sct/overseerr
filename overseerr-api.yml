@@ -2106,6 +2106,23 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MediaInfo'
+  /media/{mediaId}:
+    delete:
+      summary: Delete a media item
+      description: Removes a media item. The `MANAGE_REQUESTS` permission is required to perform this action.
+      tags:
+        - media
+      parameters:
+        - in: path
+          name: mediaId
+          description: Media ID
+          required: true
+          example: 1
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Succesfully removed media item
 
 security:
   - cookieAuth: []

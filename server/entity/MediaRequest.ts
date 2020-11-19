@@ -31,6 +31,7 @@ export class MediaRequest {
 
   @ManyToOne(() => Media, (media) => media.requests, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   public media: Media;
 

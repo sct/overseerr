@@ -113,6 +113,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     }
   };
 
+  const deleteMedia = async () => {
+    if (data?.mediaInfo?.id) {
+      await axios.delete(`/api/v1/media/${data?.mediaInfo?.id}`);
+      revalidate();
+    }
+  };
+
   return (
     <div
       className="bg-cover bg-center -mx-4 -mt-2 px-4 sm:px-8 pt-4 "
@@ -155,6 +162,22 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             )}
           </ul>
         </div>
+        {data?.mediaInfo && (
+          <div className="mt-8">
+            <Button
+              buttonType="danger"
+              className="w-full text-center"
+              onClick={() => deleteMedia()}
+            >
+              Clear All Media Data
+            </Button>
+            <div className="text-sm text-cool-gray-400 mt-2">
+              This will remove all media data including all requests for this
+              item. This action is irreversible. If this item exists in your
+              Plex library, the media information will be recreated next sync.
+            </div>
+          </div>
+        )}
       </SlideOver>
       <div className="flex flex-col items-center md:flex-row md:items-end pt-4">
         <div className="mr-4 flex-shrink-0">

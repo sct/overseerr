@@ -2,6 +2,9 @@ import { Router } from 'express';
 import { getRepository, FindOperator, FindOneOptions } from 'typeorm';
 import Media from '../entity/Media';
 import { MediaStatus } from '../constants/media';
+import logger from '../logger';
+import { isAuthenticated } from '../middleware/auth';
+import { Permission } from '../lib/permissions';
 
 export interface MediaResultsResponse {
   pageInfo: {
@@ -77,5 +80,29 @@ mediaRoutes.get('/', async (req, res, next) => {
     next({ status: 500, message: e.message });
   }
 });
+
+mediaRoutes.delete(
+  '/:id',
+  isAuthenticated(Permission.MANAGE_REQUESTS),
+  async (req, res, next) => {
+    try {
+      const mediaRepository = getRepository(Media);
+
+      const media = await mediaRepository.findOneOrFail({
+        where: { id: req.params.id },
+      });
+
+      await mediaRepository.remove(media);
+
+      return res.status(204).send();
+    } catch (e) {
+      logger.error('Something went wrong fetching media in delete request', {
+        label: 'Media',
+        message: e.message,
+      });
+      next({ status: 404, message: 'Media not found' });
+    }
+  }
+);
 
 export default mediaRoutes;
