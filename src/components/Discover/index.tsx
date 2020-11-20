@@ -77,7 +77,7 @@ const Discover: React.FC = () => {
     <>
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
-          <div className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+          <div className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
             <span>
               <FormattedMessage {...messages.recentlyAdded} />
             </span>
@@ -99,7 +99,7 @@ const Discover: React.FC = () => {
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
           <Link href="/requests">
-            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+            <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
               <span>
                 <FormattedMessage {...messages.recentrequests} />
               </span>
@@ -137,7 +137,7 @@ const Discover: React.FC = () => {
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
           <Link href="/discover/movies/upcoming">
-            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+            <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
               <span>
                 <FormattedMessage {...messages.upcoming} />
               </span>
@@ -180,7 +180,7 @@ const Discover: React.FC = () => {
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
           <Link href="/discover/trending">
-            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+            <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
               <span>
                 <FormattedMessage {...messages.trending} />
               </span>
@@ -244,7 +244,7 @@ const Discover: React.FC = () => {
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
           <Link href="/discover/movies">
-            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+            <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
               <span>
                 <FormattedMessage {...messages.popularmovies} />
               </span>
@@ -287,7 +287,7 @@ const Discover: React.FC = () => {
       <div className="md:flex md:items-center md:justify-between mb-4 mt-4">
         <div className="flex-1 min-w-0">
           <Link href="/discover/tv">
-            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+            <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
               <span>
                 <FormattedMessage {...messages.populartv} />
               </span>

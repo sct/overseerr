@@ -27,7 +27,7 @@ const ListView: React.FC<ListViewProps> = ({
   return (
     <>
       {isEmpty && (
-        <div className="w-full mt-64 text-2xl text-center text-cool-gray-400">
+        <div className="w-full mt-64 text-2xl text-center text-gray-400">
           No Results
         </div>
       )}

@@ -37,7 +37,7 @@ const LanguagePicker: React.FC = () => {
     <div className="ml-3 relative">
       <div>
         <button
-          className="p-1 text-gray-400 rounded-full hover:bg-cool-gray-500 hover:text-white focus:outline-none focus:shadow-outline focus:text-white"
+          className="p-1 text-gray-400 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring focus:text-white"
           aria-label="Language Picker"
           onClick={() => setDropdownOpen(true)}
         >
@@ -68,17 +68,17 @@ const LanguagePicker: React.FC = () => {
           className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg"
           ref={dropdownRef}
         >
-          <div className="py-2 px-2 rounded-md bg-cool-gray-700 shadow-xs">
+          <div className="py-2 px-2 rounded-md bg-gray-700 ring-1 ring-black ring-opacity-5">
             <div>
               <label
                 htmlFor="language"
-                className="block text-sm leading-5 font-medium text-cool-gray-300 pb-2"
+                className="block text-sm leading-5 font-medium text-gray-300 pb-2"
               >
                 <FormattedMessage {...messages.changelanguage} />
               </label>
               <select
                 id="language"
-                className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 text-white bg-cool-gray-700 border-cool-gray-600 focus:outline-none focus:shadow-outline-indigo focus:border-blue-800 sm:text-sm sm:leading-5"
+                className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 text-white bg-gray-700 border-gray-600 focus:outline-none focus:ring-indigo focus:border-blue-800 sm:text-sm sm:leading-5"
                 onChange={(e) =>
                   setLocale && setLocale(e.target.value as AvailableLocales)
                 }

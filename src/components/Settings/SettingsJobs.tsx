@@ -24,24 +24,24 @@ const SettingsJobs: React.FC = () => {
             <table className="min-w-full">
               <thead>
                 <tr>
-                  <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                  <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                     Job Name
                   </th>
-                  <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                  <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                     Next Execution
                   </th>
-                  <th className="px-6 py-3 bg-cool-gray-500"></th>
+                  <th className="px-6 py-3 bg-gray-500"></th>
                 </tr>
               </thead>
-              <tbody className="bg-cool-gray-600 divide-y divide-cool-gray-700">
+              <tbody className="bg-gray-600 divide-y divide-gray-700">
                 {data?.map((job, index) => (
                   <tr key={`job-list-${index}`}>
-                    <td className="px-6 py-4 whitespace-no-wrap">
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm leading-5 text-white">
                         {job.name}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-no-wrap">
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm leading-5 text-white">
                         <FormattedRelativeTime
                           value={Math.floor(
@@ -53,7 +53,7 @@ const SettingsJobs: React.FC = () => {
                         />
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm leading-5 font-medium">
                       <Button buttonType="primary">Run Now</Button>
                     </td>
                   </tr>

@@ -3,7 +3,7 @@ import React from 'react';
 const Notifications: React.FC = () => {
   return (
     <button
-      className="p-1 text-gray-400 rounded-full hover:bg-cool-gray-500 hover:text-white focus:outline-none focus:shadow-outline focus:text-white"
+      className="p-1 text-gray-400 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring focus:text-white"
       aria-label="Notifications"
     >
       <svg

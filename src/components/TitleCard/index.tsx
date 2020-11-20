@@ -117,7 +117,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="absolute top-0 left-0 right-0 bottom-0 bg-cool-gray-800 bg-opacity-75 z-40 text-white flex items-center justify-center rounded-lg">
+            <div className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 bg-opacity-75 z-40 text-white flex items-center justify-center rounded-lg">
               <svg
                 className="w-10 h-10 animate-spin"
                 fill="none"
@@ -177,7 +177,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     }
                     as={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}
                   >
-                    <a className="cursor-pointer flex w-full h-7 text-center text-white bg-indigo-500 rounded-sm hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+                    <a className="cursor-pointer flex w-full h-7 text-center text-white bg-indigo-500 rounded-sm hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition ease-in-out duration-150">
                       <svg
                         className="w-4 mx-auto"
                         fill="none"
@@ -203,7 +203,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   {!currentStatus && (
                     <button
                       onClick={() => setShowRequestModal(true)}
-                      className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-2 hover:bg-indigo-400 focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                      className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-2 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                     >
                       <svg
                         className="w-4 mx-auto"
@@ -222,7 +222,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     </button>
                   )}
                   {currentStatus === MediaStatus.PENDING && (
-                    <button className="w-full h-7 text-center text-white bg-orange-400 hover:bg-orange-300 rounded-sm ml-2 focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition ease-in-out duration-150">
+                    <button className="w-full h-7 text-center text-white bg-orange-400 hover:bg-orange-300 rounded-sm ml-2 focus:border-orange-700 focus:ring-orange active:bg-orange-700 transition ease-in-out duration-150">
                       <svg
                         className="w-4 mx-auto"
                         fill="none"

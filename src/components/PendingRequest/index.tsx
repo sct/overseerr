@@ -35,12 +35,12 @@ const PendingRequest: React.FC<PendingRequestProps> = ({
   };
 
   return (
-    <div className="bg-cool-gray-900 border border-cool-gray-800 sm:rounded-lg mb-6 shadow rounded-lg">
+    <div className="bg-gray-900 border border-gray-800 sm:rounded-lg mb-6 shadow rounded-lg">
       <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-cool-gray-100">
+        <h3 className="text-lg leading-6 font-medium text-gray-100">
           <FormattedMessage {...messages.pendingtitle} />
         </h3>
-        <div className="mt-2 max-w-xl text-sm leading-5 text-cool-gray-400">
+        <div className="mt-2 max-w-xl text-sm leading-5 text-gray-400">
           <p>
             <FormattedMessage
               {...messages.pendingdescription}

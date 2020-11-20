@@ -28,31 +28,31 @@ const UserList: React.FC = () => {
               <table className="min-w-full">
                 <thead>
                   <tr>
-                    <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                       Total Requests
                     </th>
-                    <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                       User Type
                     </th>
-                    <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                       Role
                     </th>
-                    <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                       Created
                     </th>
-                    <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                       Last Updated
                     </th>
-                    <th className="px-6 py-3 bg-cool-gray-500"></th>
+                    <th className="px-6 py-3 bg-gray-500"></th>
                   </tr>
                 </thead>
-                <tbody className="bg-cool-gray-600 divide-y divide-cool-gray-700">
+                <tbody className="bg-gray-600 divide-y divide-gray-700">
                   {data?.map((user) => (
                     <tr key={`user-list-${user.id}`}>
-                      <td className="px-6 py-4 whitespace-no-wrap">
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
                             <img
@@ -71,26 +71,26 @@ const UserList: React.FC = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-no-wrap">
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm leading-5 text-white">
                           {user.requests.length}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-no-wrap">
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <Badge badgeType="warning">Plex User</Badge>
                       </td>
-                      <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-white">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-white">
                         {hasPermission(Permission.ADMIN, user.permissions)
                           ? 'Admin'
                           : 'User'}
                       </td>
-                      <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-white">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-white">
                         <FormattedDate value={user.createdAt} />
                       </td>
-                      <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-white">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-white">
                         <FormattedDate value={user.updatedAt} />
                       </td>
-                      <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm leading-5 font-medium">
                         <Button
                           buttonType="warning"
                           className="mr-2"

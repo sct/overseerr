@@ -77,7 +77,7 @@ const Modal: React.FC<ModalProps> = ({
     <>
       {ReactDOM.createPortal(
         <animated.div
-          className="fixed top-0 left-0 right-0 bottom-0 bg-cool-gray-800 bg-opacity-50 w-full h-full z-50 flex justify-center items-center"
+          className="fixed top-0 left-0 right-0 bottom-0 bg-gray-800 bg-opacity-50 w-full h-full z-50 flex justify-center items-center"
           style={props.style}
           onKeyDown={(e) => {
             if (e.key === 'Escape') {
@@ -103,7 +103,7 @@ const Modal: React.FC<ModalProps> = ({
               item && (
                 <animated.div
                   style={props}
-                  className="inline-block align-bottom bg-cool-gray-700 sm:rounded-lg px-4 pt-5 pb-4 text-left overflow-auto shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full sm:p-6 max-h-full"
+                  className="inline-block align-bottom bg-gray-700 sm:rounded-lg px-4 pt-5 pb-4 text-left overflow-auto shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full sm:p-6 max-h-full"
                   role="dialog"
                   aria-modal="true"
                   aria-labelledby="modal-headline"
@@ -112,7 +112,7 @@ const Modal: React.FC<ModalProps> = ({
                 >
                   <div className="sm:flex sm:items-center">
                     {iconSvg && (
-                      <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-cool-gray-600 text-white sm:mx-0 sm:h-10 sm:w-10">
+                      <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-gray-600 text-white sm:mx-0 sm:h-10 sm:w-10">
                         {iconSvg}
                       </div>
                     )}
@@ -132,7 +132,7 @@ const Modal: React.FC<ModalProps> = ({
                     </div>
                   </div>
                   {children && (
-                    <div className="mt-4 text-sm leading-5 text-cool-gray-300">
+                    <div className="mt-4 text-sm leading-5 text-gray-300">
                       {children}
                     </div>
                   )}

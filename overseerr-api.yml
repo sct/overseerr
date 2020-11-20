@@ -1866,7 +1866,7 @@ paths:
                     example: 2020
                   url:
                     type: string
-                    example: "http://www.rottentomatoes.com/m/mulan_2020/"
+                    example: 'http://www.rottentomatoes.com/m/mulan_2020/'
                   criticsScore:
                     type: number
                     example: 85
@@ -2054,7 +2054,7 @@ paths:
                     example: 2019
                   url:
                     type: string
-                    example: "http://www.rottentomatoes.com/m/mulan_2020/"
+                    example: 'http://www.rottentomatoes.com/m/mulan_2020/'
                   criticsScore:
                     type: number
                     example: 85

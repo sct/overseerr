@@ -55,7 +55,7 @@ const SetupSteps: React.FC<CurrentStep> = ({
       {!isLastStep && (
         <div className="hidden md:block absolute top-0 right-0 h-full w-5">
           <svg
-            className="h-full w-full text-cool-gray-600"
+            className="h-full w-full text-gray-600"
             viewBox="0 0 22 80"
             fill="none"
             preserveAspectRatio="none"

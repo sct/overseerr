@@ -38,7 +38,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
   onDelete,
 }) => {
   return (
-    <li className="col-span-1 bg-cool-gray-700 rounded-lg shadow">
+    <li className="col-span-1 bg-gray-700 rounded-lg shadow">
       <div className="w-full flex items-center justify-between p-6 space-x-6">
         <div className="flex-1 truncate">
           <div className="flex items-center space-x-3 mb-2">
@@ -49,11 +49,11 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
             {isDefault4K && <Badge badgeType="warning">Default 4K</Badge>}
             {isSSL && <Badge badgeType="success">SSL</Badge>}
           </div>
-          <p className="mt-1 text-cool-gray-300 text-sm leading-5 truncate">
+          <p className="mt-1 text-gray-300 text-sm leading-5 truncate">
             <span className="font-bold mr-2">Address</span>
             {address}
           </p>
-          <p className="mt-1 text-cool-gray-300 text-sm leading-5 truncate">
+          <p className="mt-1 text-gray-300 text-sm leading-5 truncate">
             <span className="font-bold mr-2">Active Profile</span> {profileName}
           </p>
         </div>
@@ -63,12 +63,12 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
           alt=""
         />
       </div>
-      <div className="border-t border-cool-gray-800">
+      <div className="border-t border-gray-800">
         <div className="-mt-px flex">
-          <div className="w-0 flex-1 flex border-r border-cool-gray-800">
+          <div className="w-0 flex-1 flex border-r border-gray-800">
             <button
               onClick={() => onEdit()}
-              className="relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm leading-5 text-cool-gray-200 font-medium border border-transparent rounded-bl-lg hover:text-white focus:outline-none focus:shadow-outline-blue focus:border-cool-gray-500 focus:z-10 transition ease-in-out duration-150"
+              className="relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm leading-5 text-gray-200 font-medium border border-transparent rounded-bl-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10 transition ease-in-out duration-150"
             >
               <svg
                 className="w-5 h-5"
@@ -84,7 +84,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
           <div className="-ml-px w-0 flex-1 flex">
             <button
               onClick={() => onDelete()}
-              className="relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm leading-5 text-cool-gray-200 font-medium border border-transparent rounded-br-lg hover:text-white focus:outline-none focus:shadow-outline-blue focus:border-cool-gray-500 focus:z-10 transition ease-in-out duration-150"
+              className="relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm leading-5 text-gray-200 font-medium border border-transparent rounded-br-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10 transition ease-in-out duration-150"
             >
               <svg
                 className="w-5 h-5"
@@ -154,10 +154,10 @@ const SettingsServices: React.FC = () => {
   return (
     <>
       <div>
-        <h3 className="text-lg leading-6 font-medium text-cool-gray-200">
+        <h3 className="text-lg leading-6 font-medium text-gray-200">
           Radarr Settings
         </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-5 text-cool-gray-500">
+        <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
           Configure your Radarr connection below. You can have multiple Radarr
           configurations but only two can be active as defaults at any time (one
           for standard HD and one for 4K). Administrations can override a titles
@@ -232,7 +232,7 @@ const SettingsServices: React.FC = () => {
                 }
               />
             ))}
-            <li className="col-span-1 border-2 border-dashed border-cool-gray-400 rounded-lg shadow h-32 sm:h-32">
+            <li className="col-span-1 border-2 border-dashed border-gray-400 rounded-lg shadow h-32 sm:h-32">
               <div className="flex items-center justify-center w-full h-full">
                 <Button
                   buttonType="ghost"
@@ -260,10 +260,10 @@ const SettingsServices: React.FC = () => {
         )}
       </div>
       <div className="mt-10">
-        <h3 className="text-lg leading-6 font-medium text-cool-gray-200">
+        <h3 className="text-lg leading-6 font-medium text-gray-200">
           Sonarr Settings
         </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-5 text-cool-gray-500">
+        <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
           Configure your Sonarr connection below. You can have multiple Sonarr
           configurations but only two can be active as defaults at any time (one
           for standard HD and one for 4K). Administrations can override a titles
@@ -294,7 +294,7 @@ const SettingsServices: React.FC = () => {
                 }
               />
             ))}
-            <li className="col-span-1 border-2 border-dashed border-cool-gray-400 rounded-lg shadow h-32 sm:h-32">
+            <li className="col-span-1 border-2 border-dashed border-gray-400 rounded-lg shadow h-32 sm:h-32">
               <div className="flex items-center justify-center w-full h-full">
                 <Button
                   buttonType="ghost"

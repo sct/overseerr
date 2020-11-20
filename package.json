@@ -11,11 +11,11 @@
     "start": "NODE_ENV=production node dist/index.js",
     "i18n:extract": "extract-messages -l=en,ja -o src/i18n/locale -d en --flat true './src/**/!(*.test).{ts,tsx}'",
     "migration:generate": "ts-node --project server/tsconfig.json ./node_modules/.bin/typeorm migration:generate",
-    "migration:run": "ts-node --project server/tsconfig.json ./node_modules/.bin/typeorm migration:run"
+    "migration:run": "ts-node --project server/tsconfig.json ./node_modules/.bin/typeorm migration:run",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@svgr/webpack": "^5.4.0",
-    "@tailwindcss/ui": "^0.6.2",
     "axios": "^0.20.0",
     "body-parser": "^1.19.0",
     "bowser": "^2.11.0",
@@ -53,6 +53,9 @@
     "@babel/cli": "^7.11.6",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@tailwindcss/aspect-ratio": "^0.2.0",
+    "@tailwindcss/forms": "^0.2.1",
+    "@tailwindcss/typography": "^0.3.1",
     "@types/body-parser": "^1.19.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.8",
@@ -71,6 +74,7 @@
     "@types/yup": "^0.29.9",
     "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/parser": "^3.10.1",
+    "autoprefixer": "^9",
     "babel-plugin-react-intl": "^8.2.2",
     "babel-plugin-react-intl-auto": "^3.3.0",
     "commitizen": "^4.2.1",
@@ -86,9 +90,10 @@
     "husky": "^4.3.0",
     "lint-staged": "^10.4.0",
     "nodemon": "^2.0.4",
+    "postcss": "^7",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.1.2",
-    "tailwindcss": "^1.8.12",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
   },

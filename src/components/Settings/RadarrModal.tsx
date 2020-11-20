@@ -214,7 +214,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
                     htmlFor="isDefault"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     Default Server
                   </label>
@@ -223,14 +223,14 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       type="checkbox"
                       id="isDefault"
                       name="isDefault"
-                      className="form-checkbox h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
+                      className="form-checkbox h-6 w-6 text-indigo-600 transition duration-150 ease-in-out rounded-md"
                     />
                   </div>
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     Server Name
                   </label>
@@ -239,13 +239,13 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       <Field
                         id="name"
                         name="name"
-                        type="input"
+                        type="text"
                         placeholder="A Radarr Server"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('name', e.target.value);
                         }}
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                       />
                     </div>
                     {errors.name && touched.name && (
@@ -256,7 +256,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
                     htmlFor="hostname"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     Hostname
                   </label>
@@ -265,13 +265,13 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       <Field
                         id="hostname"
                         name="hostname"
-                        type="input"
+                        type="text"
                         placeholder="127.0.0.1"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('hostname', e.target.value);
                         }}
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                       />
                     </div>
                     {errors.hostname && touched.hostname && (
@@ -282,7 +282,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
                     htmlFor="port"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     Port
                   </label>
@@ -290,13 +290,13 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     <Field
                       id="port"
                       name="port"
-                      type="input"
+                      type="text"
                       placeholder="7878"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setIsValidated(false);
                         setFieldValue('port', e.target.value);
                       }}
-                      className="rounded-md shadow-sm form-input block w-24 transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                      className="rounded-md shadow-sm form-input block w-24 transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                     />
                     {errors.port && touched.port && (
                       <div className="text-red-500 mt-2">{errors.port}</div>
@@ -306,7 +306,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
                     htmlFor="ssl"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     SSL
                   </label>
@@ -319,14 +319,14 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         setIsValidated(false);
                         setFieldValue('ssl', !values.ssl);
                       }}
-                      className="form-checkbox h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
+                      className="form-checkbox h-6 w-6 rounded-md text-indigo-600 transition duration-150 ease-in-out"
                     />
                   </div>
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
                     htmlFor="apiKey"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     API Key
                   </label>
@@ -335,13 +335,13 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       <Field
                         id="apiKey"
                         name="apiKey"
-                        type="input"
+                        type="text"
                         placeholder="Your Radarr API Key"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('apiKey', e.target.value);
                         }}
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                       />
                     </div>
                     {errors.apiKey && touched.apiKey && (
@@ -352,7 +352,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
                     htmlFor="baseUrl"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     Base URL
                   </label>
@@ -361,13 +361,13 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       <Field
                         id="baseUrl"
                         name="baseUrl"
-                        type="input"
+                        type="text"
                         placeholder="Example: /radarr"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
                         }}
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                       />
                     </div>
                     {errors.baseUrl && touched.baseUrl && (
@@ -378,7 +378,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
                     htmlFor="activeProfileId"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     Quality Profile
                   </label>
@@ -388,7 +388,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         as="select"
                         id="activeProfileId"
                         name="activeProfileId"
-                        className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 bg-cool-gray-700 border-cool-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-cool-gray-500 sm:text-sm sm:leading-5"
+                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
                         {testResponse.profiles.length > 0 &&
                           testResponse.profiles.map((profile) => (
@@ -411,7 +411,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
                     htmlFor="rootFolder"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     Root Folder
                   </label>
@@ -421,7 +421,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         as="select"
                         id="rootFolder"
                         name="rootFolder"
-                        className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 bg-cool-gray-700 border-cool-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-cool-gray-500 sm:text-sm sm:leading-5"
+                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
@@ -444,7 +444,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                   <label
                     htmlFor="minimumAvailability"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     Minimum Availability
                   </label>
@@ -454,7 +454,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         as="select"
                         id="minimumAvailability"
                         name="minimumAvailability"
-                        className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 bg-cool-gray-700 border-cool-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-cool-gray-500 sm:text-sm sm:leading-5"
+                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
                         <option value="announced">Announced</option>
                         <option value="inCinemas">In Cinemas</option>
@@ -467,7 +467,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
                     htmlFor="is4k"
-                    className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
                     Ultra HD Server
                   </label>
@@ -476,7 +476,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       type="checkbox"
                       id="is4k"
                       name="is4k"
-                      className="form-checkbox h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
+                      className="form-checkbox h-6 w-6 rounded-md text-indigo-600 transition duration-150 ease-in-out"
                     />
                   </div>
                 </div>

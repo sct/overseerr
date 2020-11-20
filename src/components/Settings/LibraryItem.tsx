@@ -13,7 +13,7 @@ const LibraryItem: React.FC<LibraryItemProps> = ({
 }) => {
   return (
     <li className="col-span-1 flex shadow-sm rounded-md">
-      <div className="flex-1 flex items-center justify-between border-t border-r border-b border-cool-gray-700 bg-cool-gray-600 rounded-md truncate">
+      <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-700 bg-gray-600 rounded-md truncate">
         <div className="flex-1 px-4 py-6 text-sm leading-5 truncate cursor-default">
           {name}
         </div>
@@ -29,8 +29,8 @@ const LibraryItem: React.FC<LibraryItemProps> = ({
               }
             }}
             className={`${
-              isEnabled ? 'bg-indigo-600' : 'bg-cool-gray-700'
-            } relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline`}
+              isEnabled ? 'bg-indigo-600' : 'bg-gray-700'
+            } relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring`}
           >
             <span
               aria-hidden="true"

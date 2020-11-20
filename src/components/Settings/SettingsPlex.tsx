@@ -157,10 +157,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   return (
     <>
       <div>
-        <h3 className="text-lg leading-6 font-medium text-cool-gray-200">
+        <h3 className="text-lg leading-6 font-medium text-gray-200">
           <FormattedMessage {...messages.plexsettings} />
         </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-5 text-cool-gray-500">
+        <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
           <FormattedMessage {...messages.plexsettingsDescription} />
         </p>
       </div>
@@ -174,13 +174,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
             <label
               htmlFor="name"
-              className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+              className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
             >
               <FormattedMessage {...messages.servername} />
             </label>
             <div className="mt-1 sm:mt-0 sm:col-span-2">
               <div className="max-w-lg flex rounded-md shadow-sm">
                 <input
+                  type="text"
                   id="name"
                   name="name"
                   placeholder={intl.formatMessage(
@@ -188,7 +189,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   )}
                   value={data?.name}
                   readOnly
-                  className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                  className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                 />
               </div>
             </div>
@@ -196,19 +197,20 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
             <label
               htmlFor="hostname"
-              className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+              className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
             >
               <FormattedMessage {...messages.hostname} />
             </label>
             <div className="mt-1 sm:mt-0 sm:col-span-2">
               <div className="max-w-lg flex rounded-md shadow-sm">
                 <input
+                  type="text"
                   id="hostname"
                   name="hostname"
                   placeholder="127.0.0.1"
                   value={formik.values.hostname}
                   onChange={formik.handleChange}
-                  className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                  className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                 />
               </div>
             </div>
@@ -216,25 +218,26 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <label
               htmlFor="port"
-              className="block text-sm font-medium leading-5 text-cool-gray-400 sm:mt-px sm:pt-2"
+              className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
             >
               <FormattedMessage {...messages.port} />
             </label>
             <div className="mt-1 sm:mt-0 sm:col-span-2">
               <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
                 <input
+                  type="text"
                   id="port"
                   name="port"
                   placeholder="32400"
                   value={formik.values.port}
                   onChange={formik.handleChange}
-                  className="form-input block w-24 transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                  className="form-input block w-24 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                 />
               </div>
             </div>
           </div>
         </div>
-        <div className="mt-8 border-t border-cool-gray-700 pt-5">
+        <div className="mt-8 border-t border-gray-700 pt-5">
           <div className="flex justify-end">
             <span className="ml-3 inline-flex rounded-md shadow-sm">
               <Button buttonType="primary" type="submit" disabled={isUpdating}>
@@ -247,10 +250,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         </div>
       </form>
       <div className="mt-10">
-        <h3 className="text-lg leading-6 font-medium text-cool-gray-200">
+        <h3 className="text-lg leading-6 font-medium text-gray-200">
           <FormattedMessage {...messages.plexlibraries} />
         </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-5 text-cool-gray-500">
+        <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
           <FormattedMessage {...messages.plexlibrariesDescription} />
         </p>
         <div className="mt-6">
@@ -284,15 +287,15 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         </ul>
       </div>
       <div className="mt-10">
-        <h3 className="text-lg leading-6 font-medium text-cool-gray-200">
+        <h3 className="text-lg leading-6 font-medium text-gray-200">
           <FormattedMessage {...messages.manualscan} />
         </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-5 text-cool-gray-500">
+        <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
           <FormattedMessage {...messages.manualscanDescription} />
         </p>
         <div className="mt-6">
-          <div className="bg-cool-gray-800 p-4 rounded-md">
-            <div className="w-full h-8 rounded-full bg-cool-gray-600 mb-6 relative overflow-hidden">
+          <div className="bg-gray-800 p-4 rounded-md">
+            <div className="w-full h-8 rounded-full bg-gray-600 mb-6 relative overflow-hidden">
               {dataSync?.running && (
                 <div
                   className="h-8 bg-indigo-600 transition-all ease-in-out duration-200"

@@ -11,11 +11,11 @@ const Layout: React.FC = ({ children }) => {
   const router = useRouter();
 
   return (
-    <div className="min-h-full h-full flex bg-cool-gray-900">
+    <div className="min-h-full h-full flex bg-gray-900">
       <Sidebar open={isSidebarOpen} setClosed={() => setSidebarOpen(false)} />
 
       <div className="flex flex-col w-0 flex-1 md:ml-64 relative mb-16">
-        <div className="z-10 flex-shrink-0 flex h-16 bg-cool-gray-600 shadow fixed right-0 left-0 md:left-64">
+        <div className="z-10 flex-shrink-0 flex h-16 bg-gray-600 shadow fixed right-0 left-0 md:left-64">
           <button
             className="px-4 border-r border-gray-800 text-gray-200 focus:outline-none focus:bg-gray-300 focus:text-gray-600 md:hidden"
             aria-label="Open sidebar"
@@ -77,7 +77,7 @@ const Layout: React.FC = ({ children }) => {
                       <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
                         <a
                           href="http://github.com/sct/overseerr"
-                          className="whitespace-no-wrap font-medium text-indigo-100 hover:text-white transition ease-in-out duration-150"
+                          className="whitespace-nowrap font-medium text-indigo-100 hover:text-white transition ease-in-out duration-150"
                           target="_blank"
                           rel="noreferrer"
                         >

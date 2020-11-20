@@ -46,7 +46,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
       leaveTo="opacity-0"
     >
       <div
-        className={`z-50 fixed inset-0 overflow-hidden bg-opacity-50 bg-cool-gray-800`}
+        className={`z-50 fixed inset-0 overflow-hidden bg-opacity-50 bg-gray-800`}
       >
         <div className="absolute inset-0 overflow-hidden">
           <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex">
@@ -61,7 +61,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
               leaveTo="translate-x-full"
             >
               <div className="w-screen max-w-md" ref={slideoverRef}>
-                <div className="h-full flex flex-col bg-cool-gray-700 shadow-xl overflow-y-scroll">
+                <div className="h-full flex flex-col bg-gray-700 shadow-xl overflow-y-scroll">
                   <header className="space-y-1 py-6 px-4 bg-indigo-600 sm:px-6">
                     <div className="flex items-center justify-between space-x-3">
                       <h2 className="text-lg leading-7 font-medium text-white">

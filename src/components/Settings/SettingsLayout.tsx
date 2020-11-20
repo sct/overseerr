@@ -47,7 +47,7 @@ const SettingsLayout: React.FC = ({ children }) => {
     'border-indigo-600 text-indigo-500 focus:outline-none focus:text-indigo-500 focus:border-indigo-500';
 
   const inactiveLinkColor =
-    'border-transparent text-cool-gray-500 hover:text-cool-gray-400 hover:border-cool-gray-300 focus:outline-none focus:text-cool-gray-4700 focus:border-cool-gray-300';
+    'border-transparent text-gray-500 hover:text-gray-400 hover:border-gray-300 focus:outline-none focus:text-gray-4700 focus:border-gray-300';
 
   const SettingsLink: React.FC<{
     route: string;
@@ -61,7 +61,7 @@ const SettingsLayout: React.FC = ({ children }) => {
     return (
       <Link href={route}>
         <a
-          className={`whitespace-no-wrap ml-8 first:ml-0 py-4 px-1 border-b-2 border-transparent font-medium text-sm leading-5 ${
+          className={`whitespace-nowrap ml-8 first:ml-0 py-4 px-1 border-b-2 border-transparent font-medium text-sm leading-5 ${
             !!router.pathname.match(regex) ? activeLinkColor : inactiveLinkColor
           }`}
           aria-current="page"
@@ -88,7 +88,7 @@ const SettingsLayout: React.FC = ({ children }) => {
               )?.route
             }
             aria-label="Selected tab"
-            className="bg-cool-gray-800 text-white mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-cool-gray-700 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5 transition ease-in-out duration-150"
+            className="bg-gray-800 text-white mt-1 rounded-md form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-700 focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5 transition ease-in-out duration-150"
           >
             {settingsRoutes.map((route, index) => (
               <SettingsLink
@@ -103,7 +103,7 @@ const SettingsLayout: React.FC = ({ children }) => {
           </select>
         </div>
         <div className="hidden sm:block">
-          <div className="border-b border-cool-gray-600">
+          <div className="border-b border-gray-600">
             <nav className="-mb-px flex">
               {settingsRoutes.map((route, index) => (
                 <SettingsLink

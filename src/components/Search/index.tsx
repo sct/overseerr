@@ -68,13 +68,13 @@ const Search: React.FC = () => {
           <span className="relative z-0 inline-flex shadow-sm rounded-md">
             <button
               type="button"
-              className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-indigo-900 bg-indigo-500 hover:bg-indigo-400 text-sm leading-5 font-medium text-cool-gray-100 hover:text-white focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+              className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-indigo-900 bg-indigo-500 hover:bg-indigo-400 text-sm leading-5 font-medium text-gray-100 hover:text-white focus:z-10 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
             >
               Movies
             </button>
             <button
               type="button"
-              className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-indigo-900 bg-indigo-500   text-sm leading-5 font-medium text-cool-gray-100 hover:text-white focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+              className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-indigo-900 bg-indigo-500   text-sm leading-5 font-medium text-gray-100 hover:text-white focus:z-10 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
             >
               TV Shows
             </button>

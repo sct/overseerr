@@ -210,7 +210,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
               <table className="min-w-full">
                 <thead>
                   <tr>
-                    <th className="px-4 py-3 bg-cool-gray-500 w-16">
+                    <th className="px-4 py-3 bg-gray-500 w-16">
                       <span
                         role="checkbox"
                         tabIndex={0}
@@ -233,22 +233,22 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                           aria-hidden="true"
                           className={`${
                             isAllSeasons() ? 'translate-x-5' : 'translate-x-0'
-                          } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow transform group-focus:shadow-outline group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
+                          } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow transform group-focus:ring group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
                         ></span>
                       </span>
                     </th>
-                    <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                       Season
                     </th>
-                    <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                       # Of Episodes
                     </th>
-                    <th className="px-6 py-3 bg-cool-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
                       Status
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-cool-gray-600 divide-y">
+                <tbody className="bg-gray-600 divide-y">
                   {data?.seasons
                     .filter((season) => season.seasonNumber !== 0)
                     .map((season) => {
@@ -260,7 +260,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                       );
                       return (
                         <tr key={`season-${season.id}`}>
-                          <td className="px-4 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-100">
+                          <td className="px-4 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-100">
                             <span
                               role="checkbox"
                               tabIndex={0}
@@ -297,19 +297,19 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                   isSelectedSeason(season.seasonNumber)
                                     ? 'translate-x-5'
                                     : 'translate-x-0'
-                                } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow transform group-focus:shadow-outline group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
+                                } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow transform group-focus:ring group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
                               ></span>
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-100">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-100">
                             {season.seasonNumber === 0
                               ? 'Extras'
                               : `Season ${season.seasonNumber}`}
                           </td>
-                          <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-200">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-200">
                             {season.episodeCount}
                           </td>
-                          <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-200">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-200">
                             {!seasonRequest && !mediaSeason && (
                               <Badge>Not Requested</Badge>
                             )}

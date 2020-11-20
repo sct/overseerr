@@ -152,14 +152,15 @@ const UserEdit: React.FC = () => {
             <div className="space-y-1">
               <label
                 htmlFor="username"
-                className="block text-sm font-medium leading-5 text-cool-gray-400"
+                className="block text-sm font-medium leading-5 text-gray-400"
               >
                 <FormattedMessage {...messages.username} />
               </label>
               <div className="rounded-md shadow-sm flex">
                 <input
                   id="username"
-                  className="form-input flex-grow block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                  type="text"
+                  className="form-input flex-grow block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                   value={user?.username}
                   readOnly
                 />
@@ -168,14 +169,15 @@ const UserEdit: React.FC = () => {
             <div className="space-y-1">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-5 text-cool-gray-400"
+                className="block text-sm font-medium leading-5 text-gray-400"
               >
                 <FormattedMessage {...messages.email} />
               </label>
               <div className="rounded-md shadow-sm flex">
                 <input
                   id="email"
-                  className="form-input flex-grow block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-cool-gray-700 border border-cool-gray-500"
+                  type="text"
+                  className="form-input flex-grow block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                   value={user?.email}
                   readOnly
                 />
@@ -185,7 +187,7 @@ const UserEdit: React.FC = () => {
 
           <div className="flex-grow space-y-1 lg:flex-grow-0 lg:flex-shrink-0">
             <p
-              className="block text-sm leading-5 font-medium text-cool-gray-400"
+              className="block text-sm leading-5 font-medium text-gray-400"
               aria-hidden="true"
             >
               <FormattedMessage {...messages.avatar} />
@@ -251,7 +253,7 @@ const UserEdit: React.FC = () => {
                             id={permissionOption.id}
                             name="permissions"
                             type="checkbox"
-                            className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                            className="form-checkbox h-4 w-4 rounded-md text-indigo-600 transition duration-150 ease-in-out"
                             disabled={
                               (permissionOption.permission !==
                                 Permission.ADMIN &&
@@ -302,7 +304,7 @@ const UserEdit: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="mt-8 border-t border-cool-gray-700 pt-5">
+          <div className="mt-8 border-t border-gray-700 pt-5">
             <div className="flex justify-end">
               <span className="ml-3 inline-flex rounded-md shadow-sm">
                 <Button

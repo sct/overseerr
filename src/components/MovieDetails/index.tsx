@@ -125,7 +125,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       className="bg-cover bg-center -mx-4 -mt-2 px-4 sm:px-8 pt-4 "
       style={{
         height: 493,
-        backgroundImage: `linear-gradient(180deg, rgba(45, 55, 72, 0.47) 0%, #1A202E 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
+        backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
       <RequestModal
@@ -145,20 +145,18 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         subText={data.title}
       >
         <h3 className="text-xl mb-2">Requests</h3>
-        <div className="bg-cool-gray-600 shadow overflow-hidden rounded-md">
+        <div className="bg-gray-600 shadow overflow-hidden rounded-md">
           <ul>
             {data.mediaInfo?.requests?.map((request) => (
               <li
                 key={`manage-request-${request.id}`}
-                className="border-b last:border-b-0 border-cool-gray-700"
+                className="border-b last:border-b-0 border-gray-700"
               >
                 <RequestBlock request={request} onUpdate={() => revalidate()} />
               </li>
             ))}
             {(data.mediaInfo?.requests ?? []).length === 0 && (
-              <li className="text-center py-4 text-cool-gray-400">
-                No requests
-              </li>
+              <li className="text-center py-4 text-gray-400">No requests</li>
             )}
           </ul>
         </div>
@@ -171,7 +169,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             >
               Clear All Media Data
             </Button>
-            <div className="text-sm text-cool-gray-400 mt-2">
+            <div className="text-sm text-gray-400 mt-2">
               This will remove all media data including all requests for this
               item. This action is irreversible. If this item exists in your
               Plex library, the media information will be recreated next sync.
@@ -373,9 +371,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </p>
         </div>
         <div className="w-full md:w-80 mt-8 md:mt-0">
-          <div className="bg-cool-gray-900 rounded-lg shadow border border-cool-gray-800">
+          <div className="bg-gray-900 rounded-lg shadow border border-gray-800">
             {(data.voteCount > 0 || ratingData) && (
-              <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0 items-center justify-center">
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0 items-center justify-center">
                 {ratingData?.criticsRating && (
                   <>
                     <span className="text-sm">
@@ -385,7 +383,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         <RTFresh className="w-6 mr-1" />
                       )}
                     </span>
-                    <span className="text-cool-gray-400 text-sm mr-4 last:mr-0">
+                    <span className="text-gray-400 text-sm mr-4 last:mr-0">
                       {ratingData.criticsScore}%
                     </span>
                   </>
@@ -399,7 +397,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         <RTAudFresh className="w-6 mr-1" />
                       )}
                     </span>
-                    <span className="text-cool-gray-400 text-sm mr-4 last:mr-0">
+                    <span className="text-gray-400 text-sm mr-4 last:mr-0">
                       {ratingData.audienceScore}%
                     </span>
                   </>
@@ -409,18 +407,18 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     <span className="text-sm">
                       <TmdbLogo className="w-6 mr-2" />
                     </span>
-                    <span className="text-cool-gray-400 text-sm">
+                    <span className="text-gray-400 text-sm">
                       {data.voteAverage}/10
                     </span>
                   </>
                 )}
               </div>
             )}
-            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+            <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
               <span className="text-sm">
                 <FormattedMessage {...messages.releasedate} />
               </span>
-              <span className="flex-1 text-right text-cool-gray-400 text-sm">
+              <span className="flex-1 text-right text-gray-400 text-sm">
                 <FormattedDate
                   value={new Date(data.releaseDate)}
                   year="numeric"
@@ -429,20 +427,20 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 />
               </span>
             </div>
-            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+            <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
               <span className="text-sm">
                 <FormattedMessage {...messages.status} />
               </span>
-              <span className="flex-1 text-right text-cool-gray-400 text-sm">
+              <span className="flex-1 text-right text-gray-400 text-sm">
                 {data.status}
               </span>
             </div>
             {data.revenue > 0 && (
-              <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
                   <FormattedMessage {...messages.revenue} />
                 </span>
-                <span className="flex-1 text-right text-cool-gray-400 text-sm">
+                <span className="flex-1 text-right text-gray-400 text-sm">
                   <FormattedNumber
                     currency="USD"
                     style="currency"
@@ -452,11 +450,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               </div>
             )}
             {data.budget > 0 && (
-              <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
                   <FormattedMessage {...messages.budget} />
                 </span>
-                <span className="flex-1 text-right text-cool-gray-400 text-sm">
+                <span className="flex-1 text-right text-gray-400 text-sm">
                   <FormattedNumber
                     currency="USD"
                     style="currency"
@@ -465,11 +463,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
-            <div className="flex px-4 py-2 border-b border-cool-gray-800 last:border-b-0">
+            <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
               <span className="text-sm">
                 <FormattedMessage {...messages.originallanguage} />
               </span>
-              <span className="flex-1 text-right text-cool-gray-400 text-sm">
+              <span className="flex-1 text-right text-gray-400 text-sm">
                 {data.originalLanguage}
               </span>
             </div>
@@ -479,7 +477,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
           <Link href="/movie/[movieId]/cast" as={`/movie/${data.id}/cast`}>
-            <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+            <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
               <span>
                 <FormattedMessage {...messages.cast} />
               </span>
@@ -522,7 +520,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 href="/movie/[movieId]/recommendations"
                 as={`/movie/${data.id}/recommendations`}
               >
-                <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+                <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
                   <span>
                     <FormattedMessage {...messages.recommendations} />
                   </span>
@@ -572,7 +570,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 href="/movie/[movieId]/similar"
                 as={`/movie/${data.id}/similar`}
               >
-                <a className="inline-flex text-xl leading-7 text-cool-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+                <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
                   <span>
                     <FormattedMessage {...messages.similar} />
                   </span>

@@ -22,7 +22,7 @@ const UserDropdown: React.FC = () => {
     <div className="ml-3 relative">
       <div>
         <button
-          className="max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:shadow-outline"
+          className="max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring"
           id="user-menu"
           aria-label="User menu"
           aria-haspopup="true"
@@ -45,7 +45,7 @@ const UserDropdown: React.FC = () => {
           ref={dropdownRef}
         >
           <div
-            className="py-1 rounded-md bg-cool-gray-700 shadow-xs"
+            className="py-1 rounded-md bg-gray-700 ring-1 ring-black ring-opacity-5"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="user-menu"

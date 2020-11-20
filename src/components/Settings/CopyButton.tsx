@@ -20,7 +20,7 @@ const CopyButton: React.FC<{ textToCopy: string }> = ({ textToCopy }) => {
   return (
     <button
       onClick={setCopied}
-      className="-ml-px relative inline-flex items-center px-4 py-2 border border-cool-gray-500 text-sm leading-5 font-medium text-white bg-indigo-500  hover:bg-indigo-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+      className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-500 text-sm leading-5 font-medium text-white bg-indigo-500  hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
     >
       <svg
         className="w-5 h-5 text-white"

@@ -34,7 +34,7 @@ const Setup: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cool-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+    <div className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
@@ -51,7 +51,7 @@ const Setup: React.FC = () => {
         />
         <nav className="relative z-50">
           <ul
-            className=" bg-cool-gray-800 bg-opacity-50 border border-cool-gray-600 rounded-md divide-y divide-cool-gray-600 md:flex md:divide-y-0"
+            className=" bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md divide-y divide-gray-600 md:flex md:divide-y-0"
             style={{ backdropFilter: 'blur(5px)' }}
           >
             <SetupSteps
@@ -74,14 +74,14 @@ const Setup: React.FC = () => {
             />
           </ul>
         </nav>
-        <div className="w-full mt-10 p-4 text-white bg-cool-gray-800 bg-opacity-50 border border-cool-gray-600 rounded-md">
+        <div className="w-full mt-10 p-4 text-white bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md">
           {currentStep === 1 && (
             <LoginWithPlex onComplete={() => setCurrentStep(2)} />
           )}
           {currentStep === 2 && (
             <div>
               <SettingsPlex onComplete={() => setPlexSettingsComplete(true)} />
-              <div className="mt-8 border-t border-cool-gray-700 pt-5">
+              <div className="mt-8 border-t border-gray-700 pt-5">
                 <div className="flex justify-end">
                   <span className="ml-3 inline-flex rounded-md shadow-sm">
                     <Button
@@ -99,7 +99,7 @@ const Setup: React.FC = () => {
           {currentStep === 3 && (
             <div>
               <SettingsServices />
-              <div className="mt-8 border-t border-cool-gray-700 pt-5">
+              <div className="mt-8 border-t border-gray-700 pt-5">
                 <div className="flex justify-end">
                   <span className="ml-3 inline-flex rounded-md shadow-sm">
                     <Button

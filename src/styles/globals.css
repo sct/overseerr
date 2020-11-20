@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-cool-gray-900;
+  @apply bg-gray-900;
 }
 
 .plex-button {
@@ -16,7 +16,7 @@ body {
 }
 
 .titleCard {
-  @apply relative bg-cover rounded-lg bg-cool-gray-800;
+  @apply relative bg-cover rounded-lg bg-gray-800;
   padding-bottom: 150%;
 }
 
