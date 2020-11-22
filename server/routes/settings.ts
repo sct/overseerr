@@ -349,4 +349,19 @@ settingsRoutes.get(
   }
 );
 
+settingsRoutes.get('/notifications/discord', (req, res) => {
+  const settings = getSettings();
+
+  res.status(200).json(settings.notifications.agents.discord);
+});
+
+settingsRoutes.post('/notifications/discord', (req, res) => {
+  const settings = getSettings();
+
+  settings.notifications.agents.discord = req.body;
+  settings.save();
+
+  res.status(200).json(settings.notifications.agents.discord);
+});
+
 export default settingsRoutes;

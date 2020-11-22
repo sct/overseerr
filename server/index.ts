@@ -14,6 +14,8 @@ import { Session } from './entity/Session';
 import { getSettings } from './lib/settings';
 import logger from './logger';
 import { startJobs } from './job/schedule';
+import notificationManager from './lib/notifications';
+import DiscordAgent from './lib/notifications/agents/discord';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -27,6 +29,9 @@ app
     await createConnection();
     // Load Settings
     getSettings().load();
+
+    // Register Notification Agents
+    notificationManager.registerAgents([new DiscordAgent()]);
 
     // Start Jobs
     startJobs();

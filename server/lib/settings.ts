@@ -50,6 +50,16 @@ interface PublicSettings {
   initialized: boolean;
 }
 
+interface NotificationAgent {
+  enabled: boolean;
+  types: number;
+  options: Record<string, unknown>;
+}
+
+interface NotificationSettings {
+  agents: Record<string, NotificationAgent>;
+}
+
 interface AllSettings {
   clientId?: string;
   main: MainSettings;
@@ -57,6 +67,7 @@ interface AllSettings {
   radarr: RadarrSettings[];
   sonarr: SonarrSettings[];
   public: PublicSettings;
+  notifications: NotificationSettings;
 }
 
 const SETTINGS_PATH = path.join(__dirname, '../../config/settings.json');
@@ -79,6 +90,17 @@ class Settings {
       sonarr: [],
       public: {
         initialized: false,
+      },
+      notifications: {
+        agents: {
+          discord: {
+            enabled: false,
+            types: 0,
+            options: {
+              webhookUrl: '',
+            },
+          },
+        },
       },
     };
     if (initialSettings) {
@@ -126,6 +148,14 @@ class Settings {
     this.data.public = data;
   }
 
+  get notifications(): NotificationSettings {
+    return this.data.notifications;
+  }
+
+  set notifications(data: NotificationSettings) {
+    this.data.notifications = data;
+  }
+
   get clientId(): string {
     if (!this.data.clientId) {
       this.data.clientId = uuidv4();
@@ -156,6 +186,7 @@ class Settings {
 
     if (data) {
       this.data = Object.assign(this.data, JSON.parse(data));
+      this.save();
     }
     return this.data;
   }

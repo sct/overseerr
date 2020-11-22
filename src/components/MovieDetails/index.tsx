@@ -186,7 +186,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           />
         </div>
         <div className="text-white flex flex-col mr-4 mt-4 md:mt-0 text-center md:text-left">
-          <div className="mb-2 md:mb-0">
+          <div className="mb-2">
             {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
               <Badge badgeType="success">Available</Badge>
             )}

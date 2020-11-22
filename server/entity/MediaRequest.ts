@@ -20,6 +20,7 @@ import RadarrAPI from '../api/radarr';
 import logger from '../logger';
 import SeasonRequest from './SeasonRequest';
 import SonarrAPI from '../api/sonarr';
+import notificationManager, { Notification } from '../lib/notifications';
 
 @Entity()
 export class MediaRequest {
@@ -58,6 +59,22 @@ export class MediaRequest {
 
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
+  }
+
+  @AfterInsert()
+  private async notifyNewRequest() {
+    if (this.status === MediaRequestStatus.PENDING) {
+      const tmdb = new TheMovieDb();
+      if (this.media.mediaType === MediaType.MOVIE) {
+        const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
+        notificationManager.sendNotification(Notification.MEDIA_ADDED, {
+          subject: `New Request: ${movie.title}`,
+          message: movie.overview,
+          image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+          username: this.requestedBy.username,
+        });
+      }
+    }
   }
 
   @AfterUpdate()

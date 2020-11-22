@@ -752,6 +752,20 @@ components:
         results:
           type: number
           example: 100
+    DiscordSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            webhookUrl:
+              type: string
 
   securitySchemes:
     cookieAuth:
@@ -1207,7 +1221,37 @@ paths:
                     nextExecutionTime:
                       type: string
                       example: '2020-09-02T05:02:23.000Z'
-
+  /settings/notifications/discord:
+    get:
+      summary: Return current discord notification settings
+      description: Returns current discord notification settings in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned discord settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscordSettings'
+    post:
+      summary: Update discord notification settings
+      description: Update current discord notification settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiscordSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscordSettings'
   /auth/me:
     get:
       summary: Returns the currently logged in user
