@@ -64,14 +64,86 @@ export class MediaRequest {
   @AfterInsert()
   private async notifyNewRequest() {
     if (this.status === MediaRequestStatus.PENDING) {
+      const mediaRepository = getRepository(Media);
+      const media = await mediaRepository.findOne({
+        where: { id: this.media.id },
+      });
+      if (!media) {
+        logger.error('No parent media!', { label: 'Media Request' });
+        return;
+      }
+      const tmdb = new TheMovieDb();
+      if (this.type === MediaType.MOVIE) {
+        const movie = await tmdb.getMovie({ movieId: media.tmdbId });
+        notificationManager.sendNotification(Notification.MEDIA_PENDING, {
+          subject: movie.title,
+          message: movie.overview,
+          image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+          notifyUser: this.requestedBy,
+        });
+      }
+
+      if (this.type === MediaType.TV) {
+        const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
+        notificationManager.sendNotification(Notification.MEDIA_PENDING, {
+          subject: tv.name,
+          message: tv.overview,
+          image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
+          notifyUser: this.requestedBy,
+          extra: [
+            {
+              name: 'Seasons',
+              value: this.seasons
+                .map((season) => season.seasonNumber)
+                .join(', '),
+            },
+          ],
+        });
+      }
+    }
+  }
+
+  /**
+   * Notification for approval
+   *
+   * We only check on AfterUpdate as to not trigger this for
+   * auto approved content
+   */
+  @AfterUpdate()
+  private async notifyApproved() {
+    if (this.status === MediaRequestStatus.APPROVED) {
+      const mediaRepository = getRepository(Media);
+      const media = await mediaRepository.findOne({
+        where: { id: this.media.id },
+      });
+      if (!media) {
+        logger.error('No parent media!', { label: 'Media Request' });
+        return;
+      }
       const tmdb = new TheMovieDb();
       if (this.media.mediaType === MediaType.MOVIE) {
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
-        notificationManager.sendNotification(Notification.MEDIA_ADDED, {
-          subject: `New Request: ${movie.title}`,
+        notificationManager.sendNotification(Notification.MEDIA_APPROVED, {
+          subject: movie.title,
           message: movie.overview,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-          username: this.requestedBy.username,
+          notifyUser: this.requestedBy,
+        });
+      } else if (this.media.mediaType === MediaType.TV) {
+        const tv = await tmdb.getTvShow({ tvId: this.media.tmdbId });
+        notificationManager.sendNotification(Notification.MEDIA_APPROVED, {
+          subject: tv.name,
+          message: tv.overview,
+          image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
+          notifyUser: this.requestedBy,
+          extra: [
+            {
+              name: 'Seasons',
+              value: this.seasons
+                .map((season) => season.seasonNumber)
+                .join(', '),
+            },
+          ],
         });
       }
     }

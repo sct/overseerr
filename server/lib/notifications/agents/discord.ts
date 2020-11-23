@@ -81,10 +81,21 @@ class DiscordAgent implements NotificationAgent {
     payload: NotificationPayload
   ): DiscordRichEmbed {
     let color = EmbedColors.DEFAULT;
+    let status = 'Unknown';
 
     switch (type) {
-      case Notification.MEDIA_ADDED:
+      case Notification.MEDIA_PENDING:
         color = EmbedColors.ORANGE;
+        status = 'Pending Approval';
+        break;
+      case Notification.MEDIA_APPROVED:
+        color = EmbedColors.PURPLE;
+        status = 'Processing Request';
+        break;
+      case Notification.MEDIA_AVAILABLE:
+        color = EmbedColors.GREEN;
+        status = 'Available';
+        break;
     }
 
     return {
@@ -96,14 +107,19 @@ class DiscordAgent implements NotificationAgent {
       fields: [
         {
           name: 'Requested By',
-          value: payload.username ?? '',
+          value: payload.notifyUser.username ?? '',
           inline: true,
         },
         {
           name: 'Status',
-          value: 'Pending Approval',
+          value: status,
           inline: true,
         },
+        // If we have extra data, map it to fields for discord notifications
+        ...(payload.extra ?? []).map((extra) => ({
+          name: extra.name,
+          value: extra.value,
+        })),
       ],
       thumbnail: {
         url: payload.image,
@@ -131,8 +147,8 @@ class DiscordAgent implements NotificationAgent {
     const settings = getSettings();
     logger.debug('Sending discord notification', { label: 'Notifications' });
     try {
-      const webhookUrl = settings.notifications.agents.discord?.options
-        ?.webhookUrl as string;
+      const webhookUrl =
+        settings.notifications.agents.discord?.options?.webhookUrl;
 
       if (!webhookUrl) {
         return false;

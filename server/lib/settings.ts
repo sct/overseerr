@@ -55,9 +55,18 @@ interface NotificationAgent {
   types: number;
   options: Record<string, unknown>;
 }
+interface NotificationAgentDiscord extends NotificationAgent {
+  options: {
+    webhookUrl: string;
+  };
+}
+
+interface NotificationAgents {
+  discord: NotificationAgentDiscord;
+}
 
 interface NotificationSettings {
-  agents: Record<string, NotificationAgent>;
+  agents: NotificationAgents;
 }
 
 interface AllSettings {

@@ -1,10 +1,12 @@
 import { Notification } from '..';
+import { User } from '../../../entity/User';
 
 export interface NotificationPayload {
   subject: string;
-  username?: string;
+  notifyUser: User;
   image?: string;
   message?: string;
+  extra?: { name: string; value: string }[];
 }
 
 export interface NotificationAgent {

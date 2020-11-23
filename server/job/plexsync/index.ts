@@ -146,11 +146,15 @@ class JobPlexSync {
           where: { tmdbId: tvShow.id, mediaType: MediaType.TV },
         });
 
-        const availableSeasons: Season[] = [];
+        const newSeasons: Season[] = [];
 
         seasons.forEach((season) => {
           const matchedPlexSeason = metadata.Children?.Metadata.find(
             (md) => Number(md.index) === season.season_number
+          );
+
+          const existingSeason = media?.seasons.find(
+            (es) => es.seasonNumber === season.season_number
           );
 
           // Check if we found the matching season and it has all the available episodes
@@ -158,19 +162,27 @@ class JobPlexSync {
             matchedPlexSeason &&
             Number(matchedPlexSeason.leafCount) === season.episode_count
           ) {
-            availableSeasons.push(
-              new Season({
-                seasonNumber: season.season_number,
-                status: MediaStatus.AVAILABLE,
-              })
-            );
+            if (existingSeason) {
+              existingSeason.status = MediaStatus.AVAILABLE;
+            } else {
+              newSeasons.push(
+                new Season({
+                  seasonNumber: season.season_number,
+                  status: MediaStatus.AVAILABLE,
+                })
+              );
+            }
           } else if (matchedPlexSeason) {
-            availableSeasons.push(
-              new Season({
-                seasonNumber: season.season_number,
-                status: MediaStatus.PARTIALLY_AVAILABLE,
-              })
-            );
+            if (existingSeason) {
+              existingSeason.status = MediaStatus.PARTIALLY_AVAILABLE;
+            } else {
+              newSeasons.push(
+                new Season({
+                  seasonNumber: season.season_number,
+                  status: MediaStatus.PARTIALLY_AVAILABLE,
+                })
+              );
+            }
           }
         });
 
@@ -179,11 +191,13 @@ class JobPlexSync {
           (season) => season.season_number !== 0
         );
 
-        const isAllSeasons = availableSeasons.length >= filteredSeasons.length;
+        const isAllSeasons =
+          newSeasons.length + (media?.seasons.length ?? 0) >=
+          filteredSeasons.length;
 
         if (media) {
           // Update existing
-          media.seasons = availableSeasons;
+          media.seasons = [...media.seasons, ...newSeasons];
           media.status = isAllSeasons
             ? MediaStatus.AVAILABLE
             : MediaStatus.PARTIALLY_AVAILABLE;
@@ -192,7 +206,7 @@ class JobPlexSync {
         } else {
           const newMedia = new Media({
             mediaType: MediaType.TV,
-            seasons: availableSeasons,
+            seasons: newSeasons,
             tmdbId: tvShow.id,
             tvdbId: tvShow.external_ids.tvdb_id,
             status: isAllSeasons
