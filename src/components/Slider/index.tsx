@@ -1,5 +1,11 @@
 import { debounce } from 'lodash';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  ReactNode,
+} from 'react';
 import { useSpring } from 'react-spring';
 import TitleCard from '../TitleCard';
 import { defineMessages, FormattedMessage } from 'react-intl';
