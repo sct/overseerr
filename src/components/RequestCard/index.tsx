@@ -13,6 +13,7 @@ import { useUser, Permission } from '../../hooks/useUser';
 import axios from 'axios';
 import Button from '../Common/Button';
 import { withProperties } from '../../utils/typeHelpers';
+import Link from 'next/link';
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
@@ -76,8 +77,17 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
       }}
     >
       <div className="flex-1 pr-4 min-w-0 flex flex-col">
-        <h2 className="text-base sm:text-lg overflow-ellipsis overflow-hidden whitespace-nowrap text-white">
-          {isMovie(title) ? title.title : title.name}
+        <h2 className="text-base sm:text-lg overflow-ellipsis overflow-hidden whitespace-nowrap text-white cursor-pointer hover:underline">
+          <Link
+            href={request.type === 'movie' ? '/movie/[movieId]' : '/tv/[tvId]'}
+            as={
+              request.type === 'movie'
+                ? `/movie/${request.media.tmdbId}`
+                : `/tv/${request.media.tmdbId}`
+            }
+          >
+            {isMovie(title) ? title.title : title.name}
+          </Link>
         </h2>
         <div className="text-xs sm:text-sm">
           Requested by {requestData.requestedBy.username}
@@ -155,11 +165,20 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
           )}
       </div>
       <div className="flex-shrink-0 w-20 sm:w-28">
-        <img
-          src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
-          alt=""
-          className="w-20 sm:w-28 rounded-md shadow-sm"
-        />
+        <Link
+          href={request.type === 'movie' ? '/movie/[movieId]' : '/tv/[tvId]'}
+          as={
+            request.type === 'movie'
+              ? `/movie/${request.media.tmdbId}`
+              : `/tv/${request.media.tmdbId}`
+          }
+        >
+          <img
+            src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
+            alt=""
+            className="w-20 sm:w-28 rounded-md shadow-sm cursor-pointer"
+          />
+        </Link>
       </div>
     </div>
   );
