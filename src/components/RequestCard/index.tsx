@@ -86,6 +86,9 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
           {requestData.media.status === MediaStatus.AVAILABLE && (
             <Badge badgeType="success">Available</Badge>
           )}
+          {requestData.media.status === MediaStatus.PARTIALLY_AVAILABLE && (
+            <Badge badgeType="success">Partially Available</Badge>
+          )}
           {requestData.media.status === MediaStatus.PROCESSING && (
             <Badge badgeType="danger">Unavailable</Badge>
           )}
