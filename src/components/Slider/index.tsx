@@ -14,6 +14,7 @@ interface SliderProps {
   isLoading: boolean;
   isEmpty: boolean;
   emptyMessage?: string;
+  placeholder?: ReactNode;
 }
 
 enum Direction {
@@ -27,6 +28,7 @@ const Slider: React.FC<SliderProps> = ({
   isLoading,
   isEmpty,
   emptyMessage,
+  placeholder = <TitleCard.Placeholder />,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollPos, setScrollPos] = useState({ isStart: true, isEnd: false });
@@ -204,14 +206,20 @@ const Slider: React.FC<SliderProps> = ({
         onScroll={onScroll}
       >
         {items?.map((item, index) => (
-          <div key={`${sliderKey}-${index}`} className="px-2 inline-block">
+          <div
+            key={`${sliderKey}-${index}`}
+            className="px-2 inline-block align-top"
+          >
             {item}
           </div>
         ))}
         {isLoading &&
           [...Array(10)].map((_item, i) => (
-            <div key={`placeholder-${i}`} className="px-2 inline-block">
-              <TitleCard.Placeholder />
+            <div
+              key={`placeholder-${i}`}
+              className="px-2 inline-block align-top"
+            >
+              {placeholder}
             </div>
           ))}
         {isEmpty && (

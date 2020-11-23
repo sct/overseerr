@@ -8,13 +8,14 @@ import type {
 import TitleCard from '../TitleCard';
 import PersonCard from '../PersonCard';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
-import RequestCard from '../TitleCard/RequestCard';
+import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
 import Slider from '../Slider';
 import Link from 'next/link';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
 import type Media from '../../../server/entity/Media';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
+import RequestCard from '../RequestCard';
 
 const messages = defineMessages({
   recentrequests: 'Recent Requests',
@@ -89,7 +90,7 @@ const Discover: React.FC = () => {
         isLoading={!media && !mediaError}
         isEmpty={!!media && !mediaError && media.results.length === 0}
         items={media?.results?.map((item) => (
-          <RequestCard
+          <TmdbTitleCard
             key={`media-slider-item-${item.id}`}
             tmdbId={item.tmdbId}
             type={item.mediaType}
@@ -128,10 +129,10 @@ const Discover: React.FC = () => {
         items={requests?.map((request) => (
           <RequestCard
             key={`request-slider-item-${request.id}`}
-            tmdbId={request.media.tmdbId}
-            type={request.media.mediaType}
+            request={request}
           />
         ))}
+        placeholder={<RequestCard.Placeholder />}
         emptyMessage={intl.formatMessage(messages.nopending)}
       />
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">

@@ -14,7 +14,7 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
 };
 
-const RequestCard: React.FC<TmdbTitleCardProps> = ({ tmdbId, type }) => {
+const TmdbTitleCard: React.FC<TmdbTitleCardProps> = ({ tmdbId, type }) => {
   const { locale } = useContext(LanguageContext);
   const url =
     type === 'movie' ? `/api/v1/movie/${tmdbId}` : `/api/v1/tv/${tmdbId}`;
@@ -55,4 +55,4 @@ const RequestCard: React.FC<TmdbTitleCardProps> = ({ tmdbId, type }) => {
   );
 };
 
-export default RequestCard;
+export default TmdbTitleCard;
