@@ -20,8 +20,8 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
 
 const RequestCardPlaceholder: React.FC = () => {
   return (
-    <div className="w-96 relative animate-pulse rounded-lg bg-gray-700 p-4">
-      <div className="w-28">
+    <div className="w-72 sm:w-96 relative animate-pulse rounded-lg bg-gray-700 p-4">
+      <div className="w-20 sm:w-28">
         <div className="w-full" style={{ paddingBottom: '150%' }} />
       </div>
     </div>
