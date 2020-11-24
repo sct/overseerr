@@ -35,6 +35,7 @@ import RTAudFresh from '../../assets/rt_aud_fresh.svg';
 import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import Error from '../../pages/_error';
+import Head from 'next/head';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -128,6 +129,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
+      <Head>
+        <title>{data.title} - Overseerr</title>
+      </Head>
       <RequestModal
         tmdbId={data.id}
         show={showRequestModal}

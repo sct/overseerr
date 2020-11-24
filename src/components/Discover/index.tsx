@@ -15,6 +15,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
 import type Media from '../../../server/entity/Media';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
+import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
 import RequestCard from '../RequestCard';
 
 const messages = defineMessages({
@@ -70,9 +71,9 @@ const Discover: React.FC = () => {
     '/api/v1/media?filter=available&take=20&sort=modified'
   );
 
-  const { data: requests, error: requestError } = useSWR<MediaRequest[]>(
-    '/api/v1/request?filter=unavailable&take=20&sort=modified&skip=0'
-  );
+  const { data: requests, error: requestError } = useSWR<
+    RequestResultsResponse
+  >('/api/v1/request?filter=unavailable&take=20&sort=modified&skip=0');
 
   return (
     <>
@@ -125,8 +126,8 @@ const Discover: React.FC = () => {
       <Slider
         sliderKey="requests"
         isLoading={!requests && !requestError}
-        isEmpty={!!requests && !requestError && requests.length === 0}
-        items={requests?.map((request) => (
+        isEmpty={!!requests && !requestError && requests.results.length === 0}
+        items={(requests?.results ?? []).map((request) => (
           <RequestCard
             key={`request-slider-item-${request.id}`}
             request={request}

@@ -33,6 +33,10 @@ components:
           type: string
           example: '2020-09-02T05:02:23.000Z'
           readOnly: true
+        requestCount:
+          type: number
+          example: 5
+          readOnly: true
         requests:
           type: array
           readOnly: true
@@ -1656,9 +1660,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MediaRequest'
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaRequest'
     post:
       summary: Create a new request
       description: |

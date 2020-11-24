@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  RelationCount,
 } from 'typeorm';
 import { Permission, hasPermission } from '../lib/permissions';
 import { MediaRequest } from './MediaRequest';
@@ -37,6 +38,9 @@ export class User {
 
   @Column()
   public avatar: string;
+
+  @RelationCount((user: User) => user.requests)
+  public requestCount: number;
 
   @OneToMany(() => MediaRequest, (request) => request.requestedBy)
   public requests: MediaRequest[];

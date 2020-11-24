@@ -8,17 +8,20 @@ import RottenTomatoes from '../api/rottentomatoes';
 
 const tvRoutes = Router();
 
-tvRoutes.get('/:id', async (req, res) => {
+tvRoutes.get('/:id', async (req, res, next) => {
   const tmdb = new TheMovieDb();
+  try {
+    const tv = await tmdb.getTvShow({
+      tvId: Number(req.params.id),
+      language: req.query.language as string,
+    });
 
-  const tv = await tmdb.getTvShow({
-    tvId: Number(req.params.id),
-    language: req.query.language as string,
-  });
+    const media = await Media.getMedia(tv.id);
 
-  const media = await Media.getMedia(tv.id);
-
-  return res.status(200).json(mapTvDetails(tv, media));
+    return res.status(200).json(mapTvDetails(tv, media));
+  } catch (e) {
+    return next({ status: 404, message: 'TV Show does not exist' });
+  }
 });
 
 tvRoutes.get('/:id/season/:seasonNumber', async (req, res) => {

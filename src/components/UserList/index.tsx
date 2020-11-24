@@ -73,7 +73,7 @@ const UserList: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm leading-5 text-white">
-                          {user.requests.length}
+                          {user.requestCount}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

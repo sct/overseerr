@@ -8,12 +8,16 @@ import Media from '../entity/Media';
 import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
 import SeasonRequest from '../entity/SeasonRequest';
 import logger from '../logger';
+import { RequestResultsResponse } from '../interfaces/api/requestInterfaces';
 
 const requestRoutes = Router();
 
 requestRoutes.get('/', async (req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
   try {
+    const pageSize = Number(req.query.take) ?? 20;
+    const skip = Number(req.query.skip) ?? 0;
+
     let statusFilter:
       | MediaRequestStatus
       | FindOperator<MediaRequestStatus>
@@ -51,23 +55,33 @@ requestRoutes.get('/', async (req, res, next) => {
         break;
     }
 
-    const requests = req.user?.hasPermission(Permission.MANAGE_REQUESTS)
-      ? await requestRepository.find({
+    const [requests, requestCount] = req.user?.hasPermission(
+      Permission.MANAGE_REQUESTS
+    )
+      ? await requestRepository.findAndCount({
           order: sortFilter,
           relations: ['media', 'modifiedBy'],
           where: { status: statusFilter },
           take: Number(req.query.take) ?? 20,
-          skip: Number(req.query.skip) ?? 0,
+          skip,
         })
-      : await requestRepository.find({
+      : await requestRepository.findAndCount({
           where: { requestedBy: { id: req.user?.id }, status: statusFilter },
           relations: ['media', 'modifiedBy'],
           order: sortFilter,
           take: Number(req.query.limit) ?? 20,
-          skip: Number(req.query.skip) ?? 0,
+          skip,
         });
 
-    return res.status(200).json(requests);
+    return res.status(200).json({
+      pageInfo: {
+        pages: Math.ceil(requestCount / pageSize),
+        pageSize,
+        results: requestCount,
+        page: Math.ceil(skip / pageSize) + 1,
+      },
+      results: requests,
+    } as RequestResultsResponse);
   } catch (e) {
     next({ status: 500, message: e.message });
   }

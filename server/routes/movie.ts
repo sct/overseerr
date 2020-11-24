@@ -8,17 +8,21 @@ import RottenTomatoes from '../api/rottentomatoes';
 
 const movieRoutes = Router();
 
-movieRoutes.get('/:id', async (req, res) => {
+movieRoutes.get('/:id', async (req, res, next) => {
   const tmdb = new TheMovieDb();
 
-  const movie = await tmdb.getMovie({
-    movieId: Number(req.params.id),
-    language: req.query.language as string,
-  });
+  try {
+    const movie = await tmdb.getMovie({
+      movieId: Number(req.params.id),
+      language: req.query.language as string,
+    });
 
-  const media = await Media.getMedia(movie.id);
+    const media = await Media.getMedia(movie.id);
 
-  return res.status(200).json(mapMovieDetails(movie, media));
+    return res.status(200).json(mapMovieDetails(movie, media));
+  } catch (e) {
+    return next({ status: 404, message: 'Movie does not exist' });
+  }
 });
 
 movieRoutes.get('/:id/recommendations', async (req, res) => {
@@ -74,27 +78,27 @@ movieRoutes.get('/:id/similar', async (req, res) => {
 });
 
 movieRoutes.get('/:id/ratings', async (req, res, next) => {
-  const tmdb = new TheMovieDb();
-  const rtapi = new RottenTomatoes();
+  try {
+    const tmdb = new TheMovieDb();
+    const rtapi = new RottenTomatoes();
 
-  const movie = await tmdb.getMovie({
-    movieId: Number(req.params.id),
-  });
+    const movie = await tmdb.getMovie({
+      movieId: Number(req.params.id),
+    });
 
-  if (!movie) {
+    const rtratings = await rtapi.getMovieRatings(
+      movie.title,
+      Number(movie.release_date.slice(0, 4))
+    );
+
+    if (!rtratings) {
+      return next({ status: 404, message: 'Unable to retrieve ratings' });
+    }
+
+    return res.status(200).json(rtratings);
+  } catch (e) {
     return next({ status: 404, message: 'Movie does not exist' });
   }
-
-  const rtratings = await rtapi.getMovieRatings(
-    movie.title,
-    Number(movie.release_date.slice(0, 4))
-  );
-
-  if (!rtratings) {
-    return next({ status: 404, message: 'Unable to retrieve ratings' });
-  }
-
-  return res.status(200).json(rtratings);
 });
 
 export default movieRoutes;

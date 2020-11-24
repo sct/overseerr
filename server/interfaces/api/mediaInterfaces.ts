@@ -1,11 +1,6 @@
 import type Media from '../../entity/Media';
+import { PaginatedResponse } from './common';
 
-export interface MediaResultsResponse {
-  pageInfo: {
-    pages: number;
-    page: number;
-    results: number;
-    pageSize: number;
-  };
+export interface MediaResultsResponse extends PaginatedResponse {
   results: Media[];
 }
