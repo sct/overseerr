@@ -16,6 +16,7 @@ import logger from './logger';
 import { startJobs } from './job/schedule';
 import notificationManager from './lib/notifications';
 import DiscordAgent from './lib/notifications/agents/discord';
+import EmailAgent from './lib/notifications/agents/email';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -31,7 +32,7 @@ app
     getSettings().load();
 
     // Register Notification Agents
-    notificationManager.registerAgents([new DiscordAgent()]);
+    notificationManager.registerAgents([new DiscordAgent(), new EmailAgent()]);
 
     // Start Jobs
     startJobs();

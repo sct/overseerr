@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { merge } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface Library {
@@ -44,6 +45,7 @@ export interface SonarrSettings extends DVRSettings {
 
 export interface MainSettings {
   apiKey: string;
+  applicationUrl: string;
 }
 
 interface PublicSettings {
@@ -61,7 +63,18 @@ interface NotificationAgentDiscord extends NotificationAgent {
   };
 }
 
+interface NotificationAgentEmail extends NotificationAgent {
+  options: {
+    smtpHost: string;
+    smtpPort: number;
+    secure: boolean;
+    authUser?: string;
+    authPass?: string;
+  };
+}
+
 interface NotificationAgents {
+  email: NotificationAgentEmail;
   discord: NotificationAgentDiscord;
 }
 
@@ -88,6 +101,7 @@ class Settings {
     this.data = {
       main: {
         apiKey: 'temp',
+        applicationUrl: '',
       },
       plex: {
         name: '',
@@ -102,6 +116,15 @@ class Settings {
       },
       notifications: {
         agents: {
+          email: {
+            enabled: false,
+            types: 0,
+            options: {
+              smtpHost: '127.0.0.1',
+              smtpPort: 465,
+              secure: false,
+            },
+          },
           discord: {
             enabled: false,
             types: 0,
@@ -113,7 +136,7 @@ class Settings {
       },
     };
     if (initialSettings) {
-      Object.assign<AllSettings, AllSettings>(this.data, initialSettings);
+      this.data = merge(this.data, initialSettings);
     }
   }
 
@@ -194,7 +217,7 @@ class Settings {
     const data = fs.readFileSync(SETTINGS_PATH, 'utf-8');
 
     if (data) {
-      this.data = Object.assign(this.data, JSON.parse(data));
+      this.data = merge(this.data, JSON.parse(data));
       this.save();
     }
     return this.data;

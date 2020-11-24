@@ -176,7 +176,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
           <img
             src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
             alt=""
-            className="w-20 sm:w-28 rounded-md shadow-sm cursor-pointer"
+            className="w-20 sm:w-28 rounded-md shadow-sm cursor-pointer transition transform-gpu duration-300 scale-100 hover:scale-105 hover:shadow-md"
           />
         </Link>
       </div>
