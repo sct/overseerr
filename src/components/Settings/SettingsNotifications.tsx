@@ -53,6 +53,15 @@ const SettingsNotifications: React.FC = ({ children }) => {
 
   return (
     <>
+      <div className="mb-6">
+        <h3 className="text-lg leading-6 font-medium text-gray-200">
+          Notification Settings
+        </h3>
+        <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
+          Here you can pick and choose what types of notifications to send and
+          through what types of services.
+        </p>
+      </div>
       <div>
         <div className="sm:hidden">
           <label htmlFor="tabs" className="sr-only">

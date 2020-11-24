@@ -54,8 +54,10 @@ components:
         apiKey:
           type: string
           example: 'anapikey'
-      required:
-        - apiKey
+          readOnly: true
+        applicationUrl:
+          type: string
+          example: https://os.example.com
     PlexLibrary:
       type: object
       properties:

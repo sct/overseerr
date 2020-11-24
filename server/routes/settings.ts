@@ -15,6 +15,7 @@ import logger from '../logger';
 import { scheduledJobs } from '../job/schedule';
 import { Permission } from '../lib/permissions';
 import { isAuthenticated } from '../middleware/auth';
+import { merge } from 'lodash';
 
 const settingsRoutes = Router();
 
@@ -27,7 +28,7 @@ settingsRoutes.get('/main', (_req, res) => {
 settingsRoutes.post('/main', (req, res) => {
   const settings = getSettings();
 
-  settings.main = req.body;
+  settings.main = merge(settings.main, req.body);
   settings.save();
 
   return res.status(200).json(settings.main);
