@@ -1,8 +1,10 @@
-**/node_modules
-**/.next
+node_modules
+.next
 .git
 .gitconfig
 .gitignore
 .github
 **/README.md
 **/.vscode
+config/db/db.sqlite3
+config/db/logs/overseerr.log

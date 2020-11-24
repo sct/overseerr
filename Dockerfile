@@ -7,6 +7,7 @@ RUN yarn --frozen-lockfile && \
   yarn build
 
 # remove development dependencies
-RUN npm prune --production
+RUN yarn install --production --ignore-scripts --prefer-offline
+RUN yarn cache clean
 
 CMD yarn start
