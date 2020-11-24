@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import next from 'next';
 import TheMovieDb from '../api/themoviedb';
 import logger from '../logger';
 import {
@@ -9,7 +10,7 @@ import {
 
 const personRoutes = Router();
 
-personRoutes.get('/:id', async (req, res) => {
+personRoutes.get('/:id', async (req, res, next) => {
   const tmdb = new TheMovieDb();
 
   try {
@@ -17,11 +18,10 @@ personRoutes.get('/:id', async (req, res) => {
       personId: Number(req.params.id),
       language: req.query.language as string,
     });
-    if (person) {
-      return res.status(200).json(mapPersonDetails(person));
-    }
+    return res.status(200).json(mapPersonDetails(person));
   } catch (e) {
     logger.error(e.message);
+    next();
   }
 });
 
