@@ -26,7 +26,7 @@ const settingsRoutes: SettingsRoute[] = [
   },
   {
     text: 'Notifications',
-    route: '/settings/notifications',
+    route: '/settings/notifications/email',
     regex: /^\/settings\/notifications/,
   },
   {

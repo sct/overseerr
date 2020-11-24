@@ -364,4 +364,19 @@ settingsRoutes.post('/notifications/discord', (req, res) => {
   res.status(200).json(settings.notifications.agents.discord);
 });
 
+settingsRoutes.get('/notifications/email', (req, res) => {
+  const settings = getSettings();
+
+  res.status(200).json(settings.notifications.agents.email);
+});
+
+settingsRoutes.post('/notifications/email', (req, res) => {
+  const settings = getSettings();
+
+  settings.notifications.agents.email = req.body;
+  settings.save();
+
+  res.status(200).json(settings.notifications.agents.email);
+});
+
 export default settingsRoutes;

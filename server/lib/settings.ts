@@ -65,6 +65,7 @@ interface NotificationAgentDiscord extends NotificationAgent {
 
 interface NotificationAgentEmail extends NotificationAgent {
   options: {
+    emailFrom: string;
     smtpHost: string;
     smtpPort: number;
     secure: boolean;
@@ -120,6 +121,7 @@ class Settings {
             enabled: false,
             types: 0,
             options: {
+              emailFrom: '',
               smtpHost: '127.0.0.1',
               smtpPort: 465,
               secure: false,

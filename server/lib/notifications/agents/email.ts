@@ -35,9 +35,10 @@ class EmailAgent implements NotificationAgent {
   }
 
   private getNewEmail() {
+    const settings = getSettings().notifications.agents.email;
     return new Email({
       message: {
-        from: 'no-reply@os.sct.dev',
+        from: settings.options.emailFrom,
       },
       send: true,
       transport: this.getSmtpTransport(),
@@ -55,9 +56,6 @@ class EmailAgent implements NotificationAgent {
         .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
         .forEach((user) => {
           const email = this.getNewEmail();
-          logger.debug('Sending email notification', {
-            label: 'Notifications',
-          });
 
           email.send({
             template: path.join(
@@ -74,9 +72,76 @@ class EmailAgent implements NotificationAgent {
               timestamp: new Date().toTimeString(),
               requestedBy: payload.notifyUser.username,
               actionUrl: settings.applicationUrl,
+              requestType: 'New Request',
             },
           });
         });
+      return true;
+    } catch (e) {
+      logger.error('Mail notification failed to send', {
+        label: 'Notifications',
+        message: e.message,
+      });
+      return false;
+    }
+  }
+
+  private async sendMediaApprovedEmail(payload: NotificationPayload) {
+    const settings = getSettings().main;
+    try {
+      const email = this.getNewEmail();
+
+      email.send({
+        template: path.join(
+          __dirname,
+          '../../../templates/email/media-request'
+        ),
+        message: {
+          to: payload.notifyUser.email,
+        },
+        locals: {
+          body: 'Your request for the following media has been approved:',
+          mediaName: payload.subject,
+          imageUrl: payload.image,
+          timestamp: new Date().toTimeString(),
+          requestedBy: payload.notifyUser.username,
+          actionUrl: settings.applicationUrl,
+          requestType: 'Request Approved',
+        },
+      });
+      return true;
+    } catch (e) {
+      logger.error('Mail notification failed to send', {
+        label: 'Notifications',
+        message: e.message,
+      });
+      return false;
+    }
+  }
+
+  private async sendMediaAvailableEmail(payload: NotificationPayload) {
+    const settings = getSettings().main;
+    try {
+      const email = this.getNewEmail();
+
+      email.send({
+        template: path.join(
+          __dirname,
+          '../../../templates/email/media-request'
+        ),
+        message: {
+          to: payload.notifyUser.email,
+        },
+        locals: {
+          body: 'Your requsested media is now available!',
+          mediaName: payload.subject,
+          imageUrl: payload.image,
+          timestamp: new Date().toTimeString(),
+          requestedBy: payload.notifyUser.username,
+          actionUrl: settings.applicationUrl,
+          requestType: 'Now Available',
+        },
+      });
       return true;
     } catch (e) {
       logger.error('Mail notification failed to send', {
@@ -96,6 +161,12 @@ class EmailAgent implements NotificationAgent {
     switch (type) {
       case Notification.MEDIA_PENDING:
         this.sendMediaRequestEmail(payload);
+        break;
+      case Notification.MEDIA_APPROVED:
+        this.sendMediaApprovedEmail(payload);
+        break;
+      case Notification.MEDIA_AVAILABLE:
+        this.sendMediaAvailableEmail(payload);
         break;
     }
 

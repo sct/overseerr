@@ -10,9 +10,9 @@ interface SettingsRoute {
 
 const settingsRoutes: SettingsRoute[] = [
   {
-    text: 'General',
-    route: '/settings/notifications',
-    regex: /^\/settings\/notifications$/,
+    text: 'Email',
+    route: '/settings/notifications/email',
+    regex: /^\/settings\/notifications\/email/,
   },
   {
     text: 'Discord',

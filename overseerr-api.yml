@@ -770,6 +770,36 @@ components:
           properties:
             webhookUrl:
               type: string
+    NotificationEmailSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            emailFrom:
+              type: string
+              example: no-reply@example.com
+            smtpHost:
+              type: string
+              example: 127.0.0.1
+            smtpPort:
+              type: number
+              example: 465
+            secure:
+              type: boolean
+              example: false
+            authUser:
+              type: string
+              nullable: true
+            authPass:
+              type: string
+              nullable: true
 
   securitySchemes:
     cookieAuth:
@@ -1225,6 +1255,37 @@ paths:
                     nextExecutionTime:
                       type: string
                       example: '2020-09-02T05:02:23.000Z'
+  /settings/notifications/email:
+    get:
+      summary: Return current email notification settings
+      description: Returns current email notification settings in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned email settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationEmailSettings'
+    post:
+      summary: Update email notification settings
+      description: Update current email notification settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationEmailSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationEmailSettings'
   /settings/notifications/discord:
     get:
       summary: Return current discord notification settings
