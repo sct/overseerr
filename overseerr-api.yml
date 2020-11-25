@@ -803,6 +803,144 @@ components:
               type: string
               nullable: true
 
+    PersonDetail:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+        deathday:
+          type: string
+        knownForDepartment:
+          type: string
+        alsoKnownAs:
+          type: array
+          items:
+            type: string
+        gender:
+          type: string
+        biography:
+          type: string
+        popularity:
+          type: string
+        placeOfBirth:
+          type: string
+        profilePath:
+          type: string
+        adult:
+          type: boolean
+        imdbId:
+          type: string
+        homepage:
+          type: string
+    CreditCast:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        originalLanguage:
+          type: string
+        episodeCount:
+          type: number
+        overview:
+          type: string
+        originCountry:
+          type: array
+          items:
+            type: string
+        originalName:
+          type: string
+        voteCount:
+          type: number
+        name:
+          type: string
+        mediaType:
+          type: string
+        popularity:
+          type: number
+        creditId:
+          type: string
+        backdropPath:
+          type: string
+        firstAirDate:
+          type: string
+        voteAverage:
+          type: number
+        genreIds:
+          type: array
+          items:
+            type: number
+        posterPath:
+          type: string
+        originalTitle:
+          type: string
+        video:
+          type: boolean
+        title:
+          type: string
+        adult:
+          type: boolean
+        releaseDate:
+          type: string
+        character:
+          type: string
+    CreditCrew:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        originalLanguage:
+          type: string
+        episodeCount:
+          type: number
+        overview:
+          type: string
+        originCountry:
+          type: array
+          items:
+            type: string
+        originalName:
+          type: string
+        voteCount:
+          type: number
+        name:
+          type: string
+        mediaType:
+          type: string
+        popularity:
+          type: number
+        creditId:
+          type: string
+        backdropPath:
+          type: string
+        firstAirDate:
+          type: string
+        voteAverage:
+          type: number
+        genreIds:
+          type: array
+          items:
+            type: number
+        posterPath:
+          type: string
+        originalTitle:
+          type: string
+        video:
+          type: boolean
+        title:
+          type: string
+        adult:
+          type: boolean
+        releaseDate:
+          type: string
+        department:
+          type: string
+        job:
+          type: string
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -2177,6 +2315,68 @@ paths:
                   criticsRating:
                     type: string
                     enum: ['Rotten', 'Fresh']
+  /person/{personId}:
+    get:
+      summary: Request person details
+      description: Returns details of the person based on provided person ID in JSON format
+      tags:
+        - person
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: number
+            example: 287
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Returned person
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonDetail'
+
+  /person/{personId}/combined_credits:
+    get:
+      summary: Request combined credits of person
+      description: Returns the combined credits of the person based on the provided person ID in JSON format
+      tags:
+        - person
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: number
+            example: 287
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Returned combined credts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cast:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CreditCast'
+                  crew:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CreditCrew"
+                  id:
+                    type: number
   /media:
     get:
       summary: Return all media

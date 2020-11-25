@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios';
-import { number } from 'yup';
 
 interface SearchOptions {
   query: string;
@@ -271,6 +270,60 @@ export interface TmdbTvDetails {
   external_ids: TmdbExternalIds;
 }
 
+export interface TmdbPersonDetail {
+  id: number;
+  name: string;
+  deathday: string;
+  known_for_department: string;
+  also_known_as?: string[];
+  gender: number;
+  biography: string;
+  popularity: string;
+  place_of_birth?: string;
+  profile_path?: string;
+  adult: boolean;
+  imdb_id?: string;
+  homepage?: string;
+}
+
+export interface TmdbPersonCredit {
+  id: number;
+  original_language: string;
+  episode_count: number;
+  overview: string;
+  origin_country: string[];
+  original_name: string;
+  vote_count: number;
+  name: string;
+  media_type?: string;
+  popularity: number;
+  credit_id: string;
+  backdrop_path?: string;
+  first_air_date: string;
+  vote_average: number;
+  genre_ids?: number[];
+  poster_path?: string;
+  original_title: string;
+  video?: boolean;
+  title: string;
+  adult: boolean;
+  release_date: string;
+}
+export interface TmdbPersonCreditCast extends TmdbPersonCredit {
+  character: string;
+}
+
+export interface TmdbPersonCreditCrew extends TmdbPersonCredit {
+  department: string;
+  job: string;
+}
+
+export interface TmdbPersonCombinedCredits {
+  id: number;
+  cast: TmdbPersonCreditCast[];
+  crew: TmdbPersonCreditCrew[];
+}
+
 export interface TmdbSeasonWithEpisodes extends TmdbTvSeasonResult {
   episodes: TmdbTvEpisodeResult[];
   external_ids: TmdbExternalIds;
@@ -307,6 +360,50 @@ class TheMovieDb {
       return response.data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to search multi: ${e.message}`);
+    }
+  };
+
+  public getPerson = async ({
+    personId,
+    language = 'en-US',
+  }: {
+    personId: number;
+    language?: string;
+  }): Promise<TmdbPersonDetail> => {
+    try {
+      const response = await this.axios.get<TmdbPersonDetail>(
+        `/person/${personId}`,
+        {
+          params: { language },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch person details: ${e.message}`);
+    }
+  };
+
+  public getPersonCombinedCredits = async ({
+    personId,
+    language = 'en-US',
+  }: {
+    personId: number;
+    language?: string;
+  }): Promise<TmdbPersonCombinedCredits> => {
+    try {
+      const response = await this.axios.get<TmdbPersonCombinedCredits>(
+        `/person/${personId}/combined_credits`,
+        {
+          params: { language },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(
+        `[TMDB] Failed to fetch person combined credits: ${e.message}`
+      );
     }
   };
 
