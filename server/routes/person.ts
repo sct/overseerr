@@ -21,7 +21,7 @@ personRoutes.get('/:id', async (req, res, next) => {
     return res.status(200).json(mapPersonDetails(person));
   } catch (e) {
     logger.error(e.message);
-    next();
+    next({ status: 404, message: 'Person not found' });
   }
 });
 
