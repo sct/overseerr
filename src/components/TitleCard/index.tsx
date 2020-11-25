@@ -222,7 +222,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     </button>
                   )}
                   {currentStatus === MediaStatus.PENDING && (
-                    <button className="w-full h-7 text-center text-white bg-orange-400 hover:bg-orange-300 rounded-sm ml-2 focus:border-orange-700 focus:ring-orange active:bg-orange-700 transition ease-in-out duration-150">
+                    <button
+                      className="w-full h-7 text-center text-yellow-500 border border-yellow-500 rounded-sm ml-2 cursor-default"
+                      disabled
+                    >
                       <svg
                         className="w-4 mx-auto"
                         fill="none"
@@ -234,13 +237,16 @@ const TitleCard: React.FC<TitleCardProps> = ({
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                         />
                       </svg>
                     </button>
                   )}
                   {currentStatus === MediaStatus.PROCESSING && (
-                    <button className="w-full h-7 text-center text-white bg-red-500 rounded-sm ml-2">
+                    <button
+                      className="w-full h-7 text-center text-red-500 border border-red-500 rounded-sm ml-2 cursor-default"
+                      disabled
+                    >
                       <svg
                         className="w-4 mx-auto"
                         fill="none"
@@ -259,7 +265,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   )}
                   {(currentStatus === MediaStatus.AVAILABLE ||
                     currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
-                    <button className="w-full h-7 text-center text-white bg-green-400 rounded-sm ml-2">
+                    <button
+                      className="w-full h-7 text-center text-green-400 border border-green-400 rounded-sm ml-2 cursor-default"
+                      disabled
+                    >
                       <svg
                         className="w-4 mx-auto"
                         fill="none"

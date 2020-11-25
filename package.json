@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon -e ts --watch server --watch overseerr-api.yml -e .json,.ts,.yml -x ts-node --files --project server/tsconfig.json server/index.ts",
-    "build:server": "tsc --project server/tsconfig.json",
+    "build:server": "tsc --project server/tsconfig.json && copyfiles -u 2 server/templates/**/*.{html,pug} dist/templates",
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
     "lint": "eslint \"./server/**/*.{ts,tsx}\" \"./src/**/*.{ts,tsx}\"",
@@ -83,6 +83,7 @@
     "babel-plugin-react-intl": "^8.2.2",
     "babel-plugin-react-intl-auto": "^3.3.0",
     "commitizen": "^4.2.1",
+    "copyfiles": "^2.4.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.10.0",
     "eslint-config-prettier": "^6.11.0",
