@@ -133,6 +133,17 @@ settingsRoutes.post('/radarr', (req, res) => {
   const lastItem = settings.radarr[settings.radarr.length - 1];
   newRadarr.id = lastItem ? lastItem.id + 1 : 0;
 
+  // If we are setting this as the default, clear any previous defaults for the same type first
+  // ex: if is4k is true, it will only remove defaults for other servers that have is4k set to true
+  // and are the default
+  if (req.body.isDefault) {
+    settings.radarr
+      .filter((radarrInstance) => radarrInstance.is4k === req.body.is4k)
+      .forEach((radarrInstance) => {
+        radarrInstance.isDefault = false;
+      });
+  }
+
   settings.radarr = [...settings.radarr, newRadarr];
   settings.save();
 
@@ -179,6 +190,17 @@ settingsRoutes.put<{ id: string }>('/radarr/:id', (req, res) => {
     return res
       .status(404)
       .json({ status: '404', message: 'Settings instance not found' });
+  }
+
+  // If we are setting this as the default, clear any previous defaults for the same type first
+  // ex: if is4k is true, it will only remove defaults for other servers that have is4k set to true
+  // and are the default
+  if (req.body.isDefault) {
+    settings.radarr
+      .filter((radarrInstance) => radarrInstance.is4k === req.body.is4k)
+      .forEach((radarrInstance) => {
+        radarrInstance.isDefault = false;
+      });
   }
 
   settings.radarr[radarrIndex] = {
@@ -252,6 +274,17 @@ settingsRoutes.post('/sonarr', (req, res) => {
   const lastItem = settings.sonarr[settings.sonarr.length - 1];
   newSonarr.id = lastItem ? lastItem.id + 1 : 0;
 
+  // If we are setting this as the default, clear any previous defaults for the same type first
+  // ex: if is4k is true, it will only remove defaults for other servers that have is4k set to true
+  // and are the default
+  if (req.body.isDefault) {
+    settings.sonarr
+      .filter((sonarrInstance) => sonarrInstance.is4k === req.body.is4k)
+      .forEach((sonarrInstance) => {
+        sonarrInstance.isDefault = false;
+      });
+  }
+
   settings.sonarr = [...settings.sonarr, newSonarr];
   settings.save();
 
@@ -298,6 +331,17 @@ settingsRoutes.put<{ id: string }>('/sonarr/:id', (req, res) => {
     return res
       .status(404)
       .json({ status: '404', message: 'Settings instance not found' });
+  }
+
+  // If we are setting this as the default, clear any previous defaults for the same type first
+  // ex: if is4k is true, it will only remove defaults for other servers that have is4k set to true
+  // and are the default
+  if (req.body.isDefault) {
+    settings.sonarr
+      .filter((sonarrInstance) => sonarrInstance.is4k === req.body.is4k)
+      .forEach((sonarrInstance) => {
+        sonarrInstance.isDefault = false;
+      });
   }
 
   settings.sonarr[sonarrIndex] = {

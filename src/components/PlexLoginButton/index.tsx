@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 import PlexOAuth from '../../utils/plex';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  loginwithplex: 'Login with Plex',
+  loading: 'Loading...',
+  loggingin: 'Logging in...',
+});
 
 const plexOAuth = new PlexOAuth();
 
@@ -12,13 +19,16 @@ const PlexLoginButton: React.FC<PlexLoginButtonProps> = ({
   onAuthToken,
   onError,
 }) => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const intl = useIntl();
+  const [loading, setLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const getPlexLogin = async () => {
     setLoading(true);
     try {
       const authToken = await plexOAuth.login();
       setLoading(false);
+      setIsProcessing(true);
       onAuthToken(authToken);
     } catch (e) {
       if (onError) {
@@ -35,10 +45,14 @@ const PlexLoginButton: React.FC<PlexLoginButtonProps> = ({
           plexOAuth.preparePopup();
           setTimeout(() => getPlexLogin(), 1500);
         }}
-        disabled={loading}
+        disabled={loading || isProcessing}
         className="plex-button"
       >
-        {loading ? 'Loading...' : 'Login with Plex'}
+        {loading
+          ? intl.formatMessage(messages.loading)
+          : isProcessing
+          ? intl.formatMessage(messages.loggingin)
+          : intl.formatMessage(messages.loginwithplex)}
       </button>
     </span>
   );

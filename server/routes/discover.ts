@@ -6,18 +6,8 @@ import TheMovieDb, {
 } from '../api/themoviedb';
 import { mapMovieResult, mapTvResult, mapPersonResult } from '../models/Search';
 import Media from '../entity/Media';
-
-const isMovie = (
-  movie: TmdbMovieResult | TmdbTvResult | TmdbPersonResult
-): movie is TmdbMovieResult => {
-  return (movie as TmdbMovieResult).title !== undefined;
-};
-
-const isPerson = (
-  person: TmdbMovieResult | TmdbTvResult | TmdbPersonResult
-): person is TmdbPersonResult => {
-  return (person as TmdbPersonResult).known_for !== undefined;
-};
+import { isMovie, isPerson } from '../utils/typeHelpers';
+import { MediaType } from '../constants/media';
 
 const discoverRoutes = Router();
 
@@ -65,7 +55,9 @@ discoverRoutes.get('/movies/upcoming', async (req, res) => {
     results: data.results.map((result) =>
       mapMovieResult(
         result,
-        media.find((req) => req.tmdbId === result.id)
+        media.find(
+          (med) => med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
+        )
       )
     ),
   });
@@ -90,7 +82,9 @@ discoverRoutes.get('/tv', async (req, res) => {
     results: data.results.map((result) =>
       mapTvResult(
         result,
-        media.find((req) => req.tmdbId === result.id)
+        media.find(
+          (med) => med.tmdbId === result.id && med.mediaType === MediaType.TV
+        )
       )
     ),
   });
@@ -116,13 +110,16 @@ discoverRoutes.get('/trending', async (req, res) => {
       isMovie(result)
         ? mapMovieResult(
             result,
-            media.find((req) => req.tmdbId === result.id)
+            media.find(
+              (req) =>
+                req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+            )
           )
         : isPerson(result)
         ? mapPersonResult(result)
         : mapTvResult(
             result,
-            media.find((req) => req.tmdbId === result.id)
+            media.find((req) => req.tmdbId === result.id && MediaType.TV)
           )
     ),
   });

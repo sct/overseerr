@@ -25,6 +25,10 @@ const availableLanguages: AvailableLanguageObject = {
     code: 'ja',
     display: '日本語',
   },
+  fr: {
+    code: 'fr',
+    display: 'Français',
+  },
 };
 
 const LanguagePicker: React.FC = () => {

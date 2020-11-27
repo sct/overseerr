@@ -5,6 +5,12 @@ import Sidebar from './Sidebar';
 import Notifications from './Notifications';
 import LanguagePicker from './LanguagePicker';
 import { useRouter } from 'next/router';
+import { defineMessages, FormattedMessage } from 'react-intl';
+
+const messages = defineMessages({
+  alphawarning:
+    'This is ALPHA software. Almost everything is bound to be nearly broken and/or unstable. Please report issues to the Overseerr Github!',
+});
 
 const Layout: React.FC = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -70,9 +76,7 @@ const Layout: React.FC = ({ children }) => {
                     </div>
                     <div className="ml-3 flex-1 md:flex md:justify-between">
                       <p className="text-sm leading-5 text-white">
-                        This is ALPHA software. Almost everything is bound to be
-                        nearly broken or unstable. Please report issues to the
-                        Overseerr Github!
+                        <FormattedMessage {...messages.alphawarning} />
                       </p>
                       <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
                         <a

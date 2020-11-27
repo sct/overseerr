@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useUser } from '../../hooks/useUser';
 import PlexLoginButton from '../PlexLoginButton';
 import axios from 'axios';
+import { defineMessages, FormattedMessage } from 'react-intl';
+
+const messages = defineMessages({
+  welcome: 'Welcome to Overseerr',
+  signinMessage: 'Get started by logging in with your Plex account',
+});
 
 interface LoginWithPlexProps {
   onComplete: () => void;
@@ -39,10 +45,10 @@ const LoginWithPlex: React.FC<LoginWithPlexProps> = ({ onComplete }) => {
   return (
     <form>
       <div className="flex justify-center font-bold text-xl mb-2">
-        Welcome to Overseerr
+        <FormattedMessage {...messages.welcome} />
       </div>
       <div className="flex justify-center text-sm pb-6 mb-2">
-        Get started by logging in with your Plex account
+        <FormattedMessage {...messages.signinMessage} />
       </div>
       <div className="flex items-center justify-center">
         <PlexLoginButton onAuthToken={(authToken) => setAuthToken(authToken)} />

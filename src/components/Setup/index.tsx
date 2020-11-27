@@ -7,15 +7,19 @@ import SettingsServices from '../Settings/SettingsServices';
 import LoginWithPlex from './LoginWithPlex';
 import SetupSteps from './SetupSteps';
 import axios from 'axios';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   finish: 'Finish Setup',
   finishing: 'Finishing...',
   continue: 'Continue',
+  loginwithplex: 'Login with Plex',
+  configureplex: 'Configure Plex',
+  configureservices: 'Configure Services',
 });
 
 const Setup: React.FC = () => {
+  const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [plexSettingsComplete, setPlexSettingsComplete] = useState(false);
@@ -43,7 +47,7 @@ const Setup: React.FC = () => {
           '/images/rotate4.jpg',
         ]}
       />
-      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-2xl relative z-50">
+      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-4xl relative z-50">
         <img
           src="/logo.png"
           className="mx-auto max-h-32 w-auto mb-10"
@@ -56,19 +60,19 @@ const Setup: React.FC = () => {
           >
             <SetupSteps
               stepNumber={1}
-              description={'Login with Plex'}
+              description={intl.formatMessage(messages.loginwithplex)}
               active={currentStep === 1}
               completed={currentStep > 1}
             />
             <SetupSteps
               stepNumber={2}
-              description={'Configure Plex'}
+              description={intl.formatMessage(messages.configureplex)}
               active={currentStep === 2}
               completed={currentStep > 2}
             />
             <SetupSteps
               stepNumber={3}
-              description={'Configure Services'}
+              description={intl.formatMessage(messages.configureservices)}
               active={currentStep === 3}
               isLastStep
             />

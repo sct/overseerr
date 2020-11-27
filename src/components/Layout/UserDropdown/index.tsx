@@ -3,6 +3,11 @@ import Transition from '../../Transition';
 import { useUser } from '../../../hooks/useUser';
 import axios from 'axios';
 import useClickOutside from '../../../hooks/useClickOutside';
+import { defineMessages, FormattedMessage } from 'react-intl';
+
+const messages = defineMessages({
+  signout: 'Sign Out',
+});
 
 const UserDropdown: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -56,7 +61,7 @@ const UserDropdown: React.FC = () => {
               role="menuitem"
               onClick={() => logout()}
             >
-              Sign out
+              <FormattedMessage {...messages.signout} />
             </a>
           </div>
         </div>

@@ -1,11 +1,45 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Transition from '../Transition';
-import Modal from '../Common/Modal';
+import Transition from '../../Transition';
+import Modal from '../../Common/Modal';
 import { Formik, Field } from 'formik';
-import type { SonarrSettings } from '../../../server/lib/settings';
+import type { SonarrSettings } from '../../../../server/lib/settings';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
+import { useIntl, defineMessages } from 'react-intl';
+
+const messages = defineMessages({
+  createsonarr: 'Create New Sonarr Server',
+  editsonarr: 'Edit Sonarr Server',
+  validationHostnameRequired: 'You must provide a hostname/IP',
+  validationPortRequired: 'You must provide a port',
+  validationApiKeyRequired: 'You must provide an API key',
+  validationRootFolderRequired: 'You must select a root folder',
+  validationProfileRequired: 'You must select a profile',
+  toastRadarrTestSuccess: 'Sonarr connection established!',
+  toastRadarrTestFailure: 'Failed to connect to Sonarr Server',
+  saving: 'Saving...',
+  save: 'Save Changes',
+  add: 'Add Server',
+  test: 'Test',
+  testing: 'Testing...',
+  defaultserver: 'Default Server',
+  servername: 'Server Name',
+  servernamePlaceholder: 'A Sonarr Server',
+  hostname: 'Hostname',
+  port: 'Port',
+  ssl: 'SSL',
+  apiKey: 'API Key',
+  apiKeyPlaceholder: 'Your Sonarr API Key',
+  baseUrl: 'Base URL',
+  baseUrlPlaceholder: 'Example: /sonarr',
+  qualityprofile: 'Quality Profile',
+  rootfolder: 'Root Folder',
+  seasonfolders: 'Season Folders',
+  server4k: '4K Server',
+  selectQualityProfile: 'Select a Quality Profile',
+  selectRootFolder: 'Select a Root Folder',
+});
 
 interface TestResponse {
   profiles: {
@@ -29,6 +63,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
   sonarr,
   onSave,
 }) => {
+  const intl = useIntl();
   const initialLoad = useRef(false);
   const { addToast } = useToasts();
   const [isValidated, setIsValidated] = useState(sonarr ? true : false);
@@ -38,11 +73,21 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
     rootFolders: [],
   });
   const SonarrSettingsSchema = Yup.object().shape({
-    hostname: Yup.string().required('You must provide a hostname/IP'),
-    port: Yup.number().required('You must provide a port'),
-    apiKey: Yup.string().required('You must provide an API Key'),
-    rootFolder: Yup.string().required('You must select a root folder'),
-    activeProfileId: Yup.string().required('You must select a profile'),
+    hostname: Yup.string().required(
+      intl.formatMessage(messages.validationHostnameRequired)
+    ),
+    port: Yup.number().required(
+      intl.formatMessage(messages.validationPortRequired)
+    ),
+    apiKey: Yup.string().required(
+      intl.formatMessage(messages.validationApiKeyRequired)
+    ),
+    rootFolder: Yup.string().required(
+      intl.formatMessage(messages.validationRootFolderRequired)
+    ),
+    activeProfileId: Yup.string().required(
+      intl.formatMessage(messages.validationProfileRequired)
+    ),
   });
 
   const testConnection = useCallback(
@@ -183,13 +228,17 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               okButtonType="primary"
               okText={
                 isSubmitting
-                  ? 'Saving...'
+                  ? intl.formatMessage(messages.saving)
                   : !!sonarr
-                  ? 'Save Changes'
-                  : 'Add Server'
+                  ? intl.formatMessage(messages.save)
+                  : intl.formatMessage(messages.add)
               }
               secondaryButtonType="warning"
-              secondaryText={isTesting ? 'Testing...' : 'Test'}
+              secondaryText={
+                isTesting
+                  ? intl.formatMessage(messages.testing)
+                  : intl.formatMessage(messages.test)
+              }
               onSecondary={() => {
                 if (values.apiKey && values.hostname && values.port) {
                   testConnection({
@@ -207,7 +256,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               okDisabled={!isValidated || isSubmitting || isTesting}
               onOk={() => handleSubmit()}
               title={
-                !sonarr ? 'Create New Sonarr Server' : 'Edit Sonarr Server'
+                !sonarr
+                  ? intl.formatMessage(messages.createsonarr)
+                  : intl.formatMessage(messages.editsonarr)
               }
             >
               <div className="mb-6">
@@ -216,7 +267,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="isDefault"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Default Server
+                    {intl.formatMessage(messages.defaultserver)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
@@ -232,7 +283,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="name"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Server Name
+                    {intl.formatMessage(messages.servername)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -240,7 +291,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         id="name"
                         name="name"
                         type="text"
-                        placeholder="A Sonarr Server"
+                        placeholder={intl.formatMessage(
+                          messages.servernamePlaceholder
+                        )}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('name', e.target.value);
@@ -258,7 +311,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="hostname"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Hostname
+                    {intl.formatMessage(messages.hostname)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -284,7 +337,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="port"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Port
+                    {intl.formatMessage(messages.port)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
@@ -308,7 +361,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="ssl"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    SSL
+                    {intl.formatMessage(messages.ssl)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
@@ -328,7 +381,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="apiKey"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    API Key
+                    {intl.formatMessage(messages.apiKey)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -336,7 +389,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         id="apiKey"
                         name="apiKey"
                         type="text"
-                        placeholder="Your Sonarr API Key"
+                        placeholder={intl.formatMessage(
+                          messages.apiKeyPlaceholder
+                        )}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('apiKey', e.target.value);
@@ -354,7 +409,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="baseUrl"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Base URL
+                    {intl.formatMessage(messages.baseUrl)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -362,7 +417,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         id="baseUrl"
                         name="baseUrl"
                         type="text"
-                        placeholder="Example: /sonarr"
+                        placeholder={intl.formatMessage(
+                          messages.baseUrlPlaceholder
+                        )}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
@@ -380,7 +437,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="activeProfileId"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Quality Profile
+                    {intl.formatMessage(messages.qualityprofile)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -390,7 +447,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         name="activeProfileId"
                         className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
-                        <option value="">Select a Quality Profile</option>
+                        <option value="">
+                          {intl.formatMessage(messages.selectQualityProfile)}
+                        </option>
                         {testResponse.profiles.length > 0 &&
                           testResponse.profiles.map((profile) => (
                             <option
@@ -414,7 +473,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="rootFolder"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Root Folder
+                    {intl.formatMessage(messages.rootfolder)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -424,7 +483,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         name="rootFolder"
                         className="mt-1 form-select block rounded-md w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
-                        <option value="">Select a Root Folder</option>
+                        <option value="">
+                          {intl.formatMessage(messages.selectRootFolder)}
+                        </option>
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
                             <option
@@ -448,7 +509,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="is4k"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Ultra HD Server
+                    {intl.formatMessage(messages.server4k)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
@@ -464,7 +525,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="enableSeasonFolders"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Season Folders
+                    {intl.formatMessage(messages.seasonfolders)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field

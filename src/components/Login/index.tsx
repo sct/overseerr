@@ -4,6 +4,11 @@ import { useUser } from '../../hooks/useUser';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
 import ImageFader from '../Common/ImageFader';
+import { defineMessages, FormattedMessage } from 'react-intl';
+
+const messages = defineMessages({
+  signinplex: 'Sign in to continue',
+});
 
 const Login: React.FC = () => {
   const [authToken, setAuthToken] = useState<string | undefined>(undefined);
@@ -51,7 +56,7 @@ const Login: React.FC = () => {
           alt="Overseerr Logo"
         />
         <h2 className="mt-2 text-center text-3xl leading-9 font-extrabold text-gray-100">
-          Log in to continue
+          <FormattedMessage {...messages.signinplex} />
         </h2>
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-50">

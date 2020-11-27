@@ -14,6 +14,25 @@ import Transition from '../Transition';
 import axios from 'axios';
 import SonarrModal from './SonarrModal';
 
+const messages = defineMessages({
+  radarrsettings: 'Radarr Settings',
+  radarrSettingsDescription:
+    'Configure your Radarr connection below. You can have multiple Radarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrations can override a titles connection to use in the manage title screen.',
+  sonarrsettings: 'Sonarr Settings',
+  sonarrSettingsDescription:
+    'Configure your Sonarr connection below. You can have multiple Sonarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrations can override a titles connection to use in the manage title screen.',
+  deleteserverconfirm: 'Are you sure you want to delete this server?',
+  edit: 'Edit',
+  delete: 'Delete',
+  ssl: 'SSL',
+  default: 'Default',
+  default4k: 'Default 4K',
+  address: 'Address',
+  activeProfile: 'Active Profile',
+  addradarr: 'Add Radarr Server',
+  addsonarr: 'Add Sonarr Server',
+});
+
 interface ServerInstanceProps {
   name: string;
   isDefault?: boolean;
@@ -45,16 +64,33 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
             <h3 className="text-white text-sm leading-5 font-medium truncate">
               {name}
             </h3>
-            {isDefault && <Badge>Default</Badge>}
-            {isDefault4K && <Badge badgeType="warning">Default 4K</Badge>}
-            {isSSL && <Badge badgeType="success">SSL</Badge>}
+            {isDefault && (
+              <Badge>
+                <FormattedMessage {...messages.default} />
+              </Badge>
+            )}
+            {isDefault4K && (
+              <Badge badgeType="warning">
+                <FormattedMessage {...messages.default4k} />
+              </Badge>
+            )}
+            {isSSL && (
+              <Badge badgeType="success">
+                <FormattedMessage {...messages.ssl} />
+              </Badge>
+            )}
           </div>
           <p className="mt-1 text-gray-300 text-sm leading-5 truncate">
-            <span className="font-bold mr-2">Address</span>
+            <span className="font-bold mr-2">
+              <FormattedMessage {...messages.address} />
+            </span>
             {address}
           </p>
           <p className="mt-1 text-gray-300 text-sm leading-5 truncate">
-            <span className="font-bold mr-2">Active Profile</span> {profileName}
+            <span className="font-bold mr-2">
+              <FormattedMessage {...messages.activeProfile} />
+            </span>{' '}
+            {profileName}
           </p>
         </div>
         <img
@@ -78,7 +114,9 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               >
                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
               </svg>
-              <span className="ml-3">Edit</span>
+              <span className="ml-3">
+                <FormattedMessage {...messages.edit} />
+              </span>
             </button>
           </div>
           <div className="-ml-px w-0 flex-1 flex">
@@ -98,7 +136,9 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="ml-3">Delete</span>
+              <span className="ml-3">
+                <FormattedMessage {...messages.delete} />
+              </span>
             </button>
           </div>
         </div>
@@ -155,13 +195,10 @@ const SettingsServices: React.FC = () => {
     <>
       <div>
         <h3 className="text-lg leading-6 font-medium text-gray-200">
-          Radarr Settings
+          <FormattedMessage {...messages.radarrsettings} />
         </h3>
         <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
-          Configure your Radarr connection below. You can have multiple Radarr
-          configurations but only two can be active as defaults at any time (one
-          for standard HD and one for 4K). Administrations can override a titles
-          connection to use in the manage title screen.
+          <FormattedMessage {...messages.radarrSettingsDescription} />
         </p>
       </div>
       {editRadarrModal.open && (
@@ -206,7 +243,7 @@ const SettingsServices: React.FC = () => {
           }
           title="Delete Server"
         >
-          Are you sure you want to delete this server?
+          <FormattedMessage {...messages.deleteserverconfirm} />
         </Modal>
       </Transition>
       <div className="mt-6 sm:mt-5">
@@ -252,7 +289,7 @@ const SettingsServices: React.FC = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Add Radarr Server
+                  <FormattedMessage {...messages.addradarr} />
                 </Button>
               </div>
             </li>
@@ -261,13 +298,10 @@ const SettingsServices: React.FC = () => {
       </div>
       <div className="mt-10">
         <h3 className="text-lg leading-6 font-medium text-gray-200">
-          Sonarr Settings
+          <FormattedMessage {...messages.sonarrsettings} />
         </h3>
         <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
-          Configure your Sonarr connection below. You can have multiple Sonarr
-          configurations but only two can be active as defaults at any time (one
-          for standard HD and one for 4K). Administrations can override a titles
-          connection to use in the manage title screen.
+          <FormattedMessage {...messages.sonarrSettingsDescription} />
         </p>
       </div>
       <div className="mt-6 sm:mt-5">
@@ -314,7 +348,7 @@ const SettingsServices: React.FC = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Add Sonarr Server
+                  <FormattedMessage {...messages.addsonarr} />
                 </Button>
               </div>
             </li>

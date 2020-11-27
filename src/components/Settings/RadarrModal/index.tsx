@@ -1,11 +1,46 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Transition from '../Transition';
-import Modal from '../Common/Modal';
+import Transition from '../../Transition';
+import Modal from '../../Common/Modal';
 import { Formik, Field } from 'formik';
-import type { RadarrSettings } from '../../../server/lib/settings';
+import type { RadarrSettings } from '../../../../server/lib/settings';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  createradarr: 'Create New Radarr Server',
+  editradarr: 'Edit Radarr Server',
+  validationHostnameRequired: 'You must provide a hostname/IP',
+  validationPortRequired: 'You must provide a port',
+  validationApiKeyRequired: 'You must provide an API key',
+  validationRootFolderRequired: 'You must select a root folder',
+  validationProfileRequired: 'You must select a profile',
+  toastRadarrTestSuccess: 'Radarr connection established!',
+  toastRadarrTestFailure: 'Failed to connect to Radarr Server',
+  saving: 'Saving...',
+  save: 'Save Changes',
+  add: 'Add Server',
+  test: 'Test',
+  testing: 'Testing...',
+  defaultserver: 'Default Server',
+  servername: 'Server Name',
+  servernamePlaceholder: 'A Radarr Server',
+  hostname: 'Hostname',
+  port: 'Port',
+  ssl: 'SSL',
+  apiKey: 'API Key',
+  apiKeyPlaceholder: 'Your Radarr API Key',
+  baseUrl: 'Base URL',
+  baseUrlPlaceholder: 'Example: /radarr',
+  qualityprofile: 'Quality Profile',
+  rootfolder: 'Root Folder',
+  minimumAvailability: 'Minimum Availability',
+  server4k: '4K Server',
+  selectQualityProfile: 'Select a Quality Profile',
+  selectRootFolder: 'Select a Root Folder',
+  selectMinimumAvailability: 'Select minimum availability',
+});
 
 interface TestResponse {
   profiles: {
@@ -29,6 +64,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
   radarr,
   onSave,
 }) => {
+  const intl = useIntl();
   const initialLoad = useRef(false);
   const { addToast } = useToasts();
   const [isValidated, setIsValidated] = useState(radarr ? true : false);
@@ -38,11 +74,17 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     rootFolders: [],
   });
   const RadarrSettingsSchema = Yup.object().shape({
-    hostname: Yup.string().required('You must provide a hostname/IP'),
-    port: Yup.number().required('You must provide a port'),
-    apiKey: Yup.string().required('You must provide an API Key'),
-    rootFolder: Yup.string().required('You must select a root folder'),
-    activeProfileId: Yup.string().required('You must select a profile'),
+    hostname: Yup.string().required(
+      intl.formatMessage(messages.validationHostnameRequired)
+    ),
+    port: Yup.number().required(
+      intl.formatMessage(messages.validationPortRequired)
+    ),
+    apiKey: Yup.string().required(intl.formatMessage(messages.apiKey)),
+    rootFolder: Yup.string().required(intl.formatMessage(messages.rootfolder)),
+    activeProfileId: Yup.string().required(
+      intl.formatMessage(messages.validationProfileRequired)
+    ),
   });
 
   const testConnection = useCallback(
@@ -75,7 +117,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
         setIsValidated(true);
         setTestResponse(response.data);
         if (initialLoad.current) {
-          addToast('Radarr connection established!', {
+          addToast(intl.formatMessage(messages.toastRadarrTestSuccess), {
             appearance: 'success',
             autoDismiss: true,
           });
@@ -83,7 +125,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
       } catch (e) {
         setIsValidated(false);
         if (initialLoad.current) {
-          addToast('Failed to connect to Radarr server', {
+          addToast(intl.formatMessage(messages.toastRadarrTestFailure), {
             appearance: 'error',
             autoDismiss: true,
           });
@@ -183,13 +225,17 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               okButtonType="primary"
               okText={
                 isSubmitting
-                  ? 'Saving...'
+                  ? intl.formatMessage(messages.saving)
                   : !!radarr
-                  ? 'Save Changes'
-                  : 'Add Server'
+                  ? intl.formatMessage(messages.save)
+                  : intl.formatMessage(messages.add)
               }
               secondaryButtonType="warning"
-              secondaryText={isTesting ? 'Testing...' : 'Test'}
+              secondaryText={
+                isTesting
+                  ? intl.formatMessage(messages.testing)
+                  : intl.formatMessage(messages.test)
+              }
               onSecondary={() => {
                 if (values.apiKey && values.hostname && values.port) {
                   testConnection({
@@ -207,7 +253,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               okDisabled={!isValidated || isSubmitting || isTesting}
               onOk={() => handleSubmit()}
               title={
-                !radarr ? 'Create New Radarr Server' : 'Edit Radarr Server'
+                !radarr
+                  ? intl.formatMessage(messages.createradarr)
+                  : intl.formatMessage(messages.editradarr)
               }
             >
               <div className="mb-6">
@@ -216,7 +264,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="isDefault"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Default Server
+                    {intl.formatMessage(messages.defaultserver)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
@@ -232,7 +280,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="name"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Server Name
+                    {intl.formatMessage(messages.servername)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -240,7 +288,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="name"
                         name="name"
                         type="text"
-                        placeholder="A Radarr Server"
+                        placeholder={intl.formatMessage(
+                          messages.servernamePlaceholder
+                        )}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('name', e.target.value);
@@ -258,7 +308,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="hostname"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Hostname
+                    {intl.formatMessage(messages.hostname)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -284,7 +334,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="port"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Port
+                    {intl.formatMessage(messages.port)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
@@ -308,7 +358,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="ssl"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    SSL
+                    {intl.formatMessage(messages.ssl)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
@@ -328,7 +378,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="apiKey"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    API Key
+                    {intl.formatMessage(messages.apiKey)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -336,7 +386,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="apiKey"
                         name="apiKey"
                         type="text"
-                        placeholder="Your Radarr API Key"
+                        placeholder={intl.formatMessage(
+                          messages.apiKeyPlaceholder
+                        )}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('apiKey', e.target.value);
@@ -354,7 +406,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="baseUrl"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Base URL
+                    {intl.formatMessage(messages.baseUrl)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -362,7 +414,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="baseUrl"
                         name="baseUrl"
                         type="text"
-                        placeholder="Example: /radarr"
+                        placeholder={intl.formatMessage(
+                          messages.baseUrlPlaceholder
+                        )}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
@@ -380,7 +434,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="activeProfileId"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Quality Profile
+                    {intl.formatMessage(messages.qualityprofile)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -390,6 +444,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         name="activeProfileId"
                         className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
+                        <option value="">
+                          {intl.formatMessage(messages.selectQualityProfile)}
+                        </option>
                         {testResponse.profiles.length > 0 &&
                           testResponse.profiles.map((profile) => (
                             <option
@@ -413,7 +470,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="rootFolder"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Root Folder
+                    {intl.formatMessage(messages.rootfolder)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -423,6 +480,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         name="rootFolder"
                         className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
+                        <option value="">
+                          {intl.formatMessage(messages.selectRootFolder)}
+                        </option>
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
                             <option
@@ -446,7 +506,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="minimumAvailability"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Minimum Availability
+                    {intl.formatMessage(messages.minimumAvailability)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -456,6 +516,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         name="minimumAvailability"
                         className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
+                        <option value="">
+                          {intl.formatMessage(
+                            messages.selectMinimumAvailability
+                          )}
+                        </option>
                         <option value="announced">Announced</option>
                         <option value="inCinemas">In Cinemas</option>
                         <option value="released">Released</option>
@@ -469,7 +534,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     htmlFor="is4k"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Ultra HD Server
+                    {intl.formatMessage(messages.server4k)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
