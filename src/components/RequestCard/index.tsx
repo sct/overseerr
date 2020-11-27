@@ -14,6 +14,13 @@ import axios from 'axios';
 import Button from '../Common/Button';
 import { withProperties } from '../../utils/typeHelpers';
 import Link from 'next/link';
+import { defineMessages, useIntl } from 'react-intl';
+import globalMessages from '../../i18n/globalMessages';
+
+const messages = defineMessages({
+  requestedby: 'Requested by {username}',
+  seasons: 'Seasons',
+});
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
@@ -34,6 +41,7 @@ interface RequestCardProps {
 }
 
 const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
+  const intl = useIntl();
   const { hasPermission } = useUser();
   const { locale } = useContext(LanguageContext);
   const url =
@@ -90,25 +98,35 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
           </Link>
         </h2>
         <div className="text-xs sm:text-sm">
-          Requested by {requestData.requestedBy.username}
+          {intl.formatMessage(messages.requestedby, {
+            username: requestData.requestedBy.username,
+          })}
         </div>
         <div className="mt-1 sm:mt-2">
           {requestData.media.status === MediaStatus.AVAILABLE && (
-            <Badge badgeType="success">Available</Badge>
+            <Badge badgeType="success">
+              {intl.formatMessage(globalMessages.available)}
+            </Badge>
           )}
           {requestData.media.status === MediaStatus.PARTIALLY_AVAILABLE && (
-            <Badge badgeType="success">Partially Available</Badge>
+            <Badge badgeType="success">
+              {intl.formatMessage(globalMessages.partiallyavailable)}
+            </Badge>
           )}
           {requestData.media.status === MediaStatus.PROCESSING && (
-            <Badge badgeType="danger">Unavailable</Badge>
+            <Badge badgeType="danger">
+              {intl.formatMessage(globalMessages.unavailable)}
+            </Badge>
           )}
           {requestData.media.status === MediaStatus.PENDING && (
-            <Badge badgeType="warning">Pending</Badge>
+            <Badge badgeType="warning">
+              {intl.formatMessage(globalMessages.pending)}
+            </Badge>
           )}
         </div>
         {request.seasons.length > 0 && (
           <div className="hidden mt-2 text-sm sm:flex items-center">
-            <span className="mr-2">Seasons</span>
+            <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
             {request.seasons.map((season) => (
               <span key={`season-${season.id}`} className="mr-2">
                 <Badge>{season.seasonNumber}</Badge>
@@ -137,7 +155,9 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="hidden sm:block">Approve</span>
+                  <span className="hidden sm:block">
+                    {intl.formatMessage(globalMessages.approve)}
+                  </span>
                 </Button>
               </span>
               <span>
@@ -158,7 +178,9 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="hidden sm:block">Decline</span>
+                  <span className="hidden sm:block">
+                    {intl.formatMessage(globalMessages.decline)}
+                  </span>
                 </Button>
               </span>
             </div>
