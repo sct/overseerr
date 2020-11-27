@@ -156,7 +156,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       onCancel={onCancel}
       onOk={sendRequest}
       okDisabled={isUpdating}
-      title={intl.formatMessage(messages.requesttitle)}
+      title={intl.formatMessage(messages.requesttitle, { title: data?.title })}
       okText={
         isUpdating
           ? intl.formatMessage(messages.requesting)
