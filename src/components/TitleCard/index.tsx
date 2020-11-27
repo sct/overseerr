@@ -9,6 +9,12 @@ import Placeholder from './Placeholder';
 import Link from 'next/link';
 import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  movie: 'MOVIE',
+  tvshow: 'SERIES',
+});
 
 interface TitleCardProps {
   id: number;
@@ -32,6 +38,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
   mediaType,
   canExpand = false,
 }) => {
+  const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(status);
   const [showDetail, setShowDetail] = useState(false);
@@ -87,7 +94,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
             }`}
           >
             <div className="flex items-center text-center text-xs text-white h-4 px-2 py-1 font-normal">
-              {mediaType === 'movie' ? 'MOVIE' : 'TV SHOW'}
+              {mediaType === 'movie'
+                ? intl.formatMessage(messages.movie)
+                : intl.formatMessage(messages.tvshow)}
             </div>
           </div>
 

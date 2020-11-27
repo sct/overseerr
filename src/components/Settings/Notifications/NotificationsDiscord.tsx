@@ -10,6 +10,10 @@ import * as Yup from 'yup';
 const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving...',
+  agentenabled: 'Agent Enabled',
+  webhookUrl: 'Webhook URL',
+  validationWebhookUrlRequired: 'You must provide a webhook URL',
+  webhookUrlPlaceholder: 'Server Settings -> Integrations -> Webhooks',
 });
 
 const NotificationsDiscord: React.FC = () => {
@@ -19,7 +23,9 @@ const NotificationsDiscord: React.FC = () => {
   );
 
   const NotificationsDiscordSchema = Yup.object().shape({
-    webhookUrl: Yup.string().required('You must provide a webhook URL'),
+    webhookUrl: Yup.string().required(
+      intl.formatMessage(messages.validationWebhookUrlRequired)
+    ),
   });
 
   if (!data && !error) {
@@ -58,7 +64,7 @@ const NotificationsDiscord: React.FC = () => {
                 htmlFor="isDefault"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                Agent Enabled
+                {intl.formatMessage(messages.agentenabled)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <Field
@@ -74,7 +80,7 @@ const NotificationsDiscord: React.FC = () => {
                 htmlFor="name"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                Webhook URL
+                {intl.formatMessage(messages.webhookUrl)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <div className="max-w-lg flex rounded-md shadow-sm">
@@ -82,7 +88,9 @@ const NotificationsDiscord: React.FC = () => {
                     id="webhookUrl"
                     name="webhookUrl"
                     type="text"
-                    placeholder="Server Settings -> Integrations -> Webhooks"
+                    placeholder={intl.formatMessage(
+                      messages.webhookUrlPlaceholder
+                    )}
                     className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                   />
                 </div>

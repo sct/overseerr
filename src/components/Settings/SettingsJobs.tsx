@@ -1,13 +1,17 @@
 import React from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
-import Badge from '../Common/Badge';
-import { FormattedDate, FormattedRelativeTime } from 'react-intl';
+import { FormattedRelativeTime, defineMessages, useIntl } from 'react-intl';
 import Button from '../Common/Button';
-import { hasPermission } from '../../../server/lib/permissions';
-import { Permission } from '../../hooks/useUser';
+
+const messages = defineMessages({
+  jobname: 'Job Name',
+  nextexecution: 'Next Execution',
+  runnow: 'Run Now',
+});
 
 const SettingsJobs: React.FC = () => {
+  const intl = useIntl();
   const { data, error } = useSWR<{ name: string; nextExecutionTime: string }[]>(
     '/api/v1/settings/jobs'
   );
@@ -25,10 +29,10 @@ const SettingsJobs: React.FC = () => {
               <thead>
                 <tr>
                   <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                    Job Name
+                    {intl.formatMessage(messages.jobname)}
                   </th>
                   <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                    Next Execution
+                    {intl.formatMessage(messages.nextexecution)}
                   </th>
                   <th className="px-6 py-3 bg-gray-500"></th>
                 </tr>
@@ -54,7 +58,9 @@ const SettingsJobs: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm leading-5 font-medium">
-                      <Button buttonType="primary">Run Now</Button>
+                      <Button buttonType="primary">
+                        {intl.formatMessage(messages.runnow)}
+                      </Button>
                     </td>
                   </tr>
                 ))}

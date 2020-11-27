@@ -14,11 +14,25 @@ import {
 import { TvDetails, SeasonWithEpisodes } from '../../../server/models/Tv';
 import type SeasonRequest from '../../../server/entity/SeasonRequest';
 import Badge from '../Common/Badge';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',
   cancelrequest:
     'This will remove your request. Are you sure you want to continue?',
+  requestSuccess: '<strong>{title}</strong> successfully requested!',
+  requestCancel: 'Request for <strong>{title}</strong> cancelled',
+  requesttitle: 'Request {title}',
+  requesting: 'Requesting...',
+  requestseasons:
+    'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
+  selectseason: 'Select season(s)',
+  season: 'Season',
+  numberofepisodes: '# of Episodes',
+  status: 'Status',
+  seasonnumber: 'Season {number}',
+  extras: 'Extras',
+  notrequested: 'Not Requested',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -61,7 +75,12 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       }
       addToast(
         <span>
-          <strong>{data?.name}</strong> succesfully requested!
+          {intl.formatMessage(messages.requestSuccess, {
+            title: data?.name,
+            strong: function strong(msg) {
+              return <strong>{msg}</strong>;
+            },
+          })}
         </span>,
         { appearance: 'success', autoDismiss: true }
       );
@@ -177,11 +196,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       backgroundClickable
       onCancel={onCancel}
       onOk={() => sendRequest()}
-      title={`Request ${data?.name}`}
+      title={intl.formatMessage(messages.requesttitle, { title: data?.name })}
       okText={
         selectedSeasons.length === 0
-          ? 'Select a season'
-          : `Request ${selectedSeasons.length} seasons`
+          ? intl.formatMessage(messages.selectseason)
+          : intl.formatMessage(messages.requestseasons, {
+              seasonCount: selectedSeasons.length,
+            })
       }
       okDisabled={selectedSeasons.length === 0}
       okButtonType="primary"
@@ -238,13 +259,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                       </span>
                     </th>
                     <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                      Season
+                      {intl.formatMessage(messages.season)}
                     </th>
                     <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                      # Of Episodes
+                      {intl.formatMessage(messages.numberofepisodes)}
                     </th>
                     <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                      Status
+                      {intl.formatMessage(messages.status)}
                     </th>
                   </tr>
                 </thead>
@@ -303,39 +324,55 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-100">
                             {season.seasonNumber === 0
-                              ? 'Extras'
-                              : `Season ${season.seasonNumber}`}
+                              ? intl.formatMessage(messages.extras)
+                              : intl.formatMessage(messages.seasonnumber, {
+                                  number: season.seasonNumber,
+                                })}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-200">
                             {season.episodeCount}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-200">
                             {!seasonRequest && !mediaSeason && (
-                              <Badge>Not Requested</Badge>
+                              <Badge>
+                                {intl.formatMessage(messages.notrequested)}
+                              </Badge>
                             )}
                             {!mediaSeason &&
                               seasonRequest?.status ===
                                 MediaRequestStatus.PENDING && (
-                                <Badge badgeType="warning">Pending</Badge>
+                                <Badge badgeType="warning">
+                                  {intl.formatMessage(globalMessages.pending)}
+                                </Badge>
                               )}
                             {!mediaSeason &&
                               seasonRequest?.status ===
                                 MediaRequestStatus.APPROVED && (
-                                <Badge badgeType="danger">Unavailable</Badge>
+                                <Badge badgeType="danger">
+                                  {intl.formatMessage(
+                                    globalMessages.unavailable
+                                  )}
+                                </Badge>
                               )}
                             {!mediaSeason &&
                               seasonRequest?.status ===
                                 MediaRequestStatus.AVAILABLE && (
-                                <Badge badgeType="success">Available</Badge>
+                                <Badge badgeType="success">
+                                  {intl.formatMessage(globalMessages.available)}
+                                </Badge>
                               )}
                             {mediaSeason?.status ===
                               MediaStatus.PARTIALLY_AVAILABLE && (
                               <Badge badgeType="success">
-                                Partially Available
+                                {intl.formatMessage(
+                                  globalMessages.partiallyavailable
+                                )}
                               </Badge>
                             )}
                             {mediaSeason?.status === MediaStatus.AVAILABLE && (
-                              <Badge badgeType="success">Available</Badge>
+                              <Badge badgeType="success">
+                                {intl.formatMessage(globalMessages.available)}
+                              </Badge>
                             )}
                           </td>
                         </tr>

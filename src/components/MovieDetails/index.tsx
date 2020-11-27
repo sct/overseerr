@@ -36,6 +36,7 @@ import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import Error from '../../pages/_error';
 import Head from 'next/head';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -56,6 +57,14 @@ const messages = defineMessages({
   viewrequest: 'View Request',
   pending: 'Pending',
   overviewunavailable: 'Overview unavailable',
+  manageModalTitle: 'Manage Movie',
+  manageModalRequests: 'Requests',
+  manageModalNoRequests: 'No Requests',
+  manageModalClearMedia: 'Clear All Media Data',
+  manageModalClearMediaWarning:
+    'This will remove all media data including all requests for this item. This action is irreversible. If this item exists in your Plex library, the media information will be recreated next sync.',
+  approve: 'Approve',
+  decline: 'Decline',
 });
 
 interface MovieDetailsProps {
@@ -144,11 +153,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       />
       <SlideOver
         show={showManager}
-        title="Manage Movie"
+        title={intl.formatMessage(messages.manageModalTitle)}
         onClose={() => setShowManager(false)}
         subText={data.title}
       >
-        <h3 className="text-xl mb-2">Requests</h3>
+        <h3 className="text-xl mb-2">
+          {intl.formatMessage(messages.manageModalRequests)}
+        </h3>
         <div className="bg-gray-600 shadow overflow-hidden rounded-md">
           <ul>
             {data.mediaInfo?.requests?.map((request) => (
@@ -160,7 +171,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               </li>
             ))}
             {(data.mediaInfo?.requests ?? []).length === 0 && (
-              <li className="text-center py-4 text-gray-400">No requests</li>
+              <li className="text-center py-4 text-gray-400">
+                {intl.formatMessage(messages.manageModalNoRequests)}
+              </li>
             )}
           </ul>
         </div>
@@ -171,12 +184,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               className="w-full text-center"
               onClick={() => deleteMedia()}
             >
-              Clear All Media Data
+              {intl.formatMessage(messages.manageModalClearMedia)}
             </Button>
             <div className="text-sm text-gray-400 mt-2">
-              This will remove all media data including all requests for this
-              item. This action is irreversible. If this item exists in your
-              Plex library, the media information will be recreated next sync.
+              {intl.formatMessage(messages.manageModalClearMediaWarning)}
             </div>
           </div>
         )}
@@ -192,13 +203,19 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         <div className="text-white flex flex-col mr-4 mt-4 md:mt-0 text-center md:text-left">
           <div className="mb-2">
             {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
-              <Badge badgeType="success">Available</Badge>
+              <Badge badgeType="success">
+                {intl.formatMessage(globalMessages.available)}
+              </Badge>
             )}
             {data.mediaInfo?.status === MediaStatus.PROCESSING && (
-              <Badge badgeType="danger">Unavailable</Badge>
+              <Badge badgeType="danger">
+                {intl.formatMessage(globalMessages.unavailable)}
+              </Badge>
             )}
             {data.mediaInfo?.status === MediaStatus.PENDING && (
-              <Badge badgeType="warning">Pending</Badge>
+              <Badge badgeType="warning">
+                {intl.formatMessage(globalMessages.pending)}
+              </Badge>
             )}
           </div>
           <h1 className="text-2xl md:text-4xl">
@@ -309,7 +326,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Approve
+                    {intl.formatMessage(messages.approve)}
                   </ButtonWithDropdown.Item>
                   <ButtonWithDropdown.Item
                     onClick={() => modifyRequest('decline')}
@@ -326,7 +343,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Decline
+                    {intl.formatMessage(messages.decline)}
                   </ButtonWithDropdown.Item>
                 </>
               )}

@@ -19,6 +19,16 @@ const messages = defineMessages({
     'Your request will be immediately approved. Do you wish to continue?',
   cancelrequest:
     'This will remove your request. Are you sure you want to continue?',
+  requestSuccess: '<strong>{title}</strong> successfully requested!',
+  requestCancel: 'Request for <strong>{title}</strong> cancelled',
+  requesttitle: 'Request {title}',
+  close: 'Close',
+  cancel: 'Cancel Request',
+  cancelling: 'Cancelling...',
+  pendingrequest: 'Pending request for {title}',
+  requesting: 'Requesting...',
+  request: 'Request',
+  requestfrom: 'There is currently a pending request from {username}',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -62,7 +72,12 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       }
       addToast(
         <span>
-          <strong>{data?.title}</strong> succesfully requested!
+          {intl.formatMessage(messages.requestSuccess, {
+            title: data?.title,
+            strong: function strong(msg) {
+              return <strong>{msg}</strong>;
+            },
+          })}
         </span>,
         { appearance: 'success', autoDismiss: true }
       );
@@ -84,7 +99,12 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       }
       addToast(
         <span>
-          <strong>{data?.title}</strong> request cancelled!
+          {intl.formatMessage(messages.cancelrequest, {
+            title: data?.title,
+            strong: function strong(msg) {
+              return <strong>{msg}</strong>;
+            },
+          })}
         </span>,
         { appearance: 'success', autoDismiss: true }
       );
@@ -109,15 +129,22 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         onCancel={onCancel}
         onOk={isOwner ? () => cancelRequest() : undefined}
         okDisabled={isUpdating}
-        title={`Pending request for ${data?.title}`}
-        okText={isUpdating ? 'Cancelling...' : 'Cancel Request'}
+        title={intl.formatMessage(messages.pendingrequest, {
+          title: data?.title,
+        })}
+        okText={
+          isUpdating
+            ? intl.formatMessage(messages.cancelling)
+            : intl.formatMessage(messages.cancel)
+        }
         okButtonType={'danger'}
-        cancelText="Close"
+        cancelText={intl.formatMessage(messages.close)}
         iconSvg={<DownloadIcon className="w-6 h-6" />}
         {...props}
       >
-        There is currently a pending request from{' '}
-        <strong>{activeRequest.requestedBy.username}</strong>.
+        {intl.formatMessage(messages.requestfrom, {
+          username: activeRequest.requestedBy.username,
+        })}
       </Modal>
     );
   }
@@ -129,8 +156,12 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       onCancel={onCancel}
       onOk={sendRequest}
       okDisabled={isUpdating}
-      title={`Request ${data?.title}`}
-      okText={isUpdating ? 'Requesting...' : 'Request'}
+      title={intl.formatMessage(messages.requesttitle)}
+      okText={
+        isUpdating
+          ? intl.formatMessage(messages.requesting)
+          : intl.formatMessage(messages.request)
+      }
       okButtonType={'primary'}
       iconSvg={<DownloadIcon className="w-6 h-6" />}
       {...props}

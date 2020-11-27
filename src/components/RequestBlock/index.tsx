@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import { FormattedDate } from 'react-intl';
+import { FormattedDate, useIntl, defineMessages } from 'react-intl';
 import Badge from '../Common/Badge';
 import { MediaRequestStatus } from '../../../server/constants/media';
 import Button from '../Common/Button';
 import axios from 'axios';
+import globalMessages from '../../i18n/globalMessages';
+
+const messages = defineMessages({
+  seasons: 'Seasons',
+});
 
 interface RequestBlockProps {
   request: MediaRequest;
@@ -12,6 +17,7 @@ interface RequestBlockProps {
 }
 
 const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
+  const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const updateRequest = async (type: 'approve' | 'decline'): Promise<void> => {
@@ -143,16 +149,24 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
           <div className="sm:flex">
             <div className="mr-6 flex items-center text-sm leading-5 text-gray-300">
               {request.status === MediaRequestStatus.AVAILABLE && (
-                <Badge badgeType="success">Available</Badge>
+                <Badge badgeType="success">
+                  {intl.formatMessage(globalMessages.available)}
+                </Badge>
               )}
               {request.status === MediaRequestStatus.APPROVED && (
-                <Badge badgeType="success">Approved</Badge>
+                <Badge badgeType="success">
+                  {intl.formatMessage(globalMessages.approved)}
+                </Badge>
               )}
               {request.status === MediaRequestStatus.DECLINED && (
-                <Badge badgeType="danger">Declined</Badge>
+                <Badge badgeType="danger">
+                  {intl.formatMessage(globalMessages.declined)}
+                </Badge>
               )}
               {request.status === MediaRequestStatus.PENDING && (
-                <Badge badgeType="warning">Pending</Badge>
+                <Badge badgeType="warning">
+                  {intl.formatMessage(globalMessages.pending)}
+                </Badge>
               )}
             </div>
           </div>
@@ -176,7 +190,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
         </div>
         {(request.seasons ?? []).length > 0 && (
           <div className="mt-2 text-sm flex items-center">
-            <span className="mr-2">Seasons</span>
+            <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
             {request.seasons.map((season) => (
               <span key={`season-${season.id}`} className="mr-2">
                 <Badge>{season.seasonNumber}</Badge>

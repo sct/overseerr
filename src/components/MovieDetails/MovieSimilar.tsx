@@ -35,7 +35,7 @@ const MovieSimilar: React.FC = () => {
 
       return `/api/v1/movie/${router.query.movieId}/similar?page=${
         pageIndex + 1
-      }`;
+      }&language=${locale}`;
     },
     {
       initialSize: 3,

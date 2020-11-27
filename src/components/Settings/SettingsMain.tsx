@@ -9,8 +9,13 @@ import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
+  generalsettings: 'General Settings',
+  generalsettingsDescription:
+    'These are settings related to general Overseerr configuration.',
   save: 'Save Changes',
   saving: 'Saving...',
+  apikey: 'API Key',
+  applicationurl: 'Application URL',
 });
 
 const SettingsMain: React.FC = () => {
@@ -27,10 +32,10 @@ const SettingsMain: React.FC = () => {
     <>
       <div>
         <h3 className="text-lg leading-6 font-medium text-gray-200">
-          General Settings
+          {intl.formatMessage(messages.generalsettings)}
         </h3>
         <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
-          These are settings related to general Overseerr configuration.
+          {intl.formatMessage(messages.generalsettingsDescription)}
         </p>
       </div>
       <div className="mt-6 sm:mt-5">
@@ -59,7 +64,7 @@ const SettingsMain: React.FC = () => {
                     htmlFor="username"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    API Key
+                    {intl.formatMessage(messages.apikey)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
@@ -93,7 +98,7 @@ const SettingsMain: React.FC = () => {
                     htmlFor="name"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
                   >
-                    Application URL
+                    {intl.formatMessage(messages.applicationurl)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">

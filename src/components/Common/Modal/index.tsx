@@ -5,6 +5,8 @@ import { useTransition, animated } from 'react-spring';
 import { useLockBodyScroll } from '../../../hooks/useLockBodyScroll';
 import LoadingSpinner from '../LoadingSpinner';
 import useClickOutside from '../../../hooks/useClickOutside';
+import { useIntl } from 'react-intl';
+import globalMessages from '../../../i18n/globalMessages';
 
 interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;
@@ -53,6 +55,7 @@ const Modal: React.FC<ModalProps> = ({
   onTertiary,
   ...props
 }) => {
+  const intl = useIntl();
   const modalRef = useRef<HTMLDivElement>(null);
   useClickOutside(modalRef, () => {
     typeof onCancel === 'function' && backgroundClickable
@@ -174,7 +177,9 @@ const Modal: React.FC<ModalProps> = ({
                           onClick={onCancel}
                           className="ml-3 sm:ml-0 sm:px-4"
                         >
-                          {cancelText ? cancelText : 'Cancel'}
+                          {cancelText
+                            ? cancelText
+                            : intl.formatMessage(globalMessages.cancel)}
                         </Button>
                       )}
                     </div>

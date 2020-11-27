@@ -10,6 +10,16 @@ import * as Yup from 'yup';
 const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving...',
+  validationFromRequired: 'You must provide an email sender address',
+  validationSmtpHostRequired: 'You must provide an SMTP host',
+  validationSmtpPortRequired: 'You must provide an SMTP port',
+  agentenabled: 'Agent Enabled',
+  emailsender: 'Email Sender Address',
+  smtpHost: 'SMTP Host',
+  smtpPort: 'SMTP Port',
+  enableSsl: 'Enable SSL',
+  authUser: 'Auth User',
+  authPass: 'Auth Pass',
 });
 
 const NotificationsEmail: React.FC = () => {
@@ -20,10 +30,14 @@ const NotificationsEmail: React.FC = () => {
 
   const NotificationsDiscordSchema = Yup.object().shape({
     emailFrom: Yup.string().required(
-      'You must provide an email sender address'
+      intl.formatMessage(messages.validationFromRequired)
     ),
-    smtpHost: Yup.string().required('You must provide an SMTP host'),
-    smtpPort: Yup.number().required('You must provide an SMTP port'),
+    smtpHost: Yup.string().required(
+      intl.formatMessage(messages.validationSmtpHostRequired)
+    ),
+    smtpPort: Yup.number().required(
+      intl.formatMessage(messages.validationSmtpPortRequired)
+    ),
   });
 
   if (!data && !error) {
@@ -88,7 +102,7 @@ const NotificationsEmail: React.FC = () => {
                 htmlFor="name"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                Email Sender Address
+                {intl.formatMessage(messages.emailsender)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <div className="max-w-lg flex rounded-md shadow-sm">
@@ -110,7 +124,7 @@ const NotificationsEmail: React.FC = () => {
                 htmlFor="name"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                SMTP Host
+                {intl.formatMessage(messages.smtpHost)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <div className="max-w-lg flex rounded-md shadow-sm">
@@ -132,7 +146,7 @@ const NotificationsEmail: React.FC = () => {
                 htmlFor="name"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                SMTP Port
+                {intl.formatMessage(messages.smtpPort)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <div className="max-w-lg flex rounded-md shadow-sm">
@@ -154,7 +168,7 @@ const NotificationsEmail: React.FC = () => {
                 htmlFor="isDefault"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                Enable SSL
+                {intl.formatMessage(messages.enableSsl)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <Field
@@ -170,7 +184,7 @@ const NotificationsEmail: React.FC = () => {
                 htmlFor="name"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                Auth User
+                {intl.formatMessage(messages.authUser)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <div className="max-w-lg flex rounded-md shadow-sm">
@@ -178,7 +192,6 @@ const NotificationsEmail: React.FC = () => {
                     id="authUser"
                     name="authUser"
                     type="text"
-                    placeholder="localhost"
                     className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                   />
                 </div>
@@ -189,7 +202,7 @@ const NotificationsEmail: React.FC = () => {
                 htmlFor="name"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                Auth Pass
+                {intl.formatMessage(messages.authPass)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <div className="max-w-lg flex rounded-md shadow-sm">
@@ -197,7 +210,6 @@ const NotificationsEmail: React.FC = () => {
                     id="authPass"
                     name="authPass"
                     type="password"
-                    placeholder="localhost"
                     className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                   />
                 </div>

@@ -3,14 +3,30 @@ import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import type { User } from '../../../server/entity/User';
 import Badge from '../Common/Badge';
-import { FormattedDate } from 'react-intl';
+import { FormattedDate, defineMessages, useIntl } from 'react-intl';
 import Button from '../Common/Button';
 import { hasPermission } from '../../../server/lib/permissions';
 import { Permission } from '../../hooks/useUser';
 import { useRouter } from 'next/router';
 import Header from '../Common/Header';
 
+const messages = defineMessages({
+  userlist: 'User List',
+  username: 'Username',
+  totalrequests: 'Total Requests',
+  usertype: 'User Type',
+  role: 'Role',
+  created: 'Created',
+  lastupdated: 'Last Updated',
+  edit: 'Edit',
+  delete: 'Delete',
+  admin: 'Admin',
+  user: 'User',
+  plexuser: 'Plex User',
+});
+
 const UserList: React.FC = () => {
+  const intl = useIntl();
   const router = useRouter();
   const { data, error } = useSWR<User[]>('/api/v1/user');
 
@@ -20,7 +36,7 @@ const UserList: React.FC = () => {
 
   return (
     <>
-      <Header extraMargin={4}>User List</Header>
+      <Header extraMargin={4}>{intl.formatMessage(messages.userlist)}</Header>
       <div className="flex flex-col">
         <div className="my-2 overflow-x-auto -mx-6 sm:-mx-6 md:mx-4 lg:mx-4">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -29,22 +45,22 @@ const UserList: React.FC = () => {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                      Name
+                      {intl.formatMessage(messages.username)}
                     </th>
                     <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                      Total Requests
+                      {intl.formatMessage(messages.totalrequests)}
                     </th>
                     <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                      User Type
+                      {intl.formatMessage(messages.usertype)}
                     </th>
                     <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                      Role
+                      {intl.formatMessage(messages.role)}
                     </th>
                     <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                      Created
+                      {intl.formatMessage(messages.created)}
                     </th>
                     <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                      Last Updated
+                      {intl.formatMessage(messages.lastupdated)}
                     </th>
                     <th className="px-6 py-3 bg-gray-500"></th>
                   </tr>
@@ -77,12 +93,14 @@ const UserList: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <Badge badgeType="warning">Plex User</Badge>
+                        <Badge badgeType="warning">
+                          {intl.formatMessage(messages.plexuser)}
+                        </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-white">
                         {hasPermission(Permission.ADMIN, user.permissions)
-                          ? 'Admin'
-                          : 'User'}
+                          ? intl.formatMessage(messages.admin)
+                          : intl.formatMessage(messages.user)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-white">
                         <FormattedDate value={user.createdAt} />
@@ -101,9 +119,11 @@ const UserList: React.FC = () => {
                             )
                           }
                         >
-                          Edit
+                          {intl.formatMessage(messages.edit)}
                         </Button>
-                        <Button buttonType="danger">Delete</Button>
+                        <Button buttonType="danger">
+                          {intl.formatMessage(messages.delete)}
+                        </Button>
                       </td>
                     </tr>
                   ))}

@@ -1,8 +1,14 @@
 import React, { useEffect } from 'react';
 import useClipboard from 'react-use-clipboard';
 import { useToasts } from 'react-toast-notifications';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  copied: 'Copied API key to clipboard',
+});
 
 const CopyButton: React.FC<{ textToCopy: string }> = ({ textToCopy }) => {
+  const intl = useIntl();
   const [isCopied, setCopied] = useClipboard(textToCopy, {
     successDuration: 1000,
   });
@@ -10,12 +16,12 @@ const CopyButton: React.FC<{ textToCopy: string }> = ({ textToCopy }) => {
 
   useEffect(() => {
     if (isCopied) {
-      addToast('Copied API key to clipboard', {
+      addToast(intl.formatMessage(messages.copied), {
         appearance: 'info',
         autoDismiss: true,
       });
     }
-  }, [isCopied, addToast]);
+  }, [isCopied, addToast, intl]);
 
   return (
     <button

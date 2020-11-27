@@ -35,7 +35,7 @@ const MovieRecommendations: React.FC = () => {
 
       return `/api/v1/movie/${router.query.movieId}/recommendations?page=${
         pageIndex + 1
-      }`;
+      }&language=${locale}`;
     },
     {
       initialSize: 3,

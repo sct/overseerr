@@ -13,10 +13,13 @@ import { LanguageContext, AvailableLocales } from '../context/LanguageContext';
 import Head from 'next/head';
 import Toast from '../components/Toast';
 
-const loadLocaleData = (locale: string) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const loadLocaleData = (locale: string): Promise<any> => {
   switch (locale) {
     case 'ja':
       return import('../i18n/locale/ja.json');
+    case 'fr':
+      return import('../i18n/locale/fr.json');
     default:
       return import('../i18n/locale/en.json');
   }

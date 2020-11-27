@@ -1,6 +1,13 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  notificationsettings: 'Notification Settings',
+  notificationsettingsDescription:
+    'Here you can pick and choose what types of notifications to send and through what types of services.',
+});
 
 interface SettingsRoute {
   text: string;
@@ -23,6 +30,7 @@ const settingsRoutes: SettingsRoute[] = [
 
 const SettingsNotifications: React.FC = ({ children }) => {
   const router = useRouter();
+  const intl = useIntl();
 
   const activeLinkColor = 'bg-gray-700';
 
@@ -55,11 +63,10 @@ const SettingsNotifications: React.FC = ({ children }) => {
     <>
       <div className="mb-6">
         <h3 className="text-lg leading-6 font-medium text-gray-200">
-          Notification Settings
+          {intl.formatMessage(messages.notificationsettings)}
         </h3>
         <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
-          Here you can pick and choose what types of notifications to send and
-          through what types of services.
+          {intl.formatMessage(messages.notificationsettingsDescription)}
         </p>
       </div>
       <div>
