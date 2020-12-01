@@ -163,16 +163,16 @@ export class MediaRequest {
     }
     const seasonRequestRepository = getRepository(SeasonRequest);
     if (this.status === MediaRequestStatus.APPROVED) {
-      this.media.status = MediaStatus.PROCESSING;
-      mediaRepository.save(this.media);
+      media.status = MediaStatus.PROCESSING;
+      mediaRepository.save(media);
     }
 
     if (
       this.media.mediaType === MediaType.MOVIE &&
       this.status === MediaRequestStatus.DECLINED
     ) {
-      this.media.status = MediaStatus.UNKNOWN;
-      mediaRepository.save(this.media);
+      media.status = MediaStatus.UNKNOWN;
+      mediaRepository.save(media);
     }
 
     /**
@@ -213,7 +213,7 @@ export class MediaRequest {
     });
     if (!fullMedia.requests || fullMedia.requests.length === 0) {
       fullMedia.status = MediaStatus.UNKNOWN;
-      mediaRepository.save(this.media);
+      mediaRepository.save(fullMedia);
     }
   }
 
