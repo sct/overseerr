@@ -99,7 +99,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       }
       addToast(
         <span>
-          {intl.formatMessage(messages.cancelrequest, {
+          {intl.formatMessage(messages.requestCancel, {
             title: data?.title,
             strong: function strong(msg) {
               return <strong>{msg}</strong>;

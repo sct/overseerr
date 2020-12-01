@@ -209,7 +209,8 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       </svg>
                     </a>
                   </Link>
-                  {!currentStatus && (
+                  {(!currentStatus ||
+                    currentStatus === MediaStatus.UNKNOWN) && (
                     <button
                       onClick={() => setShowRequestModal(true)}
                       className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-2 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition ease-in-out duration-150"
