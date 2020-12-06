@@ -56,6 +56,8 @@
     "@babel/cli": "^7.11.6",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/git": "^9.0.0",
     "@tailwindcss/aspect-ratio": "^0.2.0",
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindcss/typography": "^0.3.1",
@@ -99,6 +101,8 @@
     "postcss": "^7",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.1.2",
+    "semantic-release": "^17.3.0",
+    "semantic-release-docker": "^2.2.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
@@ -134,5 +138,21 @@
   "prettier": {
     "singleQuote": true,
     "trailingComma": "es5"
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/git",
+      "semantic-release-docker"
+    ],
+    "branches": [
+      "master"
+    ],
+    "publish": [
+      {
+        "path": "semantic-release-docker",
+        "name": "sctx/overseerr"
+      }
+    ]
   }
 }

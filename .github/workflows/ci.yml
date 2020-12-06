@@ -37,4 +37,4 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: sctx/overseerr
-          tags: latest
+          tags: develop
