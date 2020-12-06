@@ -1,0 +1,43 @@
+name: Overseerr Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    container: node:12.18-alpine
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        env:
+          HUSKY_SKIP_INSTALL: 1
+        run: yarn
+      - name: lint
+        run: yarn lint
+      - name: build
+        run: yarn build
+  semnatic-release:
+    name: Tag and release latest version
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Install dependencies
+        run: yarn
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: npx semantic-release
