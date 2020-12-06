@@ -56,7 +56,9 @@
     "@babel/cli": "^7.11.6",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
     "@tailwindcss/aspect-ratio": "^0.2.0",
     "@tailwindcss/forms": "^0.2.1",
@@ -142,12 +144,35 @@
   "release": {
     "plugins": [
       "@semantic-release/commit-analyzer",
-      "@semantic-release/git",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json",
+            "CHANGELOG.md"
+          ],
+          "message": "chore(release): ${nextRelease.version}"
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "docker build -t sctx/overseerr ."
+        }
+      ],
       "semantic-release-docker"
     ],
     "branches": [
       "master"
     ],
+    "npmPublish": false,
     "publish": [
       {
         "path": "semantic-release-docker",
