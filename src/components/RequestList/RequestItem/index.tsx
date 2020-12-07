@@ -1,6 +1,11 @@
 import React, { useContext } from 'react';
 import type { MediaRequest } from '../../../../server/entity/MediaRequest';
-import { useIntl, FormattedDate, FormattedRelativeTime } from 'react-intl';
+import {
+  useIntl,
+  FormattedDate,
+  FormattedRelativeTime,
+  defineMessages,
+} from 'react-intl';
 import { useUser, Permission } from '../../../hooks/useUser';
 import { LanguageContext } from '../../../context/LanguageContext';
 import type { MovieDetails } from '../../../../server/models/Movie';
@@ -13,6 +18,13 @@ import { MediaRequestStatus } from '../../../../server/constants/media';
 import Button from '../../Common/Button';
 import axios from 'axios';
 import globalMessages from '../../../i18n/globalMessages';
+import Link from 'next/link';
+
+const messages = defineMessages({
+  requestedby: 'Requested by {username}',
+  seasons: 'Seasons',
+  notavailable: 'N/A',
+});
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
@@ -20,9 +32,10 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
 
 interface RequestItemProps {
   request: MediaRequest;
+  onDelete: () => void;
 }
 
-const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
+const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
   const { locale } = useContext(LanguageContext);
@@ -33,13 +46,24 @@ const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     `${url}?language=${locale}`
   );
+  const { data: requestData, error: requestError, revalidate } = useSWR<
+    MediaRequest
+  >(`/api/v1/request/${request.id}`, {
+    initialData: request,
+  });
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.get(`/api/v1/request/${request.id}/${type}`);
 
     if (response) {
-      // revalidate();
+      revalidate();
     }
+  };
+
+  const deleteRequest = async () => {
+    await axios.delete(`/api/v1/request/${request.id}`);
+
+    onDelete();
   };
 
   if (!title && !error) {
@@ -50,7 +74,7 @@ const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
     );
   }
 
-  if (!title) {
+  if (!title || !requestData) {
     return (
       <tr className="w-full bg-gray-800 animate-pulse h-24">
         <td colSpan={6}></td>
@@ -64,23 +88,43 @@ const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
         noPadding
         className="w-20 px-4 relative hidden sm:table-cell align-middle"
       >
-        <img
-          src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
-          alt=""
-          className="rounded-md shadow-sm cursor-pointer transition transform-gpu duration-300 scale-100 hover:scale-105 hover:shadow-md"
-        />
+        <Link
+          href={
+            request.type === 'movie'
+              ? `/movie/${request.media.tmdbId}`
+              : `/tv/${request.media.tmdbId}`
+          }
+        >
+          <a>
+            <img
+              src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
+              alt=""
+              className="rounded-md shadow-sm cursor-pointer transition transform-gpu duration-300 scale-100 hover:scale-105 hover:shadow-md"
+            />
+          </a>
+        </Link>
       </Table.TD>
       <Table.TD>
-        <h2 className="text-white text-xl mr-2">
-          {isMovie(title) ? title.title : title.name}
-        </h2>
+        <Link
+          href={
+            requestData.type === 'movie'
+              ? `/movie/${requestData.media.tmdbId}`
+              : `/tv/${requestData.media.tmdbId}`
+          }
+        >
+          <a className="text-white text-xl mr-2 hover:underline">
+            {isMovie(title) ? title.title : title.name}
+          </a>
+        </Link>
         <div className="text-sm">
-          Requested by {request.requestedBy.username}
+          {intl.formatMessage(messages.requestedby, {
+            username: requestData.requestedBy.username,
+          })}
         </div>
-        {request.seasons.length > 0 && (
+        {requestData.seasons.length > 0 && (
           <div className="hidden mt-2 text-sm sm:flex items-center">
-            <span className="mr-2">Seasons</span>
-            {request.seasons.map((season) => (
+            <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
+            {requestData.seasons.map((season) => (
               <span key={`season-${season.id}`} className="mr-2">
                 <Badge>{season.seasonNumber}</Badge>
               </span>
@@ -89,25 +133,24 @@ const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
         )}
       </Table.TD>
       <Table.TD>
-        <StatusBadge status={request.media.status} />
+        <StatusBadge status={requestData.media.status} />
       </Table.TD>
       <Table.TD>
         <div className="flex flex-col">
-          <span>Requested at</span>
           <span className="text-sm text-gray-300">
-            <FormattedDate value={request.createdAt} />
+            <FormattedDate value={requestData.createdAt} />
           </span>
         </div>
       </Table.TD>
       <Table.TD>
         <div className="flex flex-col">
-          <span>Modified by</span>
-          {request.modifiedBy ? (
+          {requestData.modifiedBy ? (
             <span className="text-sm text-gray-300">
-              {request.modifiedBy.username} (
+              {requestData.modifiedBy.username} (
               <FormattedRelativeTime
                 value={Math.floor(
-                  (new Date(request.updatedAt).getTime() - Date.now()) / 1000
+                  (new Date(requestData.updatedAt).getTime() - Date.now()) /
+                    1000
                 )}
                 updateIntervalInSeconds={1}
               />
@@ -119,7 +162,30 @@ const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
         </div>
       </Table.TD>
       <Table.TD alignText="right">
-        {request.status === MediaRequestStatus.PENDING &&
+        {requestData.status !== MediaRequestStatus.PENDING && (
+          <Button
+            buttonType="danger"
+            buttonSize="sm"
+            onClick={() => deleteRequest()}
+          >
+            <svg
+              className="w-4 h-4 mr-0 sm:mr-1"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span className="hidden sm:block">
+              {intl.formatMessage(globalMessages.delete)}
+            </span>
+          </Button>
+        )}
+        {requestData.status === MediaRequestStatus.PENDING &&
           hasPermission(Permission.MANAGE_REQUESTS) && (
             <>
               <span className="mr-2">
@@ -171,35 +237,6 @@ const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
             </>
           )}
       </Table.TD>
-      {/* <div className="flex justify-start flex-1 items-center">
-        <div className="mr-12">
-          <div className="flex flex-col">
-            <span>Requested at</span>
-            <span className="text-sm text-gray-300">
-              <FormattedDate value={request.createdAt} />
-            </span>
-          </div>
-        </div>
-        <div>
-          <div className="flex flex-col">
-            <span>Modified by</span>
-            {request.modifiedBy ? (
-              <span className="text-sm text-gray-300">
-                {request.modifiedBy.username} (
-                <FormattedRelativeTime
-                  value={Math.floor(
-                    (new Date(request.updatedAt).getTime() - Date.now()) / 1000
-                  )}
-                  updateIntervalInSeconds={1}
-                />
-                )
-              </span>
-            ) : (
-              <span className="text-sm text-gray-300">N/A</span>
-            )}
-          </div>
-        </div>
-      </div> */}
     </tr>
   );
 };

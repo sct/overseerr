@@ -156,12 +156,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       />
       <SlideOver
         show={showManager}
-        title="Manage Series"
+        title={intl.formatMessage(messages.manageModalTitle)}
         onClose={() => setShowManager(false)}
         subText={data.name}
       >
         <h3 className="text-xl mb-2">
-          {intl.formatMessage(messages.manageModalTitle)}
+          {intl.formatMessage(messages.manageModalRequests)}
         </h3>
         <div className="bg-gray-600 shadow overflow-hidden rounded-md">
           <ul>

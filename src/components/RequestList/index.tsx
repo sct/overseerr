@@ -6,11 +6,25 @@ import RequestItem from './RequestItem';
 import Header from '../Common/Header';
 import Table from '../Common/Table';
 import Button from '../Common/Button';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  requests: 'Requests',
+  mediaInfo: 'Media Info',
+  status: 'Status',
+  requestedAt: 'Requested At',
+  modifiedBy: 'Last Modified By',
+  showingresults:
+    'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
+  next: 'Next',
+  previous: 'Previous',
+});
 
 const RequestList: React.FC = () => {
+  const intl = useIntl();
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { data, error } = useSWR<RequestResultsResponse>(
+  const { data, error, revalidate } = useSWR<RequestResultsResponse>(
     `/api/v1/request?take=10&skip=${pageIndex * 10}`
   );
   if (!data && !error) {
@@ -26,14 +40,14 @@ const RequestList: React.FC = () => {
 
   return (
     <>
-      <Header>Requests</Header>
+      <Header>{intl.formatMessage(messages.requests)}</Header>
       <Table>
         <thead>
           <Table.TH className="hidden sm:table-cell"></Table.TH>
-          <Table.TH>Media Info</Table.TH>
-          <Table.TH>Status</Table.TH>
-          <Table.TH></Table.TH>
-          <Table.TH></Table.TH>
+          <Table.TH>{intl.formatMessage(messages.mediaInfo)}</Table.TH>
+          <Table.TH>{intl.formatMessage(messages.status)}</Table.TH>
+          <Table.TH>{intl.formatMessage(messages.requestedAt)}</Table.TH>
+          <Table.TH>{intl.formatMessage(messages.modifiedBy)}</Table.TH>
           <Table.TH></Table.TH>
         </thead>
         <Table.TBody>
@@ -42,6 +56,7 @@ const RequestList: React.FC = () => {
               <RequestItem
                 request={request}
                 key={`request-list-${request.id}`}
+                onDelete={() => revalidate()}
               />
             );
           })}
@@ -53,19 +68,17 @@ const RequestList: React.FC = () => {
               >
                 <div className="hidden sm:block">
                   <p className="text-sm">
-                    Showing
-                    <span className="font-medium px-1">{pageIndex * 10}</span>
-                    to
-                    <span className="font-medium px-1">
-                      {data.results.length < 10
-                        ? pageIndex * 10 + data.results.length
-                        : pageIndex + 1 * 10}
-                    </span>
-                    of
-                    <span className="font-medium px-1">
-                      {data.pageInfo.results}
-                    </span>
-                    results
+                    {intl.formatMessage(messages.showingresults, {
+                      from: pageIndex * 10,
+                      to:
+                        data.results.length < 10
+                          ? pageIndex * 10 + data.results.length
+                          : pageIndex + 1 * 10,
+                      total: data.pageInfo.results,
+                      strong: function strong(msg) {
+                        return <span className="font-medium">{msg}</span>;
+                      },
+                    })}
                   </p>
                 </div>
                 <div className="flex-1 flex justify-start sm:justify-end">
@@ -74,14 +87,14 @@ const RequestList: React.FC = () => {
                       disabled={!hasPrevPage}
                       onClick={() => setPageIndex((current) => current - 1)}
                     >
-                      Previous
+                      {intl.formatMessage(messages.previous)}
                     </Button>
                   </span>
                   <Button
                     disabled={!hasNextPage}
                     onClick={() => setPageIndex((current) => current + 1)}
                   >
-                    Next
+                    {intl.formatMessage(messages.next)}
                   </Button>
                 </div>
               </nav>
