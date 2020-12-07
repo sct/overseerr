@@ -3,6 +3,7 @@ import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import { FormattedRelativeTime, defineMessages, useIntl } from 'react-intl';
 import Button from '../Common/Button';
+import Table from '../Common/Table';
 
 const messages = defineMessages({
   jobname: 'Job Name',
@@ -21,55 +22,38 @@ const SettingsJobs: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="my-2 overflow-x-auto -mx-6 sm:-mx-6 md:mx-4 lg:mx-4">
-        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div className="shadow overflow-hidden sm:rounded-lg">
-            <table className="min-w-full">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                    {intl.formatMessage(messages.jobname)}
-                  </th>
-                  <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
-                    {intl.formatMessage(messages.nextexecution)}
-                  </th>
-                  <th className="px-6 py-3 bg-gray-500"></th>
-                </tr>
-              </thead>
-              <tbody className="bg-gray-600 divide-y divide-gray-700">
-                {data?.map((job, index) => (
-                  <tr key={`job-list-${index}`}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm leading-5 text-white">
-                        {job.name}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm leading-5 text-white">
-                        <FormattedRelativeTime
-                          value={Math.floor(
-                            (new Date(job.nextExecutionTime).getTime() -
-                              Date.now()) /
-                              1000
-                          )}
-                          updateIntervalInSeconds={1}
-                        />
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm leading-5 font-medium">
-                      <Button buttonType="primary">
-                        {intl.formatMessage(messages.runnow)}
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Table>
+      <thead>
+        <Table.TH>{intl.formatMessage(messages.jobname)}</Table.TH>
+        <Table.TH>{intl.formatMessage(messages.nextexecution)}</Table.TH>
+        <Table.TH></Table.TH>
+      </thead>
+      <Table.TBody>
+        {data?.map((job, index) => (
+          <tr key={`job-list-${index}`}>
+            <Table.TD>
+              <div className="text-sm leading-5 text-white">{job.name}</div>
+            </Table.TD>
+            <Table.TD>
+              <div className="text-sm leading-5 text-white">
+                <FormattedRelativeTime
+                  value={Math.floor(
+                    (new Date(job.nextExecutionTime).getTime() - Date.now()) /
+                      1000
+                  )}
+                  updateIntervalInSeconds={1}
+                />
+              </div>
+            </Table.TD>
+            <Table.TD alignText="right">
+              <Button buttonType="primary">
+                {intl.formatMessage(messages.runnow)}
+              </Button>
+            </Table.TD>
+          </tr>
+        ))}
+      </Table.TBody>
+    </Table>
   );
 };
 

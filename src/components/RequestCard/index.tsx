@@ -16,6 +16,7 @@ import { withProperties } from '../../utils/typeHelpers';
 import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
 import globalMessages from '../../i18n/globalMessages';
+import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   requestedby: 'Requested by {username}',
@@ -102,28 +103,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             username: requestData.requestedBy.username,
           })}
         </div>
-        <div className="mt-1 sm:mt-2">
-          {requestData.media.status === MediaStatus.AVAILABLE && (
-            <Badge badgeType="success">
-              {intl.formatMessage(globalMessages.available)}
-            </Badge>
-          )}
-          {requestData.media.status === MediaStatus.PARTIALLY_AVAILABLE && (
-            <Badge badgeType="success">
-              {intl.formatMessage(globalMessages.partiallyavailable)}
-            </Badge>
-          )}
-          {requestData.media.status === MediaStatus.PROCESSING && (
-            <Badge badgeType="danger">
-              {intl.formatMessage(globalMessages.unavailable)}
-            </Badge>
-          )}
-          {requestData.media.status === MediaStatus.PENDING && (
-            <Badge badgeType="warning">
-              {intl.formatMessage(globalMessages.pending)}
-            </Badge>
-          )}
-        </div>
+        {requestData.media.status && (
+          <div className="mt-1 sm:mt-2">
+            <StatusBadge status={requestData.media.status} />
+          </div>
+        )}
         {request.seasons.length > 0 && (
           <div className="hidden mt-2 text-sm sm:flex items-center">
             <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
