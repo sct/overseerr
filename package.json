@@ -48,7 +48,7 @@
     "swagger-ui-express": "^4.1.4",
     "swr": "^0.3.5",
     "typeorm": "^0.2.26",
-    "uuid": "^8.3.0",
+    "uuid": "^8.3.1",
     "winston": "^3.3.3",
     "xml2js": "^0.4.23",
     "yamljs": "^0.3.0",
