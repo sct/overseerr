@@ -102,7 +102,7 @@ class Settings {
     this.data = {
       clientId: '',
       main: {
-        apiKey: 'temp',
+        apiKey: '',
         applicationUrl: '',
       },
       plex: {
@@ -144,6 +144,10 @@ class Settings {
   }
 
   get main(): MainSettings {
+    if (!this.data.main.apiKey) {
+      this.data.main.apiKey = this.generateApiKey();
+      this.save();
+    }
     return this.data.main;
   }
 
@@ -198,6 +202,16 @@ class Settings {
     }
 
     return this.data.clientId;
+  }
+
+  public regenerateApiKey(): MainSettings {
+    this.main.apiKey = this.generateApiKey();
+    this.save();
+    return this.main;
+  }
+
+  private generateApiKey(): string {
+    return Buffer.from(`${Date.now()}${this.clientId}`).toString('base64');
   }
 
   /**

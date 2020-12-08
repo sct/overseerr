@@ -4,6 +4,7 @@ import {
   RadarrSettings,
   SonarrSettings,
   Library,
+  MainSettings,
 } from '../lib/settings';
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
@@ -19,8 +20,14 @@ import { merge } from 'lodash';
 
 const settingsRoutes = Router();
 
-settingsRoutes.get('/main', (_req, res) => {
+settingsRoutes.get('/main', (req, res) => {
   const settings = getSettings();
+
+  if (!req.user?.hasPermission(Permission.ADMIN)) {
+    return res.status(200).json({
+      applicationUrl: settings.main.applicationUrl,
+    } as Partial<MainSettings>);
+  }
 
   res.status(200).json(settings.main);
 });
