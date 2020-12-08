@@ -100,13 +100,11 @@ CoreApp.getInitialProps = async (initialProps) => {
 
   if (ctx.res) {
     // Check if app is initialized and redirect if necessary
-    let initialized = true;
-
     const response = await axios.get<{ initialized: boolean }>(
       `http://localhost:${process.env.PORT || 3000}/api/v1/settings/public`
     );
 
-    initialized = response.data.initialized;
+    const initialized = response.data.initialized;
 
     if (!initialized) {
       if (!router.pathname.match(/(setup|login\/plex)/)) {

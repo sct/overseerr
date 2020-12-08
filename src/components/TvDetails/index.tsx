@@ -473,7 +473,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       </div>
       <Slider
         sliderKey="cast"
-        isLoading={!data && !error}
+        isLoading={false}
         isEmpty={false}
         items={data?.credits.cast.slice(0, 20).map((person) => (
           <PersonCard
