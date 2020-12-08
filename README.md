@@ -43,7 +43,7 @@
 
 ## Running Overseerr
 
-Currently,Overseerr is only distributed through Docker images. If you have Docker, you can run Overseerr as per:
+Currently, Overseerr is only distributed through Docker images. If you have Docker, you can run Overseerr as per:
 
 ```
 docker run -d \
