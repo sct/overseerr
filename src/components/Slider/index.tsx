@@ -117,7 +117,7 @@ const Slider: React.FC<SliderProps> = ({
         to: {
           x: newX,
         },
-        onFrame: (props) => {
+        onFrame: (props: { x: number }) => {
           if (containerRef.current) {
             containerRef.current.scrollLeft = props.x;
           }
@@ -141,7 +141,7 @@ const Slider: React.FC<SliderProps> = ({
         to: {
           x: newX,
         },
-        onFrame: (props) => {
+        onFrame: (props: { x: number }) => {
           if (containerRef.current) {
             containerRef.current.scrollLeft = props.x;
           }
