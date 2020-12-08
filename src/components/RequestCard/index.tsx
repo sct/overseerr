@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { TvDetails } from '../../../server/models/Tv';
 import type { MovieDetails } from '../../../server/models/Movie';
@@ -42,6 +43,9 @@ interface RequestCardProps {
 }
 
 const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+  });
   const intl = useIntl();
   const { hasPermission } = useUser();
   const { locale } = useContext(LanguageContext);
@@ -50,7 +54,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    `${url}?language=${locale}`
+    inView ? `${url}?language=${locale}` : null
   );
   const { data: requestData, error: requestError, revalidate } = useSWR<
     MediaRequest
@@ -67,7 +71,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
   };
 
   if (!title && !error) {
-    return <RequestCardPlaceholder />;
+    return (
+      <div ref={ref}>
+        <RequestCardPlaceholder />
+      </div>
+    );
   }
 
   if (!requestData && !requestError) {

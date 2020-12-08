@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useInView } from 'react-intersection-observer';
 import type { MediaRequest } from '../../../../server/entity/MediaRequest';
 import {
   useIntl,
@@ -36,6 +37,9 @@ interface RequestItemProps {
 }
 
 const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+  });
   const intl = useIntl();
   const { hasPermission } = useUser();
   const { locale } = useContext(LanguageContext);
@@ -44,7 +48,7 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    `${url}?language=${locale}`
+    inView ? `${url}?language=${locale}` : null
   );
   const { data: requestData, error: requestError, revalidate } = useSWR<
     MediaRequest
@@ -68,7 +72,7 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
 
   if (!title && !error) {
     return (
-      <tr className="w-full bg-gray-800 animate-pulse h-24">
+      <tr className="w-full bg-gray-800 animate-pulse h-24" ref={ref}>
         <td colSpan={6}></td>
       </tr>
     );

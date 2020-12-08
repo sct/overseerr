@@ -37,6 +37,7 @@
     "pug": "^3.0.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-intersection-observer": "^8.31.0",
     "react-intl": "^5.8.5",
     "react-spring": "^8.0.27",
     "react-toast-notifications": "^2.4.0",

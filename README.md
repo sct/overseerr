@@ -2,6 +2,7 @@
 <img src="https://i.imgur.com/TMoEG7g.png" alt="Overseerr">
 </p>
 <p align="center">
+<img src="https://github.com/sct/overseerr/workflows/Overseerr%20Release/badge.svg?branch=master" alt="Overseerr Release" />
 <img src="https://github.com/sct/overseerr/workflows/Overseerr%20CI/badge.svg" alt="Overseerr CI">
 <a href="https://discord.gg/ySfaEUcQ">
 <img src="https://img.shields.io/discord/783137440809746482" alt="Discord">
