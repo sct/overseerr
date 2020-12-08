@@ -1,5 +1,4 @@
 import { TmdbMovieDetails } from '../api/themoviedb';
-import { MediaRequest } from '../entity/MediaRequest';
 import {
   ProductionCompany,
   Genre,

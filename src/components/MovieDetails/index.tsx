@@ -522,7 +522,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       </div>
       <Slider
         sliderKey="cast"
-        isLoading={!data && !error}
+        isLoading={false}
         isEmpty={false}
         items={data?.credits.cast.slice(0, 20).map((person) => (
           <PersonCard

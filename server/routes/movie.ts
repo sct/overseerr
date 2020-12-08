@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
 import { mapMovieDetails } from '../models/Movie';
-import { MediaRequest } from '../entity/MediaRequest';
 import { mapMovieResult } from '../models/Search';
 import Media from '../entity/Media';
 import RottenTomatoes from '../api/rottentomatoes';

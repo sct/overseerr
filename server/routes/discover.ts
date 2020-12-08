@@ -1,9 +1,5 @@
 import { Router } from 'express';
-import TheMovieDb, {
-  TmdbMovieResult,
-  TmdbTvResult,
-  TmdbPersonResult,
-} from '../api/themoviedb';
+import TheMovieDb from '../api/themoviedb';
 import { mapMovieResult, mapTvResult, mapPersonResult } from '../models/Search';
 import Media from '../entity/Media';
 import { isMovie, isPerson } from '../utils/typeHelpers';

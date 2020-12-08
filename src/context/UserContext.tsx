@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { User, useUser } from '../hooks/useUser';
 import { useRouter } from 'next/dist/client/router';
 
@@ -17,20 +17,19 @@ export const UserContext: React.FC<UserContextProps> = ({
 }) => {
   const { user, error, revalidate } = useUser({ initialData: initialUser });
   const router = useRouter();
+  const routing = useRef(false);
 
   useEffect(() => {
     revalidate();
   }, [router.pathname, revalidate]);
 
   useEffect(() => {
-    let routing = false;
-
     if (
       !router.pathname.match(/(setup|login)/) &&
       (!user || error) &&
-      !routing
+      !routing.current
     ) {
-      routing = true;
+      routing.current = true;
       location.href = '/login';
     }
   }, [router, user, error]);

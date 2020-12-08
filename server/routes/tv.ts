@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
-import { MediaRequest } from '../entity/MediaRequest';
 import { mapTvDetails, mapSeasonWithEpisodes } from '../models/Tv';
 import { mapTvResult } from '../models/Search';
 import Media from '../entity/Media';

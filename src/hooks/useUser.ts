@@ -1,5 +1,4 @@
 import useSwr from 'swr';
-import { useRef } from 'react';
 import { hasPermission, Permission } from '../../server/lib/permissions';
 
 export interface User {

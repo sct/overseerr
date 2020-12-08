@@ -13,6 +13,7 @@ const globalMessages = defineMessages({
   cancel: 'Cancel',
   approve: 'Approve',
   decline: 'Decline',
+  delete: 'Delete',
 });
 
 export default globalMessages;

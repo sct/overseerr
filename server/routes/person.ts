@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import next from 'next';
 import TheMovieDb from '../api/themoviedb';
 import logger from '../logger';
 import {

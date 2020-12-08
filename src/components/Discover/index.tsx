@@ -7,13 +7,11 @@ import type {
 } from '../../../server/models/Search';
 import TitleCard from '../TitleCard';
 import PersonCard from '../PersonCard';
-import { MediaRequest } from '../../../server/entity/MediaRequest';
 import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
 import Slider from '../Slider';
 import Link from 'next/link';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
-import type Media from '../../../server/entity/Media';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
 import RequestCard from '../RequestCard';

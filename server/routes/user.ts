@@ -5,7 +5,7 @@ import { hasPermission, Permission } from '../lib/permissions';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
   const userRepository = getRepository(User);
 
   const users = await userRepository.find();

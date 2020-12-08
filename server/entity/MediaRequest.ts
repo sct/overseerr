@@ -62,7 +62,7 @@ export class MediaRequest {
   }
 
   @AfterInsert()
-  private async notifyNewRequest() {
+  private async _notifyNewRequest() {
     if (this.status === MediaRequestStatus.PENDING) {
       const mediaRepository = getRepository(Media);
       const media = await mediaRepository.findOne({
@@ -110,7 +110,7 @@ export class MediaRequest {
    * auto approved content
    */
   @AfterUpdate()
-  private async notifyApproved() {
+  private async _notifyApproved() {
     if (this.status === MediaRequestStatus.APPROVED) {
       const mediaRepository = getRepository(Media);
       const media = await mediaRepository.findOne({
@@ -151,7 +151,7 @@ export class MediaRequest {
 
   @AfterUpdate()
   @AfterInsert()
-  private async updateParentStatus() {
+  private async _updateParentStatus() {
     const mediaRepository = getRepository(Media);
     const media = await mediaRepository.findOne({
       where: { id: this.media.id },
@@ -206,7 +206,7 @@ export class MediaRequest {
   }
 
   @AfterRemove()
-  private async handleRemoveParentUpdate() {
+  private async _handleRemoveParentUpdate() {
     const mediaRepository = getRepository(Media);
     const fullMedia = await mediaRepository.findOneOrFail({
       where: { id: this.media.id },
@@ -219,7 +219,7 @@ export class MediaRequest {
 
   @AfterUpdate()
   @AfterInsert()
-  private async sendToRadarr() {
+  private async _sendToRadarr() {
     if (
       this.status === MediaRequestStatus.APPROVED &&
       this.type === MediaType.MOVIE
@@ -267,7 +267,7 @@ export class MediaRequest {
 
   @AfterUpdate()
   @AfterInsert()
-  private async sendToSonarr() {
+  private async _sendToSonarr() {
     if (
       this.status === MediaRequestStatus.APPROVED &&
       this.type === MediaType.TV

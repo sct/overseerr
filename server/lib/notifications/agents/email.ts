@@ -7,10 +7,12 @@ import Email from 'email-templates';
 import logger from '../../../logger';
 import { getRepository } from 'typeorm';
 import { User } from '../../../entity/User';
-import { hasPermission, Permission } from '../../permissions';
+import { Permission } from '../../permissions';
 
 class EmailAgent implements NotificationAgent {
-  public shouldSend(type: Notification): boolean {
+  // TODO: Add checking for type here once we add notification type filters for agents
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public shouldSend(_type: Notification): boolean {
     const settings = getSettings();
 
     if (settings.notifications.agents.email.enabled) {

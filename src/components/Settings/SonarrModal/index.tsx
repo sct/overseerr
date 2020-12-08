@@ -229,7 +229,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               okText={
                 isSubmitting
                   ? intl.formatMessage(messages.saving)
-                  : !!sonarr
+                  : sonarr
                   ? intl.formatMessage(messages.save)
                   : intl.formatMessage(messages.add)
               }

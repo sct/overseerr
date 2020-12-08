@@ -1,4 +1,5 @@
 module.exports = {
+  ignoreFiles: ['**/*.js'],
   rules: {
     'at-rule-no-unknown': [
       true,

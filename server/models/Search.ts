@@ -3,7 +3,6 @@ import type {
   TmdbPersonResult,
   TmdbTvResult,
 } from '../api/themoviedb';
-import type { MediaRequest } from '../entity/MediaRequest';
 import Media from '../entity/Media';
 
 export type MediaType = 'tv' | 'movie' | 'person';

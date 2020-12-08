@@ -1,13 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
+import { useInView } from 'react-intersection-observer';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { TvDetails } from '../../../server/models/Tv';
 import type { MovieDetails } from '../../../server/models/Movie';
 import useSWR from 'swr';
 import { LanguageContext } from '../../context/LanguageContext';
-import {
-  MediaStatus,
-  MediaRequestStatus,
-} from '../../../server/constants/media';
+import { MediaRequestStatus } from '../../../server/constants/media';
 import Badge from '../Common/Badge';
 import { useUser, Permission } from '../../hooks/useUser';
 import axios from 'axios';
@@ -16,6 +14,7 @@ import { withProperties } from '../../utils/typeHelpers';
 import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
 import globalMessages from '../../i18n/globalMessages';
+import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   requestedby: 'Requested by {username}',
@@ -41,6 +40,9 @@ interface RequestCardProps {
 }
 
 const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+  });
   const intl = useIntl();
   const { hasPermission } = useUser();
   const { locale } = useContext(LanguageContext);
@@ -49,7 +51,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    `${url}?language=${locale}`
+    inView ? `${url}?language=${locale}` : null
   );
   const { data: requestData, error: requestError, revalidate } = useSWR<
     MediaRequest
@@ -66,7 +68,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
   };
 
   if (!title && !error) {
-    return <RequestCardPlaceholder />;
+    return (
+      <div ref={ref}>
+        <RequestCardPlaceholder />
+      </div>
+    );
   }
 
   if (!requestData && !requestError) {
@@ -102,28 +108,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             username: requestData.requestedBy.username,
           })}
         </div>
-        <div className="mt-1 sm:mt-2">
-          {requestData.media.status === MediaStatus.AVAILABLE && (
-            <Badge badgeType="success">
-              {intl.formatMessage(globalMessages.available)}
-            </Badge>
-          )}
-          {requestData.media.status === MediaStatus.PARTIALLY_AVAILABLE && (
-            <Badge badgeType="success">
-              {intl.formatMessage(globalMessages.partiallyavailable)}
-            </Badge>
-          )}
-          {requestData.media.status === MediaStatus.PROCESSING && (
-            <Badge badgeType="danger">
-              {intl.formatMessage(globalMessages.unavailable)}
-            </Badge>
-          )}
-          {requestData.media.status === MediaStatus.PENDING && (
-            <Badge badgeType="warning">
-              {intl.formatMessage(globalMessages.pending)}
-            </Badge>
-          )}
-        </div>
+        {requestData.media.status && (
+          <div className="mt-1 sm:mt-2">
+            <StatusBadge status={requestData.media.status} />
+          </div>
+        )}
         {request.seasons.length > 0 && (
           <div className="hidden mt-2 text-sm sm:flex items-center">
             <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
