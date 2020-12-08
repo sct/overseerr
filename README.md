@@ -4,6 +4,8 @@
 <p align="center">
 <img src="https://github.com/sct/overseerr/workflows/Overseerr%20Release/badge.svg?branch=master" alt="Overseerr Release" />
 <img src="https://github.com/sct/overseerr/workflows/Overseerr%20CI/badge.svg" alt="Overseerr CI">
+</p>
+<p align="center">
 <a href="https://discord.gg/ySfaEUcQ">
 <img src="https://img.shields.io/discord/783137440809746482" alt="Discord">
 </a>
@@ -11,6 +13,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/">
 <img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" />
 </a>
+<a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 </p>
 
 **Overseerr** is a tool for managing requests for your media library. It integrates with existing services such as **Sonarr** and **Radarr**!
