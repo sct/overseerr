@@ -30,7 +30,7 @@
   "components.MovieDetails.manageModalRequests": "リクエスト",
   "components.MovieDetails.manageModalTitle": "映画を管理",
   "components.MovieDetails.originallanguage": "原語",
-  "components.MovieDetails.overview": "あらすじ",
+  "components.MovieDetails.overview": "概要",
   "components.MovieDetails.overviewunavailable": "あらすじありません",
   "components.MovieDetails.pending": "リクエスト中",
   "components.MovieDetails.recommendations": "オススメの作品",
