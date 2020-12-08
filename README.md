@@ -6,7 +6,7 @@
 <img src="https://github.com/sct/overseerr/workflows/Overseerr%20CI/badge.svg" alt="Overseerr CI">
 </p>
 <p align="center">
-<a href="https://discord.gg/ySfaEUcQ">
+<a href="https://discord.gg/PkCWJSeCk7">
 <img src="https://img.shields.io/discord/783137440809746482" alt="Discord">
 </a>
 <img src="https://img.shields.io/docker/pulls/sctx/overseerr" alt="Docker pulls">
@@ -65,7 +65,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ## Support
 
-- You can get support on [Discord](https://discord.gg/ySfaEUcQ).
+- You can get support on [Discord](https://discord.gg/PkCWJSeCk7).
 - Bugs can be opened via a [GitHub issue](https://github.com/sct/overseerr/issues).
 
 ## API Documentation
