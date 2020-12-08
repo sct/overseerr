@@ -74,7 +74,13 @@ Full API documentation will soon be published automatically and available outsid
 
 ## Contribution
 
-Anyone is welcome to contribute to Docker, and pull requests are greatly appreciated! Contributors will get recognition in this README.
+Anyone is welcome to contribute to Docker, and pull requests are greatly appreciated!
+
+### Contributors
+
+<a href="https://github.com/sct/overseerr/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=sct/overseerr" />
+</a>
 
 ### Developing Overseerr
 
