@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-export type AvailableLocales = 'en' | 'ja' | 'fr';
+export type AvailableLocales = 'en' | 'ja' | 'fr' | 'nb-NO' | 'de';
 
 interface LanguageContextProps {
   locale: AvailableLocales;

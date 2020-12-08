@@ -29,6 +29,14 @@ const availableLanguages: AvailableLanguageObject = {
     code: 'fr',
     display: 'Français',
   },
+  'nb-NO': {
+    code: 'nb-NO',
+    display: 'Norwegian Bokmål',
+  },
+  de: {
+    code: 'de',
+    display: 'German',
+  },
 };
 
 const LanguagePicker: React.FC = () => {

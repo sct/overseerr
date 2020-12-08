@@ -20,6 +20,10 @@ const loadLocaleData = (locale: string): Promise<any> => {
       return import('../i18n/locale/ja.json');
     case 'fr':
       return import('../i18n/locale/fr.json');
+    case 'nb-NO':
+      return import('../i18n/locale/nb_NO.json');
+    case 'de':
+      return import('../i18n/locale/de.json');
     default:
       return import('../i18n/locale/en.json');
   }
