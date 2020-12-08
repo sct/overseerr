@@ -375,6 +375,7 @@ components:
           example: 1
         logoPath:
           type: string
+          nullable: true
         originCountry:
           type: string
         name:
@@ -428,7 +429,8 @@ components:
         releaseDate:
           type: string
         revenue:
-          type: string
+          type: number
+          nullable: true
         runtime:
           type: number
         spokenLanguages:
@@ -476,6 +478,7 @@ components:
           type: string
         airDate:
           type: string
+          nullable: true
         episodeNumber:
           type: number
         overview:
@@ -483,11 +486,12 @@ components:
         productionCode:
           type: string
         seasonNumber:
-          type: string
+          type: number
         showId:
           type: number
         stillPath:
           type: string
+          nullable: true
         voteAverage:
           type: number
         voteCount:
@@ -499,6 +503,7 @@ components:
           type: number
         airDate:
           type: string
+          nullable: true
         episodeCount:
           type: number
         name:
@@ -536,6 +541,7 @@ components:
                 type: number
               profilePath:
                 type: string
+                nullable: true
         episodeRunTime:
           type: array
           items:
@@ -658,6 +664,7 @@ components:
         tvdbId:
           type: number
           readOnly: true
+          nullable: true
         status:
           type: number
         requests:
@@ -696,6 +703,7 @@ components:
           type: number
         profilePath:
           type: string
+          nullable: true
     Crew:
       type: object
       properties:
@@ -715,25 +723,34 @@ components:
           type: string
         profilePath:
           type: string
+          nullable: true
     ExternalIds:
       type: object
       properties:
         facebookId:
           type: string
+          nullable: true
         freebaseId:
           type: string
+          nullable: true
         freebaseMid:
           type: string
+          nullable: true
         imdbId:
           type: string
+          nullable: true
         instagramId:
           type: string
+          nullable: true
         tvdbId:
-          type: string
+          type: number
+          nullable: true
         tvrageId:
-          type: string
+          type: number
+          nullable: true
         twitterId:
           type: string
+          nullable: true
     ServiceProfile:
       type: object
       properties:

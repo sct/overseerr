@@ -15,8 +15,8 @@ const requestRoutes = Router();
 requestRoutes.get('/', async (req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
   try {
-    const pageSize = Number(req.query.take) ?? 20;
-    const skip = Number(req.query.skip) ?? 0;
+    const pageSize = req.query.take ? Number(req.query.take) : 20;
+    const skip = req.query.skip ? Number(req.query.skip) : 0;
 
     let statusFilter:
       | MediaRequestStatus
