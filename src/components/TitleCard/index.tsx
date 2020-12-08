@@ -93,7 +93,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
               mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
             }`}
           >
-            <div className="flex items-center text-center text-xs text-white h-4 px-2 py-1 font-normal">
+            <div className="flex items-center text-center text-xs text-white h-4 px-2 py-1 font-normal uppercase">
               {mediaType === 'movie'
                 ? intl.formatMessage(messages.movie)
                 : intl.formatMessage(messages.tvshow)}
