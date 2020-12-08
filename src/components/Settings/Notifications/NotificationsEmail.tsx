@@ -86,7 +86,7 @@ const NotificationsEmail: React.FC = () => {
                 htmlFor="isDefault"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                Agent Enabled
+                {intl.formatMessage(messages.agentenabled)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <Field
