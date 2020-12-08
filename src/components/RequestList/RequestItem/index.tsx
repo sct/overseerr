@@ -50,11 +50,12 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}?language=${locale}` : null
   );
-  const { data: requestData, error: requestError, revalidate } = useSWR<
-    MediaRequest
-  >(`/api/v1/request/${request.id}`, {
-    initialData: request,
-  });
+  const { data: requestData, revalidate } = useSWR<MediaRequest>(
+    `/api/v1/request/${request.id}`,
+    {
+      initialData: request,
+    }
+  );
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.get(`/api/v1/request/${request.id}/${type}`);

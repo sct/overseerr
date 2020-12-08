@@ -57,19 +57,15 @@ class PlexOAuth {
         'You must initialize the plex headers clientside to login'
       );
     }
-    try {
-      const response = await axios.post(
-        'https://plex.tv/api/v2/pins?strong=true',
-        undefined,
-        { headers: this.plexHeaders }
-      );
+    const response = await axios.post(
+      'https://plex.tv/api/v2/pins?strong=true',
+      undefined,
+      { headers: this.plexHeaders }
+    );
 
-      this.pin = { id: response.data.id, code: response.data.code };
+    this.pin = { id: response.data.id, code: response.data.code };
 
-      return this.pin;
-    } catch (e) {
-      throw e;
-    }
+    return this.pin;
   }
 
   public preparePopup(): void {
@@ -77,42 +73,38 @@ class PlexOAuth {
   }
 
   public async login(): Promise<string> {
-    try {
-      this.initializeHeaders();
-      await this.getPin();
+    this.initializeHeaders();
+    await this.getPin();
 
-      if (!this.plexHeaders || !this.pin) {
-        throw new Error('Unable to call login if class is not initialized.');
-      }
-
-      const params = {
-        clientID: this.plexHeaders['X-Plex-Client-Identifier'],
-        'context[device][product]': this.plexHeaders['X-Plex-Product'],
-        'context[device][version]': this.plexHeaders['X-Plex-Version'],
-        'context[device][platform]': this.plexHeaders['X-Plex-Platform'],
-        'context[device][platformVersion]': this.plexHeaders[
-          'X-Plex-Platform-Version'
-        ],
-        'context[device][device]': this.plexHeaders['X-Plex-Device'],
-        'context[device][deviceName]': this.plexHeaders['X-Plex-Device-Name'],
-        'context[device][model]': this.plexHeaders['X-Plex-Model'],
-        'context[device][screenResolution]': this.plexHeaders[
-          'X-Plex-Device-Screen-Resolution'
-        ],
-        'context[device][layout]': 'desktop',
-        code: this.pin.code,
-      };
-
-      if (this.popup) {
-        this.popup.location.href = `https://app.plex.tv/auth/#!?${this.encodeData(
-          params
-        )}`;
-      }
-
-      return this.pinPoll();
-    } catch (e) {
-      throw e;
+    if (!this.plexHeaders || !this.pin) {
+      throw new Error('Unable to call login if class is not initialized.');
     }
+
+    const params = {
+      clientID: this.plexHeaders['X-Plex-Client-Identifier'],
+      'context[device][product]': this.plexHeaders['X-Plex-Product'],
+      'context[device][version]': this.plexHeaders['X-Plex-Version'],
+      'context[device][platform]': this.plexHeaders['X-Plex-Platform'],
+      'context[device][platformVersion]': this.plexHeaders[
+        'X-Plex-Platform-Version'
+      ],
+      'context[device][device]': this.plexHeaders['X-Plex-Device'],
+      'context[device][deviceName]': this.plexHeaders['X-Plex-Device-Name'],
+      'context[device][model]': this.plexHeaders['X-Plex-Model'],
+      'context[device][screenResolution]': this.plexHeaders[
+        'X-Plex-Device-Screen-Resolution'
+      ],
+      'context[device][layout]': 'desktop',
+      code: this.pin.code,
+    };
+
+    if (this.popup) {
+      this.popup.location.href = `https://app.plex.tv/auth/#!?${this.encodeData(
+        params
+      )}`;
+    }
+
+    return this.pinPoll();
   }
 
   private async pinPoll(): Promise<string> {
@@ -131,9 +123,9 @@ class PlexOAuth {
         );
 
         if (response.data?.authToken) {
-          this.authToken = response.data.authToken;
+          this.authToken = response.data.authToken as string;
           this.closePopup();
-          resolve(response.data.authToken);
+          resolve(this.authToken);
         } else if (!response.data?.authToken && !this.popup?.closed) {
           setTimeout(executePoll, 1000, resolve, reject);
         } else {

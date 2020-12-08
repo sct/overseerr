@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, AllHTMLAttributes } from 'react';
+import React, { AllHTMLAttributes } from 'react';
 import { withProperties } from '../../../utils/typeHelpers';
 
 const TBody: React.FC = ({ children }) => {
@@ -20,7 +20,11 @@ const TH: React.FC<AllHTMLAttributes<HTMLTableHeaderCellElement>> = ({
     style.push(className);
   }
 
-  return <th className={style.join(' ')}>{children}</th>;
+  return (
+    <th className={style.join(' ')} {...props}>
+      {children}
+    </th>
+  );
 };
 
 interface TDProps extends AllHTMLAttributes<HTMLTableCellElement> {

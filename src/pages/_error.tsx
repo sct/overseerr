@@ -65,7 +65,7 @@ Error.getInitialProps = async ({ res, err }): Promise<ErrorProps> => {
   // Apologies for how gross ternary is but this is just temporary. Honestly,
   // blame the nextjs docs
   let statusCode: Undefinable<number>;
-  if (!!res) {
+  if (res) {
     statusCode = res.statusCode;
   } else {
     statusCode = err ? err.statusCode : undefined;

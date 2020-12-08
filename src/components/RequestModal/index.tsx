@@ -1,10 +1,8 @@
 import React from 'react';
-import useSWR from 'swr';
 import MovieRequestModal from './MovieRequestModal';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { MediaStatus } from '../../../server/constants/media';
 import TvRequestModal from './TvRequestModal';
-import { useTransition, animated } from 'react-spring';
+import { useTransition } from 'react-spring';
 
 interface RequestModalProps {
   show: boolean;
@@ -21,7 +19,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
   show,
   tmdbId,
   onComplete,
-  onError,
   onUpdating,
   onCancel,
 }) => {

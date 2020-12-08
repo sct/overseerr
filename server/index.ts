@@ -5,7 +5,7 @@ import { createConnection, getRepository } from 'typeorm';
 import routes from './routes';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import session from 'express-session';
+import session, { Store } from 'express-session';
 import { TypeormStore } from 'connect-typeorm/out';
 import YAML from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
@@ -29,7 +29,7 @@ app
   .then(async () => {
     await createConnection();
     // Load Settings
-    getSettings().load();
+    const settings = getSettings().load();
 
     // Register Notification Agents
     notificationManager.registerAgents([new DiscordAgent(), new EmailAgent()]);
@@ -47,7 +47,7 @@ app
     server.use(
       '/api',
       session({
-        secret: 'verysecret',
+        secret: settings.clientId,
         resave: false,
         saveUninitialized: false,
         cookie: {
@@ -56,7 +56,7 @@ app
         store: new TypeormStore({
           cleanupLimit: 2,
           ttl: 1000 * 60 * 60 * 24 * 30,
-        }).connect(sessionRespository),
+        }).connect(sessionRespository) as Store,
       })
     );
     const apiDocs = YAML.load(API_SPEC_PATH);
@@ -71,7 +71,7 @@ app
      * OpenAPI validator. Otherwise, they are treated as objects instead of strings
      * and response validation will fail
      */
-    server.use((req, res, next) => {
+    server.use((_req, res, next) => {
       const original = res.json;
       res.json = function jsonp(json) {
         return original.call(this, JSON.parse(JSON.stringify(json)));
@@ -83,8 +83,10 @@ app
     server.use(
       (
         err: { status: number; message: string; errors: string[] },
-        req: Request,
+        _req: Request,
         res: Response,
+        // We must provide a next function for the function signature here even though its not used
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _next: NextFunction
       ) => {
         // format error
@@ -96,10 +98,7 @@ app
     );
 
     const port = Number(process.env.PORT) || 3000;
-    server.listen(port, (err) => {
-      if (err) {
-        throw err;
-      }
+    server.listen(port, () => {
       logger.info(`Server ready on port ${port}`, {
         label: 'SERVER',
       });

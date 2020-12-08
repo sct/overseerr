@@ -8,7 +8,6 @@ import {
   AfterInsert,
   AfterUpdate,
   getRepository,
-  RelationId,
 } from 'typeorm';
 import { MediaStatus } from '../constants/media';
 import Media from './Media';
@@ -42,7 +41,7 @@ class Season {
 
   @AfterInsert()
   @AfterUpdate()
-  private async sendSeasonAvailableNotification() {
+  private async _sendSeasonAvailableNotification() {
     if (this.status === MediaStatus.AVAILABLE) {
       try {
         const lazyMedia = await this.media;

@@ -80,7 +80,7 @@ const SettingsLayout: React.FC = ({ children }) => {
       <Link href={route}>
         <a
           className={`whitespace-nowrap ml-8 first:ml-0 py-4 px-1 border-b-2 border-transparent font-medium text-sm leading-5 ${
-            !!router.pathname.match(regex) ? activeLinkColor : inactiveLinkColor
+            router.pathname.match(regex) ? activeLinkColor : inactiveLinkColor
           }`}
           aria-current="page"
         >

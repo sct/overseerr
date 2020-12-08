@@ -49,7 +49,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       <Link href={route}>
         <a
           className={`whitespace-nowrap ml-8 first:ml-0 px-3 py-2 font-medium text-sm rounded-md ${
-            !!router.pathname.match(regex) ? activeLinkColor : inactiveLinkColor
+            router.pathname.match(regex) ? activeLinkColor : inactiveLinkColor
           }`}
           aria-current="page"
         >

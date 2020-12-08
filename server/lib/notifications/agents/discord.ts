@@ -127,7 +127,9 @@ class DiscordAgent implements NotificationAgent {
     };
   }
 
-  public shouldSend(type: Notification): boolean {
+  // TODO: Add checking for type here once we add notification type filters for agents
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public shouldSend(_type: Notification): boolean {
     const settings = getSettings();
 
     if (

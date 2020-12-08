@@ -11,10 +11,10 @@ import {
   MediaStatus,
   MediaRequestStatus,
 } from '../../../server/constants/media';
-import { TvDetails, SeasonWithEpisodes } from '../../../server/models/Tv';
-import type SeasonRequest from '../../../server/entity/SeasonRequest';
+import { TvDetails } from '../../../server/models/Tv';
 import Badge from '../Common/Badge';
 import globalMessages from '../../i18n/globalMessages';
+import SeasonRequest from '../../../server/entity/SeasonRequest';
 
 const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',

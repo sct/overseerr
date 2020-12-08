@@ -100,7 +100,7 @@ class Media {
   }
 
   @AfterUpdate()
-  private async notifyAvailable() {
+  private async _notifyAvailable() {
     if (this.status === MediaStatus.AVAILABLE) {
       if (this.mediaType === MediaType.MOVIE) {
         const requestRepository = getRepository(MediaRequest);

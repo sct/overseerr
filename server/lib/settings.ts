@@ -84,7 +84,7 @@ interface NotificationSettings {
 }
 
 interface AllSettings {
-  clientId?: string;
+  clientId: string;
   main: MainSettings;
   plex: PlexSettings;
   radarr: RadarrSettings[];
@@ -100,6 +100,7 @@ class Settings {
 
   constructor(initialSettings?: AllSettings) {
     this.data = {
+      clientId: '',
       main: {
         apiKey: 'temp',
         applicationUrl: '',

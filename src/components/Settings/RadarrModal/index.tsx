@@ -226,7 +226,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               okText={
                 isSubmitting
                   ? intl.formatMessage(messages.saving)
-                  : !!radarr
+                  : radarr
                   ? intl.formatMessage(messages.save)
                   : intl.formatMessage(messages.add)
               }

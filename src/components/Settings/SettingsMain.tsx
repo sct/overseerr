@@ -56,7 +56,7 @@ const SettingsMain: React.FC = () => {
             }
           }}
         >
-          {({ errors, touched, isSubmitting }) => {
+          {({ isSubmitting }) => {
             return (
               <Form>
                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">

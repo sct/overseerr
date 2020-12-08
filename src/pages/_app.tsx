@@ -145,7 +145,7 @@ CoreApp.getInitialProps = async (initialProps) => {
 
     const cookies = parseCookies(ctx);
 
-    if (!!cookies.locale) {
+    if (cookies.locale) {
       locale = cookies.locale;
     }
   }

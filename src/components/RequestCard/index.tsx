@@ -1,14 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useInView } from 'react-intersection-observer';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { TvDetails } from '../../../server/models/Tv';
 import type { MovieDetails } from '../../../server/models/Movie';
 import useSWR from 'swr';
 import { LanguageContext } from '../../context/LanguageContext';
-import {
-  MediaStatus,
-  MediaRequestStatus,
-} from '../../../server/constants/media';
+import { MediaRequestStatus } from '../../../server/constants/media';
 import Badge from '../Common/Badge';
 import { useUser, Permission } from '../../hooks/useUser';
 import axios from 'axios';

@@ -679,9 +679,10 @@ class TheMovieDb {
   public getMovieTrending = async ({
     page = 1,
     timeWindow = 'day',
-  }: { page?: number; timeWindow?: 'day' | 'week' } = {}): Promise<
-    TmdbSearchMovieResponse
-  > => {
+  }: {
+    page?: number;
+    timeWindow?: 'day' | 'week';
+  } = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const response = await this.axios.get<TmdbSearchMovieResponse>(
         `/trending/movie/${timeWindow}`,
@@ -701,9 +702,10 @@ class TheMovieDb {
   public getTvTrending = async ({
     page = 1,
     timeWindow = 'day',
-  }: { page?: number; timeWindow?: 'day' | 'week' } = {}): Promise<
-    TmdbSearchTvResponse
-  > => {
+  }: {
+    page?: number;
+    timeWindow?: 'day' | 'week';
+  } = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const response = await this.axios.get<TmdbSearchTvResponse>(
         `/trending/tv/${timeWindow}`,

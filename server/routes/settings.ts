@@ -7,7 +7,7 @@ import {
 } from '../lib/settings';
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
-import PlexAPI, { PlexLibrary } from '../api/plexapi';
+import PlexAPI from '../api/plexapi';
 import { jobPlexFullSync } from '../job/plexsync';
 import SonarrAPI from '../api/sonarr';
 import RadarrAPI from '../api/radarr';
@@ -120,7 +120,7 @@ settingsRoutes.get('/plex/sync', (req, res) => {
   return res.status(200).json(jobPlexFullSync.status());
 });
 
-settingsRoutes.get('/radarr', (req, res) => {
+settingsRoutes.get('/radarr', (_req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.radarr);
@@ -261,7 +261,7 @@ settingsRoutes.delete<{ id: string }>('/radarr/:id', (req, res) => {
   return res.status(200).json(removed[0]);
 });
 
-settingsRoutes.get('/sonarr', (req, res) => {
+settingsRoutes.get('/sonarr', (_req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.sonarr);
@@ -372,7 +372,7 @@ settingsRoutes.delete<{ id: string }>('/sonarr/:id', (req, res) => {
   return res.status(200).json(removed[0]);
 });
 
-settingsRoutes.get('/jobs', (req, res) => {
+settingsRoutes.get('/jobs', (_req, res) => {
   return res.status(200).json(
     scheduledJobs.map((job) => ({
       name: job.name,
@@ -384,7 +384,7 @@ settingsRoutes.get('/jobs', (req, res) => {
 settingsRoutes.get(
   '/initialize',
   isAuthenticated(Permission.ADMIN),
-  (req, res) => {
+  (_req, res) => {
     const settings = getSettings();
 
     settings.public.initialized = true;
@@ -394,7 +394,7 @@ settingsRoutes.get(
   }
 );
 
-settingsRoutes.get('/notifications/discord', (req, res) => {
+settingsRoutes.get('/notifications/discord', (_req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.notifications.agents.discord);
@@ -409,7 +409,7 @@ settingsRoutes.post('/notifications/discord', (req, res) => {
   res.status(200).json(settings.notifications.agents.discord);
 });
 
-settingsRoutes.get('/notifications/email', (req, res) => {
+settingsRoutes.get('/notifications/email', (_req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.notifications.agents.email);
