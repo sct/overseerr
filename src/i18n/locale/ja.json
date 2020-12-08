@@ -83,7 +83,7 @@
   "components.RequestModal.selectseason": "シーズンを選ぶ",
   "components.RequestModal.status": "状態",
   "components.Search.searchresults": "検索結果",
-  "components.Settings.Notifications.agentenabled": "エージェント有効",
+  "components.Settings.Notifications.agentenabled": "エージェントを有効にする",
   "components.Settings.Notifications.authPass": "認証パスワード",
   "components.Settings.Notifications.authUser": "認証ユーザー",
   "components.Settings.Notifications.emailsender": "配信元メールアドレス",
