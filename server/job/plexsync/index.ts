@@ -253,7 +253,7 @@ class JobPlexSync {
       this.progress = start;
       await this.processItems(slicedItems);
 
-      await new Promise((resolve) =>
+      await new Promise<void>((resolve) =>
         setTimeout(async () => {
           await this.loop({
             start: start + BUNDLE_SIZE,

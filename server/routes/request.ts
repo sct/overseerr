@@ -20,7 +20,7 @@ requestRoutes.get('/', async (req, res, next) => {
 
     let statusFilter:
       | MediaRequestStatus
-      | FindOperator<MediaRequestStatus>
+      | FindOperator<string | MediaRequestStatus>
       | undefined = undefined;
 
     switch (req.query.filter) {
