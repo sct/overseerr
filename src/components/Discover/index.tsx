@@ -242,7 +242,11 @@ const Discover: React.FC = () => {
               );
             case 'person':
               return (
-                <PersonCard name={title.name} profilePath={title.profilePath} />
+                <PersonCard
+                  personId={title.id}
+                  name={title.name}
+                  profilePath={title.profilePath}
+                />
               );
           }
         })}
