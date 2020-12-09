@@ -2391,7 +2391,7 @@ paths:
                   crew:
                     type: array
                     items:
-                      $ref: "#/components/schemas/CreditCrew"
+                      $ref: '#/components/schemas/CreditCrew'
                   id:
                     type: number
   /media:

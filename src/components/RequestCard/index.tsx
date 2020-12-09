@@ -54,9 +54,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}?language=${locale}` : null
   );
-  const { data: requestData, error: requestError, revalidate } = useSWR<
-    MediaRequest
-  >(`/api/v1/request/${request.id}`, {
+  const {
+    data: requestData,
+    error: requestError,
+    revalidate,
+  } = useSWR<MediaRequest>(`/api/v1/request/${request.id}`, {
     initialData: request,
   });
 
