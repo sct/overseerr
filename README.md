@@ -14,6 +14,7 @@
 <img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" />
 </a>
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
+<img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr">
 </p>
 
 **Overseerr** is a libre software tool for managing requests for your media library. It integrates with existing services such as **Sonarr** and **Radarr**!
@@ -33,6 +34,7 @@
 - User profiles.
 - User settings page (to give users the ability to modify their Overseerr experience to their liking).
 - Version update notifications in-app.
+- 4K requests (Includes multi-radarr/sonarr management for media)
 
 ## Planned Features
 
@@ -66,39 +68,27 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 ## Support
 
 - You can get support on [Discord](https://discord.gg/PkCWJSeCk7).
-- Bugs can be opened via a [GitHub issue](https://github.com/sct/overseerr/issues).
+- You can ask questions in the Help category of our [GitHub Discussions](https://github.com/sct/overseerr/discussions).
+- Bugs/Feature Requests can be opened via a [GitHub issue](https://github.com/sct/overseerr/issues).
 
 ## API Documentation
 
 Full API documentation will soon be published automatically and available outside of running the app. Currently, you can access the API docs by running Overseerr locally and visiting http://localhost:3000/api-docs
 
-## Contribution
+## Community
 
-Anyone is welcome to contribute to Docker, and pull requests are greatly appreciated!
+You can ask questions, share ideas, and more in [GitHub Discussions](https://github.com/sct/overseerr/discussions).
 
-### Contributors
+If you would like to chat with community members you can join the [Overseerr Discord](https://discord.gg/PkCWJSeCk7).
+
+Our [Code of Conduct](https://github.com/sct/overseerr/blob/develop/CODE_OF_CONDUCT.md) applies to all Overseerr community channels.
+
+## Contributors
 
 <a href="https://github.com/sct/overseerr/graphs/contributors">
   <img src="https://contributors-img.web.app/image?repo=sct/overseerr" />
 </a>
 
-### Developing Overseerr
+## Contributing
 
-You can develop Overseer entirely in Docker. Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed before continuing.
-
-1. Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed.
-2. Run `docker-compose up -d` to start the server.
-3. Access the container at http://localhost:3000
-
-If Docker isn't your jam, you can always run Overseer with these Yarn commands:
-
-```
-yarn
-yarn dev
-```
-
-You will need Node.js installed. Once it's built and running, access it locally at http://localhost:3000 (just like Docker).
-
-### Translation
-
-We use [Weblate](https://hosted.weblate.org/engage/overseerr/) for our translations so please feel free to contribute to localizing Overseerr!
+You can help build Overseerr too! Check out our [Contribution Guide](https://github.com/sct/overseerr/blob/develop/CONTRIBUTING.md) to get started.
