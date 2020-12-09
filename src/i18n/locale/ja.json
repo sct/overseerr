@@ -49,6 +49,7 @@
   "components.PlexLoginButton.loggingin": "ログイン中…",
   "components.PlexLoginButton.loginwithplex": "Plexでログイン",
   "components.RequestBlock.seasons": "シーズン",
+  "components.RequestCard.all": "",
   "components.RequestCard.requestedby": "{username}のリクエスト",
   "components.RequestCard.seasons": "シーズン",
   "components.RequestList.RequestItem.notavailable": "N/A",

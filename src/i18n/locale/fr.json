@@ -49,6 +49,7 @@
   "components.PlexLoginButton.loggingin": "Connexion en cours…",
   "components.PlexLoginButton.loginwithplex": "Se connecter avec Plex",
   "components.RequestBlock.seasons": "Saisons",
+  "components.RequestCard.all": "",
   "components.RequestCard.requestedby": "Demandé par {username}",
   "components.RequestCard.seasons": "Saisons",
   "components.RequestList.RequestItem.notavailable": "s.o.",

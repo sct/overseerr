@@ -19,6 +19,7 @@ import StatusBadge from '../StatusBadge';
 const messages = defineMessages({
   requestedby: 'Requested by {username}',
   seasons: 'Seasons',
+  all: 'All',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -103,7 +104,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             {isMovie(title) ? title.title : title.name}
           </Link>
         </h2>
-        <div className="text-xs sm:text-sm">
+        <div className="text-xs sm:text-sm truncate">
           {intl.formatMessage(messages.requestedby, {
             username: requestData.requestedBy.username,
           })}
@@ -116,11 +117,21 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
         {request.seasons.length > 0 && (
           <div className="hidden mt-2 text-sm sm:flex items-center">
             <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
-            {request.seasons.map((season) => (
-              <span key={`season-${season.id}`} className="mr-2">
-                <Badge>{season.seasonNumber}</Badge>
+            {!isMovie(title) &&
+            title.seasons.filter((season) => season.seasonNumber !== 0)
+              .length === request.seasons.length ? (
+              <span className="mr-2 uppercase">
+                <Badge>{intl.formatMessage(messages.all)}</Badge>
               </span>
-            ))}
+            ) : (
+              <div className="hide-scrollbar overflow-x-scroll">
+                {request.seasons.map((season) => (
+                  <span key={`season-${season.id}`} className="mr-2">
+                    <Badge>{season.seasonNumber}</Badge>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         )}
         {requestData.status === MediaRequestStatus.PENDING &&
