@@ -19,7 +19,7 @@ import StatusBadge from '../StatusBadge';
 const messages = defineMessages({
   requestedby: 'Requested by {username}',
   seasons: 'Seasons',
-  all: 'ALL',
+  all: 'All',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -120,11 +120,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             {!isMovie(title) &&
             title.seasons.filter((season) => season.seasonNumber !== 0)
               .length === request.seasons.length ? (
-              <span className="mr-2">
+              <span className="mr-2 uppercase">
                 <Badge>{intl.formatMessage(messages.all)}</Badge>
               </span>
             ) : (
-              <div className="example overflow-x-scroll">
+              <div className="hide-scrollbar overflow-x-scroll">
                 {request.seasons.map((season) => (
                   <span key={`season-${season.id}`} className="mr-2">
                     <Badge>{season.seasonNumber}</Badge>
