@@ -904,6 +904,8 @@ components:
           type: string
         character:
           type: string
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
     CreditCrew:
       type: object
       properties:
@@ -958,6 +960,8 @@ components:
           type: string
         job:
           type: string
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
   securitySchemes:
     cookieAuth:
       type: apiKey

@@ -527,6 +527,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         items={data?.credits.cast.slice(0, 20).map((person) => (
           <PersonCard
             key={`cast-item-${person.id}`}
+            personId={person.id}
             name={person.name}
             subName={person.character}
             profilePath={person.profilePath}
