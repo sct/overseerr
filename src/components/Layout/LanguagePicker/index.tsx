@@ -37,6 +37,10 @@ const availableLanguages: AvailableLanguageObject = {
     code: 'de',
     display: 'German',
   },
+  ru: {
+    code: 'ru',
+    display: 'Russian',
+  },
 };
 
 const LanguagePicker: React.FC = () => {
@@ -69,10 +73,10 @@ const LanguagePicker: React.FC = () => {
       </div>
       <Transition
         show={isDropdownOpen}
-        enter="transition ease-out duration-100"
+        enter="transition ease-out duration-100 opacity-0"
         enterFrom="transform opacity-0 scale-95"
         enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
+        leave="transition ease-in duration-75 opacity-100"
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
