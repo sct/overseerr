@@ -69,6 +69,7 @@ const ListView: React.FC<ListViewProps> = ({
             case 'person':
               titleCard = (
                 <PersonCard
+                  personId={title.id}
                   name={title.name}
                   profilePath={title.profilePath}
                   canExpand
