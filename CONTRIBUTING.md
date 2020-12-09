@@ -28,6 +28,10 @@ You can also run the development environment in [Docker](https://www.docker.com/
 ### Contributing Code
 
 - If you are taking on an existing bug or feature ticket, please comment on the [GitHub Issue](https://github.com/sct/overseerr/issues) to avoid multiple people working on the same thing.
+- All commits **must** follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+  - It is okay if you squash your PR down to be a single commit that fits this standard.
+  - PRs with commits not following this standard will not be merged.
+- Please make meaningful commits, or squash them
 - Always rebase your commit to the latest `develop` branch. Do not merge develop into your branch.
 - It is your responsbility to keep your branch up to date. It will not be merged unless its rebased off the latest develop branch.
 - You can create a Draft pull request early to get feedback on your work.
