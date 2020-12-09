@@ -104,7 +104,7 @@
     "nodemon": "^2.0.6",
     "postcss": "^7",
     "postcss-preset-env": "^6.7.0",
-    "prettier": "^2.1.2",
+    "prettier": "^2.2.1",
     "semantic-release": "^17.3.0",
     "semantic-release-docker": "^2.2.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
