@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
+import Media from '../entity/Media';
 import logger from '../logger';
 import {
   mapCastCredits,
@@ -32,9 +33,27 @@ personRoutes.get('/:id/combined_credits', async (req, res) => {
     language: req.query.language as string,
   });
 
+  const castMedia = await Media.getRelatedMedia(
+    combinedCredits.cast.map((result) => result.id)
+  );
+
+  const crewMedia = await Media.getRelatedMedia(
+    combinedCredits.crew.map((result) => result.id)
+  );
+
   return res.status(200).json({
-    cast: combinedCredits.cast.map((result) => mapCastCredits(result)),
-    crew: combinedCredits.crew.map((result) => mapCrewCredits(result)),
+    cast: combinedCredits.cast.map((result) =>
+      mapCastCredits(
+        result,
+        castMedia.find((med) => med.tmdbId === result.id)
+      )
+    ),
+    crew: combinedCredits.crew.map((result) =>
+      mapCrewCredits(
+        result,
+        crewMedia.find((med) => med.tmdbId === result.id)
+      )
+    ),
     id: combinedCredits.id,
   });
 });

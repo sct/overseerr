@@ -36,3 +36,14 @@ body {
 .error-message {
   @apply flex items-center justify-center text-center text-gray-300 relative top-0 left-0 bottom-0 right-0 h-screen flex-col;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

@@ -3,6 +3,7 @@ import {
   TmdbPersonCreditCrew,
   TmdbPersonDetail,
 } from '../api/themoviedb';
+import Media from '../entity/Media';
 
 export interface PersonDetail {
   id: number;
@@ -42,6 +43,7 @@ export interface PersonCredit {
   title: string;
   adult: boolean;
   releaseDate: string;
+  mediaInfo?: Media;
 }
 
 export interface PersonCreditCast extends PersonCredit {
@@ -76,7 +78,8 @@ export const mapPersonDetails = (person: TmdbPersonDetail): PersonDetail => ({
 });
 
 export const mapCastCredits = (
-  cast: TmdbPersonCreditCast
+  cast: TmdbPersonCreditCast,
+  media?: Media
 ): PersonCreditCast => ({
   id: cast.id,
   originalLanguage: cast.original_language,
@@ -100,10 +103,12 @@ export const mapCastCredits = (
   adult: cast.adult,
   releaseDate: cast.release_date,
   character: cast.character,
+  mediaInfo: media,
 });
 
 export const mapCrewCredits = (
-  crew: TmdbPersonCreditCrew
+  crew: TmdbPersonCreditCrew,
+  media?: Media
 ): PersonCreditCrew => ({
   id: crew.id,
   originalLanguage: crew.original_language,
@@ -128,4 +133,5 @@ export const mapCrewCredits = (
   releaseDate: crew.release_date,
   department: crew.department,
   job: crew.job,
+  mediaInfo: media,
 });

@@ -57,9 +57,12 @@ const Discover: React.FC = () => {
     `/api/v1/discover/tv?language=${locale}`
   );
 
-  const { data: movieUpcomingData, error: movieUpcomingError } = useSWR<
-    MovieDiscoverResult
-  >(`/api/v1/discover/movies/upcoming?language=${locale}`);
+  const {
+    data: movieUpcomingData,
+    error: movieUpcomingError,
+  } = useSWR<MovieDiscoverResult>(
+    `/api/v1/discover/movies/upcoming?language=${locale}`
+  );
 
   const { data: trendingData, error: trendingError } = useSWR<MixedResult>(
     `/api/v1/discover/trending?language=${locale}`
@@ -69,9 +72,12 @@ const Discover: React.FC = () => {
     '/api/v1/media?filter=available&take=20&sort=modified'
   );
 
-  const { data: requests, error: requestError } = useSWR<
-    RequestResultsResponse
-  >('/api/v1/request?filter=unavailable&take=10&sort=modified&skip=0');
+  const {
+    data: requests,
+    error: requestError,
+  } = useSWR<RequestResultsResponse>(
+    '/api/v1/request?filter=unavailable&take=10&sort=modified&skip=0'
+  );
 
   return (
     <>
@@ -236,7 +242,11 @@ const Discover: React.FC = () => {
               );
             case 'person':
               return (
-                <PersonCard name={title.name} profilePath={title.profilePath} />
+                <PersonCard
+                  personId={title.id}
+                  name={title.name}
+                  profilePath={title.profilePath}
+                />
               );
           }
         })}

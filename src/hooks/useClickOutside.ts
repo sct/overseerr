@@ -19,7 +19,7 @@ const useClickOutside = (
         callback(e);
       }
     };
-    document.body.addEventListener('click', handleBodyClick);
+    document.body.addEventListener('click', handleBodyClick, { capture: true });
 
     return () => {
       document.body.removeEventListener('click', handleBodyClick);

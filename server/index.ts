@@ -9,7 +9,7 @@ import session, { Store } from 'express-session';
 import { TypeormStore } from 'connect-typeorm/out';
 import YAML from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
-import { OpenApiValidator } from 'express-openapi-validator';
+import * as OpenApiValidator from 'express-openapi-validator';
 import { Session } from './entity/Session';
 import { getSettings } from './lib/settings';
 import logger from './logger';
@@ -61,11 +61,12 @@ app
     );
     const apiDocs = YAML.load(API_SPEC_PATH);
     server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
-    await new OpenApiValidator({
-      apiSpec: API_SPEC_PATH,
-      validateRequests: true,
-      validateResponses: true,
-    }).install(server);
+    server.use(
+      OpenApiValidator.middleware({
+        apiSpec: API_SPEC_PATH,
+        validateRequests: true,
+      })
+    );
     /**
      * This is a workaround to convert dates to strings before they are validated by
      * OpenAPI validator. Otherwise, they are treated as objects instead of strings
