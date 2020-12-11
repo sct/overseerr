@@ -2,7 +2,7 @@ import React from 'react';
 import MovieRequestModal from './MovieRequestModal';
 import type { MediaStatus } from '../../../server/constants/media';
 import TvRequestModal from './TvRequestModal';
-import { useTransition } from 'react-spring';
+import Transition from '../Transition';
 
 interface RequestModalProps {
   show: boolean;
@@ -22,49 +22,46 @@ const RequestModal: React.FC<RequestModalProps> = ({
   onUpdating,
   onCancel,
 }) => {
-  const transitions = useTransition(show, null, {
-    from: { opacity: 0, backdropFilter: 'blur(0px)' },
-    enter: { opacity: 1, backdropFilter: 'blur(3px)' },
-    leave: { opacity: 0, backdropFilter: 'blur(0px)' },
-    config: { tension: 500, velocity: 40, friction: 60 },
-  });
-
   if (type === 'tv') {
     return (
-      <>
-        {transitions.map(
-          ({ props, item, key }) =>
-            item && (
-              <TvRequestModal
-                onComplete={onComplete}
-                onCancel={onCancel}
-                tmdbId={tmdbId}
-                onUpdating={onUpdating}
-                style={props}
-                key={key}
-              />
-            )
-        )}
-      </>
+      <Transition
+        enter="opacity-0"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="opacity-100"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+        appear
+        show={show}
+      >
+        <TvRequestModal
+          onComplete={onComplete}
+          onCancel={onCancel}
+          tmdbId={tmdbId}
+          onUpdating={onUpdating}
+        />
+      </Transition>
     );
   }
 
   return (
-    <>
-      {transitions.map(
-        ({ props, item, key }) =>
-          item && (
-            <MovieRequestModal
-              onComplete={onComplete}
-              onCancel={onCancel}
-              tmdbId={tmdbId}
-              onUpdating={onUpdating}
-              style={props}
-              key={key}
-            />
-          )
-      )}
-    </>
+    <Transition
+      enter="opacity-0"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
+      leave="opacity-100"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
+      appear
+      show={show}
+    >
+      <MovieRequestModal
+        onComplete={onComplete}
+        onCancel={onCancel}
+        tmdbId={tmdbId}
+        onUpdating={onUpdating}
+      />
+    </Transition>
   );
 };
 
