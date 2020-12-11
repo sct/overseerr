@@ -47,7 +47,6 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   onComplete,
   tmdbId,
   onUpdating,
-  ...props
 }) => {
   const { addToast } = useToasts();
   const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${tmdbId}`);
@@ -222,7 +221,6 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           />
         </svg>
       }
-      {...props}
     >
       <div className="flex flex-col">
         <div className="-mx-4 sm:mx-0 overflow-auto max-h-96">

@@ -43,7 +43,6 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   onComplete,
   tmdbId,
   onUpdating,
-  ...props
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const { addToast } = useToasts();
@@ -140,7 +139,6 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         okButtonType={'danger'}
         cancelText={intl.formatMessage(messages.close)}
         iconSvg={<DownloadIcon className="w-6 h-6" />}
-        {...props}
       >
         {intl.formatMessage(messages.requestfrom, {
           username: activeRequest.requestedBy.username,
@@ -164,7 +162,6 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       }
       okButtonType={'primary'}
       iconSvg={<DownloadIcon className="w-6 h-6" />}
-      {...props}
     >
       {text}
     </Modal>

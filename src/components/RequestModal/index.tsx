@@ -25,13 +25,12 @@ const RequestModal: React.FC<RequestModalProps> = ({
   if (type === 'tv') {
     return (
       <Transition
-        enter="opacity-0"
+        enter="transition opacity-0 duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
-        leave="opacity-100"
+        leave="transition opacity-100 duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        appear
         show={show}
       >
         <TvRequestModal
@@ -46,13 +45,12 @@ const RequestModal: React.FC<RequestModalProps> = ({
 
   return (
     <Transition
-      enter="opacity-0"
+      enter="transition opacity-0 duration-300"
       enterFrom="opacity-0"
       enterTo="opacity-100"
-      leave="opacity-100"
+      leave="transition opacity-100 duration-300"
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
-      appear
       show={show}
     >
       <MovieRequestModal

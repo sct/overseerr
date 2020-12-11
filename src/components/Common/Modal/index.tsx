@@ -84,7 +84,6 @@ const Modal: React.FC<ModalProps> = ({
             leave="transition opacity-100 duration-300"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            appear
             show={loading}
           >
             <div style={{ position: 'absolute' }}>
@@ -98,7 +97,6 @@ const Modal: React.FC<ModalProps> = ({
             leave="transition opacity-100 duration-300"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            appear
             show={!loading}
           >
             <div
