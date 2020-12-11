@@ -18,7 +18,7 @@ const PersonCard: React.FC<PersonCardProps> = ({
 }) => {
   return (
     <Link href={`/person/${personId}`}>
-      <a>
+      <a className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}>
         <div
           className={`relative ${
             canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'
