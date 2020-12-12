@@ -26,7 +26,7 @@ jobs:
   build_and_push:
     name: Build and push Docker image to Docker Hub
     needs: test
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/develop' && !contains(github.event.head_commit.message, 'skip ci')
     runs-on: ubuntu-latest
     steps:
       - name: checkout
