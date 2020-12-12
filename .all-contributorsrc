@@ -53,6 +53,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "KovalevArtem",
+      "name": "KovalevArtem",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/36500228?v=4",
+      "profile": "https://github.com/KovalevArtem",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
