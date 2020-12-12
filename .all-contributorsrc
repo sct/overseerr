@@ -34,6 +34,16 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "comradekingu",
+      "name": "Allan Nordhøy",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/13802408?v=4",
+      "profile": "http://portfolio.anotheragency.no",
+      "contributions": [
+        "doc",
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
