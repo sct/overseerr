@@ -1,7 +1,7 @@
 {
   "components.Discover.discovermovies": "Популярные фильмы",
   "components.Discover.discovertv": "Популярные серии",
-  "components.Discover.nopending": "",
+  "components.Discover.nopending": "Нет отложенных запросов",
   "components.Discover.popularmovies": "Популярные фильмы",
   "components.Discover.populartv": "Популярные серии",
   "components.Discover.recentlyAdded": "Недавно добавленные",
