@@ -1,0 +1,26 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "sct",
+      "name": "sct",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/234213?v=4",
+      "profile": "https://sct.dev",
+      "contributions": [
+        "code",
+        "design",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "overseerr",
+  "projectOwner": "sct",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
