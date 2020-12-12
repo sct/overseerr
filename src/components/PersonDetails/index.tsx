@@ -56,7 +56,7 @@ const PersonDetails: React.FC = () => {
 
   return (
     <>
-      <div className="flex mt-8 mb-8 flex-col md:flex-row items-center">
+      <div className="flex mt-8 mb-8 flex-col md:flex-row items-center md:items-start">
         {data.profilePath && (
           <div
             style={{
