@@ -88,8 +88,6 @@ Our [Code of Conduct](https://github.com/sct/overseerr/blob/develop/CODE_OF_COND
 
 ## Contributors
 
-## Contributing
-
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -103,5 +101,7 @@ Our [Code of Conduct](https://github.com/sct/overseerr/blob/develop/CODE_OF_COND
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## Contributing
 
 You can help build Overseerr too! Check out our [Contribution Guide](https://github.com/sct/overseerr/blob/develop/CONTRIBUTING.md) to get started.
