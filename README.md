@@ -85,10 +85,6 @@ Our [Code of Conduct](https://github.com/sct/overseerr/blob/develop/CODE_OF_COND
 
 ## Contributors
 
-<a href="https://github.com/sct/overseerr/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=sct/overseerr" />
-</a>
-
 ## Contributing
 
 You can help build Overseerr too! Check out our [Contribution Guide](https://github.com/sct/overseerr/blob/develop/CONTRIBUTING.md) to get started.
