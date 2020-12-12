@@ -5,7 +5,6 @@ import type { PersonDetail } from '../../../server/models/Person';
 import type { PersonCombinedCreditsResponse } from '../../../server/interfaces/api/personInterfaces';
 import Error from '../../pages/_error';
 import LoadingSpinner from '../Common/LoadingSpinner';
-import Slider from '../Slider';
 import TitleCard from '../TitleCard';
 import { defineMessages, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
@@ -54,6 +53,8 @@ const PersonDetails: React.FC = () => {
     return 1;
   });
 
+  const isLoading = !combinedCredits && !errorCombinedCredits;
+
   return (
     <>
       <div className="flex mt-8 mb-8 flex-col md:flex-row items-center md:items-start">
@@ -81,13 +82,13 @@ const PersonDetails: React.FC = () => {
           </div>
         </div>
       </div>
-      <Slider
-        isEmpty={!sortedCast}
-        isLoading={!combinedCredits && !errorCombinedCredits}
-        sliderKey={`person-${data.id}-slider-cast`}
-        items={sortedCast?.map((media) => {
+      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
+        {sortedCast?.map((media) => {
           return (
-            <div key={`slider-cast-item-${media.id}`} className="flex flex-col">
+            <li
+              key={`list-cast-item-${media.id}`}
+              className="col-span-1 flex flex-col text-center items-center"
+            >
               <TitleCard
                 id={media.id}
                 title={media.mediaType === 'movie' ? media.title : media.name}
@@ -101,6 +102,7 @@ const PersonDetails: React.FC = () => {
                 summary={media.overview}
                 mediaType={media.mediaType as 'movie' | 'tv'}
                 status={media.mediaInfo?.status}
+                canExpand
               />
               {media.character && (
                 <div className="mt-2 text-gray-300 text-xs truncate w-36 sm:w-36 md:w-44 text-center">
@@ -109,10 +111,19 @@ const PersonDetails: React.FC = () => {
                   })}
                 </div>
               )}
-            </div>
+            </li>
           );
         })}
-      />
+        {isLoading &&
+          [...Array(20)].map((_item, i) => (
+            <li
+              key={`placeholder-${i}`}
+              className="col-span-1 flex flex-col text-center items-center"
+            >
+              <TitleCard.Placeholder canExpand />
+            </li>
+          ))}
+      </ul>
     </>
   );
 };
