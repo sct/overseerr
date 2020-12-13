@@ -22,7 +22,7 @@
   "components.MovieDetails.available": "Disponible",
   "components.MovieDetails.budget": "Budget",
   "components.MovieDetails.cancelrequest": "Annuler la demande",
-  "components.MovieDetails.cast": "Distribution",
+  "components.MovieDetails.cast": "Casting",
   "components.MovieDetails.decline": "Refuser",
   "components.MovieDetails.manageModalClearMedia": "Effacer toutes les données médias",
   "components.MovieDetails.manageModalClearMediaWarning": "Toutes les donnés de médias vont être éffacées pour cet élément irréversiblement. Si cet élément existe dans votre bibliothèque Plex, les informations du média seront recrées à la prochaine synchronisation.",
@@ -228,7 +228,7 @@
   "components.TvDetails.approverequests": "Valider {requestCount} {requestCount, plural, one {Request} other {Requests}}",
   "components.TvDetails.available": "Disponible",
   "components.TvDetails.cancelrequest": "Annuler la demande",
-  "components.TvDetails.cast": "Distribution",
+  "components.TvDetails.cast": "Casting",
   "components.TvDetails.decline": "Refuser",
   "components.TvDetails.declinerequests": "Refuser {requestCount} {requestCount, plural, one {Request} other {Requests}}",
   "components.TvDetails.manageModalClearMedia": "Effacer toutes les données média",
@@ -302,5 +302,7 @@
   "pages.pageNotFound": "404 – Page non trouvée",
   "pages.returnHome": "Retourner à l'acceuil",
   "pages.serviceUnavailable": "{statusCode} – Service indisponible",
-  "pages.somethingWentWrong": "{statusCode} – Il y a eu un problème"
+  "pages.somethingWentWrong": "{statusCode} – Une erreur est survenue",
+  "components.TvDetails.TvCast.fullseriescast": "Casting complet de la série",
+  "components.MovieDetails.MovieCast.fullcast": "Casting complet"
 }
