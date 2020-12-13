@@ -52,7 +52,7 @@
     "winston": "^3.3.3",
     "xml2js": "^0.4.23",
     "yamljs": "^0.3.0",
-    "yup": "^0.32.6"
+    "yup": "^0.32.8"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.8",
