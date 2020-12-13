@@ -302,5 +302,7 @@
   "pages.pageNotFound": "404 – Seite nicht gefunden",
   "pages.returnHome": "Zur Starseite",
   "pages.serviceUnavailable": "{statusCode} – Dienst nicht verfügbar",
-  "pages.somethingWentWrong": "{statusCode} – Es ist ein Fehler aufgetreten"
+  "pages.somethingWentWrong": "{statusCode} – Es ist ein Fehler aufgetreten",
+  "components.TvDetails.TvCast.fullseriescast": "Vollserienbesetzung",
+  "components.MovieDetails.MovieCast.fullcast": "Vollständige Besetzung"
 }
