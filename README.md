@@ -55,7 +55,7 @@ docker run -d \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
   -p 5055:3000 \
-  -v /path/to/appdata/config:/config \
+  -v /path/to/appdata/config:/app/config \
   --restart unless-stopped \
   sctx/overseerr
 ```
@@ -105,6 +105,7 @@ Our [Code of Conduct](https://github.com/sct/overseerr/blob/develop/CODE_OF_COND
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Contributing
