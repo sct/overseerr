@@ -9,6 +9,9 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+**Are you on latest or develop branch?**
+Please fill in which docker image you are currently using.
+
 **To Reproduce**
 Steps to reproduce the behavior:
 

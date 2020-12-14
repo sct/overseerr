@@ -111,7 +111,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
           {
             hostname,
             apiKey,
-            port,
+            port: Number(port),
             baseUrl,
             useSsl,
           }
@@ -188,11 +188,11 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
             const submission = {
               name: values.name,
               hostname: values.hostname,
-              port: values.port,
+              port: Number(values.port),
               apiKey: values.apiKey,
               useSsl: values.ssl,
               baseUrl: values.baseUrl,
-              activeProfileId: values.activeProfileId,
+              activeProfileId: Number(values.activeProfileId),
               activeProfileName: profileName,
               activeDirectory: values.rootFolder,
               is4k: values.is4k,

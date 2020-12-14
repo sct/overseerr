@@ -15,7 +15,7 @@ const useClickOutside = (
 ): void => {
   useEffect(() => {
     const handleBodyClick = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
         callback(e);
       }
     };
