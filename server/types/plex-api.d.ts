@@ -2,7 +2,7 @@ declare module 'plex-api' {
   export default class PlexAPI {
     constructor(intiialOptions: {
       hostname: string;
-      post: number;
+      port: number;
       token?: string;
       authenticator: {
         authenticate: (
