@@ -61,6 +61,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "angrycuban13",
+      "name": "Angry Cuban",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/39564898?v=4",
+      "profile": "https://github.com/angrycuban13",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
