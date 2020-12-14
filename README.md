@@ -20,7 +20,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
-**Overseerr** is a libre software tool for managing requests for your media library. It integrates with existing services such as **Sonarr** and **Radarr**!
+**Overseerr** is a free and open source software application for managing requests for your media library. It integrates with your existing services such as **Sonarr**, **Radarr** and **Plex**!
 
 ## Current Features
 
