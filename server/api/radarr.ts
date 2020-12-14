@@ -1,4 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
+import logger from '../logger';
 
 interface RadarrMovieOptions {
   title: string;
@@ -96,6 +97,11 @@ class RadarrAPI {
 
       return response.data;
     } catch (e) {
+      logger.error('Something went wrong adding a movie to Radarr', {
+        label: 'Radarr',
+        message: e.message,
+        options,
+      });
       throw new Error(`[Radarr] Failed to add movie: ${e.message}`);
     }
   };
