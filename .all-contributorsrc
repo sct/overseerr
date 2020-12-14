@@ -1,0 +1,82 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "sct",
+      "name": "sct",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/234213?v=4",
+      "profile": "https://sct.dev",
+      "contributions": [
+        "code",
+        "design",
+        "ideas"
+      ]
+    },
+    {
+      "login": "azoitos",
+      "name": "Alex Zoitos",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/26529049?v=4",
+      "profile": "https://github.com/azoitos",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "OwsleyJr",
+      "name": "Brandon Cohen",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8635678?v=4",
+      "profile": "https://github.com/OwsleyJr",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "Ahreluth",
+      "name": "Ahreluth",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/75682440?v=4",
+      "profile": "https://github.com/Ahreluth",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "KovalevArtem",
+      "name": "KovalevArtem",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/36500228?v=4",
+      "profile": "https://github.com/KovalevArtem",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "GiyomuWeb",
+      "name": "GiyomuWeb",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/62489209?v=4",
+      "profile": "https://github.com/GiyomuWeb",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "angrycuban13",
+      "name": "Angry Cuban",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/39564898?v=4",
+      "profile": "https://github.com/angrycuban13",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
+  "contributorsPerLine": 7,
+  "projectName": "overseerr",
+  "projectOwner": "sct",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

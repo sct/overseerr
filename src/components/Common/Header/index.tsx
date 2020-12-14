@@ -2,7 +2,7 @@ import React from 'react';
 
 interface HeaderProps {
   extraMargin?: number;
-  subtext?: string;
+  subtext?: React.ReactNode;
 }
 
 const Header: React.FC<HeaderProps> = ({

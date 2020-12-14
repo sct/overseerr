@@ -20,7 +20,7 @@ jobs:
         run: yarn lint
       - name: build
         run: yarn build
-  semnatic-release:
+  semantic-release:
     name: Tag and release latest version
     needs: test
     runs-on: ubuntu-latest
