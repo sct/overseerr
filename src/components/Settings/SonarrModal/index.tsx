@@ -192,7 +192,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               apiKey: values.apiKey,
               useSsl: values.ssl,
               baseUrl: values.baseUrl,
-              activeProfileId: values.activeProfileId,
+              activeProfileId: Number(values.activeProfileId),
               activeProfileName: profileName,
               activeDirectory: values.rootFolder,
               is4k: values.is4k,
