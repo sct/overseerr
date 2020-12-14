@@ -108,7 +108,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
           {
             hostname,
             apiKey,
-            port,
+            port: Number(port),
             baseUrl,
             useSsl,
           }

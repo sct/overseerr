@@ -111,7 +111,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
           {
             hostname,
             apiKey,
-            port,
+            port: Number(port),
             baseUrl,
             useSsl,
           }
