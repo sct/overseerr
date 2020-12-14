@@ -6,6 +6,7 @@ import Button from '../../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import Axios from 'axios';
 import * as Yup from 'yup';
+import { useToasts } from 'react-toast-notifications';
 
 const messages = defineMessages({
   save: 'Save Changes',
@@ -20,10 +21,13 @@ const messages = defineMessages({
   enableSsl: 'Enable SSL',
   authUser: 'Auth User',
   authPass: 'Auth Pass',
+  emailsettingssaved: 'Email notification settings saved!',
+  emailsettingsfailed: 'Email notification settings failed to save.',
 });
 
 const NotificationsEmail: React.FC = () => {
   const intl = useIntl();
+  const { addToast } = useToasts();
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/email'
   );
@@ -65,14 +69,21 @@ const NotificationsEmail: React.FC = () => {
             options: {
               emailFrom: values.emailFrom,
               smtpHost: values.smtpHost,
-              smtpPort: values.smtpPort,
+              smtpPort: Number(values.smtpPort),
               secure: values.secure,
               authUser: values.authUser,
               authPass: values.authPass,
             },
           });
+          addToast(intl.formatMessage(messages.emailsettingssaved), {
+            appearance: 'success',
+            autoDismiss: true,
+          });
         } catch (e) {
-          // TODO show error
+          addToast(intl.formatMessage(messages.emailsettingsfailed), {
+            appearance: 'error',
+            autoDismiss: true,
+          });
         } finally {
           revalidate();
         }

@@ -234,8 +234,19 @@ export class MediaRequest {
           return;
         }
 
+        const radarrSettings = settings.radarr.find(
+          (radarr) => radarr.isDefault && !radarr.is4k
+        );
+
+        if (!radarrSettings) {
+          logger.info(
+            'There is no default radarr configured. Did you set any of your Radarr servers as default?',
+            { label: 'Media Request' }
+          );
+          return;
+        }
+
         const tmdb = new TheMovieDb();
-        const radarrSettings = settings.radarr[0];
         const radarr = new RadarrAPI({
           apiKey: radarrSettings.apiKey,
           url: `${radarrSettings.useSsl ? 'https' : 'http'}://${
@@ -283,6 +294,18 @@ export class MediaRequest {
           return;
         }
 
+        const sonarrSettings = settings.sonarr.find(
+          (sonarr) => sonarr.isDefault && !sonarr.is4k
+        );
+
+        if (!sonarrSettings) {
+          logger.info(
+            'There is no default sonarr configured. Did you set any of your Sonarr servers as default?',
+            { label: 'Media Request' }
+          );
+          return;
+        }
+
         const media = await mediaRepository.findOne({
           where: { id: this.media.id },
           relations: ['requests'],
@@ -293,7 +316,6 @@ export class MediaRequest {
         }
 
         const tmdb = new TheMovieDb();
-        const sonarrSettings = settings.sonarr[0];
         const sonarr = new SonarrAPI({
           apiKey: sonarrSettings.apiKey,
           url: `${sonarrSettings.useSsl ? 'https' : 'http'}://${

@@ -7,6 +7,10 @@ import type { Nullable } from '../utils/typeHelpers';
 
 type Url = string | UrlObject;
 
+const encodeURIExtraParams = (string: string): string => {
+  return encodeURIComponent(string).replace(/!/g, '%21');
+};
+
 interface SearchObject {
   searchValue: string;
   searchOpen: boolean;
@@ -35,14 +39,17 @@ const useSearchInput = (): SearchObject => {
       if (router.pathname.startsWith('/search')) {
         router.replace({
           pathname: router.pathname,
-          query: { ...router.query, query: debouncedValue },
+          query: {
+            ...router.query,
+            query: encodeURIExtraParams(debouncedValue),
+          },
         });
       } else {
         setLastRoute(router.asPath);
         router
           .push({
             pathname: '/search',
-            query: { query: debouncedValue },
+            query: { query: encodeURIExtraParams(debouncedValue) },
           })
           .then(() => window.scrollTo(0, 0));
       }
@@ -85,8 +92,12 @@ const useSearchInput = (): SearchObject => {
    * is on /search
    */
   useEffect(() => {
-    if (router.query.query !== debouncedValue) {
-      setSearchValue((router.query.query as string) ?? '');
+    if (router.query.query !== encodeURIExtraParams(debouncedValue)) {
+      setSearchValue(
+        router.query.query
+          ? decodeURIComponent(router.query.query as string)
+          : ''
+      );
 
       if (!router.pathname.startsWith('/search') && !router.query.query) {
         setIsOpen(false);

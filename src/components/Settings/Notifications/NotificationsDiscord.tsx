@@ -6,6 +6,7 @@ import Button from '../../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import Axios from 'axios';
 import * as Yup from 'yup';
+import { useToasts } from 'react-toast-notifications';
 
 const messages = defineMessages({
   save: 'Save Changes',
@@ -14,10 +15,13 @@ const messages = defineMessages({
   webhookUrl: 'Webhook URL',
   validationWebhookUrlRequired: 'You must provide a webhook URL',
   webhookUrlPlaceholder: 'Server Settings -> Integrations -> Webhooks',
+  discordsettingssaved: 'Discord notification settings saved!',
+  discordsettingsfailed: 'Discord notification settings failed to save.',
 });
 
 const NotificationsDiscord: React.FC = () => {
   const intl = useIntl();
+  const { addToast } = useToasts();
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/discord'
   );
@@ -49,8 +53,15 @@ const NotificationsDiscord: React.FC = () => {
               webhookUrl: values.webhookUrl,
             },
           });
+          addToast(intl.formatMessage(messages.discordsettingssaved), {
+            appearance: 'success',
+            autoDismiss: true,
+          });
         } catch (e) {
-          // TODO show error
+          addToast(intl.formatMessage(messages.discordsettingsfailed), {
+            appearance: 'error',
+            autoDismiss: true,
+          });
         } finally {
           revalidate();
         }

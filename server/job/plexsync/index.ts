@@ -51,64 +51,81 @@ class JobPlexSync {
 
   private async processMovie(plexitem: PlexLibraryItem) {
     const mediaRepository = getRepository(Media);
-    if (plexitem.guid.match(plexRegex)) {
-      const metadata = await this.plexClient.getMetadata(plexitem.ratingKey);
-      const newMedia = new Media();
+    try {
+      if (plexitem.guid.match(plexRegex)) {
+        const metadata = await this.plexClient.getMetadata(plexitem.ratingKey);
+        const newMedia = new Media();
 
-      metadata.Guid.forEach((ref) => {
-        if (ref.id.match(imdbRegex)) {
-          newMedia.imdbId = ref.id.match(imdbRegex)?.[1] ?? undefined;
-        } else if (ref.id.match(tmdbRegex)) {
-          const tmdbMatch = ref.id.match(tmdbRegex)?.[1];
-          newMedia.tmdbId = Number(tmdbMatch);
+        if (!metadata.Guid) {
+          logger.debug('No Guid metadata for this title. Skipping', {
+            label: 'Plex Sync',
+            ratingKey: plexitem.ratingKey,
+          });
+          return;
         }
-      });
 
-      const existing = await this.getExisting(newMedia.tmdbId);
-
-      if (existing && existing.status === MediaStatus.AVAILABLE) {
-        this.log(`Title exists and is already available ${metadata.title}`);
-      } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
-        existing.status = MediaStatus.AVAILABLE;
-        mediaRepository.save(existing);
-        this.log(
-          `Request for ${metadata.title} exists. Setting status AVAILABLE`,
-          'info'
-        );
-      } else {
-        newMedia.status = MediaStatus.AVAILABLE;
-        newMedia.mediaType = MediaType.MOVIE;
-        await mediaRepository.save(newMedia);
-        this.log(`Saved ${plexitem.title}`);
-      }
-    } else {
-      const matchedid = plexitem.guid.match(/imdb:\/\/(tt[0-9]+)/);
-
-      if (matchedid?.[1]) {
-        const tmdbMovie = await this.tmdb.getMovieByImdbId({
-          imdbId: matchedid[1],
+        metadata.Guid.forEach((ref) => {
+          if (ref.id.match(imdbRegex)) {
+            newMedia.imdbId = ref.id.match(imdbRegex)?.[1] ?? undefined;
+          } else if (ref.id.match(tmdbRegex)) {
+            const tmdbMatch = ref.id.match(tmdbRegex)?.[1];
+            newMedia.tmdbId = Number(tmdbMatch);
+          }
         });
 
-        const existing = await this.getExisting(tmdbMovie.id);
+        const existing = await this.getExisting(newMedia.tmdbId);
+
         if (existing && existing.status === MediaStatus.AVAILABLE) {
-          this.log(`Title exists and is already available ${plexitem.title}`);
+          this.log(`Title exists and is already available ${metadata.title}`);
         } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
           existing.status = MediaStatus.AVAILABLE;
-          await mediaRepository.save(existing);
+          mediaRepository.save(existing);
           this.log(
-            `Request for ${plexitem.title} exists. Setting status AVAILABLE`,
+            `Request for ${metadata.title} exists. Setting status AVAILABLE`,
             'info'
           );
-        } else if (tmdbMovie) {
-          const newMedia = new Media();
-          newMedia.imdbId = tmdbMovie.external_ids.imdb_id;
-          newMedia.tmdbId = tmdbMovie.id;
+        } else {
           newMedia.status = MediaStatus.AVAILABLE;
           newMedia.mediaType = MediaType.MOVIE;
           await mediaRepository.save(newMedia);
-          this.log(`Saved ${tmdbMovie.title}`);
+          this.log(`Saved ${plexitem.title}`);
+        }
+      } else {
+        const matchedid = plexitem.guid.match(/imdb:\/\/(tt[0-9]+)/);
+
+        if (matchedid?.[1]) {
+          const tmdbMovie = await this.tmdb.getMovieByImdbId({
+            imdbId: matchedid[1],
+          });
+
+          const existing = await this.getExisting(tmdbMovie.id);
+          if (existing && existing.status === MediaStatus.AVAILABLE) {
+            this.log(`Title exists and is already available ${plexitem.title}`);
+          } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
+            existing.status = MediaStatus.AVAILABLE;
+            await mediaRepository.save(existing);
+            this.log(
+              `Request for ${plexitem.title} exists. Setting status AVAILABLE`,
+              'info'
+            );
+          } else if (tmdbMovie) {
+            const newMedia = new Media();
+            newMedia.imdbId = tmdbMovie.external_ids.imdb_id;
+            newMedia.tmdbId = tmdbMovie.id;
+            newMedia.status = MediaStatus.AVAILABLE;
+            newMedia.mediaType = MediaType.MOVIE;
+            await mediaRepository.save(newMedia);
+            this.log(`Saved ${tmdbMovie.title}`);
+          }
         }
       }
+    } catch (e) {
+      this.log(
+        `Failed to process plex item. ratingKey: ${
+          plexitem.parentRatingKey ?? plexitem.ratingKey
+        }`,
+        'error'
+      );
     }
   }
 

@@ -78,7 +78,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       try {
         await axios.post('/api/v1/settings/plex', {
           ip: values.hostname,
-          port: values.port,
+          port: Number(values.port),
         } as PlexSettings);
 
         revalidate();
