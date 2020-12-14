@@ -251,7 +251,7 @@ export class MediaRequest {
           apiKey: radarrSettings.apiKey,
           url: `${radarrSettings.useSsl ? 'https' : 'http'}://${
             radarrSettings.hostname
-          }:${radarrSettings.port}/api`,
+          }:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}/api`,
         });
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
 
@@ -320,7 +320,7 @@ export class MediaRequest {
           apiKey: sonarrSettings.apiKey,
           url: `${sonarrSettings.useSsl ? 'https' : 'http'}://${
             sonarrSettings.hostname
-          }:${sonarrSettings.port}/api`,
+          }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}/api`,
         });
         const series = await tmdb.getTvShow({ tvId: media.tmdbId });
 
