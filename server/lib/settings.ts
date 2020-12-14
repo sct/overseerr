@@ -100,7 +100,7 @@ class Settings {
 
   constructor(initialSettings?: AllSettings) {
     this.data = {
-      clientId: '',
+      clientId: uuidv4(),
       main: {
         apiKey: '',
         applicationUrl: '',
@@ -222,10 +222,10 @@ class Settings {
    * @param overrideSettings If passed in, will override all existing settings with these
    * values
    */
-  public load(overrideSettings?: AllSettings): AllSettings {
+  public load(overrideSettings?: AllSettings): Settings {
     if (overrideSettings) {
       this.data = overrideSettings;
-      return this.data;
+      return this;
     }
 
     if (!fs.existsSync(SETTINGS_PATH)) {
@@ -237,7 +237,7 @@ class Settings {
       this.data = merge(this.data, JSON.parse(data));
       this.save();
     }
-    return this.data;
+    return this;
   }
 
   public save(): void {
