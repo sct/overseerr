@@ -57,7 +57,7 @@ docker run -d \
   -p 5055:3000 \
   -v /path/to/appdata/config:/config \
   --restart unless-stopped \
-  sctx/overseer
+  sctx/overseerr
 ```
 
 After running Overseerr for the first time, configure it by visiting the web UI at http://[address]:5055 and completing the setup steps.
