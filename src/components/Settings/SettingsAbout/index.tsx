@@ -4,9 +4,20 @@ import Error from '../../../pages/_error';
 import List from '../../Common/List';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import { SettingsAboutResponse } from '../../../../server/interfaces/api/settingsInterfaces';
-import { FormattedNumber } from 'react-intl';
+import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  overseerrinformation: 'Overseerr Information',
+  version: 'Version',
+  totalmedia: 'Total Media',
+  totalrequests: 'Total Requests',
+  gettingsupport: 'Getting Support',
+  githubdiscussions: 'GitHub Discussions',
+  clickheretojoindiscord: 'Click here to join our Discord server.',
+});
 
 const SettingsAbout: React.FC = () => {
+  const intl = useIntl();
   const { data, error } = useSWR<SettingsAboutResponse>(
     '/api/v1/settings/about'
   );
@@ -26,19 +37,21 @@ const SettingsAbout: React.FC = () => {
   return (
     <>
       <div className="mb-8">
-        <List title="Overseerr Information">
-          <List.Item title="Version">{data.version}</List.Item>
-          <List.Item title="Total Media">
+        <List title={intl.formatMessage(messages.overseerrinformation)}>
+          <List.Item title={intl.formatMessage(messages.version)}>
+            {data.version}
+          </List.Item>
+          <List.Item title={intl.formatMessage(messages.totalmedia)}>
             <FormattedNumber value={data.totalMediaItems} />
           </List.Item>
-          <List.Item title="Total Requests">
+          <List.Item title={intl.formatMessage(messages.totalrequests)}>
             <FormattedNumber value={data.totalRequests} />
           </List.Item>
         </List>
       </div>
       <div className="mb-8">
-        <List title="Getting Support">
-          <List.Item title="GitHub Discussions">
+        <List title={intl.formatMessage(messages.gettingsupport)}>
+          <List.Item title={intl.formatMessage(messages.githubdiscussions)}>
             <a
               href="https://github.com/sct/overseerr/discussions"
               target="_blank"
@@ -55,7 +68,7 @@ const SettingsAbout: React.FC = () => {
               rel="noreferrer"
               className="text-indigo-500 hover:underline"
             >
-              Click here to join our Discord server.
+              {intl.formatMessage(messages.clickheretojoindiscord)}
             </a>
           </List.Item>
         </List>
