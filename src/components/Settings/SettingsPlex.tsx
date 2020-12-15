@@ -2,21 +2,23 @@ import React, { useState } from 'react';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import type { PlexSettings } from '../../../server/lib/settings';
 import useSWR from 'swr';
-import { useFormik } from 'formik';
+import { Formik, Field } from 'formik';
 import Button from '../Common/Button';
 import axios from 'axios';
 import LibraryItem from './LibraryItem';
 import Badge from '../Common/Badge';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import * as Yup from 'yup';
 
 const messages = defineMessages({
   plexsettings: 'Plex Settings',
   plexsettingsDescription:
     'Configure the settings for your Plex server. Overseerr uses your Plex server to scan your library at an interval and see what content is available.',
-  servername: 'Server Name (Automatically Set)',
+  servername: 'Server Name (Automatically set after you save)',
   servernamePlaceholder: 'Plex Server Name',
   hostname: 'Hostname/IP',
   port: 'Port',
+  ssl: 'SSL',
   save: 'Save Changes',
   saving: 'Saving...',
   plexlibraries: 'Plex Libraries',
@@ -32,6 +34,8 @@ const messages = defineMessages({
   librariesRemaining: 'Libraries Remaining: {count}',
   startscan: 'Start Scan',
   cancelscan: 'Cancel Scan',
+  validationHostnameRequired: 'You must provide a hostname/IP',
+  validationPortRequired: 'You must provide a port',
 });
 
 interface Library {
@@ -64,33 +68,15 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
     }
   );
   const [isSyncing, setIsSyncing] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const formik = useFormik({
-    initialValues: {
-      hostname: data?.ip,
-      port: data?.port,
-    },
-    enableReinitialize: true,
-    onSubmit: async (values) => {
-      setSubmitError(null);
-      setIsUpdating(true);
-      try {
-        await axios.post('/api/v1/settings/plex', {
-          ip: values.hostname,
-          port: Number(values.port),
-        } as PlexSettings);
 
-        revalidate();
-        if (onComplete) {
-          onComplete();
-        }
-      } catch (e) {
-        setSubmitError(e.response.data.message);
-      } finally {
-        setIsUpdating(false);
-      }
-    },
+  const PlexSettingsSchema = Yup.object().shape({
+    hostname: Yup.string().required(
+      intl.formatMessage(messages.validationHostnameRequired)
+    ),
+    port: Yup.number().required(
+      intl.formatMessage(messages.validationPortRequired)
+    ),
   });
 
   const activeLibraries =
@@ -164,91 +150,154 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           <FormattedMessage {...messages.plexsettingsDescription} />
         </p>
       </div>
-      <form onSubmit={formik.handleSubmit}>
-        <div className="mt-6 sm:mt-5">
-          {submitError && (
-            <div className="bg-red-700 text-white p-4 rounded-md mb-6">
-              {submitError}
-            </div>
-          )}
-          <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
-            >
-              <FormattedMessage {...messages.servername} />
-            </label>
-            <div className="mt-1 sm:mt-0 sm:col-span-2">
-              <div className="max-w-lg flex rounded-md shadow-sm">
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder={intl.formatMessage(
-                    messages.servernamePlaceholder
-                  )}
-                  value={data?.name}
-                  readOnly
-                  className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
-                />
+      <Formik
+        initialValues={{
+          hostname: data?.ip,
+          port: data?.port,
+          useSsl: data?.useSsl,
+        }}
+        enableReinitialize
+        validationSchema={PlexSettingsSchema}
+        onSubmit={async (values) => {
+          setSubmitError(null);
+          try {
+            await axios.post('/api/v1/settings/plex', {
+              ip: values.hostname,
+              port: Number(values.port),
+              useSsl: values.useSsl,
+            } as PlexSettings);
+
+            revalidate();
+            if (onComplete) {
+              onComplete();
+            }
+          } catch (e) {
+            setSubmitError(e.response.data.message);
+          }
+        }}
+      >
+        {({
+          errors,
+          touched,
+          values,
+          handleSubmit,
+          setFieldValue,
+          isSubmitting,
+        }) => {
+          return (
+            <form onSubmit={handleSubmit}>
+              <div className="mt-6 sm:mt-5">
+                {submitError && (
+                  <div className="bg-red-700 text-white p-4 rounded-md mb-6">
+                    {submitError}
+                  </div>
+                )}
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                  >
+                    <FormattedMessage {...messages.servername} />
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg flex rounded-md shadow-sm">
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder={intl.formatMessage(
+                          messages.servernamePlaceholder
+                        )}
+                        value={data?.name}
+                        readOnly
+                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                  <label
+                    htmlFor="hostname"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                  >
+                    <FormattedMessage {...messages.hostname} />
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg flex rounded-md shadow-sm">
+                      <Field
+                        type="text"
+                        id="hostname"
+                        name="hostname"
+                        placeholder="127.0.0.1"
+                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                      />
+                    </div>
+                    {errors.hostname && touched.hostname && (
+                      <div className="text-red-500 mt-2">{errors.hostname}</div>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                  <label
+                    htmlFor="port"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                  >
+                    <FormattedMessage {...messages.port} />
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
+                      <Field
+                        type="text"
+                        id="port"
+                        name="port"
+                        placeholder="32400"
+                        className="form-input block w-24 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                      />
+                    </div>
+                    {errors.port && touched.port && (
+                      <div className="text-red-500 mt-2">{errors.port}</div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
-            <label
-              htmlFor="hostname"
-              className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
-            >
-              <FormattedMessage {...messages.hostname} />
-            </label>
-            <div className="mt-1 sm:mt-0 sm:col-span-2">
-              <div className="max-w-lg flex rounded-md shadow-sm">
-                <input
-                  type="text"
-                  id="hostname"
-                  name="hostname"
-                  placeholder="127.0.0.1"
-                  value={formik.values.hostname}
-                  onChange={formik.handleChange}
-                  className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
-                />
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                <label
+                  htmlFor="ssl"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                >
+                  {intl.formatMessage(messages.ssl)}
+                </label>
+                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <Field
+                    type="checkbox"
+                    id="useSsl"
+                    name="useSsl"
+                    onChange={() => {
+                      setFieldValue('useSsl', !values.useSsl);
+                    }}
+                    className="form-checkbox h-6 w-6 rounded-md text-indigo-600 transition duration-150 ease-in-out"
+                  />
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-            <label
-              htmlFor="port"
-              className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
-            >
-              <FormattedMessage {...messages.port} />
-            </label>
-            <div className="mt-1 sm:mt-0 sm:col-span-2">
-              <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
-                <input
-                  type="text"
-                  id="port"
-                  name="port"
-                  placeholder="32400"
-                  value={formik.values.port}
-                  onChange={formik.handleChange}
-                  className="form-input block w-24 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
-                />
+              <div className="mt-8 border-t border-gray-700 pt-5">
+                <div className="flex justify-end">
+                  <span className="ml-3 inline-flex rounded-md shadow-sm">
+                    <Button
+                      buttonType="primary"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting
+                        ? intl.formatMessage(messages.saving)
+                        : intl.formatMessage(messages.save)}
+                    </Button>
+                  </span>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-8 border-t border-gray-700 pt-5">
-          <div className="flex justify-end">
-            <span className="ml-3 inline-flex rounded-md shadow-sm">
-              <Button buttonType="primary" type="submit" disabled={isUpdating}>
-                {isUpdating
-                  ? intl.formatMessage(messages.saving)
-                  : intl.formatMessage(messages.save)}
-              </Button>
-            </span>
-          </div>
-        </div>
-      </form>
+            </form>
+          );
+        }}
+      </Formik>
       <div className="mt-10">
         <h3 className="text-lg leading-6 font-medium text-gray-200">
           <FormattedMessage {...messages.plexlibraries} />

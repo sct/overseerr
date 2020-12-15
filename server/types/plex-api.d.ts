@@ -4,6 +4,7 @@ declare module 'plex-api' {
       hostname: string;
       port: number;
       token?: string;
+      https?: boolean;
       authenticator: {
         authenticate: (
           _plexApi: PlexAPI,
