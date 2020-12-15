@@ -62,6 +62,7 @@ class PlexAPI {
     this.plexClient = new NodePlexAPI({
       hostname: settings.plex.ip,
       port: settings.plex.port,
+      https: settings.plex.useSsl,
       token: plexToken,
       authenticator: {
         authenticate: (

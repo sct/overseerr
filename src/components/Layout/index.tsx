@@ -6,6 +6,7 @@ import Notifications from './Notifications';
 import LanguagePicker from './LanguagePicker';
 import { useRouter } from 'next/router';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { Permission, useUser } from '../../hooks/useUser';
 
 const messages = defineMessages({
   alphawarning:
@@ -14,6 +15,7 @@ const messages = defineMessages({
 
 const Layout: React.FC = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const { hasPermission } = useUser();
   const router = useRouter();
 
   return (
@@ -57,7 +59,7 @@ const Layout: React.FC = ({ children }) => {
         >
           <div className="pt-2 pb-6 md:py-6">
             <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
-              {router.pathname === '/' && (
+              {router.pathname === '/' && hasPermission(Permission.ADMIN) && (
                 <div className="rounded-md bg-indigo-700 p-4 mt-2">
                   <div className="flex">
                     <div className="flex-shrink-0">
@@ -85,7 +87,7 @@ const Layout: React.FC = ({ children }) => {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          Github &rarr;
+                          GitHub &rarr;
                         </a>
                       </p>
                     </div>

@@ -17,6 +17,8 @@ import { scheduledJobs } from '../job/schedule';
 import { Permission } from '../lib/permissions';
 import { isAuthenticated } from '../middleware/auth';
 import { merge } from 'lodash';
+import Media from '../entity/Media';
+import { MediaRequest } from '../entity/MediaRequest';
 
 const settingsRoutes = Router();
 
@@ -429,6 +431,28 @@ settingsRoutes.post('/notifications/email', (req, res) => {
   settings.save();
 
   res.status(200).json(settings.notifications.agents.email);
+});
+
+settingsRoutes.get('/about', async (req, res) => {
+  const mediaRepository = getRepository(Media);
+  const mediaRequestRepository = getRepository(MediaRequest);
+
+  const totalMediaItems = await mediaRepository.count();
+  const totalRequests = await mediaRequestRepository.count();
+
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { version } = require('../../package.json');
+
+  let finalVersion = version;
+
+  if (version === '0.1.0') {
+    finalVersion = `develop-${process.env.COMMIT_TAG ?? 'local'}`;
+  }
+  return res.status(200).json({
+    version: finalVersion,
+    totalMediaItems,
+    totalRequests,
+  });
 });
 
 export default settingsRoutes;

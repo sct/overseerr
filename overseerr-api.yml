@@ -1478,6 +1478,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DiscordSettings'
+  /settings/about:
+    get:
+      summary: Return current about stats
+      description: Returns current server stats in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned about settings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0.0'
+                  totalRequests:
+                    type: number
+                    example: 100
+                  totalMediaItems:
+                    type: number
+                    example: 100
   /auth/me:
     get:
       summary: Returns the currently logged in user

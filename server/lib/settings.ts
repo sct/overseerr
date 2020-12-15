@@ -14,6 +14,7 @@ export interface PlexSettings {
   machineId?: string;
   ip: string;
   port: number;
+  useSsl?: boolean;
   libraries: Library[];
 }
 
@@ -109,6 +110,7 @@ class Settings {
         name: '',
         ip: '127.0.0.1',
         port: 32400,
+        useSsl: false,
         libraries: [],
       },
       radarr: [],
