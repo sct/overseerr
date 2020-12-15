@@ -7,7 +7,8 @@ export type AvailableLocales =
   | 'nb-NO'
   | 'de'
   | 'ru'
-  | 'nl';
+  | 'nl'
+  | 'es';
 
 interface LanguageContextProps {
   locale: AvailableLocales;
