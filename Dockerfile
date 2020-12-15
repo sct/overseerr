@@ -12,6 +12,9 @@ RUN yarn cache clean
 
 FROM node:12.18-alpine
 
+ARG COMMIT_TAG
+ENV COMMIT_TAG=${COMMIT_TAG}
+
 COPY . /app
 WORKDIR /app
 
