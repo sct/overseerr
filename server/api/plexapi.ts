@@ -4,10 +4,12 @@ import { getSettings } from '../lib/settings';
 export interface PlexLibraryItem {
   ratingKey: string;
   parentRatingKey?: string;
+  grandparentRatingKey?: string;
   title: string;
   guid: string;
   parentGuid?: string;
-  type: 'movie' | 'show' | 'season';
+  grandparentGuid?: string;
+  type: 'movie' | 'show' | 'season' | 'episode';
 }
 
 interface PlexLibraryResponse {
@@ -20,6 +22,7 @@ export interface PlexLibrary {
   type: 'show' | 'movie';
   key: string;
   title: string;
+  agent: string;
 }
 
 interface PlexLibrariesResponse {
@@ -120,9 +123,9 @@ class PlexAPI {
     return response.MediaContainer.Metadata[0];
   }
 
-  public async getRecentlyAdded(): Promise<PlexLibraryItem[]> {
+  public async getRecentlyAdded(id: string): Promise<PlexLibraryItem[]> {
     const response = await this.plexClient.query<PlexLibraryResponse>(
-      '/library/recentlyAdded'
+      `/library/sections/${id}/recentlyAdded`
     );
 
     return response.MediaContainer.Metadata;
