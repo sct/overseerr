@@ -8,7 +8,8 @@ import logger from '../../logger';
 import { getSettings, Library } from '../../lib/settings';
 import Season from '../../entity/Season';
 
-const BUNDLE_SIZE = 10;
+const BUNDLE_SIZE = 20;
+const UPDATE_RATE = 4 * 1000;
 
 const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);
@@ -277,7 +278,7 @@ class JobPlexSync {
             end: end + BUNDLE_SIZE,
           });
           resolve();
-        }, 5000)
+        }, UPDATE_RATE)
       );
     }
   }
