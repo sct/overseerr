@@ -17,7 +17,6 @@ import { scheduledJobs } from '../job/schedule';
 import { Permission } from '../lib/permissions';
 import { isAuthenticated } from '../middleware/auth';
 import { merge } from 'lodash';
-import { version } from '../../package.json';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 
@@ -440,6 +439,9 @@ settingsRoutes.get('/about', async (req, res) => {
 
   const totalMediaItems = await mediaRepository.count();
   const totalRequests = await mediaRequestRepository.count();
+
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { version } = require('../../package.json');
 
   let finalVersion = version;
 
