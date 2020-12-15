@@ -9,8 +9,10 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**Are you on latest or develop branch?**
-Please fill in which docker image you are currently using.
+**What version of Overseerr are you running?**
+Please fill in the version you are currently running.
+
+You can find it under: Settings -> About -> Version
 
 **To Reproduce**
 Steps to reproduce the behavior:
