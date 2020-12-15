@@ -1,9 +1,25 @@
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
 import { Permission } from '../lib/permissions';
+import { getSettings } from '../lib/settings';
 
 export const checkUser: Middleware = async (req, _res, next) => {
-  if (req.session?.userId) {
+  const settings = getSettings();
+  if (req.header('X-API-Key') === settings.main.apiKey) {
+    const userRepository = getRepository(User);
+
+    let userId = 1; // Work on original administrator account
+
+    // If a User ID is provided, we will act on that users behalf
+    if (req.header('X-API-User')) {
+      userId = Number(req.header('X-API-User'));
+    }
+    const user = await userRepository.findOne({ where: { id: userId } });
+
+    if (user) {
+      req.user = user;
+    }
+  } else if (req.session?.userId) {
     const userRepository = getRepository(User);
 
     const user = await userRepository.findOne({

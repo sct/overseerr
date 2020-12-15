@@ -966,6 +966,10 @@ components:
       type: apiKey
       name: connect.sid
       in: cookie
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
 
 paths:
   /settings/main:
@@ -2485,3 +2489,4 @@ paths:
 
 security:
   - cookieAuth: []
+  - apiKey: []
