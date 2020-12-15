@@ -93,17 +93,22 @@ settingsRoutes.get('/plex/library', async (req, res) => {
 
     const libraries = await plexapi.getLibraries();
 
-    const newLibraries: Library[] = libraries.map((library) => {
-      const existing = settings.plex.libraries.find(
-        (l) => l.id === library.key
-      );
+    const newLibraries: Library[] = libraries
+      // Remove libraries that are not movie or show
+      .filter((library) => library.type === 'movie' || library.type === 'show')
+      // Remove libraries that do not have a metadata agent set (usually personal video libraries)
+      .filter((library) => library.agent !== 'com.plexapp.agents.none')
+      .map((library) => {
+        const existing = settings.plex.libraries.find(
+          (l) => l.id === library.key
+        );
 
-      return {
-        id: library.key,
-        name: library.title,
-        enabled: existing?.enabled ?? false,
-      };
-    });
+        return {
+          id: library.key,
+          name: library.title,
+          enabled: existing?.enabled ?? false,
+        };
+      });
 
     settings.plex.libraries = newLibraries;
   }
