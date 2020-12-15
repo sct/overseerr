@@ -16,7 +16,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr">
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-9-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-10-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -104,6 +104,7 @@ Our [Code of Conduct](https://github.com/sct/overseerr/blob/develop/CODE_OF_COND
   <tr>
     <td align="center"><a href="https://github.com/jvennik"><img src="https://avatars3.githubusercontent.com/u/6672637?v=4" width="100px;" alt=""/><br /><sub><b>jvennik</b></sub></a><br /><a href="#translation-jvennik" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/darknessgp"><img src="https://avatars0.githubusercontent.com/u/1521243?v=4" width="100px;" alt=""/><br /><sub><b>darknessgp</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=darknessgp" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/saltydk"><img src="https://avatars1.githubusercontent.com/u/6587950?v=4" width="100px;" alt=""/><br /><sub><b>salty</b></sub></a><br /><a href="#infra-saltydk" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 
