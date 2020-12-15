@@ -1,9 +1,9 @@
 {
   "components.Discover.discovermovies": "Beliebte Filme",
-  "components.Discover.discovertv": "Beliebte Serie",
+  "components.Discover.discovertv": "Beliebte Serien",
   "components.Discover.nopending": "Keine ausstehenden Anträge",
   "components.Discover.popularmovies": "Beliebte Filme",
-  "components.Discover.populartv": "Beliebte Serie",
+  "components.Discover.populartv": "Beliebte Serien",
   "components.Discover.recentlyAdded": "Kürzlich hinzugefügt",
   "components.Discover.recentrequests": "Letzte Anträge",
   "components.Discover.trending": "Trends",
@@ -304,5 +304,9 @@
   "pages.serviceUnavailable": "{statusCode} – Dienst nicht verfügbar",
   "pages.somethingWentWrong": "{statusCode} – Es ist ein Fehler aufgetreten",
   "components.TvDetails.TvCast.fullseriescast": "Vollserienbesetzung",
-  "components.MovieDetails.MovieCast.fullcast": "Vollständige Besetzung"
+  "components.MovieDetails.MovieCast.fullcast": "Vollständige Besetzung",
+  "components.Settings.Notifications.emailsettingssaved": "E-Mail-Benachrichtigungseinstellungen gespeichert!",
+  "components.Settings.Notifications.emailsettingsfailed": "Die Einstellungen für die E-Mail-Benachrichtigungen konnten nicht gespeichert werden.",
+  "components.Settings.Notifications.discordsettingssaved": "Discord-Benachrichtigungseinstellungen gespeichert!",
+  "components.Settings.Notifications.discordsettingsfailed": "Die Einstellungen für die Discord-Benachrichtigungen konnten nicht gespeichert werden."
 }
