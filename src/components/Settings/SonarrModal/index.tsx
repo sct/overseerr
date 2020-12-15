@@ -11,6 +11,7 @@ import { useIntl, defineMessages } from 'react-intl';
 const messages = defineMessages({
   createsonarr: 'Create New Sonarr Server',
   editsonarr: 'Edit Sonarr Server',
+  validationNameRequired: 'You must provide a server name',
   validationHostnameRequired: 'You must provide a hostname/IP',
   validationPortRequired: 'You must provide a port',
   validationApiKeyRequired: 'You must provide an API key',
@@ -73,6 +74,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
     rootFolders: [],
   });
   const SonarrSettingsSchema = Yup.object().shape({
+    name: Yup.string().required(
+      intl.formatMessage(messages.validationNameRequired)
+    ),
     hostname: Yup.string().required(
       intl.formatMessage(messages.validationHostnameRequired)
     ),

@@ -11,6 +11,7 @@ import { defineMessages, useIntl } from 'react-intl';
 const messages = defineMessages({
   createradarr: 'Create New Radarr Server',
   editradarr: 'Edit Radarr Server',
+  validationNameRequired: 'You must provide a server name',
   validationHostnameRequired: 'You must provide a hostname/IP',
   validationPortRequired: 'You must provide a port',
   validationApiKeyRequired: 'You must provide an API key',
@@ -74,6 +75,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     rootFolders: [],
   });
   const RadarrSettingsSchema = Yup.object().shape({
+    name: Yup.string().required(
+      intl.formatMessage(messages.validationNameRequired)
+    ),
     hostname: Yup.string().required(
       intl.formatMessage(messages.validationHostnameRequired)
     ),
