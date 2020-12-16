@@ -135,7 +135,7 @@ class EmailAgent implements NotificationAgent {
           to: payload.notifyUser.email,
         },
         locals: {
-          body: 'Your requsested media is now available!',
+          body: 'Your requested media is now available!',
           mediaName: payload.subject,
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
