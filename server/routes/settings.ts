@@ -19,6 +19,7 @@ import { isAuthenticated } from '../middleware/auth';
 import { merge } from 'lodash';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
+import { getAppVersion } from '../utils/appVersion';
 
 const settingsRoutes = Router();
 
@@ -445,16 +446,8 @@ settingsRoutes.get('/about', async (req, res) => {
   const totalMediaItems = await mediaRepository.count();
   const totalRequests = await mediaRequestRepository.count();
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { version } = require('../../package.json');
-
-  let finalVersion = version;
-
-  if (version === '0.1.0') {
-    finalVersion = `develop-${process.env.COMMIT_TAG ?? 'local'}`;
-  }
   return res.status(200).json({
-    version: finalVersion,
+    version: getAppVersion(),
     totalMediaItems,
     totalRequests,
   });

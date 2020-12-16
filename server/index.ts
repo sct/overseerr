@@ -17,9 +17,11 @@ import { startJobs } from './job/schedule';
 import notificationManager from './lib/notifications';
 import DiscordAgent from './lib/notifications/agents/discord';
 import EmailAgent from './lib/notifications/agents/email';
+import { getAppVersion } from './utils/appVersion';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
+logger.info(`Starting Overseerr version ${getAppVersion()}`);
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -101,7 +103,7 @@ app
     const port = Number(process.env.PORT) || 3000;
     server.listen(port, () => {
       logger.info(`Server ready on port ${port}`, {
-        label: 'SERVER',
+        label: 'Server',
       });
     });
   })
