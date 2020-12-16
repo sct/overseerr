@@ -246,7 +246,11 @@ class JobPlexSync {
           plexitem.parentRatingKey ??
           plexitem.ratingKey
         }`,
-        'error'
+        'error',
+        {
+          errorMessage: e.message,
+          plexitem,
+        }
       );
     }
   }
@@ -293,9 +297,10 @@ class JobPlexSync {
 
   private log(
     message: string,
-    level: 'info' | 'error' | 'debug' = 'debug'
+    level: 'info' | 'error' | 'debug' = 'debug',
+    optional?: Record<string, unknown>
   ): void {
-    logger[level](message, { label: 'Plex Sync' });
+    logger[level](message, { label: 'Plex Sync', ...optional });
   }
 
   public async run(): Promise<void> {
