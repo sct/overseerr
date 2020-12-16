@@ -1,9 +1,10 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useRef } from 'react';
 import Transition from '../../Transition';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { useUser, Permission } from '../../../hooks/useUser';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 const messages = defineMessages({
   dashboard: 'Discover',
@@ -116,8 +117,10 @@ const SidebarLinks: SidebarLinkProps[] = [
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
+  const navRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { hasPermission } = useUser();
+  useClickOutside(navRef, () => setClosed());
   return (
     <>
       <div className="md:hidden">
@@ -166,7 +169,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                       </svg>
                     </button>
                   </div>
-                  <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
+                  <div
+                    ref={navRef}
+                    className="flex-1 h-0 pt-5 pb-4 overflow-y-auto"
+                  >
                     <div className="flex-shrink-0 flex items-center px-4">
                       <span className="text-xl text-gray-50">
                         <Link href="/">
