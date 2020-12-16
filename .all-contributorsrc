@@ -97,6 +97,33 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "Shutruk",
+      "name": "Shutruk",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/9198633?v=4",
+      "profile": "https://github.com/Shutruk",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "krystiancharubin",
+      "name": "Krystian Charubin",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/17775600?v=4",
+      "profile": "https://github.com/krystiancharubin",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "kieron",
+      "name": "Kieron Boswell",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8655212?v=4",
+      "profile": "https://github.com/kieron",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",

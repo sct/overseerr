@@ -19,6 +19,7 @@ import { isAuthenticated } from '../middleware/auth';
 import { merge } from 'lodash';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
+import { getAppVersion } from '../utils/appVersion';
 
 const settingsRoutes = Router();
 
@@ -93,17 +94,22 @@ settingsRoutes.get('/plex/library', async (req, res) => {
 
     const libraries = await plexapi.getLibraries();
 
-    const newLibraries: Library[] = libraries.map((library) => {
-      const existing = settings.plex.libraries.find(
-        (l) => l.id === library.key
-      );
+    const newLibraries: Library[] = libraries
+      // Remove libraries that are not movie or show
+      .filter((library) => library.type === 'movie' || library.type === 'show')
+      // Remove libraries that do not have a metadata agent set (usually personal video libraries)
+      .filter((library) => library.agent !== 'com.plexapp.agents.none')
+      .map((library) => {
+        const existing = settings.plex.libraries.find(
+          (l) => l.id === library.key && l.name === library.title
+        );
 
-      return {
-        id: library.key,
-        name: library.title,
-        enabled: existing?.enabled ?? false,
-      };
-    });
+        return {
+          id: library.key,
+          name: library.title,
+          enabled: existing?.enabled ?? false,
+        };
+      });
 
     settings.plex.libraries = newLibraries;
   }
@@ -440,16 +446,8 @@ settingsRoutes.get('/about', async (req, res) => {
   const totalMediaItems = await mediaRepository.count();
   const totalRequests = await mediaRequestRepository.count();
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { version } = require('../../package.json');
-
-  let finalVersion = version;
-
-  if (version === '0.1.0') {
-    finalVersion = `develop-${process.env.COMMIT_TAG ?? 'local'}`;
-  }
   return res.status(200).json({
-    version: finalVersion,
+    version: getAppVersion(),
     totalMediaItems,
     totalRequests,
   });

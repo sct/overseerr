@@ -304,5 +304,9 @@
   "pages.serviceUnavailable": "{statusCode} – Service indisponible",
   "pages.somethingWentWrong": "{statusCode} – Une erreur est survenue",
   "components.TvDetails.TvCast.fullseriescast": "Casting complet de la série",
-  "components.MovieDetails.MovieCast.fullcast": "Casting complet"
+  "components.MovieDetails.MovieCast.fullcast": "Casting complet",
+  "components.Settings.Notifications.emailsettingssaved": "Paramètres de notification par courriel enregistrés !",
+  "components.Settings.Notifications.emailsettingsfailed": "Les paramètres de notification par courriel n'ont pas pu être enregistrés.",
+  "components.Settings.Notifications.discordsettingssaved": "Paramètres de notification Discord enregistrés !",
+  "components.Settings.Notifications.discordsettingsfailed": "Les paramètres de notification Discord n'ont pas pu être enregistrés."
 }

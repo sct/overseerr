@@ -45,6 +45,10 @@ const availableLanguages: AvailableLanguageObject = {
     code: 'nl',
     display: 'Nederlands',
   },
+  es: {
+    code: 'es',
+    display: 'Spanish',
+  },
 };
 
 const LanguagePicker: React.FC = () => {

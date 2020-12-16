@@ -13,7 +13,7 @@ export const startJobs = (): void => {
   // Run recently added plex sync every 5 minutes
   scheduledJobs.push({
     name: 'Plex Recently Added Sync',
-    job: schedule.scheduleJob('0 */10 * * * *', () => {
+    job: schedule.scheduleJob('0 */5 * * * *', () => {
       logger.info('Starting scheduled job: Plex Recently Added Sync', {
         label: 'Jobs',
       });
@@ -23,7 +23,7 @@ export const startJobs = (): void => {
   // Run full plex sync every 6 hours
   scheduledJobs.push({
     name: 'Plex Full Library Sync',
-    job: schedule.scheduleJob('0 0 */6 * * *', () => {
+    job: schedule.scheduleJob('0 0 3 * * *', () => {
       logger.info('Starting scheduled job: Plex Full Sync', { label: 'Jobs' });
       jobPlexFullSync.run();
     }),

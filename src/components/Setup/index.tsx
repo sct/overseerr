@@ -8,6 +8,7 @@ import LoginWithPlex from './LoginWithPlex';
 import SetupSteps from './SetupSteps';
 import axios from 'axios';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import Badge from '../Common/Badge';
 
 const messages = defineMessages({
   finish: 'Finish Setup',
@@ -16,6 +17,9 @@ const messages = defineMessages({
   loginwithplex: 'Login with Plex',
   configureplex: 'Configure Plex',
   configureservices: 'Configure Services',
+  tip: 'Tip',
+  syncingbackground:
+    'Syncing will run in the background. You can continue the setup process in the meantime.',
 });
 
 const Setup: React.FC = () => {
@@ -85,6 +89,12 @@ const Setup: React.FC = () => {
           {currentStep === 2 && (
             <div>
               <SettingsPlex onComplete={() => setPlexSettingsComplete(true)} />
+              <div className="mt-4 text-gray-500 text-sm">
+                <span className="mr-2">
+                  <Badge>{intl.formatMessage(messages.tip)}</Badge>
+                </span>
+                {intl.formatMessage(messages.syncingbackground)}
+              </div>
               <div className="mt-8 border-t border-gray-700 pt-5">
                 <div className="flex justify-end">
                   <span className="ml-3 inline-flex rounded-md shadow-sm">

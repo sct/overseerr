@@ -46,7 +46,7 @@ const SettingsJobs: React.FC = () => {
               </div>
             </Table.TD>
             <Table.TD alignText="right">
-              <Button buttonType="primary">
+              <Button buttonType="primary" disabled>
                 {intl.formatMessage(messages.runnow)}
               </Button>
             </Table.TD>

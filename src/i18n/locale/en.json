@@ -236,6 +236,8 @@
   "components.Setup.finishing": "Finishing...",
   "components.Setup.loginwithplex": "Login with Plex",
   "components.Setup.signinMessage": "Get started by logging in with your Plex account",
+  "components.Setup.syncingbackground": "Syncing will run in the background. You can continue the setup process in the meantime.",
+  "components.Setup.tip": "Tip",
   "components.Setup.welcome": "Welcome to Overseerr",
   "components.Slider.noresults": "No Results",
   "components.TitleCard.movie": "Movie",

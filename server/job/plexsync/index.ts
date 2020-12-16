@@ -8,7 +8,8 @@ import logger from '../../logger';
 import { getSettings, Library } from '../../lib/settings';
 import Season from '../../entity/Season';
 
-const BUNDLE_SIZE = 10;
+const BUNDLE_SIZE = 20;
+const UPDATE_RATE = 4 * 1000;
 
 const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);
@@ -136,7 +137,9 @@ class JobPlexSync {
 
     try {
       const metadata = await this.plexClient.getMetadata(
-        plexitem.parentRatingKey ?? plexitem.ratingKey,
+        plexitem.grandparentRatingKey ??
+          plexitem.parentRatingKey ??
+          plexitem.ratingKey,
         { includeChildren: true }
       );
       if (metadata.guid.match(tvdbRegex)) {
@@ -239,9 +242,15 @@ class JobPlexSync {
     } catch (e) {
       this.log(
         `Failed to process plex item. ratingKey: ${
-          plexitem.parentRatingKey ?? plexitem.ratingKey
+          plexitem.grandparentRatingKey ??
+          plexitem.parentRatingKey ??
+          plexitem.ratingKey
         }`,
-        'error'
+        'error',
+        {
+          errorMessage: e.message,
+          plexitem,
+        }
       );
     }
   }
@@ -251,7 +260,11 @@ class JobPlexSync {
       slicedItems.map(async (plexitem) => {
         if (plexitem.type === 'movie') {
           await this.processMovie(plexitem);
-        } else if (plexitem.type === 'show') {
+        } else if (
+          plexitem.type === 'show' ||
+          plexitem.type === 'episode' ||
+          plexitem.type === 'season'
+        ) {
           await this.processShow(plexitem);
         }
       })
@@ -277,16 +290,17 @@ class JobPlexSync {
             end: end + BUNDLE_SIZE,
           });
           resolve();
-        }, 5000)
+        }, UPDATE_RATE)
       );
     }
   }
 
   private log(
     message: string,
-    level: 'info' | 'error' | 'debug' = 'debug'
+    level: 'info' | 'error' | 'debug' = 'debug',
+    optional?: Record<string, unknown>
   ): void {
-    logger[level](message, { label: 'Plex Sync' });
+    logger[level](message, { label: 'Plex Sync', ...optional });
   }
 
   public async run(): Promise<void> {
@@ -300,20 +314,22 @@ class JobPlexSync {
       });
 
       this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
-      if (this.isRecentOnly) {
-        this.currentLibrary = {
-          id: '0',
-          name: 'Recently Added',
-          enabled: true,
-        };
-        this.log(`Beginning to process recently added`, 'info');
-        this.items = await this.plexClient.getRecentlyAdded();
-        await this.loop();
-      } else {
-        this.libraries = settings.plex.libraries.filter(
-          (library) => library.enabled
-        );
 
+      this.libraries = settings.plex.libraries.filter(
+        (library) => library.enabled
+      );
+
+      if (this.isRecentOnly) {
+        for (const library of this.libraries) {
+          this.currentLibrary = library;
+          this.log(
+            `Beginning to process recently added for library: ${library.name}`,
+            'info'
+          );
+          this.items = await this.plexClient.getRecentlyAdded(library.id);
+          await this.loop();
+        }
+      } else {
         for (const library of this.libraries) {
           this.currentLibrary = library;
           this.log(`Beginning to process library: ${library.name}`, 'info');

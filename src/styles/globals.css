@@ -47,3 +47,7 @@ body {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+code {
+  @apply bg-gray-800 py-1 px-2 rounded-md;
+}

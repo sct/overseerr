@@ -12,6 +12,7 @@ import { IntlProvider } from 'react-intl';
 import { LanguageContext, AvailableLocales } from '../context/LanguageContext';
 import Head from 'next/head';
 import Toast from '../components/Toast';
+import { InteractionProvider } from '../context/InteractionContext';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: string): Promise<any> => {
@@ -28,6 +29,8 @@ const loadLocaleData = (locale: string): Promise<any> => {
       return import('../i18n/locale/ru.json');
     case 'nl':
       return import('../i18n/locale/nl.json');
+    case 'es':
+      return import('../i18n/locale/es.json');
     default:
       return import('../i18n/locale/en.json');
   }
@@ -88,12 +91,14 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
           defaultLocale="en"
           messages={loadedMessages}
         >
-          <ToastProvider components={{ Toast }}>
-            <Head>
-              <title>Overseerr</title>
-            </Head>
-            <UserContext initialUser={user}>{component}</UserContext>
-          </ToastProvider>
+          <InteractionProvider>
+            <ToastProvider components={{ Toast }}>
+              <Head>
+                <title>Overseerr</title>
+              </Head>
+              <UserContext initialUser={user}>{component}</UserContext>
+            </ToastProvider>
+          </InteractionProvider>
         </IntlProvider>
       </LanguageContext.Provider>
     </SWRConfig>
