@@ -1419,6 +1419,41 @@ paths:
                     nextExecutionTime:
                       type: string
                       example: '2020-09-02T05:02:23.000Z'
+  /settings/logs:
+    get:
+      summary: Returns logs
+      description: Returns list of all log items and details
+      tags:
+        - settings
+      parameters:
+        - in: query
+          name: rows
+          schema:
+            type: number
+            example: 1000
+            default: 1000
+      responses:
+        '200':
+          description: Server log returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                      example: SERVER
+                    level:
+                      type: string
+                      example: info
+                    message:
+                      type: string
+                      example: Server ready on port 3000
+                    timestamp:
+                      type: string
+                      example: 2020-12-15T16:20:00.069Z
   /settings/notifications/email:
     get:
       summary: Return current email notification settings

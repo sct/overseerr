@@ -43,7 +43,7 @@ settingsRoutes.post('/main', (req, res) => {
   return res.status(200).json(settings.main);
 });
 
-settingsRoutes.get('/plex', (_req, res) => {
+settingsRoutes.get('/plex', (req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.plex);
@@ -134,7 +134,7 @@ settingsRoutes.get('/plex/sync', (req, res) => {
   return res.status(200).json(jobPlexFullSync.status());
 });
 
-settingsRoutes.get('/radarr', (_req, res) => {
+settingsRoutes.get('/radarr', (req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.radarr);
@@ -275,7 +275,7 @@ settingsRoutes.delete<{ id: string }>('/radarr/:id', (req, res) => {
   return res.status(200).json(removed[0]);
 });
 
-settingsRoutes.get('/sonarr', (_req, res) => {
+settingsRoutes.get('/sonarr', (req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.sonarr);
@@ -386,7 +386,7 @@ settingsRoutes.delete<{ id: string }>('/sonarr/:id', (req, res) => {
   return res.status(200).json(removed[0]);
 });
 
-settingsRoutes.get('/jobs', (_req, res) => {
+settingsRoutes.get('/jobs', (req, res) => {
   return res.status(200).json(
     scheduledJobs.map((job) => ({
       name: job.name,
@@ -395,10 +395,24 @@ settingsRoutes.get('/jobs', (_req, res) => {
   );
 });
 
+settingsRoutes.get('/logs', (req, res) => {
+  const options = {
+    rows: Number(req.query.rows),
+    fields: null,
+  };
+
+  return logger.query(options, (err, results) => {
+    if (err) {
+      return res.status(500).json(err);
+    }
+    return res.status(200).json(results.file);
+  });
+});
+
 settingsRoutes.get(
   '/initialize',
   isAuthenticated(Permission.ADMIN),
-  (_req, res) => {
+  (req, res) => {
     const settings = getSettings();
 
     settings.public.initialized = true;
@@ -408,7 +422,7 @@ settingsRoutes.get(
   }
 );
 
-settingsRoutes.get('/notifications/discord', (_req, res) => {
+settingsRoutes.get('/notifications/discord', (req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.notifications.agents.discord);
@@ -423,7 +437,7 @@ settingsRoutes.post('/notifications/discord', (req, res) => {
   res.status(200).json(settings.notifications.agents.discord);
 });
 
-settingsRoutes.get('/notifications/email', (_req, res) => {
+settingsRoutes.get('/notifications/email', (req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.notifications.agents.email);
