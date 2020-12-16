@@ -196,14 +196,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         )}
       </SlideOver>
       <div className="flex flex-col items-center md:flex-row md:items-end pt-4">
-        <div className="mr-4 flex-shrink-0">
+        <div className="md:mr-4 flex-shrink-0">
           <img
             src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
             alt=""
             className="rounded md:rounded-lg shadow md:shadow-2xl w-32 md:w-52"
           />
         </div>
-        <div className="text-white flex flex-col mr-4 mt-4 md:mt-0 text-center md:text-left">
+        <div className="text-white flex flex-col md:mr-4 mt-4 md:mt-0 text-center md:text-left">
           <div className="mb-2">
             {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
               <Badge badgeType="success">
@@ -344,7 +344,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
               buttonType="default"
-              className="ml-2"
+              className="ml-2 first:ml-0"
               onClick={() => setShowManager(true)}
             >
               <svg
