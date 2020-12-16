@@ -1,0 +1,19 @@
+name: 'Invalid Template'
+
+on:
+  issues:
+    types: [labeled, unlabeled, reopened]
+
+jobs:
+  support:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/support-requests@v2
+        with:
+          github-token: ${{ github.token }}
+          support-label: 'invalid:template-incomplete'
+          issue-comment: >
+            :wave: @{issue-author}, please edit your issue and follow the template provided.
+          close-issue: false
+          lock-issue: true
+          issue-lock-reason: 'resolved'
