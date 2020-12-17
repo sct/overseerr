@@ -29,10 +29,13 @@ class EmailAgent implements NotificationAgent {
       host: emailSettings.smtpHost,
       port: emailSettings.smtpPort,
       secure: emailSettings.secure,
-      auth: {
-        user: emailSettings.authUser,
-        pass: emailSettings.authPass,
-      },
+      auth:
+        emailSettings.authUser && emailSettings.authPass
+          ? {
+              user: emailSettings.authUser,
+              pass: emailSettings.authPass,
+            }
+          : undefined,
     });
   }
 
