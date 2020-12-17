@@ -205,7 +205,7 @@
   "components.Settings.runnow": "Jetzt ausführen",
   "components.Settings.save": "Änderungen speichern",
   "components.Settings.saving": "Speichern …",
-  "components.Settings.servername": "Servername (automatisch festgelegt)",
+  "components.Settings.servername": "Servername (Wird nach dem Speichern automatisch festgelegt)",
   "components.Settings.servernamePlaceholder": "Plex-Servername",
   "components.Settings.sonarrSettingsDescription": "Richten Sie unten Ihre Sonarr-Verbindung ein. Sie können jederzeit mehrere, aber nur zwei standardmäßig aktiv haben (eine für Standard-HD und eine für 4K). Administratoren können überschreiben, welcher Server für neue Anforderungen verwendet wird.",
   "components.Settings.sonarrsettings": "Sonarr-Einstellungen",
@@ -308,5 +308,18 @@
   "components.Settings.Notifications.emailsettingssaved": "E-Mail-Benachrichtigungseinstellungen gespeichert!",
   "components.Settings.Notifications.emailsettingsfailed": "Die Einstellungen für die E-Mail-Benachrichtigungen konnten nicht gespeichert werden.",
   "components.Settings.Notifications.discordsettingssaved": "Discord-Benachrichtigungseinstellungen gespeichert!",
-  "components.Settings.Notifications.discordsettingsfailed": "Die Einstellungen für die Discord-Benachrichtigungen konnten nicht gespeichert werden."
+  "components.Settings.Notifications.discordsettingsfailed": "Die Einstellungen für die Discord-Benachrichtigungen konnten nicht gespeichert werden.",
+  "components.Settings.validationPortRequired": "Sie müssen einen Port angeben",
+  "components.Settings.validationHostnameRequired": "Sie müssen einen Hostnamen/IP angeben",
+  "components.Settings.SonarrModal.validationNameRequired": "Sie müssen einen Servernamen angeben",
+  "components.Settings.SettingsAbout.version": "Version",
+  "components.Settings.SettingsAbout.totalrequests": "Anträge insgesamt",
+  "components.Settings.SettingsAbout.totalmedia": "Medien insgesamt",
+  "components.Settings.SettingsAbout.overseerrinformation": "Overseerr-Informationen",
+  "components.Settings.SettingsAbout.githubdiscussions": "GitHub-Diskussionen",
+  "components.Settings.SettingsAbout.gettingsupport": "Hilfe erhalten",
+  "components.Settings.SettingsAbout.clickheretojoindiscord": "Klicken Sie hier, um unserem Discord-Server beizutreten.",
+  "components.Settings.RadarrModal.validationNameRequired": "Sie müssen einen Servernamen angeben",
+  "components.Setup.tip": "Tipp",
+  "components.Setup.syncingbackground": "Die Synchronisierung wird im Hintergrund ausgeführt. Sie können die Konfiguration in der Zwischenzeit fortsetzen."
 }
