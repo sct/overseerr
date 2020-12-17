@@ -335,6 +335,7 @@ export class MediaRequest {
           title: series.name,
           tvdbid: series.external_ids.tvdb_id,
           seasons: this.seasons.map((season) => season.seasonNumber),
+          seasonFolder: sonarrSettings.enableSeasonFolders,
           monitored: true,
           searchNow: true,
         });
