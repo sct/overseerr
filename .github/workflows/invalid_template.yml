@@ -15,5 +15,5 @@ jobs:
           issue-comment: >
             :wave: @{issue-author}, please edit your issue and follow the template provided.
           close-issue: false
-          lock-issue: true
+          lock-issue: false
           issue-lock-reason: 'resolved'
