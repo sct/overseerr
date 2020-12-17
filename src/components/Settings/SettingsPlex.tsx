@@ -224,12 +224,15 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
+                      <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-500 bg-gray-800 text-gray-100 sm:text-sm cursor-default">
+                        {values.useSsl ? 'https://' : 'http://'}
+                      </span>
                       <Field
                         type="text"
                         id="hostname"
                         name="hostname"
                         placeholder="127.0.0.1"
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                        className="flex-1 form-input block w-full min-w-0 rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                       />
                     </div>
                     {errors.hostname && touched.hostname && (
