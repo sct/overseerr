@@ -56,7 +56,7 @@ export interface TvDetails {
     profilePath?: string;
   }[];
   episodeRunTime: number[];
-  firstAirDate: string;
+  firstAirDate?: string;
   genres: Genre[];
   homepage: string;
   inProduction: boolean;

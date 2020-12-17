@@ -124,6 +124,26 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "samwiseg0",
+      "name": "samwiseg0",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2241731?v=4",
+      "profile": "https://github.com/samwiseg0",
+      "contributions": [
+        "question",
+        "infra"
+      ]
+    },
+    {
+      "login": "ecelebi29",
+      "name": "ecelebi29",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8337120?v=4",
+      "profile": "https://github.com/ecelebi29",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",

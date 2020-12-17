@@ -33,7 +33,7 @@ You can also run the development environment in [Docker](https://www.docker.com/
   - PRs with commits not following this standard will not be merged.
 - Please make meaningful commits, or squash them
 - Always rebase your commit to the latest `develop` branch. Do not merge develop into your branch.
-- It is your responsbility to keep your branch up to date. It will not be merged unless its rebased off the latest develop branch.
+- It is your responsibility to keep your branch up to date. It will not be merged unless its rebased off the latest develop branch.
 - You can create a Draft pull request early to get feedback on your work.
 - Your code must be formatted correctly or the tests will fail.
   - We use Prettier to format our codebase. It should auto run with a git hook, but its recommended to have a Prettier extension installed in your editor and have it format on save.

@@ -21,7 +21,7 @@ interface TitleCardProps {
   id: number;
   image?: string;
   summary?: string;
-  year: string;
+  year?: string;
   title: string;
   userScore: number;
   mediaType: MediaType;
@@ -169,7 +169,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
               >
                 <div className="absolute bottom-0 w-full left-0 right-0">
                   <div className="px-2 text-white">
-                    <div className="text-sm">{year}</div>
+                    {year && <div className="text-sm">{year}</div>}
 
                     <h1 className="text-xl leading-tight whitespace-normal">
                       {title}

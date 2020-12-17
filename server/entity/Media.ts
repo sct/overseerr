@@ -8,14 +8,11 @@ import {
   UpdateDateColumn,
   getRepository,
   In,
-  AfterUpdate,
 } from 'typeorm';
 import { MediaRequest } from './MediaRequest';
 import { MediaStatus, MediaType } from '../constants/media';
 import logger from '../logger';
 import Season from './Season';
-import notificationManager, { Notification } from '../lib/notifications';
-import TheMovieDb from '../api/themoviedb';
 
 @Entity()
 class Media {
@@ -97,32 +94,6 @@ class Media {
 
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
-  }
-
-  @AfterUpdate()
-  private async _notifyAvailable() {
-    if (this.status === MediaStatus.AVAILABLE) {
-      if (this.mediaType === MediaType.MOVIE) {
-        const requestRepository = getRepository(MediaRequest);
-        const relatedRequests = await requestRepository.find({
-          where: { media: this },
-        });
-
-        if (relatedRequests.length > 0) {
-          const tmdb = new TheMovieDb();
-          const movie = await tmdb.getMovie({ movieId: this.tmdbId });
-
-          relatedRequests.forEach((request) => {
-            notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
-              notifyUser: request.requestedBy,
-              subject: movie.title,
-              message: movie.overview,
-              image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-            });
-          });
-        }
-      }
-    }
   }
 }
 

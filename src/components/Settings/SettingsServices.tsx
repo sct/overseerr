@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import useSWR from 'swr';
@@ -31,7 +31,47 @@ const messages = defineMessages({
   activeProfile: 'Active Profile',
   addradarr: 'Add Radarr Server',
   addsonarr: 'Add Sonarr Server',
+  nodefault: 'No default server selected!',
+  nodefaultdescription:
+    'At least one server must be marked as default before any requests will make it to your services.',
+  no4kimplemented: '(Default 4K servers are not currently implemented)',
 });
+
+const NoDefaultAlert: React.FC = () => {
+  const intl = useIntl();
+  return (
+    <div className="rounded-md bg-yellow-600 p-4 mb-8">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <svg
+            className="h-5 w-5 text-yellow-200"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fillRule="evenodd"
+              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
+        <div className="ml-3">
+          <h3 className="text-sm font-medium text-yellow-200">
+            {intl.formatMessage(messages.nodefault)}
+          </h3>
+          <div className="mt-2 text-sm text-yellow-300">
+            <p>{intl.formatMessage(messages.nodefaultdescription)}</p>
+            <p className="mt-2">
+              {intl.formatMessage(messages.no4kimplemented)}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface ServerInstanceProps {
   name: string;
@@ -249,51 +289,57 @@ const SettingsServices: React.FC = () => {
       <div className="mt-6 sm:mt-5">
         {!radarrData && !radarrError && <LoadingSpinner />}
         {radarrData && !radarrError && (
-          <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {radarrData.map((radarr) => (
-              <ServerInstance
-                key={`radarr-config-${radarr.id}`}
-                name={radarr.name}
-                address={radarr.hostname}
-                profileName={radarr.activeProfileName}
-                isSSL={radarr.useSsl}
-                isDefault={radarr.isDefault && !radarr.is4k}
-                isDefault4K={radarr.is4k && radarr.isDefault}
-                onEdit={() => setEditRadarrModal({ open: true, radarr })}
-                onDelete={() =>
-                  setDeleteServerModal({
-                    open: true,
-                    serverId: radarr.id,
-                    type: 'radarr',
-                  })
-                }
-              />
-            ))}
-            <li className="col-span-1 border-2 border-dashed border-gray-400 rounded-lg shadow h-32 sm:h-32">
-              <div className="flex items-center justify-center w-full h-full">
-                <Button
-                  buttonType="ghost"
-                  onClick={() =>
-                    setEditRadarrModal({ open: true, radarr: null })
+          <>
+            {radarrData.length > 0 &&
+              !radarrData.some(
+                (radarr) => radarr.isDefault && !radarr.is4k
+              ) && <NoDefaultAlert />}
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {radarrData.map((radarr) => (
+                <ServerInstance
+                  key={`radarr-config-${radarr.id}`}
+                  name={radarr.name}
+                  address={radarr.hostname}
+                  profileName={radarr.activeProfileName}
+                  isSSL={radarr.useSsl}
+                  isDefault={radarr.isDefault && !radarr.is4k}
+                  isDefault4K={radarr.is4k && radarr.isDefault}
+                  onEdit={() => setEditRadarrModal({ open: true, radarr })}
+                  onDelete={() =>
+                    setDeleteServerModal({
+                      open: true,
+                      serverId: radarr.id,
+                      type: 'radarr',
+                    })
                   }
-                >
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
+                />
+              ))}
+              <li className="col-span-1 border-2 border-dashed border-gray-400 rounded-lg shadow h-32 sm:h-32">
+                <div className="flex items-center justify-center w-full h-full">
+                  <Button
+                    buttonType="ghost"
+                    onClick={() =>
+                      setEditRadarrModal({ open: true, radarr: null })
+                    }
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <FormattedMessage {...messages.addradarr} />
-                </Button>
-              </div>
-            </li>
-          </ul>
+                    <svg
+                      className="w-5 h-5 mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <FormattedMessage {...messages.addradarr} />
+                  </Button>
+                </div>
+              </li>
+            </ul>
+          </>
         )}
       </div>
       <div className="mt-10">
@@ -307,52 +353,58 @@ const SettingsServices: React.FC = () => {
       <div className="mt-6 sm:mt-5">
         {!sonarrData && !sonarrError && <LoadingSpinner />}
         {sonarrData && !sonarrError && (
-          <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {sonarrData.map((sonarr) => (
-              <ServerInstance
-                key={`sonarr-config-${sonarr.id}`}
-                name={sonarr.name}
-                address={sonarr.hostname}
-                profileName={sonarr.activeProfileName}
-                isSSL={sonarr.useSsl}
-                isSonarr
-                isDefault4K={sonarr.isDefault && sonarr.is4k}
-                isDefault={sonarr.isDefault && !sonarr.is4k}
-                onEdit={() => setEditSonarrModal({ open: true, sonarr })}
-                onDelete={() =>
-                  setDeleteServerModal({
-                    open: true,
-                    serverId: sonarr.id,
-                    type: 'sonarr',
-                  })
-                }
-              />
-            ))}
-            <li className="col-span-1 border-2 border-dashed border-gray-400 rounded-lg shadow h-32 sm:h-32">
-              <div className="flex items-center justify-center w-full h-full">
-                <Button
-                  buttonType="ghost"
-                  onClick={() =>
-                    setEditSonarrModal({ open: true, sonarr: null })
+          <>
+            {sonarrData.length > 0 &&
+              !sonarrData.some(
+                (sonarr) => sonarr.isDefault && !sonarr.is4k
+              ) && <NoDefaultAlert />}
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {sonarrData.map((sonarr) => (
+                <ServerInstance
+                  key={`sonarr-config-${sonarr.id}`}
+                  name={sonarr.name}
+                  address={sonarr.hostname}
+                  profileName={sonarr.activeProfileName}
+                  isSSL={sonarr.useSsl}
+                  isSonarr
+                  isDefault4K={sonarr.isDefault && sonarr.is4k}
+                  isDefault={sonarr.isDefault && !sonarr.is4k}
+                  onEdit={() => setEditSonarrModal({ open: true, sonarr })}
+                  onDelete={() =>
+                    setDeleteServerModal({
+                      open: true,
+                      serverId: sonarr.id,
+                      type: 'sonarr',
+                    })
                   }
-                >
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
+                />
+              ))}
+              <li className="col-span-1 border-2 border-dashed border-gray-400 rounded-lg shadow h-32 sm:h-32">
+                <div className="flex items-center justify-center w-full h-full">
+                  <Button
+                    buttonType="ghost"
+                    onClick={() =>
+                      setEditSonarrModal({ open: true, sonarr: null })
+                    }
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <FormattedMessage {...messages.addsonarr} />
-                </Button>
-              </div>
-            </li>
-          </ul>
+                    <svg
+                      className="w-5 h-5 mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <FormattedMessage {...messages.addsonarr} />
+                  </Button>
+                </div>
+              </li>
+            </ul>
+          </>
         )}
       </div>
     </>

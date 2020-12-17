@@ -76,6 +76,7 @@ interface AddSeriesOptions {
   title: string;
   profileId: number;
   seasons: number[];
+  seasonFolder: boolean;
   rootFolderPath: string;
   monitored?: boolean;
   searchNow?: boolean;
@@ -149,6 +150,7 @@ class SonarrAPI {
               monitored: false,
             }))
           ),
+          seasonFolder: options.seasonFolder,
           monitored: options.monitored,
           rootFolderPath: options.rootFolderPath,
           addOptions: {

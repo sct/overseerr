@@ -17,6 +17,7 @@ const messages = defineMessages({
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
   validationProfileRequired: 'You must select a profile',
+  validationMinimumAvailabilityRequired: 'You must select minimum availability',
   toastRadarrTestSuccess: 'Radarr connection established!',
   toastRadarrTestFailure: 'Failed to connect to Radarr Server',
   saving: 'Saving...',
@@ -41,6 +42,10 @@ const messages = defineMessages({
   selectQualityProfile: 'Select a Quality Profile',
   selectRootFolder: 'Select a Root Folder',
   selectMinimumAvailability: 'Select minimum availability',
+  loadingprofiles: 'Loading quality profiles…',
+  testFirstQualityProfiles: 'Test your connection to load quality profiles',
+  loadingrootfolders: 'Loading root folders…',
+  testFirstRootFolders: 'Test your connection to load root folders',
 });
 
 interface TestResponse {
@@ -85,9 +90,14 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
       intl.formatMessage(messages.validationPortRequired)
     ),
     apiKey: Yup.string().required(intl.formatMessage(messages.apiKey)),
-    rootFolder: Yup.string().required(intl.formatMessage(messages.rootfolder)),
+    rootFolder: Yup.string().required(
+      intl.formatMessage(messages.validationRootFolderRequired)
+    ),
     activeProfileId: Yup.string().required(
       intl.formatMessage(messages.validationProfileRequired)
+    ),
+    minimumAvailability: Yup.string().required(
+      intl.formatMessage(messages.validationMinimumAvailabilityRequired)
     ),
   });
 
@@ -175,7 +185,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
           baseUrl: radarr?.baseUrl,
           activeProfileId: radarr?.activeProfileId,
           rootFolder: radarr?.activeDirectory,
-          minimumAvailability: radarr?.minimumAvailability,
+          minimumAvailability: radarr?.minimumAvailability ?? 'released',
           isDefault: radarr?.isDefault ?? false,
           is4k: radarr?.is4k ?? false,
         }}
@@ -222,6 +232,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
           handleSubmit,
           setFieldValue,
           isSubmitting,
+          isValid,
         }) => {
           return (
             <Modal
@@ -254,7 +265,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               secondaryDisabled={
                 !values.apiKey || !values.hostname || !values.port || isTesting
               }
-              okDisabled={!isValidated || isSubmitting || isTesting}
+              okDisabled={!isValidated || isSubmitting || isTesting || !isValid}
               onOk={() => handleSubmit()}
               title={
                 !radarr
@@ -316,6 +327,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="max-w-lg flex rounded-md shadow-sm">
+                      <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-500 bg-gray-600 text-gray-100 sm:text-sm cursor-default">
+                        {values.ssl ? 'https://' : 'http://'}
+                      </span>
                       <Field
                         id="hostname"
                         name="hostname"
@@ -325,7 +339,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           setIsValidated(false);
                           setFieldValue('hostname', e.target.value);
                         }}
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                        className="flex-1 form-input block w-full min-w-0 rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
                       />
                     </div>
                     {errors.hostname && touched.hostname && (
@@ -446,10 +460,17 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         as="select"
                         id="activeProfileId"
                         name="activeProfileId"
-                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
+                        disabled={!isValidated || isTesting}
+                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
-                          {intl.formatMessage(messages.selectQualityProfile)}
+                          {isTesting
+                            ? intl.formatMessage(messages.loadingprofiles)
+                            : !isValidated
+                            ? intl.formatMessage(
+                                messages.testFirstQualityProfiles
+                              )
+                            : intl.formatMessage(messages.selectQualityProfile)}
                         </option>
                         {testResponse.profiles.length > 0 &&
                           testResponse.profiles.map((profile) => (
@@ -482,10 +503,15 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         as="select"
                         id="rootFolder"
                         name="rootFolder"
-                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
+                        disabled={!isValidated || isTesting}
+                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
-                          {intl.formatMessage(messages.selectRootFolder)}
+                          {isTesting
+                            ? intl.formatMessage(messages.loadingrootfolders)
+                            : !isValidated
+                            ? intl.formatMessage(messages.testFirstRootFolders)
+                            : intl.formatMessage(messages.selectRootFolder)}
                         </option>
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
@@ -520,17 +546,18 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         name="minimumAvailability"
                         className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
-                        <option value="">
-                          {intl.formatMessage(
-                            messages.selectMinimumAvailability
-                          )}
-                        </option>
                         <option value="announced">Announced</option>
                         <option value="inCinemas">In Cinemas</option>
                         <option value="released">Released</option>
                         <option value="preDB">PreDB</option>
                       </Field>
                     </div>
+                    {errors.minimumAvailability &&
+                      touched.minimumAvailability && (
+                        <div className="text-red-500 mt-2">
+                          {errors.minimumAvailability}
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
