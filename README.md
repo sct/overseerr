@@ -44,7 +44,7 @@
 - More notification types (Slack/Telegram/etc.).
 - Issues system. This will allow users to report issues with content on your media server.
 - Local user system (for those who don't use Plex).
-- Compatiblity APIs (to work with existing tools in your system).
+- Compatibility APIs (to work with existing tools in your system).
 
 ## Running Overseerr
 
