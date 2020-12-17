@@ -42,6 +42,10 @@ const messages = defineMessages({
   selectQualityProfile: 'Select a Quality Profile',
   selectRootFolder: 'Select a Root Folder',
   selectMinimumAvailability: 'Select minimum availability',
+  loadingprofiles: 'Loading quality profiles…',
+  testFirstQualityProfiles: 'Test your connection to load quality profiles',
+  loadingrootfolders: 'Loading root folders…',
+  testFirstRootFolders: 'Test your connection to load root folders',
 });
 
 interface TestResponse {
@@ -86,7 +90,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
       intl.formatMessage(messages.validationPortRequired)
     ),
     apiKey: Yup.string().required(intl.formatMessage(messages.apiKey)),
-    rootFolder: Yup.string().required(intl.formatMessage(messages.rootfolder)),
+    rootFolder: Yup.string().required(
+      intl.formatMessage(messages.validationRootFolderRequired)
+    ),
     activeProfileId: Yup.string().required(
       intl.formatMessage(messages.validationProfileRequired)
     ),
@@ -179,7 +185,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
           baseUrl: radarr?.baseUrl,
           activeProfileId: radarr?.activeProfileId,
           rootFolder: radarr?.activeDirectory,
-          minimumAvailability: radarr?.minimumAvailability,
+          minimumAvailability: radarr?.minimumAvailability ?? 'released',
           isDefault: radarr?.isDefault ?? false,
           is4k: radarr?.is4k ?? false,
         }}
@@ -226,6 +232,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
           handleSubmit,
           setFieldValue,
           isSubmitting,
+          isValid,
         }) => {
           return (
             <Modal
@@ -258,7 +265,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               secondaryDisabled={
                 !values.apiKey || !values.hostname || !values.port || isTesting
               }
-              okDisabled={!isValidated || isSubmitting || isTesting}
+              okDisabled={!isValidated || isSubmitting || isTesting || !isValid}
               onOk={() => handleSubmit()}
               title={
                 !radarr
@@ -453,10 +460,17 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         as="select"
                         id="activeProfileId"
                         name="activeProfileId"
-                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
+                        disabled={!isValidated || isTesting}
+                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
-                          {intl.formatMessage(messages.selectQualityProfile)}
+                          {isTesting
+                            ? intl.formatMessage(messages.loadingprofiles)
+                            : !isValidated
+                            ? intl.formatMessage(
+                                messages.testFirstQualityProfiles
+                              )
+                            : intl.formatMessage(messages.selectQualityProfile)}
                         </option>
                         {testResponse.profiles.length > 0 &&
                           testResponse.profiles.map((profile) => (
@@ -489,10 +503,15 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         as="select"
                         id="rootFolder"
                         name="rootFolder"
-                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
+                        disabled={!isValidated || isTesting}
+                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
-                          {intl.formatMessage(messages.selectRootFolder)}
+                          {isTesting
+                            ? intl.formatMessage(messages.loadingrootfolders)
+                            : !isValidated
+                            ? intl.formatMessage(messages.testFirstRootFolders)
+                            : intl.formatMessage(messages.selectRootFolder)}
                         </option>
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
@@ -527,11 +546,6 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         name="minimumAvailability"
                         className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
-                        <option value="">
-                          {intl.formatMessage(
-                            messages.selectMinimumAvailability
-                          )}
-                        </option>
                         <option value="announced">Announced</option>
                         <option value="inCinemas">In Cinemas</option>
                         <option value="released">Released</option>

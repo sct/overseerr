@@ -40,6 +40,10 @@ const messages = defineMessages({
   server4k: '4K Server',
   selectQualityProfile: 'Select a Quality Profile',
   selectRootFolder: 'Select a Root Folder',
+  loadingprofiles: 'Loading quality profiles…',
+  testFirstQualityProfiles: 'Test your connection to load quality profiles',
+  loadingrootfolders: 'Loading root folders…',
+  testFirstRootFolders: 'Test your connection to load root folders',
 });
 
 interface TestResponse {
@@ -225,6 +229,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
           handleSubmit,
           setFieldValue,
           isSubmitting,
+          isValid,
         }) => {
           return (
             <Modal
@@ -257,7 +262,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               secondaryDisabled={
                 !values.apiKey || !values.hostname || !values.port || isTesting
               }
-              okDisabled={!isValidated || isSubmitting || isTesting}
+              okDisabled={!isValidated || isSubmitting || isTesting || !isValid}
               onOk={() => handleSubmit()}
               title={
                 !sonarr
@@ -452,10 +457,17 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         as="select"
                         id="activeProfileId"
                         name="activeProfileId"
-                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
+                        disabled={!isValidated || isTesting}
+                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
-                          {intl.formatMessage(messages.selectQualityProfile)}
+                          {isTesting
+                            ? intl.formatMessage(messages.loadingprofiles)
+                            : !isValidated
+                            ? intl.formatMessage(
+                                messages.testFirstQualityProfiles
+                              )
+                            : intl.formatMessage(messages.selectQualityProfile)}
                         </option>
                         {testResponse.profiles.length > 0 &&
                           testResponse.profiles.map((profile) => (
@@ -488,10 +500,15 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         as="select"
                         id="rootFolder"
                         name="rootFolder"
-                        className="mt-1 form-select block rounded-md w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
+                        disabled={!isValidated || isTesting}
+                        className="mt-1 form-select block rounded-md w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
-                          {intl.formatMessage(messages.selectRootFolder)}
+                          {isTesting
+                            ? intl.formatMessage(messages.loadingrootfolders)
+                            : !isValidated
+                            ? intl.formatMessage(messages.testFirstRootFolders)
+                            : intl.formatMessage(messages.selectRootFolder)}
                         </option>
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
