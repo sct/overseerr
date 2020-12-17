@@ -227,8 +227,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             )}
           </div>
           <h1 className="text-2xl md:text-4xl">
-            {data.name}{' '}
-            <span className="text-2xl">({data.firstAirDate.slice(0, 4)})</span>
+            <span>{data.name}</span>
+            {data.firstAirDate && (
+              <span className="text-2xl ml-2">
+                ({data.firstAirDate.slice(0, 4)})
+              </span>
+            )}
           </h1>
           <span className="text-xs md:text-base mt-1 md:mt-0">
             {data.genres.map((g) => g.name).join(', ')}
