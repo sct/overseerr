@@ -36,10 +36,18 @@ export class MediaRequest {
   })
   public media: Media;
 
-  @ManyToOne(() => User, (user) => user.requests, { eager: true })
+  @ManyToOne(() => User, (user) => user.requests, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   public requestedBy: User;
 
-  @ManyToOne(() => User, { nullable: true, cascade: true, eager: true })
+  @ManyToOne(() => User, {
+    nullable: true,
+    cascade: true,
+    eager: true,
+    onDelete: 'SET NULL',
+  })
   public modifiedBy?: User;
 
   @CreateDateColumn()

@@ -8,7 +8,7 @@ import { useIntl } from 'react-intl';
 import globalMessages from '../../../i18n/globalMessages';
 import Transition from '../../Transition';
 
-interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ModalProps {
   title?: string;
   onCancel?: (e?: MouseEvent<HTMLElement>) => void;
   onOk?: (e?: MouseEvent<HTMLButtonElement>) => void;
