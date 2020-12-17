@@ -135,6 +135,7 @@
   "components.Settings.RadarrModal.toastRadarrTestSuccess": "Radarr connection established!",
   "components.Settings.RadarrModal.validationApiKeyRequired": "You must provide an API key",
   "components.Settings.RadarrModal.validationHostnameRequired": "You must provide a hostname/IP",
+  "components.Settings.RadarrModal.validationMinimumAvailabilityRequired": "You must select minimum availability",
   "components.Settings.RadarrModal.validationNameRequired": "You must provide a server name",
   "components.Settings.RadarrModal.validationPortRequired": "You must provide a port",
   "components.Settings.RadarrModal.validationProfileRequired": "You must select a profile",

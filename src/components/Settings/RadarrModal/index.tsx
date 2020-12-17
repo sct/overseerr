@@ -17,6 +17,7 @@ const messages = defineMessages({
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
   validationProfileRequired: 'You must select a profile',
+  validationMinimumAvailabilityRequired: 'You must select minimum availability',
   toastRadarrTestSuccess: 'Radarr connection established!',
   toastRadarrTestFailure: 'Failed to connect to Radarr Server',
   saving: 'Saving...',
@@ -88,6 +89,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     rootFolder: Yup.string().required(intl.formatMessage(messages.rootfolder)),
     activeProfileId: Yup.string().required(
       intl.formatMessage(messages.validationProfileRequired)
+    ),
+    minimumAvailability: Yup.string().required(
+      intl.formatMessage(messages.validationMinimumAvailabilityRequired)
     ),
   });
 
@@ -534,6 +538,12 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         <option value="preDB">PreDB</option>
                       </Field>
                     </div>
+                    {errors.minimumAvailability &&
+                      touched.minimumAvailability && (
+                        <div className="text-red-500 mt-2">
+                          {errors.minimumAvailability}
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
