@@ -24,7 +24,7 @@ authRoutes.get('/me', isAuthenticated(), async (req, res) => {
   return res.status(200).json(user.filter());
 });
 
-authRoutes.post('/login', async (req, res) => {
+authRoutes.post('/login', async (req, res, next) => {
   const userRepository = getRepository(User);
   const body = req.body as { authToken?: string };
 
@@ -86,6 +86,22 @@ authRoutes.post('/login', async (req, res) => {
           avatar: account.thumb,
         });
         await userRepository.save(user);
+      } else {
+        logger.info(
+          'Failed login attempt from user without access to plex server',
+          {
+            label: 'Auth',
+            account: {
+              ...account,
+              authentication_token: '__REDACTED__',
+              authToken: '__REDACTED__',
+            },
+          }
+        );
+        return next({
+          status: 403,
+          message: 'You do not have access to this Plex server',
+        });
       }
     }
 
@@ -97,9 +113,10 @@ authRoutes.post('/login', async (req, res) => {
     return res.status(200).json(user?.filter() ?? {});
   } catch (e) {
     logger.error(e.message, { label: 'Auth' });
-    res
-      .status(500)
-      .json({ error: 'Something went wrong. Is your auth token valid?' });
+    return next({
+      status: 500,
+      message: 'Something went wrong. Is your auth token valid?',
+    });
   }
 });
 

@@ -12,23 +12,23 @@ const plexOAuth = new PlexOAuth();
 
 interface PlexLoginButtonProps {
   onAuthToken: (authToken: string) => void;
+  isProcessing?: boolean;
   onError?: (message: string) => void;
 }
 
 const PlexLoginButton: React.FC<PlexLoginButtonProps> = ({
   onAuthToken,
   onError,
+  isProcessing,
 }) => {
   const intl = useIntl();
   const [loading, setLoading] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   const getPlexLogin = async () => {
     setLoading(true);
     try {
       const authToken = await plexOAuth.login();
       setLoading(false);
-      setIsProcessing(true);
       onAuthToken(authToken);
     } catch (e) {
       if (onError) {
