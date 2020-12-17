@@ -5,6 +5,7 @@ const devConfig = {
   logging: false,
   entities: ['server/entity/**/*.ts'],
   migrations: ['server/migration/**/*.ts'],
+  subscribers: ['server/subscriber/**/*.ts'],
   cli: {
     entitiesDir: 'server/entity',
     migrationsDir: 'server/migration',
@@ -19,6 +20,7 @@ const prodConfig = {
   entities: ['dist/entity/**/*.js'],
   migrations: ['dist/migration/**/*.js'],
   migrationsRun: true,
+  subscribers: ['dist/subscriber/**/*.js'],
   cli: {
     entitiesDir: 'dist/entity',
     migrationsDir: 'dist/migration',

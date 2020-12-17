@@ -7,6 +7,7 @@ import { MediaStatus, MediaType } from '../../constants/media';
 import logger from '../../logger';
 import { getSettings, Library } from '../../lib/settings';
 import Season from '../../entity/Season';
+import { uniqWith } from 'lodash';
 
 const BUNDLE_SIZE = 20;
 const UPDATE_RATE = 4 * 1000;
@@ -326,7 +327,25 @@ class JobPlexSync {
             `Beginning to process recently added for library: ${library.name}`,
             'info'
           );
-          this.items = await this.plexClient.getRecentlyAdded(library.id);
+          const libraryItems = await this.plexClient.getRecentlyAdded(
+            library.id
+          );
+
+          // Bundle items up by rating keys
+          this.items = uniqWith(libraryItems, (mediaA, mediaB) => {
+            if (mediaA.grandparentRatingKey && mediaB.grandparentRatingKey) {
+              return (
+                mediaA.grandparentRatingKey === mediaB.grandparentRatingKey
+              );
+            }
+
+            if (mediaA.parentRatingKey && mediaB.parentRatingKey) {
+              return mediaA.parentRatingKey === mediaB.parentRatingKey;
+            }
+
+            return mediaA.ratingKey === mediaB.ratingKey;
+          });
+
           await this.loop();
         }
       } else {
