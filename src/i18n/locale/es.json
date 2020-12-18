@@ -321,5 +321,22 @@
   "components.Settings.applicationurl": "URL de la aplicación",
   "components.Settings.apikey": "Clave API",
   "components.Setup.tip": "Consejo",
-  "components.Setup.syncingbackground": "La sincronización se ejecutará en segundo plano. Mientras tanto, puede continuar con el proceso de configuración."
+  "components.Setup.syncingbackground": "La sincronización se ejecutará en segundo plano. Mientras tanto, puede continuar con el proceso de configuración.",
+  "i18n.deleting": "Eliminando…",
+  "components.UserList.userdeleteerror": "Algo salió mal al eliminar al usuario",
+  "components.UserList.userdeleted": "Usuario eliminado",
+  "components.UserList.deleteuser": "Eliminar usuario",
+  "components.UserList.deleteconfirm": "¿Está seguro de que desea eliminar este usuario? Se eliminarán todas las solicitudes existentes de este usuario.",
+  "components.Settings.nodefaultdescription": "Al menos un servidor debe estar marcado como predeterminado antes de que cualquier solicitud llegue a sus servicios.",
+  "components.Settings.nodefault": "¡Ningún servidor predeterminado seleccionado!",
+  "components.Settings.no4kimplemented": "(Los servidores 4K predeterminados no están implementados actualmente)",
+  "components.Settings.SonarrModal.testFirstRootFolders": "Prueba la conexión para cargar carpetas raíz",
+  "components.Settings.SonarrModal.testFirstQualityProfiles": "Prueba la conexión para cargar perfiles de calidad",
+  "components.Settings.SonarrModal.loadingrootfolders": "Cargando carpetas raíz…",
+  "components.Settings.SonarrModal.loadingprofiles": "Cargando perfiles de calidad…",
+  "components.Settings.RadarrModal.validationMinimumAvailabilityRequired": "Debes seleccionar disponibilidad mínima",
+  "components.Settings.RadarrModal.testFirstRootFolders": "Prueba la conexión para cargar carpetas raíz",
+  "components.Settings.RadarrModal.testFirstQualityProfiles": "Prueba la conexión para cargar perfiles de calidad",
+  "components.Settings.RadarrModal.loadingrootfolders": "Cargando carpetas raíz…",
+  "components.Settings.RadarrModal.loadingprofiles": "Cargando perfiles de calidad…"
 }
