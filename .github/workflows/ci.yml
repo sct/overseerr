@@ -55,5 +55,5 @@ jobs:
           tags: |
             sctx/overseerr:develop
             sctx/overseerr:${{ github.sha }}
-            ghcr.io/sctx/overseerr:develop
-            ghcr.io/sctx/overseerr:${{ github.sha }}
+            ghcr.io/sct/overseerr:develop
+            ghcr.io/sct/overseerr:${{ github.sha }}
