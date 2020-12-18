@@ -213,7 +213,7 @@ class Settings {
   }
 
   private generateApiKey(): string {
-    return Buffer.from(`${Date.now()}${this.clientId}`).toString('base64');
+    return Buffer.from(`${Date.now()}${uuidv4()})`).toString('base64');
   }
 
   /**

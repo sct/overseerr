@@ -436,12 +436,7 @@ components:
         spokenLanguages:
           type: array
           items:
-            type: object
-            properties:
-              iso_639_1:
-                type: string
-              name:
-                type: string
+            $ref: '#/components/schemas/SpokenLanguage'
         status:
           type: string
         tagline:
@@ -592,6 +587,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductionCompany'
+        spokenLanguages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpokenLanguage'
         seasons:
           type: array
           items:
@@ -617,6 +616,10 @@ components:
                 $ref: '#/components/schemas/Crew'
         externalIds:
           $ref: '#/components/schemas/ExternalIds'
+        keywords:
+          type: array
+          items:
+            $ref: '#/components/schemas/Keyword'
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
     MediaRequest:
@@ -961,6 +964,28 @@ components:
           type: string
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
+    Keyword:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: 'anime'
+    SpokenLanguage:
+      type: object
+      properties:
+        englishName:
+          type: string
+          example: 'English'
+          nullable: true
+        iso_639_1:
+          type: string
+          example: 'en'
+        name:
+          type: string
+          example: 'English'
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -975,7 +1000,7 @@ paths:
   /settings/main:
     get:
       summary: Returns main settings
-      description: Retreives all main settings in JSON format
+      description: Retrieves all main settings in JSON format
       tags:
         - settings
       responses:
@@ -999,6 +1024,19 @@ paths:
       responses:
         '200':
           description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MainSettings'
+  /settings/main/regenerate:
+    get:
+      summary: Returns main settings with newly generated API Key
+      description: Retreives all main settings in JSON format with new API Key
+      tags:
+        - settings
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -1140,7 +1178,7 @@ paths:
   /settings/radarr/test:
     post:
       summary: Test radarr configuration
-      description: Test if the provided Radarr congifuration values are valid. Returns profiles and root folders on success
+      description: Test if the provided Radarr configuration values are valid. Returns profiles and root folders on success
       tags:
         - settings
       requestBody:
@@ -1284,7 +1322,7 @@ paths:
   /settings/sonarr/test:
     post:
       summary: Test Sonarr configuration
-      description: Test if the provided Sonarr congifuration values are valid. Returns profiles and root folders on success
+      description: Test if the provided Sonarr configuration values are valid. Returns profiles and root folders on success
       tags:
         - settings
       requestBody:
@@ -1387,7 +1425,7 @@ paths:
   /settings/initialize:
     get:
       summary: Set the application as initialized
-      description: Sets the app as initalized and allows the user to navigate to pages other than the setup page
+      description: Sets the app as initialized and allows the user to navigate to pages other than the setup page
       tags:
         - settings
       responses:
@@ -1870,6 +1908,51 @@ paths:
                         - $ref: '#/components/schemas/MovieResult'
                         - $ref: '#/components/schemas/TvResult'
                         - $ref: '#/components/schemas/PersonResult'
+  /discover/keyword/{keywordId}/movies:
+    get:
+      summary: Request list of movies from keyword
+      description: Returns list of movies based on provided keyword ID in JSON format
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: keywordId
+          required: true
+          schema:
+            type: number
+            example: 207317
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieResult'
   /request:
     get:
       summary: Get all requests

@@ -7,6 +7,7 @@ import {
   mapCrew,
   ExternalIds,
   mapExternalIds,
+  Keyword,
 } from './common';
 import {
   TmdbTvEpisodeResult,
@@ -45,6 +46,12 @@ export interface SeasonWithEpisodes extends Season {
   externalIds: ExternalIds;
 }
 
+interface SpokenLanguage {
+  englishName: string;
+  iso_639_1: string;
+  name: string;
+}
+
 export interface TvDetails {
   id: number;
   backdropPath?: string;
@@ -74,6 +81,7 @@ export interface TvDetails {
   overview: string;
   popularity: number;
   productionCompanies: ProductionCompany[];
+  spokenLanguages: SpokenLanguage[];
   seasons: Season[];
   status: string;
   type: string;
@@ -84,6 +92,7 @@ export interface TvDetails {
     crew: Crew[];
   };
   externalIds: ExternalIds;
+  keywords: Keyword[];
   mediaInfo?: Media;
 }
 
@@ -161,6 +170,11 @@ export const mapTvDetails = (
     originCountry: company.origin_country,
     logoPath: company.logo_path,
   })),
+  spokenLanguages: show.spoken_languages.map((language) => ({
+    englishName: language.english_name,
+    iso_639_1: language.iso_639_1,
+    name: language.name,
+  })),
   seasons: show.seasons.map(mapSeasonResult),
   status: show.status,
   type: show.type,
@@ -179,5 +193,9 @@ export const mapTvDetails = (
     crew: show.credits.crew.map(mapCrew),
   },
   externalIds: mapExternalIds(show.external_ids),
+  keywords: show.keywords.results.map((keyword) => ({
+    id: keyword.id,
+    name: keyword.name,
+  })),
   mediaInfo: media,
 });

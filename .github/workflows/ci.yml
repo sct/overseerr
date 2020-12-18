@@ -29,13 +29,31 @@ jobs:
     if: github.ref == 'refs/heads/develop' && !contains(github.event.head_commit.message, 'skip ci')
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: Build and push to Docker Hub
-        uses: docker/build-push-action@v1
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: sctx/overseerr
-          build_args: COMMIT_TAG=${{ github.sha }}
-          tags: develop
+          password: ${{ secrets.DOCKER_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            sctx/overseerr:develop
+            sctx/overseerr:${{ github.sha }}
+            ghcr.io/sct/overseerr:develop
+            ghcr.io/sct/overseerr:${{ github.sha }}

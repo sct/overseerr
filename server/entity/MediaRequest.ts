@@ -15,11 +15,11 @@ import { User } from './User';
 import Media from './Media';
 import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
 import { getSettings } from '../lib/settings';
-import TheMovieDb from '../api/themoviedb';
+import TheMovieDb, { ANIME_KEYWORD_ID } from '../api/themoviedb';
 import RadarrAPI from '../api/radarr';
 import logger from '../logger';
 import SeasonRequest from './SeasonRequest';
-import SonarrAPI from '../api/sonarr';
+import SonarrAPI, { SonarrSeries } from '../api/sonarr';
 import notificationManager, { Notification } from '../lib/notifications';
 
 @Entity()
@@ -36,10 +36,18 @@ export class MediaRequest {
   })
   public media: Media;
 
-  @ManyToOne(() => User, (user) => user.requests, { eager: true })
+  @ManyToOne(() => User, (user) => user.requests, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   public requestedBy: User;
 
-  @ManyToOne(() => User, { nullable: true, cascade: true, eager: true })
+  @ManyToOne(() => User, {
+    nullable: true,
+    cascade: true,
+    eager: true,
+    onDelete: 'SET NULL',
+  })
   public modifiedBy?: User;
 
   @CreateDateColumn()
@@ -328,14 +336,32 @@ export class MediaRequest {
           throw new Error('Series was missing tvdb id');
         }
 
+        let seriesType: SonarrSeries['seriesType'] = 'standard';
+
+        // Change series type to anime if the anime keyword is present on tmdb
+        if (
+          series.keywords.results.some(
+            (keyword) => keyword.id === ANIME_KEYWORD_ID
+          )
+        ) {
+          seriesType = 'anime';
+        }
+
         // Run this asynchronously so we don't wait for it on the UI side
         sonarr.addSeries({
-          profileId: sonarrSettings.activeProfileId,
-          rootFolderPath: sonarrSettings.activeDirectory,
+          profileId:
+            seriesType === 'anime' && sonarrSettings.activeAnimeProfileId
+              ? sonarrSettings.activeAnimeProfileId
+              : sonarrSettings.activeProfileId,
+          rootFolderPath:
+            seriesType === 'anime' && sonarrSettings.activeAnimeDirectory
+              ? sonarrSettings.activeAnimeDirectory
+              : sonarrSettings.activeDirectory,
           title: series.name,
           tvdbid: series.external_ids.tvdb_id,
           seasons: this.seasons.map((season) => season.seasonNumber),
           seasonFolder: sonarrSettings.enableSeasonFolders,
+          seriesType,
           monitored: true,
           searchNow: true,
         });

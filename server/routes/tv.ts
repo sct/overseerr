@@ -4,6 +4,7 @@ import { mapTvDetails, mapSeasonWithEpisodes } from '../models/Tv';
 import { mapTvResult } from '../models/Search';
 import Media from '../entity/Media';
 import RottenTomatoes from '../api/rottentomatoes';
+import logger from '../logger';
 
 const tvRoutes = Router();
 
@@ -19,6 +20,10 @@ tvRoutes.get('/:id', async (req, res, next) => {
 
     return res.status(200).json(mapTvDetails(tv, media));
   } catch (e) {
+    logger.error('Failed to get tv show', {
+      label: 'API',
+      errorMessage: e.message,
+    });
     return next({ status: 404, message: 'TV Show does not exist' });
   }
 });

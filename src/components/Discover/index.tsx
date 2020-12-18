@@ -63,6 +63,12 @@ const Discover: React.FC = () => {
   } = useSWR<MovieDiscoverResult>(
     `/api/v1/discover/movies/upcoming?language=${locale}`
   );
+  const {
+    data: holUpcomingData,
+    error: holUpcomingError,
+  } = useSWR<MovieDiscoverResult>(
+    `/api/v1/discover/keyword/207317/movies?language=${locale}`
+  );
 
   const { data: trendingData, error: trendingError } = useSWR<MixedResult>(
     `/api/v1/discover/trending?language=${locale}`
@@ -140,6 +146,57 @@ const Discover: React.FC = () => {
         placeholder={<RequestCard.Placeholder />}
         emptyMessage={intl.formatMessage(messages.nopending)}
       />
+      {/* Special Temporary Slider */}
+      <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
+        <div className="flex-1 min-w-0">
+          <Link href="/discover/holiday">
+            <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+              <span>
+                <span role="img" aria-label="Christmas Tree" className="mr-2">
+                  🎄
+                </span>
+                Happy Holidays!
+                <span role="img" aria-label="Christmas Tree" className="ml-2">
+                  🎄
+                </span>
+              </span>
+              <svg
+                className="w-6 h-6 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </a>
+          </Link>
+        </div>
+      </div>
+      <Slider
+        sliderKey="holiday"
+        isLoading={!holUpcomingData && !holUpcomingError}
+        isEmpty={false}
+        items={holUpcomingData?.results.map((title) => (
+          <TitleCard
+            key={`holiday-movie-slider-${title.id}`}
+            id={title.id}
+            image={title.posterPath}
+            status={title.mediaInfo?.status}
+            summary={title.overview}
+            title={title.title}
+            userScore={title.voteAverage}
+            year={title.releaseDate}
+            mediaType={title.mediaType}
+          />
+        ))}
+      />
+      {/* End Special Temporary Slider */}
       <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
         <div className="flex-1 min-w-0">
           <Link href="/discover/movies/upcoming">

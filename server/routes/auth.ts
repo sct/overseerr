@@ -14,7 +14,7 @@ authRoutes.get('/me', isAuthenticated(), async (req, res) => {
     return res.status(500).json({
       status: 500,
       error:
-        'Requsted user endpoint withuot valid authenticated user in session',
+        'Requested user endpoint without valid authenticated user in session',
     });
   }
   const user = await userRepository.findOneOrFail({

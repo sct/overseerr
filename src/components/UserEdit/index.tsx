@@ -23,13 +23,12 @@ const messages = defineMessages({
     'Grants permission to manage Overseerr users. Users with this permission cannot modify users with Administrator privilege, or grant it.',
   settings: 'Manage Settings',
   settingsDescription:
-    'Grants permission to modify all Overseerr settings. User must have this permission to be able to grant it to others.',
+    'Grants permission to modify all Overseerr settings. A user must have this permission to grant it to others.',
   managerequests: 'Manage Requests',
   managerequestsDescription:
     'Grants permission to manage Overseerr requests. This includes approving and denying requests.',
   request: 'Request',
-  requestDescription:
-    'Grants permission to make requests for movies or tv shows.',
+  requestDescription: 'Grants permission to request movies and series.',
   vote: 'Vote',
   voteDescription:
     'Grants permission to vote on requests (voting not yet implemented)',
@@ -38,7 +37,7 @@ const messages = defineMessages({
     'Grants auto approval for any requests made by this user.',
   save: 'Save',
   saving: 'Saving...',
-  usersaved: 'User succesfully saved',
+  usersaved: 'User saved',
   userfail: 'Something went wrong saving the user.',
 });
 

@@ -23,16 +23,27 @@ import { getAppVersion } from '../utils/appVersion';
 
 const settingsRoutes = Router();
 
-settingsRoutes.get('/main', (req, res) => {
-  const settings = getSettings();
-
-  if (!req.user?.hasPermission(Permission.ADMIN)) {
-    return res.status(200).json({
-      applicationUrl: settings.main.applicationUrl,
-    } as Partial<MainSettings>);
+const filteredMainSettings = (
+  user: User,
+  main: MainSettings
+): Partial<MainSettings> => {
+  if (!user?.hasPermission(Permission.ADMIN)) {
+    return {
+      applicationUrl: main.applicationUrl,
+    };
   }
 
-  res.status(200).json(settings.main);
+  return main;
+};
+
+settingsRoutes.get('/main', (req, res, next) => {
+  const settings = getSettings();
+
+  if (!req.user) {
+    return next({ status: 500, message: 'User missing from request' });
+  }
+
+  res.status(200).json(filteredMainSettings(req.user, settings.main));
 });
 
 settingsRoutes.post('/main', (req, res) => {
@@ -42,6 +53,18 @@ settingsRoutes.post('/main', (req, res) => {
   settings.save();
 
   return res.status(200).json(settings.main);
+});
+
+settingsRoutes.get('/main/regenerate', (req, res, next) => {
+  const settings = getSettings();
+
+  const main = settings.regenerateApiKey();
+
+  if (!req.user) {
+    return next({ status: 500, message: 'User missing from request' });
+  }
+
+  return res.status(200).json(filteredMainSettings(req.user, main));
 });
 
 settingsRoutes.get('/plex', (_req, res) => {

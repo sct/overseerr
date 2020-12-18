@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
+export const ANIME_KEYWORD_ID = 210024;
+
 interface SearchOptions {
   query: string;
   page?: number;
@@ -258,6 +260,11 @@ export interface TmdbTvDetails {
     name: string;
     origin_country: string;
   }[];
+  spoken_languages: {
+    english_name: string;
+    iso_639_1: string;
+    name: string;
+  }[];
   seasons: TmdbTvSeasonResult[];
   status: string;
   type: string;
@@ -268,6 +275,14 @@ export interface TmdbTvDetails {
     crew: TmdbCreditCrew[];
   };
   external_ids: TmdbExternalIds;
+  keywords: {
+    results: TmdbKeyword[];
+  };
+}
+
+export interface TmdbKeyword {
+  id: number;
+  name: string;
 }
 
 export interface TmdbPersonDetail {
@@ -437,7 +452,10 @@ class TheMovieDb {
   }): Promise<TmdbTvDetails> => {
     try {
       const response = await this.axios.get<TmdbTvDetails>(`/tv/${tvId}`, {
-        params: { language, append_to_response: 'credits,external_ids' },
+        params: {
+          language,
+          append_to_response: 'credits,external_ids,keywords',
+        },
       });
 
       return response.data;
@@ -521,6 +539,32 @@ class TheMovieDb {
       return response.data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch discover movies: ${e.message}`);
+    }
+  }
+
+  public async getMoviesByKeyword({
+    keywordId,
+    page = 1,
+    language = 'en-US',
+  }: {
+    keywordId: number;
+    page?: number;
+    language?: string;
+  }): Promise<TmdbSearchMovieResponse> {
+    try {
+      const response = await this.axios.get<TmdbSearchMovieResponse>(
+        `/keyword/${keywordId}/movies`,
+        {
+          params: {
+            page,
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch movies by keyword: ${e.message}`);
     }
   }
 

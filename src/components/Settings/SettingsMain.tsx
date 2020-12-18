@@ -8,6 +8,7 @@ import axios from 'axios';
 import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import { useUser, Permission } from '../../hooks/useUser';
+import { useToasts } from 'react-toast-notifications';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -17,14 +18,36 @@ const messages = defineMessages({
   saving: 'Saving...',
   apikey: 'API Key',
   applicationurl: 'Application URL',
+  toastApiKeySuccess: 'New API Key generated!',
+  toastApiKeyFailure: 'Something went wrong generating a new API Key.',
+  toastSettingsSuccess: 'Settings saved.',
+  toastSettingsFailure: 'Something went wrong saving settings.',
 });
 
 const SettingsMain: React.FC = () => {
+  const { addToast } = useToasts();
   const { hasPermission } = useUser();
   const intl = useIntl();
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
   );
+
+  const regenerate = async () => {
+    try {
+      await axios.get('/api/v1/settings/main/regenerate');
+
+      revalidate();
+      addToast(intl.formatMessage(messages.toastApiKeySuccess), {
+        autoDismiss: true,
+        appearance: 'success',
+      });
+    } catch (e) {
+      addToast(intl.formatMessage(messages.toastApiKeyFailure), {
+        autoDismiss: true,
+        appearance: 'error',
+      });
+    }
+  };
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -50,8 +73,16 @@ const SettingsMain: React.FC = () => {
               await axios.post('/api/v1/settings/main', {
                 applicationUrl: values.applicationUrl,
               });
+
+              addToast(intl.formatMessage(messages.toastSettingsSuccess), {
+                autoDismiss: true,
+                appearance: 'success',
+              });
             } catch (e) {
-              // TODO show error
+              addToast(intl.formatMessage(messages.toastSettingsFailure), {
+                autoDismiss: true,
+                appearance: 'error',
+              });
             } finally {
               revalidate();
             }
@@ -77,8 +108,17 @@ const SettingsMain: React.FC = () => {
                           value={data?.apiKey}
                           readOnly
                         />
-                        <CopyButton textToCopy={data?.apiKey ?? ''} />
-                        <button className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-500 text-sm leading-5 font-medium rounded-r-md text-white bg-indigo-500  hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
+                        <CopyButton
+                          textToCopy={data?.apiKey ?? ''}
+                          key={data?.apiKey}
+                        />
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            regenerate();
+                          }}
+                          className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-500 text-sm leading-5 font-medium rounded-r-md text-white bg-indigo-500  hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                        >
                           <svg
                             className="w-5 h-5"
                             fill="currentColor"
