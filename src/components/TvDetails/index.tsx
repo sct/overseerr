@@ -29,6 +29,7 @@ import type { RTRating } from '../../../server/api/rottentomatoes';
 import Head from 'next/head';
 import globalMessages from '../../i18n/globalMessages';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
+import ExternalLinkBlock from '../ExternalLinkBlock';
 
 const messages = defineMessages({
   userrating: 'User Rating',
@@ -481,6 +482,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
+          </div>
+          <div className="mt-4">
+            <ExternalLinkBlock
+              mediaType="tv"
+              tmdbId={data.id}
+              imdbId={data.externalIds.imdbId}
+              rtUrl={ratingData?.url}
+            />
           </div>
         </div>
       </div>

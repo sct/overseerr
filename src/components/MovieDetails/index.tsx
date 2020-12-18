@@ -37,6 +37,7 @@ import type { RTRating } from '../../../server/api/rottentomatoes';
 import Error from '../../pages/_error';
 import Head from 'next/head';
 import globalMessages from '../../i18n/globalMessages';
+import ExternalLinkBlock from '../ExternalLinkBlock';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -511,6 +512,14 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
+          </div>
+          <div className="mt-4">
+            <ExternalLinkBlock
+              mediaType="movie"
+              tmdbId={data.id}
+              imdbId={data.externalIds.imdbId}
+              rtUrl={ratingData?.url}
+            />
           </div>
         </div>
       </div>
