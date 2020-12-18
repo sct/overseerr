@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/sct/overseerr/compare/v1.9.0...v1.9.1) (2020-12-18)
+
+
+### Bug Fixes
+
+* change default internal port to 5055 ([#389](https://github.com/sct/overseerr/issues/389)) ([5e5ba40](https://github.com/sct/overseerr/commit/5e5ba4050563f07bff367d2fb31ed7e7fca4291e))
+
 # [1.9.0](https://github.com/sct/overseerr/compare/v1.8.0...v1.9.0) (2020-12-18)
 
 
