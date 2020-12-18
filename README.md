@@ -54,7 +54,7 @@ Currently, Overseerr is only distributed through Docker images. If you have Dock
 docker run -d \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
-  -p 5055:3000 \
+  -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
   --restart unless-stopped \
   sctx/overseerr
@@ -76,7 +76,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ## API Documentation
 
-Full API documentation will soon be published automatically and available outside of running the app. Currently, you can access the API docs by running Overseerr locally and visiting http://localhost:3000/api-docs
+Full API documentation will soon be published automatically and available outside of running the app. Currently, you can access the API docs by running Overseerr locally and visiting http://localhost:5055/api-docs
 
 ## Community
 
@@ -124,4 +124,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->

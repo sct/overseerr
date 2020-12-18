@@ -100,7 +100,7 @@ app
       }
     );
 
-    const port = Number(process.env.PORT) || 3000;
+    const port = Number(process.env.PORT) || 5055;
     const host = process.env.HOST;
     if (host) {
       server.listen(port, host, () => {
