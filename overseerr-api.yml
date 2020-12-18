@@ -436,12 +436,7 @@ components:
         spokenLanguages:
           type: array
           items:
-            type: object
-            properties:
-              iso_639_1:
-                type: string
-              name:
-                type: string
+            $ref: '#/components/schemas/SpokenLanguage'
         status:
           type: string
         tagline:
@@ -592,6 +587,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductionCompany'
+        spokenLanguages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpokenLanguage'
         seasons:
           type: array
           items:
@@ -617,6 +616,10 @@ components:
                 $ref: '#/components/schemas/Crew'
         externalIds:
           $ref: '#/components/schemas/ExternalIds'
+        keywords:
+          type: array
+          items:
+            $ref: '#/components/schemas/Keyword'
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
     MediaRequest:
@@ -961,6 +964,28 @@ components:
           type: string
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
+    Keyword:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: 'anime'
+    SpokenLanguage:
+      type: object
+      properties:
+        englishName:
+          type: string
+          example: 'English'
+          nullable: true
+        iso_639_1:
+          type: string
+          example: 'en'
+        name:
+          type: string
+          example: 'English'
   securitySchemes:
     cookieAuth:
       type: apiKey

@@ -6,7 +6,7 @@ interface SonarrSeason {
   monitored: boolean;
 }
 
-interface SonarrSeries {
+export interface SonarrSeries {
   title: string;
   sortTitle: string;
   seasonCount: number;
@@ -33,7 +33,7 @@ interface SonarrSeries {
   tvMazeId: number;
   firstAired: string;
   lastInfoSync?: string;
-  seriesType: string;
+  seriesType: 'standard' | 'daily' | 'anime';
   cleanTitle: string;
   imdbId: string;
   titleSlug: string;
@@ -78,6 +78,7 @@ interface AddSeriesOptions {
   seasons: number[];
   seasonFolder: boolean;
   rootFolderPath: string;
+  seriesType: SonarrSeries['seriesType'];
   monitored?: boolean;
   searchNow?: boolean;
 }
@@ -153,6 +154,7 @@ class SonarrAPI {
           seasonFolder: options.seasonFolder,
           monitored: options.monitored,
           rootFolderPath: options.rootFolderPath,
+          seriesType: options.seriesType,
           addOptions: {
             ignoreEpisodesWithFiles: true,
             searchForMissingEpisodes: options.searchNow,
@@ -164,7 +166,7 @@ class SonarrAPI {
     } catch (e) {
       logger.error('Something went wrong adding a series to Sonarr', {
         label: 'Sonarr API',
-        message: e.message,
+        errorMessage: e.message,
         error: e,
       });
       throw new Error('Failed to add series');
