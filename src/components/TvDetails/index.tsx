@@ -28,6 +28,7 @@ import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import Head from 'next/head';
 import globalMessages from '../../i18n/globalMessages';
+import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
 
 const messages = defineMessages({
   userrating: 'User Rating',
@@ -56,6 +57,8 @@ const messages = defineMessages({
     'This will remove all media data including all requests for this item. This action is irreversible. If this item exists in your Plex library, the media information will be recreated next sync.',
   approve: 'Approve',
   decline: 'Decline',
+  showtype: 'Show Type',
+  anime: 'Anime',
 });
 
 interface TvDetailsProps {
@@ -429,6 +432,18 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     </span>
                   </>
                 )}
+              </div>
+            )}
+            {data.keywords.some(
+              (keyword) => keyword.id === ANIME_KEYWORD_ID
+            ) && (
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  {intl.formatMessage(messages.showtype)}
+                </span>
+                <span className="flex-1 text-right text-gray-400 text-sm">
+                  {intl.formatMessage(messages.anime)}
+                </span>
               </div>
             )}
             <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">

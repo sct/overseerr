@@ -36,6 +36,8 @@ const messages = defineMessages({
   baseUrlPlaceholder: 'Example: /sonarr',
   qualityprofile: 'Quality Profile',
   rootfolder: 'Root Folder',
+  animequalityprofile: 'Anime Quality Profile',
+  animerootfolder: 'Anime Root Folder',
   seasonfolders: 'Season Folders',
   server4k: '4K Server',
   selectQualityProfile: 'Select a Quality Profile',
@@ -182,6 +184,8 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
           baseUrl: sonarr?.baseUrl,
           activeProfileId: sonarr?.activeProfileId,
           rootFolder: sonarr?.activeDirectory,
+          activeAnimeProfileId: sonarr?.activeAnimeProfileId,
+          activeAnimeRootFolder: sonarr?.activeAnimeDirectory,
           isDefault: sonarr?.isDefault ?? false,
           is4k: sonarr?.is4k ?? false,
           enableSeasonFolders: sonarr?.enableSeasonFolders ?? false,
@@ -191,6 +195,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
           try {
             const profileName = testResponse.profiles.find(
               (profile) => profile.id === Number(values.activeProfileId)
+            )?.name;
+            const animeProfileName = testResponse.profiles.find(
+              (profile) => profile.id === Number(values.activeAnimeProfileId)
             )?.name;
 
             const submission = {
@@ -203,6 +210,11 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               activeProfileId: Number(values.activeProfileId),
               activeProfileName: profileName,
               activeDirectory: values.rootFolder,
+              activeAnimeProfileId: values.activeAnimeProfileId
+                ? Number(values.activeAnimeProfileId)
+                : undefined,
+              activeAnimeProfileName: animeProfileName ?? undefined,
+              activeAnimeDirectory: values.activeAnimeRootFolder,
               is4k: values.is4k,
               isDefault: values.isDefault,
               enableSeasonFolders: values.enableSeasonFolders,
@@ -526,6 +538,92 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         {errors.rootFolder}
                       </div>
                     )}
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                  <label
+                    htmlFor="activeAnimeProfileId"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                  >
+                    {intl.formatMessage(messages.animequalityprofile)}
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg flex rounded-md shadow-sm">
+                      <Field
+                        as="select"
+                        id="activeAnimeProfileId"
+                        name="activeAnimeProfileId"
+                        disabled={!isValidated || isTesting}
+                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
+                      >
+                        <option value="">
+                          {isTesting
+                            ? intl.formatMessage(messages.loadingprofiles)
+                            : !isValidated
+                            ? intl.formatMessage(
+                                messages.testFirstQualityProfiles
+                              )
+                            : intl.formatMessage(messages.selectQualityProfile)}
+                        </option>
+                        {testResponse.profiles.length > 0 &&
+                          testResponse.profiles.map((profile) => (
+                            <option
+                              key={`loaded-profile-${profile.id}`}
+                              value={profile.id}
+                            >
+                              {profile.name}
+                            </option>
+                          ))}
+                      </Field>
+                    </div>
+                    {errors.activeAnimeProfileId &&
+                      touched.activeAnimeProfileId && (
+                        <div className="text-red-500 mt-2">
+                          {errors.activeAnimeProfileId}
+                        </div>
+                      )}
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                  <label
+                    htmlFor="activeAnimeRootFolder"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                  >
+                    {intl.formatMessage(messages.animerootfolder)}
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg flex rounded-md shadow-sm">
+                      <Field
+                        as="select"
+                        id="activeAnimeRootFolder"
+                        name="activeAnimeRootFolder"
+                        disabled={!isValidated || isTesting}
+                        className="mt-1 form-select block rounded-md w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
+                      >
+                        <option value="">
+                          {isTesting
+                            ? intl.formatMessage(messages.loadingrootfolders)
+                            : !isValidated
+                            ? intl.formatMessage(messages.testFirstRootFolders)
+                            : intl.formatMessage(messages.selectRootFolder)}
+                        </option>
+                        {testResponse.rootFolders.length > 0 &&
+                          testResponse.rootFolders.map((folder) => (
+                            <option
+                              key={`loaded-profile-${folder.id}`}
+                              value={folder.path}
+                            >
+                              {folder.path}
+                            </option>
+                          ))}
+                      </Field>
+                    </div>
+                    {errors.activeAnimeRootFolder &&
+                      touched.activeAnimeRootFolder && (
+                        <div className="text-red-500 mt-2">
+                          {errors.rootFolder}
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
