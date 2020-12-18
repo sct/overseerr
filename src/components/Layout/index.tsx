@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import SearchInput from './SearchInput';
 import UserDropdown from './UserDropdown';
 import Sidebar from './Sidebar';
-import Notifications from './Notifications';
 import LanguagePicker from './LanguagePicker';
 import { useRouter } from 'next/router';
 import { defineMessages, FormattedMessage } from 'react-intl';
@@ -47,7 +46,6 @@ const Layout: React.FC = ({ children }) => {
             <SearchInput />
             <div className="ml-4 flex items-center md:ml-6">
               <LanguagePicker />
-              <Notifications />
               <UserDropdown />
             </div>
           </div>
