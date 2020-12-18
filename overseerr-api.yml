@@ -1895,6 +1895,51 @@ paths:
                         - $ref: '#/components/schemas/MovieResult'
                         - $ref: '#/components/schemas/TvResult'
                         - $ref: '#/components/schemas/PersonResult'
+  /discover/keyword/{keywordId}/movies:
+    get:
+      summary: Request list of movies from keyword
+      description: Returns list of movies based on provided keyword ID in JSON format
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: keywordId
+          required: true
+          schema:
+            type: number
+            example: 207317
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieResult'
   /request:
     get:
       summary: Get all requests

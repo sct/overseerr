@@ -542,6 +542,32 @@ class TheMovieDb {
     }
   }
 
+  public async getMoviesByKeyword({
+    keywordId,
+    page = 1,
+    language = 'en-US',
+  }: {
+    keywordId: number;
+    page?: number;
+    language?: string;
+  }): Promise<TmdbSearchMovieResponse> {
+    try {
+      const response = await this.axios.get<TmdbSearchMovieResponse>(
+        `/keyword/${keywordId}/movies`,
+        {
+          params: {
+            page,
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch movies by keyword: ${e.message}`);
+    }
+  }
+
   public async getTvRecommendations({
     tvId,
     page = 1,

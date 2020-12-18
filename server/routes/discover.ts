@@ -121,4 +121,36 @@ discoverRoutes.get('/trending', async (req, res) => {
   });
 });
 
+discoverRoutes.get<{ keywordId: string }>(
+  '/keyword/:keywordId/movies',
+  async (req, res) => {
+    const tmdb = new TheMovieDb();
+
+    const data = await tmdb.getMoviesByKeyword({
+      keywordId: Number(req.params.keywordId),
+      page: Number(req.query.page),
+      language: req.query.language as string,
+    });
+
+    const media = await Media.getRelatedMedia(
+      data.results.map((result) => result.id)
+    );
+
+    return res.status(200).json({
+      page: data.page,
+      totalPages: data.total_pages,
+      totalResults: data.total_results,
+      results: data.results.map((result) =>
+        mapMovieResult(
+          result,
+          media.find(
+            (req) =>
+              req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+          )
+        )
+      ),
+    });
+  }
+);
+
 export default discoverRoutes;
