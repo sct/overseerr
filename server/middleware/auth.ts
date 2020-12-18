@@ -40,7 +40,7 @@ export const isAuthenticated = (
     if (!req.user || !req.user.hasPermission(permissions ?? 0)) {
       res.status(403).json({
         status: 403,
-        error: 'You do not have permisson to access this endpoint',
+        error: 'You do not have permission to access this endpoint',
       });
     } else {
       next();

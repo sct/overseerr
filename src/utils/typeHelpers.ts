@@ -3,7 +3,7 @@ export type Nullable<T> = T | null;
 export type Maybe<T> = T | null | undefined;
 
 /**
- * Helps type objects with an abitrary number of properties that are
+ * Helps type objects with an arbitrary number of properties that are
  * usually being defined at export.
  *
  * @param component Main object you want to apply properties to

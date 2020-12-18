@@ -1000,7 +1000,7 @@ paths:
   /settings/main:
     get:
       summary: Returns main settings
-      description: Retreives all main settings in JSON format
+      description: Retrieves all main settings in JSON format
       tags:
         - settings
       responses:
@@ -1178,7 +1178,7 @@ paths:
   /settings/radarr/test:
     post:
       summary: Test radarr configuration
-      description: Test if the provided Radarr congifuration values are valid. Returns profiles and root folders on success
+      description: Test if the provided Radarr configuration values are valid. Returns profiles and root folders on success
       tags:
         - settings
       requestBody:
@@ -1322,7 +1322,7 @@ paths:
   /settings/sonarr/test:
     post:
       summary: Test Sonarr configuration
-      description: Test if the provided Sonarr congifuration values are valid. Returns profiles and root folders on success
+      description: Test if the provided Sonarr configuration values are valid. Returns profiles and root folders on success
       tags:
         - settings
       requestBody:
@@ -1425,7 +1425,7 @@ paths:
   /settings/initialize:
     get:
       summary: Set the application as initialized
-      description: Sets the app as initalized and allows the user to navigate to pages other than the setup page
+      description: Sets the app as initialized and allows the user to navigate to pages other than the setup page
       tags:
         - settings
       responses:
