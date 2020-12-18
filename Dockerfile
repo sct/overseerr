@@ -25,4 +25,4 @@ COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
 
 CMD yarn start
 
-EXPOSE 3000
+EXPOSE 5055
