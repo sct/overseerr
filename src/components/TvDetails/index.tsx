@@ -59,6 +59,7 @@ const messages = defineMessages({
   decline: 'Decline',
   showtype: 'Show Type',
   anime: 'Anime',
+  network: 'Network',
 });
 
 interface TvDetailsProps {
@@ -454,14 +455,32 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 {data.status}
               </span>
             </div>
-            <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
-              <span className="text-sm">
-                <FormattedMessage {...messages.originallanguage} />
-              </span>
-              <span className="flex-1 text-right text-gray-400 text-sm">
-                {data.originalLanguage}
-              </span>
-            </div>
+            {data.spokenLanguages.some(
+              (lng) => lng.iso_639_1 === data.originalLanguage
+            ) && (
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.originallanguage} />
+                </span>
+                <span className="flex-1 text-right text-gray-400 text-sm">
+                  {
+                    data.spokenLanguages.find(
+                      (lng) => lng.iso_639_1 === data.originalLanguage
+                    )?.name
+                  }
+                </span>
+              </div>
+            )}
+            {data.networks.length > 0 && (
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.network} />
+                </span>
+                <span className="flex-1 text-right text-gray-400 text-sm">
+                  {data.networks.map((n) => n.name).join(', ')}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
