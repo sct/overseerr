@@ -101,11 +101,20 @@ app
     );
 
     const port = Number(process.env.PORT) || 3000;
-    server.listen(port, () => {
-      logger.info(`Server ready on port ${port}`, {
-        label: 'Server',
+    const host = process.env.HOST;
+    if (host) {
+      server.listen(port, host, () => {
+        logger.info(`Server ready on ${host} port ${port}`, {
+          label: 'Server',
+        });
       });
-    });
+    } else {
+      server.listen(port, () => {
+        logger.info(`Server ready on port ${port}`, {
+          label: 'Server',
+        });
+      });
+    }
   })
   .catch((err) => {
     logger.error(err.stack);
