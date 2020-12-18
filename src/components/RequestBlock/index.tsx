@@ -43,26 +43,30 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
 
   return (
     <div className="block">
-      <div className="px-4 py-4 sm:px-6 ">
+      <div className="px-4 py-4 sm:px-6">
         <div className="flex items-center justify-between">
-          <div className="mr-6 flex items-center text-sm leading-5 text-gray-300">
-            <svg
-              className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>{request.requestedBy.username}</span>
+          <div className="mr-6 flex-col items-center text-sm leading-5 text-gray-300 flex-1 min-w-0">
+            <div className="flex flex-nowrap mb-1 white">
+              <svg
+                className="min-w-0 flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="truncate w-40 md:w-auto">
+                {request.requestedBy.username}
+              </span>
+            </div>
             {request.modifiedBy && (
-              <>
+              <div className="flex flex-nowrap">
                 <svg
-                  className="flex-shrink-0 ml-2 mr-1.5 h-5 w-5 text-gray-300"
+                  className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -74,8 +78,10 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>{request.modifiedBy?.username}</span>
-              </>
+                <span className="truncate w-40 md:w-auto">
+                  {request.modifiedBy?.username}
+                </span>
+              </div>
             )}
           </div>
           <div className="ml-2 flex-shrink-0 flex">
@@ -189,13 +195,18 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
           </div>
         </div>
         {(request.seasons ?? []).length > 0 && (
-          <div className="mt-2 text-sm flex items-center">
-            <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
-            {request.seasons.map((season) => (
-              <span key={`season-${season.id}`} className="mr-2">
-                <Badge>{season.seasonNumber}</Badge>
-              </span>
-            ))}
+          <div className="mt-2 text-sm flex flex-col">
+            <div className="mb-2">{intl.formatMessage(messages.seasons)}</div>
+            <div>
+              {request.seasons.map((season) => (
+                <span
+                  key={`season-${season.id}`}
+                  className="mr-2 mb-1 inline-block"
+                >
+                  <Badge>{season.seasonNumber}</Badge>
+                </span>
+              ))}
+            </div>
           </div>
         )}
       </div>
