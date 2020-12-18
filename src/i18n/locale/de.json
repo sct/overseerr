@@ -321,5 +321,22 @@
   "components.Settings.SettingsAbout.clickheretojoindiscord": "Klicken Sie hier, um unserem Discord-Server beizutreten.",
   "components.Settings.RadarrModal.validationNameRequired": "Sie müssen einen Servernamen angeben",
   "components.Setup.tip": "Tipp",
-  "components.Setup.syncingbackground": "Die Synchronisierung wird im Hintergrund ausgeführt. Sie können die Konfiguration in der Zwischenzeit fortsetzen."
+  "components.Setup.syncingbackground": "Die Synchronisierung wird im Hintergrund ausgeführt. Sie können die Konfiguration in der Zwischenzeit fortsetzen.",
+  "i18n.deleting": "Löschen …",
+  "components.UserList.userdeleteerror": "Beim Löschen des Benutzers ist ein Fehler aufgetreten",
+  "components.UserList.userdeleted": "Benutzer gelöscht",
+  "components.UserList.deleteuser": "Benutzer löschen",
+  "components.UserList.deleteconfirm": "Wollen Sie diesen Benutzer wirklich löschen? Alle vorhandenen Anforderungsdaten dieses Benutzers werden entfernt.",
+  "components.Settings.nodefaultdescription": "Mindestens ein Server muss als Standard markiert sein, bevor Anforderungen an Ihre Dienste weitergeleitet werden.",
+  "components.Settings.nodefault": "Kein Standardserver ausgewählt!",
+  "components.Settings.no4kimplemented": "(Standard-4K-Server sind derzeit nicht implementiert.)",
+  "components.Settings.SonarrModal.testFirstRootFolders": "Testen Sie Ihre Verbindung, um Stammordner zu laden",
+  "components.Settings.SonarrModal.testFirstQualityProfiles": "Testen Sie Ihre Verbindung, um Qualitätsprofile zu laden",
+  "components.Settings.SonarrModal.loadingrootfolders": "Laden von Stammordnern…",
+  "components.Settings.SonarrModal.loadingprofiles": "Qualitätsprofile werden geladen…",
+  "components.Settings.RadarrModal.validationMinimumAvailabilityRequired": "Sie müssen die Mindestverfügbarkeit auswählen",
+  "components.Settings.RadarrModal.testFirstRootFolders": "Testen Sie Ihre Verbindung, um Stammordner zu laden",
+  "components.Settings.RadarrModal.testFirstQualityProfiles": "Testen Sie Ihre Verbindung zu Lastqualitätsprofilen",
+  "components.Settings.RadarrModal.loadingrootfolders": "Laden von Stammordnern…",
+  "components.Settings.RadarrModal.loadingprofiles": "Qualitätsprofile werden geladen…"
 }
