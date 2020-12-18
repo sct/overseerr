@@ -171,7 +171,8 @@
           "prepareCmd": "docker build -t sctx/overseerr ."
         }
       ],
-      "semantic-release-docker"
+      "semantic-release-docker",
+      "@semantic-release/github"
     ],
     "branches": [
       "master"
