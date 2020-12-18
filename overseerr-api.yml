@@ -1028,6 +1028,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MainSettings'
+  /settings/main/regenerate:
+    get:
+      summary: Returns main settings with newly generated API Key
+      description: Retreives all main settings in JSON format with new API Key
+      tags:
+        - settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MainSettings'
   /settings/plex:
     get:
       summary: Returns plex settings
