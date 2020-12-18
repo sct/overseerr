@@ -321,5 +321,22 @@
   "components.Settings.SettingsAbout.clickheretojoindiscord": "Cliquez ici pour rejoindre notre serveur Discord.",
   "components.Settings.RadarrModal.validationNameRequired": "Vous devez fournir un nom de serveur",
   "components.Setup.tip": "Astuce",
-  "components.Setup.syncingbackground": "La synchronisation s'exécutera en arrière-plan. Vous pouvez continuer le processus de configuration en attendant."
+  "components.Setup.syncingbackground": "La synchronisation s'exécutera en arrière-plan. Vous pouvez continuer le processus de configuration en attendant.",
+  "i18n.deleting": "Suppression…",
+  "components.UserList.userdeleteerror": "Une erreur s'est produite lors de la suppression de l'utilisateur",
+  "components.UserList.userdeleted": "Utilisateur supprimé",
+  "components.UserList.deleteuser": "Supprimer l'utilisateur",
+  "components.UserList.deleteconfirm": "Voulez-vous vraiment supprimer cet utilisateur ? Toutes les données de demande existantes de cet utilisateur seront supprimées.",
+  "components.Settings.nodefaultdescription": "Au moins un serveur doit être marqué par défaut avant que toute demande parvienne à vos services.",
+  "components.Settings.nodefault": "Aucun serveur par défaut sélectionné !",
+  "components.Settings.no4kimplemented": "(Les serveurs 4K par défaut ne sont actuellement pas implémentés)",
+  "components.Settings.SonarrModal.testFirstRootFolders": "Testez votre connexion pour charger les dossiers racine",
+  "components.Settings.SonarrModal.testFirstQualityProfiles": "Testez votre connexion pour charger des profils qualité",
+  "components.Settings.SonarrModal.loadingrootfolders": "Chargement des dossiers racine…",
+  "components.Settings.SonarrModal.loadingprofiles": "Chargement des profils qualité…",
+  "components.Settings.RadarrModal.validationMinimumAvailabilityRequired": "Vous devez sélectionner une disponibilité minimale",
+  "components.Settings.RadarrModal.testFirstRootFolders": "Testez votre connexion pour charger les dossiers racine",
+  "components.Settings.RadarrModal.testFirstQualityProfiles": "Testez votre connexion pour charger des profils qualité",
+  "components.Settings.RadarrModal.loadingrootfolders": "Chargement des dossiers racine…",
+  "components.Settings.RadarrModal.loadingprofiles": "Chargement des profils qualité…"
 }
