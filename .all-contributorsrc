@@ -153,6 +153,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mazzetta86",
+      "name": "mazzetta86",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/45591560?v=4",
+      "profile": "https://github.com/mazzetta86",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "Panzer1119",
+      "name": "Paul Hagedorn",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/23016343?v=4",
+      "profile": "https://github.com/Panzer1119",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",

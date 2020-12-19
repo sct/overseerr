@@ -14,6 +14,7 @@ const messages = defineMessages({
   gettingsupport: 'Getting Support',
   githubdiscussions: 'GitHub Discussions',
   clickheretojoindiscord: 'Click here to join our Discord server.',
+  timezone: 'Timezone',
 });
 
 const SettingsAbout: React.FC = () => {
@@ -47,6 +48,11 @@ const SettingsAbout: React.FC = () => {
           <List.Item title={intl.formatMessage(messages.totalrequests)}>
             <FormattedNumber value={data.totalRequests} />
           </List.Item>
+          {data.tz && (
+            <List.Item title={intl.formatMessage(messages.timezone)}>
+              {data.tz}
+            </List.Item>
+          )}
         </List>
       </div>
       <div className="mb-8">

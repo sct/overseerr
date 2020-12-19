@@ -106,7 +106,7 @@ tvRoutes.get('/:id/ratings', async (req, res, next) => {
 
   const rtratings = await rtapi.getTVRatings(
     tv.name,
-    Number(tv.first_air_date.slice(0, 4))
+    tv.first_air_date ? Number(tv.first_air_date.slice(0, 4)) : undefined
   );
 
   if (!rtratings) {

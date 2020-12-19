@@ -29,6 +29,7 @@ import type { RTRating } from '../../../server/api/rottentomatoes';
 import Head from 'next/head';
 import globalMessages from '../../i18n/globalMessages';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
+import ExternalLinkBlock from '../ExternalLinkBlock';
 
 const messages = defineMessages({
   userrating: 'User Rating',
@@ -136,6 +137,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       revalidate();
     }
   };
+
+  const isComplete =
+    data.seasons.filter((season) => season.seasonNumber !== 0).length <=
+    (
+      data.mediaInfo?.seasons.filter(
+        (season) => season.status === MediaStatus.AVAILABLE
+      ) ?? []
+    ).length;
 
   return (
     <div
@@ -266,89 +275,91 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               <FormattedMessage {...messages.request} />
             </Button>
           )}
-          {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
-            <ButtonWithDropdown
-              dropdownIcon={
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              }
-              text={
-                <>
+          {data.mediaInfo &&
+            data.mediaInfo.status !== MediaStatus.UNKNOWN &&
+            !isComplete && (
+              <ButtonWithDropdown
+                dropdownIcon={
                   <svg
-                    className="w-4 mr-1"
+                    className="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
                       fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
                       clipRule="evenodd"
                     />
                   </svg>
-                  <FormattedMessage {...messages.requestmore} />
-                </>
-              }
-              onClick={() => setShowRequestModal(true)}
-            >
-              {hasPermission(Permission.MANAGE_REQUESTS) &&
-                activeRequests &&
-                activeRequests.length > 0 && (
+                }
+                text={
                   <>
-                    <ButtonWithDropdown.Item
-                      onClick={() => modifyRequests('approve')}
+                    <svg
+                      className="w-4 mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <svg
-                        className="w-4 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <FormattedMessage
-                        {...messages.approverequests}
-                        values={{ requestCount: activeRequests.length }}
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clipRule="evenodd"
                       />
-                    </ButtonWithDropdown.Item>
-                    <ButtonWithDropdown.Item
-                      onClick={() => modifyRequests('decline')}
-                    >
-                      <svg
-                        className="w-4 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <FormattedMessage
-                        {...messages.declinerequests}
-                        values={{ requestCount: activeRequests.length }}
-                      />
-                    </ButtonWithDropdown.Item>
+                    </svg>
+                    <FormattedMessage {...messages.requestmore} />
                   </>
-                )}
-            </ButtonWithDropdown>
-          )}
+                }
+                onClick={() => setShowRequestModal(true)}
+              >
+                {hasPermission(Permission.MANAGE_REQUESTS) &&
+                  activeRequests &&
+                  activeRequests.length > 0 && (
+                    <>
+                      <ButtonWithDropdown.Item
+                        onClick={() => modifyRequests('approve')}
+                      >
+                        <svg
+                          className="w-4 mr-1"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <FormattedMessage
+                          {...messages.approverequests}
+                          values={{ requestCount: activeRequests.length }}
+                        />
+                      </ButtonWithDropdown.Item>
+                      <ButtonWithDropdown.Item
+                        onClick={() => modifyRequests('decline')}
+                      >
+                        <svg
+                          className="w-4 mr-1"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <FormattedMessage
+                          {...messages.declinerequests}
+                          values={{ requestCount: activeRequests.length }}
+                        />
+                      </ButtonWithDropdown.Item>
+                    </>
+                  )}
+              </ButtonWithDropdown>
+            )}
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
               buttonType="default"
@@ -395,34 +406,36 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           <div className="bg-gray-900 rounded-lg shadow border border-gray-800">
             {(data.voteCount > 0 || ratingData) && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0 items-center justify-center">
-                {ratingData?.criticsRating && (
-                  <>
-                    <span className="text-sm">
-                      {ratingData.criticsRating === 'Rotten' ? (
-                        <RTRotten className="w-6 mr-1" />
-                      ) : (
-                        <RTFresh className="w-6 mr-1" />
-                      )}
-                    </span>
-                    <span className="text-gray-400 text-sm mr-4 last:mr-0">
-                      {ratingData.criticsScore}%
-                    </span>
-                  </>
-                )}
-                {ratingData?.audienceRating && (
-                  <>
-                    <span className="text-sm">
-                      {ratingData.audienceRating === 'Spilled' ? (
-                        <RTAudRotten className="w-6 mr-1" />
-                      ) : (
-                        <RTAudFresh className="w-6 mr-1" />
-                      )}
-                    </span>
-                    <span className="text-gray-400 text-sm mr-4 last:mr-0">
-                      {ratingData.audienceScore}%
-                    </span>
-                  </>
-                )}
+                {ratingData?.criticsRating &&
+                  (ratingData?.criticsScore ?? 0) > 0 && (
+                    <>
+                      <span className="text-sm">
+                        {ratingData.criticsRating === 'Rotten' ? (
+                          <RTRotten className="w-6 mr-1" />
+                        ) : (
+                          <RTFresh className="w-6 mr-1" />
+                        )}
+                      </span>
+                      <span className="text-gray-400 text-sm mr-4 last:mr-0">
+                        {ratingData.criticsScore}%
+                      </span>
+                    </>
+                  )}
+                {ratingData?.audienceRating &&
+                  (ratingData?.audienceScore ?? 0) > 0 && (
+                    <>
+                      <span className="text-sm">
+                        {ratingData.audienceRating === 'Spilled' ? (
+                          <RTAudRotten className="w-6 mr-1" />
+                        ) : (
+                          <RTAudFresh className="w-6 mr-1" />
+                        )}
+                      </span>
+                      <span className="text-gray-400 text-sm mr-4 last:mr-0">
+                        {ratingData.audienceScore}%
+                      </span>
+                    </>
+                  )}
                 {data.voteCount > 0 && (
                   <>
                     <span className="text-sm">
@@ -481,6 +494,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
+          </div>
+          <div className="mt-4">
+            <ExternalLinkBlock
+              mediaType="tv"
+              tmdbId={data.id}
+              imdbId={data.externalIds.imdbId}
+              rtUrl={ratingData?.url}
+            />
           </div>
         </div>
       </div>

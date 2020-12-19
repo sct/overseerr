@@ -172,7 +172,12 @@
         }
       ],
       "semantic-release-docker",
-      "@semantic-release/github"
+      [
+        "@semantic-release/github",
+        {
+          "addReleases": "top"
+        }
+      ]
     ],
     "branches": [
       "master"
@@ -182,7 +187,8 @@
       {
         "path": "semantic-release-docker",
         "name": "sctx/overseerr"
-      }
+      },
+      "@semantic-release/github"
     ]
   }
 }

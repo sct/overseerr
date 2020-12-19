@@ -52,6 +52,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          build-args: |
+            COMMIT_TAG=${{ github.sha }}
           tags: |
             sctx/overseerr:develop
             sctx/overseerr:${{ github.sha }}
