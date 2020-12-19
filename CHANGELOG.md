@@ -1,3 +1,22 @@
+# [1.10.0](https://github.com/sct/overseerr/compare/v1.9.1...v1.10.0) (2020-12-19)
+
+
+### Bug Fixes
+
+* **email:** fix link to Overseerr in email templates ([816fec1](https://github.com/sct/overseerr/commit/816fec1a83a53edb3b65c3e5e7d0e6e1bd49726d)), closes [#392](https://github.com/sct/overseerr/issues/392)
+* **frontend:** adjust padding of search box so placeholder text fits on mobile ([3601d44](https://github.com/sct/overseerr/commit/3601d442db32d3f98f7b050365c11ea8ef9bc4ae)), closes [#393](https://github.com/sct/overseerr/issues/393)
+* **frontend:** changed request block for slideover on mobile UI ([#387](https://github.com/sct/overseerr/issues/387)) ([549567a](https://github.com/sct/overseerr/commit/549567a7e9db01933546d9970fc06f17218dfab1))
+* **frontend:** hide Request More button if all current seasons are available ([2a4dd52](https://github.com/sct/overseerr/commit/2a4dd52275007e48f946c3b9e29f1d78da57bdaa)), closes [#343](https://github.com/sct/overseerr/issues/343)
+* **frontend:** try not to render broken rottentomatoes data ([a0c5608](https://github.com/sct/overseerr/commit/a0c5608aa0b6c7a4294300589efa9a662163ce48))
+
+
+### Features
+
+* **lang:** translations update from Weblate ([#391](https://github.com/sct/overseerr/issues/391)) ([5f71fb7](https://github.com/sct/overseerr/commit/5f71fb7ee280714275d2ac045c472fcdddd5a2ea))
+* add missing tzdata package to image ([53bede6](https://github.com/sct/overseerr/commit/53bede692d4f0e940dededa63015fe1908129914)), closes [#394](https://github.com/sct/overseerr/issues/394)
+* **frontend:** add external links to movie and tv detail pages ([a0024a0](https://github.com/sct/overseerr/commit/a0024a0cbe717d78f53413bb78644c829f143c4d))
+* **lang:** translations update from Weblate ([#380](https://github.com/sct/overseerr/issues/380)) ([8408e19](https://github.com/sct/overseerr/commit/8408e19568b2f239c57e11e2946c75f193d1c22e))
+
 ## [1.9.1](https://github.com/sct/overseerr/compare/v1.9.0...v1.9.1) (2020-12-18)
 
 
