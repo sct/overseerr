@@ -9,6 +9,7 @@ import SetupSteps from './SetupSteps';
 import axios from 'axios';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Badge from '../Common/Badge';
+import LanguagePicker from '../Layout/LanguagePicker';
 
 const messages = defineMessages({
   finish: 'Finish Setup',
@@ -51,7 +52,10 @@ const Setup: React.FC = () => {
           '/images/rotate4.jpg',
         ]}
       />
-      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-4xl relative z-50">
+      <div className="absolute top-4 right-4 z-50">
+        <LanguagePicker />
+      </div>
+      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-4xl relative z-40">
         <img
           src="/logo.png"
           className="mx-auto max-h-32 w-auto mb-10"
