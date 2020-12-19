@@ -58,7 +58,7 @@ const LanguagePicker: React.FC = () => {
   useClickOutside(dropdownRef, () => setDropdownOpen(false));
 
   return (
-    <div className="ml-3 relative">
+    <div className="relative">
       <div>
         <button
           className="p-1 text-gray-400 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring focus:text-white"

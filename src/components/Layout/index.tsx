@@ -44,7 +44,7 @@ const Layout: React.FC = ({ children }) => {
           </button>
           <div className="flex-1 px-4 flex justify-between">
             <SearchInput />
-            <div className="ml-4 flex items-center md:ml-6">
+            <div className="flex items-center md:ml-6">
               <LanguagePicker />
               <UserDropdown />
             </div>
