@@ -1542,6 +1542,10 @@ paths:
                   totalMediaItems:
                     type: number
                     example: 100
+                  tz:
+                    type: string
+                    nullable: true
+                    example: Asia/Tokyo
   /auth/me:
     get:
       summary: Returns the currently logged in user

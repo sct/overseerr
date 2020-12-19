@@ -20,6 +20,7 @@ import { merge } from 'lodash';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import { getAppVersion } from '../utils/appVersion';
+import { SettingsAboutResponse } from '../interfaces/api/settingsInterfaces';
 
 const settingsRoutes = Router();
 
@@ -473,7 +474,8 @@ settingsRoutes.get('/about', async (req, res) => {
     version: getAppVersion(),
     totalMediaItems,
     totalRequests,
-  });
+    tz: process.env.TZ,
+  } as SettingsAboutResponse);
 });
 
 export default settingsRoutes;
