@@ -406,34 +406,36 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           <div className="bg-gray-900 rounded-lg shadow border border-gray-800">
             {(data.voteCount > 0 || ratingData) && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0 items-center justify-center">
-                {ratingData?.criticsRating && (
-                  <>
-                    <span className="text-sm">
-                      {ratingData.criticsRating === 'Rotten' ? (
-                        <RTRotten className="w-6 mr-1" />
-                      ) : (
-                        <RTFresh className="w-6 mr-1" />
-                      )}
-                    </span>
-                    <span className="text-gray-400 text-sm mr-4 last:mr-0">
-                      {ratingData.criticsScore}%
-                    </span>
-                  </>
-                )}
-                {ratingData?.audienceRating && (
-                  <>
-                    <span className="text-sm">
-                      {ratingData.audienceRating === 'Spilled' ? (
-                        <RTAudRotten className="w-6 mr-1" />
-                      ) : (
-                        <RTAudFresh className="w-6 mr-1" />
-                      )}
-                    </span>
-                    <span className="text-gray-400 text-sm mr-4 last:mr-0">
-                      {ratingData.audienceScore}%
-                    </span>
-                  </>
-                )}
+                {ratingData?.criticsRating &&
+                  (ratingData?.criticsScore ?? 0) > 0 && (
+                    <>
+                      <span className="text-sm">
+                        {ratingData.criticsRating === 'Rotten' ? (
+                          <RTRotten className="w-6 mr-1" />
+                        ) : (
+                          <RTFresh className="w-6 mr-1" />
+                        )}
+                      </span>
+                      <span className="text-gray-400 text-sm mr-4 last:mr-0">
+                        {ratingData.criticsScore}%
+                      </span>
+                    </>
+                  )}
+                {ratingData?.audienceRating &&
+                  (ratingData?.audienceScore ?? 0) > 0 && (
+                    <>
+                      <span className="text-sm">
+                        {ratingData.audienceRating === 'Spilled' ? (
+                          <RTAudRotten className="w-6 mr-1" />
+                        ) : (
+                          <RTAudFresh className="w-6 mr-1" />
+                        )}
+                      </span>
+                      <span className="text-gray-400 text-sm mr-4 last:mr-0">
+                        {ratingData.audienceScore}%
+                      </span>
+                    </>
+                  )}
                 {data.voteCount > 0 && (
                   <>
                     <span className="text-sm">
