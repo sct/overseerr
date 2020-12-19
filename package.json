@@ -176,7 +176,7 @@
       [
         "@semantic-release/github",
         {
-          "addReleases": "top"
+          "addReleases": "bottom"
         }
       ]
     ],
