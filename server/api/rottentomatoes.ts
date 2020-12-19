@@ -116,7 +116,7 @@ class RottenTomatoes {
 
   public async getTVRatings(
     name: string,
-    year: number
+    year?: number
   ): Promise<RTRating | null> {
     try {
       const response = await this.axios.get<RTMultiSearchResponse>(
@@ -126,9 +126,13 @@ class RottenTomatoes {
         }
       );
 
-      const tvshow = response.data.tvSeries.find(
-        (series) => series.startYear === year
-      );
+      let tvshow: RTTvSearchResult | undefined = response.data.tvSeries[0];
+
+      if (year) {
+        tvshow = response.data.tvSeries.find(
+          (series) => series.startYear === year
+        );
+      }
 
       if (!tvshow) {
         return null;
