@@ -171,6 +171,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "Shagon94",
+      "name": "Shagon94",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/9140783?v=4",
+      "profile": "https://github.com/Shagon94",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
