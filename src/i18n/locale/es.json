@@ -243,7 +243,7 @@
   "components.TvDetails.similar": "Series similares",
   "components.TvDetails.requestmore": "Solicitar más",
   "components.TvDetails.request": "Solicitar",
-  "components.TvDetails.recommendationssubtext": "Si te gustó {title}, también te puede gustar...",
+  "components.TvDetails.recommendationssubtext": "Si te gustó {title}, también te puede gustar…",
   "components.TvDetails.recommendations": "Recomendaciones",
   "components.TvDetails.pending": "Pendiente",
   "components.TvDetails.overviewunavailable": "Resumen no disponible",
