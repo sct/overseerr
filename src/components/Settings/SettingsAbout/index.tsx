@@ -15,6 +15,8 @@ const messages = defineMessages({
   githubdiscussions: 'GitHub Discussions',
   clickheretojoindiscord: 'Click here to join our Discord server.',
   timezone: 'Timezone',
+  supportoverseerr: 'Support Overseerr',
+  helppaycoffee: 'Help pay for coffee',
 });
 
 const SettingsAbout: React.FC = () => {
@@ -75,6 +77,22 @@ const SettingsAbout: React.FC = () => {
               className="text-indigo-500 hover:underline"
             >
               {intl.formatMessage(messages.clickheretojoindiscord)}
+            </a>
+          </List.Item>
+        </List>
+      </div>
+      <div className="mb-8">
+        <List title={intl.formatMessage(messages.supportoverseerr)}>
+          <List.Item
+            title={`☕️ ${intl.formatMessage(messages.helppaycoffee)}`}
+          >
+            <a
+              href="https://patreon.com/overseerr"
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-500 hover:underline"
+            >
+              https://patreon.com/overseerr
             </a>
           </List.Item>
         </List>
