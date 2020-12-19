@@ -61,6 +61,10 @@ const availableLanguages: AvailableLanguageObject = {
     code: 'sr',
     display: 'Serbian',
   },
+  sv: {
+    code: 'sv',
+    display: 'Swedish',
+  },
 };
 
 const LanguagePicker: React.FC = () => {
