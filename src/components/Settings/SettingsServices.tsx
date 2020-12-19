@@ -13,6 +13,7 @@ import Modal from '../Common/Modal';
 import Transition from '../Transition';
 import axios from 'axios';
 import SonarrModal from './SonarrModal';
+import Alert from '../Common/Alert';
 
 const messages = defineMessages({
   radarrsettings: 'Radarr Settings',
@@ -36,42 +37,6 @@ const messages = defineMessages({
     'At least one server must be marked as default before any requests will make it to your services.',
   no4kimplemented: '(Default 4K servers are not currently implemented)',
 });
-
-const NoDefaultAlert: React.FC = () => {
-  const intl = useIntl();
-  return (
-    <div className="rounded-md bg-yellow-600 p-4 mb-8">
-      <div className="flex">
-        <div className="flex-shrink-0">
-          <svg
-            className="h-5 w-5 text-yellow-200"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fillRule="evenodd"
-              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
-        <div className="ml-3">
-          <h3 className="text-sm font-medium text-yellow-200">
-            {intl.formatMessage(messages.nodefault)}
-          </h3>
-          <div className="mt-2 text-sm text-yellow-300">
-            <p>{intl.formatMessage(messages.nodefaultdescription)}</p>
-            <p className="mt-2">
-              {intl.formatMessage(messages.no4kimplemented)}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 interface ServerInstanceProps {
   name: string;
@@ -188,6 +153,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
 };
 
 const SettingsServices: React.FC = () => {
+  const intl = useIntl();
   const {
     data: radarrData,
     error: radarrError,
@@ -293,7 +259,14 @@ const SettingsServices: React.FC = () => {
             {radarrData.length > 0 &&
               !radarrData.some(
                 (radarr) => radarr.isDefault && !radarr.is4k
-              ) && <NoDefaultAlert />}
+              ) && (
+                <Alert title={intl.formatMessage(messages.nodefault)}>
+                  <p>{intl.formatMessage(messages.nodefaultdescription)}</p>
+                  <p className="mt-2">
+                    {intl.formatMessage(messages.no4kimplemented)}
+                  </p>
+                </Alert>
+              )}
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {radarrData.map((radarr) => (
                 <ServerInstance
@@ -357,7 +330,14 @@ const SettingsServices: React.FC = () => {
             {sonarrData.length > 0 &&
               !sonarrData.some(
                 (sonarr) => sonarr.isDefault && !sonarr.is4k
-              ) && <NoDefaultAlert />}
+              ) && (
+                <Alert title={intl.formatMessage(messages.nodefault)}>
+                  <p>{intl.formatMessage(messages.nodefaultdescription)}</p>
+                  <p className="mt-2">
+                    {intl.formatMessage(messages.no4kimplemented)}
+                  </p>
+                </Alert>
+              )}
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {sonarrData.map((sonarr) => (
                 <ServerInstance

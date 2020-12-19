@@ -5,6 +5,7 @@ import List from '../../Common/List';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import { SettingsAboutResponse } from '../../../../server/interfaces/api/settingsInterfaces';
 import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
+import Releases from './Releases';
 
 const messages = defineMessages({
   overseerrinformation: 'Overseerr Information',
@@ -96,6 +97,9 @@ const SettingsAbout: React.FC = () => {
             </a>
           </List.Item>
         </List>
+      </div>
+      <div className="mb-8">
+        <Releases currentVersion={data.version} />
       </div>
     </>
   );
