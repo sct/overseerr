@@ -16,7 +16,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr">
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-17-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-18-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -120,6 +120,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/ecelebi29"><img src="https://avatars2.githubusercontent.com/u/8337120?v=4" width="100px;" alt=""/><br /><sub><b>ecelebi29</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=ecelebi29" title="Code">💻</a> <a href="https://github.com/sct/overseerr/commits?author=ecelebi29" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/mmozeiko"><img src="https://avatars3.githubusercontent.com/u/1665010?v=4" width="100px;" alt=""/><br /><sub><b>Mārtiņš Možeiko</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=mmozeiko" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/mazzetta86"><img src="https://avatars2.githubusercontent.com/u/45591560?v=4" width="100px;" alt=""/><br /><sub><b>mazzetta86</b></sub></a><br /><a href="#translation-mazzetta86" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/Panzer1119"><img src="https://avatars1.githubusercontent.com/u/23016343?v=4" width="100px;" alt=""/><br /><sub><b>Paul Hagedorn</b></sub></a><br /><a href="#translation-Panzer1119" title="Translation">🌍</a></td>
   </tr>
 </table>
 
