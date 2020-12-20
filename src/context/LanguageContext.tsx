@@ -8,7 +8,11 @@ export type AvailableLocales =
   | 'de'
   | 'ru'
   | 'nl'
-  | 'es';
+  | 'es'
+  | 'it'
+  | 'pt-BR'
+  | 'sr'
+  | 'sv';
 
 interface LanguageContextProps {
   locale: AvailableLocales;

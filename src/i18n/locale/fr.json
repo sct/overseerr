@@ -34,7 +34,7 @@
   "components.MovieDetails.overviewunavailable": "Résumé indisponible",
   "components.MovieDetails.pending": "En attente",
   "components.MovieDetails.recommendations": "Recommendations",
-  "components.MovieDetails.recommendationssubtext": "Si vous avez aimé {title}, vous aimerez peut-être...",
+  "components.MovieDetails.recommendationssubtext": "Si vous avez aimé {title}, vous aimerez peut-être…",
   "components.MovieDetails.releasedate": "Date de sortie",
   "components.MovieDetails.request": "Demande d'ajout",
   "components.MovieDetails.revenue": "Revenus",

@@ -5,6 +5,7 @@ import List from '../../Common/List';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import { SettingsAboutResponse } from '../../../../server/interfaces/api/settingsInterfaces';
 import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
+import Releases from './Releases';
 
 const messages = defineMessages({
   overseerrinformation: 'Overseerr Information',
@@ -15,6 +16,8 @@ const messages = defineMessages({
   githubdiscussions: 'GitHub Discussions',
   clickheretojoindiscord: 'Click here to join our Discord server.',
   timezone: 'Timezone',
+  supportoverseerr: 'Support Overseerr',
+  helppaycoffee: 'Help pay for coffee',
 });
 
 const SettingsAbout: React.FC = () => {
@@ -78,6 +81,25 @@ const SettingsAbout: React.FC = () => {
             </a>
           </List.Item>
         </List>
+      </div>
+      <div className="mb-8">
+        <List title={intl.formatMessage(messages.supportoverseerr)}>
+          <List.Item
+            title={`☕️ ${intl.formatMessage(messages.helppaycoffee)}`}
+          >
+            <a
+              href="https://patreon.com/overseerr"
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-500 hover:underline"
+            >
+              https://patreon.com/overseerr
+            </a>
+          </List.Item>
+        </List>
+      </div>
+      <div className="mb-8">
+        <Releases currentVersion={data.version} />
       </div>
     </>
   );

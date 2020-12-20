@@ -6,6 +6,7 @@ import { useRouter } from 'next/dist/client/router';
 import ImageFader from '../Common/ImageFader';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import Transition from '../Transition';
+import LanguagePicker from '../Layout/LanguagePicker';
 
 const messages = defineMessages({
   signinplex: 'Sign in to continue',
@@ -59,7 +60,10 @@ const Login: React.FC = () => {
           '/images/rotate4.jpg',
         ]}
       />
-      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-md relative z-50">
+      <div className="absolute top-4 right-4 z-50">
+        <LanguagePicker />
+      </div>
+      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-md relative z-40">
         <img
           src="/logo.png"
           className="mx-auto max-h-32 w-auto"
