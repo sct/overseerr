@@ -2,6 +2,7 @@ const devConfig = {
   type: 'sqlite',
   database: 'config/db/db.sqlite3',
   synchronize: true,
+  migrationsRun: false,
   logging: false,
   entities: ['server/entity/**/*.ts'],
   migrations: ['server/migration/**/*.ts'],
@@ -19,7 +20,7 @@ const prodConfig = {
   logging: false,
   entities: ['dist/entity/**/*.js'],
   migrations: ['dist/migration/**/*.js'],
-  migrationsRun: true,
+  migrationsRun: false,
   subscribers: ['dist/subscriber/**/*.js'],
   cli: {
     entitiesDir: 'dist/entity',

@@ -190,6 +190,12 @@ class JobPlexSync {
 
         const newSeasons: Season[] = [];
 
+        const currentSeasonAvailable = (
+          media?.seasons.filter(
+            (season) => season.status === MediaStatus.AVAILABLE
+          ) ?? []
+        ).length;
+
         seasons.forEach((season) => {
           const matchedPlexSeason = metadata.Children?.Metadata.find(
             (md) => Number(md.index) === season.season_number
@@ -240,6 +246,25 @@ class JobPlexSync {
         if (media) {
           // Update existing
           media.seasons = [...media.seasons, ...newSeasons];
+
+          const newSeasonAvailable = (
+            media.seasons.filter(
+              (season) => season.status === MediaStatus.AVAILABLE
+            ) ?? []
+          ).length;
+
+          // If at least one new season has become available, update
+          // the lastSeasonChange field so we can trigger notifications
+          if (newSeasonAvailable > currentSeasonAvailable) {
+            this.log(
+              `Detected ${
+                newSeasonAvailable - currentSeasonAvailable
+              } new season(s) for ${tvShow.name}`,
+              'debug'
+            );
+            media.lastSeasonChange = new Date();
+          }
+
           media.status = isAllSeasons
             ? MediaStatus.AVAILABLE
             : MediaStatus.PARTIALLY_AVAILABLE;

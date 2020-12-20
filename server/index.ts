@@ -29,7 +29,12 @@ const handle = app.getRequestHandler();
 app
   .prepare()
   .then(async () => {
-    await createConnection();
+    const dbConnection = await createConnection();
+
+    await dbConnection.query('PRAGMA foreign_keys=OFF');
+    await dbConnection.runMigrations();
+    await dbConnection.query('PRAGMA foreign_keys=ON');
+
     // Load Settings
     const settings = getSettings().load();
 
