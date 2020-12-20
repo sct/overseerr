@@ -1,3 +1,16 @@
+# [1.11.0](https://github.com/sct/overseerr/compare/v1.10.0...v1.11.0) (2020-12-20)
+
+
+### Features
+
+* **frontend:** add language picker to setup/login ([ff2ab29](https://github.com/sct/overseerr/commit/ff2ab29491a80c421525b9a394d6fbbf54914dc2))
+* **frontend:** add support overseerr block to about page ([c128898](https://github.com/sct/overseerr/commit/c128898206d6cbb482de4d8dca53f70b87e4911a))
+* **frontend:** releases added to about page ([b7f5739](https://github.com/sct/overseerr/commit/b7f573903500cc8a62e39afd787bc1da8c09d88b)), closes [#303](https://github.com/sct/overseerr/issues/303)
+* **lang:** add support for Italian, Portuguese (Brazil) and Serbian ([108dfc4](https://github.com/sct/overseerr/commit/108dfc4afd31388cb6c9e07deccd168ade8b1574))
+* **lang:** add support for swedish language ([c9fe6cb](https://github.com/sct/overseerr/commit/c9fe6cb0b7ea984d8e4e1cb3f284935c9da7cc2b))
+* **lang:** translations update from Weblate ([#400](https://github.com/sct/overseerr/issues/400)) ([1bd0e64](https://github.com/sct/overseerr/commit/1bd0e646e313ddf77ef331e818e03401fbf64a72))
+* **lang:** translations update from Weblate ([#403](https://github.com/sct/overseerr/issues/403)) ([3778ad8](https://github.com/sct/overseerr/commit/3778ad829c0897de178212b3bde4c0d3b5089161))
+
 # [1.10.0](https://github.com/sct/overseerr/compare/v1.9.1...v1.10.0) (2020-12-19)
 
 
