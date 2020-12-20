@@ -53,18 +53,18 @@ interface PublicSettings {
   initialized: boolean;
 }
 
-interface NotificationAgent {
+export interface NotificationAgentConfig {
   enabled: boolean;
   types: number;
   options: Record<string, unknown>;
 }
-interface NotificationAgentDiscord extends NotificationAgent {
+export interface NotificationAgentDiscord extends NotificationAgentConfig {
   options: {
     webhookUrl: string;
   };
 }
 
-interface NotificationAgentEmail extends NotificationAgent {
+export interface NotificationAgentEmail extends NotificationAgentConfig {
   options: {
     emailFrom: string;
     smtpHost: string;

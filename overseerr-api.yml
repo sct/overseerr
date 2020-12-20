@@ -1488,6 +1488,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotificationEmailSettings'
+  /settings/notifications/email/test:
+    post:
+      summary: Test the provided email settings
+      description: Sends a test notification to the email agent
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationEmailSettings'
+      responses:
+        '204':
+          description: Test notification attempted
   /settings/notifications/discord:
     get:
       summary: Return current discord notification settings
@@ -1519,6 +1534,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DiscordSettings'
+  /settings/notifications/discord/test:
+    post:
+      summary: Test the provided discord settings
+      description: Sends a test notification to the discord agent
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiscordSettings'
+      responses:
+        '204':
+          description: Test notification attempted
   /settings/about:
     get:
       summary: Return current about stats

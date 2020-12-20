@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import Button from '../../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
-import Axios from 'axios';
+import axios from 'axios';
 import * as Yup from 'yup';
 import { useToasts } from 'react-toast-notifications';
 
@@ -23,6 +23,8 @@ const messages = defineMessages({
   authPass: 'Auth Pass',
   emailsettingssaved: 'Email notification settings saved!',
   emailsettingsfailed: 'Email notification settings failed to save.',
+  test: 'Test',
+  testsent: 'Test notification sent!',
 });
 
 const NotificationsEmail: React.FC = () => {
@@ -63,7 +65,7 @@ const NotificationsEmail: React.FC = () => {
       validationSchema={NotificationsDiscordSchema}
       onSubmit={async (values) => {
         try {
-          await Axios.post('/api/v1/settings/notifications/email', {
+          await axios.post('/api/v1/settings/notifications/email', {
             enabled: values.enabled,
             types: values.types,
             options: {
@@ -89,7 +91,27 @@ const NotificationsEmail: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting }) => {
+      {({ errors, touched, isSubmitting, values, isValid }) => {
+        const testSettings = async () => {
+          await axios.post('/api/v1/settings/notifications/email/test', {
+            enabled: true,
+            types: values.types,
+            options: {
+              emailFrom: values.emailFrom,
+              smtpHost: values.smtpHost,
+              smtpPort: Number(values.smtpPort),
+              secure: values.secure,
+              authUser: values.authUser,
+              authPass: values.authPass,
+            },
+          });
+
+          addToast(intl.formatMessage(messages.testsent), {
+            appearance: 'info',
+            autoDismiss: true,
+          });
+        };
+
         return (
           <Form>
             <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
@@ -230,9 +252,22 @@ const NotificationsEmail: React.FC = () => {
               <div className="flex justify-end">
                 <span className="ml-3 inline-flex rounded-md shadow-sm">
                   <Button
+                    buttonType="warning"
+                    disabled={isSubmitting || !isValid}
+                    onClick={(e) => {
+                      e.preventDefault();
+
+                      testSettings();
+                    }}
+                  >
+                    {intl.formatMessage(messages.test)}
+                  </Button>
+                </span>
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
+                  <Button
                     buttonType="primary"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !isValid}
                   >
                     {isSubmitting
                       ? intl.formatMessage(messages.saving)

@@ -1,7 +1,7 @@
-import type { NotificationAgent, NotificationPayload } from './agent';
+import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 import { Notification } from '..';
 import path from 'path';
-import { getSettings } from '../../settings';
+import { getSettings, NotificationAgentEmail } from '../../settings';
 import nodemailer from 'nodemailer';
 import Email from 'email-templates';
 import logger from '../../../logger';
@@ -9,13 +9,25 @@ import { getRepository } from 'typeorm';
 import { User } from '../../../entity/User';
 import { Permission } from '../../permissions';
 
-class EmailAgent implements NotificationAgent {
+class EmailAgent
+  extends BaseAgent<NotificationAgentEmail>
+  implements NotificationAgent {
+  protected getSettings(): NotificationAgentEmail {
+    if (this.settings) {
+      return this.settings;
+    }
+
+    const settings = getSettings();
+
+    return settings.notifications.agents.email;
+  }
+
   // TODO: Add checking for type here once we add notification type filters for agents
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public shouldSend(_type: Notification): boolean {
-    const settings = getSettings();
+    const settings = this.getSettings();
 
-    if (settings.notifications.agents.email.enabled) {
+    if (settings.enabled) {
       return true;
     }
 
@@ -23,7 +35,7 @@ class EmailAgent implements NotificationAgent {
   }
 
   private getSmtpTransport() {
-    const emailSettings = getSettings().notifications.agents.email.options;
+    const emailSettings = this.getSettings().options;
 
     return nodemailer.createTransport({
       host: emailSettings.smtpHost,
@@ -40,7 +52,7 @@ class EmailAgent implements NotificationAgent {
   }
 
   private getNewEmail() {
-    const settings = getSettings().notifications.agents.email;
+    const settings = this.getSettings();
     return new Email({
       message: {
         from: settings.options.emailFrom,
@@ -51,7 +63,8 @@ class EmailAgent implements NotificationAgent {
   }
 
   private async sendMediaRequestEmail(payload: NotificationPayload) {
-    const settings = getSettings().main;
+    // This is getting main settings for the whole app
+    const applicationUrl = getSettings().main.applicationUrl;
     try {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
@@ -76,7 +89,7 @@ class EmailAgent implements NotificationAgent {
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
               requestedBy: payload.notifyUser.username,
-              actionUrl: settings.applicationUrl,
+              actionUrl: applicationUrl,
               requestType: 'New Request',
             },
           });
@@ -92,7 +105,8 @@ class EmailAgent implements NotificationAgent {
   }
 
   private async sendMediaApprovedEmail(payload: NotificationPayload) {
-    const settings = getSettings().main;
+    // This is getting main settings for the whole app
+    const applicationUrl = getSettings().main.applicationUrl;
     try {
       const email = this.getNewEmail();
 
@@ -110,7 +124,7 @@ class EmailAgent implements NotificationAgent {
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
           requestedBy: payload.notifyUser.username,
-          actionUrl: settings.applicationUrl,
+          actionUrl: applicationUrl,
           requestType: 'Request Approved',
         },
       });
@@ -125,7 +139,8 @@ class EmailAgent implements NotificationAgent {
   }
 
   private async sendMediaAvailableEmail(payload: NotificationPayload) {
-    const settings = getSettings().main;
+    // This is getting main settings for the whole app
+    const applicationUrl = getSettings().main.applicationUrl;
     try {
       const email = this.getNewEmail();
 
@@ -143,8 +158,34 @@ class EmailAgent implements NotificationAgent {
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
           requestedBy: payload.notifyUser.username,
-          actionUrl: settings.applicationUrl,
+          actionUrl: applicationUrl,
           requestType: 'Now Available',
+        },
+      });
+      return true;
+    } catch (e) {
+      logger.error('Mail notification failed to send', {
+        label: 'Notifications',
+        message: e.message,
+      });
+      return false;
+    }
+  }
+
+  private async sendTestEmail(payload: NotificationPayload) {
+    // This is getting main settings for the whole app
+    const applicationUrl = getSettings().main.applicationUrl;
+    try {
+      const email = this.getNewEmail();
+
+      email.send({
+        template: path.join(__dirname, '../../../templates/email/test-email'),
+        message: {
+          to: payload.notifyUser.email,
+        },
+        locals: {
+          body: payload.message,
+          actionUrl: applicationUrl,
         },
       });
       return true;
@@ -172,6 +213,9 @@ class EmailAgent implements NotificationAgent {
         break;
       case Notification.MEDIA_AVAILABLE:
         this.sendMediaAvailableEmail(payload);
+        break;
+      case Notification.TEST_NOTIFICATION:
+        this.sendTestEmail(payload);
         break;
     }
 

@@ -102,6 +102,8 @@
   "components.Settings.Notifications.saving": "Saving…",
   "components.Settings.Notifications.smtpHost": "SMTP Host",
   "components.Settings.Notifications.smtpPort": "SMTP Port",
+  "components.Settings.Notifications.test": "Test",
+  "components.Settings.Notifications.testsent": "Test notification sent!",
   "components.Settings.Notifications.validationFromRequired": "You must provide an email sender address",
   "components.Settings.Notifications.validationSmtpHostRequired": "You must provide an SMTP host",
   "components.Settings.Notifications.validationSmtpPortRequired": "You must provide an SMTP port",
