@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import logger from '../logger';
 
 export const ANIME_KEYWORD_ID = 210024;
 
@@ -374,7 +375,16 @@ class TheMovieDb {
 
       return response.data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to search multi: ${e.message}`);
+      logger.error('Failed to search multi', {
+        label: 'TMDB',
+        errorMessage: e.message,
+      });
+      return {
+        page: 1,
+        results: [],
+        total_pages: 1,
+        total_results: 0,
+      };
     }
   };
 
