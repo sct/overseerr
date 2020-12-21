@@ -84,7 +84,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               </div>
             )}
           </div>
-          <div className="ml-2 flex-shrink-0 flex">
+          <div className="ml-2 flex-shrink-0 flex flex-wrap">
             {request.status === MediaRequestStatus.PENDING && (
               <>
                 <span className="mr-1">
