@@ -71,6 +71,7 @@ const UserList: React.FC = () => {
         appearance: 'error',
       });
     } finally {
+      setDeleting(false);
       revalidate();
     }
   };
