@@ -143,8 +143,6 @@ class DiscordAgent
           }
         );
         break;
-      default:
-        color = EmbedColors.DARK_PURPLE;
     }
 
     return {
