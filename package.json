@@ -27,7 +27,7 @@
     "express": "^4.17.1",
     "express-openapi-validator": "^4.8.0",
     "express-session": "^1.17.1",
-    "formik": "^2.2.5",
+    "formik": "^2.2.6",
     "intl": "^1.2.5",
     "lodash": "^4.17.20",
     "next": "^10.0.3",
