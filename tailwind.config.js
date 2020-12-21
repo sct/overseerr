@@ -5,6 +5,9 @@ module.exports = {
   purge: ['./src/pages/**/*.{ts,tsx}', './src/components/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      transitionProperty: {
+        'max-height': 'max-height',
+      },
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
