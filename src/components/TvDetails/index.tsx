@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
@@ -30,6 +30,8 @@ import Head from 'next/head';
 import globalMessages from '../../i18n/globalMessages';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
 import ExternalLinkBlock from '../ExternalLinkBlock';
+import { sortCrewPriority } from '../../utils/creditHelpers';
+import { Crew } from '../../../server/models/common';
 
 const messages = defineMessages({
   userrating: 'User Rating',
@@ -105,6 +107,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     `/api/v1/tv/${router.query.tvId}/ratings`
   );
 
+  const sortedCrew = useMemo(() => sortCrewPriority(data?.credits.crew ?? []), [
+    data,
+  ]);
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -148,7 +154,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   return (
     <div
-      className="bg-cover bg-center -mx-4 -mt-2 px-4 sm:px-8 pt-4 "
+      className="px-4 pt-4 -mx-4 -mt-2 bg-center bg-cover sm:px-8 "
       style={{
         height: 493,
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
@@ -173,21 +179,21 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         onClose={() => setShowManager(false)}
         subText={data.name}
       >
-        <h3 className="text-xl mb-2">
+        <h3 className="mb-2 text-xl">
           {intl.formatMessage(messages.manageModalRequests)}
         </h3>
-        <div className="bg-gray-600 shadow overflow-hidden rounded-md">
+        <div className="overflow-hidden bg-gray-600 rounded-md shadow">
           <ul>
             {data.mediaInfo?.requests?.map((request) => (
               <li
                 key={`manage-request-${request.id}`}
-                className="border-b last:border-b-0 border-gray-700"
+                className="border-b border-gray-700 last:border-b-0"
               >
                 <RequestBlock request={request} onUpdate={() => revalidate()} />
               </li>
             ))}
             {(data.mediaInfo?.requests ?? []).length === 0 && (
-              <li className="text-center py-4 text-gray-400">
+              <li className="py-4 text-center text-gray-400">
                 {intl.formatMessage(messages.manageModalNoRequests)}
               </li>
             )}
@@ -202,21 +208,21 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             >
               {intl.formatMessage(messages.manageModalClearMedia)}
             </Button>
-            <div className="text-sm text-gray-400 mt-2">
+            <div className="mt-2 text-sm text-gray-400">
               {intl.formatMessage(messages.manageModalClearMediaWarning)}
             </div>
           </div>
         )}
       </SlideOver>
-      <div className="flex flex-col items-center md:flex-row md:items-end pt-4">
-        <div className="md:mr-4 flex-shrink-0">
+      <div className="flex flex-col items-center pt-4 md:flex-row md:items-end">
+        <div className="flex-shrink-0 md:mr-4">
           <img
             src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
             alt=""
-            className="rounded md:rounded-lg shadow md:shadow-2xl w-32 md:w-52"
+            className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-52"
           />
         </div>
-        <div className="text-white flex flex-col md:mr-4 mt-4 md:mt-0 text-center md:text-left">
+        <div className="flex flex-col mt-4 text-center text-white md:mr-4 md:mt-0 md:text-left">
           <div className="mb-2">
             {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
               <Badge badgeType="success">
@@ -242,16 +248,16 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           <h1 className="text-2xl md:text-4xl">
             <span>{data.name}</span>
             {data.firstAirDate && (
-              <span className="text-2xl ml-2">
+              <span className="ml-2 text-2xl">
                 ({data.firstAirDate.slice(0, 4)})
               </span>
             )}
           </h1>
-          <span className="text-xs md:text-base mt-1 md:mt-0">
+          <span className="mt-1 text-xs md:text-base md:mt-0">
             {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
-        <div className="flex-1 flex justify-end mt-4 md:mt-0">
+        <div className="flex justify-end flex-1 mt-4 md:mt-0">
           {(!data.mediaInfo ||
             data.mediaInfo.status === MediaStatus.UNKNOWN) && (
             <Button
@@ -391,7 +397,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           )}
         </div>
       </div>
-      <div className="flex pt-8 text-white flex-col md:flex-row pb-4">
+      <div className="flex flex-col pt-8 pb-4 text-white md:flex-row">
         <div className="flex-1 md:mr-8">
           <h2 className="text-xl md:text-2xl">
             <FormattedMessage {...messages.overview} />
@@ -401,11 +407,40 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               ? data.overview
               : intl.formatMessage(messages.overviewunavailable)}
           </p>
+          <ul className="grid grid-cols-2 gap-6 mt-6 sm:grid-cols-3">
+            {(data.createdBy.length > 0
+              ? [
+                  ...data.createdBy.map(
+                    (person): Partial<Crew> => ({
+                      id: person.id,
+                      job: 'Creator',
+                      name: person.name,
+                    })
+                  ),
+                  ...sortedCrew,
+                ]
+              : sortedCrew
+            )
+              .slice(0, 6)
+              .map((person) => (
+                <li
+                  className="flex flex-col col-span-1"
+                  key={`crew-${person.job}-${person.id}`}
+                >
+                  <span className="font-bold">{person.job}</span>
+                  <Link href={`/person/${person.id}`}>
+                    <a className="text-gray-400 transition duration-300 hover:text-underline hover:text-gray-100">
+                      {person.name}
+                    </a>
+                  </Link>
+                </li>
+              ))}
+          </ul>
         </div>
-        <div className="w-full md:w-80 mt-8 md:mt-0">
-          <div className="bg-gray-900 rounded-lg shadow border border-gray-800">
+        <div className="w-full mt-8 md:w-80 md:mt-0">
+          <div className="bg-gray-900 border border-gray-800 rounded-lg shadow">
             {(data.voteCount > 0 || ratingData) && (
-              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0 items-center justify-center">
+              <div className="flex items-center justify-center px-4 py-2 border-b border-gray-800 last:border-b-0">
                 {ratingData?.criticsRating &&
                   (ratingData?.criticsScore ?? 0) > 0 && (
                     <>
@@ -416,7 +451,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                           <RTFresh className="w-6 mr-1" />
                         )}
                       </span>
-                      <span className="text-gray-400 text-sm mr-4 last:mr-0">
+                      <span className="mr-4 text-sm text-gray-400 last:mr-0">
                         {ratingData.criticsScore}%
                       </span>
                     </>
@@ -431,7 +466,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                           <RTAudFresh className="w-6 mr-1" />
                         )}
                       </span>
-                      <span className="text-gray-400 text-sm mr-4 last:mr-0">
+                      <span className="mr-4 text-sm text-gray-400 last:mr-0">
                         {ratingData.audienceScore}%
                       </span>
                     </>
@@ -441,7 +476,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     <span className="text-sm">
                       <TmdbLogo className="w-6 mr-2" />
                     </span>
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-sm text-gray-400">
                       {data.voteAverage}/10
                     </span>
                   </>
@@ -455,7 +490,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <span className="text-sm">
                   {intl.formatMessage(messages.showtype)}
                 </span>
-                <span className="flex-1 text-right text-gray-400 text-sm">
+                <span className="flex-1 text-sm text-right text-gray-400">
                   {intl.formatMessage(messages.anime)}
                 </span>
               </div>
@@ -464,7 +499,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               <span className="text-sm">
                 <FormattedMessage {...messages.status} />
               </span>
-              <span className="flex-1 text-right text-gray-400 text-sm">
+              <span className="flex-1 text-sm text-right text-gray-400">
                 {data.status}
               </span>
             </div>
@@ -475,7 +510,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <span className="text-sm">
                   <FormattedMessage {...messages.originallanguage} />
                 </span>
-                <span className="flex-1 text-right text-gray-400 text-sm">
+                <span className="flex-1 text-sm text-right text-gray-400">
                   {
                     data.spokenLanguages.find(
                       (lng) => lng.iso_639_1 === data.originalLanguage
@@ -489,7 +524,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <span className="text-sm">
                   <FormattedMessage {...messages.network} />
                 </span>
-                <span className="flex-1 text-right text-gray-400 text-sm">
+                <span className="flex-1 text-sm text-right text-gray-400">
                   {data.networks.map((n) => n.name).join(', ')}
                 </span>
               </div>
@@ -505,10 +540,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </div>
         </div>
       </div>
-      <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
+      <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
           <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
-            <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+            <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
               <span>
                 <FormattedMessage {...messages.cast} />
               </span>
@@ -546,13 +581,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       />
       {(recommended?.results ?? []).length > 0 && (
         <>
-          <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
+          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <Link
                 href="/tv/[tvId]/recommendations"
                 as={`/tv/${data.id}/recommendations`}
               >
-                <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+                <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
                   <span>
                     <FormattedMessage {...messages.recommendations} />
                   </span>
@@ -596,10 +631,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       )}
       {(similar?.results ?? []).length > 0 && (
         <>
-          <div className="md:flex md:items-center md:justify-between mb-4 mt-6">
+          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <Link href="/tv/[tvId]/similar" as={`/tv/${data.id}/similar`}>
-                <a className="inline-flex text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate items-center">
+                <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
                   <span>
                     <FormattedMessage {...messages.similar} />
                   </span>
