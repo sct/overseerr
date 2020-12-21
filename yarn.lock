@@ -11448,10 +11448,10 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.1:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-use-clipboard@1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/react-use-clipboard/-/react-use-clipboard-1.0.5.tgz#a6d3477da1a17c0bd0a40c8319cf25c280820309"
-  integrity sha512-R0Yr1NrbfQzJ2gxkalr4rjkGPsrWzy7s5zVdkhtD6gh3PB36fWLVpXUGhFeUpR/uxGZq3C2MJJ++sPiMQTzxXg==
+react-use-clipboard@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-use-clipboard/-/react-use-clipboard-1.0.2.tgz#e00254ffc70b989daa41638325fa6557c7b89dd2"
+  integrity sha512-dgKUfjWm6xAeag7OHdMadUgDMEG59LSgCSwVRqPJwZIFbGNxUtA0GqCZQS5M9MvAeSzHNEi/j0LfJQecDcaNlQ==
   dependencies:
     copy-to-clipboard "^3.3.1"
 
