@@ -189,6 +189,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "danshilm",
+      "name": "Danshil Mungur",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/20923978?v=4",
+      "profile": "https://github.com/danshilm",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
