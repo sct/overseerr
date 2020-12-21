@@ -4,7 +4,13 @@ node_modules
 .gitconfig
 .gitignore
 .github
+.all-contributorsrc
+.editorconfig
+.prettierignore
 **/README.md
 **/.vscode
 config/db/db.sqlite3
 config/db/logs/overseerr.log
+Dockerfil**
+**.md
+**.yml
