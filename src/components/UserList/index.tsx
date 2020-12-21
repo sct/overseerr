@@ -18,6 +18,10 @@ import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
   userlist: 'User List',
+  importfromplex: 'Import Users From Plex',
+  importfromplexerror: 'Something went wrong importing users from Plex',
+  importedfromplex:
+    '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex',
   username: 'Username',
   totalrequests: 'Total Requests',
   usertype: 'User Type',
@@ -42,6 +46,7 @@ const UserList: React.FC = () => {
   const { addToast } = useToasts();
   const { data, error, revalidate } = useSWR<User[]>('/api/v1/user');
   const [isDeleting, setDeleting] = useState(false);
+  const [isImporting, setImporting] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     user?: User;
@@ -66,7 +71,35 @@ const UserList: React.FC = () => {
         appearance: 'error',
       });
     } finally {
+      setDeleting(false);
       revalidate();
+    }
+  };
+
+  const importFromPlex = async () => {
+    setImporting(true);
+
+    try {
+      const { data: createdUsers } = await axios.post(
+        '/api/v1/user/import-from-plex'
+      );
+      addToast(
+        intl.formatMessage(messages.importedfromplex, {
+          userCount: createdUsers.length,
+        }),
+        {
+          autoDismiss: true,
+          appearance: 'success',
+        }
+      );
+    } catch (e) {
+      addToast(intl.formatMessage(messages.importfromplexerror), {
+        autoDismiss: true,
+        appearance: 'error',
+      });
+    } finally {
+      revalidate();
+      setImporting(false);
     }
   };
 
@@ -116,7 +149,17 @@ const UserList: React.FC = () => {
           {intl.formatMessage(messages.deleteconfirm)}
         </Modal>
       </Transition>
-      <Header extraMargin={4}>{intl.formatMessage(messages.userlist)}</Header>
+      <div className="flex items-center justify-between">
+        <Header extraMargin={4}>{intl.formatMessage(messages.userlist)}</Header>
+        <Button
+          className="mx-4 my-8"
+          buttonType="primary"
+          disabled={isImporting}
+          onClick={() => importFromPlex()}
+        >
+          {intl.formatMessage(messages.importfromplex)}
+        </Button>
+      </div>
       <Table>
         <thead>
           <tr>
@@ -134,18 +177,18 @@ const UserList: React.FC = () => {
             <tr key={`user-list-${user.id}`}>
               <Table.TD>
                 <div className="flex items-center">
-                  <div className="flex-shrink-0 h-10 w-10">
+                  <div className="flex-shrink-0 w-10 h-10">
                     <img
-                      className="h-10 w-10 rounded-full"
+                      className="w-10 h-10 rounded-full"
                       src={user.avatar}
                       alt=""
                     />
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm leading-5 font-medium">
+                    <div className="text-sm font-medium leading-5">
                       {user.username}
                     </div>
-                    <div className="text-sm leading-5 text-gray-300">
+                    <div className="text-sm text-gray-300 leading-5">
                       {user.email}
                     </div>
                   </div>
