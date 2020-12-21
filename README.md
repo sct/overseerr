@@ -16,7 +16,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr">
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-21-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-22-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -124,6 +124,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Shagon94"><img src="https://avatars3.githubusercontent.com/u/9140783?v=4" width="100px;" alt=""/><br /><sub><b>Shagon94</b></sub></a><br /><a href="#translation-Shagon94" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/sebstrgg"><img src="https://avatars3.githubusercontent.com/u/27026694?v=4" width="100px;" alt=""/><br /><sub><b>sebstrgg</b></sub></a><br /><a href="#translation-sebstrgg" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/danshilm"><img src="https://avatars2.githubusercontent.com/u/20923978?v=4" width="100px;" alt=""/><br /><sub><b>Danshil Mungur</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=danshilm" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/doob187"><img src="https://avatars1.githubusercontent.com/u/60312740?v=4" width="100px;" alt=""/><br /><sub><b>doob187</b></sub></a><br /><a href="#infra-doob187" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 
