@@ -56,6 +56,21 @@ interface FriendResponse {
   };
 }
 
+interface UsersResponse {
+  MediaContainer: {
+    User: {
+      $: {
+        id: string;
+        title: string;
+        username: string;
+        email: string;
+        thumb: string;
+      };
+      Server: ServerResponse[];
+    }[];
+  };
+}
+
 class PlexTvAPI {
   private authToken: string;
   private axios: AxiosInstance;
@@ -128,6 +143,18 @@ class PlexTvAPI {
       logger.error(`Error checking user access: ${e.message}`);
       return false;
     }
+  }
+
+  public async getUsers(): Promise<UsersResponse> {
+    const response = await this.axios.get('/api/users', {
+      transformResponse: [],
+      responseType: 'text',
+    });
+
+    const parsedXml = (await xml2js.parseStringPromise(
+      response.data
+    )) as UsersResponse;
+    return parsedXml;
   }
 }
 

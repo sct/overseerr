@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
+import PlexTvAPI from '../api/plextv';
 import { MediaRequest } from '../entity/MediaRequest';
 import { User } from '../entity/User';
 import { hasPermission, Permission } from '../lib/permissions';
+import { getSettings } from '../lib/settings';
 import logger from '../logger';
 
 const router = Router();
@@ -139,6 +141,53 @@ router.delete<{ id: string }>('/:id', async (req, res, next) => {
       status: 500,
       message: 'Something went wrong deleting the user',
     });
+  }
+});
+
+router.post('/import-from-plex', async (req, res, next) => {
+  try {
+    const settings = getSettings();
+    const userRepository = getRepository(User);
+
+    // taken from auth.ts
+    const mainUser = await userRepository.findOneOrFail({
+      select: ['id', 'plexToken'],
+      order: { id: 'ASC' },
+    });
+    const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
+
+    const plexUsersResponse = await mainPlexTv.getUsers();
+    const createdUsers: User[] = [];
+    for (const rawUser of plexUsersResponse.MediaContainer.User) {
+      const account = rawUser.$;
+      const user = await userRepository.findOne({
+        where: { plexId: account.id },
+      });
+      if (user) {
+        // Update the users avatar with their plex thumbnail (incase it changed)
+        user.avatar = account.thumb;
+        user.email = account.email;
+        user.username = account.username;
+        await userRepository.save(user);
+      } else {
+        // Check to make sure it's a real account
+        if (account.email && account.username) {
+          const newUser = new User({
+            username: account.username,
+            email: account.email,
+            permissions: settings.main.defaultPermissions,
+            plexId: parseInt(account.id),
+            plexToken: '',
+            avatar: account.thumb,
+          });
+          await userRepository.save(newUser);
+          createdUsers.push(newUser);
+        }
+      }
+    }
+    return res.status(201).json(User.filterMany(createdUsers));
+  } catch (e) {
+    next({ status: 500, message: e.message });
   }
 });
 
