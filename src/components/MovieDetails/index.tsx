@@ -68,6 +68,7 @@ const messages = defineMessages({
   approve: 'Approve',
   decline: 'Decline',
   studio: 'Studio',
+  viewfullcrew: 'View Full Crew',
 });
 
 interface MovieDetailsProps {
@@ -412,6 +413,29 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               </li>
             ))}
           </ul>
+          {sortedCrew.length > 0 && (
+            <div className="flex justify-end mt-4">
+              <Link href={`/movie/${data.id}/crew`}>
+                <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
+                  <span>{intl.formatMessage(messages.viewfullcrew)}</span>
+                  <svg
+                    className="inline-block w-5 h-5 ml-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </a>
+              </Link>
+            </div>
+          )}
         </div>
         <div className="w-full mt-8 md:w-80 md:mt-0">
           <div className="bg-gray-900 border border-gray-800 rounded-lg shadow">

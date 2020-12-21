@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { MovieDetails } from '../../../../server/models/Movie';
+import type { TvDetails } from '../../../../server/models/Tv';
 import { LanguageContext } from '../../../context/LanguageContext';
 import Error from '../../../pages/_error';
 import Header from '../../Common/Header';
@@ -11,15 +11,15 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import PersonCard from '../../PersonCard';
 
 const messages = defineMessages({
-  fullcast: 'Full Cast',
+  fullseriescrew: 'Full Series Crew',
 });
 
-const MovieCast: React.FC = () => {
+const TvCrew: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
-  const { data, error } = useSWR<MovieDetails>(
-    `/api/v1/movie/${router.query.movieId}?language=${locale}`
+  const { data, error } = useSWR<TvDetails>(
+    `/api/v1/tv/${router.query.tvId}?language=${locale}`
   );
 
   if (!data && !error) {
@@ -34,24 +34,24 @@ const MovieCast: React.FC = () => {
     <>
       <Header
         subtext={
-          <Link href={`/movie/${data.id}`}>
-            <a className="hover:underline">{data.title}</a>
+          <Link href={`/tv/${data.id}`}>
+            <a className="hover:underline">{data.name}</a>
           </Link>
         }
       >
-        {intl.formatMessage(messages.fullcast)}
+        {intl.formatMessage(messages.fullseriescrew)}
       </Header>
       <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
-        {data?.credits.cast.map((person, index) => {
+        {data?.credits.crew.map((person, index) => {
           return (
             <li
-              key={`cast-${person.id}-${index}`}
+              key={`crew-${person.id}-${index}`}
               className="flex flex-col items-center col-span-1 text-center"
             >
               <PersonCard
                 name={person.name}
                 personId={person.id}
-                subName={person.character}
+                subName={person.job}
                 profilePath={person.profilePath}
                 canExpand
               />
@@ -63,4 +63,4 @@ const MovieCast: React.FC = () => {
   );
 };
 
-export default MovieCast;
+export default TvCrew;
