@@ -71,44 +71,48 @@ authRoutes.post('/login', async (req, res, next) => {
         await userRepository.save(user);
       }
 
-      // If we get to this point, the user does not already exist so we need to create the
-      // user _assuming_ they have access to the plex server
-      const mainUser = await userRepository.findOneOrFail({
-        select: ['id', 'plexToken'],
-        order: { id: 'ASC' },
-      });
-      const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
-      if (await mainPlexTv.checkUserAccess(account)) {
-        user = new User({
-          email: account.email,
-          username: account.username,
-          plexId: account.id,
-          plexToken: account.authToken,
-          permissions: settings.main.defaultPermissions,
-          avatar: account.thumb,
+      // Double check that we didn't create the first admin user before running this
+      if (!user) {
+        // If we get to this point, the user does not already exist so we need to create the
+        // user _assuming_ they have access to the plex server
+        const mainUser = await userRepository.findOneOrFail({
+          select: ['id', 'plexToken'],
+          order: { id: 'ASC' },
         });
-        await userRepository.save(user);
-      } else {
-        logger.info(
-          'Failed login attempt from user without access to plex server',
-          {
-            label: 'Auth',
-            account: {
-              ...account,
-              authentication_token: '__REDACTED__',
-              authToken: '__REDACTED__',
-            },
-          }
-        );
-        return next({
-          status: 403,
-          message: 'You do not have access to this Plex server',
-        });
+        const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
+
+        if (await mainPlexTv.checkUserAccess(account)) {
+          user = new User({
+            email: account.email,
+            username: account.username,
+            plexId: account.id,
+            plexToken: account.authToken,
+            permissions: settings.main.defaultPermissions,
+            avatar: account.thumb,
+          });
+          await userRepository.save(user);
+        } else {
+          logger.info(
+            'Failed login attempt from user without access to plex server',
+            {
+              label: 'Auth',
+              account: {
+                ...account,
+                authentication_token: '__REDACTED__',
+                authToken: '__REDACTED__',
+              },
+            }
+          );
+          return next({
+            status: 403,
+            message: 'You do not have access to this Plex server',
+          });
+        }
       }
     }
 
     // Set logged in session
-    if (req.session && user) {
+    if (req.session) {
       req.session.userId = user.id;
     }
 
