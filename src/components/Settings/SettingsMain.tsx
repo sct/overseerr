@@ -9,6 +9,8 @@ import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import { useUser, Permission } from '../../hooks/useUser';
 import { useToasts } from 'react-toast-notifications';
+import { messages as permissionMessages } from '../UserEdit';
+import { hasPermission } from '../../../server/lib/permissions';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -22,11 +24,19 @@ const messages = defineMessages({
   toastApiKeyFailure: 'Something went wrong generating a new API Key.',
   toastSettingsSuccess: 'Settings saved.',
   toastSettingsFailure: 'Something went wrong saving settings.',
+  defaultPermissions: 'Default User Permissions',
 });
+
+interface PermissionOption {
+  id: string;
+  name: string;
+  description: string;
+  permission: Permission;
+}
 
 const SettingsMain: React.FC = () => {
   const { addToast } = useToasts();
-  const { hasPermission } = useUser();
+  const { hasPermission: userHasPermission } = useUser();
   const intl = useIntl();
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
@@ -53,13 +63,62 @@ const SettingsMain: React.FC = () => {
     return <LoadingSpinner />;
   }
 
+  const permissionList: PermissionOption[] = [
+    {
+      id: 'admin',
+      name: intl.formatMessage(permissionMessages.admin),
+      description: intl.formatMessage(permissionMessages.adminDescription),
+      permission: Permission.ADMIN,
+    },
+    {
+      id: 'settings',
+      name: intl.formatMessage(permissionMessages.settings),
+      description: intl.formatMessage(permissionMessages.settingsDescription),
+      permission: Permission.MANAGE_SETTINGS,
+    },
+    {
+      id: 'users',
+      name: intl.formatMessage(permissionMessages.users),
+      description: intl.formatMessage(permissionMessages.usersDescription),
+      permission: Permission.MANAGE_USERS,
+    },
+    {
+      id: 'managerequest',
+      name: intl.formatMessage(permissionMessages.managerequests),
+      description: intl.formatMessage(
+        permissionMessages.managerequestsDescription
+      ),
+      permission: Permission.MANAGE_REQUESTS,
+    },
+    {
+      id: 'request',
+      name: intl.formatMessage(permissionMessages.request),
+      description: intl.formatMessage(permissionMessages.requestDescription),
+      permission: Permission.REQUEST,
+    },
+    {
+      id: 'vote',
+      name: intl.formatMessage(permissionMessages.vote),
+      description: intl.formatMessage(permissionMessages.voteDescription),
+      permission: Permission.VOTE,
+    },
+    {
+      id: 'autoapprove',
+      name: intl.formatMessage(permissionMessages.autoapprove),
+      description: intl.formatMessage(
+        permissionMessages.autoapproveDescription
+      ),
+      permission: Permission.AUTO_APPROVE,
+    },
+  ];
+
   return (
     <>
       <div>
-        <h3 className="text-lg leading-6 font-medium text-gray-200">
+        <h3 className="text-lg font-medium leading-6 text-gray-200">
           {intl.formatMessage(messages.generalsettings)}
         </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
+        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
           {intl.formatMessage(messages.generalsettingsDescription)}
         </p>
       </div>
@@ -67,11 +126,14 @@ const SettingsMain: React.FC = () => {
         <Formik
           initialValues={{
             applicationUrl: data?.applicationUrl,
+            defaultPermissions: data?.defaultPermissions ?? 0,
           }}
+          enableReinitialize
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/settings/main', {
                 applicationUrl: values.applicationUrl,
+                defaultPermissions: values.defaultPermissions,
               });
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -88,10 +150,10 @@ const SettingsMain: React.FC = () => {
             }
           }}
         >
-          {({ isSubmitting }) => {
+          {({ isSubmitting, values, setFieldValue }) => {
             return (
               <Form>
-                {hasPermission(Permission.ADMIN) && (
+                {userHasPermission(Permission.ADMIN) && (
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
                     <label
                       htmlFor="username"
@@ -100,11 +162,11 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(messages.apikey)}
                     </label>
                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <div className="max-w-lg flex rounded-md shadow-sm">
+                      <div className="flex max-w-lg rounded-md shadow-sm">
                         <input
                           type="text"
                           id="apiKey"
-                          className="flex-1 form-input block w-full min-w-0 rounded-none rounded-l-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                          className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-none form-input rounded-l-md sm:text-sm sm:leading-5"
                           value={data?.apiKey}
                           readOnly
                         />
@@ -117,7 +179,7 @@ const SettingsMain: React.FC = () => {
                             e.preventDefault();
                             regenerate();
                           }}
-                          className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-500 text-sm leading-5 font-medium rounded-r-md text-white bg-indigo-500  hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                          className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-500 border border-gray-500 rounded-r-md hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
                         >
                           <svg
                             className="w-5 h-5"
@@ -144,20 +206,98 @@ const SettingsMain: React.FC = () => {
                     {intl.formatMessage(messages.applicationurl)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg flex rounded-md shadow-sm">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         id="applicationUrl"
                         name="applicationUrl"
                         type="text"
                         placeholder="https://os.example.com"
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
                   </div>
                 </div>
-                <div className="mt-8 border-t border-gray-700 pt-5">
+                <div className="mt-6">
+                  <div role="group" aria-labelledby="label-permissions">
+                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                      <div>
+                        <div
+                          className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
+                          id="label-permissions"
+                        >
+                          {intl.formatMessage(messages.defaultPermissions)}
+                        </div>
+                      </div>
+                      <div className="mt-4 sm:mt-0 sm:col-span-2">
+                        <div className="max-w-lg">
+                          {permissionList.map((permissionOption) => (
+                            <div
+                              className={`relative flex items-start first:mt-0 mt-4 ${
+                                permissionOption.permission !==
+                                  Permission.ADMIN &&
+                                hasPermission(
+                                  Permission.ADMIN,
+                                  values.defaultPermissions
+                                )
+                                  ? 'opacity-50'
+                                  : ''
+                              }`}
+                              key={`permission-option-${permissionOption.id}`}
+                            >
+                              <div className="flex items-center h-5">
+                                <input
+                                  id={permissionOption.id}
+                                  name="permissions"
+                                  type="checkbox"
+                                  className="w-4 h-4 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                                  disabled={
+                                    permissionOption.permission !==
+                                      Permission.ADMIN &&
+                                    hasPermission(
+                                      Permission.ADMIN,
+                                      values.defaultPermissions
+                                    )
+                                  }
+                                  onClick={() => {
+                                    setFieldValue(
+                                      'defaultPermissions',
+                                      hasPermission(
+                                        permissionOption.permission,
+                                        values.defaultPermissions
+                                      )
+                                        ? values.defaultPermissions -
+                                            permissionOption.permission
+                                        : values.defaultPermissions +
+                                            permissionOption.permission
+                                    );
+                                  }}
+                                  checked={hasPermission(
+                                    permissionOption.permission,
+                                    values.defaultPermissions
+                                  )}
+                                />
+                              </div>
+                              <div className="ml-3 text-sm leading-5">
+                                <label
+                                  htmlFor={permissionOption.id}
+                                  className="font-medium"
+                                >
+                                  {permissionOption.name}
+                                </label>
+                                <p className="text-gray-500">
+                                  {permissionOption.description}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="pt-5 mt-8 border-t border-gray-700">
                   <div className="flex justify-end">
-                    <span className="ml-3 inline-flex rounded-md shadow-sm">
+                    <span className="inline-flex ml-3 rounded-md shadow-sm">
                       <Button
                         buttonType="primary"
                         type="submit"

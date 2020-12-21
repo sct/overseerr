@@ -5,6 +5,7 @@ import PlexTvAPI from '../api/plextv';
 import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
+import { getSettings } from '../lib/settings';
 
 const authRoutes = Router();
 
@@ -25,6 +26,7 @@ authRoutes.get('/me', isAuthenticated(), async (req, res) => {
 });
 
 authRoutes.post('/login', async (req, res, next) => {
+  const settings = getSettings();
   const userRepository = getRepository(User);
   const body = req.body as { authToken?: string };
 
@@ -82,7 +84,7 @@ authRoutes.post('/login', async (req, res, next) => {
           username: account.username,
           plexId: account.id,
           plexToken: account.authToken,
-          permissions: Permission.REQUEST,
+          permissions: settings.main.defaultPermissions,
           avatar: account.thumb,
         });
         await userRepository.save(user);

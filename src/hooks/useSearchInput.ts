@@ -7,8 +7,20 @@ import type { Nullable } from '../utils/typeHelpers';
 
 type Url = string | UrlObject;
 
+const extraEncodes: [RegExp, string][] = [
+  [/\(/g, '%28'],
+  [/\)/g, '%29'],
+  [/!/g, '%21'],
+];
+
 const encodeURIExtraParams = (string: string): string => {
-  return encodeURIComponent(string).replace(/!/g, '%21');
+  let finalString = encodeURIComponent(string);
+
+  extraEncodes.forEach((encode) => {
+    finalString = finalString.replace(encode[0], encode[1]);
+  });
+
+  return finalString;
 };
 
 interface SearchObject {

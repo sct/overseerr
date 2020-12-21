@@ -58,6 +58,9 @@ components:
         applicationUrl:
           type: string
           example: https://os.example.com
+        defaultPermissions:
+          type: number
+          example: 32
     PlexLibrary:
       type: object
       properties:

@@ -16,7 +16,7 @@ import logger from '../logger';
 import { scheduledJobs } from '../job/schedule';
 import { Permission } from '../lib/permissions';
 import { isAuthenticated } from '../middleware/auth';
-import { merge } from 'lodash';
+import { merge, omit } from 'lodash';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import { getAppVersion } from '../utils/appVersion';
@@ -32,9 +32,7 @@ const filteredMainSettings = (
   main: MainSettings
 ): Partial<MainSettings> => {
   if (!user?.hasPermission(Permission.ADMIN)) {
-    return {
-      applicationUrl: main.applicationUrl,
-    };
+    return omit(main, 'apiKey');
   }
 
   return main;

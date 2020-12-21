@@ -31,9 +31,12 @@ app
   .then(async () => {
     const dbConnection = await createConnection();
 
-    await dbConnection.query('PRAGMA foreign_keys=OFF');
-    await dbConnection.runMigrations();
-    await dbConnection.query('PRAGMA foreign_keys=ON');
+    // Run migrations in production
+    if (process.env.NODE_ENV === 'production') {
+      await dbConnection.query('PRAGMA foreign_keys=OFF');
+      await dbConnection.runMigrations();
+      await dbConnection.query('PRAGMA foreign_keys=ON');
+    }
 
     // Load Settings
     const settings = getSettings().load();

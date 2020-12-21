@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { merge } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { Permission } from './permissions';
 
 export interface Library {
   id: string;
@@ -47,6 +48,7 @@ export interface SonarrSettings extends DVRSettings {
 export interface MainSettings {
   apiKey: string;
   applicationUrl: string;
+  defaultPermissions: number;
 }
 
 interface PublicSettings {
@@ -105,6 +107,7 @@ class Settings {
       main: {
         apiKey: '',
         applicationUrl: '',
+        defaultPermissions: Permission.REQUEST,
       },
       plex: {
         name: '',
