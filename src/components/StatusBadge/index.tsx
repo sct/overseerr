@@ -24,8 +24,8 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
         </Badge>
       )}
       {status === MediaStatus.PROCESSING && (
-        <Badge badgeType="danger">
-          {intl.formatMessage(globalMessages.unavailable)}
+        <Badge badgeType="warning">
+          {intl.formatMessage(globalMessages.processing)}
         </Badge>
       )}
       {status === MediaStatus.PENDING && (
