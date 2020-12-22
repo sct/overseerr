@@ -191,6 +191,23 @@ export interface TmdbMovieDetails {
     crew: TmdbCreditCrew[];
   };
   external_ids: TmdbExternalIds;
+  videos: TmdbVideoResult;
+}
+
+export interface TmdbVideo {
+  id: string;
+  key: string;
+  name: string;
+  site: 'YouTube';
+  size: number;
+  type:
+    | 'Clip'
+    | 'Teaser'
+    | 'Trailer'
+    | 'Featurette'
+    | 'Opening Credits'
+    | 'Behind the Scenes'
+    | 'Bloopers';
 }
 
 export interface TmdbTvEpisodeResult {
@@ -278,6 +295,11 @@ export interface TmdbTvDetails {
   keywords: {
     results: TmdbKeyword[];
   };
+  videos: TmdbVideoResult;
+}
+
+export interface TmdbVideoResult {
+  results: TmdbVideo[];
 }
 
 export interface TmdbKeyword {
@@ -438,7 +460,10 @@ class TheMovieDb {
       const response = await this.axios.get<TmdbMovieDetails>(
         `/movie/${movieId}`,
         {
-          params: { language, append_to_response: 'credits,external_ids' },
+          params: {
+            language,
+            append_to_response: 'credits,external_ids,videos',
+          },
         }
       );
 
@@ -459,7 +484,7 @@ class TheMovieDb {
       const response = await this.axios.get<TmdbTvDetails>(`/tv/${tvId}`, {
         params: {
           language,
-          append_to_response: 'credits,external_ids,keywords',
+          append_to_response: 'credits,external_ids,keywords,videos',
         },
       });
 

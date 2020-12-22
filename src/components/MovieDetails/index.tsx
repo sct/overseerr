@@ -46,6 +46,7 @@ const messages = defineMessages({
   status: 'Status',
   revenue: 'Revenue',
   budget: 'Budget',
+  watchtrailer: 'Watch Trailer',
   originallanguage: 'Original Language',
   overview: 'Overview',
   runtime: '{minutes} minutes',
@@ -120,6 +121,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const activeRequest = data?.mediaInfo?.requests?.find(
     (request) => request.status === MediaRequestStatus.PENDING
   );
+
+  const trailerUrl = data.relatedVideos
+    ?.filter((r) => r.type === 'Trailer')
+    .sort((a, b) => a.size - b.size)
+    .pop()?.url;
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.get(
@@ -244,10 +250,18 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </span>
         </div>
         <div className="flex justify-end flex-1 mt-4 md:mt-0">
+          {trailerUrl && (
+            <a href={trailerUrl} target={'_blank'} rel="noreferrer">
+              <Button buttonType="ghost">
+                <FormattedMessage {...messages.watchtrailer} />
+              </Button>
+            </a>
+          )}
           {(!data.mediaInfo ||
             data.mediaInfo?.status === MediaStatus.UNKNOWN) && (
             <Button
               buttonType="primary"
+              className="ml-2"
               onClick={() => setShowRequestModal(true)}
             >
               {activeRequest ? (
