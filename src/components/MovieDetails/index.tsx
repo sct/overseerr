@@ -438,6 +438,25 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           )}
         </div>
         <div className="w-full mt-8 md:w-80 md:mt-0">
+          {data.collection && (
+            <div className="mb-6">
+              <Link href={`/collection/${data.collection.id}`}>
+                <a>
+                  <div
+                    className="relative transition duration-300 transform scale-100 bg-gray-800 bg-center bg-cover rounded-lg shadow-md cursor-pointer group hover:scale-105"
+                    style={{
+                      backgroundImage: `linear-gradient(180deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 0.80) 100%), url(//image.tmdb.org/t/p/w1440_and_h320_multi_faces/${data.collection.backdropPath})`,
+                    }}
+                  >
+                    <div className="flex items-center justify-between p-4 text-gray-200 transition duration-300 h-14 group-hover:text-white">
+                      <div>{data.collection.name}</div>
+                      <Button buttonSize="sm">View</Button>
+                    </div>
+                  </div>
+                </a>
+              </Link>
+            </div>
+          )}
           <div className="bg-gray-900 border border-gray-800 rounded-lg shadow">
             {(data.voteCount > 0 || ratingData) && (
               <div className="flex items-center justify-center px-4 py-2 border-b border-gray-800 last:border-b-0">

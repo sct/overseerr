@@ -51,7 +51,7 @@ const Button: React.FC<ButtonProps> = ({
       break;
     default:
       buttonStyle.push(
-        'leading-5 font-medium rounded-md text-gray-200 bg-gray-500 hover:bg-gray-400 hover:text-white focus:border-blue-300 focus:ring-blue active:text-gray-200 active:bg-gray-400 disabled:opacity-50'
+        'leading-5 font-medium rounded-md text-gray-200 bg-gray-500 hover:bg-gray-400 group-hover:bg-gray-400 hover:text-white group-hover:text-white focus:border-blue-300 focus:ring-blue active:text-gray-200 active:bg-gray-400 disabled:opacity-50'
       );
   }
 

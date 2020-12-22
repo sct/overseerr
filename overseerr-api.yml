@@ -463,6 +463,19 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Crew'
+        collection:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            name:
+              type: string
+              example: A collection
+            posterPath:
+              type: string
+            backdropPath:
+              type: string
         externalIds:
           $ref: '#/components/schemas/ExternalIds'
         mediaInfo:
@@ -991,6 +1004,26 @@ components:
         name:
           type: string
           example: 'English'
+    Collection:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+        name:
+          type: string
+          example: A Movie Collection
+        overview:
+          type: string
+          example: Overview of collection
+        posterPath:
+          type: string
+        backdropPath:
+          type: string
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovieResult'
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -2626,6 +2659,31 @@ paths:
       responses:
         '204':
           description: Succesfully removed media item
+  /collection/{collectionId}:
+    get:
+      summary: Request collection details
+      description: Returns back full collection details in JSON format
+      tags:
+        - collection
+      parameters:
+        - in: path
+          name: collectionId
+          required: true
+          schema:
+            type: number
+            example: 537982
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Collection details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
 
 security:
   - cookieAuth: []

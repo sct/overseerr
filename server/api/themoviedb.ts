@@ -190,6 +190,12 @@ export interface TmdbMovieDetails {
     cast: TmdbCreditCast[];
     crew: TmdbCreditCrew[];
   };
+  belongs_to_collection?: {
+    id: number;
+    name: string;
+    poster_path?: string;
+    backdrop_path?: string;
+  };
   external_ids: TmdbExternalIds;
 }
 
@@ -342,6 +348,15 @@ export interface TmdbPersonCombinedCredits {
 export interface TmdbSeasonWithEpisodes extends TmdbTvSeasonResult {
   episodes: TmdbTvEpisodeResult[];
   external_ids: TmdbExternalIds;
+}
+
+export interface TmdbCollection {
+  id: number;
+  name: string;
+  overview?: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  parts: TmdbMovieResult[];
 }
 
 class TheMovieDb {
@@ -864,6 +879,29 @@ class TheMovieDb {
       throw new Error(
         `[TMDB] Failed to get tv show by external tvdb ID: ${e.message}`
       );
+    }
+  }
+
+  public async getCollection({
+    collectionId,
+    language = 'en-US',
+  }: {
+    collectionId: number;
+    language?: string;
+  }): Promise<TmdbCollection> {
+    try {
+      const response = await this.axios.get<TmdbCollection>(
+        `/collection/${collectionId}`,
+        {
+          params: {
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch collection: ${e.message}`);
     }
   }
 }
