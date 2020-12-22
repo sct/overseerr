@@ -17,7 +17,7 @@ const UPDATE_RATE = 4 * 1000;
 
 const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);
-const tvdbRegex = new RegExp(/tvdb:\/\/([0-9]+)/);
+const tvdbRegex = new RegExp(/tvdb:\/\/([0-9]+)|hama:\/\/tvdb-([0-9]+)/);
 const tmdbShowRegex = new RegExp(/themoviedb:\/\/([0-9]+)/);
 const plexRegex = new RegExp(/plex:\/\//);
 
