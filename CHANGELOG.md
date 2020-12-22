@@ -1,3 +1,33 @@
+# [1.12.0](https://github.com/sct/overseerr/compare/v1.11.0...v1.12.0) (2020-12-22)
+
+
+### Bug Fixes
+
+* **api:** fix cross-imported type crashing build ([f35dae5](https://github.com/sct/overseerr/commit/f35dae56a583a5545375318fa5be994ae1f2557f))
+* **api:** prevent checking first admin account for plex server access ([22006e9](https://github.com/sct/overseerr/commit/22006e9dbde82609440f89bde9a40887b4742682))
+* **frontend:** add name, short_name and start_url to manifest ([#424](https://github.com/sct/overseerr/issues/424)) ([c6836e0](https://github.com/sct/overseerr/commit/c6836e02c810e8adb12c3a4b110f9604cf5b7b81))
+* **frontend:** adjust person card layout to deal with overflowing content ([4891298](https://github.com/sct/overseerr/commit/48912988915ae40606a900a6f1dd23fc25ed567f)), closes [#416](https://github.com/sct/overseerr/issues/416)
+* **frontend:** allow more special characters in search input ([5deb64a](https://github.com/sct/overseerr/commit/5deb64a87fd70e97da27a025ad11fb8ace0e0b57)), closes [#430](https://github.com/sct/overseerr/issues/430)
+* **logs:** improve logging when adding to sonarr/radarr ([4b50522](https://github.com/sct/overseerr/commit/4b505223b881a750007e3fbc7d4bcb9677d4d412))
+* only run migrations in production ([ab9cef3](https://github.com/sct/overseerr/commit/ab9cef3624b5db1ec03507553a69d33b87857e29))
+* **notifications:** always update the media table when seasons become available ([0916b58](https://github.com/sct/overseerr/commit/0916b58594a00db98c6701fdcaee4f3c3e08904e))
+* **plex-sync:** fixes processing movies using TMDB agent ([764db94](https://github.com/sct/overseerr/commit/764db94f1bd7866309684d5bd56033b21cbc2e0c)), closes [#363](https://github.com/sct/overseerr/issues/363)
+
+
+### Features
+
+* **frontend:** add crew related movies/shows to person details page ([12127a7](https://github.com/sct/overseerr/commit/12127a77633f0e92ae88cbafd49581296f559c33))
+* **frontend:** add full crew page for movies/shows ([604ba2a](https://github.com/sct/overseerr/commit/604ba2a92f1d59489e7fc6dfc011347f8595c123))
+* default user permissions added to settings ([e7ee85c](https://github.com/sct/overseerr/commit/e7ee85c29b5d25c6bff58717eae5e62de4dcef0c)), closes [#388](https://github.com/sct/overseerr/issues/388)
+* import users from plex ([#428](https://github.com/sct/overseerr/issues/428)) ([7e8f361](https://github.com/sct/overseerr/commit/7e8f361af711001cfc4dcc06a384b76f9846f90f)), closes [#281](https://github.com/sct/overseerr/issues/281)
+* **frontend:** add prioritized crew under overview ([6753d9d](https://github.com/sct/overseerr/commit/6753d9daaafb18672f14fd86f2c1675dcec39b13)), closes [#406](https://github.com/sct/overseerr/issues/406)
+* **notifications:** added ability to send test notifications ([44a3054](https://github.com/sct/overseerr/commit/44a305426f3e9829c167a4a73095d0d248641f47)), closes [#309](https://github.com/sct/overseerr/issues/309)
+
+
+### Reverts
+
+* **deps:** revert react-use-clipboard to 1.0.2 ([7083ddf](https://github.com/sct/overseerr/commit/7083ddf18121716e3442acab3506c395fdc351ac))
+
 # [1.11.0](https://github.com/sct/overseerr/compare/v1.10.0...v1.11.0) (2020-12-20)
 
 
