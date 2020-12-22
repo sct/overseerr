@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/sct/overseerr/compare/v1.12.0...v1.12.1) (2020-12-22)
+
+
+### Bug Fixes
+
+* **migration:** fixes issue migrating away from the unique imdbId constraint ([69fd7a5](https://github.com/sct/overseerr/commit/69fd7a5511215674a5c22ba48627f221da900229))
+
 # [1.12.0](https://github.com/sct/overseerr/compare/v1.11.0...v1.12.0) (2020-12-22)
 
 
