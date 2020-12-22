@@ -13,4 +13,3 @@ config/db/db.sqlite3
 config/db/logs/overseerr.log
 Dockerfil**
 **.md
-**.yml
