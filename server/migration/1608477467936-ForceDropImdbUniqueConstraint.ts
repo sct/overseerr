@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddLastSeasonChangeMedia1608477467935
+export class ForceDropImdbUniqueConstraint1608477467935
   implements MigrationInterface {
-  name = 'AddLastSeasonChangeMedia1608477467935';
+  name = 'ForceDropImdbUniqueConstraint1608477467936';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP INDEX "IDX_7157aad07c73f6a6ae3bbd5ef5"`);
