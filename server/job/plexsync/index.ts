@@ -100,7 +100,7 @@ class JobPlexSync {
         let tmdbMovie: TmdbMovieDetails | undefined;
 
         const imdbMatch = plexitem.guid.match(imdbRegex);
-        const tmdbMatch = plexitem.guid.match(tmdbRegex);
+        const tmdbMatch = plexitem.guid.match(tmdbShowRegex);
 
         if (imdbMatch) {
           tmdbMovie = await this.tmdb.getMovieByImdbId({
