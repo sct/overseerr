@@ -29,6 +29,7 @@ export class MediaSubscriber implements EntitySubscriberInterface {
               notifyUser: request.requestedBy,
               subject: movie.title,
               message: movie.overview,
+              media: entity,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
             });
           });
@@ -79,6 +80,7 @@ export class MediaSubscriber implements EntitySubscriberInterface {
             message: tv.overview,
             notifyUser: request.requestedBy,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
+            media: entity,
             extra: [
               {
                 name: 'Seasons',

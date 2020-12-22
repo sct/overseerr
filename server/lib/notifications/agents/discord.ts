@@ -93,7 +93,8 @@ class DiscordAgent
     type: Notification,
     payload: NotificationPayload
   ): DiscordRichEmbed {
-    let color = EmbedColors.DEFAULT;
+    const settings = getSettings();
+    let color = EmbedColors.DARK_PURPLE;
 
     const fields: Field[] = [];
 
@@ -112,6 +113,13 @@ class DiscordAgent
             inline: true,
           }
         );
+
+        if (settings.main.applicationUrl) {
+          fields.push({
+            name: 'View Media',
+            value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
+          });
+        }
         break;
       case Notification.MEDIA_APPROVED:
         color = EmbedColors.PURPLE;
@@ -127,6 +135,13 @@ class DiscordAgent
             inline: true,
           }
         );
+
+        if (settings.main.applicationUrl) {
+          fields.push({
+            name: 'View Media',
+            value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
+          });
+        }
         break;
       case Notification.MEDIA_AVAILABLE:
         color = EmbedColors.GREEN;
@@ -142,6 +157,13 @@ class DiscordAgent
             inline: true,
           }
         );
+
+        if (settings.main.applicationUrl) {
+          fields.push({
+            name: 'View Media',
+            value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
+          });
+        }
         break;
     }
 
@@ -150,7 +172,7 @@ class DiscordAgent
       description: payload.message,
       color,
       timestamp: new Date().toISOString(),
-      author: { name: 'Overseerr' },
+      author: { name: 'Overseerr', url: settings.main.applicationUrl },
       fields: [
         ...fields,
         // If we have extra data, map it to fields for discord notifications

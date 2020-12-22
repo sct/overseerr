@@ -89,7 +89,10 @@ class EmailAgent
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
               requestedBy: payload.notifyUser.username,
-              actionUrl: applicationUrl,
+              actionUrl: applicationUrl
+                ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+                : undefined,
+              applicationUrl,
               requestType: 'New Request',
             },
           });
@@ -124,7 +127,10 @@ class EmailAgent
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
           requestedBy: payload.notifyUser.username,
-          actionUrl: applicationUrl,
+          actionUrl: applicationUrl
+            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+            : undefined,
+          applicationUrl,
           requestType: 'Request Approved',
         },
       });
@@ -158,7 +164,10 @@ class EmailAgent
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
           requestedBy: payload.notifyUser.username,
-          actionUrl: applicationUrl,
+          actionUrl: applicationUrl
+            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+            : undefined,
+          applicationUrl,
           requestType: 'Now Available',
         },
       });
@@ -185,7 +194,7 @@ class EmailAgent
         },
         locals: {
           body: payload.message,
-          actionUrl: applicationUrl,
+          applicationUrl,
         },
       });
       return true;

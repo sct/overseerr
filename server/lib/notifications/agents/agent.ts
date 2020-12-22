@@ -1,10 +1,12 @@
 import { Notification } from '..';
+import Media from '../../../entity/Media';
 import { User } from '../../../entity/User';
 import { NotificationAgentConfig } from '../../settings';
 
 export interface NotificationPayload {
   subject: string;
   notifyUser: User;
+  media?: Media;
   image?: string;
   message?: string;
   extra?: { name: string; value: string }[];
