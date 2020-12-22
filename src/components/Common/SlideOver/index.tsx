@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Transition from '../../Transition';
@@ -49,7 +48,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
         className={`z-50 fixed inset-0 overflow-hidden bg-opacity-50 bg-gray-800`}
       >
         <div className="absolute inset-0 overflow-hidden">
-          <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex">
+          <section className="absolute inset-y-0 right-0 flex max-w-full pl-10">
             <Transition
               show={show}
               appear
@@ -61,20 +60,20 @@ const SlideOver: React.FC<SlideOverProps> = ({
               leaveTo="translate-x-full"
             >
               <div className="w-screen max-w-md" ref={slideoverRef}>
-                <div className="h-full flex flex-col bg-gray-700 shadow-xl overflow-y-scroll">
-                  <header className="space-y-1 py-6 px-4 bg-indigo-600 sm:px-6">
+                <div className="flex flex-col h-full overflow-y-scroll bg-gray-700 shadow-xl">
+                  <header className="px-4 py-6 space-y-1 bg-indigo-600 sm:px-6">
                     <div className="flex items-center justify-between space-x-3">
-                      <h2 className="text-lg leading-7 font-medium text-white">
+                      <h2 className="text-lg font-medium leading-7 text-white">
                         {title}
                       </h2>
-                      <div className="h-7 flex items-center">
+                      <div className="flex items-center h-7">
                         <button
                           aria-label="Close panel"
-                          className="text-indigo-200 hover:text-white transition ease-in-out duration-150"
+                          className="text-indigo-200 transition duration-150 ease-in-out hover:text-white"
                           onClick={() => onClose()}
                         >
                           <svg
-                            className="h-6 w-6"
+                            className="w-6 h-6"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
@@ -98,7 +97,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
                       </div>
                     )}
                   </header>
-                  <div className="relative flex-1 py-6 px-4 sm:px-6 text-white">
+                  <div className="relative flex-1 px-4 py-6 text-white sm:px-6">
                     {children}
                   </div>
                 </div>

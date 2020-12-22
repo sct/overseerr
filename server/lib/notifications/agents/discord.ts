@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { Notification } from '..';
 import logger from '../../../logger';
-import { getSettings } from '../../settings';
-import type { NotificationAgent, NotificationPayload } from './agent';
+import { getSettings, NotificationAgentDiscord } from '../../settings';
+import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 enum EmbedColors {
   DEFAULT = 0,
@@ -37,6 +37,11 @@ interface DiscordImageEmbed {
   width?: number;
 }
 
+interface Field {
+  name: string;
+  value: string;
+  inline?: boolean;
+}
 interface DiscordRichEmbed {
   title?: string;
   type?: 'rich'; // Always rich for webhooks
@@ -61,11 +66,7 @@ interface DiscordRichEmbed {
     icon_url?: string;
     proxy_icon_url?: string;
   };
-  fields?: {
-    name: string;
-    value: string;
-    inline?: boolean;
-  }[];
+  fields?: Field[];
 }
 
 interface DiscordWebhookPayload {
@@ -75,26 +76,72 @@ interface DiscordWebhookPayload {
   tts: boolean;
 }
 
-class DiscordAgent implements NotificationAgent {
+class DiscordAgent
+  extends BaseAgent<NotificationAgentDiscord>
+  implements NotificationAgent {
+  protected getSettings(): NotificationAgentDiscord {
+    if (this.settings) {
+      return this.settings;
+    }
+
+    const settings = getSettings();
+
+    return settings.notifications.agents.discord;
+  }
+
   public buildEmbed(
     type: Notification,
     payload: NotificationPayload
   ): DiscordRichEmbed {
     let color = EmbedColors.DEFAULT;
-    let status = 'Unknown';
+
+    const fields: Field[] = [];
 
     switch (type) {
       case Notification.MEDIA_PENDING:
         color = EmbedColors.ORANGE;
-        status = 'Pending Approval';
+        fields.push(
+          {
+            name: 'Requested By',
+            value: payload.notifyUser.username ?? '',
+            inline: true,
+          },
+          {
+            name: 'Status',
+            value: 'Pending Approval',
+            inline: true,
+          }
+        );
         break;
       case Notification.MEDIA_APPROVED:
         color = EmbedColors.PURPLE;
-        status = 'Processing Request';
+        fields.push(
+          {
+            name: 'Requested By',
+            value: payload.notifyUser.username ?? '',
+            inline: true,
+          },
+          {
+            name: 'Status',
+            value: 'Processing Request',
+            inline: true,
+          }
+        );
         break;
       case Notification.MEDIA_AVAILABLE:
         color = EmbedColors.GREEN;
-        status = 'Available';
+        fields.push(
+          {
+            name: 'Requested By',
+            value: payload.notifyUser.username ?? '',
+            inline: true,
+          },
+          {
+            name: 'Status',
+            value: 'Available',
+            inline: true,
+          }
+        );
         break;
     }
 
@@ -105,16 +152,7 @@ class DiscordAgent implements NotificationAgent {
       timestamp: new Date().toISOString(),
       author: { name: 'Overseerr' },
       fields: [
-        {
-          name: 'Requested By',
-          value: payload.notifyUser.username ?? '',
-          inline: true,
-        },
-        {
-          name: 'Status',
-          value: status,
-          inline: true,
-        },
+        ...fields,
         // If we have extra data, map it to fields for discord notifications
         ...(payload.extra ?? []).map((extra) => ({
           name: extra.name,
@@ -130,12 +168,7 @@ class DiscordAgent implements NotificationAgent {
   // TODO: Add checking for type here once we add notification type filters for agents
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public shouldSend(_type: Notification): boolean {
-    const settings = getSettings();
-
-    if (
-      settings.notifications.agents.discord?.enabled &&
-      settings.notifications.agents.discord?.options?.webhookUrl
-    ) {
+    if (this.getSettings().enabled && this.getSettings().options.webhookUrl) {
       return true;
     }
 
@@ -146,11 +179,9 @@ class DiscordAgent implements NotificationAgent {
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    const settings = getSettings();
     logger.debug('Sending discord notification', { label: 'Notifications' });
     try {
-      const webhookUrl =
-        settings.notifications.agents.discord?.options?.webhookUrl;
+      const webhookUrl = this.getSettings().options.webhookUrl;
 
       if (!webhookUrl) {
         return false;

@@ -374,7 +374,12 @@ class TheMovieDb {
 
       return response.data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to search multi: ${e.message}`);
+      return {
+        page: 1,
+        results: [],
+        total_pages: 1,
+        total_results: 0,
+      };
     }
   };
 

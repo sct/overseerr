@@ -5,6 +5,7 @@ export enum Notification {
   MEDIA_PENDING = 2,
   MEDIA_APPROVED = 4,
   MEDIA_AVAILABLE = 8,
+  TEST_NOTIFICATION = 16,
 }
 
 class NotificationManager {

@@ -16,11 +16,14 @@ import logger from '../logger';
 import { scheduledJobs } from '../job/schedule';
 import { Permission } from '../lib/permissions';
 import { isAuthenticated } from '../middleware/auth';
-import { merge } from 'lodash';
+import { merge, omit } from 'lodash';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import { getAppVersion } from '../utils/appVersion';
 import { SettingsAboutResponse } from '../interfaces/api/settingsInterfaces';
+import { Notification } from '../lib/notifications';
+import DiscordAgent from '../lib/notifications/agents/discord';
+import EmailAgent from '../lib/notifications/agents/email';
 
 const settingsRoutes = Router();
 
@@ -29,9 +32,7 @@ const filteredMainSettings = (
   main: MainSettings
 ): Partial<MainSettings> => {
   if (!user?.hasPermission(Permission.ADMIN)) {
-    return {
-      applicationUrl: main.applicationUrl,
-    };
+    return omit(main, 'apiKey');
   }
 
   return main;
@@ -448,6 +449,25 @@ settingsRoutes.post('/notifications/discord', (req, res) => {
   res.status(200).json(settings.notifications.agents.discord);
 });
 
+settingsRoutes.post('/notifications/discord/test', (req, res, next) => {
+  if (!req.user) {
+    return next({
+      status: 500,
+      message: 'User information missing from request',
+    });
+  }
+
+  const discordAgent = new DiscordAgent(req.body);
+  discordAgent.send(Notification.TEST_NOTIFICATION, {
+    notifyUser: req.user,
+    subject: 'Test Notification',
+    message:
+      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+  });
+
+  return res.status(204).send();
+});
+
 settingsRoutes.get('/notifications/email', (_req, res) => {
   const settings = getSettings();
 
@@ -461,6 +481,25 @@ settingsRoutes.post('/notifications/email', (req, res) => {
   settings.save();
 
   res.status(200).json(settings.notifications.agents.email);
+});
+
+settingsRoutes.post('/notifications/email/test', (req, res, next) => {
+  if (!req.user) {
+    return next({
+      status: 500,
+      message: 'User information missing from request',
+    });
+  }
+
+  const emailAgent = new EmailAgent(req.body);
+  emailAgent.send(Notification.TEST_NOTIFICATION, {
+    notifyUser: req.user,
+    subject: 'Test Notification',
+    message:
+      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+  });
+
+  return res.status(204).send();
 });
 
 settingsRoutes.get('/about', async (req, res) => {

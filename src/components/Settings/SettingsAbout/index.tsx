@@ -26,16 +26,12 @@ const SettingsAbout: React.FC = () => {
     '/api/v1/settings/about'
   );
 
-  if (error) {
-    return <Error statusCode={500} />;
-  }
-
   if (!data && !error) {
     return <LoadingSpinner />;
   }
 
   if (!data) {
-    return <LoadingSpinner />;
+    return <Error statusCode={500} />;
   }
 
   return (

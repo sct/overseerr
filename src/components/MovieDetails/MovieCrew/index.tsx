@@ -11,10 +11,10 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import PersonCard from '../../PersonCard';
 
 const messages = defineMessages({
-  fullcast: 'Full Cast',
+  fullcrew: 'Full Crew',
 });
 
-const MovieCast: React.FC = () => {
+const MovieCrew: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
@@ -39,19 +39,19 @@ const MovieCast: React.FC = () => {
           </Link>
         }
       >
-        {intl.formatMessage(messages.fullcast)}
+        {intl.formatMessage(messages.fullcrew)}
       </Header>
       <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
-        {data?.credits.cast.map((person, index) => {
+        {data?.credits.crew.map((person, index) => {
           return (
             <li
-              key={`cast-${person.id}-${index}`}
+              key={`crew-${person.id}-${index}`}
               className="flex flex-col items-center col-span-1 text-center"
             >
               <PersonCard
                 name={person.name}
                 personId={person.id}
-                subName={person.character}
+                subName={person.job}
                 profilePath={person.profilePath}
                 canExpand
               />
@@ -63,4 +63,4 @@ const MovieCast: React.FC = () => {
   );
 };
 
-export default MovieCast;
+export default MovieCrew;
