@@ -227,7 +227,7 @@
   "components.Settings.jobname": "Job Name",
   "components.Settings.librariesRemaining": "Libraries Remaining: {count}",
   "components.Settings.manualscan": "Manual Library Scan",
-  "components.Settings.manualscanDescription": "Normally, this will only be run once every 6 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one time full manual library scan is recommended!",
+  "components.Settings.manualscanDescription": "Normally, this will only be run once every 24 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one time full manual library scan is recommended!",
   "components.Settings.menuAbout": "About",
   "components.Settings.menuGeneralSettings": "General Settings",
   "components.Settings.menuJobs": "Jobs",
