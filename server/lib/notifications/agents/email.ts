@@ -113,7 +113,7 @@ class EmailAgent
     try {
       const email = this.getNewEmail();
 
-      email.send({
+      await email.send({
         template: path.join(
           __dirname,
           '../../../templates/email/media-request'
@@ -150,7 +150,7 @@ class EmailAgent
     try {
       const email = this.getNewEmail();
 
-      email.send({
+      await email.send({
         template: path.join(
           __dirname,
           '../../../templates/email/media-request'
@@ -187,7 +187,7 @@ class EmailAgent
     try {
       const email = this.getNewEmail();
 
-      email.send({
+      await email.send({
         template: path.join(__dirname, '../../../templates/email/test-email'),
         message: {
           to: payload.notifyUser.email,
