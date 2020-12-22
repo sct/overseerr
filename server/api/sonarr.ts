@@ -126,13 +126,28 @@ class SonarrAPI {
 
         series.addOptions = {
           ignoreEpisodesWithFiles: true,
-          searchForMissingEpisodes: true,
+          searchForMissingEpisodes: options.searchNow,
         };
 
         const newSeriesResponse = await this.axios.put<SonarrSeries>(
           '/series',
           series
         );
+
+        if (newSeriesResponse.data.id) {
+          logger.info('Sonarr accepted request. Updated existing series', {
+            label: 'Sonarr',
+          });
+          logger.debug('Sonarr add details', {
+            label: 'Sonarr',
+            movie: newSeriesResponse.data,
+          });
+        } else {
+          logger.error('Failed to add movie to Sonarr', {
+            label: 'Sonarr',
+            options,
+          });
+        }
 
         return newSeriesResponse.data;
       }
@@ -161,6 +176,19 @@ class SonarrAPI {
           },
         } as Partial<SonarrSeries>
       );
+
+      if (createdSeriesResponse.data.id) {
+        logger.info('Sonarr accepted request', { label: 'Sonarr' });
+        logger.debug('Sonarr add details', {
+          label: 'Sonarr',
+          movie: createdSeriesResponse.data,
+        });
+      } else {
+        logger.error('Failed to add movie to Sonarr', {
+          label: 'Sonarr',
+          options,
+        });
+      }
 
       return createdSeriesResponse.data;
     } catch (e) {
