@@ -289,6 +289,7 @@
   "components.TvDetails.cast": "Cast",
   "components.TvDetails.decline": "Decline",
   "components.TvDetails.declinerequests": "Decline {requestCount} {requestCount, plural, one {Request} other {Requests}}",
+  "components.TvDetails.firstAirDate": "First Air Date",
   "components.TvDetails.manageModalClearMedia": "Clear All Media Data",
   "components.TvDetails.manageModalClearMediaWarning": "This will remove all media data including all requests for this item, irreversibly. If this item exists in your Plex library, the media info will be recreated next sync.",
   "components.TvDetails.manageModalNoRequests": "No Requests",
