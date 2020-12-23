@@ -81,11 +81,11 @@ const PersonDetails: React.FC = () => {
         <div className="absolute top-0 left-0 right-0 z-0 h-96">
           <ImageFader
             isDarker
-            backgroundImages={[...(sortedCrew ?? []), ...(sortedCast ?? [])]
+            backgroundImages={[...(sortedCast ?? []), ...(sortedCrew ?? [])]
               .filter((media) => media.posterPath)
               .map(
                 (media) =>
-                  `//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.posterPath}`
+                  `//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`
               )
               .slice(0, 6)}
           />
