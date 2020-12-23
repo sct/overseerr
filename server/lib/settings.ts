@@ -74,6 +74,7 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
     secure: boolean;
     authUser?: string;
     authPass?: string;
+    allowSelfSigned: boolean;
   };
 }
 
@@ -129,8 +130,9 @@ class Settings {
             options: {
               emailFrom: '',
               smtpHost: '127.0.0.1',
-              smtpPort: 465,
+              smtpPort: 587,
               secure: false,
+              allowSelfSigned: false,
             },
           },
           discord: {

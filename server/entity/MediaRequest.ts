@@ -88,6 +88,7 @@ export class MediaRequest {
           message: movie.overview,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
           notifyUser: this.requestedBy,
+          media,
         });
       }
 
@@ -98,6 +99,7 @@ export class MediaRequest {
           message: tv.overview,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
           notifyUser: this.requestedBy,
+          media,
           extra: [
             {
               name: 'Seasons',
@@ -136,6 +138,7 @@ export class MediaRequest {
           message: movie.overview,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
           notifyUser: this.requestedBy,
+          media,
         });
       } else if (this.media.mediaType === MediaType.TV) {
         const tv = await tmdb.getTvShow({ tvId: this.media.tmdbId });
@@ -144,6 +147,7 @@ export class MediaRequest {
           message: tv.overview,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
           notifyUser: this.requestedBy,
+          media,
           extra: [
             {
               name: 'Seasons',

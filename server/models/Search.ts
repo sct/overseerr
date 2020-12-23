@@ -78,7 +78,7 @@ export const mapTvResult = (
   media?: Media
 ): TvResult => ({
   id: tvResult.id,
-  firstAirDate: tvResult.first_air_Date,
+  firstAirDate: tvResult.first_air_date,
   genreIds: tvResult.genre_ids,
   // Some results from tmdb dont return the mediaType so we force it here!
   mediaType: tvResult.media_type || 'tv',

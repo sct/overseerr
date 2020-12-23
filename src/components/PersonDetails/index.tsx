@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
+import TruncateMarkup from 'react-truncate-markup';
 import useSWR from 'swr';
 import type { PersonDetail } from '../../../server/models/Person';
 import type { PersonCombinedCreditsResponse } from '../../../server/interfaces/api/personInterfaces';
@@ -8,6 +9,8 @@ import LoadingSpinner from '../Common/LoadingSpinner';
 import TitleCard from '../TitleCard';
 import { defineMessages, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
+import ImageFader from '../Common/ImageFader';
+import Ellipsis from '../../assets/ellipsis.svg';
 
 const messages = defineMessages({
   appearsin: 'Appears in',
@@ -74,7 +77,21 @@ const PersonDetails: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center mt-8 mb-8 md:flex-row md:items-start">
+      {(sortedCrew || sortedCast) && (
+        <div className="absolute top-0 left-0 right-0 z-0 h-96">
+          <ImageFader
+            isDarker
+            backgroundImages={[...(sortedCast ?? []), ...(sortedCrew ?? [])]
+              .filter((media) => media.backdropPath)
+              .map(
+                (media) =>
+                  `//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`
+              )
+              .slice(0, 6)}
+          />
+        </div>
+      )}
+      <div className="relative z-10 flex flex-col items-center mt-8 mb-8 md:flex-row md:items-start">
         {data.profilePath && (
           <div
             style={{
@@ -88,30 +105,30 @@ const PersonDetails: React.FC = () => {
           <div className="relative">
             {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
             <div
-              className={`transition-max-height duration-300 ${
-                showBio
-                  ? 'overflow-visible extra-max-height'
-                  : 'overflow-hidden max-h-44'
-              }`}
+              className="outline-none group ring-0"
               onClick={() => setShowBio((show) => !show)}
               role="button"
               tabIndex={-1}
             >
-              <div className={showBio ? 'h-auto' : 'h-36'}>
-                {data.biography
-                  ? data.biography
-                  : intl.formatMessage(messages.nobiography)}
-              </div>
-              {!showBio && (
-                <div className="absolute bottom-0 left-0 right-0 w-full h-8 bg-gradient-to-t from-gray-900" />
-              )}
+              <TruncateMarkup
+                lines={showBio ? 200 : 6}
+                ellipsis={
+                  <Ellipsis className="relative inline-block ml-2 -top-0.5 opacity-70 group-hover:opacity-100 transition duration-300" />
+                }
+              >
+                <div>
+                  {data.biography
+                    ? data.biography
+                    : intl.formatMessage(messages.nobiography)}
+                </div>
+              </TruncateMarkup>
             </div>
           </div>
         </div>
       </div>
       {(sortedCast ?? []).length > 0 && (
         <>
-          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
+          <div className="relative z-10 mt-6 mb-4 md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
                 <span>{intl.formatMessage(messages.appearsin)}</span>
@@ -157,7 +174,7 @@ const PersonDetails: React.FC = () => {
       )}
       {(sortedCrew ?? []).length > 0 && (
         <>
-          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
+          <div className="relative z-10 mt-6 mb-4 md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
                 <span>{intl.formatMessage(messages.crewmember)}</span>

@@ -25,6 +25,9 @@ const messages = defineMessages({
   emailsettingsfailed: 'Email notification settings failed to save.',
   test: 'Test',
   testsent: 'Test notification sent!',
+  allowselfsigned: 'Allow Self-Signed Certificates',
+  ssldisabletip:
+    'SSL should be disabled on standard TLS connections (Port 587)',
 });
 
 const NotificationsEmail: React.FC = () => {
@@ -61,6 +64,7 @@ const NotificationsEmail: React.FC = () => {
         secure: data.options.secure,
         authUser: data.options.authUser,
         authPass: data.options.authPass,
+        allowSelfSigned: data.options.allowSelfSigned,
       }}
       validationSchema={NotificationsDiscordSchema}
       onSubmit={async (values) => {
@@ -75,6 +79,7 @@ const NotificationsEmail: React.FC = () => {
               secure: values.secure,
               authUser: values.authUser,
               authPass: values.authPass,
+              allowSelfSigned: values.allowSelfSigned,
             },
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {
@@ -116,7 +121,7 @@ const NotificationsEmail: React.FC = () => {
           <Form>
             <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
               <label
-                htmlFor="isDefault"
+                htmlFor="enabled"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
                 {intl.formatMessage(messages.agentenabled)}
@@ -126,131 +131,152 @@ const NotificationsEmail: React.FC = () => {
                   type="checkbox"
                   id="enabled"
                   name="enabled"
-                  className="form-checkbox rounded-md h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
+                  className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                 />
               </div>
             </div>
             <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
               <label
-                htmlFor="name"
+                htmlFor="emailFrom"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
                 {intl.formatMessage(messages.emailsender)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
-                <div className="max-w-lg flex rounded-md shadow-sm">
+                <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="emailFrom"
                     name="emailFrom"
                     type="text"
                     placeholder="no-reply@example.com"
-                    className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
                 {errors.emailFrom && touched.emailFrom && (
-                  <div className="text-red-500 mt-2">{errors.emailFrom}</div>
+                  <div className="mt-2 text-red-500">{errors.emailFrom}</div>
                 )}
               </div>
             </div>
             <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
               <label
-                htmlFor="name"
+                htmlFor="smtpHost"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
                 {intl.formatMessage(messages.smtpHost)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
-                <div className="max-w-lg flex rounded-md shadow-sm">
+                <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="smtpHost"
                     name="smtpHost"
                     type="text"
                     placeholder="localhost"
-                    className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
                 {errors.smtpHost && touched.smtpHost && (
-                  <div className="text-red-500 mt-2">{errors.smtpHost}</div>
+                  <div className="mt-2 text-red-500">{errors.smtpHost}</div>
                 )}
               </div>
             </div>
             <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
               <label
-                htmlFor="name"
+                htmlFor="smtpPort"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
                 {intl.formatMessage(messages.smtpPort)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
-                <div className="max-w-lg flex rounded-md shadow-sm">
+                <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="smtpPort"
                     name="smtpPort"
                     type="text"
                     placeholder="465"
-                    className="form-input block w-24 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                    className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
                 {errors.smtpPort && touched.smtpPort && (
-                  <div className="text-red-500 mt-2">{errors.smtpPort}</div>
+                  <div className="mt-2 text-red-500">{errors.smtpPort}</div>
                 )}
               </div>
             </div>
             <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
               <label
-                htmlFor="isDefault"
+                htmlFor="secure"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
-                {intl.formatMessage(messages.enableSsl)}
+                <div className="flex flex-col">
+                  <span>{intl.formatMessage(messages.enableSsl)}</span>
+                  <span className="text-gray-500">
+                    {intl.formatMessage(messages.ssldisabletip)}
+                  </span>
+                </div>
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <Field
                   type="checkbox"
                   id="secure"
                   name="secure"
-                  className="form-checkbox rounded-md h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
+                  className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                />
+              </div>
+            </div>
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+              <label
+                htmlFor="allowSelfSigned"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+              >
+                {intl.formatMessage(messages.allowselfsigned)}
+              </label>
+              <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <Field
+                  type="checkbox"
+                  id="allowSelfSigned"
+                  name="allowSelfSigned"
+                  className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                 />
               </div>
             </div>
             <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
               <label
-                htmlFor="name"
+                htmlFor="authUser"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
                 {intl.formatMessage(messages.authUser)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
-                <div className="max-w-lg flex rounded-md shadow-sm">
+                <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="authUser"
                     name="authUser"
                     type="text"
-                    className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
             </div>
             <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
               <label
-                htmlFor="name"
+                htmlFor="authPass"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
                 {intl.formatMessage(messages.authPass)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
-                <div className="max-w-lg flex rounded-md shadow-sm">
+                <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="authPass"
                     name="authPass"
                     type="password"
-                    className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-8 border-t border-gray-700 pt-5">
+            <div className="pt-5 mt-8 border-t border-gray-700">
               <div className="flex justify-end">
-                <span className="ml-3 inline-flex rounded-md shadow-sm">
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="warning"
                     disabled={isSubmitting || !isValid}
@@ -263,7 +289,7 @@ const NotificationsEmail: React.FC = () => {
                     {intl.formatMessage(messages.test)}
                   </Button>
                 </span>
-                <span className="ml-3 inline-flex rounded-md shadow-sm">
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"

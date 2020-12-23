@@ -8,12 +8,18 @@ import React, {
 interface ImageFaderProps extends HTMLAttributes<HTMLDivElement> {
   backgroundImages: string[];
   rotationSpeed?: number;
+  isDarker?: boolean;
 }
 
 const DEFAULT_ROTATION_SPEED = 6000;
 
 const ImageFader: ForwardRefRenderFunction<HTMLDivElement, ImageFaderProps> = (
-  { backgroundImages, rotationSpeed = DEFAULT_ROTATION_SPEED, ...props },
+  {
+    backgroundImages,
+    rotationSpeed = DEFAULT_ROTATION_SPEED,
+    isDarker,
+    ...props
+  },
   ref
 ) => {
   const [activeIndex, setIndex] = useState(0);
@@ -29,6 +35,14 @@ const ImageFader: ForwardRefRenderFunction<HTMLDivElement, ImageFaderProps> = (
     };
   }, [backgroundImages, rotationSpeed]);
 
+  let gradient =
+    'linear-gradient(180deg, rgba(45, 55, 72, 0.47) 0%, #1A202E 100%)';
+
+  if (isDarker) {
+    gradient =
+      'linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%)';
+  }
+
   return (
     <div ref={ref}>
       {backgroundImages.map((imageUrl, i) => (
@@ -38,7 +52,7 @@ const ImageFader: ForwardRefRenderFunction<HTMLDivElement, ImageFaderProps> = (
             i === activeIndex ? 'opacity-100' : 'opacity-0'
           }`}
           style={{
-            backgroundImage: `linear-gradient(180deg, rgba(45, 55, 72, 0.47) 0%, #1A202E 100%), url(${imageUrl})`,
+            backgroundImage: `${gradient}, url(${imageUrl})`,
           }}
           {...props}
         />

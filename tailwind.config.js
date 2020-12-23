@@ -62,7 +62,7 @@ module.exports = {
     borderWidth: ['first', 'last'],
     margin: ['first', 'last', 'responsive'],
     boxShadow: ['group-focus'],
-    opacity: ['disabled', 'hover'],
+    opacity: ['disabled', 'hover', 'group-hover'],
   },
   plugins: [
     require('@tailwindcss/forms'),

@@ -71,7 +71,7 @@ export interface TmdbTvResult extends TmdbMediaResult {
   name: string;
   original_name: string;
   origin_country: string[];
-  first_air_Date: string;
+  first_air_date: string;
 }
 
 export interface TmdbPersonResult {

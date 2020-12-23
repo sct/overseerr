@@ -16,15 +16,23 @@ const hformat = winston.format.printf(
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'debug',
   format: winston.format.combine(
-    winston.format.colorize(),
     winston.format.splat(),
     winston.format.timestamp(),
     hformat
   ),
   transports: [
-    new winston.transports.Console(),
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.splat(),
+        winston.format.timestamp(),
+        hformat
+      ),
+    }),
     new winston.transports.File({
       filename: path.join(__dirname, '../config/logs/overseerr.log'),
+      maxsize: 20971520,
+      maxFiles: 6,
     }),
   ],
 });

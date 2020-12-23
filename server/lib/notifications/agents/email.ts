@@ -41,6 +41,11 @@ class EmailAgent
       host: emailSettings.smtpHost,
       port: emailSettings.smtpPort,
       secure: emailSettings.secure,
+      tls: emailSettings.allowSelfSigned
+        ? {
+            rejectUnauthorized: false,
+          }
+        : undefined,
       auth:
         emailSettings.authUser && emailSettings.authPass
           ? {
@@ -89,7 +94,10 @@ class EmailAgent
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
               requestedBy: payload.notifyUser.username,
-              actionUrl: applicationUrl,
+              actionUrl: applicationUrl
+                ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+                : undefined,
+              applicationUrl,
               requestType: 'New Request',
             },
           });
@@ -110,7 +118,7 @@ class EmailAgent
     try {
       const email = this.getNewEmail();
 
-      email.send({
+      await email.send({
         template: path.join(
           __dirname,
           '../../../templates/email/media-request'
@@ -124,7 +132,10 @@ class EmailAgent
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
           requestedBy: payload.notifyUser.username,
-          actionUrl: applicationUrl,
+          actionUrl: applicationUrl
+            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+            : undefined,
+          applicationUrl,
           requestType: 'Request Approved',
         },
       });
@@ -144,7 +155,7 @@ class EmailAgent
     try {
       const email = this.getNewEmail();
 
-      email.send({
+      await email.send({
         template: path.join(
           __dirname,
           '../../../templates/email/media-request'
@@ -158,7 +169,10 @@ class EmailAgent
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
           requestedBy: payload.notifyUser.username,
-          actionUrl: applicationUrl,
+          actionUrl: applicationUrl
+            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+            : undefined,
+          applicationUrl,
           requestType: 'Now Available',
         },
       });
@@ -178,14 +192,14 @@ class EmailAgent
     try {
       const email = this.getNewEmail();
 
-      email.send({
+      await email.send({
         template: path.join(__dirname, '../../../templates/email/test-email'),
         message: {
           to: payload.notifyUser.email,
         },
         locals: {
           body: payload.message,
-          actionUrl: applicationUrl,
+          applicationUrl,
         },
       });
       return true;

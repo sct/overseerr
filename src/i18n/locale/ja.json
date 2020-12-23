@@ -348,5 +348,22 @@
   "components.Settings.RadarrModal.testFirstQualityProfiles": "画質プロファイルをロードするには先に接続をテストしてください",
   "components.Settings.RadarrModal.loadingprofiles": "画質プロファイルの読込中…",
   "components.Settings.RadarrModal.loadingrootfolders": "ルートフォルダー読込中…",
-  "components.MovieDetails.studio": "スタジオ"
+  "components.MovieDetails.studio": "スタジオ",
+  "components.Settings.Notifications.test": "テスト",
+  "i18n.close": "閉じる",
+  "components.Settings.defaultPermissions": "デフォルトのユーザー権限",
+  "components.Settings.SettingsAbout.timezone": "タイムゾーン",
+  "components.Settings.SettingsAbout.supportoverseerr": "Overseerrを応援",
+  "components.Settings.SettingsAbout.helppaycoffee": "開発者のコーヒーのためにチップを",
+  "components.Settings.SettingsAbout.Releases.viewongithub": "GitHubで見る",
+  "components.Settings.SettingsAbout.Releases.viewchangelog": "変更履歴参照",
+  "components.Settings.SettingsAbout.Releases.versionChangelog": "バージョン変更履歴",
+  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "お使いのバージョンのパッチノート以下に記載されていません。最新のアップデートは<GithubLink>GitHubリポジトリ</GithubLink>をご覧ください。",
+  "components.Settings.SettingsAbout.Releases.runningDevelop": "Overseerrの開発バージョンを実行しています。",
+  "components.Settings.SettingsAbout.Releases.releases": "リリース",
+  "components.Settings.SettingsAbout.Releases.releasedataMissing": "リリースデータがありません。GitHubはダウンしていますか？",
+  "components.Settings.SettingsAbout.Releases.latestversion": "最新バージョン",
+  "components.Settings.SettingsAbout.Releases.currentversion": "現在のバージョン",
+  "components.Settings.Notifications.testsent": "テスト通知が送信されました。",
+  "components.MovieDetails.MovieCrew.fullcrew": "フルクルー"
 }
