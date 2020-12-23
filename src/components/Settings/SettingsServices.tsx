@@ -99,7 +99,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
           </p>
         </div>
         <img
-          className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"
+          className="w-10 h-10 flex-shrink-0"
           src={`/images/${isSonarr ? 'sonarr' : 'radarr'}_logo.png`}
           alt=""
         />
