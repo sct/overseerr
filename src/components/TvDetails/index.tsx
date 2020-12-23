@@ -1,5 +1,10 @@
 import React, { useState, useContext, useMemo } from 'react';
-import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
+import {
+  FormattedMessage,
+  FormattedDate,
+  defineMessages,
+  useIntl,
+} from 'react-intl';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import Button from '../Common/Button';
@@ -34,6 +39,7 @@ import { sortCrewPriority } from '../../utils/creditHelpers';
 import { Crew } from '../../../server/models/common';
 
 const messages = defineMessages({
+  firstAirDate: 'First Air Date',
   userrating: 'User Rating',
   status: 'Status',
   originallanguage: 'Original Language',
@@ -516,6 +522,21 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   {intl.formatMessage(messages.anime)}
+                </span>
+              </div>
+            )}
+            {data.firstAirDate && (
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.firstAirDate} />
+                </span>
+                <span className="flex-1 text-sm text-right text-gray-400">
+                  <FormattedDate
+                    value={new Date(data.firstAirDate)}
+                    year="numeric"
+                    month="long"
+                    day="numeric"
+                  />
                 </span>
               </div>
             )}
