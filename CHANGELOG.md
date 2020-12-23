@@ -1,3 +1,28 @@
+# [1.13.0](https://github.com/sct/overseerr/compare/v1.12.1...v1.13.0) (2020-12-23)
+
+
+### Bug Fixes
+
+* **api:** correctly return firstAirDate for series in search endpoints ([32b4c99](https://github.com/sct/overseerr/commit/32b4c99950659d9e1da2ffa93c22383c54d0d904)), closes [#462](https://github.com/sct/overseerr/issues/462)
+* **email:** correctly log errors when emails fail to send ([0980fa5](https://github.com/sct/overseerr/commit/0980fa54f9fc3bdfae6c57fa5a20ce3b2a88a677))
+* **frontend:** added new Radarr v3 logo ([#471](https://github.com/sct/overseerr/issues/471)) ([3bbc716](https://github.com/sct/overseerr/commit/3bbc716434dc04bfe6b55de9898eb2c0ecb03baa))
+* **frontend:** approve and decline button (in manage panel) will now fit on mobile ([#441](https://github.com/sct/overseerr/issues/441)) ([66ef72d](https://github.com/sct/overseerr/commit/66ef72dd42912d83ea8f86aabb75fbee547f8de9))
+* **frontend:** filter out undefined backdrop paths for person details page ([2e0e4d5](https://github.com/sct/overseerr/commit/2e0e4d5129ed4912415f61eb8d1da41e88ddcaff))
+* **frontend:** show backdrops instead of posters for new person detail design ([9f5f920](https://github.com/sct/overseerr/commit/9f5f920c23007363aa7f53ebef0b61236d4f53ea))
+* clarify full sync runs every 24 hours ([0c8a180](https://github.com/sct/overseerr/commit/0c8a180189b2610bab2fa977d458743d8a60343e))
+* **plex-sync:** match correct tmdb format for movies ([4205e32](https://github.com/sct/overseerr/commit/4205e32ae71bc18c07209f1c82e6af1cb5f01335))
+
+
+### Features
+
+* **email:** option to allow self signed certificates ([6898357](https://github.com/sct/overseerr/commit/6898357b13a6aa53a55709ea95819c2b3df6784c))
+* **frontend:** adjust person details design and add improved truncate ([1fb7ea7](https://github.com/sct/overseerr/commit/1fb7ea72589d2908ae80a2a688881d4eb3c050e5))
+* **frontend:** first air date added to TV details page ([#470](https://github.com/sct/overseerr/issues/470)) ([a7db01f](https://github.com/sct/overseerr/commit/a7db01fba483ca633a6eb9d39eb085ab9939d4d2))
+* **lang:** translations update from Weblate ([#410](https://github.com/sct/overseerr/issues/410)) ([941fe19](https://github.com/sct/overseerr/commit/941fe1990454439cf05b48ef92bd3493432f8ed8))
+* **logs:** rotate log files if they reach 20MB in size ([22002ab](https://github.com/sct/overseerr/commit/22002ab4c76aace2bb202ac58da605b7a6f75d6d)), closes [#438](https://github.com/sct/overseerr/issues/438)
+* **notifications:** include direct links to media in notifications ([659fa50](https://github.com/sct/overseerr/commit/659fa505f0db32262ad0041cddb4daea893e6d65)), closes [#437](https://github.com/sct/overseerr/issues/437)
+* **plex-sync:** add support for hama guid's ([ffe9e19](https://github.com/sct/overseerr/commit/ffe9e19c3b99de6af1185900e292da641ff44320)), closes [#453](https://github.com/sct/overseerr/issues/453)
+
 ## [1.12.1](https://github.com/sct/overseerr/compare/v1.12.0...v1.12.1) (2020-12-22)
 
 
