@@ -333,5 +333,11 @@
   "components.Settings.RadarrModal.testFirstRootFolders": "Test je connectie om hoofdfolders te laden",
   "components.Settings.RadarrModal.testFirstQualityProfiles": "Test je connectie om kwaliteitsprofielen te laden",
   "components.Settings.RadarrModal.loadingrootfolders": "Bezig met laden van hoofdfolders…",
-  "components.Settings.RadarrModal.loadingprofiles": "Bezig met laden van kwaliteitsprofielen…"
+  "components.Settings.RadarrModal.loadingprofiles": "Bezig met laden van kwaliteitsprofielen…",
+  "components.Settings.SettingsAbout.Releases.releasedataMissing": "Publicatiedatum mist. Is GitHub offline?",
+  "components.Settings.SettingsAbout.Releases.latestversion": "Laatste versie",
+  "components.Settings.SettingsAbout.Releases.currentversion": "Huidige versie",
+  "components.Settings.Notifications.testsent": "Test notificatie verzonden!",
+  "components.Settings.Notifications.test": "Test",
+  "components.MovieDetails.studio": "Studio"
 }
