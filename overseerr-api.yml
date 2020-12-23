@@ -2200,6 +2200,30 @@ paths:
       responses:
         '204':
           description: Succesfully removed request
+  /request/{requestId}/retry:
+    post:
+      summary: Retry a failed request
+      description: |
+        Retries a request by resending requests to Sonarr or Radarr
+
+        Requires the `MANAGE_REQUESTS` permission or `ADMIN`
+      tags:
+        - request
+      parameters:
+        - in: path
+          name: requestId
+          description: Request ID
+          required: true
+          schema:
+            type: string
+            example: 1
+      responses:
+        '200':
+          description: Retry triggered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaRequest'
   /request/{requestId}/{status}:
     get:
       summary: Update a requests status

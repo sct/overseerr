@@ -244,6 +244,32 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
   }
 });
 
+requestRoutes.post<{
+  requestId: string;
+}>(
+  '/:requestId/retry',
+  isAuthenticated(Permission.MANAGE_REQUESTS),
+  async (req, res, next) => {
+    const requestRepository = getRepository(MediaRequest);
+
+    try {
+      const request = await requestRepository.findOneOrFail({
+        where: { id: Number(req.params.requestId) },
+        relations: ['requestedBy', 'modifiedBy'],
+      });
+
+      await request.updateParentStatus();
+      await request.sendMedia();
+      return res.status(200).json(request);
+    } catch (e) {
+      logger.error('Error processing request retry', {
+        label: 'Media Request',
+        message: e.message,
+      });
+      next({ status: 404, message: 'Request not found' });
+    }
+  }
+);
 requestRoutes.get<{
   requestId: string;
   status: 'pending' | 'approve' | 'decline';

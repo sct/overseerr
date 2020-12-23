@@ -56,7 +56,7 @@ const RequestList: React.FC = () => {
               <RequestItem
                 request={request}
                 key={`request-list-${request.id}`}
-                onDelete={() => revalidate()}
+                revalidateList={() => revalidate()}
               />
             );
           })}
