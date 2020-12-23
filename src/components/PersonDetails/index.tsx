@@ -82,7 +82,7 @@ const PersonDetails: React.FC = () => {
           <ImageFader
             isDarker
             backgroundImages={[...(sortedCast ?? []), ...(sortedCrew ?? [])]
-              .filter((media) => media.posterPath)
+              .filter((media) => media.backdropPath)
               .map(
                 (media) =>
                   `//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`
