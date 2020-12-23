@@ -41,6 +41,11 @@ class EmailAgent
       host: emailSettings.smtpHost,
       port: emailSettings.smtpPort,
       secure: emailSettings.secure,
+      tls: emailSettings.allowSelfSigned
+        ? {
+            rejectUnauthorized: false,
+          }
+        : undefined,
       auth:
         emailSettings.authUser && emailSettings.authPass
           ? {
