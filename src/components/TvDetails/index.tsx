@@ -227,15 +227,15 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </div>
         )}
       </SlideOver>
-      <div className="flex flex-col items-center pt-4 md:flex-row md:items-end">
-        <div className="flex-shrink-0 md:mr-4">
+      <div className="flex flex-col items-center pt-4 lg:flex-row lg:items-end">
+        <div className="lg:mr-4">
           <img
             src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
             alt=""
-            className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-52"
+            className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-44 lg:w-52"
           />
         </div>
-        <div className="flex flex-col mt-4 text-center text-white md:mr-4 md:mt-0 md:text-left">
+        <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
           <div className="mb-2">
             {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
               <Badge badgeType="success">
@@ -258,7 +258,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               </Badge>
             )}
           </div>
-          <h1 className="text-2xl md:text-4xl">
+          <h1 className="text-2xl lg:text-4xl">
             <span>{data.name}</span>
             {data.firstAirDate && (
               <span className="ml-2 text-2xl">
@@ -266,14 +266,34 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               </span>
             )}
           </h1>
-          <span className="mt-1 text-xs md:text-base md:mt-0">
+          <span className="mt-1 text-xs lg:text-base lg:mt-0">
             {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
-        <div className="flex justify-end flex-1 mt-4 md:mt-0">
+        <div className="flex justify-end flex-shrink-0 mt-4 lg:mt-0">
           {trailerUrl && (
             <a href={trailerUrl} target="_blank" rel="noreferrer">
               <Button buttonType="ghost">
+                <svg
+                  className="w-5 h-5 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
                 <FormattedMessage {...messages.watchtrailer} />
               </Button>
             </a>
@@ -286,7 +306,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               onClick={() => setShowRequestModal(true)}
             >
               <svg
-                className="w-4 mr-1"
+                className="w-5 mr-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -323,7 +343,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 text={
                   <>
                     <svg
-                      className="w-4 mr-1"
+                      className="w-5 mr-1"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
