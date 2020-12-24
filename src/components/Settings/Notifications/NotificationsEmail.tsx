@@ -37,7 +37,7 @@ const NotificationsEmail: React.FC = () => {
     '/api/v1/settings/notifications/email'
   );
 
-  const NotificationsDiscordSchema = Yup.object().shape({
+  const NotificationsEmailSchema = Yup.object().shape({
     emailFrom: Yup.string().required(
       intl.formatMessage(messages.validationFromRequired)
     ),
@@ -66,7 +66,7 @@ const NotificationsEmail: React.FC = () => {
         authPass: data.options.authPass,
         allowSelfSigned: data.options.allowSelfSigned,
       }}
-      validationSchema={NotificationsDiscordSchema}
+      validationSchema={NotificationsEmailSchema}
       onSubmit={async (values) => {
         try {
           await axios.post('/api/v1/settings/notifications/email', {
