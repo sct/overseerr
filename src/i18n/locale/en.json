@@ -1,4 +1,13 @@
 {
+  "components.CollectionDetails.movies": "Movies",
+  "components.CollectionDetails.numberofmovies": "Number of Movies: {count}",
+  "components.CollectionDetails.overview": "Overview",
+  "components.CollectionDetails.overviewunavailable": "Overview unavailable",
+  "components.CollectionDetails.request": "Request",
+  "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> successfully requested!",
+  "components.CollectionDetails.requestcollection": "Request Collection",
+  "components.CollectionDetails.requesting": "Requesting…",
+  "components.CollectionDetails.requestswillbecreated": "The following titles will have requests created for them:",
   "components.Discover.discovermovies": "Popular Movies",
   "components.Discover.discovertv": "Popular Series",
   "components.Discover.nopending": "No Pending Requests",

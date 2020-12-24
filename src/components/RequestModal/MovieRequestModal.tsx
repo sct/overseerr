@@ -67,7 +67,11 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
 
     if (response.data) {
       if (onComplete) {
-        onComplete(response.data.media.status);
+        onComplete(
+          hasPermission(Permission.AUTO_APPROVE)
+            ? MediaStatus.PROCESSING
+            : MediaStatus.PENDING
+        );
       }
       addToast(
         <span>

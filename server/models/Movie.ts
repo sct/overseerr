@@ -46,6 +46,12 @@ export interface MovieDetails {
     cast: Cast[];
     crew: Crew[];
   };
+  collection?: {
+    id: number;
+    name: string;
+    posterPath?: string;
+    backdropPath?: string;
+  };
   mediaInfo?: Media;
   externalIds: ExternalIds;
 }
@@ -87,6 +93,14 @@ export const mapMovieDetails = (
     cast: movie.credits.cast.map(mapCast),
     crew: movie.credits.crew.map(mapCrew),
   },
+  collection: movie.belongs_to_collection
+    ? {
+        id: movie.belongs_to_collection.id,
+        name: movie.belongs_to_collection.name,
+        posterPath: movie.belongs_to_collection.poster_path,
+        backdropPath: movie.belongs_to_collection.backdrop_path,
+      }
+    : undefined,
   externalIds: mapExternalIds(movie.external_ids),
   mediaInfo: media,
 });

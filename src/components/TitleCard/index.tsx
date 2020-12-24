@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import type { MediaType } from '../../../server/models/Search';
 import Available from '../../assets/available.svg';
 import Requested from '../../assets/requested.svg';
@@ -51,6 +51,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
     year = year.slice(0, 4);
   }
 
+  useEffect(() => {
+    setCurrentStatus(status);
+  }, [status]);
+
   const requestComplete = useCallback((newStatus: MediaStatus) => {
     setCurrentStatus(newStatus);
     setShowRequestModal(false);
@@ -74,7 +78,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className="titleCard outline-none cursor-default"
+        className="outline-none cursor-default titleCard"
         style={{
           backgroundImage: `url(//image.tmdb.org/t/p/w300_and_h450_face${image})`,
         }}
@@ -93,13 +97,13 @@ const TitleCard: React.FC<TitleCardProps> = ({
         role="link"
         tabIndex={0}
       >
-        <div className="absolute top-0 h-full w-full bottom-0 left-0 right-0 overflow-hidden shadow-xl">
+        <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden shadow-xl">
           <div
             className={`absolute left-0 top-0 rounded-tl-md rounded-br-md z-40 ${
               mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
             }`}
           >
-            <div className="flex items-center text-center text-xs text-white h-4 px-2 py-1 font-normal uppercase">
+            <div className="flex items-center h-4 px-2 py-1 text-xs font-normal text-center text-white uppercase">
               {mediaType === 'movie'
                 ? intl.formatMessage(messages.movie)
                 : intl.formatMessage(messages.tvshow)}
@@ -107,7 +111,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
           </div>
 
           <div
-            className="absolute right-0 top-0 z-40"
+            className="absolute top-0 right-0 z-40"
             style={{
               right: '-1px',
             }}
@@ -132,7 +136,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 bg-opacity-75 z-40 text-white flex items-center justify-center rounded-lg">
+            <div className="absolute top-0 bottom-0 left-0 right-0 z-40 flex items-center justify-center text-white bg-gray-800 bg-opacity-75 rounded-lg">
               <svg
                 className="w-10 h-10 animate-spin"
                 fill="none"
@@ -162,14 +166,14 @@ const TitleCard: React.FC<TitleCardProps> = ({
             <div>
               <Link href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}>
                 <a
-                  className="absolute w-full h-full text-left top-0 right-0 left-0 bottom-0 rounded-lg overflow-hidden cursor-pointer"
+                  className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden text-left rounded-lg cursor-pointer"
                   style={{
                     background:
                       'linear-gradient(180deg, rgba(45, 55, 72, 0.4) 0%, rgba(45, 55, 72, 0.9) 100%)',
                   }}
                 >
-                  <div className="flex items-end h-full w-full">
-                    <div className="px-2 pb-11 text-white">
+                  <div className="flex items-end w-full h-full">
+                    <div className="px-2 text-white pb-11">
                       {year && <div className="text-sm">{year}</div>}
 
                       <h1 className="text-xl leading-tight whitespace-normal">
@@ -191,11 +195,11 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 </a>
               </Link>
 
-              <div className="absolute flex justify-between left-0 bottom-0 right-0 px-2 py-2">
+              <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-2">
                 <Link
                   href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}
                 >
-                  <a className="cursor-pointer flex w-full h-7 text-center text-white bg-indigo-500 rounded-sm hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+                  <a className="flex w-full text-center text-white transition duration-150 ease-in-out bg-indigo-500 rounded-sm cursor-pointer h-7 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700">
                     <svg
                       className="w-4 mx-auto"
                       fill="none"
@@ -224,7 +228,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       e.preventDefault();
                       setShowRequestModal(true);
                     }}
-                    className="w-full h-7 text-center text-white bg-indigo-500 rounded-sm ml-2 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                    className="w-full ml-2 text-center text-white transition duration-150 ease-in-out bg-indigo-500 rounded-sm h-7 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
                   >
                     <svg
                       className="w-4 mx-auto"
@@ -244,7 +248,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 )}
                 {currentStatus === MediaStatus.PENDING && (
                   <button
-                    className="w-full h-7 text-center text-yellow-500 border border-yellow-500 rounded-sm ml-2 cursor-default"
+                    className="w-full ml-2 text-center text-yellow-500 border border-yellow-500 rounded-sm cursor-default h-7"
                     disabled
                   >
                     <svg
@@ -265,7 +269,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 )}
                 {currentStatus === MediaStatus.PROCESSING && (
                   <button
-                    className="w-full h-7 text-center text-red-500 border border-red-500 rounded-sm ml-2 cursor-default"
+                    className="w-full ml-2 text-center text-red-500 border border-red-500 rounded-sm cursor-default h-7"
                     disabled
                   >
                     <svg
@@ -287,7 +291,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 {(currentStatus === MediaStatus.AVAILABLE ||
                   currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
                   <button
-                    className="w-full h-7 text-center text-green-400 border border-green-400 rounded-sm ml-2 cursor-default"
+                    className="w-full ml-2 text-center text-green-400 border border-green-400 rounded-sm cursor-default h-7"
                     disabled
                   >
                     <svg
