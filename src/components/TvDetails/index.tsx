@@ -357,6 +357,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     <FormattedMessage {...messages.requestmore} />
                   </>
                 }
+                className="ml-2"
                 onClick={() => setShowRequestModal(true)}
               >
                 {hasPermission(Permission.MANAGE_REQUESTS) &&

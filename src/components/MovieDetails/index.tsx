@@ -351,6 +351,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </>
               }
               onClick={() => setShowRequestModal(true)}
+              className="ml-2"
             >
               {hasPermission(Permission.MANAGE_REQUESTS) && (
                 <>
