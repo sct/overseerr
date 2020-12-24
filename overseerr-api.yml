@@ -560,8 +560,6 @@ components:
           type: string
         posterPath:
           type: string
-        youtubeTrailerUrl:
-          type: string
         createdBy:
           type: array
           items:
