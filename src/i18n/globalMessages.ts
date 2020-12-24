@@ -5,6 +5,7 @@ const globalMessages = defineMessages({
   partiallyavailable: 'Partially Available',
   processing: 'Processing',
   unavailable: 'Unavailable',
+  requested: 'Requested',
   pending: 'Pending',
   declined: 'Declined',
   approved: 'Approved',

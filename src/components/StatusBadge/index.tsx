@@ -5,36 +5,40 @@ import { useIntl } from 'react-intl';
 import globalMessages from '../../i18n/globalMessages';
 
 interface StatusBadgeProps {
-  status: MediaStatus;
+  status?: MediaStatus;
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   const intl = useIntl();
 
-  return (
-    <>
-      {status === MediaStatus.AVAILABLE && (
+  switch (status) {
+    case MediaStatus.AVAILABLE:
+      return (
         <Badge badgeType="success">
           {intl.formatMessage(globalMessages.available)}
         </Badge>
-      )}
-      {status === MediaStatus.PARTIALLY_AVAILABLE && (
+      );
+    case MediaStatus.PARTIALLY_AVAILABLE:
+      return (
         <Badge badgeType="success">
           {intl.formatMessage(globalMessages.partiallyavailable)}
         </Badge>
-      )}
-      {status === MediaStatus.PROCESSING && (
-        <Badge badgeType="danger">
-          {intl.formatMessage(globalMessages.unavailable)}
+      );
+    case MediaStatus.PROCESSING:
+      return (
+        <Badge badgeType="primary">
+          {intl.formatMessage(globalMessages.requested)}
         </Badge>
-      )}
-      {status === MediaStatus.PENDING && (
+      );
+    case MediaStatus.PENDING:
+      return (
         <Badge badgeType="warning">
           {intl.formatMessage(globalMessages.pending)}
         </Badge>
-      )}
-    </>
-  );
+      );
+    default:
+      return null;
+  }
 };
 
 export default StatusBadge;

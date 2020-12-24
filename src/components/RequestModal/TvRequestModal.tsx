@@ -223,13 +223,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       }
     >
       <div className="flex flex-col">
-        <div className="-mx-4 sm:mx-0 overflow-auto max-h-96">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden sm:rounded-lg">
+        <div className="-mx-4 overflow-auto sm:mx-0 max-h-96">
+          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <div className="overflow-hidden shadow sm:rounded-lg">
               <table className="min-w-full">
                 <thead>
                   <tr>
-                    <th className="px-4 py-3 bg-gray-500 w-16">
+                    <th className="w-16 px-4 py-3 bg-gray-500">
                       <span
                         role="checkbox"
                         tabIndex={0}
@@ -240,7 +240,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                             toggleAllSeasons();
                           }
                         }}
-                        className="group relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none"
+                        className="relative inline-flex items-center justify-center flex-shrink-0 w-10 h-5 cursor-pointer group focus:outline-none"
                       >
                         <span
                           aria-hidden="true"
@@ -256,13 +256,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                         ></span>
                       </span>
                     </th>
-                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
                       {intl.formatMessage(messages.season)}
                     </th>
-                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
                       {intl.formatMessage(messages.numberofepisodes)}
                     </th>
-                    <th className="px-6 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
                       {intl.formatMessage(messages.status)}
                     </th>
                   </tr>
@@ -279,7 +279,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                       );
                       return (
                         <tr key={`season-${season.id}`}>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-100">
+                          <td className="px-4 py-4 text-sm font-medium leading-5 text-gray-100 whitespace-nowrap">
                             <span
                               role="checkbox"
                               tabIndex={0}
@@ -320,17 +320,17 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                               ></span>
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-100">
+                          <td className="px-6 py-4 text-sm font-medium leading-5 text-gray-100 whitespace-nowrap">
                             {season.seasonNumber === 0
                               ? intl.formatMessage(messages.extras)
                               : intl.formatMessage(messages.seasonnumber, {
                                   number: season.seasonNumber,
                                 })}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-200">
+                          <td className="px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
                             {season.episodeCount}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-200">
+                          <td className="px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
                             {!seasonRequest && !mediaSeason && (
                               <Badge>
                                 {intl.formatMessage(messages.notrequested)}
@@ -346,10 +346,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                             {!mediaSeason &&
                               seasonRequest?.status ===
                                 MediaRequestStatus.APPROVED && (
-                                <Badge badgeType="danger">
-                                  {intl.formatMessage(
-                                    globalMessages.unavailable
-                                  )}
+                                <Badge badgeType="primary">
+                                  {intl.formatMessage(globalMessages.requested)}
                                 </Badge>
                               )}
                             {!mediaSeason &&

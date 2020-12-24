@@ -19,7 +19,6 @@ import { useUser, Permission } from '../../hooks/useUser';
 import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
 import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
-import Badge from '../Common/Badge';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import axios from 'axios';
 import SlideOver from '../Common/SlideOver';
@@ -32,11 +31,11 @@ import RTAudFresh from '../../assets/rt_aud_fresh.svg';
 import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import Head from 'next/head';
-import globalMessages from '../../i18n/globalMessages';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import { Crew } from '../../../server/models/common';
+import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -237,26 +236,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
           <div className="mb-2">
-            {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
-              <Badge badgeType="success">
-                {intl.formatMessage(globalMessages.available)}
-              </Badge>
-            )}
-            {data.mediaInfo?.status === MediaStatus.PARTIALLY_AVAILABLE && (
-              <Badge badgeType="success">
-                {intl.formatMessage(globalMessages.partiallyavailable)}
-              </Badge>
-            )}
-            {data.mediaInfo?.status === MediaStatus.PROCESSING && (
-              <Badge badgeType="danger">
-                {intl.formatMessage(globalMessages.unavailable)}
-              </Badge>
-            )}
-            {data.mediaInfo?.status === MediaStatus.PENDING && (
-              <Badge badgeType="warning">
-                {intl.formatMessage(globalMessages.pending)}
-              </Badge>
-            )}
+            <StatusBadge status={data.mediaInfo?.status} />
           </div>
           <h1 className="text-2xl lg:text-4xl">
             <span>{data.name}</span>
