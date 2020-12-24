@@ -38,7 +38,7 @@ All help is welcome and greatly appreciated. If you would like to contribute to 
 
    ```
    yarn
-   yarn install
+   yarn dev
    ```
 
    - Alternatively you can run using [Docker](https://www.docker.com/) with `docker-compose up -d`. This method does not require installing NodeJS or Yarn on your machine directly.
