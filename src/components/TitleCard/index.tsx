@@ -163,10 +163,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="absolute top-0 left-0 right-0 bottom-0">
+            <div className="absolute top-0 bottom-0 left-0 right-0">
               <Link href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}>
                 <a
-                  className="absolute w-full h-full overflow-hidden text-left rounded-lg cursor-pointer"
+                  className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden text-left rounded-lg cursor-pointer"
                   style={{
                     background:
                       'linear-gradient(180deg, rgba(45, 55, 72, 0.4) 0%, rgba(45, 55, 72, 0.9) 100%)',
