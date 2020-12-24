@@ -383,6 +383,36 @@ components:
           type: string
         name:
           type: string
+    RelatedVideo:
+      type: object
+      properties:
+        url:
+          type: string
+          example: https://www.youtube.com/watch?v=9qhL2_UxXM0/
+        key:
+          type: string
+          example: 9qhL2_UxXM0
+        name:
+          type: string
+          example: Trailer for some movie (1978)
+        size:
+          type: number
+          example: 1080
+        type:
+          type: string
+          example: Trailer
+          enum:
+            - Clip
+            - Teaser
+            - Trailer
+            - Featurette
+            - Opening Credits
+            - Behind the Scenes
+            - Bloopers
+        site:
+          type: string
+          enum:
+            - 'YouTube'
     MovieDetails:
       type: object
       properties:
@@ -408,6 +438,10 @@ components:
             $ref: '#/components/schemas/Genre'
         homepage:
           type: string
+        relatedVideos:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedVideo'
         originalLanguage:
           type: string
         originalTitle:
@@ -1724,7 +1758,8 @@ paths:
             application/json:
               schema:
                 type: array
-                $ref: '#/components/schemas/User'
+                items:
+                  $ref: '#/components/schemas/User'
 
   /user/{userId}:
     get:

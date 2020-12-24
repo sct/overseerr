@@ -8,6 +8,7 @@ import {
   ExternalIds,
   mapExternalIds,
   Keyword,
+  mapVideos,
 } from './common';
 import {
   TmdbTvEpisodeResult,
@@ -16,6 +17,7 @@ import {
   TmdbSeasonWithEpisodes,
 } from '../api/themoviedb';
 import type Media from '../entity/Media';
+import { Video } from './Movie';
 
 interface Episode {
   id: number;
@@ -67,6 +69,7 @@ export interface TvDetails {
   genres: Genre[];
   homepage: string;
   inProduction: boolean;
+  relatedVideos?: Video[];
   languages: string[];
   lastAirDate: string;
   lastEpisodeToAir?: Episode;
@@ -145,6 +148,7 @@ export const mapTvDetails = (
     id: genre.id,
     name: genre.name,
   })),
+  relatedVideos: mapVideos(show.videos),
   homepage: show.homepage,
   id: show.id,
   inProduction: show.in_production,

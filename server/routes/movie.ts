@@ -4,6 +4,7 @@ import { mapMovieDetails } from '../models/Movie';
 import { mapMovieResult } from '../models/Search';
 import Media from '../entity/Media';
 import RottenTomatoes from '../api/rottentomatoes';
+import logger from '../logger';
 
 const movieRoutes = Router();
 
@@ -11,15 +12,19 @@ movieRoutes.get('/:id', async (req, res, next) => {
   const tmdb = new TheMovieDb();
 
   try {
-    const movie = await tmdb.getMovie({
+    const tmdbMovie = await tmdb.getMovie({
       movieId: Number(req.params.id),
       language: req.query.language as string,
     });
 
-    const media = await Media.getMedia(movie.id);
+    const media = await Media.getMedia(tmdbMovie.id);
 
-    return res.status(200).json(mapMovieDetails(movie, media));
+    return res.status(200).json(mapMovieDetails(tmdbMovie, media));
   } catch (e) {
+    logger.error('Something went wrong getting movie', {
+      label: 'Movie',
+      message: e.message,
+    });
     return next({ status: 404, message: 'Movie does not exist' });
   }
 });

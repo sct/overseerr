@@ -48,6 +48,7 @@ const messages = defineMessages({
   recommendations: 'Recommendations',
   similar: 'Similar Series',
   cancelrequest: 'Cancel Request',
+  watchtrailer: 'Watch Trailer',
   available: 'Available',
   unavailable: 'Unavailable',
   request: 'Request',
@@ -129,6 +130,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const activeRequests = data.mediaInfo?.requests?.filter(
     (request) => request.status === MediaRequestStatus.PENDING
   );
+
+  const trailerUrl = data.relatedVideos
+    ?.filter((r) => r.type === 'Trailer')
+    .sort((a, b) => a.size - b.size)
+    .pop()?.url;
 
   const modifyRequests = async (type: 'approve' | 'decline'): Promise<void> => {
     if (!activeRequests) {
@@ -265,9 +271,17 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </span>
         </div>
         <div className="flex justify-end flex-1 mt-4 md:mt-0">
+          {trailerUrl && (
+            <a href={trailerUrl} target="_blank" rel="noreferrer">
+              <Button buttonType="ghost">
+                <FormattedMessage {...messages.watchtrailer} />
+              </Button>
+            </a>
+          )}
           {(!data.mediaInfo ||
             data.mediaInfo.status === MediaStatus.UNKNOWN) && (
             <Button
+              className="ml-2"
               buttonType="primary"
               onClick={() => setShowRequestModal(true)}
             >
