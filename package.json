@@ -53,6 +53,7 @@
     "typeorm": "^0.2.29",
     "uuid": "^8.3.2",
     "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0",
     "xml2js": "^0.4.23",
     "yamljs": "^0.3.0",
     "yup": "^0.32.8"
