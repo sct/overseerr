@@ -76,7 +76,7 @@ class RadarrAPI {
     }
   };
 
-  public addMovie = async (options: RadarrMovieOptions): Promise<void> => {
+  public addMovie = async (options: RadarrMovieOptions): Promise<boolean> => {
     try {
       const response = await this.axios.post<RadarrMovie>(`/movie`, {
         title: options.title,
@@ -104,7 +104,9 @@ class RadarrAPI {
           label: 'Radarr',
           options,
         });
+        return false;
       }
+      return true;
     } catch (e) {
       logger.error(
         'Failed to add movie to Radarr. This might happen if the movie already exists, in which case you can safely ignore this error.',
@@ -112,8 +114,13 @@ class RadarrAPI {
           label: 'Radarr',
           errorMessage: e.message,
           options,
+          response: e?.response?.data,
         }
       );
+      if (e?.response?.data?.[0]?.errorCode === 'MovieExistsValidator') {
+        return true;
+      }
+      return false;
     }
   };
 
