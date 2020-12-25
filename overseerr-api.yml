@@ -841,6 +841,20 @@ components:
           properties:
             webhookUrl:
               type: string
+    SlackSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            webhookUrl:
+              type: string
     NotificationEmailSettings:
       type: object
       properties:
@@ -1618,6 +1632,52 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DiscordSettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/slack:
+    get:
+      summary: Return current slack notification settings
+      description: Returns current slack notification settings in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned slack settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlackSettings'
+    post:
+      summary: Update slack notification settings
+      description: Update current slack notification settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlackSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlackSettings'
+  /settings/notifications/slack/test:
+    post:
+      summary: Test the provided slack settings
+      description: Sends a test notification to the slack agent
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlackSettings'
       responses:
         '204':
           description: Test notification attempted
