@@ -1,3 +1,32 @@
+# [1.14.0](https://github.com/sct/overseerr/compare/v1.13.0...v1.14.0) (2020-12-25)
+
+
+### Bug Fixes
+
+* **frontend:** add margin to ButtonWithDropdown component on movie/tv details page ([06fc98b](https://github.com/sct/overseerr/commit/06fc98b6b958221fa180f57f702c348f15b31f1c))
+* **frontend:** correctly position title card hover section ([#486](https://github.com/sct/overseerr/issues/486)) ([4b7af86](https://github.com/sct/overseerr/commit/4b7af86111a0300e1a137f23fa4ad1639fa55feb))
+* **frontend:** fix missing styles for alert component ([de3d288](https://github.com/sct/overseerr/commit/de3d288949b60d3a3af889d69a62bea2bc799ed7))
+* **frontend:** fix mobile dropdown in notifications settings ([6353cda](https://github.com/sct/overseerr/commit/6353cda5825f442dd539886c7b9ba437edf27ac4))
+* **frontend:** fix scaling titlecard content position ([bd94740](https://github.com/sct/overseerr/commit/bd947409e6e8ff313011b77adc76ccd5f9112c78))
+* **frontend:** improve flex header on movie/tv details page ([d7b1c28](https://github.com/sct/overseerr/commit/d7b1c2840690c144ebf29a360defcbd6fdb21354))
+* **frontend:** invalid dom-nesting title card fix ([#482](https://github.com/sct/overseerr/issues/482)) ([f2ebba7](https://github.com/sct/overseerr/commit/f2ebba7b1df775d33d2af6abc3ee2c9de5f2e57a)), closes [#476](https://github.com/sct/overseerr/issues/476)
+* **frontend:** remove vote permission for now ([5d06a34](https://github.com/sct/overseerr/commit/5d06a347311bd10c05d8f58068ca7104e265dcca))
+* **frontend:** sort person detail credits by tmdb votes ([17518db](https://github.com/sct/overseerr/commit/17518dbe7f545100770a892d03d1f8508adc3650))
+* **frontend:** status badge Unavailable renamed to Requested ([ed94a0f](https://github.com/sct/overseerr/commit/ed94a0f335c59de526dd812aea7616313fe002fd)), closes [#374](https://github.com/sct/overseerr/issues/374)
+* **frontend:** update titlecard status badge to new requested colors ([8f292d5](https://github.com/sct/overseerr/commit/8f292d538b937ea133175089979ef02599f6fef4))
+* **logs:** rotate logs on a daily basis instead of incrementing log filename ([395cbb2](https://github.com/sct/overseerr/commit/395cbb2be6c62f1d7573593e49a93615eaf22853))
+* improve apple-touch-icon and android app icons ([329a814](https://github.com/sct/overseerr/commit/329a814a8fb791122266c0b04b05848c71d68ba1))
+
+
+### Features
+
+* **lang:** translations update from Weblate ([#479](https://github.com/sct/overseerr/issues/479)) ([c8c74b0](https://github.com/sct/overseerr/commit/c8c74b0ae54fcc524aa8b2edf5a5c5e5db6c1638))
+* **notifications:** add slack notification agent ([1163e81](https://github.com/sct/overseerr/commit/1163e81adc7da1e8334155ebee5b4672a22143db)), closes [#365](https://github.com/sct/overseerr/issues/365)
+* add collections ([#484](https://github.com/sct/overseerr/issues/484)) ([a333a09](https://github.com/sct/overseerr/commit/a333a095820ce3f10857026ba4770a2fffeed7cb)), closes [#418](https://github.com/sct/overseerr/issues/418)
+* add separate auto approve permissions for Movies/Series ([4809257](https://github.com/sct/overseerr/commit/480925781691de456abc427fbbba161be11a3a8a)), closes [#268](https://github.com/sct/overseerr/issues/268)
+* simple failed request handling ([#474](https://github.com/sct/overseerr/issues/474)) ([02969d5](https://github.com/sct/overseerr/commit/02969d5426245062a2f53475d83c4a8639632c9d))
+* YouTube Movie/TV Trailers ([#454](https://github.com/sct/overseerr/issues/454)) ([e88dc83](https://github.com/sct/overseerr/commit/e88dc83aeba0475e3ad421d5ab130cea4fc9a806))
+
 # [1.13.0](https://github.com/sct/overseerr/compare/v1.12.1...v1.13.0) (2020-12-23)
 
 
