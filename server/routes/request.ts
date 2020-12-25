@@ -127,12 +127,16 @@ requestRoutes.post(
           media,
           requestedBy: req.user,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
-          status: req.user?.hasPermission(Permission.AUTO_APPROVE)
-            ? MediaRequestStatus.APPROVED
-            : MediaRequestStatus.PENDING,
-          modifiedBy: req.user?.hasPermission(Permission.AUTO_APPROVE)
-            ? req.user
-            : undefined,
+          status:
+            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+            req.user?.hasPermission(Permission.AUTO_APPROVE_MOVIE)
+              ? MediaRequestStatus.APPROVED
+              : MediaRequestStatus.PENDING,
+          modifiedBy:
+            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+            req.user?.hasPermission(Permission.AUTO_APPROVE_MOVIE)
+              ? req.user
+              : undefined,
         });
 
         await requestRepository.save(request);
@@ -172,19 +176,25 @@ requestRoutes.post(
           } as Media,
           requestedBy: req.user,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
-          status: req.user?.hasPermission(Permission.AUTO_APPROVE)
-            ? MediaRequestStatus.APPROVED
-            : MediaRequestStatus.PENDING,
-          modifiedBy: req.user?.hasPermission(Permission.AUTO_APPROVE)
-            ? req.user
-            : undefined,
+          status:
+            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+            req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
+              ? MediaRequestStatus.APPROVED
+              : MediaRequestStatus.PENDING,
+          modifiedBy:
+            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+            req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
+              ? req.user
+              : undefined,
           seasons: finalSeasons.map(
             (sn) =>
               new SeasonRequest({
                 seasonNumber: sn,
-                status: req.user?.hasPermission(Permission.AUTO_APPROVE)
-                  ? MediaRequestStatus.APPROVED
-                  : MediaRequestStatus.PENDING,
+                status:
+                  req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+                  req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
+                    ? MediaRequestStatus.APPROVED
+                    : MediaRequestStatus.PENDING,
               })
           ),
         });
