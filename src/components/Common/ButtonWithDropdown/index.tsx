@@ -14,7 +14,7 @@ const DropdownItem: React.FC<AnchorHTMLAttributes<HTMLAnchorElement>> = ({
   ...props
 }) => (
   <a
-    className="cursor-pointer flex items-center px-4 py-2 text-sm leading-5 text-white bg-indigo-600 hover:bg-indigo-500 hover:text-white focus:outline-none focus:border-indigo-700 focus:text-white"
+    className="flex items-center px-4 py-2 text-sm leading-5 text-white bg-indigo-600 cursor-pointer hover:bg-indigo-500 hover:text-white focus:outline-none focus:border-indigo-700 focus:text-white"
     {...props}
   >
     {children}
@@ -31,6 +31,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
   text,
   children,
   dropdownIcon,
+  className,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,22 +39,22 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
   useClickOutside(buttonRef, () => setIsOpen(false));
 
   return (
-    <span className="relative z-0 inline-flex shadow-sm rounded-md">
+    <span className="relative z-0 inline-flex rounded-md shadow-sm">
       <button
         type="button"
         className={`relative inline-flex items-center px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-500 text-sm leading-5 font-medium hover:text-white focus:ring-indigo active:bg-indigo-700 focus:z-10 focus:outline-none focus:ring-blue transition ease-in-out duration-150 ${
           children ? 'rounded-l-md' : 'rounded-md'
-        }`}
+        } ${className}`}
         ref={buttonRef}
         {...props}
       >
         {text}
       </button>
-      <span className="-ml-px relative block">
+      <span className="relative block -ml-px">
         {children && (
           <button
             type="button"
-            className="relative inline-flex items-center px-2 py-2 rounded-r-md bg-indigo-700 hover:bg-indigo-500 text-sm leading-5 font-medium text-white focus:z-10 focus:outline-none active:bg-indigo-700 border border-indigo-600 focus:ring-blue transition ease-in-out duration-150"
+            className="relative inline-flex items-center px-2 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-700 border border-indigo-600 rounded-r-md hover:bg-indigo-500 focus:z-10 focus:outline-none active:bg-indigo-700 focus:ring-blue"
             aria-label="Expand"
             onClick={() => setIsOpen((state) => !state)}
           >
@@ -61,7 +62,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
               dropdownIcon
             ) : (
               <svg
-                className="h-5 w-5"
+                className="w-5 h-5"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
@@ -84,8 +85,8 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <div className="origin-top-right absolute right-0 mt-2 -mr-1 w-56 rounded-md shadow-lg">
-            <div className="rounded-md bg-indigo-600 ring-1 ring-black ring-opacity-5">
+          <div className="absolute right-0 w-56 mt-2 -mr-1 origin-top-right rounded-md shadow-lg">
+            <div className="bg-indigo-600 rounded-md ring-1 ring-black ring-opacity-5">
               <div className="py-1">{children}</div>
             </div>
           </div>

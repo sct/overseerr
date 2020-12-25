@@ -66,6 +66,12 @@ export interface NotificationAgentDiscord extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentSlack extends NotificationAgentConfig {
+  options: {
+    webhookUrl: string;
+  };
+}
+
 export interface NotificationAgentEmail extends NotificationAgentConfig {
   options: {
     emailFrom: string;
@@ -81,6 +87,7 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
 interface NotificationAgents {
   email: NotificationAgentEmail;
   discord: NotificationAgentDiscord;
+  slack: NotificationAgentSlack;
 }
 
 interface NotificationSettings {
@@ -136,6 +143,13 @@ class Settings {
             },
           },
           discord: {
+            enabled: false,
+            types: 0,
+            options: {
+              webhookUrl: '',
+            },
+          },
+          slack: {
             enabled: false,
             types: 0,
             options: {

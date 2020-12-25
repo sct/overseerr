@@ -116,7 +116,7 @@ class SonarrAPI {
     }
   }
 
-  public async addSeries(options: AddSeriesOptions): Promise<SonarrSeries> {
+  public async addSeries(options: AddSeriesOptions): Promise<boolean> {
     try {
       const series = await this.getSeriesByTvdbId(options.tvdbid);
 
@@ -147,9 +147,10 @@ class SonarrAPI {
             label: 'Sonarr',
             options,
           });
+          return false;
         }
 
-        return newSeriesResponse.data;
+        return true;
       }
 
       const createdSeriesResponse = await this.axios.post<SonarrSeries>(
@@ -188,16 +189,18 @@ class SonarrAPI {
           label: 'Sonarr',
           options,
         });
+        return false;
       }
 
-      return createdSeriesResponse.data;
+      return true;
     } catch (e) {
       logger.error('Something went wrong adding a series to Sonarr', {
         label: 'Sonarr API',
         errorMessage: e.message,
         error: e,
+        response: e?.response?.data,
       });
-      throw new Error('Failed to add series');
+      return false;
     }
   }
 

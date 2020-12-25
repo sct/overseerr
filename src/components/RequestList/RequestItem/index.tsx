@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import type { MediaRequest } from '../../../../server/entity/MediaRequest';
 import {
@@ -15,16 +15,21 @@ import useSWR from 'swr';
 import Badge from '../../Common/Badge';
 import StatusBadge from '../../StatusBadge';
 import Table from '../../Common/Table';
-import { MediaRequestStatus } from '../../../../server/constants/media';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+} from '../../../../server/constants/media';
 import Button from '../../Common/Button';
 import axios from 'axios';
 import globalMessages from '../../../i18n/globalMessages';
 import Link from 'next/link';
+import { useToasts } from 'react-toast-notifications';
 
 const messages = defineMessages({
   requestedby: 'Requested by {username}',
   seasons: 'Seasons',
   notavailable: 'N/A',
+  failedretry: 'Something went wrong retrying the request',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -33,13 +38,17 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
 
 interface RequestItemProps {
   request: MediaRequest;
-  onDelete: () => void;
+  revalidateList: () => void;
 }
 
-const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
+const RequestItem: React.FC<RequestItemProps> = ({
+  request,
+  revalidateList,
+}) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });
+  const { addToast } = useToasts();
   const intl = useIntl();
   const { hasPermission } = useUser();
   const { locale } = useContext(LanguageContext);
@@ -50,12 +59,14 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}?language=${locale}` : null
   );
-  const { data: requestData, revalidate } = useSWR<MediaRequest>(
+  const { data: requestData, revalidate, mutate } = useSWR<MediaRequest>(
     `/api/v1/request/${request.id}`,
     {
       initialData: request,
     }
   );
+
+  const [isRetrying, setRetrying] = useState(false);
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.get(`/api/v1/request/${request.id}/${type}`);
@@ -68,7 +79,23 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
   const deleteRequest = async () => {
     await axios.delete(`/api/v1/request/${request.id}`);
 
-    onDelete();
+    revalidateList();
+  };
+
+  const retryRequest = async () => {
+    setRetrying(true);
+
+    try {
+      const result = await axios.post(`/api/v1/request/${request.id}/retry`);
+      mutate(result.data);
+    } catch (e) {
+      addToast(intl.formatMessage(messages.failedretry), {
+        autoDismiss: true,
+        appearance: 'error',
+      });
+    } finally {
+      setRetrying(false);
+    }
   };
 
   if (!title && !error) {
@@ -138,7 +165,13 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
         )}
       </Table.TD>
       <Table.TD>
-        <StatusBadge status={requestData.media.status} />
+        {requestData.media.status === MediaStatus.UNKNOWN ? (
+          <Badge badgeType="danger">
+            {intl.formatMessage(globalMessages.failed)}
+          </Badge>
+        ) : (
+          <StatusBadge status={requestData.media.status} />
+        )}
       </Table.TD>
       <Table.TD>
         <div className="flex flex-col">
@@ -167,6 +200,31 @@ const RequestItem: React.FC<RequestItemProps> = ({ request, onDelete }) => {
         </div>
       </Table.TD>
       <Table.TD alignText="right">
+        {requestData.media.status === MediaStatus.UNKNOWN &&
+          hasPermission(Permission.MANAGE_REQUESTS) && (
+            <Button
+              className="mr-2"
+              buttonType="primary"
+              buttonSize="sm"
+              disabled={isRetrying}
+              onClick={() => retryRequest()}
+            >
+              <svg
+                className="w-4 h-4 mr-0 sm:mr-1"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="18px"
+                height="18px"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
+              </svg>
+              <span className="hidden sm:block">
+                {intl.formatMessage(globalMessages.retry)}
+              </span>
+            </Button>
+          )}
         {requestData.status !== MediaRequestStatus.PENDING &&
           hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button

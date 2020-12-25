@@ -44,36 +44,112 @@ const PersonDetails: React.FC = () => {
   }
 
   const sortedCast = combinedCredits?.cast.sort((a, b) => {
-    const aDate =
-      a.mediaType === 'movie'
-        ? a.releaseDate?.slice(0, 4) ?? 0
-        : a.firstAirDate?.slice(0, 4) ?? 0;
-    const bDate =
-      b.mediaType === 'movie'
-        ? b.releaseDate?.slice(0, 4) ?? 0
-        : b.firstAirDate?.slice(0, 4) ?? 0;
-    if (aDate > bDate) {
+    const aVotes = a.voteCount ?? 0;
+    const bVotes = b.voteCount ?? 0;
+    if (aVotes > bVotes) {
       return -1;
     }
     return 1;
   });
 
   const sortedCrew = combinedCredits?.crew.sort((a, b) => {
-    const aDate =
-      a.mediaType === 'movie'
-        ? a.releaseDate?.slice(0, 4) ?? 0
-        : a.firstAirDate?.slice(0, 4) ?? 0;
-    const bDate =
-      b.mediaType === 'movie'
-        ? b.releaseDate?.slice(0, 4) ?? 0
-        : b.firstAirDate?.slice(0, 4) ?? 0;
-    if (aDate > bDate) {
+    const aVotes = a.voteCount ?? 0;
+    const bVotes = b.voteCount ?? 0;
+    if (aVotes > bVotes) {
       return -1;
     }
     return 1;
   });
 
   const isLoading = !combinedCredits && !errorCombinedCredits;
+
+  const cast = (sortedCast ?? []).length > 0 && (
+    <>
+      <div className="relative z-10 mt-6 mb-4 md:flex md:items-center md:justify-between">
+        <div className="flex-1 min-w-0">
+          <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
+            <span>{intl.formatMessage(messages.appearsin)}</span>
+          </div>
+        </div>
+      </div>
+      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
+        {sortedCast?.map((media, index) => {
+          return (
+            <li
+              key={`list-cast-item-${media.id}-${index}`}
+              className="flex flex-col items-center col-span-1 text-center"
+            >
+              <TitleCard
+                id={media.id}
+                title={media.mediaType === 'movie' ? media.title : media.name}
+                userScore={media.voteAverage}
+                year={
+                  media.mediaType === 'movie'
+                    ? media.releaseDate
+                    : media.firstAirDate
+                }
+                image={media.posterPath}
+                summary={media.overview}
+                mediaType={media.mediaType as 'movie' | 'tv'}
+                status={media.mediaInfo?.status}
+                canExpand
+              />
+              {media.character && (
+                <div className="mt-2 text-xs text-center text-gray-300 truncate w-36 sm:w-36 md:w-44">
+                  {intl.formatMessage(messages.ascharacter, {
+                    character: media.character,
+                  })}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
+
+  const crew = (sortedCrew ?? []).length > 0 && (
+    <>
+      <div className="relative z-10 mt-6 mb-4 md:flex md:items-center md:justify-between">
+        <div className="flex-1 min-w-0">
+          <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
+            <span>{intl.formatMessage(messages.crewmember)}</span>
+          </div>
+        </div>
+      </div>
+      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
+        {sortedCrew?.map((media, index) => {
+          return (
+            <li
+              key={`list-crew-item-${media.id}-${index}`}
+              className="flex flex-col items-center col-span-1 text-center"
+            >
+              <TitleCard
+                id={media.id}
+                title={media.mediaType === 'movie' ? media.title : media.name}
+                userScore={media.voteAverage}
+                year={
+                  media.mediaType === 'movie'
+                    ? media.releaseDate
+                    : media.firstAirDate
+                }
+                image={media.posterPath}
+                summary={media.overview}
+                mediaType={media.mediaType as 'movie' | 'tv'}
+                status={media.mediaInfo?.status}
+                canExpand
+              />
+              {media.job && (
+                <div className="mt-2 text-xs text-center text-gray-300 truncate w-36 sm:w-36 md:w-44">
+                  {media.job}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
 
   return (
     <>
@@ -126,96 +202,7 @@ const PersonDetails: React.FC = () => {
           </div>
         </div>
       </div>
-      {(sortedCast ?? []).length > 0 && (
-        <>
-          <div className="relative z-10 mt-6 mb-4 md:flex md:items-center md:justify-between">
-            <div className="flex-1 min-w-0">
-              <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-                <span>{intl.formatMessage(messages.appearsin)}</span>
-              </div>
-            </div>
-          </div>
-          <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
-            {sortedCast?.map((media, index) => {
-              return (
-                <li
-                  key={`list-cast-item-${media.id}-${index}`}
-                  className="flex flex-col items-center col-span-1 text-center"
-                >
-                  <TitleCard
-                    id={media.id}
-                    title={
-                      media.mediaType === 'movie' ? media.title : media.name
-                    }
-                    userScore={media.voteAverage}
-                    year={
-                      media.mediaType === 'movie'
-                        ? media.releaseDate
-                        : media.firstAirDate
-                    }
-                    image={media.posterPath}
-                    summary={media.overview}
-                    mediaType={media.mediaType as 'movie' | 'tv'}
-                    status={media.mediaInfo?.status}
-                    canExpand
-                  />
-                  {media.character && (
-                    <div className="mt-2 text-xs text-center text-gray-300 truncate w-36 sm:w-36 md:w-44">
-                      {intl.formatMessage(messages.ascharacter, {
-                        character: media.character,
-                      })}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      )}
-      {(sortedCrew ?? []).length > 0 && (
-        <>
-          <div className="relative z-10 mt-6 mb-4 md:flex md:items-center md:justify-between">
-            <div className="flex-1 min-w-0">
-              <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-                <span>{intl.formatMessage(messages.crewmember)}</span>
-              </div>
-            </div>
-          </div>
-          <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
-            {sortedCrew?.map((media, index) => {
-              return (
-                <li
-                  key={`list-crew-item-${media.id}-${index}`}
-                  className="flex flex-col items-center col-span-1 text-center"
-                >
-                  <TitleCard
-                    id={media.id}
-                    title={
-                      media.mediaType === 'movie' ? media.title : media.name
-                    }
-                    userScore={media.voteAverage}
-                    year={
-                      media.mediaType === 'movie'
-                        ? media.releaseDate
-                        : media.firstAirDate
-                    }
-                    image={media.posterPath}
-                    summary={media.overview}
-                    mediaType={media.mediaType as 'movie' | 'tv'}
-                    status={media.mediaInfo?.status}
-                    canExpand
-                  />
-                  {media.job && (
-                    <div className="mt-2 text-xs text-center text-gray-300 truncate w-36 sm:w-36 md:w-44">
-                      {media.job}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      )}
+      {data.knownForDepartment === 'Acting' ? [cast, crew] : [crew, cast]}
       {isLoading && <LoadingSpinner />}
     </>
   );

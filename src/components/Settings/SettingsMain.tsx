@@ -10,7 +10,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useUser, Permission } from '../../hooks/useUser';
 import { useToasts } from 'react-toast-notifications';
 import { messages as permissionMessages } from '../UserEdit';
-import { hasPermission } from '../../../server/lib/permissions';
+import PermissionOption, { PermissionItem } from '../PermissionOption';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -26,13 +26,6 @@ const messages = defineMessages({
   toastSettingsFailure: 'Something went wrong saving settings.',
   defaultPermissions: 'Default User Permissions',
 });
-
-interface PermissionOption {
-  id: string;
-  name: string;
-  description: string;
-  permission: Permission;
-}
 
 const SettingsMain: React.FC = () => {
   const { addToast } = useToasts();
@@ -63,7 +56,7 @@ const SettingsMain: React.FC = () => {
     return <LoadingSpinner />;
   }
 
-  const permissionList: PermissionOption[] = [
+  const permissionList: PermissionItem[] = [
     {
       id: 'admin',
       name: intl.formatMessage(permissionMessages.admin),
@@ -97,18 +90,30 @@ const SettingsMain: React.FC = () => {
       permission: Permission.REQUEST,
     },
     {
-      id: 'vote',
-      name: intl.formatMessage(permissionMessages.vote),
-      description: intl.formatMessage(permissionMessages.voteDescription),
-      permission: Permission.VOTE,
-    },
-    {
       id: 'autoapprove',
       name: intl.formatMessage(permissionMessages.autoapprove),
       description: intl.formatMessage(
         permissionMessages.autoapproveDescription
       ),
       permission: Permission.AUTO_APPROVE,
+      children: [
+        {
+          id: 'autoapprovemovies',
+          name: intl.formatMessage(permissionMessages.autoapproveMovies),
+          description: intl.formatMessage(
+            permissionMessages.autoapproveMoviesDescription
+          ),
+          permission: Permission.AUTO_APPROVE_MOVIE,
+        },
+        {
+          id: 'autoapprovetv',
+          name: intl.formatMessage(permissionMessages.autoapproveSeries),
+          description: intl.formatMessage(
+            permissionMessages.autoapproveSeriesDescription
+          ),
+          permission: Permission.AUTO_APPROVE_TV,
+        },
+      ],
     },
   ];
 
@@ -230,65 +235,18 @@ const SettingsMain: React.FC = () => {
                       </div>
                       <div className="mt-4 sm:mt-0 sm:col-span-2">
                         <div className="max-w-lg">
-                          {permissionList.map((permissionOption) => (
-                            <div
-                              className={`relative flex items-start first:mt-0 mt-4 ${
-                                permissionOption.permission !==
-                                  Permission.ADMIN &&
-                                hasPermission(
-                                  Permission.ADMIN,
-                                  values.defaultPermissions
+                          {permissionList.map((permissionItem) => (
+                            <PermissionOption
+                              key={`permission-option-${permissionItem.id}`}
+                              option={permissionItem}
+                              currentPermission={values.defaultPermissions}
+                              onUpdate={(newPermissions) =>
+                                setFieldValue(
+                                  'defaultPermissions',
+                                  newPermissions
                                 )
-                                  ? 'opacity-50'
-                                  : ''
-                              }`}
-                              key={`permission-option-${permissionOption.id}`}
-                            >
-                              <div className="flex items-center h-5">
-                                <input
-                                  id={permissionOption.id}
-                                  name="permissions"
-                                  type="checkbox"
-                                  className="w-4 h-4 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                                  disabled={
-                                    permissionOption.permission !==
-                                      Permission.ADMIN &&
-                                    hasPermission(
-                                      Permission.ADMIN,
-                                      values.defaultPermissions
-                                    )
-                                  }
-                                  onClick={() => {
-                                    setFieldValue(
-                                      'defaultPermissions',
-                                      hasPermission(
-                                        permissionOption.permission,
-                                        values.defaultPermissions
-                                      )
-                                        ? values.defaultPermissions -
-                                            permissionOption.permission
-                                        : values.defaultPermissions +
-                                            permissionOption.permission
-                                    );
-                                  }}
-                                  checked={hasPermission(
-                                    permissionOption.permission,
-                                    values.defaultPermissions
-                                  )}
-                                />
-                              </div>
-                              <div className="ml-3 text-sm leading-5">
-                                <label
-                                  htmlFor={permissionOption.id}
-                                  className="font-medium"
-                                >
-                                  {permissionOption.name}
-                                </label>
-                                <p className="text-gray-500">
-                                  {permissionOption.description}
-                                </p>
-                              </div>
-                            </div>
+                              }
+                            />
                           ))}
                         </div>
                       </div>

@@ -1,5 +1,17 @@
 import * as winston from 'winston';
+import 'winston-daily-rotate-file';
 import path from 'path';
+import fs from 'fs';
+
+// Migrate away from old log
+const OLD_LOG_FILE = path.join(__dirname, '../config/logs/overseerr.log');
+if (fs.existsSync(OLD_LOG_FILE)) {
+  const file = fs.lstatSync(OLD_LOG_FILE);
+
+  if (!file.isSymbolicLink()) {
+    fs.unlinkSync(OLD_LOG_FILE);
+  }
+}
 
 const hformat = winston.format.printf(
   ({ level, label, message, timestamp, ...metadata }) => {
@@ -29,10 +41,14 @@ const logger = winston.createLogger({
         hformat
       ),
     }),
-    new winston.transports.File({
-      filename: path.join(__dirname, '../config/logs/overseerr.log'),
-      maxsize: 20971520,
-      maxFiles: 6,
+    new winston.transports.DailyRotateFile({
+      filename: path.join(__dirname, '../config/logs/overseerr-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '7d',
+      createSymlink: true,
+      symlinkName: 'overseerr.log',
     }),
   ],
 });

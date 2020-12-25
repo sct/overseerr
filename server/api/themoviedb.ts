@@ -190,7 +190,30 @@ export interface TmdbMovieDetails {
     cast: TmdbCreditCast[];
     crew: TmdbCreditCrew[];
   };
+  belongs_to_collection?: {
+    id: number;
+    name: string;
+    poster_path?: string;
+    backdrop_path?: string;
+  };
   external_ids: TmdbExternalIds;
+  videos: TmdbVideoResult;
+}
+
+export interface TmdbVideo {
+  id: string;
+  key: string;
+  name: string;
+  site: 'YouTube';
+  size: number;
+  type:
+    | 'Clip'
+    | 'Teaser'
+    | 'Trailer'
+    | 'Featurette'
+    | 'Opening Credits'
+    | 'Behind the Scenes'
+    | 'Bloopers';
 }
 
 export interface TmdbTvEpisodeResult {
@@ -278,6 +301,11 @@ export interface TmdbTvDetails {
   keywords: {
     results: TmdbKeyword[];
   };
+  videos: TmdbVideoResult;
+}
+
+export interface TmdbVideoResult {
+  results: TmdbVideo[];
 }
 
 export interface TmdbKeyword {
@@ -342,6 +370,15 @@ export interface TmdbPersonCombinedCredits {
 export interface TmdbSeasonWithEpisodes extends TmdbTvSeasonResult {
   episodes: TmdbTvEpisodeResult[];
   external_ids: TmdbExternalIds;
+}
+
+export interface TmdbCollection {
+  id: number;
+  name: string;
+  overview?: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  parts: TmdbMovieResult[];
 }
 
 class TheMovieDb {
@@ -438,7 +475,10 @@ class TheMovieDb {
       const response = await this.axios.get<TmdbMovieDetails>(
         `/movie/${movieId}`,
         {
-          params: { language, append_to_response: 'credits,external_ids' },
+          params: {
+            language,
+            append_to_response: 'credits,external_ids,videos',
+          },
         }
       );
 
@@ -459,7 +499,7 @@ class TheMovieDb {
       const response = await this.axios.get<TmdbTvDetails>(`/tv/${tvId}`, {
         params: {
           language,
-          append_to_response: 'credits,external_ids,keywords',
+          append_to_response: 'credits,external_ids,keywords,videos',
         },
       });
 
@@ -864,6 +904,29 @@ class TheMovieDb {
       throw new Error(
         `[TMDB] Failed to get tv show by external tvdb ID: ${e.message}`
       );
+    }
+  }
+
+  public async getCollection({
+    collectionId,
+    language = 'en-US',
+  }: {
+    collectionId: number;
+    language?: string;
+  }): Promise<TmdbCollection> {
+    try {
+      const response = await this.axios.get<TmdbCollection>(
+        `/collection/${collectionId}`,
+        {
+          params: {
+            language,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch collection: ${e.message}`);
     }
   }
 }

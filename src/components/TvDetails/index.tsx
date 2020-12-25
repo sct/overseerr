@@ -19,7 +19,6 @@ import { useUser, Permission } from '../../hooks/useUser';
 import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
 import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
-import Badge from '../Common/Badge';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import axios from 'axios';
 import SlideOver from '../Common/SlideOver';
@@ -32,11 +31,11 @@ import RTAudFresh from '../../assets/rt_aud_fresh.svg';
 import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import Head from 'next/head';
-import globalMessages from '../../i18n/globalMessages';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import { Crew } from '../../../server/models/common';
+import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -48,6 +47,7 @@ const messages = defineMessages({
   recommendations: 'Recommendations',
   similar: 'Similar Series',
   cancelrequest: 'Cancel Request',
+  watchtrailer: 'Watch Trailer',
   available: 'Available',
   unavailable: 'Unavailable',
   request: 'Request',
@@ -129,6 +129,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const activeRequests = data.mediaInfo?.requests?.filter(
     (request) => request.status === MediaRequestStatus.PENDING
   );
+
+  const trailerUrl = data.relatedVideos
+    ?.filter((r) => r.type === 'Trailer')
+    .sort((a, b) => a.size - b.size)
+    .pop()?.url;
 
   const modifyRequests = async (type: 'approve' | 'decline'): Promise<void> => {
     if (!activeRequests) {
@@ -221,38 +226,19 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </div>
         )}
       </SlideOver>
-      <div className="flex flex-col items-center pt-4 md:flex-row md:items-end">
-        <div className="flex-shrink-0 md:mr-4">
+      <div className="flex flex-col items-center pt-4 lg:flex-row lg:items-end">
+        <div className="lg:mr-4">
           <img
             src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
             alt=""
-            className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-52"
+            className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-44 lg:w-52"
           />
         </div>
-        <div className="flex flex-col mt-4 text-center text-white md:mr-4 md:mt-0 md:text-left">
+        <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
           <div className="mb-2">
-            {data.mediaInfo?.status === MediaStatus.AVAILABLE && (
-              <Badge badgeType="success">
-                {intl.formatMessage(globalMessages.available)}
-              </Badge>
-            )}
-            {data.mediaInfo?.status === MediaStatus.PARTIALLY_AVAILABLE && (
-              <Badge badgeType="success">
-                {intl.formatMessage(globalMessages.partiallyavailable)}
-              </Badge>
-            )}
-            {data.mediaInfo?.status === MediaStatus.PROCESSING && (
-              <Badge badgeType="danger">
-                {intl.formatMessage(globalMessages.unavailable)}
-              </Badge>
-            )}
-            {data.mediaInfo?.status === MediaStatus.PENDING && (
-              <Badge badgeType="warning">
-                {intl.formatMessage(globalMessages.pending)}
-              </Badge>
-            )}
+            <StatusBadge status={data.mediaInfo?.status} />
           </div>
-          <h1 className="text-2xl md:text-4xl">
+          <h1 className="text-2xl lg:text-4xl">
             <span>{data.name}</span>
             {data.firstAirDate && (
               <span className="ml-2 text-2xl">
@@ -260,19 +246,47 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               </span>
             )}
           </h1>
-          <span className="mt-1 text-xs md:text-base md:mt-0">
+          <span className="mt-1 text-xs lg:text-base lg:mt-0">
             {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
-        <div className="flex justify-end flex-1 mt-4 md:mt-0">
+        <div className="flex justify-end flex-shrink-0 mt-4 lg:mt-0">
+          {trailerUrl && (
+            <a href={trailerUrl} target="_blank" rel="noreferrer">
+              <Button buttonType="ghost">
+                <svg
+                  className="w-5 h-5 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <FormattedMessage {...messages.watchtrailer} />
+              </Button>
+            </a>
+          )}
           {(!data.mediaInfo ||
             data.mediaInfo.status === MediaStatus.UNKNOWN) && (
             <Button
+              className="ml-2"
               buttonType="primary"
               onClick={() => setShowRequestModal(true)}
             >
               <svg
-                className="w-4 mr-1"
+                className="w-5 mr-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -309,7 +323,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 text={
                   <>
                     <svg
-                      className="w-4 mr-1"
+                      className="w-5 mr-1"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -323,6 +337,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     <FormattedMessage {...messages.requestmore} />
                   </>
                 }
+                className="ml-2"
                 onClick={() => setShowRequestModal(true)}
               >
                 {hasPermission(Permission.MANAGE_REQUESTS) &&

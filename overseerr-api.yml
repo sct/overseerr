@@ -383,6 +383,36 @@ components:
           type: string
         name:
           type: string
+    RelatedVideo:
+      type: object
+      properties:
+        url:
+          type: string
+          example: https://www.youtube.com/watch?v=9qhL2_UxXM0/
+        key:
+          type: string
+          example: 9qhL2_UxXM0
+        name:
+          type: string
+          example: Trailer for some movie (1978)
+        size:
+          type: number
+          example: 1080
+        type:
+          type: string
+          example: Trailer
+          enum:
+            - Clip
+            - Teaser
+            - Trailer
+            - Featurette
+            - Opening Credits
+            - Behind the Scenes
+            - Bloopers
+        site:
+          type: string
+          enum:
+            - 'YouTube'
     MovieDetails:
       type: object
       properties:
@@ -408,6 +438,10 @@ components:
             $ref: '#/components/schemas/Genre'
         homepage:
           type: string
+        relatedVideos:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedVideo'
         originalLanguage:
           type: string
         originalTitle:
@@ -463,6 +497,19 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Crew'
+        collection:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            name:
+              type: string
+              example: A collection
+            posterPath:
+              type: string
+            backdropPath:
+              type: string
         externalIds:
           $ref: '#/components/schemas/ExternalIds'
         mediaInfo:
@@ -794,6 +841,20 @@ components:
           properties:
             webhookUrl:
               type: string
+    SlackSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            webhookUrl:
+              type: string
     NotificationEmailSettings:
       type: object
       properties:
@@ -991,6 +1052,26 @@ components:
         name:
           type: string
           example: 'English'
+    Collection:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+        name:
+          type: string
+          example: A Movie Collection
+        overview:
+          type: string
+          example: Overview of collection
+        posterPath:
+          type: string
+        backdropPath:
+          type: string
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovieResult'
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -1554,6 +1635,52 @@ paths:
       responses:
         '204':
           description: Test notification attempted
+  /settings/notifications/slack:
+    get:
+      summary: Return current slack notification settings
+      description: Returns current slack notification settings in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned slack settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlackSettings'
+    post:
+      summary: Update slack notification settings
+      description: Update current slack notification settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlackSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlackSettings'
+  /settings/notifications/slack/test:
+    post:
+      summary: Test the provided slack settings
+      description: Sends a test notification to the slack agent
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlackSettings'
+      responses:
+        '204':
+          description: Test notification attempted
   /settings/about:
     get:
       summary: Return current about stats
@@ -1691,7 +1818,8 @@ paths:
             application/json:
               schema:
                 type: array
-                $ref: '#/components/schemas/User'
+                items:
+                  $ref: '#/components/schemas/User'
 
   /user/{userId}:
     get:
@@ -2132,6 +2260,30 @@ paths:
       responses:
         '204':
           description: Succesfully removed request
+  /request/{requestId}/retry:
+    post:
+      summary: Retry a failed request
+      description: |
+        Retries a request by resending requests to Sonarr or Radarr
+
+        Requires the `MANAGE_REQUESTS` permission or `ADMIN`
+      tags:
+        - request
+      parameters:
+        - in: path
+          name: requestId
+          description: Request ID
+          required: true
+          schema:
+            type: string
+            example: 1
+      responses:
+        '200':
+          description: Retry triggered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaRequest'
   /request/{requestId}/{status}:
     get:
       summary: Update a requests status
@@ -2626,6 +2778,31 @@ paths:
       responses:
         '204':
           description: Succesfully removed media item
+  /collection/{collectionId}:
+    get:
+      summary: Request collection details
+      description: Returns back full collection details in JSON format
+      tags:
+        - collection
+      parameters:
+        - in: path
+          name: collectionId
+          required: true
+          schema:
+            type: number
+            example: 537982
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Collection details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
 
 security:
   - cookieAuth: []

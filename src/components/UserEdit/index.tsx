@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import { Permission, useUser } from '../../hooks/useUser';
-import { hasPermission } from '../../../server/lib/permissions';
 import Button from '../Common/Button';
 import { useIntl, defineMessages, FormattedMessage } from 'react-intl';
 import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
 import Header from '../Common/Header';
+import PermissionOption, { PermissionItem } from '../PermissionOption';
 
 export const messages = defineMessages({
   edituser: 'Edit User',
@@ -35,25 +35,24 @@ export const messages = defineMessages({
   autoapprove: 'Auto Approve',
   autoapproveDescription:
     'Grants auto approval for any requests made by this user.',
+  autoapproveMovies: 'Auto Approve Movies',
+  autoapproveMoviesDescription:
+    'Grants auto approve for movie requests made by this user.',
+  autoapproveSeries: 'Auto Approve Series',
+  autoapproveSeriesDescription:
+    'Grants auto approve for series requests made by this user.',
   save: 'Save',
   saving: 'Saving...',
   usersaved: 'User saved',
   userfail: 'Something went wrong saving the user.',
 });
 
-interface PermissionOption {
-  id: string;
-  name: string;
-  description: string;
-  permission: Permission;
-}
-
 const UserEdit: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
   const { addToast } = useToasts();
   const [isUpdating, setIsUpdating] = useState(false);
-  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
+  const { user: currentUser } = useUser();
   const { user, error, revalidate } = useUser({
     id: Number(router.query.userId),
   });
@@ -97,7 +96,7 @@ const UserEdit: React.FC = () => {
     return <LoadingSpinner />;
   }
 
-  const permissionList: PermissionOption[] = [
+  const permissionList: PermissionItem[] = [
     {
       id: 'admin',
       name: intl.formatMessage(messages.admin),
@@ -129,16 +128,28 @@ const UserEdit: React.FC = () => {
       permission: Permission.REQUEST,
     },
     {
-      id: 'vote',
-      name: intl.formatMessage(messages.vote),
-      description: intl.formatMessage(messages.voteDescription),
-      permission: Permission.VOTE,
-    },
-    {
       id: 'autoapprove',
       name: intl.formatMessage(messages.autoapprove),
       description: intl.formatMessage(messages.autoapproveDescription),
       permission: Permission.AUTO_APPROVE,
+      children: [
+        {
+          id: 'autoapprovemovies',
+          name: intl.formatMessage(messages.autoapproveMovies),
+          description: intl.formatMessage(
+            messages.autoapproveMoviesDescription
+          ),
+          permission: Permission.AUTO_APPROVE_MOVIE,
+        },
+        {
+          id: 'autoapprovetv',
+          name: intl.formatMessage(messages.autoapproveSeries),
+          description: intl.formatMessage(
+            messages.autoapproveSeriesDescription
+          ),
+          permission: Permission.AUTO_APPROVE_TV,
+        },
+      ],
     },
   ];
 
@@ -231,74 +242,16 @@ const UserEdit: React.FC = () => {
                 </div>
                 <div className="mt-4 sm:mt-0 sm:col-span-2">
                   <div className="max-w-lg">
-                    {permissionList.map((permissionOption) => (
-                      <div
-                        className={`relative flex items-start first:mt-0 mt-4 ${
-                          (permissionOption.permission !== Permission.ADMIN &&
-                            hasPermission(
-                              Permission.ADMIN,
-                              currentPermission
-                            )) ||
-                          (currentUser?.id !== 1 &&
-                            permissionOption.permission === Permission.ADMIN) ||
-                          (!currentHasPermission(Permission.MANAGE_SETTINGS) &&
-                            permissionOption.permission ===
-                              Permission.MANAGE_SETTINGS)
-                            ? 'opacity-50'
-                            : ''
-                        }`}
-                        key={`permission-option-${permissionOption.id}`}
-                      >
-                        <div className="flex items-center h-5">
-                          <input
-                            id={permissionOption.id}
-                            name="permissions"
-                            type="checkbox"
-                            className="w-4 h-4 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                            disabled={
-                              (permissionOption.permission !==
-                                Permission.ADMIN &&
-                                hasPermission(
-                                  Permission.ADMIN,
-                                  currentPermission
-                                )) ||
-                              (currentUser?.id !== 1 &&
-                                permissionOption.permission ===
-                                  Permission.ADMIN) ||
-                              (!currentHasPermission(
-                                Permission.MANAGE_SETTINGS
-                              ) &&
-                                permissionOption.permission ===
-                                  Permission.MANAGE_SETTINGS)
-                            }
-                            onClick={() => {
-                              setCurrentPermission((current) =>
-                                hasPermission(
-                                  permissionOption.permission,
-                                  currentPermission
-                                )
-                                  ? current - permissionOption.permission
-                                  : current + permissionOption.permission
-                              );
-                            }}
-                            checked={hasPermission(
-                              permissionOption.permission,
-                              currentPermission
-                            )}
-                          />
-                        </div>
-                        <div className="ml-3 text-sm leading-5">
-                          <label
-                            htmlFor={permissionOption.id}
-                            className="font-medium"
-                          >
-                            {permissionOption.name}
-                          </label>
-                          <p className="text-gray-500">
-                            {permissionOption.description}
-                          </p>
-                        </div>
-                      </div>
+                    {permissionList.map((permissionItem) => (
+                      <PermissionOption
+                        key={`permission-option-${permissionItem.id}`}
+                        option={permissionItem}
+                        user={currentUser}
+                        currentPermission={currentPermission}
+                        onUpdate={(newPermission) =>
+                          setCurrentPermission(newPermission)
+                        }
+                      />
                     ))}
                   </div>
                 </div>

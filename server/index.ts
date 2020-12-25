@@ -18,6 +18,7 @@ import notificationManager from './lib/notifications';
 import DiscordAgent from './lib/notifications/agents/discord';
 import EmailAgent from './lib/notifications/agents/email';
 import { getAppVersion } from './utils/appVersion';
+import SlackAgent from './lib/notifications/agents/slack';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -42,7 +43,11 @@ app
     const settings = getSettings().load();
 
     // Register Notification Agents
-    notificationManager.registerAgents([new DiscordAgent(), new EmailAgent()]);
+    notificationManager.registerAgents([
+      new DiscordAgent(),
+      new EmailAgent(),
+      new SlackAgent(),
+    ]);
 
     // Start Jobs
     startJobs();

@@ -14,16 +14,46 @@ All help is welcome and greatly appreciated. If you would like to contribute to 
 ### Getting Started
 
 1. [Fork](https://help.github.com/articles/fork-a-repo/) the repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device.
-2. Create a new branch `git checkout -b BRANCH_NAME`
+   ```
+   git clone https://github.com/YOUR_USERNAME/overseerr.git
+   cd overseerr/
+   ```
+2. Add the remote upstream.
 
-- Its recommended to name the branch something relevant to the feature or fix you are working on.
-- An example of this would be `fix-title-cards` or `feature-new-system`.
-- Bad examples would be `patch` or `bug`.
+   ```
+   git remote add upstream https://github.com/sct/overseerr.git
+   ```
 
-3. Install dependencies `yarn`
-4. `yarn dev` to build and watch for changes
+3. Create a new branch
 
-You can also run the development environment in [Docker](https://www.docker.com/) with `docker-compose up -d`. This method does not require installing NodeJS or Yarn on your machine directly.
+   ```
+   git checkout -b BRANCH_NAME develop
+   ```
+
+   - Its recommended to name the branch something relevant to the feature or fix you are working on.
+   - An example of this would be `fix-title-cards` or `feature-new-system`.
+   - Bad examples would be `patch` or `bug`.
+
+4. Run development environment
+
+   ```
+   yarn
+   yarn install
+   ```
+
+   - Alternatively you can run using [Docker](https://www.docker.com/) with `docker-compose up -d`. This method does not require installing NodeJS or Yarn on your machine directly.
+
+5. Create your patch and run appropriate tests.
+
+6. Follow the [guidelines](#contributing-code).
+
+7. Should you need to update your fork you can do so by rebasing from upstream.
+
+   ```
+   git fetch upstream
+   git rebase upstream/develop
+   git push origin BRANCH_NAME -f
+   ```
 
 ### Contributing Code
 

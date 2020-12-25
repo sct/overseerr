@@ -12,6 +12,7 @@ import movieRoutes from './movie';
 import tvRoutes from './tv';
 import mediaRoutes from './media';
 import personRoutes from './person';
+import collectionRoutes from './collection';
 
 const router = Router();
 
@@ -34,6 +35,7 @@ router.use('/movie', isAuthenticated(), movieRoutes);
 router.use('/tv', isAuthenticated(), tvRoutes);
 router.use('/media', isAuthenticated(), mediaRoutes);
 router.use('/person', isAuthenticated(), personRoutes);
+router.use('/collection', isAuthenticated(), collectionRoutes);
 router.use('/auth', authRoutes);
 
 router.get('/', (_req, res) => {

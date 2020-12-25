@@ -375,5 +375,18 @@
   "components.MovieDetails.MovieCrew.fullcrew": "Équipe complète",
   "components.TvDetails.firstAirDate": "Date de première diffusion",
   "components.Settings.Notifications.ssldisabletip": "Le SSL doit être désactivé sur les connexions TLS standard (Port 587)",
-  "components.Settings.Notifications.allowselfsigned": "Autoriser les certificats autosignés"
+  "components.Settings.Notifications.allowselfsigned": "Autoriser les certificats autosignés",
+  "components.TvDetails.watchtrailer": "Regarder la bande-annonce",
+  "components.MovieDetails.watchtrailer": "Regarder la bande-annonce",
+  "components.MovieDetails.view": "Voir",
+  "components.CollectionDetails.requestswillbecreated": "Des demandes seront créées pour les titres suivants :",
+  "components.CollectionDetails.requesting": "Demande en cours…",
+  "components.CollectionDetails.requestcollection": "Demander une collection",
+  "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> demandé avec succès !",
+  "components.CollectionDetails.request": "Demander",
+  "components.CollectionDetails.overviewunavailable": "Résumé indisponible",
+  "components.CollectionDetails.overview": "Résumé",
+  "components.CollectionDetails.numberofmovies": "Nombre de films : {count}",
+  "components.CollectionDetails.movies": "Films",
+  "i18n.requested": "Demandé"
 }

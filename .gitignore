@@ -37,6 +37,7 @@ config/settings.json
 
 # logs
 config/logs/*.log*
+config/logs/*.json
 
 # dist files
 dist

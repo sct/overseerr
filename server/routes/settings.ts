@@ -24,6 +24,7 @@ import { SettingsAboutResponse } from '../interfaces/api/settingsInterfaces';
 import { Notification } from '../lib/notifications';
 import DiscordAgent from '../lib/notifications/agents/discord';
 import EmailAgent from '../lib/notifications/agents/email';
+import SlackAgent from '../lib/notifications/agents/slack';
 
 const settingsRoutes = Router();
 
@@ -459,6 +460,40 @@ settingsRoutes.post('/notifications/discord/test', (req, res, next) => {
 
   const discordAgent = new DiscordAgent(req.body);
   discordAgent.send(Notification.TEST_NOTIFICATION, {
+    notifyUser: req.user,
+    subject: 'Test Notification',
+    message:
+      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+  });
+
+  return res.status(204).send();
+});
+
+settingsRoutes.get('/notifications/slack', (_req, res) => {
+  const settings = getSettings();
+
+  res.status(200).json(settings.notifications.agents.slack);
+});
+
+settingsRoutes.post('/notifications/slack', (req, res) => {
+  const settings = getSettings();
+
+  settings.notifications.agents.slack = req.body;
+  settings.save();
+
+  res.status(200).json(settings.notifications.agents.slack);
+});
+
+settingsRoutes.post('/notifications/slack/test', (req, res, next) => {
+  if (!req.user) {
+    return next({
+      status: 500,
+      message: 'User information missing from request',
+    });
+  }
+
+  const slackAgent = new SlackAgent(req.body);
+  slackAgent.send(Notification.TEST_NOTIFICATION, {
     notifyUser: req.user,
     subject: 'Test Notification',
     message:

@@ -127,12 +127,16 @@ requestRoutes.post(
           media,
           requestedBy: req.user,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
-          status: req.user?.hasPermission(Permission.AUTO_APPROVE)
-            ? MediaRequestStatus.APPROVED
-            : MediaRequestStatus.PENDING,
-          modifiedBy: req.user?.hasPermission(Permission.AUTO_APPROVE)
-            ? req.user
-            : undefined,
+          status:
+            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+            req.user?.hasPermission(Permission.AUTO_APPROVE_MOVIE)
+              ? MediaRequestStatus.APPROVED
+              : MediaRequestStatus.PENDING,
+          modifiedBy:
+            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+            req.user?.hasPermission(Permission.AUTO_APPROVE_MOVIE)
+              ? req.user
+              : undefined,
         });
 
         await requestRepository.save(request);
@@ -172,19 +176,25 @@ requestRoutes.post(
           } as Media,
           requestedBy: req.user,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
-          status: req.user?.hasPermission(Permission.AUTO_APPROVE)
-            ? MediaRequestStatus.APPROVED
-            : MediaRequestStatus.PENDING,
-          modifiedBy: req.user?.hasPermission(Permission.AUTO_APPROVE)
-            ? req.user
-            : undefined,
+          status:
+            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+            req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
+              ? MediaRequestStatus.APPROVED
+              : MediaRequestStatus.PENDING,
+          modifiedBy:
+            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+            req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
+              ? req.user
+              : undefined,
           seasons: finalSeasons.map(
             (sn) =>
               new SeasonRequest({
                 seasonNumber: sn,
-                status: req.user?.hasPermission(Permission.AUTO_APPROVE)
-                  ? MediaRequestStatus.APPROVED
-                  : MediaRequestStatus.PENDING,
+                status:
+                  req.user?.hasPermission(Permission.AUTO_APPROVE) ||
+                  req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
+                    ? MediaRequestStatus.APPROVED
+                    : MediaRequestStatus.PENDING,
               })
           ),
         });
@@ -244,6 +254,32 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
   }
 });
 
+requestRoutes.post<{
+  requestId: string;
+}>(
+  '/:requestId/retry',
+  isAuthenticated(Permission.MANAGE_REQUESTS),
+  async (req, res, next) => {
+    const requestRepository = getRepository(MediaRequest);
+
+    try {
+      const request = await requestRepository.findOneOrFail({
+        where: { id: Number(req.params.requestId) },
+        relations: ['requestedBy', 'modifiedBy'],
+      });
+
+      await request.updateParentStatus();
+      await request.sendMedia();
+      return res.status(200).json(request);
+    } catch (e) {
+      logger.error('Error processing request retry', {
+        label: 'Media Request',
+        message: e.message,
+      });
+      next({ status: 404, message: 'Request not found' });
+    }
+  }
+);
 requestRoutes.get<{
   requestId: string;
   status: 'pending' | 'approve' | 'decline';

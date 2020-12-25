@@ -112,6 +112,52 @@ class EmailAgent
     }
   }
 
+  private async sendMediaFailedEmail(payload: NotificationPayload) {
+    // This is getting main settings for the whole app
+    const applicationUrl = getSettings().main.applicationUrl;
+    try {
+      const userRepository = getRepository(User);
+      const users = await userRepository.find();
+
+      // Send to all users with the manage requests permission (or admins)
+      users
+        .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
+        .forEach((user) => {
+          const email = this.getNewEmail();
+
+          email.send({
+            template: path.join(
+              __dirname,
+              '../../../templates/email/media-request'
+            ),
+            message: {
+              to: user.email,
+            },
+            locals: {
+              body:
+                "A user's new request has failed to add to Sonarr or Radarr",
+              mediaName: payload.subject,
+              imageUrl: payload.image,
+              timestamp: new Date().toTimeString(),
+              requestedBy: payload.notifyUser.username,
+              actionUrl: applicationUrl
+                ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+                : undefined,
+              applicationUrl,
+              requestType: 'Failed Request',
+            },
+          });
+        });
+      return true;
+    } catch (e) {
+      logger.error('Mail notification failed to send', {
+        label: 'Notifications',
+        message: e.message,
+      });
+      return false;
+    }
+  }
+
   private async sendMediaApprovedEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
     const applicationUrl = getSettings().main.applicationUrl;
@@ -227,6 +273,9 @@ class EmailAgent
         break;
       case Notification.MEDIA_AVAILABLE:
         this.sendMediaAvailableEmail(payload);
+        break;
+      case Notification.MEDIA_FAILED:
+        this.sendMediaFailedEmail(payload);
         break;
       case Notification.TEST_NOTIFICATION:
         this.sendTestEmail(payload);
