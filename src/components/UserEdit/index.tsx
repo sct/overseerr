@@ -128,12 +128,6 @@ const UserEdit: React.FC = () => {
       permission: Permission.REQUEST,
     },
     {
-      id: 'vote',
-      name: intl.formatMessage(messages.vote),
-      description: intl.formatMessage(messages.voteDescription),
-      permission: Permission.VOTE,
-    },
-    {
       id: 'autoapprove',
       name: intl.formatMessage(messages.autoapprove),
       description: intl.formatMessage(messages.autoapproveDescription),
