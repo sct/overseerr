@@ -269,7 +269,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 )}
                 {currentStatus === MediaStatus.PROCESSING && (
                   <button
-                    className="w-full ml-2 text-center text-red-500 border border-red-500 rounded-sm cursor-default h-7"
+                    className="w-full ml-2 text-center text-indigo-500 border border-indigo-500 rounded-sm cursor-default h-7"
                     disabled
                   >
                     <svg
