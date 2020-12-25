@@ -12,14 +12,16 @@ const messages = defineMessages({
 });
 
 interface SettingsRoute {
-  text: React.ReactNode;
+  text: string;
+  content: React.ReactNode;
   route: string;
   regex: RegExp;
 }
 
 const settingsRoutes: SettingsRoute[] = [
   {
-    text: (
+    text: 'Email',
+    content: (
       <span className="flex items-center">
         <svg
           className="h-4 mr-2"
@@ -42,7 +44,8 @@ const settingsRoutes: SettingsRoute[] = [
     regex: /^\/settings\/notifications\/email/,
   },
   {
-    text: (
+    text: 'Discord',
+    content: (
       <span className="flex items-center">
         <DiscordLogo className="h-4 mr-2" />
         Discord
@@ -52,7 +55,8 @@ const settingsRoutes: SettingsRoute[] = [
     regex: /^\/settings\/notifications\/discord/,
   },
   {
-    text: (
+    text: 'Slack',
+    content: (
       <span className="flex items-center">
         <SlackLogo className="h-4 mr-2" />
         Slack
@@ -144,7 +148,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
                 regex={route.regex}
                 key={`standard-settings-link-${index}`}
               >
-                {route.text}
+                {route.content}
               </SettingsLink>
             ))}
           </nav>
