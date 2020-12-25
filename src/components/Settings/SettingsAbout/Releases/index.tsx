@@ -7,7 +7,7 @@ import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import Modal from '../../../Common/Modal';
 import Transition from '../../../Transition';
-import { defineMessages, useIntl } from 'react-intl';
+import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import globalMessages from '../../../../i18n/globalMessages';
 
 const messages = defineMessages({
@@ -59,7 +59,7 @@ const Release: React.FC<ReleaseProps> = ({
   const intl = useIntl();
   const [isModalOpen, setModalOpen] = useState(false);
   return (
-    <div className="bg-gray-800 rounded-md flex flex-col sm:flex-row px-4 py-2">
+    <div className="flex flex-col px-4 py-2 bg-gray-800 rounded-md sm:flex-row">
       <Transition
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
@@ -99,7 +99,16 @@ const Release: React.FC<ReleaseProps> = ({
           </div>
         </Modal>
       </Transition>
-      <div className="flex mb-4 sm:mb-0 items-center justify-center sm:justify-start">
+      <div className="flex items-center justify-center mb-4 sm:mb-0 sm:justify-start">
+        <span className="mr-2 text-sm">
+          <FormattedRelativeTime
+            value={Math.floor(
+              (new Date(release.created_at).getTime() - Date.now()) / 1000
+            )}
+            updateIntervalInSeconds={1}
+            numeric="always"
+          />
+        </span>
         <span className="text-xl">{release.name}</span>
         {isLatest && (
           <span className="ml-2">
@@ -147,7 +156,7 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
 
   return (
     <div>
-      <div className="text-xl pb-4 mb-4 border-b border-gray-800">
+      <div className="pb-4 mb-4 text-xl border-b border-gray-800">
         {intl.formatMessage(messages.releases)}
       </div>
       {currentVersion.startsWith('develop-') && (
@@ -159,7 +168,7 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
                   href="https://github.com/sct/overseerr"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-yellow-100 underline hover:text-white transition duration-300"
+                  className="text-yellow-100 underline transition duration-300 hover:text-white"
                 >
                   {msg}
                 </a>

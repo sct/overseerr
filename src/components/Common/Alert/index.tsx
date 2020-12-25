@@ -7,7 +7,9 @@ interface AlertProps {
 
 const Alert: React.FC<AlertProps> = ({ title, children, type }) => {
   let design = {
-    color: 'yellow',
+    bgColor: 'bg-yellow-600',
+    titleColor: 'text-yellow-200',
+    textColor: 'text-yellow-300',
     svg: (
       <svg
         className="w-5 h-5"
@@ -28,7 +30,9 @@ const Alert: React.FC<AlertProps> = ({ title, children, type }) => {
   switch (type) {
     case 'info':
       design = {
-        color: 'indigo',
+        bgColor: 'bg-indigo-600',
+        titleColor: 'text-indigo-200',
+        textColor: 'text-indigo-300',
         svg: (
           <svg
             className="w-5 h-5"
@@ -50,18 +54,14 @@ const Alert: React.FC<AlertProps> = ({ title, children, type }) => {
   }
 
   return (
-    <div className={`rounded-md p-4 mb-8 bg-${design.color}-600`}>
+    <div className={`rounded-md p-4 mb-8 ${design.bgColor}`}>
       <div className="flex">
-        <div className={`flex-shrink-0 text-${design.color}-200`}>
-          {design.svg}
-        </div>
+        <div className={`flex-shrink-0 ${design.titleColor}`}>{design.svg}</div>
         <div className="ml-3">
-          <h3 className={`text-sm font-medium text-${design.color}-200`}>
+          <h3 className={`text-sm font-medium ${design.titleColor}`}>
             {title}
           </h3>
-          <div className={`mt-2 text-sm text-${design.color}-300`}>
-            {children}
-          </div>
+          <div className={`mt-2 text-sm ${design.textColor}`}>{children}</div>
         </div>
       </div>
     </div>
