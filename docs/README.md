@@ -1,3 +1,4 @@
-## Overseerr Documentation
+# Introduction
 
 Welcome to the Overseerr Documentation.
+
