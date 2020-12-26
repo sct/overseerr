@@ -1,7 +1,7 @@
 # Installation
 
 {% hint style="danger" %}
-Overseerr is currently under very heavy, rapid development and things are likely to break often. We need all the help we can get to find bugs and get them fixed to hit a more stable release. If you would like to help test the bleeding edge, please use the image `sctx/overseerr:develop` instead! 
+Overseerr is currently under very heavy, rapid development and things are likely to break often. We need all the help we can get to find bugs and get them fixed to hit a more stable release. If you would like to help test the bleeding edge, please use the image **`sctx/overseerr:develop`** instead! 
 {% endhint %}
 
 After running Overseerr for the first time, configure it by visiting the web UI at `http://[address]:5055` and completing the setup steps.
@@ -16,7 +16,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ## Docker
 
-```text
+```bash
 docker run -d \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
@@ -40,9 +40,11 @@ Docker for windows must be installed and WSL2 must be enabled to be able to run 
 
 Please refer to the [docker for windows documentation](https://docs.docker.com/docker-for-windows/) for installation.
 
+{% hint style="warning" %}
 **Warning: WSL2 will need to be installed to prevent DB corruption! Please see** [**Docker Desktop WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) **on how to enable WSL2. The command below will only work with WSL2 installed! Details below.**
+{% endhint %}
 
-```text
+```bash
 docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/here:/app/config" --restart unless-stopped sctx/overseerr
 ```
 
