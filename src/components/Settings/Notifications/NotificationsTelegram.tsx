@@ -25,7 +25,7 @@ const messages = defineMessages({
   settinguptelegramDescription:
     'To setup Telegram you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
     Additionally, you need the chat id for the chat you want the bot to send notifications to.\
-    Which you can do by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
+    You can do this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
 });
 
 const NotificationsTelegram: React.FC = () => {
