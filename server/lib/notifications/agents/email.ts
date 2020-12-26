@@ -60,7 +60,10 @@ class EmailAgent
     const settings = this.getSettings();
     return new Email({
       message: {
-        from: settings.options.emailFrom,
+        from: {
+          name: settings.options.senderName,
+          address: settings.options.emailFrom,
+        },
       },
       send: true,
       transport: this.getSmtpTransport(),

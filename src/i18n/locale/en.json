@@ -132,6 +132,7 @@
   "components.Settings.Notifications.saving": "Saving…",
   "components.Settings.Notifications.settinguptelegram": "Setting up Telegram Notifications",
   "components.Settings.Notifications.settinguptelegramDescription": "To setup Telegram you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.    Additionally, you need the chat id for the chat you want the bot to send notifications to.    You can do this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.",
+  "components.Settings.Notifications.senderName": "Sender Name",
   "components.Settings.Notifications.smtpHost": "SMTP Host",
   "components.Settings.Notifications.smtpPort": "SMTP Port",
   "components.Settings.Notifications.ssldisabletip": "SSL should be disabled on standard TLS connections (Port 587)",
