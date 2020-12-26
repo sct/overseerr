@@ -16,6 +16,8 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ## Docker
 
+{% tabs %}
+{% tab title="Basic" %}
 ```bash
 docker run -d \
   -e LOG_LEVEL=info \
@@ -25,6 +27,37 @@ docker run -d \
   --restart unless-stopped \
   sctx/overseerr
 ```
+{% endtab %}
+
+{% tab title="UID/GID" %}
+```
+docker run -d \
+  --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ] \
+  -e LOG_LEVEL=info \
+  -e TZ=Asia/Tokyo \
+  -p 5055:5055 \
+  -v /path/to/appdata/config:/app/config \
+  --restart unless-stopped \
+   sctx/overseerr
+```
+{% endtab %}
+
+{% tab title="Manual Update" %}
+```
+# Stop the Overseerr container
+docker stop overseerr
+
+# Remove the Overseerr container
+docker rm overseerr
+
+# Pull the latest update
+docker pull sctx/overseerr
+
+# Run the Overseerr container with the same parameters as before
+docker run -d ...
+```
+{% endtab %}
+{% endtabs %}
 
 ## Unraid
 
@@ -41,14 +74,14 @@ Docker for windows must be installed and WSL2 must be enabled to be able to run 
 Please refer to the [docker for windows documentation](https://docs.docker.com/docker-for-windows/) for installation.
 
 {% hint style="warning" %}
-**Warning: WSL2 will need to be installed to prevent DB corruption! Please see** [**Docker Desktop WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) **on how to enable WSL2. The command below will only work with WSL2 installed! Details below.**
+**WSL2 will need to be installed to prevent DB corruption! Please see** [**Docker Desktop WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) **on how to enable WSL2. The command below will only work with WSL2 installed! Details below.**
 {% endhint %}
 
 ```bash
 docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/here:/app/config" --restart unless-stopped sctx/overseerr
 ```
 
-_Detail: Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases._
+_Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases._
 
 ## ArchLinux \(Third party\)
 
