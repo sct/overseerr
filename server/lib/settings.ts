@@ -84,10 +84,18 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentTelegram extends NotificationAgentConfig {
+  options: {
+    botAPI: string;
+    chatId: string;
+  };
+}
+
 interface NotificationAgents {
   email: NotificationAgentEmail;
   discord: NotificationAgentDiscord;
   slack: NotificationAgentSlack;
+  telegram: NotificationAgentTelegram;
 }
 
 interface NotificationSettings {
@@ -154,6 +162,14 @@ class Settings {
             types: 0,
             options: {
               webhookUrl: '',
+            },
+          },
+          telegram: {
+            enabled: false,
+            types: 0,
+            options: {
+              botAPI: '',
+              chatId: '',
             },
           },
         },

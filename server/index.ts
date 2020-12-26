@@ -17,6 +17,7 @@ import { startJobs } from './job/schedule';
 import notificationManager from './lib/notifications';
 import DiscordAgent from './lib/notifications/agents/discord';
 import EmailAgent from './lib/notifications/agents/email';
+import TelegramAgent from './lib/notifications/agents/telegram';
 import { getAppVersion } from './utils/appVersion';
 import SlackAgent from './lib/notifications/agents/slack';
 
@@ -47,6 +48,7 @@ app
       new DiscordAgent(),
       new EmailAgent(),
       new SlackAgent(),
+      new TelegramAgent(),
     ]);
 
     // Start Jobs

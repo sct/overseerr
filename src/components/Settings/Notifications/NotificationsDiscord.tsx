@@ -89,7 +89,7 @@ const NotificationsDiscord: React.FC = () => {
           <Form>
             <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
               <label
-                htmlFor="isDefault"
+                htmlFor="enabled"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
               >
                 {intl.formatMessage(messages.agentenabled)}
