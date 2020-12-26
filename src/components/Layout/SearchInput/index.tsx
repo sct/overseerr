@@ -8,7 +8,7 @@ const messages = defineMessages({
 
 const SearchInput: React.FC = () => {
   const intl = useIntl();
-  const { searchValue, setSearchValue, setIsOpen } = useSearchInput();
+  const { searchValue, setSearchValue, setIsOpen, clear } = useSearchInput();
   return (
     <div className="flex-1 flex">
       <div className="w-full flex md:ml-0">
@@ -35,6 +35,9 @@ const SearchInput: React.FC = () => {
             onFocus={() => setIsOpen(true)}
             onBlur={() => setIsOpen(false)}
           />
+          {searchValue.length > 0 && (
+            <button className="search-clear-icon" onClick={clear} />
+          )}
         </div>
       </div>
     </div>
