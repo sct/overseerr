@@ -23,7 +23,7 @@ const messages = defineMessages({
   test: 'Test',
   settinguptelegram: 'Setting up Telegram Notifications',
   settinguptelegramDescription:
-    'To setup Telegram you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\r\n\
+    'To setup Telegram you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
     Additionally, you need the chat id for the chat you want the bot to send notifications to.\
     Which you can do by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
 });
