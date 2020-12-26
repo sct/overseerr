@@ -60,21 +60,3 @@ code {
 input[type='search']::-webkit-search-cancel-button {
   -webkit-appearance: none;
 }
-
-.search-clear-icon,
-.search-clear-icon:focus,
-.search-clear-icon:active {
-  outline: none;
-  border: none;
-}
-.search-clear-icon:after {
-  position: absolute;
-  content: '';
-  width: 20px;
-  height: 20px;
-  right: 0px;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  background-image: url('../assets/cross.svg');
-}
