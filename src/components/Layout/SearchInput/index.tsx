@@ -28,7 +28,7 @@ const SearchInput: React.FC = () => {
           </div>
           <input
             id="search_field"
-            style={{ paddingRight: searchValue.length > 0 ? '1.65rem' : '' }}
+            style={{ paddingRight: searchValue.length > 0 ? '1.75rem' : '' }}
             className="block w-full h-full pl-8 py-2 rounded-md border-transparent focus:border-transparent bg-gray-600 text-white placeholder-gray-300 focus:outline-none focus:ring-0 focus:placeholder-gray-400 sm:text-base"
             placeholder={intl.formatMessage(messages.searchPlaceholder)}
             type="search"
@@ -39,7 +39,7 @@ const SearchInput: React.FC = () => {
           />
           {searchValue.length > 0 && (
             <button
-              className="absolute inset-y-0 right-0 h-5 w-5 m-auto mr-1 outline-none border-none focus:outline-none focus:border-none"
+              className="absolute inset-y-0 right-0 h-7 w-7 m-auto p-1 outline-none border-none focus:outline-none focus:border-none"
               onClick={clear}
             >
               <ClearButton />
