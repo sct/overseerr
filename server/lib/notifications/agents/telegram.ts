@@ -58,32 +58,32 @@ class TelegramAgent
     switch (type) {
       case Notification.MEDIA_PENDING:
         message += `\*New Request\*\n`;
-        message += `${title}\n`;
-        message += `\*Plot\*\n${plot}\n`;
-        message += `\*Requested By\*\n${user}\n`;
+        message += `${title}\n\n`;
+        message += `${plot}\n\n`;
+        message += `\*Requested By\*\n${user}\n\n`;
         message += `\*Status\*\nPending Approval\n`;
 
         break;
       case Notification.MEDIA_APPROVED:
         message += `\*Request Approved\*\n`;
-        message += `${title}\n`;
-        message += `\*Plot\*\n${plot}\n`;
-        message += `\*Requested By\*\n${user}\n`;
+        message += `${title}\n\n`;
+        message += `${plot}\n\n`;
+        message += `\*Requested By\*\n${user}\n\n`;
         message += `\*Status\*\nProcessing Request\n`;
 
         break;
       case Notification.MEDIA_AVAILABLE:
-        message += `\*Now available\!\*\n`;
-        message += `${title}\n`;
-        message += `\*Plot\*\n${plot}\n`;
-        message += `\*Requested By\*\n${user}\n`;
+        message += `\*Now available\\!\*\n`;
+        message += `${title}\n\n`;
+        message += `${plot}\n\n`;
+        message += `\*Requested By\*\n${user}\n\n`;
         message += `\*Status\*\nAvailable\n`;
 
         break;
       case Notification.TEST_NOTIFICATION:
         message += `\*Test Notification\*\n`;
-        message += `${title}\n`;
-        message += `\*Plot\*\n${plot}\n`;
+        message += `${title}\n\n`;
+        message += `${plot}\n\n`;
         message += `\*Requested By\*\n${user}\n`;
 
         break;
