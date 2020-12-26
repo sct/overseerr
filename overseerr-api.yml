@@ -886,6 +886,9 @@ components:
             emailFrom:
               type: string
               example: no-reply@example.com
+            senderName:
+              type: string
+              example: Overseerr
             smtpHost:
               type: string
               example: 127.0.0.1

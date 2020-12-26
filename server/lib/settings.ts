@@ -81,6 +81,7 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
     authUser?: string;
     authPass?: string;
     allowSelfSigned: boolean;
+    senderName: string;
   };
 }
 
@@ -148,6 +149,7 @@ class Settings {
               smtpPort: 587,
               secure: false,
               allowSelfSigned: false,
+              senderName: 'Overseerr',
             },
           },
           discord: {

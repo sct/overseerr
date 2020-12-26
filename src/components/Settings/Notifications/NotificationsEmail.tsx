@@ -28,6 +28,7 @@ const messages = defineMessages({
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:
     'SSL should be disabled on standard TLS connections (Port 587)',
+  senderName: 'Sender Name',
 });
 
 const NotificationsEmail: React.FC = () => {
@@ -65,6 +66,7 @@ const NotificationsEmail: React.FC = () => {
         authUser: data.options.authUser,
         authPass: data.options.authPass,
         allowSelfSigned: data.options.allowSelfSigned,
+        senderName: data.options.senderName,
       }}
       validationSchema={NotificationsEmailSchema}
       onSubmit={async (values) => {
@@ -80,6 +82,7 @@ const NotificationsEmail: React.FC = () => {
               authUser: values.authUser,
               authPass: values.authPass,
               allowSelfSigned: values.allowSelfSigned,
+              senderName: values.senderName,
             },
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {
@@ -108,6 +111,7 @@ const NotificationsEmail: React.FC = () => {
               secure: values.secure,
               authUser: values.authUser,
               authPass: values.authPass,
+              senderName: values.senderName,
             },
           });
 
@@ -155,6 +159,25 @@ const NotificationsEmail: React.FC = () => {
                 {errors.emailFrom && touched.emailFrom && (
                   <div className="mt-2 text-red-500">{errors.emailFrom}</div>
                 )}
+              </div>
+            </div>
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+              <label
+                htmlFor="senderName"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+              >
+                {intl.formatMessage(messages.senderName)}
+              </label>
+              <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="flex max-w-lg rounded-md shadow-sm">
+                  <Field
+                    id="senderName"
+                    name="senderName"
+                    placeholder="Overseerr"
+                    type="text"
+                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                  />
+                </div>
               </div>
             </div>
             <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
