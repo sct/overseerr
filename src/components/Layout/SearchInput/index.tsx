@@ -1,6 +1,7 @@
 import React from 'react';
 import useSearchInput from '../../../hooks/useSearchInput';
 import { defineMessages, useIntl } from 'react-intl';
+import ClearButton from '../../../assets/xcircle.svg';
 
 const messages = defineMessages({
   searchPlaceholder: 'Search Movies & TV',
@@ -8,7 +9,7 @@ const messages = defineMessages({
 
 const SearchInput: React.FC = () => {
   const intl = useIntl();
-  const { searchValue, setSearchValue, setIsOpen } = useSearchInput();
+  const { searchValue, setSearchValue, setIsOpen, clear } = useSearchInput();
   return (
     <div className="flex-1 flex">
       <div className="w-full flex md:ml-0">
@@ -27,7 +28,8 @@ const SearchInput: React.FC = () => {
           </div>
           <input
             id="search_field"
-            className="block w-full h-full pl-8 pr-1 py-2 rounded-md border-transparent focus:border-transparent bg-gray-600 text-white placeholder-gray-300 focus:outline-none focus:ring-0 focus:placeholder-gray-400 sm:text-base"
+            style={{ paddingRight: searchValue.length > 0 ? '1.75rem' : '' }}
+            className="block w-full h-full pl-8 py-2 rounded-md border-transparent focus:border-transparent bg-gray-600 text-white placeholder-gray-300 focus:outline-none focus:ring-0 focus:placeholder-gray-400 sm:text-base"
             placeholder={intl.formatMessage(messages.searchPlaceholder)}
             type="search"
             value={searchValue}
@@ -35,6 +37,14 @@ const SearchInput: React.FC = () => {
             onFocus={() => setIsOpen(true)}
             onBlur={() => setIsOpen(false)}
           />
+          {searchValue.length > 0 && (
+            <button
+              className="absolute inset-y-0 right-0 h-7 w-7 m-auto p-1 outline-none border-none focus:outline-none focus:border-none"
+              onClick={clear}
+            >
+              <ClearButton />
+            </button>
+          )}
         </div>
       </div>
     </div>
