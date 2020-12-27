@@ -84,9 +84,9 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 **A:** Check your minimum availability in radarr. If an added item does not meet the minimum availability, no search will be performed. Also verify that radarr did not search for it by checking the radarr logs. Lastly, verify the item was not already being monitored by radarr. Currently there is no state sync with radarr. 
 
-### Help! My request still shows unavailable even though it's in Plex!?!
+### Help! My request still shows "requested" even though it's in Plex!?!
 
-**A:** Overseerr supports the new Plex Movie, Legacy Plex Movie, TheTVDB agent, and the TMDb agent. Please verify that your library is using one of the agents previously listed. If you are changing agents, a full metadata refresh will need to be performed. Caution, this can take a long time depending on how many items you have in your library.
+**A:** See "[Some media is missing from Overseerr that I know is in Plex!](https://docs.overseerr.dev/v/docs/support/faq#some-media-is-missing-from-overseerr-that-i-know-is-in-plex)" for troubleshooting steps.
 
 ## Notifications
 
