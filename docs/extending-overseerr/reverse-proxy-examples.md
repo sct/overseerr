@@ -1,16 +1,12 @@
 # Reverse Proxy Examples
 
-## Note: Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported.
+{% hint style="danger" %}
+Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported.Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported.
+{% endhint %}
 
-## Reverse Proxies:
+## LE/SWAG
 
-* [LE/SWAG](reverse-proxy-examples.md#leswag)
-* [Traefik \(v2\)](reverse-proxy-examples.md#traefik-v2)
-* [LE/NGINX](reverse-proxy-examples.md#lenginx)
-
-### LE/SWAG
-
-#### Subdomain
+### Subdomain
 
 Place in the `proxy-confs` folder as `overseerr.subdomain.conf`
 
@@ -41,11 +37,11 @@ server {
 }
 ```
 
-### Traefik \(v2\)
+## Traefik \(v2\)
 
 Add the labels to the Overseerr service in your `docker-compose` file. A basic example for a `docker-compose` file using Traefik can be found [here](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/).
 
-#### Subdomain
+### Subdomain
 
 Example Configuration:
 
@@ -61,9 +57,9 @@ labels:
   - "traefik.http.services.overseerr-svc.loadbalancer.server.port=5055"
 ```
 
-### LE/NGINX
+## LE/NGINX
 
-#### Subdomain
+### Subdomain
 
 Take the configuration below and place it in `/etc/nginx/sites-available/overseerr.example.com.conf`.
 

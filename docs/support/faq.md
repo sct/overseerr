@@ -1,6 +1,8 @@
 # Frequently Asked Questions
 
-**If you can't find a solution here, please ask on** [**Discord**](https://discord.gg/PkCWJSeCk7)**. Please do not post questions on the GitHub issues tracker.**
+{% hint style="info" %}
+If you can't find a solution here, please ask on [Discord](https://discord.gg/PkCWJSeCk7). Please do not post questions on the GitHub issues tracker.
+{% endhint %}
 
 ## General
 
@@ -16,7 +18,7 @@
 
 **A:** The easy and least secure method is to forward an external port \(`5055`\) on your router to the internal port used by Overseerr \(default is TCP `5055`\). Visit [Port Forward](http://portforward.com/) for instructions for your particular router. You will then be able to access Overseerr via `http://EXTERNAL-IP-ADDRESS:5055`.
 
-The more advanced and most preferred method \(and more secure if you use SSL\) is to set up a web server with NGINX/Apache, and use a reverse proxy to access Overseerr. You can lookup many guides on the internet to find out how to do this. There are several reverse proxy config examples located [here](https://github.com/sct/overseerr/wiki/Reverse-Proxy-Examples).
+The more advanced and most preferred method \(and more secure if you use SSL\) is to set up a web server with NGINX/Apache, and use a reverse proxy to access Overseerr. You can lookup many guides on the internet to find out how to do this. There are several reverse proxy config examples located [here](../extending-overseerr/reverse-proxy-examples.md).
 
 The most secure method, but also the most inconvenient, is to set up a VPN tunnel to your home server, then you can access Overseerr as if it is on a local network via `http://LOCAL-IP-ADDRESS:5055`.
 
@@ -38,7 +40,7 @@ The most secure method, but also the most inconvenient, is to set up a VPN tunne
 
 **Troubleshooting Steps:**
 
-Check the Overseerr logs for media items that are missing. The logs will contain an error as to why that item could not be matched. One example would be `errorMessage":"SQLITE_CONSTRAINT: NOT NULL`. This means that the TMDb ID is missing for that item.
+Check the Overseerr logs for media items that are missing. The logs will contain an error as to why that item could not be matched. One example might be `errorMessage":"SQLITE_CONSTRAINT: NOT NULL`. This means that the TMDb ID is missing from the Plex XML for that item.
 
 1. Verify that you are using one of the agents mentioned above.
 2. Refresh the metadata for just that item.
@@ -73,13 +75,9 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ## Requests
 
-### Why does a request still say unavailable?
-
-**A:** Availability is based off whether or not it is in Plex only. Currently, there is no state sync with Sonarr and Radarr.
-
 ### I approved a requested movie and radarr didn't search for it!
 
-**A:** Check your minimum availability in radarr. If an added item does not meet the minimum availability, no search will be performed.
+**A:** Check your minimum availability in radarr. If an added item does not meet the minimum availability, no search will be performed. Also verify that radarr did not search for it by checking the radarr logs. Lastly, verify the item was not already being monitored by radarr. Currently there is no state sync with radarr. 
 
 ### Help! My request still shows unavailable even though it's in Plex!?!
 
