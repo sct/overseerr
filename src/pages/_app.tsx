@@ -75,7 +75,10 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 
   useEffect(() => {
     loadLocaleData(currentLocale).then(setMessages);
-    setCookie(null, 'locale', currentLocale, { path: '/' });
+    setCookie(null, 'locale', currentLocale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365 * 10,
+    });
   }, [currentLocale]);
 
   if (router.pathname.match(/(login|setup)/)) {
