@@ -171,7 +171,7 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "docker build -t sctx/overseerr ."
+          "prepareCmd": "docker build --build-arg COMMIT_TAG=$GITHUB_SHA -t sctx/overseerr ."
         }
       ],
       "semantic-release-docker",

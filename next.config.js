@@ -1,4 +1,7 @@
 module.exports = {
+  env: {
+    commitTag: process.env.COMMIT_TAG || 'local',
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

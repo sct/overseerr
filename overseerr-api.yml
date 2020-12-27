@@ -1102,6 +1102,26 @@ components:
       name: X-Api-Key
 
 paths:
+  /status:
+    get:
+      summary: Return Overseerr version
+      description: Returns the current Overseerr version in JSON format
+      security: []
+      tags:
+        - public
+      responses:
+        '200':
+          description: Returned version
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: 1.0.0
+                  commitTag:
+                    type: string
   /settings/main:
     get:
       summary: Returns main settings

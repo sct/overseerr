@@ -13,10 +13,19 @@ import tvRoutes from './tv';
 import mediaRoutes from './media';
 import personRoutes from './person';
 import collectionRoutes from './collection';
+import { getAppVersion } from '../utils/appVersion';
 
 const router = Router();
 
 router.use(checkUser);
+
+router.get('/status', (req, res) => {
+  return res.status(200).json({
+    version: getAppVersion(),
+    commitTag: process.env.COMMIT_TAG || 'local',
+  });
+});
+
 router.use('/user', isAuthenticated(Permission.MANAGE_USERS), user);
 router.get('/settings/public', (_req, res) => {
   const settings = getSettings();
