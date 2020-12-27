@@ -1,7 +1,7 @@
 # Installation
 
 {% hint style="danger" %}
-Overseerr is currently under very heavy, rapid development and things are likely to break often. We need all the help we can get to find bugs and get them fixed to hit a more stable release. If you would like to help test the bleeding edge, please use the image **`sctx/overseerr:develop`** instead! 
+Overseerr is currently under very heavy, rapid development and things are likely to break often. We need all the help we can get to find bugs and get them fixed to hit a more stable release. If you would like to help test the bleeding edge, please use the image **`sctx/overseerr:develop`** instead!
 {% endhint %}
 
 {% hint style="info" %}
@@ -24,7 +24,7 @@ docker run -d \
 {% endtab %}
 
 {% tab title="UID/GID" %}
-```
+```text
 docker run -d \
   --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ] \
   -e LOG_LEVEL=info \
@@ -37,7 +37,7 @@ docker run -d \
 {% endtab %}
 
 {% tab title="Manual Update" %}
-```
+```text
 # Stop the Overseerr container
 docker stop overseerr
 

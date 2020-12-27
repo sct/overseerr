@@ -82,7 +82,7 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### I approved a requested movie and radarr didn't search for it!
 
-**A:** Check your minimum availability in radarr. If an added item does not meet the minimum availability, no search will be performed. Also verify that radarr did not search for it by checking the radarr logs. Lastly, verify the item was not already being monitored by radarr. Currently there is no state sync with radarr. 
+**A:** Check your minimum availability in radarr. If an added item does not meet the minimum availability, no search will be performed. Also verify that radarr did not search for it by checking the radarr logs. Lastly, verify the item was not already being monitored by radarr. Currently there is no state sync with radarr.
 
 ### Help! My request still shows "requested" even though it's in Plex!?!
 
