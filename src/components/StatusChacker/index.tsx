@@ -1,9 +1,18 @@
 import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import Modal from '../Common/Modal';
 import Transition from '../Transition';
 
+const messages = defineMessages({
+  newversionavailable: 'New Version Available',
+  newversionDescription:
+    'An update is now available. Click the button below to reload the application.',
+  reloadOverseerr: 'Reload Overseerr',
+});
+
 const StatusChecker: React.FC = () => {
+  const intl = useIntl();
   const { data, error } = useSWR<{ version: string; commitTag: string }>(
     '/api/v1/status',
     {
@@ -47,13 +56,12 @@ const StatusChecker: React.FC = () => {
             />
           </svg>
         }
-        title="New Version Available"
+        title={intl.formatMessage(messages.newversionavailable)}
         onOk={() => location.reload()}
-        okText="Reload Overseerr"
+        okText={intl.formatMessage(messages.reloadOverseerr)}
         backgroundClickable={false}
       >
-        An update is now available. Click the button below to reload the
-        application.
+        {intl.formatMessage(messages.newversionDescription)}
       </Modal>
     </Transition>
   );
