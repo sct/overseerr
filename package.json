@@ -18,7 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "@svgr/webpack": "^5.5.0",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "bowser": "^2.11.0",
     "connect-typeorm": "^1.1.4",
