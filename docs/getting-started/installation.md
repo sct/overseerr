@@ -53,6 +53,10 @@ docker run -d ...
 {% endtab %}
 {% endtabs %}
 
+{% hint style="info" %}
+Use 3rd party updating mechanisms such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date.
+{% endhint %}
+
 ## Unraid
 
 1. Ensure you have the **Community Applications** plugin installed.
@@ -63,11 +67,9 @@ docker run -d ...
 
 ## Windows
 
-Docker for windows must be installed and WSL2 must be enabled to be able to run the command below.
-
 Please refer to the [docker for windows documentation](https://docs.docker.com/docker-for-windows/) for installation.
 
-{% hint style="warning" %}
+{% hint style="danger" %}
 **WSL2 will need to be installed to prevent DB corruption! Please see** [**Docker Desktop WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) **on how to enable WSL2. The command below will only work with WSL2 installed! Details below.**
 {% endhint %}
 
@@ -75,17 +77,17 @@ Please refer to the [docker for windows documentation](https://docs.docker.com/d
 docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/here:/app/config" --restart unless-stopped sctx/overseerr
 ```
 
-_Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases._
+{% hint style="info" %}
+Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases.
+{% endhint %}
 
 ## ArchLinux \(Third party\)
 
-Built from tag: [https://aur.archlinux.org/packages/overseerr/](https://aur.archlinux.org/packages/overseerr/)
+Built from tag \(master\): [https://aur.archlinux.org/packages/overseerr/](https://aur.archlinux.org/packages/overseerr/)  
+Built from latest \(develop\): [aur.archlinux.org/packages/overseerr-git](https://aur.archlinux.org/packages/overseerr-git/)  
+**To install these just use your favorite AUR package manager:**
 
-Built from latest git: [https://aur.archlinux.org/packages/overseerr-git/](https://aur.archlinux.org/packages/overseerr-git/)
-
-To install these just use your favorite AUR package manager:
-
-```text
+```bash
 yay -S overseer
 ```
 
