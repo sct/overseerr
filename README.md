@@ -36,15 +36,20 @@
 
 - User profiles.
 - User settings page (to give users the ability to modify their Overseerr experience to their liking).
-- Version update notifications in-app.
 - 4K requests (Includes multi-radarr/sonarr management for media)
 
 ## Planned Features
 
-- More notification types (Slack/Telegram/etc.).
+- More notification types.
 - Issues system. This will allow users to report issues with content on your media server.
 - Local user system (for those who don't use Plex).
 - Compatibility APIs (to work with existing tools in your system).
+
+## Getting Started
+
+Check out our documenation for steps on how to install and run Overseerr:
+
+https://docs.overseerr.dev/getting-started/installation
 
 ## Running Overseerr
 
@@ -70,6 +75,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ## Support
 
+- Check out the [Overseerr Documentation](https://docs.overseerr.dev/) before asking for help. Your question might already be in the [FAQ](https://docs.overseerr.dev/support/faq).
 - You can get support on [Discord](https://discord.gg/PkCWJSeCk7).
 - You can ask questions in the Help category of our [GitHub Discussions](https://github.com/sct/overseerr/discussions).
 - Bugs/Feature Requests can be opened via a [GitHub issue](https://github.com/sct/overseerr/issues).
@@ -135,4 +141,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->

@@ -18,6 +18,7 @@ const messages = defineMessages({
   timezone: 'Timezone',
   supportoverseerr: 'Support Overseerr',
   helppaycoffee: 'Help pay for coffee',
+  documentation: 'Documentation',
 });
 
 const SettingsAbout: React.FC = () => {
@@ -56,6 +57,16 @@ const SettingsAbout: React.FC = () => {
       </div>
       <div className="mb-8">
         <List title={intl.formatMessage(messages.gettingsupport)}>
+          <List.Item title={intl.formatMessage(messages.documentation)}>
+            <a
+              href="https://docs.overseerr.dev"
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-500 hover:underline"
+            >
+              https://docs.overseerr.dev
+            </a>
+          </List.Item>
           <List.Item title={intl.formatMessage(messages.githubdiscussions)}>
             <a
               href="https://github.com/sct/overseerr/discussions"

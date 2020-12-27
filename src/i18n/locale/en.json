@@ -195,6 +195,7 @@
   "components.Settings.SettingsAbout.Releases.viewchangelog": "View Changelog",
   "components.Settings.SettingsAbout.Releases.viewongithub": "View on GitHub",
   "components.Settings.SettingsAbout.clickheretojoindiscord": "Click here to join our Discord server.",
+  "components.Settings.SettingsAbout.documentation": "Documentation",
   "components.Settings.SettingsAbout.gettingsupport": "Getting Support",
   "components.Settings.SettingsAbout.githubdiscussions": "GitHub Discussions",
   "components.Settings.SettingsAbout.helppaycoffee": "Help pay for coffee",
