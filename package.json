@@ -48,7 +48,7 @@
     "react-use-clipboard": "1.0.2",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.0.0",
-    "swagger-ui-express": "^4.1.5",
+    "swagger-ui-express": "^4.1.6",
     "swr": "^0.3.11",
     "typeorm": "^0.2.29",
     "uuid": "^8.3.2",
