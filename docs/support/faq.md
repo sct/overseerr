@@ -12,7 +12,7 @@ If you can't find a solution here, please ask on [Discord](https://discord.gg/Pk
 
 ### How do I keep Overseerr up-to-date?
 
-**A:** Use a 3rd party updating mechanisms such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date automatically.
+**A:** Use a 3rd party updating mechanism such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date automatically.
 
 ### How can I access Overseerr outside my home network?
 
@@ -45,7 +45,8 @@ Check the Overseerr logs for media items that are missing. The logs will contain
 1. Verify that you are using one of the agents mentioned above.
 2. Refresh the metadata for just that item.
 3. Run a full scan in Overseerr to see if that item is now matched properly. 
-4. If the item is now seen by Overseerr then repeat step 2 for each missing item. If you have a large amount of items missing then a full metadata refresh is recommended for that library. Run a full scan on Overseerr after refreshing all unmached items. 
+4. If the item is now seen by Overseerr then repeat step 2 for each missing item. If you have a large amount of items missing then a full metadata refresh is recommended for that library. 
+5. Run a full scan on Overseerr after refreshing all unmatched items. 
 
 Perform these steps to verify the media item has a guid Overseerr can match.
 
