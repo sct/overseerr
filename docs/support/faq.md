@@ -12,7 +12,7 @@ If you can't find a solution here, please ask on [Discord](https://discord.gg/Pk
 
 ### How do I keep Overseerr up-to-date?
 
-**A:** It is recommended that you you use a 3rd party updating mechanism for docker such as [Ouroboros](https://github.com/pyouroboros/ouroboros) or [Watchtower](https://github.com/containrrr/watchtower)
+**A:** Use a 3rd party updating mechanisms such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date automatically.
 
 ### How can I access Overseerr outside my home network?
 

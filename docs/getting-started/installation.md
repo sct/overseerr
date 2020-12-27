@@ -54,7 +54,7 @@ docker run -d ...
 {% endtabs %}
 
 {% hint style="info" %}
-Use 3rd party updating mechanisms such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date.
+Use a 3rd party updating mechanisms such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date automatically.
 {% endhint %}
 
 ## Unraid
