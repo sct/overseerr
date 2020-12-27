@@ -45,7 +45,7 @@
     "react-toast-notifications": "^2.4.0",
     "react-transition-group": "^4.4.1",
     "react-truncate-markup": "^5.0.1",
-    "react-use-clipboard": "1.0.2",
+    "react-use-clipboard": "1.0.6",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.0.0",
     "swagger-ui-express": "^4.1.5",

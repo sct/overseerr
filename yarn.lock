@@ -11482,10 +11482,10 @@ react-truncate-markup@^5.0.1:
     prop-types "^15.6.0"
     resize-observer-polyfill "1.5.x"
 
-react-use-clipboard@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-use-clipboard/-/react-use-clipboard-1.0.2.tgz#e00254ffc70b989daa41638325fa6557c7b89dd2"
-  integrity sha512-dgKUfjWm6xAeag7OHdMadUgDMEG59LSgCSwVRqPJwZIFbGNxUtA0GqCZQS5M9MvAeSzHNEi/j0LfJQecDcaNlQ==
+react-use-clipboard@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-use-clipboard/-/react-use-clipboard-1.0.6.tgz#04582d9d5df22395ee250b801c48f66df794a4de"
+  integrity sha512-qA9/PVClz+OjTV4tcLPJ4q0sHScf5Gmp6qSYg6zolcqxtFBlG9qepTapbCQn5g+FYDc8ol3m0/qG+xyN+RKDSQ==
   dependencies:
     copy-to-clipboard "^3.3.1"
 
