@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import path from 'path';
 import user from './user';
 import authRoutes from './auth';
 import { checkUser, isAuthenticated } from '../middleware/auth';
@@ -14,6 +15,17 @@ import mediaRoutes from './media';
 import personRoutes from './person';
 import collectionRoutes from './collection';
 import { getAppVersion } from '../utils/appVersion';
+import { existsSync } from 'fs';
+import logger from '../logger';
+
+const COMMIT_TAG_PATH = path.join(__dirname, '../../committag.json');
+let commitTag = 'local';
+
+if (existsSync(COMMIT_TAG_PATH)) {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  commitTag = require(COMMIT_TAG_PATH).commitTag;
+  logger.info(`Commit Tag: ${commitTag}`);
+}
 
 const router = Router();
 
@@ -22,7 +34,7 @@ router.use(checkUser);
 router.get('/status', (req, res) => {
   return res.status(200).json({
     version: getAppVersion(),
-    commitTag: process.env.COMMIT_TAG || 'local',
+    commitTag,
   });
 });
 
