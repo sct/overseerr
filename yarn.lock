@@ -1987,13 +1987,14 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-0.0.31.tgz#bac8d8aab6a823e91deb7f79083b2a35fa638f33"
   integrity sha512-LS1MCPaQKqspg7FvexuhmDbWUhE2yIJ+4AgVIyObfc06/UKZ8REgxGNjZc82wPLWmbeOm7S+gSsLgo75TanG4A==
 
-"@types/email-templates@^7.1.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@types/email-templates/-/email-templates-7.1.0.tgz#9dbdb4e20aa6c700f5587b9b76bcbd7111e985df"
-  integrity sha512-IhL+OLeZySsTq7dRtmytObRJaX5Y0SDKS1yTUtwjI6oS4rEXELiD+pYESdv/Eq5Stk8hz2unJeWChjHN/q34ig==
+"@types/email-templates@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@types/email-templates/-/email-templates-8.0.0.tgz#9bd4e328be02253d65609ff078181e98e3c2818a"
+  integrity sha512-oPZQ9qkidtJCTWH3XKwfcqKdAuBrFZ6L+yVr7FQONivDm0g88MoKR0cCn13Hrt79R4r+FFAinELC22+6eXFa0Q==
   dependencies:
     "@types/html-to-text" "*"
     "@types/nodemailer" "*"
+    juice "^7.0.0"
 
 "@types/emoji-regex@^8.0.0":
   version "8.0.0"
