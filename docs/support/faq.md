@@ -60,11 +60,15 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 3. TheTVDB agent `guid="com.plexapp.agents.thetvdb://78874/1/1"`
 4. Legacy Plex Movie agent `guid="com.plexapp.agents.imdb://tt0765446"`
 
+### Where can I find the logs?
+
+**A:** The logs are located at `<Overseeerr-install-directory>/logs/overseerr.log`
+
 ## User Management
 
 ### Why can't I see all my Plex users?
 
-**A:** Navigate to your **User List** in Overseerr and click Import Users From Plex button.
+**A:** Navigate to your **User List** in Overseerr and click **Import Users From Plex** button.
 
 ### Can I create local users in Overseerr?
 
@@ -72,7 +76,7 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### Is is possible to set user roles in Overseerr?
 
-**A:** Unfortunately, this is not possible today. It is planned!
+**A:** Unfortunately, this is not possible yet. It is planned!
 
 ## Requests
 
@@ -82,7 +86,7 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### Help! My request still shows unavailable even though it's in Plex!?!
 
-**A:** Overseerr supports the new Plex Movie, Legacy Plex Movie, and the TMDb Movie agent. Please verify that your library is using one of the agents previously listed. If you are changing agents, a full metadata refresh will need to be performed. Caution, this can take a long time depending on how many items you have in your movie library.
+**A:** Overseerr supports the new Plex Movie, Legacy Plex Movie, TheTVDB agent, and the TMDb agent. Please verify that your library is using one of the agents previously listed. If you are changing agents, a full metadata refresh will need to be performed. Caution, this can take a long time depending on how many items you have in your library.
 
 ## Notifications
 
