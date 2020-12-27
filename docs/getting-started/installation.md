@@ -5,7 +5,7 @@ Overseerr is currently under very heavy, rapid development and things are likely
 {% endhint %}
 
 {% hint style="info" %}
-After running Overseerr for the first time, configure it by visiting the web UI at http://\[address\]:5055 and completing the setup steps.
+After running Overseerr for the first time, configure it by visiting the web UI at `http://[address]:5055` and completing the setup steps.
 {% endhint %}
 
 ## Docker

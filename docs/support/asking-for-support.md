@@ -5,11 +5,11 @@
 * Make sure you have updated to the latest version.
 * ["Have you tried turning it off and on again?"](https://www.youtube.com/watch?v=nn2FB1P_Mn8)
 * Analyzing your logs, you just might find the solution yourself!
-* **Search** the [Wiki](https://github.com/sct/overseerr/wiki),
+* **Search** the [Wiki](../),
 
-  [Installation Guides](https://github.com/sct/overseerr/wiki/Installation), and
+  [Installation Guides](../getting-started/installation.md), and
 
-  [FAQs](https://github.com/sct/overseerr/wiki/Frequently-Asked-Questions).
+  [FAQs](faq.md).
 
 * If you have questions, feel free to ask them on [Discord](https://discord.gg/PkCWJSeCk7) \(Please review our [Code of Conduct](https://github.com/sct/overseerr/blob/develop/CODE_OF_CONDUCT.md)\). Please include a link to your logs. See [How can I share my logs?](asking-for-support.md#how-can-i-share-my-logs) for more details.
 
