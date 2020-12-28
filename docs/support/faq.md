@@ -44,9 +44,9 @@ Check the Overseerr logs for media items that are missing. The logs will contain
 
 1. Verify that you are using one of the agents mentioned above.
 2. Refresh the metadata for just that item.
-3. Run a full scan in Overseerr to see if that item is now matched properly. 
-4. If the item is now seen by Overseerr then repeat step 2 for each missing item. If you have a large amount of items missing then a full metadata refresh is recommended for that library. 
-5. Run a full scan on Overseerr after refreshing all unmatched items. 
+3. Run a full scan in Overseerr to see if that item is now matched properly.
+4. If the item is now seen by Overseerr then repeat step 2 for each missing item. If you have a large amount of items missing then a full metadata refresh is recommended for that library.
+5. Run a full scan on Overseerr after refreshing all unmatched items.
 
 Perform these steps to verify the media item has a guid Overseerr can match.
 
@@ -86,11 +86,10 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### Help! My request still shows "requested" even though it's in Plex!?!
 
-**A:** See "[Some media is missing from Overseerr that I know is in Plex!](https://docs.overseerr.dev/v/docs/support/faq#some-media-is-missing-from-overseerr-that-i-know-is-in-plex)" for troubleshooting steps.
+**A:** See "[Some media is missing from Overseerr that I know is in Plex!](./faq.md#some-media-is-missing-from-overseerr-that-i-know-is-in-plex)" for troubleshooting steps.
 
 ## Notifications
 
 ### I am getting "Username and Password not accepted" when sending email notifications to gmail!
 
 **A:** If you have 2-Step Verification enabled on your account you will need to create an app password. More details can be found [here](https://support.google.com/mail/answer/185833).
-
