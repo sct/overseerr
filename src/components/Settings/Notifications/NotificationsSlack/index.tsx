@@ -8,6 +8,7 @@ import axios from 'axios';
 import * as Yup from 'yup';
 import { useToasts } from 'react-toast-notifications';
 import Alert from '../../../Common/Alert';
+import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
@@ -23,6 +24,7 @@ const messages = defineMessages({
   settingupslack: 'Setting up Slack Notifications',
   settingupslackDescription:
     'To use Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and use the provided webhook URL below.',
+  notificationtypes: 'Notification Types',
 });
 
 const NotificationsSlack: React.FC = () => {
@@ -44,24 +46,22 @@ const NotificationsSlack: React.FC = () => {
 
   return (
     <>
-      <p className="mb-">
-        <Alert title={intl.formatMessage(messages.settingupslack)} type="info">
-          {intl.formatMessage(messages.settingupslackDescription, {
-            WebhookLink: function WebhookLink(msg) {
-              return (
-                <a
-                  href="https://my.slack.com/services/new/incoming-webhook/"
-                  className="text-indigo-100 hover:text-white hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {msg}
-                </a>
-              );
-            },
-          })}
-        </Alert>
-      </p>
+      <Alert title={intl.formatMessage(messages.settingupslack)} type="info">
+        {intl.formatMessage(messages.settingupslackDescription, {
+          WebhookLink: function WebhookLink(msg) {
+            return (
+              <a
+                href="https://my.slack.com/services/new/incoming-webhook/"
+                className="text-indigo-100 hover:text-white hover:underline"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {msg}
+              </a>
+            );
+          },
+        })}
+      </Alert>
       <Formik
         initialValues={{
           enabled: data.enabled,
@@ -92,7 +92,14 @@ const NotificationsSlack: React.FC = () => {
           }
         }}
       >
-        {({ errors, touched, isSubmitting, values, isValid }) => {
+        {({
+          errors,
+          touched,
+          isSubmitting,
+          values,
+          isValid,
+          setFieldValue,
+        }) => {
           const testSettings = async () => {
             await axios.post('/api/v1/settings/notifications/slack/test', {
               enabled: true,
@@ -148,6 +155,30 @@ const NotificationsSlack: React.FC = () => {
                   {errors.webhookUrl && touched.webhookUrl && (
                     <div className="mt-2 text-red-500">{errors.webhookUrl}</div>
                   )}
+                </div>
+              </div>
+              <div className="mt-6">
+                <div role="group" aria-labelledby="label-permissions">
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                    <div>
+                      <div
+                        className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
+                        id="label-types"
+                      >
+                        {intl.formatMessage(messages.notificationtypes)}
+                      </div>
+                    </div>
+                    <div className="mt-4 sm:mt-0 sm:col-span-2">
+                      <div className="max-w-lg">
+                        <NotificationTypeSelector
+                          currentTypes={values.types}
+                          onUpdate={(newTypes) =>
+                            setFieldValue('types', newTypes)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="pt-5 mt-8 border-t border-gray-700">

@@ -8,6 +8,7 @@ import axios from 'axios';
 import * as Yup from 'yup';
 import { useToasts } from 'react-toast-notifications';
 import Alert from '../../Common/Alert';
+import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
@@ -26,6 +27,7 @@ const messages = defineMessages({
     'To setup Telegram you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
     Additionally, you need the chat id for the chat you want the bot to send notifications to.\
     You can do this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
+  notificationtypes: 'Notification Types',
 });
 
 const NotificationsTelegram: React.FC = () => {
@@ -81,7 +83,7 @@ const NotificationsTelegram: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid }) => {
+      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
           await axios.post('/api/v1/settings/notifications/telegram/test', {
             enabled: true,
@@ -100,39 +102,37 @@ const NotificationsTelegram: React.FC = () => {
 
         return (
           <>
-            <p className="mb-">
-              <Alert
-                title={intl.formatMessage(messages.settinguptelegram)}
-                type="info"
-              >
-                {intl.formatMessage(messages.settinguptelegramDescription, {
-                  CreateBotLink: function CreateBotLink(msg) {
-                    return (
-                      <a
-                        href="https://core.telegram.org/bots#6-botfather"
-                        className="text-indigo-100 hover:text-white hover:underline"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {msg}
-                      </a>
-                    );
-                  },
-                  GetIdBotLink: function GetIdBotLink(msg) {
-                    return (
-                      <a
-                        href="https://telegram.me/get_id_bot"
-                        className="text-indigo-100 hover:text-white hover:underline"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {msg}
-                      </a>
-                    );
-                  },
-                })}
-              </Alert>
-            </p>
+            <Alert
+              title={intl.formatMessage(messages.settinguptelegram)}
+              type="info"
+            >
+              {intl.formatMessage(messages.settinguptelegramDescription, {
+                CreateBotLink: function CreateBotLink(msg) {
+                  return (
+                    <a
+                      href="https://core.telegram.org/bots#6-botfather"
+                      className="text-indigo-100 hover:text-white hover:underline"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {msg}
+                    </a>
+                  );
+                },
+                GetIdBotLink: function GetIdBotLink(msg) {
+                  return (
+                    <a
+                      href="https://telegram.me/get_id_bot"
+                      className="text-indigo-100 hover:text-white hover:underline"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {msg}
+                    </a>
+                  );
+                },
+              })}
+            </Alert>
             <Form>
               <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                 <label
@@ -158,17 +158,17 @@ const NotificationsTelegram: React.FC = () => {
                   {intl.formatMessage(messages.botAPI)}
                 </label>
                 <div className="mt-1 sm:mt-0 sm:col-span-2">
-                  <div className="max-w-lg flex rounded-md shadow-sm">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
                     <Field
                       id="botAPI"
                       name="botAPI"
                       type="text"
                       placeholder={intl.formatMessage(messages.botAPI)}
-                      className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                   {errors.botAPI && touched.botAPI && (
-                    <div className="text-red-500 mt-2">{errors.botAPI}</div>
+                    <div className="mt-2 text-red-500">{errors.botAPI}</div>
                   )}
                 </div>
                 <label
@@ -178,23 +178,47 @@ const NotificationsTelegram: React.FC = () => {
                   {intl.formatMessage(messages.chatId)}
                 </label>
                 <div className="mt-1 sm:mt-0 sm:col-span-2">
-                  <div className="max-w-lg flex rounded-md shadow-sm">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
                     <Field
                       id="chatId"
                       name="chatId"
                       type="text"
                       placeholder={intl.formatMessage(messages.chatId)}
-                      className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                   {errors.chatId && touched.chatId && (
-                    <div className="text-red-500 mt-2">{errors.chatId}</div>
+                    <div className="mt-2 text-red-500">{errors.chatId}</div>
                   )}
                 </div>
               </div>
-              <div className="mt-8 border-t border-gray-700 pt-5">
+              <div className="mt-6">
+                <div role="group" aria-labelledby="label-permissions">
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                    <div>
+                      <div
+                        className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
+                        id="label-types"
+                      >
+                        {intl.formatMessage(messages.notificationtypes)}
+                      </div>
+                    </div>
+                    <div className="mt-4 sm:mt-0 sm:col-span-2">
+                      <div className="max-w-lg">
+                        <NotificationTypeSelector
+                          currentTypes={values.types}
+                          onUpdate={(newTypes) =>
+                            setFieldValue('types', newTypes)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-5 mt-8 border-t border-gray-700">
                 <div className="flex justify-end">
-                  <span className="ml-3 inline-flex rounded-md shadow-sm">
+                  <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="warning"
                       disabled={isSubmitting || !isValid}
@@ -207,7 +231,7 @@ const NotificationsTelegram: React.FC = () => {
                       {intl.formatMessage(messages.test)}
                     </Button>
                   </span>
-                  <span className="ml-3 inline-flex rounded-md shadow-sm">
+                  <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"

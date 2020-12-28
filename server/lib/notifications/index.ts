@@ -9,6 +9,27 @@ export enum Notification {
   TEST_NOTIFICATION = 32,
 }
 
+export const hasNotificationType = (
+  types: Notification | Notification[],
+  value: number
+): boolean => {
+  let total = 0;
+
+  // If we are not checking any notifications, bail out and return true
+  if (types === 0) {
+    return true;
+  }
+
+  if (Array.isArray(types)) {
+    // Combine all notification values into one
+    total = types.reduce((a, v) => a + v, 0);
+  } else {
+    total = types;
+  }
+
+  return !!(value & total);
+};
+
 class NotificationManager {
   private activeAgents: NotificationAgent[] = [];
 

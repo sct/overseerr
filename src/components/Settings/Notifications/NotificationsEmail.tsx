@@ -7,6 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useToasts } from 'react-toast-notifications';
+import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
@@ -29,6 +30,7 @@ const messages = defineMessages({
   ssldisabletip:
     'SSL should be disabled on standard TLS connections (Port 587)',
   senderName: 'Sender Name',
+  notificationtypes: 'Notification Types',
 });
 
 const NotificationsEmail: React.FC = () => {
@@ -99,7 +101,7 @@ const NotificationsEmail: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid }) => {
+      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
           await axios.post('/api/v1/settings/notifications/email/test', {
             enabled: true,
@@ -292,8 +294,33 @@ const NotificationsEmail: React.FC = () => {
                     id="authPass"
                     name="authPass"
                     type="password"
+                    autoComplete="off"
                     className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
+                </div>
+              </div>
+            </div>
+            <div className="mt-6">
+              <div role="group" aria-labelledby="label-permissions">
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                  <div>
+                    <div
+                      className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
+                      id="label-types"
+                    >
+                      {intl.formatMessage(messages.notificationtypes)}
+                    </div>
+                  </div>
+                  <div className="mt-4 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg">
+                      <NotificationTypeSelector
+                        currentTypes={values.types}
+                        onUpdate={(newTypes) =>
+                          setFieldValue('types', newTypes)
+                        }
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

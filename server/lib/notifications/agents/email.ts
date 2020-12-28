@@ -1,5 +1,5 @@
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
-import { Notification } from '..';
+import { hasNotificationType, Notification } from '..';
 import path from 'path';
 import { getSettings, NotificationAgentEmail } from '../../settings';
 import nodemailer from 'nodemailer';
@@ -22,12 +22,13 @@ class EmailAgent
     return settings.notifications.agents.email;
   }
 
-  // TODO: Add checking for type here once we add notification type filters for agents
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public shouldSend(_type: Notification): boolean {
+  public shouldSend(type: Notification): boolean {
     const settings = this.getSettings();
 
-    if (settings.enabled) {
+    if (
+      settings.enabled &&
+      hasNotificationType(type, this.getSettings().types)
+    ) {
       return true;
     }
 

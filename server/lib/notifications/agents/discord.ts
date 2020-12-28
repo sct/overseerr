@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Notification } from '..';
+import { hasNotificationType, Notification } from '..';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentDiscord } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
@@ -196,10 +196,12 @@ class DiscordAgent
     };
   }
 
-  // TODO: Add checking for type here once we add notification type filters for agents
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public shouldSend(_type: Notification): boolean {
-    if (this.getSettings().enabled && this.getSettings().options.webhookUrl) {
+  public shouldSend(type: Notification): boolean {
+    if (
+      this.getSettings().enabled &&
+      this.getSettings().options.webhookUrl &&
+      hasNotificationType(type, this.getSettings().types)
+    ) {
       return true;
     }
 
