@@ -63,7 +63,7 @@ const RequestList: React.FC = () => {
           <tr>
             <Table.TD colSpan={6} noPadding>
               <nav
-                className="bg-gray-700 px-4 py-3 flex items-center justify-between text-white sm:px-6"
+                className="flex items-center justify-between px-4 py-3 text-white bg-gray-700 sm:px-6"
                 aria-label="Pagination"
               >
                 <div className="hidden sm:block">
@@ -73,7 +73,7 @@ const RequestList: React.FC = () => {
                       to:
                         data.results.length < 10
                           ? pageIndex * 10 + data.results.length
-                          : pageIndex + 1 * 10,
+                          : (pageIndex + 1) * 10,
                       total: data.pageInfo.results,
                       strong: function strong(msg) {
                         return <span className="font-medium">{msg}</span>;
@@ -81,7 +81,7 @@ const RequestList: React.FC = () => {
                     })}
                   </p>
                 </div>
-                <div className="flex-1 flex justify-start sm:justify-end">
+                <div className="flex justify-start flex-1 sm:justify-end">
                   <span className="mr-2">
                     <Button
                       disabled={!hasPrevPage}
