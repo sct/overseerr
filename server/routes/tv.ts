@@ -5,6 +5,7 @@ import { mapTvResult } from '../models/Search';
 import Media from '../entity/Media';
 import RottenTomatoes from '../api/rottentomatoes';
 import logger from '../logger';
+import { MediaType } from '../constants/media';
 
 const tvRoutes = Router();
 
@@ -16,7 +17,7 @@ tvRoutes.get('/:id', async (req, res, next) => {
       language: req.query.language as string,
     });
 
-    const media = await Media.getMedia(tv.id);
+    const media = await Media.getMedia(tv.id, MediaType.TV);
 
     return res.status(200).json(mapTvDetails(tv, media));
   } catch (e) {
@@ -60,7 +61,9 @@ tvRoutes.get('/:id/recommendations', async (req, res) => {
     results: results.results.map((result) =>
       mapTvResult(
         result,
-        media.find((req) => req.tmdbId === result.id)
+        media.find(
+          (req) => req.tmdbId === result.id && req.mediaType === MediaType.TV
+        )
       )
     ),
   });
@@ -86,7 +89,9 @@ tvRoutes.get('/:id/similar', async (req, res) => {
     results: results.results.map((result) =>
       mapTvResult(
         result,
-        media.find((req) => req.tmdbId === result.id)
+        media.find(
+          (req) => req.tmdbId === result.id && req.mediaType === MediaType.TV
+        )
       )
     ),
   });

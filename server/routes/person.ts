@@ -45,13 +45,19 @@ personRoutes.get('/:id/combined_credits', async (req, res) => {
     cast: combinedCredits.cast.map((result) =>
       mapCastCredits(
         result,
-        castMedia.find((med) => med.tmdbId === result.id)
+        castMedia.find(
+          (med) =>
+            med.tmdbId === result.id && med.mediaType === result.media_type
+        )
       )
     ),
     crew: combinedCredits.crew.map((result) =>
       mapCrewCredits(
         result,
-        crewMedia.find((med) => med.tmdbId === result.id)
+        crewMedia.find(
+          (med) =>
+            med.tmdbId === result.id && med.mediaType === result.media_type
+        )
       )
     ),
     id: combinedCredits.id,
