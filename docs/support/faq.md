@@ -68,7 +68,7 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### Why can't I see all my Plex users?
 
-**A:** Navigate to your **User List** in Overseerr and click **Import Users From Plex** button.
+**A:** Navigate to your **User List** in Overseerr and click **Import Users From Plex** button. Don't forget to check the default user permissions in the **Settings -&gt; General Settings** page beforehand.
 
 ### Can I create local users in Overseerr?
 
