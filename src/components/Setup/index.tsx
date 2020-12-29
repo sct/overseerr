@@ -43,27 +43,29 @@ const Setup: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+    <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900 sm:px-6 lg:px-8">
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
           '/images/rotate2.jpg',
           '/images/rotate3.jpg',
           '/images/rotate4.jpg',
+          '/images/rotate5.jpg',
+          '/images/rotate6.jpg',
         ]}
       />
-      <div className="absolute top-4 right-4 z-50">
+      <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />
       </div>
-      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-4xl relative z-40">
+      <div className="relative z-40 px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-4xl">
         <img
           src="/logo.png"
-          className="mx-auto max-h-32 w-auto mb-10"
+          className="w-auto mx-auto mb-10 max-h-32"
           alt="Overseerr Logo"
         />
         <nav className="relative z-50">
           <ul
-            className=" bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md divide-y divide-gray-600 md:flex md:divide-y-0"
+            className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md  md:flex md:divide-y-0"
             style={{ backdropFilter: 'blur(5px)' }}
           >
             <SetupSteps
@@ -86,22 +88,22 @@ const Setup: React.FC = () => {
             />
           </ul>
         </nav>
-        <div className="w-full mt-10 p-4 text-white bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md">
+        <div className="w-full p-4 mt-10 text-white bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md">
           {currentStep === 1 && (
             <LoginWithPlex onComplete={() => setCurrentStep(2)} />
           )}
           {currentStep === 2 && (
             <div>
               <SettingsPlex onComplete={() => setPlexSettingsComplete(true)} />
-              <div className="mt-4 text-gray-500 text-sm">
+              <div className="mt-4 text-sm text-gray-500">
                 <span className="mr-2">
                   <Badge>{intl.formatMessage(messages.tip)}</Badge>
                 </span>
                 {intl.formatMessage(messages.syncingbackground)}
               </div>
-              <div className="mt-8 border-t border-gray-700 pt-5">
+              <div className="pt-5 mt-8 border-t border-gray-700">
                 <div className="flex justify-end">
-                  <span className="ml-3 inline-flex rounded-md shadow-sm">
+                  <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       disabled={!plexSettingsComplete}
@@ -117,9 +119,9 @@ const Setup: React.FC = () => {
           {currentStep === 3 && (
             <div>
               <SettingsServices />
-              <div className="mt-8 border-t border-gray-700 pt-5">
+              <div className="pt-5 mt-8 border-t border-gray-700">
                 <div className="flex justify-end">
-                  <span className="ml-3 inline-flex rounded-md shadow-sm">
+                  <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       onClick={() => finishSetup()}
