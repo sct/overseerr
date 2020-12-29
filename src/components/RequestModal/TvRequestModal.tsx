@@ -262,7 +262,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                     <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
                       {intl.formatMessage(messages.numberofepisodes)}
                     </th>
-                    <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
+                    <th className="px-2 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
                       {intl.formatMessage(messages.status)}
                     </th>
                   </tr>
@@ -330,7 +330,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                           <td className="px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
                             {season.episodeCount}
                           </td>
-                          <td className="px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
+                          <td className="pr-2 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
                             {!seasonRequest && !mediaSeason && (
                               <Badge>
                                 {intl.formatMessage(messages.notrequested)}
