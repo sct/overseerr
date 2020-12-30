@@ -7,7 +7,7 @@ interface ListItemProps {
 
 const ListItem: React.FC<ListItemProps> = ({ title, children }) => {
   return (
-    <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+    <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
       <dt className="text-sm font-medium text-gray-200">{title}</dt>
       <dd className="mt-1 flex text-sm text-gray-400 sm:mt-0 sm:col-span-2">
         <span className="flex-grow">{children}</span>

@@ -40,7 +40,7 @@ const RequestList: React.FC = () => {
 
   return (
     <>
-      <Header>{intl.formatMessage(messages.requests)}</Header>
+      <Header extraMargin={4}>{intl.formatMessage(messages.requests)}</Header>
       <Table>
         <thead>
           <Table.TH className="hidden sm:table-cell"></Table.TH>
