@@ -98,7 +98,7 @@ const Modal: React.FC<ModalProps> = ({
         show={!loading}
       >
         <div
-          className="inline-block align-bottom bg-gray-700 sm:rounded-lg px-4 pt-5 pb-4 text-left overflow-auto shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full sm:p-6 max-h-full"
+          className="inline-block align-bottom bg-gray-700 sm:rounded-lg px-4 pt-5 pb-4 text-left overflow-auto shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full max-h-full"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
@@ -166,7 +166,7 @@ const Modal: React.FC<ModalProps> = ({
                 <Button
                   buttonType={cancelButtonType}
                   onClick={onCancel}
-                  className="ml-3 sm:ml-0 sm:px-4"
+                  className="ml-3 sm:ml-0"
                 >
                   {cancelText
                     ? cancelText

@@ -63,7 +63,7 @@ const RequestList: React.FC = () => {
           <tr>
             <Table.TD colSpan={6} noPadding>
               <nav
-                className="flex items-center justify-between px-4 py-3 text-white bg-gray-700 sm:px-6"
+                className="flex items-center justify-between px-4 py-3 text-white bg-gray-700"
                 aria-label="Pagination"
               >
                 <div className="hidden sm:block">

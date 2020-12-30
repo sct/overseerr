@@ -55,8 +55,8 @@ const Layout: React.FC = ({ children }) => {
           className="relative z-0 top-16 focus:outline-none right-0"
           tabIndex={0}
         >
-          <div className="pt-2 pb-6 md:py-6">
-            <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
+          <div className="pt-2 pb-6">
+            <div className="max-w-8xl mx-auto px-4">
               {router.pathname === '/' && hasPermission(Permission.ADMIN) && (
                 <div className="rounded-md bg-indigo-700 p-4 mt-2">
                   <div className="flex">

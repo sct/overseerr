@@ -61,7 +61,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
             >
               <div className="w-screen max-w-md" ref={slideoverRef}>
                 <div className="flex flex-col h-full overflow-y-scroll bg-gray-700 shadow-xl">
-                  <header className="px-4 py-6 space-y-1 bg-indigo-600 sm:px-6">
+                  <header className="px-4 py-6 space-y-1 bg-indigo-600">
                     <div className="flex items-center justify-between space-x-3">
                       <h2 className="text-lg font-medium leading-7 text-white">
                         {title}
@@ -97,7 +97,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
                       </div>
                     )}
                   </header>
-                  <div className="relative flex-1 px-4 py-6 text-white sm:px-6">
+                  <div className="relative flex-1 px-4 py-6 text-white">
                     {children}
                   </div>
                 </div>

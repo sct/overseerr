@@ -125,10 +125,10 @@ const NotificationsEmail: React.FC = () => {
 
         return (
           <Form>
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
               <label
                 htmlFor="enabled"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.agentenabled)}
               </label>
@@ -141,10 +141,10 @@ const NotificationsEmail: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="emailFrom"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.emailsender)}
               </label>
@@ -163,10 +163,10 @@ const NotificationsEmail: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="senderName"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.senderName)}
               </label>
@@ -182,10 +182,10 @@ const NotificationsEmail: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="smtpHost"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.smtpHost)}
               </label>
@@ -204,10 +204,10 @@ const NotificationsEmail: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="smtpPort"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.smtpPort)}
               </label>
@@ -226,10 +226,10 @@ const NotificationsEmail: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
               <label
                 htmlFor="secure"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 <div className="flex flex-col">
                   <span>{intl.formatMessage(messages.enableSsl)}</span>
@@ -247,10 +247,10 @@ const NotificationsEmail: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
               <label
                 htmlFor="allowSelfSigned"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.allowselfsigned)}
               </label>
@@ -263,10 +263,10 @@ const NotificationsEmail: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="authUser"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.authUser)}
               </label>
@@ -281,10 +281,10 @@ const NotificationsEmail: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="authPass"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.authPass)}
               </label>
