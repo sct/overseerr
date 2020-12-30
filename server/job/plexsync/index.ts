@@ -1,6 +1,6 @@
 import { getRepository } from 'typeorm';
 import { User } from '../../entity/User';
-import PlexAPI, { PlexLibraryItem } from '../../api/plexapi';
+import PlexAPI, { PlexLibraryItem, PlexMetadata } from '../../api/plexapi';
 import TheMovieDb, {
   TmdbMovieDetails,
   TmdbTvDetails,
@@ -11,15 +11,20 @@ import logger from '../../logger';
 import { getSettings, Library } from '../../lib/settings';
 import Season from '../../entity/Season';
 import { uniqWith } from 'lodash';
+import animeList from '../../api/animelist';
 
 const BUNDLE_SIZE = 20;
 const UPDATE_RATE = 4 * 1000;
 
 const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);
-const tvdbRegex = new RegExp(/tvdb:\/\/([0-9]+)|hama:\/\/tvdb-([0-9]+)/);
+const tvdbRegex = new RegExp(/tvdb:\/\/([0-9]+)/);
 const tmdbShowRegex = new RegExp(/themoviedb:\/\/([0-9]+)/);
 const plexRegex = new RegExp(/plex:\/\//);
+// Hama agent uses ASS naming, see details here:
+// https://github.com/ZeroQI/Absolute-Series-Scanner/blob/master/README.md#forcing-the-movieseries-id
+const hamaTvdbRegex = new RegExp(/hama:\/\/tvdb[0-9]?-([0-9]+)/);
+const hamaAnidbRegex = new RegExp(/hama:\/\/anidb[0-9]?-([0-9]+)/);
 
 interface SyncStatus {
   running: boolean;
@@ -118,30 +123,7 @@ class JobPlexSync {
           throw new Error('Unable to find TMDB ID');
         }
 
-        const existing = await this.getExisting(tmdbMovieId, MediaType.MOVIE);
-        if (existing && existing.status === MediaStatus.AVAILABLE) {
-          this.log(`Title exists and is already available ${plexitem.title}`);
-        } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
-          existing.status = MediaStatus.AVAILABLE;
-          await mediaRepository.save(existing);
-          this.log(
-            `Request for ${plexitem.title} exists. Setting status AVAILABLE`,
-            'info'
-          );
-        } else {
-          // If we have a tmdb movie guid but it didn't already exist, only then
-          // do we request the movie from tmdb (to reduce api requests)
-          if (!tmdbMovie) {
-            tmdbMovie = await this.tmdb.getMovie({ movieId: tmdbMovieId });
-          }
-          const newMedia = new Media();
-          newMedia.imdbId = tmdbMovie.external_ids.imdb_id;
-          newMedia.tmdbId = tmdbMovie.id;
-          newMedia.status = MediaStatus.AVAILABLE;
-          newMedia.mediaType = MediaType.MOVIE;
-          await mediaRepository.save(newMedia);
-          this.log(`Saved ${tmdbMovie.title}`);
-        }
+        this.processMovieWithId(plexitem, tmdbMovie, tmdbMovieId);
       }
     } catch (e) {
       this.log(
@@ -152,6 +134,72 @@ class JobPlexSync {
           plexitem,
         }
       );
+    }
+  }
+
+  private async processMovieWithId(
+    plexitem: PlexLibraryItem,
+    tmdbMovie: TmdbMovieDetails | undefined,
+    tmdbMovieId: number
+  ) {
+    const mediaRepository = getRepository(Media);
+    const existing = await this.getExisting(tmdbMovieId, MediaType.MOVIE);
+    if (existing && existing.status === MediaStatus.AVAILABLE) {
+      this.log(`Title exists and is already available ${plexitem.title}`);
+    } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
+      existing.status = MediaStatus.AVAILABLE;
+      await mediaRepository.save(existing);
+      this.log(
+        `Request for ${plexitem.title} exists. Setting status AVAILABLE`,
+        'info'
+      );
+    } else {
+      // If we have a tmdb movie guid but it didn't already exist, only then
+      // do we request the movie from tmdb (to reduce api requests)
+      if (!tmdbMovie) {
+        tmdbMovie = await this.tmdb.getMovie({ movieId: tmdbMovieId });
+      }
+      const newMedia = new Media();
+      newMedia.imdbId = tmdbMovie.external_ids.imdb_id;
+      newMedia.tmdbId = tmdbMovie.id;
+      newMedia.status = MediaStatus.AVAILABLE;
+      newMedia.mediaType = MediaType.MOVIE;
+      await mediaRepository.save(newMedia);
+      this.log(`Saved ${tmdbMovie.title}`);
+    }
+  }
+
+  // this adds all movie episodes from specials season for Hama agent
+  private async processHamaSpecials(
+    plexitem: PlexLibraryItem,
+    metadata: PlexMetadata,
+    tvdbId: number
+  ) {
+    const specials = metadata.Children?.Metadata.find(
+      (md) => Number(md.index) === 0
+    );
+    if (specials) {
+      const episodes = await this.plexClient.getChildrenMetadata(
+        specials.ratingKey
+      );
+      if (episodes) {
+        for (const episode of episodes) {
+          const special = await animeList.getSpecialEpisode(
+            tvdbId,
+            episode.index
+          );
+          if (special) {
+            if (special.tmdbId) {
+              await this.processMovieWithId(episode, undefined, special.tmdbId);
+            } else if (special.imdbId) {
+              const tmdbMovie = await this.tmdb.getMovieByImdbId({
+                imdbId: special.imdbId,
+              });
+              await this.processMovieWithId(episode, tmdbMovie, tmdbMovie.id);
+            }
+          }
+        }
+      }
     }
   }
 
@@ -181,6 +229,56 @@ class JobPlexSync {
 
         if (matchedtmdb?.[1]) {
           tvShow = await this.tmdb.getTvShow({ tvId: Number(matchedtmdb[1]) });
+        }
+      } else if (metadata.guid.match(hamaTvdbRegex)) {
+        const matched = metadata.guid.match(hamaTvdbRegex);
+        const tvdbId = matched?.[1];
+
+        if (tvdbId) {
+          tvShow = await this.tmdb.getShowByTvdbId({ tvdbId: Number(tvdbId) });
+          await this.processHamaSpecials(plexitem, metadata, Number(tvdbId));
+        }
+      } else if (metadata.guid.match(hamaAnidbRegex)) {
+        const matched = metadata.guid.match(hamaAnidbRegex);
+
+        if (matched?.[1]) {
+          const anidbId = Number(matched[1]);
+          const result = await animeList.getFromAnidbId(anidbId);
+          if (result) {
+            // first try to lookup tvShow by tvdbid
+            if (result.tvdbId) {
+              const extResponse = await this.tmdb.getByExternalId({
+                externalId: result.tvdbId,
+                type: 'tvdb',
+              });
+              if (extResponse.tv_results[0]) {
+                tvShow = await this.tmdb.getTvShow({
+                  tvId: extResponse.tv_results[0].id,
+                });
+              }
+              await this.processHamaSpecials(plexitem, metadata, result.tvdbId);
+            }
+
+            // if getting tvShow above failed, try with tmdb/imdb for movie
+            if (tvShow == null) {
+              if (result.tmdbId) {
+                return await this.processMovieWithId(
+                  plexitem,
+                  undefined,
+                  result.tmdbId
+                );
+              } else if (result.imdbId) {
+                const tmdbMovie = await this.tmdb.getMovieByImdbId({
+                  imdbId: result.imdbId,
+                });
+                return await this.processMovieWithId(
+                  plexitem,
+                  tmdbMovie,
+                  tmdbMovie.id
+                );
+              }
+            }
+          }
         }
       }
 

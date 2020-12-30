@@ -123,6 +123,14 @@ class PlexAPI {
     return response.MediaContainer.Metadata[0];
   }
 
+  public async getChildrenMetadata(key: string): Promise<PlexMetadata[]> {
+    const response = await this.plexClient.query<PlexMetadataResponse>(
+      `/library/metadata/${key}/children`
+    );
+
+    return response.MediaContainer.Metadata;
+  }
+
   public async getRecentlyAdded(id: string): Promise<PlexLibraryItem[]> {
     const response = await this.plexClient.query<PlexLibraryResponse>(
       `/library/sections/${id}/recentlyAdded`
