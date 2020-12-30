@@ -150,7 +150,7 @@ const UserList: React.FC = () => {
         </Modal>
       </Transition>
       <div className="flex items-center justify-between">
-        <Header extraMargin={4}>{intl.formatMessage(messages.userlist)}</Header>
+        <Header>{intl.formatMessage(messages.userlist)}</Header>
         <Button
           className="mx-4 my-8"
           buttonType="primary"

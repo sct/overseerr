@@ -155,10 +155,10 @@ const UserEdit: React.FC = () => {
 
   return (
     <>
-      <Header extraMargin={4}>
+      <Header>
         <FormattedMessage {...messages.edituser} />
       </Header>
-      <div className="px-4 space-y-6">
+      <div className="space-y-6">
         <div className="flex flex-col space-y-6 text-white lg:flex-row lg:space-y-0 lg:space-x-6">
           <div className="flex-grow space-y-6">
             <div className="space-y-1">
