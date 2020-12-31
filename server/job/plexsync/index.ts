@@ -25,6 +25,7 @@ const plexRegex = new RegExp(/plex:\/\//);
 // https://github.com/ZeroQI/Absolute-Series-Scanner/blob/master/README.md#forcing-the-movieseries-id
 const hamaTvdbRegex = new RegExp(/hama:\/\/tvdb[0-9]?-([0-9]+)/);
 const hamaAnidbRegex = new RegExp(/hama:\/\/anidb[0-9]?-([0-9]+)/);
+const HAMA_AGENT = 'com.plexapp.agents.hama';
 
 interface SyncStatus {
   running: boolean;
@@ -236,12 +237,24 @@ class JobPlexSync {
 
         if (tvdbId) {
           tvShow = await this.tmdb.getShowByTvdbId({ tvdbId: Number(tvdbId) });
-          await this.processHamaSpecials(plexitem, metadata, Number(tvdbId));
+          if (animeList.isLoaded()) {
+            await this.processHamaSpecials(plexitem, metadata, Number(tvdbId));
+          } else {
+            this.log(
+              `Hama id ${plexitem.guid} detected, but library agent is not set to Hama`,
+              'info'
+            );
+          }
         }
       } else if (metadata.guid.match(hamaAnidbRegex)) {
         const matched = metadata.guid.match(hamaAnidbRegex);
 
-        if (matched?.[1]) {
+        if (!animeList.isLoaded()) {
+          this.log(
+            `Hama id ${plexitem.guid} detected, but library agent is not set to Hama`,
+            'info'
+          );
+        } else if (matched?.[1]) {
           const anidbId = Number(matched[1]);
           const result = await animeList.getFromAnidbId(anidbId);
           if (result) {
@@ -449,6 +462,18 @@ class JobPlexSync {
     logger[level](message, { label: 'Plex Sync', ...optional });
   }
 
+  // checks if any of this.libraries has Hama agent set in Plex
+  private async hasHamaAgent() {
+    const plexLibraries = await this.plexClient.getLibraries();
+    for (const library of this.libraries) {
+      const found = plexLibraries.find((lib) => lib.key == library.id);
+      if (found && found.agent == HAMA_AGENT) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public async run(): Promise<void> {
     const settings = getSettings();
     if (!this.running) {
@@ -468,6 +493,11 @@ class JobPlexSync {
       this.libraries = settings.plex.libraries.filter(
         (library) => library.enabled
       );
+
+      const hasHama = await this.hasHamaAgent();
+      if (hasHama) {
+        await animeList.sync();
+      }
 
       if (this.isRecentOnly) {
         for (const library of this.libraries) {

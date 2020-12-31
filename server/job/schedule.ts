@@ -1,6 +1,5 @@
 import schedule from 'node-schedule';
 import { jobPlexFullSync, jobPlexRecentSync } from './plexsync';
-import { jobAnimeListSync } from './animelistsync';
 import logger from '../logger';
 
 interface ScheduledJob {
@@ -27,16 +26,6 @@ export const startJobs = (): void => {
     job: schedule.scheduleJob('0 0 3 * * *', () => {
       logger.info('Starting scheduled job: Plex Full Sync', { label: 'Jobs' });
       jobPlexFullSync.run();
-    }),
-  });
-  // Run Anime-List xml mapping sync every 24 hours (before full Plex sync)
-  scheduledJobs.push({
-    name: 'Anime-List Sync (AniDB Mapping for Hama agent)',
-    job: schedule.scheduleJob('0 0 2 * * *', () => {
-      logger.info('Starting scheduled job: Anime-List Sync', {
-        label: 'Jobs',
-      });
-      jobAnimeListSync.run();
     }),
   });
 

@@ -2,6 +2,7 @@ import axios from 'axios';
 import xml2js from 'xml2js';
 import fs, { promises as fsp } from 'fs';
 import path from 'path';
+import logger from '../logger';
 
 const UPDATE_INTERVAL = 24 * 3600; // how often to download new mapping
 // originally at https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml
@@ -28,7 +29,10 @@ class AnimeListMapping {
   // each episode in season 0 from TVDB can map to movie (AniDB id)
   private specials: { [tvdbId: number]: { [episode: number]: number } } = {};
 
+  public isLoaded = () => Object.keys(this.mapping).length !== 0;
+
   private loadFromFile = async () => {
+    logger.info('Loading Anime-List mapping file');
     try {
       const file = await fsp.readFile(LOCAL_PATH);
       const xml = await xml2js.parseStringPromise(file);
@@ -92,8 +96,29 @@ class AnimeListMapping {
           }
         }
       }
+      logger.info(
+        `Loaded ${
+          Object.keys(this.mapping).length
+        } AniDB items from Anime-List mapping file`
+      );
     } catch (e) {
       throw new Error(`Failed to load anidb mappings: ${e.message}`);
+    }
+  };
+
+  private downloadFile = async () => {
+    logger.info('Downloading latest Anime-List mapping file');
+    try {
+      const response = await axios.get(MAPPING_URL, {
+        responseType: 'stream',
+      });
+      await new Promise<void>((resolve) => {
+        const writer = fs.createWriteStream(LOCAL_PATH);
+        writer.on('finish', resolve);
+        response.data.pipe(writer);
+      });
+    } catch (e) {
+      throw new Error(`Failed to download AniDB mapping: ${e.message}`);
     }
   };
 
@@ -105,34 +130,19 @@ class AnimeListMapping {
 
     this.syncing = true;
     try {
+      // check if local file is not "expired" yet
       if (fs.existsSync(LOCAL_PATH)) {
         const now = new Date();
         const stat = await fsp.stat(LOCAL_PATH);
         if (now.getTime() - stat.mtime.getTime() < UPDATE_INTERVAL * 1000) {
-          // don't sync more often than once a day
-          // but make sure mapping is loaded
-          if (Object.keys(this.mapping).length === 0) {
+          // no neet to download, but make sure file is loaded
+          if (!this.isLoaded()) {
             await this.loadFromFile();
           }
           return;
         }
       }
-
-      // download
-      try {
-        const response = await axios.get(MAPPING_URL, {
-          responseType: 'stream',
-        });
-        await new Promise<void>((resolve) => {
-          const writer = fs.createWriteStream(LOCAL_PATH);
-          writer.on('finish', resolve);
-          response.data.pipe(writer);
-        });
-      } catch (e) {
-        throw new Error(`Failed to download AniDB mapping: ${e.message}`);
-      }
-
-      // parse
+      await this.downloadFile();
       await this.loadFromFile();
     } finally {
       this.syncing = false;
@@ -160,6 +170,5 @@ class AnimeListMapping {
 }
 
 const animeList = new AnimeListMapping();
-animeList.sync();
 
 export default animeList;
