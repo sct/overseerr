@@ -134,10 +134,10 @@ const NotificationsTelegram: React.FC = () => {
               })}
             </Alert>
             <Form>
-              <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+              <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                 <label
                   htmlFor="enabled"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                 >
                   {intl.formatMessage(messages.agentenabled)}
                 </label>
@@ -150,10 +150,10 @@ const NotificationsTelegram: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                 <label
                   htmlFor="botAPI"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                 >
                   {intl.formatMessage(messages.botAPI)}
                 </label>
@@ -173,7 +173,7 @@ const NotificationsTelegram: React.FC = () => {
                 </div>
                 <label
                   htmlFor="chatId"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                 >
                   {intl.formatMessage(messages.chatId)}
                 </label>

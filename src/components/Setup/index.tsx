@@ -43,7 +43,7 @@ const Setup: React.FC = () => {
   };
 
   return (
-    <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900 sm:px-6 lg:px-8">
+    <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900">
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
@@ -57,7 +57,7 @@ const Setup: React.FC = () => {
       <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />
       </div>
-      <div className="relative z-40 px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-4xl">
+      <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
         <img
           src="/logo.png"
           className="w-auto mx-auto mb-10 max-h-32"

@@ -51,7 +51,7 @@ const Login: React.FC = () => {
   }, [user, router]);
 
   return (
-    <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900 sm:px-6 lg:px-8">
+    <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900">
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
@@ -65,7 +65,7 @@ const Login: React.FC = () => {
       <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />
       </div>
-      <div className="relative z-40 px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
         <img
           src="/logo.png"
           className="w-auto mx-auto max-h-32"
@@ -77,7 +77,7 @@ const Login: React.FC = () => {
       </div>
       <div className="relative z-50 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div
-          className="px-4 py-8 bg-gray-800 bg-opacity-50 shadow sm:rounded-lg sm:px-10"
+          className="px-4 py-8 bg-gray-800 bg-opacity-50 shadow sm:rounded-lg"
           style={{ backdropFilter: 'blur(5px)' }}
         >
           <Transition

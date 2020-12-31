@@ -146,7 +146,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
 
   return (
     <div
-      className="px-4 pt-4 -mx-4 -mt-2 bg-center bg-cover sm:px-8 "
+      className="px-4 pt-4 -mx-4 -mt-2 bg-center bg-cover"
       style={{
         height: 493,
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
