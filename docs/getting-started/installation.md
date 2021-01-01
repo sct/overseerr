@@ -80,8 +80,15 @@ yarn start
 ```
 You might want to create your own service file or a reverse proxy.
 
-
-
+### Upgrading
+In order to upgrade, you will need to re-build overseer.
+```bash
+cd /opt/overseerr
+git pull
+yarn build
+yarn install
+yarn start
+```
 
 
 ## Unraid
