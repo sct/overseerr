@@ -135,3 +135,17 @@ docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/her
 Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases.
 {% endhint %}
 
+
+## Swizzin \(Third party\)
+The installation is not implemented via docker, but barebones. The latest released version of overseerr will be used.
+Please see the [swizzin documentation](https://swizzin.ltd/applications/overseerr) for more information.
+
+To install, run the following:
+```bash
+box install overseerr
+```
+
+To upgrade, run the following:
+```bash
+box upgrade overseerr
+```
