@@ -72,7 +72,6 @@ apt install sqlite3 libsqlite3-dev        # This might be necessary if you're fa
 cd /opt
 git clone https://github.com/sct/overseerr.git
 cd overseerr
-nano next.config.js                       # Only if you need to change some pre-build values 
 npm config set python "$(which python3)"  # Only needed if your sqlite build is failing due to bad python declaration
 npm install yarn
 yarn build
@@ -118,4 +117,3 @@ Built from latest \(develop\): [aur.archlinux.org/packages/overseerr-git](https:
 ```bash
 yay -S overseer
 ```
-
