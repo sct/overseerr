@@ -57,22 +57,26 @@ docker run -d ...
 Use a 3rd party updating mechanism such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date automatically.
 {% endhint %}
 
-## Native Linux
-{% hint style="info" %}
-These instructions are provided by the community and are not necessarily currently supported. Please make sure you know what you're doing if you're willing to go down this path.
+## Linux \(Unsupported\)
+{% hint style="danger" %}
+This install method is **not currently supported**. Docker is the only install method currently supported. Do not open tickets or ask for support in case you're running this "natively" and cannot/did not reproduce the issue in the Docker install. Thank you for understanding.
 {% endhint %}
 
-Please note, these instructions are targetted at `apt`-based systems, but modify these instructions to fit your own
+{% tabs %}
+{% tab title="Ubuntu & Debian" %}
 ```bash
-sudo su                                   # You REALLY need to know what you're doing
 # Install nodejs your OWN way https://nodejs.org/en/download/package-manager/
-curl -sL https://deb.nodesource.com/setup_12.x | -E bash -
-apt install -y nodejs
-apt install sqlite3 libsqlite3-dev        # This might be necessary if you're failing to install due to sqlite3
-cd /opt
+# Node 12 is LTS so that's why it's chosen here
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt install -y nodejs
+# This might be necessary if you're failing to yarn install due to sqlite3
+sudo apt install sqlite3 libsqlite3-dev
+# Feel free to `cd` to wherever you want to install the overseer files
+cd ~
 git clone https://github.com/sct/overseerr.git
 cd overseerr
-npm config set python "$(which python3)"  # Only needed if your sqlite build is failing due to bad python declaration
+# Only needed if your yarn install is failing due to bad python declaration
+npm config set python "$(which python3)"  
 npm install yarn
 yarn build
 yarn install
@@ -80,15 +84,31 @@ yarn start
 ```
 You might want to create your own service file or a reverse proxy.
 
-### Upgrading
+**Upgrading**
 In order to upgrade, you will need to re-build overseer.
 ```bash
-cd /opt/overseerr
+cd ~/.overseerr
 git pull
 yarn build
 yarn install
 yarn start
 ```
+{% endtab %}
+
+{% tab title="ArchLinux \(3rd Party\)" %}
+Built from tag \(master\): [https://aur.archlinux.org/packages/overseerr/](https://aur.archlinux.org/packages/overseerr/)  
+Built from latest \(develop\): [aur.archlinux.org/packages/overseerr-git](https://aur.archlinux.org/packages/overseerr-git/)  
+**To install these just use your favorite AUR package manager:**
+
+```bash
+yay -S overseer
+```
+{% endtab %}
+
+{% endtabs %}
+
+
+
 
 
 ## Unraid
@@ -115,12 +135,3 @@ docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/her
 Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases.
 {% endhint %}
 
-## ArchLinux \(Third party\)
-
-Built from tag \(master\): [https://aur.archlinux.org/packages/overseerr/](https://aur.archlinux.org/packages/overseerr/)  
-Built from latest \(develop\): [aur.archlinux.org/packages/overseerr-git](https://aur.archlinux.org/packages/overseerr-git/)  
-**To install these just use your favorite AUR package manager:**
-
-```bash
-yay -S overseer
-```
