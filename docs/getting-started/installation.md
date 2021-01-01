@@ -91,3 +91,11 @@ Built from latest \(develop\): [aur.archlinux.org/packages/overseerr-git](https:
 yay -S overseer
 ```
 
+## Swizzin \(Third party\)
+Please see the [swizzin documentation](https://swizzin.ltd/applications/overseerr) for more information.
+The latest released version will be used.
+
+To install, run the following:
+```bash
+box install overseerr
+```
