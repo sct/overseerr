@@ -57,6 +57,40 @@ docker run -d ...
 Use a 3rd party updating mechanism such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date automatically.
 {% endhint %}
 
+## Native Linux
+{% hint style="info" %}
+These instructions are provided by the community and are not necessarily currently supported. Please make sure you know what you're doing if you're willing to go down this path.
+{% endhint %}
+
+Please note, these instructions are targetted at `apt`-based systems, but modify these instructions to fit your own
+```bash
+sudo su                                   # You REALLY need to know what you're doing
+# Install nodejs your OWN way https://nodejs.org/en/download/package-manager/
+curl -sL https://deb.nodesource.com/setup_12.x | -E bash -
+apt install -y nodejs
+apt install sqlite3 libsqlite3-dev        # This might be necessary if you're failing to install due to sqlite3
+cd /opt
+git clone https://github.com/sct/overseerr.git
+cd overseerr
+npm config set python "$(which python3)"  # Only needed if your sqlite build is failing due to bad python declaration
+npm install yarn
+yarn build
+yarn install
+yarn start
+```
+You might want to create your own service file or a reverse proxy.
+
+### Upgrading
+In order to upgrade, you will need to re-build overseer.
+```bash
+cd /opt/overseerr
+git pull
+yarn build
+yarn install
+yarn start
+```
+
+
 ## Unraid
 
 1. Ensure you have the **Community Applications** plugin installed.
@@ -90,4 +124,3 @@ Built from latest \(develop\): [aur.archlinux.org/packages/overseerr-git](https:
 ```bash
 yay -S overseer
 ```
-
