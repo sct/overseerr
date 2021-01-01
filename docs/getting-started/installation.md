@@ -73,8 +73,8 @@ sudo apt install -y nodejs
 sudo apt install sqlite3 libsqlite3-dev
 # Feel free to `cd` to wherever you want to install the overseer files
 cd ~
-sudo git clone https://github.com/sct/overseerr.git .overseerr
-cd .overseerr
+git clone https://github.com/sct/overseerr.git
+cd overseerr
 # Only needed if your yarn install is failing due to bad python declaration
 npm config set python "$(which python3)"  
 npm install yarn
