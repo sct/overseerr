@@ -92,10 +92,15 @@ yay -S overseer
 ```
 
 ## Swizzin \(Third party\)
+The installation is not implemented via docker, but barebones. The latest released version of overseerr will be used.
 Please see the [swizzin documentation](https://swizzin.ltd/applications/overseerr) for more information.
-The latest released version will be used.
 
 To install, run the following:
 ```bash
 box install overseerr
+```
+
+To upgrade, run the following:
+```bash
+box upgrade overseerr
 ```
