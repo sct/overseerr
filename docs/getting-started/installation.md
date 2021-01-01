@@ -62,18 +62,18 @@ Use a 3rd party updating mechanism such as [Watchtower](https://github.com/conta
 These instructions are provided by the community and are not necessarily currently supported. Please make sure you know what you're doing if you're willing to go down this path.
 {% endhint %}
 
-Please note, these instructions are targetted at `apt`-based systems, but modify these to fit your own
+Please note, these instructions are targetted at `apt`-based systems, but modify these instructions to fit your own
 ```bash
-# Install nodejs your OWN way, below i https://nodejs.org/en/download/package-manager/
-sudo su # You REALLY need to know what you're doing
+sudo su                                   # You REALLY need to know what you're doing
+# Install nodejs your OWN way https://nodejs.org/en/download/package-manager/
 curl -sL https://deb.nodesource.com/setup_12.x | -E bash -
-apt-get install -y nodejs
-sudo apt install sqlite3 libsqlite3-dev # This might be necessary if you're failing to install due to sqlite3
+apt install -y nodejs
+apt install sqlite3 libsqlite3-dev        # This might be necessary if you're failing to install due to sqlite3
 cd /opt
 git clone https://github.com/sct/overseerr.git
 cd overseerr
-nano next.config.js # Only if you need to change some pre-build values 
-npm config set python "$(which python3)" # Only needed if your sqlite build is failing due to bad python declaration
+nano next.config.js                       # Only if you need to change some pre-build values 
+npm config set python "$(which python3)"  # Only needed if your sqlite build is failing due to bad python declaration
 npm install yarn
 yarn build
 yarn install
