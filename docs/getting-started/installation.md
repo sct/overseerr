@@ -59,7 +59,7 @@ Use a 3rd party updating mechanism such as [Watchtower](https://github.com/conta
 
 ## Linux \(Unsupported\)
 {% hint style="danger" %}
-These instructions are provided by the community and are not necessarily currently supported. Please make sure you know what you're doing if you're willing to go down this path.
+This install method is **not currently supported**. Docker is the only install method currently supported. Do not open tickets or ask for support in case you're running this "natively" and cannot/did not reproduce the issue in the Docker install. Thank you for understanding.
 {% endhint %}
 
 {% tabs %}
