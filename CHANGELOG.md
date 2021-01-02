@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/sct/overseerr/compare/v1.14.0...v1.14.1) (2021-01-02)
+
+
+### Bug Fixes
+
+* **holiday:** remove special holiday slider ([22f2037](https://github.com/sct/overseerr/commit/22f2037ea6c5a0ba2ffa4d69f2b7cf42bdcf8575))
+
 # [1.14.0](https://github.com/sct/overseerr/compare/v1.13.0...v1.14.0) (2020-12-25)
 
 
