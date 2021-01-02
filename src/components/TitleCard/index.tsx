@@ -96,7 +96,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
       >
         <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden shadow-xl">
           <div
-            className={`absolute left-2 top-2 rounded-md z-40 ${
+            className={`absolute left-2 top-2 rounded-md z-40 pointer-events-none ${
               mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
             }`}
           >
@@ -106,7 +106,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 : intl.formatMessage(messages.tvshow)}
             </div>
           </div>
-          <div className="absolute z-40 top-2 right-2">
+          <div className="absolute z-40 pointer-events-none top-2 right-2">
             {(currentStatus === MediaStatus.AVAILABLE ||
               currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
               <div className="flex items-center justify-center w-4 h-4 text-white bg-green-400 border border-green-600 rounded-full sm:w-5 sm:h-5">
