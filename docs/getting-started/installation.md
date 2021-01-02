@@ -57,40 +57,98 @@ docker run -d ...
 Use a 3rd party updating mechanism such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date automatically.
 {% endhint %}
 
-## Linux \(Unsupported\)
+## Unraid
+
+1. Ensure you have the **Community Applications** plugin installed.
+2. Inside the **Communtiy Applications** app store, search for **Overseerr**.
+3. Click the **Install Button**.
+4. On the following **Add Container** screen, make changes to the **Host Port** and **Host Path 1**\(Appdata\) as needed.
+5. Click apply and access "Overseerr" at your `<ServerIP:HostPort>` in a web browser.
+
+## Windows
+
+Please refer to the [docker for windows documentation](https://docs.docker.com/docker-for-windows/) for installation.
+
 {% hint style="danger" %}
-This install method is **not currently supported**. Docker is the only install method currently supported. Do not open tickets or ask for support in case you're running this "natively" and cannot/did not reproduce the issue in the Docker install. Thank you for understanding.
+**WSL2 will need to be installed to prevent DB corruption! Please see** [**Docker Desktop WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) **on how to enable WSL2. The command below will only work with WSL2 installed! Details below.**
 {% endhint %}
 
-{% tabs %}
-{% tab title="Ubuntu & Debian" %}
 ```bash
-# Install nodejs your OWN way https://nodejs.org/en/download/package-manager/
-# Node 12 is LTS so that's why it's chosen here
+docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/here:/app/config" --restart unless-stopped sctx/overseerr
+```
+
+{% hint style="info" %}
+Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases.
+{% endhint %}
+
+## Linux \(Unsupported\)
+{% tabs %}
+
+{% tab title="Ubuntu 16.04+/Debian" %}
+{% hint style="danger" %}
+This install method is **not currently supported**. Docker is the only install method supported. Do not create issues or ask for support unless you are able to reproduce the issue with Docker.
+{% endhint %}
+
+```bash
+# Install nodejs
+sudo apt-get install -y curl git gnupg2
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt install -y nodejs
-# This might be necessary if you're failing to yarn install due to sqlite3
-sudo apt install sqlite3 libsqlite3-dev
-# Feel free to `cd` to wherever you want to install the overseer files
-cd ~
-git clone https://github.com/sct/overseerr.git
+sudo apt-get install -y nodejs
+# Install yarn
+curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install yarn
+# Install Overseerr
+cd ~ && git clone https://github.com/sct/overseerr.git
 cd overseerr
-# Only needed if your yarn install is failing due to bad python declaration
-npm config set python "$(which python3)"  
-npm install yarn
-yarn build
 yarn install
+yarn build
 yarn start
 ```
-You might want to create your own service file or a reverse proxy.
 
-**Upgrading**
-In order to upgrade, you will need to re-build overseer.
+**Updating**
+
+In order to update, you will need to re-build overseer.
 ```bash
 cd ~/.overseerr
 git pull
-yarn build
 yarn install
+yarn build
+yarn start
+```
+{% endtab %}
+
+{% tab title="Ubuntu ARM" %}
+{% hint style="danger" %}
+This install method is **not currently supported**. Docker is the only install method supported. Do not create issues or ask for support unless you are able to reproduce the issue with Docker.
+{% endhint %}
+
+```bash
+# Install nodejs
+sudo apt-get install -y curl git gnupg2 build-essential
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get install -y nodejs
+# Install yarn
+curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install yarn
+# Install Overseerr
+cd ~ && git clone https://github.com/sct/overseerr.git
+cd overseerr
+npm config set python "$(which python3)"
+yarn install
+yarn build
+yarn start
+```
+
+**Updating**
+
+In order to update, you will need to re-build overseer.
+```bash
+cd ~/.overseerr
+git pull
+yarn install
+yarn build
 yarn start
 ```
 {% endtab %}
@@ -122,31 +180,6 @@ emerge www-apps/overseerr
 {% endtab %}
 
 {% endtabs %}
-
-## Unraid
-
-1. Ensure you have the **Community Applications** plugin installed.
-2. Inside the **Communtiy Applications** app store, search for **Overseerr**.
-3. Click the **Install Button**.
-4. On the following **Add Container** screen, make changes to the **Host Port** and **Host Path 1**\(Appdata\) as needed.
-5. Click apply and access "Overseerr" at your `<ServerIP:HostPort>` in a web browser.
-
-## Windows
-
-Please refer to the [docker for windows documentation](https://docs.docker.com/docker-for-windows/) for installation.
-
-{% hint style="danger" %}
-**WSL2 will need to be installed to prevent DB corruption! Please see** [**Docker Desktop WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) **on how to enable WSL2. The command below will only work with WSL2 installed! Details below.**
-{% endhint %}
-
-```bash
-docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/here:/app/config" --restart unless-stopped sctx/overseerr
-```
-
-{% hint style="info" %}
-Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases.
-{% endhint %}
-
 
 ## Swizzin \(Third party\)
 The installation is not implemented via docker, but barebones. The latest released version of overseerr will be used.
