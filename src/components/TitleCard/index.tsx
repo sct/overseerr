@@ -95,6 +95,17 @@ const TitleCard: React.FC<TitleCardProps> = ({
         tabIndex={0}
       >
         <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden shadow-xl">
+          <div
+            className={`absolute left-2 top-2 rounded-md z-40 ${
+              mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
+            }`}
+          >
+            <div className="flex items-center h-4 px-1 py-2 text-xs font-normal tracking-wider text-center text-white uppercase">
+              {mediaType === 'movie'
+                ? intl.formatMessage(messages.movie)
+                : intl.formatMessage(messages.tvshow)}
+            </div>
+          </div>
           <div className="absolute z-40 top-2 right-2">
             {(currentStatus === MediaStatus.AVAILABLE ||
               currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
@@ -181,17 +192,6 @@ const TitleCard: React.FC<TitleCardProps> = ({
             leaveTo="opacity-0"
           >
             <div className="absolute top-0 bottom-0 left-0 right-0">
-              <div
-                className={`absolute left-2 top-2 rounded-md z-40 ${
-                  mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
-                }`}
-              >
-                <div className="flex items-center h-4 px-1 py-2 text-xs font-normal tracking-wider text-center text-white uppercase">
-                  {mediaType === 'movie'
-                    ? intl.formatMessage(messages.movie)
-                    : intl.formatMessage(messages.tvshow)}
-                </div>
-              </div>
               <Link href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}>
                 <a
                   className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden text-left rounded-lg cursor-pointer"
