@@ -164,7 +164,7 @@ requestRoutes.post(
 
         if (finalSeasons.length === 0) {
           return next({
-            status: 500,
+            status: 202,
             message: 'No seasons available to request',
           });
         }
