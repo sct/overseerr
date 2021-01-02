@@ -107,6 +107,7 @@ yarn start
 ```
 
 **Updating**
+
 In order to update, you will need to re-build overseer.
 ```bash
 cd ~/.overseerr
@@ -141,6 +142,7 @@ yarn start
 ```
 
 **Updating**
+
 In order to update, you will need to re-build overseer.
 ```bash
 cd ~/.overseerr
