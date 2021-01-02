@@ -109,9 +109,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
           <div className="absolute z-40 top-2 right-2">
             {(currentStatus === MediaStatus.AVAILABLE ||
               currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
-              <div className="flex items-center justify-center w-4 h-4 text-white bg-green-400 border border-green-600 rounded-full">
+              <div className="flex items-center justify-center w-4 h-4 text-white bg-green-400 border border-green-600 rounded-full sm:w-5 sm:h-5">
                 <svg
-                  className="w-3 h-3"
+                  className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -127,9 +127,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
               </div>
             )}
             {currentStatus === MediaStatus.PENDING && (
-              <div className="flex items-center justify-center w-4 h-4 text-white bg-yellow-500 border border-yellow-600 rounded-full">
+              <div className="flex items-center justify-center w-4 h-4 text-white bg-yellow-500 border border-yellow-600 rounded-full sm:w-5 sm:h-5">
                 <svg
-                  className="w-3 h-3"
+                  className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -139,9 +139,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
               </div>
             )}
             {currentStatus === MediaStatus.PROCESSING && (
-              <div className="flex items-center justify-center w-4 h-4 text-white bg-indigo-500 border border-indigo-600 rounded-full">
+              <div className="flex items-center justify-center w-4 h-4 text-white bg-indigo-500 border border-indigo-600 rounded-full sm:w-5 sm:h-5">
                 <svg
-                  className="w-3 h-3"
+                  className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
