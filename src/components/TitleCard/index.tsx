@@ -1,8 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import type { MediaType } from '../../../server/models/Search';
-import Available from '../../assets/available.svg';
-import Requested from '../../assets/requested.svg';
-import Unavailable from '../../assets/unavailable.svg';
 import { withProperties } from '../../utils/typeHelpers';
 import Transition from '../Transition';
 import Placeholder from './Placeholder';
@@ -98,33 +95,53 @@ const TitleCard: React.FC<TitleCardProps> = ({
         tabIndex={0}
       >
         <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden shadow-xl">
-          <div
-            className={`absolute left-0 top-0 rounded-tl-md rounded-br-md z-40 ${
-              mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
-            }`}
-          >
-            <div className="flex items-center h-4 px-2 py-1 text-xs font-normal text-center text-white uppercase">
-              {mediaType === 'movie'
-                ? intl.formatMessage(messages.movie)
-                : intl.formatMessage(messages.tvshow)}
-            </div>
-          </div>
-
-          <div
-            className="absolute top-0 right-0 z-40"
-            style={{
-              right: '-1px',
-            }}
-          >
+          <div className="absolute z-40 top-2 right-2">
             {(currentStatus === MediaStatus.AVAILABLE ||
               currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
-              <Available className="rounded-tr-md" />
+              <div className="flex items-center justify-center w-4 h-4 text-white bg-green-400 border border-green-600 rounded-full">
+                <svg
+                  className="w-3 h-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
             )}
             {currentStatus === MediaStatus.PENDING && (
-              <Requested className="rounded-tr-md" />
+              <div className="flex items-center justify-center w-4 h-4 text-white bg-yellow-500 border border-yellow-600 rounded-full">
+                <svg
+                  className="w-3 h-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                </svg>
+              </div>
             )}
             {currentStatus === MediaStatus.PROCESSING && (
-              <Unavailable className="rounded-tr-md" />
+              <div className="flex items-center justify-center w-4 h-4 text-white bg-indigo-500 border border-indigo-600 rounded-full">
+                <svg
+                  className="w-3 h-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
             )}
           </div>
           <Transition
@@ -164,6 +181,17 @@ const TitleCard: React.FC<TitleCardProps> = ({
             leaveTo="opacity-0"
           >
             <div className="absolute top-0 bottom-0 left-0 right-0">
+              <div
+                className={`absolute left-2 top-2 rounded-md z-40 ${
+                  mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
+                }`}
+              >
+                <div className="flex items-center h-4 px-1 py-2 text-xs font-normal tracking-wider text-center text-white uppercase">
+                  {mediaType === 'movie'
+                    ? intl.formatMessage(messages.movie)
+                    : intl.formatMessage(messages.tvshow)}
+                </div>
+              </div>
               <Link href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}>
                 <a
                   className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden text-left rounded-lg cursor-pointer"
