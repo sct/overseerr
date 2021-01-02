@@ -90,6 +90,12 @@ const SettingsMain: React.FC = () => {
       permission: Permission.REQUEST,
     },
     {
+      id: 'request4k',
+      name: intl.formatMessage(permissionMessages.request4k),
+      description: intl.formatMessage(permissionMessages.request4kDescription),
+      permission: Permission.REQUEST_4K,
+    },
+    {
       id: 'autoapprove',
       name: intl.formatMessage(permissionMessages.autoapprove),
       description: intl.formatMessage(

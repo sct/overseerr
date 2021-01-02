@@ -110,13 +110,19 @@ requestRoutes.post(
         media = new Media({
           tmdbId: tmdbMedia.id,
           tvdbId: tmdbMedia.external_ids.tvdb_id,
-          status: MediaStatus.PENDING,
+          status: !req.body.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
+          status4k: req.body.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
           mediaType: req.body.mediaType,
         });
         await mediaRepository.save(media);
       } else {
-        if (media.status === MediaStatus.UNKNOWN) {
+        if (media.status === MediaStatus.UNKNOWN && !req.body.is4k) {
           media.status = MediaStatus.PENDING;
+          await mediaRepository.save(media);
+        }
+
+        if (media.status4k === MediaStatus.UNKNOWN && req.body.is4k) {
+          media.status4k = MediaStatus.PENDING;
           await mediaRepository.save(media);
         }
       }
@@ -137,6 +143,10 @@ requestRoutes.post(
             req.user?.hasPermission(Permission.AUTO_APPROVE_MOVIE)
               ? req.user
               : undefined,
+          is4k: req.body.is4k,
+          serverId: req.body.serverId,
+          profileId: req.body.profileId,
+          rootFolder: req.body.rootFolder,
         });
 
         await requestRepository.save(request);

@@ -80,6 +80,9 @@ class Media {
   @Column({ type: 'int', default: MediaStatus.UNKNOWN })
   public status: MediaStatus;
 
+  @Column({ type: 'int', default: MediaStatus.UNKNOWN })
+  public status4k: MediaStatus;
+
   @OneToMany(() => MediaRequest, (request) => request.media, { cascade: true })
   public requests: MediaRequest[];
 

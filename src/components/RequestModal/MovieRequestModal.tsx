@@ -22,17 +22,22 @@ const messages = defineMessages({
   requestSuccess: '<strong>{title}</strong> successfully requested!',
   requestCancel: 'Request for <strong>{title}</strong> cancelled',
   requesttitle: 'Request {title}',
+  request4ktitle: 'Request {title} in 4K',
   close: 'Close',
   cancel: 'Cancel Request',
   cancelling: 'Cancelling...',
   pendingrequest: 'Pending request for {title}',
+  pending4krequest: 'Pending request for {title} in 4K',
   requesting: 'Requesting...',
   request: 'Request',
+  request4k: 'Request 4K',
   requestfrom: 'There is currently a pending request from {username}',
+  request4kfrom: 'There is currently a pending 4K request from {username}',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   tmdbId: number;
+  is4k?: boolean;
   onCancel?: () => void;
   onComplete?: (newStatus: MediaStatus) => void;
   onUpdating?: (isUpdating: boolean) => void;
@@ -43,6 +48,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   onComplete,
   tmdbId,
   onUpdating,
+  is4k,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const { addToast } = useToasts();
@@ -63,6 +69,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
     const response = await axios.post<MediaRequest>('/api/v1/request', {
       mediaId: data?.id,
       mediaType: 'movie',
+      is4k,
     });
 
     if (response.data) {
@@ -89,7 +96,9 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
     }
   }, [data, onComplete, addToast]);
 
-  const activeRequest = data?.mediaInfo?.requests?.[0];
+  const activeRequest = data?.mediaInfo?.requests?.find(
+    (request) => request.is4k === !!is4k
+  );
 
   const cancelRequest = async () => {
     setIsUpdating(true);
@@ -133,9 +142,12 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         onCancel={onCancel}
         onOk={isOwner ? () => cancelRequest() : undefined}
         okDisabled={isUpdating}
-        title={intl.formatMessage(messages.pendingrequest, {
-          title: data?.title,
-        })}
+        title={intl.formatMessage(
+          is4k ? messages.pending4krequest : messages.pendingrequest,
+          {
+            title: data?.title,
+          }
+        )}
         okText={
           isUpdating
             ? intl.formatMessage(messages.cancelling)
@@ -145,9 +157,12 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         cancelText={intl.formatMessage(messages.close)}
         iconSvg={<DownloadIcon className="w-6 h-6" />}
       >
-        {intl.formatMessage(messages.requestfrom, {
-          username: activeRequest.requestedBy.username,
-        })}
+        {intl.formatMessage(
+          is4k ? messages.request4kfrom : messages.requestfrom,
+          {
+            username: activeRequest.requestedBy.username,
+          }
+        )}
       </Modal>
     );
   }
@@ -159,11 +174,14 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       onCancel={onCancel}
       onOk={sendRequest}
       okDisabled={isUpdating}
-      title={intl.formatMessage(messages.requesttitle, { title: data?.title })}
+      title={intl.formatMessage(
+        is4k ? messages.request4ktitle : messages.requesttitle,
+        { title: data?.title }
+      )}
       okText={
         isUpdating
           ? intl.formatMessage(messages.requesting)
-          : intl.formatMessage(messages.request)
+          : intl.formatMessage(is4k ? messages.request4k : messages.request)
       }
       okButtonType={'primary'}
       iconSvg={<DownloadIcon className="w-6 h-6" />}

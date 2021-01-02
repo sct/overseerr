@@ -9,6 +9,7 @@ export enum Permission {
   AUTO_APPROVE = 128,
   AUTO_APPROVE_MOVIE = 256,
   AUTO_APPROVE_TV = 512,
+  REQUEST_4K = 1024,
 }
 
 /**

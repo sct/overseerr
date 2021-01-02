@@ -8,6 +8,7 @@ interface RequestModalProps {
   show: boolean;
   type: 'movie' | 'tv';
   tmdbId: number;
+  is4k?: boolean;
   onComplete?: (newStatus: MediaStatus) => void;
   onError?: (error: string) => void;
   onCancel?: () => void;
@@ -18,6 +19,7 @@ const RequestModal: React.FC<RequestModalProps> = ({
   type,
   show,
   tmdbId,
+  is4k,
   onComplete,
   onUpdating,
   onCancel,
@@ -58,6 +60,7 @@ const RequestModal: React.FC<RequestModalProps> = ({
         onCancel={onCancel}
         tmdbId={tmdbId}
         onUpdating={onUpdating}
+        is4k={is4k}
       />
     </Transition>
   );
