@@ -106,13 +106,19 @@ yay -S overseer
 {% endtab %}
 
 {% tab title="Gentoo \(3rd Party\)" %}
-Portage overlay: [https://github.com/chriscpritchard/overseerr-overlay](https://github.com/chriscpritchard/overseerr-overlay)
+Portage overlay [GitHub Repository](https://github.com/chriscpritchard/overseerr-overlay)
 
 Efforts will be made to keep up to date with the latest releases, however, this cannot be guaranteed.
 
-To enable using eselect repository, run ```eselect repository add overseerr-overlay git https://github.com/chriscpritchard/overseerr-overlay.git```
+To enable using eselect repository, run:
+```bash
+eselect repository add overseerr-overlay git https://github.com/chriscpritchard/overseerr-overlay.git
+```
 
-Once complete, you can just run ```emerge www-apps/overseerr```
+Once complete, you can just run:
+```bash
+emerge www-apps/overseerr
+```
 {% endtab %}
 
 {% endtabs %}
