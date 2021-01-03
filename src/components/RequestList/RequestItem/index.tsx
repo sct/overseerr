@@ -100,7 +100,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
   if (!title && !error) {
     return (
-      <tr className="w-full bg-gray-800 animate-pulse h-24" ref={ref}>
+      <tr className="w-full h-24 bg-gray-800 animate-pulse" ref={ref}>
         <td colSpan={6}></td>
       </tr>
     );
@@ -108,61 +108,62 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
   if (!title || !requestData) {
     return (
-      <tr className="w-full bg-gray-800 animate-pulse h-24">
+      <tr className="w-full h-24 bg-gray-800 animate-pulse">
         <td colSpan={6}></td>
       </tr>
     );
   }
 
   return (
-    <tr className="w-full bg-gray-800 h-24 p-2 relative text-white">
-      <Table.TD
-        noPadding
-        className="w-20 px-4 relative hidden sm:table-cell align-middle"
-      >
-        <Link
-          href={
-            request.type === 'movie'
-              ? `/movie/${request.media.tmdbId}`
-              : `/tv/${request.media.tmdbId}`
-          }
-        >
-          <a>
-            <img
-              src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
-              alt=""
-              className="rounded-md shadow-sm cursor-pointer transition transform-gpu duration-300 scale-100 hover:scale-105 hover:shadow-md"
-            />
-          </a>
-        </Link>
-      </Table.TD>
+    <tr className="relative w-full h-24 p-2 text-white bg-gray-800">
       <Table.TD>
-        <Link
-          href={
-            requestData.type === 'movie'
-              ? `/movie/${requestData.media.tmdbId}`
-              : `/tv/${requestData.media.tmdbId}`
-          }
-        >
-          <a className="text-white text-xl mr-2 hover:underline">
-            {isMovie(title) ? title.title : title.name}
-          </a>
-        </Link>
-        <div className="text-sm">
-          {intl.formatMessage(messages.requestedby, {
-            username: requestData.requestedBy.username,
-          })}
-        </div>
-        {requestData.seasons.length > 0 && (
-          <div className="hidden mt-2 text-sm sm:flex items-center">
-            <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
-            {requestData.seasons.map((season) => (
-              <span key={`season-${season.id}`} className="mr-2">
-                <Badge>{season.seasonNumber}</Badge>
-              </span>
-            ))}
+        <div className="flex items-center">
+          <Link
+            href={
+              request.type === 'movie'
+                ? `/movie/${request.media.tmdbId}`
+                : `/tv/${request.media.tmdbId}`
+            }
+          >
+            <a className="flex-shrink-0 hidden mr-4 sm:block">
+              <img
+                src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
+                alt=""
+                className="w-12 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer transform-gpu hover:scale-105 hover:shadow-md"
+              />
+            </a>
+          </Link>
+          <div className="flex-shrink overflow-hidden">
+            <Link
+              href={
+                requestData.type === 'movie'
+                  ? `/movie/${requestData.media.tmdbId}`
+                  : `/tv/${requestData.media.tmdbId}`
+              }
+            >
+              <a className="min-w-0 mr-2 text-xl text-white truncate hover:underline">
+                {isMovie(title) ? title.title : title.name}
+              </a>
+            </Link>
+            <div className="text-sm">
+              {intl.formatMessage(messages.requestedby, {
+                username: requestData.requestedBy.username,
+              })}
+            </div>
+            {requestData.seasons.length > 0 && (
+              <div className="items-center hidden mt-2 text-sm sm:flex">
+                <span className="mr-2">
+                  {intl.formatMessage(messages.seasons)}
+                </span>
+                {requestData.seasons.map((season) => (
+                  <span key={`season-${season.id}`} className="mr-2">
+                    <Badge>{season.seasonNumber}</Badge>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </Table.TD>
       <Table.TD>
         {requestData.media.status === MediaStatus.UNKNOWN ? (
