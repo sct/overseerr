@@ -8,6 +8,7 @@ import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
 import { defineMessages, useIntl } from 'react-intl';
 import { useIsTouch } from '../../hooks/useIsTouch';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
   movie: 'Movie',
@@ -256,7 +257,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
                         d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                       />
                     </svg>
-                    <span className="text-xs">Request</span>
+                    <span className="text-xs">
+                      {intl.formatMessage(globalMessages.request)}
+                    </span>
                   </button>
                 )}
               </div>
