@@ -207,7 +207,7 @@ const Slider: React.FC<SliderProps> = ({
         </button>
       </div>
       <div
-        className="relative px-2 -ml-4 -mr-4 overflow-x-scroll overflow-y-auto whitespace-nowrap hide-scrollbar overscroll-x-contain"
+        className="relative px-2 py-2 -my-2 -ml-4 -mr-4 overflow-x-scroll overflow-y-auto whitespace-nowrap hide-scrollbar overscroll-x-contain"
         ref={containerRef}
         onScroll={onScroll}
       >
