@@ -10,7 +10,7 @@ const MAPPING_URL =
   'https://raw.githubusercontent.com/Anime-Lists/anime-lists/master/anime-list.xml';
 const LOCAL_PATH = path.join(__dirname, '../../config/anime-list.xml');
 
-const mappingRegexp = new RegExp(/;[0-9]+-([0-9]+);/);
+const mappingRegexp = new RegExp(/;[0-9]+-([0-9]+)/g);
 
 // Anime-List xml files are community maintained mappings that Hama agent uses to map AniDB IDs to tvdb/tmdb IDs
 // https://github.com/Anime-Lists/anime-lists/
@@ -53,14 +53,18 @@ class AnimeListMapping {
 
   private mapping: { [anidbId: number]: AnidbItem } = {};
 
-  // each episode in season 0 from TVDB can map to movie (AniDB id)
-  private specials: { [tvdbId: number]: { [episode: number]: number } } = {};
+  // mapping file modification date when it was loaded
+  private mappingModified: Date | null = null;
+
+  // each episode in season 0 from TVDB can map to movie
+  private specials: { [tvdbId: number]: { [episode: number]: AnidbItem } } = {};
 
   public isLoaded = () => Object.keys(this.mapping).length !== 0;
 
   private loadFromFile = async () => {
     logger.info('Loading mapping file', { label: 'Anime-List Sync' });
     try {
+      const mappingStat = await fsp.stat(LOCAL_PATH);
       const file = await fsp.readFile(LOCAL_PATH);
       const xml = (await xml2js.parseStringPromise(file)) as AnimeList;
 
@@ -75,9 +79,13 @@ class AnimeListMapping {
           tvdbId = undefined;
         }
 
-        let imdbId = anime.$.imdbid;
-        if (imdbId && !imdbId.startsWith('tt')) {
-          imdbId = undefined;
+        let imdbIds: (string | undefined)[];
+        if (anime.$.imdbid) {
+          // if there are multiple imdb entries, then they map to different movies
+          imdbIds = anime.$.imdbid.split(',');
+        } else {
+          // in case there is no imdbid, that's ok as there will be tmdbid
+          imdbIds = [undefined];
         }
 
         const tmdbId = anime.$.tmdbid ? Number(anime.$.tmdbid) : undefined;
@@ -86,37 +94,55 @@ class AnimeListMapping {
           // for season 0 ignore tvdbid, because this must be movie/OVA
           tvdbId: anime.$.defaulttvdbseason === '0' ? undefined : tvdbId,
           tmdbId: tmdbId,
-          imdbId: imdbId,
+          imdbId: imdbIds[0], // this is used for one AniDB -> one imdb movie mapping
         };
 
         if (tvdbId) {
           const mappingList = anime['mapping-list'];
           if (mappingList && mappingList.length != 0) {
+            let imdbIndex = 0;
             for (const mapping of mappingList[0].mapping) {
               const text = mapping._;
               if (text && mapping.$.tvdbseason === '0') {
-                const matches = text.match(mappingRegexp);
-                if (matches) {
+                let matches;
+                while ((matches = mappingRegexp.exec(text)) !== null) {
                   const episode = Number(matches[1]);
                   if (!this.specials[tvdbId]) {
                     this.specials[tvdbId] = {};
                   }
-                  this.specials[tvdbId][episode] = anidbId;
+                  // map next available imdbid to episode in s0
+                  const imdbId =
+                    imdbIndex > imdbIds.length ? undefined : imdbIds[imdbIndex];
+                  if (tmdbId || imdbId) {
+                    this.specials[tvdbId][episode] = {
+                      tmdbId: tmdbId,
+                      imdbId: imdbId,
+                    };
+                    imdbIndex++;
+                  }
                 }
               }
             }
           } else {
-            // some movies do not have mapping-list, which means 1 episode in specials
-            // matches movie itself
-            if (imdbId && anime.$.defaulttvdbseason === '0') {
+            // some movies do not have mapping-list, so map episode 1,2,3,..to movies
+            // movies must have imdbid or tmdbid
+            const hasImdb = imdbIds.length > 1 || imdbIds[0] !== undefined;
+            if ((hasImdb || tmdbId) && anime.$.defaulttvdbseason === '0') {
               if (!this.specials[tvdbId]) {
                 this.specials[tvdbId] = {};
               }
-              this.specials[tvdbId][1] = anidbId;
+              // map each imdbid to episode in s0, episode index starts with 1
+              for (let idx = 0; idx < imdbIds.length; idx++) {
+                this.specials[tvdbId][idx + 1] = {
+                  tmdbId: tmdbId,
+                  imdbId: imdbIds[idx],
+                };
+              }
             }
           }
         }
       }
+      this.mappingModified = mappingStat.mtime;
       logger.info(
         `Loaded ${
           Object.keys(this.mapping).length
@@ -159,8 +185,14 @@ class AnimeListMapping {
         const now = new Date();
         const stat = await fsp.stat(LOCAL_PATH);
         if (now.getTime() - stat.mtime.getTime() < UPDATE_INTERVAL_MSEC) {
-          // no neet to download, but make sure file is loaded
           if (!this.isLoaded()) {
+            // no need to download, but make sure file is loaded
+            await this.loadFromFile();
+          } else if (
+            this.mappingModified &&
+            stat.mtime.getTime() > this.mappingModified.getTime()
+          ) {
+            // if file has been modified externally since last load, reload it
             await this.loadFromFile();
           }
           return;
@@ -182,14 +214,7 @@ class AnimeListMapping {
     episode: number
   ): AnidbItem | undefined => {
     const episodes = this.specials[tvdbId];
-    if (!episodes) {
-      return undefined;
-    }
-    const anidbId = episodes[episode];
-    if (!anidbId) {
-      return undefined;
-    }
-    return this.mapping[anidbId];
+    return episodes ? episodes[episode] : undefined;
   };
 }
 
