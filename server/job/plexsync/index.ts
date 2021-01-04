@@ -12,6 +12,7 @@ import { getSettings, Library } from '../../lib/settings';
 import Season from '../../entity/Season';
 import { uniqWith } from 'lodash';
 import animeList from '../../api/animelist';
+import AsyncLock from '../../utils/asyncLock';
 
 const BUNDLE_SIZE = 20;
 const UPDATE_RATE = 4 * 1000;
@@ -44,6 +45,7 @@ class JobPlexSync {
   private currentLibrary: Library;
   private running = false;
   private isRecentOnly = false;
+  private asyncLock = new AsyncLock();
 
   constructor({ isRecentOnly }: { isRecentOnly?: boolean } = {}) {
     this.tmdb = new TheMovieDb();
@@ -84,26 +86,28 @@ class JobPlexSync {
           }
         });
 
-        const existing = await this.getExisting(
-          newMedia.tmdbId,
-          MediaType.MOVIE
-        );
-
-        if (existing && existing.status === MediaStatus.AVAILABLE) {
-          this.log(`Title exists and is already available ${metadata.title}`);
-        } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
-          existing.status = MediaStatus.AVAILABLE;
-          mediaRepository.save(existing);
-          this.log(
-            `Request for ${metadata.title} exists. Setting status AVAILABLE`,
-            'info'
+        await this.asyncLock.dispatch(newMedia.tmdbId, async () => {
+          const existing = await this.getExisting(
+            newMedia.tmdbId,
+            MediaType.MOVIE
           );
-        } else {
-          newMedia.status = MediaStatus.AVAILABLE;
-          newMedia.mediaType = MediaType.MOVIE;
-          await mediaRepository.save(newMedia);
-          this.log(`Saved ${plexitem.title}`);
-        }
+
+          if (existing && existing.status === MediaStatus.AVAILABLE) {
+            this.log(`Title exists and is already available ${metadata.title}`);
+          } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
+            existing.status = MediaStatus.AVAILABLE;
+            mediaRepository.save(existing);
+            this.log(
+              `Request for ${metadata.title} exists. Setting status AVAILABLE`,
+              'info'
+            );
+          } else {
+            newMedia.status = MediaStatus.AVAILABLE;
+            newMedia.mediaType = MediaType.MOVIE;
+            await mediaRepository.save(newMedia);
+            this.log(`Saved ${plexitem.title}`);
+          }
+        });
       } else {
         let tmdbMovieId: number | undefined;
         let tmdbMovie: TmdbMovieDetails | undefined;
@@ -144,30 +148,33 @@ class JobPlexSync {
     tmdbMovieId: number
   ) {
     const mediaRepository = getRepository(Media);
-    const existing = await this.getExisting(tmdbMovieId, MediaType.MOVIE);
-    if (existing && existing.status === MediaStatus.AVAILABLE) {
-      this.log(`Title exists and is already available ${plexitem.title}`);
-    } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
-      existing.status = MediaStatus.AVAILABLE;
-      await mediaRepository.save(existing);
-      this.log(
-        `Request for ${plexitem.title} exists. Setting status AVAILABLE`,
-        'info'
-      );
-    } else {
-      // If we have a tmdb movie guid but it didn't already exist, only then
-      // do we request the movie from tmdb (to reduce api requests)
-      if (!tmdbMovie) {
-        tmdbMovie = await this.tmdb.getMovie({ movieId: tmdbMovieId });
+
+    await this.asyncLock.dispatch(tmdbMovieId, async () => {
+      const existing = await this.getExisting(tmdbMovieId, MediaType.MOVIE);
+      if (existing && existing.status === MediaStatus.AVAILABLE) {
+        this.log(`Title exists and is already available ${plexitem.title}`);
+      } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
+        existing.status = MediaStatus.AVAILABLE;
+        await mediaRepository.save(existing);
+        this.log(
+          `Request for ${plexitem.title} exists. Setting status AVAILABLE`,
+          'info'
+        );
+      } else {
+        // If we have a tmdb movie guid but it didn't already exist, only then
+        // do we request the movie from tmdb (to reduce api requests)
+        if (!tmdbMovie) {
+          tmdbMovie = await this.tmdb.getMovie({ movieId: tmdbMovieId });
+        }
+        const newMedia = new Media();
+        newMedia.imdbId = tmdbMovie.external_ids.imdb_id;
+        newMedia.tmdbId = tmdbMovie.id;
+        newMedia.status = MediaStatus.AVAILABLE;
+        newMedia.mediaType = MediaType.MOVIE;
+        await mediaRepository.save(newMedia);
+        this.log(`Saved ${tmdbMovie.title}`);
       }
-      const newMedia = new Media();
-      newMedia.imdbId = tmdbMovie.external_ids.imdb_id;
-      newMedia.tmdbId = tmdbMovie.id;
-      newMedia.status = MediaStatus.AVAILABLE;
-      newMedia.mediaType = MediaType.MOVIE;
-      await mediaRepository.save(newMedia);
-      this.log(`Saved ${tmdbMovie.title}`);
-    }
+    });
   }
 
   // this adds all movie episodes from specials season for Hama agent
@@ -291,106 +298,114 @@ class JobPlexSync {
         }
       }
 
-      if (tvShow && metadata) {
-        // Lets get the available seasons from plex
-        const seasons = tvShow.seasons;
-        const media = await this.getExisting(tvShow.id, MediaType.TV);
-
-        const newSeasons: Season[] = [];
-
-        const currentSeasonAvailable = (
-          media?.seasons.filter(
-            (season) => season.status === MediaStatus.AVAILABLE
-          ) ?? []
-        ).length;
-
-        seasons.forEach((season) => {
-          const matchedPlexSeason = metadata.Children?.Metadata.find(
-            (md) => Number(md.index) === season.season_number
-          );
-
-          const existingSeason = media?.seasons.find(
-            (es) => es.seasonNumber === season.season_number
-          );
-
-          // Check if we found the matching season and it has all the available episodes
-          if (
-            matchedPlexSeason &&
-            Number(matchedPlexSeason.leafCount) === season.episode_count
-          ) {
-            if (existingSeason) {
-              existingSeason.status = MediaStatus.AVAILABLE;
-            } else {
-              newSeasons.push(
-                new Season({
-                  seasonNumber: season.season_number,
-                  status: MediaStatus.AVAILABLE,
-                })
-              );
-            }
-          } else if (matchedPlexSeason) {
-            if (existingSeason) {
-              existingSeason.status = MediaStatus.PARTIALLY_AVAILABLE;
-            } else {
-              newSeasons.push(
-                new Season({
-                  seasonNumber: season.season_number,
-                  status: MediaStatus.PARTIALLY_AVAILABLE,
-                })
-              );
-            }
+      if (tvShow) {
+        await this.asyncLock.dispatch(tvShow.id, async () => {
+          if (!tvShow) {
+            // this will never execute, but typescript thinks somebody could reset tvShow from
+            // outer scope back to null before this async gets called
+            return;
           }
-        });
 
-        // Remove extras season. We dont count it for determining availability
-        const filteredSeasons = tvShow.seasons.filter(
-          (season) => season.season_number !== 0
-        );
+          // Lets get the available seasons from plex
+          const seasons = tvShow.seasons;
+          const media = await this.getExisting(tvShow.id, MediaType.TV);
 
-        const isAllSeasons =
-          newSeasons.length + (media?.seasons.length ?? 0) >=
-          filteredSeasons.length;
+          const newSeasons: Season[] = [];
 
-        if (media) {
-          // Update existing
-          media.seasons = [...media.seasons, ...newSeasons];
-
-          const newSeasonAvailable = (
-            media.seasons.filter(
+          const currentSeasonAvailable = (
+            media?.seasons.filter(
               (season) => season.status === MediaStatus.AVAILABLE
             ) ?? []
           ).length;
 
-          // If at least one new season has become available, update
-          // the lastSeasonChange field so we can trigger notifications
-          if (newSeasonAvailable > currentSeasonAvailable) {
-            this.log(
-              `Detected ${
-                newSeasonAvailable - currentSeasonAvailable
-              } new season(s) for ${tvShow.name}`,
-              'debug'
+          seasons.forEach((season) => {
+            const matchedPlexSeason = metadata.Children?.Metadata.find(
+              (md) => Number(md.index) === season.season_number
             );
-            media.lastSeasonChange = new Date();
-          }
 
-          media.status = isAllSeasons
-            ? MediaStatus.AVAILABLE
-            : MediaStatus.PARTIALLY_AVAILABLE;
-          await mediaRepository.save(media);
-          this.log(`Updating existing title: ${tvShow.name}`);
-        } else {
-          const newMedia = new Media({
-            mediaType: MediaType.TV,
-            seasons: newSeasons,
-            tmdbId: tvShow.id,
-            tvdbId: tvShow.external_ids.tvdb_id,
-            status: isAllSeasons
-              ? MediaStatus.AVAILABLE
-              : MediaStatus.PARTIALLY_AVAILABLE,
+            const existingSeason = media?.seasons.find(
+              (es) => es.seasonNumber === season.season_number
+            );
+
+            // Check if we found the matching season and it has all the available episodes
+            if (
+              matchedPlexSeason &&
+              Number(matchedPlexSeason.leafCount) === season.episode_count
+            ) {
+              if (existingSeason) {
+                existingSeason.status = MediaStatus.AVAILABLE;
+              } else {
+                newSeasons.push(
+                  new Season({
+                    seasonNumber: season.season_number,
+                    status: MediaStatus.AVAILABLE,
+                  })
+                );
+              }
+            } else if (matchedPlexSeason) {
+              if (existingSeason) {
+                existingSeason.status = MediaStatus.PARTIALLY_AVAILABLE;
+              } else {
+                newSeasons.push(
+                  new Season({
+                    seasonNumber: season.season_number,
+                    status: MediaStatus.PARTIALLY_AVAILABLE,
+                  })
+                );
+              }
+            }
           });
-          await mediaRepository.save(newMedia);
-          this.log(`Saved ${tvShow.name}`);
-        }
+
+          // Remove extras season. We dont count it for determining availability
+          const filteredSeasons = tvShow.seasons.filter(
+            (season) => season.season_number !== 0
+          );
+
+          const isAllSeasons =
+            newSeasons.length + (media?.seasons.length ?? 0) >=
+            filteredSeasons.length;
+
+          if (media) {
+            // Update existing
+            media.seasons = [...media.seasons, ...newSeasons];
+
+            const newSeasonAvailable = (
+              media.seasons.filter(
+                (season) => season.status === MediaStatus.AVAILABLE
+              ) ?? []
+            ).length;
+
+            // If at least one new season has become available, update
+            // the lastSeasonChange field so we can trigger notifications
+            if (newSeasonAvailable > currentSeasonAvailable) {
+              this.log(
+                `Detected ${
+                  newSeasonAvailable - currentSeasonAvailable
+                } new season(s) for ${tvShow.name}`,
+                'debug'
+              );
+              media.lastSeasonChange = new Date();
+            }
+
+            media.status = isAllSeasons
+              ? MediaStatus.AVAILABLE
+              : MediaStatus.PARTIALLY_AVAILABLE;
+            await mediaRepository.save(media);
+            this.log(`Updating existing title: ${tvShow.name}`);
+          } else {
+            const newMedia = new Media({
+              mediaType: MediaType.TV,
+              seasons: newSeasons,
+              tmdbId: tvShow.id,
+              tvdbId: tvShow.external_ids.tvdb_id,
+              status: isAllSeasons
+                ? MediaStatus.AVAILABLE
+                : MediaStatus.PARTIALLY_AVAILABLE,
+            });
+            await mediaRepository.save(newMedia);
+            this.log(`Saved ${tvShow.name}`);
+          }
+        });
       } else {
         this.log(`failed show: ${plexitem.guid}`);
       }
