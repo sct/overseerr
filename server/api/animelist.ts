@@ -83,7 +83,8 @@ class AnimeListMapping {
         const tmdbId = anime.$.tmdbid ? Number(anime.$.tmdbid) : undefined;
         const anidbId = Number(anime.$.anidbid);
         this.mapping[anidbId] = {
-          tvdbId: tvdbId,
+          // for season 0 ignore tvdbid, because this must be movie/OVA
+          tvdbId: anime.$.defaulttvdbseason === '0' ? undefined : tvdbId,
           tmdbId: tmdbId,
           imdbId: imdbId,
         };
