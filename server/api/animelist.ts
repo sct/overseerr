@@ -4,7 +4,7 @@ import fs, { promises as fsp } from 'fs';
 import path from 'path';
 import logger from '../logger';
 
-const UPDATE_INTERVAL = 24 * 3600; // how often to download new mapping
+const UPDATE_INTERVAL_MSEC = 24 * 3600 * 1000; // how often to download new mapping in milliseconds
 // originally at https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml
 const MAPPING_URL =
   'https://raw.githubusercontent.com/Anime-Lists/anime-lists/master/anime-list.xml';
@@ -14,6 +14,33 @@ const mappingRegexp = new RegExp(/;[0-9]+-([0-9]+);/);
 
 // Anime-List xml files are community maintained mappings that Hama agent uses to map AniDB IDs to tvdb/tmdb IDs
 // https://github.com/Anime-Lists/anime-lists/
+
+interface AnimeMapping {
+  $: {
+    anidbseason: string;
+    tvdbseason: string;
+  };
+  _: string;
+}
+
+interface Anime {
+  $: {
+    anidbid: number;
+    tvdbid?: string;
+    defaulttvdbseason?: string;
+    tmdbid?: number;
+    imdbid?: string;
+  };
+  'mapping-list'?: {
+    mapping: AnimeMapping[];
+  }[];
+}
+
+interface AnimeList {
+  'anime-list': {
+    anime: Anime[];
+  };
+}
 
 export interface AnidbItem {
   tvdbId?: number;
@@ -32,30 +59,29 @@ class AnimeListMapping {
   public isLoaded = () => Object.keys(this.mapping).length !== 0;
 
   private loadFromFile = async () => {
-    logger.info('Loading Anime-List mapping file');
+    logger.info('Loading mapping file', { label: 'Anime-List Sync' });
     try {
       const file = await fsp.readFile(LOCAL_PATH);
-      const xml = await xml2js.parseStringPromise(file);
+      const xml = (await xml2js.parseStringPromise(file)) as AnimeList;
 
       this.mapping = {};
       this.specials = {};
-      for (const anime of xml['anime-list']['anime']) {
-        const a = anime['$'];
-
-        let tvdbId = a['tvdbid'];
-        if (!isNaN(Number(tvdbId))) {
-          tvdbId = Number(tvdbId);
+      for (const anime of xml['anime-list'].anime) {
+        // tvdbId can be nonnumber, like 'movie' string
+        let tvdbId: number | undefined;
+        if (anime.$.tvdbid && !isNaN(Number(anime.$.tvdbid))) {
+          tvdbId = Number(anime.$.tvdbid);
         } else {
           tvdbId = undefined;
         }
 
-        let imdbId = a['imdbid'];
+        let imdbId = anime.$.imdbid;
         if (imdbId && !imdbId.startsWith('tt')) {
           imdbId = undefined;
         }
 
-        const tmdbId = a['tmdbid'];
-        const anidbId = Number(a['anidbid']);
+        const tmdbId = anime.$.tmdbid ? Number(anime.$.tmdbid) : undefined;
+        const anidbId = Number(anime.$.anidbid);
         this.mapping[anidbId] = {
           tvdbId: tvdbId,
           tmdbId: tmdbId,
@@ -63,31 +89,25 @@ class AnimeListMapping {
         };
 
         if (tvdbId) {
-          const mappingLists = anime['mapping-list'];
-          if (mappingLists) {
-            for (const mappingList of mappingLists) {
-              for (const mapping of mappingList['mapping']) {
-                const text = mapping['_'];
-                if (text && mapping['$']['tvdbseason'] == '0') {
-                  const matches = text.match(mappingRegexp);
-                  if (matches) {
-                    const episode = Number(matches[1]);
-                    if (!this.specials[tvdbId]) {
-                      this.specials[tvdbId] = {};
-                    }
-                    this.specials[tvdbId][episode] = anidbId;
+          const mappingList = anime['mapping-list'];
+          if (mappingList && mappingList.length != 0) {
+            for (const mapping of mappingList[0].mapping) {
+              const text = mapping._;
+              if (text && mapping.$.tvdbseason === '0') {
+                const matches = text.match(mappingRegexp);
+                if (matches) {
+                  const episode = Number(matches[1]);
+                  if (!this.specials[tvdbId]) {
+                    this.specials[tvdbId] = {};
                   }
+                  this.specials[tvdbId][episode] = anidbId;
                 }
               }
             }
-          }
-          // some movies do not have mapping-list, which means 1 episode in specials
-          // matches movie itself
-          if (imdbId) {
-            if (
-              a['defaulttvdbseason'] == '0' &&
-              anime['mapping-list'] == undefined
-            ) {
+          } else {
+            // some movies do not have mapping-list, which means 1 episode in specials
+            // matches movie itself
+            if (imdbId && anime.$.defaulttvdbseason === '0') {
               if (!this.specials[tvdbId]) {
                 this.specials[tvdbId] = {};
               }
@@ -99,15 +119,18 @@ class AnimeListMapping {
       logger.info(
         `Loaded ${
           Object.keys(this.mapping).length
-        } AniDB items from Anime-List mapping file`
+        } AniDB items from mapping file`,
+        { label: 'Anime-List Sync' }
       );
     } catch (e) {
-      throw new Error(`Failed to load anidb mappings: ${e.message}`);
+      throw new Error(`Failed to load Anime-List mappings: ${e.message}`);
     }
   };
 
   private downloadFile = async () => {
-    logger.info('Downloading latest Anime-List mapping file');
+    logger.info('Downloading latest mapping file', {
+      label: 'Anime-List Sync',
+    });
     try {
       const response = await axios.get(MAPPING_URL, {
         responseType: 'stream',
@@ -118,7 +141,7 @@ class AnimeListMapping {
         response.data.pipe(writer);
       });
     } catch (e) {
-      throw new Error(`Failed to download AniDB mapping: ${e.message}`);
+      throw new Error(`Failed to download Anime-List mapping: ${e.message}`);
     }
   };
 
@@ -134,7 +157,7 @@ class AnimeListMapping {
       if (fs.existsSync(LOCAL_PATH)) {
         const now = new Date();
         const stat = await fsp.stat(LOCAL_PATH);
-        if (now.getTime() - stat.mtime.getTime() < UPDATE_INTERVAL * 1000) {
+        if (now.getTime() - stat.mtime.getTime() < UPDATE_INTERVAL_MSEC) {
           // no neet to download, but make sure file is loaded
           if (!this.isLoaded()) {
             await this.loadFromFile();

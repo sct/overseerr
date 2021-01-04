@@ -124,7 +124,7 @@ class JobPlexSync {
           throw new Error('Unable to find TMDB ID');
         }
 
-        this.processMovieWithId(plexitem, tmdbMovie, tmdbMovieId);
+        await this.processMovieWithId(plexitem, tmdbMovie, tmdbMovieId);
       }
     } catch (e) {
       this.log(
@@ -171,11 +171,7 @@ class JobPlexSync {
   }
 
   // this adds all movie episodes from specials season for Hama agent
-  private async processHamaSpecials(
-    plexitem: PlexLibraryItem,
-    metadata: PlexMetadata,
-    tvdbId: number
-  ) {
+  private async processHamaSpecials(metadata: PlexMetadata, tvdbId: number) {
     const specials = metadata.Children?.Metadata.find(
       (md) => Number(md.index) === 0
     );
@@ -238,11 +234,11 @@ class JobPlexSync {
         if (tvdbId) {
           tvShow = await this.tmdb.getShowByTvdbId({ tvdbId: Number(tvdbId) });
           if (animeList.isLoaded()) {
-            await this.processHamaSpecials(plexitem, metadata, Number(tvdbId));
+            await this.processHamaSpecials(metadata, Number(tvdbId));
           } else {
             this.log(
               `Hama id ${plexitem.guid} detected, but library agent is not set to Hama`,
-              'info'
+              'warn'
             );
           }
         }
@@ -252,14 +248,14 @@ class JobPlexSync {
         if (!animeList.isLoaded()) {
           this.log(
             `Hama id ${plexitem.guid} detected, but library agent is not set to Hama`,
-            'info'
+            'warn'
           );
         } else if (matched?.[1]) {
           const anidbId = Number(matched[1]);
-          const result = await animeList.getFromAnidbId(anidbId);
-          if (result) {
-            // first try to lookup tvShow by tvdbid
-            if (result.tvdbId) {
+          const result = animeList.getFromAnidbId(anidbId);
+
+          // first try to lookup tvshow by tvdbid
+          if (result?.tvdbId) {
               const extResponse = await this.tmdb.getByExternalId({
                 externalId: result.tvdbId,
                 type: 'tvdb',
@@ -269,27 +265,27 @@ class JobPlexSync {
                   tvId: extResponse.tv_results[0].id,
                 });
               }
-              await this.processHamaSpecials(plexitem, metadata, result.tvdbId);
+            await this.processHamaSpecials(metadata, result.tvdbId);
             }
 
-            // if getting tvShow above failed, try with tmdb/imdb for movie
-            if (tvShow == null) {
-              if (result.tmdbId) {
-                return await this.processMovieWithId(
-                  plexitem,
-                  undefined,
-                  result.tmdbId
-                );
-              } else if (result.imdbId) {
-                const tmdbMovie = await this.tmdb.getMovieByImdbId({
-                  imdbId: result.imdbId,
-                });
-                return await this.processMovieWithId(
-                  plexitem,
-                  tmdbMovie,
-                  tmdbMovie.id
-                );
-              }
+          if (!tvShow) {
+            // if lookup of tvshow above failed, then try movie with tmdbid/imdbid
+            // note - some tv shows have imdbid set too, that's why this need to go second
+            if (result?.tmdbId) {
+              return await this.processMovieWithId(
+                plexitem,
+                undefined,
+                result.tmdbId
+              );
+            } else if (result?.imdbId) {
+              const tmdbMovie = await this.tmdb.getMovieByImdbId({
+                imdbId: result.imdbId,
+              });
+              return await this.processMovieWithId(
+                plexitem,
+                tmdbMovie,
+                tmdbMovie.id
+              );
             }
           }
         }
@@ -465,13 +461,12 @@ class JobPlexSync {
   // checks if any of this.libraries has Hama agent set in Plex
   private async hasHamaAgent() {
     const plexLibraries = await this.plexClient.getLibraries();
-    for (const library of this.libraries) {
-      const found = plexLibraries.find((lib) => lib.key == library.id);
-      if (found && found.agent == HAMA_AGENT) {
-        return true;
-      }
-    }
-    return false;
+    return this.libraries.some((library) =>
+      plexLibraries.some(
+        (plexLibrary) =>
+          plexLibrary.agent === HAMA_AGENT && library.id === plexLibrary.key
+      )
+    );
   }
 
   public async run(): Promise<void> {
