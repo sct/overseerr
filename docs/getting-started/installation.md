@@ -179,6 +179,39 @@ emerge www-apps/overseerr
 ```
 {% endtab %}
 
+{% tab title="Fedora 33" %}
+{% hint style="danger" %}
+This install method is **not currently supported**. Docker is the only install method supported. Do not create issues or ask for support unless you are able to reproduce the issue with Docker.
+{% endhint %}
+
+```bash
+# Install nodejs
+sudo dnf install -y curl git gnupg2
+curl -sL https://rpm.nodesource.com/setup_12.x | sudo bash -
+sudo yum install -y nodejs
+# Install yarn
+curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+sudo yum install -y yarn
+# Install Overseerr
+cd ~ && git clone https://github.com/sct/overseerr.git
+cd overseerr
+yarn install
+yarn build
+yarn start
+```
+
+**Updating**
+
+In order to update, you will need to re-build overseer.
+```bash
+cd ~/.overseerr
+git pull
+yarn install
+yarn build
+yarn start
+```
+{% endtab %}
+
 {% endtabs %}
 
 ## Swizzin \(Third party\)
