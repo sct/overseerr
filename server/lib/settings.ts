@@ -81,6 +81,14 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
     authUser?: string;
     authPass?: string;
     allowSelfSigned: boolean;
+    senderName: string;
+  };
+}
+
+export interface NotificationAgentTelegram extends NotificationAgentConfig {
+  options: {
+    botAPI: string;
+    chatId: string;
   };
 }
 
@@ -88,6 +96,7 @@ interface NotificationAgents {
   email: NotificationAgentEmail;
   discord: NotificationAgentDiscord;
   slack: NotificationAgentSlack;
+  telegram: NotificationAgentTelegram;
 }
 
 interface NotificationSettings {
@@ -140,6 +149,7 @@ class Settings {
               smtpPort: 587,
               secure: false,
               allowSelfSigned: false,
+              senderName: 'Overseerr',
             },
           },
           discord: {
@@ -154,6 +164,14 @@ class Settings {
             types: 0,
             options: {
               webhookUrl: '',
+            },
+          },
+          telegram: {
+            enabled: false,
+            types: 0,
+            options: {
+              botAPI: '',
+              chatId: '',
             },
           },
         },

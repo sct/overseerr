@@ -3,7 +3,7 @@ import type { ToastProps } from 'react-toast-notifications';
 
 const Toast: React.FC<ToastProps> = ({ appearance, children, onDismiss }) => {
   return (
-    <div className="toast flex items-end justify-center px-2 py-2 pointer-events-none sm:p-6 sm:items-start sm:justify-end">
+    <div className="toast flex items-end justify-center px-2 py-2 pointer-events-none sm:items-start sm:justify-end">
       <div className="max-w-sm w-full bg-gray-700 shadow-lg rounded-lg pointer-events-auto">
         <div className="rounded-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
           <div className="p-4">

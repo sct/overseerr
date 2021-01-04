@@ -155,10 +155,10 @@ const UserEdit: React.FC = () => {
 
   return (
     <>
-      <Header extraMargin={4}>
+      <Header>
         <FormattedMessage {...messages.edituser} />
       </Header>
-      <div className="px-4 space-y-6 sm:p-6 lg:pb-8">
+      <div className="space-y-6">
         <div className="flex flex-col space-y-6 text-white lg:flex-row lg:space-y-0 lg:space-x-6">
           <div className="flex-grow space-y-6">
             <div className="space-y-1">
@@ -229,7 +229,7 @@ const UserEdit: React.FC = () => {
           </div>
         </div>
         <div className="text-white">
-          <div className="sm:border-t sm:border-gray-200 sm:pt-5">
+          <div className="sm:border-t sm:border-gray-200">
             <div role="group" aria-labelledby="label-permissions">
               <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
                 <div>

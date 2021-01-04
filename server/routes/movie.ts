@@ -5,6 +5,7 @@ import { mapMovieResult } from '../models/Search';
 import Media from '../entity/Media';
 import RottenTomatoes from '../api/rottentomatoes';
 import logger from '../logger';
+import { MediaType } from '../constants/media';
 
 const movieRoutes = Router();
 
@@ -17,7 +18,7 @@ movieRoutes.get('/:id', async (req, res, next) => {
       language: req.query.language as string,
     });
 
-    const media = await Media.getMedia(tmdbMovie.id);
+    const media = await Media.getMedia(tmdbMovie.id, MediaType.MOVIE);
 
     return res.status(200).json(mapMovieDetails(tmdbMovie, media));
   } catch (e) {
@@ -49,7 +50,9 @@ movieRoutes.get('/:id/recommendations', async (req, res) => {
     results: results.results.map((result) =>
       mapMovieResult(
         result,
-        media.find((req) => req.tmdbId === result.id)
+        media.find(
+          (req) => req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+        )
       )
     ),
   });
@@ -75,7 +78,9 @@ movieRoutes.get('/:id/similar', async (req, res) => {
     results: results.results.map((result) =>
       mapMovieResult(
         result,
-        media.find((req) => req.tmdbId === result.id)
+        media.find(
+          (req) => req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+        )
       )
     ),
   });

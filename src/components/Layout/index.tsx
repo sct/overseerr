@@ -18,18 +18,18 @@ const Layout: React.FC = ({ children }) => {
   const router = useRouter();
 
   return (
-    <div className="min-h-full h-full flex bg-gray-900">
+    <div className="flex h-full min-w-0 min-h-full bg-gray-900">
       <Sidebar open={isSidebarOpen} setClosed={() => setSidebarOpen(false)} />
 
-      <div className="flex flex-col w-0 flex-1 md:ml-64 relative mb-16">
-        <div className="z-10 flex-shrink-0 flex h-16 bg-gray-600 shadow fixed right-0 left-0 md:left-64">
+      <div className="relative flex flex-col flex-1 w-0 min-w-0 mb-16 md:ml-64">
+        <div className="fixed left-0 right-0 z-10 flex flex-shrink-0 h-16 bg-gray-600 shadow md:left-64">
           <button
-            className="px-4 border-r border-gray-800 text-gray-200 focus:outline-none focus:bg-gray-300 focus:text-gray-600 md:hidden"
+            className="px-4 text-gray-200 border-r border-gray-800 focus:outline-none focus:bg-gray-300 focus:text-gray-600 md:hidden"
             aria-label="Open sidebar"
             onClick={() => setSidebarOpen(true)}
           >
             <svg
-              className="h-6 w-6"
+              className="w-6 h-6"
               stroke="currentColor"
               fill="none"
               viewBox="0 0 24 24"
@@ -42,7 +42,7 @@ const Layout: React.FC = ({ children }) => {
               />
             </svg>
           </button>
-          <div className="flex-1 px-4 flex justify-between">
+          <div className="flex justify-between flex-1 px-4">
             <SearchInput />
             <div className="flex items-center md:ml-6">
               <LanguagePicker />
@@ -51,18 +51,15 @@ const Layout: React.FC = ({ children }) => {
           </div>
         </div>
 
-        <main
-          className="relative z-0 top-16 focus:outline-none right-0"
-          tabIndex={0}
-        >
-          <div className="pt-2 pb-6 md:py-6">
-            <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
+        <main className="relative z-0 top-16 focus:outline-none" tabIndex={0}>
+          <div className="pt-2 pb-6">
+            <div className="px-4 mx-auto max-w-8xl">
               {router.pathname === '/' && hasPermission(Permission.ADMIN) && (
-                <div className="rounded-md bg-indigo-700 p-4 mt-2">
+                <div className="p-4 mt-2 bg-indigo-700 rounded-md">
                   <div className="flex">
                     <div className="flex-shrink-0">
                       <svg
-                        className="h-5 w-5 text-white"
+                        className="w-5 h-5 text-white"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -74,14 +71,14 @@ const Layout: React.FC = ({ children }) => {
                         />
                       </svg>
                     </div>
-                    <div className="ml-3 flex-1 md:flex md:justify-between">
+                    <div className="flex-1 ml-3 md:flex md:justify-between">
                       <p className="text-sm leading-5 text-white">
                         <FormattedMessage {...messages.alphawarning} />
                       </p>
                       <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
                         <a
                           href="http://github.com/sct/overseerr"
-                          className="whitespace-nowrap font-medium text-indigo-100 hover:text-white transition ease-in-out duration-150"
+                          className="font-medium text-indigo-100 transition duration-150 ease-in-out whitespace-nowrap hover:text-white"
                           target="_blank"
                           rel="noreferrer"
                         >

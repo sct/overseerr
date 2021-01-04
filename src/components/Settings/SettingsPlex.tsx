@@ -48,7 +48,7 @@ interface SyncStatus {
   running: boolean;
   progress: number;
   total: number;
-  currentLibrary: Library;
+  currentLibrary?: Library;
   libraries: Library[];
 }
 
@@ -86,12 +86,17 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
 
   const syncLibraries = async () => {
     setIsSyncing(true);
+
+    const params: { sync: boolean; enable?: string } = {
+      sync: true,
+    };
+
+    if (activeLibraries.length > 0) {
+      params.enable = activeLibraries.join(',');
+    }
+
     await axios.get('/api/v1/settings/plex/library', {
-      params: {
-        sync: true,
-        enable:
-          activeLibraries.length > 0 ? activeLibraries.join(',') : undefined,
-      },
+      params,
     });
     setIsSyncing(false);
     revalidate();
@@ -118,13 +123,16 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   const toggleLibrary = async (libraryId: string) => {
     setIsSyncing(true);
     if (activeLibraries.includes(libraryId)) {
+      const params: { enable?: string } = {};
+
+      if (activeLibraries.length > 1) {
+        params.enable = activeLibraries
+          .filter((id) => id !== libraryId)
+          .join(',');
+      }
+
       await axios.get('/api/v1/settings/plex/library', {
-        params: {
-          enable:
-            activeLibraries.length > 0
-              ? activeLibraries.filter((id) => id !== libraryId).join(',')
-              : undefined,
-        },
+        params,
       });
     } else {
       await axios.get('/api/v1/settings/plex/library', {
@@ -192,10 +200,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     {submitError}
                   </div>
                 )}
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     <FormattedMessage {...messages.servername} />
                   </label>
@@ -215,10 +223,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     </div>
                   </div>
                 </div>
-                <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="hostname"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     <FormattedMessage {...messages.hostname} />
                   </label>
@@ -240,10 +248,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                   <label
                     htmlFor="port"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     <FormattedMessage {...messages.port} />
                   </label>
@@ -263,10 +271,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   </div>
                 </div>
               </div>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                 <label
                   htmlFor="ssl"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                 >
                   {intl.formatMessage(messages.ssl)}
                 </label>
@@ -369,25 +377,29 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
             <div className="flex flex-col w-full sm:flex-row">
               {dataSync?.running && (
                 <>
-                  <div className="flex items-center mb-2 mr-0 sm:mb-0 sm:mr-2">
-                    <Badge>
-                      <FormattedMessage
-                        {...messages.currentlibrary}
-                        values={{ name: dataSync.currentLibrary.name }}
-                      />
-                    </Badge>
-                  </div>
+                  {dataSync.currentLibrary && (
+                    <div className="flex items-center mb-2 mr-0 sm:mb-0 sm:mr-2">
+                      <Badge>
+                        <FormattedMessage
+                          {...messages.currentlibrary}
+                          values={{ name: dataSync.currentLibrary.name }}
+                        />
+                      </Badge>
+                    </div>
+                  )}
                   <div className="flex items-center">
                     <Badge badgeType="warning">
                       <FormattedMessage
                         {...messages.librariesRemaining}
                         values={{
-                          count: dataSync.libraries.slice(
-                            dataSync.libraries.findIndex(
-                              (library) =>
-                                library.id === dataSync.currentLibrary.id
-                            ) + 1
-                          ).length,
+                          count: dataSync.currentLibrary
+                            ? dataSync.libraries.slice(
+                                dataSync.libraries.findIndex(
+                                  (library) =>
+                                    library.id === dataSync.currentLibrary?.id
+                                ) + 1
+                              ).length
+                            : 0,
                         }}
                       />
                     </Badge>

@@ -44,11 +44,11 @@ class JobPlexSync {
     this.isRecentOnly = isRecentOnly ?? false;
   }
 
-  private async getExisting(tmdbId: number) {
+  private async getExisting(tmdbId: number, mediaType: MediaType) {
     const mediaRepository = getRepository(Media);
 
     const existing = await mediaRepository.findOne({
-      where: { tmdbId: tmdbId },
+      where: { tmdbId: tmdbId, mediaType },
     });
 
     return existing;
@@ -78,7 +78,10 @@ class JobPlexSync {
           }
         });
 
-        const existing = await this.getExisting(newMedia.tmdbId);
+        const existing = await this.getExisting(
+          newMedia.tmdbId,
+          MediaType.MOVIE
+        );
 
         if (existing && existing.status === MediaStatus.AVAILABLE) {
           this.log(`Title exists and is already available ${metadata.title}`);
@@ -115,7 +118,7 @@ class JobPlexSync {
           throw new Error('Unable to find TMDB ID');
         }
 
-        const existing = await this.getExisting(tmdbMovieId);
+        const existing = await this.getExisting(tmdbMovieId, MediaType.MOVIE);
         if (existing && existing.status === MediaStatus.AVAILABLE) {
           this.log(`Title exists and is already available ${plexitem.title}`);
         } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
@@ -184,9 +187,7 @@ class JobPlexSync {
       if (tvShow && metadata) {
         // Lets get the available seasons from plex
         const seasons = tvShow.seasons;
-        const media = await mediaRepository.findOne({
-          where: { tmdbId: tvShow.id, mediaType: MediaType.TV },
-        });
+        const media = await this.getExisting(tvShow.id, MediaType.TV);
 
         const newSeasons: Season[] = [];
 

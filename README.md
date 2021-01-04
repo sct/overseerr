@@ -16,7 +16,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr">
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-25-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-26-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -36,15 +36,20 @@
 
 - User profiles.
 - User settings page (to give users the ability to modify their Overseerr experience to their liking).
-- Version update notifications in-app.
 - 4K requests (Includes multi-radarr/sonarr management for media)
 
 ## Planned Features
 
-- More notification types (Slack/Telegram/etc.).
+- More notification types.
 - Issues system. This will allow users to report issues with content on your media server.
 - Local user system (for those who don't use Plex).
 - Compatibility APIs (to work with existing tools in your system).
+
+## Getting Started
+
+Check out our documenation for steps on how to install and run Overseerr:
+
+https://docs.overseerr.dev/getting-started/installation
 
 ## Running Overseerr
 
@@ -70,6 +75,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ## Support
 
+- Check out the [Overseerr Documentation](https://docs.overseerr.dev/) before asking for help. Your question might already be in the [FAQ](https://docs.overseerr.dev/support/faq).
 - You can get support on [Discord](https://discord.gg/PkCWJSeCk7).
 - You can ask questions in the Help category of our [GitHub Discussions](https://github.com/sct/overseerr/discussions).
 - Bugs/Feature Requests can be opened via a [GitHub issue](https://github.com/sct/overseerr/issues).
@@ -123,13 +129,14 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Panzer1119"><img src="https://avatars1.githubusercontent.com/u/23016343?v=4" width="100px;" alt=""/><br /><sub><b>Paul Hagedorn</b></sub></a><br /><a href="#translation-Panzer1119" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/Shagon94"><img src="https://avatars3.githubusercontent.com/u/9140783?v=4" width="100px;" alt=""/><br /><sub><b>Shagon94</b></sub></a><br /><a href="#translation-Shagon94" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/sebstrgg"><img src="https://avatars3.githubusercontent.com/u/27026694?v=4" width="100px;" alt=""/><br /><sub><b>sebstrgg</b></sub></a><br /><a href="#translation-sebstrgg" title="Translation">🌍</a></td>
-    <td align="center"><a href="https://github.com/danshilm"><img src="https://avatars2.githubusercontent.com/u/20923978?v=4" width="100px;" alt=""/><br /><sub><b>Danshil Mungur</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=danshilm" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/danshilm"><img src="https://avatars2.githubusercontent.com/u/20923978?v=4" width="100px;" alt=""/><br /><sub><b>Danshil Mungur</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=danshilm" title="Code">💻</a> <a href="https://github.com/sct/overseerr/commits?author=danshilm" title="Documentation">📖</a></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/doob187"><img src="https://avatars1.githubusercontent.com/u/60312740?v=4" width="100px;" alt=""/><br /><sub><b>doob187</b></sub></a><br /><a href="#infra-doob187" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
     <td align="center"><a href="https://github.com/johnpyp"><img src="https://avatars2.githubusercontent.com/u/20625636?v=4" width="100px;" alt=""/><br /><sub><b>johnpyp</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=johnpyp" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ankarhem"><img src="https://avatars1.githubusercontent.com/u/14110063?v=4" width="100px;" alt=""/><br /><sub><b>Jakob Ankarhem</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=ankarhem" title="Documentation">📖</a> <a href="https://github.com/sct/overseerr/commits?author=ankarhem" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/jayesh100"><img src="https://avatars1.githubusercontent.com/u/8022175?v=4" width="100px;" alt=""/><br /><sub><b>Jayesh</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=jayesh100" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/flying-sausages"><img src="https://avatars1.githubusercontent.com/u/23618693?v=4" width="100px;" alt=""/><br /><sub><b>flying-sausages</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=flying-sausages" title="Documentation">📖</a></td>
   </tr>
 </table>
 

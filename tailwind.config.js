@@ -58,7 +58,7 @@ module.exports = {
     },
   },
   variants: {
-    padding: ['first', 'last'],
+    padding: ['first', 'last', 'responsive'],
     borderWidth: ['first', 'last'],
     margin: ['first', 'last', 'responsive'],
     boxShadow: ['group-focus'],

@@ -855,6 +855,22 @@ components:
           properties:
             webhookUrl:
               type: string
+    TelegramSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            botAPI:
+              type: string
+            chatId:
+              type: string
     NotificationEmailSettings:
       type: object
       properties:
@@ -870,6 +886,9 @@ components:
             emailFrom:
               type: string
               example: no-reply@example.com
+            senderName:
+              type: string
+              example: Overseerr
             smtpHost:
               type: string
               example: 127.0.0.1
@@ -1083,6 +1102,26 @@ components:
       name: X-Api-Key
 
 paths:
+  /status:
+    get:
+      summary: Return Overseerr version
+      description: Returns the current Overseerr version in JSON format
+      security: []
+      tags:
+        - public
+      responses:
+        '200':
+          description: Returned version
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: 1.0.0
+                  commitTag:
+                    type: string
   /settings/main:
     get:
       summary: Returns main settings
@@ -1632,6 +1671,52 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DiscordSettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/telegram:
+    get:
+      summary: Return current telegram notification settings
+      description: Returns current telegram notification settings in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned telegram settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelegramSettings'
+    post:
+      summary: Update telegram notification settings
+      description: Update current telegram notification settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelegramSettings'
+  /settings/notifications/telegram/test:
+    post:
+      summary: Test the provided telegram settings
+      description: Sends a test notification to the telegram agent
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramSettings'
       responses:
         '204':
           description: Test notification attempted

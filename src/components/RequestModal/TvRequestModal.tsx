@@ -224,7 +224,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     >
       <div className="flex flex-col">
         <div className="-mx-4 overflow-auto sm:mx-0 max-h-96">
-          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+          <div className="inline-block min-w-full py-2 align-middle">
             <div className="overflow-hidden shadow sm:rounded-lg">
               <table className="min-w-full">
                 <thead>
@@ -256,13 +256,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                         ></span>
                       </span>
                     </th>
-                    <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
+                    <th className="px-1 md:px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
                       {intl.formatMessage(messages.season)}
                     </th>
-                    <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
+                    <th className="px-5 md:px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
                       {intl.formatMessage(messages.numberofepisodes)}
                     </th>
-                    <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
+                    <th className="px-2 md:px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
                       {intl.formatMessage(messages.status)}
                     </th>
                   </tr>
@@ -320,17 +320,17 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                               ></span>
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-sm font-medium leading-5 text-gray-100 whitespace-nowrap">
+                          <td className="px-1 md:px-6 py-4 text-sm font-medium leading-5 text-gray-100 whitespace-nowrap">
                             {season.seasonNumber === 0
                               ? intl.formatMessage(messages.extras)
                               : intl.formatMessage(messages.seasonnumber, {
                                   number: season.seasonNumber,
                                 })}
                           </td>
-                          <td className="px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
+                          <td className="px-5 md:px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
                             {season.episodeCount}
                           </td>
-                          <td className="px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
+                          <td className="pr-2 md:px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
                             {!seasonRequest && !mediaSeason && (
                               <Badge>
                                 {intl.formatMessage(messages.notrequested)}

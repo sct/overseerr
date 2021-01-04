@@ -56,3 +56,7 @@ body {
 code {
   @apply px-2 py-1 bg-gray-800 rounded-md;
 }
+
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}

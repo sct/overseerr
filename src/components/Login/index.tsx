@@ -51,31 +51,33 @@ const Login: React.FC = () => {
   }, [user, router]);
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+    <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900">
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
           '/images/rotate2.jpg',
           '/images/rotate3.jpg',
           '/images/rotate4.jpg',
+          '/images/rotate5.jpg',
+          '/images/rotate6.jpg',
         ]}
       />
-      <div className="absolute top-4 right-4 z-50">
+      <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />
       </div>
-      <div className="px-4 sm:px-2 md:px-0 sm:mx-auto sm:w-full sm:max-w-md relative z-40">
+      <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
         <img
           src="/logo.png"
-          className="mx-auto max-h-32 w-auto"
+          className="w-auto mx-auto max-h-32"
           alt="Overseerr Logo"
         />
-        <h2 className="mt-2 text-center text-3xl leading-9 font-extrabold text-gray-100">
+        <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
           <FormattedMessage {...messages.signinplex} />
         </h2>
       </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-50">
+      <div className="relative z-50 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div
-          className="bg-gray-800 bg-opacity-50 py-8 px-4 shadow sm:rounded-lg sm:px-10"
+          className="px-4 py-8 bg-gray-800 bg-opacity-50 shadow sm:rounded-lg"
           style={{ backdropFilter: 'blur(5px)' }}
         >
           <Transition
@@ -87,11 +89,11 @@ const Login: React.FC = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="rounded-md bg-red-600 p-4 mb-4">
+            <div className="p-4 mb-4 bg-red-600 rounded-md">
               <div className="flex">
                 <div className="flex-shrink-0">
                   <svg
-                    className="h-5 w-5 text-red-300"
+                    className="w-5 h-5 text-red-300"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"

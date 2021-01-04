@@ -7,6 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useToasts } from 'react-toast-notifications';
+import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
@@ -19,6 +20,7 @@ const messages = defineMessages({
   discordsettingsfailed: 'Discord notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
+  notificationtypes: 'Notification Types',
 });
 
 const NotificationsDiscord: React.FC = () => {
@@ -69,7 +71,7 @@ const NotificationsDiscord: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid }) => {
+      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
           await axios.post('/api/v1/settings/notifications/discord/test', {
             enabled: true,
@@ -87,10 +89,10 @@ const NotificationsDiscord: React.FC = () => {
 
         return (
           <Form>
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
               <label
-                htmlFor="isDefault"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                htmlFor="enabled"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.agentenabled)}
               </label>
@@ -99,19 +101,19 @@ const NotificationsDiscord: React.FC = () => {
                   type="checkbox"
                   id="enabled"
                   name="enabled"
-                  className="form-checkbox rounded-md h-6 w-6 text-indigo-600 transition duration-150 ease-in-out"
+                  className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                 />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="name"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.webhookUrl)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
-                <div className="max-w-lg flex rounded-md shadow-sm">
+                <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="webhookUrl"
                     name="webhookUrl"
@@ -119,17 +121,41 @@ const NotificationsDiscord: React.FC = () => {
                     placeholder={intl.formatMessage(
                       messages.webhookUrlPlaceholder
                     )}
-                    className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
                 {errors.webhookUrl && touched.webhookUrl && (
-                  <div className="text-red-500 mt-2">{errors.webhookUrl}</div>
+                  <div className="mt-2 text-red-500">{errors.webhookUrl}</div>
                 )}
               </div>
             </div>
-            <div className="mt-8 border-t border-gray-700 pt-5">
+            <div className="mt-6">
+              <div role="group" aria-labelledby="label-permissions">
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                  <div>
+                    <div
+                      className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
+                      id="label-types"
+                    >
+                      {intl.formatMessage(messages.notificationtypes)}
+                    </div>
+                  </div>
+                  <div className="mt-4 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg">
+                      <NotificationTypeSelector
+                        currentTypes={values.types}
+                        onUpdate={(newTypes) =>
+                          setFieldValue('types', newTypes)
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="pt-5 mt-8 border-t border-gray-700">
               <div className="flex justify-end">
-                <span className="ml-3 inline-flex rounded-md shadow-sm">
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="warning"
                     disabled={isSubmitting || !isValid}
@@ -142,7 +168,7 @@ const NotificationsDiscord: React.FC = () => {
                     {intl.formatMessage(messages.test)}
                   </Button>
                 </span>
-                <span className="ml-3 inline-flex rounded-md shadow-sm">
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"

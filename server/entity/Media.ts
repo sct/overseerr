@@ -40,12 +40,15 @@ class Media {
     }
   }
 
-  public static async getMedia(id: number): Promise<Media | undefined> {
+  public static async getMedia(
+    id: number,
+    mediaType: MediaType
+  ): Promise<Media | undefined> {
     const mediaRepository = getRepository(Media);
 
     try {
       const media = await mediaRepository.findOne({
-        where: { tmdbId: id },
+        where: { tmdbId: id, mediaType },
         relations: ['requests'],
       });
 
@@ -62,7 +65,7 @@ class Media {
   @Column({ type: 'varchar' })
   public mediaType: MediaType;
 
-  @Column({ unique: true })
+  @Column()
   @Index()
   public tmdbId: number;
 
@@ -70,7 +73,7 @@ class Media {
   @Index()
   public tvdbId?: number;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ nullable: true })
   @Index()
   public imdbId?: string;
 

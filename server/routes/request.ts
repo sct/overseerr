@@ -102,7 +102,7 @@ requestRoutes.post(
           : await tmdb.getTvShow({ tvId: req.body.mediaId });
 
       let media = await mediaRepository.findOne({
-        where: { tmdbId: req.body.mediaId },
+        where: { tmdbId: req.body.mediaId, mediaType: req.body.mediaType },
         relations: ['requests'],
       });
 
@@ -164,7 +164,7 @@ requestRoutes.post(
 
         if (finalSeasons.length === 0) {
           return next({
-            status: 500,
+            status: 202,
             message: 'No seasons available to request',
           });
         }
