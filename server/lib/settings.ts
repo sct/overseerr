@@ -92,11 +92,21 @@ export interface NotificationAgentTelegram extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentPushover extends NotificationAgentConfig {
+  options: {
+    accessToken: string;
+    userToken: string;
+    priority: number;
+    sound: string;
+  };
+}
+
 interface NotificationAgents {
   email: NotificationAgentEmail;
   discord: NotificationAgentDiscord;
   slack: NotificationAgentSlack;
   telegram: NotificationAgentTelegram;
+  pushover: NotificationAgentPushover;
 }
 
 interface NotificationSettings {
@@ -172,6 +182,16 @@ class Settings {
             options: {
               botAPI: '',
               chatId: '',
+            },
+          },
+          pushover: {
+            enabled: false,
+            types: 0,
+            options: {
+              accessToken: '',
+              userToken: '',
+              priority: 0,
+              sound: '',
             },
           },
         },
