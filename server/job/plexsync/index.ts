@@ -263,17 +263,21 @@ class JobPlexSync {
 
           // first try to lookup tvshow by tvdbid
           if (result?.tvdbId) {
-              const extResponse = await this.tmdb.getByExternalId({
-                externalId: result.tvdbId,
-                type: 'tvdb',
+            const extResponse = await this.tmdb.getByExternalId({
+              externalId: result.tvdbId,
+              type: 'tvdb',
+            });
+            if (extResponse.tv_results[0]) {
+              tvShow = await this.tmdb.getTvShow({
+                tvId: extResponse.tv_results[0].id,
               });
-              if (extResponse.tv_results[0]) {
-                tvShow = await this.tmdb.getTvShow({
-                  tvId: extResponse.tv_results[0].id,
-                });
-              }
-            await this.processHamaSpecials(metadata, result.tvdbId);
+            } else {
+              this.log(
+                `Missing TVDB ${result.tvdbId} entry in TMDB for AniDB ${anidbId}`
+              );
             }
+            await this.processHamaSpecials(metadata, result.tvdbId);
+          }
 
           if (!tvShow) {
             // if lookup of tvshow above failed, then try movie with tmdbid/imdbid
