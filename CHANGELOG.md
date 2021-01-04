@@ -1,3 +1,41 @@
+# [1.15.0](https://github.com/sct/overseerr/compare/v1.14.1...v1.15.0) (2021-01-04)
+
+
+### Bug Fixes
+
+* **api:** return 202 when same seasons are requested again ([5c84702](https://github.com/sct/overseerr/commit/5c847026aad79fcac4d020786ded9f867696c226))
+* **build:** fixes build to include commit tag for app build step ([289864a](https://github.com/sct/overseerr/commit/289864af1a995ce04834bf8a220cc238e1954d19))
+* **docs:** fix typo in build instructions ([#503](https://github.com/sct/overseerr/issues/503)) ([2b27a71](https://github.com/sct/overseerr/commit/2b27a715b07c27200ba1e5e9623629a34389276d))
+* **frontend:** add i18n for request text on titlecard ([a524b9c](https://github.com/sct/overseerr/commit/a524b9c4c8968f6823d33eb270dc26069fe4a725))
+* **frontend:** add localized strings for status checker ([2dcda39](https://github.com/sct/overseerr/commit/2dcda39d40d820419e098bd6f1101eb820e5b42d))
+* **frontend:** center text in movie auto-approve modal on small screens ([#510](https://github.com/sct/overseerr/issues/510)) ([1438b08](https://github.com/sct/overseerr/commit/1438b08cf0b358d79c6688c64be99f1718ec2d23)), closes [#507](https://github.com/sct/overseerr/issues/507)
+* **frontend:** change titlecard to only have a request button ([b5a3a7a](https://github.com/sct/overseerr/commit/b5a3a7a89fcaf86dd794dc419711677b53646577))
+* **frontend:** combine duplicate credits on a persons detail page ([d188f6f](https://github.com/sct/overseerr/commit/d188f6ffadff1564c47d5f33138e35498bed29fd)), closes [#504](https://github.com/sct/overseerr/issues/504)
+* **frontend:** disable pointer-events on titlecard badges ([ce06879](https://github.com/sct/overseerr/commit/ce0687922a94588b3492e8ddf2e84f54dd1a0d4e))
+* **frontend:** fix count of requests in request list ([f124d73](https://github.com/sct/overseerr/commit/f124d732a2911abdccb5abc11471efe61cc20f7a))
+* **frontend:** fix sliders overflowing on firefox ([67ac9e0](https://github.com/sct/overseerr/commit/67ac9e075f0ca1cfe7e4766d9168815d7ab600fa)), closes [#566](https://github.com/sct/overseerr/issues/566)
+* **frontend:** full season request modal fits on a smaller mobile UI ([#535](https://github.com/sct/overseerr/issues/535)) ([12db7a0](https://github.com/sct/overseerr/commit/12db7a065ad566b47d46de4b949343290894f153))
+* **frontend:** handle currentLibrary possibly being null on first manual sync ([93b57a7](https://github.com/sct/overseerr/commit/93b57a76f10a823615ca11ff59f523b67aa30fad))
+* **frontend:** increase titlecard status badge size on larger screens ([ba106c4](https://github.com/sct/overseerr/commit/ba106c447d76db2f9ac70a60c5b38cc60ab554fe))
+* **frontend:** search clear button now correctly triggers routing ([343f466](https://github.com/sct/overseerr/commit/343f466788abc308b91a414ef61bba816ac8875c))
+* **frontend:** set locale cookie expiration to be much longer ([fae4818](https://github.com/sct/overseerr/commit/fae481895736eab81d52eb93788beb00669fb355))
+* **frontend:** show movie/series badges always ([8cbf39a](https://github.com/sct/overseerr/commit/8cbf39a9d12eaee7720fa4721c350c1ef9dee856))
+* **frontend:** update login/setup images ([058fb65](https://github.com/sct/overseerr/commit/058fb65495baa08a0bd4c9e0aef320c6fc7d017b))
+* **holiday:** remove special holiday slider ([8c09033](https://github.com/sct/overseerr/commit/8c0903393cf2cb2a929ba70a8ab6ddcc4cba0574))
+* correctly deal with tmdb id duplicates between movies/series ([721ed9a](https://github.com/sct/overseerr/commit/721ed9a93087a57ae749388bddcacf26022e3df6)), closes [#526](https://github.com/sct/overseerr/issues/526)
+* use new commit tag file for app version as well ([d00e470](https://github.com/sct/overseerr/commit/d00e470b55327489b49d770144b7cfdb24045be6))
+
+
+### Features
+
+* **email:** add sendername to email notification ([#506](https://github.com/sct/overseerr/issues/506)) ([0185bb1](https://github.com/sct/overseerr/commit/0185bb1a7084c1faeb61fb1c63e34e26732711c8))
+* **frontend:** add clear-field-icon to search field ([#498](https://github.com/sct/overseerr/issues/498)) ([7434a26](https://github.com/sct/overseerr/commit/7434a26f76b5e9f74918f3e1a34443d20ecfcbe4))
+* **frontend:** add documentation link to about page ([c034496](https://github.com/sct/overseerr/commit/c034496f557a031aed35cd28dc7221d8cdf36643))
+* **frontend:** add telegram integration ([#491](https://github.com/sct/overseerr/issues/491)) ([c8d4d67](https://github.com/sct/overseerr/commit/c8d4d674f412082ad9e9da09abd79660365cf728))
+* **frontend:** filter/sorting for request list ([5add44c](https://github.com/sct/overseerr/commit/5add44cfb0379aa6fed7c3b867230292feacc684)), closes [#431](https://github.com/sct/overseerr/issues/431)
+* **notifications:** control notifcation types per agent ([8af6a1f](https://github.com/sct/overseerr/commit/8af6a1f566769c583af7dd9e18d162717835b7cc)), closes [#513](https://github.com/sct/overseerr/issues/513)
+* status checker to prompt users to reload their frontend when app version changes ([75a4264](https://github.com/sct/overseerr/commit/75a426437a4182e21da13684066966dd5bf8fc5e))
+
 ## [1.14.1](https://github.com/sct/overseerr/compare/v1.14.0...v1.14.1) (2021-01-02)
 
 
