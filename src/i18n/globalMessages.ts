@@ -6,6 +6,7 @@ const globalMessages = defineMessages({
   processing: 'Processing',
   unavailable: 'Unavailable',
   requested: 'Requested',
+  request: 'Request',
   failed: 'Failed',
   pending: 'Pending',
   declined: 'Declined',

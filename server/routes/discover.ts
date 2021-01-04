@@ -26,7 +26,9 @@ discoverRoutes.get('/movies', async (req, res) => {
     results: data.results.map((result) =>
       mapMovieResult(
         result,
-        media.find((req) => req.tmdbId === result.id)
+        media.find(
+          (req) => req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+        )
       )
     ),
   });

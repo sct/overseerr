@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import TruncateMarkup from 'react-truncate-markup';
 import useSWR from 'swr';
 import type { PersonDetail } from '../../../server/models/Person';
@@ -11,6 +11,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
 import ImageFader from '../Common/ImageFader';
 import Ellipsis from '../../assets/ellipsis.svg';
+import { groupBy } from 'lodash';
 
 const messages = defineMessages({
   appearsin: 'Appears in',
@@ -35,6 +36,42 @@ const PersonDetails: React.FC = () => {
     `/api/v1/person/${router.query.personId}/combined_credits?language=${locale}`
   );
 
+  const sortedCast = useMemo(() => {
+    const grouped = groupBy(combinedCredits?.cast ?? [], 'id');
+
+    const reduced = Object.values(grouped).map((objs) => ({
+      ...objs[0],
+      character: objs.map((pos) => pos.character).join(', '),
+    }));
+
+    return reduced.sort((a, b) => {
+      const aVotes = a.voteCount ?? 0;
+      const bVotes = b.voteCount ?? 0;
+      if (aVotes > bVotes) {
+        return -1;
+      }
+      return 1;
+    });
+  }, [combinedCredits]);
+
+  const sortedCrew = useMemo(() => {
+    const grouped = groupBy(combinedCredits?.crew ?? [], 'id');
+
+    const reduced = Object.values(grouped).map((objs) => ({
+      ...objs[0],
+      job: objs.map((pos) => pos.job).join(', '),
+    }));
+
+    return reduced.sort((a, b) => {
+      const aVotes = a.voteCount ?? 0;
+      const bVotes = b.voteCount ?? 0;
+      if (aVotes > bVotes) {
+        return -1;
+      }
+      return 1;
+    });
+  }, [combinedCredits]);
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -42,24 +79,6 @@ const PersonDetails: React.FC = () => {
   if (!data) {
     return <Error statusCode={404} />;
   }
-
-  const sortedCast = combinedCredits?.cast.sort((a, b) => {
-    const aVotes = a.voteCount ?? 0;
-    const bVotes = b.voteCount ?? 0;
-    if (aVotes > bVotes) {
-      return -1;
-    }
-    return 1;
-  });
-
-  const sortedCrew = combinedCredits?.crew.sort((a, b) => {
-    const aVotes = a.voteCount ?? 0;
-    const bVotes = b.voteCount ?? 0;
-    if (aVotes > bVotes) {
-      return -1;
-    }
-    return 1;
-  });
 
   const isLoading = !combinedCredits && !errorCombinedCredits;
 

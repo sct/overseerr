@@ -13,6 +13,7 @@ import { LanguageContext, AvailableLocales } from '../context/LanguageContext';
 import Head from 'next/head';
 import Toast from '../components/Toast';
 import { InteractionProvider } from '../context/InteractionContext';
+import StatusChecker from '../components/StatusChacker';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: string): Promise<any> => {
@@ -74,7 +75,10 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 
   useEffect(() => {
     loadLocaleData(currentLocale).then(setMessages);
-    setCookie(null, 'locale', currentLocale, { path: '/' });
+    setCookie(null, 'locale', currentLocale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365 * 10,
+    });
   }, [currentLocale]);
 
   if (router.pathname.match(/(login|setup)/)) {
@@ -104,6 +108,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
               <Head>
                 <title>Overseerr</title>
               </Head>
+              <StatusChecker />
               <UserContext initialUser={user}>{component}</UserContext>
             </ToastProvider>
           </InteractionProvider>

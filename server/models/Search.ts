@@ -3,6 +3,7 @@ import type {
   TmdbPersonResult,
   TmdbTvResult,
 } from '../api/themoviedb';
+import { MediaType as MainMediaType } from '../constants/media';
 import Media from '../entity/Media';
 
 export type MediaType = 'tv' | 'movie' | 'person';
@@ -122,12 +123,18 @@ export const mapSearchResults = (
       case 'movie':
         return mapMovieResult(
           result,
-          media?.find((req) => req.tmdbId === result.id)
+          media?.find(
+            (req) =>
+              req.tmdbId === result.id && req.mediaType === MainMediaType.MOVIE
+          )
         );
       case 'tv':
         return mapTvResult(
           result,
-          media?.find((req) => req.tmdbId === result.id)
+          media?.find(
+            (req) =>
+              req.tmdbId === result.id && req.mediaType === MainMediaType.TV
+          )
         );
       default:
         return mapPersonResult(result);

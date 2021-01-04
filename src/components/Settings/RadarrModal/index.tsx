@@ -274,10 +274,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               }
             >
               <div className="mb-6">
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                   <label
                     htmlFor="isDefault"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.defaultserver)}
                   </label>
@@ -290,10 +290,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.servername)}
                   </label>
@@ -318,10 +318,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="hostname"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.hostname)}
                   </label>
@@ -347,10 +347,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                   <label
                     htmlFor="port"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.port)}
                   </label>
@@ -371,10 +371,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                   <label
                     htmlFor="ssl"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.ssl)}
                   </label>
@@ -391,10 +391,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="apiKey"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.apiKey)}
                   </label>
@@ -419,10 +419,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="baseUrl"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
@@ -447,10 +447,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="activeProfileId"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.qualityprofile)}
                   </label>
@@ -490,10 +490,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-8005">
                   <label
                     htmlFor="rootFolder"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.rootfolder)}
                   </label>
@@ -531,10 +531,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="minimumAvailability"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.minimumAvailability)}
                   </label>
@@ -560,10 +560,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                   <label
                     htmlFor="is4k"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.server4k)}
                   </label>

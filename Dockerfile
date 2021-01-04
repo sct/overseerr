@@ -1,5 +1,8 @@
 FROM node:12.18-alpine AS BUILD_IMAGE
 
+ARG COMMIT_TAG
+ENV COMMIT_TAG=${COMMIT_TAG}
+
 COPY . /app
 WORKDIR /app
 
@@ -24,6 +27,8 @@ WORKDIR /app
 COPY --from=BUILD_IMAGE /app/dist ./dist
 COPY --from=BUILD_IMAGE /app/.next ./.next
 COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
+
+RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
 
 CMD yarn start
 

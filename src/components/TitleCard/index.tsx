@@ -1,8 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import type { MediaType } from '../../../server/models/Search';
-import Available from '../../assets/available.svg';
-import Requested from '../../assets/requested.svg';
-import Unavailable from '../../assets/unavailable.svg';
 import { withProperties } from '../../utils/typeHelpers';
 import Transition from '../Transition';
 import Placeholder from './Placeholder';
@@ -11,6 +8,7 @@ import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
 import { defineMessages, useIntl } from 'react-intl';
 import { useIsTouch } from '../../hooks/useIsTouch';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
   movie: 'Movie',
@@ -99,32 +97,63 @@ const TitleCard: React.FC<TitleCardProps> = ({
       >
         <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden shadow-xl">
           <div
-            className={`absolute left-0 top-0 rounded-tl-md rounded-br-md z-40 ${
+            className={`absolute left-2 top-2 rounded-md z-40 pointer-events-none ${
               mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
             }`}
           >
-            <div className="flex items-center h-4 px-2 py-1 text-xs font-normal text-center text-white uppercase">
+            <div className="flex items-center h-4 px-1 py-2 text-xs font-normal tracking-wider text-center text-white uppercase">
               {mediaType === 'movie'
                 ? intl.formatMessage(messages.movie)
                 : intl.formatMessage(messages.tvshow)}
             </div>
           </div>
-
-          <div
-            className="absolute top-0 right-0 z-40"
-            style={{
-              right: '-1px',
-            }}
-          >
+          <div className="absolute z-40 pointer-events-none top-2 right-2">
             {(currentStatus === MediaStatus.AVAILABLE ||
               currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
-              <Available className="rounded-tr-md" />
+              <div className="flex items-center justify-center w-4 h-4 text-white bg-green-400 border border-green-600 rounded-full sm:w-5 sm:h-5">
+                <svg
+                  className="w-3 h-3 sm:w-4 sm:h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
             )}
             {currentStatus === MediaStatus.PENDING && (
-              <Requested className="rounded-tr-md" />
+              <div className="flex items-center justify-center w-4 h-4 text-white bg-yellow-500 border border-yellow-600 rounded-full sm:w-5 sm:h-5">
+                <svg
+                  className="w-3 h-3 sm:w-4 sm:h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                </svg>
+              </div>
             )}
             {currentStatus === MediaStatus.PROCESSING && (
-              <Unavailable className="rounded-tr-md" />
+              <div className="flex items-center justify-center w-4 h-4 text-white bg-indigo-500 border border-indigo-600 rounded-full sm:w-5 sm:h-5">
+                <svg
+                  className="w-3 h-3 sm:w-4 sm:h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
             )}
           </div>
           <Transition
@@ -173,7 +202,13 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   }}
                 >
                   <div className="flex items-end w-full h-full">
-                    <div className="px-2 text-white pb-11">
+                    <div
+                      className={`px-2 text-white ${
+                        currentStatus && currentStatus !== MediaStatus.UNKNOWN
+                          ? 'pb-2'
+                          : 'pb-11'
+                      }`}
+                    >
                       {year && <div className="text-sm">{year}</div>}
 
                       <h1 className="text-xl leading-tight whitespace-normal">
@@ -182,7 +217,11 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       <div
                         className="text-xs whitespace-normal"
                         style={{
-                          WebkitLineClamp: 3,
+                          WebkitLineClamp:
+                            currentStatus &&
+                            currentStatus !== MediaStatus.UNKNOWN
+                              ? 5
+                              : 3,
                           display: '-webkit-box',
                           overflow: 'hidden',
                           WebkitBoxOrient: 'vertical',
@@ -196,42 +235,16 @@ const TitleCard: React.FC<TitleCardProps> = ({
               </Link>
 
               <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-2">
-                <Link
-                  href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}
-                >
-                  <a className="flex w-full text-center text-white transition duration-150 ease-in-out bg-indigo-500 rounded-sm cursor-pointer h-7 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700">
-                    <svg
-                      className="w-4 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  </a>
-                </Link>
                 {(!currentStatus || currentStatus === MediaStatus.UNKNOWN) && (
                   <button
                     onClick={(e) => {
                       e.preventDefault();
                       setShowRequestModal(true);
                     }}
-                    className="w-full ml-2 text-center text-white transition duration-150 ease-in-out bg-indigo-500 rounded-sm h-7 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
+                    className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-500 rounded-sm h-7 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
                   >
                     <svg
-                      className="w-4 mx-auto"
+                      className="w-4 mr-1"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -244,70 +257,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
                         d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                       />
                     </svg>
-                  </button>
-                )}
-                {currentStatus === MediaStatus.PENDING && (
-                  <button
-                    className="w-full ml-2 text-center text-yellow-500 border border-yellow-500 rounded-sm cursor-default h-7"
-                    disabled
-                  >
-                    <svg
-                      className="w-4 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                      />
-                    </svg>
-                  </button>
-                )}
-                {currentStatus === MediaStatus.PROCESSING && (
-                  <button
-                    className="w-full ml-2 text-center text-indigo-500 border border-indigo-500 rounded-sm cursor-default h-7"
-                    disabled
-                  >
-                    <svg
-                      className="w-4 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </button>
-                )}
-                {(currentStatus === MediaStatus.AVAILABLE ||
-                  currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
-                  <button
-                    className="w-full ml-2 text-center text-green-400 border border-green-400 rounded-sm cursor-default h-7"
-                    disabled
-                  >
-                    <svg
-                      className="w-4 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <span className="text-xs">
+                      {intl.formatMessage(globalMessages.request)}
+                    </span>
                   </button>
                 )}
               </div>

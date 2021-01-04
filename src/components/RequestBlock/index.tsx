@@ -43,7 +43,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
 
   return (
     <div className="block">
-      <div className="px-4 py-4 sm:px-6">
+      <div className="px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="mr-6 flex-col items-center text-sm leading-5 text-gray-300 flex-1 min-w-0">
             <div className="flex flex-nowrap mb-1 white">

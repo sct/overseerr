@@ -160,7 +160,7 @@ const Slider: React.FC<SliderProps> = ({
 
   return (
     <div className="relative">
-      <div className="absolute flex text-gray-400 right-0 -mt-10">
+      <div className="absolute right-0 flex -mt-10 text-gray-400">
         <button
           className={`${
             scrollPos.isStart ? 'cursor-not-allowed text-gray-800' : ''
@@ -207,14 +207,14 @@ const Slider: React.FC<SliderProps> = ({
         </button>
       </div>
       <div
-        className="relative overflow-x-scroll whitespace-nowrap hide-scrollbar overscroll-x-contain -ml-4 -mr-4 px-2 overflow-y-auto"
+        className="relative px-2 -ml-4 -mr-4 overflow-x-scroll overflow-y-auto whitespace-nowrap hide-scrollbar overscroll-x-contain"
         ref={containerRef}
         onScroll={onScroll}
       >
         {items?.map((item, index) => (
           <div
             key={`${sliderKey}-${index}`}
-            className="px-2 inline-block align-top"
+            className="inline-block px-2 align-top"
           >
             {item}
           </div>
@@ -223,13 +223,13 @@ const Slider: React.FC<SliderProps> = ({
           [...Array(10)].map((_item, i) => (
             <div
               key={`placeholder-${i}`}
-              className="px-2 inline-block align-top"
+              className="inline-block px-2 align-top"
             >
               {placeholder}
             </div>
           ))}
         {isEmpty && (
-          <div className="text-center text-white mt-16 mb-16">
+          <div className="mt-16 mb-16 text-center text-white">
             {emptyMessage ? (
               emptyMessage
             ) : (

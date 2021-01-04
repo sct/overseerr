@@ -1,4 +1,5 @@
 import { TmdbCollection } from '../api/themoviedb';
+import { MediaType } from '../constants/media';
 import Media from '../entity/Media';
 import { mapMovieResult, MovieResult } from './Search';
 
@@ -23,7 +24,9 @@ export const mapCollection = (
   parts: collection.parts.map((part) =>
     mapMovieResult(
       part,
-      media?.find((req) => req.tmdbId === part.id)
+      media?.find(
+        (req) => req.tmdbId === part.id && req.mediaType === MediaType.MOVIE
+      )
     )
   ),
 });

@@ -7,6 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useToasts } from 'react-toast-notifications';
+import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
@@ -28,6 +29,8 @@ const messages = defineMessages({
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:
     'SSL should be disabled on standard TLS connections (Port 587)',
+  senderName: 'Sender Name',
+  notificationtypes: 'Notification Types',
 });
 
 const NotificationsEmail: React.FC = () => {
@@ -37,7 +40,7 @@ const NotificationsEmail: React.FC = () => {
     '/api/v1/settings/notifications/email'
   );
 
-  const NotificationsDiscordSchema = Yup.object().shape({
+  const NotificationsEmailSchema = Yup.object().shape({
     emailFrom: Yup.string().required(
       intl.formatMessage(messages.validationFromRequired)
     ),
@@ -65,8 +68,9 @@ const NotificationsEmail: React.FC = () => {
         authUser: data.options.authUser,
         authPass: data.options.authPass,
         allowSelfSigned: data.options.allowSelfSigned,
+        senderName: data.options.senderName,
       }}
-      validationSchema={NotificationsDiscordSchema}
+      validationSchema={NotificationsEmailSchema}
       onSubmit={async (values) => {
         try {
           await axios.post('/api/v1/settings/notifications/email', {
@@ -80,6 +84,7 @@ const NotificationsEmail: React.FC = () => {
               authUser: values.authUser,
               authPass: values.authPass,
               allowSelfSigned: values.allowSelfSigned,
+              senderName: values.senderName,
             },
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {
@@ -96,7 +101,7 @@ const NotificationsEmail: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid }) => {
+      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
           await axios.post('/api/v1/settings/notifications/email/test', {
             enabled: true,
@@ -108,6 +113,7 @@ const NotificationsEmail: React.FC = () => {
               secure: values.secure,
               authUser: values.authUser,
               authPass: values.authPass,
+              senderName: values.senderName,
             },
           });
 
@@ -119,10 +125,10 @@ const NotificationsEmail: React.FC = () => {
 
         return (
           <Form>
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
               <label
                 htmlFor="enabled"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.agentenabled)}
               </label>
@@ -135,10 +141,10 @@ const NotificationsEmail: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="emailFrom"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.emailsender)}
               </label>
@@ -157,10 +163,29 @@ const NotificationsEmail: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+              <label
+                htmlFor="senderName"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+              >
+                {intl.formatMessage(messages.senderName)}
+              </label>
+              <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="flex max-w-lg rounded-md shadow-sm">
+                  <Field
+                    id="senderName"
+                    name="senderName"
+                    placeholder="Overseerr"
+                    type="text"
+                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="smtpHost"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.smtpHost)}
               </label>
@@ -179,10 +204,10 @@ const NotificationsEmail: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="smtpPort"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.smtpPort)}
               </label>
@@ -201,10 +226,10 @@ const NotificationsEmail: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
               <label
                 htmlFor="secure"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 <div className="flex flex-col">
                   <span>{intl.formatMessage(messages.enableSsl)}</span>
@@ -222,10 +247,10 @@ const NotificationsEmail: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
               <label
                 htmlFor="allowSelfSigned"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.allowselfsigned)}
               </label>
@@ -238,10 +263,10 @@ const NotificationsEmail: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="authUser"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.authUser)}
               </label>
@@ -256,10 +281,10 @@ const NotificationsEmail: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800 sm:pt-5">
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
               <label
                 htmlFor="authPass"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px sm:pt-2"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
                 {intl.formatMessage(messages.authPass)}
               </label>
@@ -269,8 +294,33 @@ const NotificationsEmail: React.FC = () => {
                     id="authPass"
                     name="authPass"
                     type="password"
+                    autoComplete="off"
                     className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
+                </div>
+              </div>
+            </div>
+            <div className="mt-6">
+              <div role="group" aria-labelledby="label-permissions">
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                  <div>
+                    <div
+                      className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
+                      id="label-types"
+                    >
+                      {intl.formatMessage(messages.notificationtypes)}
+                    </div>
+                  </div>
+                  <div className="mt-4 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg">
+                      <NotificationTypeSelector
+                        currentTypes={values.types}
+                        onUpdate={(newTypes) =>
+                          setFieldValue('types', newTypes)
+                        }
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

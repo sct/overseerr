@@ -168,7 +168,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       okButtonType={'primary'}
       iconSvg={<DownloadIcon className="w-6 h-6" />}
     >
-      {text}
+      <p className="text-center md:text-left">{text}</p>
     </Modal>
   );
 };

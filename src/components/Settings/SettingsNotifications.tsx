@@ -4,6 +4,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import DiscordLogo from '../../assets/extlogos/discord_white.svg';
 import SlackLogo from '../../assets/extlogos/slack.svg';
+import TelegramLogo from '../../assets/extlogos/telegram.svg';
 
 const messages = defineMessages({
   notificationsettings: 'Notification Settings',
@@ -64,6 +65,17 @@ const settingsRoutes: SettingsRoute[] = [
     ),
     route: '/settings/notifications/slack',
     regex: /^\/settings\/notifications\/slack/,
+  },
+  {
+    text: 'Telegram',
+    content: (
+      <span className="flex items-center">
+        <TelegramLogo className="h-4 mr-2" />
+        Telegram
+      </span>
+    ),
+    route: '/settings/notifications/telegram',
+    regex: /^\/settings\/notifications\/telegram/,
   },
 ];
 
