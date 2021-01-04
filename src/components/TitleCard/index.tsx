@@ -76,7 +76,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className={`transition duration-300 transform scale-100 outline-none cursor-default titleCard ${
+        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default titleCard ${
           showDetail ? 'scale-105' : ''
         }`}
         style={{
