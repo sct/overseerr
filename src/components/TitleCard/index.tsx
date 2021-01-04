@@ -76,7 +76,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className="transition duration-300 transform scale-100 outline-none cursor-default titleCard hover:scale-105 focus:scale-105"
+        className={`transition duration-300 transform scale-100 outline-none cursor-default titleCard ${
+          showDetail ? 'scale-105' : ''
+        }`}
         style={{
           backgroundImage: `url(//image.tmdb.org/t/p/w300_and_h450_face${image})`,
         }}
