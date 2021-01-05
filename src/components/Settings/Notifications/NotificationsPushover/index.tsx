@@ -1,14 +1,14 @@
 import React from 'react';
 import { Field, Form, Formik } from 'formik';
 import useSWR from 'swr';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import Button from '../../Common/Button';
+import LoadingSpinner from '../../../Common/LoadingSpinner';
+import Button from '../../../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useToasts } from 'react-toast-notifications';
-import Alert from '../../Common/Alert';
-import NotificationTypeSelector from '../../NotificationTypeSelector';
+import Alert from '../../../Common/Alert';
+import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
