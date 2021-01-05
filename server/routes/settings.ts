@@ -26,6 +26,7 @@ import DiscordAgent from '../lib/notifications/agents/discord';
 import EmailAgent from '../lib/notifications/agents/email';
 import SlackAgent from '../lib/notifications/agents/slack';
 import TelegramAgent from '../lib/notifications/agents/telegram';
+import PushoverAgent from '../lib/notifications/agents/pushover';
 
 const settingsRoutes = Router();
 
@@ -529,6 +530,40 @@ settingsRoutes.post('/notifications/telegram/test', (req, res, next) => {
 
   const telegramAgent = new TelegramAgent(req.body);
   telegramAgent.send(Notification.TEST_NOTIFICATION, {
+    notifyUser: req.user,
+    subject: 'Test Notification',
+    message:
+      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+  });
+
+  return res.status(204).send();
+});
+
+settingsRoutes.get('/notifications/pushover', (_req, res) => {
+  const settings = getSettings();
+
+  res.status(200).json(settings.notifications.agents.pushover);
+});
+
+settingsRoutes.post('/notifications/pushover', (req, res) => {
+  const settings = getSettings();
+
+  settings.notifications.agents.pushover = req.body;
+  settings.save();
+
+  res.status(200).json(settings.notifications.agents.pushover);
+});
+
+settingsRoutes.post('/notifications/pushover/test', (req, res, next) => {
+  if (!req.user) {
+    return next({
+      status: 500,
+      message: 'User information missing from request',
+    });
+  }
+
+  const pushoverAgent = new PushoverAgent(req.body);
+  pushoverAgent.send(Notification.TEST_NOTIFICATION, {
     notifyUser: req.user,
     subject: 'Test Notification',
     message:

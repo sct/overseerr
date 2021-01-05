@@ -871,6 +871,26 @@ components:
               type: string
             chatId:
               type: string
+    PushoverSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            accessToken:
+              type: string
+            userToken:
+              type: string
+            priority:
+              type: number
+            sound:
+              type: string
     NotificationEmailSettings:
       type: object
       properties:
@@ -1717,6 +1737,52 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TelegramSettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/pushover:
+    get:
+      summary: Return current pushover notification settings
+      description: Returns current pushover notification settings in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned pushover settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushoverSettings'
+    post:
+      summary: Update pushover notification settings
+      description: Update current pushover notification settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushoverSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushoverSettings'
+  /settings/notifications/pushover/test:
+    post:
+      summary: Test the provided pushover settings
+      description: Sends a test notification to the pushover agent
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushoverSettings'
       responses:
         '204':
           description: Test notification attempted
