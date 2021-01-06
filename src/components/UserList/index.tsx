@@ -312,9 +312,9 @@ const UserList: React.FC = () => {
           </Formik>
         </Modal>
       </Transition>
-      <div className="flex items-center justify-between">
+      <div className="flex-col sm:flex-row flex justify-between">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
-        <div>
+        <div className="flex">
           <Button
             className="mx-4 my-8 outline"
             buttonType="primary"

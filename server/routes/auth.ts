@@ -6,6 +6,7 @@ import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
 import { getSettings } from '../lib/settings';
+import { UserType } from '../../src/hooks/useUser';
 
 const authRoutes = Router();
 
@@ -137,7 +138,7 @@ authRoutes.post('/local', async (req, res, next) => {
   }
   try {
     const user = await userRepository.findOne({
-      where: { email: body.email },
+      where: { email: body.email, userType: UserType.LOCAL },
     });
 
     const isCorrectCredentials = await user?.passwordMatch(body.password);

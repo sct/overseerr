@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 // import Transition from '../Transition';
 import Button from '../Common/Button';
@@ -25,7 +25,7 @@ interface LocalLoginProps {
 
 const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
   const intl = useIntl();
-  // const { addToast } = useToasts();
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -50,10 +50,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
             password: values.password,
           });
         } catch (e) {
-          // addToast(intl.formatMessage(messages.loginerror), {
-          //   autoDismiss: true,
-          //   appearance: 'error',
-          // });
+          setLoginError(intl.formatMessage(messages.loginerror));
         } finally {
           revalidate();
         }
@@ -84,7 +81,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
                       name="email"
                       type="text"
                       placeholder="name@example.com"
-                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                      className="text-white flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                   {errors.email && touched.email && (
@@ -104,13 +101,18 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
                       name="password"
                       type="password"
                       placeholder={intl.formatMessage(messages.password)}
-                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                      className="text-white flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                   {errors.password && touched.password && (
                     <div className="mt-2 text-red-500">{errors.password}</div>
                   )}
                 </div>
+                {loginError && (
+                  <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
+                    <div className="mt-2 text-red-500">{loginError}</div>
+                  </div>
+                )}
               </div>
               <div className="pt-5 mt-8 border-t border-gray-700">
                 <div className="flex justify-end">

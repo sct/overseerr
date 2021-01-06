@@ -78,6 +78,12 @@ export class User {
   }
 
   public passwordMatch(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password || '');
+    return new Promise((resolve, reject) => {
+      if (this.password) {
+        resolve(bcrypt.compare(password, this.password));
+      } else {
+        return reject(false);
+      }
+    });
   }
 }
