@@ -345,7 +345,7 @@ class JobPlexSync {
 
   private log(
     message: string,
-    level: 'info' | 'error' | 'debug' = 'debug',
+    level: 'info' | 'error' | 'debug' | 'warn' = 'debug',
     optional?: Record<string, unknown>
   ): void {
     logger[level](message, { label: 'Plex Sync', ...optional });
@@ -356,10 +356,14 @@ class JobPlexSync {
     if (!this.running) {
       this.running = true;
       const userRepository = getRepository(User);
-      const admin = await userRepository.findOneOrFail({
+      const admin = await userRepository.findOne({
         select: ['id', 'plexToken'],
         order: { id: 'ASC' },
       });
+
+      if (!admin) {
+        return this.log('No admin configured. Plex sync skipped.', 'warn');
+      }
 
       this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
 
