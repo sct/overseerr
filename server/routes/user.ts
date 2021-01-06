@@ -6,6 +6,7 @@ import { User } from '../entity/User';
 import { hasPermission, Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
+import bcrypt from 'bcrypt';
 
 const router = Router();
 
@@ -21,11 +22,17 @@ router.post('/', async (req, res, next) => {
   try {
     const userRepository = getRepository(User);
 
+    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+
     const user = new User({
+      username: req.body.username ?? req.body.email,
       email: req.body.email,
+      password: hashedPassword,
       permissions: req.body.permissions,
       plexToken: '',
+      userType: req.body.userType,
     });
+
     await userRepository.save(user);
     return res.status(201).json(user.filter());
   } catch (e) {

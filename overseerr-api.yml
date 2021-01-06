@@ -20,6 +20,9 @@ components:
         plexToken:
           type: string
           readOnly: true
+        userType:
+          type: integer
+          example: 1
         permissions:
           type: number
           example: 0
@@ -44,6 +47,7 @@ components:
             $ref: '#/components/schemas/MediaRequest'
       required:
         - id
+        - userType
         - email
         - permissions
         - createdAt
@@ -1969,6 +1973,34 @@ paths:
                   type: string
               required:
                 - authToken
+  /auth/local:
+    post:
+      summary: Login using a local account
+      description: Takes an `email` and a `password` to log the user in. Generates a session cookie for use in further requests.
+      security: []
+      tags:
+        - auth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
   /auth/logout:
     get:
       summary: Logout and clear session cookie

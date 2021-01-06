@@ -1,12 +1,18 @@
 import useSwr from 'swr';
 import { hasPermission, Permission } from '../../server/lib/permissions';
 
+export enum UserType {
+  PLEX = 1,
+  LOCAL = 2,
+}
+
 export interface User {
   id: number;
   username: string;
   email: string;
   avatar: string;
   permissions: number;
+  userType: number;
 }
 
 export { Permission };

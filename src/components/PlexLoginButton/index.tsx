@@ -38,7 +38,7 @@ const PlexLoginButton: React.FC<PlexLoginButtonProps> = ({
     }
   };
   return (
-    <span className="block w-full rounded-md shadow-sm">
+    <span className="block w-full pb-4 rounded-md shadow-sm">
       <button
         type="button"
         onClick={() => {

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Permission, hasPermission } from '../lib/permissions';
 import { MediaRequest } from './MediaRequest';
+import bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -16,7 +17,7 @@ export class User {
     return users.map((u) => u.filter());
   }
 
-  static readonly filteredFields: string[] = ['plexToken'];
+  static readonly filteredFields: string[] = ['plexToken', 'password'];
 
   @PrimaryGeneratedColumn()
   public id: number;
@@ -27,8 +28,14 @@ export class User {
   @Column()
   public username: string;
 
-  @Column({ select: false })
-  public plexId: number;
+  @Column({ nullable: true })
+  public password?: string;
+
+  @Column({ type: 'integer', default: 1 })
+  public userType = 1;
+
+  @Column({ nullable: true, select: false })
+  public plexId?: number;
 
   @Column({ nullable: true, select: false })
   public plexToken?: string;
@@ -36,7 +43,7 @@ export class User {
   @Column({ type: 'integer', default: 0 })
   public permissions = 0;
 
-  @Column()
+  @Column({ default: '' })
   public avatar: string;
 
   @RelationCount((user: User) => user.requests)
@@ -68,5 +75,9 @@ export class User {
 
   public hasPermission(permissions: Permission | Permission[]): boolean {
     return !!hasPermission(permissions, this.permissions);
+  }
+
+  public passwordMatch(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password || '');
   }
 }
