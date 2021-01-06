@@ -40,6 +40,7 @@ const RequestModal: React.FC<RequestModalProps> = ({
           onCancel={onCancel}
           tmdbId={tmdbId}
           onUpdating={onUpdating}
+          is4k={is4k}
         />
       </Transition>
     );

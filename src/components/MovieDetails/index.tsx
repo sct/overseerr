@@ -51,9 +51,6 @@ const messages = defineMessages({
   cancelrequest: 'Cancel Request',
   available: 'Available',
   unavailable: 'Unavailable',
-  request: 'Request',
-  request4k: 'Request 4K',
-  viewrequest: 'View Request',
   pending: 'Pending',
   overviewunavailable: 'Overview unavailable',
   manageModalTitle: 'Manage Movie',
@@ -244,6 +241,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             </a>
           )}
           <RequestButton
+            mediaType="movie"
             media={data.mediaInfo}
             tmdbId={data.id}
             onUpdate={() => revalidate()}

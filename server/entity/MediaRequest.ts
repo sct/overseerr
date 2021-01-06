@@ -371,12 +371,14 @@ export class MediaRequest {
         }
 
         const sonarrSettings = settings.sonarr.find(
-          (sonarr) => sonarr.isDefault && !sonarr.is4k
+          (sonarr) => sonarr.isDefault && this.is4k
         );
 
         if (!sonarrSettings) {
           logger.info(
-            'There is no default sonarr configured. Did you set any of your Sonarr servers as default?',
+            `There is no default ${
+              this.is4k ? '4K ' : ''
+            }sonarr configured. Did you set any of your Sonarr servers as default?`,
             { label: 'Media Request' }
           );
           return;

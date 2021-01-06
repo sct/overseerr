@@ -159,13 +159,15 @@ requestRoutes.post(
         // already requested. In the case they were, we just throw out any duplicates but still approve the request.
         // (Unless there are no seasons, in which case we abort)
         if (media.requests) {
-          existingSeasons = media.requests.reduce((seasons, request) => {
-            const combinedSeasons = request.seasons.map(
-              (season) => season.seasonNumber
-            );
+          existingSeasons = media.requests
+            .filter((request) => request.is4k === req.body.is4k)
+            .reduce((seasons, request) => {
+              const combinedSeasons = request.seasons.map(
+                (season) => season.seasonNumber
+              );
 
-            return [...seasons, ...combinedSeasons];
-          }, [] as number[]);
+              return [...seasons, ...combinedSeasons];
+            }, [] as number[]);
         }
 
         const finalSeasons = requestedSeasons.filter(
@@ -196,6 +198,7 @@ requestRoutes.post(
             req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
               ? req.user
               : undefined,
+          is4k: req.body.is4k,
           seasons: finalSeasons.map(
             (sn) =>
               new SeasonRequest({
