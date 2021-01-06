@@ -7,6 +7,7 @@ import { hasPermission, Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
 import bcrypt from 'bcrypt';
+import gravatarUrl from 'gravatar-url';
 
 const router = Router();
 
@@ -20,17 +21,20 @@ router.get('/', async (_req, res) => {
 
 router.post('/', async (req, res, next) => {
   try {
+    const body = req.body;
     const userRepository = getRepository(User);
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    const hashedPassword = await bcrypt.hash(body.password, 12);
+    const avatar = gravatarUrl(body.email);
 
     const user = new User({
-      username: req.body.username ?? req.body.email,
-      email: req.body.email,
+      avatar: body.avatar ?? avatar,
+      username: body.username ?? req.body.email,
+      email: body.email,
       password: hashedPassword,
-      permissions: req.body.permissions,
+      permissions: body.permissions,
       plexToken: '',
-      userType: req.body.userType,
+      userType: body.userType,
     });
 
     await userRepository.save(user);

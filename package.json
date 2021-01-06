@@ -30,6 +30,7 @@
     "express-openapi-validator": "^4.10.2",
     "express-session": "^1.17.1",
     "formik": "^2.2.6",
+    "gravatar-url": "^3.1.0",
     "intl": "^1.2.5",
     "lodash": "^4.17.20",
     "next": "10.0.3",

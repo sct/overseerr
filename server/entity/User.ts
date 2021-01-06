@@ -43,7 +43,7 @@ export class User {
   @Column({ type: 'integer', default: 0 })
   public permissions = 0;
 
-  @Column({ default: '' })
+  @Column()
   public avatar: string;
 
   @RelationCount((user: User) => user.requests)
