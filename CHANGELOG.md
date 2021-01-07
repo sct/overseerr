@@ -1,3 +1,21 @@
+# [1.16.0](https://github.com/sct/overseerr/compare/v1.15.0...v1.16.0) (2021-01-07)
+
+
+### Bug Fixes
+
+* **frontend:** adjust titlecard badge styling ([effc809](https://github.com/sct/overseerr/commit/effc80977a4ed732092254248f82363e52233171))
+* **frontend:** apply same titlecard hover effect to personcard ([67f2b57](https://github.com/sct/overseerr/commit/67f2b57f00216ded3b34965629d6fdd2f16bc25f))
+* **frontend:** only animate titlecard when showDetail is true ([0ab4c3c](https://github.com/sct/overseerr/commit/0ab4c3c36fe2c1ded142b6931111516f7f990a41))
+* **frontend:** use hardware acceleration for titlecard scale ([88810bf](https://github.com/sct/overseerr/commit/88810bf0a4ef74299f6541b60fa91cea3610f99c))
+* **plex-sync:** do not run plex sync if no admin exists ([493d82b](https://github.com/sct/overseerr/commit/493d82b6b066d77609cf66e005fd1f1472b8e011))
+
+
+### Features
+
+* **lang:** translations update from Weblate ([#495](https://github.com/sct/overseerr/issues/495)) ([b04eda6](https://github.com/sct/overseerr/commit/b04eda6c8a3bfcaa2a14b8a29612fdf690c9fba0))
+* **lang:** Translations update from Weblate ([#580](https://github.com/sct/overseerr/issues/580)) ([2bfe0f2](https://github.com/sct/overseerr/commit/2bfe0f2bf66956763ab26d5c54f26e6c456f59f7))
+* **notifications:** add pushover integration ([#574](https://github.com/sct/overseerr/issues/574)) ([ee5d018](https://github.com/sct/overseerr/commit/ee5d0181fc9a673b27aefd1d09b0a78c3d2e4f55))
+
 # [1.15.0](https://github.com/sct/overseerr/compare/v1.14.1...v1.15.0) (2021-01-04)
 
 
