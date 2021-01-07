@@ -6,7 +6,7 @@ import Badge from '../Common/Badge';
 import { FormattedDate, defineMessages, useIntl } from 'react-intl';
 import Button from '../Common/Button';
 import { hasPermission } from '../../../server/lib/permissions';
-import { Permission, UserType } from '../../hooks/useUser';
+import { Permission, UserType, useUser } from '../../hooks/useUser';
 import { useRouter } from 'next/router';
 import Header from '../Common/Header';
 import Table from '../Common/Table';
@@ -19,6 +19,7 @@ import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import AddUserIcon from '../../assets/useradd.svg';
 import Alert from '../Common/Alert';
+import BulkEditModal from './BulkEditModal';
 
 const messages = defineMessages({
   userlist: 'User List',
@@ -78,6 +79,37 @@ const UserList: React.FC = () => {
   }>({
     isOpen: false,
   });
+  const [showBulkEditModal, setShowBulkEditModal] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const { user: currentUser } = useUser();
+
+  const isAllUsersSelected = () => {
+    return (
+      selectedUsers.length ===
+      data?.filter((user) => user.id !== currentUser?.id).length
+    );
+  };
+  const isUserSelected = (userId: number) => selectedUsers.includes(userId);
+  const toggleAllUsers = () => {
+    if (
+      data &&
+      selectedUsers.length >= 0 &&
+      selectedUsers.length < data?.length - 1
+    ) {
+      setSelectedUsers(
+        data.filter((user) => user.id !== currentUser?.id).map((u) => u.id)
+      );
+    } else {
+      setSelectedUsers([]);
+    }
+  };
+  const toggleUser = (userId: number) => {
+    if (selectedUsers.includes(userId)) {
+      setSelectedUsers((users) => users.filter((u) => u !== userId));
+    } else {
+      setSelectedUsers((users) => [...users, userId]);
+    }
+  };
 
   const deleteUser = async () => {
     setDeleting(true);
@@ -183,6 +215,7 @@ const UserList: React.FC = () => {
           {intl.formatMessage(messages.deleteconfirm)}
         </Modal>
       </Transition>
+
       <Transition
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
@@ -313,6 +346,27 @@ const UserList: React.FC = () => {
           }}
         </Formik>
       </Transition>
+
+      <Transition
+        enter="opacity-0 transition duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="opacity-100 transition duration-300"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+        show={showBulkEditModal}
+      >
+        <BulkEditModal
+          onCancel={() => setShowBulkEditModal(false)}
+          onComplete={() => {
+            setShowBulkEditModal(false);
+            revalidate();
+          }}
+          selectedUserIds={selectedUsers}
+          users={data}
+        />
+      </Transition>
+
       <div className="flex flex-col justify-between sm:flex-row">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
         <div className="flex">
@@ -335,7 +389,35 @@ const UserList: React.FC = () => {
       </div>
       <Table>
         <thead>
+          {selectedUsers.length > 0 && (
+            <tr>
+              <Table.TH colSpan={42}>
+                <Button
+                  buttonType="warning"
+                  className="mr-2"
+                  onClick={() => setShowBulkEditModal(true)}
+                >
+                  {intl.formatMessage(messages.edit)}
+                </Button>
+              </Table.TH>
+            </tr>
+          )}
           <tr>
+            {currentUser &&
+              hasPermission(Permission.ADMIN, currentUser.permissions) && (
+                <Table.TH>
+                  <input
+                    type="checkbox"
+                    id="selectAll"
+                    name="selectAll"
+                    checked={isAllUsersSelected()}
+                    onChange={() => {
+                      toggleAllUsers();
+                    }}
+                    className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                  />
+                </Table.TH>
+              )}
             <Table.TH>{intl.formatMessage(messages.username)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.usertype)}</Table.TH>
@@ -348,6 +430,20 @@ const UserList: React.FC = () => {
         <Table.TBody>
           {data?.map((user) => (
             <tr key={`user-list-${user.id}`}>
+              <Table.TD>
+                {user.id !== currentUser?.id && (
+                  <input
+                    type="checkbox"
+                    id={`user-list-select-${user.id}`}
+                    name={`user-list-select-${user.id}`}
+                    checked={isUserSelected(user.id)}
+                    onChange={() => {
+                      toggleUser(user.id);
+                    }}
+                    className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                  />
+                )}
+              </Table.TD>
               <Table.TD>
                 <div className="flex items-center">
                   <div className="flex-shrink-0 w-10 h-10">
