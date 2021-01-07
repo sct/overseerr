@@ -9,10 +9,9 @@ import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import { useUser, Permission } from '../../hooks/useUser';
 import { useToasts } from 'react-toast-notifications';
-import { messages as permissionMessages } from '../UserEdit';
-import PermissionOption, { PermissionItem } from '../PermissionOption';
 import Badge from '../Common/Badge';
 import globalMessages from '../../i18n/globalMessages';
+import PermissionEdit from '../PermissionEdit';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -58,101 +57,6 @@ const SettingsMain: React.FC = () => {
   if (!data && !error) {
     return <LoadingSpinner />;
   }
-
-  const permissionList: PermissionItem[] = [
-    {
-      id: 'admin',
-      name: intl.formatMessage(permissionMessages.admin),
-      description: intl.formatMessage(permissionMessages.adminDescription),
-      permission: Permission.ADMIN,
-    },
-    {
-      id: 'settings',
-      name: intl.formatMessage(permissionMessages.settings),
-      description: intl.formatMessage(permissionMessages.settingsDescription),
-      permission: Permission.MANAGE_SETTINGS,
-    },
-    {
-      id: 'users',
-      name: intl.formatMessage(permissionMessages.users),
-      description: intl.formatMessage(permissionMessages.usersDescription),
-      permission: Permission.MANAGE_USERS,
-    },
-    {
-      id: 'managerequest',
-      name: intl.formatMessage(permissionMessages.managerequests),
-      description: intl.formatMessage(
-        permissionMessages.managerequestsDescription
-      ),
-      permission: Permission.MANAGE_REQUESTS,
-      children: [
-        {
-          id: 'advancedrequest',
-          name: intl.formatMessage(permissionMessages.advancedrequest),
-          description: intl.formatMessage(
-            permissionMessages.advancedrequestDescription
-          ),
-          permission: Permission.REQUEST_ADVANCED,
-        },
-      ],
-    },
-    {
-      id: 'request',
-      name: intl.formatMessage(permissionMessages.request),
-      description: intl.formatMessage(permissionMessages.requestDescription),
-      permission: Permission.REQUEST,
-    },
-    {
-      id: 'request4k',
-      name: intl.formatMessage(permissionMessages.request4k),
-      description: intl.formatMessage(permissionMessages.request4kDescription),
-      permission: Permission.REQUEST_4K,
-      children: [
-        {
-          id: 'request4k-movies',
-          name: intl.formatMessage(permissionMessages.request4kMovies),
-          description: intl.formatMessage(
-            permissionMessages.request4kMoviesDescription
-          ),
-          permission: Permission.REQUEST_4K_MOVIE,
-        },
-        {
-          id: 'request4k-tv',
-          name: intl.formatMessage(permissionMessages.request4kTv),
-          description: intl.formatMessage(
-            permissionMessages.request4kTvDescription
-          ),
-          permission: Permission.REQUEST_4K_TV,
-        },
-      ],
-    },
-    {
-      id: 'autoapprove',
-      name: intl.formatMessage(permissionMessages.autoapprove),
-      description: intl.formatMessage(
-        permissionMessages.autoapproveDescription
-      ),
-      permission: Permission.AUTO_APPROVE,
-      children: [
-        {
-          id: 'autoapprovemovies',
-          name: intl.formatMessage(permissionMessages.autoapproveMovies),
-          description: intl.formatMessage(
-            permissionMessages.autoapproveMoviesDescription
-          ),
-          permission: Permission.AUTO_APPROVE_MOVIE,
-        },
-        {
-          id: 'autoapprovetv',
-          name: intl.formatMessage(permissionMessages.autoapproveSeries),
-          description: intl.formatMessage(
-            permissionMessages.autoapproveSeriesDescription
-          ),
-          permission: Permission.AUTO_APPROVE_TV,
-        },
-      ],
-    },
-  ];
 
   return (
     <>
@@ -298,19 +202,15 @@ const SettingsMain: React.FC = () => {
                       </div>
                       <div className="mt-4 sm:mt-0 sm:col-span-2">
                         <div className="max-w-lg">
-                          {permissionList.map((permissionItem) => (
-                            <PermissionOption
-                              key={`permission-option-${permissionItem.id}`}
-                              option={permissionItem}
-                              currentPermission={values.defaultPermissions}
-                              onUpdate={(newPermissions) =>
-                                setFieldValue(
-                                  'defaultPermissions',
-                                  newPermissions
-                                )
-                              }
-                            />
-                          ))}
+                          <PermissionEdit
+                            currentPermission={values.defaultPermissions}
+                            onUpdate={(newPermissions) =>
+                              setFieldValue(
+                                'defaultPermissions',
+                                newPermissions
+                              )
+                            }
+                          />
                         </div>
                       </div>
                     </div>
