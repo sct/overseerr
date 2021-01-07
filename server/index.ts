@@ -20,6 +20,7 @@ import EmailAgent from './lib/notifications/agents/email';
 import TelegramAgent from './lib/notifications/agents/telegram';
 import { getAppVersion } from './utils/appVersion';
 import SlackAgent from './lib/notifications/agents/slack';
+import PushoverAgent from './lib/notifications/agents/pushover';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -49,6 +50,7 @@ app
       new EmailAgent(),
       new SlackAgent(),
       new TelegramAgent(),
+      new PushoverAgent(),
     ]);
 
     // Start Jobs

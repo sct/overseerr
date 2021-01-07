@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface PersonCardProps {
   personId: number;
@@ -16,13 +16,30 @@ const PersonCard: React.FC<PersonCardProps> = ({
   profilePath,
   canExpand = false,
 }) => {
+  const [isHovered, setHovered] = useState(false);
+
   return (
     <Link href={`/person/${personId}`}>
-      <a className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}>
+      <a
+        className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}
+        onMouseEnter={() => {
+          setHovered(true);
+        }}
+        onMouseLeave={() => setHovered(false)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            setHovered(true);
+          }
+        }}
+        role="link"
+        tabIndex={0}
+      >
         <div
           className={`relative ${
             canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'
-          } bg-gray-600 rounded-lg text-white shadow-lg hover:bg-gray-500 transition ease-in-out duration-150 cursor-pointer`}
+          } rounded-lg text-white shadow-lg transition ease-in-out duration-150 cursor-pointer transform-gpu ${
+            isHovered ? 'bg-gray-500 scale-105' : 'bg-gray-600 scale-100'
+          }`}
         >
           <div style={{ paddingBottom: '150%' }}>
             <div className="absolute inset-0 flex flex-col items-center w-full h-full p-2">

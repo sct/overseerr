@@ -5,6 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import DiscordLogo from '../../assets/extlogos/discord_white.svg';
 import SlackLogo from '../../assets/extlogos/slack.svg';
 import TelegramLogo from '../../assets/extlogos/telegram.svg';
+import PushoverLogo from '../../assets/extlogos/pushover.svg';
 
 const messages = defineMessages({
   notificationsettings: 'Notification Settings',
@@ -76,6 +77,17 @@ const settingsRoutes: SettingsRoute[] = [
     ),
     route: '/settings/notifications/telegram',
     regex: /^\/settings\/notifications\/telegram/,
+  },
+  {
+    text: 'Pushover',
+    content: (
+      <span className="flex items-center">
+        <PushoverLogo className="h-4 mr-2" />
+        Pushover
+      </span>
+    ),
+    route: '/settings/notifications/pushover',
+    regex: /^\/settings\/notifications\/pushover/,
   },
 ];
 
