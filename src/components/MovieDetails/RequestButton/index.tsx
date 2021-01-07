@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import {
   MediaRequestStatus,
@@ -7,6 +7,7 @@ import {
 } from '../../../../server/constants/media';
 import Media from '../../../../server/entity/Media';
 import { MediaRequest } from '../../../../server/entity/MediaRequest';
+import { SettingsContext } from '../../../context/SettingsContext';
 import { Permission, useUser } from '../../../hooks/useUser';
 import ButtonWithDropdown from '../../Common/ButtonWithDropdown';
 import RequestModal from '../../RequestModal';
@@ -57,6 +58,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   is4kShowComplete = false,
 }) => {
   const intl = useIntl();
+  const settings = useContext(SettingsContext);
   const { hasPermission } = useUser();
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showRequest4kModal, setShowRequest4kModal] = useState(false);
@@ -163,7 +165,9 @@ const RequestButton: React.FC<RequestButtonProps> = ({
 
   if (
     (!media || media.status4k === MediaStatus.UNKNOWN) &&
-    hasPermission(Permission.REQUEST_4K)
+    hasPermission(Permission.REQUEST_4K) &&
+    ((settings.currentSettings.movie4kEnabled && mediaType === 'movie') ||
+      (settings.currentSettings.series4kEnabled && mediaType === 'tv'))
   ) {
     buttons.push({
       id: 'request4k',
@@ -190,7 +194,12 @@ const RequestButton: React.FC<RequestButtonProps> = ({
     });
   }
 
-  if (mediaType === 'tv' && active4kRequests && !is4kShowComplete) {
+  if (
+    mediaType === 'tv' &&
+    active4kRequests &&
+    !is4kShowComplete &&
+    settings.currentSettings.series4kEnabled
+  ) {
     buttons.push({
       id: 'request-more-4k',
       text: intl.formatMessage(messages.requestmore4k),
