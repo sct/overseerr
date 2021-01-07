@@ -8,6 +8,9 @@ import { getSettings } from '../lib/settings';
 import logger from '../logger';
 import bcrypt from 'bcrypt';
 import gravatarUrl from 'gravatar-url';
+import { default as generatePassword } from 'secure-random-password';
+import path from 'path';
+import PreparedEmail from '../lib/email';
 
 const router = Router();
 
@@ -24,12 +27,18 @@ router.post('/', async (req, res, next) => {
     const body = req.body;
     const userRepository = getRepository(User);
 
-    const hashedPassword = await bcrypt.hash(body.password, 12);
+    // if not passing an explicit password, generate a secure one
+    const passedExplicitPassword = body.password && body.password.length > 0;
+    const password = passedExplicitPassword
+      ? body.password
+      : generatePassword.randomPassword({ length: 16 });
+
+    const hashedPassword = await bcrypt.hash(password, 12);
     const avatar = gravatarUrl(body.email);
 
     const user = new User({
       avatar: body.avatar ?? avatar,
-      username: body.username ?? req.body.email,
+      username: body.username ?? body.email,
       email: body.email,
       password: hashedPassword,
       permissions: body.permissions,
@@ -38,6 +47,33 @@ router.post('/', async (req, res, next) => {
     });
 
     await userRepository.save(user);
+
+    if (!passedExplicitPassword) {
+      const applicationUrl = getSettings().main.applicationUrl;
+      try {
+        logger.info(`Sending password email for ${body.email}`, {
+          label: 'User creation',
+        });
+        // const email = getNewEmail();
+        const email = new PreparedEmail();
+        await email.send({
+          template: path.join(__dirname, '../templates/email/password'),
+          message: {
+            to: body.email,
+          },
+          locals: {
+            password: password,
+            applicationUrl,
+          },
+        });
+      } catch (e) {
+        logger.error('Failed to send out password email', {
+          label: 'User creation',
+          message: e.message,
+        });
+      }
+    }
+
     return res.status(201).json(user.filter());
   } catch (e) {
     next({ status: 500, message: e.message });

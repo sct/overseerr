@@ -47,13 +47,15 @@ const messages = defineMessages({
   creating: 'Creating',
   create: 'Create',
   validationemailrequired: 'Must enter a valid email address.',
-  validationpasswordrequired: 'Must set a temporary password',
   validationpasswordminchars:
     'Password is too short - should be 8 chars minimum.',
   usercreatedfailed: 'Something went wrong when trying to create the user',
   usercreatedsuccess: 'Successfully created the user',
   email: 'Email Address',
   password: 'Password',
+  passwordinfo: 'Password Info',
+  passwordinfodescription:
+    'If you leave the password blank, an email will be sent to the user with a generated password.',
 });
 
 const UserList: React.FC = () => {
@@ -132,9 +134,9 @@ const UserList: React.FC = () => {
     email: Yup.string()
       .email()
       .required(intl.formatMessage(messages.validationemailrequired)),
-    password: Yup.string()
-      .required(intl.formatMessage(messages.validationpasswordrequired))
-      .min(8, intl.formatMessage(messages.validationpasswordminchars)),
+    password: Yup.lazy((value) =>
+      !value ? Yup.string() : Yup.string().min(8)
+    ),
   });
 
   return (
@@ -231,6 +233,7 @@ const UserList: React.FC = () => {
             }) => {
               return (
                 <>
+                  {intl.formatMessage(messages.passwordinfodescription)}
                   <Form>
                     <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                       <label
