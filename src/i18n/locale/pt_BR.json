@@ -23,7 +23,7 @@
   "components.MovieDetails.runtime": "{minutes} minutos",
   "components.MovieDetails.revenue": "Receita",
   "components.MovieDetails.request": "Solicitar",
-  "components.MovieDetails.releasedate": "Data de Lançamento",
+  "components.MovieDetails.releasedate": "Lançamento",
   "components.MovieDetails.recommendationssubtext": "Se você gostou de {title}, você provavelmente irá gostar…",
   "components.MovieDetails.recommendations": "Recomendações",
   "components.MovieDetails.pending": "Pendente",
@@ -430,5 +430,6 @@
   "components.NotificationTypeSelector.mediafailedDescription": "Envia uma notificação quando houver falha ao adicionar título aos serviços (Radarr/Sonarr). Para alguns agentes, somente serão enviadas notificações aos administradores ou usuários com perfil “Gerenciar solicitações”.",
   "components.NotificationTypeSelector.mediafailed": "Solicitação Falhou",
   "components.NotificationTypeSelector.mediaavailableDescription": "Envia uma notificação quando o título solicitado estiver disponível.",
-  "components.NotificationTypeSelector.mediaapprovedDescription": "Envia uma notificação quando a solicitação é aprovada."
+  "components.NotificationTypeSelector.mediaapprovedDescription": "Envia uma notificação quando a solicitação é aprovada.",
+  "i18n.request": "Solicitar"
 }

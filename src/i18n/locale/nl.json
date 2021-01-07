@@ -430,5 +430,19 @@
   "components.Settings.Notifications.NotificationsSlack.settingupslack": "Slack Notificaties Instellen",
   "components.NotificationTypeSelector.mediarequestedDescription": "Stuurt een notificatie wanneer nieuwe media is verzocht. Voor bepaalde angenten wordt deze notificatie alleen verstuurd naar beheerders of gebruikers met de \"Beheer Verzoeken\" permissie.",
   "components.NotificationTypeSelector.mediafailedDescription": "Stuurt een notificatie wanneer media niet toegevoegd kan worden aan diensten (Radarr/Sonarr). For bepaalde agenten stuurt dit alleen de notificatie naar beheerders of gebruikers met de \"Beheer Verzoeken\" permissie.",
-  "components.TvDetails.TvCrew.fullseriescrew": "Volledige crew van de serie"
+  "components.TvDetails.TvCrew.fullseriescrew": "Volledige crew van de serie",
+  "components.Settings.Notifications.NotificationsPushover.saving": "Bezig met opslaan...",
+  "components.Settings.Notifications.NotificationsPushover.save": "Sla Wijzingen Op",
+  "components.Settings.Notifications.NotificationsPushover.pushoversettingssaved": "Pushover notificatie instellingen zijn opgeslagen!",
+  "components.Settings.Notifications.NotificationsPushover.pushoversettingsfailed": "Pushover notificatie setting kon niet opgeslagen worden.",
+  "components.Settings.Notifications.NotificationsPushover.notificationtypes": "Notificatie Types",
+  "components.Settings.Notifications.NotificationsPushover.agentenabled": "Agent Ingeschakeld",
+  "components.Settings.Notifications.NotificationsPushover.accessToken": "Access Token",
+  "components.RequestList.sortModified": "Laatst Gewijzigd",
+  "components.RequestList.sortAdded": "Verzoek Datum",
+  "components.RequestList.showallrequests": "Toon Alle Verzoeken",
+  "components.RequestList.noresults": "Geen Resultaten.",
+  "components.RequestList.filterPending": "Wachtende",
+  "components.RequestList.filterApproved": "Goedgekeurd",
+  "components.RequestList.filterAll": "Alle"
 }
