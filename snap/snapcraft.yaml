@@ -13,6 +13,7 @@ parts:
     plugin: nodejs
     nodejs-version: "12.18.4"
     nodejs-package-manager: "yarn"
+    nodejs-yarn-version: v1.22.5
     build-packages:
       - git
       - on arm64:
@@ -25,6 +26,7 @@ parts:
     source: .
     override-pull: |
       snapcraftctl pull
+      # Get information to determine snap grade and version
       BRANCH=$(git rev-parse --abbrev-ref HEAD)
       COMMIT=$(git rev-parse HEAD)
       COMMIT_SHORT=$(git rev-parse --short HEAD)
@@ -36,6 +38,9 @@ parts:
         SNAP_VERSION=$VERSION
         GRADE=stable
       fi
+      # Write COMMIT_TAG as it is needed durring the build process
+      echo $COMMIT > commit.txt
+      # Print debug info for build version
       echo "{\"commitShort\": \"$COMMIT_SHORT\", \
       \"version\": \"$VERSION\", \
       \"snapVersion\": \"$SNAP_VERSION\", \
@@ -43,23 +48,27 @@ parts:
       \"branch\": \"$BRANCH\", \
       \"commit\": \"$COMMIT\"}"
       echo "{\"commitTag\": \"$COMMIT\"}" > committag.json
-      export COMMIT_TAG=$COMMIT
+      # Set snap version and grade
       snapcraftctl set-version "$SNAP_VERSION"
       snapcraftctl set-grade "$GRADE"
     build-environment:
       - PATH: "$SNAPCRAFT_PART_BUILD/node_modules/.bin:$SNAPCRAFT_PART_BUILD/../npm/bin:$PATH"
     override-build: |
       set -e
-      export COMMIT_TAG=$(cat $SNAPCRAFT_PART_BUILD/commit.txt)
+      # On arm builds "python" cannot be found. Set python to python3
       if [ "$ARCH" != "x86_64" ]; then
         npm config set python "$(which python3)"
       fi
+      # Set COMMIT_TAG before the build begins
+      export COMMIT_TAG=$(cat $SNAPCRAFT_PART_BUILD/commit.txt)
       snapcraftctl build
       yarn build
+      # Copy files needed for staging
       cp $SNAPCRAFT_PART_BUILD/committag.json $SNAPCRAFT_PART_INSTALL/
       cp -R $SNAPCRAFT_PART_BUILD/.next $SNAPCRAFT_PART_INSTALL/
       cp -R $SNAPCRAFT_PART_BUILD/dist $SNAPCRAFT_PART_INSTALL/
       cp -R $SNAPCRAFT_PART_BUILD/node_modules $SNAPCRAFT_PART_INSTALL/
+      # Remove .github and gitbook as it will fail snap lint
       rm -rf $SNAPCRAFT_PART_INSTALL/.github && rm $SNAPCRAFT_PART_INSTALL/.gitbook.yaml
     stage:
       [ .next, ./* ]
