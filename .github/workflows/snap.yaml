@@ -54,9 +54,6 @@ jobs:
 
       - name: Publish Snap Package
         uses: snapcore/action-publish@v1
-        if: >
-          github.event_name != 'pull_request' &&
-          (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/develop')
         with:
           store_login: ${{ secrets.SNAP_LOGIN }}
           snap: ${{ steps.build.outputs.snap }}
