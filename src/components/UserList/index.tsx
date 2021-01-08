@@ -56,6 +56,7 @@ const messages = defineMessages({
   passwordinfo: 'Password Info',
   passwordinfodescription:
     'If you leave the password blank, an email will be sent to the user with a generated password.',
+  autogeneratepassword: 'Automatically generate password',
 });
 
 const UserList: React.FC = () => {
@@ -198,13 +199,14 @@ const UserList: React.FC = () => {
             initialValues={{
               email: '',
               password: '',
+              genpassword: true,
             }}
             validationSchema={CreateUserSchema}
             onSubmit={async (values) => {
               try {
                 await axios.post('/api/v1/user', {
                   email: values.email,
-                  password: values.password,
+                  password: values.genpassword ? null : values.password,
                   permissions: Permission.REQUEST,
                   userType: UserType.LOCAL,
                 });
@@ -227,7 +229,7 @@ const UserList: React.FC = () => {
               errors,
               touched,
               isSubmitting,
-              // values,
+              values,
               isValid,
               // setFieldValue,
             }) => {
@@ -259,6 +261,20 @@ const UserList: React.FC = () => {
                         )}
                       </div>
                       <label
+                        htmlFor="genpassword"
+                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                      >
+                        {intl.formatMessage(messages.autogeneratepassword)}
+                      </label>
+                      <div className="mt-1 sm:mt-0 sm:col-span-2">
+                        <Field
+                          type="checkbox"
+                          id="genpassword"
+                          name="genpassword"
+                          className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                        />
+                      </div>
+                      <label
                         htmlFor="password"
                         className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                       >
@@ -270,6 +286,7 @@ const UserList: React.FC = () => {
                             id="password"
                             name="password"
                             type="password"
+                            disabled={values.genpassword}
                             placeholder={intl.formatMessage(messages.password)}
                             className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                           />
