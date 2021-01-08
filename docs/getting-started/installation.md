@@ -12,6 +12,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 {% tabs %}
 {% tab title="Basic" %}
+
 ```bash
 docker run -d \
   -e LOG_LEVEL=info \
@@ -21,9 +22,11 @@ docker run -d \
   --restart unless-stopped \
   sctx/overseerr
 ```
+
 {% endtab %}
 
 {% tab title="UID/GID" %}
+
 ```text
 docker run -d \
   --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ] \
@@ -34,9 +37,11 @@ docker run -d \
   --restart unless-stopped \
    sctx/overseerr
 ```
+
 {% endtab %}
 
 {% tab title="Manual Update" %}
+
 ```text
 # Stop the Overseerr container
 docker stop overseerr
@@ -50,6 +55,7 @@ docker pull sctx/overseerr
 # Run the Overseerr container with the same parameters as before
 docker run -d ...
 ```
+
 {% endtab %}
 {% endtabs %}
 
@@ -70,7 +76,7 @@ Use a 3rd party updating mechanism such as [Watchtower](https://github.com/conta
 Please refer to the [docker for windows documentation](https://docs.docker.com/docker-for-windows/) for installation.
 
 {% hint style="danger" %}
-**WSL2 will need to be installed to prevent DB corruption! Please see** [**Docker Desktop WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) **on how to enable WSL2. The command below will only work with WSL2 installed! Details below.**
+**WSL2 will need to be installed to prevent DB corruption! Please see** [**Docker Desktop WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) **on how to enable WSL2. The command below will only work with WSL2 installed!**
 {% endhint %}
 
 ```bash
@@ -81,116 +87,74 @@ docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/her
 Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases.
 {% endhint %}
 
-## Linux \(Unsupported\)
+## Linux
+
+{% hint style="info" %}
+The [Overseerr snap](https://snapcraft.io/overseerr) is the only supported linux install method. Currently, the listening port cannot be changed. Port `5055` will need to be available on your host. To install snapd please refer to [Installing snapd](https://snapcraft.io/docs/installing-snapd).
+{% endhint %}
+
+**To install:**
+
+```
+sudo snap install overseerr
+```
+
+**Updating:**
+Snap will keep Overseerr up-to-date automatically. You can force a refresh by using the following command.
+
+```
+sudo snap refresh
+```
+
+**To install the development build:**
+
+```
+sudo snap install overseerr --edge
+```
+
+{% hint style="danger" %}
+This version can break any moment. Be prepared to troubleshoot any issues that arise!
+{% endhint %}
+
+## Third Party
+
 {% tabs %}
 
-{% tab title="Ubuntu 16.04+/Debian" %}
-{% hint style="danger" %}
-This install method is **not currently supported**. Docker is the only install method supported. Do not create issues or ask for support unless you are able to reproduce the issue with Docker.
-{% endhint %}
-
-```bash
-# Install nodejs
-sudo apt-get install -y curl git gnupg2
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
-# Install yarn
-curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install yarn
-# Install Overseerr
-cd ~ && git clone https://github.com/sct/overseerr.git
-cd overseerr
-yarn install
-yarn build
-yarn start
-```
-
-**Updating**
-
-In order to update, you will need to re-build overseer.
-```bash
-cd ~/.overseerr
-git pull
-yarn install
-yarn build
-yarn start
-```
-{% endtab %}
-
-{% tab title="Ubuntu ARM" %}
-{% hint style="danger" %}
-This install method is **not currently supported**. Docker is the only install method supported. Do not create issues or ask for support unless you are able to reproduce the issue with Docker.
-{% endhint %}
-
-```bash
-# Install nodejs
-sudo apt-get install -y curl git gnupg2 build-essential
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
-# Install yarn
-curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install yarn
-# Install Overseerr
-cd ~ && git clone https://github.com/sct/overseerr.git
-cd overseerr
-npm config set python "$(which python3)"
-yarn install
-yarn build
-yarn start
-```
-
-**Updating**
-
-In order to update, you will need to re-build overseer.
-```bash
-cd ~/.overseerr
-git pull
-yarn install
-yarn build
-yarn start
-```
-{% endtab %}
-
-{% tab title="ArchLinux \(3rd Party\)" %}
-Built from tag \(master\): [https://aur.archlinux.org/packages/overseerr/](https://aur.archlinux.org/packages/overseerr/)  
-Built from latest \(develop\): [aur.archlinux.org/packages/overseerr-git](https://aur.archlinux.org/packages/overseerr-git/)  
-**To install these just use your favorite AUR package manager:**
-
-```bash
-yay -S overseer
-```
-{% endtab %}
-
-{% tab title="Gentoo \(3rd Party\)" %}
+{% tab title="Gentoo" %}
 Portage overlay [GitHub Repository](https://github.com/chriscpritchard/overseerr-overlay)
 
 Efforts will be made to keep up to date with the latest releases, however, this cannot be guaranteed.
 
 To enable using eselect repository, run:
+
 ```bash
 eselect repository add overseerr-overlay git https://github.com/chriscpritchard/overseerr-overlay.git
 ```
 
 Once complete, you can just run:
+
 ```bash
 emerge www-apps/overseerr
 ```
+
 {% endtab %}
 
-{% endtabs %}
-
-## Swizzin \(Third party\)
+{% tab title="Swizzin" %}
 The installation is not implemented via docker, but barebones. The latest released version of overseerr will be used.
 Please see the [swizzin documentation](https://swizzin.ltd/applications/overseerr) for more information.
 
 To install, run the following:
+
 ```bash
 box install overseerr
 ```
 
 To upgrade, run the following:
+
 ```bash
 box upgrade overseerr
 ```
+
+{% endtab %}
+
+{% endtabs %}
