@@ -18,6 +18,7 @@ import globalMessages from '../../i18n/globalMessages';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import AddUserIcon from '../../assets/useradd.svg';
+import Alert from '../Common/Alert';
 
 const messages = defineMessages({
   userlist: 'User List',
@@ -55,7 +56,7 @@ const messages = defineMessages({
   password: 'Password',
   passwordinfo: 'Password Info',
   passwordinfodescription:
-    'If you leave the password blank, an email will be sent to the user with a generated password.',
+    'Email notification settings need to be enabled and setup in order to use the auto generated passwords',
   autogeneratepassword: 'Automatically generate password',
 });
 
@@ -231,11 +232,13 @@ const UserList: React.FC = () => {
               isSubmitting,
               values,
               isValid,
-              // setFieldValue,
+              setFieldValue,
             }) => {
               return (
                 <>
-                  {intl.formatMessage(messages.passwordinfodescription)}
+                  <Alert title={intl.formatMessage(messages.passwordinfo)}>
+                    {intl.formatMessage(messages.passwordinfodescription)}
+                  </Alert>
                   <Form>
                     <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                       <label
@@ -272,6 +275,7 @@ const UserList: React.FC = () => {
                           id="genpassword"
                           name="genpassword"
                           className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                          onClick={() => setFieldValue('password', '')}
                         />
                       </div>
                       <label
