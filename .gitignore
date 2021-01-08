@@ -39,6 +39,9 @@ config/settings.json
 config/logs/*.log*
 config/logs/*.json
 
+# anidb mapping file
+config/anime-list.xml
+
 # dist files
 dist
 
