@@ -289,7 +289,10 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                         season.seasonNumber
                       );
                       const mediaSeason = data?.mediaInfo?.seasons.find(
-                        (sn) => sn.seasonNumber === season.seasonNumber
+                        (sn) =>
+                          sn.seasonNumber === season.seasonNumber &&
+                          sn[is4k ? 'status4k' : 'status'] !==
+                            MediaStatus.UNKNOWN
                       );
                       return (
                         <tr key={`season-${season.id}`}>

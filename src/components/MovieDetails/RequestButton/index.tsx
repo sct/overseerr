@@ -197,6 +197,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   if (
     mediaType === 'tv' &&
     active4kRequests &&
+    active4kRequests.length > 0 &&
     !is4kShowComplete &&
     settings.currentSettings.series4kEnabled
   ) {
