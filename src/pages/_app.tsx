@@ -14,6 +14,8 @@ import Head from 'next/head';
 import Toast from '../components/Toast';
 import { InteractionProvider } from '../context/InteractionContext';
 import StatusChecker from '../components/StatusChacker';
+import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
+import { SettingsProvider } from '../context/SettingsContext';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: string): Promise<any> => {
@@ -55,6 +57,7 @@ interface ExtendedAppProps extends AppProps {
   user: User;
   messages: MessagesType;
   locale: AvailableLocales;
+  currentSettings: PublicSettingsResponse;
 }
 
 if (typeof window === 'undefined') {
@@ -68,6 +71,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
   user,
   messages,
   locale,
+  currentSettings,
 }: ExtendedAppProps) => {
   let component: React.ReactNode;
   const [loadedMessages, setMessages] = useState<MessagesType>(messages);
@@ -103,15 +107,17 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
           defaultLocale="en"
           messages={loadedMessages}
         >
-          <InteractionProvider>
-            <ToastProvider components={{ Toast }}>
-              <Head>
-                <title>Overseerr</title>
-              </Head>
-              <StatusChecker />
-              <UserContext initialUser={user}>{component}</UserContext>
-            </ToastProvider>
-          </InteractionProvider>
+          <SettingsProvider currentSettings={currentSettings}>
+            <InteractionProvider>
+              <ToastProvider components={{ Toast }}>
+                <Head>
+                  <title>Overseerr</title>
+                </Head>
+                <StatusChecker />
+                <UserContext initialUser={user}>{component}</UserContext>
+              </ToastProvider>
+            </InteractionProvider>
+          </SettingsProvider>
         </IntlProvider>
       </LanguageContext.Provider>
     </SWRConfig>
@@ -121,14 +127,21 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 CoreApp.getInitialProps = async (initialProps) => {
   const { ctx, router } = initialProps;
   let user = undefined;
+  let currentSettings: PublicSettingsResponse = {
+    initialized: false,
+    movie4kEnabled: false,
+    series4kEnabled: false,
+  };
 
   let locale = 'en';
 
   if (ctx.res) {
     // Check if app is initialized and redirect if necessary
-    const response = await axios.get<{ initialized: boolean }>(
+    const response = await axios.get<PublicSettingsResponse>(
       `http://localhost:${process.env.PORT || 5055}/api/v1/settings/public`
     );
+
+    currentSettings = response.data;
 
     const initialized = response.data.initialized;
 
@@ -181,7 +194,7 @@ CoreApp.getInitialProps = async (initialProps) => {
 
   const messages = await loadLocaleData(locale);
 
-  return { ...appInitialProps, user, messages, locale };
+  return { ...appInitialProps, user, messages, locale, currentSettings };
 };
 
 export default CoreApp;

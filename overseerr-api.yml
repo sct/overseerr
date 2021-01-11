@@ -701,6 +701,15 @@ components:
             - $ref: '#/components/schemas/User'
             - type: string
               nullable: true
+        is4k:
+          type: boolean
+          example: false
+        serverId:
+          type: number
+        profileId:
+          type: number
+        rootFolder:
+          type: string
       required:
         - id
         - status
@@ -2364,6 +2373,15 @@ paths:
                   type: array
                   items:
                     type: number
+                is4k:
+                  type: boolean
+                  example: false
+                serverId:
+                  type: number
+                profileId:
+                  type: number
+                rootFolder:
+                  type: string
               required:
                 - mediaType
                 - mediaId

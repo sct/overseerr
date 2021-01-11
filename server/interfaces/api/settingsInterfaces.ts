@@ -4,3 +4,9 @@ export interface SettingsAboutResponse {
   totalMediaItems: number;
   tz?: string;
 }
+
+export interface PublicSettingsResponse {
+  initialized: boolean;
+  movie4kEnabled: boolean;
+  series4kEnabled: boolean;
+}

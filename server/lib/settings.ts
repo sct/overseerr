@@ -55,6 +55,11 @@ interface PublicSettings {
   initialized: boolean;
 }
 
+interface FullPublicSettings extends PublicSettings {
+  movie4kEnabled: boolean;
+  series4kEnabled: boolean;
+}
+
 export interface NotificationAgentConfig {
   enabled: boolean;
   types: number;
@@ -244,6 +249,18 @@ class Settings {
 
   set public(data: PublicSettings) {
     this.data.public = data;
+  }
+
+  get fullPublicSettings(): FullPublicSettings {
+    return {
+      ...this.data.public,
+      movie4kEnabled: this.data.radarr.some(
+        (radarr) => radarr.is4k && radarr.isDefault
+      ),
+      series4kEnabled: this.data.sonarr.some(
+        (sonarr) => sonarr.is4k && sonarr.isDefault
+      ),
+    };
   }
 
   get notifications(): NotificationSettings {

@@ -19,7 +19,6 @@ import { useUser, Permission } from '../../hooks/useUser';
 import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
 import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
-import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import axios from 'axios';
 import SlideOver from '../Common/SlideOver';
 import RequestBlock from '../RequestBlock';
@@ -36,6 +35,7 @@ import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import { Crew } from '../../../server/models/common';
 import StatusBadge from '../StatusBadge';
+import RequestButton from '../MovieDetails/RequestButton';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -50,14 +50,8 @@ const messages = defineMessages({
   watchtrailer: 'Watch Trailer',
   available: 'Available',
   unavailable: 'Unavailable',
-  request: 'Request',
-  requestmore: 'Request More',
   pending: 'Pending',
   overviewunavailable: 'Overview unavailable',
-  approverequests:
-    'Approve {requestCount} {requestCount, plural, one {Request} other {Requests}}',
-  declinerequests:
-    'Decline {requestCount} {requestCount, plural, one {Request} other {Requests}}',
   manageModalTitle: 'Manage Series',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No Requests',
@@ -81,13 +75,6 @@ interface SearchResult {
   totalResults: number;
   totalPages: number;
   results: TvResult[];
-}
-
-enum MediaRequestStatus {
-  PENDING = 1,
-  APPROVED,
-  DECLINED,
-  AVAILABLE,
 }
 
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
@@ -126,28 +113,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     return <Error statusCode={404} />;
   }
 
-  const activeRequests = data.mediaInfo?.requests?.filter(
-    (request) => request.status === MediaRequestStatus.PENDING
-  );
-
   const trailerUrl = data.relatedVideos
     ?.filter((r) => r.type === 'Trailer')
     .sort((a, b) => a.size - b.size)
     .pop()?.url;
-
-  const modifyRequests = async (type: 'approve' | 'decline'): Promise<void> => {
-    if (!activeRequests) {
-      return;
-    }
-
-    await Promise.all(
-      activeRequests.map(async (request) => {
-        return axios.get(`/api/v1/request/${request.id}/${type}`);
-      })
-    );
-
-    revalidate();
-  };
 
   const deleteMedia = async () => {
     if (data?.mediaInfo?.id) {
@@ -161,6 +130,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     (
       data.mediaInfo?.seasons.filter(
         (season) => season.status === MediaStatus.AVAILABLE
+      ) ?? []
+    ).length;
+
+  const is4kComplete =
+    data.seasons.filter((season) => season.seasonNumber !== 0).length <=
+    (
+      data.mediaInfo?.seasons.filter(
+        (season) => season.status4k === MediaStatus.AVAILABLE
       ) ?? []
     ).length;
 
@@ -236,7 +213,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
           <div className="mb-2">
-            <StatusBadge status={data.mediaInfo?.status} />
+            {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
+              <span className="mr-2">
+                <StatusBadge status={data.mediaInfo?.status} />
+              </span>
+            )}
+            <span>
+              <StatusBadge status={data.mediaInfo?.status4k} is4k />
+            </span>
           </div>
           <h1 className="text-2xl lg:text-4xl">
             <span>{data.name}</span>
@@ -278,116 +262,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               </Button>
             </a>
           )}
-          {(!data.mediaInfo ||
-            data.mediaInfo.status === MediaStatus.UNKNOWN) && (
-            <Button
-              className="ml-2"
-              buttonType="primary"
-              onClick={() => setShowRequestModal(true)}
-            >
-              <svg
-                className="w-5 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              <FormattedMessage {...messages.request} />
-            </Button>
-          )}
-          {data.mediaInfo &&
-            data.mediaInfo.status !== MediaStatus.UNKNOWN &&
-            !isComplete && (
-              <ButtonWithDropdown
-                dropdownIcon={
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                text={
-                  <>
-                    <svg
-                      className="w-5 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <FormattedMessage {...messages.requestmore} />
-                  </>
-                }
-                className="ml-2"
-                onClick={() => setShowRequestModal(true)}
-              >
-                {hasPermission(Permission.MANAGE_REQUESTS) &&
-                  activeRequests &&
-                  activeRequests.length > 0 && (
-                    <>
-                      <ButtonWithDropdown.Item
-                        onClick={() => modifyRequests('approve')}
-                      >
-                        <svg
-                          className="w-4 mr-1"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <FormattedMessage
-                          {...messages.approverequests}
-                          values={{ requestCount: activeRequests.length }}
-                        />
-                      </ButtonWithDropdown.Item>
-                      <ButtonWithDropdown.Item
-                        onClick={() => modifyRequests('decline')}
-                      >
-                        <svg
-                          className="w-4 mr-1"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <FormattedMessage
-                          {...messages.declinerequests}
-                          values={{ requestCount: activeRequests.length }}
-                        />
-                      </ButtonWithDropdown.Item>
-                    </>
-                  )}
-              </ButtonWithDropdown>
-            )}
+          <RequestButton
+            mediaType="tv"
+            onUpdate={() => revalidate()}
+            tmdbId={data?.id}
+            media={data?.mediaInfo}
+            isShowComplete={isComplete}
+            is4kShowComplete={is4kComplete}
+          />
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
               buttonType="default"

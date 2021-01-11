@@ -23,6 +23,7 @@ const messages = defineMessages({
   requestSuccess: '<strong>{title}</strong> successfully requested!',
   requestCancel: 'Request for <strong>{title}</strong> cancelled',
   requesttitle: 'Request {title}',
+  request4ktitle: 'Request {title} in 4K',
   requesting: 'Requesting...',
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
@@ -40,6 +41,7 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onCancel?: () => void;
   onComplete?: (newStatus: MediaStatus) => void;
   onUpdating?: (isUpdating: boolean) => void;
+  is4k?: boolean;
 }
 
 const TvRequestModal: React.FC<RequestModalProps> = ({
@@ -47,6 +49,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   onComplete,
   tmdbId,
   onUpdating,
+  is4k = false,
 }) => {
   const { addToast } = useToasts();
   const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${tmdbId}`);
@@ -65,6 +68,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       mediaId: data?.id,
       tvdbId: data?.externalIds.tvdbId,
       mediaType: 'tv',
+      is4k,
       seasons: selectedSeasons,
     });
 
@@ -90,21 +94,21 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   };
 
   const getAllRequestedSeasons = (): number[] => {
-    const requestedSeasons = (data?.mediaInfo?.requests ?? []).reduce(
-      (requestedSeasons, request) => {
+    const requestedSeasons = (data?.mediaInfo?.requests ?? [])
+      .filter((request) => request.is4k === is4k)
+      .reduce((requestedSeasons, request) => {
         return [
           ...requestedSeasons,
           ...request.seasons.map((sr) => sr.seasonNumber),
         ];
-      },
-      [] as number[]
-    );
+      }, [] as number[]);
 
     const availableSeasons = (data?.mediaInfo?.seasons ?? [])
       .filter(
         (season) =>
-          (season.status === MediaStatus.AVAILABLE ||
-            season.status === MediaStatus.PARTIALLY_AVAILABLE) &&
+          (season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
+            season[is4k ? 'status4k' : 'status'] ===
+              MediaStatus.PARTIALLY_AVAILABLE) &&
           !requestedSeasons.includes(season.seasonNumber)
       )
       .map((season) => season.seasonNumber);
@@ -176,14 +180,21 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     seasonNumber: number
   ): SeasonRequest | undefined => {
     let seasonRequest: SeasonRequest | undefined;
-    if (data?.mediaInfo && (data.mediaInfo.requests || []).length > 0) {
-      data.mediaInfo.requests.forEach((request) => {
-        if (!seasonRequest) {
-          seasonRequest = request.seasons.find(
-            (season) => season.seasonNumber === seasonNumber
-          );
-        }
-      });
+
+    if (
+      data?.mediaInfo &&
+      (data.mediaInfo.requests || []).filter((request) => request.is4k === is4k)
+        .length > 0
+    ) {
+      data.mediaInfo.requests
+        .filter((request) => request.is4k === is4k)
+        .forEach((request) => {
+          if (!seasonRequest) {
+            seasonRequest = request.seasons.find(
+              (season) => season.seasonNumber === seasonNumber
+            );
+          }
+        });
     }
 
     return seasonRequest;
@@ -195,7 +206,10 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       backgroundClickable
       onCancel={onCancel}
       onOk={() => sendRequest()}
-      title={intl.formatMessage(messages.requesttitle, { title: data?.name })}
+      title={intl.formatMessage(
+        is4k ? messages.request4ktitle : messages.requesttitle,
+        { title: data?.name }
+      )}
       okText={
         selectedSeasons.length === 0
           ? intl.formatMessage(messages.selectseason)
@@ -256,13 +270,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                         ></span>
                       </span>
                     </th>
-                    <th className="px-1 md:px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
+                    <th className="px-1 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500 md:px-6">
                       {intl.formatMessage(messages.season)}
                     </th>
-                    <th className="px-5 md:px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
+                    <th className="px-5 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500 md:px-6">
                       {intl.formatMessage(messages.numberofepisodes)}
                     </th>
-                    <th className="px-2 md:px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500">
+                    <th className="px-2 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500 md:px-6">
                       {intl.formatMessage(messages.status)}
                     </th>
                   </tr>
@@ -275,7 +289,10 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                         season.seasonNumber
                       );
                       const mediaSeason = data?.mediaInfo?.seasons.find(
-                        (sn) => sn.seasonNumber === season.seasonNumber
+                        (sn) =>
+                          sn.seasonNumber === season.seasonNumber &&
+                          sn[is4k ? 'status4k' : 'status'] !==
+                            MediaStatus.UNKNOWN
                       );
                       return (
                         <tr key={`season-${season.id}`}>
@@ -320,17 +337,17 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                               ></span>
                             </span>
                           </td>
-                          <td className="px-1 md:px-6 py-4 text-sm font-medium leading-5 text-gray-100 whitespace-nowrap">
+                          <td className="px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6 whitespace-nowrap">
                             {season.seasonNumber === 0
                               ? intl.formatMessage(messages.extras)
                               : intl.formatMessage(messages.seasonnumber, {
                                   number: season.seasonNumber,
                                 })}
                           </td>
-                          <td className="px-5 md:px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
+                          <td className="px-5 py-4 text-sm leading-5 text-gray-200 md:px-6 whitespace-nowrap">
                             {season.episodeCount}
                           </td>
-                          <td className="pr-2 md:px-6 py-4 text-sm leading-5 text-gray-200 whitespace-nowrap">
+                          <td className="py-4 pr-2 text-sm leading-5 text-gray-200 md:px-6 whitespace-nowrap">
                             {!seasonRequest && !mediaSeason && (
                               <Badge>
                                 {intl.formatMessage(messages.notrequested)}
@@ -357,7 +374,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                   {intl.formatMessage(globalMessages.available)}
                                 </Badge>
                               )}
-                            {mediaSeason?.status ===
+                            {mediaSeason?.[is4k ? 'status4k' : 'status'] ===
                               MediaStatus.PARTIALLY_AVAILABLE && (
                               <Badge badgeType="success">
                                 {intl.formatMessage(
@@ -365,7 +382,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                 )}
                               </Badge>
                             )}
-                            {mediaSeason?.status === MediaStatus.AVAILABLE && (
+                            {mediaSeason?.[is4k ? 'status4k' : 'status'] ===
+                              MediaStatus.AVAILABLE && (
                               <Badge badgeType="success">
                                 {intl.formatMessage(globalMessages.available)}
                               </Badge>

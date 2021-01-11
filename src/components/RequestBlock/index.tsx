@@ -45,8 +45,8 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
     <div className="block">
       <div className="px-4 py-4">
         <div className="flex items-center justify-between">
-          <div className="mr-6 flex-col items-center text-sm leading-5 text-gray-300 flex-1 min-w-0">
-            <div className="flex flex-nowrap mb-1 white">
+          <div className="flex-col items-center flex-1 min-w-0 mr-6 text-sm leading-5 text-gray-300">
+            <div className="flex mb-1 flex-nowrap white">
               <svg
                 className="min-w-0 flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
                 fill="currentColor"
@@ -59,7 +59,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="truncate w-40 md:w-auto">
+              <span className="w-40 truncate md:w-auto">
                 {request.requestedBy.username}
               </span>
             </div>
@@ -78,13 +78,13 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="truncate w-40 md:w-auto">
+                <span className="w-40 truncate md:w-auto">
                   {request.modifiedBy?.username}
                 </span>
               </div>
             )}
           </div>
-          <div className="ml-2 flex-shrink-0 flex flex-wrap">
+          <div className="flex flex-wrap flex-shrink-0 ml-2">
             {request.status === MediaRequestStatus.PENDING && (
               <>
                 <span className="mr-1">
@@ -153,11 +153,11 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
         </div>
         <div className="mt-2 sm:flex sm:justify-between">
           <div className="sm:flex">
-            <div className="mr-6 flex items-center text-sm leading-5 text-gray-300">
-              {request.status === MediaRequestStatus.AVAILABLE && (
-                <Badge badgeType="success">
-                  {intl.formatMessage(globalMessages.available)}
-                </Badge>
+            <div className="flex items-center mr-6 text-sm leading-5 text-gray-300">
+              {request.is4k && (
+                <span className="mr-1">
+                  <Badge badgeType="warning">4K</Badge>
+                </span>
               )}
               {request.status === MediaRequestStatus.APPROVED && (
                 <Badge badgeType="success">
@@ -176,7 +176,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               )}
             </div>
           </div>
-          <div className="mt-2 flex items-center text-sm leading-5 text-gray-300 sm:mt-0">
+          <div className="flex items-center mt-2 text-sm leading-5 text-gray-300 sm:mt-0">
             <svg
               className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
               xmlns="http://www.w3.org/2000/svg"
@@ -195,13 +195,13 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
           </div>
         </div>
         {(request.seasons ?? []).length > 0 && (
-          <div className="mt-2 text-sm flex flex-col">
+          <div className="flex flex-col mt-2 text-sm">
             <div className="mb-2">{intl.formatMessage(messages.seasons)}</div>
             <div>
               {request.seasons.map((season) => (
                 <span
                   key={`season-${season.id}`}
-                  className="mr-2 mb-1 inline-block"
+                  className="inline-block mb-1 mr-2"
                 >
                   <Badge>{season.seasonNumber}</Badge>
                 </span>

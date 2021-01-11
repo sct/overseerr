@@ -90,6 +90,30 @@ const SettingsMain: React.FC = () => {
       permission: Permission.REQUEST,
     },
     {
+      id: 'request4k',
+      name: intl.formatMessage(permissionMessages.request4k),
+      description: intl.formatMessage(permissionMessages.request4kDescription),
+      permission: Permission.REQUEST_4K,
+      children: [
+        {
+          id: 'request4k-movies',
+          name: intl.formatMessage(permissionMessages.request4kMovies),
+          description: intl.formatMessage(
+            permissionMessages.request4kMoviesDescription
+          ),
+          permission: Permission.REQUEST_4K_MOVIE,
+        },
+        {
+          id: 'request4k-tv',
+          name: intl.formatMessage(permissionMessages.request4kTv),
+          description: intl.formatMessage(
+            permissionMessages.request4kTvDescription
+          ),
+          permission: Permission.REQUEST_4K_TV,
+        },
+      ],
+    },
+    {
       id: 'autoapprove',
       name: intl.formatMessage(permissionMessages.autoapprove),
       description: intl.formatMessage(

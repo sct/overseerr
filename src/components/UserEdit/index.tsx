@@ -41,6 +41,12 @@ export const messages = defineMessages({
   autoapproveSeries: 'Auto Approve Series',
   autoapproveSeriesDescription:
     'Grants auto approve for series requests made by this user.',
+  request4k: 'Request 4K',
+  request4kDescription: 'Grants permission to request 4K movies and series.',
+  request4kMovies: 'Request 4K Movies',
+  request4kMoviesDescription: 'Grants permission to request 4K movies.',
+  request4kTv: 'Request 4K Series',
+  request4kTvDescription: 'Grants permission to request 4K Series.',
   save: 'Save',
   saving: 'Saving...',
   usersaved: 'User saved',
@@ -126,6 +132,26 @@ const UserEdit: React.FC = () => {
       name: intl.formatMessage(messages.request),
       description: intl.formatMessage(messages.requestDescription),
       permission: Permission.REQUEST,
+    },
+    {
+      id: 'request4k',
+      name: intl.formatMessage(messages.request4k),
+      description: intl.formatMessage(messages.request4kDescription),
+      permission: Permission.REQUEST_4K,
+      children: [
+        {
+          id: 'request4k-movies',
+          name: intl.formatMessage(messages.request4kMovies),
+          description: intl.formatMessage(messages.request4kMoviesDescription),
+          permission: Permission.REQUEST_4K_MOVIE,
+        },
+        {
+          id: 'request4k-tv',
+          name: intl.formatMessage(messages.request4kTv),
+          description: intl.formatMessage(messages.request4kTvDescription),
+          permission: Permission.REQUEST_4K_TV,
+        },
+      ],
     },
     {
       id: 'autoapprove',

@@ -20,6 +20,9 @@ class Season {
   @Column({ type: 'int', default: MediaStatus.UNKNOWN })
   public status: MediaStatus;
 
+  @Column({ type: 'int', default: MediaStatus.UNKNOWN })
+  public status4k: MediaStatus;
+
   @ManyToOne(() => Media, (media) => media.seasons, { onDelete: 'CASCADE' })
   public media: Promise<Media>;
 

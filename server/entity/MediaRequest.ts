@@ -65,6 +65,18 @@ export class MediaRequest {
   })
   public seasons: SeasonRequest[];
 
+  @Column({ default: false })
+  public is4k: boolean;
+
+  @Column({ nullable: true })
+  public serverId: number;
+
+  @Column({ nullable: true })
+  public profileId: number;
+
+  @Column({ nullable: true })
+  public rootFolder: string;
+
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
   }
@@ -181,7 +193,11 @@ export class MediaRequest {
     }
     const seasonRequestRepository = getRepository(SeasonRequest);
     if (this.status === MediaRequestStatus.APPROVED) {
-      media.status = MediaStatus.PROCESSING;
+      if (this.is4k) {
+        media.status4k = MediaStatus.PROCESSING;
+      } else {
+        media.status = MediaStatus.PROCESSING;
+      }
       mediaRepository.save(media);
     }
 
@@ -189,7 +205,11 @@ export class MediaRequest {
       this.media.mediaType === MediaType.MOVIE &&
       this.status === MediaRequestStatus.DECLINED
     ) {
-      media.status = MediaStatus.UNKNOWN;
+      if (this.is4k) {
+        media.status4k = MediaStatus.UNKNOWN;
+      } else {
+        media.status = MediaStatus.UNKNOWN;
+      }
       mediaRepository.save(media);
     }
 
@@ -224,15 +244,28 @@ export class MediaRequest {
   }
 
   @AfterRemove()
-  private async _handleRemoveParentUpdate() {
+  public async handleRemoveParentUpdate(): Promise<void> {
     const mediaRepository = getRepository(Media);
     const fullMedia = await mediaRepository.findOneOrFail({
       where: { id: this.media.id },
+      relations: ['requests'],
     });
-    if (!fullMedia.requests || fullMedia.requests.length === 0) {
+
+    if (
+      !fullMedia.requests.some((request) => !request.is4k) &&
+      fullMedia.status !== MediaStatus.AVAILABLE
+    ) {
       fullMedia.status = MediaStatus.UNKNOWN;
-      mediaRepository.save(fullMedia);
     }
+
+    if (
+      !fullMedia.requests.some((request) => request.is4k) &&
+      fullMedia.status4k !== MediaStatus.AVAILABLE
+    ) {
+      fullMedia.status4k = MediaStatus.UNKNOWN;
+    }
+
+    mediaRepository.save(fullMedia);
   }
 
   private async _sendToRadarr() {
@@ -252,12 +285,14 @@ export class MediaRequest {
         }
 
         const radarrSettings = settings.radarr.find(
-          (radarr) => radarr.isDefault && !radarr.is4k
+          (radarr) => radarr.isDefault && this.is4k
         );
 
         if (!radarrSettings) {
           logger.info(
-            'There is no default radarr configured. Did you set any of your Radarr servers as default?',
+            `There is no default ${
+              this.is4k ? '4K ' : ''
+            }radarr configured. Did you set any of your Radarr servers as default?`,
             { label: 'Media Request' }
           );
           return;
@@ -342,12 +377,14 @@ export class MediaRequest {
         }
 
         const sonarrSettings = settings.sonarr.find(
-          (sonarr) => sonarr.isDefault && !sonarr.is4k
+          (sonarr) => sonarr.isDefault && this.is4k
         );
 
         if (!sonarrSettings) {
           logger.info(
-            'There is no default sonarr configured. Did you set any of your Sonarr servers as default?',
+            `There is no default ${
+              this.is4k ? '4K ' : ''
+            }sonarr configured. Did you set any of your Sonarr servers as default?`,
             { label: 'Media Request' }
           );
           return;

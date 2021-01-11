@@ -45,6 +45,8 @@ class JobPlexSync {
   private currentLibrary: Library;
   private running = false;
   private isRecentOnly = false;
+  private enable4kMovie = false;
+  private enable4kShow = false;
   private asyncLock = new AsyncLock();
 
   constructor({ isRecentOnly }: { isRecentOnly?: boolean } = {}) {
@@ -86,23 +88,59 @@ class JobPlexSync {
           }
         });
 
+        const has4k = metadata.Media.some(
+          (media) => media.videoResolution === '4k'
+        );
+        const hasOtherResolution = metadata.Media.some(
+          (media) => media.videoResolution !== '4k'
+        );
+
         await this.asyncLock.dispatch(newMedia.tmdbId, async () => {
           const existing = await this.getExisting(
             newMedia.tmdbId,
             MediaType.MOVIE
           );
 
-          if (existing && existing.status === MediaStatus.AVAILABLE) {
-            this.log(`Title exists and is already available ${metadata.title}`);
-          } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
-            existing.status = MediaStatus.AVAILABLE;
-            mediaRepository.save(existing);
-            this.log(
-              `Request for ${metadata.title} exists. Setting status AVAILABLE`,
-              'info'
-            );
+          if (existing) {
+            let changedExisting = false;
+
+            if (
+              (hasOtherResolution || (!this.enable4kMovie && has4k)) &&
+              existing.status !== MediaStatus.AVAILABLE
+            ) {
+              existing.status = MediaStatus.AVAILABLE;
+              changedExisting = true;
+            }
+
+            if (
+              has4k &&
+              this.enable4kMovie &&
+              existing.status4k !== MediaStatus.AVAILABLE
+            ) {
+              existing.status4k = MediaStatus.AVAILABLE;
+              changedExisting = true;
+            }
+
+            if (changedExisting) {
+              await mediaRepository.save(existing);
+              this.log(
+                `Request for ${metadata.title} exists. New media types set to AVAILABLE`,
+                'info'
+              );
+            } else {
+              this.log(
+                `Title already exists and no new media types found ${metadata.title}`
+              );
+            }
           } else {
-            newMedia.status = MediaStatus.AVAILABLE;
+            newMedia.status =
+              hasOtherResolution || (!this.enable4kMovie && has4k)
+                ? MediaStatus.AVAILABLE
+                : MediaStatus.UNKNOWN;
+            newMedia.status4k =
+              has4k && this.enable4kMovie
+                ? MediaStatus.AVAILABLE
+                : MediaStatus.UNKNOWN;
             newMedia.mediaType = MediaType.MOVIE;
             await mediaRepository.save(newMedia);
             this.log(`Saved ${plexitem.title}`);
@@ -150,16 +188,47 @@ class JobPlexSync {
     const mediaRepository = getRepository(Media);
 
     await this.asyncLock.dispatch(tmdbMovieId, async () => {
+      const metadata = await this.plexClient.getMetadata(plexitem.ratingKey);
       const existing = await this.getExisting(tmdbMovieId, MediaType.MOVIE);
-      if (existing && existing.status === MediaStatus.AVAILABLE) {
-        this.log(`Title exists and is already available ${plexitem.title}`);
-      } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
-        existing.status = MediaStatus.AVAILABLE;
-        await mediaRepository.save(existing);
-        this.log(
-          `Request for ${plexitem.title} exists. Setting status AVAILABLE`,
-          'info'
-        );
+
+      const has4k = metadata.Media.some(
+        (media) => media.videoResolution === '4k'
+      );
+      const hasOtherResolution = metadata.Media.some(
+        (media) => media.videoResolution !== '4k'
+      );
+
+      if (existing) {
+        let changedExisting = false;
+
+        if (
+          (hasOtherResolution || (!this.enable4kMovie && has4k)) &&
+          existing.status !== MediaStatus.AVAILABLE
+        ) {
+          existing.status = MediaStatus.AVAILABLE;
+          changedExisting = true;
+        }
+
+        if (
+          has4k &&
+          this.enable4kMovie &&
+          existing.status4k !== MediaStatus.AVAILABLE
+        ) {
+          existing.status4k = MediaStatus.AVAILABLE;
+          changedExisting = true;
+        }
+
+        if (changedExisting) {
+          await mediaRepository.save(existing);
+          this.log(
+            `Request for ${metadata.title} exists. New media types set to AVAILABLE`,
+            'info'
+          );
+        } else {
+          this.log(
+            `Title already exists and no new media types found ${metadata.title}`
+          );
+        }
       } else {
         // If we have a tmdb movie guid but it didn't already exist, only then
         // do we request the movie from tmdb (to reduce api requests)
@@ -169,7 +238,14 @@ class JobPlexSync {
         const newMedia = new Media();
         newMedia.imdbId = tmdbMovie.external_ids.imdb_id;
         newMedia.tmdbId = tmdbMovie.id;
-        newMedia.status = MediaStatus.AVAILABLE;
+        newMedia.status =
+          hasOtherResolution || (!this.enable4kMovie && has4k)
+            ? MediaStatus.AVAILABLE
+            : MediaStatus.UNKNOWN;
+        newMedia.status4k =
+          has4k && this.enable4kMovie
+            ? MediaStatus.AVAILABLE
+            : MediaStatus.UNKNOWN;
         newMedia.mediaType = MediaType.MOVIE;
         await mediaRepository.save(newMedia);
         this.log(`Saved ${tmdbMovie.title}`);
@@ -316,13 +392,18 @@ class JobPlexSync {
 
           const newSeasons: Season[] = [];
 
-          const currentSeasonAvailable = (
+          const currentStandardSeasonAvailable = (
             media?.seasons.filter(
               (season) => season.status === MediaStatus.AVAILABLE
             ) ?? []
           ).length;
+          const current4kSeasonAvailable = (
+            media?.seasons.filter(
+              (season) => season.status4k === MediaStatus.AVAILABLE
+            ) ?? []
+          ).length;
 
-          seasons.forEach((season) => {
+          for (const season of seasons) {
             const matchedPlexSeason = metadata.Children?.Metadata.find(
               (md) => Number(md.index) === season.season_number
             );
@@ -332,68 +413,136 @@ class JobPlexSync {
             );
 
             // Check if we found the matching season and it has all the available episodes
-            if (
-              matchedPlexSeason &&
-              Number(matchedPlexSeason.leafCount) === season.episode_count
-            ) {
+            if (matchedPlexSeason) {
+              // If we have a matched plex season, get its children metadata so we can check details
+              const episodes = await this.plexClient.getChildrenMetadata(
+                matchedPlexSeason.ratingKey
+              );
+              // Total episodes that are in standard definition (not 4k)
+              const totalStandard = episodes.filter((episode) =>
+                episode.Media.some((media) => media.videoResolution !== '4k')
+              ).length;
+
+              // Total episodes that are in 4k
+              const total4k = episodes.filter((episode) =>
+                episode.Media.some((media) => media.videoResolution === '4k')
+              ).length;
+
               if (existingSeason) {
-                existingSeason.status = MediaStatus.AVAILABLE;
+                // These ternary statements look super confusing, but they are simply
+                // setting the status to AVAILABLE if all of a type is there, partially if some,
+                // and then not modifying the status if there are 0 items
+                existingSeason.status =
+                  totalStandard === season.episode_count
+                    ? MediaStatus.AVAILABLE
+                    : totalStandard > 0
+                    ? MediaStatus.PARTIALLY_AVAILABLE
+                    : existingSeason.status;
+                existingSeason.status4k =
+                  total4k === season.episode_count
+                    ? MediaStatus.AVAILABLE
+                    : total4k > 0
+                    ? MediaStatus.PARTIALLY_AVAILABLE
+                    : existingSeason.status4k;
               } else {
                 newSeasons.push(
                   new Season({
                     seasonNumber: season.season_number,
-                    status: MediaStatus.AVAILABLE,
-                  })
-                );
-              }
-            } else if (matchedPlexSeason) {
-              if (existingSeason) {
-                existingSeason.status = MediaStatus.PARTIALLY_AVAILABLE;
-              } else {
-                newSeasons.push(
-                  new Season({
-                    seasonNumber: season.season_number,
-                    status: MediaStatus.PARTIALLY_AVAILABLE,
+                    // This ternary is the same as the ones above, but it just falls back to "UNKNOWN"
+                    // if we dont have any items for the season
+                    status:
+                      totalStandard === season.episode_count
+                        ? MediaStatus.AVAILABLE
+                        : totalStandard > 0
+                        ? MediaStatus.PARTIALLY_AVAILABLE
+                        : MediaStatus.UNKNOWN,
+                    status4k:
+                      total4k === season.episode_count
+                        ? MediaStatus.AVAILABLE
+                        : total4k > 0
+                        ? MediaStatus.PARTIALLY_AVAILABLE
+                        : MediaStatus.UNKNOWN,
                   })
                 );
               }
             }
-          });
+          }
 
           // Remove extras season. We dont count it for determining availability
           const filteredSeasons = tvShow.seasons.filter(
             (season) => season.season_number !== 0
           );
 
-          const isAllSeasons =
-            newSeasons.length + (media?.seasons.length ?? 0) >=
+          const isAllStandardSeasons =
+            newSeasons.filter(
+              (season) => season.status === MediaStatus.AVAILABLE
+            ).length +
+              (media?.seasons.filter(
+                (season) => season.status === MediaStatus.AVAILABLE
+              ).length ?? 0) >=
+            filteredSeasons.length;
+
+          const isAll4kSeasons =
+            newSeasons.filter(
+              (season) => season.status4k === MediaStatus.AVAILABLE
+            ).length +
+              (media?.seasons.filter(
+                (season) => season.status4k === MediaStatus.AVAILABLE
+              ).length ?? 0) >=
             filteredSeasons.length;
 
           if (media) {
             // Update existing
             media.seasons = [...media.seasons, ...newSeasons];
 
-            const newSeasonAvailable = (
+            const newStandardSeasonAvailable = (
               media.seasons.filter(
                 (season) => season.status === MediaStatus.AVAILABLE
               ) ?? []
             ).length;
 
+            const new4kSeasonAvailable = (
+              media.seasons.filter(
+                (season) => season.status4k === MediaStatus.AVAILABLE
+              ) ?? []
+            ).length;
+
             // If at least one new season has become available, update
             // the lastSeasonChange field so we can trigger notifications
-            if (newSeasonAvailable > currentSeasonAvailable) {
+            if (newStandardSeasonAvailable > currentStandardSeasonAvailable) {
               this.log(
                 `Detected ${
-                  newSeasonAvailable - currentSeasonAvailable
-                } new season(s) for ${tvShow.name}`,
+                  newStandardSeasonAvailable - currentStandardSeasonAvailable
+                } new standard season(s) for ${tvShow.name}`,
                 'debug'
               );
               media.lastSeasonChange = new Date();
             }
 
-            media.status = isAllSeasons
+            if (new4kSeasonAvailable > current4kSeasonAvailable) {
+              this.log(
+                `Detected ${
+                  new4kSeasonAvailable - current4kSeasonAvailable
+                } new 4K season(s) for ${tvShow.name}`,
+                'debug'
+              );
+              media.lastSeasonChange = new Date();
+            }
+
+            media.status = isAllStandardSeasons
               ? MediaStatus.AVAILABLE
-              : MediaStatus.PARTIALLY_AVAILABLE;
+              : media.seasons.some(
+                  (season) => season.status !== MediaStatus.UNKNOWN
+                )
+              ? MediaStatus.PARTIALLY_AVAILABLE
+              : MediaStatus.UNKNOWN;
+            media.status4k = isAll4kSeasons
+              ? MediaStatus.AVAILABLE
+              : media.seasons.some(
+                  (season) => season.status4k !== MediaStatus.UNKNOWN
+                )
+              ? MediaStatus.PARTIALLY_AVAILABLE
+              : MediaStatus.UNKNOWN;
             await mediaRepository.save(media);
             this.log(`Updating existing title: ${tvShow.name}`);
           } else {
@@ -402,9 +551,20 @@ class JobPlexSync {
               seasons: newSeasons,
               tmdbId: tvShow.id,
               tvdbId: tvShow.external_ids.tvdb_id,
-              status: isAllSeasons
+              status: isAllStandardSeasons
                 ? MediaStatus.AVAILABLE
-                : MediaStatus.PARTIALLY_AVAILABLE,
+                : newSeasons.some(
+                    (season) => season.status !== MediaStatus.UNKNOWN
+                  )
+                ? MediaStatus.PARTIALLY_AVAILABLE
+                : MediaStatus.UNKNOWN,
+              status4k: isAll4kSeasons
+                ? MediaStatus.AVAILABLE
+                : newSeasons.some(
+                    (season) => season.status4k !== MediaStatus.UNKNOWN
+                  )
+                ? MediaStatus.PARTIALLY_AVAILABLE
+                : MediaStatus.UNKNOWN,
             });
             await mediaRepository.save(newMedia);
             this.log(`Saved ${tvShow.name}`);
@@ -507,6 +667,22 @@ class JobPlexSync {
       this.libraries = settings.plex.libraries.filter(
         (library) => library.enabled
       );
+
+      this.enable4kMovie = settings.radarr.some((radarr) => radarr.is4k);
+      if (this.enable4kMovie) {
+        this.log(
+          'At least one 4K Radarr server was detected, so 4K movie detection is now enabled',
+          'info'
+        );
+      }
+
+      this.enable4kShow = settings.sonarr.some((sonarr) => sonarr.is4k);
+      if (this.enable4kShow) {
+        this.log(
+          'At least one 4K Sonarr server was detected, so 4K series detection is now enabled',
+          'info'
+        );
+      }
 
       const hasHama = await this.hasHamaAgent();
       if (hasHama) {

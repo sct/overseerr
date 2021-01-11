@@ -30,7 +30,7 @@ router.use('/user', isAuthenticated(Permission.MANAGE_USERS), user);
 router.get('/settings/public', (_req, res) => {
   const settings = getSettings();
 
-  return res.status(200).json(settings.public);
+  return res.status(200).json(settings.fullPublicSettings);
 });
 router.use(
   '/settings',
