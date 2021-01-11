@@ -36,14 +36,13 @@
 
 - User profiles.
 - User settings page (to give users the ability to modify their Overseerr experience to their liking).
-- 4K requests (Includes multi-radarr/sonarr management for media)
+- Local user system (for those who don't use Plex).
 
 ## Planned Features
 
 - More notification types.
 - Issues system. This will allow users to report issues with content on your media server.
-- Local user system (for those who don't use Plex).
-- Compatibility APIs (to work with existing tools in your system).
+- And a ton more! Check out our [issue tracker](https://github.com/sct/overseerr/issues) to see what features people have already requested.
 
 ## Getting Started
 
@@ -142,4 +141,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
