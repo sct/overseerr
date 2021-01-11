@@ -212,7 +212,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
-        <div className="flex justify-end flex-shrink-0 mt-4 lg:mt-0">
+        <div className="relative z-10 flex justify-end flex-shrink-0 mt-4 lg:mt-0">
           {trailerUrl && (
             <a href={trailerUrl} target={'_blank'} rel="noreferrer">
               <Button buttonType="ghost">
@@ -332,7 +332,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <Link href={`/collection/${data.collection.id}`}>
                 <a>
                   <div
-                    className="relative transition duration-300 transform scale-100 bg-gray-800 bg-center bg-cover rounded-lg shadow-md cursor-pointer group hover:scale-105"
+                    className="relative z-0 transition duration-300 scale-100 bg-gray-800 bg-center bg-cover rounded-lg shadow-md cursor-pointer transform-gpu group hover:scale-105"
                     style={{
                       backgroundImage: `linear-gradient(180deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 0.80) 100%), url(//image.tmdb.org/t/p/w1440_and_h320_multi_faces/${data.collection.backdropPath})`,
                     }}
