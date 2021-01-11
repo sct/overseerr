@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+    name: Lint
     runs-on: ubuntu-latest
     container: node:12.18-alpine
     steps:
