@@ -137,7 +137,13 @@ const RequestButton: React.FC<RequestButtonProps> = ({
     });
   }
 
-  if (mediaType === 'tv' && activeRequests && !isShowComplete) {
+  if (
+    mediaType === 'tv' &&
+    media &&
+    media.status !== MediaStatus.AVAILABLE &&
+    media.status !== MediaStatus.UNKNOWN &&
+    !isShowComplete
+  ) {
     buttons.push({
       id: 'request-more',
       text: intl.formatMessage(messages.requestmore),
@@ -196,8 +202,9 @@ const RequestButton: React.FC<RequestButtonProps> = ({
 
   if (
     mediaType === 'tv' &&
-    active4kRequests &&
-    active4kRequests.length > 0 &&
+    media &&
+    media.status4k !== MediaStatus.AVAILABLE &&
+    media.status4k !== MediaStatus.UNKNOWN &&
     !is4kShowComplete &&
     settings.currentSettings.series4kEnabled
   ) {

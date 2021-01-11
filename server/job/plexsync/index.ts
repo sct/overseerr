@@ -392,13 +392,18 @@ class JobPlexSync {
 
           const newSeasons: Season[] = [];
 
-          const currentSeasonAvailable = (
+          const currentStandardSeasonAvailable = (
             media?.seasons.filter(
               (season) => season.status === MediaStatus.AVAILABLE
             ) ?? []
           ).length;
+          const current4kSeasonAvailable = (
+            media?.seasons.filter(
+              (season) => season.status4k === MediaStatus.AVAILABLE
+            ) ?? []
+          ).length;
 
-          seasons.forEach((season) => {
+          for (const season of seasons) {
             const matchedPlexSeason = metadata.Children?.Metadata.find(
               (md) => Number(md.index) === season.season_number
             );
@@ -408,68 +413,136 @@ class JobPlexSync {
             );
 
             // Check if we found the matching season and it has all the available episodes
-            if (
-              matchedPlexSeason &&
-              Number(matchedPlexSeason.leafCount) === season.episode_count
-            ) {
+            if (matchedPlexSeason) {
+              // If we have a matched plex season, get its children metadata so we can check details
+              const episodes = await this.plexClient.getChildrenMetadata(
+                matchedPlexSeason.ratingKey
+              );
+              // Total episodes that are in standard definition (not 4k)
+              const totalStandard = episodes.filter((episode) =>
+                episode.Media.some((media) => media.videoResolution !== '4k')
+              ).length;
+
+              // Total episodes that are in 4k
+              const total4k = episodes.filter((episode) =>
+                episode.Media.some((media) => media.videoResolution === '4k')
+              ).length;
+
               if (existingSeason) {
-                existingSeason.status = MediaStatus.AVAILABLE;
+                // These ternary statements look super confusing, but they are simply
+                // setting the status to AVAILABLE if all of a type is there, partially if some,
+                // and then not modifying the status if there are 0 items
+                existingSeason.status =
+                  totalStandard === season.episode_count
+                    ? MediaStatus.AVAILABLE
+                    : totalStandard > 0
+                    ? MediaStatus.PARTIALLY_AVAILABLE
+                    : existingSeason.status;
+                existingSeason.status4k =
+                  total4k === season.episode_count
+                    ? MediaStatus.AVAILABLE
+                    : total4k > 0
+                    ? MediaStatus.PARTIALLY_AVAILABLE
+                    : existingSeason.status4k;
               } else {
                 newSeasons.push(
                   new Season({
                     seasonNumber: season.season_number,
-                    status: MediaStatus.AVAILABLE,
-                  })
-                );
-              }
-            } else if (matchedPlexSeason) {
-              if (existingSeason) {
-                existingSeason.status = MediaStatus.PARTIALLY_AVAILABLE;
-              } else {
-                newSeasons.push(
-                  new Season({
-                    seasonNumber: season.season_number,
-                    status: MediaStatus.PARTIALLY_AVAILABLE,
+                    // This ternary is the same as the ones above, but it just falls back to "UNKNOWN"
+                    // if we dont have any items for the season
+                    status:
+                      totalStandard === season.episode_count
+                        ? MediaStatus.AVAILABLE
+                        : totalStandard > 0
+                        ? MediaStatus.PARTIALLY_AVAILABLE
+                        : MediaStatus.UNKNOWN,
+                    status4k:
+                      total4k === season.episode_count
+                        ? MediaStatus.AVAILABLE
+                        : total4k > 0
+                        ? MediaStatus.PARTIALLY_AVAILABLE
+                        : MediaStatus.UNKNOWN,
                   })
                 );
               }
             }
-          });
+          }
 
           // Remove extras season. We dont count it for determining availability
           const filteredSeasons = tvShow.seasons.filter(
             (season) => season.season_number !== 0
           );
 
-          const isAllSeasons =
-            newSeasons.length + (media?.seasons.length ?? 0) >=
+          const isAllStandardSeasons =
+            newSeasons.filter(
+              (season) => season.status === MediaStatus.AVAILABLE
+            ).length +
+              (media?.seasons.filter(
+                (season) => season.status === MediaStatus.AVAILABLE
+              ).length ?? 0) >=
+            filteredSeasons.length;
+
+          const isAll4kSeasons =
+            newSeasons.filter(
+              (season) => season.status4k === MediaStatus.AVAILABLE
+            ).length +
+              (media?.seasons.filter(
+                (season) => season.status4k === MediaStatus.AVAILABLE
+              ).length ?? 0) >=
             filteredSeasons.length;
 
           if (media) {
             // Update existing
             media.seasons = [...media.seasons, ...newSeasons];
 
-            const newSeasonAvailable = (
+            const newStandardSeasonAvailable = (
               media.seasons.filter(
                 (season) => season.status === MediaStatus.AVAILABLE
               ) ?? []
             ).length;
 
+            const new4kSeasonAvailable = (
+              media.seasons.filter(
+                (season) => season.status4k === MediaStatus.AVAILABLE
+              ) ?? []
+            ).length;
+
             // If at least one new season has become available, update
             // the lastSeasonChange field so we can trigger notifications
-            if (newSeasonAvailable > currentSeasonAvailable) {
+            if (newStandardSeasonAvailable > currentStandardSeasonAvailable) {
               this.log(
                 `Detected ${
-                  newSeasonAvailable - currentSeasonAvailable
-                } new season(s) for ${tvShow.name}`,
+                  newStandardSeasonAvailable - currentStandardSeasonAvailable
+                } new standard season(s) for ${tvShow.name}`,
                 'debug'
               );
               media.lastSeasonChange = new Date();
             }
 
-            media.status = isAllSeasons
+            if (new4kSeasonAvailable > current4kSeasonAvailable) {
+              this.log(
+                `Detected ${
+                  new4kSeasonAvailable - current4kSeasonAvailable
+                } new 4K season(s) for ${tvShow.name}`,
+                'debug'
+              );
+              media.lastSeasonChange = new Date();
+            }
+
+            media.status = isAllStandardSeasons
               ? MediaStatus.AVAILABLE
-              : MediaStatus.PARTIALLY_AVAILABLE;
+              : media.seasons.some(
+                  (season) => season.status !== MediaStatus.UNKNOWN
+                )
+              ? MediaStatus.PARTIALLY_AVAILABLE
+              : MediaStatus.UNKNOWN;
+            media.status4k = isAll4kSeasons
+              ? MediaStatus.AVAILABLE
+              : media.seasons.some(
+                  (season) => season.status4k !== MediaStatus.UNKNOWN
+                )
+              ? MediaStatus.PARTIALLY_AVAILABLE
+              : MediaStatus.UNKNOWN;
             await mediaRepository.save(media);
             this.log(`Updating existing title: ${tvShow.name}`);
           } else {
@@ -478,9 +551,20 @@ class JobPlexSync {
               seasons: newSeasons,
               tmdbId: tvShow.id,
               tvdbId: tvShow.external_ids.tvdb_id,
-              status: isAllSeasons
+              status: isAllStandardSeasons
                 ? MediaStatus.AVAILABLE
-                : MediaStatus.PARTIALLY_AVAILABLE,
+                : newSeasons.some(
+                    (season) => season.status !== MediaStatus.UNKNOWN
+                  )
+                ? MediaStatus.PARTIALLY_AVAILABLE
+                : MediaStatus.UNKNOWN,
+              status4k: isAll4kSeasons
+                ? MediaStatus.AVAILABLE
+                : newSeasons.some(
+                    (season) => season.status4k !== MediaStatus.UNKNOWN
+                  )
+                ? MediaStatus.PARTIALLY_AVAILABLE
+                : MediaStatus.UNKNOWN,
             });
             await mediaRepository.save(newMedia);
             this.log(`Saved ${tvShow.name}`);
