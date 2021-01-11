@@ -84,11 +84,11 @@ export class MediaRequest {
   @AfterUpdate()
   @AfterInsert()
   public async sendMedia(): Promise<void> {
-    await Promise.all([this._sendToRadarr(), this._sendToSonarr()]);
+    await Promise.all([this.sendToRadarr(), this.sendToSonarr()]);
   }
 
   @AfterInsert()
-  private async _notifyNewRequest() {
+  public async notifyNewRequest(): Promise<void> {
     if (this.status === MediaRequestStatus.PENDING) {
       const mediaRepository = getRepository(Media);
       const media = await mediaRepository.findOne({
@@ -268,7 +268,7 @@ export class MediaRequest {
     mediaRepository.save(fullMedia);
   }
 
-  private async _sendToRadarr() {
+  public async sendToRadarr(): Promise<void> {
     if (
       this.status === MediaRequestStatus.APPROVED &&
       this.type === MediaType.MOVIE
@@ -285,7 +285,7 @@ export class MediaRequest {
         }
 
         const radarrSettings = settings.radarr.find(
-          (radarr) => radarr.isDefault && this.is4k
+          (radarr) => radarr.isDefault && radarr.is4k === this.is4k
         );
 
         if (!radarrSettings) {
@@ -360,7 +360,7 @@ export class MediaRequest {
     }
   }
 
-  private async _sendToSonarr() {
+  public async sendToSonarr(): Promise<void> {
     if (
       this.status === MediaRequestStatus.APPROVED &&
       this.type === MediaType.TV
@@ -377,7 +377,7 @@ export class MediaRequest {
         }
 
         const sonarrSettings = settings.sonarr.find(
-          (sonarr) => sonarr.isDefault && this.is4k
+          (sonarr) => sonarr.isDefault && sonarr.is4k === this.is4k
         );
 
         if (!sonarrSettings) {
