@@ -114,7 +114,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
         {requestData.media.status && (
           <div className="mt-1 sm:mt-2">
             <StatusBadge
-              status={requestData.media.status}
+              status={
+                requestData.is4k
+                  ? requestData.media.status4k
+                  : requestData.media.status
+              }
               is4k={requestData.is4k}
             />
           </div>
