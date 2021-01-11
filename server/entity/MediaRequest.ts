@@ -244,18 +244,24 @@ export class MediaRequest {
   }
 
   @AfterRemove()
-  private async _handleRemoveParentUpdate() {
+  public async handleRemoveParentUpdate(): Promise<void> {
     const mediaRepository = getRepository(Media);
     const fullMedia = await mediaRepository.findOneOrFail({
       where: { id: this.media.id },
       relations: ['requests'],
     });
 
-    if (!fullMedia.requests.some((request) => !request.is4k)) {
+    if (
+      !fullMedia.requests.some((request) => !request.is4k) &&
+      fullMedia.status !== MediaStatus.AVAILABLE
+    ) {
       fullMedia.status = MediaStatus.UNKNOWN;
     }
 
-    if (!fullMedia.requests.some((request) => request.is4k)) {
+    if (
+      !fullMedia.requests.some((request) => request.is4k) &&
+      fullMedia.status4k !== MediaStatus.AVAILABLE
+    ) {
       fullMedia.status4k = MediaStatus.UNKNOWN;
     }
 
