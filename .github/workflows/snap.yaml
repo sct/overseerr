@@ -7,8 +7,23 @@ on:
     pull_request: ~
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: node:12.18-alpine
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        env:
+          HUSKY_SKIP_INSTALL: 1
+        run: yarn
+      - name: lint
+        run: yarn lint
+      - name: build
+        run: yarn build
   build-snap:
     name: Build Snap Package (${{ matrix.architecture }})
+    needs: test
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     strategy:
