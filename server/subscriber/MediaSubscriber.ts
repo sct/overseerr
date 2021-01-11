@@ -12,8 +12,11 @@ import notificationManager, { Notification } from '../lib/notifications';
 
 @EventSubscriber()
 export class MediaSubscriber implements EntitySubscriberInterface {
-  private async notifyAvailableMovie(entity: Media) {
-    if (entity.status === MediaStatus.AVAILABLE) {
+  private async notifyAvailableMovie(entity: Media, dbEntity?: Media) {
+    if (
+      entity.status === MediaStatus.AVAILABLE &&
+      dbEntity?.status !== MediaStatus.AVAILABLE
+    ) {
       if (entity.mediaType === MediaType.MOVIE) {
         const requestRepository = getRepository(MediaRequest);
         const relatedRequests = await requestRepository.find({
@@ -100,7 +103,7 @@ export class MediaSubscriber implements EntitySubscriberInterface {
       event.entity.mediaType === MediaType.MOVIE &&
       event.entity.status === MediaStatus.AVAILABLE
     ) {
-      this.notifyAvailableMovie(event.entity);
+      this.notifyAvailableMovie(event.entity, event.databaseEntity);
     }
 
     if (
