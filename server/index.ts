@@ -98,6 +98,7 @@ app
       };
       next();
     });
+
     server.use('/api/v1', routes);
     server.get('*', (req, res) => handle(req, res));
     server.use(

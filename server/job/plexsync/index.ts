@@ -45,6 +45,8 @@ class JobPlexSync {
   private currentLibrary: Library;
   private running = false;
   private isRecentOnly = false;
+  private enable4kMovie = false;
+  private enable4kShow = false;
   private asyncLock = new AsyncLock();
 
   constructor({ isRecentOnly }: { isRecentOnly?: boolean } = {}) {
@@ -86,23 +88,59 @@ class JobPlexSync {
           }
         });
 
+        const has4k = metadata.Media.some(
+          (media) => media.videoResolution === '4k'
+        );
+        const hasOtherResolution = metadata.Media.some(
+          (media) => media.videoResolution !== '4k'
+        );
+
         await this.asyncLock.dispatch(newMedia.tmdbId, async () => {
           const existing = await this.getExisting(
             newMedia.tmdbId,
             MediaType.MOVIE
           );
 
-          if (existing && existing.status === MediaStatus.AVAILABLE) {
-            this.log(`Title exists and is already available ${metadata.title}`);
-          } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
-            existing.status = MediaStatus.AVAILABLE;
-            mediaRepository.save(existing);
-            this.log(
-              `Request for ${metadata.title} exists. Setting status AVAILABLE`,
-              'info'
-            );
+          if (existing) {
+            let changedExisting = false;
+
+            if (
+              (hasOtherResolution || (!this.enable4kMovie && has4k)) &&
+              existing.status !== MediaStatus.AVAILABLE
+            ) {
+              existing.status = MediaStatus.AVAILABLE;
+              changedExisting = true;
+            }
+
+            if (
+              has4k &&
+              this.enable4kMovie &&
+              existing.status4k !== MediaStatus.AVAILABLE
+            ) {
+              existing.status4k = MediaStatus.AVAILABLE;
+              changedExisting = true;
+            }
+
+            if (changedExisting) {
+              await mediaRepository.save(existing);
+              this.log(
+                `Request for ${metadata.title} exists. New media types set to AVAILABLE`,
+                'info'
+              );
+            } else {
+              this.log(
+                `Title already exists and no new media types found ${metadata.title}`
+              );
+            }
           } else {
-            newMedia.status = MediaStatus.AVAILABLE;
+            newMedia.status =
+              hasOtherResolution || (!this.enable4kMovie && has4k)
+                ? MediaStatus.AVAILABLE
+                : MediaStatus.UNKNOWN;
+            newMedia.status4k =
+              has4k && this.enable4kMovie
+                ? MediaStatus.AVAILABLE
+                : MediaStatus.UNKNOWN;
             newMedia.mediaType = MediaType.MOVIE;
             await mediaRepository.save(newMedia);
             this.log(`Saved ${plexitem.title}`);
@@ -150,16 +188,47 @@ class JobPlexSync {
     const mediaRepository = getRepository(Media);
 
     await this.asyncLock.dispatch(tmdbMovieId, async () => {
+      const metadata = await this.plexClient.getMetadata(plexitem.ratingKey);
       const existing = await this.getExisting(tmdbMovieId, MediaType.MOVIE);
-      if (existing && existing.status === MediaStatus.AVAILABLE) {
-        this.log(`Title exists and is already available ${plexitem.title}`);
-      } else if (existing && existing.status !== MediaStatus.AVAILABLE) {
-        existing.status = MediaStatus.AVAILABLE;
-        await mediaRepository.save(existing);
-        this.log(
-          `Request for ${plexitem.title} exists. Setting status AVAILABLE`,
-          'info'
-        );
+
+      const has4k = metadata.Media.some(
+        (media) => media.videoResolution === '4k'
+      );
+      const hasOtherResolution = metadata.Media.some(
+        (media) => media.videoResolution !== '4k'
+      );
+
+      if (existing) {
+        let changedExisting = false;
+
+        if (
+          (hasOtherResolution || (!this.enable4kMovie && has4k)) &&
+          existing.status !== MediaStatus.AVAILABLE
+        ) {
+          existing.status = MediaStatus.AVAILABLE;
+          changedExisting = true;
+        }
+
+        if (
+          has4k &&
+          this.enable4kMovie &&
+          existing.status4k !== MediaStatus.AVAILABLE
+        ) {
+          existing.status4k = MediaStatus.AVAILABLE;
+          changedExisting = true;
+        }
+
+        if (changedExisting) {
+          await mediaRepository.save(existing);
+          this.log(
+            `Request for ${metadata.title} exists. New media types set to AVAILABLE`,
+            'info'
+          );
+        } else {
+          this.log(
+            `Title already exists and no new media types found ${metadata.title}`
+          );
+        }
       } else {
         // If we have a tmdb movie guid but it didn't already exist, only then
         // do we request the movie from tmdb (to reduce api requests)
@@ -169,7 +238,14 @@ class JobPlexSync {
         const newMedia = new Media();
         newMedia.imdbId = tmdbMovie.external_ids.imdb_id;
         newMedia.tmdbId = tmdbMovie.id;
-        newMedia.status = MediaStatus.AVAILABLE;
+        newMedia.status =
+          hasOtherResolution || (!this.enable4kMovie && has4k)
+            ? MediaStatus.AVAILABLE
+            : MediaStatus.UNKNOWN;
+        newMedia.status4k =
+          has4k && this.enable4kMovie
+            ? MediaStatus.AVAILABLE
+            : MediaStatus.UNKNOWN;
         newMedia.mediaType = MediaType.MOVIE;
         await mediaRepository.save(newMedia);
         this.log(`Saved ${tmdbMovie.title}`);
@@ -507,6 +583,22 @@ class JobPlexSync {
       this.libraries = settings.plex.libraries.filter(
         (library) => library.enabled
       );
+
+      this.enable4kMovie = settings.radarr.some((radarr) => radarr.is4k);
+      if (this.enable4kMovie) {
+        this.log(
+          'At least one 4K Radarr server was detected, so 4K movie detection is now enabled',
+          'info'
+        );
+      }
+
+      this.enable4kShow = settings.sonarr.some((sonarr) => sonarr.is4k);
+      if (this.enable4kShow) {
+        this.log(
+          'At least one 4K Sonarr server was detected, so 4K series detection is now enabled',
+          'info'
+        );
+      }
 
       const hasHama = await this.hasHamaAgent();
       if (hasHama) {

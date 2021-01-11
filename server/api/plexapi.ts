@@ -48,6 +48,23 @@ export interface PlexMetadata {
   parentIndex?: number;
   leafCount: number;
   viewedLeafCount: number;
+  Media: Media[];
+}
+
+interface Media {
+  id: number;
+  duration: number;
+  bitrate: number;
+  width: number;
+  height: number;
+  aspectRatio: number;
+  audioChannels: number;
+  audioCodec: string;
+  videoCodec: string;
+  videoResolution: string;
+  container: string;
+  videoFrameRate: string;
+  videoProfile: string;
 }
 
 interface PlexMetadataResponse {
