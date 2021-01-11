@@ -19,8 +19,6 @@ jobs:
         run: yarn
       - name: lint
         run: yarn lint
-      - name: build
-        run: yarn build
   build-snap:
     name: Build Snap Package (${{ matrix.architecture }})
     needs: test
