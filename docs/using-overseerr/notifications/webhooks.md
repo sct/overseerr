@@ -16,7 +16,7 @@ Custom authorization header. Anything entered for this will be sent as an `Autho
 
 ### Custom JSON Payload (Required)
 
-Design your JSON payload as you see fit. JSON is validated before you can save or test. Overseerr provides several [template variables]() for use in the payload which will be replaced with actual values when the notifications are sent.
+Design your JSON payload as you see fit. JSON is validated before you can save or test. Overseerr provides several [template variables](./webhooks.md#template-variables) for use in the payload which will be replaced with actual values when the notifications are sent.
 
 You can always reset back to the default custom payload setting by clicking the `Reset to Default JSON Payload` button under the editor.
 
