@@ -24,6 +24,7 @@ You can always reset back to the default custom payload setting by clicking the 
 
 ### Main
 
+- `{{notification_type}}` The type of notification. (Ex. `MEDIA_PENDING` or `MEDIA_APPROVED`)
 - `{{subject}}` The notification subject message. (For request notifications, this is the media title)
 - `{{message}}` Notification message body. (For request notifications, this is the media's overview/synopsis)
 - `{{image}}` Associated image with the request. (For request notifications, this is the media's poster)
