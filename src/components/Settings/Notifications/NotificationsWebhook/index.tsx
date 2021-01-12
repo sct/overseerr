@@ -45,6 +45,9 @@ const messages = defineMessages({
   testsent: 'Test notification sent!',
   test: 'Test',
   notificationtypes: 'Notification Types',
+  resetPayload: 'Reset to Default JSON Payload',
+  resetPayloadSuccess: 'JSON reset to default payload.',
+  customJson: 'Custom JSON Payload',
 });
 
 const NotificationsWebhook: React.FC = () => {
@@ -123,6 +126,10 @@ const NotificationsWebhook: React.FC = () => {
             'jsonPayload',
             JSON.stringify(defaultPayload, undefined, '    ')
           );
+          addToast(intl.formatMessage(messages.resetPayloadSuccess), {
+            appearance: 'info',
+            autoDismiss: true,
+          });
         };
 
         const testSettings = async () => {
@@ -207,7 +214,7 @@ const NotificationsWebhook: React.FC = () => {
                 htmlFor="name"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
               >
-                Custom JSON
+                {intl.formatMessage(messages.customJson)}
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <div className="flex max-w-lg rounded-md shadow-sm">
@@ -241,7 +248,7 @@ const NotificationsWebhook: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Reset to Default JSON Payload
+                    {intl.formatMessage(messages.resetPayload)}
                   </Button>
                 </div>
               </div>
