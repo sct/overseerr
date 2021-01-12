@@ -4,13 +4,13 @@ import { defineMessages, useIntl } from 'react-intl';
 import {
   MediaRequestStatus,
   MediaStatus,
-} from '../../../../server/constants/media';
-import Media from '../../../../server/entity/Media';
-import { MediaRequest } from '../../../../server/entity/MediaRequest';
-import { SettingsContext } from '../../../context/SettingsContext';
-import { Permission, useUser } from '../../../hooks/useUser';
-import ButtonWithDropdown from '../../Common/ButtonWithDropdown';
-import RequestModal from '../../RequestModal';
+} from '../../../server/constants/media';
+import Media from '../../../server/entity/Media';
+import { MediaRequest } from '../../../server/entity/MediaRequest';
+import { SettingsContext } from '../../context/SettingsContext';
+import { Permission, useUser } from '../../hooks/useUser';
+import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import RequestModal from '../RequestModal';
 
 const messages = defineMessages({
   viewrequest: 'View Request',
@@ -555,25 +555,6 @@ const RequestButton: React.FC<RequestButtonProps> = ({
               </ButtonWithDropdown.Item>
             ))
           : null}
-        {/* {hasPermission(Permission.MANAGE_REQUESTS) && (
-        <>
-          <ButtonWithDropdown.Item onClick={() => modifyRequest('approve')}>
-            <svg
-              className="w-4 mr-1"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-            {intl.formatMessage(messages.approve)}
-          </ButtonWithDropdown.Item>
-        </>
-      )} */}
       </ButtonWithDropdown>
     </>
   );

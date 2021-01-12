@@ -35,7 +35,7 @@ import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import { Crew } from '../../../server/models/common';
 import StatusBadge from '../StatusBadge';
-import RequestButton from '../MovieDetails/RequestButton';
+import RequestButton from '../RequestButton';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -234,9 +234,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
-        <div className="flex justify-end flex-shrink-0 mt-4 lg:mt-0">
+        <div className="flex flex-wrap justify-center flex-shrink-0 mt-4 sm:flex-nowrap sm:justify-end lg:mt-0">
           {trailerUrl && (
-            <a href={trailerUrl} target="_blank" rel="noreferrer">
+            <a
+              href={trailerUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mb-3 sm:mb-0"
+            >
               <Button buttonType="ghost">
                 <svg
                   className="w-5 h-5 mr-1"
@@ -262,18 +267,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               </Button>
             </a>
           )}
-          <RequestButton
-            mediaType="tv"
-            onUpdate={() => revalidate()}
-            tmdbId={data?.id}
-            media={data?.mediaInfo}
-            isShowComplete={isComplete}
-            is4kShowComplete={is4kComplete}
-          />
+          <div className="mb-3 sm:mb-0">
+            <RequestButton
+              mediaType="tv"
+              onUpdate={() => revalidate()}
+              tmdbId={data?.id}
+              media={data?.mediaInfo}
+              isShowComplete={isComplete}
+              is4kShowComplete={is4kComplete}
+            />
+          </div>
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
               buttonType="default"
-              className="ml-2 first:ml-0"
+              className="mb-3 ml-2 first:ml-0 sm:mb-0"
               onClick={() => setShowManager(true)}
             >
               <svg

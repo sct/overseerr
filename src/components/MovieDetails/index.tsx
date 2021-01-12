@@ -33,7 +33,7 @@ import Head from 'next/head';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import StatusBadge from '../StatusBadge';
-import RequestButton from './RequestButton';
+import RequestButton from '../RequestButton';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -212,9 +212,14 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
-        <div className="relative z-10 flex justify-end flex-shrink-0 mt-4 lg:mt-0">
+        <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
           {trailerUrl && (
-            <a href={trailerUrl} target={'_blank'} rel="noreferrer">
+            <a
+              href={trailerUrl}
+              target={'_blank'}
+              rel="noreferrer"
+              className="mb-3 sm:mb-0"
+            >
               <Button buttonType="ghost">
                 <svg
                   className="w-5 h-5 mr-1"
@@ -240,16 +245,18 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               </Button>
             </a>
           )}
-          <RequestButton
-            mediaType="movie"
-            media={data.mediaInfo}
-            tmdbId={data.id}
-            onUpdate={() => revalidate()}
-          />
+          <div className="mb-3 sm:mb-0">
+            <RequestButton
+              mediaType="movie"
+              media={data.mediaInfo}
+              tmdbId={data.id}
+              onUpdate={() => revalidate()}
+            />
+          </div>
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
               buttonType="default"
-              className="ml-2 first:ml-0"
+              className="mb-3 ml-2 first:ml-0 sm:mb-0"
               onClick={() => setShowManager(true)}
             >
               <svg

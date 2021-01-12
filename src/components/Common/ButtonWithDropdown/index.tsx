@@ -54,7 +54,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
         {children && (
           <button
             type="button"
-            className="relative inline-flex items-center px-2 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-700 border border-indigo-600 rounded-r-md hover:bg-indigo-500 focus:z-10 focus:outline-none active:bg-indigo-700 focus:ring-blue"
+            className="relative inline-flex items-center h-full px-2 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-700 border border-indigo-600 rounded-r-md hover:bg-indigo-500 focus:z-10 focus:outline-none active:bg-indigo-700 focus:ring-blue"
             aria-label="Expand"
             onClick={() => setIsOpen((state) => !state)}
           >
