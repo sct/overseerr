@@ -48,6 +48,7 @@ const messages = defineMessages({
   resetPayload: 'Reset to Default JSON Payload',
   resetPayloadSuccess: 'JSON reset to default payload.',
   customJson: 'Custom JSON Payload',
+  templatevariablehelp: 'Template Variable Help',
 });
 
 const NotificationsWebhook: React.FC = () => {
@@ -235,6 +236,7 @@ const NotificationsWebhook: React.FC = () => {
                       e.preventDefault();
                       resetPayload();
                     }}
+                    className="mr-2"
                   >
                     <svg
                       className="w-5 h-5 mr-1"
@@ -250,6 +252,26 @@ const NotificationsWebhook: React.FC = () => {
                     </svg>
                     {intl.formatMessage(messages.resetPayload)}
                   </Button>
+                  <a
+                    href="https://docs.overseerr.dev/using-overseerr/notifications/webhooks#template-variables"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md focus:outline-none hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 disabled:opacity-50 px-2.5 py-1.5 text-xs"
+                  >
+                    <svg
+                      className="w-5 h-5 mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    {intl.formatMessage(messages.templatevariablehelp)}
+                  </a>
                 </div>
               </div>
             </div>
