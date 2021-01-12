@@ -18,6 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "@svgr/webpack": "^5.5.0",
+    "ace-builds": "^1.4.12",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "bowser": "^2.11.0",
@@ -37,6 +38,7 @@
     "plex-api": "^5.3.1",
     "pug": "^3.0.0",
     "react": "17.0.1",
+    "react-ace": "^9.2.1",
     "react-dom": "17.0.1",
     "react-intersection-observer": "^8.31.0",
     "react-intl": "^5.10.11",
