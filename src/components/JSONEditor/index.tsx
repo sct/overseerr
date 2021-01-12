@@ -16,7 +16,7 @@ const JSONEditor: React.FC<JSONEditorProps> = ({
   onBlur,
 }) => {
   return (
-    <div>
+    <div className="w-full">
       <AceEditor
         mode="json"
         theme="dracula"
@@ -25,6 +25,8 @@ const JSONEditor: React.FC<JSONEditorProps> = ({
         editorProps={{ $blockScrolling: true }}
         value={value}
         onBlur={onBlur}
+        height="300px"
+        width="100%"
       />
     </div>
   );

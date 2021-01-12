@@ -17,6 +17,7 @@ const messages = defineMessages({
   saving: 'Saving...',
   agentenabled: 'Agent Enabled',
   webhookUrl: 'Webhook URL',
+  authheader: 'Authorization Header',
   validationWebhookUrlRequired: 'You must provide a webhook URL',
   validationJsonPayloadRequired: 'You must provide a JSON Payload',
   webhookUrlPlaceholder: 'Remote webhook URL',
@@ -61,6 +62,7 @@ const NotificationsWebhook: React.FC = () => {
         types: data.types,
         webhookUrl: data.options.webhookUrl,
         jsonPayload: data.options.jsonPayload,
+        authHeader: data.options.authHeader,
       }}
       validationSchema={NotificationsWebhookSchema}
       onSubmit={async (values) => {
@@ -71,6 +73,7 @@ const NotificationsWebhook: React.FC = () => {
             options: {
               webhookUrl: values.webhookUrl,
               jsonPayload: JSON.stringify(values.jsonPayload),
+              authHeader: values.authHeader,
             },
           });
           addToast(intl.formatMessage(messages.webhooksettingssaved), {
@@ -103,6 +106,7 @@ const NotificationsWebhook: React.FC = () => {
             options: {
               webhookUrl: values.webhookUrl,
               jsonPayload: JSON.stringify(values.jsonPayload),
+              authHeader: values.authHeader,
             },
           });
 
@@ -152,6 +156,24 @@ const NotificationsWebhook: React.FC = () => {
                 {errors.webhookUrl && touched.webhookUrl && (
                   <div className="mt-2 text-red-500">{errors.webhookUrl}</div>
                 )}
+              </div>
+            </div>
+            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+              >
+                {intl.formatMessage(messages.authheader)}
+              </label>
+              <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="flex max-w-lg rounded-md shadow-sm">
+                  <Field
+                    id="authHeader"
+                    name="authHeader"
+                    type="text"
+                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                  />
+                </div>
               </div>
             </div>
             <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">

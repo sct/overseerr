@@ -214,6 +214,7 @@ notificationRoutes.post('/webhook', (req, res, next) => {
           'base64'
         ),
         webhookUrl: req.body.options.webhookUrl,
+        authHeader: req.body.options.authHeader,
       },
     };
     settings.save();
@@ -243,6 +244,7 @@ notificationRoutes.post('/webhook/test', (req, res, next) => {
           'base64'
         ),
         webhookUrl: req.body.options.webhookUrl,
+        authHeader: req.body.options.authHeader,
       },
     };
 

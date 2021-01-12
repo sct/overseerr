@@ -113,13 +113,17 @@ class WebhookAgent
   ): Promise<boolean> {
     logger.debug('Sending webhook notification', { label: 'Notifications' });
     try {
-      const webhookUrl = this.getSettings().options.webhookUrl;
+      const { webhookUrl, authHeader } = this.getSettings().options;
 
       if (!webhookUrl) {
         return false;
       }
 
-      await axios.post(webhookUrl, this.buildPayload(type, payload));
+      await axios.post(webhookUrl, this.buildPayload(type, payload), {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
 
       return true;
     } catch (e) {
