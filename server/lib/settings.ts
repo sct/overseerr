@@ -106,12 +106,21 @@ export interface NotificationAgentPushover extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentWebhook extends NotificationAgentConfig {
+  options: {
+    webhookUrl: string;
+    jsonPayload: string;
+    authHeader: string;
+  };
+}
+
 interface NotificationAgents {
   email: NotificationAgentEmail;
   discord: NotificationAgentDiscord;
   slack: NotificationAgentSlack;
   telegram: NotificationAgentTelegram;
   pushover: NotificationAgentPushover;
+  webhook: NotificationAgentWebhook;
 }
 
 interface NotificationSettings {
@@ -197,6 +206,16 @@ class Settings {
               userToken: '',
               priority: 0,
               sound: '',
+            },
+          },
+          webhook: {
+            enabled: false,
+            types: 0,
+            options: {
+              webhookUrl: '',
+              authHeader: '',
+              jsonPayload:
+                'IntcbiAgICBcIm5vdGlmaWNhdGlvbl90eXBlXCI6IFwie3tub3RpZmljYXRpb25fdHlwZX19XCIsXG4gICAgXCJzdWJqZWN0XCI6IFwie3tzdWJqZWN0fX1cIixcbiAgICBcIm1lc3NhZ2VcIjogXCJ7e21lc3NhZ2V9fVwiLFxuICAgIFwiaW1hZ2VcIjogXCJ7e2ltYWdlfX1cIixcbiAgICBcImVtYWlsXCI6IFwie3tub3RpZnl1c2VyX2VtYWlsfX1cIixcbiAgICBcInVzZXJuYW1lXCI6IFwie3tub3RpZnl1c2VyX3VzZXJuYW1lfX1cIixcbiAgICBcImF2YXRhclwiOiBcInt7bm90aWZ5dXNlcl9hdmF0YXJ9fVwiLFxuICAgIFwie3ttZWRpYX19XCI6IHtcbiAgICAgICAgXCJtZWRpYV90eXBlXCI6IFwie3ttZWRpYV90eXBlfX1cIixcbiAgICAgICAgXCJ0bWRiSWRcIjogXCJ7e21lZGlhX3RtZGJpZH19XCIsXG4gICAgICAgIFwiaW1kYklkXCI6IFwie3ttZWRpYV9pbWRiaWR9fVwiLFxuICAgICAgICBcInR2ZGJJZFwiOiBcInt7bWVkaWFfdHZkYmlkfX1cIixcbiAgICAgICAgXCJzdGF0dXNcIjogXCJ7e21lZGlhX3N0YXR1c319XCIsXG4gICAgICAgIFwic3RhdHVzNGtcIjogXCJ7e21lZGlhX3N0YXR1czRrfX1cIlxuICAgIH0sXG4gICAgXCJ7e2V4dHJhfX1cIjogW11cbn0i',
             },
           },
         },

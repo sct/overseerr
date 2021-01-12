@@ -6,6 +6,7 @@ import DiscordLogo from '../../assets/extlogos/discord_white.svg';
 import SlackLogo from '../../assets/extlogos/slack.svg';
 import TelegramLogo from '../../assets/extlogos/telegram.svg';
 import PushoverLogo from '../../assets/extlogos/pushover.svg';
+import Bolt from '../../assets/bolt.svg';
 
 const messages = defineMessages({
   notificationsettings: 'Notification Settings',
@@ -88,6 +89,17 @@ const settingsRoutes: SettingsRoute[] = [
     ),
     route: '/settings/notifications/pushover',
     regex: /^\/settings\/notifications\/pushover/,
+  },
+  {
+    text: 'Webhook',
+    content: (
+      <span className="flex items-center">
+        <Bolt className="h-4 mr-2" />
+        Webhook
+      </span>
+    ),
+    route: '/settings/notifications/webhook',
+    regex: /^\/settings\/notifications\/webhook/,
   },
 ];
 

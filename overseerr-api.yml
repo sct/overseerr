@@ -864,6 +864,22 @@ components:
           properties:
             webhookUrl:
               type: string
+    WebhookSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            webhookUrl:
+              type: string
+            jsonPayload:
+              type: string
     TelegramSettings:
       type: object
       properties:
@@ -1827,6 +1843,52 @@ paths:
               schema:
                 $ref: '#/components/schemas/SlackSettings'
   /settings/notifications/slack/test:
+    post:
+      summary: Test the provided slack settings
+      description: Sends a test notification to the slack agent
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlackSettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/webhook:
+    get:
+      summary: Return current webhook notification settings
+      description: Returns current webhook notification settings in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned webhook settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSettings'
+    post:
+      summary: Update webhook notification settings
+      description: Update current webhook notification settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSettings'
+  /settings/notifications/webhook/test:
     post:
       summary: Test the provided slack settings
       description: Sends a test notification to the slack agent
