@@ -11,6 +11,7 @@ import logger from '../../logger';
 import { getSettings, Library } from '../../lib/settings';
 import Season from '../../entity/Season';
 import { uniqWith } from 'lodash';
+import { v4 as uuid } from 'uuid';
 import animeList from '../../api/animelist';
 import AsyncLock from '../../utils/asyncLock';
 
@@ -37,6 +38,7 @@ interface SyncStatus {
 }
 
 class JobPlexSync {
+  private sessionId: string;
   private tmdb: TheMovieDb;
   private plexClient: PlexAPI;
   private items: PlexLibraryItem[] = [];
@@ -608,22 +610,35 @@ class JobPlexSync {
   private async loop({
     start = 0,
     end = BUNDLE_SIZE,
+    sessionId,
   }: {
     start?: number;
     end?: number;
+    sessionId?: string;
   } = {}) {
     const slicedItems = this.items.slice(start, end);
-    if (start < this.items.length && this.running) {
+
+    if (!this.running) {
+      throw new Error('Sync was aborted.');
+    }
+
+    if (this.sessionId !== sessionId) {
+      throw new Error('New session was started. Old session aborted.');
+    }
+
+    if (start < this.items.length) {
       this.progress = start;
       await this.processItems(slicedItems);
 
-      await new Promise<void>((resolve) =>
-        setTimeout(async () => {
-          await this.loop({
+      await new Promise<void>((resolve, reject) =>
+        setTimeout(() => {
+          this.loop({
             start: start + BUNDLE_SIZE,
             end: end + BUNDLE_SIZE,
-          });
-          resolve();
+            sessionId,
+          })
+            .then(() => resolve())
+            .catch((e) => reject(new Error(e.message)));
         }, UPDATE_RATE)
       );
     }
@@ -650,7 +665,10 @@ class JobPlexSync {
 
   public async run(): Promise<void> {
     const settings = getSettings();
-    if (!this.running) {
+    const sessionId = uuid();
+    this.sessionId = sessionId;
+    logger.info('Plex Sync Starting', { sessionId, label: 'Plex Sync' });
+    try {
       this.running = true;
       const userRepository = getRepository(User);
       const admin = await userRepository.findOne({
@@ -671,7 +689,7 @@ class JobPlexSync {
       this.enable4kMovie = settings.radarr.some((radarr) => radarr.is4k);
       if (this.enable4kMovie) {
         this.log(
-          'At least one 4K Radarr server was detected, so 4K movie detection is now enabled',
+          'At least one 4K Radarr server was detected. 4K movie detection is now enabled',
           'info'
         );
       }
@@ -679,7 +697,7 @@ class JobPlexSync {
       this.enable4kShow = settings.sonarr.some((sonarr) => sonarr.is4k);
       if (this.enable4kShow) {
         this.log(
-          'At least one 4K Sonarr server was detected, so 4K series detection is now enabled',
+          'At least one 4K Sonarr server was detected. 4K series detection is now enabled',
           'info'
         );
       }
@@ -715,18 +733,31 @@ class JobPlexSync {
             return mediaA.ratingKey === mediaB.ratingKey;
           });
 
-          await this.loop();
+          await this.loop({ sessionId });
         }
       } else {
         for (const library of this.libraries) {
           this.currentLibrary = library;
           this.log(`Beginning to process library: ${library.name}`, 'info');
           this.items = await this.plexClient.getLibraryContents(library.id);
-          await this.loop();
+          await this.loop({ sessionId });
         }
       }
-      this.running = false;
-      this.log('complete');
+      this.log(
+        this.isRecentOnly
+          ? 'Recently Added Scan Complete'
+          : 'Full Scan Complete'
+      );
+    } catch (e) {
+      logger.error('Sync interrupted', {
+        label: 'Plex Sync',
+        errorMessage: e.message,
+      });
+    } finally {
+      // If a new scanning session hasnt started, set running back to false
+      if (this.sessionId === sessionId) {
+        this.running = false;
+      }
     }
   }
 
