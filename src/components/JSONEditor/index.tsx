@@ -16,7 +16,7 @@ const JSONEditor: React.FC<JSONEditorProps> = ({
   onBlur,
 }) => {
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden rounded-md">
       <AceEditor
         mode="json"
         theme="dracula"

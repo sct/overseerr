@@ -12,6 +12,25 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const JSONEditor = dynamic(() => import('../../../JSONEditor'), { ssr: false });
 
+const defaultPayload = {
+  notification_type: '{{notification_type}}',
+  subject: '{{subject}}',
+  message: '{{message}}',
+  image: '{{image}}',
+  email: '{{notifyuser_email}}',
+  username: '{{notifyuser_username}}',
+  avatar: '{{notifyuser_avatar}}',
+  '{{media}}': {
+    media_type: '{{media_type}}',
+    tmdbId: '{{media_tmdbid}}',
+    imdbId: '{{media_imdbid}}',
+    tvdbId: '{{media_tvdbid}}',
+    status: '{{media_status}}',
+    status4k: '{{media_status4k}}',
+  },
+  '{{extra}}': [],
+};
+
 const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving...',
@@ -99,6 +118,13 @@ const NotificationsWebhook: React.FC = () => {
         setFieldValue,
         setFieldTouched,
       }) => {
+        const resetPayload = () => {
+          setFieldValue(
+            'jsonPayload',
+            JSON.stringify(defaultPayload, undefined, '    ')
+          );
+        };
+
         const testSettings = async () => {
           await axios.post('/api/v1/settings/notifications/webhook/test', {
             enabled: true,
@@ -195,6 +221,29 @@ const NotificationsWebhook: React.FC = () => {
                 {errors.jsonPayload && touched.jsonPayload && (
                   <div className="mt-2 text-red-500">{errors.jsonPayload}</div>
                 )}
+                <div className="mt-2">
+                  <Button
+                    buttonSize="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      resetPayload();
+                    }}
+                  >
+                    <svg
+                      className="w-5 h-5 mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Reset to Default JSON Payload
+                  </Button>
+                </div>
               </div>
             </div>
             <div className="mt-6">
