@@ -8,6 +8,7 @@ import TheMovieDb from '../api/themoviedb';
 import { MediaStatus, MediaType } from '../constants/media';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
+import Season from '../entity/Season';
 import notificationManager, { Notification } from '../lib/notifications';
 
 @EventSubscriber()
@@ -42,10 +43,13 @@ export class MediaSubscriber implements EntitySubscriberInterface {
   }
 
   private async notifyAvailableSeries(entity: Media, dbEntity: Media) {
+    const seasonRepository = getRepository(Season);
     const newAvailableSeasons = entity.seasons
       .filter((season) => season.status === MediaStatus.AVAILABLE)
       .map((season) => season.seasonNumber);
-    const oldAvailableSeasons = dbEntity.seasons
+    const oldSeasonIds = dbEntity.seasons.map((season) => season.id);
+    const oldSeasons = await seasonRepository.findByIds(oldSeasonIds);
+    const oldAvailableSeasons = oldSeasons
       .filter((season) => season.status === MediaStatus.AVAILABLE)
       .map((season) => season.seasonNumber);
 
