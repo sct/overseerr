@@ -21,15 +21,16 @@ router.get('/', async (_req, res) => {
 router.post('/', async (req, res, next) => {
   try {
     const settings = getSettings().notifications.agents.email;
-    if (!settings.enabled) {
-      throw new Error('Email notifications must be enabled');
-    }
 
     const body = req.body;
     const userRepository = getRepository(User);
 
     const passedExplicitPassword = body.password && body.password.length > 0;
     const avatar = gravatarUrl(body.email);
+
+    if (passedExplicitPassword && !settings.enabled) {
+      throw new Error('Email notifications must be enabled');
+    }
 
     const user = new User({
       avatar: body.avatar ?? avatar,

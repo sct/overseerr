@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-// import Transition from '../Transition';
 import Button from '../Common/Button';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-// import { useToasts } from 'react-toast-notifications';
 import axios from 'axios';
 
 const messages = defineMessages({
@@ -56,18 +54,11 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
         }
       }}
     >
-      {({
-        errors,
-        touched,
-        isSubmitting,
-        // values,
-        isValid,
-        // setFieldValue,
-      }) => {
+      {({ errors, touched, isSubmitting, isValid }) => {
         return (
           <>
             <Form>
-              <div className="mt-6 sm:mt-5 sm:border-t sm:border-gray-800">
+              <div className="sm:border-t sm:border-gray-800">
                 <label
                   htmlFor="email"
                   className="block my-1 text-sm font-medium leading-5 text-gray-400 sm:mt-px"
@@ -130,7 +121,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
-                      buttonType="default"
+                      buttonType="primary"
                       type="submit"
                       disabled={isSubmitting || !isValid}
                     >

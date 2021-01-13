@@ -121,10 +121,12 @@ const Login: React.FC = () => {
                   </div>
                 </div>
               </Transition>
-              <PlexLoginButton
-                isProcessing={isProcessing}
-                onAuthToken={(authToken) => setAuthToken(authToken)}
-              />
+              <div className="pb-4">
+                <PlexLoginButton
+                  isProcessing={isProcessing}
+                  onAuthToken={(authToken) => setAuthToken(authToken)}
+                />
+              </div>
               <span className="block w-full rounded-md shadow-sm">
                 <Button
                   buttonType="primary"
