@@ -111,6 +111,7 @@ class JobPlexSync {
               existing.status !== MediaStatus.AVAILABLE
             ) {
               existing.status = MediaStatus.AVAILABLE;
+              existing.mediaAddedAt = new Date(plexitem.addedAt * 1000);
               changedExisting = true;
             }
 
@@ -120,6 +121,11 @@ class JobPlexSync {
               existing.status4k !== MediaStatus.AVAILABLE
             ) {
               existing.status4k = MediaStatus.AVAILABLE;
+              changedExisting = true;
+            }
+
+            if (!existing.mediaAddedAt && !changedExisting) {
+              existing.mediaAddedAt = new Date(plexitem.addedAt * 1000);
               changedExisting = true;
             }
 
@@ -144,6 +150,7 @@ class JobPlexSync {
                 ? MediaStatus.AVAILABLE
                 : MediaStatus.UNKNOWN;
             newMedia.mediaType = MediaType.MOVIE;
+            newMedia.mediaAddedAt = new Date(plexitem.addedAt * 1000);
             await mediaRepository.save(newMedia);
             this.log(`Saved ${plexitem.title}`);
           }
@@ -208,6 +215,7 @@ class JobPlexSync {
           existing.status !== MediaStatus.AVAILABLE
         ) {
           existing.status = MediaStatus.AVAILABLE;
+          existing.mediaAddedAt = new Date(plexitem.addedAt * 1000);
           changedExisting = true;
         }
 
@@ -217,6 +225,11 @@ class JobPlexSync {
           existing.status4k !== MediaStatus.AVAILABLE
         ) {
           existing.status4k = MediaStatus.AVAILABLE;
+          changedExisting = true;
+        }
+
+        if (!existing.mediaAddedAt && !changedExisting) {
+          existing.mediaAddedAt = new Date(plexitem.addedAt * 1000);
           changedExisting = true;
         }
 
@@ -240,6 +253,7 @@ class JobPlexSync {
         const newMedia = new Media();
         newMedia.imdbId = tmdbMovie.external_ids.imdb_id;
         newMedia.tmdbId = tmdbMovie.id;
+        newMedia.mediaAddedAt = new Date(plexitem.addedAt * 1000);
         newMedia.status =
           hasOtherResolution || (!this.enable4kMovie && has4k)
             ? MediaStatus.AVAILABLE
@@ -266,10 +280,7 @@ class JobPlexSync {
       );
       if (episodes) {
         for (const episode of episodes) {
-          const special = await animeList.getSpecialEpisode(
-            tvdbId,
-            episode.index
-          );
+          const special = animeList.getSpecialEpisode(tvdbId, episode.index);
           if (special) {
             if (special.tmdbId) {
               await this.processMovieWithId(episode, undefined, special.tmdbId);
@@ -519,6 +530,7 @@ class JobPlexSync {
                 'debug'
               );
               media.lastSeasonChange = new Date();
+              media.mediaAddedAt = new Date(plexitem.addedAt * 1000);
             }
 
             if (new4kSeasonAvailable > current4kSeasonAvailable) {
@@ -529,6 +541,10 @@ class JobPlexSync {
                 'debug'
               );
               media.lastSeasonChange = new Date();
+            }
+
+            if (!media.mediaAddedAt) {
+              media.mediaAddedAt = new Date(plexitem.addedAt * 1000);
             }
 
             media.status = isAllStandardSeasons
@@ -553,6 +569,7 @@ class JobPlexSync {
               seasons: newSeasons,
               tmdbId: tvShow.id,
               tvdbId: tvShow.external_ids.tvdb_id,
+              mediaAddedAt: new Date(plexitem.addedAt * 1000),
               status: isAllStandardSeasons
                 ? MediaStatus.AVAILABLE
                 : newSeasons.some(

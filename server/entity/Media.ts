@@ -101,6 +101,9 @@ class Media {
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   public lastSeasonChange: Date;
 
+  @Column({ type: 'datetime', nullable: true })
+  public mediaAddedAt: Date;
+
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
   }

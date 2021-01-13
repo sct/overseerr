@@ -69,7 +69,7 @@ const Discover: React.FC = () => {
   );
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
-    '/api/v1/media?filter=available&take=20&sort=modified'
+    '/api/v1/media?filter=available&take=20&sort=mediaAdded'
   );
 
   const {

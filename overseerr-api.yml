@@ -2976,7 +2976,7 @@ paths:
           name: sort
           schema:
             type: string
-            enum: [added, modified]
+            enum: [added, modified, mediaAdded]
             default: added
       responses:
         '200':

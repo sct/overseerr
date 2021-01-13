@@ -9,6 +9,8 @@ export interface PlexLibraryItem {
   guid: string;
   parentGuid?: string;
   grandparentGuid?: string;
+  addedAt: number;
+  updatedAt: number;
   type: 'movie' | 'show' | 'season' | 'episode';
 }
 
@@ -48,6 +50,8 @@ export interface PlexMetadata {
   parentIndex?: number;
   leafCount: number;
   viewedLeafCount: number;
+  addedAt: number;
+  updatedAt: number;
   Media: Media[];
 }
 
