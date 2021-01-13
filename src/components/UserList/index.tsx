@@ -192,149 +192,128 @@ const UserList: React.FC = () => {
         leaveTo="opacity-0"
         show={createModal.isOpen}
       >
-        <Modal
-          title={intl.formatMessage(messages.createuser)}
-          iconSvg={<AddUserIcon className="h-6" />}
+        <Formik
+          initialValues={{
+            email: '',
+            password: '',
+            genpassword: true,
+          }}
+          validationSchema={CreateUserSchema}
+          onSubmit={async (values) => {
+            try {
+              await axios.post('/api/v1/user', {
+                email: values.email,
+                password: values.genpassword ? null : values.password,
+                permissions: Permission.REQUEST,
+                userType: UserType.LOCAL,
+              });
+              addToast(intl.formatMessage(messages.usercreatedsuccess), {
+                appearance: 'success',
+                autoDismiss: true,
+              });
+              setCreateModal({ isOpen: false });
+            } catch (e) {
+              addToast(intl.formatMessage(messages.usercreatedfailed), {
+                appearance: 'error',
+                autoDismiss: true,
+              });
+            } finally {
+              revalidate();
+            }
+          }}
         >
-          <Formik
-            initialValues={{
-              email: '',
-              password: '',
-              genpassword: true,
-            }}
-            validationSchema={CreateUserSchema}
-            onSubmit={async (values) => {
-              try {
-                await axios.post('/api/v1/user', {
-                  email: values.email,
-                  password: values.genpassword ? null : values.password,
-                  permissions: Permission.REQUEST,
-                  userType: UserType.LOCAL,
-                });
-                addToast(intl.formatMessage(messages.usercreatedsuccess), {
-                  appearance: 'success',
-                  autoDismiss: true,
-                });
-                setCreateModal({ isOpen: false });
-              } catch (e) {
-                addToast(intl.formatMessage(messages.usercreatedfailed), {
-                  appearance: 'error',
-                  autoDismiss: true,
-                });
-              } finally {
-                revalidate();
-              }
-            }}
-          >
-            {({
-              errors,
-              touched,
-              isSubmitting,
-              values,
-              isValid,
-              setFieldValue,
-            }) => {
-              return (
-                <>
-                  <Alert title={intl.formatMessage(messages.passwordinfo)}>
-                    {intl.formatMessage(messages.passwordinfodescription)}
-                  </Alert>
-                  <Form>
-                    <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                      >
-                        {intl.formatMessage(messages.email)}
-                      </label>
-                      <div className="mt-1 sm:mt-0 sm:col-span-2">
-                        <div className="flex max-w-lg rounded-md shadow-sm">
-                          <Field
-                            id="email"
-                            name="email"
-                            type="text"
-                            placeholder="name@example.com"
-                            className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                          />
-                        </div>
-                        {errors.email && touched.email && (
-                          <div className="mt-2 text-red-500">
-                            {errors.email}
-                          </div>
-                        )}
-                      </div>
-                      <label
-                        htmlFor="genpassword"
-                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                      >
-                        {intl.formatMessage(messages.autogeneratepassword)}
-                      </label>
-                      <div className="mt-1 sm:mt-0 sm:col-span-2">
+          {({
+            errors,
+            touched,
+            isSubmitting,
+            values,
+            isValid,
+            setFieldValue,
+            handleSubmit,
+          }) => {
+            return (
+              <Modal
+                title={intl.formatMessage(messages.createuser)}
+                iconSvg={<AddUserIcon className="h-6" />}
+                onOk={() => handleSubmit()}
+                okText={
+                  isSubmitting
+                    ? intl.formatMessage(messages.creating)
+                    : intl.formatMessage(messages.create)
+                }
+                okDisabled={isSubmitting || !isValid}
+                okButtonType="primary"
+                onCancel={() => setCreateModal({ isOpen: false })}
+              >
+                <Alert title={intl.formatMessage(messages.passwordinfo)}>
+                  {intl.formatMessage(messages.passwordinfodescription)}
+                </Alert>
+                <Form>
+                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    >
+                      {intl.formatMessage(messages.email)}
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <div className="flex max-w-lg rounded-md shadow-sm">
                         <Field
-                          type="checkbox"
-                          id="genpassword"
-                          name="genpassword"
-                          className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                          onClick={() => setFieldValue('password', '')}
+                          id="email"
+                          name="email"
+                          type="text"
+                          placeholder="name@example.com"
+                          className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                         />
                       </div>
-                      <label
-                        htmlFor="password"
-                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                      >
-                        {intl.formatMessage(messages.password)}
-                      </label>
-                      <div className="mt-1 sm:mt-0 sm:col-span-2">
-                        <div className="flex max-w-lg rounded-md shadow-sm">
-                          <Field
-                            id="password"
-                            name="password"
-                            type="password"
-                            disabled={values.genpassword}
-                            placeholder={intl.formatMessage(messages.password)}
-                            className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                          />
+                      {errors.email && touched.email && (
+                        <div className="mt-2 text-red-500">{errors.email}</div>
+                      )}
+                    </div>
+                    <label
+                      htmlFor="genpassword"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    >
+                      {intl.formatMessage(messages.autogeneratepassword)}
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <Field
+                        type="checkbox"
+                        id="genpassword"
+                        name="genpassword"
+                        className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                        onClick={() => setFieldValue('password', '')}
+                      />
+                    </div>
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    >
+                      {intl.formatMessage(messages.password)}
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <div className="flex max-w-lg rounded-md shadow-sm">
+                        <Field
+                          id="password"
+                          name="password"
+                          type="password"
+                          disabled={values.genpassword}
+                          placeholder={intl.formatMessage(messages.password)}
+                          className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                        />
+                      </div>
+                      {errors.password && touched.password && (
+                        <div className="mt-2 text-red-500">
+                          {errors.password}
                         </div>
-                        {errors.password && touched.password && (
-                          <div className="mt-2 text-red-500">
-                            {errors.password}
-                          </div>
-                        )}
-                      </div>
+                      )}
                     </div>
-                    <div className="pt-5 mt-8 border-t border-gray-700">
-                      <div className="flex justify-end">
-                        <span className="inline-flex ml-3 rounded-md shadow-sm">
-                          <Button
-                            buttonType="ghost"
-                            type="reset"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setCreateModal({ isOpen: false });
-                            }}
-                          >
-                            {intl.formatMessage(globalMessages.cancel)}
-                          </Button>
-                        </span>
-                        <span className="inline-flex ml-3 rounded-md shadow-sm">
-                          <Button
-                            buttonType="default"
-                            type="submit"
-                            disabled={isSubmitting || !isValid}
-                          >
-                            {isSubmitting
-                              ? intl.formatMessage(messages.creating)
-                              : intl.formatMessage(messages.create)}
-                          </Button>
-                        </span>
-                      </div>
-                    </div>
-                  </Form>
-                </>
-              );
-            }}
-          </Formik>
-        </Modal>
+                  </div>
+                </Form>
+              </Modal>
+            );
+          }}
+        </Formik>
       </Transition>
       <div className="flex-col sm:flex-row flex justify-between">
         <Header>{intl.formatMessage(messages.userlist)}</Header>

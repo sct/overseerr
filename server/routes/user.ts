@@ -28,7 +28,7 @@ router.post('/', async (req, res, next) => {
     const passedExplicitPassword = body.password && body.password.length > 0;
     const avatar = gravatarUrl(body.email);
 
-    if (passedExplicitPassword && !settings.enabled) {
+    if (!passedExplicitPassword && !settings.enabled) {
       throw new Error('Email notifications must be enabled');
     }
 
