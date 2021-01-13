@@ -138,6 +138,7 @@ authRoutes.post('/local', async (req, res, next) => {
   }
   try {
     const user = await userRepository.findOne({
+      select: ['id', 'password'],
       where: { email: body.email, userType: UserType.LOCAL },
     });
 

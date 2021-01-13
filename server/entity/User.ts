@@ -33,7 +33,7 @@ export class User {
   @Column()
   public username: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
   public password?: string;
 
   @Column({ type: 'integer', default: 1 })
