@@ -82,6 +82,16 @@ const SettingsMain: React.FC = () => {
         permissionMessages.managerequestsDescription
       ),
       permission: Permission.MANAGE_REQUESTS,
+      children: [
+        {
+          id: 'advancedrequest',
+          name: intl.formatMessage(permissionMessages.advancedrequest),
+          description: intl.formatMessage(
+            permissionMessages.advancedrequestDescription
+          ),
+          permission: Permission.REQUEST_ADVANCED,
+        },
+      ],
     },
     {
       id: 'request',
