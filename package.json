@@ -27,7 +27,7 @@
     "cookie-parser": "^1.4.5",
     "email-templates": "^8.0.2",
     "express": "^4.17.1",
-    "express-openapi-validator": "^4.10.2",
+    "express-openapi-validator": "^4.10.5",
     "express-session": "^1.17.1",
     "formik": "^2.2.6",
     "gravatar-url": "^3.1.0",
