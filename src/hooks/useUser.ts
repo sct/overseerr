@@ -1,10 +1,6 @@
 import useSwr from 'swr';
 import { hasPermission, Permission } from '../../server/lib/permissions';
-
-export enum UserType {
-  PLEX = 1,
-  LOCAL = 2,
-}
+import { UserType } from '../../server/constants/user';
 
 export interface User {
   id: number;
@@ -15,7 +11,7 @@ export interface User {
   userType: number;
 }
 
-export { Permission };
+export { Permission, UserType };
 
 interface UserHookResponse {
   user?: User;

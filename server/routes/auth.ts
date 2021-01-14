@@ -6,7 +6,7 @@ import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
 import { getSettings } from '../lib/settings';
-import { UserType } from '../../src/hooks/useUser';
+import { UserType } from '../constants/user';
 
 const authRoutes = Router();
 
