@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
@@ -20,6 +21,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     {
       refreshInterval: 0,
       refreshWhenHidden: false,
+      revalidateOnFocus: false,
     }
   );
   const [selectedServer, setSelectedServer] = useState<number | null>(null);
@@ -37,6 +39,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     {
       refreshInterval: 0,
       refreshWhenHidden: false,
+      revalidateOnFocus: false,
     }
   );
 

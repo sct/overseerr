@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import RadarrAPI from '../api/radarr';
+import SonarrAPI from '../api/sonarr';
 import {
   ServiceCommonServer,
   ServiceCommonServerWithDetails,
@@ -59,6 +60,72 @@ serviceRoutes.get<{ radarrId: string }>(
         isDefault: radarrSettings.isDefault,
         activeDirectory: radarrSettings.activeDirectory,
         activeProfileId: radarrSettings.activeProfileId,
+      },
+      profiles: profiles.map((profile) => ({
+        id: profile.id,
+        name: profile.name,
+      })),
+      rootFolders: rootFolders.map((folder) => ({
+        id: folder.id,
+        freeSpace: folder.freeSpace,
+        path: folder.path,
+        totalSpace: folder.totalSpace,
+      })),
+    } as ServiceCommonServerWithDetails);
+  }
+);
+
+serviceRoutes.get('/sonarr', async (req, res) => {
+  const settings = getSettings();
+
+  const filteredSonarrServers: ServiceCommonServer[] = settings.sonarr.map(
+    (sonarr) => ({
+      id: sonarr.id,
+      name: sonarr.name,
+      is4k: sonarr.is4k,
+      isDefault: sonarr.isDefault,
+      activeDirectory: sonarr.activeDirectory,
+      activeProfileId: sonarr.activeProfileId,
+    })
+  );
+
+  return res.status(200).json(filteredSonarrServers);
+});
+
+serviceRoutes.get<{ sonarrId: string }>(
+  '/sonarr/:sonarrId',
+  async (req, res, next) => {
+    const settings = getSettings();
+
+    const sonarrSettings = settings.sonarr.find(
+      (radarr) => radarr.id === Number(req.params.sonarrId)
+    );
+
+    if (!sonarrSettings) {
+      return next({
+        status: 404,
+        message: 'Radarr server with provided ID  does not exist.',
+      });
+    }
+
+    const sonarr = new SonarrAPI({
+      apiKey: sonarrSettings.apiKey,
+      url: `${sonarrSettings.useSsl ? 'https' : 'http'}://${
+        sonarrSettings.hostname
+      }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}/api`,
+    });
+
+    const profiles = await sonarr.getProfiles();
+    const rootFolders = await sonarr.getRootFolders();
+
+    return res.status(200).json({
+      server: {
+        id: sonarrSettings.id,
+        name: sonarrSettings.name,
+        is4k: sonarrSettings.is4k,
+        isDefault: sonarrSettings.isDefault,
+        activeDirectory: sonarrSettings.activeDirectory,
+        activeProfileId: sonarrSettings.activeProfileId,
       },
       profiles: profiles.map((profile) => ({
         id: profile.id,

@@ -15,6 +15,8 @@ import { TvDetails } from '../../../server/models/Tv';
 import Badge from '../Common/Badge';
 import globalMessages from '../../i18n/globalMessages';
 import SeasonRequest from '../../../server/entity/SeasonRequest';
+import Alert from '../Common/Alert';
+import AdvancedRequester from './AdvancedRequester';
 
 const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',
@@ -172,10 +174,6 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     );
   };
 
-  const text = hasPermission(Permission.MANAGE_REQUESTS)
-    ? intl.formatMessage(messages.requestadmin)
-    : undefined;
-
   const getSeasonRequest = (
     seasonNumber: number
   ): SeasonRequest | undefined => {
@@ -236,8 +234,17 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         </svg>
       }
     >
+      {(hasPermission(Permission.MANAGE_REQUESTS) ||
+        hasPermission(Permission.AUTO_APPROVE) ||
+        hasPermission(Permission.AUTO_APPROVE_MOVIE)) && (
+        <p className="mt-6">
+          <Alert title="Auto Approval" type="info">
+            {intl.formatMessage(messages.requestadmin)}
+          </Alert>
+        </p>
+      )}
       <div className="flex flex-col">
-        <div className="-mx-4 overflow-auto sm:mx-0 max-h-96">
+        <div className="-mx-4 sm:mx-0">
           <div className="inline-block min-w-full py-2 align-middle">
             <div className="overflow-hidden shadow sm:rounded-lg">
               <table className="min-w-full">
@@ -281,7 +288,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-gray-600 divide-y">
+                <tbody className="bg-gray-600 divide-y divide-gray-700">
                   {data?.seasons
                     .filter((season) => season.seasonNumber !== 0)
                     .map((season) => {
@@ -398,7 +405,11 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           </div>
         </div>
       </div>
-      <p className="mt-4">{text}</p>
+      {hasPermission(Permission.REQUEST_ADVANCED) && (
+        <div className="mt-4">
+          <AdvancedRequester type="tv" is4k={is4k} />
+        </div>
+      )}
     </Modal>
   );
 };
