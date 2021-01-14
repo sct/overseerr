@@ -47,7 +47,6 @@ components:
             $ref: '#/components/schemas/MediaRequest'
       required:
         - id
-        - userType
         - email
         - permissions
         - createdAt
