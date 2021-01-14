@@ -14,6 +14,7 @@ import mediaRoutes from './media';
 import personRoutes from './person';
 import collectionRoutes from './collection';
 import { getAppVersion, getCommitTag } from '../utils/appVersion';
+import serviceRoutes from './service';
 
 const router = Router();
 
@@ -45,6 +46,7 @@ router.use('/tv', isAuthenticated(), tvRoutes);
 router.use('/media', isAuthenticated(), mediaRoutes);
 router.use('/person', isAuthenticated(), personRoutes);
 router.use('/collection', isAuthenticated(), collectionRoutes);
+router.use('/service', isAuthenticated(), serviceRoutes);
 router.use('/auth', authRoutes);
 
 router.get('/', (_req, res) => {

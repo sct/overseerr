@@ -14,6 +14,7 @@ import {
 } from '../../../server/constants/media';
 import DownloadIcon from '../../assets/download.svg';
 import Alert from '../Common/Alert';
+import AdvancedRequester from './AdvancedRequester';
 
 const messages = defineMessages({
   requestadmin:
@@ -49,7 +50,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   onComplete,
   tmdbId,
   onUpdating,
-  is4k,
+  is4k = false,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const { addToast } = useToasts();
@@ -131,10 +132,6 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       hasPermission(Permission.MANAGE_REQUESTS)
     : false;
 
-  const text = hasPermission(Permission.MANAGE_REQUESTS)
-    ? intl.formatMessage(messages.requestadmin)
-    : undefined;
-
   if (activeRequest?.status === MediaRequestStatus.PENDING) {
     return (
       <Modal
@@ -187,64 +184,17 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       okButtonType={'primary'}
       iconSvg={<DownloadIcon className="w-6 h-6" />}
     >
-      <p className="mt-6">
-        <Alert title="Auto Approval" type="info">
-          {text}
-        </Alert>
-      </p>
+      {(hasPermission(Permission.MANAGE_REQUESTS) ||
+        hasPermission(Permission.AUTO_APPROVE) ||
+        hasPermission(Permission.AUTO_APPROVE_MOVIE)) && (
+        <p className="mt-6">
+          <Alert title="Auto Approval" type="info">
+            {intl.formatMessage(messages.requestadmin)}
+          </Alert>
+        </p>
+      )}
       {hasPermission(Permission.REQUEST_ADVANCED) && (
-        <>
-          <div className="flex items-center mb-2 font-bold tracking-wider">
-            <svg
-              className="w-4 h-4 mr-1"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M9.707 7.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L13 8.586V5h3a2 2 0 012 2v5a2 2 0 01-2 2H8a2 2 0 01-2-2V7a2 2 0 012-2h3v3.586L9.707 7.293zM11 3a1 1 0 112 0v2h-2V3z" />
-              <path d="M4 9a2 2 0 00-2 2v5a2 2 0 002 2h8a2 2 0 002-2H4V9z" />
-            </svg>
-            Advanced Options
-          </div>
-          <div className="flex items-center justify-between p-4 bg-gray-600 rounded-md">
-            <div className="flex-grow mr-4">
-              <label htmlFor="server" className="block text-sm font-medium">
-                Destination Server
-              </label>
-              <select
-                id="server"
-                name="server"
-                className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-              >
-                <option>Main Radarr</option>
-              </select>
-            </div>
-            <div className="flex-grow mr-4">
-              <label htmlFor="server" className="block text-sm font-medium">
-                Quality Profile
-              </label>
-              <select
-                id="server"
-                name="server"
-                className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-              >
-                <option>HD - 720p/1080p</option>
-              </select>
-            </div>
-            <div className="flex-grow">
-              <label htmlFor="server" className="block text-sm font-medium">
-                Root Folder
-              </label>
-              <select
-                id="server"
-                name="server"
-                className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-              >
-                <option>/movies/</option>
-              </select>
-            </div>
-          </div>
-        </>
+        <AdvancedRequester type="movie" is4k={is4k} />
       )}
     </Modal>
   );
