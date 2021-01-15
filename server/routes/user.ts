@@ -202,6 +202,7 @@ router.post('/import-from-plex', async (req, res, next) => {
             plexId: parseInt(account.id),
             plexToken: '',
             avatar: account.thumb,
+            userType: UserType.PLEX,
           });
           await userRepository.save(newUser);
           createdUsers.push(newUser);
