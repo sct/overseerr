@@ -79,7 +79,6 @@ const UserEdit: React.FC = () => {
       await axios.put(`/api/v1/user/${user?.id}`, {
         permissions: currentPermission,
         email: user?.email,
-        avatar: user?.avatar,
       });
 
       addToast(intl.formatMessage(messages.usersaved), {

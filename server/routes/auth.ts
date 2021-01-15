@@ -68,6 +68,7 @@ authRoutes.post('/login', async (req, res, next) => {
           plexToken: account.authToken,
           permissions: Permission.ADMIN,
           avatar: account.thumb,
+          userType: UserType.PLEX,
         });
         await userRepository.save(user);
       }
@@ -90,6 +91,7 @@ authRoutes.post('/login', async (req, res, next) => {
             plexToken: account.authToken,
             permissions: settings.main.defaultPermissions,
             avatar: account.thumb,
+            userType: UserType.PLEX,
           });
           await userRepository.save(user);
         } else {
