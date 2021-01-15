@@ -8,10 +8,8 @@ import {
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import Button from '../Common/Button';
-import type { TvResult } from '../../../server/models/Search';
 import Link from 'next/link';
 import Slider from '../Slider';
-import TitleCard from '../TitleCard';
 import PersonCard from '../PersonCard';
 import { LanguageContext } from '../../context/LanguageContext';
 import LoadingSpinner from '../Common/LoadingSpinner';
@@ -36,6 +34,7 @@ import { sortCrewPriority } from '../../utils/creditHelpers';
 import { Crew } from '../../../server/models/common';
 import StatusBadge from '../StatusBadge';
 import RequestButton from '../RequestButton';
+import MediaSlider from '../MediaSlider';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -70,13 +69,6 @@ interface TvDetailsProps {
   tv?: TvDetailsType;
 }
 
-interface SearchResult {
-  page: number;
-  totalResults: number;
-  totalPages: number;
-  results: TvResult[];
-}
-
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const { hasPermission } = useUser();
   const router = useRouter();
@@ -89,12 +81,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     {
       initialData: tv,
     }
-  );
-  const { data: recommended, error: recommendedError } = useSWR<SearchResult>(
-    `/api/v1/tv/${router.query.tvId}/recommendations?language=${locale}`
-  );
-  const { data: similar, error: similarError } = useSWR<SearchResult>(
-    `/api/v1/tv/${router.query.tvId}/similar?language=${locale}`
   );
 
   const { data: ratingData } = useSWR<RTRating>(
@@ -528,103 +514,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           />
         ))}
       />
-      {(recommended?.results ?? []).length > 0 && (
-        <>
-          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
-            <div className="flex-1 min-w-0">
-              <Link
-                href="/tv/[tvId]/recommendations"
-                as={`/tv/${data.id}/recommendations`}
-              >
-                <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-                  <span>
-                    <FormattedMessage {...messages.recommendations} />
-                  </span>
-                  <svg
-                    className="w-6 h-6 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </div>
-          </div>
-          <Slider
-            sliderKey="recommendations"
-            isLoading={!recommended && !recommendedError}
-            isEmpty={false}
-            items={recommended?.results.map((title) => (
-              <TitleCard
-                key={`recommended-${title.id}`}
-                id={title.id}
-                image={title.posterPath}
-                status={title.mediaInfo?.status}
-                summary={title.overview}
-                title={title.name}
-                userScore={title.voteAverage}
-                year={title.firstAirDate}
-                mediaType={title.mediaType}
-              />
-            ))}
-          />
-        </>
-      )}
-      {(similar?.results ?? []).length > 0 && (
-        <>
-          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
-            <div className="flex-1 min-w-0">
-              <Link href="/tv/[tvId]/similar" as={`/tv/${data.id}/similar`}>
-                <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-                  <span>
-                    <FormattedMessage {...messages.similar} />
-                  </span>
-                  <svg
-                    className="w-6 h-6 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </div>
-          </div>
-          <Slider
-            sliderKey="similar"
-            isLoading={!similar && !similarError}
-            isEmpty={false}
-            items={similar?.results.map((title) => (
-              <TitleCard
-                key={`recommended-${title.id}`}
-                id={title.id}
-                image={title.posterPath}
-                status={title.mediaInfo?.status}
-                summary={title.overview}
-                title={title.name}
-                userScore={title.voteAverage}
-                year={title.firstAirDate}
-                mediaType={title.mediaType}
-              />
-            ))}
-          />
-        </>
-      )}
+      <MediaSlider
+        sliderKey="recommendations"
+        title={intl.formatMessage(messages.recommendations)}
+        url={`/api/v1/tv/${router.query.tvId}/recommendations`}
+        linkUrl={`/tv/${data.id}/recommendations`}
+        hideWhenEmpty
+      />
+      <MediaSlider
+        sliderKey="similar"
+        title={intl.formatMessage(messages.similar)}
+        url={`/api/v1/tv/${router.query.tvId}/similar`}
+        linkUrl={`/tv/${data.id}/similar`}
+        hideWhenEmpty
+      />
       <div className="pb-8" />
     </div>
   );
