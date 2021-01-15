@@ -23,11 +23,13 @@ components:
         userType:
           type: integer
           example: 1
+          readOnly: true
         permissions:
           type: number
           example: 0
         avatar:
           type: string
+          readOnly: true
         createdAt:
           type: string
           example: '2020-09-02T05:02:23.000Z'
@@ -47,9 +49,7 @@ components:
             $ref: '#/components/schemas/MediaRequest'
       required:
         - id
-        - userType
         - email
-        - permissions
         - createdAt
         - updatedAt
     MainSettings:

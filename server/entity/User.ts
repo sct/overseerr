@@ -15,6 +15,7 @@ import PreparedEmail from '../lib/email';
 import logger from '../logger';
 import { getSettings } from '../lib/settings';
 import { default as generatePassword } from 'secure-random-password';
+import { UserType } from '../constants/user';
 
 @Entity()
 export class User {
@@ -36,8 +37,8 @@ export class User {
   @Column({ nullable: true, select: false })
   public password?: string;
 
-  @Column({ type: 'integer', default: 1 })
-  public userType = 1;
+  @Column({ type: 'integer', default: UserType.PLEX })
+  public userType: UserType;
 
   @Column({ nullable: true, select: false })
   public plexId?: number;

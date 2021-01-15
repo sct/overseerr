@@ -204,8 +204,6 @@ const UserList: React.FC = () => {
               await axios.post('/api/v1/user', {
                 email: values.email,
                 password: values.genpassword ? null : values.password,
-                permissions: Permission.REQUEST,
-                userType: UserType.LOCAL,
               });
               addToast(intl.formatMessage(messages.usercreatedsuccess), {
                 appearance: 'success',
@@ -315,7 +313,7 @@ const UserList: React.FC = () => {
           }}
         </Formik>
       </Transition>
-      <div className="flex-col sm:flex-row flex justify-between">
+      <div className="flex flex-col justify-between sm:flex-row">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
         <div className="flex">
           <Button
@@ -363,7 +361,7 @@ const UserList: React.FC = () => {
                     <div className="text-sm font-medium leading-5">
                       {user.username}
                     </div>
-                    <div className="text-sm text-gray-300 leading-5">
+                    <div className="text-sm leading-5 text-gray-300">
                       {user.email}
                     </div>
                   </div>
