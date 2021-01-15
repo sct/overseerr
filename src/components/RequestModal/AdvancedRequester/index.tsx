@@ -6,6 +6,15 @@ import type {
   ServiceCommonServer,
   ServiceCommonServerWithDetails,
 } from '../../../../server/interfaces/api/serviceInterfaces';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  advancedoptions: 'Advanced Options',
+  destinationserver: 'Destination Server',
+  qualityprofile: 'Quality Profile',
+  rootfolder: 'Root Folder',
+  animenote: '* This series is an anime.',
+});
 
 export type RequestOverrides = {
   server?: number;
@@ -26,6 +35,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   isAnime = false,
   onChange,
 }) => {
+  const intl = useIntl();
   const { data, error } = useSWR<ServiceCommonServer[]>(
     `/api/v1/service/${type === 'movie' ? 'radarr' : 'sonarr'}`,
     {
@@ -130,13 +140,13 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
           <path d="M9.707 7.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L13 8.586V5h3a2 2 0 012 2v5a2 2 0 01-2 2H8a2 2 0 01-2-2V7a2 2 0 012-2h3v3.586L9.707 7.293zM11 3a1 1 0 112 0v2h-2V3z" />
           <path d="M4 9a2 2 0 00-2 2v5a2 2 0 002 2h8a2 2 0 002-2H4V9z" />
         </svg>
-        Advanced Options
+        {intl.formatMessage(messages.advancedoptions)}
       </div>
       <div className="p-4 bg-gray-600 rounded-md">
         <div className="flex flex-col items-center justify-between md:flex-row">
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mr-4 md:mb-0">
             <label htmlFor="server" className="block text-sm font-medium">
-              Destination Server
+              {intl.formatMessage(messages.destinationserver)}
             </label>
             <select
               id="server"
@@ -156,7 +166,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
           </div>
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mr-4 md:mb-0">
             <label htmlFor="server" className="block text-sm font-medium">
-              Quality Profile
+              {intl.formatMessage(messages.qualityprofile)}
             </label>
             <select
               id="profile"
@@ -180,7 +190,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
           </div>
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mb-0">
             <label htmlFor="server" className="block text-sm font-medium">
-              Root Folder
+              {intl.formatMessage(messages.rootfolder)}
             </label>
             <select
               id="folder"
@@ -202,7 +212,9 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
           </div>
         </div>
         {isAnime && (
-          <div className="mt-4 italic">* This series is an anime.</div>
+          <div className="mt-4 italic">
+            {intl.formatMessage(messages.animenote)}
+          </div>
         )}
       </div>
     </>
