@@ -14,7 +14,7 @@ import {
 } from '../../../server/constants/media';
 import DownloadIcon from '../../assets/download.svg';
 import Alert from '../Common/Alert';
-import AdvancedRequester from './AdvancedRequester';
+import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 
 const messages = defineMessages({
   requestadmin:
@@ -53,6 +53,10 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   is4k = false,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
+  const [
+    requestOverrides,
+    setRequestOverrides,
+  ] = useState<RequestOverrides | null>(null);
   const { addToast } = useToasts();
   const { data, error } = useSWR<MovieDetails>(`/api/v1/movie/${tmdbId}`, {
     revalidateOnMount: true,
@@ -68,10 +72,19 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
 
   const sendRequest = useCallback(async () => {
     setIsUpdating(true);
+    let overrideParams = {};
+    if (requestOverrides) {
+      overrideParams = {
+        serverId: requestOverrides.server,
+        profileId: requestOverrides.profile,
+        rootFolder: requestOverrides.folder,
+      };
+    }
     const response = await axios.post<MediaRequest>('/api/v1/request', {
       mediaId: data?.id,
       mediaType: 'movie',
       is4k,
+      ...overrideParams,
     });
 
     if (response.data) {
@@ -96,7 +109,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       );
       setIsUpdating(false);
     }
-  }, [data, onComplete, addToast]);
+  }, [data, onComplete, addToast, requestOverrides]);
 
   const activeRequest = data?.mediaInfo?.requests?.find(
     (request) => request.is4k === !!is4k
@@ -194,7 +207,13 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         </p>
       )}
       {hasPermission(Permission.REQUEST_ADVANCED) && (
-        <AdvancedRequester type="movie" is4k={is4k} />
+        <AdvancedRequester
+          type="movie"
+          is4k={is4k}
+          onChange={(overrides) => {
+            setRequestOverrides(overrides);
+          }}
+        />
       )}
     </Modal>
   );

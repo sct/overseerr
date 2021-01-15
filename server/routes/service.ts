@@ -86,6 +86,8 @@ serviceRoutes.get('/sonarr', async (req, res) => {
       isDefault: sonarr.isDefault,
       activeDirectory: sonarr.activeDirectory,
       activeProfileId: sonarr.activeProfileId,
+      activeAnimeProfileId: sonarr.activeAnimeProfileId,
+      activeAnimeDirectory: sonarr.activeAnimeDirectory,
     })
   );
 
@@ -126,6 +128,8 @@ serviceRoutes.get<{ sonarrId: string }>(
         isDefault: sonarrSettings.isDefault,
         activeDirectory: sonarrSettings.activeDirectory,
         activeProfileId: sonarrSettings.activeProfileId,
+        activeAnimeProfileId: sonarrSettings.activeAnimeProfileId,
+        activeAnimeDirectory: sonarrSettings.activeAnimeDirectory,
       },
       profiles: profiles.map((profile) => ({
         id: profile.id,

@@ -7,14 +7,24 @@ import type {
   ServiceCommonServerWithDetails,
 } from '../../../../server/interfaces/api/serviceInterfaces';
 
+export type RequestOverrides = {
+  server?: number;
+  profile?: number;
+  folder?: string;
+};
+
 interface AdvancedRequesterProps {
   type: 'movie' | 'tv';
   is4k: boolean;
+  isAnime?: boolean;
+  onChange: (overrides: RequestOverrides) => void;
 }
 
 const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   type,
   is4k = false,
+  isAnime = false,
+  onChange,
 }) => {
   const { data, error } = useSWR<ServiceCommonServer[]>(
     `/api/v1/service/${type === 'movie' ? 'radarr' : 'sonarr'}`,
@@ -25,7 +35,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     }
   );
   const [selectedServer, setSelectedServer] = useState<number | null>(null);
-  const [selectedProfile, setSelectedProfile] = useState<number>(0);
+  const [selectedProfile, setSelectedProfile] = useState<number>(-1);
   const [selectedFolder, setSelectedFolder] = useState<string>('');
   const {
     data: serverData,
@@ -60,10 +70,18 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   useEffect(() => {
     if (serverData) {
       const defaultProfile = serverData.profiles.find(
-        (profile) => profile.id === serverData.server.activeProfileId
+        (profile) =>
+          profile.id ===
+          (isAnime
+            ? serverData.server.activeAnimeProfileId
+            : serverData.server.activeProfileId)
       );
       const defaultFolder = serverData.rootFolders.find(
-        (folder) => folder.path === serverData.server.activeDirectory
+        (folder) =>
+          folder.path ===
+          (isAnime
+            ? serverData.server.activeAnimeDirectory
+            : serverData.server.activeDirectory)
       );
 
       if (defaultProfile && defaultProfile.id !== selectedProfile) {
@@ -75,6 +93,16 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       }
     }
   }, [serverData]);
+
+  useEffect(() => {
+    if (selectedServer !== null) {
+      onChange({
+        folder: selectedFolder !== '' ? selectedFolder : undefined,
+        profile: selectedProfile !== -1 ? selectedProfile : undefined,
+        server: selectedServer ?? undefined,
+      });
+    }
+  }, [selectedFolder, selectedServer, selectedProfile]);
 
   if (!data && !error) {
     return (
@@ -104,71 +132,78 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         </svg>
         Advanced Options
       </div>
-      <div className="flex flex-col items-center justify-between p-4 bg-gray-600 rounded-md md:flex-row">
-        <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mr-4 md:mb-0">
-          <label htmlFor="server" className="block text-sm font-medium">
-            Destination Server
-          </label>
-          <select
-            id="server"
-            name="server"
-            onChange={(e) => setSelectedServer(Number(e.target.value))}
-            onBlur={(e) => setSelectedServer(Number(e.target.value))}
-            value={selectedServer}
-            className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-          >
-            {data.map((server) => (
-              <option key={`server-list-${server.id}`} value={server.id}>
-                {server.name}
-                {server.isDefault ? ' (DEFAULT)' : ''}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mr-4 md:mb-0">
-          <label htmlFor="server" className="block text-sm font-medium">
-            Quality Profile
-          </label>
-          <select
-            id="profile"
-            name="profile"
-            value={selectedProfile}
-            onChange={(e) => setSelectedProfile(Number(e.target.value))}
-            onBlur={(e) => setSelectedProfile(Number(e.target.value))}
-            className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-          >
-            {isLoadingDetails && <option value="">Loading Profiles...</option>}
-            {!isLoadingDetails &&
-              serverData &&
-              serverData.profiles.map((profile) => (
-                <option key={`profile-list${profile.id}`} value={profile.id}>
-                  {profile.name}
+      <div className="p-4 bg-gray-600 rounded-md">
+        <div className="flex flex-col items-center justify-between md:flex-row">
+          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mr-4 md:mb-0">
+            <label htmlFor="server" className="block text-sm font-medium">
+              Destination Server
+            </label>
+            <select
+              id="server"
+              name="server"
+              onChange={(e) => setSelectedServer(Number(e.target.value))}
+              onBlur={(e) => setSelectedServer(Number(e.target.value))}
+              value={selectedServer}
+              className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+            >
+              {data.map((server) => (
+                <option key={`server-list-${server.id}`} value={server.id}>
+                  {server.name}
+                  {server.isDefault ? ' (DEFAULT)' : ''}
                 </option>
               ))}
-          </select>
+            </select>
+          </div>
+          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mr-4 md:mb-0">
+            <label htmlFor="server" className="block text-sm font-medium">
+              Quality Profile
+            </label>
+            <select
+              id="profile"
+              name="profile"
+              value={selectedProfile}
+              onChange={(e) => setSelectedProfile(Number(e.target.value))}
+              onBlur={(e) => setSelectedProfile(Number(e.target.value))}
+              className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+            >
+              {isLoadingDetails && (
+                <option value="">Loading Profiles...</option>
+              )}
+              {!isLoadingDetails &&
+                serverData &&
+                serverData.profiles.map((profile) => (
+                  <option key={`profile-list${profile.id}`} value={profile.id}>
+                    {profile.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mb-0">
+            <label htmlFor="server" className="block text-sm font-medium">
+              Root Folder
+            </label>
+            <select
+              id="folder"
+              name="folder"
+              value={selectedFolder}
+              onChange={(e) => setSelectedFolder(e.target.value)}
+              onBlur={(e) => setSelectedFolder(e.target.value)}
+              className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+            >
+              {isLoadingDetails && <option value="">Loading Folders...</option>}
+              {!isLoadingDetails &&
+                serverData &&
+                serverData.rootFolders.map((folder) => (
+                  <option key={`profile-list${folder.id}`} value={folder.path}>
+                    {folder.path}
+                  </option>
+                ))}
+            </select>
+          </div>
         </div>
-        <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mb-0">
-          <label htmlFor="server" className="block text-sm font-medium">
-            Root Folder
-          </label>
-          <select
-            id="folder"
-            name="folder"
-            value={selectedFolder}
-            onChange={(e) => setSelectedFolder(e.target.value)}
-            onBlur={(e) => setSelectedFolder(e.target.value)}
-            className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-          >
-            {isLoadingDetails && <option value="">Loading Folders...</option>}
-            {!isLoadingDetails &&
-              serverData &&
-              serverData.rootFolders.map((folder) => (
-                <option key={`profile-list${folder.id}`} value={folder.path}>
-                  {folder.path}
-                </option>
-              ))}
-          </select>
-        </div>
+        {isAnime && (
+          <div className="mt-4 italic">* This series is an anime.</div>
+        )}
       </div>
     </>
   );

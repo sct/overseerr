@@ -199,6 +199,9 @@ requestRoutes.post(
               ? req.user
               : undefined,
           is4k: req.body.is4k,
+          serverId: req.body.serverId,
+          profileId: req.body.profileId,
+          rootFolder: req.body.rootFolder,
           seasons: finalSeasons.map(
             (sn) =>
               new SeasonRequest({

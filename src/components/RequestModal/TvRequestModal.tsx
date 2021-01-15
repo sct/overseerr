@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
 import useSWR from 'swr';
 import { useToasts } from 'react-toast-notifications';
+import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
 import axios from 'axios';
 import {
   MediaStatus,
@@ -16,7 +17,7 @@ import Badge from '../Common/Badge';
 import globalMessages from '../../i18n/globalMessages';
 import SeasonRequest from '../../../server/entity/SeasonRequest';
 import Alert from '../Common/Alert';
-import AdvancedRequester from './AdvancedRequester';
+import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 
 const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',
@@ -55,6 +56,10 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
 }) => {
   const { addToast } = useToasts();
   const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${tmdbId}`);
+  const [
+    requestOverrides,
+    setRequestOverrides,
+  ] = useState<RequestOverrides | null>(null);
   const [selectedSeasons, setSelectedSeasons] = useState<number[]>([]);
   const intl = useIntl();
   const { hasPermission } = useUser();
@@ -66,12 +71,21 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     if (onUpdating) {
       onUpdating(true);
     }
+    let overrideParams = {};
+    if (requestOverrides) {
+      overrideParams = {
+        serverId: requestOverrides.server,
+        profileId: requestOverrides.profile,
+        rootFolder: requestOverrides.folder,
+      };
+    }
     const response = await axios.post<MediaRequest>('/api/v1/request', {
       mediaId: data?.id,
       tvdbId: data?.externalIds.tvdbId,
       mediaType: 'tv',
       is4k,
       seasons: selectedSeasons,
+      ...overrideParams,
     });
 
     if (response.data) {
@@ -407,7 +421,14 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       </div>
       {hasPermission(Permission.REQUEST_ADVANCED) && (
         <div className="mt-4">
-          <AdvancedRequester type="tv" is4k={is4k} />
+          <AdvancedRequester
+            type="tv"
+            is4k={is4k}
+            isAnime={data?.keywords.some(
+              (keyword) => keyword.id === ANIME_KEYWORD_ID
+            )}
+            onChange={(overrides) => setRequestOverrides(overrides)}
+          />
         </div>
       )}
     </Modal>

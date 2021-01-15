@@ -7,6 +7,8 @@ export interface ServiceCommonServer {
   isDefault: boolean;
   activeProfileId: number;
   activeDirectory: string;
+  activeAnimeProfileId?: number;
+  activeAnimeDirectory?: string;
 }
 
 export interface ServiceCommonServerWithDetails {
