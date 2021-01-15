@@ -8,6 +8,18 @@ import type {
 } from '../../../../server/interfaces/api/serviceInterfaces';
 import { defineMessages, useIntl } from 'react-intl';
 
+const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+};
+
 const messages = defineMessages({
   advancedoptions: 'Advanced Options',
   destinationserver: 'Destination Server',
@@ -142,7 +154,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       </div>
       <div className="p-4 bg-gray-600 rounded-md">
         <div className="flex flex-col items-center justify-between md:flex-row">
-          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mr-4 md:mb-0">
+          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
             <label htmlFor="server" className="block text-sm font-medium">
               {intl.formatMessage(messages.destinationserver)}
             </label>
@@ -162,7 +174,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               ))}
             </select>
           </div>
-          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mr-4 md:mb-0">
+          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
             <label htmlFor="server" className="block text-sm font-medium">
               {intl.formatMessage(messages.qualityprofile)}
             </label>
@@ -184,7 +196,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 ))}
             </select>
           </div>
-          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-auto md:mb-0">
+          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:mb-0">
             <label htmlFor="server" className="block text-sm font-medium">
               {intl.formatMessage(messages.rootfolder)}
             </label>
@@ -201,7 +213,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 serverData &&
                 serverData.rootFolders.map((folder) => (
                   <option key={`profile-list${folder.id}`} value={folder.path}>
-                    {folder.path}
+                    {folder.path} ({formatBytes(folder.freeSpace ?? 0)})
                   </option>
                 ))}
             </select>
