@@ -126,8 +126,6 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     return null;
   }
 
-  const isLoadingDetails = (!data && !error) || isValidating;
-
   return (
     <>
       <div className="flex items-center mb-2 font-bold tracking-wider">
@@ -176,10 +174,8 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               onBlur={(e) => setSelectedProfile(Number(e.target.value))}
               className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
             >
-              {isLoadingDetails && (
-                <option value="">Loading Profiles...</option>
-              )}
-              {!isLoadingDetails &&
+              {isValidating && <option value="">Loading Profiles...</option>}
+              {!isValidating &&
                 serverData &&
                 serverData.profiles.map((profile) => (
                   <option key={`profile-list${profile.id}`} value={profile.id}>
@@ -200,8 +196,8 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               onBlur={(e) => setSelectedFolder(e.target.value)}
               className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
             >
-              {isLoadingDetails && <option value="">Loading Folders...</option>}
-              {!isLoadingDetails &&
+              {isValidating && <option value="">Loading Folders...</option>}
+              {!isValidating &&
                 serverData &&
                 serverData.rootFolders.map((folder) => (
                   <option key={`profile-list${folder.id}`} value={folder.path}>
