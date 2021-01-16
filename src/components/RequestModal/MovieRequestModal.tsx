@@ -15,6 +15,7 @@ import {
 import DownloadIcon from '../../assets/download.svg';
 import Alert from '../Common/Alert';
 import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
   requestadmin:
@@ -40,6 +41,7 @@ const messages = defineMessages({
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   tmdbId: number;
   is4k?: boolean;
+  editRequest?: MediaRequest;
   onCancel?: () => void;
   onComplete?: (newStatus: MediaStatus) => void;
   onUpdating?: (isUpdating: boolean) => void;
@@ -50,6 +52,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   onComplete,
   tmdbId,
   onUpdating,
+  editRequest,
   is4k = false,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -140,6 +143,35 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
     }
   };
 
+  const updateRequest = async () => {
+    setIsUpdating(true);
+
+    try {
+      await axios.put(`/api/v1/request/${editRequest?.id}`, {
+        mediaType: 'movie',
+        serverId: requestOverrides?.server,
+        profileId: requestOverrides?.profile,
+        rootFolder: requestOverrides?.folder,
+      });
+
+      addToast(<span>Request edited.</span>, {
+        appearance: 'success',
+        autoDismiss: true,
+      });
+
+      if (onComplete) {
+        onComplete(MediaStatus.PENDING);
+      }
+    } catch (e) {
+      addToast(<span>Something went wrong editing the request.</span>, {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const isOwner = activeRequest
     ? activeRequest.requestedBy.id === user?.id ||
       hasPermission(Permission.MANAGE_REQUESTS)
@@ -151,20 +183,24 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         loading={!data && !error}
         backgroundClickable
         onCancel={onCancel}
-        onOk={isOwner ? () => cancelRequest() : undefined}
-        okDisabled={isUpdating}
         title={intl.formatMessage(
           is4k ? messages.pending4krequest : messages.pendingrequest,
           {
             title: data?.title,
           }
         )}
-        okText={
+        onOk={() => updateRequest()}
+        okDisabled={isUpdating}
+        okText={intl.formatMessage(globalMessages.edit)}
+        okButtonType="primary"
+        onSecondary={isOwner ? () => cancelRequest() : undefined}
+        secondaryDisabled={isUpdating}
+        secondaryText={
           isUpdating
             ? intl.formatMessage(messages.cancelling)
             : intl.formatMessage(messages.cancel)
         }
-        okButtonType={'danger'}
+        secondaryButtonType="danger"
         cancelText={intl.formatMessage(messages.close)}
         iconSvg={<DownloadIcon className="w-6 h-6" />}
       >
@@ -173,6 +209,26 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           {
             username: activeRequest.requestedBy.username,
           }
+        )}
+        {hasPermission(Permission.REQUEST_ADVANCED) && (
+          <div className="mt-4">
+            <AdvancedRequester
+              type="movie"
+              is4k={is4k}
+              defaultOverrides={
+                editRequest
+                  ? {
+                      folder: editRequest.rootFolder,
+                      profile: editRequest.profileId,
+                      server: editRequest.serverId,
+                    }
+                  : undefined
+              }
+              onChange={(overrides) => {
+                setRequestOverrides(overrides);
+              }}
+            />
+          </div>
         )}
       </Modal>
     );

@@ -38,6 +38,7 @@ interface AdvancedRequesterProps {
   type: 'movie' | 'tv';
   is4k: boolean;
   isAnime?: boolean;
+  defaultOverrides?: RequestOverrides;
   onChange: (overrides: RequestOverrides) => void;
 }
 
@@ -45,6 +46,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   type,
   is4k = false,
   isAnime = false,
+  defaultOverrides,
   onChange,
 }) => {
   const intl = useIntl();
@@ -54,11 +56,20 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       refreshInterval: 0,
       refreshWhenHidden: false,
       revalidateOnFocus: false,
+      revalidateOnMount: true,
     }
   );
-  const [selectedServer, setSelectedServer] = useState<number | null>(null);
-  const [selectedProfile, setSelectedProfile] = useState<number>(-1);
-  const [selectedFolder, setSelectedFolder] = useState<string>('');
+  const [selectedServer, setSelectedServer] = useState<number | null>(
+    defaultOverrides?.server !== undefined && defaultOverrides?.server >= 0
+      ? defaultOverrides?.server
+      : null
+  );
+  const [selectedProfile, setSelectedProfile] = useState<number>(
+    defaultOverrides?.profile ?? -1
+  );
+  const [selectedFolder, setSelectedFolder] = useState<string>(
+    defaultOverrides?.folder ?? ''
+  );
   const {
     data: serverData,
     isValidating,
@@ -84,7 +95,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       defaultServer = data?.[0];
     }
 
-    if (defaultServer && defaultServer.id !== selectedServer) {
+    if (
+      defaultServer &&
+      defaultServer.id !== selectedServer &&
+      (!defaultOverrides || defaultOverrides.server === null)
+    ) {
       setSelectedServer(defaultServer.id);
     }
   }, [data]);
@@ -106,15 +121,53 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             : serverData.server.activeDirectory)
       );
 
-      if (defaultProfile && defaultProfile.id !== selectedProfile) {
+      if (
+        defaultProfile &&
+        defaultProfile.id !== selectedProfile &&
+        (!defaultOverrides || defaultOverrides.profile === null)
+      ) {
         setSelectedProfile(defaultProfile.id);
       }
 
-      if (defaultFolder && defaultFolder.path !== selectedFolder) {
+      if (
+        defaultFolder &&
+        defaultFolder.path !== selectedFolder &&
+        (!defaultOverrides || defaultOverrides.folder === null)
+      ) {
         setSelectedFolder(defaultFolder?.path ?? '');
       }
     }
   }, [serverData]);
+
+  useEffect(() => {
+    if (
+      defaultOverrides &&
+      defaultOverrides.server !== null &&
+      defaultOverrides.server !== undefined
+    ) {
+      setSelectedServer(defaultOverrides.server);
+    }
+
+    if (
+      defaultOverrides &&
+      defaultOverrides.profile !== null &&
+      defaultOverrides.profile !== undefined
+    ) {
+      setSelectedProfile(defaultOverrides.profile);
+    }
+
+    if (
+      defaultOverrides &&
+      defaultOverrides.folder !== null &&
+      defaultOverrides.folder !== undefined
+    ) {
+      setSelectedFolder(defaultOverrides.folder);
+    }
+  }, [
+    defaultOverrides?.server,
+    defaultOverrides?.folder,
+    defaultOverrides?.profile,
+  ]);
 
   useEffect(() => {
     if (selectedServer !== null) {
@@ -152,7 +205,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         </svg>
         {intl.formatMessage(messages.advancedoptions)}
       </div>
-      <div className="p-4 bg-gray-600 rounded-md">
+      <div className="p-4 bg-gray-600 rounded-md shadow">
         <div className="flex flex-col items-center justify-between md:flex-row">
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
             <label htmlFor="server" className="block text-sm font-medium">
@@ -169,7 +222,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               {data.map((server) => (
                 <option key={`server-list-${server.id}`} value={server.id}>
                   {server.name}
-                  {server.isDefault ? ' (DEFAULT)' : ''}
+                  {server.isDefault && server.is4k === is4k ? ' (DEFAULT)' : ''}
                 </option>
               ))}
             </select>

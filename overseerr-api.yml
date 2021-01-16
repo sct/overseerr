@@ -2507,6 +2507,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaRequest'
+    put:
+      summary: Update a specific MediaRequest
+      description: Updats a specific media request and returns the request in JSON format. Requires the `MANAGE_REQUESTS` permission.
+      tags:
+        - request
+      parameters:
+        - in: path
+          name: requestId
+          description: Request ID
+          required: true
+          example: 1
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesfully updated request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaRequest'
     delete:
       summary: Delete a request
       description: Removes a request. If the user has the `MANAGE_REQUESTS` permission, then any request can be removed. Otherwise, only pending requests can be removed.

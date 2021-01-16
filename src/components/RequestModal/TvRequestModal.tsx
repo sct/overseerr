@@ -45,6 +45,7 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onComplete?: (newStatus: MediaStatus) => void;
   onUpdating?: (isUpdating: boolean) => void;
   is4k?: boolean;
+  editRequest?: MediaRequest;
 }
 
 const TvRequestModal: React.FC<RequestModalProps> = ({
@@ -52,15 +53,21 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   onComplete,
   tmdbId,
   onUpdating,
+  editRequest,
   is4k = false,
 }) => {
   const { addToast } = useToasts();
+  const editingSeasons: number[] = (editRequest?.seasons ?? []).map(
+    (season) => season.seasonNumber
+  );
   const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${tmdbId}`);
   const [
     requestOverrides,
     setRequestOverrides,
   ] = useState<RequestOverrides | null>(null);
-  const [selectedSeasons, setSelectedSeasons] = useState<number[]>([]);
+  const [selectedSeasons, setSelectedSeasons] = useState<number[]>(
+    editRequest ? editingSeasons : []
+  );
   const intl = useIntl();
   const { hasPermission } = useUser();
 
@@ -115,7 +122,9 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       .reduce((requestedSeasons, request) => {
         return [
           ...requestedSeasons,
-          ...request.seasons.map((sr) => sr.seasonNumber),
+          ...request.seasons
+            .filter((season) => !editingSeasons.includes(season.seasonNumber))
+            .map((sr) => sr.seasonNumber),
         ];
       }, [] as number[]);
 
@@ -223,14 +232,18 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         { title: data?.name }
       )}
       okText={
-        selectedSeasons.length === 0
+        editRequest && selectedSeasons.length === 0
+          ? 'Cancel Request'
+          : selectedSeasons.length === 0
           ? intl.formatMessage(messages.selectseason)
           : intl.formatMessage(messages.requestseasons, {
               seasonCount: selectedSeasons.length,
             })
       }
-      okDisabled={selectedSeasons.length === 0}
-      okButtonType="primary"
+      okDisabled={editRequest ? false : selectedSeasons.length === 0}
+      okButtonType={
+        editRequest && selectedSeasons.length === 0 ? 'danger' : `primary`
+      }
       iconSvg={
         <svg
           className="w-6 h-6"
@@ -250,13 +263,14 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     >
       {(hasPermission(Permission.MANAGE_REQUESTS) ||
         hasPermission(Permission.AUTO_APPROVE) ||
-        hasPermission(Permission.AUTO_APPROVE_MOVIE)) && (
-        <p className="mt-6">
-          <Alert title="Auto Approval" type="info">
-            {intl.formatMessage(messages.requestadmin)}
-          </Alert>
-        </p>
-      )}
+        hasPermission(Permission.AUTO_APPROVE_MOVIE)) &&
+        !editRequest && (
+          <p className="mt-6">
+            <Alert title="Auto Approval" type="info">
+              {intl.formatMessage(messages.requestadmin)}
+            </Alert>
+          </p>
+        )}
       <div className="flex flex-col">
         <div className="-mx-4 sm:mx-0">
           <div className="inline-block min-w-full py-2 align-middle">
@@ -323,7 +337,10 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                               tabIndex={0}
                               aria-checked={
                                 !!mediaSeason ||
-                                !!seasonRequest ||
+                                (!!seasonRequest &&
+                                  !editingSeasons.includes(
+                                    season.seasonNumber
+                                  )) ||
                                 isSelectedSeason(season.seasonNumber)
                               }
                               onClick={() => toggleSeason(season.seasonNumber)}
@@ -333,14 +350,21 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                 }
                               }}
                               className={`group relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none ${
-                                mediaSeason || seasonRequest ? 'opacity-50' : ''
+                                mediaSeason ||
+                                (!!seasonRequest &&
+                                  !editingSeasons.includes(season.seasonNumber))
+                                  ? 'opacity-50'
+                                  : ''
                               }`}
                             >
                               <span
                                 aria-hidden="true"
                                 className={`${
                                   !!mediaSeason ||
-                                  !!seasonRequest ||
+                                  (!!seasonRequest &&
+                                    !editingSeasons.includes(
+                                      season.seasonNumber
+                                    )) ||
                                   isSelectedSeason(season.seasonNumber)
                                     ? 'bg-indigo-500'
                                     : 'bg-gray-800'
@@ -350,7 +374,10 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                 aria-hidden="true"
                                 className={`${
                                   !!mediaSeason ||
-                                  !!seasonRequest ||
+                                  (!!seasonRequest &&
+                                    !editingSeasons.includes(
+                                      season.seasonNumber
+                                    )) ||
                                   isSelectedSeason(season.seasonNumber)
                                     ? 'translate-x-5'
                                     : 'translate-x-0'
@@ -428,6 +455,15 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
               (keyword) => keyword.id === ANIME_KEYWORD_ID
             )}
             onChange={(overrides) => setRequestOverrides(overrides)}
+            defaultOverrides={
+              editRequest
+                ? {
+                    folder: editRequest.rootFolder,
+                    profile: editRequest.profileId,
+                    server: editRequest.serverId,
+                  }
+                : undefined
+            }
           />
         </div>
       )}

@@ -241,6 +241,35 @@ requestRoutes.get('/:requestId', async (req, res, next) => {
   }
 });
 
+requestRoutes.put<{ requestId: string }>(
+  '/:requestId',
+  isAuthenticated(Permission.MANAGE_REQUESTS),
+  async (req, res, next) => {
+    const requestRepository = getRepository(MediaRequest);
+    try {
+      const request = await requestRepository.findOne(
+        Number(req.params.requestId)
+      );
+
+      if (!request) {
+        return next({ status: 404, message: 'Request not found' });
+      }
+
+      if (req.body.mediaType === 'movie') {
+        request.serverId = req.body.serverId;
+        request.profileId = req.body.profileId;
+        request.rootFolder = req.body.rootFolder;
+
+        requestRepository.save(request);
+      }
+
+      return res.status(200).json(request);
+    } catch (e) {
+      next({ status: 500, message: e.message });
+    }
+  }
+);
+
 requestRoutes.delete('/:requestId', async (req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
 
