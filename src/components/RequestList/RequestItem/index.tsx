@@ -24,6 +24,7 @@ import axios from 'axios';
 import globalMessages from '../../../i18n/globalMessages';
 import Link from 'next/link';
 import { useToasts } from 'react-toast-notifications';
+import RequestModal from '../../RequestModal';
 
 const messages = defineMessages({
   requestedby: 'Requested by {username}',
@@ -51,6 +52,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   const { addToast } = useToasts();
   const intl = useIntl();
   const { hasPermission } = useUser();
+  const [showEditModal, setShowEditModal] = useState(false);
   const { locale } = useContext(LanguageContext);
   const url =
     request.type === 'movie'
@@ -116,6 +118,18 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
   return (
     <tr className="relative w-full h-24 p-2 text-white bg-gray-800">
+      <RequestModal
+        show={showEditModal}
+        tmdbId={request.media.tmdbId}
+        type={request.type}
+        is4k={request.is4k}
+        editRequest={request}
+        onCancel={() => setShowEditModal(false)}
+        onComplete={() => {
+          revalidateList();
+          setShowEditModal(false);
+        }}
+      />
       <Table.TD>
         <div className="flex items-center">
           <Link
@@ -276,7 +290,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   </span>
                 </Button>
               </span>
-              <span>
+              <span className="mr-2">
                 <Button
                   buttonType="danger"
                   buttonSize="sm"
@@ -296,6 +310,25 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   </svg>
                   <span className="hidden sm:block">
                     {intl.formatMessage(globalMessages.decline)}
+                  </span>
+                </Button>
+              </span>
+              <span>
+                <Button
+                  buttonType="primary"
+                  buttonSize="sm"
+                  onClick={() => setShowEditModal(true)}
+                >
+                  <svg
+                    className="w-4 h-4 mr-0 sm:mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                  <span className="hidden sm:block">
+                    {intl.formatMessage(globalMessages.edit)}
                   </span>
                 </Button>
               </span>

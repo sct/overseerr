@@ -47,6 +47,9 @@ export const messages = defineMessages({
   request4kMoviesDescription: 'Grants permission to request 4K movies.',
   request4kTv: 'Request 4K Series',
   request4kTvDescription: 'Grants permission to request 4K Series.',
+  advancedrequest: 'Advanced Requests',
+  advancedrequestDescription:
+    'Grants permission to use advanced request options. (Ex. Changing servers/profiles/paths)',
   save: 'Save',
   saving: 'Saving...',
   usersaved: 'User saved',
@@ -125,6 +128,14 @@ const UserEdit: React.FC = () => {
       name: intl.formatMessage(messages.managerequests),
       description: intl.formatMessage(messages.managerequestsDescription),
       permission: Permission.MANAGE_REQUESTS,
+      children: [
+        {
+          id: 'advancedrequest',
+          name: intl.formatMessage(messages.advancedrequest),
+          description: intl.formatMessage(messages.advancedrequestDescription),
+          permission: Permission.REQUEST_ADVANCED,
+        },
+      ],
     },
     {
       id: 'request',

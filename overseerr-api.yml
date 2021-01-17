@@ -2507,6 +2507,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaRequest'
+    put:
+      summary: Update a specific MediaRequest
+      description: Updats a specific media request and returns the request in JSON format. Requires the `MANAGE_REQUESTS` permission.
+      tags:
+        - request
+      parameters:
+        - in: path
+          name: requestId
+          description: Request ID
+          required: true
+          example: 1
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesfully updated request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaRequest'
     delete:
       summary: Delete a request
       description: Removes a request. If the user has the `MANAGE_REQUESTS` permission, then any request can be removed. Otherwise, only pending requests can be removed.
@@ -3066,6 +3086,86 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Collection'
+  /service/radarr:
+    get:
+      summary: Returns non-sensitive radarr server list
+      description: Returns a list of radarr servers, both ID and name in JSON format
+      tags:
+        - service
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RadarrSettings'
+  /service/radarr/{radarrId}:
+    get:
+      summary: Returns radarr server quality profiles and root folders
+      description: Returns a radarr server quality profile and root folder details in JSON format
+      tags:
+        - service
+      parameters:
+        - in: path
+          name: radarrId
+          required: true
+          schema:
+            type: number
+            example: 0
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  server:
+                    $ref: '#/components/schemas/RadarrSettings'
+                  profiles:
+                    $ref: '#/components/schemas/ServiceProfile'
+  /service/sonarr:
+    get:
+      summary: Returns non-sensitive sonarr server list
+      description: Returns a list of sonarr servers, both ID and name in JSON format
+      tags:
+        - service
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SonarrSettings'
+  /service/sonarr/{sonarrId}:
+    get:
+      summary: Returns sonarr server quality profiles and root folders
+      description: Returns a sonarr server quality profile and root folder details in JSON format
+      tags:
+        - service
+      parameters:
+        - in: path
+          name: sonarrId
+          required: true
+          schema:
+            type: number
+            example: 0
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  server:
+                    $ref: '#/components/schemas/SonarrSettings'
+                  profiles:
+                    $ref: '#/components/schemas/ServiceProfile'
 
 security:
   - cookieAuth: []

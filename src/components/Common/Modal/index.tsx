@@ -66,7 +66,7 @@ const Modal: React.FC<ModalProps> = ({
   return ReactDOM.createPortal(
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      className="fixed top-0 left-0 right-0 bottom-0 bg-gray-800 bg-opacity-50 w-full h-full z-50 flex justify-center items-center"
+      className="fixed top-0 bottom-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-gray-800 bg-opacity-50"
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
           typeof onCancel === 'function' && backgroundClickable
@@ -98,7 +98,7 @@ const Modal: React.FC<ModalProps> = ({
         show={!loading}
       >
         <div
-          className="inline-block align-bottom bg-gray-700 sm:rounded-lg px-4 pt-5 pb-4 text-left overflow-auto shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full max-h-full"
+          className="inline-block w-full max-h-full px-4 pt-5 pb-4 overflow-auto text-left align-bottom transition-all transform bg-gray-700 shadow-xl sm:rounded-lg sm:my-8 sm:align-middle sm:max-w-3xl"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
@@ -106,7 +106,7 @@ const Modal: React.FC<ModalProps> = ({
         >
           <div className="sm:flex sm:items-center">
             {iconSvg && (
-              <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-gray-600 text-white sm:mx-0 sm:h-10 sm:w-10">
+              <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto text-white bg-gray-600 rounded-full sm:mx-0 sm:h-10 sm:w-10">
                 {iconSvg}
               </div>
             )}
@@ -116,12 +116,12 @@ const Modal: React.FC<ModalProps> = ({
               }`}
             >
               {title && (
-                <h3
-                  className="text-lg leading-6 font-medium text-white"
+                <span
+                  className="text-lg font-medium leading-6 text-white"
                   id="modal-headline"
                 >
                   {title}
-                </h3>
+                </span>
               )}
             </div>
           </div>
@@ -131,7 +131,7 @@ const Modal: React.FC<ModalProps> = ({
             </div>
           )}
           {(onCancel || onOk || onSecondary || onTertiary) && (
-            <div className="mt-5 sm:mt-4 flex justify-center sm:justify-start flex-row-reverse">
+            <div className="flex flex-row-reverse justify-center mt-5 sm:mt-4 sm:justify-start">
               {typeof onOk === 'function' && (
                 <Button
                   buttonType={okButtonType}

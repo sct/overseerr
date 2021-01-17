@@ -12,6 +12,7 @@ export enum Permission {
   REQUEST_4K = 1024,
   REQUEST_4K_MOVIE = 2048,
   REQUEST_4K_TV = 4096,
+  REQUEST_ADVANCED = 8192,
 }
 
 /**

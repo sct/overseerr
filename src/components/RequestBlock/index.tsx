@@ -6,9 +6,15 @@ import { MediaRequestStatus } from '../../../server/constants/media';
 import Button from '../Common/Button';
 import axios from 'axios';
 import globalMessages from '../../i18n/globalMessages';
+import RequestModal from '../RequestModal';
+import useRequestOverride from '../../hooks/useRequestOverride';
 
 const messages = defineMessages({
   seasons: 'Seasons',
+  requestoverrides: 'Request Overrides',
+  server: 'Server',
+  profilechanged: 'Profile Changed',
+  rootfolder: 'Root Folder',
 });
 
 interface RequestBlockProps {
@@ -19,6 +25,8 @@ interface RequestBlockProps {
 const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const { profile, rootFolder, server } = useRequestOverride(request);
 
   const updateRequest = async (type: 'approve' | 'decline'): Promise<void> => {
     setIsUpdating(true);
@@ -43,6 +51,20 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
 
   return (
     <div className="block">
+      <RequestModal
+        show={showEditModal}
+        tmdbId={request.media.tmdbId}
+        type={request.type}
+        is4k={request.is4k}
+        editRequest={request}
+        onCancel={() => setShowEditModal(false)}
+        onComplete={() => {
+          if (onUpdate) {
+            onUpdate();
+          }
+          setShowEditModal(false);
+        }}
+      />
       <div className="px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex-col items-center flex-1 min-w-0 mr-6 text-sm leading-5 text-gray-300">
@@ -107,7 +129,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                     </svg>
                   </Button>
                 </span>
-                <span>
+                <span className="mr-1">
                   <Button
                     buttonType="danger"
                     onClick={() => updateRequest('decline')}
@@ -124,6 +146,22 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                         d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                         clipRule="evenodd"
                       />
+                    </svg>
+                  </Button>
+                </span>
+                <span>
+                  <Button
+                    buttonType="primary"
+                    onClick={() => setShowEditModal(true)}
+                    disabled={isUpdating}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                     </svg>
                   </Button>
                 </span>
@@ -208,6 +246,39 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               ))}
             </div>
           </div>
+        )}
+        {(server || profile || rootFolder) && (
+          <>
+            <div className="mt-4 mb-1 text-sm">
+              {intl.formatMessage(messages.requestoverrides)}
+            </div>
+            <ul className="px-2 text-xs bg-gray-800 divide-y divide-gray-700 rounded-md">
+              {server && (
+                <li className="flex justify-between px-1 py-2">
+                  <span className="font-bold">
+                    {intl.formatMessage(messages.server)}
+                  </span>
+                  <span>{server}</span>
+                </li>
+              )}
+              {profile !== null && (
+                <li className="flex justify-between px-1 py-2">
+                  <span className="font-bold">
+                    {intl.formatMessage(messages.profilechanged)}
+                  </span>
+                  <span>ID {profile}</span>
+                </li>
+              )}
+              {rootFolder && (
+                <li className="flex justify-between px-1 py-2">
+                  <span className="mr-2 font-bold">
+                    {intl.formatMessage(messages.rootfolder)}
+                  </span>
+                  <span>{rootFolder}</span>
+                </li>
+              )}
+            </ul>
+          </>
         )}
       </div>
     </div>

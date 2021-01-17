@@ -29,7 +29,7 @@ interface RadarrMovie {
   hasFile: boolean;
 }
 
-interface RadarrRootFolder {
+export interface RadarrRootFolder {
   id: number;
   path: string;
   freeSpace: number;
@@ -40,7 +40,7 @@ interface RadarrRootFolder {
   }[];
 }
 
-interface RadarrProfile {
+export interface RadarrProfile {
   id: number;
   name: string;
 }

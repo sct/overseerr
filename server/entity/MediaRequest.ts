@@ -202,7 +202,7 @@ export class MediaRequest {
     }
 
     if (
-      this.media.mediaType === MediaType.MOVIE &&
+      media.mediaType === MediaType.MOVIE &&
       this.status === MediaRequestStatus.DECLINED
     ) {
       if (this.is4k) {
@@ -284,9 +284,23 @@ export class MediaRequest {
           return;
         }
 
-        const radarrSettings = settings.radarr.find(
+        let radarrSettings = settings.radarr.find(
           (radarr) => radarr.isDefault && radarr.is4k === this.is4k
         );
+
+        if (
+          this.serverId !== null &&
+          this.serverId >= 0 &&
+          radarrSettings?.id !== this.serverId
+        ) {
+          radarrSettings = settings.radarr.find(
+            (radarr) => radarr.id === this.serverId
+          );
+          logger.info(
+            `Request has an override server: ${radarrSettings?.name}`,
+            { label: 'Media Request' }
+          );
+        }
 
         if (!radarrSettings) {
           logger.info(
@@ -296,6 +310,30 @@ export class MediaRequest {
             { label: 'Media Request' }
           );
           return;
+        }
+
+        let rootFolder = radarrSettings.activeDirectory;
+        let qualityProfile = radarrSettings.activeProfileId;
+
+        if (
+          this.rootFolder &&
+          this.rootFolder !== '' &&
+          this.rootFolder !== radarrSettings.activeDirectory
+        ) {
+          rootFolder = this.rootFolder;
+          logger.info(`Request has an override root folder: ${rootFolder}`, {
+            label: 'Media Request',
+          });
+        }
+
+        if (
+          this.profileId &&
+          this.profileId !== radarrSettings.activeProfileId
+        ) {
+          qualityProfile = this.profileId;
+          logger.info(`Request has an override profile id: ${qualityProfile}`, {
+            label: 'Media Request',
+          });
         }
 
         const tmdb = new TheMovieDb();
@@ -310,9 +348,9 @@ export class MediaRequest {
         // Run this asynchronously so we don't wait for it on the UI side
         radarr
           .addMovie({
-            profileId: radarrSettings.activeProfileId,
-            qualityProfileId: radarrSettings.activeProfileId,
-            rootFolderPath: radarrSettings.activeDirectory,
+            profileId: qualityProfile,
+            qualityProfileId: qualityProfile,
+            rootFolderPath: rootFolder,
             minimumAvailability: radarrSettings.minimumAvailability,
             title: movie.title,
             tmdbId: movie.id,
@@ -376,9 +414,23 @@ export class MediaRequest {
           return;
         }
 
-        const sonarrSettings = settings.sonarr.find(
+        let sonarrSettings = settings.sonarr.find(
           (sonarr) => sonarr.isDefault && sonarr.is4k === this.is4k
         );
+
+        if (
+          this.serverId !== null &&
+          this.serverId >= 0 &&
+          sonarrSettings?.id !== this.serverId
+        ) {
+          sonarrSettings = settings.sonarr.find(
+            (sonarr) => sonarr.id === this.serverId
+          );
+          logger.info(
+            `Request has an override server: ${sonarrSettings?.name}`,
+            { label: 'Media Request' }
+          );
+        }
 
         if (!sonarrSettings) {
           logger.info(
@@ -423,17 +475,38 @@ export class MediaRequest {
           seriesType = 'anime';
         }
 
+        let rootFolder =
+          seriesType === 'anime' && sonarrSettings.activeAnimeDirectory
+            ? sonarrSettings.activeAnimeDirectory
+            : sonarrSettings.activeDirectory;
+        let qualityProfile =
+          seriesType === 'anime' && sonarrSettings.activeAnimeProfileId
+            ? sonarrSettings.activeAnimeProfileId
+            : sonarrSettings.activeProfileId;
+
+        if (
+          this.rootFolder &&
+          this.rootFolder !== '' &&
+          this.rootFolder !== rootFolder
+        ) {
+          rootFolder = this.rootFolder;
+          logger.info(`Request has an override root folder: ${rootFolder}`, {
+            label: 'Media Request',
+          });
+        }
+
+        if (this.profileId && this.profileId !== qualityProfile) {
+          qualityProfile = this.profileId;
+          logger.info(`Request has an override profile id: ${qualityProfile}`, {
+            label: 'Media Request',
+          });
+        }
+
         // Run this asynchronously so we don't wait for it on the UI side
         sonarr
           .addSeries({
-            profileId:
-              seriesType === 'anime' && sonarrSettings.activeAnimeProfileId
-                ? sonarrSettings.activeAnimeProfileId
-                : sonarrSettings.activeProfileId,
-            rootFolderPath:
-              seriesType === 'anime' && sonarrSettings.activeAnimeDirectory
-                ? sonarrSettings.activeAnimeDirectory
-                : sonarrSettings.activeDirectory,
+            profileId: qualityProfile,
+            rootFolderPath: rootFolder,
             title: series.name,
             tvdbid: series.external_ids.tvdb_id,
             seasons: this.seasons.map((season) => season.seasonNumber),
