@@ -123,7 +123,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
         tmdbId={request.media.tmdbId}
         type={request.type}
         is4k={request.is4k}
-        editRequest={request.id}
+        editRequest={request}
         onCancel={() => setShowEditModal(false)}
         onComplete={() => {
           revalidateList();

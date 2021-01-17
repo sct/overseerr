@@ -261,6 +261,73 @@ requestRoutes.put<{ requestId: string }>(
         request.rootFolder = req.body.rootFolder;
 
         requestRepository.save(request);
+      } else if (req.body.mediaType === 'tv') {
+        const mediaRepository = getRepository(Media);
+        request.serverId = req.body.serverId;
+        request.profileId = req.body.profileId;
+        request.rootFolder = req.body.rootFolder;
+
+        const requestedSeasons = req.body.seasons as number[] | undefined;
+
+        if (!requestedSeasons || requestedSeasons.length === 0) {
+          throw new Error(
+            'Missing seasons. If you want to cancel a tv request, use the DELETE method.'
+          );
+        }
+
+        // Get existing media so we can work with all the requests
+        const media = await mediaRepository.findOneOrFail({
+          where: { tmdbId: request.media.tmdbId, mediaType: MediaType.TV },
+          relations: ['requests'],
+        });
+
+        // Get all requested seasons that are not part of this request we are editing
+        const existingSeasons = media.requests
+          .filter((r) => r.is4k === request.is4k && r.id !== request.id)
+          .reduce((seasons, r) => {
+            const combinedSeasons = r.seasons.map(
+              (season) => season.seasonNumber
+            );
+
+            return [...seasons, ...combinedSeasons];
+          }, [] as number[]);
+
+        const filteredSeasons = requestedSeasons.filter(
+          (rs) => !existingSeasons.includes(rs)
+        );
+
+        if (filteredSeasons.length === 0) {
+          return next({
+            status: 202,
+            message: 'No seasons available to request',
+          });
+        }
+
+        const newSeasons = requestedSeasons.filter(
+          (sn) => !request.seasons.map((s) => s.seasonNumber).includes(sn)
+        );
+
+        request.seasons = request.seasons.filter((rs) =>
+          filteredSeasons.includes(rs.seasonNumber)
+        );
+
+        if (newSeasons.length > 0) {
+          logger.debug('Adding new seasons to request', {
+            label: 'Media Request',
+            newSeasons,
+          });
+          request.seasons.push(
+            ...newSeasons.map(
+              (ns) =>
+                new SeasonRequest({
+                  seasonNumber: ns,
+                  status: MediaRequestStatus.PENDING,
+                })
+            )
+          );
+        }
+
+        await requestRepository.save(request);
       }
 
       return res.status(200).json(request);

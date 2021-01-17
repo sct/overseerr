@@ -103,6 +103,10 @@ export class MediaSubscriber implements EntitySubscriberInterface {
   }
 
   public beforeUpdate(event: UpdateEvent<Media>): void {
+    if (!event.entity) {
+      return;
+    }
+
     if (
       event.entity.mediaType === MediaType.MOVIE &&
       event.entity.status === MediaStatus.AVAILABLE

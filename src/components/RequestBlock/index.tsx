@@ -56,7 +56,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
         tmdbId={request.media.tmdbId}
         type={request.type}
         is4k={request.is4k}
-        editRequest={request.id}
+        editRequest={request}
         onCancel={() => setShowEditModal(false)}
         onComplete={() => {
           if (onUpdate) {

@@ -24,7 +24,6 @@ const messages = defineMessages({
   cancelrequest:
     'This will remove your request. Are you sure you want to continue?',
   requestSuccess: '<strong>{title}</strong> successfully requested!',
-  requestCancel: 'Request for <strong>{title}</strong> cancelled',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
   requesting: 'Requesting...',
@@ -37,6 +36,9 @@ const messages = defineMessages({
   seasonnumber: 'Season {number}',
   extras: 'Extras',
   notrequested: 'Not Requested',
+  errorediting: 'Something went wrong editing the request.',
+  requestedited: 'Request edited.',
+  requestcancelled: 'Request cancelled.',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -70,6 +72,54 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   );
   const intl = useIntl();
   const { hasPermission } = useUser();
+
+  const updateRequest = async () => {
+    if (!editRequest) {
+      return;
+    }
+
+    if (onUpdating) {
+      onUpdating(true);
+    }
+
+    try {
+      if (selectedSeasons.length > 0) {
+        await axios.put(`/api/v1/request/${editRequest.id}`, {
+          mediaType: 'tv',
+          serverId: requestOverrides?.server,
+          profileId: requestOverrides?.profile,
+          rootFolder: requestOverrides?.folder,
+          seasons: selectedSeasons,
+        });
+      } else {
+        await axios.delete(`/api/v1/request/${editRequest.id}`);
+      }
+
+      addToast(
+        <span>
+          {selectedSeasons.length > 0
+            ? intl.formatMessage(messages.requestedited)
+            : intl.formatMessage(messages.requestcancelled)}
+        </span>,
+        {
+          appearance: 'success',
+          autoDismiss: true,
+        }
+      );
+      if (onComplete) {
+        onComplete(MediaStatus.PENDING);
+      }
+    } catch (e) {
+      addToast(<span>{intl.formatMessage(messages.errorediting)}</span>, {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    } finally {
+      if (onUpdating) {
+        onUpdating(false);
+      }
+    }
+  };
 
   const sendRequest = async () => {
     if (selectedSeasons.length === 0) {
@@ -226,7 +276,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       loading={!data && !error}
       backgroundClickable
       onCancel={onCancel}
-      onOk={() => sendRequest()}
+      onOk={() => (editRequest ? updateRequest() : sendRequest())}
       title={intl.formatMessage(
         is4k ? messages.request4ktitle : messages.requesttitle,
         { title: data?.name }

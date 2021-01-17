@@ -26,6 +26,9 @@ const messages = defineMessages({
   qualityprofile: 'Quality Profile',
   rootfolder: 'Root Folder',
   animenote: '* This series is an anime.',
+  default: '(Default)',
+  loadingprofiles: 'Loading profiles…',
+  loadingfolders: 'Loading folders…',
 });
 
 export type RequestOverrides = {
@@ -222,7 +225,9 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               {data.map((server) => (
                 <option key={`server-list-${server.id}`} value={server.id}>
                   {server.name}
-                  {server.isDefault && server.is4k === is4k ? ' (DEFAULT)' : ''}
+                  {server.isDefault && server.is4k === is4k
+                    ? ` ${intl.formatMessage(messages.default)}`
+                    : ''}
                 </option>
               ))}
             </select>
@@ -239,12 +244,23 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               onBlur={(e) => setSelectedProfile(Number(e.target.value))}
               className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
             >
-              {isValidating && <option value="">Loading Profiles...</option>}
+              {isValidating && (
+                <option value="">
+                  {intl.formatMessage(messages.loadingprofiles)}
+                </option>
+              )}
               {!isValidating &&
                 serverData &&
                 serverData.profiles.map((profile) => (
                   <option key={`profile-list${profile.id}`} value={profile.id}>
                     {profile.name}
+                    {isAnime &&
+                    serverData.server.activeAnimeProfileId === profile.id
+                      ? ` ${intl.formatMessage(messages.default)}`
+                      : !isAnime &&
+                        serverData.server.activeProfileId === profile.id
+                      ? ` ${intl.formatMessage(messages.default)}`
+                      : ''}
                   </option>
                 ))}
             </select>
@@ -261,12 +277,23 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               onBlur={(e) => setSelectedFolder(e.target.value)}
               className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
             >
-              {isValidating && <option value="">Loading Folders...</option>}
+              {isValidating && (
+                <option value="">
+                  {intl.formatMessage(messages.loadingfolders)}
+                </option>
+              )}
               {!isValidating &&
                 serverData &&
                 serverData.rootFolders.map((folder) => (
-                  <option key={`profile-list${folder.id}`} value={folder.path}>
+                  <option key={`folder-list${folder.id}`} value={folder.path}>
                     {folder.path} ({formatBytes(folder.freeSpace ?? 0)})
+                    {isAnime &&
+                    serverData.server.activeAnimeDirectory === folder.path
+                      ? ` ${intl.formatMessage(messages.default)}`
+                      : !isAnime &&
+                        serverData.server.activeDirectory === folder.path
+                      ? ` ${intl.formatMessage(messages.default)}`
+                      : ''}
                   </option>
                 ))}
             </select>

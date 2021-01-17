@@ -36,6 +36,8 @@ const messages = defineMessages({
   request4k: 'Request 4K',
   requestfrom: 'There is currently a pending request from {username}',
   request4kfrom: 'There is currently a pending 4K request from {username}',
+  errorediting: 'Something went wrong editing the request.',
+  requestedited: 'Request edited.',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -154,7 +156,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         rootFolder: requestOverrides?.folder,
       });
 
-      addToast(<span>Request edited.</span>, {
+      addToast(<span>{intl.formatMessage(messages.requestedited)}</span>, {
         appearance: 'success',
         autoDismiss: true,
       });
@@ -163,7 +165,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         onComplete(MediaStatus.PENDING);
       }
     } catch (e) {
-      addToast(<span>Something went wrong editing the request.</span>, {
+      addToast(<span>{intl.formatMessage(messages.errorediting)}</span>, {
         appearance: 'error',
         autoDismiss: true,
       });

@@ -202,7 +202,7 @@ export class MediaRequest {
     }
 
     if (
-      this.media.mediaType === MediaType.MOVIE &&
+      media.mediaType === MediaType.MOVIE &&
       this.status === MediaRequestStatus.DECLINED
     ) {
       if (this.is4k) {
