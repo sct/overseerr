@@ -40,6 +40,7 @@ const messages = defineMessages({
   requestedited: 'Request edited.',
   requestcancelled: 'Request cancelled.',
   autoapproval: 'Auto Approval',
+  requesterror: 'Something went wrong when trying to request media.',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -129,38 +130,47 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     if (onUpdating) {
       onUpdating(true);
     }
-    let overrideParams = {};
-    if (requestOverrides) {
-      overrideParams = {
-        serverId: requestOverrides.server,
-        profileId: requestOverrides.profile,
-        rootFolder: requestOverrides.folder,
-      };
-    }
-    const response = await axios.post<MediaRequest>('/api/v1/request', {
-      mediaId: data?.id,
-      tvdbId: data?.externalIds.tvdbId,
-      mediaType: 'tv',
-      is4k,
-      seasons: selectedSeasons,
-      ...overrideParams,
-    });
 
-    if (response.data) {
-      if (onComplete) {
-        onComplete(response.data.media.status);
+    try {
+      let overrideParams = {};
+      if (requestOverrides) {
+        overrideParams = {
+          serverId: requestOverrides.server,
+          profileId: requestOverrides.profile,
+          rootFolder: requestOverrides.folder,
+        };
       }
-      addToast(
-        <span>
-          {intl.formatMessage(messages.requestSuccess, {
-            title: data?.name,
-            strong: function strong(msg) {
-              return <strong>{msg}</strong>;
-            },
-          })}
-        </span>,
-        { appearance: 'success', autoDismiss: true }
-      );
+      const response = await axios.post<MediaRequest>('/api/v1/request', {
+        mediaId: data?.id,
+        tvdbId: data?.externalIds.tvdbId,
+        mediaType: 'tv',
+        is4k,
+        seasons: selectedSeasons,
+        ...overrideParams,
+      });
+
+      if (response.data) {
+        if (onComplete) {
+          onComplete(response.data.media.status);
+        }
+        addToast(
+          <span>
+            {intl.formatMessage(messages.requestSuccess, {
+              title: data?.name,
+              strong: function strong(msg) {
+                return <strong>{msg}</strong>;
+              },
+            })}
+          </span>,
+          { appearance: 'success', autoDismiss: true }
+        );
+      }
+    } catch (e) {
+      addToast(intl.formatMessage(messages.requesterror), {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    } finally {
       if (onUpdating) {
         onUpdating(false);
       }

@@ -427,9 +427,9 @@ export class MediaRequest {
           });
         logger.info('Sent request to Radarr', { label: 'Media Request' });
       } catch (e) {
-        throw new Error(
-          `[MediaRequest] Request failed to send to radarr: ${e.message}`
-        );
+        const errorMessage = `Request failed to send to radarr: ${e.message}`;
+        logger.error(`[MediaRequest] ${errorMessage}`);
+        throw new Error(errorMessage);
       }
     }
   }
@@ -503,6 +503,7 @@ export class MediaRequest {
         const series = await tmdb.getTvShow({ tvId: media.tmdbId });
 
         if (!series.external_ids.tvdb_id) {
+          this.handleRemoveParentUpdate();
           throw new Error('Series was missing tvdb id');
         }
 
@@ -590,9 +591,9 @@ export class MediaRequest {
           });
         logger.info('Sent request to Sonarr', { label: 'Media Request' });
       } catch (e) {
-        throw new Error(
-          `[MediaRequest] Request failed to send to sonarr: ${e.message}`
-        );
+        const errorMessage = `Request failed to send to sonarr: ${e.message}`;
+        logger.error(`[MediaRequest] ${errorMessage}`);
+        throw new Error(errorMessage);
       }
     }
   }
