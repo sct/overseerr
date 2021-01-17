@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React, { useContext } from 'react';
-import useSWR from 'swr';
+import { useSWRInfinite } from 'swr';
 import type {
   MovieResult,
   PersonResult,
@@ -10,6 +10,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import PersonCard from '../PersonCard';
 import Slider from '../Slider';
 import TitleCard from '../TitleCard';
+import ShowMoreCard from './ShowMoreCard';
 
 interface MixedResult {
   page: number;
@@ -34,10 +35,78 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
   hideWhenEmpty = false,
 }) => {
   const { locale } = useContext(LanguageContext);
-  const { data, error } = useSWR<MixedResult>(`${url}?language=${locale}`);
+  const { data, error } = useSWRInfinite<MixedResult>(
+    (pageIndex: number, previousPageData: MixedResult | null) => {
+      if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
+        return null;
+      }
 
-  if (hideWhenEmpty && (data?.results ?? []).length === 0) {
+      return `${url}?page=${pageIndex + 1}&language=${locale}`;
+    },
+    {
+      initialSize: 2,
+    }
+  );
+
+  if (hideWhenEmpty && (data?.[0].results ?? []).length === 0) {
     return null;
+  }
+
+  const titles = (data ?? []).reduce(
+    (a, v) => [...a, ...v.results],
+    [] as (MovieResult | TvResult | PersonResult)[]
+  );
+
+  const finalTitles = titles.slice(0, 20).map((title) => {
+    switch (title.mediaType) {
+      case 'movie':
+        return (
+          <TitleCard
+            id={title.id}
+            image={title.posterPath}
+            status={title.mediaInfo?.status}
+            summary={title.overview}
+            title={title.title}
+            userScore={title.voteAverage}
+            year={title.releaseDate}
+            mediaType={title.mediaType}
+          />
+        );
+      case 'tv':
+        return (
+          <TitleCard
+            id={title.id}
+            image={title.posterPath}
+            status={title.mediaInfo?.status}
+            summary={title.overview}
+            title={title.name}
+            userScore={title.voteAverage}
+            year={title.firstAirDate}
+            mediaType={title.mediaType}
+          />
+        );
+      case 'person':
+        return (
+          <PersonCard
+            personId={title.id}
+            name={title.name}
+            profilePath={title.profilePath}
+          />
+        );
+    }
+  });
+
+  if (linkUrl && titles.length > 20) {
+    finalTitles.push(
+      <ShowMoreCard
+        url={linkUrl}
+        posters={titles
+          .slice(20, 24)
+          .map((title) =>
+            title.mediaType !== 'person' ? title.posterPath : undefined
+          )}
+      />
+    );
   }
 
   return (
@@ -75,44 +144,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
         sliderKey={sliderKey}
         isLoading={!data && !error}
         isEmpty={false}
-        items={data?.results.map((title) => {
-          switch (title.mediaType) {
-            case 'movie':
-              return (
-                <TitleCard
-                  id={title.id}
-                  image={title.posterPath}
-                  status={title.mediaInfo?.status}
-                  summary={title.overview}
-                  title={title.title}
-                  userScore={title.voteAverage}
-                  year={title.releaseDate}
-                  mediaType={title.mediaType}
-                />
-              );
-            case 'tv':
-              return (
-                <TitleCard
-                  id={title.id}
-                  image={title.posterPath}
-                  status={title.mediaInfo?.status}
-                  summary={title.overview}
-                  title={title.name}
-                  userScore={title.voteAverage}
-                  year={title.firstAirDate}
-                  mediaType={title.mediaType}
-                />
-              );
-            case 'person':
-              return (
-                <PersonCard
-                  personId={title.id}
-                  name={title.name}
-                  profilePath={title.profilePath}
-                />
-              );
-          }
-        })}
+        items={finalTitles}
       />
     </>
   );
