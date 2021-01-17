@@ -36,6 +36,7 @@
   "components.Login.signinwithoverseerr": "Sign in with Overseerr",
   "components.Login.validationemailrequired": "Not a valid email address",
   "components.Login.validationpasswordrequired": "Password required",
+  "components.MediaSlider.ShowMoreCard.seemore": "See More",
   "components.MovieDetails.MovieCast.fullcast": "Full Cast",
   "components.MovieDetails.MovieCrew.fullcrew": "Full Crew",
   "components.MovieDetails.approve": "Approve",
