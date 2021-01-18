@@ -275,6 +275,9 @@ class EmailAgent
       case Notification.MEDIA_APPROVED:
         this.sendMediaApprovedEmail(payload);
         break;
+      case Notification.MEDIA_DECLINED:
+        this.sendMediaDeclinedEmail(payload);
+        break;
       case Notification.MEDIA_AVAILABLE:
         this.sendMediaAvailableEmail(payload);
         break;
