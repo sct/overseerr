@@ -2,7 +2,7 @@ name: Publish Snap
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, add-snap-package]
     tags: [v*]
     pull_request: ~
 
