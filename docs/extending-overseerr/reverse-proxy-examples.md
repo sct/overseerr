@@ -8,7 +8,7 @@ Base URLs cannot be configured in Overseerr. With this limitation, only subdomai
 
 ### Subdomain
 
-As of 2020/12/18 a sample is bundled in SWAG. This page is still the only source of truth, so the sample is not guaranteed to be up to date. If you catch an inconsistency, report it to the linuxserver team, or do a pull-request against the proxy-confs repository to update the sample.
+A sample is bundled in SWAG. This page is still the only source of truth, so the sample is not guaranteed to be up to date. If you catch an inconsistency, report it to the linuxserver team, or do a pull-request against the proxy-confs repository to update the sample.
 
 Rename the sample file `overseerr.subdomain.conf.sample` to `overseerr.subdomain.conf` in the `proxy-confs`folder, or create `overseerr.subdomain.conf` in the same folder with the example below. 
 
