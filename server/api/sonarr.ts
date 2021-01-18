@@ -94,6 +94,28 @@ class SonarrAPI {
     });
   }
 
+  public async getSeriesByTitle(title: string): Promise<SonarrSeries[]> {
+    try {
+      const response = await this.axios.get<SonarrSeries[]>('/series/lookup', {
+        params: {
+          term: title,
+        },
+      });
+
+      if (!response.data[0]) {
+        throw new Error('No series found');
+      }
+
+      return response.data;
+    } catch (e) {
+      logger.error('Error retrieving series by series title', {
+        label: 'Sonarr API',
+        message: e.message,
+      });
+      throw new Error('No series found');
+    }
+  }
+
   public async getSeriesByTvdbId(id: number): Promise<SonarrSeries> {
     try {
       const response = await this.axios.get<SonarrSeries[]>('/series/lookup', {

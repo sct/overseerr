@@ -32,9 +32,10 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
 }) => {
   const intl = useIntl();
   const { data, error } = useSWR<{ result: SearchResult[] }>(
-    `/api/v1/tv/${tmdbId}/tvdb_search_results`
+    `/api/v1/service/sonarr/lookup/${tmdbId}`
   );
-  console.log(data, tmdbId);
+
+  console.log(data);
   return (
     <Formik
       initialValues={{
@@ -56,7 +57,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
       }) => {
         return (
           <Modal
-            loading={loading}
+            loading={loading && !error}
             backgroundClickable
             onCancel={onCancel}
             onOk={() => handleSubmit()}
@@ -85,21 +86,36 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
               {intl.formatMessage(messages.notvdbiddescription)}
             </Alert>
             <Form>
-              <div>
-                {data?.result.map((show) => (
-                  <div key={show.tvdbId}>
-                    <label>
-                      <Field
-                        id="tvdbId"
-                        name="tvdbId"
-                        type="radio"
-                        value={show.tvdbId}
-                        // className="flex-1 block transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                      />
-                      {show.mediaName + (show.year ? ` (${show.year})` : '')}
-                    </label>
-                  </div>
-                ))}
+              <div role="group" aria-labelledby="tvdb-group">
+                {/* {data?.result.map((show) => (
+                  <>
+                    <div className="p-1" key={show.tvdbId}>
+                      <label className="block text-sm font-medium leading-5 sm:mt-px">
+                        <Field
+                          id="tvdbId"
+                          name="tvdbId"
+                          type="radio"
+                          value={String(show.tvdbId)}
+                          className="w-6 h-6 mr-2 text-indigo-600 transition duration-150 ease-in-out rounded-full form-radio"
+                        />
+
+                        {show.mediaName + (show.year ? ` (${show.year})` : '')}
+                      </label>
+                    </div>
+                    <div className="p-1">
+                      <label className="block text-sm font-medium leading-5 sm:mt-px">
+                        <Field
+                          id="tvdbId"
+                          name="tvdbId"
+                          type="radio"
+                          value={String(show.tvdbId)}
+                          className="w-6 h-6 mr-2 text-indigo-600 transition duration-150 ease-in-out rounded-full form-radio"
+                        />
+                        {'Some other title (1337)'}
+                      </label>
+                    </div>
+                  </>
+                ))} */}
               </div>
             </Form>
           </Modal>

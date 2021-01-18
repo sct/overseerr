@@ -6,6 +6,8 @@ import {
   ServiceCommonServerWithDetails,
 } from '../interfaces/api/serviceInterfaces';
 import { getSettings } from '../lib/settings';
+import TheMovieDb from '../api/themoviedb';
+import logger from '../logger';
 
 const serviceRoutes = Router();
 
@@ -100,13 +102,13 @@ serviceRoutes.get<{ sonarrId: string }>(
     const settings = getSettings();
 
     const sonarrSettings = settings.sonarr.find(
-      (radarr) => radarr.id === Number(req.params.sonarrId)
+      (sonarr) => sonarr.id === Number(req.params.sonarrId)
     );
 
     if (!sonarrSettings) {
       return next({
         status: 404,
-        message: 'Radarr server with provided ID  does not exist.',
+        message: 'Sonarr server with provided ID  does not exist.',
       });
     }
 
@@ -142,6 +144,58 @@ serviceRoutes.get<{ sonarrId: string }>(
         totalSpace: folder.totalSpace,
       })),
     } as ServiceCommonServerWithDetails);
+  }
+);
+
+serviceRoutes.get<{ tmdbId: string }>(
+  '/sonarr/lookup/:tmdbId',
+  async (req, res, next) => {
+    const settings = getSettings();
+    const tmdb = new TheMovieDb();
+
+    const sonarrSettings = settings.sonarr[0];
+
+    if (!sonarrSettings) {
+      logger.error('No sonarr server has been setup', {
+        label: 'Media Request',
+      });
+      return next({
+        status: 404,
+        message: 'No sonarr server has been setup',
+      });
+    }
+
+    const sonarr = new SonarrAPI({
+      apiKey: sonarrSettings.apiKey,
+      url: `${sonarrSettings.useSsl ? 'https' : 'http'}://${
+        sonarrSettings.hostname
+      }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}/api`,
+    });
+
+    try {
+      const tv = await tmdb.getTvShow({
+        tvId: Number(req.params.tmdbId),
+        language: req.query.language as string,
+      });
+
+      const response = await sonarr.getSeriesByTitle(tv.name);
+
+      return res.status(200).json(response);
+    } catch (e) {
+      logger.error('Failed to fetch tvdb search results', {
+        label: 'Media Request',
+        message: e.message,
+      });
+      next({
+        status: 500,
+        message: 'Failed to fetch tvdb search results',
+      });
+    }
+
+    return next({
+      status: 500,
+      message: 'Something went wrong trying to fetch series information',
+    });
   }
 );
 
