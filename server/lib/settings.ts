@@ -137,11 +137,9 @@ interface AllSettings {
   notifications: NotificationSettings;
 }
 
-const SETTINGS_PATH = path.join(
-  __dirname,
-  '../../',
-  `${process.env.CONFIG_DIRECTORY || '/config'}/settings.json`
-);
+const SETTINGS_PATH = process.env.CONFIG_DIRECTORY
+  ? `${process.env.CONFIG_DIRECTORY}/settings.json`
+  : path.join(__dirname, '../../config/settings.json');
 
 class Settings {
   private data: AllSettings;
