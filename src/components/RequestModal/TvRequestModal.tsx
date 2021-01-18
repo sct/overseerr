@@ -18,6 +18,7 @@ import globalMessages from '../../i18n/globalMessages';
 import SeasonRequest from '../../../server/entity/SeasonRequest';
 import Alert from '../Common/Alert';
 import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
+import SearchByNameModal from './SearchByNameModal';
 
 const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',
@@ -41,6 +42,10 @@ const messages = defineMessages({
   requestcancelled: 'Request cancelled.',
   autoapproval: 'Auto Approval',
   requesterror: 'Something went wrong when trying to request media.',
+  next: 'Next',
+  notvdbid: 'No TVDB id was found connected on TMDB',
+  notvdbiddescription:
+    'Either add the TVDB id to TMDB and come back later, or select the correct match below.',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -74,6 +79,12 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   );
   const intl = useIntl();
   const { hasPermission } = useUser();
+  const [searchModal, setSearchModal] = useState<{
+    show: boolean;
+  }>({
+    show: true,
+  });
+  const [tvdbId, setTvdbId] = useState<number | undefined>(undefined);
 
   const updateRequest = async () => {
     if (!editRequest) {
@@ -142,7 +153,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       }
       const response = await axios.post<MediaRequest>('/api/v1/request', {
         mediaId: data?.id,
-        tvdbId: data?.externalIds.tvdbId,
+        tvdbId: tvdbId || data?.externalIds.tvdbId,
         mediaType: 'tv',
         is4k,
         seasons: selectedSeasons,
@@ -289,7 +300,19 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     return seasonRequest;
   };
 
-  return (
+  return !data?.externalIds.tvdbId && searchModal.show ? (
+    <SearchByNameModal
+      setTvdbId={setTvdbId}
+      closeModal={() => setSearchModal({ show: false })}
+      loading={!data && !error}
+      onCancel={onCancel}
+      modalTitle={intl.formatMessage(
+        is4k ? messages.request4ktitle : messages.requesttitle,
+        { title: data?.name }
+      )}
+      tmdbId={tmdbId}
+    />
+  ) : (
     <Modal
       loading={!data && !error}
       backgroundClickable

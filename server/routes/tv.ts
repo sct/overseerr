@@ -6,6 +6,7 @@ import Media from '../entity/Media';
 import RottenTomatoes from '../api/rottentomatoes';
 import logger from '../logger';
 import { MediaType } from '../constants/media';
+import TvdbApi from '../api/tvdb';
 
 const tvRoutes = Router();
 
@@ -119,6 +120,30 @@ tvRoutes.get('/:id/ratings', async (req, res, next) => {
   }
 
   return res.status(200).json(rtratings);
+});
+
+tvRoutes.get('/:id/tvdb_search_results', async (req, res, next) => {
+  const tmdb = new TheMovieDb();
+  const tvdb = new TvdbApi();
+
+  try {
+    const tv = await tmdb.getTvShow({
+      tvId: Number(req.params.id),
+      language: req.query.language as string,
+    });
+    const response = await tvdb.getShowsByName(tv.name);
+
+    return res.status(200).json(response);
+  } catch (e) {
+    logger.error('Failed to fetch tvdb search results', {
+      label: 'Media Request',
+      message: e.message,
+    });
+    next({
+      status: 500,
+      message: 'Failed to fetch tvdb search results',
+    });
+  }
 });
 
 export default tvRoutes;

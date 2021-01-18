@@ -1143,6 +1143,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MovieResult'
+    TvdbItem:
+      type: object
+      properties:
+        tvdbId:
+          type: number
+          example: 0
+        mediaName:
+          type: string
+          example: The Lord of the Rings
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -2964,6 +2973,26 @@ paths:
                   criticsRating:
                     type: string
                     enum: ['Rotten', 'Fresh']
+  /tv/{tvId}/tvdb_search_results:
+    get:
+      summary: Fetch results from tvdb
+      description: Returns back the top results from tvdb for the media tvId's title in JSON format
+      tags:
+        - request
+      parameters:
+        - in: path
+          name: tvId
+          required: true
+          schema:
+            type: number
+            example: 76479
+      responses:
+        '200':
+          description: tvdb results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TvdbItem'
   /person/{personId}:
     get:
       summary: Request person details
