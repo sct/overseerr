@@ -1,4 +1,4 @@
-name: overseerr-test
+name: overseerr
 adopt-info: overseerr
 license: MIT
 summary: Request management and media discovery tool for the Plex ecosystem.
@@ -88,9 +88,6 @@ apps:
     environment:
       PATH: "$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$PATH"
       OVERSEERR_SNAP: "True"
+      CONFIG_DIRECTORY: $SNAP_USER_COMMON
       LOG_LEVEL: "debug"
       NODE_ENV: "production"
-
-layout:
-  $SNAP/config:
-    bind: $SNAP_COMMON/config
