@@ -2,7 +2,7 @@ name: Publish Snap
 
 on:
   push:
-    branches: [develop, add-snap-package]
+    branches: [develop]
     tags: [v*]
     pull_request: ~
 
@@ -60,7 +60,7 @@ jobs:
       - name: Upload Snap Package
         uses: actions/upload-artifact@v2
         with:
-          name: Overseerr-test-snap-package-${{ matrix.architecture }}
+          name: overseerr-snap-package-${{ matrix.architecture }}
           path: ${{ steps.build.outputs.snap }}
 
       - name: Review Snap Package
