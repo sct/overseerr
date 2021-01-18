@@ -14,6 +14,8 @@ const messages = defineMessages({
   mediafailed: 'Media Failed',
   mediafailedDescription:
     'Sends a notification when media fails to be added to services (Radarr/Sonarr). For certain agents, this will only send the notification to admins or users with the "Manage Requests" permission.',
+  mediadeclined: 'Media Declined',
+  mediadeclinedDescription: 'Sends a notification when a request is declined.',
 });
 
 export const hasNotificationType = (
@@ -41,6 +43,7 @@ export enum Notification {
   MEDIA_AVAILABLE = 8,
   MEDIA_FAILED = 16,
   TEST_NOTIFICATION = 32,
+  MEDIA_DECLINED = 64,
 }
 
 export interface NotificationItem {
@@ -74,6 +77,12 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
       name: intl.formatMessage(messages.mediaapproved),
       description: intl.formatMessage(messages.mediaapprovedDescription),
       value: Notification.MEDIA_APPROVED,
+    },
+    {
+      id: 'media-declined',
+      name: intl.formatMessage(messages.mediadeclined),
+      description: intl.formatMessage(messages.mediadeclinedDescription),
+      value: Notification.MEDIA_DECLINED,
     },
     {
       id: 'media-available',

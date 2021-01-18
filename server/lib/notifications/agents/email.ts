@@ -162,6 +162,43 @@ class EmailAgent
     }
   }
 
+  private async sendMediaDeclinedEmail(payload: NotificationPayload) {
+    // This is getting main settings for the whole app
+    const applicationUrl = getSettings().main.applicationUrl;
+    try {
+      const email = new PreparedEmail();
+
+      await email.send({
+        template: path.join(
+          __dirname,
+          '../../../templates/email/media-request'
+        ),
+        message: {
+          to: payload.notifyUser.email,
+        },
+        locals: {
+          body: 'Your request for the following media was declined:',
+          mediaName: payload.subject,
+          imageUrl: payload.image,
+          timestamp: new Date().toTimeString(),
+          requestedBy: payload.notifyUser.username,
+          actionUrl: applicationUrl
+            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+            : undefined,
+          applicationUrl,
+          requestType: 'Request Declined',
+        },
+      });
+      return true;
+    } catch (e) {
+      logger.error('Mail notification failed to send', {
+        label: 'Notifications',
+        message: e.message,
+      });
+      return false;
+    }
+  }
+
   private async sendMediaAvailableEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
     const applicationUrl = getSettings().main.applicationUrl;

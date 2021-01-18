@@ -72,6 +72,8 @@
   "components.NotificationTypeSelector.mediaapprovedDescription": "Sends a notification when media is approved.",
   "components.NotificationTypeSelector.mediaavailable": "Media Available",
   "components.NotificationTypeSelector.mediaavailableDescription": "Sends a notification when media becomes available.",
+  "components.NotificationTypeSelector.mediadeclined": "Media Declined",
+  "components.NotificationTypeSelector.mediadeclinedDescription": "Sends a notification when a request is declined.",
   "components.NotificationTypeSelector.mediafailed": "Media Failed",
   "components.NotificationTypeSelector.mediafailedDescription": "Sends a notification when media fails to be added to services (Radarr/Sonarr). For certain agents, this will only send the notification to admins or users with the \"Manage Requests\" permission.",
   "components.NotificationTypeSelector.mediarequested": "Media Requested",

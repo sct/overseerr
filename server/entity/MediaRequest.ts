@@ -138,8 +138,11 @@ export class MediaRequest {
    * auto approved content
    */
   @AfterUpdate()
-  private async _notifyApproved() {
-    if (this.status === MediaRequestStatus.APPROVED) {
+  public async notifyApprovedOrDeclined(): Promise<void> {
+    if (
+      this.status === MediaRequestStatus.APPROVED ||
+      this.status === MediaRequestStatus.DECLINED
+    ) {
       const mediaRepository = getRepository(Media);
       const media = await mediaRepository.findOne({
         where: { id: this.media.id },
@@ -151,30 +154,40 @@ export class MediaRequest {
       const tmdb = new TheMovieDb();
       if (this.media.mediaType === MediaType.MOVIE) {
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
-        notificationManager.sendNotification(Notification.MEDIA_APPROVED, {
-          subject: movie.title,
-          message: movie.overview,
-          image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-          notifyUser: this.requestedBy,
-          media,
-        });
+        notificationManager.sendNotification(
+          this.status === MediaRequestStatus.APPROVED
+            ? Notification.MEDIA_APPROVED
+            : Notification.MEDIA_DECLINED,
+          {
+            subject: movie.title,
+            message: movie.overview,
+            image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+            notifyUser: this.requestedBy,
+            media,
+          }
+        );
       } else if (this.media.mediaType === MediaType.TV) {
         const tv = await tmdb.getTvShow({ tvId: this.media.tmdbId });
-        notificationManager.sendNotification(Notification.MEDIA_APPROVED, {
-          subject: tv.name,
-          message: tv.overview,
-          image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
-          notifyUser: this.requestedBy,
-          media,
-          extra: [
-            {
-              name: 'Seasons',
-              value: this.seasons
-                .map((season) => season.seasonNumber)
-                .join(', '),
-            },
-          ],
-        });
+        notificationManager.sendNotification(
+          this.status === MediaRequestStatus.APPROVED
+            ? Notification.MEDIA_APPROVED
+            : Notification.MEDIA_DECLINED,
+          {
+            subject: tv.name,
+            message: tv.overview,
+            image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
+            notifyUser: this.requestedBy,
+            media,
+            extra: [
+              {
+                name: 'Seasons',
+                value: this.seasons
+                  .map((season) => season.seasonNumber)
+                  .join(', '),
+              },
+            ],
+          }
+        );
       }
     }
   }

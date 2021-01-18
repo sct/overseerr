@@ -96,6 +96,22 @@ class SlackAgent
           actionUrl = `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`;
         }
         break;
+      case Notification.MEDIA_DECLINED:
+        header = 'Request Declined';
+        fields.push(
+          {
+            type: 'mrkdwn',
+            text: `*Requested By*\n${payload.notifyUser.username ?? ''}`,
+          },
+          {
+            type: 'mrkdwn',
+            text: '*Status*\nDeclined',
+          }
+        );
+        if (settings.main.applicationUrl) {
+          actionUrl = `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`;
+        }
+        break;
       case Notification.MEDIA_AVAILABLE:
         header = 'Now available!';
         fields.push(

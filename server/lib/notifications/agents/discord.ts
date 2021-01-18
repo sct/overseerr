@@ -165,6 +165,28 @@ class DiscordAgent
           });
         }
         break;
+      case Notification.MEDIA_DECLINED:
+        color = EmbedColors.RED;
+        fields.push(
+          {
+            name: 'Requested By',
+            value: payload.notifyUser.username ?? '',
+            inline: true,
+          },
+          {
+            name: 'Status',
+            value: 'Declined',
+            inline: true,
+          }
+        );
+
+        if (settings.main.applicationUrl) {
+          fields.push({
+            name: 'View Media',
+            value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
+          });
+        }
+        break;
       case Notification.MEDIA_FAILED:
         color = EmbedColors.RED;
         if (settings.main.applicationUrl) {
