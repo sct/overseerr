@@ -1,0 +1,103 @@
+name: Publish Snap
+
+on:
+  push:
+    branches: [develop]
+    tags: [v*]
+    pull_request: ~
+
+jobs:
+  test:
+    name: Lint & Build Test
+    runs-on: ubuntu-latest
+    container: node:12.18-alpine
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        env:
+          HUSKY_SKIP_INSTALL: 1
+        run: yarn
+      - name: lint
+        run: yarn lint
+      - name: build
+        run: yarn build
+  build-snap:
+    name: Build Snap Package (${{ matrix.architecture }})
+    needs: test
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture:
+          - amd64
+          - arm64
+          - armhf
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Prepare
+        id: prepare
+        run: |
+          git fetch --prune --unshallow --tags
+          if [[ $GITHUB_REF == refs/tags/* || $GITHUB_REF == refs/heads/master ]]; then
+            echo ::set-output name=RELEASE::stable
+          else
+            echo ::set-output name=RELEASE::edge
+          fi
+
+      - name: Set Up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Build Snap Package
+        uses: diddlesnaps/snapcraft-multiarch-action@v1
+        id: build
+        with:
+          architecture: ${{ matrix.architecture }}
+
+      - name: Upload Snap Package
+        uses: actions/upload-artifact@v2
+        with:
+          name: overseerr-snap-package-${{ matrix.architecture }}
+          path: ${{ steps.build.outputs.snap }}
+
+      - name: Review Snap Package
+        uses: diddlesnaps/snapcraft-review-tools-action@v1
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+
+      - name: Publish Snap Package
+        uses: snapcore/action-publish@v1
+        with:
+          store_login: ${{ secrets.SNAP_LOGIN }}
+          snap: ${{ steps.build.outputs.snap }}
+          release: ${{ steps.prepare.outputs.RELEASE }}
+
+  discord:
+    name: Discord Notification
+    needs: build-snap
+    if: always() && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Build Job Status
+        uses: technote-space/workflow-conclusion-action@v1
+
+      - name: Combine Job Status
+        id: status
+        run: |
+          failures=(neutral, skipped, timed_out, action_required)
+          if [[ ${array[@]} =~ $WORKFLOW_CONCLUSION ]]; then
+            echo ::set-output name=status::failure
+          else
+            echo ::set-output name=status::$WORKFLOW_CONCLUSION
+          fi
+
+      - name: Post Status to Discord
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ steps.status.outputs.status }}
+          title: ${{ github.workflow }}
+          nofail: true
