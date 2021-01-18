@@ -302,5 +302,10 @@
   "pages.pageNotFound": "",
   "pages.returnHome": "",
   "pages.serviceUnavailable": "",
-  "pages.somethingWentWrong": ""
+  "pages.somethingWentWrong": "",
+  "components.CollectionDetails.request": "Запрос",
+  "components.CollectionDetails.overviewunavailable": "Обзор недоступен",
+  "components.CollectionDetails.overview": "Обзор",
+  "components.CollectionDetails.numberofmovies": "Количество фильмов: {count}",
+  "components.CollectionDetails.movies": "Фильмы"
 }
