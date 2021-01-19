@@ -10,6 +10,7 @@ jobs:
   test:
     name: Lint & Test Build
     runs-on: ubuntu-20.04
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     container: node:12.18-alpine
     steps:
       - name: checkout
@@ -25,7 +26,6 @@ jobs:
   build-snap:
     name: Build Snap Package (${{ matrix.architecture }})
     needs: test
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
