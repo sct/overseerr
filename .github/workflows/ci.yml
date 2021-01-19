@@ -10,7 +10,8 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    name: Lint & Test Build
+    runs-on: ubuntu-20.04
     container: node:12.18-alpine
     steps:
       - name: checkout
@@ -24,10 +25,10 @@ jobs:
       - name: build
         run: yarn build
   build_and_push:
-    name: Build and push Docker image to Docker Hub
+    name: Build & Publish to Docker Hub
     needs: test
-    if: github.ref == 'refs/heads/develop' && !contains(github.event.head_commit.message, 'skip ci')
-    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' && !contains(github.event.head_commit.message, '[skip ci]')
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2

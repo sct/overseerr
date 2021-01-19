@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     container: node:12.18-alpine
     steps:
       - name: checkout
@@ -23,7 +23,7 @@ jobs:
   semantic-release:
     name: Tag and release latest version
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
