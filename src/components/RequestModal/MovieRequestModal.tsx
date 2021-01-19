@@ -38,6 +38,7 @@ const messages = defineMessages({
   request4kfrom: 'There is currently a pending 4K request from {username}',
   errorediting: 'Something went wrong editing the request.',
   requestedited: 'Request edited.',
+  autoapproval: 'Auto Approval',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -259,7 +260,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         hasPermission(Permission.AUTO_APPROVE) ||
         hasPermission(Permission.AUTO_APPROVE_MOVIE)) && (
         <p className="mt-6">
-          <Alert title="Auto Approval" type="info">
+          <Alert title={intl.formatMessage(messages.autoapproval)} type="info">
             {intl.formatMessage(messages.requestadmin)}
           </Alert>
         </p>

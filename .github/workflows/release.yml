@@ -43,6 +43,7 @@ jobs:
         run: npx semantic-release
   discord:
     name: Send Discord Notification
+    needs: semantic-release
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status

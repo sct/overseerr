@@ -39,6 +39,7 @@ const messages = defineMessages({
   errorediting: 'Something went wrong editing the request.',
   requestedited: 'Request edited.',
   requestcancelled: 'Request cancelled.',
+  autoapproval: 'Auto Approval',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -313,10 +314,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     >
       {(hasPermission(Permission.MANAGE_REQUESTS) ||
         hasPermission(Permission.AUTO_APPROVE) ||
-        hasPermission(Permission.AUTO_APPROVE_MOVIE)) &&
+        hasPermission(Permission.AUTO_APPROVE_TV)) &&
         !editRequest && (
           <p className="mt-6">
-            <Alert title="Auto Approval" type="info">
+            <Alert
+              title={intl.formatMessage(messages.autoapproval)}
+              type="info"
+            >
               {intl.formatMessage(messages.requestadmin)}
             </Alert>
           </p>
