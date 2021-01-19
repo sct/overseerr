@@ -5,7 +5,7 @@ import {
   UpdateEvent,
 } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
-import { MediaStatus, MediaType } from '../constants/media';
+import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import Season from '../entity/Season';
@@ -102,6 +102,21 @@ export class MediaSubscriber implements EntitySubscriberInterface {
     }
   }
 
+  private async updateChildRequestStatus(event: Media, is4k: boolean) {
+    const requestRepository = getRepository(MediaRequest);
+
+    const requests = await requestRepository.find({
+      where: { media: event.id },
+    });
+
+    for (const request of requests) {
+      if (request.is4k === is4k) {
+        request.status = MediaRequestStatus.APPROVED;
+        await requestRepository.save(request);
+      }
+    }
+  }
+
   public beforeUpdate(event: UpdateEvent<Media>): void {
     if (!event.entity) {
       return;
@@ -120,6 +135,20 @@ export class MediaSubscriber implements EntitySubscriberInterface {
         event.entity.status === MediaStatus.PARTIALLY_AVAILABLE)
     ) {
       this.notifyAvailableSeries(event.entity, event.databaseEntity);
+    }
+
+    if (
+      event.entity.status === MediaStatus.AVAILABLE &&
+      event.databaseEntity.status === MediaStatus.PENDING
+    ) {
+      this.updateChildRequestStatus(event.entity, false);
+    }
+
+    if (
+      event.entity.status4k === MediaStatus.AVAILABLE &&
+      event.databaseEntity.status4k === MediaStatus.PENDING
+    ) {
+      this.updateChildRequestStatus(event.entity, true);
     }
   }
 }
