@@ -6,7 +6,7 @@ on:
 
 jobs:
   support:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: dessant/support-requests@v2
         with:
