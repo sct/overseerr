@@ -3,8 +3,6 @@ name: Publish Snap
 on:
   push:
     branches: [develop]
-    tags: [v*]
-    pull_request: ~
 
 jobs:
   test:
