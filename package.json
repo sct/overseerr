@@ -122,6 +122,9 @@
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },
+  "resolutions": {
+    "sqlite3/node-gyp": "^5.1.0"
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
