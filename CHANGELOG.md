@@ -1,3 +1,10 @@
+## [1.17.1](https://github.com/sct/overseerr/compare/v1.17.0...v1.17.1) (2021-01-19)
+
+
+### Bug Fixes
+
+* **frontend:** show auto approval on series request modal only with correct permissions ([8927c6d](https://github.com/sct/overseerr/commit/8927c6d2e39dbda2b1121095a7273f5cab1c9b74)), closes [#687](https://github.com/sct/overseerr/issues/687)
+
 # [1.17.0](https://github.com/sct/overseerr/compare/v1.16.0...v1.17.0) (2021-01-19)
 
 
