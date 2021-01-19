@@ -134,6 +134,7 @@
   "components.RequestModal.AdvancedRequester.loadingprofiles": "Loading profiles…",
   "components.RequestModal.AdvancedRequester.qualityprofile": "Quality Profile",
   "components.RequestModal.AdvancedRequester.rootfolder": "Root Folder",
+  "components.RequestModal.autoapproval": "Auto Approval",
   "components.RequestModal.cancel": "Cancel Request",
   "components.RequestModal.cancelling": "Cancelling…",
   "components.RequestModal.cancelrequest": "This will remove your request. Are you sure you want to continue?",
