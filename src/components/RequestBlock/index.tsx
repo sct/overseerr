@@ -6,9 +6,15 @@ import { MediaRequestStatus } from '../../../server/constants/media';
 import Button from '../Common/Button';
 import axios from 'axios';
 import globalMessages from '../../i18n/globalMessages';
+import RequestModal from '../RequestModal';
+import useRequestOverride from '../../hooks/useRequestOverride';
 
 const messages = defineMessages({
   seasons: 'Seasons',
+  requestoverrides: 'Request Overrides',
+  server: 'Server',
+  profilechanged: 'Profile Changed',
+  rootfolder: 'Root Folder',
 });
 
 interface RequestBlockProps {
@@ -19,6 +25,8 @@ interface RequestBlockProps {
 const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const { profile, rootFolder, server } = useRequestOverride(request);
 
   const updateRequest = async (type: 'approve' | 'decline'): Promise<void> => {
     setIsUpdating(true);
@@ -43,10 +51,24 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
 
   return (
     <div className="block">
+      <RequestModal
+        show={showEditModal}
+        tmdbId={request.media.tmdbId}
+        type={request.type}
+        is4k={request.is4k}
+        editRequest={request}
+        onCancel={() => setShowEditModal(false)}
+        onComplete={() => {
+          if (onUpdate) {
+            onUpdate();
+          }
+          setShowEditModal(false);
+        }}
+      />
       <div className="px-4 py-4">
         <div className="flex items-center justify-between">
-          <div className="mr-6 flex-col items-center text-sm leading-5 text-gray-300 flex-1 min-w-0">
-            <div className="flex flex-nowrap mb-1 white">
+          <div className="flex-col items-center flex-1 min-w-0 mr-6 text-sm leading-5 text-gray-300">
+            <div className="flex mb-1 flex-nowrap white">
               <svg
                 className="min-w-0 flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
                 fill="currentColor"
@@ -59,7 +81,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="truncate w-40 md:w-auto">
+              <span className="w-40 truncate md:w-auto">
                 {request.requestedBy.username}
               </span>
             </div>
@@ -78,13 +100,13 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="truncate w-40 md:w-auto">
+                <span className="w-40 truncate md:w-auto">
                   {request.modifiedBy?.username}
                 </span>
               </div>
             )}
           </div>
-          <div className="ml-2 flex-shrink-0 flex flex-wrap">
+          <div className="flex flex-wrap flex-shrink-0 ml-2">
             {request.status === MediaRequestStatus.PENDING && (
               <>
                 <span className="mr-1">
@@ -107,7 +129,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                     </svg>
                   </Button>
                 </span>
-                <span>
+                <span className="mr-1">
                   <Button
                     buttonType="danger"
                     onClick={() => updateRequest('decline')}
@@ -124,6 +146,22 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                         d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                         clipRule="evenodd"
                       />
+                    </svg>
+                  </Button>
+                </span>
+                <span>
+                  <Button
+                    buttonType="primary"
+                    onClick={() => setShowEditModal(true)}
+                    disabled={isUpdating}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                     </svg>
                   </Button>
                 </span>
@@ -153,11 +191,11 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
         </div>
         <div className="mt-2 sm:flex sm:justify-between">
           <div className="sm:flex">
-            <div className="mr-6 flex items-center text-sm leading-5 text-gray-300">
-              {request.status === MediaRequestStatus.AVAILABLE && (
-                <Badge badgeType="success">
-                  {intl.formatMessage(globalMessages.available)}
-                </Badge>
+            <div className="flex items-center mr-6 text-sm leading-5 text-gray-300">
+              {request.is4k && (
+                <span className="mr-1">
+                  <Badge badgeType="warning">4K</Badge>
+                </span>
               )}
               {request.status === MediaRequestStatus.APPROVED && (
                 <Badge badgeType="success">
@@ -176,7 +214,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               )}
             </div>
           </div>
-          <div className="mt-2 flex items-center text-sm leading-5 text-gray-300 sm:mt-0">
+          <div className="flex items-center mt-2 text-sm leading-5 text-gray-300 sm:mt-0">
             <svg
               className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
               xmlns="http://www.w3.org/2000/svg"
@@ -195,19 +233,52 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
           </div>
         </div>
         {(request.seasons ?? []).length > 0 && (
-          <div className="mt-2 text-sm flex flex-col">
+          <div className="flex flex-col mt-2 text-sm">
             <div className="mb-2">{intl.formatMessage(messages.seasons)}</div>
             <div>
               {request.seasons.map((season) => (
                 <span
                   key={`season-${season.id}`}
-                  className="mr-2 mb-1 inline-block"
+                  className="inline-block mb-1 mr-2"
                 >
                   <Badge>{season.seasonNumber}</Badge>
                 </span>
               ))}
             </div>
           </div>
+        )}
+        {(server || profile || rootFolder) && (
+          <>
+            <div className="mt-4 mb-1 text-sm">
+              {intl.formatMessage(messages.requestoverrides)}
+            </div>
+            <ul className="px-2 text-xs bg-gray-800 divide-y divide-gray-700 rounded-md">
+              {server && (
+                <li className="flex justify-between px-1 py-2">
+                  <span className="font-bold">
+                    {intl.formatMessage(messages.server)}
+                  </span>
+                  <span>{server}</span>
+                </li>
+              )}
+              {profile !== null && (
+                <li className="flex justify-between px-1 py-2">
+                  <span className="font-bold">
+                    {intl.formatMessage(messages.profilechanged)}
+                  </span>
+                  <span>ID {profile}</span>
+                </li>
+              )}
+              {rootFolder && (
+                <li className="flex justify-between px-1 py-2">
+                  <span className="mr-2 font-bold">
+                    {intl.formatMessage(messages.rootfolder)}
+                  </span>
+                  <span>{rootFolder}</span>
+                </li>
+              )}
+            </ul>
+          </>
         )}
       </div>
     </div>

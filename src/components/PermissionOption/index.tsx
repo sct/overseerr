@@ -59,7 +59,7 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
                 !hasPermission(Permission.MANAGE_SETTINGS, user.permissions) &&
                 option.permission === Permission.MANAGE_SETTINGS)
             }
-            onClick={() => {
+            onChange={() => {
               onUpdate(
                 hasPermission(option.permission, currentPermission)
                   ? currentPermission - option.permission

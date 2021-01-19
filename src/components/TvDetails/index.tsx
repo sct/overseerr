@@ -8,10 +8,8 @@ import {
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import Button from '../Common/Button';
-import type { TvResult } from '../../../server/models/Search';
 import Link from 'next/link';
 import Slider from '../Slider';
-import TitleCard from '../TitleCard';
 import PersonCard from '../PersonCard';
 import { LanguageContext } from '../../context/LanguageContext';
 import LoadingSpinner from '../Common/LoadingSpinner';
@@ -19,7 +17,6 @@ import { useUser, Permission } from '../../hooks/useUser';
 import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
 import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
-import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import axios from 'axios';
 import SlideOver from '../Common/SlideOver';
 import RequestBlock from '../RequestBlock';
@@ -36,6 +33,8 @@ import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import { Crew } from '../../../server/models/common';
 import StatusBadge from '../StatusBadge';
+import RequestButton from '../RequestButton';
+import MediaSlider from '../MediaSlider';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -50,14 +49,8 @@ const messages = defineMessages({
   watchtrailer: 'Watch Trailer',
   available: 'Available',
   unavailable: 'Unavailable',
-  request: 'Request',
-  requestmore: 'Request More',
   pending: 'Pending',
   overviewunavailable: 'Overview unavailable',
-  approverequests:
-    'Approve {requestCount} {requestCount, plural, one {Request} other {Requests}}',
-  declinerequests:
-    'Decline {requestCount} {requestCount, plural, one {Request} other {Requests}}',
   manageModalTitle: 'Manage Series',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No Requests',
@@ -76,20 +69,6 @@ interface TvDetailsProps {
   tv?: TvDetailsType;
 }
 
-interface SearchResult {
-  page: number;
-  totalResults: number;
-  totalPages: number;
-  results: TvResult[];
-}
-
-enum MediaRequestStatus {
-  PENDING = 1,
-  APPROVED,
-  DECLINED,
-  AVAILABLE,
-}
-
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const { hasPermission } = useUser();
   const router = useRouter();
@@ -102,12 +81,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     {
       initialData: tv,
     }
-  );
-  const { data: recommended, error: recommendedError } = useSWR<SearchResult>(
-    `/api/v1/tv/${router.query.tvId}/recommendations?language=${locale}`
-  );
-  const { data: similar, error: similarError } = useSWR<SearchResult>(
-    `/api/v1/tv/${router.query.tvId}/similar?language=${locale}`
   );
 
   const { data: ratingData } = useSWR<RTRating>(
@@ -126,28 +99,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     return <Error statusCode={404} />;
   }
 
-  const activeRequests = data.mediaInfo?.requests?.filter(
-    (request) => request.status === MediaRequestStatus.PENDING
-  );
-
   const trailerUrl = data.relatedVideos
     ?.filter((r) => r.type === 'Trailer')
     .sort((a, b) => a.size - b.size)
     .pop()?.url;
-
-  const modifyRequests = async (type: 'approve' | 'decline'): Promise<void> => {
-    if (!activeRequests) {
-      return;
-    }
-
-    await Promise.all(
-      activeRequests.map(async (request) => {
-        return axios.get(`/api/v1/request/${request.id}/${type}`);
-      })
-    );
-
-    revalidate();
-  };
 
   const deleteMedia = async () => {
     if (data?.mediaInfo?.id) {
@@ -161,6 +116,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     (
       data.mediaInfo?.seasons.filter(
         (season) => season.status === MediaStatus.AVAILABLE
+      ) ?? []
+    ).length;
+
+  const is4kComplete =
+    data.seasons.filter((season) => season.seasonNumber !== 0).length <=
+    (
+      data.mediaInfo?.seasons.filter(
+        (season) => season.status4k === MediaStatus.AVAILABLE
       ) ?? []
     ).length;
 
@@ -236,7 +199,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
           <div className="mb-2">
-            <StatusBadge status={data.mediaInfo?.status} />
+            {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
+              <span className="mr-2">
+                <StatusBadge status={data.mediaInfo?.status} />
+              </span>
+            )}
+            <span>
+              <StatusBadge status={data.mediaInfo?.status4k} is4k />
+            </span>
           </div>
           <h1 className="text-2xl lg:text-4xl">
             <span>{data.name}</span>
@@ -250,9 +220,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.genres.map((g) => g.name).join(', ')}
           </span>
         </div>
-        <div className="flex justify-end flex-shrink-0 mt-4 lg:mt-0">
+        <div className="flex flex-wrap justify-center flex-shrink-0 mt-4 sm:flex-nowrap sm:justify-end lg:mt-0">
           {trailerUrl && (
-            <a href={trailerUrl} target="_blank" rel="noreferrer">
+            <a
+              href={trailerUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mb-3 sm:mb-0"
+            >
               <Button buttonType="ghost">
                 <svg
                   className="w-5 h-5 mr-1"
@@ -278,120 +253,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               </Button>
             </a>
           )}
-          {(!data.mediaInfo ||
-            data.mediaInfo.status === MediaStatus.UNKNOWN) && (
-            <Button
-              className="ml-2"
-              buttonType="primary"
-              onClick={() => setShowRequestModal(true)}
-            >
-              <svg
-                className="w-5 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              <FormattedMessage {...messages.request} />
-            </Button>
-          )}
-          {data.mediaInfo &&
-            data.mediaInfo.status !== MediaStatus.UNKNOWN &&
-            !isComplete && (
-              <ButtonWithDropdown
-                dropdownIcon={
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                text={
-                  <>
-                    <svg
-                      className="w-5 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <FormattedMessage {...messages.requestmore} />
-                  </>
-                }
-                className="ml-2"
-                onClick={() => setShowRequestModal(true)}
-              >
-                {hasPermission(Permission.MANAGE_REQUESTS) &&
-                  activeRequests &&
-                  activeRequests.length > 0 && (
-                    <>
-                      <ButtonWithDropdown.Item
-                        onClick={() => modifyRequests('approve')}
-                      >
-                        <svg
-                          className="w-4 mr-1"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <FormattedMessage
-                          {...messages.approverequests}
-                          values={{ requestCount: activeRequests.length }}
-                        />
-                      </ButtonWithDropdown.Item>
-                      <ButtonWithDropdown.Item
-                        onClick={() => modifyRequests('decline')}
-                      >
-                        <svg
-                          className="w-4 mr-1"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <FormattedMessage
-                          {...messages.declinerequests}
-                          values={{ requestCount: activeRequests.length }}
-                        />
-                      </ButtonWithDropdown.Item>
-                    </>
-                  )}
-              </ButtonWithDropdown>
-            )}
+          <div className="mb-3 sm:mb-0">
+            <RequestButton
+              mediaType="tv"
+              onUpdate={() => revalidate()}
+              tmdbId={data?.id}
+              media={data?.mediaInfo}
+              isShowComplete={isComplete}
+              is4kShowComplete={is4kComplete}
+            />
+          </div>
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
               buttonType="default"
-              className="ml-2 first:ml-0"
+              className="mb-3 ml-2 first:ml-0 sm:mb-0"
               onClick={() => setShowManager(true)}
             >
               <svg
@@ -639,103 +514,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           />
         ))}
       />
-      {(recommended?.results ?? []).length > 0 && (
-        <>
-          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
-            <div className="flex-1 min-w-0">
-              <Link
-                href="/tv/[tvId]/recommendations"
-                as={`/tv/${data.id}/recommendations`}
-              >
-                <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-                  <span>
-                    <FormattedMessage {...messages.recommendations} />
-                  </span>
-                  <svg
-                    className="w-6 h-6 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </div>
-          </div>
-          <Slider
-            sliderKey="recommendations"
-            isLoading={!recommended && !recommendedError}
-            isEmpty={false}
-            items={recommended?.results.map((title) => (
-              <TitleCard
-                key={`recommended-${title.id}`}
-                id={title.id}
-                image={title.posterPath}
-                status={title.mediaInfo?.status}
-                summary={title.overview}
-                title={title.name}
-                userScore={title.voteAverage}
-                year={title.firstAirDate}
-                mediaType={title.mediaType}
-              />
-            ))}
-          />
-        </>
-      )}
-      {(similar?.results ?? []).length > 0 && (
-        <>
-          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
-            <div className="flex-1 min-w-0">
-              <Link href="/tv/[tvId]/similar" as={`/tv/${data.id}/similar`}>
-                <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-                  <span>
-                    <FormattedMessage {...messages.similar} />
-                  </span>
-                  <svg
-                    className="w-6 h-6 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </div>
-          </div>
-          <Slider
-            sliderKey="similar"
-            isLoading={!similar && !similarError}
-            isEmpty={false}
-            items={similar?.results.map((title) => (
-              <TitleCard
-                key={`recommended-${title.id}`}
-                id={title.id}
-                image={title.posterPath}
-                status={title.mediaInfo?.status}
-                summary={title.overview}
-                title={title.name}
-                userScore={title.voteAverage}
-                year={title.firstAirDate}
-                mediaType={title.mediaType}
-              />
-            ))}
-          />
-        </>
-      )}
+      <MediaSlider
+        sliderKey="recommendations"
+        title={intl.formatMessage(messages.recommendations)}
+        url={`/api/v1/tv/${router.query.tvId}/recommendations`}
+        linkUrl={`/tv/${data.id}/recommendations`}
+        hideWhenEmpty
+      />
+      <MediaSlider
+        sliderKey="similar"
+        title={intl.formatMessage(messages.similar)}
+        url={`/api/v1/tv/${router.query.tvId}/similar`}
+        linkUrl={`/tv/${data.id}/similar`}
+        hideWhenEmpty
+      />
       <div className="pb-8" />
     </div>
   );

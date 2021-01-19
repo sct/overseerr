@@ -80,6 +80,9 @@ class Media {
   @Column({ type: 'int', default: MediaStatus.UNKNOWN })
   public status: MediaStatus;
 
+  @Column({ type: 'int', default: MediaStatus.UNKNOWN })
+  public status4k: MediaStatus;
+
   @OneToMany(() => MediaRequest, (request) => request.media, { cascade: true })
   public requests: MediaRequest[];
 
@@ -97,6 +100,9 @@ class Media {
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   public lastSeasonChange: Date;
+
+  @Column({ type: 'datetime', nullable: true })
+  public mediaAddedAt: Date;
 
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);

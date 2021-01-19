@@ -12,7 +12,8 @@ export type AvailableLocales =
   | 'it'
   | 'pt-BR'
   | 'sr'
-  | 'sv';
+  | 'sv'
+  | 'zh-Hant';
 
 interface LanguageContextProps {
   locale: AvailableLocales;

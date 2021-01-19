@@ -65,6 +65,18 @@ export class MediaRequest {
   })
   public seasons: SeasonRequest[];
 
+  @Column({ default: false })
+  public is4k: boolean;
+
+  @Column({ nullable: true })
+  public serverId: number;
+
+  @Column({ nullable: true })
+  public profileId: number;
+
+  @Column({ nullable: true })
+  public rootFolder: string;
+
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
   }
@@ -72,11 +84,11 @@ export class MediaRequest {
   @AfterUpdate()
   @AfterInsert()
   public async sendMedia(): Promise<void> {
-    await Promise.all([this._sendToRadarr(), this._sendToSonarr()]);
+    await Promise.all([this.sendToRadarr(), this.sendToSonarr()]);
   }
 
   @AfterInsert()
-  private async _notifyNewRequest() {
+  public async notifyNewRequest(): Promise<void> {
     if (this.status === MediaRequestStatus.PENDING) {
       const mediaRepository = getRepository(Media);
       const media = await mediaRepository.findOne({
@@ -126,8 +138,11 @@ export class MediaRequest {
    * auto approved content
    */
   @AfterUpdate()
-  private async _notifyApproved() {
-    if (this.status === MediaRequestStatus.APPROVED) {
+  public async notifyApprovedOrDeclined(): Promise<void> {
+    if (
+      this.status === MediaRequestStatus.APPROVED ||
+      this.status === MediaRequestStatus.DECLINED
+    ) {
       const mediaRepository = getRepository(Media);
       const media = await mediaRepository.findOne({
         where: { id: this.media.id },
@@ -139,30 +154,40 @@ export class MediaRequest {
       const tmdb = new TheMovieDb();
       if (this.media.mediaType === MediaType.MOVIE) {
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
-        notificationManager.sendNotification(Notification.MEDIA_APPROVED, {
-          subject: movie.title,
-          message: movie.overview,
-          image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-          notifyUser: this.requestedBy,
-          media,
-        });
+        notificationManager.sendNotification(
+          this.status === MediaRequestStatus.APPROVED
+            ? Notification.MEDIA_APPROVED
+            : Notification.MEDIA_DECLINED,
+          {
+            subject: movie.title,
+            message: movie.overview,
+            image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+            notifyUser: this.requestedBy,
+            media,
+          }
+        );
       } else if (this.media.mediaType === MediaType.TV) {
         const tv = await tmdb.getTvShow({ tvId: this.media.tmdbId });
-        notificationManager.sendNotification(Notification.MEDIA_APPROVED, {
-          subject: tv.name,
-          message: tv.overview,
-          image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
-          notifyUser: this.requestedBy,
-          media,
-          extra: [
-            {
-              name: 'Seasons',
-              value: this.seasons
-                .map((season) => season.seasonNumber)
-                .join(', '),
-            },
-          ],
-        });
+        notificationManager.sendNotification(
+          this.status === MediaRequestStatus.APPROVED
+            ? Notification.MEDIA_APPROVED
+            : Notification.MEDIA_DECLINED,
+          {
+            subject: tv.name,
+            message: tv.overview,
+            image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
+            notifyUser: this.requestedBy,
+            media,
+            extra: [
+              {
+                name: 'Seasons',
+                value: this.seasons
+                  .map((season) => season.seasonNumber)
+                  .join(', '),
+              },
+            ],
+          }
+        );
       }
     }
   }
@@ -181,15 +206,23 @@ export class MediaRequest {
     }
     const seasonRequestRepository = getRepository(SeasonRequest);
     if (this.status === MediaRequestStatus.APPROVED) {
-      media.status = MediaStatus.PROCESSING;
+      if (this.is4k) {
+        media.status4k = MediaStatus.PROCESSING;
+      } else {
+        media.status = MediaStatus.PROCESSING;
+      }
       mediaRepository.save(media);
     }
 
     if (
-      this.media.mediaType === MediaType.MOVIE &&
+      media.mediaType === MediaType.MOVIE &&
       this.status === MediaRequestStatus.DECLINED
     ) {
-      media.status = MediaStatus.UNKNOWN;
+      if (this.is4k) {
+        media.status4k = MediaStatus.UNKNOWN;
+      } else {
+        media.status = MediaStatus.UNKNOWN;
+      }
       mediaRepository.save(media);
     }
 
@@ -224,18 +257,31 @@ export class MediaRequest {
   }
 
   @AfterRemove()
-  private async _handleRemoveParentUpdate() {
+  public async handleRemoveParentUpdate(): Promise<void> {
     const mediaRepository = getRepository(Media);
     const fullMedia = await mediaRepository.findOneOrFail({
       where: { id: this.media.id },
+      relations: ['requests'],
     });
-    if (!fullMedia.requests || fullMedia.requests.length === 0) {
+
+    if (
+      !fullMedia.requests.some((request) => !request.is4k) &&
+      fullMedia.status !== MediaStatus.AVAILABLE
+    ) {
       fullMedia.status = MediaStatus.UNKNOWN;
-      mediaRepository.save(fullMedia);
     }
+
+    if (
+      !fullMedia.requests.some((request) => request.is4k) &&
+      fullMedia.status4k !== MediaStatus.AVAILABLE
+    ) {
+      fullMedia.status4k = MediaStatus.UNKNOWN;
+    }
+
+    mediaRepository.save(fullMedia);
   }
 
-  private async _sendToRadarr() {
+  public async sendToRadarr(): Promise<void> {
     if (
       this.status === MediaRequestStatus.APPROVED &&
       this.type === MediaType.MOVIE
@@ -251,16 +297,56 @@ export class MediaRequest {
           return;
         }
 
-        const radarrSettings = settings.radarr.find(
-          (radarr) => radarr.isDefault && !radarr.is4k
+        let radarrSettings = settings.radarr.find(
+          (radarr) => radarr.isDefault && radarr.is4k === this.is4k
         );
+
+        if (
+          this.serverId !== null &&
+          this.serverId >= 0 &&
+          radarrSettings?.id !== this.serverId
+        ) {
+          radarrSettings = settings.radarr.find(
+            (radarr) => radarr.id === this.serverId
+          );
+          logger.info(
+            `Request has an override server: ${radarrSettings?.name}`,
+            { label: 'Media Request' }
+          );
+        }
 
         if (!radarrSettings) {
           logger.info(
-            'There is no default radarr configured. Did you set any of your Radarr servers as default?',
+            `There is no default ${
+              this.is4k ? '4K ' : ''
+            }radarr configured. Did you set any of your Radarr servers as default?`,
             { label: 'Media Request' }
           );
           return;
+        }
+
+        let rootFolder = radarrSettings.activeDirectory;
+        let qualityProfile = radarrSettings.activeProfileId;
+
+        if (
+          this.rootFolder &&
+          this.rootFolder !== '' &&
+          this.rootFolder !== radarrSettings.activeDirectory
+        ) {
+          rootFolder = this.rootFolder;
+          logger.info(`Request has an override root folder: ${rootFolder}`, {
+            label: 'Media Request',
+          });
+        }
+
+        if (
+          this.profileId &&
+          this.profileId !== radarrSettings.activeProfileId
+        ) {
+          qualityProfile = this.profileId;
+          logger.info(`Request has an override profile id: ${qualityProfile}`, {
+            label: 'Media Request',
+          });
         }
 
         const tmdb = new TheMovieDb();
@@ -275,9 +361,9 @@ export class MediaRequest {
         // Run this asynchronously so we don't wait for it on the UI side
         radarr
           .addMovie({
-            profileId: radarrSettings.activeProfileId,
-            qualityProfileId: radarrSettings.activeProfileId,
-            rootFolderPath: radarrSettings.activeDirectory,
+            profileId: qualityProfile,
+            qualityProfileId: qualityProfile,
+            rootFolderPath: rootFolder,
             minimumAvailability: radarrSettings.minimumAvailability,
             title: movie.title,
             tmdbId: movie.id,
@@ -325,7 +411,7 @@ export class MediaRequest {
     }
   }
 
-  private async _sendToSonarr() {
+  public async sendToSonarr(): Promise<void> {
     if (
       this.status === MediaRequestStatus.APPROVED &&
       this.type === MediaType.TV
@@ -341,13 +427,29 @@ export class MediaRequest {
           return;
         }
 
-        const sonarrSettings = settings.sonarr.find(
-          (sonarr) => sonarr.isDefault && !sonarr.is4k
+        let sonarrSettings = settings.sonarr.find(
+          (sonarr) => sonarr.isDefault && sonarr.is4k === this.is4k
         );
+
+        if (
+          this.serverId !== null &&
+          this.serverId >= 0 &&
+          sonarrSettings?.id !== this.serverId
+        ) {
+          sonarrSettings = settings.sonarr.find(
+            (sonarr) => sonarr.id === this.serverId
+          );
+          logger.info(
+            `Request has an override server: ${sonarrSettings?.name}`,
+            { label: 'Media Request' }
+          );
+        }
 
         if (!sonarrSettings) {
           logger.info(
-            'There is no default sonarr configured. Did you set any of your Sonarr servers as default?',
+            `There is no default ${
+              this.is4k ? '4K ' : ''
+            }sonarr configured. Did you set any of your Sonarr servers as default?`,
             { label: 'Media Request' }
           );
           return;
@@ -386,17 +488,38 @@ export class MediaRequest {
           seriesType = 'anime';
         }
 
+        let rootFolder =
+          seriesType === 'anime' && sonarrSettings.activeAnimeDirectory
+            ? sonarrSettings.activeAnimeDirectory
+            : sonarrSettings.activeDirectory;
+        let qualityProfile =
+          seriesType === 'anime' && sonarrSettings.activeAnimeProfileId
+            ? sonarrSettings.activeAnimeProfileId
+            : sonarrSettings.activeProfileId;
+
+        if (
+          this.rootFolder &&
+          this.rootFolder !== '' &&
+          this.rootFolder !== rootFolder
+        ) {
+          rootFolder = this.rootFolder;
+          logger.info(`Request has an override root folder: ${rootFolder}`, {
+            label: 'Media Request',
+          });
+        }
+
+        if (this.profileId && this.profileId !== qualityProfile) {
+          qualityProfile = this.profileId;
+          logger.info(`Request has an override profile id: ${qualityProfile}`, {
+            label: 'Media Request',
+          });
+        }
+
         // Run this asynchronously so we don't wait for it on the UI side
         sonarr
           .addSeries({
-            profileId:
-              seriesType === 'anime' && sonarrSettings.activeAnimeProfileId
-                ? sonarrSettings.activeAnimeProfileId
-                : sonarrSettings.activeProfileId,
-            rootFolderPath:
-              seriesType === 'anime' && sonarrSettings.activeAnimeDirectory
-                ? sonarrSettings.activeAnimeDirectory
-                : sonarrSettings.activeDirectory,
+            profileId: qualityProfile,
+            rootFolderPath: rootFolder,
             title: series.name,
             tvdbid: series.external_ids.tvdb_id,
             seasons: this.seasons.map((season) => season.seasonNumber),

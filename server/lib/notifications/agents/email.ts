@@ -2,12 +2,11 @@ import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 import { hasNotificationType, Notification } from '..';
 import path from 'path';
 import { getSettings, NotificationAgentEmail } from '../../settings';
-import nodemailer from 'nodemailer';
-import Email from 'email-templates';
 import logger from '../../../logger';
 import { getRepository } from 'typeorm';
 import { User } from '../../../entity/User';
 import { Permission } from '../../permissions';
+import PreparedEmail from '../../email';
 
 class EmailAgent
   extends BaseAgent<NotificationAgentEmail>
@@ -35,42 +34,6 @@ class EmailAgent
     return false;
   }
 
-  private getSmtpTransport() {
-    const emailSettings = this.getSettings().options;
-
-    return nodemailer.createTransport({
-      host: emailSettings.smtpHost,
-      port: emailSettings.smtpPort,
-      secure: emailSettings.secure,
-      tls: emailSettings.allowSelfSigned
-        ? {
-            rejectUnauthorized: false,
-          }
-        : undefined,
-      auth:
-        emailSettings.authUser && emailSettings.authPass
-          ? {
-              user: emailSettings.authUser,
-              pass: emailSettings.authPass,
-            }
-          : undefined,
-    });
-  }
-
-  private getNewEmail() {
-    const settings = this.getSettings();
-    return new Email({
-      message: {
-        from: {
-          name: settings.options.senderName,
-          address: settings.options.emailFrom,
-        },
-      },
-      send: true,
-      transport: this.getSmtpTransport(),
-    });
-  }
-
   private async sendMediaRequestEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
     const applicationUrl = getSettings().main.applicationUrl;
@@ -82,7 +45,7 @@ class EmailAgent
       users
         .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
         .forEach((user) => {
-          const email = this.getNewEmail();
+          const email = new PreparedEmail();
 
           email.send({
             template: path.join(
@@ -127,7 +90,7 @@ class EmailAgent
       users
         .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
         .forEach((user) => {
-          const email = this.getNewEmail();
+          const email = new PreparedEmail();
 
           email.send({
             template: path.join(
@@ -166,7 +129,7 @@ class EmailAgent
     // This is getting main settings for the whole app
     const applicationUrl = getSettings().main.applicationUrl;
     try {
-      const email = this.getNewEmail();
+      const email = new PreparedEmail();
 
       await email.send({
         template: path.join(
@@ -199,11 +162,48 @@ class EmailAgent
     }
   }
 
+  private async sendMediaDeclinedEmail(payload: NotificationPayload) {
+    // This is getting main settings for the whole app
+    const applicationUrl = getSettings().main.applicationUrl;
+    try {
+      const email = new PreparedEmail();
+
+      await email.send({
+        template: path.join(
+          __dirname,
+          '../../../templates/email/media-request'
+        ),
+        message: {
+          to: payload.notifyUser.email,
+        },
+        locals: {
+          body: 'Your request for the following media was declined:',
+          mediaName: payload.subject,
+          imageUrl: payload.image,
+          timestamp: new Date().toTimeString(),
+          requestedBy: payload.notifyUser.username,
+          actionUrl: applicationUrl
+            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+            : undefined,
+          applicationUrl,
+          requestType: 'Request Declined',
+        },
+      });
+      return true;
+    } catch (e) {
+      logger.error('Mail notification failed to send', {
+        label: 'Notifications',
+        message: e.message,
+      });
+      return false;
+    }
+  }
+
   private async sendMediaAvailableEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
     const applicationUrl = getSettings().main.applicationUrl;
     try {
-      const email = this.getNewEmail();
+      const email = new PreparedEmail();
 
       await email.send({
         template: path.join(
@@ -240,7 +240,7 @@ class EmailAgent
     // This is getting main settings for the whole app
     const applicationUrl = getSettings().main.applicationUrl;
     try {
-      const email = this.getNewEmail();
+      const email = new PreparedEmail();
 
       await email.send({
         template: path.join(__dirname, '../../../templates/email/test-email'),
@@ -274,6 +274,9 @@ class EmailAgent
         break;
       case Notification.MEDIA_APPROVED:
         this.sendMediaApprovedEmail(payload);
+        break;
+      case Notification.MEDIA_DECLINED:
+        this.sendMediaDeclinedEmail(payload);
         break;
       case Notification.MEDIA_AVAILABLE:
         this.sendMediaAvailableEmail(payload);

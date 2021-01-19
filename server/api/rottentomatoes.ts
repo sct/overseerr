@@ -92,7 +92,27 @@ class RottenTomatoes {
         }
       );
 
-      const movie = response.data.movies.find((movie) => movie.year === year);
+      // First, attempt to match exact name and year
+      let movie = response.data.movies.find(
+        (movie) => movie.year === year && movie.title === name
+      );
+
+      // If we don't find a movie, try to match partial name and year
+      if (!movie) {
+        movie = response.data.movies.find(
+          (movie) => movie.year === year && movie.title.includes(name)
+        );
+      }
+
+      // If we still dont find a movie, try to match just on year
+      if (!movie) {
+        movie = response.data.movies.find((movie) => movie.year === year);
+      }
+
+      // One last try, try exact name match only
+      if (!movie) {
+        movie = response.data.movies.find((movie) => movie.title === name);
+      }
 
       if (!movie) {
         return null;

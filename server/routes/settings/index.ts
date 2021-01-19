@@ -5,30 +5,27 @@ import {
   SonarrSettings,
   Library,
   MainSettings,
-} from '../lib/settings';
+} from '../../lib/settings';
 import { getRepository } from 'typeorm';
-import { User } from '../entity/User';
-import PlexAPI from '../api/plexapi';
-import { jobPlexFullSync } from '../job/plexsync';
-import SonarrAPI from '../api/sonarr';
-import RadarrAPI from '../api/radarr';
-import logger from '../logger';
-import { scheduledJobs } from '../job/schedule';
-import { Permission } from '../lib/permissions';
-import { isAuthenticated } from '../middleware/auth';
+import { User } from '../../entity/User';
+import PlexAPI from '../../api/plexapi';
+import { jobPlexFullSync } from '../../job/plexsync';
+import SonarrAPI from '../../api/sonarr';
+import RadarrAPI from '../../api/radarr';
+import logger from '../../logger';
+import { scheduledJobs } from '../../job/schedule';
+import { Permission } from '../../lib/permissions';
+import { isAuthenticated } from '../../middleware/auth';
 import { merge, omit } from 'lodash';
-import Media from '../entity/Media';
-import { MediaRequest } from '../entity/MediaRequest';
-import { getAppVersion } from '../utils/appVersion';
-import { SettingsAboutResponse } from '../interfaces/api/settingsInterfaces';
-import { Notification } from '../lib/notifications';
-import DiscordAgent from '../lib/notifications/agents/discord';
-import EmailAgent from '../lib/notifications/agents/email';
-import SlackAgent from '../lib/notifications/agents/slack';
-import TelegramAgent from '../lib/notifications/agents/telegram';
-import PushoverAgent from '../lib/notifications/agents/pushover';
+import Media from '../../entity/Media';
+import { MediaRequest } from '../../entity/MediaRequest';
+import { getAppVersion } from '../../utils/appVersion';
+import { SettingsAboutResponse } from '../../interfaces/api/settingsInterfaces';
+import notificationRoutes from './notifications';
 
 const settingsRoutes = Router();
+
+settingsRoutes.use('/notifications', notificationRoutes);
 
 const filteredMainSettings = (
   user: User,
@@ -436,176 +433,6 @@ settingsRoutes.get(
     return res.status(200).json(settings.public);
   }
 );
-
-settingsRoutes.get('/notifications/discord', (_req, res) => {
-  const settings = getSettings();
-
-  res.status(200).json(settings.notifications.agents.discord);
-});
-
-settingsRoutes.post('/notifications/discord', (req, res) => {
-  const settings = getSettings();
-
-  settings.notifications.agents.discord = req.body;
-  settings.save();
-
-  res.status(200).json(settings.notifications.agents.discord);
-});
-
-settingsRoutes.post('/notifications/discord/test', (req, res, next) => {
-  if (!req.user) {
-    return next({
-      status: 500,
-      message: 'User information missing from request',
-    });
-  }
-
-  const discordAgent = new DiscordAgent(req.body);
-  discordAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
-});
-
-settingsRoutes.get('/notifications/slack', (_req, res) => {
-  const settings = getSettings();
-
-  res.status(200).json(settings.notifications.agents.slack);
-});
-
-settingsRoutes.post('/notifications/slack', (req, res) => {
-  const settings = getSettings();
-
-  settings.notifications.agents.slack = req.body;
-  settings.save();
-
-  res.status(200).json(settings.notifications.agents.slack);
-});
-
-settingsRoutes.post('/notifications/slack/test', (req, res, next) => {
-  if (!req.user) {
-    return next({
-      status: 500,
-      message: 'User information missing from request',
-    });
-  }
-
-  const slackAgent = new SlackAgent(req.body);
-  slackAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
-});
-
-settingsRoutes.get('/notifications/telegram', (_req, res) => {
-  const settings = getSettings();
-
-  res.status(200).json(settings.notifications.agents.telegram);
-});
-
-settingsRoutes.post('/notifications/telegram', (req, res) => {
-  const settings = getSettings();
-
-  settings.notifications.agents.telegram = req.body;
-  settings.save();
-
-  res.status(200).json(settings.notifications.agents.telegram);
-});
-
-settingsRoutes.post('/notifications/telegram/test', (req, res, next) => {
-  if (!req.user) {
-    return next({
-      status: 500,
-      message: 'User information missing from request',
-    });
-  }
-
-  const telegramAgent = new TelegramAgent(req.body);
-  telegramAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
-});
-
-settingsRoutes.get('/notifications/pushover', (_req, res) => {
-  const settings = getSettings();
-
-  res.status(200).json(settings.notifications.agents.pushover);
-});
-
-settingsRoutes.post('/notifications/pushover', (req, res) => {
-  const settings = getSettings();
-
-  settings.notifications.agents.pushover = req.body;
-  settings.save();
-
-  res.status(200).json(settings.notifications.agents.pushover);
-});
-
-settingsRoutes.post('/notifications/pushover/test', (req, res, next) => {
-  if (!req.user) {
-    return next({
-      status: 500,
-      message: 'User information missing from request',
-    });
-  }
-
-  const pushoverAgent = new PushoverAgent(req.body);
-  pushoverAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
-});
-
-settingsRoutes.get('/notifications/email', (_req, res) => {
-  const settings = getSettings();
-
-  res.status(200).json(settings.notifications.agents.email);
-});
-
-settingsRoutes.post('/notifications/email', (req, res) => {
-  const settings = getSettings();
-
-  settings.notifications.agents.email = req.body;
-  settings.save();
-
-  res.status(200).json(settings.notifications.agents.email);
-});
-
-settingsRoutes.post('/notifications/email/test', (req, res, next) => {
-  if (!req.user) {
-    return next({
-      status: 500,
-      message: 'User information missing from request',
-    });
-  }
-
-  const emailAgent = new EmailAgent(req.body);
-  emailAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
-});
 
 settingsRoutes.get('/about', async (req, res) => {
   const mediaRepository = getRepository(Media);

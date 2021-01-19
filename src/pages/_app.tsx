@@ -14,9 +14,11 @@ import Head from 'next/head';
 import Toast from '../components/Toast';
 import { InteractionProvider } from '../context/InteractionContext';
 import StatusChecker from '../components/StatusChacker';
+import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
+import { SettingsProvider } from '../context/SettingsContext';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const loadLocaleData = (locale: string): Promise<any> => {
+const loadLocaleData = (locale: AvailableLocales): Promise<any> => {
   switch (locale) {
     case 'ja':
       return import('../i18n/locale/ja.json');
@@ -40,6 +42,8 @@ const loadLocaleData = (locale: string): Promise<any> => {
       return import('../i18n/locale/sr.json');
     case 'sv':
       return import('../i18n/locale/sv.json');
+    case 'zh-Hant':
+      return import('../i18n/locale/zh_Hant.json');
     default:
       return import('../i18n/locale/en.json');
   }
@@ -55,6 +59,7 @@ interface ExtendedAppProps extends AppProps {
   user: User;
   messages: MessagesType;
   locale: AvailableLocales;
+  currentSettings: PublicSettingsResponse;
 }
 
 if (typeof window === 'undefined') {
@@ -68,6 +73,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
   user,
   messages,
   locale,
+  currentSettings,
 }: ExtendedAppProps) => {
   let component: React.ReactNode;
   const [loadedMessages, setMessages] = useState<MessagesType>(messages);
@@ -103,15 +109,21 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
           defaultLocale="en"
           messages={loadedMessages}
         >
-          <InteractionProvider>
-            <ToastProvider components={{ Toast }}>
-              <Head>
-                <title>Overseerr</title>
-              </Head>
-              <StatusChecker />
-              <UserContext initialUser={user}>{component}</UserContext>
-            </ToastProvider>
-          </InteractionProvider>
+          <SettingsProvider currentSettings={currentSettings}>
+            <InteractionProvider>
+              <ToastProvider components={{ Toast }}>
+                <Head>
+                  <title>Overseerr</title>
+                  <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                  />
+                </Head>
+                <StatusChecker />
+                <UserContext initialUser={user}>{component}</UserContext>
+              </ToastProvider>
+            </InteractionProvider>
+          </SettingsProvider>
         </IntlProvider>
       </LanguageContext.Provider>
     </SWRConfig>
@@ -121,14 +133,21 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 CoreApp.getInitialProps = async (initialProps) => {
   const { ctx, router } = initialProps;
   let user = undefined;
+  let currentSettings: PublicSettingsResponse = {
+    initialized: false,
+    movie4kEnabled: false,
+    series4kEnabled: false,
+  };
 
   let locale = 'en';
 
   if (ctx.res) {
     // Check if app is initialized and redirect if necessary
-    const response = await axios.get<{ initialized: boolean }>(
+    const response = await axios.get<PublicSettingsResponse>(
       `http://localhost:${process.env.PORT || 5055}/api/v1/settings/public`
     );
+
+    currentSettings = response.data;
 
     const initialized = response.data.initialized;
 
@@ -179,9 +198,9 @@ CoreApp.getInitialProps = async (initialProps) => {
     initialProps
   );
 
-  const messages = await loadLocaleData(locale);
+  const messages = await loadLocaleData(locale as AvailableLocales);
 
-  return { ...appInitialProps, user, messages, locale };
+  return { ...appInitialProps, user, messages, locale, currentSettings };
 };
 
 export default CoreApp;

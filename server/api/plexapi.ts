@@ -9,6 +9,8 @@ export interface PlexLibraryItem {
   guid: string;
   parentGuid?: string;
   grandparentGuid?: string;
+  addedAt: number;
+  updatedAt: number;
   type: 'movie' | 'show' | 'season' | 'episode';
 }
 
@@ -48,6 +50,25 @@ export interface PlexMetadata {
   parentIndex?: number;
   leafCount: number;
   viewedLeafCount: number;
+  addedAt: number;
+  updatedAt: number;
+  Media: Media[];
+}
+
+interface Media {
+  id: number;
+  duration: number;
+  bitrate: number;
+  width: number;
+  height: number;
+  aspectRatio: number;
+  audioChannels: number;
+  audioCodec: string;
+  videoCodec: string;
+  videoResolution: string;
+  container: string;
+  videoFrameRate: string;
+  videoProfile: string;
 }
 
 interface PlexMetadataResponse {
@@ -121,6 +142,14 @@ class PlexAPI {
     );
 
     return response.MediaContainer.Metadata[0];
+  }
+
+  public async getChildrenMetadata(key: string): Promise<PlexMetadata[]> {
+    const response = await this.plexClient.query<PlexMetadataResponse>(
+      `/library/metadata/${key}/children`
+    );
+
+    return response.MediaContainer.Metadata;
   }
 
   public async getRecentlyAdded(id: string): Promise<PlexLibraryItem[]> {

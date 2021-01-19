@@ -245,6 +245,25 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "hirenshah",
+      "name": "hirenshah",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/418112?v=4",
+      "profile": "https://github.com/hirenshah",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "TheCatLady",
+      "name": "TheCatLady",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/52870424?v=4",
+      "profile": "https://github.com/TheCatLady",
+      "contributions": [
+        "code",
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",

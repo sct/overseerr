@@ -1,5 +1,6 @@
 import useSwr from 'swr';
 import { hasPermission, Permission } from '../../server/lib/permissions';
+import { UserType } from '../../server/constants/user';
 
 export interface User {
   id: number;
@@ -7,9 +8,10 @@ export interface User {
   email: string;
   avatar: string;
   permissions: number;
+  userType: number;
 }
 
-export { Permission };
+export { Permission, UserType };
 
 interface UserHookResponse {
   user?: User;

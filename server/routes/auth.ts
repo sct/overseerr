@@ -6,6 +6,7 @@ import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
 import { getSettings } from '../lib/settings';
+import { UserType } from '../constants/user';
 
 const authRoutes = Router();
 
@@ -67,6 +68,7 @@ authRoutes.post('/login', async (req, res, next) => {
           plexToken: account.authToken,
           permissions: Permission.ADMIN,
           avatar: account.thumb,
+          userType: UserType.PLEX,
         });
         await userRepository.save(user);
       }
@@ -89,6 +91,7 @@ authRoutes.post('/login', async (req, res, next) => {
             plexToken: account.authToken,
             permissions: settings.main.defaultPermissions,
             avatar: account.thumb,
+            userType: UserType.PLEX,
           });
           await userRepository.save(user);
         } else {
@@ -122,6 +125,53 @@ authRoutes.post('/login', async (req, res, next) => {
     return next({
       status: 500,
       message: 'Something went wrong. Is your auth token valid?',
+    });
+  }
+});
+
+authRoutes.post('/local', async (req, res, next) => {
+  const userRepository = getRepository(User);
+  const body = req.body as { email?: string; password?: string };
+
+  if (!body.email || !body.password) {
+    return res
+      .status(500)
+      .json({ error: 'You must provide an email and a password' });
+  }
+  try {
+    const user = await userRepository.findOne({
+      select: ['id', 'password'],
+      where: { email: body.email, userType: UserType.LOCAL },
+    });
+
+    const isCorrectCredentials = await user?.passwordMatch(body.password);
+
+    // User doesn't exist or credentials are incorrect
+    if (!isCorrectCredentials) {
+      logger.info('Failed login attempt from user with incorrect credentials', {
+        label: 'Auth',
+        account: {
+          email: body.email,
+          password: '__REDACTED__',
+        },
+      });
+      return next({
+        status: 403,
+        message: 'You do not have access to this Plex server',
+      });
+    }
+
+    // Set logged in session
+    if (user && req.session) {
+      req.session.userId = user.id;
+    }
+
+    return res.status(200).json(user?.filter() ?? {});
+  } catch (e) {
+    logger.error(e.message, { label: 'Auth' });
+    return next({
+      status: 500,
+      message: 'Something went wrong.',
     });
   }
 });

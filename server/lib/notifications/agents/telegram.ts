@@ -71,6 +71,14 @@ class TelegramAgent
         message += `\*Status\*\nProcessing Request\n`;
 
         break;
+      case Notification.MEDIA_DECLINED:
+        message += `\*Request Declined\*\n`;
+        message += `${title}\n\n`;
+        message += `${plot}\n\n`;
+        message += `\*Requested By\*\n${user}\n\n`;
+        message += `\*Status\*\nDeclined\n`;
+
+        break;
       case Notification.MEDIA_AVAILABLE:
         message += `\*Now available\\!\*\n`;
         message += `${title}\n\n`;

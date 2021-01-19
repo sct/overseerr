@@ -28,7 +28,7 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
 
 const RequestCardPlaceholder: React.FC = () => {
   return (
-    <div className="w-72 sm:w-96 relative animate-pulse rounded-lg bg-gray-700 p-4">
+    <div className="relative p-4 bg-gray-700 rounded-lg w-72 sm:w-96 animate-pulse">
       <div className="w-20 sm:w-28">
         <div className="w-full" style={{ paddingBottom: '150%' }} />
       </div>
@@ -88,13 +88,13 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
 
   return (
     <div
-      className="relative w-72 sm:w-96 p-4 bg-gray-800 rounded-md flex bg-cover bg-center text-gray-400"
+      className="relative flex p-4 text-gray-400 bg-gray-800 bg-center bg-cover rounded-md w-72 sm:w-96"
       style={{
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
       }}
     >
-      <div className="flex-1 pr-4 min-w-0 flex flex-col">
-        <h2 className="text-base sm:text-lg overflow-ellipsis overflow-hidden whitespace-nowrap text-white cursor-pointer hover:underline">
+      <div className="flex flex-col flex-1 min-w-0 pr-4">
+        <h2 className="overflow-hidden text-base text-white cursor-pointer sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
           <Link
             href={request.type === 'movie' ? '/movie/[movieId]' : '/tv/[tvId]'}
             as={
@@ -106,18 +106,25 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             {isMovie(title) ? title.title : title.name}
           </Link>
         </h2>
-        <div className="text-xs sm:text-sm truncate">
+        <div className="text-xs truncate sm:text-sm">
           {intl.formatMessage(messages.requestedby, {
             username: requestData.requestedBy.username,
           })}
         </div>
         {requestData.media.status && (
           <div className="mt-1 sm:mt-2">
-            <StatusBadge status={requestData.media.status} />
+            <StatusBadge
+              status={
+                requestData.is4k
+                  ? requestData.media.status4k
+                  : requestData.media.status
+              }
+              is4k={requestData.is4k}
+            />
           </div>
         )}
         {request.seasons.length > 0 && (
-          <div className="hidden mt-2 text-sm sm:flex items-center">
+          <div className="items-center hidden mt-2 text-sm sm:flex">
             <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
             {!isMovie(title) &&
             title.seasons.filter((season) => season.seasonNumber !== 0)
@@ -126,7 +133,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
                 <Badge>{intl.formatMessage(messages.all)}</Badge>
               </span>
             ) : (
-              <div className="hide-scrollbar overflow-x-scroll">
+              <div className="overflow-x-scroll hide-scrollbar">
                 {request.seasons.map((season) => (
                   <span key={`season-${season.id}`} className="mr-2">
                     <Badge>{season.seasonNumber}</Badge>
@@ -138,7 +145,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
         )}
         {requestData.status === MediaRequestStatus.PENDING &&
           hasPermission(Permission.MANAGE_REQUESTS) && (
-            <div className="flex-1 flex items-end">
+            <div className="flex items-end flex-1">
               <span className="mr-2">
                 <Button
                   buttonType="success"
@@ -200,7 +207,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
           <img
             src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
             alt=""
-            className="w-20 sm:w-28 rounded-md shadow-sm cursor-pointer transition transform-gpu duration-300 scale-100 hover:scale-105 hover:shadow-md"
+            className="w-20 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md"
           />
         </Link>
       </div>

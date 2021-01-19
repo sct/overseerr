@@ -23,7 +23,7 @@ const availableLanguages: AvailableLanguageObject = {
   },
   ja: {
     code: 'ja',
-    display: '日本語',
+    display: 'Japanese',
   },
   fr: {
     code: 'fr',
@@ -65,6 +65,10 @@ const availableLanguages: AvailableLanguageObject = {
     code: 'sv',
     display: 'Swedish',
   },
+  'zh-Hant': {
+    code: 'zh-Hant',
+    display: 'Chinese (Traditional)',
+  },
 };
 
 const LanguagePicker: React.FC = () => {
@@ -105,20 +109,20 @@ const LanguagePicker: React.FC = () => {
         leaveTo="transform opacity-0 scale-95"
       >
         <div
-          className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg"
+          className="absolute right-0 w-48 mt-2 origin-top-right rounded-md shadow-lg"
           ref={dropdownRef}
         >
-          <div className="py-2 px-2 rounded-md bg-gray-700 ring-1 ring-black ring-opacity-5">
+          <div className="px-2 py-2 bg-gray-700 rounded-md ring-1 ring-black ring-opacity-5">
             <div>
               <label
                 htmlFor="language"
-                className="block text-sm leading-5 font-medium text-gray-300 pb-2"
+                className="block pb-2 text-sm font-medium leading-5 text-gray-300"
               >
                 <FormattedMessage {...messages.changelanguage} />
               </label>
               <select
                 id="language"
-                className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 text-white bg-gray-700 border-gray-600 focus:outline-none focus:ring-indigo focus:border-blue-800 sm:text-sm sm:leading-5"
+                className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white bg-gray-700 border-gray-600 form-select focus:outline-none focus:ring-indigo focus:border-blue-800 sm:text-sm sm:leading-5"
                 onChange={(e) =>
                   setLocale && setLocale(e.target.value as AvailableLocales)
                 }

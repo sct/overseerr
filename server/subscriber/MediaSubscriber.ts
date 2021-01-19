@@ -8,12 +8,16 @@ import TheMovieDb from '../api/themoviedb';
 import { MediaStatus, MediaType } from '../constants/media';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
+import Season from '../entity/Season';
 import notificationManager, { Notification } from '../lib/notifications';
 
 @EventSubscriber()
 export class MediaSubscriber implements EntitySubscriberInterface {
-  private async notifyAvailableMovie(entity: Media) {
-    if (entity.status === MediaStatus.AVAILABLE) {
+  private async notifyAvailableMovie(entity: Media, dbEntity?: Media) {
+    if (
+      entity.status === MediaStatus.AVAILABLE &&
+      dbEntity?.status !== MediaStatus.AVAILABLE
+    ) {
       if (entity.mediaType === MediaType.MOVIE) {
         const requestRepository = getRepository(MediaRequest);
         const relatedRequests = await requestRepository.find({
@@ -39,10 +43,13 @@ export class MediaSubscriber implements EntitySubscriberInterface {
   }
 
   private async notifyAvailableSeries(entity: Media, dbEntity: Media) {
+    const seasonRepository = getRepository(Season);
     const newAvailableSeasons = entity.seasons
       .filter((season) => season.status === MediaStatus.AVAILABLE)
       .map((season) => season.seasonNumber);
-    const oldAvailableSeasons = dbEntity.seasons
+    const oldSeasonIds = dbEntity.seasons.map((season) => season.id);
+    const oldSeasons = await seasonRepository.findByIds(oldSeasonIds);
+    const oldAvailableSeasons = oldSeasons
       .filter((season) => season.status === MediaStatus.AVAILABLE)
       .map((season) => season.seasonNumber);
 
@@ -96,11 +103,15 @@ export class MediaSubscriber implements EntitySubscriberInterface {
   }
 
   public beforeUpdate(event: UpdateEvent<Media>): void {
+    if (!event.entity) {
+      return;
+    }
+
     if (
       event.entity.mediaType === MediaType.MOVIE &&
       event.entity.status === MediaStatus.AVAILABLE
     ) {
-      this.notifyAvailableMovie(event.entity);
+      this.notifyAvailableMovie(event.entity, event.databaseEntity);
     }
 
     if (

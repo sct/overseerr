@@ -6,6 +6,8 @@ import { User } from '../entity/User';
 import { hasPermission, Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
+import gravatarUrl from 'gravatar-url';
+import { UserType } from '../constants/user';
 
 const router = Router();
 
@@ -19,13 +21,34 @@ router.get('/', async (_req, res) => {
 
 router.post('/', async (req, res, next) => {
   try {
+    const settings = getSettings().notifications.agents.email;
+
+    const body = req.body;
     const userRepository = getRepository(User);
 
+    const passedExplicitPassword = body.password && body.password.length > 0;
+    const avatar = gravatarUrl(body.email, { default: 'mm', size: 200 });
+
+    if (!passedExplicitPassword && !settings.enabled) {
+      throw new Error('Email notifications must be enabled');
+    }
+
     const user = new User({
-      email: req.body.email,
-      permissions: req.body.permissions,
+      avatar: body.avatar ?? avatar,
+      username: body.username ?? body.email,
+      email: body.email,
+      password: body.password,
+      permissions: Permission.REQUEST,
       plexToken: '',
+      userType: UserType.LOCAL,
     });
+
+    if (passedExplicitPassword) {
+      await user?.setPassword(body.password);
+    } else {
+      await user?.resetPassword();
+    }
+
     await userRepository.save(user);
     return res.status(201).json(user.filter());
   } catch (e) {
@@ -179,6 +202,7 @@ router.post('/import-from-plex', async (req, res, next) => {
             plexId: parseInt(account.id),
             plexToken: '',
             avatar: account.thumb,
+            userType: UserType.PLEX,
           });
           await userRepository.save(newUser);
           createdUsers.push(newUser);

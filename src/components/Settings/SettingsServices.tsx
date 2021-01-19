@@ -35,7 +35,6 @@ const messages = defineMessages({
   nodefault: 'No default server selected!',
   nodefaultdescription:
     'At least one server must be marked as default before any requests will make it to your services.',
-  no4kimplemented: '(Default 4K servers are not currently implemented)',
 });
 
 interface ServerInstanceProps {
@@ -63,10 +62,10 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
 }) => {
   return (
     <li className="col-span-1 bg-gray-700 rounded-lg shadow">
-      <div className="w-full flex items-center justify-between p-6 space-x-6">
+      <div className="flex items-center justify-between w-full p-6 space-x-6">
         <div className="flex-1 truncate">
-          <div className="flex items-center space-x-3 mb-2">
-            <h3 className="text-white text-sm leading-5 font-medium truncate">
+          <div className="flex items-center mb-2 space-x-3">
+            <h3 className="text-sm font-medium leading-5 text-white truncate">
               {name}
             </h3>
             {isDefault && (
@@ -85,31 +84,31 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               </Badge>
             )}
           </div>
-          <p className="mt-1 text-gray-300 text-sm leading-5 truncate">
-            <span className="font-bold mr-2">
+          <p className="mt-1 text-sm leading-5 text-gray-300 truncate">
+            <span className="mr-2 font-bold">
               <FormattedMessage {...messages.address} />
             </span>
             {address}
           </p>
-          <p className="mt-1 text-gray-300 text-sm leading-5 truncate">
-            <span className="font-bold mr-2">
+          <p className="mt-1 text-sm leading-5 text-gray-300 truncate">
+            <span className="mr-2 font-bold">
               <FormattedMessage {...messages.activeProfile} />
             </span>{' '}
             {profileName}
           </p>
         </div>
         <img
-          className="w-10 h-10 flex-shrink-0"
+          className="flex-shrink-0 w-10 h-10"
           src={`/images/${isSonarr ? 'sonarr' : 'radarr'}_logo.png`}
           alt=""
         />
       </div>
       <div className="border-t border-gray-800">
-        <div className="-mt-px flex">
-          <div className="w-0 flex-1 flex border-r border-gray-800">
+        <div className="flex -mt-px">
+          <div className="flex flex-1 w-0 border-r border-gray-800">
             <button
               onClick={() => onEdit()}
-              className="relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm leading-5 text-gray-200 font-medium border border-transparent rounded-bl-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10 transition ease-in-out duration-150"
+              className="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium leading-5 text-gray-200 transition duration-150 ease-in-out border border-transparent rounded-bl-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10"
             >
               <svg
                 className="w-5 h-5"
@@ -124,10 +123,10 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               </span>
             </button>
           </div>
-          <div className="-ml-px w-0 flex-1 flex">
+          <div className="flex flex-1 w-0 -ml-px">
             <button
               onClick={() => onDelete()}
-              className="relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm leading-5 text-gray-200 font-medium border border-transparent rounded-br-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10 transition ease-in-out duration-150"
+              className="relative inline-flex items-center justify-center flex-1 w-0 py-4 text-sm font-medium leading-5 text-gray-200 transition duration-150 ease-in-out border border-transparent rounded-br-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10"
             >
               <svg
                 className="w-5 h-5"
@@ -200,10 +199,10 @@ const SettingsServices: React.FC = () => {
   return (
     <>
       <div>
-        <h3 className="text-lg leading-6 font-medium text-gray-200">
+        <h3 className="text-lg font-medium leading-6 text-gray-200">
           <FormattedMessage {...messages.radarrsettings} />
         </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
+        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
           <FormattedMessage {...messages.radarrSettingsDescription} />
         </p>
       </div>
@@ -262,9 +261,6 @@ const SettingsServices: React.FC = () => {
               ) && (
                 <Alert title={intl.formatMessage(messages.nodefault)}>
                   <p>{intl.formatMessage(messages.nodefaultdescription)}</p>
-                  <p className="mt-2">
-                    {intl.formatMessage(messages.no4kimplemented)}
-                  </p>
                 </Alert>
               )}
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -287,7 +283,7 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="col-span-1 border-2 border-dashed border-gray-400 rounded-lg shadow h-32 sm:h-32">
+              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-32">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"
@@ -316,10 +312,10 @@ const SettingsServices: React.FC = () => {
         )}
       </div>
       <div className="mt-10">
-        <h3 className="text-lg leading-6 font-medium text-gray-200">
+        <h3 className="text-lg font-medium leading-6 text-gray-200">
           <FormattedMessage {...messages.sonarrsettings} />
         </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
+        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
           <FormattedMessage {...messages.sonarrSettingsDescription} />
         </p>
       </div>
@@ -333,9 +329,6 @@ const SettingsServices: React.FC = () => {
               ) && (
                 <Alert title={intl.formatMessage(messages.nodefault)}>
                   <p>{intl.formatMessage(messages.nodefaultdescription)}</p>
-                  <p className="mt-2">
-                    {intl.formatMessage(messages.no4kimplemented)}
-                  </p>
                 </Alert>
               )}
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -359,7 +352,7 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="col-span-1 border-2 border-dashed border-gray-400 rounded-lg shadow h-32 sm:h-32">
+              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-32">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"

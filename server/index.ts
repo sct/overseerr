@@ -21,6 +21,7 @@ import TelegramAgent from './lib/notifications/agents/telegram';
 import { getAppVersion } from './utils/appVersion';
 import SlackAgent from './lib/notifications/agents/slack';
 import PushoverAgent from './lib/notifications/agents/pushover';
+import WebhookAgent from './lib/notifications/agents/webhook';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -51,6 +52,7 @@ app
       new SlackAgent(),
       new TelegramAgent(),
       new PushoverAgent(),
+      new WebhookAgent(),
     ]);
 
     // Start Jobs

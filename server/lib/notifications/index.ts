@@ -7,6 +7,7 @@ export enum Notification {
   MEDIA_AVAILABLE = 8,
   MEDIA_FAILED = 16,
   TEST_NOTIFICATION = 32,
+  MEDIA_DECLINED = 64,
 }
 
 export const hasNotificationType = (

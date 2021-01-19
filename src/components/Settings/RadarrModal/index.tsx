@@ -286,7 +286,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       type="checkbox"
                       id="isDefault"
                       name="isDefault"
-                      className="form-checkbox h-6 w-6 text-indigo-600 transition duration-150 ease-in-out rounded-md"
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
@@ -296,9 +296,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.servername)}
+                    <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg flex rounded-md shadow-sm">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         id="name"
                         name="name"
@@ -310,11 +311,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           setIsValidated(false);
                           setFieldValue('name', e.target.value);
                         }}
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
                     {errors.name && touched.name && (
-                      <div className="text-red-500 mt-2">{errors.name}</div>
+                      <div className="mt-2 text-red-500">{errors.name}</div>
                     )}
                   </div>
                 </div>
@@ -324,10 +325,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.hostname)}
+                    <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg flex rounded-md shadow-sm">
-                      <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-500 bg-gray-600 text-gray-100 sm:text-sm cursor-default">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <span className="inline-flex items-center px-3 text-gray-100 bg-gray-600 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
                         {values.ssl ? 'https://' : 'http://'}
                       </span>
                       <Field
@@ -339,11 +341,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           setIsValidated(false);
                           setFieldValue('hostname', e.target.value);
                         }}
-                        className="flex-1 form-input block w-full min-w-0 rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 form-input rounded-r-md sm:text-sm sm:leading-5"
                       />
                     </div>
                     {errors.hostname && touched.hostname && (
-                      <div className="text-red-500 mt-2">{errors.hostname}</div>
+                      <div className="mt-2 text-red-500">{errors.hostname}</div>
                     )}
                   </div>
                 </div>
@@ -353,6 +355,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.port)}
+                    <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
@@ -364,10 +367,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         setIsValidated(false);
                         setFieldValue('port', e.target.value);
                       }}
-                      className="rounded-md shadow-sm form-input block w-24 transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                      className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md shadow-sm form-input sm:text-sm sm:leading-5"
                     />
                     {errors.port && touched.port && (
-                      <div className="text-red-500 mt-2">{errors.port}</div>
+                      <div className="mt-2 text-red-500">{errors.port}</div>
                     )}
                   </div>
                 </div>
@@ -387,7 +390,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         setIsValidated(false);
                         setFieldValue('ssl', !values.ssl);
                       }}
-                      className="form-checkbox h-6 w-6 rounded-md text-indigo-600 transition duration-150 ease-in-out"
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
@@ -397,9 +400,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.apiKey)}
+                    <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg flex rounded-md shadow-sm">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         id="apiKey"
                         name="apiKey"
@@ -411,11 +415,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           setIsValidated(false);
                           setFieldValue('apiKey', e.target.value);
                         }}
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
                     {errors.apiKey && touched.apiKey && (
-                      <div className="text-red-500 mt-2">{errors.apiKey}</div>
+                      <div className="mt-2 text-red-500">{errors.apiKey}</div>
                     )}
                   </div>
                 </div>
@@ -427,7 +431,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg flex rounded-md shadow-sm">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         id="baseUrl"
                         name="baseUrl"
@@ -439,11 +443,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
                         }}
-                        className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-gray-700 border border-gray-500"
+                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
                     {errors.baseUrl && touched.baseUrl && (
-                      <div className="text-red-500 mt-2">{errors.baseUrl}</div>
+                      <div className="mt-2 text-red-500">{errors.baseUrl}</div>
                     )}
                   </div>
                 </div>
@@ -453,15 +457,16 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.qualityprofile)}
+                    <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg flex rounded-md shadow-sm">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         as="select"
                         id="activeProfileId"
                         name="activeProfileId"
                         disabled={!isValidated || isTesting}
-                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
+                        className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 bg-gray-700 border-gray-500 rounded-md form-select focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
                           {isTesting
@@ -484,7 +489,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       </Field>
                     </div>
                     {errors.activeProfileId && touched.activeProfileId && (
-                      <div className="text-red-500 mt-2">
+                      <div className="mt-2 text-red-500">
                         {errors.activeProfileId}
                       </div>
                     )}
@@ -496,15 +501,16 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.rootfolder)}
+                    <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg flex rounded-md shadow-sm">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         as="select"
                         id="rootFolder"
                         name="rootFolder"
                         disabled={!isValidated || isTesting}
-                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
+                        className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 bg-gray-700 border-gray-500 rounded-md form-select focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
                           {isTesting
@@ -525,7 +531,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       </Field>
                     </div>
                     {errors.rootFolder && touched.rootFolder && (
-                      <div className="text-red-500 mt-2">
+                      <div className="mt-2 text-red-500">
                         {errors.rootFolder}
                       </div>
                     )}
@@ -537,14 +543,15 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     {intl.formatMessage(messages.minimumAvailability)}
+                    <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg flex rounded-md shadow-sm">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         as="select"
                         id="minimumAvailability"
                         name="minimumAvailability"
-                        className="mt-1 form-select rounded-md block w-full pl-3 pr-10 py-2 text-base leading-6 bg-gray-700 border-gray-500 focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
+                        className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 bg-gray-700 border-gray-500 rounded-md form-select focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5"
                       >
                         <option value="announced">Announced</option>
                         <option value="inCinemas">In Cinemas</option>
@@ -554,7 +561,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     </div>
                     {errors.minimumAvailability &&
                       touched.minimumAvailability && (
-                        <div className="text-red-500 mt-2">
+                        <div className="mt-2 text-red-500">
                           {errors.minimumAvailability}
                         </div>
                       )}
@@ -572,7 +579,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       type="checkbox"
                       id="is4k"
                       name="is4k"
-                      className="form-checkbox h-6 w-6 rounded-md text-indigo-600 transition duration-150 ease-in-out"
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>

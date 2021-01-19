@@ -20,6 +20,7 @@ const globalMessages = defineMessages({
   retry: 'Retry',
   deleting: 'Deleting…',
   close: 'Close',
+  edit: 'Edit',
 });
 
 export default globalMessages;

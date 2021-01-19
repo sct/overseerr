@@ -6,7 +6,7 @@ import Badge from '../Common/Badge';
 import { FormattedDate, defineMessages, useIntl } from 'react-intl';
 import Button from '../Common/Button';
 import { hasPermission } from '../../../server/lib/permissions';
-import { Permission } from '../../hooks/useUser';
+import { Permission, UserType } from '../../hooks/useUser';
 import { useRouter } from 'next/router';
 import Header from '../Common/Header';
 import Table from '../Common/Table';
@@ -15,6 +15,10 @@ import Modal from '../Common/Modal';
 import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
 import globalMessages from '../../i18n/globalMessages';
+import { Field, Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import AddUserIcon from '../../assets/useradd.svg';
+import Alert from '../Common/Alert';
 
 const messages = defineMessages({
   userlist: 'User List',
@@ -38,6 +42,22 @@ const messages = defineMessages({
   userdeleteerror: 'Something went wrong deleting the user',
   deleteconfirm:
     'Are you sure you want to delete this user? All existing request data from this user will be removed.',
+  localuser: 'Local User',
+  createlocaluser: 'Create Local User',
+  createuser: 'Create User',
+  creating: 'Creating',
+  create: 'Create',
+  validationemailrequired: 'Must enter a valid email address.',
+  validationpasswordminchars:
+    'Password is too short - should be 8 chars minimum.',
+  usercreatedfailed: 'Something went wrong when trying to create the user',
+  usercreatedsuccess: 'Successfully created the user',
+  email: 'Email Address',
+  password: 'Password',
+  passwordinfo: 'Password Info',
+  passwordinfodescription:
+    'Email notification settings need to be enabled and setup in order to use the auto generated passwords',
+  autogeneratepassword: 'Automatically generate password',
 });
 
 const UserList: React.FC = () => {
@@ -50,6 +70,11 @@ const UserList: React.FC = () => {
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     user?: User;
+  }>({
+    isOpen: false,
+  });
+  const [createModal, setCreateModal] = useState<{
+    isOpen: boolean;
   }>({
     isOpen: false,
   });
@@ -107,6 +132,15 @@ const UserList: React.FC = () => {
     return <LoadingSpinner />;
   }
 
+  const CreateUserSchema = Yup.object().shape({
+    email: Yup.string()
+      .email()
+      .required(intl.formatMessage(messages.validationemailrequired)),
+    password: Yup.lazy((value) =>
+      !value ? Yup.string() : Yup.string().min(8)
+    ),
+  });
+
   return (
     <>
       <Transition
@@ -149,16 +183,155 @@ const UserList: React.FC = () => {
           {intl.formatMessage(messages.deleteconfirm)}
         </Modal>
       </Transition>
-      <div className="flex items-center justify-between">
-        <Header>{intl.formatMessage(messages.userlist)}</Header>
-        <Button
-          className="mx-4 my-8"
-          buttonType="primary"
-          disabled={isImporting}
-          onClick={() => importFromPlex()}
+      <Transition
+        enter="opacity-0 transition duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="opacity-100 transition duration-300"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+        show={createModal.isOpen}
+      >
+        <Formik
+          initialValues={{
+            email: '',
+            password: '',
+            genpassword: true,
+          }}
+          validationSchema={CreateUserSchema}
+          onSubmit={async (values) => {
+            try {
+              await axios.post('/api/v1/user', {
+                email: values.email,
+                password: values.genpassword ? null : values.password,
+              });
+              addToast(intl.formatMessage(messages.usercreatedsuccess), {
+                appearance: 'success',
+                autoDismiss: true,
+              });
+              setCreateModal({ isOpen: false });
+            } catch (e) {
+              addToast(intl.formatMessage(messages.usercreatedfailed), {
+                appearance: 'error',
+                autoDismiss: true,
+              });
+            } finally {
+              revalidate();
+            }
+          }}
         >
-          {intl.formatMessage(messages.importfromplex)}
-        </Button>
+          {({
+            errors,
+            touched,
+            isSubmitting,
+            values,
+            isValid,
+            setFieldValue,
+            handleSubmit,
+          }) => {
+            return (
+              <Modal
+                title={intl.formatMessage(messages.createuser)}
+                iconSvg={<AddUserIcon className="h-6" />}
+                onOk={() => handleSubmit()}
+                okText={
+                  isSubmitting
+                    ? intl.formatMessage(messages.creating)
+                    : intl.formatMessage(messages.create)
+                }
+                okDisabled={isSubmitting || !isValid}
+                okButtonType="primary"
+                onCancel={() => setCreateModal({ isOpen: false })}
+              >
+                <Alert title={intl.formatMessage(messages.passwordinfo)}>
+                  {intl.formatMessage(messages.passwordinfodescription)}
+                </Alert>
+                <Form>
+                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    >
+                      {intl.formatMessage(messages.email)}
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <div className="flex max-w-lg rounded-md shadow-sm">
+                        <Field
+                          id="email"
+                          name="email"
+                          type="text"
+                          placeholder="name@example.com"
+                          className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                        />
+                      </div>
+                      {errors.email && touched.email && (
+                        <div className="mt-2 text-red-500">{errors.email}</div>
+                      )}
+                    </div>
+                    <label
+                      htmlFor="genpassword"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    >
+                      {intl.formatMessage(messages.autogeneratepassword)}
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <Field
+                        type="checkbox"
+                        id="genpassword"
+                        name="genpassword"
+                        className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                        onClick={() => setFieldValue('password', '')}
+                      />
+                    </div>
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    >
+                      {intl.formatMessage(messages.password)}
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <div className="flex max-w-lg rounded-md shadow-sm">
+                        <Field
+                          id="password"
+                          name="password"
+                          type="password"
+                          disabled={values.genpassword}
+                          placeholder={intl.formatMessage(messages.password)}
+                          className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                        />
+                      </div>
+                      {errors.password && touched.password && (
+                        <div className="mt-2 text-red-500">
+                          {errors.password}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Form>
+              </Modal>
+            );
+          }}
+        </Formik>
+      </Transition>
+      <div className="flex flex-col justify-between sm:flex-row">
+        <Header>{intl.formatMessage(messages.userlist)}</Header>
+        <div className="flex">
+          <Button
+            className="mx-4 my-8 outline"
+            buttonType="primary"
+            onClick={() => setCreateModal({ isOpen: true })}
+          >
+            {intl.formatMessage(messages.createlocaluser)}
+          </Button>
+          <Button
+            className="mx-4 my-8"
+            buttonType="primary"
+            disabled={isImporting}
+            onClick={() => importFromPlex()}
+          >
+            {intl.formatMessage(messages.importfromplex)}
+          </Button>
+        </div>
       </div>
       <Table>
         <thead>
@@ -188,7 +361,7 @@ const UserList: React.FC = () => {
                     <div className="text-sm font-medium leading-5">
                       {user.username}
                     </div>
-                    <div className="text-sm text-gray-300 leading-5">
+                    <div className="text-sm leading-5 text-gray-300">
                       {user.email}
                     </div>
                   </div>
@@ -198,9 +371,15 @@ const UserList: React.FC = () => {
                 <div className="text-sm leading-5">{user.requestCount}</div>
               </Table.TD>
               <Table.TD>
-                <Badge badgeType="warning">
-                  {intl.formatMessage(messages.plexuser)}
-                </Badge>
+                {user.userType === UserType.PLEX ? (
+                  <Badge badgeType="warning">
+                    {intl.formatMessage(messages.plexuser)}
+                  </Badge>
+                ) : (
+                  <Badge badgeType="default">
+                    {intl.formatMessage(messages.localuser)}
+                  </Badge>
+                )}
               </Table.TD>
               <Table.TD>
                 {hasPermission(Permission.ADMIN, user.permissions)
