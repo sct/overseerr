@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useRef, Fragment } from 'react';
 import { Field, Form, Formik } from 'formik';
 import Alert from '../../Common/Alert';
 import Modal from '../../Common/Modal';
 import useSWR from 'swr';
 import { defineMessages, useIntl } from 'react-intl';
-import { SearchResult } from '../../../../server/api/tvdb';
+import { SonarrSeries } from '../../../../server/api/sonarr';
 
 const messages = defineMessages({
   next: 'Next',
@@ -31,97 +31,72 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
   tmdbId,
 }) => {
   const intl = useIntl();
-  const { data, error } = useSWR<{ result: SearchResult[] }>(
-    `/api/v1/service/sonarr/lookup/${tmdbId}`
+  const { data, error } = useSWR<SonarrSeries[]>(
+    `/api/v1/service/sonarr/lookup/121`
+    // `/api/v1/service/sonarr/lookup/${tmdbId}`
   );
+  const selectedShow = useRef<number | null>(null);
 
-  console.log(data);
+  const handleClick = (tvdbId: number) => {
+    selectedShow.current = tvdbId;
+  };
+
   return (
-    <Formik
-      initialValues={{
-        tvdbId: 0,
-      }}
-      onSubmit={(values) => {
-        setTvdbId(values.tvdbId);
-        closeModal();
-      }}
+    <Modal
+      loading={loading && !error}
+      backgroundClickable
+      onCancel={onCancel}
+      onOk={() => null}
+      title={modalTitle}
+      okText={intl.formatMessage(messages.next)}
+      okDisabled={!selectedShow.current}
+      okButtonType="primary"
+      iconSvg={
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+          />
+        </svg>
+      }
     >
-      {({
-        // errors,
-        // touched,
-        isSubmitting,
-        values,
-        // isValid,
-        // setFieldValue,
-        handleSubmit,
-      }) => {
-        return (
-          <Modal
-            loading={loading && !error}
-            backgroundClickable
-            onCancel={onCancel}
-            onOk={() => handleSubmit()}
-            title={modalTitle}
-            okText={intl.formatMessage(messages.next)}
-            okDisabled={isSubmitting || !values.tvdbId}
-            okButtonType="primary"
-            iconSvg={
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-            }
-          >
-            <Alert title={intl.formatMessage(messages.notvdbid)} type="info">
-              {intl.formatMessage(messages.notvdbiddescription)}
-            </Alert>
-            <Form>
-              <div role="group" aria-labelledby="tvdb-group">
-                {/* {data?.result.map((show) => (
-                  <>
-                    <div className="p-1" key={show.tvdbId}>
-                      <label className="block text-sm font-medium leading-5 sm:mt-px">
-                        <Field
-                          id="tvdbId"
-                          name="tvdbId"
-                          type="radio"
-                          value={String(show.tvdbId)}
-                          className="w-6 h-6 mr-2 text-indigo-600 transition duration-150 ease-in-out rounded-full form-radio"
-                        />
-
-                        {show.mediaName + (show.year ? ` (${show.year})` : '')}
-                      </label>
-                    </div>
-                    <div className="p-1">
-                      <label className="block text-sm font-medium leading-5 sm:mt-px">
-                        <Field
-                          id="tvdbId"
-                          name="tvdbId"
-                          type="radio"
-                          value={String(show.tvdbId)}
-                          className="w-6 h-6 mr-2 text-indigo-600 transition duration-150 ease-in-out rounded-full form-radio"
-                        />
-                        {'Some other title (1337)'}
-                      </label>
-                    </div>
-                  </>
-                ))} */}
+      <Alert title={intl.formatMessage(messages.notvdbid)} type="info">
+        {intl.formatMessage(messages.notvdbiddescription)}
+      </Alert>
+      <div>
+        {data?.map((item) => (
+          <Fragment key={item.id}>
+            <div className="container mx-auto flex flex-col space-y-4 justify-center items-center h-72 overflow-hidden">
+              <div className="bg-gray-600  w-full flex items-center p-2 m-2 rounded-xl shadow">
+                <div className="flex-none flex items-center space-x-4 w-32 md:w-44 lg:w-52">
+                  <img
+                    src={item.remotePoster}
+                    alt={item.title}
+                    className="w-auto h-100 rounded-xl"
+                  />
+                </div>
+                <div className="flex-grow p-3 self-start">
+                  <div className="text-sm font-medium text-grey-200">
+                    {item.title}
+                  </div>
+                  <div className="text-sm text-gray-400 max-h-52 overflow-x-scroll">
+                    {item.overview}
+                  </div>
+                </div>
               </div>
-            </Form>
-          </Modal>
-        );
-      }}
-    </Formik>
+            </div>
+          </Fragment>
+        ))}
+      </div>
+    </Modal>
   );
 };
 
