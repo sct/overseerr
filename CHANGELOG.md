@@ -1,3 +1,48 @@
+# [1.17.0](https://github.com/sct/overseerr/compare/v1.16.0...v1.17.0) (2021-01-19)
+
+
+### Bug Fixes
+
+* **api:** improve rottentomatoes rating matching for movies ([7db62ab](https://github.com/sct/overseerr/commit/7db62ab824eefc42e6db16e42d52f4266b136f82)), closes [#494](https://github.com/sct/overseerr/issues/494)
+* **build:** remove cross import from client to server for UserType ([23624bd](https://github.com/sct/overseerr/commit/23624bd144af5df4c31995b68ce48105b95b20f6))
+* **frontend:** clarify which fields are required in radarr/sonarr modals ([860d71e](https://github.com/sct/overseerr/commit/860d71ed69a69a1a3f74b79290ef471e04f57a6b)), closes [#575](https://github.com/sct/overseerr/issues/575)
+* **frontend:** do not show failed media status on request list for declined requests ([00944b1](https://github.com/sct/overseerr/commit/00944b1ec2db8ddc5742448f6448f7364c473a98)), closes [#664](https://github.com/sct/overseerr/issues/664)
+* **frontend:** fix button styling on details page on small screen sizes ([d9e0c90](https://github.com/sct/overseerr/commit/d9e0c90e76d80aef0c67318e00e997804805f46e))
+* **frontend:** fix request button height ([a262727](https://github.com/sct/overseerr/commit/a2627270784bdef8644875fa5c5a7349a0b7fd81))
+* **frontend:** request dropdown menu now properly shows up over collection button ([b491be1](https://github.com/sct/overseerr/commit/b491be1b1e7f6aa588274230e695e4c5302b961e))
+* **frontend:** show correct request status on request cards for 4k requests ([1aa0005](https://github.com/sct/overseerr/commit/1aa0005b4298fc1af9c1d0bf1f357738c0fa2673))
+* **lang:** add missing see more i18n string for SeeMoreCard ([d9919ab](https://github.com/sct/overseerr/commit/d9919abb8998d28558ddec35b8e60ab2af75d5b7))
+* **lang:** change email auth user/pass strings to SMTP Username/Password ([a77a2aa](https://github.com/sct/overseerr/commit/a77a2aa3ebb1be353d534db5b07647ac26c60e15))
+* **notifications:** correctly compare seasons before sending series notifications ([f17fa2a](https://github.com/sct/overseerr/commit/f17fa2a2db8144bac89936f588627e8dd37bf54a))
+* **notifications:** only send one available notification for standard media ([fc6f7cc](https://github.com/sct/overseerr/commit/fc6f7ccea586165a30022b6d5554911c66ece6df))
+* **notifications:** send media declined email ([eb6fc8a](https://github.com/sct/overseerr/commit/eb6fc8a19099469794d471db0b48a258c2866633)), closes [#679](https://github.com/sct/overseerr/issues/679)
+* **plex-sync:** improve plex sync error handling. add session id to fix stuck runs ([a740b07](https://github.com/sct/overseerr/commit/a740b07f06f892b72a651b928af28ce71cb495ee))
+* **plex-sync:** store plex added date and sort recently added by it ([d688a96](https://github.com/sct/overseerr/commit/d688a967596afcba9799b8133089bebb5add27cf))
+* **requests:** select the correct radarr/sonarr server when sending request to service ([e0d9f89](https://github.com/sct/overseerr/commit/e0d9f891e797c3839f976b75a871903b6f2e55f1))
+* **server:** support absolute paths for CONFIG_DIRECTORY ([51d8fba](https://github.com/sct/overseerr/commit/51d8fba9162b9e148a35ced69e7e035438c8b0f1))
+* **user edit:** fix user edit not being able to be saved ([#651](https://github.com/sct/overseerr/issues/651)) ([b04d00e](https://github.com/sct/overseerr/commit/b04d00ef509d6f13c1f9677b3f318331782c0086))
+
+
+### Features
+
+* **api:** /request/count endpoint ([#682](https://github.com/sct/overseerr/issues/682)) ([192cfd8](https://github.com/sct/overseerr/commit/192cfd8a8ea9ab942d5bb265d42050917a2f5a04))
+* **frontend:** add see more card to media sliders ([587e8db](https://github.com/sct/overseerr/commit/587e8db15e9c19b4c58406e3e4215d8bf87d8762))
+* **frontend:** add template variable help button to custom webhook settings page ([29c5bc4](https://github.com/sct/overseerr/commit/29c5bc40975e7ab0a2e08bb77294f164f0c60769))
+* **lang:** add support for Chinese (Traditional) language ([686c4f7](https://github.com/sct/overseerr/commit/686c4f71bf930625af082ac5e14dc5f79f5c42eb))
+* **lang:** Translations update from Weblate ([#604](https://github.com/sct/overseerr/issues/604)) ([801e765](https://github.com/sct/overseerr/commit/801e76524d6ea0887249f1630402e9c3a3430b44))
+* **login:** add local users functionality ([#591](https://github.com/sct/overseerr/issues/591)) ([492e19d](https://github.com/sct/overseerr/commit/492e19df4014e67dc6a2de5903a33c25e13fcf45))
+* **notifications:** add notification for declined requests ([2f97f61](https://github.com/sct/overseerr/commit/2f97f61a6e8846975774aa16950a39ada2b1a016)), closes [#663](https://github.com/sct/overseerr/issues/663)
+* **notifications:** Webhook Notifications ([#632](https://github.com/sct/overseerr/issues/632)) ([a7cc7c5](https://github.com/sct/overseerr/commit/a7cc7c59753dd9649b2ec37eb9d46fe4fa8e1e1c))
+* **requests:** Request Overrides & Request Editing ([#653](https://github.com/sct/overseerr/issues/653)) ([bdb3372](https://github.com/sct/overseerr/commit/bdb33722e6df09dd6d8caa36b104b61c6b8dc00d))
+* **server:** add CONFIG_DIRECTORY env var to control config directory location ([fa8f112](https://github.com/sct/overseerr/commit/fa8f112c31ccb5ee6244f776bc97e76d81958539))
+* 4K Requests ([#559](https://github.com/sct/overseerr/issues/559)) ([6b2df24](https://github.com/sct/overseerr/commit/6b2df24a2e8f96dd2277a814d7e02015d1f80cdc))
+* map AniDB IDs from Hama agent to tvdb/tmdb/imdb IDs ([#538](https://github.com/sct/overseerr/issues/538)) ([0600ac7](https://github.com/sct/overseerr/commit/0600ac7c3a1bc0cdd906634d5f77ea3e99b10e94)), closes [#453](https://github.com/sct/overseerr/issues/453)
+
+
+### Reverts
+
+* **deps:** revert back to next@10.0.3 until sharp optional dependency bug is fixed ([7962964](https://github.com/sct/overseerr/commit/79629645aacc1a042919834da79bff0c1f69c9d6))
+
 # [1.16.0](https://github.com/sct/overseerr/compare/v1.15.0...v1.16.0) (2021-01-07)
 
 
