@@ -70,7 +70,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ## Preview
 
-<img src="https://i.imgur.com/Mjbyruv.png">
+<img src="./public/preview.jpg">
 
 ## Support
 
