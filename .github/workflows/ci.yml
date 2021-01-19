@@ -63,6 +63,7 @@ jobs:
   discord:
     name: Send Discord Notification
     needs: build_and_push
+    if: always() && github.event_name != 'pull_request'
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status

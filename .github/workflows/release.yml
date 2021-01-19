@@ -44,6 +44,7 @@ jobs:
   discord:
     name: Send Discord Notification
     needs: semantic-release
+    if: always()
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status
