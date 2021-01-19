@@ -18,7 +18,7 @@ import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInte
 import { SettingsProvider } from '../context/SettingsContext';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const loadLocaleData = (locale: string): Promise<any> => {
+const loadLocaleData = (locale: AvailableLocales): Promise<any> => {
   switch (locale) {
     case 'ja':
       return import('../i18n/locale/ja.json');
@@ -42,6 +42,8 @@ const loadLocaleData = (locale: string): Promise<any> => {
       return import('../i18n/locale/sr.json');
     case 'sv':
       return import('../i18n/locale/sv.json');
+    case 'zh-Hant':
+      return import('../i18n/locale/zh_Hant.json');
     default:
       return import('../i18n/locale/en.json');
   }
@@ -112,6 +114,10 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
               <ToastProvider components={{ Toast }}>
                 <Head>
                   <title>Overseerr</title>
+                  <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                  />
                 </Head>
                 <StatusChecker />
                 <UserContext initialUser={user}>{component}</UserContext>
@@ -192,7 +198,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     initialProps
   );
 
-  const messages = await loadLocaleData(locale);
+  const messages = await loadLocaleData(locale as AvailableLocales);
 
   return { ...appInitialProps, user, messages, locale, currentSettings };
 };
