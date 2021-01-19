@@ -236,14 +236,10 @@ requestRoutes.get('/count', async (_req, res, next) => {
     const approvedCount = await requestRepository.count({
       status: MediaRequestStatus.APPROVED,
     });
-    const availableCount = await requestRepository.count({
-      status: MediaRequestStatus.AVAILABLE,
-    });
 
     return res.status(200).json({
       pending: pendingCount,
       approved: approvedCount,
-      available: availableCount,
     });
   } catch (e) {
     next({ status: 500, message: e.message });

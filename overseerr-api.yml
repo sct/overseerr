@@ -2490,7 +2490,7 @@ paths:
     get:
       summary: Returns request counts
       description: |
-        Returns the number of pending, approved, and available requests.
+        Returns the number of pending and approved requests.
       tags:
         - request
       responses:
@@ -2507,13 +2507,9 @@ paths:
                   approved:
                     type: number
                     example: 10
-                  available:
-                    type: number
-                    example: 50
                 required:
                   - pending
                   - approved
-                  - available
   /request/{requestId}:
     get:
       summary: Requests a specific MediaRequest
