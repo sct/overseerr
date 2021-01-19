@@ -80,7 +80,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
           showDetail ? 'scale-105' : ''
         }`}
         style={{
-          backgroundImage: `url(//image.tmdb.org/t/p/w300_and_h450_face${image})`,
+          backgroundImage: image
+            ? `url(//image.tmdb.org/t/p/w300_and_h450_face${image})`
+            : `url('/images/overseerr_poster_not_found_logo_top.png')`,
         }}
         onMouseEnter={() => {
           if (!isTouch) {

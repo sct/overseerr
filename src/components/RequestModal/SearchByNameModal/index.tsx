@@ -1,5 +1,4 @@
-import React, { useRef, Fragment } from 'react';
-import { Field, Form, Formik } from 'formik';
+import React from 'react';
 import Alert from '../../Common/Alert';
 import Modal from '../../Common/Modal';
 import useSWR from 'swr';
@@ -11,10 +10,12 @@ const messages = defineMessages({
   notvdbid: 'No TVDB id was found connected on TMDB',
   notvdbiddescription:
     'Either add the TVDB id to TMDB and come back later, or select the correct match below.',
+  nosummary: 'No summary for this title was found.',
 });
 
 interface SearchByNameModalProps {
   setTvdbId: (id: number) => void;
+  tvdbId: number | undefined;
   loading: boolean;
   onCancel?: () => void;
   closeModal: () => void;
@@ -24,6 +25,7 @@ interface SearchByNameModalProps {
 
 const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
   setTvdbId,
+  tvdbId,
   loading,
   onCancel,
   closeModal,
@@ -32,13 +34,11 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
 }) => {
   const intl = useIntl();
   const { data, error } = useSWR<SonarrSeries[]>(
-    `/api/v1/service/sonarr/lookup/121`
-    // `/api/v1/service/sonarr/lookup/${tmdbId}`
+    `/api/v1/service/sonarr/lookup/${tmdbId}`
   );
-  const selectedShow = useRef<number | null>(null);
 
   const handleClick = (tvdbId: number) => {
-    selectedShow.current = tvdbId;
+    setTvdbId(tvdbId);
   };
 
   return (
@@ -46,10 +46,10 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
       loading={loading && !error}
       backgroundClickable
       onCancel={onCancel}
-      onOk={() => null}
+      onOk={closeModal}
       title={modalTitle}
       okText={intl.formatMessage(messages.next)}
-      okDisabled={!selectedShow.current}
+      okDisabled={!tvdbId}
       okButtonType="primary"
       iconSvg={
         <svg
@@ -71,29 +71,46 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
       <Alert title={intl.formatMessage(messages.notvdbid)} type="info">
         {intl.formatMessage(messages.notvdbiddescription)}
       </Alert>
-      <div>
-        {data?.map((item) => (
-          <Fragment key={item.id}>
-            <div className="container mx-auto flex flex-col space-y-4 justify-center items-center h-72 overflow-hidden">
-              <div className="bg-gray-600  w-full flex items-center p-2 m-2 rounded-xl shadow">
-                <div className="flex-none flex items-center space-x-4 w-32 md:w-44 lg:w-52">
-                  <img
-                    src={item.remotePoster}
-                    alt={item.title}
-                    className="w-auto h-100 rounded-xl"
-                  />
+      <div className="grid md:grid-cols-2 grid-cols-1 gap-4 pb-2">
+        {data?.slice(0, 6).map((item) => (
+          <div
+            key={item.tvdbId}
+            className="h-40 transition duration-300 transform-gpu scale-100 container mx-auto flex flex-col space-y-4 justify-center items-center hover:scale-105 outline-none "
+            onClick={() => handleClick(item.tvdbId)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === 'Space') {
+                handleClick(item.tvdbId);
+                e.preventDefault();
+              }
+            }}
+            role="link"
+            tabIndex={0}
+          >
+            <div
+              className={`border bg-gray-600 h-40 overflow-hidden w-full flex items-center p-2 rounded-xl shadow ${
+                tvdbId === item.tvdbId ? '' : 'border-transparent'
+              } `}
+            >
+              <div className="flex-none flex items-center space-x-4 w-24">
+                <img
+                  src={
+                    item.remotePoster ??
+                    '/images/overseerr_poster_not_found.png'
+                  }
+                  alt={item.title}
+                  className="w-auto h-100 rounded-xl"
+                />
+              </div>
+              <div className="flex-grow p-3 self-start">
+                <div className="text-sm font-medium text-grey-200">
+                  {item.title}
                 </div>
-                <div className="flex-grow p-3 self-start">
-                  <div className="text-sm font-medium text-grey-200">
-                    {item.title}
-                  </div>
-                  <div className="text-sm text-gray-400 max-h-52 overflow-x-scroll">
-                    {item.overview}
-                  </div>
+                <div className="text-sm text-gray-400 h-24 overflow-hidden">
+                  {item.overview ?? intl.formatMessage(messages.nosummary)}
                 </div>
               </div>
             </div>
-          </Fragment>
+          </div>
         ))}
       </div>
     </Modal>

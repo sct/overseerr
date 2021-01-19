@@ -46,6 +46,7 @@ const messages = defineMessages({
   notvdbid: 'No TVDB id was found connected on TMDB',
   notvdbiddescription:
     'Either add the TVDB id to TMDB and come back later, or select the correct match below.',
+  backbutton: 'Back',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -153,7 +154,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       }
       const response = await axios.post<MediaRequest>('/api/v1/request', {
         mediaId: data?.id,
-        tvdbId: tvdbId || data?.externalIds.tvdbId,
+        tvdbId: tvdbId ?? data?.externalIds.tvdbId,
         mediaType: 'tv',
         is4k,
         seasons: selectedSeasons,
@@ -302,6 +303,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
 
   return !data?.externalIds.tvdbId && searchModal.show ? (
     <SearchByNameModal
+      tvdbId={tvdbId}
       setTvdbId={setTvdbId}
       closeModal={() => setSearchModal({ show: false })}
       loading={!data && !error}
@@ -316,7 +318,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     <Modal
       loading={!data && !error}
       backgroundClickable
-      onCancel={onCancel}
+      onCancel={tvdbId ? () => setSearchModal({ show: true }) : onCancel}
       onOk={() => (editRequest ? updateRequest() : sendRequest())}
       title={intl.formatMessage(
         is4k ? messages.request4ktitle : messages.requesttitle,
@@ -334,6 +336,11 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       okDisabled={editRequest ? false : selectedSeasons.length === 0}
       okButtonType={
         editRequest && selectedSeasons.length === 0 ? 'danger' : `primary`
+      }
+      cancelText={
+        tvdbId
+          ? intl.formatMessage(messages.backbutton)
+          : intl.formatMessage(globalMessages.cancel)
       }
       iconSvg={
         <svg

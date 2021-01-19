@@ -109,7 +109,7 @@ requestRoutes.post(
       if (!media) {
         media = new Media({
           tmdbId: tmdbMedia.id,
-          tvdbId: tmdbMedia.external_ids.tvdb_id,
+          tvdbId: req.body.tvdbId ?? tmdbMedia.external_ids.tvdb_id,
           status: !req.body.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
           status4k: req.body.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
           mediaType: req.body.mediaType,
