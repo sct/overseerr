@@ -75,7 +75,7 @@ jobs:
   discord:
     name: Send Discord Notification
     needs: build-snap
-    if: always() && github.event_name != 'pull_request'
+    if: always()
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status
