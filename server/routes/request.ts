@@ -221,10 +221,30 @@ requestRoutes.post(
 
       next({ status: 500, message: 'Invalid media type' });
     } catch (e) {
-      next({ message: e.message, status: 500 });
+      next({ status: 500, message: e.message });
     }
   }
 );
+
+requestRoutes.get('/count', async (_req, res, next) => {
+  const requestRepository = getRepository(MediaRequest);
+
+  try {
+    const pendingCount = await requestRepository.count({
+      status: MediaRequestStatus.PENDING,
+    });
+    const approvedCount = await requestRepository.count({
+      status: MediaRequestStatus.APPROVED,
+    });
+
+    return res.status(200).json({
+      pending: pendingCount,
+      approved: approvedCount,
+    });
+  } catch (e) {
+    next({ status: 500, message: e.message });
+  }
+});
 
 requestRoutes.get('/:requestId', async (req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
@@ -392,6 +412,7 @@ requestRoutes.post<{
     }
   }
 );
+
 requestRoutes.get<{
   requestId: string;
   status: 'pending' | 'approve' | 'decline';

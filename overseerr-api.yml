@@ -2486,6 +2486,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaRequest'
+  /request/count:
+    get:
+      summary: Returns request counts
+      description: |
+        Returns the number of pending and approved requests.
+      tags:
+        - request
+      responses:
+        '200':
+          description: Request counts returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pending:
+                    type: number
+                    example: 0
+                  approved:
+                    type: number
+                    example: 10
+                required:
+                  - pending
+                  - approved
   /request/{requestId}:
     get:
       summary: Requests a specific MediaRequest
