@@ -169,7 +169,11 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
 
   const getAllRequestedSeasons = (): number[] => {
     const requestedSeasons = (data?.mediaInfo?.requests ?? [])
-      .filter((request) => request.is4k === is4k)
+      .filter(
+        (request) =>
+          request.is4k === is4k &&
+          request.status !== MediaRequestStatus.DECLINED
+      )
       .reduce((requestedSeasons, request) => {
         return [
           ...requestedSeasons,
@@ -255,8 +259,11 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
 
     if (
       data?.mediaInfo &&
-      (data.mediaInfo.requests || []).filter((request) => request.is4k === is4k)
-        .length > 0
+      (data.mediaInfo.requests || []).filter(
+        (request) =>
+          request.is4k === is4k &&
+          request.status !== MediaRequestStatus.DECLINED
+      ).length > 0
     ) {
       data.mediaInfo.requests
         .filter((request) => request.is4k === is4k)

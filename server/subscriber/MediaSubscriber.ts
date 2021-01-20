@@ -110,7 +110,10 @@ export class MediaSubscriber implements EntitySubscriberInterface {
     });
 
     for (const request of requests) {
-      if (request.is4k === is4k) {
+      if (
+        request.is4k === is4k &&
+        request.status === MediaRequestStatus.PENDING
+      ) {
         request.status = MediaRequestStatus.APPROVED;
         await requestRepository.save(request);
       }
