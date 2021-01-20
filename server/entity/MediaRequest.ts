@@ -151,6 +151,15 @@ export class MediaRequest {
         logger.error('No parent media!', { label: 'Media Request' });
         return;
       }
+
+      if (media[this.is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE) {
+        logger.warn(
+          'Media became available before request was approved. Approval notification will be skipped.',
+          { label: 'Media Request' }
+        );
+        return;
+      }
+
       const tmdb = new TheMovieDb();
       if (this.media.mediaType === MediaType.MOVIE) {
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
@@ -205,7 +214,13 @@ export class MediaRequest {
       return;
     }
     const seasonRequestRepository = getRepository(SeasonRequest);
-    if (this.status === MediaRequestStatus.APPROVED) {
+    if (
+      this.status === MediaRequestStatus.APPROVED &&
+      // Do not update the status if the item is already partially available or available
+      media[this.is4k ? 'status4k' : 'status'] !== MediaStatus.AVAILABLE &&
+      media[this.is4k ? 'status4k' : 'status'] !==
+        MediaStatus.PARTIALLY_AVAILABLE
+    ) {
       if (this.is4k) {
         media.status4k = MediaStatus.PROCESSING;
       } else {
@@ -358,6 +373,21 @@ export class MediaRequest {
         });
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
 
+        const media = await mediaRepository.findOne({
+          where: { id: this.media.id },
+        });
+
+        if (!media) {
+          logger.error('Media not present');
+          return;
+        }
+
+        if (
+          media[this.is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE
+        ) {
+          throw new Error('Media already available');
+        }
+
         // Run this asynchronously so we don't wait for it on the UI side
         radarr
           .addMovie({
@@ -373,13 +403,6 @@ export class MediaRequest {
           })
           .then(async (success) => {
             if (!success) {
-              const media = await mediaRepository.findOne({
-                where: { id: this.media.id },
-              });
-              if (!media) {
-                logger.error('Media not present');
-                return;
-              }
               media.status = MediaStatus.UNKNOWN;
               await mediaRepository.save(media);
               logger.warn(
@@ -462,6 +485,12 @@ export class MediaRequest {
 
         if (!media) {
           throw new Error('Media data is missing');
+        }
+
+        if (
+          media[this.is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE
+        ) {
+          throw new Error('Media already available');
         }
 
         const tmdb = new TheMovieDb();

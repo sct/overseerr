@@ -160,7 +160,11 @@ requestRoutes.post(
         // (Unless there are no seasons, in which case we abort)
         if (media.requests) {
           existingSeasons = media.requests
-            .filter((request) => request.is4k === req.body.is4k)
+            .filter(
+              (request) =>
+                request.is4k === req.body.is4k &&
+                request.status !== MediaRequestStatus.DECLINED
+            )
             .reduce((seasons, request) => {
               const combinedSeasons = request.seasons.map(
                 (season) => season.seasonNumber
@@ -303,7 +307,12 @@ requestRoutes.put<{ requestId: string }>(
 
         // Get all requested seasons that are not part of this request we are editing
         const existingSeasons = media.requests
-          .filter((r) => r.is4k === request.is4k && r.id !== request.id)
+          .filter(
+            (r) =>
+              r.is4k === request.is4k &&
+              r.id !== request.id &&
+              r.status !== MediaRequestStatus.DECLINED
+          )
           .reduce((seasons, r) => {
             const combinedSeasons = r.seasons.map(
               (season) => season.seasonNumber
