@@ -13,15 +13,13 @@ const messages = defineMessages({
   loginerror: 'Something went wrong when trying to sign in',
   loggingin: 'Logging in...',
   login: 'Login',
-  goback: 'Go back',
 });
 
 interface LocalLoginProps {
-  goBack: () => void;
   revalidate: () => void;
 }
 
-const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
+const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
   const intl = useIntl();
   const [loginError, setLoginError] = useState<string | null>(null);
 
@@ -107,18 +105,6 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
               </div>
               <div className="pt-5 mt-8 border-t border-gray-700">
                 <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="ghost"
-                      type="reset"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        goBack();
-                      }}
-                    >
-                      {intl.formatMessage(messages.goback)}
-                    </Button>
-                  </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
