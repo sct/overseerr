@@ -21,6 +21,7 @@ const globalMessages = defineMessages({
   deleting: 'Deleting…',
   close: 'Close',
   edit: 'Edit',
+  experimental: 'Experimental',
 });
 
 export default globalMessages;

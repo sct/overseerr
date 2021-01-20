@@ -7,6 +7,8 @@ import { LanguageContext } from '../../context/LanguageContext';
 import Header from '../Common/Header';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { TvDetails } from '../../../server/models/Tv';
+import { MediaStatus } from '../../../server/constants/media';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
@@ -21,6 +23,7 @@ interface SearchResult {
 }
 
 const TvRecommendations: React.FC = () => {
+  const settings = useSettings();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
@@ -55,7 +58,18 @@ const TvRecommendations: React.FC = () => {
     return <div>{error}</div>;
   }
 
-  const titles = data?.reduce((a, v) => [...a, ...v.results], [] as TvResult[]);
+  let titles = (data ?? []).reduce(
+    (a, v) => [...a, ...v.results],
+    [] as TvResult[]
+  );
+
+  if (settings.currentSettings.hideAvailable) {
+    titles = titles.filter(
+      (i) =>
+        i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
+        i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE
+    );
+  }
 
   const isEmpty = !isLoadingInitialData && titles?.length === 0;
   const isReachingEnd =

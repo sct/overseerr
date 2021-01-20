@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import {
   MediaRequestStatus,
@@ -7,7 +7,7 @@ import {
 } from '../../../server/constants/media';
 import Media from '../../../server/entity/Media';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
-import { SettingsContext } from '../../context/SettingsContext';
+import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import RequestModal from '../RequestModal';
@@ -58,7 +58,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   is4kShowComplete = false,
 }) => {
   const intl = useIntl();
-  const settings = useContext(SettingsContext);
+  const settings = useSettings();
   const { hasPermission } = useUser();
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showRequest4kModal, setShowRequest4kModal] = useState(false);
