@@ -1,7 +1,10 @@
 import { useContext } from 'react';
-import { SettingsContext } from '../context/SettingsContext';
+import {
+  SettingsContext,
+  SettingsContextProps,
+} from '../context/SettingsContext';
 
-const useSettings = () => {
+const useSettings = (): SettingsContextProps => {
   const settings = useContext(SettingsContext);
 
   return settings;
