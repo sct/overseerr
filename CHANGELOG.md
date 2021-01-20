@@ -1,3 +1,11 @@
+## [1.17.2](https://github.com/sct/overseerr/compare/v1.17.1...v1.17.2) (2021-01-20)
+
+
+### Bug Fixes
+
+* **requests:** allow declined season requests to be re-requested ([e1032ff](https://github.com/sct/overseerr/commit/e1032ff5dfac4a8c9d4da9cf2788c19822343ad9)), closes [#690](https://github.com/sct/overseerr/issues/690)
+* **requests:** update requests to approved when parent media is set as available ([78444a9](https://github.com/sct/overseerr/commit/78444a9e643829823162389dee60cca70da56bff)), closes [#688](https://github.com/sct/overseerr/issues/688)
+
 ## [1.17.1](https://github.com/sct/overseerr/compare/v1.17.0...v1.17.1) (2021-01-19)
 
 
