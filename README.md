@@ -16,7 +16,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr">
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-29-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-30-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -141,6 +141,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/chriscpritchard"><img src="https://avatars1.githubusercontent.com/u/1839074?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Chris Pritchard</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=chriscpritchard" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Tamberlox"><img src="https://avatars3.githubusercontent.com/u/56069014?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tamberlox</b></sub></a><br /><a href="#translation-Tamberlox" title="Translation">🌍</a></td>
   </tr>
 </table>
 
