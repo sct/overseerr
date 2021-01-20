@@ -62,6 +62,9 @@ components:
         applicationUrl:
           type: string
           example: https://os.example.com
+        hideAvailable:
+          type: boolean
+          example: false
         defaultPermissions:
           type: number
           example: 32

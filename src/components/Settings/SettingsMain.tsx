@@ -11,6 +11,8 @@ import { useUser, Permission } from '../../hooks/useUser';
 import { useToasts } from 'react-toast-notifications';
 import { messages as permissionMessages } from '../UserEdit';
 import PermissionOption, { PermissionItem } from '../PermissionOption';
+import Badge from '../Common/Badge';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -25,6 +27,7 @@ const messages = defineMessages({
   toastSettingsSuccess: 'Settings saved.',
   toastSettingsFailure: 'Something went wrong saving settings.',
   defaultPermissions: 'Default User Permissions',
+  hideAvailable: 'Hide available media',
 });
 
 const SettingsMain: React.FC = () => {
@@ -166,6 +169,7 @@ const SettingsMain: React.FC = () => {
           initialValues={{
             applicationUrl: data?.applicationUrl,
             defaultPermissions: data?.defaultPermissions ?? 0,
+            hideAvailable: data?.hideAvailable,
           }}
           enableReinitialize
           onSubmit={async (values) => {
@@ -173,6 +177,7 @@ const SettingsMain: React.FC = () => {
               await axios.post('/api/v1/settings/main', {
                 applicationUrl: values.applicationUrl,
                 defaultPermissions: values.defaultPermissions,
+                hideAvailable: values.hideAvailable,
               });
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -254,6 +259,30 @@ const SettingsMain: React.FC = () => {
                         className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.hideAvailable)}
+                    </span>
+                    <Badge badgeType="warning">
+                      {intl.formatMessage(globalMessages.experimental)}
+                    </Badge>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="hideAvailable"
+                      name="hideAvailable"
+                      onChange={() => {
+                        setFieldValue('hideAvailable', !values.hideAvailable);
+                      }}
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
                   </div>
                 </div>
                 <div className="mt-6">

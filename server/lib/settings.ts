@@ -49,6 +49,7 @@ export interface MainSettings {
   apiKey: string;
   applicationUrl: string;
   defaultPermissions: number;
+  hideAvailable: boolean;
 }
 
 interface PublicSettings {
@@ -58,6 +59,7 @@ interface PublicSettings {
 interface FullPublicSettings extends PublicSettings {
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
+  hideAvailable: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -150,6 +152,7 @@ class Settings {
       main: {
         apiKey: '',
         applicationUrl: '',
+        hideAvailable: false,
         defaultPermissions: Permission.REQUEST,
       },
       plex: {
@@ -281,6 +284,7 @@ class Settings {
       series4kEnabled: this.data.sonarr.some(
         (sonarr) => sonarr.is4k && sonarr.isDefault
       ),
+      hideAvailable: this.data.main.hideAvailable,
     };
   }
 
