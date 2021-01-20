@@ -135,6 +135,7 @@ CoreApp.getInitialProps = async (initialProps) => {
   let user = undefined;
   let currentSettings: PublicSettingsResponse = {
     initialized: false,
+    hideAvailable: false,
     movie4kEnabled: false,
     series4kEnabled: false,
   };
