@@ -3,8 +3,6 @@ name: Publish Snap
 on:
   push:
     branches: [develop]
-    tags: [v*]
-    pull_request: ~
 
 jobs:
   test:
@@ -74,10 +72,10 @@ jobs:
           store_login: ${{ secrets.SNAP_LOGIN }}
           snap: ${{ steps.build.outputs.snap }}
           release: ${{ steps.prepare.outputs.RELEASE }}
-
   discord:
     name: Send Discord Notification
     needs: build-snap
+    if: always()
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status
