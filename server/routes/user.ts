@@ -21,7 +21,7 @@ router.get('/', async (_req, res) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const settings = getSettings().notifications.agents.email;
+    const settings = getSettings();
 
     const body = req.body;
     const userRepository = getRepository(User);
@@ -29,7 +29,7 @@ router.post('/', async (req, res, next) => {
     const passedExplicitPassword = body.password && body.password.length > 0;
     const avatar = gravatarUrl(body.email, { default: 'mm', size: 200 });
 
-    if (!passedExplicitPassword && !settings.enabled) {
+    if (!passedExplicitPassword && !settings.notifications.agents.email) {
       throw new Error('Email notifications must be enabled');
     }
 
@@ -38,7 +38,7 @@ router.post('/', async (req, res, next) => {
       username: body.username ?? body.email,
       email: body.email,
       password: body.password,
-      permissions: Permission.REQUEST,
+      permissions: settings.main.defaultPermissions,
       plexToken: '',
       userType: UserType.LOCAL,
     });
