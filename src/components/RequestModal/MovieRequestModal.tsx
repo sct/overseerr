@@ -224,7 +224,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         {intl.formatMessage(
           is4k ? messages.request4kfrom : messages.requestfrom,
           {
-            username: activeRequest.requestedBy.username,
+            username: activeRequest.requestedBy.displayName,
           }
         )}
         {hasPermission(Permission.REQUEST_ADVANCED) && (

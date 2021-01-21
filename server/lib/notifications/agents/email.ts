@@ -60,7 +60,7 @@ class EmailAgent
               mediaName: payload.subject,
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
-              requestedBy: payload.notifyUser.username,
+              requestedBy: payload.notifyUser.displayName,
               actionUrl: applicationUrl
                 ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
                 : undefined,
@@ -106,7 +106,7 @@ class EmailAgent
               mediaName: payload.subject,
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
-              requestedBy: payload.notifyUser.username,
+              requestedBy: payload.notifyUser.displayName,
               actionUrl: applicationUrl
                 ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
                 : undefined,
@@ -144,7 +144,7 @@ class EmailAgent
           mediaName: payload.subject,
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
-          requestedBy: payload.notifyUser.username,
+          requestedBy: payload.notifyUser.displayName,
           actionUrl: applicationUrl
             ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
             : undefined,
@@ -181,7 +181,7 @@ class EmailAgent
           mediaName: payload.subject,
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
-          requestedBy: payload.notifyUser.username,
+          requestedBy: payload.notifyUser.displayName,
           actionUrl: applicationUrl
             ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
             : undefined,
@@ -218,7 +218,7 @@ class EmailAgent
           mediaName: payload.subject,
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
-          requestedBy: payload.notifyUser.username,
+          requestedBy: payload.notifyUser.displayName,
           actionUrl: applicationUrl
             ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
             : undefined,

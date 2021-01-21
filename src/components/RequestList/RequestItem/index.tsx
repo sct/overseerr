@@ -165,7 +165,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             </Link>
             <div className="text-sm">
               {intl.formatMessage(messages.requestedby, {
-                username: requestData.requestedBy.username,
+                username: requestData.requestedBy.displayName,
               })}
             </div>
             {requestData.seasons.length > 0 && (
@@ -206,7 +206,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
         <div className="flex flex-col">
           {requestData.modifiedBy ? (
             <span className="text-sm text-gray-300">
-              {requestData.modifiedBy.username} (
+              {requestData.modifiedBy.displayName}
+              (
               <FormattedRelativeTime
                 value={Math.floor(
                   (new Date(requestData.updatedAt).getTime() - Date.now()) /

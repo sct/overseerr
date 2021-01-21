@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { User, useUser } from '../hooks/useUser';
+import { useUser, User } from '../hooks/useUser';
 import { useRouter } from 'next/dist/client/router';
 
 interface UserContextProps {
