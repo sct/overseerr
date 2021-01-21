@@ -71,11 +71,11 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
       <Alert title={intl.formatMessage(messages.notvdbid)} type="info">
         {intl.formatMessage(messages.notvdbiddescription)}
       </Alert>
-      <div className="grid md:grid-cols-2 grid-cols-1 gap-4 pb-2">
+      <div className="grid grid-cols-1 gap-4 pb-2 md:grid-cols-2">
         {data?.slice(0, 6).map((item) => (
           <div
             key={item.tvdbId}
-            className="h-40 transition duration-300 transform-gpu scale-100 container mx-auto flex flex-col space-y-4 justify-center items-center hover:scale-105 outline-none "
+            className="container flex flex-col items-center justify-center h-40 mx-auto space-y-4 transition scale-100 outline-none cursor-pointer transform-gpu hover:scale-105"
             onClick={() => handleClick(item.tvdbId)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === 'Space') {
@@ -87,25 +87,25 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
             tabIndex={0}
           >
             <div
-              className={`border bg-gray-600 h-40 overflow-hidden w-full flex items-center p-2 rounded-xl shadow ${
-                tvdbId === item.tvdbId ? '' : 'border-transparent'
+              className={`bg-gray-600 h-40 overflow-hidden w-full flex items-center p-2 rounded-xl shadow transition ${
+                tvdbId === item.tvdbId ? 'ring ring-indigo-500' : ''
               } `}
             >
-              <div className="flex-none flex items-center space-x-4 w-24">
+              <div className="flex items-center flex-none w-24 space-x-4">
                 <img
                   src={
                     item.remotePoster ??
                     '/images/overseerr_poster_not_found.png'
                   }
                   alt={item.title}
-                  className="w-auto h-100 rounded-xl"
+                  className="w-auto rounded-md h-100"
                 />
               </div>
-              <div className="flex-grow p-3 self-start">
+              <div className="self-start flex-grow p-3">
                 <div className="text-sm font-medium text-grey-200">
                   {item.title}
                 </div>
-                <div className="text-sm text-gray-400 h-24 overflow-hidden">
+                <div className="h-24 overflow-hidden text-sm text-gray-400">
                   {item.overview ?? intl.formatMessage(messages.nosummary)}
                 </div>
               </div>
