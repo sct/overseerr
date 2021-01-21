@@ -4,8 +4,8 @@ import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   signinwithplex: 'Sign in',
-  loading: 'Loading...',
-  signingin: 'Signing in...',
+  loading: 'Loading…',
+  signingin: 'Signing in…',
 });
 
 const plexOAuth = new PlexOAuth();

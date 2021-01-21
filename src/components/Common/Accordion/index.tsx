@@ -20,11 +20,7 @@ export const AccordionContent: React.FC<{ isOpen: boolean }> = ({
   isOpen,
   children,
 }) => {
-  return (
-    <AnimateHeight height={isOpen ? 'auto' : 0}>
-      {children || <></>}
-    </AnimateHeight>
-  );
+  return <AnimateHeight height={isOpen ? 'auto' : 0}>{children}</AnimateHeight>;
 };
 
 const Accordion: React.FC<AccordionProps> = ({
