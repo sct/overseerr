@@ -108,7 +108,7 @@ serviceRoutes.get<{ sonarrId: string }>(
     if (!sonarrSettings) {
       return next({
         status: 404,
-        message: 'Sonarr server with provided ID  does not exist.',
+        message: 'Sonarr server with provided ID does not exist.',
       });
     }
 
@@ -186,7 +186,8 @@ serviceRoutes.get<{ tmdbId: string }>(
         label: 'Media Request',
         message: e.message,
       });
-      next({
+
+      return next({
         status: 500,
         message: 'Failed to fetch tvdb search results',
       });

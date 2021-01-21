@@ -428,7 +428,10 @@ export class MediaRequest {
         logger.info('Sent request to Radarr', { label: 'Media Request' });
       } catch (e) {
         const errorMessage = `Request failed to send to radarr: ${e.message}`;
-        logger.error(errorMessage, { label: 'Media Request' });
+        logger.error('Request failed to send to Radarr', {
+          label: 'Media Request',
+          errorMessage,
+        });
         throw new Error(errorMessage);
       }
     }
@@ -593,7 +596,10 @@ export class MediaRequest {
         logger.info('Sent request to Sonarr', { label: 'Media Request' });
       } catch (e) {
         const errorMessage = `Request failed to send to sonarr: ${e.message}`;
-        logger.error(errorMessage, { label: 'Media Request' });
+        logger.error('Request failed to send to Sonarr', {
+          label: 'Media Request',
+          errorMessage,
+        });
         throw new Error(errorMessage);
       }
     }

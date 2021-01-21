@@ -7,9 +7,9 @@ import { SonarrSeries } from '../../../../server/api/sonarr';
 
 const messages = defineMessages({
   next: 'Next',
-  notvdbid: 'No TVDB id was found connected on TMDB',
+  notvdbid: 'Manual match required',
   notvdbiddescription:
-    'Either add the TVDB id to TMDB and come back later, or select the correct match below.',
+    "We couldn't automatically match your request. Please select the correct match from the list below.",
   nosummary: 'No summary for this title was found.',
 });
 
@@ -73,18 +73,10 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
       </Alert>
       <div className="grid grid-cols-1 gap-4 pb-2 md:grid-cols-2">
         {data?.slice(0, 6).map((item) => (
-          <div
+          <button
             key={item.tvdbId}
-            className="container flex flex-col items-center justify-center h-40 mx-auto space-y-4 transition scale-100 outline-none cursor-pointer transform-gpu hover:scale-105"
+            className="focus:ring focus:ring-indigo-500 focus:ring-opacity-70 focus:outline-none rounded-xl container flex flex-col items-center justify-center h-40 mx-auto space-y-4 transition scale-100 outline-none cursor-pointer transform-gpu hover:scale-105"
             onClick={() => handleClick(item.tvdbId)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === 'Space') {
-                handleClick(item.tvdbId);
-                e.preventDefault();
-              }
-            }}
-            role="link"
-            tabIndex={0}
           >
             <div
               className={`bg-gray-600 h-40 overflow-hidden w-full flex items-center p-2 rounded-xl shadow transition ${
@@ -101,7 +93,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
                   className="w-auto rounded-md h-100"
                 />
               </div>
-              <div className="self-start flex-grow p-3">
+              <div className="text-left self-start flex-grow p-3">
                 <div className="text-sm font-medium text-grey-200">
                   {item.title}
                 </div>
@@ -110,7 +102,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
                 </div>
               </div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </Modal>
