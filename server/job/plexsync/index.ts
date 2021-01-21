@@ -95,6 +95,9 @@ class JobPlexSync {
           });
           newMedia.tmdbId = tmdbMovie.id;
         }
+        if (!newMedia.tmdbId) {
+          throw new Error('Unable to find TMDB ID');
+        }
 
         const has4k = metadata.Media.some(
           (media) => media.videoResolution === '4k'
