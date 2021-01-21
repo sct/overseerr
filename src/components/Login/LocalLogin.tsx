@@ -11,8 +11,8 @@ const messages = defineMessages({
   validationemailrequired: 'Not a valid email address',
   validationpasswordrequired: 'Password required',
   loginerror: 'Something went wrong when trying to sign in',
-  loggingin: 'Logging in...',
-  login: 'Login',
+  signingin: 'Signing in...',
+  signin: 'Sign in',
 });
 
 interface LocalLoginProps {
@@ -112,8 +112,8 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.loggingin)
-                        : intl.formatMessage(messages.login)}
+                        ? intl.formatMessage(messages.signingin)
+                        : intl.formatMessage(messages.signin)}
                     </Button>
                   </span>
                 </div>
