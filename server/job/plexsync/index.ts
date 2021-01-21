@@ -89,6 +89,12 @@ class JobPlexSync {
             newMedia.tmdbId = Number(tmdbMatch);
           }
         });
+        if (newMedia.imdbId && !newMedia.tmdbId) {
+          const tmdbMovie = await this.tmdb.getMovieByImdbId({
+            imdbId: newMedia.imdbId,
+          });
+          newMedia.tmdbId = tmdbMovie.id;
+        }
 
         const has4k = metadata.Media.some(
           (media) => media.videoResolution === '4k'
