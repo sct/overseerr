@@ -22,6 +22,7 @@ import { getAppVersion } from './utils/appVersion';
 import SlackAgent from './lib/notifications/agents/slack';
 import PushoverAgent from './lib/notifications/agents/pushover';
 import WebhookAgent from './lib/notifications/agents/webhook';
+import { getClientIp } from '@supercharge/request-ip';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -62,6 +63,21 @@ app
     server.use(cookieParser());
     server.use(bodyParser.json());
     server.use(bodyParser.urlencoded({ extended: true }));
+    server.use((req, res, next) => {
+      try {
+        const descriptor = Object.getOwnPropertyDescriptor(req, 'ip');
+        if (descriptor?.writable === true) {
+          req.ip = getClientIp(req) ?? '';
+        }
+      } catch (e) {
+        logger.error('Failed to attach the ip to the request', {
+          label: 'Middleware',
+          message: e.message,
+        });
+      } finally {
+        next();
+      }
+    });
 
     // Setup sessions
     const sessionRespository = getRepository(Session);
