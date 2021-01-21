@@ -114,20 +114,40 @@ requestRoutes.post(
           status4k: req.body.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
           mediaType: req.body.mediaType,
         });
-        await mediaRepository.save(media);
       } else {
         if (media.status === MediaStatus.UNKNOWN && !req.body.is4k) {
           media.status = MediaStatus.PENDING;
-          await mediaRepository.save(media);
         }
 
         if (media.status4k === MediaStatus.UNKNOWN && req.body.is4k) {
           media.status4k = MediaStatus.PENDING;
-          await mediaRepository.save(media);
         }
       }
 
       if (req.body.mediaType === 'movie') {
+        const existing = await requestRepository.findOne({
+          where: {
+            media: {
+              tmdbId: tmdbMedia.id,
+            },
+            requestedBy: req.user,
+            is4k: req.body.is4k,
+          },
+        });
+
+        if (existing) {
+          logger.warn('Duplicate request for media blocked', {
+            tmdbId: tmdbMedia.id,
+            mediaType: req.body.mediaType,
+          });
+          return next({
+            status: 409,
+            message: 'Request for this media already exists.',
+          });
+        }
+
+        await mediaRepository.save(media);
+
         const request = new MediaRequest({
           type: MediaType.MOVIE,
           media,
@@ -184,6 +204,8 @@ requestRoutes.post(
             message: 'No seasons available to request',
           });
         }
+
+        await mediaRepository.save(media);
 
         const request = new MediaRequest({
           type: MediaType.TV,
