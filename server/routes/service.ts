@@ -189,14 +189,9 @@ serviceRoutes.get<{ tmdbId: string }>(
 
       return next({
         status: 500,
-        message: 'Failed to fetch tvdb search results',
+        message: 'Something went wrong trying to fetch series information',
       });
     }
-
-    return next({
-      status: 500,
-      message: 'Something went wrong trying to fetch series information',
-    });
   }
 );
 
