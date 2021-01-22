@@ -32,6 +32,7 @@ interface DVRSettings {
   activeDirectory: string;
   is4k: boolean;
   isDefault: boolean;
+  tags?: string[];
 }
 
 export interface RadarrSettings extends DVRSettings {
@@ -42,6 +43,9 @@ export interface SonarrSettings extends DVRSettings {
   activeAnimeProfileId?: number;
   activeAnimeProfileName?: string;
   activeAnimeDirectory?: string;
+  activeAnimeLanguageProfileId?: number;
+  activeLanguageProfileId?: number;
+  animeTags?: string[];
   enableSeasonFolders: boolean;
 }
 

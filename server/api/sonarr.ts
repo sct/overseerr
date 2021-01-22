@@ -1,4 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
+import { keyBy } from 'lodash';
 import logger from '../logger';
 
 interface SonarrSeason {
@@ -39,7 +40,7 @@ export interface SonarrSeries {
   titleSlug: string;
   certification: string;
   genres: string[];
-  tags: string[];
+  tags: number[];
   added: string;
   ratings: {
     votes: number;
@@ -75,12 +76,19 @@ interface AddSeriesOptions {
   tvdbid: number;
   title: string;
   profileId: number;
+  languageProfileId?: number;
   seasons: number[];
   seasonFolder: boolean;
   rootFolderPath: string;
   seriesType: SonarrSeries['seriesType'];
+  tags?: string[];
   monitored?: boolean;
   searchNow?: boolean;
+}
+
+interface SonarrTag {
+  id: number;
+  label: string;
 }
 
 class SonarrAPI {
@@ -181,6 +189,7 @@ class SonarrAPI {
           tvdbId: options.tvdbid,
           title: options.title,
           profileId: options.profileId,
+          languageProfileId: options.languageProfileId,
           seasons: this.buildSeasonList(
             options.seasons,
             series.seasons.map((season) => ({
@@ -197,6 +206,7 @@ class SonarrAPI {
             ignoreEpisodesWithFiles: true,
             searchForMissingEpisodes: options.searchNow,
           },
+          tags: await this.mapTags(options.tags),
         } as Partial<SonarrSeries>
       );
 
@@ -278,6 +288,42 @@ class SonarrAPI {
 
     return newSeasons;
   }
+  public getTags = async (): Promise<SonarrTag[]> => {
+    try {
+      const response = await this.axios.get<SonarrTag[]>('/tag');
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[Sonarr] Failed to retrieve tags: ${e.message}`);
+    }
+  };
+
+  private mapTags = async (tags?: string[]): Promise<number[]> => {
+    if (!tags) return [];
+    if (tags.length < 1) return [];
+    const result = [];
+    try {
+      const { data: foundTags } = await this.axios.get<SonarrTag[]>('/tag');
+      const keyedTagMap = keyBy(foundTags, 'label');
+      for (const label of tags) {
+        if (label in keyedTagMap) {
+          result.push(keyedTagMap[label].id);
+        } else {
+          const { data: tag } = await this.axios.post<SonarrTag>('/tag', {
+            label,
+          });
+          result.push(tag.id);
+        }
+      }
+    } catch (e) {
+      logger.error('Something went wrong attempting to map tags in Sonarr', {
+        label: 'Sonarr',
+        errorMessage: e.message,
+        response: e?.response?.data,
+      });
+    }
+    return result;
+  };
 }
 
 export default SonarrAPI;

@@ -1,3 +1,4 @@
+import { keyBy } from 'lodash';
 import Axios, { AxiosInstance } from 'axios';
 import logger from '../logger';
 
@@ -9,6 +10,7 @@ interface RadarrMovieOptions {
   year: number;
   rootFolderPath: string;
   tmdbId: number;
+  tags?: string[];
   monitored?: boolean;
   searchNow?: boolean;
 }
@@ -27,6 +29,7 @@ interface RadarrMovie {
   added: string;
   downloaded: boolean;
   hasFile: boolean;
+  tags: number[];
 }
 
 export interface RadarrRootFolder {
@@ -43,6 +46,11 @@ export interface RadarrRootFolder {
 export interface RadarrProfile {
   id: number;
   name: string;
+}
+
+interface RadarrTag {
+  id: number;
+  label: string;
 }
 
 class RadarrAPI {
@@ -91,6 +99,7 @@ class RadarrAPI {
         addOptions: {
           searchForMovie: options.searchNow,
         },
+        tags: await this.mapTags(options.tags),
       });
 
       if (response.data.id) {
@@ -142,6 +151,43 @@ class RadarrAPI {
     } catch (e) {
       throw new Error(`[Radarr] Failed to retrieve root folders: ${e.message}`);
     }
+  };
+
+  public getTags = async (): Promise<RadarrTag[]> => {
+    try {
+      const response = await this.axios.get<RadarrTag[]>('/tag');
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[Radarr] Failed to retrieve tags: ${e.message}`);
+    }
+  };
+
+  private mapTags = async (tags?: string[]): Promise<number[]> => {
+    if (!tags) return [];
+    if (tags.length < 1) return [];
+    const result = [];
+    try {
+      const { data: foundTags } = await this.axios.get<RadarrTag[]>('/tag');
+      const keyedTagMap = keyBy(foundTags, 'label');
+      for (const label of tags) {
+        if (label in keyedTagMap) {
+          result.push(keyedTagMap[label].id);
+        } else {
+          const { data: tag } = await this.axios.post<RadarrTag>('/tag', {
+            label,
+          });
+          result.push(tag.id);
+        }
+      }
+    } catch (e) {
+      logger.error('Something went wrong attempting to map tags in Radarr', {
+        label: 'Radarr',
+        errorMessage: e.message,
+        response: e?.response?.data,
+      });
+    }
+    return result;
   };
 }
 

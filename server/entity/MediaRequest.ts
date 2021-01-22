@@ -395,6 +395,7 @@ export class MediaRequest {
             qualityProfileId: qualityProfile,
             rootFolderPath: rootFolder,
             minimumAvailability: radarrSettings.minimumAvailability,
+            tags: radarrSettings.tags,
             title: movie.title,
             tmdbId: movie.id,
             year: Number(movie.release_date.slice(0, 4)),
@@ -531,6 +532,16 @@ export class MediaRequest {
             ? sonarrSettings.activeAnimeProfileId
             : sonarrSettings.activeProfileId;
 
+        const languageProfile =
+          seriesType === 'anime' && sonarrSettings.activeAnimeLanguageProfileId
+            ? sonarrSettings.activeAnimeLanguageProfileId
+            : sonarrSettings.activeLanguageProfileId;
+
+        const tags =
+          seriesType === 'anime' && sonarrSettings.activeAnimeProfileId
+            ? sonarrSettings.animeTags
+            : sonarrSettings.tags;
+
         if (
           this.rootFolder &&
           this.rootFolder !== '' &&
@@ -553,6 +564,7 @@ export class MediaRequest {
         sonarr
           .addSeries({
             profileId: qualityProfile,
+            languageProfileId: languageProfile,
             rootFolderPath: rootFolder,
             title: series.name,
             tvdbid: tvdbId,
@@ -561,6 +573,7 @@ export class MediaRequest {
             seriesType,
             monitored: true,
             searchNow: true,
+            tags,
           })
           .then(async (success) => {
             if (!success) {

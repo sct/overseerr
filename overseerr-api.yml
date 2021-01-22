@@ -152,6 +152,11 @@ components:
         isDefault:
           type: boolean
           example: false
+        tags:
+          type: array
+          items:
+            type: string
+          example: ['anime', 'hd']
       required:
         - name
         - hostname
@@ -197,7 +202,14 @@ components:
         activeDirectory:
           type: string
           example: '/tv/'
+        activeLanguageProfileId:
+          type: number
+          example: 1
+          nullable: true
         activeAnimeProfileId:
+          type: number
+          nullable: true
+        activeAnimeLanguageProfileId:
           type: number
           nullable: true
         activeAnimeProfileName:
@@ -215,6 +227,11 @@ components:
         isDefault:
           type: boolean
           example: false
+        tags:
+          type: array
+          items:
+            type: string
+          example: ['anime', 'hd']
       required:
         - name
         - hostname
