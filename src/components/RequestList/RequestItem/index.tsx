@@ -141,7 +141,11 @@ const RequestItem: React.FC<RequestItemProps> = ({
           >
             <a className="flex-shrink-0 hidden mr-4 sm:block">
               <img
-                src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
+                src={
+                  title.posterPath
+                    ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                    : '/images/overseerr_poster_not_found.png'
+                }
                 alt=""
                 className="w-12 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer transform-gpu hover:scale-105 hover:shadow-md"
               />

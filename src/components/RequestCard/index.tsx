@@ -205,7 +205,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
           }
         >
           <img
-            src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
+            src={
+              title.posterPath
+                ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                : '/images/overseerr_poster_not_found.png'
+            }
             alt=""
             className="w-20 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md"
           />
