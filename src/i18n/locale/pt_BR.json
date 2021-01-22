@@ -555,5 +555,14 @@
   "components.UserEdit.advancedrequestDescription": "Concede permissão para usar opções de solicitações avançadas. (Ex. Alterar servidores / perfis / caminhos)",
   "components.UserEdit.advancedrequest": "Solicitações Avançadas",
   "i18n.experimental": "Experimental",
-  "components.Settings.hideAvailable": "Ocultar títulos disponíveis"
+  "components.Settings.hideAvailable": "Ocultar títulos disponíveis",
+  "components.RequestModal.requesterror": "Algo deu errado ao tentar solicitar a mídia.",
+  "components.RequestModal.notvdbiddescription": "Adicione o ID TVDB ao TMDB e volte mais tarde, ou selecione a correspondência correta abaixo.",
+  "components.RequestModal.notvdbid": "Nenhum ID do TVDB correspondente ao TMDB foi encontrado",
+  "components.RequestModal.SearchByNameModal.notvdbiddescription": "Não conseguimos correlacionar sua solicitação automaticamente. Por favor selecione a correspondência correta na lista abaixo.",
+  "components.RequestModal.SearchByNameModal.notvdbid": "Correlação manual necessária",
+  "components.RequestModal.next": "Próxima",
+  "components.RequestModal.backbutton": "Voltar",
+  "components.RequestModal.SearchByNameModal.nosummary": "Sinopse não encontrada para esse título.",
+  "components.RequestModal.SearchByNameModal.next": "Próxima"
 }
