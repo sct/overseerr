@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getRepository, FindOperator, FindOneOptions } from 'typeorm';
+import { getRepository, FindOperator, FindOneOptions, In } from 'typeorm';
 import Media from '../entity/Media';
 import { MediaStatus } from '../constants/media';
 import logger from '../logger';
@@ -26,6 +26,12 @@ mediaRoutes.get('/', async (req, res, next) => {
       break;
     case 'partial':
       statusFilter = MediaStatus.PARTIALLY_AVAILABLE;
+      break;
+    case 'allavailable':
+      statusFilter = In([
+        MediaStatus.AVAILABLE,
+        MediaStatus.PARTIALLY_AVAILABLE,
+      ]);
       break;
     case 'processing':
       statusFilter = MediaStatus.PROCESSING;

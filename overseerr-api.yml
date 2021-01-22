@@ -3179,7 +3179,7 @@ paths:
           schema:
             type: string
             nullable: true
-            enum: [all, available, partial, processing, pending]
+            enum: [all, available, partial, allavailable, processing, pending]
         - in: query
           name: sort
           schema:
