@@ -1,6 +1,7 @@
 import React from 'react';
 import Alert from '../../Common/Alert';
 import Modal from '../../Common/Modal';
+import LoadingSpinner from '../../Common/LoadingSpinner';
 import useSWR from 'swr';
 import { defineMessages, useIntl } from 'react-intl';
 import { SonarrSeries } from '../../../../server/api/sonarr';
@@ -71,6 +72,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
       <Alert title={intl.formatMessage(messages.notvdbid)} type="info">
         {intl.formatMessage(messages.notvdbiddescription)}
       </Alert>
+      {!data && !error && <LoadingSpinner />}
       <div className="grid grid-cols-1 gap-4 pb-2 md:grid-cols-2">
         {data?.slice(0, 6).map((item) => (
           <button
