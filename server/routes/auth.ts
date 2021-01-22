@@ -151,6 +151,7 @@ authRoutes.post('/local', async (req, res, next) => {
       logger.info('Failed login attempt from user with incorrect credentials', {
         label: 'Auth',
         account: {
+          ip: req.ip,
           email: body.email,
           password: '__REDACTED__',
         },
