@@ -70,6 +70,9 @@ parts:
       cp -R $SNAPCRAFT_PART_BUILD/node_modules $SNAPCRAFT_PART_INSTALL/
       # Remove .github and gitbook as it will fail snap lint
       rm -rf $SNAPCRAFT_PART_INSTALL/.github && rm $SNAPCRAFT_PART_INSTALL/.gitbook.yaml
+    stage-packages:
+      - on armhf:
+        - libatomic1
     stage:
       [ .next, ./* ]
     prime:
