@@ -1,7 +1,7 @@
 import React from 'react';
 import Alert from '../../Common/Alert';
 import Modal from '../../Common/Modal';
-import LoadingSpinner from '../../Common/LoadingSpinner';
+import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
 import useSWR from 'swr';
 import { defineMessages, useIntl } from 'react-intl';
 import { SonarrSeries } from '../../../../server/api/sonarr';
@@ -72,12 +72,12 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
       <Alert title={intl.formatMessage(messages.notvdbid)} type="info">
         {intl.formatMessage(messages.notvdbiddescription)}
       </Alert>
-      {!data && !error && <LoadingSpinner />}
+      {!data && !error && <SmallLoadingSpinner />}
       <div className="grid grid-cols-1 gap-4 pb-2 md:grid-cols-2">
         {data?.slice(0, 6).map((item) => (
           <button
             key={item.tvdbId}
-            className="focus:ring focus:ring-indigo-500 focus:ring-opacity-70 focus:outline-none rounded-xl container flex flex-col items-center justify-center h-40 mx-auto space-y-4 transition scale-100 outline-none cursor-pointer transform-gpu hover:scale-105"
+            className="container flex flex-col items-center justify-center h-40 mx-auto space-y-4 transition scale-100 outline-none cursor-pointer focus:ring focus:ring-indigo-500 focus:ring-opacity-70 focus:outline-none rounded-xl transform-gpu hover:scale-105"
             onClick={() => handleClick(item.tvdbId)}
           >
             <div
@@ -95,7 +95,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
                   className="w-auto rounded-md h-100"
                 />
               </div>
-              <div className="text-left self-start flex-grow p-3">
+              <div className="self-start flex-grow p-3 text-left">
                 <div className="text-sm font-medium text-grey-200">
                   {item.title}
                 </div>
