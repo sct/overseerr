@@ -3,9 +3,9 @@ import PlexOAuth from '../../utils/plex';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  loginwithplex: 'Login with Plex',
-  loading: 'Loading...',
-  loggingin: 'Logging in...',
+  signinwithplex: 'Sign in',
+  loading: 'Loading…',
+  signingin: 'Signing in…',
 });
 
 const plexOAuth = new PlexOAuth();
@@ -51,8 +51,8 @@ const PlexLoginButton: React.FC<PlexLoginButtonProps> = ({
         {loading
           ? intl.formatMessage(messages.loading)
           : isProcessing
-          ? intl.formatMessage(messages.loggingin)
-          : intl.formatMessage(messages.loginwithplex)}
+          ? intl.formatMessage(messages.signingin)
+          : intl.formatMessage(messages.signinwithplex)}
       </button>
     </span>
   );
