@@ -165,7 +165,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       <div className="flex flex-col items-center pt-4 lg:flex-row lg:items-end">
         <div className="lg:mr-4">
           <img
-            src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
+            src={
+              data.posterPath
+                ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
+                : '/images/overseerr_poster_not_found.png'
+            }
             alt=""
             className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-44 lg:w-52"
           />

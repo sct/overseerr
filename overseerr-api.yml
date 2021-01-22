@@ -1143,6 +1143,135 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MovieResult'
+    SonarrSeries:
+      type: object
+      properties:
+        title:
+          type: string
+          example: COVID-25
+        sortTitle:
+          type: string
+          example: covid 25
+        seasonCount:
+          type: number
+          example: 1
+        status:
+          type: string
+          example: upcoming
+        overview:
+          type: string
+          example: The thread is picked up again by Marianne Schmidt which ...
+        network:
+          type: string
+          example: CBS
+        airTime:
+          type: string
+          example: 02:15
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              coverType:
+                type: string
+                example: banner
+              url:
+                type: string
+                example: /sonarr/MediaCoverProxy/6467f05d9872726ad08cbf920e5fee4bf69198682260acab8eab5d3c2c958e92/5c8f116c6aa5c.jpg
+        remotePoster:
+          type: string
+          example: https://artworks.thetvdb.com/banners/posters/5c8f116129983.jpg
+        seasons:
+          type: array
+          items:
+            type: object
+            properties:
+              seasonNumber:
+                type: number
+                example: 1
+              monitored:
+                type: boolean
+                example: true
+        year:
+          type: number
+          example: 2015
+        path:
+          type: string
+        profileId:
+          type: number
+        languageProfileId:
+          type: number
+        seasonFolder:
+          type: boolean
+        monitored:
+          type: boolean
+        useSceneNumbering:
+          type: boolean
+        runtime:
+          type: number
+        tvdbId:
+          type: number
+          example: 12345
+        tvRageId:
+          type: number
+        tvMazeId:
+          type: number
+        firstAired:
+          type: string
+        lastInfoSync:
+          type: string
+          nullable: true
+        seriesType:
+          type: string
+        cleanTitle:
+          type: string
+        imdbId:
+          type: string
+        titleSlug:
+          type: string
+        certification:
+          type: string
+        genres:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        added:
+          type: string
+        ratings:
+          type: array
+          items:
+            type: object
+            properties:
+              votes:
+                type: number
+              value:
+                type: number
+        qualityProfileId:
+          type: number
+        id:
+          type: number
+          nullable: true
+        rootFolderPath:
+          type: string
+          nullable: true
+        addOptions:
+          type: array
+          items:
+            type: object
+            properties:
+              ignoreEpisodesWithFiles:
+                type: boolean
+                nullable: true
+              ignoreEpisodesWithoutFiles:
+                type: boolean
+                nullable: true
+              searchForMissingEpisodes:
+                type: boolean
+                nullable: true
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -3193,6 +3322,28 @@ paths:
                     $ref: '#/components/schemas/SonarrSettings'
                   profiles:
                     $ref: '#/components/schemas/ServiceProfile'
+  /service/sonarr/lookup/{tmdbId}:
+    get:
+      summary: Returns a list of series from sonarr
+      description: Returns a list of series returned by searching for the name in sonarr
+      tags:
+        - service
+      parameters:
+        - in: path
+          name: tmdbId
+          required: true
+          schema:
+            type: number
+            example: 0
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SonarrSeries'
 
 security:
   - cookieAuth: []
