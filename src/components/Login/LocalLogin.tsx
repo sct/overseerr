@@ -11,17 +11,15 @@ const messages = defineMessages({
   validationemailrequired: 'Not a valid email address',
   validationpasswordrequired: 'Password required',
   loginerror: 'Something went wrong when trying to sign in',
-  loggingin: 'Logging in...',
-  login: 'Login',
-  goback: 'Go back',
+  signingin: 'Signing in…',
+  signin: 'Sign in',
 });
 
 interface LocalLoginProps {
-  goBack: () => void;
   revalidate: () => void;
 }
 
-const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
+const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
   const intl = useIntl();
   const [loginError, setLoginError] = useState<string | null>(null);
 
@@ -109,25 +107,13 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ goBack, revalidate }) => {
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
-                      buttonType="ghost"
-                      type="reset"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        goBack();
-                      }}
-                    >
-                      {intl.formatMessage(messages.goback)}
-                    </Button>
-                  </span>
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
                       buttonType="primary"
                       type="submit"
                       disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.loggingin)
-                        : intl.formatMessage(messages.login)}
+                        ? intl.formatMessage(messages.signingin)
+                        : intl.formatMessage(messages.signin)}
                     </Button>
                   </span>
                 </div>
