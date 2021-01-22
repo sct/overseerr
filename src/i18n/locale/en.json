@@ -408,7 +408,7 @@
   "components.Setup.continue": "Continue",
   "components.Setup.finish": "Finish Setup",
   "components.Setup.finishing": "Finishing…",
-  "components.Setup.loginwithplex": "Login with Plex",
+  "components.Setup.loginwithplex": "Log in with Plex",
   "components.Setup.signinMessage": "Get started by logging in with your Plex account",
   "components.Setup.syncingbackground": "Syncing will run in the background. You can continue the setup process in the meantime.",
   "components.Setup.tip": "Tip",

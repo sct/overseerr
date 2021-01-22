@@ -536,5 +536,10 @@
   "components.Login.login": "Iniciar sesión",
   "components.Login.loggingin": "Iniciando sesión…",
   "components.Login.goback": "Volver",
-  "components.Login.email": "Dirección de correo electrónico"
+  "components.Login.email": "Dirección de correo electrónico",
+  "components.NotificationTypeSelector.mediadeclined": "Media Rechazada",
+  "components.RequestModal.autoapproval": "Aprobación Automática",
+  "components.NotificationTypeSelector.mediadeclinedDescription": "Envía una notificación cuando la solicitud es rechazada.",
+  "i18n.experimental": "Experimental",
+  "components.Settings.hideAvailable": "Ocultar los medios disponibles"
 }
