@@ -57,6 +57,10 @@ const availableLanguages: AvailableLanguageObject = {
     code: 'pt-BR',
     display: 'Portuguese (Brazil)',
   },
+  'pt-PT': {
+    code: 'pt-PT',
+    display: 'Portuguese (Portugal)',
+  },
   sr: {
     code: 'sr',
     display: 'Serbian',
