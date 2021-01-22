@@ -56,7 +56,7 @@ const Login: React.FC = () => {
   }, [user, router]);
 
   return (
-    <div className="relative flex flex-col min-h-screen py-14 bg-gray-900">
+    <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
@@ -124,7 +124,7 @@ const Login: React.FC = () => {
               {({ openIndexes, handleClick, AccordionContent }) => (
                 <>
                   <button
-                    className={`text-sm w-full focus:outline-none transition-colors duration-200 py-2 bg-gray-800 hover:bg-gray-700 bg-opacity-70 hover:bg-opacity-70 rounded-t-xl text-center text-gray-400 ${
+                    className={`text-sm w-full focus:outline-none transition-colors duration-200 py-2 bg-gray-800 hover:bg-gray-700 bg-opacity-70 hover:bg-opacity-70 sm:rounded-t-lg text-center text-gray-400 ${
                       openIndexes.includes(0) && 'text-indigo-500'
                     }`}
                     onClick={() => handleClick(0)}
@@ -132,7 +132,7 @@ const Login: React.FC = () => {
                     {intl.formatMessage(messages.signinwithplex)}
                   </button>
                   <AccordionContent isOpen={openIndexes.includes(0)}>
-                    <div className="py-8 px-10">
+                    <div className="px-10 py-8">
                       <PlexLoginButton
                         isProcessing={isProcessing}
                         onAuthToken={(authToken) => setAuthToken(authToken)}
@@ -143,14 +143,14 @@ const Login: React.FC = () => {
                     className={`text-sm w-full focus:outline-none transition-colors duration-200 py-2 bg-gray-800 hover:bg-gray-700 bg-opacity-70 hover:bg-opacity-70 text-center text-gray-400 ${
                       openIndexes.includes(1)
                         ? 'text-indigo-500'
-                        : 'rounded-b-xl '
+                        : 'sm:rounded-b-lg '
                     }`}
                     onClick={() => handleClick(1)}
                   >
                     {intl.formatMessage(messages.signinwithoverseerr)}
                   </button>
                   <AccordionContent isOpen={openIndexes.includes(1)}>
-                    <div className="py-8 px-10">
+                    <div className="px-10 py-8">
                       <LocalLogin revalidate={revalidate} />
                     </div>
                   </AccordionContent>
