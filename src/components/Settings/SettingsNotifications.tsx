@@ -26,6 +26,8 @@ const messages = defineMessages({
     'Here you can pick and choose what types of notifications to send and through what types of services.',
   notificationsettingssaved: 'Notification settings saved!',
   notificationsettingsfailed: 'Notification settings failed to save.',
+  enablenotifications: 'Enable Notifications',
+  autoapprovedrequests: 'Send notifications for auto-approved requests',
 });
 
 interface SettingsRoute {
@@ -206,7 +208,9 @@ const SettingsNotifications: React.FC = ({ children }) => {
                     htmlFor="name"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
-                    <span className="mr-2">Enable Notifications</span>
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.enablenotifications)}
+                    </span>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
@@ -226,7 +230,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
                     <span className="mr-2">
-                      Send Notifications for auto-approved media
+                      {intl.formatMessage(messages.autoapprovedrequests)}
                     </span>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
