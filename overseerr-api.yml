@@ -62,6 +62,9 @@ components:
         applicationUrl:
           type: string
           example: https://os.example.com
+        csrfProtection:
+          type: boolean
+          example: false
         hideAvailable:
           type: boolean
           example: false

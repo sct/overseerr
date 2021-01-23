@@ -48,6 +48,7 @@ export interface SonarrSettings extends DVRSettings {
 export interface MainSettings {
   apiKey: string;
   applicationUrl: string;
+  csrfProtection: boolean;
   defaultPermissions: number;
   hideAvailable: boolean;
 }
@@ -155,6 +156,7 @@ class Settings {
         apiKey: '',
         applicationUrl: '',
         hideAvailable: false,
+        csrfProtection: false,
         defaultPermissions: Permission.REQUEST,
       },
       plex: {

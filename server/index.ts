@@ -78,22 +78,25 @@ app
       } finally {
         next();
       }
-    server.use(
-      csurf({
-        cookie: {
-          httpOnly: true,
+    });
+    if (settings.main.csrfProtection) {
+      server.use(
+        csurf({
+          cookie: {
+            httpOnly: true,
+            sameSite: true,
+            secure: !dev,
+          },
+        })
+      );
+      server.use((req, res, next) => {
+        res.cookie('XSRF-TOKEN', req.csrfToken(), {
           sameSite: true,
           secure: !dev,
-        },
-      })
-    );
-    server.use((req, res, next) => {
-      res.cookie('XSRF-TOKEN', req.csrfToken(), {
-        sameSite: true,
-        secure: !dev,
+        });
+        next();
       });
-      next();
-    });
+    }
 
     // Set up sessions
     const sessionRespository = getRepository(Session);
