@@ -27,8 +27,9 @@ const messages = defineMessages({
   toastSettingsFailure: 'Something went wrong saving settings.',
   defaultPermissions: 'Default User Permissions',
   hideAvailable: 'Hide available media',
-  csrfProtection:
-    'Enable CSRF Protection (makes external API access read-only; reload Overseerr for changes to take effect)',
+  csrfProtection: 'Enable CSRF Protection',
+  csrfProtectionTip:
+    'Sets external API access to read-only; Overseerr must be reloaded for changes to take effect',
 });
 
 const SettingsMain: React.FC = () => {
@@ -174,9 +175,14 @@ const SettingsMain: React.FC = () => {
                     htmlFor="name"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
-                    <span className="mr-2">
-                      {intl.formatMessage(messages.csrfProtection)}
-                    </span>
+                    <div className="flex flex-col">
+                      <span className="mr-2">
+                        {intl.formatMessage(messages.csrfProtection)}
+                      </span>
+                      <span className="text-gray-500">
+                        {intl.formatMessage(messages.csrfProtectionTip)}
+                      </span>
+                    </div>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <Field
