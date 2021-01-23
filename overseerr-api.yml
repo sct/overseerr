@@ -923,6 +923,15 @@ components:
               type: number
             sound:
               type: string
+    NotificationSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: true
+        autoapprovalEnabled:
+          type: boolean
+          example: false
     NotificationEmailSettings:
       type: object
       properties:
@@ -1763,6 +1772,37 @@ paths:
                     nextExecutionTime:
                       type: string
                       example: '2020-09-02T05:02:23.000Z'
+  /settings/notifications:
+    get:
+      summary: Return current notification settings
+      description: Returns current notification settings in JSON format
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSettings'
+    post:
+      summary: Update notification settings
+      description: Update current notification settings with provided values
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSettings'
   /settings/notifications/email:
     get:
       summary: Return current email notification settings

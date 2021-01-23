@@ -126,6 +126,8 @@ interface NotificationAgents {
 }
 
 interface NotificationSettings {
+  enabled: boolean;
+  autoapprovalEnabled: boolean;
   agents: NotificationAgents;
 }
 
@@ -168,6 +170,8 @@ class Settings {
         initialized: false,
       },
       notifications: {
+        enabled: true,
+        autoapprovalEnabled: false,
         agents: {
           email: {
             enabled: false,

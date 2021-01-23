@@ -201,6 +201,18 @@ export class MediaRequest {
     }
   }
 
+  @AfterInsert()
+  public async autoapprovalNotification(): Promise<void> {
+    const settings = getSettings().notifications;
+
+    if (
+      settings.autoapprovalEnabled &&
+      this.status === MediaRequestStatus.APPROVED
+    ) {
+      this.notifyApprovedOrDeclined();
+    }
+  }
+
   @AfterUpdate()
   @AfterInsert()
   public async updateParentStatus(): Promise<void> {

@@ -10,6 +10,29 @@ import WebhookAgent from '../../lib/notifications/agents/webhook';
 
 const notificationRoutes = Router();
 
+notificationRoutes.get('/', (_req, res) => {
+  const settings = getSettings().notifications;
+  return res.status(200).json({
+    enabled: settings.enabled,
+    autoapprovalEnabled: settings.autoapprovalEnabled,
+  });
+});
+
+notificationRoutes.post('/', (req, res) => {
+  const settings = getSettings();
+
+  Object.assign(settings.notifications, {
+    enabled: req.body.enabled,
+    autoapprovalEnabled: req.body.autoapprovalEnabled,
+  });
+  settings.save();
+
+  return res.status(200).json({
+    enabled: settings.notifications.enabled,
+    autoapprovalEnabled: settings.notifications.autoapprovalEnabled,
+  });
+});
+
 notificationRoutes.get('/discord', (_req, res) => {
   const settings = getSettings();
 
