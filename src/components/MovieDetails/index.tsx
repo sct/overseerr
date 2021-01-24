@@ -131,7 +131,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         subText={data.title}
       >
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
-          (data?.mediaInfo?.downloadStatus ?? []).length > 0) && (
+          (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
           <>
             <h3 className="mb-2 text-xl">Download Status</h3>
             <div className="mb-6 overflow-hidden bg-gray-600 rounded-md shadow">

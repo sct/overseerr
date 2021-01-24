@@ -57,8 +57,8 @@ export const startJobs = (): void => {
 
   // Reset download sync
   scheduledJobs.push({
-    id: 'download-sync',
-    name: 'Download Sync',
+    id: 'download-sync-reset',
+    name: 'Download Sync Reset',
     job: schedule.scheduleJob('0 0 1 * * *', () => {
       logger.info('Starting scheduled job: Download Sync Reset', {
         label: 'Jobs',
