@@ -69,6 +69,7 @@ const messages = defineMessages({
   openradarr: 'Open Movie in Radarr',
   openradarr4k: 'Open Movie in 4K Radarr',
   downloadstatus: 'Download Status',
+  playonplex: 'Play on Plex',
 });
 
 interface MovieDetailsProps {
@@ -252,6 +253,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 <StatusBadge
                   status={data.mediaInfo?.status}
                   inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
+                  plexUrl={data.mediaInfo?.plexUrl}
+                  plexUrl4k={data.mediaInfo?.plexUrl4k}
                 />
               </span>
             )}
@@ -260,6 +263,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 status={data.mediaInfo?.status4k}
                 is4k
                 inProgress={(data.mediaInfo?.downloadStatus4k ?? []).length > 0}
+                plexUrl={data.mediaInfo?.plexUrl}
+                plexUrl4k={data.mediaInfo?.plexUrl4k}
               />
             </span>
           </div>
@@ -281,10 +286,16 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </span>
         </div>
         <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
-          {trailerUrl && (
+          {(trailerUrl ||
+            data.mediaInfo?.plexUrl ||
+            data.mediaInfo?.plexUrl4k) && (
             <a
-              href={trailerUrl}
-              target={'_blank'}
+              href={
+                data.mediaInfo?.plexUrl ??
+                data.mediaInfo?.plexUrl4k ??
+                trailerUrl
+              }
+              target="_blank"
               rel="noreferrer"
               className="mb-3 sm:mb-0"
             >
@@ -309,7 +320,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <FormattedMessage {...messages.watchtrailer} />
+                {data.mediaInfo?.plexUrl || data.mediaInfo?.plexUrl4k
+                  ? intl.formatMessage(messages.playonplex)
+                  : intl.formatMessage(messages.watchtrailer)}
               </Button>
             </a>
           )}
@@ -550,6 +563,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               tmdbId={data.id}
               imdbId={data.externalIds.imdbId}
               rtUrl={ratingData?.url}
+              plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}
             />
           </div>
         </div>
