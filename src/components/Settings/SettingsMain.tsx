@@ -29,7 +29,7 @@ const messages = defineMessages({
   hideAvailable: 'Hide available media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
-    'Sets external API access to read-only; Overseerr must be reloaded for changes to take effect',
+    'Sets external API access to read-only (Overseerr must be reloaded for changes to take effect)',
 });
 
 const SettingsMain: React.FC = () => {
