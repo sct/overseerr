@@ -27,7 +27,7 @@ const messages = defineMessages({
   requestSuccess: '<strong>{title}</strong> successfully requested!',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
-  requesting: 'Requesting...',
+  requesting: 'Requesting…',
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
   selectseason: 'Select season(s)',
@@ -37,15 +37,15 @@ const messages = defineMessages({
   seasonnumber: 'Season {number}',
   extras: 'Extras',
   notrequested: 'Not Requested',
-  errorediting: 'Something went wrong editing the request.',
+  errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request edited.',
   requestcancelled: 'Request cancelled.',
-  autoapproval: 'Auto Approval',
-  requesterror: 'Something went wrong when trying to request media.',
+  autoapproval: 'Automatic Approval',
+  requesterror: 'Something went wrong while submitting the request.',
   next: 'Next',
-  notvdbid: 'No TVDB id was found connected on TMDB',
+  notvdbid: 'No TVDB ID was found for the item on TMDb.',
   notvdbiddescription:
-    'Either add the TVDB id to TMDB and come back later, or select the correct match below.',
+    'Either add the TVDB ID to TMDb and try again later, or select the correct match below:',
   backbutton: 'Back',
 });
 

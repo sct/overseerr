@@ -33,7 +33,7 @@ const defaultPayload = {
 
 const messages = defineMessages({
   save: 'Save Changes',
-  saving: 'Saving...',
+  saving: 'Saving…',
   agentenabled: 'Agent Enabled',
   webhookUrl: 'Webhook URL',
   authheader: 'Authorization Header',

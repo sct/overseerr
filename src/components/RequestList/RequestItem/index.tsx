@@ -30,7 +30,7 @@ const messages = defineMessages({
   requestedby: 'Requested by {username}',
   seasons: 'Seasons',
   notavailable: 'N/A',
-  failedretry: 'Something went wrong retrying the request',
+  failedretry: 'Something went wrong while retrying the request.',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {

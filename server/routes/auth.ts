@@ -186,7 +186,7 @@ authRoutes.get('/logout', (req, res, next) => {
     if (err) {
       return next({
         status: 500,
-        message: 'Something went wrong while attempting to logout',
+        message: 'Something went wrong while attempting to sign out.',
       });
     }
 

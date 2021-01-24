@@ -165,7 +165,7 @@ This version can break any moment. Be prepared to troubleshoot any issues that a
 {% endtab %}
 
 {% tab title="Swizzin" %}
-The installation is not implemented via docker, but barebones. The latest released version of overseerr will be used.
+The installation is not implemented via Docker, but barebones. The latest release version of Overseerr will be used.
 Please see the [swizzin documentation](https://swizzin.ltd/applications/overseerr) for more information.
 
 To install, run the following:

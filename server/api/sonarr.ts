@@ -216,7 +216,7 @@ class SonarrAPI {
 
       return true;
     } catch (e) {
-      logger.error('Something went wrong adding a series to Sonarr', {
+      logger.error('Something went wrong while adding a series to Sonarr.', {
         label: 'Sonarr API',
         errorMessage: e.message,
         error: e,
@@ -232,7 +232,7 @@ class SonarrAPI {
 
       return response.data;
     } catch (e) {
-      logger.error('Something went wrong retrieving Sonarr profiles', {
+      logger.error('Something went wrong while retrieving Sonarr profiles.', {
         label: 'Sonarr API',
         message: e.message,
       });
@@ -246,10 +246,14 @@ class SonarrAPI {
 
       return response.data;
     } catch (e) {
-      logger.error('Something went wrong retrieving Sonarr root folders', {
-        label: 'Sonarr API',
-        message: e.message,
-      });
+      logger.error(
+        'Something went wrong while retrieving Sonarr root folders.',
+        {
+          label: 'Sonarr API',
+          message: e.message,
+        }
+      );
+
       throw new Error('Failed to get root folders');
     }
   }

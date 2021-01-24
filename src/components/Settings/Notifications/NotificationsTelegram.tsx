@@ -12,12 +12,12 @@ import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
-  saving: 'Saving...',
+  saving: 'Saving…',
   agentenabled: 'Agent Enabled',
   botAPI: 'Bot API',
-  chatId: 'Chat Id',
+  chatId: 'Chat ID',
   validationBotAPIRequired: 'You must provide a Bot API key.',
-  validationChatIdRequired: 'You must provide a Chat id.',
+  validationChatIdRequired: 'You must provide a Chat ID.',
   telegramsettingssaved: 'Telegram notification settings saved!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   testsent: 'Test notification sent!',
@@ -25,7 +25,7 @@ const messages = defineMessages({
   settinguptelegram: 'Setting up Telegram Notifications',
   settinguptelegramDescription:
     'To setup Telegram you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
-    Additionally, you need the chat id for the chat you want the bot to send notifications to.\
+    Additionally, you need the chat ID for the chat you want the bot to send notifications to.\
     You can do this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
   notificationtypes: 'Notification Types',
 });

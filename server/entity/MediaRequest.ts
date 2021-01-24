@@ -556,7 +556,7 @@ export class MediaRequest {
 
         if (this.profileId && this.profileId !== qualityProfile) {
           qualityProfile = this.profileId;
-          logger.info(`Request has an override profile id: ${qualityProfile}`, {
+          logger.info(`Request has an override profile ID: ${qualityProfile}`, {
             label: 'Media Request',
           });
         }

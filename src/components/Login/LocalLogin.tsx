@@ -10,7 +10,7 @@ const messages = defineMessages({
   password: 'Password',
   validationemailrequired: 'Not a valid email address',
   validationpasswordrequired: 'Password required',
-  loginerror: 'Something went wrong when trying to sign in',
+  loginerror: 'Something went wrong while trying to sign in.',
   signingin: 'Signing in…',
   signin: 'Sign in',
 });

@@ -16,8 +16,9 @@ import Alert from '../Common/Alert';
 const messages = defineMessages({
   plexsettings: 'Plex Settings',
   plexsettingsDescription:
-    'Configure the settings for your Plex server. Overseerr uses your Plex server to scan your library at an interval and see what content is available.',
-  servername: 'Server Name (Retrieved from Plex)',
+    'Configure the settings for your Plex server. Overseerr scans your Plex libraries to see what content is available.',
+  servername: 'Server Name',
+  servernameTip: 'Automatically retrieved from Plex after saving',
   servernamePlaceholder: 'Plex Server Name',
   serverpreset: 'Available Server',
   serverpresetPlaceholder: 'Plex Server (Retrieved Automatically)',
@@ -25,7 +26,7 @@ const messages = defineMessages({
   serverRemote: 'remote',
   serverConnected: 'connected',
   serverpresetManualMessage: 'Manually configure',
-  serverpresetRefreshing: 'Retrieving servers...',
+  serverpresetRefreshing: 'Retrieving servers…',
   serverpresetLoad: 'Press button to load available servers',
   toastPlexRefresh: 'Retrieving server list from Plex',
   toastPlexRefreshSuccess: 'Retrieved server list from Plex',
@@ -44,15 +45,15 @@ const messages = defineMessages({
   timeout: 'Timeout',
   ms: 'ms',
   save: 'Save Changes',
-  saving: 'Saving...',
+  saving: 'Saving…',
   plexlibraries: 'Plex Libraries',
   plexlibrariesDescription:
-    'These are the libraries Overseerr will scan for titles. If you see no libraries listed, you will need to run at least one sync by clicking the button below. You must first configure and save your plex connection settings before you will be able to retrieve your libraries.',
+    'The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.',
   syncing: 'Syncing',
   sync: 'Sync Plex Libraries',
   manualscan: 'Manual Library Scan',
   manualscanDescription:
-    "Normally, this will only be run once every 24 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one time full manual library scan is recommended!",
+    "Normally, this will only be run once every 24 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one-time full manual library scan is recommended!",
   notrunning: 'Not Running',
   currentlibrary: 'Current Library: {name}',
   librariesRemaining: 'Libraries Remaining: {count}',
@@ -352,7 +353,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     htmlFor="name"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
-                    <FormattedMessage {...messages.servername} />
+                    <div className="flex flex-col">
+                      <span className="mr-2">
+                        <FormattedMessage {...messages.servername} />
+                      </span>
+                      <span className="text-gray-500">
+                        <FormattedMessage {...messages.servernameTip} />
+                      </span>
+                    </div>
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                     <div className="flex max-w-lg rounded-md shadow-sm">

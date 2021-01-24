@@ -96,7 +96,7 @@ class JobPlexSync {
           newMedia.tmdbId = tmdbMovie.id;
         }
         if (!newMedia.tmdbId) {
-          throw new Error('Unable to find TMDB ID');
+          throw new Error('Unable to find TMDb ID');
         }
 
         const has4k = metadata.Media.some(
@@ -181,14 +181,14 @@ class JobPlexSync {
         }
 
         if (!tmdbMovieId) {
-          throw new Error('Unable to find TMDB ID');
+          throw new Error('Unable to find TMDb ID');
         }
 
         await this.processMovieWithId(plexitem, tmdbMovie, tmdbMovieId);
       }
     } catch (e) {
       this.log(
-        `Failed to process plex item. ratingKey: ${plexitem.ratingKey}`,
+        `Failed to process Plex item. ratingKey: ${plexitem.ratingKey}`,
         'error',
         {
           errorMessage: e.message,
@@ -342,7 +342,7 @@ class JobPlexSync {
             await this.processHamaSpecials(metadata, Number(tvdbId));
           } else {
             this.log(
-              `Hama id ${plexitem.guid} detected, but library agent is not set to Hama`,
+              `Hama ID ${plexitem.guid} detected, but library agent is not set to Hama`,
               'warn'
             );
           }
@@ -352,7 +352,7 @@ class JobPlexSync {
 
         if (!animeList.isLoaded()) {
           this.log(
-            `Hama id ${plexitem.guid} detected, but library agent is not set to Hama`,
+            `Hama ID ${plexitem.guid} detected, but library agent is not set to Hama`,
             'warn'
           );
         } else if (matched?.[1]) {
@@ -408,7 +408,7 @@ class JobPlexSync {
             return;
           }
 
-          // Lets get the available seasons from plex
+          // Lets get the available seasons from Plex
           const seasons = tvShow.seasons;
           const media = await this.getExisting(tvShow.id, MediaType.TV);
 
@@ -436,7 +436,7 @@ class JobPlexSync {
 
             // Check if we found the matching season and it has all the available episodes
             if (matchedPlexSeason) {
-              // If we have a matched plex season, get its children metadata so we can check details
+              // If we have a matched Plex season, get its children metadata so we can check details
               const episodes = await this.plexClient.getChildrenMetadata(
                 matchedPlexSeason.ratingKey
               );
@@ -603,7 +603,7 @@ class JobPlexSync {
       }
     } catch (e) {
       this.log(
-        `Failed to process plex item. ratingKey: ${
+        `Failed to process Plex item. ratingKey: ${
           plexitem.grandparentRatingKey ??
           plexitem.parentRatingKey ??
           plexitem.ratingKey

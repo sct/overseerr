@@ -12,7 +12,7 @@ import { MediaStatus } from '../../../server/constants/media';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
-  recommendationssubtext: 'If you liked {title}, you might also like...',
+  recommendationssubtext: 'If you liked {title}, you might also like…',
 });
 
 interface SearchResult {

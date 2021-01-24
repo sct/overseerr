@@ -178,7 +178,7 @@
   "components.Settings.deleteserverconfirm": "Weet je zeker dat je deze server wilt verwijderen?",
   "components.Settings.edit": "Wijzigen",
   "components.Settings.generalsettings": "Algemene instellingen",
-  "components.Settings.generalsettingsDescription": "Deze instellingen hebben betrekking op de algemene configuratie van Overseer.",
+  "components.Settings.generalsettingsDescription": "Deze instellingen hebben betrekking op de algemene configuratie van Overseerr.",
   "components.Settings.hostname": "Hostnaam/IP",
   "components.Settings.jobname": "Taaknaam",
   "components.Settings.librariesRemaining": "Resterende bibliotheken: {count}",

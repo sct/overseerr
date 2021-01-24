@@ -23,10 +23,10 @@ import BulkEditModal from './BulkEditModal';
 
 const messages = defineMessages({
   userlist: 'User List',
-  importfromplex: 'Import Users From Plex',
-  importfromplexerror: 'Something went wrong importing users from Plex',
+  importfromplex: 'Import Users from Plex',
+  importfromplexerror: 'Something went wrong while importing users from Plex.',
   importedfromplex:
-    '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex',
+    '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex.',
   username: 'Username',
   totalrequests: 'Total Requests',
   usertype: 'User Type',
@@ -41,7 +41,7 @@ const messages = defineMessages({
   plexuser: 'Plex User',
   deleteuser: 'Delete User',
   userdeleted: 'User deleted',
-  userdeleteerror: 'Something went wrong deleting the user',
+  userdeleteerror: 'Something went wrong while deleting the user.',
   deleteconfirm:
     'Are you sure you want to delete this user? All existing request data from this user will be removed.',
   localuser: 'Local User',
@@ -49,16 +49,16 @@ const messages = defineMessages({
   createuser: 'Create User',
   creating: 'Creating',
   create: 'Create',
-  validationemailrequired: 'Must enter a valid email address.',
+  validationemailrequired: 'Must enter a valid email address',
   validationpasswordminchars:
-    'Password is too short - should be 8 chars minimum.',
-  usercreatedfailed: 'Something went wrong when trying to create the user',
-  usercreatedsuccess: 'Successfully created the user',
+    'Password is too short; should be a minimum of 8 characters',
+  usercreatedfailed: 'Something went wrong while creating the user.',
+  usercreatedsuccess: 'User created successfully!',
   email: 'Email Address',
   password: 'Password',
-  passwordinfo: 'Password Info',
+  passwordinfo: 'Password Information',
   passwordinfodescription:
-    'Email notification settings need to be enabled and setup in order to use the auto generated passwords',
+    'Email notifications need to be configured and enabled in order to automatically generate passwords.',
   autogeneratepassword: 'Automatically generate password',
 });
 

@@ -192,7 +192,7 @@ class PlexTvAPI {
       return account.data.user;
     } catch (e) {
       logger.error(
-        `Something went wrong getting the account from plex.tv: ${e.message}`,
+        `Something went wrong while getting the account from plex.tv: ${e.message}`,
         { label: 'Plex.tv API' }
       );
       throw new Error('Invalid auth token');
