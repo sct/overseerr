@@ -72,10 +72,12 @@ router.get<{ id: string }>('/:id', async (req, res, next) => {
 
 const canMakePermissionsChange = (permissions: number, user?: User) =>
   // Only let the owner grant admin privileges
-  (hasPermission(Permission.ADMIN, permissions) && user?.id !== 1) ||
+  !(hasPermission(Permission.ADMIN, permissions) && user?.id !== 1) ||
   // Only let users with the manage settings permission, grant the same permission
-  (hasPermission(Permission.MANAGE_SETTINGS, permissions) &&
-    !hasPermission(Permission.MANAGE_SETTINGS, user?.permissions ?? 0));
+  !(
+    hasPermission(Permission.MANAGE_SETTINGS, permissions) &&
+    !hasPermission(Permission.MANAGE_SETTINGS, user?.permissions ?? 0)
+  );
 
 router.put<
   Record<string, never>,
@@ -85,7 +87,7 @@ router.put<
   try {
     const isOwner = req.user?.id === 1;
 
-    if (canMakePermissionsChange(req.body.permissions, req.user)) {
+    if (!canMakePermissionsChange(req.body.permissions, req.user)) {
       return next({
         status: 403,
         message: 'You do not have permission to grant this level of access',
@@ -129,7 +131,7 @@ router.put<{ id: string }>('/:id', async (req, res, next) => {
       });
     }
 
-    if (canMakePermissionsChange(req.body.permissions, req.user)) {
+    if (!canMakePermissionsChange(req.body.permissions, req.user)) {
       return next({
         status: 403,
         message: 'You do not have permission to grant this level of access',
