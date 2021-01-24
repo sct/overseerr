@@ -1,4 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
+import { RadarrSettings } from '../lib/settings';
 import logger from '../logger';
 
 interface RadarrMovieOptions {
@@ -13,12 +14,13 @@ interface RadarrMovieOptions {
   searchNow?: boolean;
 }
 
-interface RadarrMovie {
+export interface RadarrMovie {
   id: number;
   title: string;
   isAvailable: boolean;
   monitored: boolean;
   tmdbId: number;
+  imdbId: string;
   titleSlug: string;
   folderName: string;
   path: string;
@@ -46,6 +48,12 @@ export interface RadarrProfile {
 }
 
 class RadarrAPI {
+  static buildRadarrUrl(radarrSettings: RadarrSettings, path?: string): string {
+    return `${radarrSettings.useSsl ? 'https' : 'http'}://${
+      radarrSettings.hostname
+    }:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}${path}`;
+  }
+
   private axios: AxiosInstance;
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
     this.axios = Axios.create({

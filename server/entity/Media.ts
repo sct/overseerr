@@ -8,11 +8,14 @@ import {
   UpdateDateColumn,
   getRepository,
   In,
+  AfterLoad,
 } from 'typeorm';
 import { MediaRequest } from './MediaRequest';
 import { MediaStatus, MediaType } from '../constants/media';
 import logger from '../logger';
 import Season from './Season';
+import { getSettings } from '../lib/settings';
+import RadarrAPI from '../api/radarr';
 
 @Entity()
 class Media {
@@ -104,8 +107,46 @@ class Media {
   @Column({ type: 'datetime', nullable: true })
   public mediaAddedAt: Date;
 
+  @Column({ nullable: true })
+  public serviceId?: number;
+
+  @Column({ nullable: true })
+  public serviceId4k?: number;
+
+  public serviceUrl?: string;
+  public serviceUrl4k?: string;
+
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
+  }
+
+  @AfterLoad()
+  public setServiceUrl(): void {
+    if (this.serviceId !== null) {
+      const settings = getSettings();
+      const server = settings.radarr.find(
+        (radarr) => radarr.id === this.serviceId
+      );
+
+      if (server) {
+        this.serviceUrl = server.externalUrl
+          ? `${server.externalUrl}/movie/${this.tmdbId}`
+          : RadarrAPI.buildRadarrUrl(server, `/movie/${this.tmdbId}`);
+      }
+    }
+
+    if (this.serviceId4k !== null) {
+      const settings = getSettings();
+      const server = settings.radarr.find(
+        (radarr) => radarr.id === this.serviceId4k
+      );
+
+      if (server) {
+        this.serviceUrl4k = server.externalUrl
+          ? `${server.externalUrl}/movie/${this.tmdbId}`
+          : RadarrAPI.buildRadarrUrl(server, `/movie/${this.tmdbId}`);
+      }
+    }
   }
 }
 

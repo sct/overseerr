@@ -772,7 +772,8 @@ class JobPlexSync {
       this.log(
         this.isRecentOnly
           ? 'Recently Added Scan Complete'
-          : 'Full Scan Complete'
+          : 'Full Scan Complete',
+        'info'
       );
     } catch (e) {
       logger.error('Sync interrupted', {
