@@ -34,6 +34,7 @@ const messages = defineMessages({
   created: 'Created',
   lastupdated: 'Last Updated',
   edit: 'Edit',
+  bulkedit: 'Bulk Edit',
   delete: 'Delete',
   admin: 'Admin',
   user: 'User',
@@ -387,44 +388,38 @@ const UserList: React.FC = () => {
           </Button>
         </div>
       </div>
+
       <Table>
         <thead>
-          {selectedUsers.length > 0 && (
-            <tr>
-              <Table.TH colSpan={42}>
-                <Button
-                  buttonType="warning"
-                  className="mr-2"
-                  onClick={() => setShowBulkEditModal(true)}
-                >
-                  {intl.formatMessage(messages.edit)}
-                </Button>
-              </Table.TH>
-            </tr>
-          )}
           <tr>
-            {currentUser &&
-              hasPermission(Permission.ADMIN, currentUser.permissions) && (
-                <Table.TH>
-                  <input
-                    type="checkbox"
-                    id="selectAll"
-                    name="selectAll"
-                    checked={isAllUsersSelected()}
-                    onChange={() => {
-                      toggleAllUsers();
-                    }}
-                    className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                  />
-                </Table.TH>
-              )}
+            <Table.TH>
+              <input
+                type="checkbox"
+                id="selectAll"
+                name="selectAll"
+                checked={isAllUsersSelected()}
+                onChange={() => {
+                  toggleAllUsers();
+                }}
+                className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+              />
+            </Table.TH>
             <Table.TH>{intl.formatMessage(messages.username)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.usertype)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.lastupdated)}</Table.TH>
-            <Table.TH></Table.TH>
+            <Table.TH className="text-right">
+              <Button
+                buttonSize="sm"
+                buttonType="warning"
+                onClick={() => setShowBulkEditModal(true)}
+                disabled={selectedUsers.length === 0}
+              >
+                {intl.formatMessage(messages.bulkedit)}
+              </Button>
+            </Table.TH>
           </tr>
         </thead>
         <Table.TBody>

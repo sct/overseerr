@@ -492,6 +492,7 @@
   "components.UserEdit.usersaved": "User saved",
   "components.UserList.admin": "Admin",
   "components.UserList.autogeneratepassword": "Automatically generate password",
+  "components.UserList.bulkedit": "Bulk Edit",
   "components.UserList.create": "Create",
   "components.UserList.created": "Created",
   "components.UserList.createlocaluser": "Create Local User",
