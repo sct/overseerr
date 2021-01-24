@@ -84,6 +84,8 @@ const UserList: React.FC = () => {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const { user: currentUser } = useUser();
 
+  const isUserPermsEditable = (userId: number) =>
+    userId !== 1 && userId !== currentUser?.id;
   const isAllUsersSelected = () => {
     return (
       selectedUsers.length ===
@@ -98,7 +100,7 @@ const UserList: React.FC = () => {
       selectedUsers.length < data?.length - 1
     ) {
       setSelectedUsers(
-        data.filter((user) => user.id !== currentUser?.id).map((u) => u.id)
+        data.filter((user) => isUserPermsEditable(user.id)).map((u) => u.id)
       );
     } else {
       setSelectedUsers([]);
@@ -426,7 +428,7 @@ const UserList: React.FC = () => {
           {data?.map((user) => (
             <tr key={`user-list-${user.id}`}>
               <Table.TD>
-                {user.id !== currentUser?.id && (
+                {isUserPermsEditable(user.id) && (
                   <input
                     type="checkbox"
                     id={`user-list-select-${user.id}`}
