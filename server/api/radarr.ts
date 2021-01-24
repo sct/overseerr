@@ -47,6 +47,32 @@ export interface RadarrProfile {
   name: string;
 }
 
+interface QueueItem {
+  movieId: number;
+  size: number;
+  title: string;
+  sizeleft: number;
+  timeleft: string;
+  estimatedCompletionTime: string;
+  status: string;
+  trackedDownloadStatus: string;
+  trackedDownloadState: string;
+  downloadId: string;
+  protocol: string;
+  downloadClient: string;
+  indexer: string;
+  id: number;
+}
+
+interface QueueResponse {
+  page: number;
+  pageSize: number;
+  sortKey: string;
+  sortDirection: string;
+  totalRecords: number;
+  records: QueueItem[];
+}
+
 class RadarrAPI {
   static buildRadarrUrl(radarrSettings: RadarrSettings, path?: string): string {
     return `${radarrSettings.useSsl ? 'https' : 'http'}://${
@@ -149,6 +175,16 @@ class RadarrAPI {
       return response.data;
     } catch (e) {
       throw new Error(`[Radarr] Failed to retrieve root folders: ${e.message}`);
+    }
+  };
+
+  public getQueue = async (): Promise<QueueItem[]> => {
+    try {
+      const response = await this.axios.get<QueueResponse>(`/queue`);
+
+      return response.data.records;
+    } catch (e) {
+      throw new Error(`[Radarr] Failed to retrieve queue: ${e.message}`);
     }
   };
 }

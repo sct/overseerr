@@ -2,6 +2,7 @@ import schedule from 'node-schedule';
 import { jobPlexFullSync, jobPlexRecentSync } from './plexsync';
 import logger from '../logger';
 import { jobRadarrSync } from './radarrsync';
+import downloadTracker from '../lib/downloadtracker';
 
 interface ScheduledJob {
   id: string;
@@ -41,6 +42,28 @@ export const startJobs = (): void => {
     job: schedule.scheduleJob('0 0 4 * * *', () => {
       logger.info('Starting scheduled job: Radarr Sync', { label: 'Jobs' });
       jobRadarrSync.run();
+    }),
+  });
+
+  // Run download sync
+  scheduledJobs.push({
+    id: 'download-sync',
+    name: 'Download Sync',
+    job: schedule.scheduleJob('0 * * * * *', () => {
+      logger.info('Starting scheduled job: Download Sync', { label: 'Jobs' });
+      downloadTracker.updateDownloads();
+    }),
+  });
+
+  // Reset download sync
+  scheduledJobs.push({
+    id: 'download-sync',
+    name: 'Download Sync',
+    job: schedule.scheduleJob('0 0 1 * * *', () => {
+      logger.info('Starting scheduled job: Download Sync Reset', {
+        label: 'Jobs',
+      });
+      downloadTracker.resetDownloadTracker();
     }),
   });
 

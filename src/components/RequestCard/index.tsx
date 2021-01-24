@@ -120,6 +120,13 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
                   : requestData.media.status
               }
               is4k={requestData.is4k}
+              inProgress={
+                (
+                  requestData.media[
+                    requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
+                  ] ?? []
+                ).length > 0
+              }
             />
           </div>
         )}

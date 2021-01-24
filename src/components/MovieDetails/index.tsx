@@ -33,6 +33,8 @@ import { sortCrewPriority } from '../../utils/creditHelpers';
 import StatusBadge from '../StatusBadge';
 import RequestButton from '../RequestButton';
 import MediaSlider from '../MediaSlider';
+import ConfirmButton from '../Common/ConfirmButton';
+import DownloadBlock from '../DownloadBlock';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -63,6 +65,7 @@ const messages = defineMessages({
   studio: 'Studio',
   viewfullcrew: 'View Full Crew',
   view: 'View',
+  areyousure: 'Are you sure?',
 });
 
 interface MovieDetailsProps {
@@ -127,6 +130,24 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         onClose={() => setShowManager(false)}
         subText={data.title}
       >
+        {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
+          (data?.mediaInfo?.downloadStatus ?? []).length > 0) && (
+          <>
+            <h3 className="mb-2 text-xl">Download Status</h3>
+            <div className="mb-6 overflow-hidden bg-gray-600 rounded-md shadow">
+              <ul>
+                {data.mediaInfo?.downloadStatus?.map((status, index) => (
+                  <li
+                    key={`dl-status-${status.externalId}-${index}`}
+                    className="border-b border-gray-700 last:border-b-0"
+                  >
+                    <DownloadBlock downloadItem={status} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
         <h3 className="mb-2 text-xl">
           {intl.formatMessage(messages.manageModalRequests)}
         </h3>
@@ -194,13 +215,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         )}
         {data?.mediaInfo && (
           <div className="mt-8">
-            <Button
-              buttonType="danger"
-              className="w-full text-center"
+            <ConfirmButton
               onClick={() => deleteMedia()}
+              confirmText={intl.formatMessage(messages.areyousure)}
+              className="w-full"
             >
               {intl.formatMessage(messages.manageModalClearMedia)}
-            </Button>
+            </ConfirmButton>
             <div className="mt-2 text-sm text-gray-400">
               {intl.formatMessage(messages.manageModalClearMediaWarning)}
             </div>
@@ -223,7 +244,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           <div className="mb-2">
             {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
               <span className="mr-2">
-                <StatusBadge status={data.mediaInfo?.status} />
+                <StatusBadge
+                  status={data.mediaInfo?.status}
+                  inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
+                />
               </span>
             )}
             <span>

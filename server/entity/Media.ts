@@ -16,6 +16,7 @@ import logger from '../logger';
 import Season from './Season';
 import { getSettings } from '../lib/settings';
 import RadarrAPI from '../api/radarr';
+import downloadTracker, { DownloadingItem } from '../lib/downloadtracker';
 
 @Entity()
 class Media {
@@ -113,8 +114,16 @@ class Media {
   @Column({ nullable: true })
   public serviceId4k?: number;
 
+  @Column({ nullable: true })
+  public externalServiceId?: number;
+
+  @Column({ nullable: true })
+  public externalServiceId4k?: number;
+
   public serviceUrl?: string;
   public serviceUrl4k?: string;
+  public downloadStatus?: DownloadingItem[] = [];
+  public downloadStatus4k?: DownloadingItem[] = [];
 
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
@@ -146,6 +155,31 @@ class Media {
           ? `${server.externalUrl}/movie/${this.tmdbId}`
           : RadarrAPI.buildRadarrUrl(server, `/movie/${this.tmdbId}`);
       }
+    }
+  }
+
+  @AfterLoad()
+  public getDownloadingItem(): void {
+    if (
+      this.externalServiceId !== undefined &&
+      this.serviceId !== undefined &&
+      this.status === MediaStatus.PROCESSING
+    ) {
+      this.downloadStatus = downloadTracker.getMovieProgress(
+        this.serviceId,
+        this.externalServiceId
+      );
+    }
+
+    if (
+      this.externalServiceId4k !== undefined &&
+      this.serviceId4k !== undefined &&
+      this.status4k === MediaStatus.PROCESSING
+    ) {
+      this.downloadStatus4k = downloadTracker.getMovieProgress(
+        this.serviceId4k,
+        this.externalServiceId4k
+      );
     }
   }
 }

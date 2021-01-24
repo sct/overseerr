@@ -132,6 +132,18 @@ class JobRadarrSync {
         isChanged = true;
       }
 
+      if (
+        media[server4k ? 'externalServiceId4k' : 'externalServiceId'] !==
+        radarrMovie.id
+      ) {
+        media[server4k ? 'externalServiceId4k' : 'externalServiceId'] =
+          radarrMovie.id;
+        this.log(
+          `Updated external service ID for media entity: ${radarrMovie.title}`
+        );
+        isChanged = true;
+      }
+
       if (isChanged) {
         await mediaRepository.save(media);
       }
@@ -141,7 +153,9 @@ class JobRadarrSync {
         imdbId: radarrMovie.imdbId,
         mediaType: MediaType.MOVIE,
         serviceId: !server4k ? this.currentServer.id : undefined,
-        serviceId4k: !server4k ? this.currentServer.id : undefined,
+        serviceId4k: server4k ? this.currentServer.id : undefined,
+        externalServiceId: !server4k ? radarrMovie.id : undefined,
+        externalServiceId4k: server4k ? radarrMovie.id : undefined,
         status:
           !server4k && radarrMovie.downloaded
             ? MediaStatus.AVAILABLE

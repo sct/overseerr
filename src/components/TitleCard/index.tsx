@@ -9,6 +9,7 @@ import RequestModal from '../RequestModal';
 import { defineMessages, useIntl } from 'react-intl';
 import { useIsTouch } from '../../hooks/useIsTouch';
 import globalMessages from '../../i18n/globalMessages';
+import Spinner from '../../assets/spinner.svg';
 
 const messages = defineMessages({
   movie: 'Movie',
@@ -25,6 +26,7 @@ interface TitleCardProps {
   mediaType: MediaType;
   status?: MediaStatus;
   canExpand?: boolean;
+  inProgress?: boolean;
 }
 
 const TitleCard: React.FC<TitleCardProps> = ({
@@ -35,6 +37,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
   title,
   status,
   mediaType,
+  inProgress = false,
   canExpand = false,
 }) => {
   const isTouch = useIsTouch();
@@ -146,18 +149,22 @@ const TitleCard: React.FC<TitleCardProps> = ({
               )}
               {currentStatus === MediaStatus.PROCESSING && (
                 <div className="flex items-center justify-center w-4 h-4 text-white bg-indigo-500 rounded-full shadow sm:w-5 sm:h-5">
-                  <svg
-                    className="w-3 h-3 sm:w-4 sm:h-4"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  {inProgress ? (
+                    <Spinner className="w-3 h-3" />
+                  ) : (
+                    <svg
+                      className="w-3 h-3 sm:w-4 sm:h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  )}
                 </div>
               )}
             </div>
