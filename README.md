@@ -31,12 +31,12 @@
 - Incredibly simple request management UI. Don't dig through the app to simply approve recent requests.
 - Granular permission system
 - Mobile friendly design, for when you need to approve requests on the go!
+- Local user system (for those who don't use Plex).
 
 ## In Development
 
 - User profiles.
 - User settings page (to give users the ability to modify their Overseerr experience to their liking).
-- Local user system (for those who don't use Plex).
 
 ## Planned Features
 
