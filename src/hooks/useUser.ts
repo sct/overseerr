@@ -6,8 +6,8 @@ export { Permission, UserType };
 
 export interface User {
   id: number;
-  plexUsername: string;
-  username: string;
+  plexUsername?: string;
+  username?: string;
   displayName: string;
   email: string;
   avatar: string;
