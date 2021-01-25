@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import type { PlexSettings } from '../../../server/lib/settings';
+import type { PlexDevice } from '../../../server/interfaces/api/plexInterfaces';
 import useSWR from 'swr';
+import { useToasts } from 'react-toast-notifications';
 import { Formik, Field } from 'formik';
 import Button from '../Common/Button';
 import axios from 'axios';
@@ -9,16 +11,38 @@ import LibraryItem from './LibraryItem';
 import Badge from '../Common/Badge';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
+import Alert from '../Common/Alert';
 
 const messages = defineMessages({
   plexsettings: 'Plex Settings',
   plexsettingsDescription:
     'Configure the settings for your Plex server. Overseerr uses your Plex server to scan your library at an interval and see what content is available.',
-  servername: 'Server Name (Automatically set after you save)',
+  servername: 'Server Name (Retrieved from Plex)',
   servernamePlaceholder: 'Plex Server Name',
+  serverpreset: 'Available Server',
+  serverpresetPlaceholder: 'Plex Server (Retrieved Automatically)',
+  serverLocal: 'local',
+  serverRemote: 'remote',
+  serverConnected: 'connected',
+  serverpresetManualMessage: 'Manually configure',
+  serverpresetRefreshing: 'Retrieving servers...',
+  serverpresetLoad: 'Press button to load available servers',
+  toastPlexRefresh: 'Retrieving server list from Plex',
+  toastPlexRefreshSuccess: 'Retrieved server list from Plex',
+  toastPlexRefreshFailure: 'Unable to retrieve server list from Plex',
+  toastPlexConnecting: 'Attempting to connect to Plex server',
+  toastPlexConnectingSuccess: 'Connected to Plex server',
+  toastPlexConnectingFailure: 'Unable to connect to Plex server',
+  settingUpPlex: 'Setting up Plex',
+  settingUpPlexDescription:
+    'To setup Plex you can enter your details manually, \
+    or choose from one of the available servers retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>.\
+    Press the button next to the dropdown to retrieve available servers and check connectivity.',
   hostname: 'Hostname/IP',
   port: 'Port',
   ssl: 'SSL',
+  timeout: 'Timeout',
+  ms: 'ms',
   save: 'Save Changes',
   saving: 'Saving...',
   plexlibraries: 'Plex Libraries',
@@ -52,24 +76,41 @@ interface SyncStatus {
   libraries: Library[];
 }
 
+interface PresetServerDisplay {
+  name: string;
+  ssl: boolean;
+  uri: string;
+  address: string;
+  host?: string;
+  port: number;
+  local: boolean;
+  status?: boolean;
+  message?: string;
+}
 interface SettingsPlexProps {
   onComplete?: () => void;
 }
 
 const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
-  const intl = useIntl();
-  const { data, error, revalidate } = useSWR<PlexSettings>(
-    '/api/v1/settings/plex'
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isRefreshingPresets, setIsRefreshingPresets] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [availableServers, setAvailableServers] = useState<PlexDevice[] | null>(
+    null
   );
+  const {
+    data: data,
+    error: error,
+    revalidate: revalidate,
+  } = useSWR<PlexSettings>('/api/v1/settings/plex');
   const { data: dataSync, revalidate: revalidateSync } = useSWR<SyncStatus>(
     '/api/v1/settings/plex/sync',
     {
       refreshInterval: 1000,
     }
   );
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-
+  const intl = useIntl();
+  const { addToast, removeToast } = useToasts();
   const PlexSettingsSchema = Yup.object().shape({
     hostname: Yup.string().required(
       intl.formatMessage(messages.validationHostnameRequired)
@@ -83,6 +124,33 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
     data?.libraries
       .filter((library) => library.enabled)
       .map((library) => library.id) ?? [];
+
+  const availablePresets = useMemo(() => {
+    const finalPresets: PresetServerDisplay[] = [];
+    availableServers?.forEach((dev) => {
+      dev.connection.forEach((conn) =>
+        finalPresets.push({
+          name: dev.name,
+          ssl: conn.protocol === 'https' ? true : false,
+          uri: conn.uri,
+          address: conn.address,
+          port: conn.port,
+          local: conn.local,
+          host: conn.host,
+          status: conn.status === 200 ? true : false,
+          message: conn.message,
+        })
+      );
+    });
+    finalPresets.sort((a, b) => {
+      if (a.status && !b.status) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    return finalPresets;
+  }, [availableServers]);
 
   const syncLibraries = async () => {
     setIsSyncing(true);
@@ -100,6 +168,46 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
     });
     setIsSyncing(false);
     revalidate();
+  };
+
+  const refreshPresetServers = async () => {
+    setIsRefreshingPresets(true);
+    let toastId: string | undefined;
+    try {
+      addToast(
+        intl.formatMessage(messages.toastPlexRefresh),
+        {
+          autoDismiss: false,
+          appearance: 'info',
+        },
+        (id) => {
+          toastId = id;
+        }
+      );
+      const response = await axios.get<PlexDevice[]>(
+        '/api/v1/settings/plex/devices/servers'
+      );
+      if (response.data) {
+        setAvailableServers(response.data);
+      }
+      if (toastId) {
+        removeToast(toastId);
+      }
+      addToast(intl.formatMessage(messages.toastPlexRefreshSuccess), {
+        autoDismiss: true,
+        appearance: 'success',
+      });
+    } catch (e) {
+      if (toastId) {
+        removeToast(toastId);
+      }
+      addToast(intl.formatMessage(messages.toastPlexRefreshFailure), {
+        autoDismiss: true,
+        appearance: 'error',
+      });
+    } finally {
+      setIsRefreshingPresets(false);
+    }
   };
 
   const startScan = async () => {
@@ -157,18 +265,46 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
           <FormattedMessage {...messages.plexsettingsDescription} />
         </p>
+        <div className="mt-6 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+          <Alert title={intl.formatMessage(messages.settingUpPlex)} type="info">
+            {intl.formatMessage(messages.settingUpPlexDescription, {
+              RegisterPlexTVLink: function RegisterPlexTVLink(msg) {
+                return (
+                  <a
+                    href="https://plex.tv"
+                    className="text-indigo-100 hover:text-white hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {msg}
+                  </a>
+                );
+              },
+            })}
+          </Alert>
+        </div>
       </div>
       <Formik
         initialValues={{
           hostname: data?.ip,
           port: data?.port,
           useSsl: data?.useSsl,
+          selectedPreset: undefined,
         }}
-        enableReinitialize
         validationSchema={PlexSettingsSchema}
         onSubmit={async (values) => {
-          setSubmitError(null);
+          let toastId: string | null = null;
           try {
+            addToast(
+              intl.formatMessage(messages.toastPlexConnecting),
+              {
+                autoDismiss: false,
+                appearance: 'info',
+              },
+              (id) => {
+                toastId = id;
+              }
+            );
             await axios.post('/api/v1/settings/plex', {
               ip: values.hostname,
               port: Number(values.port),
@@ -176,10 +312,25 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
             } as PlexSettings);
 
             revalidate();
+            setSubmitError(null);
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastPlexConnectingSuccess), {
+              autoDismiss: true,
+              appearance: 'success',
+            });
             if (onComplete) {
               onComplete();
             }
           } catch (e) {
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastPlexConnectingFailure), {
+              autoDismiss: true,
+              appearance: 'error',
+            });
             setSubmitError(e.response.data.message);
           }
         }}
@@ -190,16 +341,12 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           values,
           handleSubmit,
           setFieldValue,
+          setFieldTouched,
           isSubmitting,
         }) => {
           return (
             <form onSubmit={handleSubmit}>
               <div className="mt-6 sm:mt-5">
-                {submitError && (
-                  <div className="p-4 mb-6 text-white bg-red-700 rounded-md">
-                    {submitError}
-                  </div>
-                )}
                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="name"
@@ -225,71 +372,176 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 </div>
                 <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
-                    htmlFor="hostname"
+                    htmlFor="preset"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
-                    <FormattedMessage {...messages.hostname} />
+                    <FormattedMessage {...messages.serverpreset} />
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
-                      <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
-                        {values.useSsl ? 'https://' : 'http://'}
-                      </span>
-                      <Field
-                        type="text"
-                        id="hostname"
-                        name="hostname"
-                        placeholder="127.0.0.1"
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 form-input rounded-r-md sm:text-sm sm:leading-5"
-                      />
+                    <div className="flex max-w-lg rounded-md shadow-sm input-group">
+                      <select
+                        id="preset"
+                        name="preset"
+                        placeholder={intl.formatMessage(
+                          messages.serverpresetPlaceholder
+                        )}
+                        value={values.selectedPreset}
+                        disabled={!availableServers || isRefreshingPresets}
+                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-none rounded-l-md form-input sm:text-sm sm:leading-5"
+                        onChange={async (e) => {
+                          const targPreset =
+                            availablePresets[Number(e.target.value)];
+                          if (targPreset) {
+                            setFieldValue('hostname', targPreset.host);
+                            setFieldValue('port', targPreset.port);
+                            setFieldValue('useSsl', targPreset.ssl);
+                          }
+                          setFieldTouched('hostname');
+                          setFieldTouched('port');
+                          setFieldTouched('useSsl');
+                        }}
+                      >
+                        <option value="manual">
+                          {availableServers || isRefreshingPresets
+                            ? isRefreshingPresets
+                              ? intl.formatMessage(
+                                  messages.serverpresetRefreshing
+                                )
+                              : intl.formatMessage(
+                                  messages.serverpresetManualMessage
+                                )
+                            : intl.formatMessage(messages.serverpresetLoad)}
+                        </option>
+                        {availablePresets.map((server, index) => (
+                          <option
+                            key={`preset-server-${index}`}
+                            value={index}
+                            disabled={!server.status}
+                          >
+                            {`
+                              ${server.name} (${server.address})
+                              [${
+                                server.local
+                                  ? intl.formatMessage(messages.serverLocal)
+                                  : intl.formatMessage(messages.serverRemote)
+                              }]
+                              ${server.status ? '' : '(' + server.message + ')'}
+                            `}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          refreshPresetServers();
+                        }}
+                        className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-500 border border-gray-500 rounded-r-md hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
+                      >
+                        <svg
+                          className={`w-5 h-5 ${
+                            isRefreshingPresets ? 'animate-spin' : ''
+                          }`}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
                     </div>
-                    {errors.hostname && touched.hostname && (
-                      <div className="mt-2 text-red-500">{errors.hostname}</div>
-                    )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-                  <label
-                    htmlFor="port"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
-                    <FormattedMessage {...messages.port} />
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
+                <div>
+                  <div>
+                    <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                      <label
+                        htmlFor="hostname"
+                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                      >
+                        <FormattedMessage {...messages.hostname} />
+                      </label>
+                      <div className="mt-1 sm:mt-0 sm:col-span-2">
+                        <div className="flex max-w-lg rounded-md shadow-sm">
+                          <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
+                            {values.useSsl ? 'https://' : 'http://'}
+                          </span>
+                          <Field
+                            type="text"
+                            id="hostname"
+                            name="hostname"
+                            placeholder="127.0.0.1"
+                            className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 form-input rounded-r-md sm:text-sm sm:leading-5"
+                          />
+                        </div>
+                        {errors.hostname && touched.hostname && (
+                          <div className="mt-2 text-red-500">
+                            {errors.hostname}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                      <label
+                        htmlFor="port"
+                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                      >
+                        <FormattedMessage {...messages.port} />
+                      </label>
+                      <div className="mt-1 sm:mt-0 sm:col-span-2">
+                        <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
+                          <Field
+                            type="text"
+                            id="port"
+                            name="port"
+                            placeholder="32400"
+                            className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                          />
+                        </div>
+                        {errors.port && touched.port && (
+                          <div className="mt-2 text-red-500">{errors.port}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                    <label
+                      htmlFor="ssl"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    >
+                      {intl.formatMessage(messages.ssl)}
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
                       <Field
-                        type="text"
-                        id="port"
-                        name="port"
-                        placeholder="32400"
-                        className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                        type="checkbox"
+                        id="useSsl"
+                        name="useSsl"
+                        onChange={() => {
+                          setFieldValue('useSsl', !values.useSsl);
+                        }}
+                        className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                       />
                     </div>
-                    {errors.port && touched.port && (
-                      <div className="mt-2 text-red-500">{errors.port}</div>
-                    )}
                   </div>
                 </div>
               </div>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-                <label
-                  htmlFor="ssl"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                >
-                  {intl.formatMessage(messages.ssl)}
-                </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
-                  <Field
-                    type="checkbox"
-                    id="useSsl"
-                    name="useSsl"
-                    onChange={() => {
-                      setFieldValue('useSsl', !values.useSsl);
-                    }}
-                    className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                  />
+              {submitError && (
+                <div className="mt-6 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                  <Alert
+                    title={intl.formatMessage(
+                      messages.toastPlexConnectingFailure
+                    )}
+                    type="error"
+                  >
+                    {submitError}
+                  </Alert>
                 </div>
-              </div>
+              )}
               <div className="pt-5 mt-8 border-t border-gray-700">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">

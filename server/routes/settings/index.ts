@@ -9,6 +9,7 @@ import {
 import { getRepository } from 'typeorm';
 import { User } from '../../entity/User';
 import PlexAPI from '../../api/plexapi';
+import PlexTvAPI from '../../api/plextv';
 import { jobPlexFullSync } from '../../job/plexsync';
 import SonarrAPI from '../../api/sonarr';
 import RadarrAPI from '../../api/radarr';
@@ -106,6 +107,69 @@ settingsRoutes.post('/plex', async (req, res, next) => {
   return res.status(200).json(settings.plex);
 });
 
+settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
+  const userRepository = getRepository(User);
+  const regexp = /(http(s?):\/\/)(.*)(:[0-9]*)/;
+  try {
+    const admin = await userRepository.findOneOrFail({
+      select: ['id', 'plexToken'],
+      order: { id: 'ASC' },
+    });
+    const plexTvClient = admin.plexToken
+      ? new PlexTvAPI(admin.plexToken)
+      : null;
+    const devices = (await plexTvClient?.getDevices())?.filter((device) => {
+      return device.provides.includes('server') && device.owned;
+    });
+    const settings = getSettings();
+    if (devices) {
+      await Promise.all(
+        devices.map(async (device) => {
+          await Promise.all(
+            device.connection.map(async (connection) => {
+              connection.host = connection.uri.replace(regexp, '$3');
+              let msg:
+                | { status: number; message: string }
+                | undefined = undefined;
+              const plexDeviceSettings = {
+                ...settings.plex,
+                ip: connection.host,
+                port: connection.port,
+                useSsl: connection.protocol === 'https' ? true : false,
+              };
+              const plexClient = new PlexAPI({
+                plexToken: admin.plexToken,
+                plexSettings: plexDeviceSettings,
+                timeout: 5000,
+              });
+              try {
+                await plexClient.getStatus();
+                msg = {
+                  status: 200,
+                  message: 'OK',
+                };
+              } catch (e) {
+                msg = {
+                  status: 500,
+                  message: e.message,
+                };
+              }
+              connection.status = msg?.status;
+              connection.message = msg?.message;
+            })
+          );
+        })
+      );
+    }
+    return res.status(200).json(devices);
+  } catch (e) {
+    return next({
+      status: 500,
+      message: `Failed to connect to Plex: ${e.message}`,
+    });
+  }
+});
+
 settingsRoutes.get('/plex/library', async (req, res) => {
   const settings = getSettings();
 
@@ -156,7 +220,6 @@ settingsRoutes.get('/plex/sync', (req, res) => {
   } else if (req.query.start) {
     jobPlexFullSync.run();
   }
-
   return res.status(200).json(jobPlexFullSync.status());
 });
 

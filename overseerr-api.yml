@@ -113,6 +113,140 @@ components:
         - machineId
         - ip
         - port
+    PlexStatus:
+      type: object
+      properties:
+        settings:
+          $ref: '#/components/schemas/PlexSettings'
+        status:
+          type: number
+          example: 200
+        message:
+          type: string
+          example: 'OK'
+    PlexConnection:
+      type: object
+      properties:
+        protocol:
+          type: string
+          example: 'https'
+        address:
+          type: string
+          example: '127.0.0.1'
+        port:
+          type: number
+          example: 32400
+        uri:
+          type: string
+          example: 'https://127-0-0-1.2ab6ce1a093d465e910def96cf4e4799.plex.direct:32400'
+        local:
+          type: boolean
+          example: true
+        status:
+          type: number
+          example: 200
+        message:
+          type: string
+          example: 'OK'
+        host:
+          type: string
+          example: '127-0-0-1.2ab6ce1a093d465e910def96cf4e4799.plex.direct'
+      required:
+        - protocol
+        - address
+        - port
+        - uri
+        - local
+    PlexDevice:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'My Plex Server'
+        product:
+          type: string
+          example: 'Plex Media Server'
+        productVersion:
+          type: string
+          example: '1.21'
+        platform:
+          type: string
+          example: 'Linux'
+        platformVersion:
+          type: string
+          example: 'default/linux/amd64/17.1/systemd'
+        device:
+          type: string
+          example: 'PC'
+        clientIdentifier:
+          type: string
+          example: '85a943ce-a0cc-4d2a-a4ec-f74f06e40feb'
+        createdAt:
+          type: string
+          example: '2021-01-01T00:00:00.000Z'
+        lastSeenAt:
+          type: string
+          example: '2021-01-01T00:00:00.000Z'
+        provides:
+          type: array
+          items:
+            type: string
+            example: 'server'
+        owned:
+          type: boolean
+          example: true
+        ownerID:
+          type: string
+          example: '12345'
+        home:
+          type: boolean
+          example: true
+        sourceTitle:
+          type: string
+          example: 'xyzabc'
+        accessToken:
+          type: string
+          example: 'supersecretaccesstoken'
+        publicAddress:
+          type: string
+          example: '127.0.0.1'
+        httpsRequired:
+          type: boolean
+          example: true
+        synced:
+          type: boolean
+          example: true
+        relay:
+          type: boolean
+          example: true
+        dnsRebindingProtection:
+          type: boolean
+          example: false
+        natLoopbackSupported:
+          type: boolean
+          example: false
+        publicAddressMatches:
+          type: boolean
+          example: false
+        presence:
+          type: boolean
+          example: true
+        connection:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlexConnection'
+      required:
+        - name
+        - product
+        - productVersion
+        - platform
+        - device
+        - clientIdentifier
+        - createdAt
+        - lastSeenAt
+        - provides
+        - owned
+        - connection
     RadarrSettings:
       type: object
       properties:
@@ -1460,6 +1594,21 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/PlexLibrary'
+  /settings/plex/devices/servers:
+    get:
+      summary: Gets the user's available plex servers
+      description: Returns a list of available plex servers and their connectivity state
+      tags:
+        - settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlexDevice'
   /settings/radarr:
     get:
       summary: Get all radarr settings
