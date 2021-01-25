@@ -1,14 +1,14 @@
 # Protecting Your Server Using Fail2ban
 
 {% hint style="warning" %}
-If your OS runs `firewalld`, make sure it is running and Overseerr is accessible before continue.
+If your OS runs `firewalld`, make sure it is running and that Overseerr is accessible before continuing.
 {% endhint %}
 
-### Setting up Fail2ban
+### Configuring Fail2ban
 
-After installing Fail2ban, the configuration files should be at `/etc/fail2ban`. Make a **copy** of `jail.conf` and `fail2ban.conf` to the same directoy, replacing the extension `.conf` with `.local`.
+After installing Fail2ban, the configuration files should be located at `/etc/fail2ban`. Make ***copies*** of `jail.conf` and `fail2ban.conf` in the same directoy, replacing the `.conf` extensions with `.local`.
 
-Edit `jail.local` and under JAILS, paste the configuration below:
+Next, open `jail.local` in a text editor.  Add the following jail configuration under `JAILS`:
 
 ```
 [overseerr]
@@ -24,30 +24,36 @@ action          = firewallcmd-allports
 #backend        = systemd
 ```
 
-**logpath:** Path to the log file which is provided to the filter.
-**filter:** Name of the filter to be used by the jail to detect matches.
-**maxretry:** Number of matches that triggers ban action on the IP.
-**findtime:** The counter is set to zero if no match is found within "findtime" seconds.
-**bantime:** Duration (in seconds) for IP to be banned for. Negative number for "permanent" ban.
+Parameter|Description
+---|---
+`logpath`|Path to the log file to be parsed by the filter.
+`filter`|Name of the filter to be used to detect matches.
+`maxretry`|Number of matches required be found within `findtime` seconds to trigger a ban action.
+`findtime`|The time (in seconds) within which `maxretry` matches must be found to trigger a ban action.
+`bantime`|Duration (in seconds) to ban matched IP adresses which have exceeded the `maxretry` limit. Set to a negative value for "permanent" bans.
 
-By default, Fail2ban logs all its actions into `/var/log/fail2ban.log`. Although it's not recommended due to performance issues, you can change it to systemd (journalctl). For that, uncomment the last line of the configuration. Save the file and quit.
+By default, Fail2ban logs all its actions into `/var/log/fail2ban.log`. Although it's not recommended due to performance issues, you can change it to `systemd` (`journalctl`) by uncommenting the last line of the configuration.
 
-Create the file `/etc/fail2ban/filter.d/overseerr.conf`, add the lines below, save and quit:
+Save the file and exit your text editor.
+
+Now, create the file `/etc/fail2ban/filter.d/overseerr.conf` and add the following:
 
 ```
 [Definition]
 failregex = .*\[info\]\[Auth\]\: Failed login attempt.*"ip":"<HOST>"
 ```
 
-Enable automatic initialization and start Fail2ban:
+Once again, save the file and exit your text editor.
 
-`
+Finally, enable automatic initialization and start Fail2ban by running the following command:
+
+```bash
 systemctl --now enable fail2ban.service
-`
+```
 
 ### Testing Fail2ban
 
-Check if your configuration was loaded correctly issuing the command `fail2ban-client -d`. You should see something similar to it:
+Check if your configuration was loaded correctly by issuing the command `fail2ban-client -d`. You should see something similar to the following:
 
 ```
 ['set', 'syslogsocket', 'auto']
@@ -72,16 +78,16 @@ Check if your configuration was loaded correctly issuing the command `fail2ban-c
 ```
 
 {% hint style="danger" %}
-The login tries should be done from a different device (cellphone/tablet), otherwise, you will lock yourself out of the server for the X amount of time set up in your configuration files.
+The login attempts in the next step should be initiated from a secondary device (e.g., a cellphone or tablet). Otherwise, you may lock yourself out of your server for the `bantime` defined in `jail.local`.
 {% endhint %}
 
-Now, running the command `tail -f /var/log/fail2ban.log`, access Overseerr and type a wrong password for a local user five times. I should see the messages below:
+Now, while running the command `tail -f /var/log/fail2ban.log`, attempt to log in as a local user to Overseerr using an incorrect password `maxretry` times. You should see output similar to the following:
 
-`
+```
 2021-01-24 21:22:34,085 fail2ban.filter         [756640]: INFO    [overseerr] Found 172.88.220.196 - 2021-01-24 21:22:34
 2021-01-24 21:22:35,688 fail2ban.filter         [756640]: INFO    [overseerr] Found 172.88.220.196 - 2021-01-24 21:22:35
 2021-01-24 21:22:36,622 fail2ban.filter         [756640]: INFO    [overseerr] Found 172.88.220.196 - 2021-01-24 21:22:36
 2021-01-24 21:22:38,559 fail2ban.filter         [756640]: INFO    [overseerr] Found 172.88.220.196 - 2021-01-24 21:22:38
 2021-01-24 21:22:41,264 fail2ban.filter         [756640]: INFO    [overseerr] Found 172.88.220.196 - 2021-01-24 21:22:41
 2021-01-24 21:22:41,444 fail2ban.actions        [756640]: NOTICE  [overseerr] Ban 172.88.220.196
-`
+```
