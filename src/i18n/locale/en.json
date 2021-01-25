@@ -378,6 +378,8 @@
   "components.Settings.autoapprovedrequests": "Send notifications for auto-approved requests",
   "components.Settings.cancelscan": "Cancel Scan",
   "components.Settings.copied": "Copied API key to clipboard",
+  "components.Settings.csrfProtection": "Enable CSRF Protection",
+  "components.Settings.csrfProtectionTip": "Sets external API access to read-only (Overseerr must be reloaded for changes to take effect)",
   "components.Settings.currentlibrary": "Current Library: {name}",
   "components.Settings.default": "Default",
   "components.Settings.default4k": "Default 4K",

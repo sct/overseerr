@@ -27,6 +27,9 @@ const messages = defineMessages({
   toastSettingsFailure: 'Something went wrong saving settings.',
   defaultPermissions: 'Default User Permissions',
   hideAvailable: 'Hide available media',
+  csrfProtection: 'Enable CSRF Protection',
+  csrfProtectionTip:
+    'Sets external API access to read-only (Overseerr must be reloaded for changes to take effect)',
 });
 
 const SettingsMain: React.FC = () => {
@@ -72,6 +75,7 @@ const SettingsMain: React.FC = () => {
         <Formik
           initialValues={{
             applicationUrl: data?.applicationUrl,
+            csrfProtection: data?.csrfProtection,
             defaultPermissions: data?.defaultPermissions ?? 0,
             hideAvailable: data?.hideAvailable,
           }}
@@ -80,6 +84,7 @@ const SettingsMain: React.FC = () => {
             try {
               await axios.post('/api/v1/settings/main', {
                 applicationUrl: values.applicationUrl,
+                csrfProtection: values.csrfProtection,
                 defaultPermissions: values.defaultPermissions,
                 hideAvailable: values.hideAvailable,
               });
@@ -163,6 +168,32 @@ const SettingsMain: React.FC = () => {
                         className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="csrfProtection"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <div className="flex flex-col">
+                      <span className="mr-2">
+                        {intl.formatMessage(messages.csrfProtection)}
+                      </span>
+                      <span className="text-gray-500">
+                        {intl.formatMessage(messages.csrfProtectionTip)}
+                      </span>
+                    </div>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="csrfProtection"
+                      name="csrfProtection"
+                      onChange={() => {
+                        setFieldValue('csrfProtection', !values.csrfProtection);
+                      }}
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
                   </div>
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">

@@ -5,6 +5,7 @@ import { createConnection, getRepository } from 'typeorm';
 import routes from './routes';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import csurf from 'csurf';
 import session, { Store } from 'express-session';
 import { TypeormStore } from 'connect-typeorm/out';
 import YAML from 'yamljs';
@@ -78,8 +79,26 @@ app
         next();
       }
     });
+    if (settings.main.csrfProtection) {
+      server.use(
+        csurf({
+          cookie: {
+            httpOnly: true,
+            sameSite: true,
+            secure: !dev,
+          },
+        })
+      );
+      server.use((req, res, next) => {
+        res.cookie('XSRF-TOKEN', req.csrfToken(), {
+          sameSite: true,
+          secure: !dev,
+        });
+        next();
+      });
+    }
 
-    // Setup sessions
+    // Set up sessions
     const sessionRespository = getRepository(Session);
     server.use(
       '/api',
