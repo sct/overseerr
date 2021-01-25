@@ -11,7 +11,7 @@ Overseerr already supports a good number of notification agents, such as **Disco
 - Pushover
 - [Webhooks](./webhooks.md)
 
-## Setting up Notifications
+## Setting Up Notifications
 
 Configuring your notifications is _very simple_. First, you will need to visit the **Settings** page and click **Notifications** in the menu. This will present you with all of the currently available notification agents. Click on each one individually to configure them.
 

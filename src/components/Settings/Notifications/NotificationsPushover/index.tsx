@@ -22,7 +22,7 @@ const messages = defineMessages({
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
-  settinguppushover: 'Setting up Pushover Notifications',
+  settinguppushover: 'Setting Up Pushover Notifications',
   settinguppushoverDescription:
     'To setup Pushover you need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and get the access token.\
     When setting up the application you can use one of the icons in the <IconLink>public folder</IconLink> on github.\

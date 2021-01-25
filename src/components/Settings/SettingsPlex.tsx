@@ -34,7 +34,7 @@ const messages = defineMessages({
   toastPlexConnecting: 'Attempting to connect to Plex server',
   toastPlexConnectingSuccess: 'Connected to Plex server',
   toastPlexConnectingFailure: 'Unable to connect to Plex server',
-  settingUpPlex: 'Setting up Plex',
+  settingUpPlex: 'Setting Up Plex',
   settingUpPlexDescription:
     'To setup Plex you can enter your details manually, \
     or choose from one of the available servers retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>.\
