@@ -67,7 +67,7 @@ const SettingsMain: React.FC = () => {
   return (
     <>
       <div>
-        <h3 className="text-2xl font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl leading-8 text-gray-200">
           {intl.formatMessage(messages.generalsettings)}
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
@@ -227,7 +227,7 @@ const SettingsMain: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="hideAvailable"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"

@@ -163,7 +163,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
   return (
     <>
       <div className="mb-6">
-        <h3 className="text-2xl font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl leading-8 text-gray-200">
           {intl.formatMessage(messages.notificationsettings)}
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
@@ -269,7 +269,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
         </Formik>
       </div>
       <div className="mt-10 mb-6">
-        <h3 className="text-2xl font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl leading-8 text-gray-200">
           {intl.formatMessage(messages.notificationAgentsSettings)}
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">

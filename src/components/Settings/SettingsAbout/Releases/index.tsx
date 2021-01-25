@@ -156,7 +156,7 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
 
   return (
     <div>
-      <h3 className="text-2xl leading-6 font-medium text-gray-100 mb-5">
+      <h3 className="text-2xl leading-8 text-gray-100 mb-5">
         {intl.formatMessage(messages.releases)}
       </h3>
       {currentVersion.startsWith('develop-') && (

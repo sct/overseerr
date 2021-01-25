@@ -25,7 +25,7 @@ const List: React.FC<ListProps> = ({ title, subTitle, children }) => {
   return (
     <>
       <div>
-        <h3 className="text-2xl leading-6 font-medium text-gray-100">
+        <h3 className="text-2xl leading-8 text-gray-100">
           {title}
         </h3>
         {subTitle && (
