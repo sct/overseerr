@@ -6,7 +6,7 @@ If your OS runs `firewalld`, make sure it is running and that Overseerr is acces
 
 ### Configuring Fail2ban
 
-After installing Fail2ban, the configuration files should be located at `/etc/fail2ban`. Make a copy of `jail.conf` in the same directoy, replacing the `.conf` extensions with `.local`.
+After installing Fail2ban, the configuration files should be located at `/etc/fail2ban`. Make a copy of `jail.conf` in the same directory, replacing the `.conf` extensions with `.local`.
 
 Next, open `jail.local` in a text editor.  Add the following jail configuration:
 
