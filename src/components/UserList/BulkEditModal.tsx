@@ -89,22 +89,28 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
       okText={intl.formatMessage(userEditMessages.save)}
       onCancel={onCancel}
     >
-      <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
-        <div>
-          <div
-            className="text-base font-medium leading-6 sm:text-sm sm:leading-5"
-            id="label-permissions"
-          >
-            <FormattedMessage {...userEditMessages.permissions} />
-          </div>
-        </div>
-        <div className="mt-4 sm:mt-0 sm:col-span-2">
-          <div className="max-w-lg">
-            <PermissionEdit
-              user={currentUser}
-              currentPermission={currentPermission}
-              onUpdate={(newPermission) => setCurrentPermission(newPermission)}
-            />
+      <div className="mt-8">
+        <div role="group" aria-labelledby="label-permissions">
+          <div className="sm:grid sm:grid-cols-4 sm:gap-4">
+            <div>
+              <div
+                className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
+                id="label-permissions"
+              >
+                <FormattedMessage {...userEditMessages.permissions} />
+              </div>
+            </div>
+            <div className="mt-4 sm:mt-0 sm:col-span-2">
+              <div className="max-w-lg">
+                <PermissionEdit
+                  user={currentUser}
+                  currentPermission={currentPermission}
+                  onUpdate={(newPermission) =>
+                    setCurrentPermission(newPermission)
+                  }
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

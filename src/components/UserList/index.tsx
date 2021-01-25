@@ -283,7 +283,7 @@ const UserList: React.FC = () => {
                   {intl.formatMessage(messages.passwordinfodescription)}
                 </Alert>
                 <Form>
-                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                     <label
                       htmlFor="email"
                       className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"

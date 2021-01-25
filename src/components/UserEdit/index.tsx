@@ -85,125 +85,95 @@ const UserEdit: React.FC = () => {
     >
       {({ isSubmitting, handleSubmit }) => (
         <Form>
-          <div className="flex flex-col justify-between sm:flex-row mt-8">
-            <Header>
-              <FormattedMessage {...messages.edituser} />
-            </Header>
-          </div>
-          <div className="space-y-6">
-            <div className="flex flex-col space-y-6 text-white lg:flex-row lg:space-y-0 lg:space-x-6">
-              <div className="flex-grow space-y-6">
-                {user?.userType === UserType.PLEX && (
-                  <div className="space-y-1 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                    <label
-                      htmlFor="plexUsername"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
-                    >
-                      {intl.formatMessage(messages.plexUsername)}
-                    </label>
-                    <div className="flex rounded-md shadow-sm">
-                      <Field
-                        id="plexUsername"
-                        name="plexUsername"
-                        type="text"
-                        className="flex-grow block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                )}
-                <div className="space-y-1 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+          <div className="mt-10 text-white">
+            <div className="flex flex-col justify-between sm:flex-row mt-8">
+              <Header>
+                <FormattedMessage {...messages.edituser} />
+              </Header>
+            </div>
+            <div>
+              {user?.userType === UserType.PLEX && (
+                <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
-                    htmlFor="username"
+                    htmlFor="plexUsername"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                   >
-                    {intl.formatMessage(messages.username)}
+                    {intl.formatMessage(messages.plexUsername)}
                   </label>
                   <div className="flex rounded-md shadow-sm">
                     <Field
-                      id="username"
-                      name="username"
-                      type="text"
-                      className="flex-grow block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
-                  >
-                    <FormattedMessage {...messages.email} />
-                  </label>
-                  <div className="flex rounded-md shadow-sm">
-                    <Field
-                      id="email"
-                      name="email"
+                      id="plexUsername"
+                      name="plexUsername"
                       type="text"
                       className="flex-grow block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       readOnly
                     />
                   </div>
                 </div>
-              </div>
-              <div className="flex-grow space-y-1 lg:flex-grow-0 lg:flex-shrink-0">
-                <p
-                  className="block text-sm font-medium leading-5 text-gray-400"
-                  aria-hidden="true"
+              )}
+              <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                 >
-                  <FormattedMessage {...messages.avatar} />
-                </p>
-                <div className="lg:hidden">
-                  <div className="flex items-center">
-                    <div
-                      className="flex-shrink-0 inline-block w-12 h-12 overflow-hidden rounded-full"
-                      aria-hidden="true"
-                    >
-                      <img
-                        className="w-full h-full rounded-full"
-                        src={user?.avatar}
-                        alt=""
-                      />
-                    </div>
-                  </div>
+                  {intl.formatMessage(messages.username)}
+                </label>
+                <div className="flex rounded-md shadow-sm">
+                  <Field
+                    id="username"
+                    name="username"
+                    type="text"
+                    className="flex-grow block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                  />
                 </div>
-
-                <div className="relative hidden overflow-hidden transition duration-150 ease-in-out rounded-full lg:block">
-                  <img
-                    className="relative w-40 h-40 rounded-full"
-                    src={user?.avatar}
-                    alt=""
+              </div>
+              <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                >
+                  <FormattedMessage {...messages.email} />
+                </label>
+                <div className="flex rounded-md shadow-sm">
+                  <Field
+                    id="email"
+                    name="email"
+                    type="text"
+                    className="flex-grow block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                    readOnly
                   />
                 </div>
               </div>
             </div>
-            <div className="text-white">
-              <div className="sm:border-t sm:border-gray-200">
-                <div role="group" aria-labelledby="label-permissions">
-                  <div className="sm:grid sm:grid-cols-4 sm:gap-4">
-                    <div className="mt-8">
-                      <div role="group" aria-labelledby="label-permissions">
-                        <div className="sm:grid sm:grid-cols-4 sm:gap-4">
-                          <div>
-                            <div
-                              className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
-                              id="label-permissions"
-                            >
-                              <FormattedMessage {...messages.permissions} />
-                            </div>
-                          </div>
-                          <div className="mt-4 sm:mt-0 sm:col-span-2">
-                            <div className="max-w-lg">
-                            <PermissionEdit
-                              user={currentUser}
-                              currentPermission={currentPermission}
-                              onUpdate={(newPermission) =>
-                                setCurrentPermission(newPermission)
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
+            <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+              <span className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3">
+                <FormattedMessage {...messages.avatar} />
+                </span>
+                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <img className="w-40 h-40 rounded-full" src={user?.avatar} alt="" />
+                </div>
+              </div>
+            </div>
+            <div className="mt-8">
+              <div role="group" aria-labelledby="label-permissions">
+                <div className="sm:grid sm:grid-cols-4 sm:gap-4">
+                  <div>
+                    <div
+                      className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
+                      id="label-permissions"
+                    >
+                      <FormattedMessage {...messages.permissions} />
+                    </div>
+                  </div>
+                  <div className="mt-4 sm:mt-0 sm:col-span-2">
+                    <div className="max-w-lg">
+                      <PermissionEdit
+                        user={currentUser}
+                        currentPermission={currentPermission}
+                        onUpdate={(newPermission) =>
+                          setCurrentPermission(newPermission)
+                        }
+                      />
                     </div>
                   </div>
                 </div>
