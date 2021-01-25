@@ -5,7 +5,6 @@ import {
   SonarrSettings,
   Library,
   MainSettings,
-  PlexStatus,
 } from '../../lib/settings';
 import { getRepository } from 'typeorm';
 import { User } from '../../entity/User';
@@ -106,72 +105,6 @@ settingsRoutes.post('/plex', async (req, res, next) => {
   }
 
   return res.status(200).json(settings.plex);
-});
-
-settingsRoutes.get('/plex/status', async (req, res) => {
-  const userRepository = getRepository(User);
-  const settings = getSettings();
-  try {
-    const admin = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken'],
-      order: { id: 'ASC' },
-    });
-
-    const plexClient = new PlexAPI({ plexToken: admin.plexToken });
-
-    await plexClient.getStatus();
-
-    const msg: PlexStatus = {
-      settings: settings.plex,
-      status: 200,
-      message: 'OK',
-    };
-    return res.status(200).json(msg);
-  } catch (e) {
-    const msg: PlexStatus = {
-      settings: settings.plex,
-      status: 500,
-      message: e.message,
-    };
-    return res.status(200).json(msg);
-  }
-});
-
-settingsRoutes.post('/plex/status', async (req, res) => {
-  const userRepository = getRepository(User);
-  const settings = getSettings();
-  try {
-    const admin = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken'],
-      order: { id: 'ASC' },
-    });
-
-    const plexDeviceSettings = {
-      ...settings.plex,
-      ...req.body,
-    };
-
-    const plexClient = new PlexAPI({
-      plexToken: admin.plexToken,
-      plexSettings: plexDeviceSettings,
-    });
-
-    await plexClient.getStatus();
-
-    const msg: PlexStatus = {
-      settings: settings.plex,
-      status: 200,
-      message: 'OK',
-    };
-    return res.status(200).json(msg);
-  } catch (e) {
-    const msg: PlexStatus = {
-      settings: settings.plex,
-      status: 500,
-      message: e.message,
-    };
-    return res.status(200).json(msg);
-  }
 });
 
 settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
@@ -288,16 +221,6 @@ settingsRoutes.get('/plex/sync', (req, res) => {
     jobPlexFullSync.run();
   }
   return res.status(200).json(jobPlexFullSync.status());
-});
-
-settingsRoutes.get('/plex/devices', async (_req, res) => {
-  const userRepository = getRepository(User);
-  const admin = await userRepository.findOneOrFail({
-    select: ['id', 'plexToken'],
-    order: { id: 'ASC' },
-  });
-  const plexTVClient = new PlexTvAPI(admin.plexToken ?? '');
-  return res.status(200).json(await plexTVClient.getDevices());
 });
 
 settingsRoutes.get('/radarr', (_req, res) => {

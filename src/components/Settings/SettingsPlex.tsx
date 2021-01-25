@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import LoadingSpinner from '../Common/LoadingSpinner';
-import type { PlexSettings, PlexDevice } from '../../../server/lib/settings';
+import type { PlexSettings } from '../../../server/lib/settings';
+import type { PlexDevice } from '../../../server/interfaces/api/plexInterfaces';
 import useSWR from 'swr';
 import { useToasts } from 'react-toast-notifications';
 import { Formik, Field } from 'formik';
@@ -92,18 +93,15 @@ interface SettingsPlexProps {
 
 const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   const [isSyncing, setIsSyncing] = useState(false);
-  const [fetchPresets, setFetchPresets] = useState(false);
   const [isRefreshingPresets, setIsRefreshingPresets] = useState(false);
-  const [presetServer, setPresetServer] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const { data: dataServers, revalidate: revalidateServers } = useSWR<
-    PlexDevice[]
-  >(fetchPresets ? '/api/v1/settings/plex/devices/servers' : null);
+  const [availableServers, setAvailableServers] = useState<PlexDevice[] | null>(
+    null
+  );
   const {
     data: data,
     error: error,
     revalidate: revalidate,
-    mutate: mutatePlexSettings,
   } = useSWR<PlexSettings>('/api/v1/settings/plex');
   const { data: dataSync, revalidate: revalidateSync } = useSWR<SyncStatus>(
     '/api/v1/settings/plex/sync',
@@ -128,13 +126,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       .map((library) => library.id) ?? [];
 
   const availablePresets = useMemo(() => {
-    const map: Map<string, PresetServerDisplay> = new Map<
-      string,
-      PresetServerDisplay
-    >();
-    dataServers?.forEach((dev) => {
-      dev.connection.forEach((conn) => {
-        map.set(conn.uri, {
+    const finalPresets: PresetServerDisplay[] = [];
+    availableServers?.forEach((dev) => {
+      dev.connection.forEach((conn) =>
+        finalPresets.push({
           name: dev.name,
           ssl: conn.protocol === 'https' ? true : false,
           uri: conn.uri,
@@ -144,82 +139,18 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           host: conn.host,
           status: conn.status === 200 ? true : false,
           message: conn.message,
-        });
-      });
-    });
-    return new Map(
-      [...map.entries()].sort((a, b) => {
-        let aval = 0;
-        let bval = 0;
-        if (a[1].status) {
-          aval += 100;
-        }
-        if (b[1].status) {
-          bval += 100;
-        }
-        if (a[1].local) {
-          aval += 50;
-        }
-        if (b[1].local) {
-          bval += 50;
-        }
-        if (bval === aval) {
-          const nameA = a[1].name.toUpperCase();
-          const nameB = b[1].name.toUpperCase();
-          if (nameA > nameB) {
-            aval += 10;
-          } else if (nameA < nameB) {
-            bval += 10;
-          }
-        }
-        return bval - aval;
-      })
-    );
-  }, [dataServers]);
-
-  const presetServerSelected = useMemo(() => {
-    let resp = 'manual';
-    if (presetServer) {
-      availablePresets.forEach((srv) => {
-        if (
-          srv.host === data?.ip &&
-          srv.port === data?.port &&
-          srv.ssl === data?.useSsl
-        ) {
-          resp = srv.uri;
-        }
-      });
-    }
-    return resp;
-  }, [data, availablePresets, presetServer]);
-
-  const changePresetServer = async (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const targPreset = availablePresets.get(e.target.value);
-    if (targPreset && data) {
-      await mutatePlexSettings(
-        {
-          ...data,
-          ip: targPreset.host,
-          port: targPreset.port,
-          useSsl: targPreset.ssl,
-        } as PlexSettings,
-        false
+        })
       );
-      setPresetServer(true);
-      if (onComplete) {
-        onComplete();
+    });
+    finalPresets.sort((a, b) => {
+      if (a.status && !b.status) {
+        return -1;
+      } else {
+        return 1;
       }
-    } else {
-      if (data) {
-        setPresetServer(false);
-        if (onComplete) {
-          onComplete();
-        }
-      }
-    }
-  };
+    });
+    return finalPresets;
+  }, [availableServers]);
 
   const syncLibraries = async () => {
     setIsSyncing(true);
@@ -241,8 +172,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
 
   const refreshPresetServers = async () => {
     setIsRefreshingPresets(true);
-    setPresetServer(false);
-    setFetchPresets(true);
     let toastId: string | undefined;
     try {
       addToast(
@@ -255,8 +184,12 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           toastId = id;
         }
       );
-      await axios.get('/api/v1/settings/plex/devices/servers');
-      revalidateServers();
+      const response = await axios.get<PlexDevice[]>(
+        '/api/v1/settings/plex/devices/servers'
+      );
+      if (response.data) {
+        setAvailableServers(response.data);
+      }
       if (toastId) {
         removeToast(toastId);
       }
@@ -264,7 +197,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         autoDismiss: true,
         appearance: 'success',
       });
-      setIsRefreshingPresets(false);
     } catch (e) {
       if (toastId) {
         removeToast(toastId);
@@ -273,6 +205,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         autoDismiss: true,
         appearance: 'error',
       });
+    } finally {
       setIsRefreshingPresets(false);
     }
   };
@@ -356,6 +289,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           hostname: data?.ip,
           port: data?.port,
           useSsl: data?.useSsl,
+          selectedPreset: undefined,
         }}
         validationSchema={PlexSettingsSchema}
         onSubmit={async (values) => {
@@ -371,22 +305,13 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 toastId = id;
               }
             );
-            await mutatePlexSettings(
-              {
-                ...data,
-                ip: values.hostname,
-                port: Number(values.port),
-                useSsl: values.useSsl,
-              } as PlexSettings,
-              false
-            );
             await axios.post('/api/v1/settings/plex', {
               ip: values.hostname,
               port: Number(values.port),
               useSsl: values.useSsl,
             } as PlexSettings);
+
             revalidate();
-            revalidateServers();
             setSubmitError(null);
             if (toastId) {
               removeToast(toastId);
@@ -460,18 +385,12 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                         placeholder={intl.formatMessage(
                           messages.serverpresetPlaceholder
                         )}
-                        value={presetServerSelected}
-                        disabled={
-                          (!dataServers && !error) ||
-                          isRefreshingPresets ||
-                          !fetchPresets
-                        }
+                        value={values.selectedPreset}
+                        disabled={!availableServers || isRefreshingPresets}
                         className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-none rounded-l-md form-input sm:text-sm sm:leading-5"
                         onChange={async (e) => {
-                          changePresetServer(e);
-                          const targPreset = availablePresets.get(
-                            e.target.value
-                          );
+                          const targPreset =
+                            availablePresets[Number(e.target.value)];
                           if (targPreset) {
                             setFieldValue('hostname', targPreset.host);
                             setFieldValue('port', targPreset.port);
@@ -483,7 +402,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                         }}
                       >
                         <option value="manual">
-                          {fetchPresets
+                          {availableServers || isRefreshingPresets
                             ? isRefreshingPresets
                               ? intl.formatMessage(
                                   messages.serverpresetRefreshing
@@ -493,10 +412,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                                 )
                             : intl.formatMessage(messages.serverpresetLoad)}
                         </option>
-                        {Array.from(availablePresets.values(), (server) => (
+                        {availablePresets.map((server, index) => (
                           <option
-                            key={server.uri}
-                            value={server.uri}
+                            key={`preset-server-${index}`}
+                            value={index}
                             disabled={!server.status}
                           >
                             {`
@@ -520,10 +439,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       >
                         <svg
                           className={`w-5 h-5 ${
-                            (fetchPresets && !dataServers && !error) ||
-                            isRefreshingPresets
-                              ? 'animate-spin'
-                              : ''
+                            isRefreshingPresets ? 'animate-spin' : ''
                           }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"

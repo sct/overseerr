@@ -1524,37 +1524,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PlexSettings'
-  /settings/plex/status:
-    get:
-      summary: Returns status of the plex server
-      description: Retrieves current plex server status
-      tags:
-        - settings
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlexStatus'
-    post:
-      summary: Returns status of the proposed plex server
-      description: Check for the status of a plex server
-      tags:
-        - settings
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlexSettings'
-      responses:
-        '200':
-          description: 'Plex server status'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlexStatus'
   /settings/plex/library:
     get:
       summary: Get a list of current plex libraries
@@ -1625,21 +1594,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/PlexLibrary'
-  /settings/plex/devices:
-    get:
-      summary: Gets the user's available plex devices
-      description: Retrieves a list of devices associated to the attached plex account
-      tags:
-        - settings
-      responses:
-        '200':
-          description: Plex Devices
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PlexDevice'
   /settings/plex/devices/servers:
     get:
       summary: Gets the user's available plex servers
