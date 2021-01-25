@@ -139,7 +139,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
         <div className="flex-1 min-w-0">
           {linkUrl ? (
             <Link href={linkUrl}>
-              <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
+              <a className="inline-flex items-center text-xl font-medium leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
                 <span>{title}</span>
                 <svg
                   className="w-6 h-6 ml-2"
@@ -158,7 +158,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
               </a>
             </Link>
           ) : (
-            <div className="inline-flex items-center text-xl leading-7 text-gray-300 sm:text-2xl sm:leading-9 sm:truncate">
+            <div className="inline-flex items-center text-xl font-medium leading-7 text-gray-300 sm:text-2xl sm:leading-9 sm:truncate">
               <span>{title}</span>
             </div>
           )}

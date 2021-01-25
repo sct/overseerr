@@ -163,7 +163,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
   return (
     <>
       <div className="mb-6">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl font-medium leading-6 text-gray-200">
           {intl.formatMessage(messages.notificationsettings)}
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
@@ -203,10 +203,10 @@ const SettingsNotifications: React.FC = ({ children }) => {
           {({ isSubmitting, values, setFieldValue }) => {
             return (
               <Form>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
                   >
                     <span className="mr-2">
                       {intl.formatMessage(messages.enablenotifications)}
@@ -224,10 +224,10 @@ const SettingsNotifications: React.FC = ({ children }) => {
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
                   >
                     <span className="mr-2">
                       {intl.formatMessage(messages.autoapprovedrequests)}
@@ -269,7 +269,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
         </Formik>
       </div>
       <div className="mt-10 mb-6">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl font-medium leading-6 text-gray-200">
           {intl.formatMessage(messages.notificationAgentsSettings)}
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">

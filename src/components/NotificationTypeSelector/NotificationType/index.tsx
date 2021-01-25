@@ -28,7 +28,7 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
             id={option.id}
             name="permissions"
             type="checkbox"
-            className="w-4 h-4 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+            className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
             disabled={
               !!parent?.value && hasNotificationType(parent.value, currentTypes)
             }

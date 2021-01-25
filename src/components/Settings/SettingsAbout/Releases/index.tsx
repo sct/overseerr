@@ -100,7 +100,7 @@ const Release: React.FC<ReleaseProps> = ({
         </Modal>
       </Transition>
       <div className="flex items-center justify-center mb-4 sm:mb-0 sm:justify-start">
-        <span className="mr-2 text-sm">
+        <span className="mr-2 text-xs">
           <FormattedRelativeTime
             value={Math.floor(
               (new Date(release.created_at).getTime() - Date.now()) / 1000
@@ -109,16 +109,16 @@ const Release: React.FC<ReleaseProps> = ({
             numeric="always"
           />
         </span>
-        <span className="text-xl">{release.name}</span>
+        <span className="text-lg">{release.name}</span>
         {isLatest && (
-          <span className="ml-2">
+          <span className="ml-2 -mt-1">
             <Badge badgeType="primary">
               {intl.formatMessage(messages.latestversion)}
             </Badge>
           </span>
         )}
         {release.name.includes(currentVersion) && (
-          <span className="ml-2">
+          <span className="ml-2 -mt-1">
             <Badge badgeType="success">
               {intl.formatMessage(messages.currentversion)}
             </Badge>
@@ -156,9 +156,9 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
 
   return (
     <div>
-      <div className="pb-4 mb-4 text-xl border-b border-gray-800">
+      <h3 className="text-2xl leading-6 font-medium text-gray-100 mb-5">
         {intl.formatMessage(messages.releases)}
-      </div>
+      </h3>
       {currentVersion.startsWith('develop-') && (
         <Alert title={intl.formatMessage(messages.runningDevelop)}>
           {intl.formatMessage(messages.runningDevelopMessage, {
@@ -179,7 +179,7 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
       )}
       {data?.map((release, index) => {
         return (
-          <div key={`release-${release.id}`} className="mb-2">
+          <div key={`release-${release.id}`} className="mb-3">
             <Release
               release={release}
               currentVersion={currentVersion}

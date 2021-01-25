@@ -286,7 +286,7 @@ const UserList: React.FC = () => {
                   <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                     <label
                       htmlFor="email"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
                     >
                       {intl.formatMessage(messages.email)}
                     </label>
@@ -306,7 +306,7 @@ const UserList: React.FC = () => {
                     </div>
                     <label
                       htmlFor="genpassword"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
                     >
                       {intl.formatMessage(messages.autogeneratepassword)}
                     </label>
@@ -321,7 +321,7 @@ const UserList: React.FC = () => {
                     </div>
                     <label
                       htmlFor="password"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
                     >
                       {intl.formatMessage(messages.password)}
                     </label>
@@ -370,18 +370,18 @@ const UserList: React.FC = () => {
         />
       </Transition>
 
-      <div className="flex flex-col justify-between sm:flex-row">
+      <div className="flex flex-col justify-between sm:flex-row mt-8">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
         <div className="flex">
           <Button
-            className="mx-4 my-8 outline"
+            className="mx-4 outline"
             buttonType="primary"
             onClick={() => setCreateModal({ isOpen: true })}
           >
             {intl.formatMessage(messages.createlocaluser)}
           </Button>
           <Button
-            className="mx-4 my-8"
+            className="mx-4 outline"
             buttonType="primary"
             disabled={isImporting}
             onClick={() => importFromPlex()}

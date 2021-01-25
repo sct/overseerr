@@ -260,7 +260,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   return (
     <>
       <div>
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl font-medium leading-6 text-gray-200">
           <FormattedMessage {...messages.plexsettings} />
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
@@ -348,10 +348,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           return (
             <form onSubmit={handleSubmit}>
               <div className="mt-6 sm:mt-5">
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
                   >
                     <div className="flex flex-col">
                       <span className="mr-2">
@@ -378,7 +378,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     </div>
                   </div>
                 </div>
-                <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="mt-6 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="preset"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
@@ -465,7 +465,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 </div>
                 <div>
                   <div>
-                    <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                    <div className="mt-6 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                       <label
                         htmlFor="hostname"
                         className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
@@ -494,7 +494,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     </div>
                   </div>
                   <div>
-                    <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                    <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                       <label
                         htmlFor="port"
                         className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
@@ -517,7 +517,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                     <label
                       htmlFor="ssl"
                       className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
@@ -570,7 +570,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         }}
       </Formik>
       <div className="mt-10">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl font-medium leading-6 text-gray-200">
           <FormattedMessage {...messages.plexlibraries} />
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
@@ -607,7 +607,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         </ul>
       </div>
       <div className="mt-10">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl font-medium leading-6 text-gray-200">
           <FormattedMessage {...messages.manualscan} />
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">

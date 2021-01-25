@@ -199,7 +199,7 @@ const SettingsServices: React.FC = () => {
   return (
     <>
       <div>
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl font-medium leading-6 text-gray-200">
           <FormattedMessage {...messages.radarrsettings} />
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
@@ -312,7 +312,7 @@ const SettingsServices: React.FC = () => {
         )}
       </div>
       <div className="mt-10">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl font-medium leading-6 text-gray-200">
           <FormattedMessage {...messages.sonarrsettings} />
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">

@@ -67,7 +67,7 @@ const SettingsMain: React.FC = () => {
   return (
     <>
       <div>
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="text-2xl font-medium leading-6 text-gray-200">
           {intl.formatMessage(messages.generalsettings)}
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
@@ -112,10 +112,10 @@ const SettingsMain: React.FC = () => {
             return (
               <Form>
                 {userHasPermission(Permission.ADMIN) && (
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                     <label
-                      htmlFor="username"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                      htmlFor="apiKey"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
                     >
                       {intl.formatMessage(messages.apikey)}
                     </label>
@@ -156,10 +156,10 @@ const SettingsMain: React.FC = () => {
                     </div>
                   </div>
                 )}
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    htmlFor="applicationUrl"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
                   >
                     {intl.formatMessage(messages.applicationurl)}
                   </label>
@@ -175,7 +175,7 @@ const SettingsMain: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="trustProxy"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
@@ -229,8 +229,8 @@ const SettingsMain: React.FC = () => {
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    htmlFor="hideAvailable"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
                   >
                     <span className="mr-2">
                       {intl.formatMessage(messages.hideAvailable)}
@@ -251,9 +251,9 @@ const SettingsMain: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="mt-6">
+                <div className="mt-8">
                   <div role="group" aria-labelledby="label-permissions">
-                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                    <div className="sm:grid sm:grid-cols-4 sm:gap-4">
                       <div>
                         <div
                           className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"

@@ -187,7 +187,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     <>
       <div className="flex items-center mb-2 font-bold tracking-wider">
         <svg
-          className="w-4 h-4 mr-1"
+          className="w-6 h-6 mr-1"
           fill="currentColor"
           viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"

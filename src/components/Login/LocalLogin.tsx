@@ -59,7 +59,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
               <div className="sm:border-t sm:border-gray-800">
                 <label
                   htmlFor="email"
-                  className="block my-1 text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  className="block my-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2"
                 >
                   {intl.formatMessage(messages.email)}
                 </label>
@@ -79,7 +79,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                 </div>
                 <label
                   htmlFor="password"
-                  className="block my-1 text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  className="block my-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2"
                 >
                   {intl.formatMessage(messages.password)}
                 </label>

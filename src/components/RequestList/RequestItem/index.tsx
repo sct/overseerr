@@ -244,7 +244,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               onClick={() => retryRequest()}
             >
               <svg
-                className="w-4 h-4 mr-0 sm:mr-1"
+                className="w-6 h-6 mr-0 sm:mr-1"
                 fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -267,7 +267,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               onClick={() => deleteRequest()}
             >
               <svg
-                className="w-4 h-4 mr-0 sm:mr-1"
+                className="w-6 h-6 mr-0 sm:mr-1"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +293,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   onClick={() => modifyRequest('approve')}
                 >
                   <svg
-                    className="w-4 h-4 mr-0 sm:mr-1"
+                    className="w-6 h-6 mr-0 sm:mr-1"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -316,7 +316,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   onClick={() => modifyRequest('decline')}
                 >
                   <svg
-                    className="w-4 h-4 mr-0 sm:mr-1"
+                    className="w-6 h-6 mr-0 sm:mr-1"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -339,7 +339,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   onClick={() => setShowEditModal(true)}
                 >
                   <svg
-                    className="w-4 h-4 mr-0 sm:mr-1"
+                    className="w-6 h-6 mr-0 sm:mr-1"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"

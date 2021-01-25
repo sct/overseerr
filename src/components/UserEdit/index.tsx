@@ -92,10 +92,10 @@ const UserEdit: React.FC = () => {
             <div className="flex flex-col space-y-6 text-white lg:flex-row lg:space-y-0 lg:space-x-6">
               <div className="flex-grow space-y-6">
                 {user?.userType === UserType.PLEX && (
-                  <div className="space-y-1">
+                  <div className="space-y-1 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                     <label
                       htmlFor="plexUsername"
-                      className="block text-sm font-medium leading-5 text-gray-400"
+                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                     >
                       {intl.formatMessage(messages.plexUsername)}
                     </label>
@@ -110,10 +110,10 @@ const UserEdit: React.FC = () => {
                     </div>
                   </div>
                 )}
-                <div className="space-y-1">
+                <div className="space-y-1 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="username"
-                    className="block text-sm font-medium leading-5 text-gray-400"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                   >
                     {intl.formatMessage(messages.username)}
                   </label>
@@ -126,10 +126,10 @@ const UserEdit: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium leading-5 text-gray-400"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                   >
                     <FormattedMessage {...messages.email} />
                   </label>
@@ -179,10 +179,10 @@ const UserEdit: React.FC = () => {
             <div className="text-white">
               <div className="sm:border-t sm:border-gray-200">
                 <div role="group" aria-labelledby="label-permissions">
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                  <div className="sm:grid sm:grid-cols-4 sm:gap-4">
                     <div>
                       <div
-                        className="text-base font-medium leading-6 sm:text-sm sm:leading-5"
+                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                         id="label-permissions"
                       >
                         <FormattedMessage {...messages.permissions} />

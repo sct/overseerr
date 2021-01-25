@@ -134,10 +134,10 @@ const NotificationsPushover: React.FC = () => {
               })}
             </Alert>
             <Form>
-              <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+              <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                 <label
                   htmlFor="enabled"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
                 >
                   {intl.formatMessage(messages.agentenabled)}
                 </label>
@@ -150,10 +150,10 @@ const NotificationsPushover: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                 <label
                   htmlFor="accessToken"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
                 >
                   {intl.formatMessage(messages.accessToken)}
                 </label>
@@ -173,9 +173,11 @@ const NotificationsPushover: React.FC = () => {
                     </div>
                   )}
                 </div>
+              </div>
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                 <label
                   htmlFor="userToken"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
                 >
                   {intl.formatMessage(messages.userToken)}
                 </label>
@@ -194,9 +196,9 @@ const NotificationsPushover: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div className="mt-6">
+              <div className="mt-8">
                 <div role="group" aria-labelledby="label-permissions">
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                  <div className="sm:grid sm:grid-cols-4 sm:gap-4">
                     <div>
                       <div
                         className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"

@@ -116,7 +116,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                     disabled={isUpdating}
                   >
                     <svg
-                      className="w-4 h-4"
+                      className="w-6 h-6"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +136,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                     disabled={isUpdating}
                   >
                     <svg
-                      className="w-4 h-4"
+                      className="w-6 h-6"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -156,7 +156,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                     disabled={isUpdating}
                   >
                     <svg
-                      className="w-4 h-4"
+                      className="w-6 h-6"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -174,7 +174,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                 disabled={isUpdating}
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-6 h-6"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
