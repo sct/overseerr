@@ -217,9 +217,15 @@ router.post('/import-from-plex', async (req, res, next) => {
     const createdUsers: User[] = [];
     for (const rawUser of plexUsersResponse.MediaContainer.User) {
       const account = rawUser.$;
-      const user = await userRepository.findOne({
-        where: { email: account.email },
-      });
+
+      const user =
+        (await userRepository.findOne({
+          where: { plexId: account.id },
+        })) ??
+        (await userRepository.findOne({
+          where: { email: account.email },
+        }));
+
       if (user) {
         // Update the users avatar with their plex thumbnail (incase it changed)
         user.avatar = account.thumb;
@@ -229,8 +235,13 @@ router.post('/import-from-plex', async (req, res, next) => {
         // in-case the user was previously a local account
         if (user.userType === UserType.LOCAL) {
           user.userType = UserType.PLEX;
-          user.username = '';
           user.plexId = parseInt(account.id);
+
+          // reset data (as it now resides in plexUsername)
+          // if an explicit username has not been set
+          if (user.username === user.email) {
+            user.username = '';
+          }
         }
         await userRepository.save(user);
       } else {
