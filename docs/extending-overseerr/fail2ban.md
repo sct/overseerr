@@ -14,7 +14,7 @@ Next, open `jail.local` in a text editor.  Add the following jail configuration 
 [overseerr]
 enabled         = true
 port            = 5055
-logpath         = /root/snap/overseerr/common/logs/overseerr.log
+logpath         = /path/to/overseerr.log
 filter          = overseerr
 maxretry        = 5
 findtime        = 120
