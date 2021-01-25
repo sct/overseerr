@@ -2228,6 +2228,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+    put:
+      summary: Update batch of users
+      description: |
+        Update users with given IDs with provided values in request `body.settings`. You cannot update users' plex tokens through this request.
+
+        Requires the `MANAGE_USERS` permission.
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                permissions:
+                  type: integer
+      responses:
+        '200':
+          description: Successfully updated user details
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: '#/components/schemas/User'
+
   /user/import-from-plex:
     post:
       summary: Imports all users from Plex
@@ -2270,7 +2300,7 @@ paths:
     put:
       summary: Update a user by user ID
       description: |
-        Update a user with provided values in request body. You cannot update a users plex token through this request.
+        Update a user with provided values in request body. You cannot update a user's plex token through this request.
 
         Requires the `MANAGE_USERS` permission.
       tags:

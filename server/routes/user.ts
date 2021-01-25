@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository, Not } from 'typeorm';
 import PlexTvAPI from '../api/plextv';
 import { MediaRequest } from '../entity/MediaRequest';
 import { User } from '../entity/User';
@@ -70,6 +70,51 @@ router.get<{ id: string }>('/:id', async (req, res, next) => {
   }
 });
 
+const canMakePermissionsChange = (permissions: number, user?: User) =>
+  // Only let the owner grant admin privileges
+  !(hasPermission(Permission.ADMIN, permissions) && user?.id !== 1) ||
+  // Only let users with the manage settings permission, grant the same permission
+  !(
+    hasPermission(Permission.MANAGE_SETTINGS, permissions) &&
+    !hasPermission(Permission.MANAGE_SETTINGS, user?.permissions ?? 0)
+  );
+
+router.put<
+  Record<string, never>,
+  Partial<User>[],
+  { ids: string[]; permissions: number }
+>('/', async (req, res, next) => {
+  try {
+    const isOwner = req.user?.id === 1;
+
+    if (!canMakePermissionsChange(req.body.permissions, req.user)) {
+      return next({
+        status: 403,
+        message: 'You do not have permission to grant this level of access',
+      });
+    }
+
+    const userRepository = getRepository(User);
+
+    const users = await userRepository.findByIds(req.body.ids, {
+      ...(!isOwner ? { id: Not(1) } : {}),
+    });
+
+    const updatedUsers = await Promise.all(
+      users.map(async (user) => {
+        return userRepository.save(<User>{
+          ...user,
+          ...{ permissions: req.body.permissions },
+        });
+      })
+    );
+
+    return res.status(200).json(updatedUsers);
+  } catch (e) {
+    next({ status: 500, message: e.message });
+  }
+});
+
 router.put<{ id: string }>('/:id', async (req, res, next) => {
   try {
     const userRepository = getRepository(User);
@@ -86,22 +131,7 @@ router.put<{ id: string }>('/:id', async (req, res, next) => {
       });
     }
 
-    // Only let the owner grant admin privileges
-    if (
-      hasPermission(Permission.ADMIN, req.body.permissions) &&
-      req.user?.id !== 1
-    ) {
-      return next({
-        status: 403,
-        message: 'You do not have permission to grant this level of access',
-      });
-    }
-
-    // Only let users with the manage settings permission, grant the same permission
-    if (
-      hasPermission(Permission.MANAGE_SETTINGS, req.body.permissions) &&
-      !hasPermission(Permission.MANAGE_SETTINGS, req.user?.permissions ?? 0)
-    ) {
+    if (!canMakePermissionsChange(req.body.permissions, req.user)) {
       return next({
         status: 403,
         message: 'You do not have permission to grant this level of access',
