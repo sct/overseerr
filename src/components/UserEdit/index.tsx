@@ -85,9 +85,11 @@ const UserEdit: React.FC = () => {
     >
       {({ isSubmitting, handleSubmit }) => (
         <Form>
-          <Header>
-            <FormattedMessage {...messages.edituser} />
-          </Header>
+          <div className="flex flex-col justify-between sm:flex-row mt-8">
+            <Header>
+              <FormattedMessage {...messages.edituser} />
+            </Header>
+          </div>
           <div className="space-y-6">
             <div className="flex flex-col space-y-6 text-white lg:flex-row lg:space-y-0 lg:space-x-6">
               <div className="flex-grow space-y-6">
@@ -144,7 +146,6 @@ const UserEdit: React.FC = () => {
                   </div>
                 </div>
               </div>
-
               <div className="flex-grow space-y-1 lg:flex-grow-0 lg:flex-shrink-0">
                 <p
                   className="block text-sm font-medium leading-5 text-gray-400"
@@ -180,23 +181,28 @@ const UserEdit: React.FC = () => {
               <div className="sm:border-t sm:border-gray-200">
                 <div role="group" aria-labelledby="label-permissions">
                   <div className="sm:grid sm:grid-cols-4 sm:gap-4">
-                    <div>
-                      <div
-                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
-                        id="label-permissions"
-                      >
-                        <FormattedMessage {...messages.permissions} />
-                      </div>
-                    </div>
-                    <div className="mt-4 sm:mt-0 sm:col-span-2">
-                      <div className="max-w-lg">
-                        <PermissionEdit
-                          user={currentUser}
-                          currentPermission={currentPermission}
-                          onUpdate={(newPermission) =>
-                            setCurrentPermission(newPermission)
-                          }
-                        />
+                    <div className="mt-8">
+                      <div role="group" aria-labelledby="label-permissions">
+                        <div className="sm:grid sm:grid-cols-4 sm:gap-4">
+                          <div>
+                            <div
+                              className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
+                              id="label-permissions"
+                            >
+                              <FormattedMessage {...messages.permissions} />
+                            </div>
+                          </div>
+                          <div className="mt-4 sm:mt-0 sm:col-span-2">
+                            <div className="max-w-lg">
+                            <PermissionEdit
+                              user={currentUser}
+                              currentPermission={currentPermission}
+                              onUpdate={(newPermission) =>
+                                setCurrentPermission(newPermission)
+                              }
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

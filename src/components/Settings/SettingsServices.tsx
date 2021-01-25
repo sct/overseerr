@@ -283,7 +283,7 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-32">
+              <li className="h-46 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-46">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"
@@ -352,7 +352,7 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-32">
+              <li className="h-46 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-46">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"
