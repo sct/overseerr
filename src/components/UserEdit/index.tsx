@@ -75,7 +75,9 @@ const UserEdit: React.FC = () => {
             appearance: 'error',
             autoDismiss: true,
           });
-          throw new Error(`Something went wrong while saving the user: ${e.message}`);
+          throw new Error(
+            `Something went wrong while saving the user: ${e.message}`
+          );
         } finally {
           revalidate();
         }
