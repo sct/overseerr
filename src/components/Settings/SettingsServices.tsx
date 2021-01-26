@@ -65,7 +65,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
       <div className="flex items-center justify-between w-full p-6 space-x-6">
         <div className="flex-1 truncate">
           <div className="flex items-center mb-2 space-x-3">
-            <h3 className="text-sm font-medium leading-5 text-white truncate">
+            <h3 className="font-medium leading-5 text-white truncate">
               {name}
             </h3>
             {isDefault && (
