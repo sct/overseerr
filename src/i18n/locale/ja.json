@@ -404,6 +404,6 @@
   "components.Settings.Notifications.NotificationsSlack.slacksettingsfailed": "Slackの通知設定の保存に失敗しました。",
   "components.Settings.Notifications.NotificationsSlack.settingupslackDescription": "Slack通知を使用するには、<WebhookLink>受信ウェブフック</WebhookLink>を作成し、以下のWebhook URLを使用する必要があります。",
   "components.Settings.Notifications.NotificationsSlack.settingupslack": "Slack通知の設定",
-  "components.Settings.Notifications.NotificationsSlack.saving": "保存中…",
+  "components.Settings.Notifications.NotificationsSlack.saving": "保存中...",
   "components.Settings.Notifications.NotificationsSlack.save": "変更を保存"
 }
