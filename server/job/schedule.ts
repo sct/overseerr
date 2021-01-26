@@ -2,6 +2,7 @@ import schedule from 'node-schedule';
 import { jobPlexFullSync, jobPlexRecentSync } from './plexsync';
 import logger from '../logger';
 import { jobRadarrSync } from './radarrsync';
+import { jobSonarrSync } from './sonarrsync';
 import downloadTracker from '../lib/downloadtracker';
 
 interface ScheduledJob {
@@ -45,12 +46,22 @@ export const startJobs = (): void => {
     }),
   });
 
+  // Run full sonarr sync every 24 hours
+  scheduledJobs.push({
+    id: 'sonarr-sync',
+    name: 'Sonarr Sync',
+    job: schedule.scheduleJob('0 30 4 * * *', () => {
+      logger.info('Starting scheduled job: Sonarr Sync', { label: 'Jobs' });
+      jobSonarrSync.run();
+    }),
+  });
+
   // Run download sync
   scheduledJobs.push({
     id: 'download-sync',
     name: 'Download Sync',
     job: schedule.scheduleJob('0 * * * * *', () => {
-      logger.info('Starting scheduled job: Download Sync', { label: 'Jobs' });
+      logger.debug('Starting scheduled job: Download Sync', { label: 'Jobs' });
       downloadTracker.updateDownloads();
     }),
   });

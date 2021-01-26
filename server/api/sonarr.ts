@@ -1,9 +1,18 @@
 import Axios, { AxiosInstance } from 'axios';
+import { SonarrSettings } from '../lib/settings';
 import logger from '../logger';
 
 interface SonarrSeason {
   seasonNumber: number;
   monitored: boolean;
+  statistics?: {
+    previousAiring?: string;
+    episodeFileCount: number;
+    episodeCount: number;
+    totalEpisodeCount: number;
+    sizeOnDisk: number;
+    percentOfEpisodes: number;
+  };
 }
 
 export interface SonarrSeries {
@@ -84,6 +93,12 @@ interface AddSeriesOptions {
 }
 
 class SonarrAPI {
+  static buildSonarrUrl(sonarrSettings: SonarrSettings, path?: string): string {
+    return `${sonarrSettings.useSsl ? 'https' : 'http'}://${
+      sonarrSettings.hostname
+    }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}${path}`;
+  }
+
   private axios: AxiosInstance;
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
     this.axios = Axios.create({
@@ -92,6 +107,16 @@ class SonarrAPI {
         apikey: apiKey,
       },
     });
+  }
+
+  public async getSeries(): Promise<SonarrSeries[]> {
+    try {
+      const response = await this.axios.get<SonarrSeries[]>('/series');
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[Radarr] Failed to retrieve series: ${e.message}`);
+    }
   }
 
   public async getSeriesByTitle(title: string): Promise<SonarrSeries[]> {

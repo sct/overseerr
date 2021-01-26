@@ -72,13 +72,19 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
     case MediaStatus.AVAILABLE:
       return (
         <Badge badgeType="success">
-          {intl.formatMessage(globalMessages.available)}
+          <div className="flex items-center">
+            <span>{intl.formatMessage(globalMessages.available)}</span>
+            {inProgress && <Spinner className="w-3 h-3 ml-1" />}
+          </div>
         </Badge>
       );
     case MediaStatus.PARTIALLY_AVAILABLE:
       return (
         <Badge badgeType="success">
-          {intl.formatMessage(globalMessages.partiallyavailable)}
+          <div className="flex items-center">
+            <span>{intl.formatMessage(globalMessages.partiallyavailable)}</span>
+            {inProgress && <Spinner className="w-3 h-3 ml-1" />}
+          </div>
         </Badge>
       );
     case MediaStatus.PROCESSING:

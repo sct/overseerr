@@ -160,11 +160,7 @@ class Media {
 
   @AfterLoad()
   public getDownloadingItem(): void {
-    if (
-      this.externalServiceId !== undefined &&
-      this.serviceId !== undefined &&
-      this.status === MediaStatus.PROCESSING
-    ) {
+    if (this.externalServiceId !== undefined && this.serviceId !== undefined) {
       this.downloadStatus = downloadTracker.getMovieProgress(
         this.serviceId,
         this.externalServiceId
@@ -173,8 +169,7 @@ class Media {
 
     if (
       this.externalServiceId4k !== undefined &&
-      this.serviceId4k !== undefined &&
-      this.status4k === MediaStatus.PROCESSING
+      this.serviceId4k !== undefined
     ) {
       this.downloadStatus4k = downloadTracker.getMovieProgress(
         this.serviceId4k,

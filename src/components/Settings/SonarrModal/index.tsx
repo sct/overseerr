@@ -46,6 +46,7 @@ const messages = defineMessages({
   testFirstQualityProfiles: 'Test connection to load quality profiles',
   loadingrootfolders: 'Loading root folders…',
   testFirstRootFolders: 'Test connection to load root folders',
+  syncEnabled: 'Enable Sync',
 });
 
 interface TestResponse {
@@ -189,6 +190,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
           isDefault: sonarr?.isDefault ?? false,
           is4k: sonarr?.is4k ?? false,
           enableSeasonFolders: sonarr?.enableSeasonFolders ?? false,
+          syncEnabled: sonarr?.syncEnabled ?? false,
         }}
         validationSchema={SonarrSettingsSchema}
         onSubmit={async (values) => {
@@ -218,6 +220,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               is4k: values.is4k,
               isDefault: values.isDefault,
               enableSeasonFolders: values.enableSeasonFolders,
+              syncEnabled: values.syncEnabled,
             };
             if (!sonarr) {
               await axios.post('/api/v1/settings/sonarr', submission);
@@ -295,6 +298,22 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       type="checkbox"
                       id="isDefault"
                       name="isDefault"
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                  <label
+                    htmlFor="is4k"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    {intl.formatMessage(messages.server4k)}
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="is4k"
+                      name="is4k"
                       className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
@@ -634,22 +653,6 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
                   <label
-                    htmlFor="is4k"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
-                    {intl.formatMessage(messages.server4k)}
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <Field
-                      type="checkbox"
-                      id="is4k"
-                      name="is4k"
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                    />
-                  </div>
-                </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-                  <label
                     htmlFor="enableSeasonFolders"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
                   >
@@ -660,6 +663,22 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       type="checkbox"
                       id="enableSeasonFolders"
                       name="enableSeasonFolders"
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                  <label
+                    htmlFor="syncEnabled"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    {intl.formatMessage(messages.syncEnabled)}
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="syncEnabled"
+                      name="syncEnabled"
                       className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
