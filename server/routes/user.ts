@@ -233,9 +233,7 @@ router.post('/import-from-plex', async (req, res, next) => {
           user.userType = UserType.PLEX;
           user.plexId = parseInt(account.id);
 
-          // reset data (as it now resides in plexUsername)
-          // if an explicit username has not been set
-          if (user.username === user.email) {
+          if (user.username === account.username) {
             user.username = '';
           }
         }

@@ -48,13 +48,17 @@ authRoutes.post('/login', async (req, res, next) => {
       // Let's check if their plex token is up to date
       if (user.plexToken !== body.authToken) {
         user.plexToken = body.authToken;
-        await userRepository.save(user);
       }
 
       // Update the users avatar with their plex thumbnail (incase it changed)
       user.avatar = account.thumb;
       user.email = account.email;
       user.plexUsername = account.username;
+
+      if (user.username === account.username) {
+        user.username = '';
+      }
+      await userRepository.save(user);
     } else {
       // Here we check if it's the first user. If it is, we create the user with no check
       // and give them admin permissions
