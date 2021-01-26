@@ -108,7 +108,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
         </h2>
         <div className="text-xs truncate sm:text-sm">
           {intl.formatMessage(messages.requestedby, {
-            username: requestData.requestedBy.username,
+            username: requestData.requestedBy.displayName,
           })}
         </div>
         {requestData.media.status && (

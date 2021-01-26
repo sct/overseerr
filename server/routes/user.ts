@@ -138,7 +138,11 @@ router.put<{ id: string }>('/:id', async (req, res, next) => {
       });
     }
 
-    Object.assign(user, req.body);
+    Object.assign(user, {
+      username: req.body.username,
+      permissions: req.body.permissions,
+    });
+
     await userRepository.save(user);
 
     return res.status(200).json(user.filter());
@@ -213,20 +217,32 @@ router.post('/import-from-plex', async (req, res, next) => {
     const createdUsers: User[] = [];
     for (const rawUser of plexUsersResponse.MediaContainer.User) {
       const account = rawUser.$;
+
       const user = await userRepository.findOne({
-        where: { plexId: account.id },
+        where: [{ plexId: account.id }, { email: account.email }],
       });
+
       if (user) {
         // Update the users avatar with their plex thumbnail (incase it changed)
         user.avatar = account.thumb;
         user.email = account.email;
-        user.username = account.username;
+        user.plexUsername = account.username;
+
+        // in-case the user was previously a local account
+        if (user.userType === UserType.LOCAL) {
+          user.userType = UserType.PLEX;
+          user.plexId = parseInt(account.id);
+
+          if (user.username === account.username) {
+            user.username = '';
+          }
+        }
         await userRepository.save(user);
       } else {
         // Check to make sure it's a real account
         if (account.email && account.username) {
           const newUser = new User({
-            username: account.username,
+            plexUsername: account.username,
             email: account.email,
             permissions: settings.main.defaultPermissions,
             plexId: parseInt(account.id),

@@ -51,7 +51,7 @@ class TelegramAgent
 
     const title = this.escapeText(payload.subject);
     const plot = this.escapeText(payload.message);
-    const user = this.escapeText(payload.notifyUser.username);
+    const user = this.escapeText(payload.notifyUser.displayName);
 
     /* eslint-disable no-useless-escape */
     switch (type) {

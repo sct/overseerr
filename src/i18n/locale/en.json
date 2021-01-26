@@ -508,7 +508,7 @@
   "components.UserEdit.save": "Save",
   "components.UserEdit.saving": "Saving…",
   "components.UserEdit.userfail": "Something went wrong saving the user.",
-  "components.UserEdit.username": "Username",
+  "components.UserEdit.username": "Display Name",
   "components.UserEdit.usersaved": "User saved",
   "components.UserList.admin": "Admin",
   "components.UserList.autogeneratepassword": "Automatically generate password",

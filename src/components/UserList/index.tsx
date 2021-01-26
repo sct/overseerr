@@ -452,7 +452,7 @@ const UserList: React.FC = () => {
                   </div>
                   <div className="ml-4">
                     <div className="text-sm font-medium leading-5">
-                      {user.username}
+                      {user.displayName}
                     </div>
                     <div className="text-sm leading-5 text-gray-300">
                       {user.email}

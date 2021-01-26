@@ -2,16 +2,18 @@ import useSwr from 'swr';
 import { hasPermission, Permission } from '../../server/lib/permissions';
 import { UserType } from '../../server/constants/user';
 
+export { Permission, UserType };
+
 export interface User {
   id: number;
-  username: string;
+  plexUsername?: string;
+  username?: string;
+  displayName: string;
   email: string;
   avatar: string;
   permissions: number;
   userType: number;
 }
-
-export { Permission, UserType };
 
 interface UserHookResponse {
   user?: User;

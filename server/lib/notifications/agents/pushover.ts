@@ -48,42 +48,42 @@ class PushoverAgent
 
     const title = payload.subject;
     const plot = payload.message;
-    const user = payload.notifyUser.username;
+    const username = payload.notifyUser.displayName;
 
     switch (type) {
       case Notification.MEDIA_PENDING:
         messageTitle = 'New Request';
         message += `${title}\n\n`;
         message += `${plot}\n\n`;
-        message += `<b>Requested By</b>\n${user}\n\n`;
+        message += `<b>Requested By</b>\n${username}\n\n`;
         message += `<b>Status</b>\nPending Approval\n`;
         break;
       case Notification.MEDIA_APPROVED:
         messageTitle = 'Request Approved';
         message += `${title}\n\n`;
         message += `${plot}\n\n`;
-        message += `<b>Requested By</b>\n${user}\n\n`;
+        message += `<b>Requested By</b>\n${username}\n\n`;
         message += `<b>Status</b>\nProcessing Request\n`;
         break;
       case Notification.MEDIA_AVAILABLE:
         messageTitle = 'Now available!';
         message += `${title}\n\n`;
         message += `${plot}\n\n`;
-        message += `<b>Requested By</b>\n${user}\n\n`;
+        message += `<b>Requested By</b>\n${username}\n\n`;
         message += `<b>Status</b>\nAvailable\n`;
         break;
       case Notification.MEDIA_DECLINED:
         messageTitle = 'Request Declined';
         message += `${title}\n\n`;
         message += `${plot}\n\n`;
-        message += `<b>Requested By</b>\n${user}\n\n`;
+        message += `<b>Requested By</b>\n${username}\n\n`;
         message += `<b>Status</b>\nDeclined\n`;
         break;
       case Notification.TEST_NOTIFICATION:
         messageTitle = 'Test Notification';
         message += `${title}\n\n`;
         message += `${plot}\n\n`;
-        message += `<b>Requested By</b>\n${user}\n`;
+        message += `<b>Requested By</b>\n${username}\n`;
         break;
     }
 

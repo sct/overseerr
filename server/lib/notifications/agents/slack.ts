@@ -69,7 +69,7 @@ class SlackAgent
         fields.push(
           {
             type: 'mrkdwn',
-            text: `*Requested By*\n${payload.notifyUser.username ?? ''}`,
+            text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
           },
           {
             type: 'mrkdwn',
@@ -85,7 +85,7 @@ class SlackAgent
         fields.push(
           {
             type: 'mrkdwn',
-            text: `*Requested By*\n${payload.notifyUser.username ?? ''}`,
+            text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
           },
           {
             type: 'mrkdwn',
@@ -101,7 +101,7 @@ class SlackAgent
         fields.push(
           {
             type: 'mrkdwn',
-            text: `*Requested By*\n${payload.notifyUser.username ?? ''}`,
+            text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
           },
           {
             type: 'mrkdwn',
@@ -117,7 +117,7 @@ class SlackAgent
         fields.push(
           {
             type: 'mrkdwn',
-            text: `*Requested By*\n${payload.notifyUser.username ?? ''}`,
+            text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
           },
           {
             type: 'mrkdwn',
