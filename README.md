@@ -46,7 +46,7 @@
 
 ## Getting Started
 
-Check out our documenation for steps on how to install and run Overseerr:
+Check out our documentation for steps on how to install and run Overseerr:
 
 https://docs.overseerr.dev/getting-started/installation
 
@@ -58,6 +58,7 @@ Currently, Overseerr is only distributed through Docker images. If you have Dock
 docker run -d \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
+  -e PROXY=<yes|no>
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
   --restart unless-stopped \

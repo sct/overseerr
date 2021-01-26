@@ -61,6 +61,9 @@ app
     startJobs();
 
     const server = express();
+    if (process.env.PROXY === 'yes') {
+      server.enable('trust proxy');
+    }
     server.use(cookieParser());
     server.use(bodyParser.json());
     server.use(bodyParser.urlencoded({ extended: true }));

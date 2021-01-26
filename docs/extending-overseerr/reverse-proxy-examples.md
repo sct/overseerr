@@ -10,7 +10,7 @@ Base URLs cannot be configured in Overseerr. With this limitation, only subdomai
 
 A sample is bundled in SWAG. This page is still the only source of truth, so the sample is not guaranteed to be up to date. If you catch an inconsistency, report it to the linuxserver team, or do a pull-request against the proxy-confs repository to update the sample.
 
-Rename the sample file `overseerr.subdomain.conf.sample` to `overseerr.subdomain.conf` in the `proxy-confs`folder, or create `overseerr.subdomain.conf` in the same folder with the example below. 
+Rename the sample file `overseerr.subdomain.conf.sample` to `overseerr.subdomain.conf` in the `proxy-confs`folder, or create `overseerr.subdomain.conf` in the same folder with the example below.
 
 Example Configuration:
 
@@ -122,6 +122,8 @@ server {
     add_header X-Frame-Options "SAMEORIGIN" always;
     # Prevent Sniff Mimetype (X-Content-Type-Options)
     add_header X-Content-Type-Options "nosniff" always;
+    # Tell crawling bots to not index the site
+    add_header X-Robots-Tag "noindex, nofollow" always;
 
     access_log /var/log/nginx/overseerr.example.com-access.log;
     error_log /var/log/nginx/overseerr.example.com-error.log;
@@ -131,4 +133,3 @@ server {
     }
 }
 ```
-
