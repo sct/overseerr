@@ -20,9 +20,9 @@ export const messages = defineMessages({
   email: 'Email',
   permissions: 'Permissions',
   save: 'Save',
-  saving: 'Saving...',
+  saving: 'Saving…',
   usersaved: 'User saved',
-  userfail: 'Something went wrong saving the user.',
+  userfail: 'Something went wrong while saving the user.',
 });
 
 const UserEdit: React.FC = () => {
@@ -75,7 +75,9 @@ const UserEdit: React.FC = () => {
             appearance: 'error',
             autoDismiss: true,
           });
-          throw new Error(`Something went wrong saving the user: ${e.message}`);
+          throw new Error(
+            `Something went wrong while saving the user: ${e.message}`
+          );
         } finally {
           revalidate();
         }

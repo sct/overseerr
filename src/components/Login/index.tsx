@@ -12,8 +12,8 @@ import Accordion from '../Common/Accordion';
 
 const messages = defineMessages({
   signinheader: 'Sign in to continue',
-  signinwithplex: 'Sign in with Plex',
-  signinwithoverseerr: 'Sign in with Overseerr',
+  signinwithplex: 'Use your Plex account',
+  signinwithoverseerr: 'Use your Overseerr account',
 });
 
 const Login: React.FC = () => {

@@ -20,14 +20,14 @@ const messages = defineMessages({
   saving: 'Saving…',
   notificationsettings: 'Notification Settings',
   notificationsettingsDescription:
-    'Global notification configuration. The settings below affect all notification agents.',
+    'Configure global notification settings. The options below will apply to all notification agents.',
   notificationAgentsSettings: 'Notification Agents',
   notificationAgentSettingsDescription:
-    'Here you can pick and choose what types of notifications to send and through what types of services.',
+    'Choose the types of notifications to send, and which notification agents to use.',
   notificationsettingssaved: 'Notification settings saved!',
   notificationsettingsfailed: 'Notification settings failed to save.',
   enablenotifications: 'Enable Notifications',
-  autoapprovedrequests: 'Send notifications for auto-approved requests',
+  autoapprovedrequests: 'Send Notifications for Auto-Approved Requests',
 });
 
 interface SettingsRoute {

@@ -18,10 +18,10 @@ import Alert from '../Common/Alert';
 const messages = defineMessages({
   radarrsettings: 'Radarr Settings',
   radarrSettingsDescription:
-    'Configure your Radarr connection below. You can have multiple Radarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override which server will be used when a new request is made.',
+    'Configure your Radarr connection below. You can have multiple Radarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server will be used when a new request is made.',
   sonarrsettings: 'Sonarr Settings',
   sonarrSettingsDescription:
-    'Configure your Sonarr connection below. You can have multiple Sonarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override which server will be used when a new request is made.',
+    'Configure your Sonarr connection below. You can have multiple Sonarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server will be used when a new request is made.',
   deleteserverconfirm: 'Are you sure you want to delete this server?',
   edit: 'Edit',
   delete: 'Delete',

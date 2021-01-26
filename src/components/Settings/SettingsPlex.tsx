@@ -16,43 +16,44 @@ import Alert from '../Common/Alert';
 const messages = defineMessages({
   plexsettings: 'Plex Settings',
   plexsettingsDescription:
-    'Configure the settings for your Plex server. Overseerr uses your Plex server to scan your library at an interval and see what content is available.',
-  servername: 'Server Name (Retrieved from Plex)',
+    'Configure the settings for your Plex server. Overseerr scans your Plex libraries to see what content is available.',
+  servername: 'Server Name',
+  servernameTip: 'Automatically retrieved from Plex after saving',
   servernamePlaceholder: 'Plex Server Name',
-  serverpreset: 'Available Server',
-  serverpresetPlaceholder: 'Plex Server (Retrieved Automatically)',
+  serverpreset: 'Server',
+  serverpresetPlaceholder: 'Plex Server',
   serverLocal: 'local',
   serverRemote: 'remote',
   serverConnected: 'connected',
   serverpresetManualMessage: 'Manually configure',
-  serverpresetRefreshing: 'Retrieving servers...',
-  serverpresetLoad: 'Press button to load available servers',
+  serverpresetRefreshing: 'Retrieving servers…',
+  serverpresetLoad: 'Press the button to load available servers',
   toastPlexRefresh: 'Retrieving server list from Plex',
   toastPlexRefreshSuccess: 'Retrieved server list from Plex',
   toastPlexRefreshFailure: 'Unable to retrieve server list from Plex',
   toastPlexConnecting: 'Attempting to connect to Plex server',
   toastPlexConnectingSuccess: 'Connected to Plex server',
   toastPlexConnectingFailure: 'Unable to connect to Plex server',
-  settingUpPlex: 'Setting up Plex',
+  settingUpPlex: 'Setting Up Plex',
   settingUpPlexDescription:
-    'To setup Plex you can enter your details manually, \
-    or choose from one of the available servers retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>.\
-    Press the button next to the dropdown to retrieve available servers and check connectivity.',
+    'To set up Plex, you can either enter your details manually \
+    or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>.\
+    Press the button to the right of the dropdown to check connectivity and retrieve available servers.',
   hostname: 'Hostname/IP',
   port: 'Port',
   ssl: 'SSL',
   timeout: 'Timeout',
   ms: 'ms',
   save: 'Save Changes',
-  saving: 'Saving...',
+  saving: 'Saving…',
   plexlibraries: 'Plex Libraries',
   plexlibrariesDescription:
-    'These are the libraries Overseerr will scan for titles. If you see no libraries listed, you will need to run at least one sync by clicking the button below. You must first configure and save your plex connection settings before you will be able to retrieve your libraries.',
+    'The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.',
   syncing: 'Syncing',
   sync: 'Sync Plex Libraries',
   manualscan: 'Manual Library Scan',
   manualscanDescription:
-    "Normally, this will only be run once every 24 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one time full manual library scan is recommended!",
+    "Normally, this will only be run once every 24 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one-time full manual library scan is recommended!",
   notrunning: 'Not Running',
   currentlibrary: 'Current Library: {name}',
   librariesRemaining: 'Libraries Remaining: {count}',
@@ -347,29 +348,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           return (
             <form onSubmit={handleSubmit}>
               <div className="mt-6 sm:mt-5">
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
-                    <FormattedMessage {...messages.servername} />
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder={intl.formatMessage(
-                          messages.servernamePlaceholder
-                        )}
-                        value={data?.name}
-                        readOnly
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                      />
-                    </div>
-                  </div>
-                </div>
                 <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="preset"
@@ -452,6 +430,36 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                           />
                         </svg>
                       </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <div className="flex flex-col">
+                      <span className="mr-2">
+                        <FormattedMessage {...messages.servername} />
+                      </span>
+                      <span className="text-gray-500">
+                        <FormattedMessage {...messages.servernameTip} />
+                      </span>
+                    </div>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder={intl.formatMessage(
+                          messages.servernamePlaceholder
+                        )}
+                        value={data?.name}
+                        readOnly
+                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                      />
                     </div>
                   </div>
                 </div>

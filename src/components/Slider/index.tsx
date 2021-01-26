@@ -11,7 +11,7 @@ import TitleCard from '../TitleCard';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 const messages = defineMessages({
-  noresults: 'No Results',
+  noresults: 'No results.',
 });
 
 interface SliderProps {

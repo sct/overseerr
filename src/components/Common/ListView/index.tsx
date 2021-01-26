@@ -7,6 +7,11 @@ import {
 import TitleCard from '../../TitleCard';
 import useVerticalScroll from '../../../hooks/useVerticalScroll';
 import PersonCard from '../../PersonCard';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  noresults: 'No results.',
+});
 
 interface ListViewProps {
   items?: (TvResult | MovieResult | PersonResult)[];
@@ -23,12 +28,13 @@ const ListView: React.FC<ListViewProps> = ({
   onScrollBottom,
   isReachingEnd,
 }) => {
+  const intl = useIntl();
   useVerticalScroll(onScrollBottom, !isLoading && !isEmpty && !isReachingEnd);
   return (
     <>
       {isEmpty && (
         <div className="w-full mt-64 text-2xl text-center text-gray-400">
-          No Results
+          {intl.formatMessage(messages.noresults)}
         </div>
       )}
       <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">

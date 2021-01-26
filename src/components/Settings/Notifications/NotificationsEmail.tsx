@@ -11,12 +11,12 @@ import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
-  saving: 'Saving...',
-  validationFromRequired: 'You must provide an email sender address',
+  saving: 'Saving…',
+  validationFromRequired: 'You must provide a sender address',
   validationSmtpHostRequired: 'You must provide an SMTP host',
   validationSmtpPortRequired: 'You must provide an SMTP port',
-  agentenabled: 'Agent Enabled',
-  emailsender: 'Email Sender Address',
+  agentenabled: 'Enable Agent',
+  emailsender: 'Sender Address',
   smtpHost: 'SMTP Host',
   smtpPort: 'SMTP Port',
   enableSsl: 'Enable SSL',
@@ -28,7 +28,7 @@ const messages = defineMessages({
   testsent: 'Test notification sent!',
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:
-    'SSL should be disabled on standard TLS connections (Port 587)',
+    'SSL should be disabled on standard TLS connections (port 587)',
   senderName: 'Sender Name',
   notificationtypes: 'Notification Types',
 });

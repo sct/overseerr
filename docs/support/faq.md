@@ -36,7 +36,7 @@ The most secure method, but also the most inconvenient, is to set up a VPN tunne
 
 ### Some media is missing from Overseerr that I know is in Plex!
 
-**A:** Overseerr supports the new Plex Movie, Legacy Plex Movie, TheTVDB agent, and the TMDb agent. Please verify that your library is using one of the agents previously listed. If you are changing agents, a full metadata refresh will need to be performed. Caution, this can take a long time depending on how many items you have in your movie library.
+**A:** Overseerr supports the new Plex Movie, legacy Plex Movie, TheTVDB, and TMDb agents. Please verify that your library is using one of the agents previously listed. If you are changing agents, a full metadata refresh will need to be performed. Caution, this can take a long time depending on how many items you have in your movie library.
 
 **Troubleshooting Steps:**
 
@@ -55,8 +55,8 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 **Examples:**
 
-1. TMDB agent `guid="com.plexapp.agents.themoviedb://1705"`
-2. The new Plex Movie agent `<Guid id="tmdb://464052"/>`
+1. TMDb agent `guid="com.plexapp.agents.themoviedb://1705"`
+2. New Plex Movie agent `<Guid id="tmdb://464052"/>`
 3. TheTVDB agent `guid="com.plexapp.agents.thetvdb://78874/1/1"`
 4. Legacy Plex Movie agent `guid="com.plexapp.agents.imdb://tt0765446"`
 
@@ -68,7 +68,7 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### Why can't I see all my Plex users?
 
-**A:** Navigate to your **User List** in Overseerr and click **Import Users From Plex** button. Don't forget to check the default user permissions in the **Settings -&gt; General Settings** page beforehand.
+**A:** Navigate to your **User List** in Overseerr and click **Import Users from Plex** button. Don't forget to check the default user permissions in the **Settings -&gt; General Settings** page beforehand.
 
 ### Can I create local users in Overseerr?
 

@@ -13,7 +13,7 @@ import LanguagePicker from '../Layout/LanguagePicker';
 
 const messages = defineMessages({
   finish: 'Finish Setup',
-  finishing: 'Finishing...',
+  finishing: 'Finishing…',
   continue: 'Continue',
   loginwithplex: 'Login with Plex',
   configureplex: 'Configure Plex',

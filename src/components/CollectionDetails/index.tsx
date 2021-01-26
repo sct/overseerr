@@ -20,7 +20,7 @@ import TitleCard from '../TitleCard';
 import Transition from '../Transition';
 
 const messages = defineMessages({
-  overviewunavailable: 'Overview unavailable',
+  overviewunavailable: 'Overview unavailable.',
   overview: 'Overview',
   movies: 'Movies',
   numberofmovies: 'Number of Movies: {count}',

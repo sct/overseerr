@@ -12,7 +12,7 @@ import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
-  recommendationssubtext: 'If you liked {title}, you might also like...',
+  recommendationssubtext: 'If you liked {title}, you might also like…',
 });
 
 interface SearchResult {

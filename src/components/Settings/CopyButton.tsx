@@ -4,7 +4,7 @@ import { useToasts } from 'react-toast-notifications';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  copied: 'Copied API key to clipboard',
+  copied: 'Copied API key to clipboard.',
 });
 
 const CopyButton: React.FC<{ textToCopy: string }> = ({ textToCopy }) => {
