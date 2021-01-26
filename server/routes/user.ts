@@ -218,13 +218,9 @@ router.post('/import-from-plex', async (req, res, next) => {
     for (const rawUser of plexUsersResponse.MediaContainer.User) {
       const account = rawUser.$;
 
-      const user =
-        (await userRepository.findOne({
-          where: { plexId: account.id },
-        })) ??
-        (await userRepository.findOne({
-          where: { email: account.email },
-        }));
+      const user = await userRepository.findOne({
+        where: [{ plexId: account.id }, { email: account.email }],
+      });
 
       if (user) {
         // Update the users avatar with their plex thumbnail (incase it changed)

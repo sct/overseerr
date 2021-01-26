@@ -37,7 +37,7 @@ export class User {
   @Column({ nullable: true })
   public plexUsername: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   public username?: string;
 
   @Column({ nullable: true, select: false })
