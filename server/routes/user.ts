@@ -226,7 +226,7 @@ router.post('/import-from-plex', async (req, res, next) => {
         // Update the users avatar with their plex thumbnail (incase it changed)
         user.avatar = account.thumb;
         user.email = account.email;
-        user.plexUsername = account.username ?? account.email;
+        user.plexUsername = account.username;
 
         // in-case the user was previously a local account
         if (user.userType === UserType.LOCAL) {
