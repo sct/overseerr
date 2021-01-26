@@ -13,7 +13,7 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
-  agentenabled: 'Agent Enabled',
+  agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
   validationWebhookUrlRequired: 'You must provide a webhook URL',
   webhookUrlPlaceholder: 'Webhook URL',

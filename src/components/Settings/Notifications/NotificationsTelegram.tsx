@@ -13,7 +13,7 @@ import NotificationTypeSelector from '../../NotificationTypeSelector';
 const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
-  agentenabled: 'Agent Enabled',
+  agentenabled: 'Enable Agent',
   botAPI: 'Bot API',
   chatId: 'Chat ID',
   validationBotAPIRequired: 'You must provide a Bot API key.',

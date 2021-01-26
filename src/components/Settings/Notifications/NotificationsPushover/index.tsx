@@ -13,7 +13,7 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
-  agentenabled: 'Agent Enabled',
+  agentenabled: 'Enable Agent',
   accessToken: 'Access Token',
   userToken: 'User Token',
   validationAccessTokenRequired: 'You must provide an access token.',

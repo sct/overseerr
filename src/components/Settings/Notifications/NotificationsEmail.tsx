@@ -15,7 +15,7 @@ const messages = defineMessages({
   validationFromRequired: 'You must provide a sender address',
   validationSmtpHostRequired: 'You must provide an SMTP host',
   validationSmtpPortRequired: 'You must provide an SMTP port',
-  agentenabled: 'Agent Enabled',
+  agentenabled: 'Enable Agent',
   emailsender: 'Sender Address',
   smtpHost: 'SMTP Host',
   smtpPort: 'SMTP Port',
