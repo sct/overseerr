@@ -66,6 +66,9 @@ const messages = defineMessages({
   viewfullcrew: 'View Full Crew',
   view: 'View',
   areyousure: 'Are you sure?',
+  openradarr: 'Open Movie in Radarr',
+  openradarr4k: 'Open Movie in 4K Radarr',
+  downloadstatus: 'Download Status',
 });
 
 interface MovieDetailsProps {
@@ -133,7 +136,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
           (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
           <>
-            <h3 className="mb-2 text-xl">Download Status</h3>
+            <h3 className="mb-2 text-xl">
+              {intl.formatMessage(messages.downloadstatus)}
+            </h3>
             <div className="mb-6 overflow-hidden bg-gray-600 rounded-md shadow">
               <ul>
                 {data.mediaInfo?.downloadStatus?.map((status, index) => (
@@ -187,7 +192,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
                     <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
                   </svg>
-                  <span>Open Movie in Radarr</span>
+                  <span>{intl.formatMessage(messages.openradarr)}</span>
                 </Button>
               </a>
             )}
@@ -207,7 +212,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
                     <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
                   </svg>
-                  <span>Open Movie in 4K Radarr</span>
+                  <span>{intl.formatMessage(messages.openradarr4k)}</span>
                 </Button>
               </a>
             )}
@@ -251,7 +256,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               </span>
             )}
             <span>
-              <StatusBadge status={data.mediaInfo?.status4k} is4k />
+              <StatusBadge
+                status={data.mediaInfo?.status4k}
+                is4k
+                inProgress={(data.mediaInfo?.downloadStatus4k ?? []).length > 0}
+              />
             </span>
           </div>
           <h1 className="text-2xl lg:text-4xl">

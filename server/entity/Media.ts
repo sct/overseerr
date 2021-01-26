@@ -17,6 +17,7 @@ import Season from './Season';
 import { getSettings } from '../lib/settings';
 import RadarrAPI from '../api/radarr';
 import downloadTracker, { DownloadingItem } from '../lib/downloadtracker';
+import SonarrAPI from '../api/sonarr';
 
 @Entity()
 class Media {
@@ -120,6 +121,12 @@ class Media {
   @Column({ nullable: true })
   public externalServiceId4k?: number;
 
+  @Column({ nullable: true })
+  public externalServiceSlug?: string;
+
+  @Column({ nullable: true })
+  public externalServiceSlug4k?: string;
+
   public serviceUrl?: string;
   public serviceUrl4k?: string;
   public downloadStatus?: DownloadingItem[] = [];
@@ -131,50 +138,119 @@ class Media {
 
   @AfterLoad()
   public setServiceUrl(): void {
-    if (this.serviceId !== null) {
-      const settings = getSettings();
-      const server = settings.radarr.find(
-        (radarr) => radarr.id === this.serviceId
-      );
+    if (this.mediaType === MediaType.MOVIE) {
+      if (this.serviceId !== null) {
+        const settings = getSettings();
+        const server = settings.radarr.find(
+          (radarr) => radarr.id === this.serviceId
+        );
 
-      if (server) {
-        this.serviceUrl = server.externalUrl
-          ? `${server.externalUrl}/movie/${this.tmdbId}`
-          : RadarrAPI.buildRadarrUrl(server, `/movie/${this.tmdbId}`);
+        if (server) {
+          this.serviceUrl = server.externalUrl
+            ? `${server.externalUrl}/movie/${this.externalServiceSlug}`
+            : RadarrAPI.buildRadarrUrl(
+                server,
+                `/movie/${this.externalServiceSlug}`
+              );
+        }
+      }
+
+      if (this.serviceId4k !== null) {
+        const settings = getSettings();
+        const server = settings.radarr.find(
+          (radarr) => radarr.id === this.serviceId4k
+        );
+
+        if (server) {
+          this.serviceUrl4k = server.externalUrl
+            ? `${server.externalUrl}/movie/${this.externalServiceSlug4k}`
+            : RadarrAPI.buildRadarrUrl(
+                server,
+                `/movie/${this.externalServiceSlug4k}`
+              );
+        }
       }
     }
 
-    if (this.serviceId4k !== null) {
-      const settings = getSettings();
-      const server = settings.radarr.find(
-        (radarr) => radarr.id === this.serviceId4k
-      );
+    if (this.mediaType === MediaType.TV) {
+      if (this.serviceId !== null) {
+        const settings = getSettings();
+        const server = settings.sonarr.find(
+          (sonarr) => sonarr.id === this.serviceId
+        );
 
-      if (server) {
-        this.serviceUrl4k = server.externalUrl
-          ? `${server.externalUrl}/movie/${this.tmdbId}`
-          : RadarrAPI.buildRadarrUrl(server, `/movie/${this.tmdbId}`);
+        if (server) {
+          this.serviceUrl = server.externalUrl
+            ? `${server.externalUrl}/series/${this.externalServiceSlug}`
+            : SonarrAPI.buildSonarrUrl(
+                server,
+                `/series/${this.externalServiceSlug}`
+              );
+        }
+      }
+
+      if (this.serviceId4k !== null) {
+        const settings = getSettings();
+        const server = settings.sonarr.find(
+          (sonarr) => sonarr.id === this.serviceId4k
+        );
+
+        if (server) {
+          this.serviceUrl4k = server.externalUrl
+            ? `${server.externalUrl}/series/${this.externalServiceSlug4k}`
+            : SonarrAPI.buildSonarrUrl(
+                server,
+                `/series/${this.externalServiceSlug4k}`
+              );
+        }
       }
     }
   }
 
   @AfterLoad()
   public getDownloadingItem(): void {
-    if (this.externalServiceId !== undefined && this.serviceId !== undefined) {
-      this.downloadStatus = downloadTracker.getMovieProgress(
-        this.serviceId,
-        this.externalServiceId
-      );
+    if (this.mediaType === MediaType.MOVIE) {
+      if (
+        this.externalServiceId !== undefined &&
+        this.serviceId !== undefined
+      ) {
+        this.downloadStatus = downloadTracker.getMovieProgress(
+          this.serviceId,
+          this.externalServiceId
+        );
+      }
+
+      if (
+        this.externalServiceId4k !== undefined &&
+        this.serviceId4k !== undefined
+      ) {
+        this.downloadStatus4k = downloadTracker.getMovieProgress(
+          this.serviceId4k,
+          this.externalServiceId4k
+        );
+      }
     }
 
-    if (
-      this.externalServiceId4k !== undefined &&
-      this.serviceId4k !== undefined
-    ) {
-      this.downloadStatus4k = downloadTracker.getMovieProgress(
-        this.serviceId4k,
-        this.externalServiceId4k
-      );
+    if (this.mediaType === MediaType.TV) {
+      if (
+        this.externalServiceId !== undefined &&
+        this.serviceId !== undefined
+      ) {
+        this.downloadStatus = downloadTracker.getSeriesProgress(
+          this.serviceId,
+          this.externalServiceId
+        );
+      }
+
+      if (
+        this.externalServiceId4k !== undefined &&
+        this.serviceId4k !== undefined
+      ) {
+        this.downloadStatus4k = downloadTracker.getSeriesProgress(
+          this.serviceId4k,
+          this.externalServiceId4k
+        );
+      }
     }
   }
 }

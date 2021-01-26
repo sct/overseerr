@@ -130,17 +130,19 @@ class JobSonarrSync {
           season.statistics
         ) {
           existingSeason[server4k ? 'status4k' : 'status'] =
-            season.statistics.episodeCount ===
+            season.statistics.episodeFileCount ===
             season.statistics.totalEpisodeCount
               ? MediaStatus.AVAILABLE
-              : season.statistics.episodeCount > 0
+              : season.statistics.episodeFileCount > 0
               ? MediaStatus.PARTIALLY_AVAILABLE
+              : season.monitored
+              ? MediaStatus.PROCESSING
               : existingSeason[server4k ? 'status4k' : 'status'];
         }
       } else {
         if (season.statistics && season.seasonNumber !== 0) {
           const allEpisodes =
-            season.statistics.episodeCount ===
+            season.statistics.episodeFileCount ===
             season.statistics.totalEpisodeCount;
           newSeasons.push(
             new Season({
@@ -148,14 +150,18 @@ class JobSonarrSync {
               status:
                 !server4k && allEpisodes
                   ? MediaStatus.AVAILABLE
-                  : !server4k && season.statistics.episodeCount > 0
+                  : !server4k && season.statistics.episodeFileCount > 0
                   ? MediaStatus.PARTIALLY_AVAILABLE
+                  : !server4k && season.monitored
+                  ? MediaStatus.PROCESSING
                   : MediaStatus.UNKNOWN,
               status4k:
                 server4k && allEpisodes
                   ? MediaStatus.AVAILABLE
-                  : server4k && season.statistics.episodeCount > 0
+                  : server4k && season.statistics.episodeFileCount > 0
                   ? MediaStatus.PARTIALLY_AVAILABLE
+                  : !server4k && season.monitored
+                  ? MediaStatus.PROCESSING
                   : MediaStatus.UNKNOWN,
             })
           );
@@ -212,6 +218,17 @@ class JobSonarrSync {
         );
       }
 
+      if (
+        media[server4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] !==
+        sonarrSeries.titleSlug
+      ) {
+        media[server4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =
+          sonarrSeries.titleSlug;
+        this.log(
+          `Updated external service slug for media entity: ${sonarrSeries.title}`
+        );
+      }
+
       media[server4k ? 'status4k' : 'status'] = isAllSeasons
         ? MediaStatus.AVAILABLE
         : media.seasons.some((season) => season.status !== MediaStatus.UNKNOWN)
@@ -244,12 +261,18 @@ class JobSonarrSync {
         serviceId4k: server4k ? this.currentServer.id : undefined,
         externalServiceId: !server4k ? sonarrSeries.id : undefined,
         externalServiceId4k: server4k ? sonarrSeries.id : undefined,
+        externalServiceSlug: !server4k ? sonarrSeries.titleSlug : undefined,
+        externalServiceSlug4k: server4k ? sonarrSeries.titleSlug : undefined,
         seasons: newSeasons,
         status:
           !server4k && isAllSeasons
             ? MediaStatus.AVAILABLE
             : !server4k &&
-              newSeasons.some((s) => s.status !== MediaStatus.UNKNOWN)
+              newSeasons.some(
+                (s) =>
+                  s.status === MediaStatus.PARTIALLY_AVAILABLE ||
+                  s.status === MediaStatus.AVAILABLE
+              )
             ? MediaStatus.PARTIALLY_AVAILABLE
             : !server4k
             ? MediaStatus.PROCESSING
@@ -258,7 +281,11 @@ class JobSonarrSync {
           server4k && isAllSeasons
             ? MediaStatus.AVAILABLE
             : server4k &&
-              newSeasons.some((s) => s.status !== MediaStatus.UNKNOWN)
+              newSeasons.some(
+                (s) =>
+                  s.status4k === MediaStatus.PARTIALLY_AVAILABLE ||
+                  s.status4k === MediaStatus.AVAILABLE
+              )
             ? MediaStatus.PARTIALLY_AVAILABLE
             : server4k
             ? MediaStatus.PROCESSING

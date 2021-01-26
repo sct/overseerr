@@ -106,6 +106,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
             userScore={title.voteAverage}
             year={title.firstAirDate}
             mediaType={title.mediaType}
+            inProgress={(title.mediaInfo?.downloadStatus ?? []).length > 0}
           />
         );
       case 'person':

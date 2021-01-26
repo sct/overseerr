@@ -606,10 +606,6 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         placeholder={intl.formatMessage(
                           messages.externalUrlPlaceholder
                         )}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          setIsValidated(false);
-                          setFieldValue('externalUrl', e.target.value);
-                        }}
                         className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>

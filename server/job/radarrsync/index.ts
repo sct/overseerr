@@ -144,6 +144,18 @@ class JobRadarrSync {
         isChanged = true;
       }
 
+      if (
+        media[server4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] !==
+        radarrMovie.titleSlug
+      ) {
+        media[server4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =
+          radarrMovie.titleSlug;
+        this.log(
+          `Updated external service slug for media entity: ${radarrMovie.title}`
+        );
+        isChanged = true;
+      }
+
       if (isChanged) {
         await mediaRepository.save(media);
       }

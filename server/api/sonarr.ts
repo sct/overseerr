@@ -64,6 +64,33 @@ export interface SonarrSeries {
   };
 }
 
+interface QueueItem {
+  seriesId: number;
+  episodeId: number;
+  size: number;
+  title: string;
+  sizeleft: number;
+  timeleft: string;
+  estimatedCompletionTime: string;
+  status: string;
+  trackedDownloadStatus: string;
+  trackedDownloadState: string;
+  downloadId: string;
+  protocol: string;
+  downloadClient: string;
+  indexer: string;
+  id: number;
+}
+
+interface QueueResponse {
+  page: number;
+  pageSize: number;
+  sortKey: string;
+  sortDirection: string;
+  totalRecords: number;
+  records: QueueItem[];
+}
+
 interface SonarrProfile {
   id: number;
   name: string;
@@ -307,6 +334,16 @@ class SonarrAPI {
 
     return newSeasons;
   }
+
+  public getQueue = async (): Promise<QueueItem[]> => {
+    try {
+      const response = await this.axios.get<QueueResponse>(`/queue`);
+
+      return response.data.records;
+    } catch (e) {
+      throw new Error(`[Radarr] Failed to retrieve queue: ${e.message}`);
+    }
+  };
 }
 
 export default SonarrAPI;
