@@ -116,12 +116,7 @@ const Modal: React.FC<ModalProps> = ({
               }`}
             >
               {title && (
-                <span
-                  className="text-lg font-medium leading-6 text-white"
-                  id="modal-headline"
-                >
-                  {title}
-                </span>
+                <h3 className="text-2xl leading-8 text-gray-200">{title}</h3>
               )}
             </div>
           </div>

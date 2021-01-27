@@ -347,195 +347,185 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         }) => {
           return (
             <form onSubmit={handleSubmit}>
-              <div className="mt-6 sm:mt-5">
-                <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
-                  >
-                    <div className="flex flex-col">
-                      <span className="mr-2">
-                        <FormattedMessage {...messages.servername} />
-                      </span>
-                      <span className="text-gray-500">
-                        <FormattedMessage {...messages.servernameTip} />
-                      </span>
-                    </div>
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder={intl.formatMessage(
-                          messages.servernamePlaceholder
-                        )}
-                        value={data?.name}
-                        readOnly
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                      />
-                    </div>
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                >
+                  <div className="flex flex-col">
+                    <span className="mr-2">
+                      <FormattedMessage {...messages.servername} />
+                    </span>
+                    <span className="text-gray-500">
+                      <FormattedMessage {...messages.servernameTip} />
+                    </span>
+                  </div>
+                </label>
+                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      placeholder={intl.formatMessage(
+                        messages.servernamePlaceholder
+                      )}
+                      value={data?.name}
+                      readOnly
+                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                    />
                   </div>
                 </div>
-                <div className="mt-6 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="preset"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
-                    <FormattedMessage {...messages.serverpreset} />
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="flex max-w-lg rounded-md shadow-sm input-group">
-                      <select
-                        id="preset"
-                        name="preset"
-                        placeholder={intl.formatMessage(
-                          messages.serverpresetPlaceholder
-                        )}
-                        value={values.selectedPreset}
-                        disabled={!availableServers || isRefreshingPresets}
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-none rounded-l-md form-input sm:text-sm sm:leading-5"
-                        onChange={async (e) => {
-                          const targPreset =
-                            availablePresets[Number(e.target.value)];
-                          if (targPreset) {
-                            setFieldValue('hostname', targPreset.host);
-                            setFieldValue('port', targPreset.port);
-                            setFieldValue('useSsl', targPreset.ssl);
-                          }
-                          setFieldTouched('hostname');
-                          setFieldTouched('port');
-                          setFieldTouched('useSsl');
-                        }}
-                      >
-                        <option value="manual">
-                          {availableServers || isRefreshingPresets
-                            ? isRefreshingPresets
-                              ? intl.formatMessage(
-                                  messages.serverpresetRefreshing
-                                )
-                              : intl.formatMessage(
-                                  messages.serverpresetManualMessage
-                                )
-                            : intl.formatMessage(messages.serverpresetLoad)}
-                        </option>
-                        {availablePresets.map((server, index) => (
-                          <option
-                            key={`preset-server-${index}`}
-                            value={index}
-                            disabled={!server.status}
-                          >
-                            {`
-                              ${server.name} (${server.address})
-                              [${
-                                server.local
-                                  ? intl.formatMessage(messages.serverLocal)
-                                  : intl.formatMessage(messages.serverRemote)
-                              }]
-                              ${server.status ? '' : '(' + server.message + ')'}
-                            `}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          refreshPresetServers();
-                        }}
-                        className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-500 border border-gray-500 rounded-r-md hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
-                      >
-                        <svg
-                          className={`w-5 h-5 ${
-                            isRefreshingPresets ? 'animate-spin' : ''
-                          }`}
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <div className="mt-6 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                      <label
-                        htmlFor="hostname"
-                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                      >
-                        <FormattedMessage {...messages.hostname} />
-                      </label>
-                      <div className="mt-1 sm:mt-0 sm:col-span-2">
-                        <div className="flex max-w-lg rounded-md shadow-sm">
-                          <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
-                            {values.useSsl ? 'https://' : 'http://'}
-                          </span>
-                          <Field
-                            type="text"
-                            id="hostname"
-                            name="hostname"
-                            placeholder="127.0.0.1"
-                            className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 form-input rounded-r-md sm:text-sm sm:leading-5"
-                          />
-                        </div>
-                        {errors.hostname && touched.hostname && (
-                          <div className="mt-2 text-red-500">
-                            {errors.hostname}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-                      <label
-                        htmlFor="port"
-                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                      >
-                        <FormattedMessage {...messages.port} />
-                      </label>
-                      <div className="mt-1 sm:mt-0 sm:col-span-2">
-                        <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
-                          <Field
-                            type="text"
-                            id="port"
-                            name="port"
-                            placeholder="32400"
-                            className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                          />
-                        </div>
-                        {errors.port && touched.port && (
-                          <div className="mt-2 text-red-500">{errors.port}</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-                    <label
-                      htmlFor="ssl"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+              </div>
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <label
+                  htmlFor="preset"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                >
+                  <FormattedMessage {...messages.serverpreset} />
+                </label>
+                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="flex max-w-lg rounded-md shadow-sm input-group">
+                    <select
+                      id="preset"
+                      name="preset"
+                      placeholder={intl.formatMessage(
+                        messages.serverpresetPlaceholder
+                      )}
+                      value={values.selectedPreset}
+                      disabled={!availableServers || isRefreshingPresets}
+                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-none rounded-l-md form-input sm:text-sm sm:leading-5"
+                      onChange={async (e) => {
+                        const targPreset =
+                          availablePresets[Number(e.target.value)];
+                        if (targPreset) {
+                          setFieldValue('hostname', targPreset.host);
+                          setFieldValue('port', targPreset.port);
+                          setFieldValue('useSsl', targPreset.ssl);
+                        }
+                        setFieldTouched('hostname');
+                        setFieldTouched('port');
+                        setFieldTouched('useSsl');
+                      }}
                     >
-                      {intl.formatMessage(messages.ssl)}
-                    </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <Field
-                        type="checkbox"
-                        id="useSsl"
-                        name="useSsl"
-                        onChange={() => {
-                          setFieldValue('useSsl', !values.useSsl);
-                        }}
-                        className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                      />
-                    </div>
+                      <option value="manual">
+                        {availableServers || isRefreshingPresets
+                          ? isRefreshingPresets
+                            ? intl.formatMessage(
+                                messages.serverpresetRefreshing
+                              )
+                            : intl.formatMessage(
+                                messages.serverpresetManualMessage
+                              )
+                          : intl.formatMessage(messages.serverpresetLoad)}
+                      </option>
+                      {availablePresets.map((server, index) => (
+                        <option
+                          key={`preset-server-${index}`}
+                          value={index}
+                          disabled={!server.status}
+                        >
+                          {`
+                            ${server.name} (${server.address})
+                            [${
+                              server.local
+                                ? intl.formatMessage(messages.serverLocal)
+                                : intl.formatMessage(messages.serverRemote)
+                            }]
+                            ${server.status ? '' : '(' + server.message + ')'}
+                          `}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        refreshPresetServers();
+                      }}
+                      className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-500 border border-gray-500 rounded-r-md hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
+                    >
+                      <svg
+                        className={`w-5 h-5 ${
+                          isRefreshingPresets ? 'animate-spin' : ''
+                        }`}
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
                   </div>
+                </div>
+              </div>
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <label
+                  htmlFor="hostname"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                >
+                  <FormattedMessage {...messages.hostname} />
+                </label>
+                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
+                    <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
+                      {values.useSsl ? 'https://' : 'http://'}
+                    </span>
+                    <Field
+                      type="text"
+                      id="hostname"
+                      name="hostname"
+                      placeholder="127.0.0.1"
+                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 form-input rounded-r-md sm:text-sm sm:leading-5"
+                    />
+                  </div>
+                  {errors.hostname && touched.hostname && (
+                    <div className="mt-2 text-red-500">{errors.hostname}</div>
+                  )}
+                </div>
+              </div>
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <label
+                  htmlFor="port"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                >
+                  <FormattedMessage {...messages.port} />
+                </label>
+                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
+                    <Field
+                      type="text"
+                      id="port"
+                      name="port"
+                      placeholder="32400"
+                      className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                    />
+                  </div>
+                  {errors.port && touched.port && (
+                    <div className="mt-2 text-red-500">{errors.port}</div>
+                  )}
+                </div>
+              </div>
+              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <label
+                  htmlFor="ssl"
+                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
+                >
+                  {intl.formatMessage(messages.ssl)}
+                </label>
+                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <Field
+                    type="checkbox"
+                    id="useSsl"
+                    name="useSsl"
+                    onChange={() => {
+                      setFieldValue('useSsl', !values.useSsl);
+                    }}
+                    className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                  />
                 </div>
               </div>
               {submitError && (
