@@ -348,6 +348,36 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           return (
             <form onSubmit={handleSubmit}>
               <div className="mt-6 sm:mt-5">
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <div className="flex flex-col">
+                      <span className="mr-2">
+                        <FormattedMessage {...messages.servername} />
+                      </span>
+                      <span className="text-gray-500">
+                        <FormattedMessage {...messages.servernameTip} />
+                      </span>
+                    </div>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder={intl.formatMessage(
+                          messages.servernamePlaceholder
+                        )}
+                        value={data?.name}
+                        readOnly
+                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
                   <label
                     htmlFor="preset"
@@ -430,36 +460,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                           />
                         </svg>
                       </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
-                    <div className="flex flex-col">
-                      <span className="mr-2">
-                        <FormattedMessage {...messages.servername} />
-                      </span>
-                      <span className="text-gray-500">
-                        <FormattedMessage {...messages.servernameTip} />
-                      </span>
-                    </div>
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder={intl.formatMessage(
-                          messages.servernamePlaceholder
-                        )}
-                        value={data?.name}
-                        readOnly
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                      />
                     </div>
                   </div>
                 </div>
