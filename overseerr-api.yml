@@ -289,6 +289,15 @@ components:
         isDefault:
           type: boolean
           example: false
+        externalUrl:
+          type: string
+          example: http://radarr.example.com
+        syncEnabled:
+          type: boolean
+          example: false
+        preventSearch:
+          type: boolean
+          example: false
       required:
         - name
         - hostname
@@ -350,6 +359,15 @@ components:
           type: boolean
           example: false
         isDefault:
+          type: boolean
+          example: false
+        externalUrl:
+          type: string
+          example: http://radarr.example.com
+        syncEnabled:
+          type: boolean
+          example: false
+        preventSearch:
           type: boolean
           example: false
       required:
@@ -1918,12 +1936,91 @@ paths:
                 items:
                   type: object
                   properties:
+                    id:
+                      type: string
+                      example: job-name
                     name:
                       type: string
                       example: A Job Name
+                    type:
+                      type: string
+                      enum: [process, command]
                     nextExecutionTime:
                       type: string
                       example: '2020-09-02T05:02:23.000Z'
+                    running:
+                      type: boolean
+                      example: false
+  /settings/jobs/{jobId}/run:
+    get:
+      summary: Invoke a specific job
+      description: Invokes a specific job to run. Will return the new job status in JSON format.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invoked job returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: job-name
+                  type:
+                      type: string
+                      enum: [process, command]
+                  name:
+                    type: string
+                    example: A Job Name
+                  nextExecutionTime:
+                    type: string
+                    example: '2020-09-02T05:02:23.000Z'
+                  running:
+                      type: boolean
+                      example: false
+  /settings/jobs/{jobId}/cancel:
+    get:
+      summary: Cancel a specific job
+      description: Cancels a specific job. Will return the new job status in JSON format.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cancelled job returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: job-name
+                  type:
+                      type: string
+                      enum: [process, command]
+                  name:
+                    type: string
+                    example: A Job Name
+                  nextExecutionTime:
+                    type: string
+                    example: '2020-09-02T05:02:23.000Z'
+                  running:
+                      type: boolean
+                      example: false
   /settings/notifications:
     get:
       summary: Return notification settings

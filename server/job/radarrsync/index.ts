@@ -26,7 +26,7 @@ class JobRadarrSync {
   private servers: RadarrSettings[];
   private currentServer: RadarrSettings;
   private radarrApi: RadarrAPI;
-  private items: RadarrMovie[];
+  private items: RadarrMovie[] = [];
 
   public async run() {
     const settings = getSettings();

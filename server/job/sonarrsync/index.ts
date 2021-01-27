@@ -28,7 +28,7 @@ class JobSonarrSync {
   private servers: SonarrSettings[];
   private currentServer: SonarrSettings;
   private sonarrApi: SonarrAPI;
-  private items: SonarrSeries[];
+  private items: SonarrSeries[] = [];
 
   public async run() {
     const settings = getSettings();

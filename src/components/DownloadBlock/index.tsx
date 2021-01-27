@@ -10,8 +10,10 @@ interface DownloadBlockProps {
 const DownloadBlock: React.FC<DownloadBlockProps> = ({ downloadItem }) => {
   return (
     <div className="p-4">
-      <div className="mb-2 text-sm truncate">{downloadItem.title}</div>
-      <div className="relative w-full h-6 mb-2 overflow-hidden bg-gray-700 rounded-full">
+      <div className="w-56 mb-2 text-sm truncate sm:w-80 md:w-full">
+        {downloadItem.title}
+      </div>
+      <div className="relative h-6 min-w-0 mb-2 overflow-hidden bg-gray-700 rounded-full">
         <div
           className="h-8 transition-all duration-200 ease-in-out bg-indigo-600"
           style={{
