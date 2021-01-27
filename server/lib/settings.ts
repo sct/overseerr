@@ -34,6 +34,7 @@ interface DVRSettings {
   isDefault: boolean;
   externalUrl?: string;
   syncEnabled: boolean;
+  preventSearch: boolean;
 }
 
 export interface RadarrSettings extends DVRSettings {

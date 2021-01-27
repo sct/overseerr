@@ -110,10 +110,43 @@ class RadarrAPI {
     }
   };
 
+  public async getMovieByTmdbId(id: number): Promise<RadarrMovie> {
+    try {
+      const response = await this.axios.get<RadarrMovie[]>('/movie/lookup', {
+        params: {
+          term: `tmdb:${id}`,
+        },
+      });
+
+      if (!response.data[0]) {
+        throw new Error('Movie not found');
+      }
+
+      return response.data[0];
+    } catch (e) {
+      logger.error('Error retrieving movie by TMDb ID', {
+        label: 'Radarr API',
+        message: e.message,
+      });
+      throw new Error('Movie not found');
+    }
+  }
+
   public addMovie = async (
     options: RadarrMovieOptions
   ): Promise<RadarrMovie> => {
     try {
+      // Check if movie already exists
+      const existing = await this.getMovieByTmdbId(options.tmdbId);
+
+      if (existing) {
+        logger.info(
+          'Movie already exists in Radarr. Skipping add and returning success',
+          { label: 'Radarr' }
+        );
+        return existing;
+      }
+
       const response = await this.axios.post<RadarrMovie>(`/movie`, {
         title: options.title,
         qualityProfileId: options.qualityProfileId,

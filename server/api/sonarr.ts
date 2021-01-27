@@ -190,7 +190,7 @@ class SonarrAPI {
     }
   }
 
-  public async addSeries(options: AddSeriesOptions): Promise<boolean> {
+  public async addSeries(options: AddSeriesOptions): Promise<SonarrSeries> {
     try {
       const series = await this.getSeriesByTvdbId(options.tvdbid);
 
@@ -212,19 +212,19 @@ class SonarrAPI {
           logger.info('Sonarr accepted request. Updated existing series', {
             label: 'Sonarr',
           });
-          logger.debug('Sonarr add details', {
+          logger.debug('Sonarr update details', {
             label: 'Sonarr',
             movie: newSeriesResponse.data,
           });
         } else {
-          logger.error('Failed to add movie to Sonarr', {
+          logger.error('Failed to update series in Sonarr', {
             label: 'Sonarr',
             options,
           });
-          return false;
+          throw new Error('Failed to update series in Sonarr');
         }
 
-        return true;
+        return newSeriesResponse.data;
       }
 
       const createdSeriesResponse = await this.axios.post<SonarrSeries>(
@@ -263,10 +263,10 @@ class SonarrAPI {
           label: 'Sonarr',
           options,
         });
-        return false;
+        throw new Error('Failed to add series to Sonarr');
       }
 
-      return true;
+      return createdSeriesResponse.data;
     } catch (e) {
       logger.error('Something went wrong while adding a series to Sonarr.', {
         label: 'Sonarr API',
@@ -274,7 +274,7 @@ class SonarrAPI {
         error: e,
         response: e?.response?.data,
       });
-      return false;
+      throw new Error('Failed to add series');
     }
   }
 

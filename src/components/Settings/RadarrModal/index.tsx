@@ -49,6 +49,7 @@ const messages = defineMessages({
   testFirstQualityProfiles: 'Test connection to load quality profiles',
   loadingrootfolders: 'Loading root folders…',
   testFirstRootFolders: 'Test connection to load root folders',
+  preventSearch: 'Disable Auto-Search',
 });
 
 interface TestResponse {
@@ -193,6 +194,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
           is4k: radarr?.is4k ?? false,
           externalUrl: radarr?.externalUrl,
           syncEnabled: radarr?.syncEnabled,
+          preventSearch: radarr?.preventSearch,
         }}
         validationSchema={RadarrSettingsSchema}
         onSubmit={async (values) => {
@@ -216,6 +218,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               isDefault: values.isDefault,
               externalUrl: values.externalUrl,
               syncEnabled: values.syncEnabled,
+              preventSearch: values.preventSearch,
             };
             if (!radarr) {
               await axios.post('/api/v1/settings/radarr', submission);
@@ -628,6 +631,22 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       type="checkbox"
                       id="syncEnabled"
                       name="syncEnabled"
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                  <label
+                    htmlFor="preventSearch"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    {intl.formatMessage(messages.preventSearch)}
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="preventSearch"
+                      name="preventSearch"
                       className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
