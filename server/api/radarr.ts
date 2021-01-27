@@ -136,15 +136,61 @@ class RadarrAPI {
     options: RadarrMovieOptions
   ): Promise<RadarrMovie> => {
     try {
-      // Check if movie already exists
-      const existing = await this.getMovieByTmdbId(options.tmdbId);
+      const movie = await this.getMovieByTmdbId(options.tmdbId);
 
-      if (existing) {
+      if (movie.downloaded) {
         logger.info(
-          'Movie already exists in Radarr. Skipping add and returning success',
+          'Title already exists and is available. Skipping add and returning success',
+          {
+            label: 'Radarr',
+          }
+        );
+        return movie;
+      }
+
+      // movie exists in radarr but is neither downloaded nor monitored
+      if (movie.id && !movie.monitored) {
+        const response = await this.axios.put<RadarrMovie>(`/movie`, {
+          ...movie,
+          title: options.title,
+          qualityProfileId: options.qualityProfileId,
+          profileId: options.profileId,
+          titleSlug: options.tmdbId.toString(),
+          minimumAvailability: options.minimumAvailability,
+          tmdbId: options.tmdbId,
+          year: options.year,
+          rootFolderPath: options.rootFolderPath,
+          monitored: options.monitored,
+          addOptions: {
+            searchForMovie: options.searchNow,
+          },
+        });
+
+        if (response.data.monitored) {
+          logger.info(
+            'Found existing title in Radarr and set it to monitored. Returning success',
+            { label: 'Radarr' }
+          );
+          logger.debug('Radarr update details', {
+            label: 'Radarr',
+            movie: response.data,
+          });
+          return movie;
+        } else {
+          logger.error('Failed to update existing movie in Radarr', {
+            label: 'Radarr',
+            options,
+          });
+          throw new Error('Failed to update existing movie in Radarr');
+        }
+      }
+
+      if (movie.id) {
+        logger.info(
+          'Movie already is already monitored in Radarr. Skipping add and returning success',
           { label: 'Radarr' }
         );
-        return existing;
+        return movie;
       }
 
       const response = await this.axios.post<RadarrMovie>(`/movie`, {
