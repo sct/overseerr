@@ -175,7 +175,7 @@ class RadarrAPI {
             label: 'Radarr',
             movie: response.data,
           });
-          return movie;
+          return response.data;
         } else {
           logger.error('Failed to update existing movie in Radarr', {
             label: 'Radarr',
@@ -187,7 +187,7 @@ class RadarrAPI {
 
       if (movie.id) {
         logger.info(
-          'Movie already is already monitored in Radarr. Skipping add and returning success',
+          'Movie is already monitored in Radarr. Skipping add and returning success',
           { label: 'Radarr' }
         );
         return movie;
