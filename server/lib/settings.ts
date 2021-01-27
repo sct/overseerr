@@ -32,6 +32,9 @@ interface DVRSettings {
   activeDirectory: string;
   is4k: boolean;
   isDefault: boolean;
+  externalUrl?: string;
+  syncEnabled: boolean;
+  preventSearch: boolean;
 }
 
 export interface RadarrSettings extends DVRSettings {

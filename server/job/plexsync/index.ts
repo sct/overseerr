@@ -442,7 +442,11 @@ class JobPlexSync {
               );
               // Total episodes that are in standard definition (not 4k)
               const totalStandard = episodes.filter((episode) =>
-                episode.Media.some((media) => media.videoResolution !== '4k')
+                !this.enable4kShow
+                  ? true
+                  : episode.Media.some(
+                      (media) => media.videoResolution !== '4k'
+                    )
               ).length;
 
               // Total episodes that are in 4k
@@ -461,9 +465,9 @@ class JobPlexSync {
                     ? MediaStatus.PARTIALLY_AVAILABLE
                     : existingSeason.status;
                 existingSeason.status4k =
-                  total4k === season.episode_count
+                  this.enable4kShow && total4k === season.episode_count
                     ? MediaStatus.AVAILABLE
-                    : total4k > 0
+                    : this.enable4kShow && total4k > 0
                     ? MediaStatus.PARTIALLY_AVAILABLE
                     : existingSeason.status4k;
               } else {
@@ -479,9 +483,9 @@ class JobPlexSync {
                         ? MediaStatus.PARTIALLY_AVAILABLE
                         : MediaStatus.UNKNOWN,
                     status4k:
-                      total4k === season.episode_count
+                      this.enable4kShow && total4k === season.episode_count
                         ? MediaStatus.AVAILABLE
-                        : total4k > 0
+                        : this.enable4kShow && total4k > 0
                         ? MediaStatus.PARTIALLY_AVAILABLE
                         : MediaStatus.UNKNOWN,
                   })
@@ -563,13 +567,15 @@ class JobPlexSync {
                 )
               ? MediaStatus.PARTIALLY_AVAILABLE
               : MediaStatus.UNKNOWN;
-            media.status4k = isAll4kSeasons
-              ? MediaStatus.AVAILABLE
-              : media.seasons.some(
-                  (season) => season.status4k !== MediaStatus.UNKNOWN
-                )
-              ? MediaStatus.PARTIALLY_AVAILABLE
-              : MediaStatus.UNKNOWN;
+            media.status4k =
+              isAll4kSeasons && this.enable4kShow
+                ? MediaStatus.AVAILABLE
+                : this.enable4kShow &&
+                  media.seasons.some(
+                    (season) => season.status4k !== MediaStatus.UNKNOWN
+                  )
+                ? MediaStatus.PARTIALLY_AVAILABLE
+                : MediaStatus.UNKNOWN;
             await mediaRepository.save(media);
             this.log(`Updating existing title: ${tvShow.name}`);
           } else {
@@ -586,13 +592,15 @@ class JobPlexSync {
                   )
                 ? MediaStatus.PARTIALLY_AVAILABLE
                 : MediaStatus.UNKNOWN,
-              status4k: isAll4kSeasons
-                ? MediaStatus.AVAILABLE
-                : newSeasons.some(
-                    (season) => season.status4k !== MediaStatus.UNKNOWN
-                  )
-                ? MediaStatus.PARTIALLY_AVAILABLE
-                : MediaStatus.UNKNOWN,
+              status4k:
+                isAll4kSeasons && this.enable4kShow
+                  ? MediaStatus.AVAILABLE
+                  : this.enable4kShow &&
+                    newSeasons.some(
+                      (season) => season.status4k !== MediaStatus.UNKNOWN
+                    )
+                  ? MediaStatus.PARTIALLY_AVAILABLE
+                  : MediaStatus.UNKNOWN,
             });
             await mediaRepository.save(newMedia);
             this.log(`Saved ${tvShow.name}`);
@@ -772,7 +780,8 @@ class JobPlexSync {
       this.log(
         this.isRecentOnly
           ? 'Recently Added Scan Complete'
-          : 'Full Scan Complete'
+          : 'Full Scan Complete',
+        'info'
       );
     } catch (e) {
       logger.error('Sync interrupted', {

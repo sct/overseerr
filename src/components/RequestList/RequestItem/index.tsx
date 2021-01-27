@@ -192,7 +192,16 @@ const RequestItem: React.FC<RequestItemProps> = ({
               : intl.formatMessage(globalMessages.failed)}
           </Badge>
         ) : (
-          <StatusBadge status={requestData.media.status} />
+          <StatusBadge
+            status={requestData.media.status}
+            inProgress={
+              (
+                requestData.media[
+                  requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
+                ] ?? []
+              ).length > 0
+            }
+          />
         )}
       </Table.TD>
       <Table.TD>

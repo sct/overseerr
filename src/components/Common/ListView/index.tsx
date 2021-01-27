@@ -53,6 +53,9 @@ const ListView: React.FC<ListViewProps> = ({
                   userScore={title.voteAverage}
                   year={title.releaseDate}
                   mediaType={title.mediaType}
+                  inProgress={
+                    (title.mediaInfo?.downloadStatus ?? []).length > 0
+                  }
                   canExpand
                 />
               );
@@ -68,6 +71,9 @@ const ListView: React.FC<ListViewProps> = ({
                   userScore={title.voteAverage}
                   year={title.firstAirDate}
                   mediaType={title.mediaType}
+                  inProgress={
+                    (title.mediaInfo?.downloadStatus ?? []).length > 0
+                  }
                   canExpand
                 />
               );
@@ -87,7 +93,7 @@ const ListView: React.FC<ListViewProps> = ({
           return (
             <li
               key={title.id}
-              className="col-span-1 flex flex-col text-center items-center"
+              className="flex flex-col items-center col-span-1 text-center"
             >
               {titleCard}
             </li>
@@ -98,7 +104,7 @@ const ListView: React.FC<ListViewProps> = ({
           [...Array(20)].map((_item, i) => (
             <li
               key={`placeholder-${i}`}
-              className="col-span-1 flex flex-col text-center items-center"
+              className="flex flex-col items-center col-span-1 text-center"
             >
               <TitleCard.Placeholder canExpand />
             </li>

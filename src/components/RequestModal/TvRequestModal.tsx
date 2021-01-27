@@ -210,7 +210,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         (season) =>
           (season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
             season[is4k ? 'status4k' : 'status'] ===
-              MediaStatus.PARTIALLY_AVAILABLE) &&
+              MediaStatus.PARTIALLY_AVAILABLE ||
+            season[is4k ? 'status4k' : 'status'] === MediaStatus.PROCESSING) &&
           !requestedSeasons.includes(season.seasonNumber)
       )
       .map((season) => season.seasonNumber);
@@ -509,13 +510,15 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                   {intl.formatMessage(globalMessages.pending)}
                                 </Badge>
                               )}
-                            {!mediaSeason &&
+                            {((!mediaSeason &&
                               seasonRequest?.status ===
-                                MediaRequestStatus.APPROVED && (
-                                <Badge badgeType="primary">
-                                  {intl.formatMessage(globalMessages.requested)}
-                                </Badge>
-                              )}
+                                MediaRequestStatus.APPROVED) ||
+                              mediaSeason?.[is4k ? 'status4k' : 'status'] ===
+                                MediaStatus.PROCESSING) && (
+                              <Badge badgeType="primary">
+                                {intl.formatMessage(globalMessages.requested)}
+                              </Badge>
+                            )}
                             {!mediaSeason &&
                               seasonRequest?.status ===
                                 MediaRequestStatus.AVAILABLE && (

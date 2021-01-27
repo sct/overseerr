@@ -411,31 +411,37 @@ export class MediaRequest {
             tmdbId: movie.id,
             year: Number(movie.release_date.slice(0, 4)),
             monitored: true,
-            searchNow: true,
+            searchNow: !radarrSettings.preventSearch,
           })
-          .then(async (success) => {
-            if (!success) {
-              media.status = MediaStatus.UNKNOWN;
-              await mediaRepository.save(media);
-              logger.warn(
-                'Newly added movie request failed to add to Radarr, marking as unknown',
-                {
-                  label: 'Media Request',
-                }
-              );
-              const userRepository = getRepository(User);
-              const admin = await userRepository.findOneOrFail({
-                select: ['id', 'plexToken'],
-                order: { id: 'ASC' },
-              });
-              notificationManager.sendNotification(Notification.MEDIA_FAILED, {
-                subject: movie.title,
-                message: 'Movie failed to add to Radarr',
-                notifyUser: admin,
-                media,
-                image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-              });
-            }
+          .then(async (radarrMovie) => {
+            media[this.is4k ? 'externalServiceId4k' : 'externalServiceId'] =
+              radarrMovie.id;
+            media[this.is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =
+              radarrMovie.titleSlug;
+            media[this.is4k ? 'serviceId4k' : 'serviceId'] = radarrSettings?.id;
+            await mediaRepository.save(media);
+          })
+          .catch(async () => {
+            media.status = MediaStatus.UNKNOWN;
+            await mediaRepository.save(media);
+            logger.warn(
+              'Newly added movie request failed to add to Radarr, marking as unknown',
+              {
+                label: 'Media Request',
+              }
+            );
+            const userRepository = getRepository(User);
+            const admin = await userRepository.findOneOrFail({
+              select: ['id', 'plexToken'],
+              order: { id: 'ASC' },
+            });
+            notificationManager.sendNotification(Notification.MEDIA_FAILED, {
+              subject: movie.title,
+              message: 'Movie failed to add to Radarr',
+              notifyUser: admin,
+              media,
+              image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+            });
           });
         logger.info('Sent request to Radarr', { label: 'Media Request' });
       } catch (e) {
@@ -572,38 +578,54 @@ export class MediaRequest {
             seasonFolder: sonarrSettings.enableSeasonFolders,
             seriesType,
             monitored: true,
-            searchNow: true,
+            searchNow: !sonarrSettings.preventSearch,
           })
-          .then(async (success) => {
-            if (!success) {
-              media.status = MediaStatus.UNKNOWN;
-              await mediaRepository.save(media);
-              logger.warn(
-                'Newly added series request failed to add to Sonarr, marking as unknown',
-                {
-                  label: 'Media Request',
-                }
-              );
-              const userRepository = getRepository(User);
-              const admin = await userRepository.findOneOrFail({
-                order: { id: 'ASC' },
-              });
-              notificationManager.sendNotification(Notification.MEDIA_FAILED, {
-                subject: series.name,
-                message: 'Series failed to add to Sonarr',
-                notifyUser: admin,
-                image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${series.poster_path}`,
-                media,
-                extra: [
-                  {
-                    name: 'Seasons',
-                    value: this.seasons
-                      .map((season) => season.seasonNumber)
-                      .join(', '),
-                  },
-                ],
-              });
+          .then(async (sonarrSeries) => {
+            // We grab media again here to make sure we have the latest version of it
+            const media = await mediaRepository.findOne({
+              where: { id: this.media.id },
+              relations: ['requests'],
+            });
+
+            if (!media) {
+              throw new Error('Media data is missing');
             }
+
+            media[this.is4k ? 'externalServiceId4k' : 'externalServiceId'] =
+              sonarrSeries.id;
+            media[this.is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =
+              sonarrSeries.titleSlug;
+            media[this.is4k ? 'serviceId4k' : 'serviceId'] = sonarrSettings?.id;
+            await mediaRepository.save(media);
+          })
+          .catch(async () => {
+            media.status = MediaStatus.UNKNOWN;
+            await mediaRepository.save(media);
+            logger.warn(
+              'Newly added series request failed to add to Sonarr, marking as unknown',
+              {
+                label: 'Media Request',
+              }
+            );
+            const userRepository = getRepository(User);
+            const admin = await userRepository.findOneOrFail({
+              order: { id: 'ASC' },
+            });
+            notificationManager.sendNotification(Notification.MEDIA_FAILED, {
+              subject: series.name,
+              message: 'Series failed to add to Sonarr',
+              notifyUser: admin,
+              image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${series.poster_path}`,
+              media,
+              extra: [
+                {
+                  name: 'Seasons',
+                  value: this.seasons
+                    .map((season) => season.seasonNumber)
+                    .join(', '),
+                },
+              ],
+            });
           });
         logger.info('Sent request to Sonarr', { label: 'Media Request' });
       } catch (e) {

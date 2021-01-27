@@ -1,4 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
+import { RadarrSettings } from '../lib/settings';
 import logger from '../logger';
 
 interface RadarrMovieOptions {
@@ -13,12 +14,13 @@ interface RadarrMovieOptions {
   searchNow?: boolean;
 }
 
-interface RadarrMovie {
+export interface RadarrMovie {
   id: number;
   title: string;
   isAvailable: boolean;
   monitored: boolean;
   tmdbId: number;
+  imdbId: string;
   titleSlug: string;
   folderName: string;
   path: string;
@@ -45,7 +47,39 @@ export interface RadarrProfile {
   name: string;
 }
 
+interface QueueItem {
+  movieId: number;
+  size: number;
+  title: string;
+  sizeleft: number;
+  timeleft: string;
+  estimatedCompletionTime: string;
+  status: string;
+  trackedDownloadStatus: string;
+  trackedDownloadState: string;
+  downloadId: string;
+  protocol: string;
+  downloadClient: string;
+  indexer: string;
+  id: number;
+}
+
+interface QueueResponse {
+  page: number;
+  pageSize: number;
+  sortKey: string;
+  sortDirection: string;
+  totalRecords: number;
+  records: QueueItem[];
+}
+
 class RadarrAPI {
+  static buildRadarrUrl(radarrSettings: RadarrSettings, path?: string): string {
+    return `${radarrSettings.useSsl ? 'https' : 'http'}://${
+      radarrSettings.hostname
+    }:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}${path}`;
+  }
+
   private axios: AxiosInstance;
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
     this.axios = Axios.create({
@@ -76,8 +110,43 @@ class RadarrAPI {
     }
   };
 
-  public addMovie = async (options: RadarrMovieOptions): Promise<boolean> => {
+  public async getMovieByTmdbId(id: number): Promise<RadarrMovie> {
     try {
+      const response = await this.axios.get<RadarrMovie[]>('/movie/lookup', {
+        params: {
+          term: `tmdb:${id}`,
+        },
+      });
+
+      if (!response.data[0]) {
+        throw new Error('Movie not found');
+      }
+
+      return response.data[0];
+    } catch (e) {
+      logger.error('Error retrieving movie by TMDb ID', {
+        label: 'Radarr API',
+        message: e.message,
+      });
+      throw new Error('Movie not found');
+    }
+  }
+
+  public addMovie = async (
+    options: RadarrMovieOptions
+  ): Promise<RadarrMovie> => {
+    try {
+      // Check if movie already exists
+      const existing = await this.getMovieByTmdbId(options.tmdbId);
+
+      if (existing) {
+        logger.info(
+          'Movie already exists in Radarr. Skipping add and returning success',
+          { label: 'Radarr' }
+        );
+        return existing;
+      }
+
       const response = await this.axios.post<RadarrMovie>(`/movie`, {
         title: options.title,
         qualityProfileId: options.qualityProfileId,
@@ -104,9 +173,9 @@ class RadarrAPI {
           label: 'Radarr',
           options,
         });
-        return false;
+        throw new Error('Failed to add movie to Radarr');
       }
-      return true;
+      return response.data;
     } catch (e) {
       logger.error(
         'Failed to add movie to Radarr. This might happen if the movie already exists, in which case you can safely ignore this error.',
@@ -117,10 +186,7 @@ class RadarrAPI {
           response: e?.response?.data,
         }
       );
-      if (e?.response?.data?.[0]?.errorCode === 'MovieExistsValidator') {
-        return true;
-      }
-      return false;
+      throw new Error('Failed to add movie to Radarr');
     }
   };
 
@@ -141,6 +207,16 @@ class RadarrAPI {
       return response.data;
     } catch (e) {
       throw new Error(`[Radarr] Failed to retrieve root folders: ${e.message}`);
+    }
+  };
+
+  public getQueue = async (): Promise<QueueItem[]> => {
+    try {
+      const response = await this.axios.get<QueueResponse>(`/queue`);
+
+      return response.data.records;
+    } catch (e) {
+      throw new Error(`[Radarr] Failed to retrieve queue: ${e.message}`);
     }
   };
 }
