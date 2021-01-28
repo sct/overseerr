@@ -127,13 +127,33 @@ class Media {
   @Column({ nullable: true })
   public externalServiceSlug4k?: string;
 
+  @Column({ nullable: true })
+  public ratingKey?: string;
+
+  @Column({ nullable: true })
+  public ratingKey4k?: string;
+
   public serviceUrl?: string;
   public serviceUrl4k?: string;
   public downloadStatus?: DownloadingItem[] = [];
   public downloadStatus4k?: DownloadingItem[] = [];
 
+  public plexUrl?: string;
+  public plexUrl4k?: string;
+
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
+  }
+
+  @AfterLoad()
+  public setPlexUrls(): void {
+    const machineId = getSettings().plex.machineId;
+    if (this.ratingKey) {
+      this.plexUrl = `https://app.plex.tv/desktop#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey}`;
+    }
+    if (this.ratingKey4k) {
+      this.plexUrl4k = `https://app.plex.tv/desktop#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey4k}`;
+    }
   }
 
   @AfterLoad()

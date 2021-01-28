@@ -68,6 +68,7 @@ class JobPlexSync {
 
   private async processMovie(plexitem: PlexLibraryItem) {
     const mediaRepository = getRepository(Media);
+
     try {
       if (plexitem.guid.match(plexRegex)) {
         const metadata = await this.plexClient.getMetadata(plexitem.ratingKey);
@@ -138,6 +139,23 @@ class JobPlexSync {
               changedExisting = true;
             }
 
+            if (
+              (hasOtherResolution || (has4k && !this.enable4kMovie)) &&
+              existing.ratingKey !== plexitem.ratingKey
+            ) {
+              existing.ratingKey = plexitem.ratingKey;
+              changedExisting = true;
+            }
+
+            if (
+              has4k &&
+              this.enable4kMovie &&
+              existing.ratingKey4k !== plexitem.ratingKey
+            ) {
+              existing.ratingKey4k = plexitem.ratingKey;
+              changedExisting = true;
+            }
+
             if (changedExisting) {
               await mediaRepository.save(existing);
               this.log(
@@ -160,6 +178,12 @@ class JobPlexSync {
                 : MediaStatus.UNKNOWN;
             newMedia.mediaType = MediaType.MOVIE;
             newMedia.mediaAddedAt = new Date(plexitem.addedAt * 1000);
+            newMedia.ratingKey =
+              hasOtherResolution || (!this.enable4kMovie && has4k)
+                ? plexitem.ratingKey
+                : undefined;
+            newMedia.ratingKey4k =
+              has4k && this.enable4kMovie ? plexitem.ratingKey : undefined;
             await mediaRepository.save(newMedia);
             this.log(`Saved ${plexitem.title}`);
           }
@@ -242,6 +266,23 @@ class JobPlexSync {
           changedExisting = true;
         }
 
+        if (
+          (hasOtherResolution || (has4k && !this.enable4kMovie)) &&
+          existing.ratingKey !== plexitem.ratingKey
+        ) {
+          existing.ratingKey = plexitem.ratingKey;
+          changedExisting = true;
+        }
+
+        if (
+          has4k &&
+          this.enable4kMovie &&
+          existing.ratingKey4k !== plexitem.ratingKey
+        ) {
+          existing.ratingKey4k = plexitem.ratingKey;
+          changedExisting = true;
+        }
+
         if (changedExisting) {
           await mediaRepository.save(existing);
           this.log(
@@ -272,6 +313,12 @@ class JobPlexSync {
             ? MediaStatus.AVAILABLE
             : MediaStatus.UNKNOWN;
         newMedia.mediaType = MediaType.MOVIE;
+        newMedia.ratingKey =
+          hasOtherResolution || (!this.enable4kMovie && has4k)
+            ? plexitem.ratingKey
+            : undefined;
+        newMedia.ratingKey4k =
+          has4k && this.enable4kMovie ? plexitem.ratingKey : undefined;
         await mediaRepository.save(newMedia);
         this.log(`Saved ${tmdbMovie.title}`);
       }
@@ -311,12 +358,14 @@ class JobPlexSync {
     let tvShow: TmdbTvDetails | null = null;
 
     try {
-      const metadata = await this.plexClient.getMetadata(
+      const ratingKey =
         plexitem.grandparentRatingKey ??
-          plexitem.parentRatingKey ??
-          plexitem.ratingKey,
-        { includeChildren: true }
-      );
+        plexitem.parentRatingKey ??
+        plexitem.ratingKey;
+      const metadata = await this.plexClient.getMetadata(ratingKey, {
+        includeChildren: true,
+      });
+
       if (metadata.guid.match(tvdbRegex)) {
         const matchedtvdb = metadata.guid.match(tvdbRegex);
 
@@ -453,6 +502,23 @@ class JobPlexSync {
               const total4k = episodes.filter((episode) =>
                 episode.Media.some((media) => media.videoResolution === '4k')
               ).length;
+
+              if (
+                media &&
+                (totalStandard > 0 || (total4k > 0 && !this.enable4kShow)) &&
+                media.ratingKey !== ratingKey
+              ) {
+                media.ratingKey = ratingKey;
+              }
+
+              if (
+                media &&
+                total4k > 0 &&
+                this.enable4kShow &&
+                media.ratingKey4k !== ratingKey
+              ) {
+                media.ratingKey4k = ratingKey;
+              }
 
               if (existingSeason) {
                 // These ternary statements look super confusing, but they are simply
