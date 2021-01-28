@@ -2520,6 +2520,64 @@ paths:
                   status:
                     type: string
                     example: 'ok'
+  /auth/reset-password:
+    post:
+      summary: Send a reset password email
+      description: Sends a reset password email to the email if the user exists
+      security: []
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'ok'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+              required:
+                - email
+  /auth/reset-password/{guid}:
+    post:
+      summary: Reset the password for a user
+      description: Resets the password for a user if the given guid is connected to a user
+      security: []
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'ok'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
   /user:
     get:
       summary: Get all users
@@ -2603,7 +2661,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-
   /user/{userId}:
     get:
       summary: Get user by ID
