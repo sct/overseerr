@@ -180,7 +180,7 @@ class JobSonarrSync {
         newSeasons.filter(
           (s) => s[server4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE
         ).length >=
-      filteredSeasons.length;
+        filteredSeasons.length && filteredSeasons.length > 0;
 
     if (media) {
       media.seasons = [...media.seasons, ...newSeasons];
