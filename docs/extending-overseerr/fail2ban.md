@@ -1,5 +1,9 @@
 # Protecting Your Server Using Fail2ban
 
+{% hint style="danger" %}
+If you are running Overseerr in a Docker container, make sure that the `PROXY` environment variable is set to `yes`.
+{% endhint %}
+
 {% hint style="warning" %}
 If your OS runs `firewalld`, make sure it is running and that Overseerr is accessible before continuing.
 {% endhint %}
