@@ -139,7 +139,7 @@ class Media {
   @AfterLoad()
   public setServiceUrl(): void {
     if (this.mediaType === MediaType.MOVIE) {
-      if (this.serviceId !== null) {
+      if (this.serviceId !== null && this.externalServiceSlug !== null) {
         const settings = getSettings();
         const server = settings.radarr.find(
           (radarr) => radarr.id === this.serviceId
@@ -155,7 +155,7 @@ class Media {
         }
       }
 
-      if (this.serviceId4k !== null) {
+      if (this.serviceId4k !== null && this.externalServiceSlug4k !== null) {
         const settings = getSettings();
         const server = settings.radarr.find(
           (radarr) => radarr.id === this.serviceId4k
@@ -173,7 +173,7 @@ class Media {
     }
 
     if (this.mediaType === MediaType.TV) {
-      if (this.serviceId !== null) {
+      if (this.serviceId !== null && this.externalServiceSlug !== null) {
         const settings = getSettings();
         const server = settings.sonarr.find(
           (sonarr) => sonarr.id === this.serviceId
@@ -189,7 +189,7 @@ class Media {
         }
       }
 
-      if (this.serviceId4k !== null) {
+      if (this.serviceId4k !== null && this.externalServiceSlug4k !== null) {
         const settings = getSettings();
         const server = settings.sonarr.find(
           (sonarr) => sonarr.id === this.serviceId4k

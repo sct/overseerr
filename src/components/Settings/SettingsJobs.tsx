@@ -65,7 +65,7 @@ const SettingsJobs: React.FC = () => {
     <Table>
       <thead>
         <Table.TH>{intl.formatMessage(messages.jobname)}</Table.TH>
-        <Table.TH>{intl.formatMessage(messages.jobname)}</Table.TH>
+        <Table.TH>{intl.formatMessage(messages.jobtype)}</Table.TH>
         <Table.TH>{intl.formatMessage(messages.nextexecution)}</Table.TH>
         <Table.TH></Table.TH>
       </thead>
