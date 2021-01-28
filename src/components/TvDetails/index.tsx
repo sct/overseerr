@@ -37,6 +37,7 @@ import RequestButton from '../RequestButton';
 import MediaSlider from '../MediaSlider';
 import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
+import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -70,6 +71,7 @@ const messages = defineMessages({
   opensonarr4k: 'Open Series in 4K Sonarr',
   downloadstatus: 'Download Status',
   playonplex: 'Play on Plex',
+  play4konplex: 'Play 4K on Plex',
 });
 
 interface TvDetailsProps {
@@ -291,7 +293,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 is4k
                 inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
                 plexUrl={data.mediaInfo?.plexUrl}
-                plexUrl4k={data.mediaInfo?.plexUrl4k}
+                plexUrl4k={
+                  data.mediaInfo?.plexUrl4k &&
+                  (hasPermission(Permission.REQUEST_4K) ||
+                    hasPermission(Permission.REQUEST_4K_TV))
+                    ? data.mediaInfo.plexUrl4k
+                    : undefined
+                }
               />
             </span>
           </div>
@@ -311,42 +319,83 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           {(trailerUrl ||
             data.mediaInfo?.plexUrl ||
             data.mediaInfo?.plexUrl4k) && (
-            <a
-              href={
-                data.mediaInfo?.plexUrl ??
-                data.mediaInfo?.plexUrl4k ??
-                trailerUrl
+            <ButtonWithDropdown
+              buttonType="ghost"
+              text={
+                <>
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>
+                    {data.mediaInfo?.plexUrl
+                      ? intl.formatMessage(messages.playonplex)
+                      : data.mediaInfo?.plexUrl4k &&
+                        (hasPermission(Permission.REQUEST_4K) ||
+                          hasPermission(Permission.REQUEST_4K_TV))
+                      ? intl.formatMessage(messages.play4konplex)
+                      : intl.formatMessage(messages.watchtrailer)}
+                  </span>
+                </>
               }
-              target="_blank"
-              rel="noreferrer"
-              className="mb-3 sm:mb-0"
+              onClick={() => {
+                if (data.mediaInfo?.plexUrl) {
+                  window.open(data.mediaInfo?.plexUrl, '_blank');
+                } else if (data.mediaInfo?.plexUrl4k) {
+                  window.open(data.mediaInfo?.plexUrl4k, '_blank');
+                } else if (trailerUrl) {
+                  window.open(trailerUrl, '_blank');
+                }
+              }}
             >
-              <Button buttonType="ghost">
-                <svg
-                  className="w-5 h-5 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                {data.mediaInfo?.plexUrl || data.mediaInfo?.plexUrl4k
-                  ? intl.formatMessage(messages.playonplex)
-                  : intl.formatMessage(messages.watchtrailer)}
-              </Button>
-            </a>
+              {data.mediaInfo?.plexUrl ||
+              (data.mediaInfo?.plexUrl4k &&
+                (hasPermission(Permission.REQUEST_4K) ||
+                  hasPermission(Permission.REQUEST_4K_TV))) ? (
+                <>
+                  {data.mediaInfo?.plexUrl &&
+                    data.mediaInfo?.plexUrl4k &&
+                    (hasPermission(Permission.REQUEST_4K) ||
+                      hasPermission(Permission.REQUEST_4K_TV)) && (
+                      <ButtonWithDropdown.Item
+                        onClick={() => {
+                          window.open(data.mediaInfo?.plexUrl4k, '_blank');
+                        }}
+                        buttonType="ghost"
+                      >
+                        {intl.formatMessage(messages.play4konplex)}
+                      </ButtonWithDropdown.Item>
+                    )}
+                  {(data.mediaInfo?.plexUrl || data.mediaInfo?.plexUrl4k) &&
+                    trailerUrl && (
+                      <ButtonWithDropdown.Item
+                        onClick={() => {
+                          window.open(trailerUrl, '_blank');
+                        }}
+                        buttonType="ghost"
+                      >
+                        {intl.formatMessage(messages.watchtrailer)}
+                      </ButtonWithDropdown.Item>
+                    )}
+                </>
+              ) : null}
+            </ButtonWithDropdown>
           )}
           <div className="mb-3 sm:mb-0">
             <RequestButton

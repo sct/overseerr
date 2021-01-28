@@ -29,24 +29,50 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   if (is4k) {
     switch (status) {
       case MediaStatus.AVAILABLE:
+        if (plexUrl4k) {
+          return (
+            <a href={plexUrl4k} target="_blank" rel="noopener noreferrer">
+              <Badge
+                badgeType="success"
+                className="transition cursor-pointer hover:bg-green-400"
+              >
+                {intl.formatMessage(messages.status4k, {
+                  status: intl.formatMessage(globalMessages.available),
+                })}
+              </Badge>
+            </a>
+          );
+        }
+
         return (
-          <a href={plexUrl4k} target="_blank" rel="noopener noreferrer">
-            <Badge badgeType="success">
-              {intl.formatMessage(messages.status4k, {
-                status: intl.formatMessage(globalMessages.available),
-              })}
-            </Badge>
-          </a>
+          <Badge badgeType="success">
+            {intl.formatMessage(messages.status4k, {
+              status: intl.formatMessage(globalMessages.available),
+            })}
+          </Badge>
         );
       case MediaStatus.PARTIALLY_AVAILABLE:
+        if (plexUrl4k) {
+          return (
+            <a href={plexUrl4k} target="_blank" rel="noopener noreferrer">
+              <Badge
+                badgeType="success"
+                className="transition cursor-pointer hover:bg-green-400"
+              >
+                {intl.formatMessage(messages.status4k, {
+                  status: intl.formatMessage(globalMessages.partiallyavailable),
+                })}
+              </Badge>
+            </a>
+          );
+        }
+
         return (
-          <a href={plexUrl4k} target="_blank" rel="noopener noreferrer">
-            <Badge badgeType="success">
-              {intl.formatMessage(messages.status4k, {
-                status: intl.formatMessage(globalMessages.partiallyavailable),
-              })}
-            </Badge>
-          </a>
+          <Badge badgeType="success">
+            {intl.formatMessage(messages.status4k, {
+              status: intl.formatMessage(globalMessages.partiallyavailable),
+            })}
+          </Badge>
         );
       case MediaStatus.PROCESSING:
         return (
@@ -78,28 +104,56 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   switch (status) {
     case MediaStatus.AVAILABLE:
+      if (plexUrl) {
+        return (
+          <a href={plexUrl} target="_blank" rel="noopener noreferrer">
+            <Badge
+              badgeType="success"
+              className="transition cursor-pointer hover:bg-green-400"
+            >
+              <div className="flex items-center">
+                <span>{intl.formatMessage(globalMessages.available)}</span>
+                {inProgress && <Spinner className="w-3 h-3 ml-1" />}
+              </div>
+            </Badge>
+          </a>
+        );
+      }
+
       return (
-        <a href={plexUrl} target="_blank" rel="noopener noreferrer">
-          <Badge badgeType="success">
-            <div className="flex items-center">
-              <span>{intl.formatMessage(globalMessages.available)}</span>
-              {inProgress && <Spinner className="w-3 h-3 ml-1" />}
-            </div>
-          </Badge>
-        </a>
+        <Badge badgeType="success">
+          <div className="flex items-center">
+            <span>{intl.formatMessage(globalMessages.available)}</span>
+            {inProgress && <Spinner className="w-3 h-3 ml-1" />}
+          </div>
+        </Badge>
       );
     case MediaStatus.PARTIALLY_AVAILABLE:
+      if (plexUrl) {
+        return (
+          <a href={plexUrl} target="_blank" rel="noopener noreferrer">
+            <Badge
+              badgeType="success"
+              className="transition cursor-pointer hover:bg-green-400"
+            >
+              <div className="flex items-center">
+                <span>
+                  {intl.formatMessage(globalMessages.partiallyavailable)}
+                </span>
+                {inProgress && <Spinner className="w-3 h-3 ml-1" />}
+              </div>
+            </Badge>
+          </a>
+        );
+      }
+
       return (
-        <a href={plexUrl} target="_blank" rel="noopener noreferrer">
-          <Badge badgeType="success">
-            <div className="flex items-center">
-              <span>
-                {intl.formatMessage(globalMessages.partiallyavailable)}
-              </span>
-              {inProgress && <Spinner className="w-3 h-3 ml-1" />}
-            </div>
-          </Badge>
-        </a>
+        <Badge badgeType="success">
+          <div className="flex items-center">
+            <span>{intl.formatMessage(globalMessages.partiallyavailable)}</span>
+            {inProgress && <Spinner className="w-3 h-3 ml-1" />}
+          </div>
+        </Badge>
       );
     case MediaStatus.PROCESSING:
       return (
