@@ -90,25 +90,15 @@ const NotificationsDiscord: React.FC = () => {
         return (
           <Form className="section">
             <div className="form-row">
-              <label
-                htmlFor="enabled"
-                className="checkbox-label"
-              >
+              <label htmlFor="enabled" className="checkbox-label">
                 {intl.formatMessage(messages.agentenabled)}
               </label>
               <div className="form-input">
-                <Field
-                  type="checkbox"
-                  id="enabled"
-                  name="enabled"
-                />
+                <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="name"
-                className="text-label"
-              >
+              <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.webhookUrl)}
               </label>
               <div className="form-input">
@@ -129,19 +119,14 @@ const NotificationsDiscord: React.FC = () => {
             </div>
             <div role="group" aria-labelledby="group-label" className="group">
               <div className="form-row">
-                <span
-                  id="group-label"
-                  className="group-label"
-                >
+                <span id="group-label" className="group-label">
                   {intl.formatMessage(messages.notificationtypes)}
                 </span>
                 <div className="form-input">
                   <div className="max-w-lg">
                     <NotificationTypeSelector
                       currentTypes={values.types}
-                      onUpdate={(newTypes) =>
-                        setFieldValue('types', newTypes)
-                      }
+                      onUpdate={(newTypes) => setFieldValue('types', newTypes)}
                     />
                   </div>
                 </div>

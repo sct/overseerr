@@ -135,25 +135,15 @@ const NotificationsPushover: React.FC = () => {
             </Alert>
             <Form className="section">
               <div className="form-row">
-                <label
-                  htmlFor="enabled"
-                  className="checkbox-label"
-                >
+                <label htmlFor="enabled" className="checkbox-label">
                   {intl.formatMessage(messages.agentenabled)}
                 </label>
                 <div className="form-input">
-                  <Field
-                    type="checkbox"
-                    id="enabled"
-                    name="enabled"
-                  />
+                  <Field type="checkbox" id="enabled" name="enabled" />
                 </div>
               </div>
               <div className="form-row">
-                <label
-                  htmlFor="accessToken"
-                  className="text-label"
-                >
+                <label htmlFor="accessToken" className="text-label">
                   {intl.formatMessage(messages.accessToken)}
                 </label>
                 <div className="form-input">
@@ -173,10 +163,7 @@ const NotificationsPushover: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
-                <label
-                  htmlFor="userToken"
-                  className="text-label"
-                >
+                <label htmlFor="userToken" className="text-label">
                   {intl.formatMessage(messages.userToken)}
                 </label>
                 <div className="form-input">
@@ -195,10 +182,7 @@ const NotificationsPushover: React.FC = () => {
               </div>
               <div role="group" aria-labelledby="group-label" className="group">
                 <div className="form-row">
-                  <span
-                    id="group-label"
-                    className="group-label"
-                  >
+                  <span id="group-label" className="group-label">
                     {intl.formatMessage(messages.notificationtypes)}
                   </span>
                   <div className="form-input">

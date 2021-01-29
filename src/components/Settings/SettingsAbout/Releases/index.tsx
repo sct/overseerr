@@ -156,9 +156,7 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
 
   return (
     <div>
-      <h3 className="heading">
-        {intl.formatMessage(messages.releases)}
-      </h3>
+      <h3 className="heading">{intl.formatMessage(messages.releases)}</h3>
       <div className="section">
         {currentVersion.startsWith('develop-') && (
           <Alert title={intl.formatMessage(messages.runningDevelop)}>

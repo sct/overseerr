@@ -285,40 +285,23 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
             >
               <div className="mb-6">
                 <div className="form-row">
-                  <label
-                    htmlFor="isDefault"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="isDefault" className="checkbox-label">
                     {intl.formatMessage(messages.defaultserver)}
                   </label>
                   <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="isDefault"
-                      name="isDefault"
-                    />
+                    <Field type="checkbox" id="isDefault" name="isDefault" />
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="is4k"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="is4k" className="checkbox-label">
                     {intl.formatMessage(messages.server4k)}
                   </label>
                   <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="is4k"
-                      name="is4k"
-                    />
+                    <Field type="checkbox" id="is4k" name="is4k" />
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="name"
-                    className="text-label"
-                  >
+                  <label htmlFor="name" className="text-label">
                     {intl.formatMessage(messages.servername)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -343,10 +326,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="hostname"
-                    className="text-label"
-                  >
+                  <label htmlFor="hostname" className="text-label">
                     {intl.formatMessage(messages.hostname)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -373,10 +353,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="port"
-                    className="text-label"
-                  >
+                  <label htmlFor="port" className="text-label">
                     {intl.formatMessage(messages.port)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -397,10 +374,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="ssl"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="ssl" className="checkbox-label">
                     {intl.formatMessage(messages.ssl)}
                   </label>
                   <div className="form-input">
@@ -609,10 +583,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="syncEnabled"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="syncEnabled" className="checkbox-label">
                     {intl.formatMessage(messages.syncEnabled)}
                   </label>
                   <div className="form-input">
@@ -624,10 +595,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="preventSearch"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="preventSearch" className="checkbox-label">
                     {intl.formatMessage(messages.preventSearch)}
                   </label>
                   <div className="form-input">

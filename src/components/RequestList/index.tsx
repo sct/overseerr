@@ -155,7 +155,9 @@ const RequestList: React.FC = () => {
             <tr className="relative w-full h-24 p-2 text-white">
               <Table.TD colSpan={6} noPadding>
                 <div className="flex flex-col items-center justify-center p-6">
-                  <span className="text-base">{intl.formatMessage(messages.noresults)}</span>
+                  <span className="text-base">
+                    {intl.formatMessage(messages.noresults)}
+                  </span>
                   {currentFilter !== 'all' && (
                     <div className="mt-6">
                       <Button

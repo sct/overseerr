@@ -26,9 +26,7 @@ const List: React.FC<ListProps> = ({ title, subTitle, children }) => {
     <>
       <div>
         <h3 className="heading">{title}</h3>
-        {subTitle && (
-          <p className="description">{subTitle}</p>
-        )}
+        {subTitle && <p className="description">{subTitle}</p>}
       </div>
       <div className="section">
         <dl>{children}</dl>

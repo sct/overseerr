@@ -348,10 +348,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           return (
             <form className="section" onSubmit={handleSubmit}>
               <div className="form-row">
-                <label
-                  htmlFor="name"
-                  className="text-label"
-                >
+                <label htmlFor="name" className="text-label">
                   <div className="flex flex-col">
                     <span className="mr-2">
                       <FormattedMessage {...messages.servername} />
@@ -377,10 +374,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 </div>
               </div>
               <div className="form-row">
-                <label
-                  htmlFor="preset"
-                  className="text-label"
-                >
+                <label htmlFor="preset" className="text-label">
                   <FormattedMessage {...messages.serverpreset} />
                 </label>
                 <div className="form-input">
@@ -462,10 +456,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 </div>
               </div>
               <div className="form-row">
-                <label
-                  htmlFor="hostname"
-                  className="text-label"
-                >
+                <label htmlFor="hostname" className="text-label">
                   <FormattedMessage {...messages.hostname} />
                 </label>
                 <div className="form-input">
@@ -487,10 +478,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 </div>
               </div>
               <div className="form-row">
-                <label
-                  htmlFor="port"
-                  className="text-label"
-                >
+                <label htmlFor="port" className="text-label">
                   <FormattedMessage {...messages.port} />
                 </label>
                 <div className="form-input">
@@ -508,10 +496,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 </div>
               </div>
               <div className="form-row">
-                <label
-                  htmlFor="ssl"
-                  className="checkbox-label"
-                >
+                <label htmlFor="ssl" className="checkbox-label">
                   {intl.formatMessage(messages.ssl)}
                 </label>
                 <div className="form-input">

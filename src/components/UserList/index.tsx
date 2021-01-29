@@ -284,10 +284,7 @@ const UserList: React.FC = () => {
                 </Alert>
                 <Form className="section">
                   <div className="form-row">
-                    <label
-                      htmlFor="email"
-                      className="text-label"
-                    >
+                    <label htmlFor="email" className="text-label">
                       {intl.formatMessage(messages.email)}
                     </label>
                     <div className="form-input">
@@ -305,10 +302,7 @@ const UserList: React.FC = () => {
                     </div>
                   </div>
                   <div className="form-row">
-                    <label
-                      htmlFor="genpassword"
-                      className="checkbox-label"
-                    >
+                    <label htmlFor="genpassword" className="checkbox-label">
                       {intl.formatMessage(messages.autogeneratepassword)}
                     </label>
                     <div className="form-input">
@@ -321,10 +315,7 @@ const UserList: React.FC = () => {
                     </div>
                   </div>
                   <div className="form-row">
-                    <label
-                      htmlFor="password"
-                      className="text-label"
-                    >
+                    <label htmlFor="password" className="text-label">
                       {intl.formatMessage(messages.password)}
                     </label>
                     <div className="form-input">

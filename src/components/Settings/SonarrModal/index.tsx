@@ -294,40 +294,23 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
             >
               <div className="mb-6">
                 <div className="form-row">
-                  <label
-                    htmlFor="isDefault"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="isDefault" className="checkbox-label">
                     {intl.formatMessage(messages.defaultserver)}
                   </label>
                   <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="isDefault"
-                      name="isDefault"
-                    />
+                    <Field type="checkbox" id="isDefault" name="isDefault" />
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="is4k"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="is4k" className="checkbox-label">
                     {intl.formatMessage(messages.server4k)}
                   </label>
                   <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="is4k"
-                      name="is4k"
-                    />
+                    <Field type="checkbox" id="is4k" name="is4k" />
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="name"
-                    className="text-label"
-                  >
+                  <label htmlFor="name" className="text-label">
                     {intl.formatMessage(messages.servername)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -352,10 +335,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="hostname"
-                    className="text-label"
-                  >
+                  <label htmlFor="hostname" className="text-label">
                     {intl.formatMessage(messages.hostname)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -382,10 +362,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="port"
-                    className="text-label"
-                  >
+                  <label htmlFor="port" className="text-label">
                     {intl.formatMessage(messages.port)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -406,10 +383,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="ssl"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="ssl" className="checkbox-label">
                     {intl.formatMessage(messages.ssl)}
                   </label>
                   <div className="form-input">
@@ -663,10 +637,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="externalUrl"
-                    className="text-label"
-                  >
+                  <label htmlFor="externalUrl" className="text-label">
                     {intl.formatMessage(messages.externalUrl)}
                   </label>
                   <div className="form-input">

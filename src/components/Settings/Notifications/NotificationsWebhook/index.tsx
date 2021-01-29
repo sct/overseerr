@@ -153,25 +153,15 @@ const NotificationsWebhook: React.FC = () => {
         return (
           <Form className="section">
             <div className="form-row">
-              <label
-                htmlFor="enabled"
-                className="checkbox-label"
-              >
+              <label htmlFor="enabled" className="checkbox-label">
                 {intl.formatMessage(messages.agentenabled)}
               </label>
               <div className="form-input">
-                <Field
-                  type="checkbox"
-                  id="enabled"
-                  name="enabled"
-                />
+                <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="name"
-                className="text-label"
-              >
+              <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.webhookUrl)}
               </label>
               <div className="form-input">
@@ -191,27 +181,17 @@ const NotificationsWebhook: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="name"
-                className="text-label"
-              >
+              <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.authheader)}
               </label>
               <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
-                  <Field
-                    id="authHeader"
-                    name="authHeader"
-                    type="text"
-                  />
+                  <Field id="authHeader" name="authHeader" type="text" />
                 </div>
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="name"
-                className="text-label"
-              >
+              <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.customJson)}
               </label>
               <div className="form-input">
@@ -276,10 +256,7 @@ const NotificationsWebhook: React.FC = () => {
               <div role="group" aria-labelledby="group-label" className="group">
                 <div className="sm:grid sm:grid-cols-4 sm:gap-4">
                   <div>
-                    <div
-                      id="group-label"
-                  className="group-label"
-                    >
+                    <div id="group-label" className="group-label">
                       {intl.formatMessage(messages.notificationtypes)}
                     </div>
                   </div>

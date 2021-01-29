@@ -120,11 +120,7 @@ const UserEdit: React.FC = () => {
               </label>
               <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
-                  <Field
-                    id="username"
-                    name="username"
-                    type="text"
-                  />
+                  <Field id="username" name="username" type="text" />
                 </div>
               </div>
             </div>
@@ -137,12 +133,7 @@ const UserEdit: React.FC = () => {
               </label>
               <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
-                  <Field
-                    id="email"
-                    name="email"
-                    type="text"
-                    readOnly
-                  />
+                  <Field id="email" name="email" type="text" readOnly />
                 </div>
               </div>
             </div>
@@ -165,10 +156,7 @@ const UserEdit: React.FC = () => {
             <div role="group" aria-labelledby="group-label" className="group">
               <div className="sm:grid sm:grid-cols-4 sm:gap-4">
                 <div>
-                  <div
-                    id="group-label"
-                    className="group-label"
-                  >
+                  <div id="group-label" className="group-label">
                     <FormattedMessage {...messages.permissions} />
                   </div>
                 </div>

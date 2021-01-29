@@ -93,10 +93,7 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
         <div role="group" aria-labelledby="group-label" className="group">
           <div className="sm:grid sm:grid-cols-4 sm:gap-4">
             <div>
-              <div
-                id="group-label"
-                className="group-label"
-              >
+              <div id="group-label" className="group-label">
                 <FormattedMessage {...userEditMessages.permissions} />
               </div>
             </div>

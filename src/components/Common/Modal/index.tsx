@@ -114,15 +114,9 @@ const Modal: React.FC<ModalProps> = ({
               iconSvg ? 'sm:ml-4' : 'mb-6'
             }`}
           >
-            {title && (
-              <h3 className="heading">{title}</h3>
-            )}
+            {title && <h3 className="heading">{title}</h3>}
           </div>
-          {children && (
-            <div className="section">
-              {children}
-            </div>
-          )}
+          {children && <div className="section">{children}</div>}
           {(onCancel || onOk || onSecondary || onTertiary) && (
             <div className="flex flex-row-reverse justify-center mt-5 sm:mt-4 sm:justify-start">
               {typeof onOk === 'function' && (

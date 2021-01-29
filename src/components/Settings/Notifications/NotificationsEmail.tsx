@@ -126,25 +126,15 @@ const NotificationsEmail: React.FC = () => {
         return (
           <Form className="section">
             <div className="form-row">
-              <label
-                htmlFor="enabled"
-                className="checkbox-label"
-              >
+              <label htmlFor="enabled" className="checkbox-label">
                 {intl.formatMessage(messages.agentenabled)}
               </label>
               <div className="form-input">
-                <Field
-                  type="checkbox"
-                  id="enabled"
-                  name="enabled"
-                />
+                <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="emailFrom"
-                className="text-label"
-              >
+              <label htmlFor="emailFrom" className="text-label">
                 {intl.formatMessage(messages.emailsender)}
               </label>
               <div className="form-input">
@@ -162,10 +152,7 @@ const NotificationsEmail: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="senderName"
-                className="text-label"
-              >
+              <label htmlFor="senderName" className="text-label">
                 {intl.formatMessage(messages.senderName)}
               </label>
               <div className="form-input">
@@ -180,10 +167,7 @@ const NotificationsEmail: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="smtpHost"
-                className="text-label"
-              >
+              <label htmlFor="smtpHost" className="text-label">
                 {intl.formatMessage(messages.smtpHost)}
               </label>
               <div className="form-input">
@@ -201,10 +185,7 @@ const NotificationsEmail: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="smtpPort"
-                className="text-label"
-              >
+              <label htmlFor="smtpPort" className="text-label">
                 {intl.formatMessage(messages.smtpPort)}
               </label>
               <div className="form-input">
@@ -222,10 +203,7 @@ const NotificationsEmail: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="secure"
-                className="checkbox-label"
-              >
+              <label htmlFor="secure" className="checkbox-label">
                 <div className="flex flex-col">
                   <span>{intl.formatMessage(messages.enableSsl)}</span>
                   <span className="text-gray-500">
@@ -234,18 +212,11 @@ const NotificationsEmail: React.FC = () => {
                 </div>
               </label>
               <div className="form-input">
-                <Field
-                  type="checkbox"
-                  id="secure"
-                  name="secure"
-                />
+                <Field type="checkbox" id="secure" name="secure" />
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="allowSelfSigned"
-                className="checkbox-label"
-              >
+              <label htmlFor="allowSelfSigned" className="checkbox-label">
                 {intl.formatMessage(messages.allowselfsigned)}
               </label>
               <div className="form-input">
@@ -257,27 +228,17 @@ const NotificationsEmail: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="authUser"
-                className="text-label"
-              >
+              <label htmlFor="authUser" className="text-label">
                 {intl.formatMessage(messages.authUser)}
               </label>
               <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
-                  <Field
-                    id="authUser"
-                    name="authUser"
-                    type="text"
-                  />
+                  <Field id="authUser" name="authUser" type="text" />
                 </div>
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="authPass"
-                className="text-label"
-              >
+              <label htmlFor="authPass" className="text-label">
                 {intl.formatMessage(messages.authPass)}
               </label>
               <div className="form-input">
@@ -293,19 +254,14 @@ const NotificationsEmail: React.FC = () => {
             </div>
             <div role="group" aria-labelledby="group-label" className="group">
               <div className="form-row">
-                <span
-                  id="group-label"
-                  className="group-label"
-                >
+                <span id="group-label" className="group-label">
                   {intl.formatMessage(messages.notificationtypes)}
                 </span>
                 <div className="form-input">
                   <div className="max-w-lg">
                     <NotificationTypeSelector
                       currentTypes={values.types}
-                      onUpdate={(newTypes) =>
-                        setFieldValue('types', newTypes)
-                      }
+                      onUpdate={(newTypes) => setFieldValue('types', newTypes)}
                     />
                   </div>
                 </div>

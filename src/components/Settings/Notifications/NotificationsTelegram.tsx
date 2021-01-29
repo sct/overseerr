@@ -135,25 +135,15 @@ const NotificationsTelegram: React.FC = () => {
             </Alert>
             <Form className="section">
               <div className="form-row">
-                <label
-                  htmlFor="enabled"
-                  className="checkbox-label"
-                >
+                <label htmlFor="enabled" className="checkbox-label">
                   {intl.formatMessage(messages.agentenabled)}
                 </label>
                 <div className="form-input">
-                  <Field
-                    type="checkbox"
-                    id="enabled"
-                    name="enabled"
-                  />
+                  <Field type="checkbox" id="enabled" name="enabled" />
                 </div>
               </div>
               <div className="form-row">
-                <label
-                  htmlFor="botAPI"
-                  className="text-label"
-                >
+                <label htmlFor="botAPI" className="text-label">
                   {intl.formatMessage(messages.botAPI)}
                 </label>
                 <div className="form-input">
@@ -171,10 +161,7 @@ const NotificationsTelegram: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
-                <label
-                  htmlFor="chatId"
-                  className="text-label"
-                >
+                <label htmlFor="chatId" className="text-label">
                   {intl.formatMessage(messages.chatId)}
                 </label>
                 <div className="form-input">
@@ -193,10 +180,7 @@ const NotificationsTelegram: React.FC = () => {
               </div>
               <div role="group" aria-labelledby="group-label" className="group">
                 <div className="form-row">
-                  <span
-                    id="group-label"
-                    className="group-label"
-                  >
+                  <span id="group-label" className="group-label">
                     {intl.formatMessage(messages.notificationtypes)}
                   </span>
                   <div className="form-input">

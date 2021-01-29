@@ -172,14 +172,12 @@ const SettingsMain: React.FC = () => {
                 </div>
                 <div className="form-row">
                   <label htmlFor="trustProxy" className="checkbox-label">
-                    <div className="flex flex-col">
-                      <span className="mr-2">
-                        {intl.formatMessage(messages.trustProxy)}
-                      </span>
-                      <span className="text-gray-500">
-                        {intl.formatMessage(messages.trustProxyTip)}
-                      </span>
-                    </div>
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.trustProxy)}
+                    </span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.trustProxyTip)}
+                    </span>
                   </label>
                   <div className="form-input">
                     <Field
