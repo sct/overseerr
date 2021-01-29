@@ -22,6 +22,8 @@ const messages = defineMessages({
   canceljob: 'Cancel Job',
   jobstarted: '{jobname} started.',
   jobcancelled: '{jobname} cancelled.',
+  process: 'Process',
+  command: 'Command',
   cache: 'Cache',
   cacheDescription:
     'Overseerr caches requests to external API endpoints to optimize performance and avoid making unnecessary API calls.',
@@ -126,7 +128,9 @@ const SettingsJobs: React.FC = () => {
                   badgeType={job.type === 'process' ? 'primary' : 'warning'}
                   className="uppercase"
                 >
-                  {job.type}
+                  {job.type === 'process'
+                    ? intl.formatMessage(messages.process)
+                    : intl.formatMessage(messages.command)}
                 </Badge>
               </Table.TD>
               <Table.TD>

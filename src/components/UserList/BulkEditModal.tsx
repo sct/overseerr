@@ -90,17 +90,17 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
       onCancel={onCancel}
     >
       <div className="mt-8">
-        <div role="group" aria-labelledby="label-permissions">
+        <div role="group" aria-labelledby="group-label" className="group">
           <div className="sm:grid sm:grid-cols-4 sm:gap-4">
             <div>
               <div
-                className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
-                id="label-permissions"
+                id="group-label"
+                className="group-label"
               >
                 <FormattedMessage {...userEditMessages.permissions} />
               </div>
             </div>
-            <div className="mt-4 sm:mt-0 sm:col-span-2">
+            <div className="form-input">
               <div className="max-w-lg">
                 <PermissionEdit
                   user={currentUser}

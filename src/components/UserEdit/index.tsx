@@ -19,9 +19,9 @@ export const messages = defineMessages({
   avatar: 'Avatar',
   email: 'Email',
   permissions: 'Permissions',
-  save: 'Save',
+  save: 'Save Changes',
   saving: 'Saving…',
-  usersaved: 'User saved',
+  usersaved: 'User saved!',
   userfail: 'Something went wrong while saving the user.',
 });
 
@@ -84,7 +84,7 @@ const UserEdit: React.FC = () => {
       }}
     >
       {({ isSubmitting, handleSubmit }) => (
-        <Form>
+        <Form className="section">
           <div className="mt-10 text-white">
             <div className="flex flex-col justify-between sm:flex-row mt-8">
               <Header>
@@ -92,68 +92,65 @@ const UserEdit: React.FC = () => {
               </Header>
             </div>
             {user?.userType === UserType.PLEX && (
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+              <div className="form-row">
                 <label
                   htmlFor="plexUsername"
                   className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                 >
                   {intl.formatMessage(messages.plexUsername)}
                 </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm">
                     <Field
                       id="plexUsername"
                       name="plexUsername"
                       type="text"
-                      className="flex-grow block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       readOnly
                     />
                   </div>
                 </div>
               </div>
             )}
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+            <div className="form-row">
               <label
                 htmlFor="username"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
               >
                 {intl.formatMessage(messages.username)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="username"
                     name="username"
                     type="text"
-                    className="flex-grow block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+            <div className="form-row">
               <label
                 htmlFor="email"
                 className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
               >
                 <FormattedMessage {...messages.email} />
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="email"
                     name="email"
                     type="text"
-                    className="flex-grow block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     readOnly
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+            <div className="form-row">
               <span className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3">
                 <FormattedMessage {...messages.avatar} />
               </span>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <img
                     className="w-40 h-40 rounded-full"
@@ -165,17 +162,17 @@ const UserEdit: React.FC = () => {
             </div>
           </div>
           <div className="mt-8 text-white">
-            <div role="group" aria-labelledby="label-permissions">
+            <div role="group" aria-labelledby="group-label" className="group">
               <div className="sm:grid sm:grid-cols-4 sm:gap-4">
                 <div>
                   <div
-                    className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
-                    id="label-permissions"
+                    id="group-label"
+                    className="group-label"
                   >
                     <FormattedMessage {...messages.permissions} />
                   </div>
                 </div>
-                <div className="mt-4 sm:mt-0 sm:col-span-2">
+                <div className="form-input">
                   <div className="max-w-lg">
                     <PermissionEdit
                       user={currentUser}

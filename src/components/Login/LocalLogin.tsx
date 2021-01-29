@@ -70,7 +70,6 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       name="email"
                       type="text"
                       placeholder="name@example.com"
-                      className="text-white flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                   {errors.email && touched.email && (
@@ -90,7 +89,6 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       name="password"
                       type="password"
                       placeholder={intl.formatMessage(messages.password)}
-                      className="text-white flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                   {errors.password && touched.password && (
@@ -103,21 +101,18 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                   </div>
                 )}
               </div>
-              <div className="pt-5 mt-8 border-t border-gray-700">
-                <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      type="submit"
-                      disabled={isSubmitting || !isValid}
-                    >
-                      {isSubmitting
-                        ? intl.formatMessage(messages.signingin)
-                        : intl.formatMessage(messages.signin)}
-                    </Button>
-                  </span>
-                </div>
-              </div>
+              <span className="block w-full rounded-md shadow-sm">
+                <Button
+                  buttonType="primary"
+                  type="submit"
+                  className="login-button mt-8"
+                  disabled={isSubmitting || !isValid}
+                >
+                  {isSubmitting
+                    ? intl.formatMessage(messages.signingin)
+                    : intl.formatMessage(messages.signin)}
+                </Button>
+              </span>
             </Form>
           </>
         );

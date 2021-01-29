@@ -209,7 +209,6 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               onChange={(e) => setSelectedServer(Number(e.target.value))}
               onBlur={(e) => setSelectedServer(Number(e.target.value))}
               value={selectedServer}
-              className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
             >
               {data.map((server) => (
                 <option key={`server-list-${server.id}`} value={server.id}>
@@ -231,7 +230,6 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               value={selectedProfile}
               onChange={(e) => setSelectedProfile(Number(e.target.value))}
               onBlur={(e) => setSelectedProfile(Number(e.target.value))}
-              className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
             >
               {isValidating && (
                 <option value="">
@@ -264,7 +262,6 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               value={selectedFolder}
               onChange={(e) => setSelectedFolder(e.target.value)}
               onBlur={(e) => setSelectedFolder(e.target.value)}
-              className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
             >
               {isValidating && (
                 <option value="">

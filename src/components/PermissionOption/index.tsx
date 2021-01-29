@@ -46,7 +46,6 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
             id={option.id}
             name="permissions"
             type="checkbox"
-            className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
             disabled={
               (option.permission !== Permission.ADMIN &&
                 hasPermission(Permission.ADMIN, currentPermission)) ||

@@ -46,7 +46,7 @@ const PlexLoginButton: React.FC<PlexLoginButtonProps> = ({
           setTimeout(() => getPlexLogin(), 1500);
         }}
         disabled={loading || isProcessing}
-        className="plex-button"
+        className="login-button"
       >
         {loading
           ? intl.formatMessage(messages.loading)

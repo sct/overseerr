@@ -25,7 +25,7 @@ const messages = defineMessages({
   serverLocal: 'local',
   serverRemote: 'remote',
   serverConnected: 'connected',
-  serverpresetManualMessage: 'Manually configure',
+  serverpresetManualMessage: 'Manual configuration',
   serverpresetRefreshing: 'Retrieving servers…',
   serverpresetLoad: 'Press the button to load available servers',
   toastPlexRefresh: 'Retrieving server list from Plex',
@@ -260,13 +260,13 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   return (
     <>
       <div>
-        <h3 className="text-2xl leading-8 text-gray-200">
+        <h3 className="heading">
           <FormattedMessage {...messages.plexsettings} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.plexsettingsDescription} />
         </p>
-        <div className="mt-6 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+        <div className="section">
           <Alert title={intl.formatMessage(messages.settingUpPlex)} type="info">
             {intl.formatMessage(messages.settingUpPlexDescription, {
               RegisterPlexTVLink: function RegisterPlexTVLink(msg) {
@@ -346,11 +346,11 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           isSubmitting,
         }) => {
           return (
-            <form onSubmit={handleSubmit}>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+            <form className="section" onSubmit={handleSubmit}>
+              <div className="form-row">
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                  className="text-label"
                 >
                   <div className="flex flex-col">
                     <span className="mr-2">
@@ -361,7 +361,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     </span>
                   </div>
                 </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm">
                     <input
                       type="text"
@@ -372,19 +372,18 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       )}
                       value={data?.name}
                       readOnly
-                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                 </div>
               </div>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+              <div className="form-row">
                 <label
                   htmlFor="preset"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                  className="text-label"
                 >
                   <FormattedMessage {...messages.serverpreset} />
                 </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm input-group">
                     <select
                       id="preset"
@@ -394,7 +393,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       )}
                       value={values.selectedPreset}
                       disabled={!availableServers || isRefreshingPresets}
-                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-none rounded-l-md form-input sm:text-sm sm:leading-5"
+                      className="rounded-l-only"
                       onChange={async (e) => {
                         const targPreset =
                           availablePresets[Number(e.target.value)];
@@ -462,14 +461,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   </div>
                 </div>
               </div>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+              <div className="form-row">
                 <label
                   htmlFor="hostname"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                  className="text-label"
                 >
                   <FormattedMessage {...messages.hostname} />
                 </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm">
                     <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
                       {values.useSsl ? 'https://' : 'http://'}
@@ -479,7 +478,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       id="hostname"
                       name="hostname"
                       placeholder="127.0.0.1"
-                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 form-input rounded-r-md sm:text-sm sm:leading-5"
+                      className="rounded-r-only"
                     />
                   </div>
                   {errors.hostname && touched.hostname && (
@@ -487,21 +486,20 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   )}
                 </div>
               </div>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+              <div className="form-row">
                 <label
                   htmlFor="port"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                  className="text-label"
                 >
                   <FormattedMessage {...messages.port} />
                 </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="form-input">
                   <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
                     <Field
                       type="text"
                       id="port"
                       name="port"
                       placeholder="32400"
-                      className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                   {errors.port && touched.port && (
@@ -509,14 +507,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   )}
                 </div>
               </div>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+              <div className="form-row">
                 <label
                   htmlFor="ssl"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
+                  className="checkbox-label"
                 >
                   {intl.formatMessage(messages.ssl)}
                 </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="form-input">
                   <Field
                     type="checkbox"
                     id="useSsl"
@@ -524,12 +522,11 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     onChange={() => {
                       setFieldValue('useSsl', !values.useSsl);
                     }}
-                    className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                   />
                 </div>
               </div>
               {submitError && (
-                <div className="mt-6 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <div className="mt-6 sm:gap-4 sm:items-start">
                   <Alert
                     title={intl.formatMessage(
                       messages.toastPlexConnectingFailure
@@ -560,10 +557,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         }}
       </Formik>
       <div className="mt-10">
-        <h3 className="text-2xl leading-8 text-gray-200">
+        <h3 className="heading">
           <FormattedMessage {...messages.plexlibraries} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.plexlibrariesDescription} />
         </p>
         <div className="mt-6">
@@ -597,10 +594,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         </ul>
       </div>
       <div className="mt-10">
-        <h3 className="text-2xl leading-8 text-gray-200">
+        <h3 className="heading">
           <FormattedMessage {...messages.manualscan} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.manualscanDescription} />
         </p>
         <div className="mt-6">

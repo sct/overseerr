@@ -100,7 +100,7 @@ const Release: React.FC<ReleaseProps> = ({
         </Modal>
       </Transition>
       <div className="flex items-center justify-center mb-4 sm:mb-0 sm:justify-start">
-        <span className="mr-2 text-xs">
+        <span className="mr-2 text-xs mt-1">
           <FormattedRelativeTime
             value={Math.floor(
               (new Date(release.created_at).getTime() - Date.now()) / 1000
@@ -156,38 +156,40 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
 
   return (
     <div>
-      <h3 className="text-2xl leading-8 text-gray-100 mb-5">
+      <h3 className="heading">
         {intl.formatMessage(messages.releases)}
       </h3>
-      {currentVersion.startsWith('develop-') && (
-        <Alert title={intl.formatMessage(messages.runningDevelop)}>
-          {intl.formatMessage(messages.runningDevelopMessage, {
-            GithubLink: function GithubLink(msg) {
-              return (
-                <a
-                  href="https://github.com/sct/overseerr"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-yellow-100 underline transition duration-300 hover:text-white"
-                >
-                  {msg}
-                </a>
-              );
-            },
-          })}
-        </Alert>
-      )}
-      {data?.map((release, index) => {
-        return (
-          <div key={`release-${release.id}`} className="mb-3">
-            <Release
-              release={release}
-              currentVersion={currentVersion}
-              isLatest={index === 0}
-            />
-          </div>
-        );
-      })}
+      <div className="section">
+        {currentVersion.startsWith('develop-') && (
+          <Alert title={intl.formatMessage(messages.runningDevelop)}>
+            {intl.formatMessage(messages.runningDevelopMessage, {
+              GithubLink: function GithubLink(msg) {
+                return (
+                  <a
+                    href="https://github.com/sct/overseerr"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-yellow-100 underline transition duration-300 hover:text-white"
+                  >
+                    {msg}
+                  </a>
+                );
+              },
+            })}
+          </Alert>
+        )}
+        {data?.map((release, index) => {
+          return (
+            <div key={`release-${release.id}`} className="mb-3">
+              <Release
+                release={release}
+                currentVersion={currentVersion}
+                isLatest={index === 0}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

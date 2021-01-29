@@ -18,10 +18,10 @@ import Alert from '../Common/Alert';
 const messages = defineMessages({
   radarrsettings: 'Radarr Settings',
   radarrSettingsDescription:
-    'Configure your Radarr connection below. You can have multiple Radarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server will be used when a new request is made.',
+    'Configure your Radarr connection below. You can have multiple Radarr configurations, but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server which is used for new requests.',
   sonarrsettings: 'Sonarr Settings',
   sonarrSettingsDescription:
-    'Configure your Sonarr connection below. You can have multiple Sonarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server will be used when a new request is made.',
+    'Configure your Sonarr connection below. You can have multiple Sonarr configurations, but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server which is used for new requests.',
   deleteserverconfirm: 'Are you sure you want to delete this server?',
   edit: 'Edit',
   delete: 'Delete',
@@ -199,10 +199,10 @@ const SettingsServices: React.FC = () => {
   return (
     <>
       <div>
-        <h3 className="text-2xl leading-8 text-gray-200">
+        <h3 className="heading">
           <FormattedMessage {...messages.radarrsettings} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.radarrSettingsDescription} />
         </p>
       </div>
@@ -251,7 +251,7 @@ const SettingsServices: React.FC = () => {
           <FormattedMessage {...messages.deleteserverconfirm} />
         </Modal>
       </Transition>
-      <div className="mt-6 sm:mt-5">
+      <div className="section">
         {!radarrData && !radarrError && <LoadingSpinner />}
         {radarrData && !radarrError && (
           <>
@@ -283,10 +283,11 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="h-46 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-46">
+              <li className="h-46 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"
+                    className="mt-3 mb-3"
                     onClick={() =>
                       setEditRadarrModal({ open: true, radarr: null })
                     }
@@ -312,14 +313,14 @@ const SettingsServices: React.FC = () => {
         )}
       </div>
       <div className="mt-10">
-        <h3 className="text-2xl leading-8 text-gray-200">
+        <h3 className="heading">
           <FormattedMessage {...messages.sonarrsettings} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.sonarrSettingsDescription} />
         </p>
       </div>
-      <div className="mt-6 sm:mt-5">
+      <div className="section">
         {!sonarrData && !sonarrError && <LoadingSpinner />}
         {sonarrData && !sonarrError && (
           <>
@@ -352,10 +353,11 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="h-46 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-46">
+              <li className="h-46 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"
+                    className="mt-3 mb-3"
                     onClick={() =>
                       setEditSonarrModal({ open: true, sonarr: null })
                     }

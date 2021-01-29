@@ -6,12 +6,12 @@ body {
   @apply bg-gray-900;
 }
 
-.plex-button {
+.login-button {
   @apply flex justify-center w-full px-4 py-2 text-sm font-medium text-center text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md disabled:opacity-50;
   background-color: #cc7b19;
 }
 
-.plex-button:hover {
+.login-button:hover {
   background: #f19a30;
 }
 
@@ -34,7 +34,75 @@ body {
 }
 
 .error-message {
-  @apply relative top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center h-screen text-center text-gray-300;
+  @apply relative top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center h-screen text-center text-gray-300
+}
+
+.heading {
+  @apply text-2xl leading-8 text-gray-100
+}
+
+.description {
+  @apply max-w-2xl mt-1 text-sm leading-5 text-gray-500
+}
+
+.section {
+  @apply mt-6 mb-10 text-white
+}
+
+.form-row {
+  @apply mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start
+}
+
+.form-input {
+  @apply sm:col-span-2 text-white
+}
+
+.label-tip {
+  @apply block text-gray-500
+}
+
+.about {
+  @apply flex text-sm text-white sm:mt-0 sm:col-span-2
+}
+
+.about-label {
+  @apply block text-sm text-sm font-medium text-gray-400
+}
+
+input[type=checkbox] {
+  @apply w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md
+}
+
+.checkbox-label {
+  @apply block text-sm font-medium leading-5 text-gray-400 sm:mt-1 mb-1
+}
+
+input[type="text"], input[type="password"], select {
+  @apply flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5 text-white
+}
+
+input.rounded-l-only, select.rounded-l-only {
+  @apply rounded-r-none
+}
+
+input.rounded-r-only, select.rounded-r-only {
+  @apply rounded-l-none
+}
+
+.protocol {
+  @apply inline-flex items-center px-3 text-gray-100 bg-gray-600 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm
+}
+
+.text-label {
+  @apply block text-sm font-medium leading-5 text-gray-400 sm:mt-2 mb-1
+}
+
+.group {
+  @apply mt-10 text-white
+}
+
+.group-label {
+  @apply block text-sm font-medium leading-5 text-gray-400 mb-1
 }
 
 /* Used for animating height */

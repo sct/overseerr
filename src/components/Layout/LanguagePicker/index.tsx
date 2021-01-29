@@ -130,7 +130,6 @@ const LanguagePicker: React.FC = () => {
               </label>
               <select
                 id="language"
-                className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white bg-gray-700 border-gray-600 form-select focus:outline-none focus:ring-indigo focus:border-blue-800 sm:text-sm sm:leading-5"
                 onChange={(e) =>
                   setLocale && setLocale(e.target.value as AvailableLocales)
                 }

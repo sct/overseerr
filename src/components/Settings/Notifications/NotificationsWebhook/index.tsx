@@ -151,31 +151,30 @@ const NotificationsWebhook: React.FC = () => {
         };
 
         return (
-          <Form>
-            <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+          <Form className="section">
+            <div className="form-row">
               <label
                 htmlFor="enabled"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
+                className="checkbox-label"
               >
                 {intl.formatMessage(messages.agentenabled)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <Field
                   type="checkbox"
                   id="enabled"
                   name="enabled"
-                  className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                 />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+            <div className="form-row">
               <label
                 htmlFor="name"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                className="text-label"
               >
                 {intl.formatMessage(messages.webhookUrl)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="webhookUrl"
@@ -184,7 +183,6 @@ const NotificationsWebhook: React.FC = () => {
                     placeholder={intl.formatMessage(
                       messages.webhookUrlPlaceholder
                     )}
-                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
                 {errors.webhookUrl && touched.webhookUrl && (
@@ -192,32 +190,31 @@ const NotificationsWebhook: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+            <div className="form-row">
               <label
                 htmlFor="name"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                className="text-label"
               >
                 {intl.formatMessage(messages.authheader)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="authHeader"
                     name="authHeader"
                     type="text"
-                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+            <div className="form-row">
               <label
                 htmlFor="name"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                className="text-label"
               >
                 {intl.formatMessage(messages.customJson)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <JSONEditor
                     name="webhook-json-payload"
@@ -276,17 +273,17 @@ const NotificationsWebhook: React.FC = () => {
               </div>
             </div>
             <div className="mt-8">
-              <div role="group" aria-labelledby="label-permissions">
+              <div role="group" aria-labelledby="group-label" className="group">
                 <div className="sm:grid sm:grid-cols-4 sm:gap-4">
                   <div>
                     <div
-                      className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
-                      id="label-types"
+                      id="group-label"
+                  className="group-label"
                     >
                       {intl.formatMessage(messages.notificationtypes)}
                     </div>
                   </div>
-                  <div className="mt-4 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="max-w-lg">
                       <NotificationTypeSelector
                         currentTypes={values.types}

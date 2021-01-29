@@ -102,7 +102,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
   if (!title && !error) {
     return (
-      <tr className="w-full h-24 bg-gray-800 animate-pulse" ref={ref}>
+      <tr className="w-full h-24 animate-pulse" ref={ref}>
         <td colSpan={6}></td>
       </tr>
     );
@@ -110,14 +110,14 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
   if (!title || !requestData) {
     return (
-      <tr className="w-full h-24 bg-gray-800 animate-pulse">
+      <tr className="w-full h-24 animate-pulse">
         <td colSpan={6}></td>
       </tr>
     );
   }
 
   return (
-    <tr className="relative w-full h-24 p-2 text-white bg-gray-800">
+    <tr className="relative w-full h-24 p-2 text-sm">
       <RequestModal
         show={showEditModal}
         tmdbId={request.media.tmdbId}
@@ -159,7 +159,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   : `/tv/${requestData.media.tmdbId}`
               }
             >
-              <a className="min-w-0 mr-2 text-xl text-white truncate hover:underline">
+              <a className="min-w-0 mr-2 text-base truncate hover:underline">
                 {isMovie(title) ? title.title : title.name}
               </a>
             </Link>
@@ -207,7 +207,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
       </Table.TD>
       <Table.TD>
         <div className="flex flex-col">
-          <span className="text-sm text-gray-300">
+          <span>
             <FormattedDate value={requestData.createdAt} />
           </span>
         </div>
@@ -215,9 +215,9 @@ const RequestItem: React.FC<RequestItemProps> = ({
       <Table.TD>
         <div className="flex flex-col">
           {requestData.modifiedBy ? (
-            <span className="text-sm text-gray-300">
+            <span>
               {requestData.modifiedBy.displayName}
-              (
+              &nbsp;(
               <FormattedRelativeTime
                 value={Math.floor(
                   (new Date(requestData.updatedAt).getTime() - Date.now()) /
@@ -228,7 +228,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               )
             </span>
           ) : (
-            <span className="text-sm text-gray-300">N/A</span>
+            <span>N/A</span>
           )}
         </div>
       </Table.TD>

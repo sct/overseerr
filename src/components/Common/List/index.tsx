@@ -7,9 +7,9 @@ interface ListItemProps {
 
 const ListItem: React.FC<ListItemProps> = ({ title, children }) => {
   return (
-    <div className="py-4 sm:grid sm:grid-cols-4 sm:gap-4">
-      <dt className="text-sm font-medium text-gray-200">{title}</dt>
-      <dd className="mt-1 flex text-sm text-gray-400 sm:mt-0 sm:col-span-2">
+    <div className="form-row sm:py-2">
+      <dt className="about-label">{title}</dt>
+      <dd className="about">
         <span className="flex-grow">{children}</span>
       </dd>
     </div>
@@ -25,12 +25,12 @@ const List: React.FC<ListProps> = ({ title, subTitle, children }) => {
   return (
     <>
       <div>
-        <h3 className="text-2xl leading-8 text-gray-100">{title}</h3>
+        <h3 className="heading">{title}</h3>
         {subTitle && (
-          <p className="mt-1 max-w-2xl text-sm text-gray-300">{subTitle}</p>
+          <p className="description">{subTitle}</p>
         )}
       </div>
-      <div className="mt-5">
+      <div className="section">
         <dl>{children}</dl>
       </div>
     </>

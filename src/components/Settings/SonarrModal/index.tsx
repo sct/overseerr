@@ -293,47 +293,45 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               }
             >
               <div className="mb-6">
-                <div className="sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <div className="form-row">
                   <label
                     htmlFor="isDefault"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
+                    className="checkbox-label"
                   >
                     {intl.formatMessage(messages.defaultserver)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="isDefault"
                       name="isDefault"
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <div className="form-row">
                   <label
                     htmlFor="is4k"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
+                    className="checkbox-label"
                   >
                     {intl.formatMessage(messages.server4k)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="is4k"
                       name="is4k"
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="form-row">
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.servername)}
                     <span className="text-red-500">*</span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         id="name"
@@ -346,7 +344,6 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                           setIsValidated(false);
                           setFieldValue('name', e.target.value);
                         }}
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
                     {errors.name && touched.name && (
@@ -354,17 +351,17 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="form-row">
                   <label
                     htmlFor="hostname"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.hostname)}
                     <span className="text-red-500">*</span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
-                      <span className="inline-flex items-center px-3 text-gray-100 bg-gray-600 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
+                      <span className="protocol">
                         {values.ssl ? 'https://' : 'http://'}
                       </span>
                       <Field
@@ -376,7 +373,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                           setIsValidated(false);
                           setFieldValue('hostname', e.target.value);
                         }}
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 form-input rounded-r-md sm:text-sm sm:leading-5"
+                        className="rounded-r-only"
                       />
                     </div>
                     {errors.hostname && touched.hostname && (
@@ -384,15 +381,15 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <div className="form-row">
                   <label
                     htmlFor="port"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.port)}
                     <span className="text-red-500">*</span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       id="port"
                       name="port"
@@ -402,21 +399,20 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         setIsValidated(false);
                         setFieldValue('port', e.target.value);
                       }}
-                      className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md shadow-sm form-input sm:text-sm sm:leading-5"
                     />
                     {errors.port && touched.port && (
                       <div className="mt-2 text-red-500">{errors.port}</div>
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <div className="form-row">
                   <label
                     htmlFor="ssl"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
+                    className="checkbox-label"
                   >
                     {intl.formatMessage(messages.ssl)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="ssl"
@@ -425,11 +421,10 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         setIsValidated(false);
                         setFieldValue('ssl', !values.ssl);
                       }}
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="form-row">
                   <label
                     htmlFor="apiKey"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
@@ -437,7 +432,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.apiKey)}
                     <span className="text-red-500">*</span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         id="apiKey"
@@ -450,7 +445,6 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                           setIsValidated(false);
                           setFieldValue('apiKey', e.target.value);
                         }}
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
                     {errors.apiKey && touched.apiKey && (
@@ -458,14 +452,14 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="form-row">
                   <label
                     htmlFor="baseUrl"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                   >
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         id="baseUrl"
@@ -478,7 +472,6 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
                         }}
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
                     {errors.baseUrl && touched.baseUrl && (
@@ -486,7 +479,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="form-row">
                   <label
                     htmlFor="activeProfileId"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
@@ -494,14 +487,13 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.qualityprofile)}
                     <span className="text-red-500">*</span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         as="select"
                         id="activeProfileId"
                         name="activeProfileId"
                         disabled={!isValidated || isTesting}
-                        className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 bg-gray-700 border-gray-500 rounded-md form-select focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
                           {isTesting
@@ -530,7 +522,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="form-row">
                   <label
                     htmlFor="rootFolder"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
@@ -538,14 +530,13 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.rootfolder)}
                     <span className="text-red-500">*</span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         as="select"
                         id="rootFolder"
                         name="rootFolder"
                         disabled={!isValidated || isTesting}
-                        className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 bg-gray-700 border-gray-500 rounded-md form-select focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
                           {isTesting
@@ -572,21 +563,20 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="form-row">
                   <label
                     htmlFor="activeAnimeProfileId"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                   >
                     {intl.formatMessage(messages.animequalityprofile)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         as="select"
                         id="activeAnimeProfileId"
                         name="activeAnimeProfileId"
                         disabled={!isValidated || isTesting}
-                        className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 bg-gray-700 border-gray-500 rounded-md form-select focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
                           {isTesting
@@ -616,21 +606,20 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="form-row">
                   <label
                     htmlFor="activeAnimeRootFolder"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
                   >
                     {intl.formatMessage(messages.animerootfolder)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         as="select"
                         id="activeAnimeRootFolder"
                         name="activeAnimeRootFolder"
                         disabled={!isValidated || isTesting}
-                        className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 bg-gray-700 border-gray-500 rounded-md form-select focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
                       >
                         <option value="">
                           {isTesting
@@ -658,30 +647,29 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <div className="form-row">
                   <label
                     htmlFor="enableSeasonFolders"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
+                    className="checkbox-label"
                   >
                     {intl.formatMessage(messages.seasonfolders)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="enableSeasonFolders"
                       name="enableSeasonFolders"
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                <div className="form-row">
                   <label
                     htmlFor="externalUrl"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.externalUrl)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         id="externalUrl"
@@ -690,7 +678,6 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         placeholder={intl.formatMessage(
                           messages.externalUrlPlaceholder
                         )}
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
                     {errors.externalUrl && touched.externalUrl && (
@@ -700,26 +687,25 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <div className="form-row">
                   <label
                     htmlFor="syncEnabled"
                     className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
                   >
                     {intl.formatMessage(messages.syncEnabled)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="syncEnabled"
                       name="syncEnabled"
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <div className="form-row">
                   <label
                     htmlFor="preventSearch"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
                   >
                     {intl.formatMessage(messages.preventSearch)}
                   </label>
@@ -728,7 +714,6 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       type="checkbox"
                       id="preventSearch"
                       name="preventSearch"
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
