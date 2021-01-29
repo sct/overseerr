@@ -475,6 +475,8 @@
   "components.Settings.toastPlexRefreshSuccess": "Retrieved Plex server list.",
   "components.Settings.toastSettingsFailure": "Something went wrong while saving settings.",
   "components.Settings.toastSettingsSuccess": "Settings saved.",
+  "components.Settings.trustProxy": "Enable Proxy Support",
+  "components.Settings.trustProxyTip": "Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)",
   "components.Settings.validationHostnameRequired": "You must provide a hostname/IP",
   "components.Settings.validationPortRequired": "You must provide a port",
   "components.Setup.configureplex": "Configure Plex",

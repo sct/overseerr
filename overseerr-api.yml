@@ -62,6 +62,9 @@ components:
         applicationUrl:
           type: string
           example: https://os.example.com
+        trustProxy:
+          type: boolean
+          example: true
         csrfProtection:
           type: boolean
           example: false
