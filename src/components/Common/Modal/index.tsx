@@ -104,19 +104,32 @@ const Modal: React.FC<ModalProps> = ({
           aria-labelledby="modal-headline"
           ref={modalRef}
         >
-          {iconSvg && (
-            <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto text-white bg-gray-600 rounded-full sm:mx-0 sm:h-10 sm:w-10">
-              {iconSvg}
+          <div className="sm:flex sm:items-center">
+            {iconSvg && (
+              <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto text-white bg-gray-600 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                {iconSvg}
+              </div>
+            )}
+            <div
+              className={`mt-3 text-center sm:mt-0 sm:text-left ${
+                iconSvg ? 'sm:ml-4' : 'mb-6'
+              }`}
+            >
+              {title && (
+                <span
+                  className="text-lg font-medium leading-6 text-white"
+                  id="modal-headline"
+                >
+                  {title}
+                </span>
+              )}
+            </div>
+          </div>
+          {children && (
+            <div className="mt-4 text-sm leading-5 text-gray-300">
+              {children}
             </div>
           )}
-          <div
-            className={`mt-3 text-center sm:mt-0 sm:text-left ${
-              iconSvg ? 'sm:ml-4' : 'mb-6'
-            }`}
-          >
-            {title && <h3 className="heading">{title}</h3>}
-          </div>
-          {children && <div className="section">{children}</div>}
           {(onCancel || onOk || onSecondary || onTertiary) && (
             <div className="flex flex-row-reverse justify-center mt-5 sm:mt-4 sm:justify-start">
               {typeof onOk === 'function' && (
