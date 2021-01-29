@@ -11,5 +11,7 @@ node_modules
 **/.vscode
 config/db/db.sqlite3
 config/db/logs/overseerr.log
+docs
+snap
 Dockerfil**
 **.md
