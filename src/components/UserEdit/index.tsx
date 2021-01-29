@@ -95,7 +95,7 @@ const UserEdit: React.FC = () => {
               <div className="form-row">
                 <label
                   htmlFor="plexUsername"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                  className="text-label"
                 >
                   {intl.formatMessage(messages.plexUsername)}
                 </label>
@@ -114,7 +114,7 @@ const UserEdit: React.FC = () => {
             <div className="form-row">
               <label
                 htmlFor="username"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                className="text-label"
               >
                 {intl.formatMessage(messages.username)}
               </label>
@@ -127,7 +127,7 @@ const UserEdit: React.FC = () => {
             <div className="form-row">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                className="text-label"
               >
                 <FormattedMessage {...messages.email} />
               </label>
@@ -138,7 +138,7 @@ const UserEdit: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <span className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3">
+              <span className="text-label">
                 <FormattedMessage {...messages.avatar} />
               </span>
               <div className="form-input">
@@ -152,42 +152,42 @@ const UserEdit: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="mt-8 text-white">
-            <div role="group" aria-labelledby="group-label" className="group">
-              <div className="sm:grid sm:grid-cols-4 sm:gap-4">
-                <div>
-                  <div id="group-label" className="group-label">
-                    <FormattedMessage {...messages.permissions} />
-                  </div>
-                </div>
-                <div className="form-input">
-                  <div className="max-w-lg">
-                    <PermissionEdit
-                      user={currentUser}
-                      currentPermission={currentPermission}
-                      onUpdate={(newPermission) =>
-                        setCurrentPermission(newPermission)
-                      }
-                    />
-                  </div>
+          <div
+            role="group"
+            aria-labelledby="group-label"
+            className="group"
+          >
+            <div className="form-row">
+              <span id="group-label" className="group-label">
+                <FormattedMessage {...messages.permissions} />
+              </span>
+              <div className="form-input">
+                <div className="max-w-lg">
+                  <PermissionEdit
+                    user={currentUser}
+                    currentPermission={currentPermission}
+                    onUpdate={(newPermission) =>
+                      setCurrentPermission(newPermission)
+                    }
+                  />
                 </div>
               </div>
             </div>
-            <div className="pt-5 mt-8 border-t border-gray-700">
-              <div className="flex justify-end">
-                <span className="inline-flex ml-3 rounded-md shadow-sm">
-                  <Button
-                    buttonType="primary"
-                    type="submit"
-                    disabled={isSubmitting}
-                    onClick={() => handleSubmit}
-                  >
-                    {isSubmitting
-                      ? intl.formatMessage(messages.saving)
-                      : intl.formatMessage(messages.save)}
-                  </Button>
-                </span>
-              </div>
+          </div>
+          <div className="pt-5 mt-8 border-t border-gray-700">
+            <div className="flex justify-end">
+              <span className="inline-flex ml-3 rounded-md shadow-sm">
+                <Button
+                  buttonType="primary"
+                  type="submit"
+                  disabled={isSubmitting}
+                  onClick={() => handleSubmit}
+                >
+                  {isSubmitting
+                    ? intl.formatMessage(messages.saving)
+                    : intl.formatMessage(messages.save)}
+                </Button>
+              </span>
             </div>
           </div>
         </Form>

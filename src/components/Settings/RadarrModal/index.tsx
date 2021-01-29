@@ -390,10 +390,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="apiKey"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
-                  >
+                  <label htmlFor="apiKey" className="text-label">
                     {intl.formatMessage(messages.apiKey)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -418,10 +415,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="baseUrl"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
-                  >
+                  <label htmlFor="baseUrl" className="text-label">
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
                   <div className="form-input">
@@ -445,10 +439,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="activeProfileId"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
-                  >
+                  <label htmlFor="activeProfileId" className="text-label">
                     {intl.formatMessage(messages.qualityprofile)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -488,10 +479,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="rootFolder"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
-                  >
+                  <label htmlFor="rootFolder" className="text-label">
                     {intl.formatMessage(messages.rootfolder)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -529,10 +517,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="minimumAvailability"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
-                  >
+                  <label htmlFor="minimumAvailability" className="text-label">
                     {intl.formatMessage(messages.minimumAvailability)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -558,10 +543,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="externalUrl"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-2"
-                  >
+                  <label htmlFor="externalUrl" className="text-label">
                     {intl.formatMessage(messages.externalUrl)}
                   </label>
                   <div className="form-input">

@@ -200,7 +200,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       <div className="p-4 bg-gray-600 rounded-md shadow">
         <div className="flex flex-col items-center justify-between md:flex-row">
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
-            <label htmlFor="server" className="block text-sm font-medium">
+            <label htmlFor="server" className="text-label">
               {intl.formatMessage(messages.destinationserver)}
             </label>
             <select
@@ -221,7 +221,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             </select>
           </div>
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
-            <label htmlFor="server" className="block text-sm font-medium">
+            <label htmlFor="server" className="text-label">
               {intl.formatMessage(messages.qualityprofile)}
             </label>
             <select
@@ -253,7 +253,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             </select>
           </div>
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:mb-0">
-            <label htmlFor="server" className="block text-sm font-medium">
+            <label htmlFor="server" className="text-label">
               {intl.formatMessage(messages.rootfolder)}
             </label>
             <select

@@ -401,7 +401,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label
                     htmlFor="apiKey"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.apiKey)}
                     <span className="text-red-500">*</span>
@@ -429,7 +429,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label
                     htmlFor="baseUrl"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
@@ -456,7 +456,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label
                     htmlFor="activeProfileId"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.qualityprofile)}
                     <span className="text-red-500">*</span>
@@ -499,7 +499,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label
                     htmlFor="rootFolder"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.rootfolder)}
                     <span className="text-red-500">*</span>
@@ -540,7 +540,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label
                     htmlFor="activeAnimeProfileId"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.animequalityprofile)}
                   </label>
@@ -583,7 +583,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label
                     htmlFor="activeAnimeRootFolder"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-3"
+                    className="text-label"
                   >
                     {intl.formatMessage(messages.animerootfolder)}
                   </label>
@@ -661,7 +661,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label
                     htmlFor="syncEnabled"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
+                    className="checkbox-label"
                   >
                     {intl.formatMessage(messages.syncEnabled)}
                   </label>
@@ -676,7 +676,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label
                     htmlFor="preventSearch"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-1"
+                    className="checkbox-label"
                   >
                     {intl.formatMessage(messages.preventSearch)}
                   </label>

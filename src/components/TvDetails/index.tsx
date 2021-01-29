@@ -207,12 +207,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           (data.mediaInfo.status !== MediaStatus.AVAILABLE ||
             data.mediaInfo.status4k !== MediaStatus.AVAILABLE) && (
             <div className="mb-6">
-              <div className="flex flex-col sm:flex-row flex-nowrap">
-                {data?.mediaInfo &&
-                  data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
+              {data?.mediaInfo &&
+                data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
+                  <div className="flex flex-col sm:flex-row flex-nowrap mb-2">
                     <Button
                       onClick={() => markAvailable()}
-                      className="w-full mb-2 sm:mb-0 sm:mr-1 last:mr-0"
+                      className="w-full sm:mb-0"
                       buttonType="success"
                     >
                       <svg
@@ -229,12 +229,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       </svg>
                       <span>{intl.formatMessage(messages.markavailable)}</span>
                     </Button>
-                  )}
-                {data?.mediaInfo &&
-                  data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
+                  </div>
+                )}
+              {data?.mediaInfo &&
+                data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
+                  <div className="flex flex-col sm:flex-row flex-nowrap mb-2">
                     <Button
                       onClick={() => markAvailable(true)}
-                      className="w-full sm:ml-1 first:ml-0"
+                      className="w-full sm:mb-0"
                       buttonType="success"
                     >
                       <svg
@@ -253,8 +255,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                         {intl.formatMessage(messages.mark4kavailable)}
                       </span>
                     </Button>
-                  )}
-              </div>
+                  </div>
+                )}
               <div className="mt-3 text-xs text-gray-300">
                 {intl.formatMessage(messages.allseasonsmarkedavailable)}
               </div>

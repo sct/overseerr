@@ -364,16 +364,16 @@ const UserList: React.FC = () => {
 
       <div className="flex flex-col justify-between sm:flex-row mt-8">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
-        <div className="flex">
+        <div className="flex mt-1">
           <Button
-            className="mr-2 outline"
+            className="flex mr-2 outline"
             buttonType="primary"
             onClick={() => setCreateModal({ isOpen: true })}
           >
             {intl.formatMessage(messages.createlocaluser)}
           </Button>
           <Button
-            className="outline"
+            className="flex outline"
             buttonType="primary"
             disabled={isImporting}
             onClick={() => importFromPlex()}

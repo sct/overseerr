@@ -56,8 +56,8 @@ const RequestList: React.FC = () => {
     <>
       <div className="flex flex-col justify-between sm:flex-row mt-8">
         <Header>{intl.formatMessage(messages.requests)}</Header>
-        <div className="flex">
-          <div className="flex mb-2 mr-2">
+        <div className="flex mt-1">
+          <div className="flex mr-2">
             <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
               <svg
                 className="w-6 h-6"
@@ -97,7 +97,7 @@ const RequestList: React.FC = () => {
               </option>
             </select>
           </div>
-          <div className="flex mb-2">
+          <div className="flex">
             <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
               <svg
                 className="w-6 h-6"
