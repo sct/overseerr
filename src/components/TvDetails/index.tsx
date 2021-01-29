@@ -72,6 +72,9 @@ const messages = defineMessages({
   downloadstatus: 'Download Status',
   playonplex: 'Play on Plex',
   play4konplex: 'Play 4K on Plex',
+  markavailable: 'Mark as Available',
+  mark4kavailable: 'Mark 4K as Available',
+  allseasonsmarkedavailable: '* All seasons will be marked as available.',
 });
 
 interface TvDetailsProps {
@@ -118,6 +121,15 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       await axios.delete(`/api/v1/media/${data?.mediaInfo?.id}`);
       revalidate();
     }
+  };
+
+  const markAvailable = async (is4k = false) => {
+    await axios.get(`/api/v1/media/${data?.mediaInfo?.id}/available`, {
+      params: {
+        is4k,
+      },
+    });
+    revalidate();
   };
 
   const isComplete =
@@ -183,6 +195,63 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             </div>
           </>
         )}
+        {data?.mediaInfo &&
+          (data.mediaInfo.status !== MediaStatus.AVAILABLE ||
+            data.mediaInfo.status4k !== MediaStatus.AVAILABLE) && (
+            <div className="mb-6">
+              <div className="flex flex-col sm:flex-row flex-nowrap">
+                {data?.mediaInfo &&
+                  data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
+                    <Button
+                      onClick={() => markAvailable()}
+                      className="w-full mb-2 sm:mb-0 sm:mr-1 last:mr-0"
+                      buttonType="success"
+                    >
+                      <svg
+                        className="w-5 h-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>{intl.formatMessage(messages.markavailable)}</span>
+                    </Button>
+                  )}
+                {data?.mediaInfo &&
+                  data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
+                    <Button
+                      onClick={() => markAvailable(true)}
+                      className="w-full sm:ml-1 first:ml-0"
+                      buttonType="success"
+                    >
+                      <svg
+                        className="w-5 h-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>
+                        {intl.formatMessage(messages.mark4kavailable)}
+                      </span>
+                    </Button>
+                  )}
+              </div>
+              <div className="mt-3 text-xs text-gray-300">
+                {intl.formatMessage(messages.allseasonsmarkedavailable)}
+              </div>
+            </div>
+          )}
         <h3 className="mb-2 text-xl">
           {intl.formatMessage(messages.manageModalRequests)}
         </h3>

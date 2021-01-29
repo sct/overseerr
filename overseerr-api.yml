@@ -1975,8 +1975,8 @@ paths:
                     type: string
                     example: job-name
                   type:
-                      type: string
-                      enum: [process, command]
+                    type: string
+                    enum: [process, command]
                   name:
                     type: string
                     example: A Job Name
@@ -1984,8 +1984,8 @@ paths:
                     type: string
                     example: '2020-09-02T05:02:23.000Z'
                   running:
-                      type: boolean
-                      example: false
+                    type: boolean
+                    example: false
   /settings/jobs/{jobId}/cancel:
     get:
       summary: Cancel a specific job
@@ -2010,8 +2010,8 @@ paths:
                     type: string
                     example: job-name
                   type:
-                      type: string
-                      enum: [process, command]
+                    type: string
+                    enum: [process, command]
                   name:
                     type: string
                     example: A Job Name
@@ -2019,8 +2019,8 @@ paths:
                     type: string
                     example: '2020-09-02T05:02:23.000Z'
                   running:
-                      type: boolean
-                      example: false
+                    type: boolean
+                    example: false
   /settings/notifications:
     get:
       summary: Return notification settings
@@ -3532,6 +3532,41 @@ paths:
       responses:
         '204':
           description: Succesfully removed media item
+  /media/{mediaId}/{status}:
+    get:
+      summary: Update media status
+      description: Updates a medias status and returns the media in JSON format
+      tags:
+        - media
+      parameters:
+        - in: path
+          name: mediaId
+          description: Media ID
+          required: true
+          example: 1
+          schema:
+            type: string
+        - in: path
+          name: status
+          description: New status
+          required: true
+          example: available
+          schema:
+            type: string
+            enum: [available, partial, processing, pending, unknown]
+        - in: query
+          name: is4k
+          description: 4K Status
+          example: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Returned media
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaInfo'
   /collection/{collectionId}:
     get:
       summary: Get collection details
