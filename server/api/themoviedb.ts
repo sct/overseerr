@@ -126,6 +126,14 @@ export interface TmdbCreditCast {
   profile_path?: string;
 }
 
+export interface TmdbAggregateCreditCast extends TmdbCreditCast {
+  roles: {
+    credit_id: string;
+    character: string;
+    episode_count: number;
+  }[];
+}
+
 export interface TmdbCreditCrew {
   credit_id: string;
   gender?: number;
@@ -293,8 +301,10 @@ export interface TmdbTvDetails {
   type: string;
   vote_average: number;
   vote_count: number;
+  aggregate_credits: {
+    cast: TmdbAggregateCreditCast[];
+  };
   credits: {
-    cast: TmdbCreditCast[];
     crew: TmdbCreditCrew[];
   };
   external_ids: TmdbExternalIds;
@@ -499,7 +509,8 @@ class TheMovieDb {
       const response = await this.axios.get<TmdbTvDetails>(`/tv/${tvId}`, {
         params: {
           language,
-          append_to_response: 'credits,external_ids,keywords,videos',
+          append_to_response:
+            'aggregate_credits,credits,external_ids,keywords,videos',
         },
       });
 
