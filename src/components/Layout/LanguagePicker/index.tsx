@@ -130,6 +130,7 @@ const LanguagePicker: React.FC = () => {
               </label>
               <select
                 id="language"
+                className="rounded-md"
                 onChange={(e) =>
                   setLocale && setLocale(e.target.value as AvailableLocales)
                 }
