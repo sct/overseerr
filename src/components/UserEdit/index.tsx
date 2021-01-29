@@ -93,10 +93,7 @@ const UserEdit: React.FC = () => {
             </div>
             {user?.userType === UserType.PLEX && (
               <div className="form-row">
-                <label
-                  htmlFor="plexUsername"
-                  className="text-label"
-                >
+                <label htmlFor="plexUsername" className="text-label">
                   {intl.formatMessage(messages.plexUsername)}
                 </label>
                 <div className="form-input">
@@ -112,10 +109,7 @@ const UserEdit: React.FC = () => {
               </div>
             )}
             <div className="form-row">
-              <label
-                htmlFor="username"
-                className="text-label"
-              >
+              <label htmlFor="username" className="text-label">
                 {intl.formatMessage(messages.username)}
               </label>
               <div className="form-input">
@@ -125,10 +119,7 @@ const UserEdit: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label
-                htmlFor="email"
-                className="text-label"
-              >
+              <label htmlFor="email" className="text-label">
                 <FormattedMessage {...messages.email} />
               </label>
               <div className="form-input">
@@ -152,11 +143,7 @@ const UserEdit: React.FC = () => {
               </div>
             </div>
           </div>
-          <div
-            role="group"
-            aria-labelledby="group-label"
-            className="group"
-          >
+          <div role="group" aria-labelledby="group-label" className="group">
             <div className="form-row">
               <span id="group-label" className="group-label">
                 <FormattedMessage {...messages.permissions} />

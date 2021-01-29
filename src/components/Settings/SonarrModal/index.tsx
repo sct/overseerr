@@ -399,10 +399,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="apiKey"
-                    className="text-label"
-                  >
+                  <label htmlFor="apiKey" className="text-label">
                     {intl.formatMessage(messages.apiKey)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -427,10 +424,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="baseUrl"
-                    className="text-label"
-                  >
+                  <label htmlFor="baseUrl" className="text-label">
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
                   <div className="form-input">
@@ -454,10 +448,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="activeProfileId"
-                    className="text-label"
-                  >
+                  <label htmlFor="activeProfileId" className="text-label">
                     {intl.formatMessage(messages.qualityprofile)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -497,10 +488,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="rootFolder"
-                    className="text-label"
-                  >
+                  <label htmlFor="rootFolder" className="text-label">
                     {intl.formatMessage(messages.rootfolder)}
                     <span className="text-red-500">*</span>
                   </label>
@@ -538,10 +526,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="activeAnimeProfileId"
-                    className="text-label"
-                  >
+                  <label htmlFor="activeAnimeProfileId" className="text-label">
                     {intl.formatMessage(messages.animequalityprofile)}
                   </label>
                   <div className="form-input">
@@ -581,10 +566,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="activeAnimeRootFolder"
-                    className="text-label"
-                  >
+                  <label htmlFor="activeAnimeRootFolder" className="text-label">
                     {intl.formatMessage(messages.animerootfolder)}
                   </label>
                   <div className="form-input">
@@ -659,10 +641,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="syncEnabled"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="syncEnabled" className="checkbox-label">
                     {intl.formatMessage(messages.syncEnabled)}
                   </label>
                   <div className="form-input">
@@ -674,10 +653,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="preventSearch"
-                    className="checkbox-label"
-                  >
+                  <label htmlFor="preventSearch" className="checkbox-label">
                     {intl.formatMessage(messages.preventSearch)}
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
