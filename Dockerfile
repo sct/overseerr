@@ -27,7 +27,7 @@ COPY --from=BUILD_IMAGE /app/.next ./.next
 COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
 
 RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json && \
-  apk add tzdata
+  apk add --update --no-cache tzdata
 
 CMD yarn start
 
