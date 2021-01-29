@@ -25,7 +25,7 @@ RUN apk add --no-cache tzdata
 ARG COMMIT_TAG
 ENV COMMIT_TAG=${COMMIT_TAG}
 
-COPY [^src]* /app/
+COPY . /app/
 WORKDIR /app
 
 # copy from build image
