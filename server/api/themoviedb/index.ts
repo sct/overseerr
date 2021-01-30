@@ -1,4 +1,4 @@
-import NodeCache from 'node-cache';
+import cacheManager from '../../lib/cache';
 import ExternalAPI from '../externalapi';
 import {
   TmdbCollection,
@@ -56,8 +56,6 @@ interface DiscoverTvOptions {
     | 'first_air_date.desc';
 }
 
-const TmdbCache = new NodeCache({ stdTTL: 300, checkperiod: 120 });
-
 class TheMovieDb extends ExternalAPI {
   constructor() {
     super(
@@ -66,7 +64,7 @@ class TheMovieDb extends ExternalAPI {
         api_key: 'db55323b8d3e4154498498a75642b381',
       },
       {
-        nodeCache: TmdbCache,
+        nodeCache: cacheManager.getCache('tmdb')?.data,
       }
     );
   }
