@@ -18,6 +18,7 @@ import globalMessages from '../../i18n/globalMessages';
 import SeasonRequest from '../../../server/entity/SeasonRequest';
 import Alert from '../Common/Alert';
 import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
+import SearchByNameModal from './SearchByNameModal';
 
 const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',
@@ -26,7 +27,7 @@ const messages = defineMessages({
   requestSuccess: '<strong>{title}</strong> successfully requested!',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
-  requesting: 'Requesting...',
+  requesting: 'Requesting…',
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
   selectseason: 'Select season(s)',
@@ -36,10 +37,16 @@ const messages = defineMessages({
   seasonnumber: 'Season {number}',
   extras: 'Extras',
   notrequested: 'Not Requested',
-  errorediting: 'Something went wrong editing the request.',
+  errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request edited.',
   requestcancelled: 'Request cancelled.',
-  autoapproval: 'Auto Approval',
+  autoapproval: 'Automatic Approval',
+  requesterror: 'Something went wrong while submitting the request.',
+  next: 'Next',
+  notvdbid: 'No TVDB ID was found for the item on TMDb.',
+  notvdbiddescription:
+    'Either add the TVDB ID to TMDb and try again later, or select the correct match below:',
+  backbutton: 'Back',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -73,6 +80,12 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   );
   const intl = useIntl();
   const { hasPermission } = useUser();
+  const [searchModal, setSearchModal] = useState<{
+    show: boolean;
+  }>({
+    show: true,
+  });
+  const [tvdbId, setTvdbId] = useState<number | undefined>(undefined);
 
   const updateRequest = async () => {
     if (!editRequest) {
@@ -129,38 +142,47 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     if (onUpdating) {
       onUpdating(true);
     }
-    let overrideParams = {};
-    if (requestOverrides) {
-      overrideParams = {
-        serverId: requestOverrides.server,
-        profileId: requestOverrides.profile,
-        rootFolder: requestOverrides.folder,
-      };
-    }
-    const response = await axios.post<MediaRequest>('/api/v1/request', {
-      mediaId: data?.id,
-      tvdbId: data?.externalIds.tvdbId,
-      mediaType: 'tv',
-      is4k,
-      seasons: selectedSeasons,
-      ...overrideParams,
-    });
 
-    if (response.data) {
-      if (onComplete) {
-        onComplete(response.data.media.status);
+    try {
+      let overrideParams = {};
+      if (requestOverrides) {
+        overrideParams = {
+          serverId: requestOverrides.server,
+          profileId: requestOverrides.profile,
+          rootFolder: requestOverrides.folder,
+        };
       }
-      addToast(
-        <span>
-          {intl.formatMessage(messages.requestSuccess, {
-            title: data?.name,
-            strong: function strong(msg) {
-              return <strong>{msg}</strong>;
-            },
-          })}
-        </span>,
-        { appearance: 'success', autoDismiss: true }
-      );
+      const response = await axios.post<MediaRequest>('/api/v1/request', {
+        mediaId: data?.id,
+        tvdbId: tvdbId ?? data?.externalIds.tvdbId,
+        mediaType: 'tv',
+        is4k,
+        seasons: selectedSeasons,
+        ...overrideParams,
+      });
+
+      if (response.data) {
+        if (onComplete) {
+          onComplete(response.data.media.status);
+        }
+        addToast(
+          <span>
+            {intl.formatMessage(messages.requestSuccess, {
+              title: data?.name,
+              strong: function strong(msg) {
+                return <strong>{msg}</strong>;
+              },
+            })}
+          </span>,
+          { appearance: 'success', autoDismiss: true }
+        );
+      }
+    } catch (e) {
+      addToast(intl.formatMessage(messages.requesterror), {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    } finally {
       if (onUpdating) {
         onUpdating(false);
       }
@@ -188,7 +210,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         (season) =>
           (season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
             season[is4k ? 'status4k' : 'status'] ===
-              MediaStatus.PARTIALLY_AVAILABLE) &&
+              MediaStatus.PARTIALLY_AVAILABLE ||
+            season[is4k ? 'status4k' : 'status'] === MediaStatus.PROCESSING) &&
           !requestedSeasons.includes(season.seasonNumber)
       )
       .map((season) => season.seasonNumber);
@@ -279,11 +302,24 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     return seasonRequest;
   };
 
-  return (
+  return !data?.externalIds.tvdbId && searchModal.show ? (
+    <SearchByNameModal
+      tvdbId={tvdbId}
+      setTvdbId={setTvdbId}
+      closeModal={() => setSearchModal({ show: false })}
+      loading={!data && !error}
+      onCancel={onCancel}
+      modalTitle={intl.formatMessage(
+        is4k ? messages.request4ktitle : messages.requesttitle,
+        { title: data?.name }
+      )}
+      tmdbId={tmdbId}
+    />
+  ) : (
     <Modal
       loading={!data && !error}
       backgroundClickable
-      onCancel={onCancel}
+      onCancel={tvdbId ? () => setSearchModal({ show: true }) : onCancel}
       onOk={() => (editRequest ? updateRequest() : sendRequest())}
       title={intl.formatMessage(
         is4k ? messages.request4ktitle : messages.requesttitle,
@@ -301,6 +337,11 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       okDisabled={editRequest ? false : selectedSeasons.length === 0}
       okButtonType={
         editRequest && selectedSeasons.length === 0 ? 'danger' : `primary`
+      }
+      cancelText={
+        tvdbId
+          ? intl.formatMessage(messages.backbutton)
+          : intl.formatMessage(globalMessages.cancel)
       }
       iconSvg={
         <svg
@@ -469,13 +510,15 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                   {intl.formatMessage(globalMessages.pending)}
                                 </Badge>
                               )}
-                            {!mediaSeason &&
+                            {((!mediaSeason &&
                               seasonRequest?.status ===
-                                MediaRequestStatus.APPROVED && (
-                                <Badge badgeType="primary">
-                                  {intl.formatMessage(globalMessages.requested)}
-                                </Badge>
-                              )}
+                                MediaRequestStatus.APPROVED) ||
+                              mediaSeason?.[is4k ? 'status4k' : 'status'] ===
+                                MediaStatus.PROCESSING) && (
+                              <Badge badgeType="primary">
+                                {intl.formatMessage(globalMessages.requested)}
+                              </Badge>
+                            )}
                             {!mediaSeason &&
                               seasonRequest?.status ===
                                 MediaRequestStatus.AVAILABLE && (

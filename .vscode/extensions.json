@@ -19,6 +19,9 @@
 
     "stylelint.vscode-stylelint",
 
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+
+    // https://marketplace.visualstudio.com/items?itemName=heybourn.headwind
+    "heybourn.headwind"
   ]
 }

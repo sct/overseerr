@@ -5,6 +5,7 @@ declare module 'plex-api' {
       port: number;
       token?: string;
       https?: boolean;
+      timeout?: number;
       authenticator: {
         authenticate: (
           _plexApi: PlexAPI,
@@ -19,7 +20,7 @@ declare module 'plex-api' {
       };
       requestOptions?: Record<string, string | number>;
     });
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     query: <T extends Record<string, any>>(endpoint: string) => Promise<T>;
   }
 }

@@ -264,6 +264,34 @@
         "code",
         "translation"
       ]
+    },
+    {
+      "login": "chriscpritchard",
+      "name": "Chris Pritchard",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1839074?v=4",
+      "profile": "https://github.com/chriscpritchard",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "Tamberlox",
+      "name": "Tamberlox",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/56069014?v=4",
+      "profile": "https://github.com/Tamberlox",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "hmnd",
+      "name": "David",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12853597?v=4",
+      "profile": "https://hmnd.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",

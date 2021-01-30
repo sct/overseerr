@@ -30,7 +30,7 @@ const messages = defineMessages({
   requestedby: 'Requested by {username}',
   seasons: 'Seasons',
   notavailable: 'N/A',
-  failedretry: 'Something went wrong retrying the request',
+  failedretry: 'Something went wrong while retrying the request.',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -141,7 +141,11 @@ const RequestItem: React.FC<RequestItemProps> = ({
           >
             <a className="flex-shrink-0 hidden mr-4 sm:block">
               <img
-                src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`}
+                src={
+                  title.posterPath
+                    ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                    : '/images/overseerr_poster_not_found.png'
+                }
                 alt=""
                 className="w-12 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer transform-gpu hover:scale-105 hover:shadow-md"
               />
@@ -161,7 +165,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             </Link>
             <div className="text-sm">
               {intl.formatMessage(messages.requestedby, {
-                username: requestData.requestedBy.username,
+                username: requestData.requestedBy.displayName,
               })}
             </div>
             {requestData.seasons.length > 0 && (
@@ -188,7 +192,16 @@ const RequestItem: React.FC<RequestItemProps> = ({
               : intl.formatMessage(globalMessages.failed)}
           </Badge>
         ) : (
-          <StatusBadge status={requestData.media.status} />
+          <StatusBadge
+            status={requestData.media.status}
+            inProgress={
+              (
+                requestData.media[
+                  requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
+                ] ?? []
+              ).length > 0
+            }
+          />
         )}
       </Table.TD>
       <Table.TD>
@@ -202,7 +215,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
         <div className="flex flex-col">
           {requestData.modifiedBy ? (
             <span className="text-sm text-gray-300">
-              {requestData.modifiedBy.username} (
+              {requestData.modifiedBy.displayName}
+              (
               <FormattedRelativeTime
                 value={Math.floor(
                   (new Date(requestData.updatedAt).getTime() - Date.now()) /

@@ -7,6 +7,8 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { useIntl, defineMessages, FormattedMessage } from 'react-intl';
 import type { TvDetails } from '../../../server/models/Tv';
 import Header from '../Common/Header';
+import { MediaStatus } from '../../../server/constants/media';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   similar: 'Similar Series',
@@ -21,6 +23,7 @@ interface SearchResult {
 }
 
 const TvSimilar: React.FC = () => {
+  const settings = useSettings();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
@@ -55,10 +58,18 @@ const TvSimilar: React.FC = () => {
     return <div>{error}</div>;
   }
 
-  const titles = data?.reduce(
+  let titles = (data ?? []).reduce(
     (a, v) => [...a, ...v.results],
     [] as MovieResult[]
   );
+
+  if (settings.currentSettings.hideAvailable) {
+    titles = titles.filter(
+      (i) =>
+        i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
+        i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE
+    );
+  }
 
   const isEmpty = !isLoadingInitialData && titles?.length === 0;
   const isReachingEnd =

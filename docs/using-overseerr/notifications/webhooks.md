@@ -42,8 +42,8 @@ These variables are usually the target user of the notification.
 These variables are only included in media related notifications, such as requests.
 
 - `{{media_type}}` Media type. Either `movie` or `tv`.
-- `{{media_tmdbid}}` Media's TMDB ID.
-- `{{media_imdbid}}` Media's IMDB ID.
+- `{{media_tmdbid}}` Media's TMDb ID.
+- `{{media_imdbid}}` Media's IMDb ID.
 - `{{media_tvdbid}}` Media's TVDB ID.
 - `{{media_status}}` Media's availability status. (Ex. `AVAILABLE` or `PENDING`)
 - `{{media_status4k}}` Media's 4K availability status. (Ex. `AVAILABLE` or `PENDING`)

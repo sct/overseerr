@@ -104,7 +104,7 @@ class DiscordAgent
         fields.push(
           {
             name: 'Requested By',
-            value: payload.notifyUser.username ?? '',
+            value: payload.notifyUser.displayName ?? '',
             inline: true,
           },
           {
@@ -126,7 +126,7 @@ class DiscordAgent
         fields.push(
           {
             name: 'Requested By',
-            value: payload.notifyUser.username ?? '',
+            value: payload.notifyUser.displayName ?? '',
             inline: true,
           },
           {
@@ -148,7 +148,7 @@ class DiscordAgent
         fields.push(
           {
             name: 'Requested By',
-            value: payload.notifyUser.username ?? '',
+            value: payload.notifyUser.displayName ?? '',
             inline: true,
           },
           {
@@ -170,7 +170,7 @@ class DiscordAgent
         fields.push(
           {
             name: 'Requested By',
-            value: payload.notifyUser.username ?? '',
+            value: payload.notifyUser.displayName ?? '',
             inline: true,
           },
           {

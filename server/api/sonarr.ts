@@ -1,9 +1,18 @@
 import Axios, { AxiosInstance } from 'axios';
+import { SonarrSettings } from '../lib/settings';
 import logger from '../logger';
 
 interface SonarrSeason {
   seasonNumber: number;
   monitored: boolean;
+  statistics?: {
+    previousAiring?: string;
+    episodeFileCount: number;
+    episodeCount: number;
+    totalEpisodeCount: number;
+    sizeOnDisk: number;
+    percentOfEpisodes: number;
+  };
 }
 
 export interface SonarrSeries {
@@ -55,6 +64,33 @@ export interface SonarrSeries {
   };
 }
 
+interface QueueItem {
+  seriesId: number;
+  episodeId: number;
+  size: number;
+  title: string;
+  sizeleft: number;
+  timeleft: string;
+  estimatedCompletionTime: string;
+  status: string;
+  trackedDownloadStatus: string;
+  trackedDownloadState: string;
+  downloadId: string;
+  protocol: string;
+  downloadClient: string;
+  indexer: string;
+  id: number;
+}
+
+interface QueueResponse {
+  page: number;
+  pageSize: number;
+  sortKey: string;
+  sortDirection: string;
+  totalRecords: number;
+  records: QueueItem[];
+}
+
 interface SonarrProfile {
   id: number;
   name: string;
@@ -84,6 +120,12 @@ interface AddSeriesOptions {
 }
 
 class SonarrAPI {
+  static buildSonarrUrl(sonarrSettings: SonarrSettings, path?: string): string {
+    return `${sonarrSettings.useSsl ? 'https' : 'http'}://${
+      sonarrSettings.hostname
+    }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}${path}`;
+  }
+
   private axios: AxiosInstance;
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
     this.axios = Axios.create({
@@ -92,6 +134,38 @@ class SonarrAPI {
         apikey: apiKey,
       },
     });
+  }
+
+  public async getSeries(): Promise<SonarrSeries[]> {
+    try {
+      const response = await this.axios.get<SonarrSeries[]>('/series');
+
+      return response.data;
+    } catch (e) {
+      throw new Error(`[Radarr] Failed to retrieve series: ${e.message}`);
+    }
+  }
+
+  public async getSeriesByTitle(title: string): Promise<SonarrSeries[]> {
+    try {
+      const response = await this.axios.get<SonarrSeries[]>('/series/lookup', {
+        params: {
+          term: title,
+        },
+      });
+
+      if (!response.data[0]) {
+        throw new Error('No series found');
+      }
+
+      return response.data;
+    } catch (e) {
+      logger.error('Error retrieving series by series title', {
+        label: 'Sonarr API',
+        message: e.message,
+      });
+      throw new Error('No series found');
+    }
   }
 
   public async getSeriesByTvdbId(id: number): Promise<SonarrSeries> {
@@ -116,7 +190,7 @@ class SonarrAPI {
     }
   }
 
-  public async addSeries(options: AddSeriesOptions): Promise<boolean> {
+  public async addSeries(options: AddSeriesOptions): Promise<SonarrSeries> {
     try {
       const series = await this.getSeriesByTvdbId(options.tvdbid);
 
@@ -138,19 +212,19 @@ class SonarrAPI {
           logger.info('Sonarr accepted request. Updated existing series', {
             label: 'Sonarr',
           });
-          logger.debug('Sonarr add details', {
+          logger.debug('Sonarr update details', {
             label: 'Sonarr',
             movie: newSeriesResponse.data,
           });
         } else {
-          logger.error('Failed to add movie to Sonarr', {
+          logger.error('Failed to update series in Sonarr', {
             label: 'Sonarr',
             options,
           });
-          return false;
+          throw new Error('Failed to update series in Sonarr');
         }
 
-        return true;
+        return newSeriesResponse.data;
       }
 
       const createdSeriesResponse = await this.axios.post<SonarrSeries>(
@@ -189,18 +263,18 @@ class SonarrAPI {
           label: 'Sonarr',
           options,
         });
-        return false;
+        throw new Error('Failed to add series to Sonarr');
       }
 
-      return true;
+      return createdSeriesResponse.data;
     } catch (e) {
-      logger.error('Something went wrong adding a series to Sonarr', {
+      logger.error('Something went wrong while adding a series to Sonarr.', {
         label: 'Sonarr API',
         errorMessage: e.message,
         error: e,
         response: e?.response?.data,
       });
-      return false;
+      throw new Error('Failed to add series');
     }
   }
 
@@ -210,7 +284,7 @@ class SonarrAPI {
 
       return response.data;
     } catch (e) {
-      logger.error('Something went wrong retrieving Sonarr profiles', {
+      logger.error('Something went wrong while retrieving Sonarr profiles.', {
         label: 'Sonarr API',
         message: e.message,
       });
@@ -224,10 +298,14 @@ class SonarrAPI {
 
       return response.data;
     } catch (e) {
-      logger.error('Something went wrong retrieving Sonarr root folders', {
-        label: 'Sonarr API',
-        message: e.message,
-      });
+      logger.error(
+        'Something went wrong while retrieving Sonarr root folders.',
+        {
+          label: 'Sonarr API',
+          message: e.message,
+        }
+      );
+
       throw new Error('Failed to get root folders');
     }
   }
@@ -256,6 +334,16 @@ class SonarrAPI {
 
     return newSeasons;
   }
+
+  public getQueue = async (): Promise<QueueItem[]> => {
+    try {
+      const response = await this.axios.get<QueueResponse>(`/queue`);
+
+      return response.data.records;
+    } catch (e) {
+      throw new Error(`[Radarr] Failed to retrieve queue: ${e.message}`);
+    }
+  };
 }
 
 export default SonarrAPI;

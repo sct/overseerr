@@ -28,17 +28,18 @@ const messages = defineMessages({
   request4ktitle: 'Request {title} in 4K',
   close: 'Close',
   cancel: 'Cancel Request',
-  cancelling: 'Cancelling...',
+  cancelling: 'Cancelling…',
   pendingrequest: 'Pending request for {title}',
   pending4krequest: 'Pending request for {title} in 4K',
-  requesting: 'Requesting...',
+  requesting: 'Requesting…',
   request: 'Request',
   request4k: 'Request 4K',
-  requestfrom: 'There is currently a pending request from {username}',
-  request4kfrom: 'There is currently a pending 4K request from {username}',
-  errorediting: 'Something went wrong editing the request.',
+  requestfrom: 'There is a pending request from {username}.',
+  request4kfrom: 'There is a pending 4K request from {username}.',
+  errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request edited.',
-  autoapproval: 'Auto Approval',
+  autoapproval: 'Automatic Approval',
+  requesterror: 'Something went wrong while submitting the request.',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -78,41 +79,50 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
 
   const sendRequest = useCallback(async () => {
     setIsUpdating(true);
-    let overrideParams = {};
-    if (requestOverrides) {
-      overrideParams = {
-        serverId: requestOverrides.server,
-        profileId: requestOverrides.profile,
-        rootFolder: requestOverrides.folder,
-      };
-    }
-    const response = await axios.post<MediaRequest>('/api/v1/request', {
-      mediaId: data?.id,
-      mediaType: 'movie',
-      is4k,
-      ...overrideParams,
-    });
 
-    if (response.data) {
-      if (onComplete) {
-        onComplete(
-          hasPermission(Permission.AUTO_APPROVE) ||
-            hasPermission(Permission.AUTO_APPROVE_MOVIE)
-            ? MediaStatus.PROCESSING
-            : MediaStatus.PENDING
+    try {
+      let overrideParams = {};
+      if (requestOverrides) {
+        overrideParams = {
+          serverId: requestOverrides.server,
+          profileId: requestOverrides.profile,
+          rootFolder: requestOverrides.folder,
+        };
+      }
+      const response = await axios.post<MediaRequest>('/api/v1/request', {
+        mediaId: data?.id,
+        mediaType: 'movie',
+        is4k,
+        ...overrideParams,
+      });
+
+      if (response.data) {
+        if (onComplete) {
+          onComplete(
+            hasPermission(Permission.AUTO_APPROVE) ||
+              hasPermission(Permission.AUTO_APPROVE_MOVIE)
+              ? MediaStatus.PROCESSING
+              : MediaStatus.PENDING
+          );
+        }
+        addToast(
+          <span>
+            {intl.formatMessage(messages.requestSuccess, {
+              title: data?.title,
+              strong: function strong(msg) {
+                return <strong>{msg}</strong>;
+              },
+            })}
+          </span>,
+          { appearance: 'success', autoDismiss: true }
         );
       }
-      addToast(
-        <span>
-          {intl.formatMessage(messages.requestSuccess, {
-            title: data?.title,
-            strong: function strong(msg) {
-              return <strong>{msg}</strong>;
-            },
-          })}
-        </span>,
-        { appearance: 'success', autoDismiss: true }
-      );
+    } catch (e) {
+      addToast(intl.formatMessage(messages.requesterror), {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    } finally {
       setIsUpdating(false);
     }
   }, [data, onComplete, addToast, requestOverrides]);
@@ -123,25 +133,29 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
 
   const cancelRequest = async () => {
     setIsUpdating(true);
-    const response = await axios.delete<MediaRequest>(
-      `/api/v1/request/${activeRequest?.id}`
-    );
 
-    if (response.status === 204) {
-      if (onComplete) {
-        onComplete(MediaStatus.UNKNOWN);
-      }
-      addToast(
-        <span>
-          {intl.formatMessage(messages.requestCancel, {
-            title: data?.title,
-            strong: function strong(msg) {
-              return <strong>{msg}</strong>;
-            },
-          })}
-        </span>,
-        { appearance: 'success', autoDismiss: true }
+    try {
+      const response = await axios.delete<MediaRequest>(
+        `/api/v1/request/${activeRequest?.id}`
       );
+
+      if (response.status === 204) {
+        if (onComplete) {
+          onComplete(MediaStatus.UNKNOWN);
+        }
+        addToast(
+          <span>
+            {intl.formatMessage(messages.requestCancel, {
+              title: data?.title,
+              strong: function strong(msg) {
+                return <strong>{msg}</strong>;
+              },
+            })}
+          </span>,
+          { appearance: 'success', autoDismiss: true }
+        );
+      }
+    } catch (e) {
       setIsUpdating(false);
     }
   };
@@ -210,7 +224,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         {intl.formatMessage(
           is4k ? messages.request4kfrom : messages.requestfrom,
           {
-            username: activeRequest.requestedBy.username,
+            username: activeRequest.requestedBy.displayName,
           }
         )}
         {hasPermission(Permission.REQUEST_ADVANCED) && (

@@ -7,6 +7,8 @@ import Header from '../Common/Header';
 import { LanguageContext } from '../../context/LanguageContext';
 import type { MovieDetails } from '../../../server/models/Movie';
 import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
+import { MediaStatus } from '../../../server/constants/media';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   similar: 'Similar Titles',
@@ -21,6 +23,7 @@ interface SearchResult {
 }
 
 const MovieSimilar: React.FC = () => {
+  const settings = useSettings();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
@@ -55,10 +58,18 @@ const MovieSimilar: React.FC = () => {
     return <div>{error}</div>;
   }
 
-  const titles = data?.reduce(
+  let titles = (data ?? []).reduce(
     (a, v) => [...a, ...v.results],
     [] as MovieResult[]
   );
+
+  if (settings.currentSettings.hideAvailable) {
+    titles = titles.filter(
+      (i) =>
+        i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
+        i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE
+    );
+  }
 
   const isEmpty = !isLoadingInitialData && titles?.length === 0;
   const isReachingEnd =

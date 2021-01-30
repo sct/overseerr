@@ -1,5 +1,5 @@
 import NodePlexAPI from 'plex-api';
-import { getSettings } from '../lib/settings';
+import { getSettings, PlexSettings } from '../lib/settings';
 
 export interface PlexLibraryItem {
   ratingKey: string;
@@ -80,13 +80,26 @@ interface PlexMetadataResponse {
 class PlexAPI {
   private plexClient: NodePlexAPI;
 
-  constructor({ plexToken }: { plexToken?: string }) {
+  constructor({
+    plexToken,
+    plexSettings,
+    timeout,
+  }: {
+    plexToken?: string;
+    plexSettings?: PlexSettings;
+    timeout?: number;
+  }) {
     const settings = getSettings();
+    let settingsPlex: PlexSettings | undefined;
+    plexSettings
+      ? (settingsPlex = plexSettings)
+      : (settingsPlex = getSettings().plex);
 
     this.plexClient = new NodePlexAPI({
-      hostname: settings.plex.ip,
-      port: settings.plex.port,
-      https: settings.plex.useSsl,
+      hostname: settingsPlex.ip,
+      port: settingsPlex.port,
+      https: settingsPlex.useSsl,
+      timeout: timeout,
       token: plexToken,
       authenticator: {
         authenticate: (
@@ -111,6 +124,7 @@ class PlexAPI {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public async getStatus() {
     return await this.plexClient.query('/');
   }

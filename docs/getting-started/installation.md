@@ -121,26 +121,49 @@ This version can break any moment. Be prepared to troubleshoot any issues that a
 {% tabs %}
 
 {% tab title="Gentoo" %}
-Portage overlay [GitHub Repository](https://github.com/chriscpritchard/overseerr-overlay)
+Portage overlay [GitHub Repository](https://github.com/chriscpritchard/overseerr-overlay).
+
+This is now included in the list of [Gentoo repositories](https://overlays.gentoo.org/), so can be easily enabled with `eselect repository`
 
 Efforts will be made to keep up to date with the latest releases, however, this cannot be guaranteed.
 
-To enable using eselect repository, run:
+**To enable:**
+To enable using `eselect repository`, run:
 
 ```bash
-eselect repository add overseerr-overlay git https://github.com/chriscpritchard/overseerr-overlay.git
+eselect repository enable overseerr-overlay
 ```
 
+**To install:**
 Once complete, you can just run:
 
 ```bash
 emerge www-apps/overseerr
 ```
 
+**To install the development build:**
+A live ebuild (`=www-apps/overseerr-9999`) is also available. To use this, you will need to modify accept_keywords for this package:
+
+```bash
+emerge --autounmask --autounmask-write "=www-apps/overseerr-9999"
+```
+
+Once installed, you will not be notified of updates, so you can update with:
+
+```bash
+emerge @live-rebuild
+```
+
+or use `app-portage/smart-live-rebuild`
+
+{% hint style="danger" %}
+This version can break any moment. Be prepared to troubleshoot any issues that arise!
+{% endhint %}
+
 {% endtab %}
 
 {% tab title="Swizzin" %}
-The installation is not implemented via docker, but barebones. The latest released version of overseerr will be used.
+The installation is not implemented via Docker, but barebones. The latest release version of Overseerr will be used.
 Please see the [swizzin documentation](https://swizzin.ltd/applications/overseerr) for more information.
 
 To install, run the following:

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository, Not } from 'typeorm';
 import PlexTvAPI from '../api/plextv';
 import { MediaRequest } from '../entity/MediaRequest';
 import { User } from '../entity/User';
@@ -21,7 +21,7 @@ router.get('/', async (_req, res) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const settings = getSettings().notifications.agents.email;
+    const settings = getSettings();
 
     const body = req.body;
     const userRepository = getRepository(User);
@@ -29,7 +29,7 @@ router.post('/', async (req, res, next) => {
     const passedExplicitPassword = body.password && body.password.length > 0;
     const avatar = gravatarUrl(body.email, { default: 'mm', size: 200 });
 
-    if (!passedExplicitPassword && !settings.enabled) {
+    if (!passedExplicitPassword && !settings.notifications.agents.email) {
       throw new Error('Email notifications must be enabled');
     }
 
@@ -38,7 +38,7 @@ router.post('/', async (req, res, next) => {
       username: body.username ?? body.email,
       email: body.email,
       password: body.password,
-      permissions: Permission.REQUEST,
+      permissions: settings.main.defaultPermissions,
       plexToken: '',
       userType: UserType.LOCAL,
     });
@@ -70,6 +70,51 @@ router.get<{ id: string }>('/:id', async (req, res, next) => {
   }
 });
 
+const canMakePermissionsChange = (permissions: number, user?: User) =>
+  // Only let the owner grant admin privileges
+  !(hasPermission(Permission.ADMIN, permissions) && user?.id !== 1) ||
+  // Only let users with the manage settings permission, grant the same permission
+  !(
+    hasPermission(Permission.MANAGE_SETTINGS, permissions) &&
+    !hasPermission(Permission.MANAGE_SETTINGS, user?.permissions ?? 0)
+  );
+
+router.put<
+  Record<string, never>,
+  Partial<User>[],
+  { ids: string[]; permissions: number }
+>('/', async (req, res, next) => {
+  try {
+    const isOwner = req.user?.id === 1;
+
+    if (!canMakePermissionsChange(req.body.permissions, req.user)) {
+      return next({
+        status: 403,
+        message: 'You do not have permission to grant this level of access',
+      });
+    }
+
+    const userRepository = getRepository(User);
+
+    const users = await userRepository.findByIds(req.body.ids, {
+      ...(!isOwner ? { id: Not(1) } : {}),
+    });
+
+    const updatedUsers = await Promise.all(
+      users.map(async (user) => {
+        return userRepository.save(<User>{
+          ...user,
+          ...{ permissions: req.body.permissions },
+        });
+      })
+    );
+
+    return res.status(200).json(updatedUsers);
+  } catch (e) {
+    next({ status: 500, message: e.message });
+  }
+});
+
 router.put<{ id: string }>('/:id', async (req, res, next) => {
   try {
     const userRepository = getRepository(User);
@@ -86,29 +131,18 @@ router.put<{ id: string }>('/:id', async (req, res, next) => {
       });
     }
 
-    // Only let the owner grant admin privileges
-    if (
-      hasPermission(Permission.ADMIN, req.body.permissions) &&
-      req.user?.id !== 1
-    ) {
+    if (!canMakePermissionsChange(req.body.permissions, req.user)) {
       return next({
         status: 403,
         message: 'You do not have permission to grant this level of access',
       });
     }
 
-    // Only let users with the manage settings permission, grant the same permission
-    if (
-      hasPermission(Permission.MANAGE_SETTINGS, req.body.permissions) &&
-      !hasPermission(Permission.MANAGE_SETTINGS, req.user?.permissions ?? 0)
-    ) {
-      return next({
-        status: 403,
-        message: 'You do not have permission to grant this level of access',
-      });
-    }
+    Object.assign(user, {
+      username: req.body.username,
+      permissions: req.body.permissions,
+    });
 
-    Object.assign(user, req.body);
     await userRepository.save(user);
 
     return res.status(200).json(user.filter());
@@ -183,20 +217,32 @@ router.post('/import-from-plex', async (req, res, next) => {
     const createdUsers: User[] = [];
     for (const rawUser of plexUsersResponse.MediaContainer.User) {
       const account = rawUser.$;
+
       const user = await userRepository.findOne({
-        where: { plexId: account.id },
+        where: [{ plexId: account.id }, { email: account.email }],
       });
+
       if (user) {
         // Update the users avatar with their plex thumbnail (incase it changed)
         user.avatar = account.thumb;
         user.email = account.email;
-        user.username = account.username;
+        user.plexUsername = account.username;
+
+        // in-case the user was previously a local account
+        if (user.userType === UserType.LOCAL) {
+          user.userType = UserType.PLEX;
+          user.plexId = parseInt(account.id);
+
+          if (user.username === account.username) {
+            user.username = '';
+          }
+        }
         await userRepository.save(user);
       } else {
         // Check to make sure it's a real account
         if (account.email && account.username) {
           const newUser = new User({
-            username: account.username,
+            plexUsername: account.username,
             email: account.email,
             permissions: settings.main.defaultPermissions,
             plexId: parseInt(account.id),

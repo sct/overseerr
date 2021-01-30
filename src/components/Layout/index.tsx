@@ -9,7 +9,7 @@ import { Permission, useUser } from '../../hooks/useUser';
 
 const messages = defineMessages({
   alphawarning:
-    'This is ALPHA software. Almost everything is bound to be nearly broken and/or unstable. Please report issues to the Overseerr Github!',
+    'This is ALPHA software. Features may be broken and/or unstable. Please report issues on GitHub!',
 });
 
 const Layout: React.FC = ({ children }) => {

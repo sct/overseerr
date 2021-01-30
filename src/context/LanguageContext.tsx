@@ -11,6 +11,7 @@ export type AvailableLocales =
   | 'es'
   | 'it'
   | 'pt-BR'
+  | 'pt-PT'
   | 'sr'
   | 'sv'
   | 'zh-Hant';

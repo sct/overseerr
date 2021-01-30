@@ -9,8 +9,8 @@ interface ErrorProps {
 }
 
 const messages = defineMessages({
-  internalServerError: '{statusCode} - Internal Server Error',
-  serviceUnavailable: '{statusCode} - Service Unavailable',
+  internalServerError: '{statusCode} - Internal server error',
+  serviceUnavailable: '{statusCode} - Service unavailable',
   somethingWentWrong: '{statusCode} - Something went wrong',
   oops: 'Oops',
   returnHome: 'Return Home',

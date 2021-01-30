@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getRepository, FindOperator, FindOneOptions } from 'typeorm';
+import { getRepository, FindOperator, FindOneOptions, In } from 'typeorm';
 import Media from '../entity/Media';
-import { MediaStatus } from '../constants/media';
+import { MediaStatus, MediaType } from '../constants/media';
 import logger from '../logger';
 import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
@@ -26,6 +26,12 @@ mediaRoutes.get('/', async (req, res, next) => {
       break;
     case 'partial':
       statusFilter = MediaStatus.PARTIALLY_AVAILABLE;
+      break;
+    case 'allavailable':
+      statusFilter = In([
+        MediaStatus.AVAILABLE,
+        MediaStatus.PARTIALLY_AVAILABLE,
+      ]);
       break;
     case 'processing':
       statusFilter = MediaStatus.PROCESSING;
@@ -75,6 +81,63 @@ mediaRoutes.get('/', async (req, res, next) => {
     next({ status: 500, message: e.message });
   }
 });
+
+mediaRoutes.get<
+  {
+    id: string;
+    status: 'available' | 'partial' | 'processing' | 'pending' | 'unknown';
+  },
+  Media
+>(
+  '/:id/:status',
+  isAuthenticated(Permission.MANAGE_REQUESTS),
+  async (req, res, next) => {
+    const mediaRepository = getRepository(Media);
+
+    const media = await mediaRepository.findOne({
+      where: { id: Number(req.params.id) },
+    });
+
+    if (!media) {
+      return next({ status: 404, message: 'Media does not exist.' });
+    }
+
+    const is4k = Boolean(req.query.is4k);
+
+    switch (req.params.status) {
+      case 'available':
+        media[is4k ? 'status4k' : 'status'] = MediaStatus.AVAILABLE;
+        if (media.mediaType === MediaType.TV) {
+          // Mark all seasons available
+          media.seasons.forEach((season) => {
+            season[is4k ? 'status4k' : 'status'] = MediaStatus.AVAILABLE;
+          });
+        }
+        break;
+      case 'partial':
+        if (media.mediaType === MediaType.MOVIE) {
+          return next({
+            status: 400,
+            message: 'Only series can be set to be partially available',
+          });
+        }
+        media.status = MediaStatus.PARTIALLY_AVAILABLE;
+        break;
+      case 'processing':
+        media.status = MediaStatus.PROCESSING;
+        break;
+      case 'pending':
+        media.status = MediaStatus.PENDING;
+        break;
+      case 'unknown':
+        media.status = MediaStatus.UNKNOWN;
+    }
+
+    await mediaRepository.save(media);
+
+    return res.status(200).json(media);
+  }
+);
 
 mediaRoutes.delete(
   '/:id',

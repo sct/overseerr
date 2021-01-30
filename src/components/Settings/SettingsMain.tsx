@@ -9,22 +9,30 @@ import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import { useUser, Permission } from '../../hooks/useUser';
 import { useToasts } from 'react-toast-notifications';
-import { messages as permissionMessages } from '../UserEdit';
-import PermissionOption, { PermissionItem } from '../PermissionOption';
+import Badge from '../Common/Badge';
+import globalMessages from '../../i18n/globalMessages';
+import PermissionEdit from '../PermissionEdit';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
   generalsettingsDescription:
-    'These are settings related to general Overseerr configuration.',
+    'Configure global and default settings for Overseerr.',
   save: 'Save Changes',
-  saving: 'Saving...',
+  saving: 'Saving…',
   apikey: 'API Key',
   applicationurl: 'Application URL',
-  toastApiKeySuccess: 'New API Key generated!',
-  toastApiKeyFailure: 'Something went wrong generating a new API Key.',
-  toastSettingsSuccess: 'Settings saved.',
-  toastSettingsFailure: 'Something went wrong saving settings.',
+  toastApiKeySuccess: 'New API key generated!',
+  toastApiKeyFailure: 'Something went wrong while generating a new API key.',
+  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsFailure: 'Something went wrong while saving settings.',
   defaultPermissions: 'Default User Permissions',
+  hideAvailable: 'Hide Available Media',
+  csrfProtection: 'Enable CSRF Protection',
+  csrfProtectionTip:
+    'Sets external API access to read-only (Overseerr must be reloaded for changes to take effect)',
+  trustProxy: 'Enable Proxy Support',
+  trustProxyTip:
+    'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
 });
 
 const SettingsMain: React.FC = () => {
@@ -56,101 +64,6 @@ const SettingsMain: React.FC = () => {
     return <LoadingSpinner />;
   }
 
-  const permissionList: PermissionItem[] = [
-    {
-      id: 'admin',
-      name: intl.formatMessage(permissionMessages.admin),
-      description: intl.formatMessage(permissionMessages.adminDescription),
-      permission: Permission.ADMIN,
-    },
-    {
-      id: 'settings',
-      name: intl.formatMessage(permissionMessages.settings),
-      description: intl.formatMessage(permissionMessages.settingsDescription),
-      permission: Permission.MANAGE_SETTINGS,
-    },
-    {
-      id: 'users',
-      name: intl.formatMessage(permissionMessages.users),
-      description: intl.formatMessage(permissionMessages.usersDescription),
-      permission: Permission.MANAGE_USERS,
-    },
-    {
-      id: 'managerequest',
-      name: intl.formatMessage(permissionMessages.managerequests),
-      description: intl.formatMessage(
-        permissionMessages.managerequestsDescription
-      ),
-      permission: Permission.MANAGE_REQUESTS,
-      children: [
-        {
-          id: 'advancedrequest',
-          name: intl.formatMessage(permissionMessages.advancedrequest),
-          description: intl.formatMessage(
-            permissionMessages.advancedrequestDescription
-          ),
-          permission: Permission.REQUEST_ADVANCED,
-        },
-      ],
-    },
-    {
-      id: 'request',
-      name: intl.formatMessage(permissionMessages.request),
-      description: intl.formatMessage(permissionMessages.requestDescription),
-      permission: Permission.REQUEST,
-    },
-    {
-      id: 'request4k',
-      name: intl.formatMessage(permissionMessages.request4k),
-      description: intl.formatMessage(permissionMessages.request4kDescription),
-      permission: Permission.REQUEST_4K,
-      children: [
-        {
-          id: 'request4k-movies',
-          name: intl.formatMessage(permissionMessages.request4kMovies),
-          description: intl.formatMessage(
-            permissionMessages.request4kMoviesDescription
-          ),
-          permission: Permission.REQUEST_4K_MOVIE,
-        },
-        {
-          id: 'request4k-tv',
-          name: intl.formatMessage(permissionMessages.request4kTv),
-          description: intl.formatMessage(
-            permissionMessages.request4kTvDescription
-          ),
-          permission: Permission.REQUEST_4K_TV,
-        },
-      ],
-    },
-    {
-      id: 'autoapprove',
-      name: intl.formatMessage(permissionMessages.autoapprove),
-      description: intl.formatMessage(
-        permissionMessages.autoapproveDescription
-      ),
-      permission: Permission.AUTO_APPROVE,
-      children: [
-        {
-          id: 'autoapprovemovies',
-          name: intl.formatMessage(permissionMessages.autoapproveMovies),
-          description: intl.formatMessage(
-            permissionMessages.autoapproveMoviesDescription
-          ),
-          permission: Permission.AUTO_APPROVE_MOVIE,
-        },
-        {
-          id: 'autoapprovetv',
-          name: intl.formatMessage(permissionMessages.autoapproveSeries),
-          description: intl.formatMessage(
-            permissionMessages.autoapproveSeriesDescription
-          ),
-          permission: Permission.AUTO_APPROVE_TV,
-        },
-      ],
-    },
-  ];
-
   return (
     <>
       <div>
@@ -165,14 +78,20 @@ const SettingsMain: React.FC = () => {
         <Formik
           initialValues={{
             applicationUrl: data?.applicationUrl,
+            csrfProtection: data?.csrfProtection,
             defaultPermissions: data?.defaultPermissions ?? 0,
+            hideAvailable: data?.hideAvailable,
+            trustProxy: data?.trustProxy,
           }}
           enableReinitialize
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/settings/main', {
                 applicationUrl: values.applicationUrl,
+                csrfProtection: values.csrfProtection,
                 defaultPermissions: values.defaultPermissions,
+                hideAvailable: values.hideAvailable,
+                trustProxy: values.trustProxy,
               });
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -256,6 +175,82 @@ const SettingsMain: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="trustProxy"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <div className="flex flex-col">
+                      <span className="mr-2">
+                        {intl.formatMessage(messages.trustProxy)}
+                      </span>
+                      <span className="text-gray-500">
+                        {intl.formatMessage(messages.trustProxyTip)}
+                      </span>
+                    </div>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="trustProxy"
+                      name="trustProxy"
+                      onChange={() => {
+                        setFieldValue('trustProxy', !values.trustProxy);
+                      }}
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="csrfProtection"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <div className="flex flex-col">
+                      <span className="mr-2">
+                        {intl.formatMessage(messages.csrfProtection)}
+                      </span>
+                      <span className="text-gray-500">
+                        {intl.formatMessage(messages.csrfProtectionTip)}
+                      </span>
+                    </div>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="csrfProtection"
+                      name="csrfProtection"
+                      onChange={() => {
+                        setFieldValue('csrfProtection', !values.csrfProtection);
+                      }}
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.hideAvailable)}
+                    </span>
+                    <Badge badgeType="warning">
+                      {intl.formatMessage(globalMessages.experimental)}
+                    </Badge>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="hideAvailable"
+                      name="hideAvailable"
+                      onChange={() => {
+                        setFieldValue('hideAvailable', !values.hideAvailable);
+                      }}
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
+                  </div>
+                </div>
                 <div className="mt-6">
                   <div role="group" aria-labelledby="label-permissions">
                     <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
@@ -269,19 +264,15 @@ const SettingsMain: React.FC = () => {
                       </div>
                       <div className="mt-4 sm:mt-0 sm:col-span-2">
                         <div className="max-w-lg">
-                          {permissionList.map((permissionItem) => (
-                            <PermissionOption
-                              key={`permission-option-${permissionItem.id}`}
-                              option={permissionItem}
-                              currentPermission={values.defaultPermissions}
-                              onUpdate={(newPermissions) =>
-                                setFieldValue(
-                                  'defaultPermissions',
-                                  newPermissions
-                                )
-                              }
-                            />
-                          ))}
+                          <PermissionEdit
+                            currentPermission={values.defaultPermissions}
+                            onUpdate={(newPermissions) =>
+                              setFieldValue(
+                                'defaultPermissions',
+                                newPermissions
+                              )
+                            }
+                          />
                         </div>
                       </div>
                     </div>

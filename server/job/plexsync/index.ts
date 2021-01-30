@@ -68,6 +68,7 @@ class JobPlexSync {
 
   private async processMovie(plexitem: PlexLibraryItem) {
     const mediaRepository = getRepository(Media);
+
     try {
       if (plexitem.guid.match(plexRegex)) {
         const metadata = await this.plexClient.getMetadata(plexitem.ratingKey);
@@ -89,6 +90,15 @@ class JobPlexSync {
             newMedia.tmdbId = Number(tmdbMatch);
           }
         });
+        if (newMedia.imdbId && !newMedia.tmdbId) {
+          const tmdbMovie = await this.tmdb.getMovieByImdbId({
+            imdbId: newMedia.imdbId,
+          });
+          newMedia.tmdbId = tmdbMovie.id;
+        }
+        if (!newMedia.tmdbId) {
+          throw new Error('Unable to find TMDb ID');
+        }
 
         const has4k = metadata.Media.some(
           (media) => media.videoResolution === '4k'
@@ -129,6 +139,23 @@ class JobPlexSync {
               changedExisting = true;
             }
 
+            if (
+              (hasOtherResolution || (has4k && !this.enable4kMovie)) &&
+              existing.ratingKey !== plexitem.ratingKey
+            ) {
+              existing.ratingKey = plexitem.ratingKey;
+              changedExisting = true;
+            }
+
+            if (
+              has4k &&
+              this.enable4kMovie &&
+              existing.ratingKey4k !== plexitem.ratingKey
+            ) {
+              existing.ratingKey4k = plexitem.ratingKey;
+              changedExisting = true;
+            }
+
             if (changedExisting) {
               await mediaRepository.save(existing);
               this.log(
@@ -151,6 +178,12 @@ class JobPlexSync {
                 : MediaStatus.UNKNOWN;
             newMedia.mediaType = MediaType.MOVIE;
             newMedia.mediaAddedAt = new Date(plexitem.addedAt * 1000);
+            newMedia.ratingKey =
+              hasOtherResolution || (!this.enable4kMovie && has4k)
+                ? plexitem.ratingKey
+                : undefined;
+            newMedia.ratingKey4k =
+              has4k && this.enable4kMovie ? plexitem.ratingKey : undefined;
             await mediaRepository.save(newMedia);
             this.log(`Saved ${plexitem.title}`);
           }
@@ -172,14 +205,14 @@ class JobPlexSync {
         }
 
         if (!tmdbMovieId) {
-          throw new Error('Unable to find TMDB ID');
+          throw new Error('Unable to find TMDb ID');
         }
 
         await this.processMovieWithId(plexitem, tmdbMovie, tmdbMovieId);
       }
     } catch (e) {
       this.log(
-        `Failed to process plex item. ratingKey: ${plexitem.ratingKey}`,
+        `Failed to process Plex item. ratingKey: ${plexitem.ratingKey}`,
         'error',
         {
           errorMessage: e.message,
@@ -233,6 +266,23 @@ class JobPlexSync {
           changedExisting = true;
         }
 
+        if (
+          (hasOtherResolution || (has4k && !this.enable4kMovie)) &&
+          existing.ratingKey !== plexitem.ratingKey
+        ) {
+          existing.ratingKey = plexitem.ratingKey;
+          changedExisting = true;
+        }
+
+        if (
+          has4k &&
+          this.enable4kMovie &&
+          existing.ratingKey4k !== plexitem.ratingKey
+        ) {
+          existing.ratingKey4k = plexitem.ratingKey;
+          changedExisting = true;
+        }
+
         if (changedExisting) {
           await mediaRepository.save(existing);
           this.log(
@@ -263,6 +313,12 @@ class JobPlexSync {
             ? MediaStatus.AVAILABLE
             : MediaStatus.UNKNOWN;
         newMedia.mediaType = MediaType.MOVIE;
+        newMedia.ratingKey =
+          hasOtherResolution || (!this.enable4kMovie && has4k)
+            ? plexitem.ratingKey
+            : undefined;
+        newMedia.ratingKey4k =
+          has4k && this.enable4kMovie ? plexitem.ratingKey : undefined;
         await mediaRepository.save(newMedia);
         this.log(`Saved ${tmdbMovie.title}`);
       }
@@ -302,12 +358,14 @@ class JobPlexSync {
     let tvShow: TmdbTvDetails | null = null;
 
     try {
-      const metadata = await this.plexClient.getMetadata(
+      const ratingKey =
         plexitem.grandparentRatingKey ??
-          plexitem.parentRatingKey ??
-          plexitem.ratingKey,
-        { includeChildren: true }
-      );
+        plexitem.parentRatingKey ??
+        plexitem.ratingKey;
+      const metadata = await this.plexClient.getMetadata(ratingKey, {
+        includeChildren: true,
+      });
+
       if (metadata.guid.match(tvdbRegex)) {
         const matchedtvdb = metadata.guid.match(tvdbRegex);
 
@@ -333,7 +391,7 @@ class JobPlexSync {
             await this.processHamaSpecials(metadata, Number(tvdbId));
           } else {
             this.log(
-              `Hama id ${plexitem.guid} detected, but library agent is not set to Hama`,
+              `Hama ID ${plexitem.guid} detected, but library agent is not set to Hama`,
               'warn'
             );
           }
@@ -343,7 +401,7 @@ class JobPlexSync {
 
         if (!animeList.isLoaded()) {
           this.log(
-            `Hama id ${plexitem.guid} detected, but library agent is not set to Hama`,
+            `Hama ID ${plexitem.guid} detected, but library agent is not set to Hama`,
             'warn'
           );
         } else if (matched?.[1]) {
@@ -399,7 +457,7 @@ class JobPlexSync {
             return;
           }
 
-          // Lets get the available seasons from plex
+          // Lets get the available seasons from Plex
           const seasons = tvShow.seasons;
           const media = await this.getExisting(tvShow.id, MediaType.TV);
 
@@ -427,19 +485,40 @@ class JobPlexSync {
 
             // Check if we found the matching season and it has all the available episodes
             if (matchedPlexSeason) {
-              // If we have a matched plex season, get its children metadata so we can check details
+              // If we have a matched Plex season, get its children metadata so we can check details
               const episodes = await this.plexClient.getChildrenMetadata(
                 matchedPlexSeason.ratingKey
               );
               // Total episodes that are in standard definition (not 4k)
               const totalStandard = episodes.filter((episode) =>
-                episode.Media.some((media) => media.videoResolution !== '4k')
+                !this.enable4kShow
+                  ? true
+                  : episode.Media.some(
+                      (media) => media.videoResolution !== '4k'
+                    )
               ).length;
 
               // Total episodes that are in 4k
               const total4k = episodes.filter((episode) =>
                 episode.Media.some((media) => media.videoResolution === '4k')
               ).length;
+
+              if (
+                media &&
+                (totalStandard > 0 || (total4k > 0 && !this.enable4kShow)) &&
+                media.ratingKey !== ratingKey
+              ) {
+                media.ratingKey = ratingKey;
+              }
+
+              if (
+                media &&
+                total4k > 0 &&
+                this.enable4kShow &&
+                media.ratingKey4k !== ratingKey
+              ) {
+                media.ratingKey4k = ratingKey;
+              }
 
               if (existingSeason) {
                 // These ternary statements look super confusing, but they are simply
@@ -452,9 +531,9 @@ class JobPlexSync {
                     ? MediaStatus.PARTIALLY_AVAILABLE
                     : existingSeason.status;
                 existingSeason.status4k =
-                  total4k === season.episode_count
+                  this.enable4kShow && total4k === season.episode_count
                     ? MediaStatus.AVAILABLE
-                    : total4k > 0
+                    : this.enable4kShow && total4k > 0
                     ? MediaStatus.PARTIALLY_AVAILABLE
                     : existingSeason.status4k;
               } else {
@@ -470,9 +549,9 @@ class JobPlexSync {
                         ? MediaStatus.PARTIALLY_AVAILABLE
                         : MediaStatus.UNKNOWN,
                     status4k:
-                      total4k === season.episode_count
+                      this.enable4kShow && total4k === season.episode_count
                         ? MediaStatus.AVAILABLE
-                        : total4k > 0
+                        : this.enable4kShow && total4k > 0
                         ? MediaStatus.PARTIALLY_AVAILABLE
                         : MediaStatus.UNKNOWN,
                   })
@@ -547,20 +626,36 @@ class JobPlexSync {
               media.mediaAddedAt = new Date(plexitem.addedAt * 1000);
             }
 
-            media.status = isAllStandardSeasons
-              ? MediaStatus.AVAILABLE
-              : media.seasons.some(
-                  (season) => season.status !== MediaStatus.UNKNOWN
-                )
-              ? MediaStatus.PARTIALLY_AVAILABLE
-              : MediaStatus.UNKNOWN;
-            media.status4k = isAll4kSeasons
-              ? MediaStatus.AVAILABLE
-              : media.seasons.some(
-                  (season) => season.status4k !== MediaStatus.UNKNOWN
-                )
-              ? MediaStatus.PARTIALLY_AVAILABLE
-              : MediaStatus.UNKNOWN;
+            // If the show is already available, and there are no new seasons, dont adjust
+            // the status
+            const shouldStayAvailable =
+              media.status === MediaStatus.AVAILABLE &&
+              newSeasons.filter(
+                (season) => season.status !== MediaStatus.UNKNOWN
+              ).length === 0;
+            const shouldStayAvailable4k =
+              media.status4k === MediaStatus.AVAILABLE &&
+              newSeasons.filter(
+                (season) => season.status4k !== MediaStatus.UNKNOWN
+              ).length === 0;
+
+            media.status =
+              isAllStandardSeasons || shouldStayAvailable
+                ? MediaStatus.AVAILABLE
+                : media.seasons.some(
+                    (season) => season.status !== MediaStatus.UNKNOWN
+                  )
+                ? MediaStatus.PARTIALLY_AVAILABLE
+                : MediaStatus.UNKNOWN;
+            media.status4k =
+              (isAll4kSeasons || shouldStayAvailable4k) && this.enable4kShow
+                ? MediaStatus.AVAILABLE
+                : this.enable4kShow &&
+                  media.seasons.some(
+                    (season) => season.status4k !== MediaStatus.UNKNOWN
+                  )
+                ? MediaStatus.PARTIALLY_AVAILABLE
+                : MediaStatus.UNKNOWN;
             await mediaRepository.save(media);
             this.log(`Updating existing title: ${tvShow.name}`);
           } else {
@@ -577,13 +672,15 @@ class JobPlexSync {
                   )
                 ? MediaStatus.PARTIALLY_AVAILABLE
                 : MediaStatus.UNKNOWN,
-              status4k: isAll4kSeasons
-                ? MediaStatus.AVAILABLE
-                : newSeasons.some(
-                    (season) => season.status4k !== MediaStatus.UNKNOWN
-                  )
-                ? MediaStatus.PARTIALLY_AVAILABLE
-                : MediaStatus.UNKNOWN,
+              status4k:
+                isAll4kSeasons && this.enable4kShow
+                  ? MediaStatus.AVAILABLE
+                  : this.enable4kShow &&
+                    newSeasons.some(
+                      (season) => season.status4k !== MediaStatus.UNKNOWN
+                    )
+                  ? MediaStatus.PARTIALLY_AVAILABLE
+                  : MediaStatus.UNKNOWN,
             });
             await mediaRepository.save(newMedia);
             this.log(`Saved ${tvShow.name}`);
@@ -594,7 +691,7 @@ class JobPlexSync {
       }
     } catch (e) {
       this.log(
-        `Failed to process plex item. ratingKey: ${
+        `Failed to process Plex item. ratingKey: ${
           plexitem.grandparentRatingKey ??
           plexitem.parentRatingKey ??
           plexitem.ratingKey
@@ -763,7 +860,8 @@ class JobPlexSync {
       this.log(
         this.isRecentOnly
           ? 'Recently Added Scan Complete'
-          : 'Full Scan Complete'
+          : 'Full Scan Complete',
+        'info'
       );
     } catch (e) {
       logger.error('Sync interrupted', {

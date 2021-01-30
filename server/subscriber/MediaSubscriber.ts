@@ -21,7 +21,7 @@ export class MediaSubscriber implements EntitySubscriberInterface {
       if (entity.mediaType === MediaType.MOVIE) {
         const requestRepository = getRepository(MediaRequest);
         const relatedRequests = await requestRepository.find({
-          where: { media: entity },
+          where: { media: entity, is4k: false },
         });
 
         if (relatedRequests.length > 0) {
@@ -64,7 +64,7 @@ export class MediaSubscriber implements EntitySubscriberInterface {
 
       for (const changedSeasonNumber of changedSeasons) {
         const requests = await requestRepository.find({
-          where: { media: entity },
+          where: { media: entity, is4k: false },
         });
         const request = requests.find(
           (request) =>

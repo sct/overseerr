@@ -11,11 +11,11 @@ import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
-  saving: 'Saving...',
-  agentenabled: 'Agent Enabled',
+  saving: 'Saving…',
+  agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
   validationWebhookUrlRequired: 'You must provide a webhook URL',
-  webhookUrlPlaceholder: 'Server Settings -> Integrations -> Webhooks',
+  webhookUrlPlaceholder: 'Server Settings → Integrations → Webhooks',
   discordsettingssaved: 'Discord notification settings saved!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
   testsent: 'Test notification sent!',

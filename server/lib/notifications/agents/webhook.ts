@@ -16,7 +16,7 @@ const KeyMap: Record<string, string | KeyMapFunction> = {
   subject: 'subject',
   message: 'message',
   image: 'image',
-  notifyuser_username: 'notifyUser.username',
+  notifyuser_username: 'notifyUser.displayName',
   notifyuser_email: 'notifyUser.email',
   notifyuser_avatar: 'notifyUser.avatar',
   media_tmdbid: 'media.tmdbId',

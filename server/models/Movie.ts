@@ -72,6 +72,7 @@ export interface MovieDetails {
   };
   mediaInfo?: Media;
   externalIds: ExternalIds;
+  plexUrl?: string;
 }
 
 export const mapMovieDetails = (

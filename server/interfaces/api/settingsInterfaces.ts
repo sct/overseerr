@@ -9,4 +9,5 @@ export interface PublicSettingsResponse {
   initialized: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
+  hideAvailable: boolean;
 }

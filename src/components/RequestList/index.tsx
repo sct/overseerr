@@ -21,7 +21,7 @@ const messages = defineMessages({
   filterAll: 'All',
   filterPending: 'Pending',
   filterApproved: 'Approved',
-  noresults: 'No Results.',
+  noresults: 'No results.',
   showallrequests: 'Show All Requests',
   sortAdded: 'Request Date',
   sortModified: 'Last Modified',

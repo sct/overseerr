@@ -32,6 +32,9 @@ interface DVRSettings {
   activeDirectory: string;
   is4k: boolean;
   isDefault: boolean;
+  externalUrl?: string;
+  syncEnabled: boolean;
+  preventSearch: boolean;
 }
 
 export interface RadarrSettings extends DVRSettings {
@@ -48,7 +51,10 @@ export interface SonarrSettings extends DVRSettings {
 export interface MainSettings {
   apiKey: string;
   applicationUrl: string;
+  csrfProtection: boolean;
   defaultPermissions: number;
+  hideAvailable: boolean;
+  trustProxy: boolean;
 }
 
 interface PublicSettings {
@@ -58,6 +64,7 @@ interface PublicSettings {
 interface FullPublicSettings extends PublicSettings {
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
+  hideAvailable: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -124,6 +131,8 @@ interface NotificationAgents {
 }
 
 interface NotificationSettings {
+  enabled: boolean;
+  autoapprovalEnabled: boolean;
   agents: NotificationAgents;
 }
 
@@ -150,7 +159,10 @@ class Settings {
       main: {
         apiKey: '',
         applicationUrl: '',
+        csrfProtection: false,
         defaultPermissions: Permission.REQUEST,
+        hideAvailable: false,
+        trustProxy: false,
       },
       plex: {
         name: '',
@@ -165,6 +177,8 @@ class Settings {
         initialized: false,
       },
       notifications: {
+        enabled: true,
+        autoapprovalEnabled: false,
         agents: {
           email: {
             enabled: false,
@@ -281,6 +295,7 @@ class Settings {
       series4kEnabled: this.data.sonarr.some(
         (sonarr) => sonarr.is4k && sonarr.isDefault
       ),
+      hideAvailable: this.data.main.hideAvailable,
     };
   }
 

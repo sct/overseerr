@@ -23,7 +23,7 @@ const Discover: React.FC = () => {
   const intl = useIntl();
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
-    '/api/v1/media?filter=available&take=20&sort=mediaAdded'
+    '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded'
   );
 
   const {

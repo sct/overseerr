@@ -5,6 +5,8 @@ import ListView from '../Common/ListView';
 import { LanguageContext } from '../../context/LanguageContext';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import Header from '../Common/Header';
+import useSettings from '../../hooks/useSettings';
+import { MediaStatus } from '../../../server/constants/media';
 
 const messages = defineMessages({
   upcomingmovies: 'Upcoming Movies',
@@ -18,6 +20,7 @@ interface SearchResult {
 }
 
 const UpcomingMovies: React.FC = () => {
+  const settings = useSettings();
   const { locale } = useContext(LanguageContext);
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
@@ -47,10 +50,18 @@ const UpcomingMovies: React.FC = () => {
     return <div>{error}</div>;
   }
 
-  const titles = data?.reduce(
+  let titles = (data ?? []).reduce(
     (a, v) => [...a, ...v.results],
     [] as MovieResult[]
   );
+
+  if (settings.currentSettings.hideAvailable) {
+    titles = titles.filter(
+      (i) =>
+        i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
+        i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE
+    );
+  }
 
   const isEmpty = !isLoadingInitialData && titles?.length === 0;
   const isReachingEnd =

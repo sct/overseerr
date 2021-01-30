@@ -82,7 +82,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                 />
               </svg>
               <span className="w-40 truncate md:w-auto">
-                {request.requestedBy.username}
+                {request.requestedBy.displayName}
               </span>
             </div>
             {request.modifiedBy && (
@@ -101,7 +101,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                   />
                 </svg>
                 <span className="w-40 truncate md:w-auto">
-                  {request.modifiedBy?.username}
+                  {request.modifiedBy?.displayName}
                 </span>
               </div>
             )}

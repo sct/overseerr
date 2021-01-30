@@ -48,13 +48,17 @@ authRoutes.post('/login', async (req, res, next) => {
       // Let's check if their plex token is up to date
       if (user.plexToken !== body.authToken) {
         user.plexToken = body.authToken;
-        await userRepository.save(user);
       }
 
       // Update the users avatar with their plex thumbnail (incase it changed)
       user.avatar = account.thumb;
       user.email = account.email;
-      user.username = account.username;
+      user.plexUsername = account.username;
+
+      if (user.username === account.username) {
+        user.username = '';
+      }
+      await userRepository.save(user);
     } else {
       // Here we check if it's the first user. If it is, we create the user with no check
       // and give them admin permissions
@@ -63,7 +67,7 @@ authRoutes.post('/login', async (req, res, next) => {
       if (totalUsers === 0) {
         user = new User({
           email: account.email,
-          username: account.username,
+          plexUsername: account.username,
           plexId: account.id,
           plexToken: account.authToken,
           permissions: Permission.ADMIN,
@@ -86,7 +90,7 @@ authRoutes.post('/login', async (req, res, next) => {
         if (await mainPlexTv.checkUserAccess(account)) {
           user = new User({
             email: account.email,
-            username: account.username,
+            plexUsername: account.username,
             plexId: account.id,
             plexToken: account.authToken,
             permissions: settings.main.defaultPermissions,
@@ -141,7 +145,7 @@ authRoutes.post('/local', async (req, res, next) => {
   try {
     const user = await userRepository.findOne({
       select: ['id', 'password'],
-      where: { email: body.email, userType: UserType.LOCAL },
+      where: { email: body.email },
     });
 
     const isCorrectCredentials = await user?.passwordMatch(body.password);
@@ -151,6 +155,7 @@ authRoutes.post('/local', async (req, res, next) => {
       logger.info('Failed login attempt from user with incorrect credentials', {
         label: 'Auth',
         account: {
+          ip: req.ip,
           email: body.email,
           password: '__REDACTED__',
         },
@@ -181,7 +186,7 @@ authRoutes.get('/logout', (req, res, next) => {
     if (err) {
       return next({
         status: 500,
-        message: 'Something went wrong while attempting to logout',
+        message: 'Something went wrong while attempting to sign out.',
       });
     }
 

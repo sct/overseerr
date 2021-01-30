@@ -1,12 +1,14 @@
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useSWRInfinite } from 'swr';
+import { MediaStatus } from '../../../server/constants/media';
 import type {
   MovieResult,
   PersonResult,
   TvResult,
 } from '../../../server/models/Search';
 import { LanguageContext } from '../../context/LanguageContext';
+import useSettings from '../../hooks/useSettings';
 import PersonCard from '../PersonCard';
 import Slider from '../Slider';
 import TitleCard from '../TitleCard';
@@ -34,8 +36,9 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
   sliderKey,
   hideWhenEmpty = false,
 }) => {
+  const settings = useSettings();
   const { locale } = useContext(LanguageContext);
-  const { data, error } = useSWRInfinite<MixedResult>(
+  const { data, error, setSize, size } = useSWRInfinite<MixedResult>(
     (pageIndex: number, previousPageData: MixedResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
         return null;
@@ -48,14 +51,33 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
     }
   );
 
-  if (hideWhenEmpty && (data?.[0].results ?? []).length === 0) {
-    return null;
-  }
-
-  const titles = (data ?? []).reduce(
+  let titles = (data ?? []).reduce(
     (a, v) => [...a, ...v.results],
     [] as (MovieResult | TvResult | PersonResult)[]
   );
+
+  if (settings.currentSettings.hideAvailable) {
+    titles = titles.filter(
+      (i) =>
+        (i.mediaType === 'movie' || i.mediaType === 'tv') &&
+        i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
+        i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE
+    );
+  }
+
+  useEffect(() => {
+    if (
+      titles.length < 24 &&
+      size < 5 &&
+      (data?.[0]?.totalResults ?? 0) > size * 20
+    ) {
+      setSize(size + 1);
+    }
+  }, [titles, setSize, size, data]);
+
+  if (hideWhenEmpty && (data?.[0].results ?? []).length === 0) {
+    return null;
+  }
 
   const finalTitles = titles.slice(0, 20).map((title) => {
     switch (title.mediaType) {
@@ -70,6 +92,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
             userScore={title.voteAverage}
             year={title.releaseDate}
             mediaType={title.mediaType}
+            inProgress={(title.mediaInfo?.downloadStatus ?? []).length > 0}
           />
         );
       case 'tv':
@@ -83,6 +106,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
             userScore={title.voteAverage}
             year={title.firstAirDate}
             mediaType={title.mediaType}
+            inProgress={(title.mediaInfo?.downloadStatus ?? []).length > 0}
           />
         );
       case 'person':

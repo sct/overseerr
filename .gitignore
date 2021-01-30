@@ -47,3 +47,6 @@ dist
 
 # sqlite journal
 config/db/db.sqlite3-journal
+
+# VS Code
+.vscode/launch.json

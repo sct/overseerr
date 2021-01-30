@@ -35,6 +35,9 @@ import { Crew } from '../../../server/models/common';
 import StatusBadge from '../StatusBadge';
 import RequestButton from '../RequestButton';
 import MediaSlider from '../MediaSlider';
+import ConfirmButton from '../Common/ConfirmButton';
+import DownloadBlock from '../DownloadBlock';
+import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -50,19 +53,28 @@ const messages = defineMessages({
   available: 'Available',
   unavailable: 'Unavailable',
   pending: 'Pending',
-  overviewunavailable: 'Overview unavailable',
+  overviewunavailable: 'Overview unavailable.',
   manageModalTitle: 'Manage Series',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No Requests',
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
-    'This will remove all media data including all requests for this item. This action is irreversible. If this item exists in your Plex library, the media information will be recreated next sync.',
+    'This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next sync.',
   approve: 'Approve',
   decline: 'Decline',
   showtype: 'Show Type',
   anime: 'Anime',
   network: 'Network',
   viewfullcrew: 'View Full Crew',
+  areyousure: 'Are you sure?',
+  opensonarr: 'Open Series in Sonarr',
+  opensonarr4k: 'Open Series in 4K Sonarr',
+  downloadstatus: 'Download Status',
+  playonplex: 'Play on Plex',
+  play4konplex: 'Play 4K on Plex',
+  markavailable: 'Mark as Available',
+  mark4kavailable: 'Mark 4K as Available',
+  allseasonsmarkedavailable: '* All seasons will be marked as available.',
 });
 
 interface TvDetailsProps {
@@ -111,6 +123,15 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     }
   };
 
+  const markAvailable = async (is4k = false) => {
+    await axios.get(`/api/v1/media/${data?.mediaInfo?.id}/available`, {
+      params: {
+        is4k,
+      },
+    });
+    revalidate();
+  };
+
   const isComplete =
     data.seasons.filter((season) => season.seasonNumber !== 0).length <=
     (
@@ -154,6 +175,83 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         onClose={() => setShowManager(false)}
         subText={data.name}
       >
+        {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
+          (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
+          <>
+            <h3 className="mb-2 text-xl">
+              {intl.formatMessage(messages.downloadstatus)}
+            </h3>
+            <div className="mb-6 overflow-hidden bg-gray-600 rounded-md shadow">
+              <ul>
+                {data.mediaInfo?.downloadStatus?.map((status, index) => (
+                  <li
+                    key={`dl-status-${status.externalId}-${index}`}
+                    className="border-b border-gray-700 last:border-b-0"
+                  >
+                    <DownloadBlock downloadItem={status} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
+        {data?.mediaInfo &&
+          (data.mediaInfo.status !== MediaStatus.AVAILABLE ||
+            data.mediaInfo.status4k !== MediaStatus.AVAILABLE) && (
+            <div className="mb-6">
+              <div className="flex flex-col sm:flex-row flex-nowrap">
+                {data?.mediaInfo &&
+                  data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
+                    <Button
+                      onClick={() => markAvailable()}
+                      className="w-full mb-2 sm:mb-0 sm:mr-1 last:mr-0"
+                      buttonType="success"
+                    >
+                      <svg
+                        className="w-5 h-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>{intl.formatMessage(messages.markavailable)}</span>
+                    </Button>
+                  )}
+                {data?.mediaInfo &&
+                  data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
+                    <Button
+                      onClick={() => markAvailable(true)}
+                      className="w-full sm:ml-1 first:ml-0"
+                      buttonType="success"
+                    >
+                      <svg
+                        className="w-5 h-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>
+                        {intl.formatMessage(messages.mark4kavailable)}
+                      </span>
+                    </Button>
+                  )}
+              </div>
+              <div className="mt-3 text-xs text-gray-300">
+                {intl.formatMessage(messages.allseasonsmarkedavailable)}
+              </div>
+            </div>
+          )}
         <h3 className="mb-2 text-xl">
           {intl.formatMessage(messages.manageModalRequests)}
         </h3>
@@ -174,15 +272,60 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             )}
           </ul>
         </div>
+        {(data?.mediaInfo?.serviceUrl || data?.mediaInfo?.serviceUrl4k) && (
+          <div className="mt-8">
+            {data?.mediaInfo?.serviceUrl && (
+              <a
+                href={data?.mediaInfo?.serviceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="block mb-2 last:mb-0"
+              >
+                <Button buttonType="ghost" className="w-full">
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                  </svg>
+                  <span>{intl.formatMessage(messages.opensonarr)}</span>
+                </Button>
+              </a>
+            )}
+            {data?.mediaInfo?.serviceUrl4k && (
+              <a
+                href={data?.mediaInfo?.serviceUrl4k}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button buttonType="ghost" className="w-full">
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                  </svg>
+                  <span>{intl.formatMessage(messages.opensonarr4k)}</span>
+                </Button>
+              </a>
+            )}
+          </div>
+        )}
         {data?.mediaInfo && (
           <div className="mt-8">
-            <Button
-              buttonType="danger"
-              className="w-full text-center"
+            <ConfirmButton
               onClick={() => deleteMedia()}
+              confirmText={intl.formatMessage(messages.areyousure)}
+              className="w-full"
             >
               {intl.formatMessage(messages.manageModalClearMedia)}
-            </Button>
+            </ConfirmButton>
             <div className="mt-2 text-sm text-gray-400">
               {intl.formatMessage(messages.manageModalClearMediaWarning)}
             </div>
@@ -192,7 +335,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       <div className="flex flex-col items-center pt-4 lg:flex-row lg:items-end">
         <div className="lg:mr-4">
           <img
-            src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
+            src={
+              data.posterPath
+                ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
+                : '/images/overseerr_poster_not_found.png'
+            }
             alt=""
             className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-44 lg:w-52"
           />
@@ -201,11 +348,28 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           <div className="mb-2">
             {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
               <span className="mr-2">
-                <StatusBadge status={data.mediaInfo?.status} />
+                <StatusBadge
+                  status={data.mediaInfo?.status}
+                  inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
+                  plexUrl={data.mediaInfo?.plexUrl}
+                  plexUrl4k={data.mediaInfo?.plexUrl4k}
+                />
               </span>
             )}
             <span>
-              <StatusBadge status={data.mediaInfo?.status4k} is4k />
+              <StatusBadge
+                status={data.mediaInfo?.status4k}
+                is4k
+                inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
+                plexUrl={data.mediaInfo?.plexUrl}
+                plexUrl4k={
+                  data.mediaInfo?.plexUrl4k &&
+                  (hasPermission(Permission.REQUEST_4K) ||
+                    hasPermission(Permission.REQUEST_4K_TV))
+                    ? data.mediaInfo.plexUrl4k
+                    : undefined
+                }
+              />
             </span>
           </div>
           <h1 className="text-2xl lg:text-4xl">
@@ -221,37 +385,86 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </span>
         </div>
         <div className="flex flex-wrap justify-center flex-shrink-0 mt-4 sm:flex-nowrap sm:justify-end lg:mt-0">
-          {trailerUrl && (
-            <a
-              href={trailerUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mb-3 sm:mb-0"
+          {(trailerUrl ||
+            data.mediaInfo?.plexUrl ||
+            data.mediaInfo?.plexUrl4k) && (
+            <ButtonWithDropdown
+              buttonType="ghost"
+              text={
+                <>
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>
+                    {data.mediaInfo?.plexUrl
+                      ? intl.formatMessage(messages.playonplex)
+                      : data.mediaInfo?.plexUrl4k &&
+                        (hasPermission(Permission.REQUEST_4K) ||
+                          hasPermission(Permission.REQUEST_4K_TV))
+                      ? intl.formatMessage(messages.play4konplex)
+                      : intl.formatMessage(messages.watchtrailer)}
+                  </span>
+                </>
+              }
+              onClick={() => {
+                if (data.mediaInfo?.plexUrl) {
+                  window.open(data.mediaInfo?.plexUrl, '_blank');
+                } else if (data.mediaInfo?.plexUrl4k) {
+                  window.open(data.mediaInfo?.plexUrl4k, '_blank');
+                } else if (trailerUrl) {
+                  window.open(trailerUrl, '_blank');
+                }
+              }}
             >
-              <Button buttonType="ghost">
-                <svg
-                  className="w-5 h-5 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <FormattedMessage {...messages.watchtrailer} />
-              </Button>
-            </a>
+              {data.mediaInfo?.plexUrl ||
+              (data.mediaInfo?.plexUrl4k &&
+                (hasPermission(Permission.REQUEST_4K) ||
+                  hasPermission(Permission.REQUEST_4K_TV))) ? (
+                <>
+                  {data.mediaInfo?.plexUrl &&
+                    data.mediaInfo?.plexUrl4k &&
+                    (hasPermission(Permission.REQUEST_4K) ||
+                      hasPermission(Permission.REQUEST_4K_TV)) && (
+                      <ButtonWithDropdown.Item
+                        onClick={() => {
+                          window.open(data.mediaInfo?.plexUrl4k, '_blank');
+                        }}
+                        buttonType="ghost"
+                      >
+                        {intl.formatMessage(messages.play4konplex)}
+                      </ButtonWithDropdown.Item>
+                    )}
+                  {(data.mediaInfo?.plexUrl || data.mediaInfo?.plexUrl4k) &&
+                    trailerUrl && (
+                      <ButtonWithDropdown.Item
+                        onClick={() => {
+                          window.open(trailerUrl, '_blank');
+                        }}
+                        buttonType="ghost"
+                      >
+                        {intl.formatMessage(messages.watchtrailer)}
+                      </ButtonWithDropdown.Item>
+                    )}
+                </>
+              ) : null}
+            </ButtonWithDropdown>
           )}
           <div className="mb-3 sm:mb-0">
             <RequestButton
@@ -471,6 +684,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               tmdbId={data.id}
               imdbId={data.externalIds.imdbId}
               rtUrl={ratingData?.url}
+              plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}
             />
           </div>
         </div>

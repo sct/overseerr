@@ -12,8 +12,8 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
-  saving: 'Saving...',
-  agentenabled: 'Agent Enabled',
+  saving: 'Saving…',
+  agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
   validationWebhookUrlRequired: 'You must provide a webhook URL',
   webhookUrlPlaceholder: 'Webhook URL',
@@ -21,7 +21,7 @@ const messages = defineMessages({
   slacksettingsfailed: 'Slack notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
-  settingupslack: 'Setting up Slack Notifications',
+  settingupslack: 'Setting Up Slack Notifications',
   settingupslackDescription:
     'To use Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and use the provided webhook URL below.',
   notificationtypes: 'Notification Types',

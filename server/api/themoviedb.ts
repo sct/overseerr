@@ -898,11 +898,11 @@ class TheMovieDb {
       }
 
       throw new Error(
-        `[TMDB] Failed to find a tv show with the provided TVDB id: ${tvdbId}`
+        `[TMDB] Failed to find a TV show with the provided TVDB ID: ${tvdbId}`
       );
     } catch (e) {
       throw new Error(
-        `[TMDB] Failed to get tv show by external tvdb ID: ${e.message}`
+        `[TMDB] Failed to get TV show using the external TVDB ID: ${e.message}`
       );
     }
   }

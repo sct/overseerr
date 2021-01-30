@@ -12,7 +12,7 @@ import globalMessages from '../../../../i18n/globalMessages';
 
 const messages = defineMessages({
   releases: 'Releases',
-  releasedataMissing: 'Release data missing. Is GitHub down?',
+  releasedataMissing: 'Release data unavailable. Is GitHub down?',
   versionChangelog: 'Version Changelog',
   viewongithub: 'View on GitHub',
   latestversion: 'Latest Version',
@@ -20,7 +20,7 @@ const messages = defineMessages({
   viewchangelog: 'View Changelog',
   runningDevelop: 'You are running a develop version of Overseerr!',
   runningDevelopMessage:
-    'The changes in your version will not be available below. Please look at the <GithubLink>GitHub repository</GithubLink> for latest updates.',
+    'The changes in your version will not be available below. Please see the <GithubLink>GitHub repository</GithubLink> for latest updates.',
 });
 
 const REPO_RELEASE_API =

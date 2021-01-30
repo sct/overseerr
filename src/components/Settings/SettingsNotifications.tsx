@@ -7,11 +7,27 @@ import SlackLogo from '../../assets/extlogos/slack.svg';
 import TelegramLogo from '../../assets/extlogos/telegram.svg';
 import PushoverLogo from '../../assets/extlogos/pushover.svg';
 import Bolt from '../../assets/bolt.svg';
+import { Field, Form, Formik } from 'formik';
+import useSWR from 'swr';
+import Error from '../../pages/_error';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import axios from 'axios';
+import { useToasts } from 'react-toast-notifications';
+import Button from '../Common/Button';
 
 const messages = defineMessages({
+  save: 'Save Changes',
+  saving: 'Saving…',
   notificationsettings: 'Notification Settings',
   notificationsettingsDescription:
-    'Here you can pick and choose what types of notifications to send and through what types of services.',
+    'Configure global notification settings. The options below will apply to all notification agents.',
+  notificationAgentsSettings: 'Notification Agents',
+  notificationAgentSettingsDescription:
+    'Choose the types of notifications to send, and which notification agents to use.',
+  notificationsettingssaved: 'Notification settings saved!',
+  notificationsettingsfailed: 'Notification settings failed to save.',
+  enablenotifications: 'Enable Notifications',
+  autoapprovedrequests: 'Send Notifications for Auto-Approved Requests',
 });
 
 interface SettingsRoute {
@@ -106,6 +122,8 @@ const settingsRoutes: SettingsRoute[] = [
 const SettingsNotifications: React.FC = ({ children }) => {
   const router = useRouter();
   const intl = useIntl();
+  const { addToast } = useToasts();
+  const { data, error, revalidate } = useSWR('/api/v1/settings/notifications');
 
   const activeLinkColor = 'bg-indigo-700';
 
@@ -134,6 +152,14 @@ const SettingsNotifications: React.FC = ({ children }) => {
     );
   };
 
+  if (!data && !error) {
+    return <LoadingSpinner />;
+  }
+
+  if (!data) {
+    return <Error statusCode={500} />;
+  }
+
   return (
     <>
       <div className="mb-6">
@@ -142,6 +168,112 @@ const SettingsNotifications: React.FC = ({ children }) => {
         </h3>
         <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
           {intl.formatMessage(messages.notificationsettingsDescription)}
+        </p>
+      </div>
+      <div className="mt-6 sm:mt-5">
+        <Formik
+          initialValues={{
+            enabled: data.enabled,
+            autoapprovalEnabled: data.autoapprovalEnabled,
+          }}
+          enableReinitialize
+          onSubmit={async (values) => {
+            try {
+              await axios.post('/api/v1/settings/notifications', {
+                enabled: values.enabled,
+                autoapprovalEnabled: values.autoapprovalEnabled,
+              });
+              addToast(intl.formatMessage(messages.notificationsettingssaved), {
+                appearance: 'success',
+                autoDismiss: true,
+              });
+            } catch (e) {
+              addToast(
+                intl.formatMessage(messages.notificationsettingsfailed),
+                {
+                  appearance: 'error',
+                  autoDismiss: true,
+                }
+              );
+            } finally {
+              revalidate();
+            }
+          }}
+        >
+          {({ isSubmitting, values, setFieldValue }) => {
+            return (
+              <Form>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.enablenotifications)}
+                    </span>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="enabled"
+                      name="enabled"
+                      onChange={() => {
+                        setFieldValue('enabled', !values.enabled);
+                      }}
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.autoapprovedrequests)}
+                    </span>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="autoapprovalEnabled"
+                      name="autoapprovalEnabled"
+                      onChange={() => {
+                        setFieldValue(
+                          'autoapprovalEnabled',
+                          !values.autoapprovalEnabled
+                        );
+                      }}
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
+                  </div>
+                </div>
+                <div className="pt-5 mt-8 border-t border-gray-700">
+                  <div className="flex justify-end">
+                    <span className="inline-flex ml-3 rounded-md shadow-sm">
+                      <Button
+                        buttonType="primary"
+                        type="submit"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting
+                          ? intl.formatMessage(messages.saving)
+                          : intl.formatMessage(messages.save)}
+                      </Button>
+                    </span>
+                  </div>
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
+      <div className="mt-10 mb-6">
+        <h3 className="text-lg font-medium leading-6 text-gray-200">
+          {intl.formatMessage(messages.notificationAgentsSettings)}
+        </h3>
+        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+          {intl.formatMessage(messages.notificationAgentSettingsDescription)}
         </p>
       </div>
       <div>

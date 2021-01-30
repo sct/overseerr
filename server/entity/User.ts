@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   RelationCount,
+  AfterLoad,
 } from 'typeorm';
 import { Permission, hasPermission } from '../lib/permissions';
 import { MediaRequest } from './MediaRequest';
@@ -25,14 +26,19 @@ export class User {
 
   static readonly filteredFields: string[] = ['plexToken', 'password'];
 
+  public displayName: string;
+
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column({ unique: true })
   public email: string;
 
-  @Column()
-  public username: string;
+  @Column({ nullable: true })
+  public plexUsername: string;
+
+  @Column({ nullable: true })
+  public username?: string;
 
   @Column({ nullable: true, select: false })
   public password?: string;
@@ -124,5 +130,10 @@ export class User {
         message: e.message,
       });
     }
+  }
+
+  @AfterLoad()
+  public setDisplayName(): void {
+    this.displayName = this.username || this.plexUsername;
   }
 }
