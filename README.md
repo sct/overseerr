@@ -58,7 +58,6 @@ Currently, Overseerr is only distributed through Docker images. If you have Dock
 docker run -d \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
-  -e PROXY=<yes|no>
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
   --restart unless-stopped \
