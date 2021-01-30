@@ -30,6 +30,9 @@ const messages = defineMessages({
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
     'Sets external API access to read-only (Overseerr must be reloaded for changes to take effect)',
+  trustProxy: 'Enable Proxy Support',
+  trustProxyTip:
+    'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
 });
 
 const SettingsMain: React.FC = () => {
@@ -78,6 +81,7 @@ const SettingsMain: React.FC = () => {
             csrfProtection: data?.csrfProtection,
             defaultPermissions: data?.defaultPermissions ?? 0,
             hideAvailable: data?.hideAvailable,
+            trustProxy: data?.trustProxy,
           }}
           enableReinitialize
           onSubmit={async (values) => {
@@ -87,6 +91,7 @@ const SettingsMain: React.FC = () => {
                 csrfProtection: values.csrfProtection,
                 defaultPermissions: values.defaultPermissions,
                 hideAvailable: values.hideAvailable,
+                trustProxy: values.trustProxy,
               });
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -168,6 +173,32 @@ const SettingsMain: React.FC = () => {
                         className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
+                  </div>
+                </div>
+                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
+                  <label
+                    htmlFor="trustProxy"
+                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
+                  >
+                    <div className="flex flex-col">
+                      <span className="mr-2">
+                        {intl.formatMessage(messages.trustProxy)}
+                      </span>
+                      <span className="text-gray-500">
+                        {intl.formatMessage(messages.trustProxyTip)}
+                      </span>
+                    </div>
+                  </label>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <Field
+                      type="checkbox"
+                      id="trustProxy"
+                      name="trustProxy"
+                      onChange={() => {
+                        setFieldValue('trustProxy', !values.trustProxy);
+                      }}
+                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
+                    />
                   </div>
                 </div>
                 <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">

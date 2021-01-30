@@ -54,6 +54,7 @@ export interface MainSettings {
   csrfProtection: boolean;
   defaultPermissions: number;
   hideAvailable: boolean;
+  trustProxy: boolean;
 }
 
 interface PublicSettings {
@@ -158,9 +159,10 @@ class Settings {
       main: {
         apiKey: '',
         applicationUrl: '',
-        hideAvailable: false,
         csrfProtection: false,
         defaultPermissions: Permission.REQUEST,
+        hideAvailable: false,
+        trustProxy: false,
       },
       plex: {
         name: '',

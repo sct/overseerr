@@ -17,7 +17,6 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 docker run -d \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
-  -e PROXY=<yes|no> \
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
   --restart unless-stopped \
@@ -33,7 +32,6 @@ docker run -d \
   --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ] \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
-  -e PROXY=<yes|no> \
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
   --restart unless-stopped \
