@@ -626,15 +626,29 @@ class JobPlexSync {
               media.mediaAddedAt = new Date(plexitem.addedAt * 1000);
             }
 
-            media.status = isAllStandardSeasons
-              ? MediaStatus.AVAILABLE
-              : media.seasons.some(
-                  (season) => season.status !== MediaStatus.UNKNOWN
-                )
-              ? MediaStatus.PARTIALLY_AVAILABLE
-              : MediaStatus.UNKNOWN;
+            // If the show is already available, and there are no new seasons, dont adjust
+            // the status
+            const shouldStayAvailable =
+              media.status === MediaStatus.AVAILABLE &&
+              newSeasons.filter(
+                (season) => season.status !== MediaStatus.UNKNOWN
+              ).length === 0;
+            const shouldStayAvailable4k =
+              media.status4k === MediaStatus.AVAILABLE &&
+              newSeasons.filter(
+                (season) => season.status4k !== MediaStatus.UNKNOWN
+              ).length === 0;
+
+            media.status =
+              isAllStandardSeasons || shouldStayAvailable
+                ? MediaStatus.AVAILABLE
+                : media.seasons.some(
+                    (season) => season.status !== MediaStatus.UNKNOWN
+                  )
+                ? MediaStatus.PARTIALLY_AVAILABLE
+                : MediaStatus.UNKNOWN;
             media.status4k =
-              isAll4kSeasons && this.enable4kShow
+              (isAll4kSeasons || shouldStayAvailable4k) && this.enable4kShow
                 ? MediaStatus.AVAILABLE
                 : this.enable4kShow &&
                   media.seasons.some(

@@ -229,11 +229,23 @@ class JobSonarrSync {
         );
       }
 
-      media[server4k ? 'status4k' : 'status'] = isAllSeasons
-        ? MediaStatus.AVAILABLE
-        : media.seasons.some((season) => season.status !== MediaStatus.UNKNOWN)
-        ? MediaStatus.PARTIALLY_AVAILABLE
-        : MediaStatus.UNKNOWN;
+      // If the show is already available, and there are no new seasons, dont adjust
+      // the status
+      const shouldStayAvailable =
+        media.status === MediaStatus.AVAILABLE &&
+        newSeasons.filter(
+          (season) =>
+            season[server4k ? 'status4k' : 'status'] !== MediaStatus.UNKNOWN
+        ).length === 0;
+
+      media[server4k ? 'status4k' : 'status'] =
+        isAllSeasons || shouldStayAvailable
+          ? MediaStatus.AVAILABLE
+          : media.seasons.some(
+              (season) => season.status !== MediaStatus.UNKNOWN
+            )
+          ? MediaStatus.PARTIALLY_AVAILABLE
+          : MediaStatus.UNKNOWN;
 
       await mediaRepository.save(media);
     } else {
