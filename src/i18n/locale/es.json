@@ -541,5 +541,12 @@
   "components.RequestModal.autoapproval": "Aprobación Automática",
   "components.NotificationTypeSelector.mediadeclinedDescription": "Envía una notificación cuando la solicitud es rechazada.",
   "i18n.experimental": "Experimental",
-  "components.Settings.hideAvailable": "Ocultar los medios disponibles"
+  "components.Settings.hideAvailable": "Ocultar los medios disponibles",
+  "components.Login.signingin": "Iniciando sesión…",
+  "components.Login.signin": "Iniciar Sesión",
+  "components.RequestModal.SearchByNameModal.next": "Siguiente",
+  "components.PlexLoginButton.signinwithplex": "Iniciar Sesión",
+  "components.PlexLoginButton.signingin": "Iniciando sesión…",
+  "components.Login.signinwithplex": "Inicia sesión con Plex",
+  "components.Login.signinheader": "Inicia sesión para continuar"
 }
