@@ -1,3 +1,56 @@
+# [1.18.0](https://github.com/sct/overseerr/compare/v1.17.2...v1.18.0) (2021-01-30)
+
+
+### Bug Fixes
+
+* **api:** prevent duplicate movie requests ([421f4c1](https://github.com/sct/overseerr/commit/421f4c17f0f206bbe7bfcbf2819014b8c7f55b6a)), closes [#705](https://github.com/sct/overseerr/issues/705)
+* **build:** fix sqlite3 build error ([#691](https://github.com/sct/overseerr/issues/691)) ([3a1f6d5](https://github.com/sct/overseerr/commit/3a1f6d5706c8fc100e88425f3d89a26a0325af79))
+* **frontend:** add poster not found image to request card and request list item ([ae9a1b3](https://github.com/sct/overseerr/commit/ae9a1b3e940ac2abf6e842d91f458daab3dd0f0d))
+* **frontend:** add poster not found image to tv details page ([0b05545](https://github.com/sct/overseerr/commit/0b055458d0ddbfd4c87ebf9b0562f161fa3445a3))
+* **frontend:** dont show external links unless slug is set ([946bd2d](https://github.com/sct/overseerr/commit/946bd2db5ecde0748b2e9bc5edfe7ca6000ec3d5))
+* **frontend:** fix server name position on plex settings page ([86efcd8](https://github.com/sct/overseerr/commit/86efcd82c34ad6490f2899ebf6f84cdd1bffc498))
+* **frontend:** fixed mismatched rounded sizing on new login ([5e352c2](https://github.com/sct/overseerr/commit/5e352c201fc2f731ca5f713ecb6901527ef354da)), closes [#721](https://github.com/sct/overseerr/issues/721)
+* **ip logging:** add env var for proxy to fix ip logging on failed logins ([#756](https://github.com/sct/overseerr/issues/756)) ([9342a40](https://github.com/sct/overseerr/commit/9342a40bbc03f7fdda23e3876b3a4a81ea8532c0))
+* **lang:** add missing i18n strings for notification settings ([2f75c4c](https://github.com/sct/overseerr/commit/2f75c4c6aed42a15bb47d3652272de8f852ec79f))
+* **notifications:** only send a single notification when standard media becomes available ([b5fd1d5](https://github.com/sct/overseerr/commit/b5fd1d520cd2a7be6e6356a25129e93af1caf542)), closes [#770](https://github.com/sct/overseerr/issues/770)
+* **permissions:** use default user permissions when creating a local user ([#713](https://github.com/sct/overseerr/issues/713)) ([660ada0](https://github.com/sct/overseerr/commit/660ada0b2025eb2c06d9054fd0a7b5a632af6af2))
+* **radarr:** fix request bug which made it unable to be added to radarr ([#760](https://github.com/sct/overseerr/issues/760)) ([45a2779](https://github.com/sct/overseerr/commit/45a277964b0c39346d7216873812e0ebe505cb79))
+* **radarr:** return the updated data when updating radarr request ([#765](https://github.com/sct/overseerr/issues/765)) ([0c6d478](https://github.com/sct/overseerr/commit/0c6d4780c355ffe1a951268fb6949491d435bbf1))
+* **requests:** handle when tvdbid is null ([#657](https://github.com/sct/overseerr/issues/657)) ([2da0da8](https://github.com/sct/overseerr/commit/2da0da826ae1d73467bc8a671fda7cc5ca1f14c9))
+* **sonarr-sync:** correctly set series with no seasons to requested status ([3812989](https://github.com/sct/overseerr/commit/3812989a1ce1e07d4af09149008043a6e2e94060)), closes [#762](https://github.com/sct/overseerr/issues/762)
+* **sync:** do not update series status if already available and no new seasons ([136d874](https://github.com/sct/overseerr/commit/136d874cba37babf9c0670844b002871710e6d99)), closes [#777](https://github.com/sct/overseerr/issues/777)
+* **ui:** Capitalization, punctuation, and grammar inconsistences & errors ([#731](https://github.com/sct/overseerr/issues/731)) ([f05d4a0](https://github.com/sct/overseerr/commit/f05d4a0d0b42905fcaee49b2471bb1f4ee77fffe))
+* lookup movie by imdbid if tmdbid does not exits for plex movie agent ([#711](https://github.com/sct/overseerr/issues/711)) ([e972288](https://github.com/sct/overseerr/commit/e97228899a5936b2525c8060abfa14b5ce31658d))
+* show recently added series even if they are not complete ([d0c830e](https://github.com/sct/overseerr/commit/d0c830e80d389f9e0f48a9b83659331f54630d03))
+
+
+### Features
+
+* **lang:** translated using Weblate (Dutch) ([059995e](https://github.com/sct/overseerr/commit/059995e0ef3370a3192bd386fa6875ca0f58690a))
+* **lang:** translated using Weblate (French) ([4789583](https://github.com/sct/overseerr/commit/4789583d66305ac7b3d393659b2f3604c0acc576))
+* **lang:** translations update from Weblate ([#727](https://github.com/sct/overseerr/issues/727)) ([71875ef](https://github.com/sct/overseerr/commit/71875efb48246dbb0139ad15a4261a5661fcfe17))
+* **lang:** update languages and fix merge conflict ([083a74a](https://github.com/sct/overseerr/commit/083a74a686d202cce5775bf9752caaa9a626cf45))
+* **ui:** Move PROXY setting to UI ([#782](https://github.com/sct/overseerr/issues/782)) ([f1dd5e7](https://github.com/sct/overseerr/commit/f1dd5e7e12c1f602449c4769173dbce71e3569d0))
+* add manual availability buttons to manage slideover ([67f8aef](https://github.com/sct/overseerr/commit/67f8aef00d98c834b60cb6152ccd5cb7b5709d12)), closes [#672](https://github.com/sct/overseerr/issues/672)
+* **media:** add link to the item on plex ([#735](https://github.com/sct/overseerr/issues/735)) ([1d7150c](https://github.com/sct/overseerr/commit/1d7150c24ec5ad347093889bfceab61b664900d5))
+* Radarr & Sonarr Sync ([#734](https://github.com/sct/overseerr/issues/734)) ([ec5fb83](https://github.com/sct/overseerr/commit/ec5fb836785855eb4846fd33b49faeb94c40506a))
+* **frontend:** add option to hide all available items from discovery ([#699](https://github.com/sct/overseerr/issues/699)) ([6c1742e](https://github.com/sct/overseerr/commit/6c1742e94ccfc6c13cf1d25fd9e893ee1f431aae))
+* **lang:** add support for Portuguese (Portugal) language ([e044146](https://github.com/sct/overseerr/commit/e044146aa55109a1eccfde9650b26beb0d5ec9a6))
+* **lang:** translated using Weblate (Dutch) ([6d0f7d4](https://github.com/sct/overseerr/commit/6d0f7d4b50370c420c1017f32d48313074543743))
+* **lang:** translated using Weblate (Italian) ([9aa5c12](https://github.com/sct/overseerr/commit/9aa5c121644518c1fbb308a487c26d8998bb5a36))
+* **lang:** translated using Weblate (Portuguese (Portugal)) ([f001fb3](https://github.com/sct/overseerr/commit/f001fb3b33d4fb749acb70c45b8a55a5bbef570c))
+* **lang:** translated using Weblate (Spanish) ([4f94d22](https://github.com/sct/overseerr/commit/4f94d227fc3096bcb8a1e5cf12fe9222d6c6b711))
+* **login:** add request ip to the failed request log ([#714](https://github.com/sct/overseerr/issues/714)) ([2d31ea9](https://github.com/sct/overseerr/commit/2d31ea940ac0a1a84d2150743798b41ff6490317))
+* **users:** add editable usernames ([#715](https://github.com/sct/overseerr/issues/715)) ([20ca3f2](https://github.com/sct/overseerr/commit/20ca3f2f5fcf4a9eb0d6a8be671bb4fb1f5e6178))
+* pre-populate server info from plex.tv API ([#563](https://github.com/sct/overseerr/issues/563)) ([82ac76b](https://github.com/sct/overseerr/commit/82ac76b0540ba1133cb5384744d2499c2488a4e8))
+* **auth:** Add optional CSRF protection ([#697](https://github.com/sct/overseerr/issues/697)) ([6e25891](https://github.com/sct/overseerr/commit/6e2589178b99f8f32f0ded9a7cfd9921c33e9b60))
+* ability to edit user settings in bulk ([#597](https://github.com/sct/overseerr/issues/597)) ([4b0241c](https://github.com/sct/overseerr/commit/4b0241c3b34d4229f928c21defb10a1c051264d1))
+* **lang:** translated using Weblate (English) ([9bb11af](https://github.com/sct/overseerr/commit/9bb11afc6b4a109ae1e14d41c9fe2b71f19c470a))
+* **lang:** translated using Weblate (German) ([c2a3e8e](https://github.com/sct/overseerr/commit/c2a3e8ed5243925dce991ec7995ae831702dbc7b))
+* **lang:** translated using Weblate (Portuguese (Brazil)) ([32f4916](https://github.com/sct/overseerr/commit/32f4916c4a926097f31ed472aee031536b847bb7))
+* **lang:** translated using Weblate (Portuguese (Brazil)) ([98570c9](https://github.com/sct/overseerr/commit/98570c920e4904a594bb7464161b985094958f84))
+* **notifications:** add option to send notifications for auto-approved requests ([21db367](https://github.com/sct/overseerr/commit/21db3676d1464b63384b04c0c2926cb2a6252e9b)), closes [#267](https://github.com/sct/overseerr/issues/267)
+
 ## [1.17.2](https://github.com/sct/overseerr/compare/v1.17.1...v1.17.2) (2021-01-20)
 
 
