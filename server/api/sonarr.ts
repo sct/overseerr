@@ -134,7 +134,7 @@ class SonarrAPI extends ExternalAPI {
         apikey: apiKey,
       },
       {
-        nodeCache: cacheManager.getCache('sonarr')?.data,
+        nodeCache: cacheManager.getCache('sonarr').data,
       }
     );
   }

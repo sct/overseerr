@@ -5,46 +5,44 @@ type AvailableCacheIds = 'tmdb' | 'radarr' | 'sonarr' | 'rt';
 interface Cache {
   id: AvailableCacheIds;
   data: NodeCache;
-  defaultTtl?: number;
-  checkPeriod?: number;
 }
 
 const DEFAULT_TTL = 300;
 const DEFAULT_CHECK_PERIOD = 120;
 
 class CacheManager {
-  private availableCaches: Record<string, Cache> = {};
-
-  public registerCache(
-    cache: Omit<Cache, 'data'> | Omit<Cache, 'data'>[]
-  ): void {
-    if (Array.isArray(cache)) {
-      cache.forEach((cache) => {
-        this.availableCaches[cache.id] = {
-          id: cache.id,
-          defaultTtl: cache.defaultTtl ?? DEFAULT_TTL,
-          checkPeriod: cache.checkPeriod ?? DEFAULT_CHECK_PERIOD,
-          data: new NodeCache({
-            stdTTL: cache.defaultTtl ?? DEFAULT_TTL,
-            checkperiod: cache.checkPeriod ?? DEFAULT_CHECK_PERIOD,
-          }),
-        };
-      });
-      return;
-    }
-
-    this.availableCaches[cache.id] = {
-      id: cache.id,
-      defaultTtl: cache.defaultTtl,
-      checkPeriod: cache.checkPeriod,
+  private availableCaches: Record<AvailableCacheIds, Cache> = {
+    tmdb: {
+      id: 'tmdb',
       data: new NodeCache({
-        stdTTL: cache.defaultTtl,
-        checkperiod: cache.checkPeriod,
+        stdTTL: DEFAULT_TTL,
+        checkperiod: DEFAULT_CHECK_PERIOD,
       }),
-    };
-  }
+    },
+    radarr: {
+      id: 'radarr',
+      data: new NodeCache({
+        stdTTL: DEFAULT_TTL,
+        checkperiod: DEFAULT_CHECK_PERIOD,
+      }),
+    },
+    sonarr: {
+      id: 'sonarr',
+      data: new NodeCache({
+        stdTTL: DEFAULT_TTL,
+        checkperiod: DEFAULT_CHECK_PERIOD,
+      }),
+    },
+    rt: {
+      id: 'rt',
+      data: new NodeCache({
+        stdTTL: 21600, // 12 hours TTL
+        checkperiod: 60 * 30, // 30 minutes check period
+      }),
+    },
+  };
 
-  public getCache(id: AvailableCacheIds): Cache | undefined {
+  public getCache(id: AvailableCacheIds): Cache {
     return this.availableCaches[id];
   }
 
@@ -54,22 +52,5 @@ class CacheManager {
 }
 
 const cacheManager = new CacheManager();
-
-cacheManager.registerCache([
-  {
-    id: 'tmdb',
-  },
-  {
-    id: 'radarr',
-  },
-  {
-    id: 'sonarr',
-  },
-  {
-    id: 'rt',
-    defaultTtl: 21600, // 12 Hours TTL
-    checkPeriod: 60 * 30,
-  },
-]);
 
 export default cacheManager;

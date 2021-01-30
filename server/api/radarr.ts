@@ -88,7 +88,7 @@ class RadarrAPI extends ExternalAPI {
         apikey: apiKey,
       },
       {
-        nodeCache: cacheManager.getCache('radarr')?.data,
+        nodeCache: cacheManager.getCache('radarr').data,
       }
     );
   }

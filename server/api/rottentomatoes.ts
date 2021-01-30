@@ -66,7 +66,7 @@ class RottenTomatoes extends ExternalAPI {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-        nodeCache: cacheManager.getCache('rt')?.data,
+        nodeCache: cacheManager.getCache('rt').data,
       }
     );
   }
