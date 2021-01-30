@@ -10,12 +10,12 @@ import {
   Keyword,
   mapVideos,
 } from './common';
-import {
+import type {
   TmdbTvEpisodeResult,
   TmdbTvSeasonResult,
   TmdbTvDetails,
   TmdbSeasonWithEpisodes,
-} from '../api/themoviedb';
+} from '../api/themoviedb/interfaces';
 import type Media from '../entity/Media';
 import { Video } from './Movie';
 
