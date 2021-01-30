@@ -55,10 +55,11 @@ jobs:
           - armhf
     steps:
       - name: Checkout Code
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: git checkout master
+      - name: Switch to master branch
+        run: git checkout master
 
       - name: Prepare
         id: prepare
