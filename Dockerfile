@@ -1,4 +1,4 @@
-FROM node:12.18-alpine3.11 AS BUILD_IMAGE
+FROM node:14.15.4-alpine AS BUILD_IMAGE
 
 ARG COMMIT_TAG
 ENV COMMIT_TAG=${COMMIT_TAG}
@@ -17,7 +17,7 @@ RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json && \
   rm -rf server
 
 
-FROM node:12.18-alpine3.11
+FROM node:14.15.4-alpine
 
 RUN apk add --no-cache tzdata
 
