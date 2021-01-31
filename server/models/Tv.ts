@@ -3,7 +3,7 @@ import {
   ProductionCompany,
   Cast,
   Crew,
-  mapCast,
+  mapAggregateCast,
   mapCrew,
   ExternalIds,
   mapExternalIds,
@@ -193,7 +193,7 @@ export const mapTvDetails = (
     : undefined,
   posterPath: show.poster_path,
   credits: {
-    cast: show.credits.cast.map(mapCast),
+    cast: show.aggregate_credits.cast.map(mapAggregateCast),
     crew: show.credits.crew.map(mapCrew),
   },
   externalIds: mapExternalIds(show.external_ids),
