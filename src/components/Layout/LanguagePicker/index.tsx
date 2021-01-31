@@ -17,61 +17,61 @@ type AvailableLanguageObject = Record<
 >;
 
 const availableLanguages: AvailableLanguageObject = {
+  de: {
+    code: 'de',
+    display: 'Deutsch',
+  },
   en: {
     code: 'en',
     display: 'English',
   },
-  ja: {
-    code: 'ja',
-    display: 'Japanese',
+  es: {
+    code: 'es',
+    display: 'Español',
   },
   fr: {
     code: 'fr',
     display: 'Français',
   },
-  'nb-NO': {
-    code: 'nb-NO',
-    display: 'Norwegian Bokmål',
-  },
-  de: {
-    code: 'de',
-    display: 'German',
-  },
-  ru: {
-    code: 'ru',
-    display: 'Russian',
+  it: {
+    code: 'it',
+    display: 'Italiano',
   },
   nl: {
     code: 'nl',
     display: 'Nederlands',
   },
-  es: {
-    code: 'es',
-    display: 'Spanish',
-  },
-  it: {
-    code: 'it',
-    display: 'Italian',
+  'nb-NO': {
+    code: 'nb-NO',
+    display: 'Norsk Bokmål',
   },
   'pt-BR': {
     code: 'pt-BR',
-    display: 'Portuguese (Brazil)',
+    display: 'Português (Brasil)',
   },
   'pt-PT': {
     code: 'pt-PT',
-    display: 'Portuguese (Portugal)',
-  },
-  sr: {
-    code: 'sr',
-    display: 'Serbian',
+    display: 'Português (Portugal)',
   },
   sv: {
     code: 'sv',
-    display: 'Swedish',
+    display: 'Svenska',
   },
-  'zh-Hant': {
-    code: 'zh-Hant',
-    display: 'Chinese (Traditional)',
+  ru: {
+    code: 'ru',
+    display: 'pусский',
+  },
+  sr: {
+    code: 'sr',
+    display: 'српски језик‬',
+  },
+  ja: {
+    code: 'ja',
+    display: '日本語',
+  },
+  'zh-TW': {
+    code: 'zh-TW',
+    display: '中文（臺灣）',
   },
 };
 
