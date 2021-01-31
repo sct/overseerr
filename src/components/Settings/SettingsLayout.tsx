@@ -9,7 +9,7 @@ const messages = defineMessages({
   menuServices: 'Services',
   menuNotifications: 'Notifications',
   menuLogs: 'Logs',
-  menuJobs: 'Jobs',
+  menuJobs: 'Jobs & Cache',
   menuAbout: 'About',
 });
 
@@ -106,7 +106,7 @@ const SettingsLayout: React.FC = ({ children }) => {
               )?.route
             }
             aria-label="Selected tab"
-            className="bg-gray-800 text-white mt-1 rounded-md form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-700 focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5 transition ease-in-out duration-150"
+            className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
           >
             {settingsRoutes.map((route, index) => (
               <SettingsLink
@@ -122,7 +122,7 @@ const SettingsLayout: React.FC = ({ children }) => {
         </div>
         <div className="hidden sm:block">
           <div className="border-b border-gray-600">
-            <nav className="-mb-px flex">
+            <nav className="flex -mb-px">
               {settingsRoutes.map((route, index) => (
                 <SettingsLink
                   route={route.route}

@@ -11,3 +11,15 @@ export interface PublicSettingsResponse {
   series4kEnabled: boolean;
   hideAvailable: boolean;
 }
+
+export interface CacheItem {
+  id: string;
+  name: string;
+  stats: {
+    hits: number;
+    misses: number;
+    keys: number;
+    ksize: number;
+    vsize: number;
+  };
+}

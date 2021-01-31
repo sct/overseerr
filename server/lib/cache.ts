@@ -1,45 +1,49 @@
 import NodeCache from 'node-cache';
 
-type AvailableCacheIds = 'tmdb' | 'radarr' | 'sonarr' | 'rt';
-
-interface Cache {
-  id: AvailableCacheIds;
-  data: NodeCache;
-}
+export type AvailableCacheIds = 'tmdb' | 'radarr' | 'sonarr' | 'rt';
 
 const DEFAULT_TTL = 300;
 const DEFAULT_CHECK_PERIOD = 120;
 
+class Cache {
+  public id: AvailableCacheIds;
+  public data: NodeCache;
+  public name: string;
+
+  constructor(
+    id: AvailableCacheIds,
+    name: string,
+    options: { stdTtl?: number; checkPeriod?: number } = {}
+  ) {
+    this.id = id;
+    this.name = name;
+    this.data = new NodeCache({
+      stdTTL: options.stdTtl ?? DEFAULT_TTL,
+      checkperiod: options.checkPeriod ?? DEFAULT_CHECK_PERIOD,
+    });
+  }
+
+  public getStats() {
+    return this.data.getStats();
+  }
+
+  public flush(): void {
+    this.data.flushAll();
+  }
+}
+
 class CacheManager {
   private availableCaches: Record<AvailableCacheIds, Cache> = {
-    tmdb: {
-      id: 'tmdb',
-      data: new NodeCache({
-        stdTTL: DEFAULT_TTL,
-        checkperiod: DEFAULT_CHECK_PERIOD,
-      }),
-    },
-    radarr: {
-      id: 'radarr',
-      data: new NodeCache({
-        stdTTL: DEFAULT_TTL,
-        checkperiod: DEFAULT_CHECK_PERIOD,
-      }),
-    },
-    sonarr: {
-      id: 'sonarr',
-      data: new NodeCache({
-        stdTTL: DEFAULT_TTL,
-        checkperiod: DEFAULT_CHECK_PERIOD,
-      }),
-    },
-    rt: {
-      id: 'rt',
-      data: new NodeCache({
-        stdTTL: 21600, // 12 hours TTL
-        checkperiod: 60 * 30, // 30 minutes check period
-      }),
-    },
+    tmdb: new Cache('tmdb', 'TMDb API', {
+      stdTtl: 21600,
+      checkPeriod: 60 * 30,
+    }),
+    radarr: new Cache('radarr', 'Radarr API'),
+    sonarr: new Cache('sonarr', 'Sonarr API'),
+    rt: new Cache('rt', 'Rotten Tomatoes API', {
+      stdTtl: 43200,
+      checkPeriod: 60 * 30,
+    }),
   };
 
   public getCache(id: AvailableCacheIds): Cache {

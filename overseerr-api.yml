@@ -2024,6 +2024,56 @@ paths:
                   running:
                     type: boolean
                     example: false
+  /settings/cache:
+    get:
+      summary: Get a list of active caches
+      description: Retrieves a list of all active caches and their current stats.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Caches returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: cache-id
+                    name:
+                      type: string
+                      example: cache name
+                    stats:
+                      type: object
+                      properties:
+                        hits:
+                          type: number
+                        misses:
+                          type: number
+                        keys:
+                          type: number
+                        ksize:
+                          type: number
+                        vsize:
+                          type: number
+  /settings/cache/{cacheId}/flush:
+    get:
+      summary: Flush a specific cache
+      description: Flushes all data from the cache ID provided
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: cacheId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Flushed cache'
   /settings/notifications:
     get:
       summary: Return notification settings

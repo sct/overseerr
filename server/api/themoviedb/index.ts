@@ -148,7 +148,7 @@ class TheMovieDb extends ExternalAPI {
             append_to_response: 'credits,external_ids,videos',
           },
         },
-        900
+        43200
       );
 
       return data;
@@ -174,7 +174,7 @@ class TheMovieDb extends ExternalAPI {
               'aggregate_credits,credits,external_ids,keywords,videos',
           },
         },
-        900
+        43200
       );
 
       return data;
