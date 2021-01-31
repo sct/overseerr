@@ -54,7 +54,7 @@ body {
 }
 
 .form-input {
-  @apply sm:col-span-2 text-white;
+  @apply text-white sm:col-span-2;
 }
 
 .label-tip {
@@ -66,7 +66,7 @@ body {
 }
 
 .about-label {
-  @apply block text-sm text-sm font-medium text-gray-400;
+  @apply block text-sm font-medium text-gray-400;
 }
 
 input[type='checkbox'] {
@@ -74,13 +74,13 @@ input[type='checkbox'] {
 }
 
 .checkbox-label {
-  @apply block text-sm font-medium leading-5 text-gray-400 sm:mt-1 mb-1;
+  @apply block mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-1;
 }
 
 input[type='text'],
 input[type='password'],
 select {
-  @apply flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5 text-white;
+  @apply flex-1 block w-full min-w-0 text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5;
 }
 
 input.rounded-l-only,
@@ -98,7 +98,7 @@ select.rounded-r-only {
 }
 
 .text-label {
-  @apply block text-sm font-medium leading-5 text-gray-400 sm:mt-2 mb-1;
+  @apply block mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2;
 }
 
 .group {
@@ -106,7 +106,7 @@ select.rounded-r-only {
 }
 
 .group-label {
-  @apply block text-sm font-medium leading-5 text-gray-400 mb-1;
+  @apply block mb-1 text-sm font-medium leading-5 text-gray-400;
 }
 
 /* Used for animating height */
