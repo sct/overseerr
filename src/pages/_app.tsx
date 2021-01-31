@@ -30,6 +30,8 @@ const loadLocaleData = (locale: AvailableLocales): Promise<any> => {
       return import('../i18n/locale/it.json');
     case 'ja':
       return import('../i18n/locale/ja.json');
+    case 'hu':
+      return import('../i18n/locale/hu.json');
     case 'nb-NO':
       return import('../i18n/locale/nb_NO.json');
     case 'nl':

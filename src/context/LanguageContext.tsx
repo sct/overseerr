@@ -7,6 +7,7 @@ export type AvailableLocales =
   | 'it'
   | 'ja'
   | 'fr'
+  | 'hu'
   | 'nb-NO'
   | 'nl'
   | 'pt-BR'

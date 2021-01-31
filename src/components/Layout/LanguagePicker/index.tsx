@@ -37,6 +37,10 @@ const availableLanguages: AvailableLanguageObject = {
     code: 'it',
     display: 'Italiano',
   },
+  hu: {
+    code: 'hu',
+    display: 'Magyar',
+  },
   nl: {
     code: 'nl',
     display: 'Nederlands',
