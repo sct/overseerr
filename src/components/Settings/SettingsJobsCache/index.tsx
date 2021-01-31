@@ -177,9 +177,9 @@ const SettingsJobs: React.FC = () => {
           {cacheData?.map((cache) => (
             <tr key={`cache-list-${cache.id}`}>
               <Table.TD>{cache.name}</Table.TD>
-              <Table.TD>{cache.stats.hits}</Table.TD>
-              <Table.TD>{cache.stats.misses}</Table.TD>
-              <Table.TD>{cache.stats.keys}</Table.TD>
+              <Table.TD>{intl.formatNumber(cache.stats.hits)}</Table.TD>
+              <Table.TD>{intl.formatNumber(cache.stats.misses)}</Table.TD>
+              <Table.TD>{intl.formatNumber(cache.stats.keys)}</Table.TD>
               <Table.TD>{formatBytes(cache.stats.ksize)}</Table.TD>
               <Table.TD>{formatBytes(cache.stats.vsize)}</Table.TD>
               <Table.TD alignText="right">
