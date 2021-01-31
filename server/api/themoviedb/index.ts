@@ -140,12 +140,16 @@ class TheMovieDb extends ExternalAPI {
     language?: string;
   }): Promise<TmdbMovieDetails> => {
     try {
-      const data = await this.get<TmdbMovieDetails>(`/movie/${movieId}`, {
-        params: {
-          language,
-          append_to_response: 'credits,external_ids,videos',
+      const data = await this.get<TmdbMovieDetails>(
+        `/movie/${movieId}`,
+        {
+          params: {
+            language,
+            append_to_response: 'credits,external_ids,videos',
+          },
         },
-      });
+        900
+      );
 
       return data;
     } catch (e) {
@@ -161,13 +165,17 @@ class TheMovieDb extends ExternalAPI {
     language?: string;
   }): Promise<TmdbTvDetails> => {
     try {
-      const data = await this.get<TmdbTvDetails>(`/tv/${tvId}`, {
-        params: {
-          language,
-          append_to_response:
-            'aggregate_credits,credits,external_ids,keywords,videos',
+      const data = await this.get<TmdbTvDetails>(
+        `/tv/${tvId}`,
+        {
+          params: {
+            language,
+            append_to_response:
+              'aggregate_credits,credits,external_ids,keywords,videos',
+          },
         },
-      });
+        900
+      );
 
       return data;
     } catch (e) {
