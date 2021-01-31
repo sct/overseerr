@@ -1,11 +1,11 @@
-import {
+import type {
   TmdbCreditCast,
   TmdbAggregateCreditCast,
   TmdbCreditCrew,
   TmdbExternalIds,
   TmdbVideo,
   TmdbVideoResult,
-} from '../api/themoviedb';
+} from '../api/themoviedb/interfaces';
 
 import { Video } from '../models/Movie';
 

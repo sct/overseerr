@@ -1,10 +1,11 @@
 import { getRepository } from 'typeorm';
 import { User } from '../../entity/User';
 import PlexAPI, { PlexLibraryItem, PlexMetadata } from '../../api/plexapi';
-import TheMovieDb, {
+import TheMovieDb from '../../api/themoviedb';
+import {
   TmdbMovieDetails,
   TmdbTvDetails,
-} from '../../api/themoviedb';
+} from '../../api/themoviedb/interfaces';
 import Media from '../../entity/Media';
 import { MediaStatus, MediaType } from '../../constants/media';
 import logger from '../../logger';

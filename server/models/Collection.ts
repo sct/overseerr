@@ -1,4 +1,4 @@
-import { TmdbCollection } from '../api/themoviedb';
+import type { TmdbCollection } from '../api/themoviedb/interfaces';
 import { MediaType } from '../constants/media';
 import Media from '../entity/Media';
 import { mapMovieResult, MovieResult } from './Search';

@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
 import useSWR from 'swr';
 import { useToasts } from 'react-toast-notifications';
-import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
+import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
 import axios from 'axios';
 import {
   MediaStatus,

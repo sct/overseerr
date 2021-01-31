@@ -28,7 +28,7 @@ import RTAudFresh from '../../assets/rt_aud_fresh.svg';
 import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import Head from 'next/head';
-import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
+import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import { Crew } from '../../../server/models/common';

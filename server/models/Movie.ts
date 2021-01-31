@@ -1,4 +1,4 @@
-import { TmdbMovieDetails } from '../api/themoviedb';
+import type { TmdbMovieDetails } from '../api/themoviedb/interfaces';
 import {
   ProductionCompany,
   Genre,
