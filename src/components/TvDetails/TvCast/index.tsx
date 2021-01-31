@@ -32,15 +32,17 @@ const TvCast: React.FC = () => {
 
   return (
     <>
-      <Header
-        subtext={
-          <Link href={`/tv/${data.id}`}>
-            <a className="hover:underline">{data.name}</a>
-          </Link>
-        }
-      >
-        {intl.formatMessage(messages.fullseriescast)}
-      </Header>
+      <div className="mt-9 mb-5">
+        <Header
+          subtext={
+            <Link href={`/tv/${data.id}`}>
+              <a className="hover:underline">{data.name}</a>
+            </Link>
+          }
+        >
+          {intl.formatMessage(messages.fullseriescast)}
+        </Header>
+      </div>
       <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
         {data?.credits.cast.map((person) => {
           return (
