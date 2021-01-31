@@ -158,7 +158,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
               </a>
             </Link>
           ) : (
-            <div className="inline-flex items-center text-xl font-medium leading-7 text-gray-300 sm:text-2xl sm:leading-9 sm:truncate">
+            <div className="inline-flex items-center text-xl leading-7 text-gray-300 sm:text-2xl sm:leading-9 sm:truncate">
               <span>{title}</span>
             </div>
           )}

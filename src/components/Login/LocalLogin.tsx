@@ -57,10 +57,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
           <>
             <Form>
               <div className="sm:border-t sm:border-gray-800">
-                <label
-                  htmlFor="email"
-                  className="block my-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2"
-                >
+                <label htmlFor="email" className="text-label">
                   {intl.formatMessage(messages.email)}
                 </label>
                 <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
@@ -73,13 +70,10 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                     />
                   </div>
                   {errors.email && touched.email && (
-                    <div className="mt-2 text-red-500">{errors.email}</div>
+                    <div className="error">{errors.email}</div>
                   )}
                 </div>
-                <label
-                  htmlFor="password"
-                  className="block my-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2"
-                >
+                <label htmlFor="password" className="text-label">
                   {intl.formatMessage(messages.password)}
                 </label>
                 <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
@@ -92,27 +86,30 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                     />
                   </div>
                   {errors.password && touched.password && (
-                    <div className="mt-2 text-red-500">{errors.password}</div>
+                    <div className="error">{errors.password}</div>
                   )}
                 </div>
                 {loginError && (
                   <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
-                    <div className="mt-2 text-red-500">{loginError}</div>
+                    <div className="error">{loginError}</div>
                   </div>
                 )}
               </div>
-              <span className="block w-full rounded-md shadow-sm">
-                <Button
-                  buttonType="primary"
-                  type="submit"
-                  className="login-button mt-8"
-                  disabled={isSubmitting || !isValid}
-                >
-                  {isSubmitting
-                    ? intl.formatMessage(messages.signingin)
-                    : intl.formatMessage(messages.signin)}
-                </Button>
-              </span>
+              <div className="actions">
+                <div className="flex justify-end">
+                  <span className="inline-flex ml-3 rounded-md shadow-sm">
+                    <Button
+                      buttonType="primary"
+                      type="submit"
+                      disabled={isSubmitting || !isValid}
+                    >
+                      {isSubmitting
+                        ? intl.formatMessage(messages.signingin)
+                        : intl.formatMessage(messages.signin)}
+                    </Button>
+                  </span>
+                </div>
+              </div>
             </Form>
           </>
         );

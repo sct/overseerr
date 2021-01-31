@@ -77,7 +77,7 @@ const TvRecommendations: React.FC = () => {
 
   return (
     <>
-      <div className="mt-9 mb-5">
+      <div className="mt-1 mb-5">
         <Header
           subtext={
             tvData && !tvError

@@ -259,7 +259,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   }
   return (
     <>
-      <div>
+      <div className="mb-6">
         <h3 className="heading">
           <FormattedMessage {...messages.plexsettings} />
         </h3>
@@ -473,7 +473,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     />
                   </div>
                   {errors.hostname && touched.hostname && (
-                    <div className="mt-2 text-red-500">{errors.hostname}</div>
+                    <div className="error">{errors.hostname}</div>
                   )}
                 </div>
               </div>
@@ -491,7 +491,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     />
                   </div>
                   {errors.port && touched.port && (
-                    <div className="mt-2 text-red-500">{errors.port}</div>
+                    <div className="error">{errors.port}</div>
                   )}
                 </div>
               </div>
@@ -522,7 +522,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   </Alert>
                 </div>
               )}
-              <div className="pt-5 mt-8 border-t border-gray-700">
+              <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
@@ -541,32 +541,32 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           );
         }}
       </Formik>
-      <div className="mt-10">
+      <div className="mt-10 mb-6">
         <h3 className="heading">
           <FormattedMessage {...messages.plexlibraries} />
         </h3>
         <p className="description">
           <FormattedMessage {...messages.plexlibrariesDescription} />
         </p>
-        <div className="mt-6">
-          <Button onClick={() => syncLibraries()} disabled={isSyncing}>
-            <svg
-              className={`${isSyncing ? 'animate-spin' : ''} w-5 h-5 mr-1`}
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                clipRule="evenodd"
-              />
-            </svg>
-            {isSyncing
-              ? intl.formatMessage(messages.syncing)
-              : intl.formatMessage(messages.sync)}
-          </Button>
-        </div>
+      </div>
+      <div className="section">
+        <Button onClick={() => syncLibraries()} disabled={isSyncing}>
+          <svg
+            className={`${isSyncing ? 'animate-spin' : ''} w-5 h-5 mr-1`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+              clipRule="evenodd"
+            />
+          </svg>
+          {isSyncing
+            ? intl.formatMessage(messages.syncing)
+            : intl.formatMessage(messages.sync)}
+        </Button>
         <ul className="grid grid-cols-1 gap-5 mt-6 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {data?.libraries.map((library) => (
             <LibraryItem
@@ -578,107 +578,107 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           ))}
         </ul>
       </div>
-      <div className="mt-10">
+      <div className="mt-10 mb-6">
         <h3 className="heading">
           <FormattedMessage {...messages.manualscan} />
         </h3>
         <p className="description">
           <FormattedMessage {...messages.manualscanDescription} />
         </p>
-        <div className="mt-6">
-          <div className="p-4 bg-gray-800 rounded-md">
-            <div className="relative w-full h-8 mb-6 overflow-hidden bg-gray-600 rounded-full">
-              {dataSync?.running && (
-                <div
-                  className="h-8 transition-all duration-200 ease-in-out bg-indigo-600"
-                  style={{
-                    width: `${Math.round(
-                      (dataSync.progress / dataSync.total) * 100
-                    )}%`,
-                  }}
-                />
-              )}
-              <div className="absolute inset-0 flex items-center justify-center w-full h-8 text-sm">
-                <span>
-                  {dataSync?.running
-                    ? `${dataSync.progress} of ${dataSync.total}`
-                    : 'Not running'}
-                </span>
-              </div>
+      </div>
+      <div className="section">
+        <div className="p-4 bg-gray-800 rounded-md">
+          <div className="relative w-full h-8 mb-6 overflow-hidden bg-gray-600 rounded-full">
+            {dataSync?.running && (
+              <div
+                className="h-8 transition-all duration-200 ease-in-out bg-indigo-600"
+                style={{
+                  width: `${Math.round(
+                    (dataSync.progress / dataSync.total) * 100
+                  )}%`,
+                }}
+              />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center w-full h-8 text-sm">
+              <span>
+                {dataSync?.running
+                  ? `${dataSync.progress} of ${dataSync.total}`
+                  : 'Not running'}
+              </span>
             </div>
-            <div className="flex flex-col w-full sm:flex-row">
-              {dataSync?.running && (
-                <>
-                  {dataSync.currentLibrary && (
-                    <div className="flex items-center mb-2 mr-0 sm:mb-0 sm:mr-2">
-                      <Badge>
-                        <FormattedMessage
-                          {...messages.currentlibrary}
-                          values={{ name: dataSync.currentLibrary.name }}
-                        />
-                      </Badge>
-                    </div>
-                  )}
-                  <div className="flex items-center">
-                    <Badge badgeType="warning">
+          </div>
+          <div className="flex flex-col w-full sm:flex-row">
+            {dataSync?.running && (
+              <>
+                {dataSync.currentLibrary && (
+                  <div className="flex items-center mb-2 mr-0 sm:mb-0 sm:mr-2">
+                    <Badge>
                       <FormattedMessage
-                        {...messages.librariesRemaining}
-                        values={{
-                          count: dataSync.currentLibrary
-                            ? dataSync.libraries.slice(
-                                dataSync.libraries.findIndex(
-                                  (library) =>
-                                    library.id === dataSync.currentLibrary?.id
-                                ) + 1
-                              ).length
-                            : 0,
-                        }}
+                        {...messages.currentlibrary}
+                        values={{ name: dataSync.currentLibrary.name }}
                       />
                     </Badge>
                   </div>
-                </>
+                )}
+                <div className="flex items-center">
+                  <Badge badgeType="warning">
+                    <FormattedMessage
+                      {...messages.librariesRemaining}
+                      values={{
+                        count: dataSync.currentLibrary
+                          ? dataSync.libraries.slice(
+                              dataSync.libraries.findIndex(
+                                (library) =>
+                                  library.id === dataSync.currentLibrary?.id
+                              ) + 1
+                            ).length
+                          : 0,
+                      }}
+                    />
+                  </Badge>
+                </div>
+              </>
+            )}
+            <div className="flex-1 text-right">
+              {!dataSync?.running && (
+                <Button buttonType="warning" onClick={() => startScan()}>
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  <FormattedMessage {...messages.startscan} />
+                </Button>
               )}
-              <div className="flex-1 text-right">
-                {!dataSync?.running && (
-                  <Button buttonType="warning" onClick={() => startScan()}>
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                    <FormattedMessage {...messages.startscan} />
-                  </Button>
-                )}
 
-                {dataSync?.running && (
-                  <Button buttonType="danger" onClick={() => cancelScan()}>
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                    <FormattedMessage {...messages.cancelscan} />
-                  </Button>
-                )}
-              </div>
+              {dataSync?.running && (
+                <Button buttonType="danger" onClick={() => cancelScan()}>
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                  <FormattedMessage {...messages.cancelscan} />
+                </Button>
+              )}
             </div>
           </div>
         </div>

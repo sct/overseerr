@@ -156,7 +156,7 @@ const NotificationsTelegram: React.FC = () => {
                     />
                   </div>
                   {errors.botAPI && touched.botAPI && (
-                    <div className="mt-2 text-red-500">{errors.botAPI}</div>
+                    <div className="error">{errors.botAPI}</div>
                   )}
                 </div>
               </div>
@@ -174,7 +174,7 @@ const NotificationsTelegram: React.FC = () => {
                     />
                   </div>
                   {errors.chatId && touched.chatId && (
-                    <div className="mt-2 text-red-500">{errors.chatId}</div>
+                    <div className="error">{errors.chatId}</div>
                   )}
                 </div>
               </div>
@@ -195,7 +195,7 @@ const NotificationsTelegram: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="pt-5 mt-8 border-t border-gray-700">
+              <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button

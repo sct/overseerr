@@ -240,7 +240,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
                     />
                   </div>
                 </div>
-                <div className="pt-5 mt-8 border-t border-gray-700">
+                <div className="actions">
                   <div className="flex justify-end">
                     <span className="inline-flex ml-3 rounded-md shadow-sm">
                       <Button

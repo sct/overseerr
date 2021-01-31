@@ -93,7 +93,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     port: Yup.number().required(
       intl.formatMessage(messages.validationPortRequired)
     ),
-    apiKey: Yup.string().required(intl.formatMessage(messages.apiKey)),
+    apiKey: Yup.string().required(
+      intl.formatMessage(messages.validationApiKeyRequired)
+    ),
     rootFolder: Yup.string().required(
       intl.formatMessage(messages.validationRootFolderRequired)
     ),
@@ -321,7 +323,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       />
                     </div>
                     {errors.name && touched.name && (
-                      <div className="mt-2 text-red-500">{errors.name}</div>
+                      <div className="error">{errors.name}</div>
                     )}
                   </div>
                 </div>
@@ -348,7 +350,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       />
                     </div>
                     {errors.hostname && touched.hostname && (
-                      <div className="mt-2 text-red-500">{errors.hostname}</div>
+                      <div className="error">{errors.hostname}</div>
                     )}
                   </div>
                 </div>
@@ -369,7 +371,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       }}
                     />
                     {errors.port && touched.port && (
-                      <div className="mt-2 text-red-500">{errors.port}</div>
+                      <div className="error">{errors.port}</div>
                     )}
                   </div>
                 </div>
@@ -410,7 +412,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       />
                     </div>
                     {errors.apiKey && touched.apiKey && (
-                      <div className="mt-2 text-red-500">{errors.apiKey}</div>
+                      <div className="error">{errors.apiKey}</div>
                     )}
                   </div>
                 </div>
@@ -434,7 +436,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       />
                     </div>
                     {errors.baseUrl && touched.baseUrl && (
-                      <div className="mt-2 text-red-500">{errors.baseUrl}</div>
+                      <div className="error">{errors.baseUrl}</div>
                     )}
                   </div>
                 </div>
@@ -472,9 +474,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       </Field>
                     </div>
                     {errors.activeProfileId && touched.activeProfileId && (
-                      <div className="mt-2 text-red-500">
-                        {errors.activeProfileId}
-                      </div>
+                      <div className="error">{errors.activeProfileId}</div>
                     )}
                   </div>
                 </div>
@@ -510,9 +510,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       </Field>
                     </div>
                     {errors.rootFolder && touched.rootFolder && (
-                      <div className="mt-2 text-red-500">
-                        {errors.rootFolder}
-                      </div>
+                      <div className="error">{errors.rootFolder}</div>
                     )}
                   </div>
                 </div>
@@ -536,7 +534,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     </div>
                     {errors.minimumAvailability &&
                       touched.minimumAvailability && (
-                        <div className="mt-2 text-red-500">
+                        <div className="error">
                           {errors.minimumAvailability}
                         </div>
                       )}
@@ -558,9 +556,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       />
                     </div>
                     {errors.externalUrl && touched.externalUrl && (
-                      <div className="mt-2 text-red-500">
-                        {errors.externalUrl}
-                      </div>
+                      <div className="error">{errors.externalUrl}</div>
                     )}
                   </div>
                 </div>

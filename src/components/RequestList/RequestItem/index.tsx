@@ -117,7 +117,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   }
 
   return (
-    <tr className="relative w-full h-24 p-2 text-sm">
+    <tr className="relative w-full h-24 p-2">
       <RequestModal
         show={showEditModal}
         tmdbId={request.media.tmdbId}
@@ -159,7 +159,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   : `/tv/${requestData.media.tmdbId}`
               }
             >
-              <a className="min-w-0 mr-2 text-base truncate hover:underline">
+              <a className="min-w-0 mr-2 text-xl text-white truncate hover:underline">
                 {isMovie(title) ? title.title : title.name}
               </a>
             </Link>
@@ -207,7 +207,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
       </Table.TD>
       <Table.TD>
         <div className="flex flex-col">
-          <span>
+          <span className="text-sm text-gray-300">
             <FormattedDate value={requestData.createdAt} />
           </span>
         </div>
@@ -215,7 +215,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
       <Table.TD>
         <div className="flex flex-col">
           {requestData.modifiedBy ? (
-            <span>
+            <span className="text-sm text-gray-300">
               {requestData.modifiedBy.displayName}
               &nbsp;(
               <FormattedRelativeTime
@@ -228,7 +228,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               )
             </span>
           ) : (
-            <span>N/A</span>
+            <span className="text-sm text-gray-300">N/A</span>
           )}
         </div>
       </Table.TD>
@@ -244,7 +244,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               onClick={() => retryRequest()}
             >
               <svg
-                className="w-6 h-6 mr-0 sm:mr-1"
+                className="w-4 h-4 mr-0 sm:mr-1"
                 fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -267,7 +267,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               onClick={() => deleteRequest()}
             >
               <svg
-                className="w-6 h-6 mr-0 sm:mr-1"
+                className="w-4 h-4 mr-0 sm:mr-1"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +293,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   onClick={() => modifyRequest('approve')}
                 >
                   <svg
-                    className="w-6 h-6 mr-0 sm:mr-1"
+                    className="w-4 h-4 mr-0 sm:mr-1"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -316,7 +316,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   onClick={() => modifyRequest('decline')}
                 >
                   <svg
-                    className="w-6 h-6 mr-0 sm:mr-1"
+                    className="w-4 h-4 mr-0 sm:mr-1"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -339,7 +339,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   onClick={() => setShowEditModal(true)}
                 >
                   <svg
-                    className="w-6 h-6 mr-0 sm:mr-1"
+                    className="w-4 h-4 mr-0 sm:mr-1"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"

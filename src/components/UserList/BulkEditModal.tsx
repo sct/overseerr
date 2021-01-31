@@ -89,9 +89,9 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
       okText={intl.formatMessage(userEditMessages.save)}
       onCancel={onCancel}
     >
-      <div className="mt-8">
-        <div role="group" aria-labelledby="group-label" className="group">
-          <div className="sm:grid sm:grid-cols-4 sm:gap-4">
+      <div className="mt-6 mb-6">
+        <div role="group" aria-labelledby="group-label">
+          <div className="form-row">
             <div>
               <div id="group-label" className="group-label">
                 <FormattedMessage {...userEditMessages.permissions} />

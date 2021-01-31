@@ -100,7 +100,7 @@ const Release: React.FC<ReleaseProps> = ({
         </Modal>
       </Transition>
       <div className="flex items-center justify-center mb-4 sm:mb-0 sm:justify-start">
-        <span className="mr-2 text-xs mt-1">
+        <span className="mt-1 mr-2 text-xs">
           <FormattedRelativeTime
             value={Math.floor(
               (new Date(release.created_at).getTime() - Date.now()) / 1000
@@ -178,7 +178,7 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
         )}
         {data?.map((release, index) => {
           return (
-            <div key={`release-${release.id}`} className="mb-3">
+            <div key={`release-${release.id}`} className="mb-2">
               <Release
                 release={release}
                 currentVersion={currentVersion}

@@ -54,10 +54,10 @@ const RequestList: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-between sm:flex-row mt-8">
+      <div className="flex flex-col justify-between md:items-end md:flex-row">
         <Header>{intl.formatMessage(messages.requests)}</Header>
-        <div className="flex mt-1">
-          <div className="flex mr-2">
+        <div className="flex flex-col mt-2 md:flex-row">
+          <div className="flex mb-2 md:mb-0 md:mr-2">
             <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
               <svg
                 className="w-6 h-6"
@@ -159,8 +159,9 @@ const RequestList: React.FC = () => {
                     {intl.formatMessage(messages.noresults)}
                   </span>
                   {currentFilter !== 'all' && (
-                    <div className="mt-6">
+                    <div className="mt-4">
                       <Button
+                        buttonSize="sm"
                         buttonType="primary"
                         onClick={() => setCurrentFilter('all')}
                       >

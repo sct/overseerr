@@ -86,7 +86,7 @@ const UserEdit: React.FC = () => {
       {({ isSubmitting, handleSubmit }) => (
         <Form className="section">
           <div className="mt-10 text-white">
-            <div className="flex flex-col justify-between sm:flex-row mt-8">
+            <div className="flex flex-col justify-between sm:flex-row">
               <Header>
                 <FormattedMessage {...messages.edituser} />
               </Header>
@@ -161,7 +161,7 @@ const UserEdit: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="pt-5 mt-8 border-t border-gray-700">
+          <div className="actions">
             <div className="flex justify-end">
               <span className="inline-flex ml-3 rounded-md shadow-sm">
                 <Button

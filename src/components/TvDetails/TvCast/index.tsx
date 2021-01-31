@@ -32,7 +32,7 @@ const TvCast: React.FC = () => {
 
   return (
     <>
-      <div className="mt-9 mb-5">
+      <div className="mt-1 mb-5">
         <Header
           subtext={
             <Link href={`/tv/${data.id}`}>
@@ -48,7 +48,7 @@ const TvCast: React.FC = () => {
           return (
             <li
               key={person.id}
-              className="col-span-1 flex flex-col text-center items-center"
+              className="flex flex-col items-center col-span-1 text-center"
             >
               <PersonCard
                 name={person.name}

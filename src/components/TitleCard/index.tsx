@@ -118,7 +118,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
             <div className="z-40 pointer-events-none">
               {(currentStatus === MediaStatus.AVAILABLE ||
                 currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
-                <div className="flex items-center justify-center w-6 h-6 text-white bg-green-400 rounded-full shadow sm:w-5 sm:h-5">
+                <div className="flex items-center justify-center w-4 h-4 text-white bg-green-400 rounded-full shadow sm:w-5 sm:h-5">
                   <svg
                     className="w-3 h-3 sm:w-4 sm:h-4"
                     fill="none"
@@ -136,7 +136,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 </div>
               )}
               {currentStatus === MediaStatus.PENDING && (
-                <div className="flex items-center justify-center w-6 h-6 text-white bg-yellow-500 rounded-full shadow sm:w-5 sm:h-5">
+                <div className="flex items-center justify-center w-4 h-4 text-white bg-yellow-500 rounded-full shadow sm:w-5 sm:h-5">
                   <svg
                     className="w-3 h-3 sm:w-4 sm:h-4"
                     fill="currentColor"

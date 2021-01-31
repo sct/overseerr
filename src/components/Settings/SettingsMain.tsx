@@ -68,7 +68,7 @@ const SettingsMain: React.FC = () => {
 
   return (
     <>
-      <div>
+      <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.generalsettings)}
         </h3>
@@ -257,7 +257,7 @@ const SettingsMain: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="pt-5 mt-8 border-t border-gray-700">
+                <div className="actions">
                   <div className="flex justify-end">
                     <span className="inline-flex ml-3 rounded-md shadow-sm">
                       <Button

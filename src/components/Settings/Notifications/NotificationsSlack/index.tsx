@@ -141,7 +141,7 @@ const NotificationsSlack: React.FC = () => {
                     />
                   </div>
                   {errors.webhookUrl && touched.webhookUrl && (
-                    <div className="mt-2 text-red-500">{errors.webhookUrl}</div>
+                    <div className="error">{errors.webhookUrl}</div>
                   )}
                 </div>
               </div>
@@ -162,7 +162,7 @@ const NotificationsSlack: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="pt-5 mt-8 border-t border-gray-700">
+              <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button

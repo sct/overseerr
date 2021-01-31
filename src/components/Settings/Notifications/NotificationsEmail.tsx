@@ -147,7 +147,7 @@ const NotificationsEmail: React.FC = () => {
                   />
                 </div>
                 {errors.emailFrom && touched.emailFrom && (
-                  <div className="mt-2 text-red-500">{errors.emailFrom}</div>
+                  <div className="error">{errors.emailFrom}</div>
                 )}
               </div>
             </div>
@@ -180,7 +180,7 @@ const NotificationsEmail: React.FC = () => {
                   />
                 </div>
                 {errors.smtpHost && touched.smtpHost && (
-                  <div className="mt-2 text-red-500">{errors.smtpHost}</div>
+                  <div className="error">{errors.smtpHost}</div>
                 )}
               </div>
             </div>
@@ -198,7 +198,7 @@ const NotificationsEmail: React.FC = () => {
                   />
                 </div>
                 {errors.smtpPort && touched.smtpPort && (
-                  <div className="mt-2 text-red-500">{errors.smtpPort}</div>
+                  <div className="error">{errors.smtpPort}</div>
                 )}
               </div>
             </div>
@@ -267,7 +267,7 @@ const NotificationsEmail: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="pt-5 mt-8 border-t border-gray-700">
+            <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button

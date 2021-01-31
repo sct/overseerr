@@ -330,7 +330,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       />
                     </div>
                     {errors.name && touched.name && (
-                      <div className="mt-2 text-red-500">{errors.name}</div>
+                      <div className="error">{errors.name}</div>
                     )}
                   </div>
                 </div>
@@ -357,7 +357,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       />
                     </div>
                     {errors.hostname && touched.hostname && (
-                      <div className="mt-2 text-red-500">{errors.hostname}</div>
+                      <div className="error">{errors.hostname}</div>
                     )}
                   </div>
                 </div>
@@ -378,7 +378,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       }}
                     />
                     {errors.port && touched.port && (
-                      <div className="mt-2 text-red-500">{errors.port}</div>
+                      <div className="error">{errors.port}</div>
                     )}
                   </div>
                 </div>
@@ -419,7 +419,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       />
                     </div>
                     {errors.apiKey && touched.apiKey && (
-                      <div className="mt-2 text-red-500">{errors.apiKey}</div>
+                      <div className="error">{errors.apiKey}</div>
                     )}
                   </div>
                 </div>
@@ -443,7 +443,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       />
                     </div>
                     {errors.baseUrl && touched.baseUrl && (
-                      <div className="mt-2 text-red-500">{errors.baseUrl}</div>
+                      <div className="error">{errors.baseUrl}</div>
                     )}
                   </div>
                 </div>
@@ -481,9 +481,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       </Field>
                     </div>
                     {errors.activeProfileId && touched.activeProfileId && (
-                      <div className="mt-2 text-red-500">
-                        {errors.activeProfileId}
-                      </div>
+                      <div className="error">{errors.activeProfileId}</div>
                     )}
                   </div>
                 </div>
@@ -519,9 +517,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       </Field>
                     </div>
                     {errors.rootFolder && touched.rootFolder && (
-                      <div className="mt-2 text-red-500">
-                        {errors.rootFolder}
-                      </div>
+                      <div className="error">{errors.rootFolder}</div>
                     )}
                   </div>
                 </div>
@@ -559,7 +555,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     </div>
                     {errors.activeAnimeProfileId &&
                       touched.activeAnimeProfileId && (
-                        <div className="mt-2 text-red-500">
+                        <div className="error">
                           {errors.activeAnimeProfileId}
                         </div>
                       )}
@@ -597,9 +593,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     </div>
                     {errors.activeAnimeRootFolder &&
                       touched.activeAnimeRootFolder && (
-                        <div className="mt-2 text-red-500">
-                          {errors.rootFolder}
-                        </div>
+                        <div className="error">{errors.rootFolder}</div>
                       )}
                   </div>
                 </div>
@@ -634,9 +628,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       />
                     </div>
                     {errors.externalUrl && touched.externalUrl && (
-                      <div className="mt-2 text-red-500">
-                        {errors.externalUrl}
-                      </div>
+                      <div className="error">{errors.externalUrl}</div>
                     )}
                   </div>
                 </div>

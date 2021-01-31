@@ -198,7 +198,7 @@ const SettingsServices: React.FC = () => {
 
   return (
     <>
-      <div>
+      <div className="mb-6">
         <h3 className="heading">
           <FormattedMessage {...messages.radarrsettings} />
         </h3>
@@ -283,7 +283,7 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="h-46 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow">
+              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-44">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"
@@ -312,7 +312,7 @@ const SettingsServices: React.FC = () => {
           </>
         )}
       </div>
-      <div className="mt-10">
+      <div className="mt-10 mb-6">
         <h3 className="heading">
           <FormattedMessage {...messages.sonarrsettings} />
         </h3>
@@ -353,11 +353,10 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="h-46 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow">
+              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-44">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"
-                    className="mt-3 mb-3"
                     onClick={() =>
                       setEditSonarrModal({ open: true, sonarr: null })
                     }

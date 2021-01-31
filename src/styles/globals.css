@@ -6,12 +6,12 @@ body {
   @apply bg-gray-900;
 }
 
-.login-button {
+.plex-button {
   @apply flex justify-center w-full px-4 py-2 text-sm font-medium text-center text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md disabled:opacity-50;
   background-color: #cc7b19;
 }
 
-.login-button:hover {
+.plex-button:hover {
   background: #f19a30;
 }
 
@@ -61,12 +61,8 @@ body {
   @apply block text-gray-500;
 }
 
-.about {
-  @apply flex text-sm text-white sm:mt-0 sm:col-span-2;
-}
-
-.about-label {
-  @apply block text-sm font-medium text-gray-400;
+.actions {
+  @apply pt-5 mt-8 border-t border-gray-700;
 }
 
 input[type='checkbox'] {
@@ -99,6 +95,10 @@ select.rounded-r-only {
 
 .text-label {
   @apply block mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2;
+}
+
+.error {
+  @apply mt-2 text-sm text-red-500;
 }
 
 .group {

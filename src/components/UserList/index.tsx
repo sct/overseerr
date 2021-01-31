@@ -297,7 +297,7 @@ const UserList: React.FC = () => {
                         />
                       </div>
                       {errors.email && touched.email && (
-                        <div className="mt-2 text-red-500">{errors.email}</div>
+                        <div className="error">{errors.email}</div>
                       )}
                     </div>
                   </div>
@@ -329,9 +329,7 @@ const UserList: React.FC = () => {
                         />
                       </div>
                       {errors.password && touched.password && (
-                        <div className="mt-2 text-red-500">
-                          {errors.password}
-                        </div>
+                        <div className="error">{errors.password}</div>
                       )}
                     </div>
                   </div>
@@ -362,18 +360,18 @@ const UserList: React.FC = () => {
         />
       </Transition>
 
-      <div className="flex flex-col justify-between sm:flex-row mt-8">
+      <div className="flex flex-col justify-between md:items-end md:flex-row">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
-        <div className="flex mt-1">
+        <div className="flex flex-row justify-between mt-2 sm:flex-row md:mb-0">
           <Button
-            className="flex mr-2 outline"
+            className="flex-grow mr-2 outline"
             buttonType="primary"
             onClick={() => setCreateModal({ isOpen: true })}
           >
             {intl.formatMessage(messages.createlocaluser)}
           </Button>
           <Button
-            className="flex outline"
+            className="flex-grow outline"
             buttonType="primary"
             disabled={isImporting}
             onClick={() => importFromPlex()}
@@ -382,7 +380,6 @@ const UserList: React.FC = () => {
           </Button>
         </div>
       </div>
-
       <Table>
         <thead>
           <tr>
