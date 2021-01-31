@@ -7,7 +7,7 @@ interface ListItemProps {
 
 const ListItem: React.FC<ListItemProps> = ({ title, children }) => {
   return (
-    <div className="form-row sm:py-2">
+    <div className="py-4 sm:grid sm:grid-cols-4 sm:gap-4">
       <dt className="about-label">{title}</dt>
       <dd className="about">
         <span className="flex-grow">{children}</span>
@@ -29,7 +29,7 @@ const List: React.FC<ListProps> = ({ title, subTitle, children }) => {
         {subTitle && <p className="description">{subTitle}</p>}
       </div>
       <div className="section">
-        <dl>{children}</dl>
+        <dl className="divide-y divide-gray-800">{children}</dl>
       </div>
     </>
   );
