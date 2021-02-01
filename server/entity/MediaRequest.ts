@@ -415,6 +415,15 @@ export class MediaRequest {
             searchNow: !radarrSettings.preventSearch,
           })
           .then(async (radarrMovie) => {
+            // We grab media again here to make sure we have the latest version of it
+            const media = await mediaRepository.findOne({
+              where: { id: this.media.id },
+            });
+
+            if (!media) {
+              throw new Error('Media data is missing');
+            }
+
             media[this.is4k ? 'externalServiceId4k' : 'externalServiceId'] =
               radarrMovie.id;
             media[this.is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =
