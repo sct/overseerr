@@ -43,7 +43,7 @@
     "plex-api": "^5.3.1",
     "pug": "^3.0.0",
     "react": "17.0.1",
-    "react-ace": "^9.2.1",
+    "react-ace": "^9.3.0",
     "react-animate-height": "^2.0.23",
     "react-dom": "17.0.1",
     "react-intersection-observer": "^8.31.0",
