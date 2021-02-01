@@ -1,8 +1,8 @@
 {
   "formats": {
     "openapi": {
-      "rootDir": "./",
-      "include": ["overseerr-api*.yml"]
+      "rootDir": ".",
+      "include": ["./overseerr-api.yml"]
     }
   },
   "exclude": ["docs"]
