@@ -254,7 +254,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       e.preventDefault();
                       setShowRequestModal(true);
                     }}
-                    className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-500 rounded-sm h-7 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
+                    className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-600 rounded-md h-7 hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
                   >
                     <svg
                       className="w-4 mr-1"
