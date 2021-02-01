@@ -5,9 +5,13 @@ import Badge from '../Common/Badge';
 
 interface DownloadBlockProps {
   downloadItem: DownloadingItem;
+  is4k?: boolean;
 }
 
-const DownloadBlock: React.FC<DownloadBlockProps> = ({ downloadItem }) => {
+const DownloadBlock: React.FC<DownloadBlockProps> = ({
+  downloadItem,
+  is4k = false,
+}) => {
   return (
     <div className="p-4">
       <div className="w-56 mb-2 text-sm truncate sm:w-80 md:w-full">
@@ -36,7 +40,14 @@ const DownloadBlock: React.FC<DownloadBlockProps> = ({ downloadItem }) => {
         </div>
       </div>
       <div className="flex items-center justify-between text-xs">
-        <Badge className="capitalize">{downloadItem.status}</Badge>
+        <span>
+          {is4k && (
+            <Badge badgeType="warning" className="mr-1">
+              4K
+            </Badge>
+          )}
+          <Badge className="capitalize">{downloadItem.status}</Badge>
+        </span>
         <span>
           ETA{' '}
           {downloadItem.estimatedCompletionTime ? (

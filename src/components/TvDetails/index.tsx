@@ -191,6 +191,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     <DownloadBlock downloadItem={status} />
                   </li>
                 ))}
+                {data.mediaInfo?.downloadStatus4k?.map((status, index) => (
+                  <li
+                    key={`dl-status-${status.externalId}-${index}`}
+                    className="border-b border-gray-700 last:border-b-0"
+                  >
+                    <DownloadBlock downloadItem={status} is4k />
+                  </li>
+                ))}
               </ul>
             </div>
           </>
