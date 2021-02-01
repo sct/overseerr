@@ -201,6 +201,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 ] ?? []
               ).length > 0
             }
+            is4k={requestData.is4k}
           />
         )}
       </Table.TD>
