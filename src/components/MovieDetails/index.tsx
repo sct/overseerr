@@ -671,6 +671,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <ExternalLinkBlock
               mediaType="movie"
               tmdbId={data.id}
+              tvdbId={data.externalIds.tvdbId}
               imdbId={data.externalIds.imdbId}
               rtUrl={ratingData?.url}
               plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}
