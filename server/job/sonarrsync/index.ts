@@ -243,9 +243,19 @@ class JobSonarrSync {
         isAllSeasons || shouldStayAvailable
           ? MediaStatus.AVAILABLE
           : media.seasons.some(
-              (season) => season.status !== MediaStatus.UNKNOWN
+              (season) =>
+                season[server4k ? 'status4k' : 'status'] ===
+                  MediaStatus.AVAILABLE ||
+                season[server4k ? 'status4k' : 'status'] ===
+                  MediaStatus.PARTIALLY_AVAILABLE
             )
           ? MediaStatus.PARTIALLY_AVAILABLE
+          : media.seasons.some(
+              (season) =>
+                season[server4k ? 'status4k' : 'status'] ===
+                MediaStatus.PROCESSING
+            )
+          ? MediaStatus.PROCESSING
           : MediaStatus.UNKNOWN;
 
       await mediaRepository.save(media);
