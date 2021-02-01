@@ -216,16 +216,18 @@ const RequestItem: React.FC<RequestItemProps> = ({
         <div className="flex flex-col">
           {requestData.modifiedBy ? (
             <span className="text-sm text-gray-300">
-              {requestData.modifiedBy.displayName}
-              &nbsp;(
-              <FormattedRelativeTime
-                value={Math.floor(
-                  (new Date(requestData.updatedAt).getTime() - Date.now()) /
-                    1000
-                )}
-                updateIntervalInSeconds={1}
-              />
-              )
+              <span className="mr-1">{requestData.modifiedBy.displayName}</span>
+              <span>
+                (
+                <FormattedRelativeTime
+                  value={Math.floor(
+                    (new Date(requestData.updatedAt).getTime() - Date.now()) /
+                      1000
+                  )}
+                  updateIntervalInSeconds={1}
+                />
+                )
+              </span>
             </span>
           ) : (
             <span className="text-sm text-gray-300">N/A</span>
