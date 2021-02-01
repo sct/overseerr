@@ -443,35 +443,41 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 }
               }}
             >
-              {data.mediaInfo?.plexUrl ||
-              (data.mediaInfo?.plexUrl4k &&
-                (hasPermission(Permission.REQUEST_4K) ||
-                  hasPermission(Permission.REQUEST_4K_TV))) ? (
-                <>
-                  {data.mediaInfo?.plexUrl &&
+              {(
+                trailerUrl
+                  ? data.mediaInfo?.plexUrl ||
+                    (data.mediaInfo?.plexUrl4k &&
+                      (hasPermission(Permission.REQUEST_4K) ||
+                        hasPermission(Permission.REQUEST_4K_TV)))
+                  : data.mediaInfo?.plexUrl &&
                     data.mediaInfo?.plexUrl4k &&
                     (hasPermission(Permission.REQUEST_4K) ||
-                      hasPermission(Permission.REQUEST_4K_TV)) && (
-                      <ButtonWithDropdown.Item
-                        onClick={() => {
-                          window.open(data.mediaInfo?.plexUrl4k, '_blank');
-                        }}
-                        buttonType="ghost"
-                      >
-                        {intl.formatMessage(messages.play4konplex)}
-                      </ButtonWithDropdown.Item>
-                    )}
-                  {(data.mediaInfo?.plexUrl || data.mediaInfo?.plexUrl4k) &&
-                    trailerUrl && (
-                      <ButtonWithDropdown.Item
-                        onClick={() => {
-                          window.open(trailerUrl, '_blank');
-                        }}
-                        buttonType="ghost"
-                      >
-                        {intl.formatMessage(messages.watchtrailer)}
-                      </ButtonWithDropdown.Item>
-                    )}
+                      hasPermission(Permission.REQUEST_4K_TV))
+              ) ? (
+                <>
+                  {data.mediaInfo?.plexUrl &&
+                  data.mediaInfo?.plexUrl4k &&
+                  (hasPermission(Permission.REQUEST_4K) ||
+                    hasPermission(Permission.REQUEST_4K_TV)) ? (
+                    <ButtonWithDropdown.Item
+                      onClick={() => {
+                        window.open(data.mediaInfo?.plexUrl4k, '_blank');
+                      }}
+                      buttonType="ghost"
+                    >
+                      {intl.formatMessage(messages.play4konplex)}
+                    </ButtonWithDropdown.Item>
+                  ) : null}
+                  {trailerUrl ? (
+                    <ButtonWithDropdown.Item
+                      onClick={() => {
+                        window.open(trailerUrl, '_blank');
+                      }}
+                      buttonType="ghost"
+                    >
+                      {intl.formatMessage(messages.watchtrailer)}
+                    </ButtonWithDropdown.Item>
+                  ) : null}
                 </>
               ) : null}
             </ButtonWithDropdown>
