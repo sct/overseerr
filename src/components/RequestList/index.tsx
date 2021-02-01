@@ -134,11 +134,13 @@ const RequestList: React.FC = () => {
       </div>
       <Table>
         <thead>
-          <Table.TH>{intl.formatMessage(messages.mediaInfo)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.status)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.requestedAt)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.modifiedBy)}</Table.TH>
-          <Table.TH></Table.TH>
+          <tr>
+            <Table.TH>{intl.formatMessage(messages.mediaInfo)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.status)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.requestedAt)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.modifiedBy)}</Table.TH>
+            <Table.TH></Table.TH>
+          </tr>
         </thead>
         <Table.TBody>
           {data.results.map((request) => {

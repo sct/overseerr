@@ -108,10 +108,12 @@ const SettingsJobs: React.FC = () => {
       <div className="section">
         <Table>
           <thead>
-            <Table.TH>{intl.formatMessage(messages.jobname)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.jobtype)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.nextexecution)}</Table.TH>
-            <Table.TH></Table.TH>
+            <tr>
+              <Table.TH>{intl.formatMessage(messages.jobname)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.jobtype)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.nextexecution)}</Table.TH>
+              <Table.TH></Table.TH>
+            </tr>
           </thead>
           <Table.TBody>
             {data?.map((job) => (
@@ -169,13 +171,15 @@ const SettingsJobs: React.FC = () => {
       <div className="section">
         <Table>
           <thead>
-            <Table.TH>{intl.formatMessage(messages.cachename)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.cachehits)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.cachemisses)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.cachekeys)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.cacheksize)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.cachevsize)}</Table.TH>
-            <Table.TH></Table.TH>
+            <tr>
+              <Table.TH>{intl.formatMessage(messages.cachename)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.cachehits)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.cachemisses)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.cachekeys)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.cacheksize)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.cachevsize)}</Table.TH>
+              <Table.TH></Table.TH>
+            </tr>
           </thead>
           <Table.TBody>
             {cacheData?.map((cache) => (
