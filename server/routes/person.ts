@@ -42,24 +42,28 @@ personRoutes.get('/:id/combined_credits', async (req, res) => {
   );
 
   return res.status(200).json({
-    cast: combinedCredits.cast.map((result) =>
-      mapCastCredits(
-        result,
-        castMedia.find(
-          (med) =>
-            med.tmdbId === result.id && med.mediaType === result.media_type
+    cast: combinedCredits.cast
+      .map((result) =>
+        mapCastCredits(
+          result,
+          castMedia.find(
+            (med) =>
+              med.tmdbId === result.id && med.mediaType === result.media_type
+          )
         )
       )
-    ),
-    crew: combinedCredits.crew.map((result) =>
-      mapCrewCredits(
-        result,
-        crewMedia.find(
-          (med) =>
-            med.tmdbId === result.id && med.mediaType === result.media_type
+      .filter((item) => !item.adult),
+    crew: combinedCredits.crew
+      .map((result) =>
+        mapCrewCredits(
+          result,
+          crewMedia.find(
+            (med) =>
+              med.tmdbId === result.id && med.mediaType === result.media_type
+          )
         )
       )
-    ),
+      .filter((item) => !item.adult),
     id: combinedCredits.id,
   });
 });
