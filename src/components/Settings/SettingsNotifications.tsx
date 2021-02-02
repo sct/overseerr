@@ -205,7 +205,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
               <Form className="section">
                 <div className="form-row">
                   <label htmlFor="name" className="checkbox-label">
-                    <span className="mr-2">
+                    <span>
                       {intl.formatMessage(messages.enablenotifications)}
                     </span>
                   </label>
@@ -222,7 +222,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
                 </div>
                 <div className="form-row">
                   <label htmlFor="name" className="checkbox-label">
-                    <span className="mr-2">
+                    <span>
                       {intl.formatMessage(messages.autoapprovedrequests)}
                     </span>
                   </label>

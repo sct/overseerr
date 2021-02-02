@@ -177,9 +177,7 @@ const SettingsMain: React.FC = () => {
                 </div>
                 <div className="form-row">
                   <label htmlFor="trustProxy" className="checkbox-label">
-                    <span className="mr-2">
-                      {intl.formatMessage(messages.trustProxy)}
-                    </span>
+                    <span>{intl.formatMessage(messages.trustProxy)}</span>
                     <span className="label-tip">
                       {intl.formatMessage(messages.trustProxyTip)}
                     </span>
@@ -243,9 +241,7 @@ const SettingsMain: React.FC = () => {
                 </div>
                 <div className="form-row">
                   <label htmlFor="localLogin" className="checkbox-label">
-                    <span className="mr-2">
-                      {intl.formatMessage(messages.localLogin)}
-                    </span>
+                    <span>{intl.formatMessage(messages.localLogin)}</span>
                     <span className="label-tip">
                       {intl.formatMessage(messages.localLoginTip)}
                     </span>
