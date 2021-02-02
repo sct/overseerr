@@ -54,6 +54,7 @@ export interface MainSettings {
   csrfProtection: boolean;
   defaultPermissions: number;
   hideAvailable: boolean;
+  localLogin: boolean;
   trustProxy: boolean;
 }
 
@@ -65,6 +66,7 @@ interface FullPublicSettings extends PublicSettings {
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
   hideAvailable: boolean;
+  localLogin: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -162,6 +164,7 @@ class Settings {
         csrfProtection: false,
         defaultPermissions: Permission.REQUEST,
         hideAvailable: false,
+        localLogin: true,
         trustProxy: false,
       },
       plex: {
@@ -296,6 +299,7 @@ class Settings {
         (sonarr) => sonarr.is4k && sonarr.isDefault
       ),
       hideAvailable: this.data.main.hideAvailable,
+      localLogin: this.data.main.localLogin,
     };
   }
 

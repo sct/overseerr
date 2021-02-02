@@ -134,10 +134,13 @@ authRoutes.post('/login', async (req, res, next) => {
 });
 
 authRoutes.post('/local', async (req, res, next) => {
+  const settings = getSettings();
   const userRepository = getRepository(User);
   const body = req.body as { email?: string; password?: string };
 
-  if (!body.email || !body.password) {
+  if (!settings.main.localLogin) {
+    return res.status(500).json({ error: 'Local user login is disabled' });
+  } else if (!body.email || !body.password) {
     return res
       .status(500)
       .json({ error: 'You must provide an email and a password' });
