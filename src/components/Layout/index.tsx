@@ -55,7 +55,7 @@ const Layout: React.FC = ({ children }) => {
           <div className="pt-2 mb-6">
             <div className="px-4 mx-auto max-w-8xl">
               {router.pathname === '/' && hasPermission(Permission.ADMIN) && (
-                <div className="p-4 mt-10 bg-indigo-700 rounded-md">
+                <div className="p-4 mt-6 bg-indigo-700 rounded-md">
                   <div className="flex">
                     <div className="flex-shrink-0">
                       <svg
