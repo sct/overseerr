@@ -491,6 +491,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       id="port"
                       name="port"
                       placeholder="32400"
+                      className="port"
                     />
                   </div>
                   {errors.port && touched.port && (

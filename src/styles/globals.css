@@ -89,6 +89,10 @@ select.rounded-r-only {
   @apply rounded-l-none;
 }
 
+input.port {
+  @apply w-24;
+}
+
 .protocol {
   @apply inline-flex items-center px-3 text-gray-100 bg-gray-600 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm;
 }

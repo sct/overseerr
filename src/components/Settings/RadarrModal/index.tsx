@@ -365,6 +365,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       name="port"
                       type="text"
                       placeholder="7878"
+                      className="port"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setIsValidated(false);
                         setFieldValue('port', e.target.value);
