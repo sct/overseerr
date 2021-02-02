@@ -391,7 +391,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                             toggleAllSeasons();
                           }
                         }}
-                        className="relative inline-flex items-center justify-center flex-shrink-0 w-10 h-5 cursor-pointer group focus:outline-none"
+                        className="relative inline-flex items-center justify-center flex-shrink-0 w-10 h-5 cursor-pointer pt-2 focus:outline-none"
                       >
                         <span
                           aria-hidden="true"
@@ -451,7 +451,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                   toggleSeason(season.seasonNumber);
                                 }
                               }}
-                              className={`group relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none ${
+                              className={`pt-2 relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none ${
                                 mediaSeason ||
                                 (!!seasonRequest &&
                                   !editingSeasons.includes(season.seasonNumber))

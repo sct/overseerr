@@ -18,10 +18,10 @@ import Alert from '../Common/Alert';
 const messages = defineMessages({
   radarrsettings: 'Radarr Settings',
   radarrSettingsDescription:
-    'Configure your Radarr connection below. You can have multiple Radarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server will be used when a new request is made.',
+    'Configure your Radarr connection below. You can have multiple Radarr configurations, but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server which is used for new requests.',
   sonarrsettings: 'Sonarr Settings',
   sonarrSettingsDescription:
-    'Configure your Sonarr connection below. You can have multiple Sonarr configurations but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server will be used when a new request is made.',
+    'Configure your Sonarr connection below. You can have multiple Sonarr configurations, but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server which is used for new requests.',
   deleteserverconfirm: 'Are you sure you want to delete this server?',
   edit: 'Edit',
   delete: 'Delete',
@@ -65,7 +65,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
       <div className="flex items-center justify-between w-full p-6 space-x-6">
         <div className="flex-1 truncate">
           <div className="flex items-center mb-2 space-x-3">
-            <h3 className="text-sm font-medium leading-5 text-white truncate">
+            <h3 className="font-medium leading-5 text-white truncate">
               {name}
             </h3>
             {isDefault && (
@@ -198,11 +198,11 @@ const SettingsServices: React.FC = () => {
 
   return (
     <>
-      <div>
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+      <div className="mb-6">
+        <h3 className="heading">
           <FormattedMessage {...messages.radarrsettings} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.radarrSettingsDescription} />
         </p>
       </div>
@@ -251,7 +251,7 @@ const SettingsServices: React.FC = () => {
           <FormattedMessage {...messages.deleteserverconfirm} />
         </Modal>
       </Transition>
-      <div className="mt-6 sm:mt-5">
+      <div className="section">
         {!radarrData && !radarrError && <LoadingSpinner />}
         {radarrData && !radarrError && (
           <>
@@ -283,10 +283,11 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-32">
+              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-44">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"
+                    className="mt-3 mb-3"
                     onClick={() =>
                       setEditRadarrModal({ open: true, radarr: null })
                     }
@@ -311,15 +312,15 @@ const SettingsServices: React.FC = () => {
           </>
         )}
       </div>
-      <div className="mt-10">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+      <div className="mt-10 mb-6">
+        <h3 className="heading">
           <FormattedMessage {...messages.sonarrsettings} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.sonarrSettingsDescription} />
         </p>
       </div>
-      <div className="mt-6 sm:mt-5">
+      <div className="section">
         {!sonarrData && !sonarrError && <LoadingSpinner />}
         {sonarrData && !sonarrError && (
           <>
@@ -352,7 +353,7 @@ const SettingsServices: React.FC = () => {
                   }
                 />
               ))}
-              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-32">
+              <li className="h-32 col-span-1 border-2 border-gray-400 border-dashed rounded-lg shadow sm:h-44">
                 <div className="flex items-center justify-center w-full h-full">
                   <Button
                     buttonType="ghost"

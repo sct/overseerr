@@ -22,6 +22,8 @@ const messages = defineMessages({
   canceljob: 'Cancel Job',
   jobstarted: '{jobname} started.',
   jobcancelled: '{jobname} cancelled.',
+  process: 'Process',
+  command: 'Command',
   cache: 'Cache',
   cacheDescription:
     'Overseerr caches requests to external API endpoints to optimize performance and avoid making unnecessary API calls.',
@@ -97,100 +99,103 @@ const SettingsJobs: React.FC = () => {
 
   return (
     <>
-      <div className="mb-4">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
-          {intl.formatMessage(messages.jobs)}
-        </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+      <div className="mb-6">
+        <h3 className="heading">{intl.formatMessage(messages.jobs)}</h3>
+        <p className="description">
           {intl.formatMessage(messages.jobsDescription)}
         </p>
       </div>
-      <Table>
-        <thead>
-          <Table.TH>{intl.formatMessage(messages.jobname)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.jobtype)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.nextexecution)}</Table.TH>
-          <Table.TH></Table.TH>
-        </thead>
-        <Table.TBody>
-          {data?.map((job) => (
-            <tr key={`job-list-${job.id}`}>
-              <Table.TD>
-                <div className="flex items-center text-sm leading-5 text-white">
-                  {job.running && <Spinner className="w-5 h-5 mr-2" />}
-                  <span>{job.name}</span>
-                </div>
-              </Table.TD>
-              <Table.TD>
-                <Badge
-                  badgeType={job.type === 'process' ? 'primary' : 'warning'}
-                  className="uppercase"
-                >
-                  {job.type}
-                </Badge>
-              </Table.TD>
-              <Table.TD>
-                <div className="text-sm leading-5 text-white">
-                  <FormattedRelativeTime
-                    value={Math.floor(
-                      (new Date(job.nextExecutionTime).getTime() - Date.now()) /
-                        1000
-                    )}
-                    updateIntervalInSeconds={1}
-                  />
-                </div>
-              </Table.TD>
-              <Table.TD alignText="right">
-                {job.running ? (
-                  <Button buttonType="danger" onClick={() => cancelJob(job)}>
-                    {intl.formatMessage(messages.canceljob)}
-                  </Button>
-                ) : (
-                  <Button buttonType="primary" onClick={() => runJob(job)}>
-                    {intl.formatMessage(messages.runnow)}
-                  </Button>
-                )}
-              </Table.TD>
-            </tr>
-          ))}
-        </Table.TBody>
-      </Table>
-      <div className="my-4">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
-          {intl.formatMessage(messages.cache)}
-        </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+      <div className="section">
+        <Table>
+          <thead>
+            <Table.TH>{intl.formatMessage(messages.jobname)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.jobtype)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.nextexecution)}</Table.TH>
+            <Table.TH></Table.TH>
+          </thead>
+          <Table.TBody>
+            {data?.map((job) => (
+              <tr key={`job-list-${job.id}`}>
+                <Table.TD>
+                  <div className="flex items-center text-sm leading-5 text-white">
+                    {job.running && <Spinner className="w-5 h-5 mr-2" />}
+                    <span>{job.name}</span>
+                  </div>
+                </Table.TD>
+                <Table.TD>
+                  <Badge
+                    badgeType={job.type === 'process' ? 'primary' : 'warning'}
+                    className="uppercase"
+                  >
+                    {job.type === 'process'
+                      ? intl.formatMessage(messages.process)
+                      : intl.formatMessage(messages.command)}
+                  </Badge>
+                </Table.TD>
+                <Table.TD>
+                  <div className="text-sm leading-5 text-white">
+                    <FormattedRelativeTime
+                      value={Math.floor(
+                        (new Date(job.nextExecutionTime).getTime() -
+                          Date.now()) /
+                          1000
+                      )}
+                      updateIntervalInSeconds={1}
+                    />
+                  </div>
+                </Table.TD>
+                <Table.TD alignText="right">
+                  {job.running ? (
+                    <Button buttonType="danger" onClick={() => cancelJob(job)}>
+                      {intl.formatMessage(messages.canceljob)}
+                    </Button>
+                  ) : (
+                    <Button buttonType="primary" onClick={() => runJob(job)}>
+                      {intl.formatMessage(messages.runnow)}
+                    </Button>
+                  )}
+                </Table.TD>
+              </tr>
+            ))}
+          </Table.TBody>
+        </Table>
+      </div>
+      <div>
+        <h3 className="heading">{intl.formatMessage(messages.cache)}</h3>
+        <p className="description">
           {intl.formatMessage(messages.cacheDescription)}
         </p>
       </div>
-      <Table>
-        <thead>
-          <Table.TH>{intl.formatMessage(messages.cachename)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.cachehits)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.cachemisses)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.cachekeys)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.cacheksize)}</Table.TH>
-          <Table.TH>{intl.formatMessage(messages.cachevsize)}</Table.TH>
-          <Table.TH></Table.TH>
-        </thead>
-        <Table.TBody>
-          {cacheData?.map((cache) => (
-            <tr key={`cache-list-${cache.id}`}>
-              <Table.TD>{cache.name}</Table.TD>
-              <Table.TD>{intl.formatNumber(cache.stats.hits)}</Table.TD>
-              <Table.TD>{intl.formatNumber(cache.stats.misses)}</Table.TD>
-              <Table.TD>{intl.formatNumber(cache.stats.keys)}</Table.TD>
-              <Table.TD>{formatBytes(cache.stats.ksize)}</Table.TD>
-              <Table.TD>{formatBytes(cache.stats.vsize)}</Table.TD>
-              <Table.TD alignText="right">
-                <Button buttonType="danger" onClick={() => flushCache(cache)}>
-                  {intl.formatMessage(messages.flushcache)}
-                </Button>
-              </Table.TD>
-            </tr>
-          ))}
-        </Table.TBody>
-      </Table>
+      <div className="section">
+        <Table>
+          <thead>
+            <Table.TH>{intl.formatMessage(messages.cachename)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.cachehits)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.cachemisses)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.cachekeys)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.cacheksize)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.cachevsize)}</Table.TH>
+            <Table.TH></Table.TH>
+          </thead>
+          <Table.TBody>
+            {cacheData?.map((cache) => (
+              <tr key={`cache-list-${cache.id}`}>
+                <Table.TD>{cache.name}</Table.TD>
+                <Table.TD>{intl.formatNumber(cache.stats.hits)}</Table.TD>
+                <Table.TD>{intl.formatNumber(cache.stats.misses)}</Table.TD>
+                <Table.TD>{intl.formatNumber(cache.stats.keys)}</Table.TD>
+                <Table.TD>{formatBytes(cache.stats.ksize)}</Table.TD>
+                <Table.TD>{formatBytes(cache.stats.vsize)}</Table.TD>
+                <Table.TD alignText="right">
+                  <Button buttonType="danger" onClick={() => flushCache(cache)}>
+                    {intl.formatMessage(messages.flushcache)}
+                  </Button>
+                </Table.TD>
+              </tr>
+            ))}
+          </Table.TBody>
+        </Table>
+      </div>
     </>
   );
 };

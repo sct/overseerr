@@ -44,10 +44,10 @@ const LoginWithPlex: React.FC<LoginWithPlexProps> = ({ onComplete }) => {
 
   return (
     <form>
-      <div className="flex justify-center font-bold text-xl mb-2">
+      <div className="flex justify-center mb-2 text-xl font-bold">
         <FormattedMessage {...messages.welcome} />
       </div>
-      <div className="flex justify-center text-sm pb-6 mb-2">
+      <div className="flex justify-center pb-6 mb-2 text-sm">
         <FormattedMessage {...messages.signinMessage} />
       </div>
       <div className="flex items-center justify-center">

@@ -200,15 +200,15 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       <div className="p-4 bg-gray-600 rounded-md shadow">
         <div className="flex flex-col items-center justify-between md:flex-row">
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
-            <label htmlFor="server" className="block text-sm font-medium">
+            <label htmlFor="server" className="text-label">
               {intl.formatMessage(messages.destinationserver)}
             </label>
             <select
               id="server"
               name="server"
+              value={selectedServer}
               onChange={(e) => setSelectedServer(Number(e.target.value))}
               onBlur={(e) => setSelectedServer(Number(e.target.value))}
-              value={selectedServer}
               className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
             >
               {data.map((server) => (
@@ -222,7 +222,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             </select>
           </div>
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
-            <label htmlFor="server" className="block text-sm font-medium">
+            <label htmlFor="server" className="text-label">
               {intl.formatMessage(messages.qualityprofile)}
             </label>
             <select
@@ -255,7 +255,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             </select>
           </div>
           <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:mb-0">
-            <label htmlFor="server" className="block text-sm font-medium">
+            <label htmlFor="server" className="text-label">
               {intl.formatMessage(messages.rootfolder)}
             </label>
             <select

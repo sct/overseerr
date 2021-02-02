@@ -282,50 +282,43 @@ const UserList: React.FC = () => {
                 <Alert title={intl.formatMessage(messages.passwordinfo)}>
                   {intl.formatMessage(messages.passwordinfodescription)}
                 </Alert>
-                <Form>
-                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                    >
+                <Form className="section">
+                  <div className="form-row">
+                    <label htmlFor="email" className="text-label">
                       {intl.formatMessage(messages.email)}
                     </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="form-input">
                       <div className="flex max-w-lg rounded-md shadow-sm">
                         <Field
                           id="email"
                           name="email"
                           type="text"
                           placeholder="name@example.com"
-                          className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                         />
                       </div>
                       {errors.email && touched.email && (
-                        <div className="mt-2 text-red-500">{errors.email}</div>
+                        <div className="error">{errors.email}</div>
                       )}
                     </div>
-                    <label
-                      htmlFor="genpassword"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                    >
+                  </div>
+                  <div className="form-row">
+                    <label htmlFor="genpassword" className="checkbox-label">
                       {intl.formatMessage(messages.autogeneratepassword)}
                     </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="form-input">
                       <Field
                         type="checkbox"
                         id="genpassword"
                         name="genpassword"
-                        className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                         onClick={() => setFieldValue('password', '')}
                       />
                     </div>
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                    >
+                  </div>
+                  <div className="form-row">
+                    <label htmlFor="password" className="text-label">
                       {intl.formatMessage(messages.password)}
                     </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="form-input">
                       <div className="flex max-w-lg rounded-md shadow-sm">
                         <Field
                           id="password"
@@ -333,13 +326,10 @@ const UserList: React.FC = () => {
                           type="password"
                           disabled={values.genpassword}
                           placeholder={intl.formatMessage(messages.password)}
-                          className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                         />
                       </div>
                       {errors.password && touched.password && (
-                        <div className="mt-2 text-red-500">
-                          {errors.password}
-                        </div>
+                        <div className="error">{errors.password}</div>
                       )}
                     </div>
                   </div>
@@ -370,18 +360,18 @@ const UserList: React.FC = () => {
         />
       </Transition>
 
-      <div className="flex flex-col justify-between sm:flex-row">
+      <div className="flex flex-col justify-between md:items-end md:flex-row">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
-        <div className="flex">
+        <div className="flex flex-row justify-between mt-2 sm:flex-row md:mb-0">
           <Button
-            className="mx-4 my-8 outline"
+            className="flex-grow mr-2 outline"
             buttonType="primary"
             onClick={() => setCreateModal({ isOpen: true })}
           >
             {intl.formatMessage(messages.createlocaluser)}
           </Button>
           <Button
-            className="mx-4 my-8"
+            className="flex-grow outline"
             buttonType="primary"
             disabled={isImporting}
             onClick={() => importFromPlex()}
@@ -390,7 +380,6 @@ const UserList: React.FC = () => {
           </Button>
         </div>
       </div>
-
       <Table>
         <thead>
           <tr>
@@ -403,7 +392,6 @@ const UserList: React.FC = () => {
                 onChange={() => {
                   toggleAllUsers();
                 }}
-                className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
               />
             </Table.TH>
             <Table.TH>{intl.formatMessage(messages.username)}</Table.TH>
@@ -414,7 +402,6 @@ const UserList: React.FC = () => {
             <Table.TH>{intl.formatMessage(messages.lastupdated)}</Table.TH>
             <Table.TH className="text-right">
               <Button
-                buttonSize="sm"
                 buttonType="warning"
                 onClick={() => setShowBulkEditModal(true)}
                 disabled={selectedUsers.length === 0}
@@ -437,7 +424,6 @@ const UserList: React.FC = () => {
                     onChange={() => {
                       toggleUser(user.id);
                     }}
-                    className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                   />
                 )}
               </Table.TD>

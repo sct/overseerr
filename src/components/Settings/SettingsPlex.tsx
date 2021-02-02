@@ -25,7 +25,7 @@ const messages = defineMessages({
   serverLocal: 'local',
   serverRemote: 'remote',
   serverConnected: 'connected',
-  serverpresetManualMessage: 'Manually configure',
+  serverpresetManualMessage: 'Manual configuration',
   serverpresetRefreshing: 'Retrieving servers…',
   serverpresetLoad: 'Press the button to load available servers',
   toastPlexRefresh: 'Retrieving server list from Plex',
@@ -259,14 +259,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   }
   return (
     <>
-      <div>
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+      <div className="mb-6">
+        <h3 className="heading">
           <FormattedMessage {...messages.plexsettings} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.plexsettingsDescription} />
         </p>
-        <div className="mt-6 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+        <div className="section">
           <Alert title={intl.formatMessage(messages.settingUpPlex)} type="info">
             {intl.formatMessage(messages.settingUpPlexDescription, {
               RegisterPlexTVLink: function RegisterPlexTVLink(msg) {
@@ -346,200 +346,172 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           isSubmitting,
         }) => {
           return (
-            <form onSubmit={handleSubmit}>
-              <div className="mt-6 sm:mt-5">
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
-                    <div className="flex flex-col">
-                      <span className="mr-2">
-                        <FormattedMessage {...messages.servername} />
-                      </span>
-                      <span className="text-gray-500">
-                        <FormattedMessage {...messages.servernameTip} />
-                      </span>
-                    </div>
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder={intl.formatMessage(
-                          messages.servernamePlaceholder
-                        )}
-                        value={data?.name}
-                        readOnly
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                      />
-                    </div>
+            <form className="section" onSubmit={handleSubmit}>
+              <div className="form-row">
+                <label htmlFor="name" className="text-label">
+                  <div className="flex flex-col">
+                    <span className="mr-2">
+                      <FormattedMessage {...messages.servername} />
+                    </span>
+                    <span className="text-gray-500">
+                      <FormattedMessage {...messages.servernameTip} />
+                    </span>
                   </div>
-                </div>
-                <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="preset"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
-                    <FormattedMessage {...messages.serverpreset} />
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <div className="flex max-w-lg rounded-md shadow-sm input-group">
-                      <select
-                        id="preset"
-                        name="preset"
-                        placeholder={intl.formatMessage(
-                          messages.serverpresetPlaceholder
-                        )}
-                        value={values.selectedPreset}
-                        disabled={!availableServers || isRefreshingPresets}
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-none rounded-l-md form-input sm:text-sm sm:leading-5"
-                        onChange={async (e) => {
-                          const targPreset =
-                            availablePresets[Number(e.target.value)];
-                          if (targPreset) {
-                            setFieldValue('hostname', targPreset.host);
-                            setFieldValue('port', targPreset.port);
-                            setFieldValue('useSsl', targPreset.ssl);
-                          }
-                          setFieldTouched('hostname');
-                          setFieldTouched('port');
-                          setFieldTouched('useSsl');
-                        }}
-                      >
-                        <option value="manual">
-                          {availableServers || isRefreshingPresets
-                            ? isRefreshingPresets
-                              ? intl.formatMessage(
-                                  messages.serverpresetRefreshing
-                                )
-                              : intl.formatMessage(
-                                  messages.serverpresetManualMessage
-                                )
-                            : intl.formatMessage(messages.serverpresetLoad)}
-                        </option>
-                        {availablePresets.map((server, index) => (
-                          <option
-                            key={`preset-server-${index}`}
-                            value={index}
-                            disabled={!server.status}
-                          >
-                            {`
-                              ${server.name} (${server.address})
-                              [${
-                                server.local
-                                  ? intl.formatMessage(messages.serverLocal)
-                                  : intl.formatMessage(messages.serverRemote)
-                              }]
-                              ${server.status ? '' : '(' + server.message + ')'}
-                            `}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          refreshPresetServers();
-                        }}
-                        className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-500 border border-gray-500 rounded-r-md hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
-                      >
-                        <svg
-                          className={`w-5 h-5 ${
-                            isRefreshingPresets ? 'animate-spin' : ''
-                          }`}
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <div className="mt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                      <label
-                        htmlFor="hostname"
-                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                      >
-                        <FormattedMessage {...messages.hostname} />
-                      </label>
-                      <div className="mt-1 sm:mt-0 sm:col-span-2">
-                        <div className="flex max-w-lg rounded-md shadow-sm">
-                          <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
-                            {values.useSsl ? 'https://' : 'http://'}
-                          </span>
-                          <Field
-                            type="text"
-                            id="hostname"
-                            name="hostname"
-                            placeholder="127.0.0.1"
-                            className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 form-input rounded-r-md sm:text-sm sm:leading-5"
-                          />
-                        </div>
-                        {errors.hostname && touched.hostname && (
-                          <div className="mt-2 text-red-500">
-                            {errors.hostname}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-                      <label
-                        htmlFor="port"
-                        className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                      >
-                        <FormattedMessage {...messages.port} />
-                      </label>
-                      <div className="mt-1 sm:mt-0 sm:col-span-2">
-                        <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
-                          <Field
-                            type="text"
-                            id="port"
-                            name="port"
-                            placeholder="32400"
-                            className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                          />
-                        </div>
-                        {errors.port && touched.port && (
-                          <div className="mt-2 text-red-500">{errors.port}</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-                    <label
-                      htmlFor="ssl"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                    >
-                      {intl.formatMessage(messages.ssl)}
-                    </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <Field
-                        type="checkbox"
-                        id="useSsl"
-                        name="useSsl"
-                        onChange={() => {
-                          setFieldValue('useSsl', !values.useSsl);
-                        }}
-                        className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                      />
-                    </div>
+                </label>
+                <div className="form-input">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      placeholder={intl.formatMessage(
+                        messages.servernamePlaceholder
+                      )}
+                      value={data?.name}
+                      readOnly
+                    />
                   </div>
                 </div>
               </div>
+              <div className="form-row">
+                <label htmlFor="preset" className="text-label">
+                  <FormattedMessage {...messages.serverpreset} />
+                </label>
+                <div className="form-input">
+                  <div className="flex max-w-lg rounded-md shadow-sm input-group">
+                    <select
+                      id="preset"
+                      name="preset"
+                      placeholder={intl.formatMessage(
+                        messages.serverpresetPlaceholder
+                      )}
+                      value={values.selectedPreset}
+                      disabled={!availableServers || isRefreshingPresets}
+                      className="rounded-l-only"
+                      onChange={async (e) => {
+                        const targPreset =
+                          availablePresets[Number(e.target.value)];
+                        if (targPreset) {
+                          setFieldValue('hostname', targPreset.host);
+                          setFieldValue('port', targPreset.port);
+                          setFieldValue('useSsl', targPreset.ssl);
+                        }
+                        setFieldTouched('hostname');
+                        setFieldTouched('port');
+                        setFieldTouched('useSsl');
+                      }}
+                    >
+                      <option value="manual">
+                        {availableServers || isRefreshingPresets
+                          ? isRefreshingPresets
+                            ? intl.formatMessage(
+                                messages.serverpresetRefreshing
+                              )
+                            : intl.formatMessage(
+                                messages.serverpresetManualMessage
+                              )
+                          : intl.formatMessage(messages.serverpresetLoad)}
+                      </option>
+                      {availablePresets.map((server, index) => (
+                        <option
+                          key={`preset-server-${index}`}
+                          value={index}
+                          disabled={!server.status}
+                        >
+                          {`
+                            ${server.name} (${server.address})
+                            [${
+                              server.local
+                                ? intl.formatMessage(messages.serverLocal)
+                                : intl.formatMessage(messages.serverRemote)
+                            }]
+                            ${server.status ? '' : '(' + server.message + ')'}
+                          `}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        refreshPresetServers();
+                      }}
+                      className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 rounded-r-md hover:bg-indigo-500 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
+                    >
+                      <svg
+                        className={`w-5 h-5 ${
+                          isRefreshingPresets ? 'animate-spin' : ''
+                        }`}
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="hostname" className="text-label">
+                  <FormattedMessage {...messages.hostname} />
+                </label>
+                <div className="form-input">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
+                    <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
+                      {values.useSsl ? 'https://' : 'http://'}
+                    </span>
+                    <Field
+                      type="text"
+                      id="hostname"
+                      name="hostname"
+                      placeholder="127.0.0.1"
+                      className="rounded-r-only"
+                    />
+                  </div>
+                  {errors.hostname && touched.hostname && (
+                    <div className="error">{errors.hostname}</div>
+                  )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="port" className="text-label">
+                  <FormattedMessage {...messages.port} />
+                </label>
+                <div className="form-input">
+                  <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
+                    <Field
+                      type="text"
+                      id="port"
+                      name="port"
+                      placeholder="32400"
+                    />
+                  </div>
+                  {errors.port && touched.port && (
+                    <div className="error">{errors.port}</div>
+                  )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="ssl" className="checkbox-label">
+                  {intl.formatMessage(messages.ssl)}
+                </label>
+                <div className="form-input">
+                  <Field
+                    type="checkbox"
+                    id="useSsl"
+                    name="useSsl"
+                    onChange={() => {
+                      setFieldValue('useSsl', !values.useSsl);
+                    }}
+                  />
+                </div>
+              </div>
               {submitError && (
-                <div className="mt-6 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
+                <div className="mt-6 sm:gap-4 sm:items-start">
                   <Alert
                     title={intl.formatMessage(
                       messages.toastPlexConnectingFailure
@@ -550,7 +522,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   </Alert>
                 </div>
               )}
-              <div className="pt-5 mt-8 border-t border-gray-700">
+              <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
@@ -569,32 +541,32 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           );
         }}
       </Formik>
-      <div className="mt-10">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+      <div className="mt-10 mb-6">
+        <h3 className="heading">
           <FormattedMessage {...messages.plexlibraries} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.plexlibrariesDescription} />
         </p>
-        <div className="mt-6">
-          <Button onClick={() => syncLibraries()} disabled={isSyncing}>
-            <svg
-              className={`${isSyncing ? 'animate-spin' : ''} w-5 h-5 mr-1`}
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                clipRule="evenodd"
-              />
-            </svg>
-            {isSyncing
-              ? intl.formatMessage(messages.syncing)
-              : intl.formatMessage(messages.sync)}
-          </Button>
-        </div>
+      </div>
+      <div className="section">
+        <Button onClick={() => syncLibraries()} disabled={isSyncing}>
+          <svg
+            className={`${isSyncing ? 'animate-spin' : ''} w-5 h-5 mr-1`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+              clipRule="evenodd"
+            />
+          </svg>
+          {isSyncing
+            ? intl.formatMessage(messages.syncing)
+            : intl.formatMessage(messages.sync)}
+        </Button>
         <ul className="grid grid-cols-1 gap-5 mt-6 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {data?.libraries.map((library) => (
             <LibraryItem
@@ -606,107 +578,107 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           ))}
         </ul>
       </div>
-      <div className="mt-10">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+      <div className="mt-10 mb-6">
+        <h3 className="heading">
           <FormattedMessage {...messages.manualscan} />
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           <FormattedMessage {...messages.manualscanDescription} />
         </p>
-        <div className="mt-6">
-          <div className="p-4 bg-gray-800 rounded-md">
-            <div className="relative w-full h-8 mb-6 overflow-hidden bg-gray-600 rounded-full">
-              {dataSync?.running && (
-                <div
-                  className="h-8 transition-all duration-200 ease-in-out bg-indigo-600"
-                  style={{
-                    width: `${Math.round(
-                      (dataSync.progress / dataSync.total) * 100
-                    )}%`,
-                  }}
-                />
-              )}
-              <div className="absolute inset-0 flex items-center justify-center w-full h-8 text-sm">
-                <span>
-                  {dataSync?.running
-                    ? `${dataSync.progress} of ${dataSync.total}`
-                    : 'Not running'}
-                </span>
-              </div>
+      </div>
+      <div className="section">
+        <div className="p-4 bg-gray-800 rounded-md">
+          <div className="relative w-full h-8 mb-6 overflow-hidden bg-gray-600 rounded-full">
+            {dataSync?.running && (
+              <div
+                className="h-8 transition-all duration-200 ease-in-out bg-indigo-600"
+                style={{
+                  width: `${Math.round(
+                    (dataSync.progress / dataSync.total) * 100
+                  )}%`,
+                }}
+              />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center w-full h-8 text-sm">
+              <span>
+                {dataSync?.running
+                  ? `${dataSync.progress} of ${dataSync.total}`
+                  : 'Not running'}
+              </span>
             </div>
-            <div className="flex flex-col w-full sm:flex-row">
-              {dataSync?.running && (
-                <>
-                  {dataSync.currentLibrary && (
-                    <div className="flex items-center mb-2 mr-0 sm:mb-0 sm:mr-2">
-                      <Badge>
-                        <FormattedMessage
-                          {...messages.currentlibrary}
-                          values={{ name: dataSync.currentLibrary.name }}
-                        />
-                      </Badge>
-                    </div>
-                  )}
-                  <div className="flex items-center">
-                    <Badge badgeType="warning">
+          </div>
+          <div className="flex flex-col w-full sm:flex-row">
+            {dataSync?.running && (
+              <>
+                {dataSync.currentLibrary && (
+                  <div className="flex items-center mb-2 mr-0 sm:mb-0 sm:mr-2">
+                    <Badge>
                       <FormattedMessage
-                        {...messages.librariesRemaining}
-                        values={{
-                          count: dataSync.currentLibrary
-                            ? dataSync.libraries.slice(
-                                dataSync.libraries.findIndex(
-                                  (library) =>
-                                    library.id === dataSync.currentLibrary?.id
-                                ) + 1
-                              ).length
-                            : 0,
-                        }}
+                        {...messages.currentlibrary}
+                        values={{ name: dataSync.currentLibrary.name }}
                       />
                     </Badge>
                   </div>
-                </>
+                )}
+                <div className="flex items-center">
+                  <Badge badgeType="warning">
+                    <FormattedMessage
+                      {...messages.librariesRemaining}
+                      values={{
+                        count: dataSync.currentLibrary
+                          ? dataSync.libraries.slice(
+                              dataSync.libraries.findIndex(
+                                (library) =>
+                                  library.id === dataSync.currentLibrary?.id
+                              ) + 1
+                            ).length
+                          : 0,
+                      }}
+                    />
+                  </Badge>
+                </div>
+              </>
+            )}
+            <div className="flex-1 text-right">
+              {!dataSync?.running && (
+                <Button buttonType="warning" onClick={() => startScan()}>
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  <FormattedMessage {...messages.startscan} />
+                </Button>
               )}
-              <div className="flex-1 text-right">
-                {!dataSync?.running && (
-                  <Button buttonType="warning" onClick={() => startScan()}>
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                    <FormattedMessage {...messages.startscan} />
-                  </Button>
-                )}
 
-                {dataSync?.running && (
-                  <Button buttonType="danger" onClick={() => cancelScan()}>
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                    <FormattedMessage {...messages.cancelscan} />
-                  </Button>
-                )}
-              </div>
+              {dataSync?.running && (
+                <Button buttonType="danger" onClick={() => cancelScan()}>
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                  <FormattedMessage {...messages.cancelscan} />
+                </Button>
+              )}
             </div>
           </div>
         </div>

@@ -27,7 +27,7 @@ const messages = defineMessages({
   notificationsettingssaved: 'Notification settings saved!',
   notificationsettingsfailed: 'Notification settings failed to save.',
   enablenotifications: 'Enable Notifications',
-  autoapprovedrequests: 'Send Notifications for Auto-Approved Requests',
+  autoapprovedrequests: 'Enable Notifications for Auto-Approved Requests',
 });
 
 interface SettingsRoute {
@@ -163,14 +163,14 @@ const SettingsNotifications: React.FC = ({ children }) => {
   return (
     <>
       <div className="mb-6">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="heading">
           {intl.formatMessage(messages.notificationsettings)}
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           {intl.formatMessage(messages.notificationsettingsDescription)}
         </p>
       </div>
-      <div className="mt-6 sm:mt-5">
+      <div className="section">
         <Formik
           initialValues={{
             enabled: data.enabled,
@@ -202,17 +202,14 @@ const SettingsNotifications: React.FC = ({ children }) => {
         >
           {({ isSubmitting, values, setFieldValue }) => {
             return (
-              <Form>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
+              <Form className="section">
+                <div className="form-row">
+                  <label htmlFor="name" className="checkbox-label">
                     <span className="mr-2">
                       {intl.formatMessage(messages.enablenotifications)}
                     </span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="enabled"
@@ -220,20 +217,16 @@ const SettingsNotifications: React.FC = ({ children }) => {
                       onChange={() => {
                         setFieldValue('enabled', !values.enabled);
                       }}
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
+                <div className="form-row">
+                  <label htmlFor="name" className="checkbox-label">
                     <span className="mr-2">
                       {intl.formatMessage(messages.autoapprovedrequests)}
                     </span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="autoapprovalEnabled"
@@ -244,11 +237,10 @@ const SettingsNotifications: React.FC = ({ children }) => {
                           !values.autoapprovalEnabled
                         );
                       }}
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="pt-5 mt-8 border-t border-gray-700">
+                <div className="actions">
                   <div className="flex justify-end">
                     <span className="inline-flex ml-3 rounded-md shadow-sm">
                       <Button
@@ -269,10 +261,10 @@ const SettingsNotifications: React.FC = ({ children }) => {
         </Formik>
       </div>
       <div className="mt-10 mb-6">
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+        <h3 className="heading">
           {intl.formatMessage(messages.notificationAgentsSettings)}
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           {intl.formatMessage(messages.notificationAgentSettingsDescription)}
         </p>
       </div>
@@ -294,7 +286,6 @@ const SettingsNotifications: React.FC = ({ children }) => {
               )?.route
             }
             aria-label="Selected tab"
-            className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
           >
             {settingsRoutes.map((route, index) => (
               <SettingsLink
@@ -322,7 +313,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
           </nav>
         </div>
       </div>
-      <div className="mt-10">{children}</div>
+      <div className="section">{children}</div>
     </>
   );
 };

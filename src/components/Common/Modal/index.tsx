@@ -112,7 +112,7 @@ const Modal: React.FC<ModalProps> = ({
             )}
             <div
               className={`mt-3 text-center sm:mt-0 sm:text-left ${
-                iconSvg ? 'sm:ml-4' : 'mb-6'
+                iconSvg ? 'sm:ml-4' : 'sm:mb-4'
               }`}
             >
               {title && (

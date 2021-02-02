@@ -77,17 +77,19 @@ const TvRecommendations: React.FC = () => {
 
   return (
     <>
-      <Header
-        subtext={
-          tvData && !tvError
-            ? intl.formatMessage(messages.recommendationssubtext, {
-                title: tvData.name,
-              })
-            : ''
-        }
-      >
-        <FormattedMessage {...messages.recommendations} />
-      </Header>
+      <div className="mt-1 mb-5">
+        <Header
+          subtext={
+            tvData && !tvError
+              ? intl.formatMessage(messages.recommendationssubtext, {
+                  title: tvData.name,
+                })
+              : ''
+          }
+        >
+          <FormattedMessage {...messages.recommendations} />
+        </Header>
+      </div>
       <ListView
         items={titles}
         isEmpty={isEmpty}

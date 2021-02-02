@@ -133,90 +133,69 @@ const NotificationsTelegram: React.FC = () => {
                 },
               })}
             </Alert>
-            <Form>
-              <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-                <label
-                  htmlFor="enabled"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                >
+            <Form className="section">
+              <div className="form-row">
+                <label htmlFor="enabled" className="checkbox-label">
                   {intl.formatMessage(messages.agentenabled)}
                 </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
-                  <Field
-                    type="checkbox"
-                    id="enabled"
-                    name="enabled"
-                    className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                  />
+                <div className="form-input">
+                  <Field type="checkbox" id="enabled" name="enabled" />
                 </div>
               </div>
-              <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                <label
-                  htmlFor="botAPI"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                >
+              <div className="form-row">
+                <label htmlFor="botAPI" className="text-label">
                   {intl.formatMessage(messages.botAPI)}
                 </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm">
                     <Field
                       id="botAPI"
                       name="botAPI"
                       type="text"
                       placeholder={intl.formatMessage(messages.botAPI)}
-                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                   {errors.botAPI && touched.botAPI && (
-                    <div className="mt-2 text-red-500">{errors.botAPI}</div>
+                    <div className="error">{errors.botAPI}</div>
                   )}
                 </div>
-                <label
-                  htmlFor="chatId"
-                  className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                >
+              </div>
+              <div className="form-row">
+                <label htmlFor="chatId" className="text-label">
                   {intl.formatMessage(messages.chatId)}
                 </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm">
                     <Field
                       id="chatId"
                       name="chatId"
                       type="text"
                       placeholder={intl.formatMessage(messages.chatId)}
-                      className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                     />
                   </div>
                   {errors.chatId && touched.chatId && (
-                    <div className="mt-2 text-red-500">{errors.chatId}</div>
+                    <div className="error">{errors.chatId}</div>
                   )}
                 </div>
               </div>
-              <div className="mt-6">
-                <div role="group" aria-labelledby="label-permissions">
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
-                    <div>
-                      <div
-                        className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
-                        id="label-types"
-                      >
-                        {intl.formatMessage(messages.notificationtypes)}
-                      </div>
-                    </div>
-                    <div className="mt-4 sm:mt-0 sm:col-span-2">
-                      <div className="max-w-lg">
-                        <NotificationTypeSelector
-                          currentTypes={values.types}
-                          onUpdate={(newTypes) =>
-                            setFieldValue('types', newTypes)
-                          }
-                        />
-                      </div>
+              <div role="group" aria-labelledby="group-label" className="group">
+                <div className="form-row">
+                  <span id="group-label" className="group-label">
+                    {intl.formatMessage(messages.notificationtypes)}
+                  </span>
+                  <div className="form-input">
+                    <div className="max-w-lg">
+                      <NotificationTypeSelector
+                        currentTypes={values.types}
+                        onUpdate={(newTypes) =>
+                          setFieldValue('types', newTypes)
+                        }
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="pt-5 mt-8 border-t border-gray-700">
+              <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button

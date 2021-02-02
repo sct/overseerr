@@ -74,9 +74,11 @@ const Trending: React.FC = () => {
 
   return (
     <>
-      <Header>
-        <FormattedMessage {...messages.trending} />
-      </Header>
+      <div className="mt-1 mb-5">
+        <Header>
+          <FormattedMessage {...messages.trending} />
+        </Header>
+      </div>
       <ListView
         items={titles}
         isEmpty={isEmpty}

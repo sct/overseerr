@@ -77,17 +77,19 @@ const TvSimilar: React.FC = () => {
 
   return (
     <>
-      <Header
-        subtext={
-          tvData && !tvError
-            ? intl.formatMessage(messages.similarsubtext, {
-                title: tvData.name,
-              })
-            : undefined
-        }
-      >
-        <FormattedMessage {...messages.similar} />
-      </Header>
+      <div className="mt-1 mb-5">
+        <Header
+          subtext={
+            tvData && !tvError
+              ? intl.formatMessage(messages.similarsubtext, {
+                  title: tvData.name,
+                })
+              : undefined
+          }
+        >
+          <FormattedMessage {...messages.similar} />
+        </Header>
+      </div>
       <ListView
         items={titles}
         isEmpty={isEmpty}

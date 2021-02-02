@@ -56,7 +56,7 @@ const RequestList: React.FC = () => {
     <>
       <div className="flex flex-col justify-between md:items-end md:flex-row">
         <Header>{intl.formatMessage(messages.requests)}</Header>
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col mt-2 md:flex-row">
           <div className="flex mb-2 md:mb-0 md:mr-2">
             <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
               <svg
@@ -84,7 +84,7 @@ const RequestList: React.FC = () => {
                 setCurrentFilter(e.target.value as Filter);
               }}
               value={currentFilter}
-              className="flex-1 block w-full py-2 pl-3 pr-10 text-base leading-6 text-white bg-gray-700 border-gray-500 rounded-r-md form-select focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
+              className="rounded-r-only"
             >
               <option value="all">
                 {intl.formatMessage(messages.filterAll)}
@@ -120,7 +120,7 @@ const RequestList: React.FC = () => {
                 setCurrentSort(e.target.value as Sort);
               }}
               value={currentSort}
-              className="flex-1 block w-full py-2 pl-3 pr-10 text-base leading-6 text-white bg-gray-700 border-gray-500 rounded-r-md form-select focus:outline-none focus:ring-blue focus:border-gray-500 sm:text-sm sm:leading-5 disabled:opacity-50"
+              className="rounded-r-only"
             >
               <option value="added">
                 {intl.formatMessage(messages.sortAdded)}
@@ -152,10 +152,12 @@ const RequestList: React.FC = () => {
           })}
 
           {data.results.length === 0 && (
-            <tr className="relative w-full h-24 p-2 text-white bg-gray-800">
+            <tr className="relative w-full h-24 p-2 text-white">
               <Table.TD colSpan={6} noPadding>
-                <div className="flex flex-col items-center justify-center p-4">
-                  <span>{intl.formatMessage(messages.noresults)}</span>
+                <div className="flex flex-col items-center justify-center p-6">
+                  <span className="text-base">
+                    {intl.formatMessage(messages.noresults)}
+                  </span>
                   {currentFilter !== 'all' && (
                     <div className="mt-4">
                       <Button
@@ -171,10 +173,10 @@ const RequestList: React.FC = () => {
               </Table.TD>
             </tr>
           )}
-          <tr>
+          <tr className="bg-gray-700">
             <Table.TD colSpan={6} noPadding>
               <nav
-                className="flex items-center justify-between px-4 py-3 text-white bg-gray-700"
+                className="flex items-center justify-between px-6 py-3"
                 aria-label="Pagination"
               >
                 <div className="hidden sm:block">

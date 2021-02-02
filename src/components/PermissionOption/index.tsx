@@ -41,12 +41,11 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
             : ''
         }`}
       >
-        <div className="flex items-center h-5">
+        <div className="flex items-center h-6">
           <input
             id={option.id}
             name="permissions"
             type="checkbox"
-            className="w-4 h-4 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
             disabled={
               (option.permission !== Permission.ADMIN &&
                 hasPermission(Permission.ADMIN, currentPermission)) ||
@@ -73,15 +72,17 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
             }
           />
         </div>
-        <div className="ml-3 text-sm leading-5">
-          <label htmlFor={option.id} className="font-medium">
-            {option.name}
+        <div className="ml-3 text-sm leading-6">
+          <label htmlFor={option.id} className="block font-medium">
+            <div className="flex flex-col">
+              <span>{option.name}</span>
+              <span className="text-gray-500">{option.description}</span>
+            </div>
           </label>
-          <p className="text-gray-500">{option.description}</p>
         </div>
       </div>
       {(option.children ?? []).map((child) => (
-        <div key={`permission-child-${child.id}`} className="pl-6 mt-4">
+        <div key={`permission-child-${child.id}`} className="pl-10 mt-4">
           <PermissionOption
             option={child}
             currentPermission={currentPermission}

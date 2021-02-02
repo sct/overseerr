@@ -77,7 +77,7 @@ const Alert: React.FC<AlertProps> = ({ title, children, type }) => {
   }
 
   return (
-    <div className={`rounded-md p-4 mb-8 ${design.bgColor}`}>
+    <div className={`rounded-md p-4 mb-5 ${design.bgColor}`}>
       <div className="flex">
         <div className={`flex-shrink-0 ${design.titleColor}`}>{design.svg}</div>
         <div className="ml-3">

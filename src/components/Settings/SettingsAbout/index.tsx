@@ -37,7 +37,7 @@ const SettingsAbout: React.FC = () => {
 
   return (
     <>
-      <div className="mb-8">
+      <div className="section">
         <List title={intl.formatMessage(messages.overseerrinformation)}>
           <List.Item title={intl.formatMessage(messages.version)}>
             {data.version}
@@ -55,7 +55,7 @@ const SettingsAbout: React.FC = () => {
           )}
         </List>
       </div>
-      <div className="mb-8">
+      <div className="section">
         <List title={intl.formatMessage(messages.gettingsupport)}>
           <List.Item title={intl.formatMessage(messages.documentation)}>
             <a
@@ -89,7 +89,7 @@ const SettingsAbout: React.FC = () => {
           </List.Item>
         </List>
       </div>
-      <div className="mb-8">
+      <div className="section">
         <List title={intl.formatMessage(messages.supportoverseerr)}>
           <List.Item
             title={`${intl.formatMessage(messages.helppaycoffee)} ☕️`}
@@ -105,7 +105,7 @@ const SettingsAbout: React.FC = () => {
           </List.Item>
         </List>
       </div>
-      <div className="mb-8">
+      <div className="section">
         <Releases currentVersion={data.version} />
       </div>
     </>

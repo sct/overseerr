@@ -52,10 +52,10 @@ const Layout: React.FC = ({ children }) => {
         </div>
 
         <main className="relative z-0 top-16 focus:outline-none" tabIndex={0}>
-          <div className="pt-2 pb-6">
+          <div className="pt-2 mb-6">
             <div className="px-4 mx-auto max-w-8xl">
               {router.pathname === '/' && hasPermission(Permission.ADMIN) && (
-                <div className="p-4 mt-2 bg-indigo-700 rounded-md">
+                <div className="p-4 mt-6 bg-indigo-700 rounded-md">
                   <div className="flex">
                     <div className="flex-shrink-0">
                       <svg

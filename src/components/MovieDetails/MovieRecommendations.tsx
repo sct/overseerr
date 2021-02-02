@@ -77,17 +77,19 @@ const MovieRecommendations: React.FC = () => {
 
   return (
     <>
-      <Header
-        subtext={
-          movieData && !movieError
-            ? intl.formatMessage(messages.recommendationssubtext, {
-                title: movieData.title,
-              })
-            : ''
-        }
-      >
-        <FormattedMessage {...messages.recommendations} />
-      </Header>
+      <div className="mt-1 mb-5">
+        <Header
+          subtext={
+            movieData && !movieError
+              ? intl.formatMessage(messages.recommendationssubtext, {
+                  title: movieData.title,
+                })
+              : ''
+          }
+        >
+          <FormattedMessage {...messages.recommendations} />
+        </Header>
+      </div>
       <ListView
         items={titles}
         isEmpty={isEmpty}

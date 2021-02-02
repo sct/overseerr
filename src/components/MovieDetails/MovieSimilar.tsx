@@ -77,17 +77,19 @@ const MovieSimilar: React.FC = () => {
 
   return (
     <>
-      <Header
-        subtext={
-          movieData && !movieError
-            ? intl.formatMessage(messages.similarsubtext, {
-                title: movieData.title,
-              })
-            : undefined
-        }
-      >
-        <FormattedMessage {...messages.similar} />
-      </Header>
+      <div className="mt-1 mb-5">
+        <Header
+          subtext={
+            movieData && !movieError
+              ? intl.formatMessage(messages.similarsubtext, {
+                  title: movieData.title,
+                })
+              : undefined
+          }
+        >
+          <FormattedMessage {...messages.similar} />
+        </Header>
+      </div>
       <ListView
         items={titles}
         isEmpty={isEmpty}

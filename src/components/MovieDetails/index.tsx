@@ -178,50 +178,56 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         {data?.mediaInfo &&
           (data.mediaInfo.status !== MediaStatus.AVAILABLE ||
             data.mediaInfo.status4k !== MediaStatus.AVAILABLE) && (
-            <div className="flex flex-col mb-6 sm:flex-row flex-nowrap">
+            <div className="mb-6">
               {data?.mediaInfo &&
                 data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
-                  <Button
-                    onClick={() => markAvailable()}
-                    className="w-full mb-2 sm:mb-0 sm:mr-1 last:mr-0"
-                    buttonType="success"
-                  >
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
+                  <div className="flex flex-col sm:flex-row flex-nowrap mb-2">
+                    <Button
+                      onClick={() => markAvailable()}
+                      className="w-full sm:mb-0"
+                      buttonType="success"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span>{intl.formatMessage(messages.markavailable)}</span>
-                  </Button>
+                      <svg
+                        className="w-5 h-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>{intl.formatMessage(messages.markavailable)}</span>
+                    </Button>
+                  </div>
                 )}
               {data?.mediaInfo &&
                 data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
-                  <Button
-                    onClick={() => markAvailable(true)}
-                    className="w-full sm:ml-1 first:ml-0"
-                    buttonType="success"
-                  >
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
+                  <div className="flex flex-col sm:flex-row flex-nowrap mb-2">
+                    <Button
+                      onClick={() => markAvailable(true)}
+                      className="w-full sm:mb-0"
+                      buttonType="success"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span>{intl.formatMessage(messages.mark4kavailable)}</span>
-                  </Button>
+                      <svg
+                        className="w-5 h-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>
+                        {intl.formatMessage(messages.mark4kavailable)}
+                      </span>
+                    </Button>
+                  </div>
                 )}
             </div>
           )}
