@@ -84,8 +84,8 @@ const UserEdit: React.FC = () => {
       }}
     >
       {({ isSubmitting, handleSubmit }) => (
-        <Form className="section">
-          <div className="mt-10 text-white">
+        <Form>
+          <div>
             <div className="flex flex-col justify-between sm:flex-row">
               <Header>
                 <FormattedMessage {...messages.edituser} />
