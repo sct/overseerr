@@ -6,6 +6,7 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import { SettingsAboutResponse } from '../../../../server/interfaces/api/settingsInterfaces';
 import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
 import Releases from './Releases';
+import Badge from '../../Common/Badge';
 
 const messages = defineMessages({
   overseerrinformation: 'Overseerr Information',
@@ -19,6 +20,7 @@ const messages = defineMessages({
   supportoverseerr: 'Support Overseerr',
   helppaycoffee: 'Help Pay for Coffee',
   documentation: 'Documentation',
+  preferredmethod: 'Preferred Method',
 });
 
 const SettingsAbout: React.FC = () => {
@@ -94,6 +96,19 @@ const SettingsAbout: React.FC = () => {
           <List.Item
             title={`${intl.formatMessage(messages.helppaycoffee)} ☕️`}
           >
+            <a
+              href="https://github.com/sponsors/sct"
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-500 hover:underline"
+            >
+              https://github.com/sponsors/sct
+            </a>
+            <Badge className="ml-2">
+              {intl.formatMessage(messages.preferredmethod)}
+            </Badge>
+          </List.Item>
+          <List.Item title="">
             <a
               href="https://patreon.com/overseerr"
               target="_blank"
