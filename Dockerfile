@@ -12,14 +12,18 @@ RUN yarn --frozen-lockfile && \
 # remove development dependencies
 RUN yarn install --production --ignore-scripts --prefer-offline
 
-RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json && \
-  rm -rf src && \
+RUN rm -rf src && \
   rm -rf server
+
+RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
 
 
 FROM node:14.15-alpine
 
 RUN apk add --no-cache tzdata
+
+ARG COMMIT_TAG
+ENV COMMIT_TAG=${COMMIT_TAG}
 
 # copy from build image
 COPY --from=BUILD_IMAGE /app /app
