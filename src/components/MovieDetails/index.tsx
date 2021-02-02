@@ -417,10 +417,17 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 }
               }}
             >
-              {data.mediaInfo?.plexUrl ||
-              (data.mediaInfo?.plexUrl4k &&
-                (hasPermission(Permission.REQUEST_4K) ||
-                  hasPermission(Permission.REQUEST_4K_MOVIE))) ? (
+              {(
+                trailerUrl
+                  ? data.mediaInfo?.plexUrl ||
+                    (data.mediaInfo?.plexUrl4k &&
+                      (hasPermission(Permission.REQUEST_4K) ||
+                        hasPermission(Permission.REQUEST_4K_MOVIE)))
+                  : data.mediaInfo?.plexUrl &&
+                    data.mediaInfo?.plexUrl4k &&
+                    (hasPermission(Permission.REQUEST_4K) ||
+                      hasPermission(Permission.REQUEST_4K_MOVIE))
+              ) ? (
                 <>
                   {data.mediaInfo?.plexUrl &&
                     data.mediaInfo?.plexUrl4k &&
@@ -435,17 +442,16 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         {intl.formatMessage(messages.play4konplex)}
                       </ButtonWithDropdown.Item>
                     )}
-                  {(data.mediaInfo?.plexUrl || data.mediaInfo?.plexUrl4k) &&
-                    trailerUrl && (
-                      <ButtonWithDropdown.Item
-                        onClick={() => {
-                          window.open(trailerUrl, '_blank');
-                        }}
-                        buttonType="ghost"
-                      >
-                        {intl.formatMessage(messages.watchtrailer)}
-                      </ButtonWithDropdown.Item>
-                    )}
+                  {trailerUrl && (
+                    <ButtonWithDropdown.Item
+                      onClick={() => {
+                        window.open(trailerUrl, '_blank');
+                      }}
+                      buttonType="ghost"
+                    >
+                      {intl.formatMessage(messages.watchtrailer)}
+                    </ButtonWithDropdown.Item>
+                  )}
                 </>
               ) : null}
             </ButtonWithDropdown>
