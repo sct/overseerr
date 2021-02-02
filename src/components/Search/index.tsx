@@ -65,7 +65,9 @@ const Search: React.FC = () => {
 
   return (
     <>
-      <Header>{intl.formatMessage(messages.searchresults)}</Header>
+      <div className="mt-1 mb-5">
+        <Header>{intl.formatMessage(messages.searchresults)}</Header>
+      </div>
       <ListView
         items={titles}
         isEmpty={isEmpty}
