@@ -562,5 +562,10 @@
   "components.Login.signinwithplex": "Accedi con Plex",
   "components.Login.signinheader": "Accedi per continuare",
   "components.Login.signingin": "Accesso in corso…",
-  "components.Login.signin": "Accedi"
+  "components.Login.signin": "Accedi",
+  "components.MovieDetails.markavailable": "Segna come disponibile",
+  "components.MovieDetails.mark4kavailable": "Segna 4K come disponibile",
+  "components.MovieDetails.downloadstatus": "Stato dello scaricamento",
+  "components.MovieDetails.areyousure": "Sei sicuro/a?",
+  "components.Common.ListView.noresults": "Nessun risultato."
 }
