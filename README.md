@@ -81,7 +81,9 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ## API Documentation
 
-Full API documentation will soon be published automatically and available outside of running the app. Currently, you can access the API docs by running Overseerr locally and visiting http://localhost:5055/api-docs
+Our documentation is built on every commit and hosted at https://api-docs.overseerr.dev
+
+Also, you can access the API docs by running Overseerr locally and visiting http://localhost:5055/api-docs
 
 ## Community
 
