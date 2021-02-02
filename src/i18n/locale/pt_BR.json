@@ -179,7 +179,7 @@
   "components.Settings.RadarrModal.hostname": "Nome do Servidor / IP",
   "components.Settings.RadarrModal.editradarr": "Editar Servidor Radarr",
   "components.Settings.RadarrModal.defaultserver": "Servidor Padrão",
-  "components.Settings.RadarrModal.createradarr": "Criar Um Novo Servidor Radarr",
+  "components.Settings.RadarrModal.createradarr": "Adicionar Novo Servidor Radarr",
   "components.Settings.RadarrModal.baseUrlPlaceholder": "Exemplo: /radarr",
   "components.Settings.RadarrModal.baseUrl": "URL Base",
   "components.Settings.RadarrModal.apiKeyPlaceholder": "Sua Chave de API do Radarr",
@@ -518,7 +518,7 @@
   "components.UserList.password": "Senha",
   "components.UserList.localuser": "Usuário Local",
   "components.UserList.email": "Endereço de E-mail",
-  "components.UserList.creating": "Criando",
+  "components.UserList.creating": "Criando…",
   "components.UserList.createuser": "Criar usuário",
   "components.UserList.createlocaluser": "Criar usuário local",
   "components.UserList.create": "Criar",
@@ -659,5 +659,8 @@
   "components.TvDetails.allseasonsmarkedavailable": "* Todas temporadas serão marcadas como disponíveis.",
   "components.MovieDetails.markavailable": "Marcar como Disponível",
   "components.MovieDetails.mark4kavailable": "Marcar como Disponível em 4K",
-  "components.Settings.trustProxy": "Habilitar Suporte a Proxy"
+  "components.Settings.trustProxy": "Habilitar Suporte a Proxy",
+  "components.Settings.trustProxyTip": "Permite que Overseerr exiba o IP correto do cliente atrás de um proxy (Overseerr precisa ser reiniciado para que as mudanças tenham efeito)",
+  "components.Settings.SettingsJobsCache.cacheflushed": "Cache {cachename} limpo.",
+  "components.Settings.SettingsJobsCache.cache": "Cache"
 }
