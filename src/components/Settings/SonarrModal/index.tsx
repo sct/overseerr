@@ -9,7 +9,7 @@ import { useToasts } from 'react-toast-notifications';
 import { useIntl, defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  createsonarr: 'Create New Sonarr Server',
+  createsonarr: 'Add New Sonarr Server',
   editsonarr: 'Edit Sonarr Server',
   validationNameRequired: 'You must provide a server name',
   validationHostnameRequired: 'You must provide a hostname/IP',

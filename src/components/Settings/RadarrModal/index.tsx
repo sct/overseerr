@@ -9,7 +9,7 @@ import { useToasts } from 'react-toast-notifications';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  createradarr: 'Create New Radarr Server',
+  createradarr: 'Add New Radarr Server',
   editradarr: 'Edit Radarr Server',
   validationNameRequired: 'You must provide a server name',
   validationHostnameRequired: 'You must provide a hostname/IP',
