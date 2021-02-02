@@ -41,7 +41,7 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
             : ''
         }`}
       >
-        <div className="flex items-center h-5">
+        <div className="flex items-center h-6">
           <input
             id={option.id}
             name="permissions"
@@ -72,7 +72,7 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
             }
           />
         </div>
-        <div className="ml-3 text-sm leading-5">
+        <div className="ml-3 text-sm leading-6">
           <label htmlFor={option.id} className="block font-medium">
             <div className="flex flex-col">
               <span>{option.name}</span>

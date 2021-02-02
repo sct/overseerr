@@ -23,7 +23,7 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
             : ''
         }`}
       >
-        <div className="flex items-center h-5">
+        <div className="flex items-center h-6">
           <input
             id={option.id}
             name="permissions"
@@ -45,7 +45,7 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
             }
           />
         </div>
-        <div className="ml-3 text-sm leading-5">
+        <div className="ml-3 text-sm leading-6">
           <label htmlFor={option.id} className="font-medium">
             {option.name}
           </label>

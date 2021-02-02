@@ -246,7 +246,7 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(messages.defaultPermissions)}
                     </span>
                     <div className="form-input">
-                      <div className="max-w-lg mt-1">
+                      <div className="max-w-lg">
                         <PermissionEdit
                           currentPermission={values.defaultPermissions}
                           onUpdate={(newPermissions) =>
