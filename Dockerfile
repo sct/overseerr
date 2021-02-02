@@ -22,9 +22,6 @@ FROM node:14.15-alpine
 
 RUN apk add --no-cache tzdata
 
-ARG COMMIT_TAG
-ENV COMMIT_TAG=${COMMIT_TAG}
-
 # copy from build image
 COPY --from=BUILD_IMAGE /app /app
 WORKDIR /app
