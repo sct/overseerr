@@ -15,9 +15,6 @@
     "migration:run": "ts-node --project server/tsconfig.json ./node_modules/.bin/typeorm migration:run",
     "format": "prettier --write ."
   },
-  "browser": {
-    "fs": false
-  },
   "license": "MIT",
   "dependencies": {
     "@headlessui/react": "^0.2.0-da179ca",

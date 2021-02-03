@@ -11,8 +11,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Badge from '../Common/Badge';
 import LanguagePicker from '../Layout/LanguagePicker';
 import PageTitle from '../Common/PageTitle';
-import { existsSync } from 'fs';
-import Alert from '../Common/Alert';
+import AppDataWarning from '../AppDataWarning';
 
 const messages = defineMessages({
   setup: 'Setup',
@@ -71,15 +70,7 @@ const Setup: React.FC = () => {
           className="w-auto mx-auto mb-10 max-h-32"
           alt="Logo"
         />
-        {existsSync('config/DOCKER') && (
-          <Alert title={intl.formatMessage(messages.dockerVolumeMissing)}>
-            {intl.formatMessage(messages.dockerVolumeMissingDescription, {
-              code: function code(msg) {
-                return <code className="bg-opacity-50">{msg}</code>;
-              },
-            })}
-          </Alert>
-        )}
+        <AppDataWarning />
         <nav className="relative z-50">
           <ul
             className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md md:flex md:divide-y-0"
