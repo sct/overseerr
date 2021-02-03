@@ -78,11 +78,7 @@ const TvSimilar: React.FC = () => {
 
   return (
     <>
-      <PageTitle
-        title={`${intl.formatMessage(messages.similar)}${
-          tvData && ' - ' + tvData.name
-        }`}
-      />
+      <PageTitle title={[intl.formatMessage(messages.similar), tvData?.name]} />
       <div className="mt-1 mb-5">
         <Header
           subtext={

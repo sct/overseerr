@@ -34,7 +34,7 @@ const TvCast: React.FC = () => {
   return (
     <>
       <PageTitle
-        title={`${intl.formatMessage(messages.fullseriescast)} - ${data.name}`}
+        title={[intl.formatMessage(messages.fullseriescast), data.name]}
       />
       <div className="mt-1 mb-5">
         <Header

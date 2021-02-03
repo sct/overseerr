@@ -33,9 +33,7 @@ const MovieCrew: React.FC = () => {
 
   return (
     <>
-      <PageTitle
-        title={`${intl.formatMessage(messages.fullcrew)} - ${data.title}`}
-      />
+      <PageTitle title={[intl.formatMessage(messages.fullcrew), data.title]} />
       <div className="mt-1 mb-5">
         <Header
           subtext={

@@ -79,9 +79,7 @@ const MovieRecommendations: React.FC = () => {
   return (
     <>
       <PageTitle
-        title={`${intl.formatMessage(messages.recommendations)}${
-          movieData && ' - ' + movieData.title
-        }`}
+        title={[intl.formatMessage(messages.recommendations), movieData?.title]}
       />
       <div className="mt-1 mb-5">
         <Header

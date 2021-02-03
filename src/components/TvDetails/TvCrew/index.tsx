@@ -34,7 +34,7 @@ const TvCrew: React.FC = () => {
   return (
     <>
       <PageTitle
-        title={`${intl.formatMessage(messages.fullseriescrew)} - ${data.name}`}
+        title={[intl.formatMessage(messages.fullseriescrew), data.name]}
       />
       <div className="mt-1 mb-5">
         <Header

@@ -79,9 +79,7 @@ const TvRecommendations: React.FC = () => {
   return (
     <>
       <PageTitle
-        title={`${intl.formatMessage(messages.recommendations)}${
-          tvData && ' - ' + tvData.name
-        }`}
+        title={[intl.formatMessage(messages.recommendations), tvData?.name]}
       />
       <div className="mt-1 mb-5">
         <Header

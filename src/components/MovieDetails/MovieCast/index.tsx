@@ -33,9 +33,7 @@ const MovieCast: React.FC = () => {
 
   return (
     <>
-      <PageTitle
-        title={`${intl.formatMessage(messages.fullcast)} - ${data.title}`}
-      />
+      <PageTitle title={[intl.formatMessage(messages.fullcast), data.title]} />
       <div className="mt-1 mb-5">
         <Header
           subtext={

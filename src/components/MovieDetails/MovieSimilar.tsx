@@ -79,9 +79,7 @@ const MovieSimilar: React.FC = () => {
   return (
     <>
       <PageTitle
-        title={`${intl.formatMessage(messages.similar)}${
-          movieData && ' - ' + movieData.title
-        }`}
+        title={[intl.formatMessage(messages.similar), movieData?.title]}
       />
       <div className="mt-1 mb-5">
         <Header
