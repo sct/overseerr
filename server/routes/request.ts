@@ -9,6 +9,7 @@ import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
 import SeasonRequest from '../entity/SeasonRequest';
 import logger from '../logger';
 import { RequestResultsResponse } from '../interfaces/api/requestInterfaces';
+import { User } from '../entity/User';
 
 const requestRoutes = Router();
 
@@ -94,8 +95,28 @@ requestRoutes.post(
     const tmdb = new TheMovieDb();
     const mediaRepository = getRepository(Media);
     const requestRepository = getRepository(MediaRequest);
+    const userRepository = getRepository(User);
 
     try {
+      let requestUser = req.user;
+
+      if (
+        req.body.userId &&
+        !(
+          req.user?.hasPermission(Permission.MANAGE_USERS) &&
+          req.user?.hasPermission(Permission.MANAGE_REQUESTS)
+        )
+      ) {
+        return next({
+          status: 403,
+          message: 'You do not have permission to modify the request user.',
+        });
+      } else if (req.body.userId) {
+        requestUser = await userRepository.findOneOrFail({
+          where: { id: req.body.userId },
+        });
+      }
+
       const tmdbMedia =
         req.body.mediaType === 'movie'
           ? await tmdb.getMovie({ movieId: req.body.mediaId })
@@ -151,7 +172,7 @@ requestRoutes.post(
         const request = new MediaRequest({
           type: MediaType.MOVIE,
           media,
-          requestedBy: req.user,
+          requestedBy: requestUser,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
           status:
             req.user?.hasPermission(Permission.AUTO_APPROVE) ||
@@ -212,7 +233,7 @@ requestRoutes.post(
           media: {
             id: media.id,
           } as Media,
-          requestedBy: req.user,
+          requestedBy: requestUser,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
           status:
             req.user?.hasPermission(Permission.AUTO_APPROVE) ||
@@ -292,6 +313,7 @@ requestRoutes.put<{ requestId: string }>(
   isAuthenticated(Permission.MANAGE_REQUESTS),
   async (req, res, next) => {
     const requestRepository = getRepository(MediaRequest);
+    const userRepository = getRepository(User);
     try {
       const request = await requestRepository.findOne(
         Number(req.params.requestId)
@@ -301,10 +323,30 @@ requestRoutes.put<{ requestId: string }>(
         return next({ status: 404, message: 'Request not found' });
       }
 
+      let requestUser = req.user;
+
+      if (
+        req.body.userId &&
+        !(
+          req.user?.hasPermission(Permission.MANAGE_USERS) &&
+          req.user?.hasPermission(Permission.MANAGE_REQUESTS)
+        )
+      ) {
+        return next({
+          status: 403,
+          message: 'You do not have permission to modify the request user.',
+        });
+      } else if (req.body.userId) {
+        requestUser = await userRepository.findOneOrFail({
+          where: { id: req.body.userId },
+        });
+      }
+
       if (req.body.mediaType === 'movie') {
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;
         request.rootFolder = req.body.rootFolder;
+        request.requestedBy = requestUser as User;
 
         requestRepository.save(request);
       } else if (req.body.mediaType === 'tv') {
@@ -312,6 +354,7 @@ requestRoutes.put<{ requestId: string }>(
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;
         request.rootFolder = req.body.rootFolder;
+        request.requestedBy = requestUser as User;
 
         const requestedSeasons = req.body.seasons as number[] | undefined;
 

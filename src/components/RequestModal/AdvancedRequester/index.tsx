@@ -8,6 +8,8 @@ import type {
 } from '../../../../server/interfaces/api/serviceInterfaces';
 import { defineMessages, useIntl } from 'react-intl';
 import { formatBytes } from '../../../utils/numberHelpers';
+import { Listbox, Transition } from '@headlessui/react';
+import { Permission, User, useUser } from '../../../hooks/useUser';
 
 const messages = defineMessages({
   advancedoptions: 'Advanced Options',
@@ -18,12 +20,14 @@ const messages = defineMessages({
   default: '(Default)',
   loadingprofiles: 'Loading profiles…',
   loadingfolders: 'Loading folders…',
+  requestas: 'Request As',
 });
 
 export type RequestOverrides = {
   server?: number;
   profile?: number;
   folder?: string;
+  user?: User;
 };
 
 interface AdvancedRequesterProps {
@@ -31,6 +35,7 @@ interface AdvancedRequesterProps {
   is4k: boolean;
   isAnime?: boolean;
   defaultOverrides?: RequestOverrides;
+  requestUser?: User;
   onChange: (overrides: RequestOverrides) => void;
 }
 
@@ -39,9 +44,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   is4k = false,
   isAnime = false,
   defaultOverrides,
+  requestUser,
   onChange,
 }) => {
   const intl = useIntl();
+  const { user, hasPermission } = useUser();
   const { data, error } = useSWR<ServiceCommonServer[]>(
     `/api/v1/service/${type === 'movie' ? 'radarr' : 'sonarr'}`,
     {
@@ -77,6 +84,22 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       revalidateOnFocus: false,
     }
   );
+
+  const [selectedUser, setSelectedUser] = useState<User | null>(
+    requestUser ?? null
+  );
+
+  const { data: userData } = useSWR<User[]>(
+    hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS])
+      ? '/api/v1/user'
+      : null
+  );
+
+  useEffect(() => {
+    if (userData && !requestUser) {
+      setSelectedUser(userData.find((u) => u.id === user?.id) ?? null);
+    }
+  }, [userData]);
 
   useEffect(() => {
     let defaultServer = data?.find(
@@ -167,9 +190,10 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         folder: selectedFolder !== '' ? selectedFolder : undefined,
         profile: selectedProfile !== -1 ? selectedProfile : undefined,
         server: selectedServer ?? undefined,
+        user: selectedUser ?? undefined,
       });
     }
-  }, [selectedFolder, selectedServer, selectedProfile]);
+  }, [selectedFolder, selectedServer, selectedProfile, selectedUser]);
 
   if (!data && !error) {
     return (
@@ -288,6 +312,130 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             </select>
           </div>
         </div>
+        {hasPermission(Permission.MANAGE_REQUESTS) &&
+          hasPermission(Permission.MANAGE_USERS) &&
+          selectedUser && (
+            <div className="mt-0 sm:mt-2">
+              <Listbox
+                as="div"
+                value={selectedUser}
+                onChange={(value) => setSelectedUser(value)}
+                className="space-y-1"
+              >
+                {({ open }) => (
+                  <>
+                    <Listbox.Label className="text-label">
+                      {intl.formatMessage(messages.requestas)}
+                    </Listbox.Label>
+                    <div className="relative">
+                      <span className="inline-block w-full rounded-md shadow-sm">
+                        <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out bg-gray-800 border border-gray-700 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5">
+                          <span className="flex items-center">
+                            <img
+                              src={selectedUser.avatar}
+                              alt=""
+                              className="flex-shrink-0 w-6 h-6 rounded-full"
+                            />
+                            <span className="block ml-3">
+                              {selectedUser.displayName}
+                            </span>
+                            <span className="ml-1 text-gray-400 truncate">
+                              ({selectedUser.email})
+                            </span>
+                          </span>
+                          <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <svg
+                              className="w-5 h-5 text-gray-500"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              stroke="currentColor"
+                            >
+                              <path
+                                d="M7 7l3-3 3 3m0 6l-3 3-3-3"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        </Listbox.Button>
+                      </span>
+
+                      <Transition
+                        show={open}
+                        enter="transition ease-in duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="transition ease-in duration-100"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                        className="w-full mt-1 bg-gray-800 rounded-md shadow-lg"
+                      >
+                        <Listbox.Options
+                          static
+                          className="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
+                        >
+                          {userData?.map((user) => (
+                            <Listbox.Option key={user.id} value={user}>
+                              {({ selected, active }) => (
+                                <div
+                                  className={`${
+                                    active
+                                      ? 'text-white bg-indigo-600'
+                                      : 'text-gray-300'
+                                  } cursor-default select-none relative py-2 pl-8 pr-4`}
+                                >
+                                  <span
+                                    className={`${
+                                      selected ? 'font-semibold' : 'font-normal'
+                                    } flex items-center`}
+                                  >
+                                    <img
+                                      src={user.avatar}
+                                      alt=""
+                                      className="flex-shrink-0 w-6 h-6 rounded-full"
+                                    />
+                                    <span className="block ml-3">
+                                      {user.displayName}
+                                    </span>
+                                    <span className="ml-1 text-gray-400 truncate">
+                                      ({user.email})
+                                    </span>
+                                  </span>
+                                  {selected && (
+                                    <span
+                                      className={`${
+                                        active
+                                          ? 'text-white'
+                                          : 'text-indigo-600'
+                                      } absolute inset-y-0 left-0 flex items-center pl-1.5`}
+                                    >
+                                      <svg
+                                        className="w-5 h-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                          clipRule="evenodd"
+                                        />
+                                      </svg>
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </Listbox.Option>
+                          ))}
+                        </Listbox.Options>
+                      </Transition>
+                    </div>
+                  </>
+                )}
+              </Listbox>
+            </div>
+          )}
         {isAnime && (
           <div className="mt-4 italic">
             {intl.formatMessage(messages.animenote)}

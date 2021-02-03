@@ -169,6 +169,7 @@
   "components.RequestModal.AdvancedRequester.loadingfolders": "Loading folders…",
   "components.RequestModal.AdvancedRequester.loadingprofiles": "Loading profiles…",
   "components.RequestModal.AdvancedRequester.qualityprofile": "Quality Profile",
+  "components.RequestModal.AdvancedRequester.requestas": "Request As",
   "components.RequestModal.AdvancedRequester.rootfolder": "Root Folder",
   "components.RequestModal.SearchByNameModal.next": "Next",
   "components.RequestModal.SearchByNameModal.nosummary": "No summary for this title was found.",
