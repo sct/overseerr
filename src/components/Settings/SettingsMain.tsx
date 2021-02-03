@@ -12,6 +12,7 @@ import { useToasts } from 'react-toast-notifications';
 import Badge from '../Common/Badge';
 import globalMessages from '../../i18n/globalMessages';
 import PermissionEdit from '../PermissionEdit';
+import * as Yup from 'yup';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -39,6 +40,7 @@ const messages = defineMessages({
   localLogin: 'Enable Local User Sign-In',
   localLoginTip:
     'Disabling this option only prevents new sign-ins (no user data is deleted)',
+  validationApplicationTitle: 'You must provide an application title',
 });
 
 const SettingsMain: React.FC = () => {
@@ -48,6 +50,11 @@ const SettingsMain: React.FC = () => {
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
   );
+  const MainSettingsSchema = Yup.object().shape({
+    applicationTitle: Yup.string().required(
+      intl.formatMessage(messages.validationApplicationTitle)
+    ),
+  });
 
   const regenerate = async () => {
     try {
@@ -92,6 +99,7 @@ const SettingsMain: React.FC = () => {
             trustProxy: data?.trustProxy,
           }}
           enableReinitialize
+          validationSchema={MainSettingsSchema}
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/settings/main', {
@@ -118,7 +126,7 @@ const SettingsMain: React.FC = () => {
             }
           }}
         >
-          {({ isSubmitting, values, setFieldValue }) => {
+          {({ errors, touched, isSubmitting, values, setFieldValue }) => {
             return (
               <Form className="section">
                 {userHasPermission(Permission.ADMIN) && (
@@ -176,6 +184,9 @@ const SettingsMain: React.FC = () => {
                         placeholder="Overseerr"
                       />
                     </div>
+                    {errors.applicationTitle && touched.applicationTitle && (
+                      <div className="error">{errors.applicationTitle}</div>
+                    )}
                   </div>
                 </div>
                 <div className="form-row">
