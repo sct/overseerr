@@ -99,7 +99,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
         </div>
         <img
           className="flex-shrink-0 w-10 h-10"
-          src={`/images/${isSonarr ? 'sonarr' : 'radarr'}_logo.png`}
+          src={`/images/${isSonarr ? 'sonarr' : 'radarr'}_logo.svg`}
           alt=""
         />
       </div>
