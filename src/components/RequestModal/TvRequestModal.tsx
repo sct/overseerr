@@ -103,6 +103,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           serverId: requestOverrides?.server,
           profileId: requestOverrides?.profile,
           rootFolder: requestOverrides?.folder,
+          userId: requestOverrides?.user?.id,
           seasons: selectedSeasons,
         });
       } else {
@@ -150,6 +151,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           serverId: requestOverrides.server,
           profileId: requestOverrides.profile,
           rootFolder: requestOverrides.folder,
+          userId: requestOverrides?.user?.id,
         };
       }
       const response = await axios.post<MediaRequest>('/api/v1/request', {
@@ -391,7 +393,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                             toggleAllSeasons();
                           }
                         }}
-                        className="relative inline-flex items-center justify-center flex-shrink-0 w-10 h-5 cursor-pointer pt-2 focus:outline-none"
+                        className="relative inline-flex items-center justify-center flex-shrink-0 w-10 h-5 pt-2 cursor-pointer focus:outline-none"
                       >
                         <span
                           aria-hidden="true"
@@ -559,6 +561,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
               (keyword) => keyword.id === ANIME_KEYWORD_ID
             )}
             onChange={(overrides) => setRequestOverrides(overrides)}
+            requestUser={editRequest?.requestedBy}
             defaultOverrides={
               editRequest
                 ? {
