@@ -12,6 +12,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import ImageFader from '../Common/ImageFader';
 import Ellipsis from '../../assets/ellipsis.svg';
 import { groupBy } from 'lodash';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   appearsin: 'Appears in',
@@ -172,6 +173,7 @@ const PersonDetails: React.FC = () => {
 
   return (
     <>
+      <PageTitle title={data.name} />
       {(sortedCrew || sortedCast) && (
         <div className="absolute top-0 left-0 right-0 z-0 h-96">
           <ImageFader

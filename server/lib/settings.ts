@@ -50,6 +50,7 @@ export interface SonarrSettings extends DVRSettings {
 
 export interface MainSettings {
   apiKey: string;
+  applicationTitle: string;
   applicationUrl: string;
   csrfProtection: boolean;
   defaultPermissions: number;
@@ -63,10 +64,11 @@ interface PublicSettings {
 }
 
 interface FullPublicSettings extends PublicSettings {
-  movie4kEnabled: boolean;
-  series4kEnabled: boolean;
+  applicationTitle: string;
   hideAvailable: boolean;
   localLogin: boolean;
+  movie4kEnabled: boolean;
+  series4kEnabled: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -160,6 +162,7 @@ class Settings {
       clientId: uuidv4(),
       main: {
         apiKey: '',
+        applicationTitle: 'Overseerr',
         applicationUrl: '',
         csrfProtection: false,
         defaultPermissions: Permission.REQUEST,
@@ -292,14 +295,15 @@ class Settings {
   get fullPublicSettings(): FullPublicSettings {
     return {
       ...this.data.public,
+      applicationTitle: this.data.main.applicationTitle,
+      hideAvailable: this.data.main.hideAvailable,
+      localLogin: this.data.main.localLogin,
       movie4kEnabled: this.data.radarr.some(
         (radarr) => radarr.is4k && radarr.isDefault
       ),
       series4kEnabled: this.data.sonarr.some(
         (sonarr) => sonarr.is4k && sonarr.isDefault
       ),
-      hideAvailable: this.data.main.hideAvailable,
-      localLogin: this.data.main.localLogin,
     };
   }
 

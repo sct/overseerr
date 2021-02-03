@@ -27,7 +27,6 @@ import RTAudFresh from '../../assets/rt_aud_fresh.svg';
 import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import Error from '../../pages/_error';
-import Head from 'next/head';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import StatusBadge from '../StatusBadge';
@@ -36,6 +35,7 @@ import MediaSlider from '../MediaSlider';
 import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -137,10 +137,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
-      <Head>
-        <title>{data.title} - Overseerr</title>
-      </Head>
-
+      <PageTitle title={data.title} />
       <SlideOver
         show={showManager}
         title={intl.formatMessage(messages.manageModalTitle)}
@@ -181,7 +178,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <div className="mb-6">
               {data?.mediaInfo &&
                 data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
-                  <div className="flex flex-col sm:flex-row flex-nowrap mb-2">
+                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
                     <Button
                       onClick={() => markAvailable()}
                       className="w-full sm:mb-0"
@@ -205,7 +202,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 )}
               {data?.mediaInfo &&
                 data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
-                  <div className="flex flex-col sm:flex-row flex-nowrap mb-2">
+                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
                     <Button
                       onClick={() => markAvailable(true)}
                       className="w-full sm:mb-0"

@@ -20,8 +20,10 @@ import * as Yup from 'yup';
 import AddUserIcon from '../../assets/useradd.svg';
 import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
+  users: 'Users',
   userlist: 'User List',
   importfromplex: 'Import Users from Plex',
   importfromplexerror: 'Something went wrong while importing users from Plex.',
@@ -178,6 +180,7 @@ const UserList: React.FC = () => {
 
   return (
     <>
+      <PageTitle title={intl.formatMessage(messages.users)} />
       <Transition
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"

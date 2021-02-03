@@ -10,8 +10,10 @@ import LanguagePicker from '../Layout/LanguagePicker';
 import LocalLogin from './LocalLogin';
 import Accordion from '../Common/Accordion';
 import useSettings from '../../hooks/useSettings';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
+  signin: 'Sign In',
   signinheader: 'Sign in to continue',
   signinwithplex: 'Use your Plex account',
   signinwithoverseerr: 'Use your Overseerr account',
@@ -59,6 +61,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
+      <PageTitle title={intl.formatMessage(messages.signin)} />
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
@@ -73,11 +76,7 @@ const Login: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
-        <img
-          src="/logo.png"
-          className="w-auto mx-auto max-h-32"
-          alt="Overseerr Logo"
-        />
+        <img src="/logo.png" className="w-auto mx-auto max-h-32" alt="Logo" />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
           <FormattedMessage {...messages.signinheader} />
         </h2>

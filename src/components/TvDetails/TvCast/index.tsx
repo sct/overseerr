@@ -9,6 +9,7 @@ import Error from '../../../pages/_error';
 import Header from '../../Common/Header';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PersonCard from '../../PersonCard';
+import PageTitle from '../../Common/PageTitle';
 
 const messages = defineMessages({
   fullseriescast: 'Full Series Cast',
@@ -32,6 +33,9 @@ const TvCast: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[intl.formatMessage(messages.fullseriescast), data.name]}
+      />
       <div className="mt-1 mb-5">
         <Header
           subtext={

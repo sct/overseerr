@@ -27,7 +27,6 @@ import RTRotten from '../../assets/rt_rotten.svg';
 import RTAudFresh from '../../assets/rt_aud_fresh.svg';
 import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
-import Head from 'next/head';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
@@ -38,6 +37,7 @@ import MediaSlider from '../MediaSlider';
 import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -156,9 +156,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
-      <Head>
-        <title>{data.name} - Overseerr</title>
-      </Head>
+      <PageTitle title={data.name} />
       <RequestModal
         tmdbId={data.id}
         show={showRequestModal}
@@ -209,7 +207,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             <div className="mb-6">
               {data?.mediaInfo &&
                 data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
-                  <div className="flex flex-col sm:flex-row flex-nowrap mb-2">
+                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
                     <Button
                       onClick={() => markAvailable()}
                       className="w-full sm:mb-0"
@@ -233,7 +231,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 )}
               {data?.mediaInfo &&
                 data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
-                  <div className="flex flex-col sm:flex-row flex-nowrap mb-2">
+                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
                     <Button
                       onClick={() => markAvailable(true)}
                       className="w-full sm:mb-0"

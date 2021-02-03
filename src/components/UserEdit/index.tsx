@@ -11,6 +11,7 @@ import PermissionEdit from '../PermissionEdit';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { UserType } from '../../../server/constants/user';
+import PageTitle from '../Common/PageTitle';
 
 export const messages = defineMessages({
   edituser: 'Edit User',
@@ -85,6 +86,7 @@ const UserEdit: React.FC = () => {
     >
       {({ isSubmitting, handleSubmit }) => (
         <Form>
+          <PageTitle title={intl.formatMessage(messages.edituser)} />
           <div>
             <div className="flex flex-col justify-between sm:flex-row">
               <Header>

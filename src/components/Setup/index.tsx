@@ -10,8 +10,10 @@ import axios from 'axios';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Badge from '../Common/Badge';
 import LanguagePicker from '../Layout/LanguagePicker';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
+  setup: 'Setup',
   finish: 'Finish Setup',
   finishing: 'Finishing…',
   continue: 'Continue',
@@ -44,6 +46,7 @@ const Setup: React.FC = () => {
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900">
+      <PageTitle title={intl.formatMessage(messages.setup)} />
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
@@ -61,11 +64,11 @@ const Setup: React.FC = () => {
         <img
           src="/logo.png"
           className="w-auto mx-auto mb-10 max-h-32"
-          alt="Overseerr Logo"
+          alt="Logo"
         />
         <nav className="relative z-50">
           <ul
-            className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md  md:flex md:divide-y-0"
+            className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md md:flex md:divide-y-0"
             style={{ backdropFilter: 'blur(5px)' }}
           >
             <SetupSteps

@@ -12,6 +12,7 @@ import { useToasts } from 'react-toast-notifications';
 import Badge from '../Common/Badge';
 import globalMessages from '../../i18n/globalMessages';
 import PermissionEdit from '../PermissionEdit';
+import * as Yup from 'yup';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -20,6 +21,7 @@ const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
   apikey: 'API Key',
+  applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
   toastApiKeySuccess: 'New API key generated!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
@@ -38,6 +40,7 @@ const messages = defineMessages({
   localLogin: 'Enable Local User Sign-In',
   localLoginTip:
     'Disabling this option only prevents new sign-ins (no user data is deleted)',
+  validationApplicationTitle: 'You must provide an application title',
 });
 
 const SettingsMain: React.FC = () => {
@@ -47,6 +50,11 @@ const SettingsMain: React.FC = () => {
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
   );
+  const MainSettingsSchema = Yup.object().shape({
+    applicationTitle: Yup.string().required(
+      intl.formatMessage(messages.validationApplicationTitle)
+    ),
+  });
 
   const regenerate = async () => {
     try {
@@ -82,6 +90,7 @@ const SettingsMain: React.FC = () => {
       <div className="section">
         <Formik
           initialValues={{
+            applicationTitle: data?.applicationTitle,
             applicationUrl: data?.applicationUrl,
             csrfProtection: data?.csrfProtection,
             defaultPermissions: data?.defaultPermissions ?? 0,
@@ -90,9 +99,11 @@ const SettingsMain: React.FC = () => {
             trustProxy: data?.trustProxy,
           }}
           enableReinitialize
+          validationSchema={MainSettingsSchema}
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/settings/main', {
+                applicationTitle: values.applicationTitle,
                 applicationUrl: values.applicationUrl,
                 csrfProtection: values.csrfProtection,
                 defaultPermissions: values.defaultPermissions,
@@ -115,7 +126,7 @@ const SettingsMain: React.FC = () => {
             }
           }}
         >
-          {({ isSubmitting, values, setFieldValue }) => {
+          {({ errors, touched, isSubmitting, values, setFieldValue }) => {
             return (
               <Form className="section">
                 {userHasPermission(Permission.ADMIN) && (
@@ -160,6 +171,24 @@ const SettingsMain: React.FC = () => {
                     </div>
                   </div>
                 )}
+                <div className="form-row">
+                  <label htmlFor="applicationTitle" className="text-label">
+                    {intl.formatMessage(messages.applicationTitle)}
+                  </label>
+                  <div className="form-input">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <Field
+                        id="applicationTitle"
+                        name="applicationTitle"
+                        type="text"
+                        placeholder="Overseerr"
+                      />
+                    </div>
+                    {errors.applicationTitle && touched.applicationTitle && (
+                      <div className="error">{errors.applicationTitle}</div>
+                    )}
+                  </div>
+                </div>
                 <div className="form-row">
                   <label htmlFor="applicationUrl" className="text-label">
                     {intl.formatMessage(messages.applicationurl)}

@@ -9,6 +9,7 @@ import Error from '../../../pages/_error';
 import Header from '../../Common/Header';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PersonCard from '../../PersonCard';
+import PageTitle from '../../Common/PageTitle';
 
 const messages = defineMessages({
   fullcrew: 'Full Crew',
@@ -32,6 +33,7 @@ const MovieCrew: React.FC = () => {
 
   return (
     <>
+      <PageTitle title={[intl.formatMessage(messages.fullcrew), data.title]} />
       <div className="mt-1 mb-5">
         <Header
           subtext={

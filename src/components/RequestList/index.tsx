@@ -7,6 +7,7 @@ import Header from '../Common/Header';
 import Table from '../Common/Table';
 import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   requests: 'Requests',
@@ -54,6 +55,7 @@ const RequestList: React.FC = () => {
 
   return (
     <>
+      <PageTitle title={intl.formatMessage(messages.requests)} />
       <div className="flex flex-col justify-between md:items-end md:flex-row">
         <Header>{intl.formatMessage(messages.requests)}</Header>
         <div className="flex flex-col mt-2 md:flex-row">

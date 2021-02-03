@@ -10,8 +10,10 @@ import ListView from '../Common/ListView';
 import { LanguageContext } from '../../context/LanguageContext';
 import { defineMessages, useIntl } from 'react-intl';
 import Header from '../Common/Header';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
+  search: 'Search',
   searchresults: 'Search Results',
 });
 
@@ -65,6 +67,7 @@ const Search: React.FC = () => {
 
   return (
     <>
+      <PageTitle title={intl.formatMessage(messages.search)} />
       <div className="mt-1 mb-5">
         <Header>{intl.formatMessage(messages.searchresults)}</Header>
       </div>

@@ -2,11 +2,12 @@ import React, { useContext } from 'react';
 import { useSWRInfinite } from 'swr';
 import type { TvResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
 import Header from '../Common/Header';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   discovertv: 'Popular Series',
@@ -20,6 +21,7 @@ interface SearchResult {
 }
 
 const DiscoverTv: React.FC = () => {
+  const intl = useIntl();
   const settings = useSettings();
   const { locale } = useContext(LanguageContext);
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
@@ -67,6 +69,7 @@ const DiscoverTv: React.FC = () => {
 
   return (
     <>
+      <PageTitle title={intl.formatMessage(messages.discovertv)} />
       <div className="mt-1 mb-5">
         <Header>
           <FormattedMessage {...messages.discovertv} />

@@ -9,6 +9,7 @@ import type { TvDetails } from '../../../server/models/Tv';
 import Header from '../Common/Header';
 import { MediaStatus } from '../../../server/constants/media';
 import useSettings from '../../hooks/useSettings';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   similar: 'Similar Series',
@@ -77,6 +78,7 @@ const TvSimilar: React.FC = () => {
 
   return (
     <>
+      <PageTitle title={[intl.formatMessage(messages.similar), tvData?.name]} />
       <div className="mt-1 mb-5">
         <Header
           subtext={

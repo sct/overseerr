@@ -9,6 +9,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { TvDetails } from '../../../server/models/Tv';
 import { MediaStatus } from '../../../server/constants/media';
 import useSettings from '../../hooks/useSettings';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
@@ -77,6 +78,9 @@ const TvRecommendations: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[intl.formatMessage(messages.recommendations), tvData?.name]}
+      />
       <div className="mt-1 mb-5">
         <Header
           subtext={

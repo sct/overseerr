@@ -9,6 +9,7 @@ import type { MovieDetails } from '../../../server/models/Movie';
 import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
 import { MediaStatus } from '../../../server/constants/media';
 import useSettings from '../../hooks/useSettings';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   similar: 'Similar Titles',
@@ -77,6 +78,9 @@ const MovieSimilar: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[intl.formatMessage(messages.similar), movieData?.title]}
+      />
       <div className="mt-1 mb-5">
         <Header
           subtext={
