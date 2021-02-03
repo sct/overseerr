@@ -11,6 +11,8 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Badge from '../Common/Badge';
 import LanguagePicker from '../Layout/LanguagePicker';
 import PageTitle from '../Common/PageTitle';
+import { existsSync } from 'fs';
+import Alert from '../Common/Alert';
 
 const messages = defineMessages({
   setup: 'Setup',
@@ -23,6 +25,9 @@ const messages = defineMessages({
   tip: 'Tip',
   syncingbackground:
     'Syncing will run in the background. You can continue the setup process in the meantime.',
+  dockerVolumeMissing: 'Docker Volume Mount Missing',
+  dockerVolumeMissingDescription:
+    'The <code>/app/config</code> volume mount was not configured properly. All data will be cleared when the container is stopped or restarted.',
 });
 
 const Setup: React.FC = () => {
@@ -66,6 +71,15 @@ const Setup: React.FC = () => {
           className="w-auto mx-auto mb-10 max-h-32"
           alt="Logo"
         />
+        {existsSync('config/DOCKER') && (
+          <Alert title={intl.formatMessage(messages.dockerVolumeMissing)}>
+            {intl.formatMessage(messages.dockerVolumeMissingDescription, {
+              code: function code(msg) {
+                return <code className="bg-opacity-50">{msg}</code>;
+              },
+            })}
+          </Alert>
+        )}
         <nav className="relative z-50">
           <ul
             className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md md:flex md:divide-y-0"

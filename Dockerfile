@@ -15,6 +15,8 @@ RUN yarn install --production --ignore-scripts --prefer-offline
 RUN rm -rf src && \
   rm -rf server
 
+RUN touch config/DOCKER
+
 RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
 
 
