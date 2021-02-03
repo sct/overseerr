@@ -21,20 +21,26 @@ const DownloadBlock: React.FC<DownloadBlockProps> = ({
         <div
           className="h-8 transition-all duration-200 ease-in-out bg-indigo-600"
           style={{
-            width: `${Math.round(
-              ((downloadItem.size - downloadItem.sizeLeft) /
-                downloadItem.size) *
-                100
-            )}%`,
+            width: `${
+              downloadItem.size
+                ? Math.round(
+                    ((downloadItem.size - downloadItem.sizeLeft) /
+                      downloadItem.size) *
+                      100
+                  )
+                : 0
+            }%`,
           }}
         />
         <div className="absolute inset-0 flex items-center justify-center w-full h-6 text-xs">
           <span>
-            {Math.round(
-              ((downloadItem.size - downloadItem.sizeLeft) /
-                downloadItem.size) *
-                100
-            )}
+            {downloadItem.size
+              ? Math.round(
+                  ((downloadItem.size - downloadItem.sizeLeft) /
+                    downloadItem.size) *
+                    100
+                )
+              : 0}
             %
           </span>
         </div>
