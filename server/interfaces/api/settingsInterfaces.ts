@@ -10,6 +10,7 @@ export interface PublicSettingsResponse {
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
   hideAvailable: boolean;
+  localLogin: boolean;
 }
 
 export interface CacheItem {

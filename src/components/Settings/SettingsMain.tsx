@@ -35,6 +35,9 @@ const messages = defineMessages({
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
     'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
+  localLogin: 'Enable Local User Sign-In',
+  localLoginTip:
+    'Disabling this option only prevents new sign-ins (no user data is deleted)',
 });
 
 const SettingsMain: React.FC = () => {
@@ -83,6 +86,7 @@ const SettingsMain: React.FC = () => {
             csrfProtection: data?.csrfProtection,
             defaultPermissions: data?.defaultPermissions ?? 0,
             hideAvailable: data?.hideAvailable,
+            localLogin: data?.localLogin,
             trustProxy: data?.trustProxy,
           }}
           enableReinitialize
@@ -93,6 +97,7 @@ const SettingsMain: React.FC = () => {
                 csrfProtection: values.csrfProtection,
                 defaultPermissions: values.defaultPermissions,
                 hideAvailable: values.hideAvailable,
+                localLogin: values.localLogin,
                 trustProxy: values.trustProxy,
               });
 
@@ -172,9 +177,7 @@ const SettingsMain: React.FC = () => {
                 </div>
                 <div className="form-row">
                   <label htmlFor="trustProxy" className="checkbox-label">
-                    <span className="mr-2">
-                      {intl.formatMessage(messages.trustProxy)}
-                    </span>
+                    <span>{intl.formatMessage(messages.trustProxy)}</span>
                     <span className="label-tip">
                       {intl.formatMessage(messages.trustProxyTip)}
                     </span>
@@ -232,6 +235,24 @@ const SettingsMain: React.FC = () => {
                       name="hideAvailable"
                       onChange={() => {
                         setFieldValue('hideAvailable', !values.hideAvailable);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="localLogin" className="checkbox-label">
+                    <span>{intl.formatMessage(messages.localLogin)}</span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.localLoginTip)}
+                    </span>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="localLogin"
+                      name="localLogin"
+                      onChange={() => {
+                        setFieldValue('localLogin', !values.localLogin);
                       }}
                     />
                   </div>

@@ -11,6 +11,7 @@ const defaultSettings = {
   movie4kEnabled: false,
   series4kEnabled: false,
   hideAvailable: false,
+  localLogin: false,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

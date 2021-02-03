@@ -351,7 +351,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               <div className="form-row">
                 <label htmlFor="name" className="text-label">
                   <div className="flex flex-col">
-                    <span className="mr-2">
+                    <span>
                       <FormattedMessage {...messages.servername} />
                     </span>
                     <span className="text-gray-500">

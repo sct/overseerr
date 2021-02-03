@@ -433,6 +433,8 @@
   "components.Settings.hideAvailable": "Hide Available Media",
   "components.Settings.hostname": "Hostname/IP",
   "components.Settings.librariesRemaining": "Libraries Remaining: {count}",
+  "components.Settings.localLogin": "Enable Local User Sign-In",
+  "components.Settings.localLoginTip": "Disabling this option only prevents new sign-ins (no user data is deleted)",
   "components.Settings.manualscan": "Manual Library Scan",
   "components.Settings.manualscanDescription": "Normally, this will only be run once every 24 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one-time full manual library scan is recommended!",
   "components.Settings.menuAbout": "About",
