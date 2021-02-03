@@ -552,7 +552,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           </div>
         </div>
       </div>
-      {hasPermission(Permission.REQUEST_ADVANCED) && (
+      {(hasPermission(Permission.REQUEST_ADVANCED) ||
+        hasPermission(Permission.MANAGE_REQUESTS)) && (
         <div className="mt-4">
           <AdvancedRequester
             type="tv"

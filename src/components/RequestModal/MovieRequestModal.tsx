@@ -229,7 +229,8 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
             username: activeRequest.requestedBy.displayName,
           }
         )}
-        {hasPermission(Permission.REQUEST_ADVANCED) && (
+        {(hasPermission(Permission.REQUEST_ADVANCED) ||
+          hasPermission(Permission.MANAGE_REQUESTS)) && (
           <div className="mt-4">
             <AdvancedRequester
               type="movie"
@@ -282,7 +283,8 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           </Alert>
         </p>
       )}
-      {hasPermission(Permission.REQUEST_ADVANCED) && (
+      {(hasPermission(Permission.REQUEST_ADVANCED) ||
+        hasPermission(Permission.MANAGE_REQUESTS)) && (
         <AdvancedRequester
           type="movie"
           is4k={is4k}
