@@ -20,6 +20,7 @@ const messages = defineMessages({
   default: '(Default)',
   loadingprofiles: 'Loading profiles…',
   loadingfolders: 'Loading folders…',
+  requestas: 'Request As',
 });
 
 export type RequestOverrides = {
@@ -311,11 +312,6 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             </select>
           </div>
         </div>
-        {isAnime && (
-          <div className="mt-4 italic">
-            {intl.formatMessage(messages.animenote)}
-          </div>
-        )}
         {hasPermission(Permission.MANAGE_REQUESTS) &&
           hasPermission(Permission.MANAGE_USERS) &&
           selectedUser && (
@@ -329,7 +325,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 {({ open }) => (
                   <>
                     <Listbox.Label className="text-label">
-                      Request as
+                      {intl.formatMessage(messages.requestas)}
                     </Listbox.Label>
                     <div className="relative">
                       <span className="inline-block w-full rounded-md shadow-sm">
@@ -440,6 +436,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               </Listbox>
             </div>
           )}
+        {isAnime && (
+          <div className="mt-4 italic">
+            {intl.formatMessage(messages.animenote)}
+          </div>
+        )}
       </div>
     </>
   );
