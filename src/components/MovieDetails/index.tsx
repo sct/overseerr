@@ -36,6 +36,7 @@ import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import PageTitle from '../Common/PageTitle';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -81,6 +82,7 @@ interface MovieDetailsProps {
 }
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
+  const settings = useSettings();
   const { hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
@@ -174,7 +176,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         )}
         {data?.mediaInfo &&
           (data.mediaInfo.status !== MediaStatus.AVAILABLE ||
-            data.mediaInfo.status4k !== MediaStatus.AVAILABLE) && (
+            (data.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
+              settings.currentSettings.movie4kEnabled)) && (
             <div className="mb-6">
               {data?.mediaInfo &&
                 data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
@@ -201,7 +204,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   </div>
                 )}
               {data?.mediaInfo &&
-                data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
+                data?.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
+                settings.currentSettings.movie4kEnabled && (
                   <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
                     <Button
                       onClick={() => markAvailable(true)}
