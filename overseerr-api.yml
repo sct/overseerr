@@ -71,6 +71,9 @@ components:
         hideAvailable:
           type: boolean
           example: false
+        localLogin:
+          type: boolean
+          example: true
         defaultPermissions:
           type: number
           example: 32
