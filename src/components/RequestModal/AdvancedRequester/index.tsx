@@ -185,7 +185,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   ]);
 
   useEffect(() => {
-    if (selectedServer !== null) {
+    if (selectedServer !== null || selectedUser) {
       onChange({
         folder: selectedFolder !== '' ? selectedFolder : undefined,
         profile: selectedProfile !== -1 ? selectedProfile : undefined,
@@ -203,7 +203,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     );
   }
 
-  if (!data || selectedServer === null) {
+  if ((!data || selectedServer === null) && !selectedUser) {
     return null;
   }
 
@@ -222,96 +222,106 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         {intl.formatMessage(messages.advancedoptions)}
       </div>
       <div className="p-4 bg-gray-600 rounded-md shadow">
-        <div className="flex flex-col items-center justify-between md:flex-row">
-          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
-            <label htmlFor="server" className="text-label">
-              {intl.formatMessage(messages.destinationserver)}
-            </label>
-            <select
-              id="server"
-              name="server"
-              value={selectedServer}
-              onChange={(e) => setSelectedServer(Number(e.target.value))}
-              onBlur={(e) => setSelectedServer(Number(e.target.value))}
-              className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-            >
-              {data.map((server) => (
-                <option key={`server-list-${server.id}`} value={server.id}>
-                  {server.name}
-                  {server.isDefault && server.is4k === is4k
-                    ? ` ${intl.formatMessage(messages.default)}`
-                    : ''}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
-            <label htmlFor="server" className="text-label">
-              {intl.formatMessage(messages.qualityprofile)}
-            </label>
-            <select
-              id="profile"
-              name="profile"
-              value={selectedProfile}
-              onChange={(e) => setSelectedProfile(Number(e.target.value))}
-              onBlur={(e) => setSelectedProfile(Number(e.target.value))}
-              className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-            >
-              {isValidating && (
-                <option value="">
-                  {intl.formatMessage(messages.loadingprofiles)}
-                </option>
-              )}
-              {!isValidating &&
-                serverData &&
-                serverData.profiles.map((profile) => (
-                  <option key={`profile-list${profile.id}`} value={profile.id}>
-                    {profile.name}
-                    {isAnime &&
-                    serverData.server.activeAnimeProfileId === profile.id
-                      ? ` ${intl.formatMessage(messages.default)}`
-                      : !isAnime &&
-                        serverData.server.activeProfileId === profile.id
-                      ? ` ${intl.formatMessage(messages.default)}`
-                      : ''}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:mb-0">
-            <label htmlFor="server" className="text-label">
-              {intl.formatMessage(messages.rootfolder)}
-            </label>
-            <select
-              id="folder"
-              name="folder"
-              value={selectedFolder}
-              onChange={(e) => setSelectedFolder(e.target.value)}
-              onBlur={(e) => setSelectedFolder(e.target.value)}
-              className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-            >
-              {isValidating && (
-                <option value="">
-                  {intl.formatMessage(messages.loadingfolders)}
-                </option>
-              )}
-              {!isValidating &&
-                serverData &&
-                serverData.rootFolders.map((folder) => (
-                  <option key={`folder-list${folder.id}`} value={folder.path}>
-                    {folder.path} ({formatBytes(folder.freeSpace ?? 0)})
-                    {isAnime &&
-                    serverData.server.activeAnimeDirectory === folder.path
-                      ? ` ${intl.formatMessage(messages.default)}`
-                      : !isAnime &&
-                        serverData.server.activeDirectory === folder.path
-                      ? ` ${intl.formatMessage(messages.default)}`
-                      : ''}
-                  </option>
-                ))}
-            </select>
-          </div>
-        </div>
+        {!!data && selectedServer !== null && (
+          <>
+            <div className="flex flex-col items-center justify-between md:flex-row">
+              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
+                <label htmlFor="server" className="text-label">
+                  {intl.formatMessage(messages.destinationserver)}
+                </label>
+                <select
+                  id="server"
+                  name="server"
+                  value={selectedServer}
+                  onChange={(e) => setSelectedServer(Number(e.target.value))}
+                  onBlur={(e) => setSelectedServer(Number(e.target.value))}
+                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                >
+                  {data.map((server) => (
+                    <option key={`server-list-${server.id}`} value={server.id}>
+                      {server.name}
+                      {server.isDefault && server.is4k === is4k
+                        ? ` ${intl.formatMessage(messages.default)}`
+                        : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
+                <label htmlFor="server" className="text-label">
+                  {intl.formatMessage(messages.qualityprofile)}
+                </label>
+                <select
+                  id="profile"
+                  name="profile"
+                  value={selectedProfile}
+                  onChange={(e) => setSelectedProfile(Number(e.target.value))}
+                  onBlur={(e) => setSelectedProfile(Number(e.target.value))}
+                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                >
+                  {isValidating && (
+                    <option value="">
+                      {intl.formatMessage(messages.loadingprofiles)}
+                    </option>
+                  )}
+                  {!isValidating &&
+                    serverData &&
+                    serverData.profiles.map((profile) => (
+                      <option
+                        key={`profile-list${profile.id}`}
+                        value={profile.id}
+                      >
+                        {profile.name}
+                        {isAnime &&
+                        serverData.server.activeAnimeProfileId === profile.id
+                          ? ` ${intl.formatMessage(messages.default)}`
+                          : !isAnime &&
+                            serverData.server.activeProfileId === profile.id
+                          ? ` ${intl.formatMessage(messages.default)}`
+                          : ''}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:mb-0">
+                <label htmlFor="server" className="text-label">
+                  {intl.formatMessage(messages.rootfolder)}
+                </label>
+                <select
+                  id="folder"
+                  name="folder"
+                  value={selectedFolder}
+                  onChange={(e) => setSelectedFolder(e.target.value)}
+                  onBlur={(e) => setSelectedFolder(e.target.value)}
+                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                >
+                  {isValidating && (
+                    <option value="">
+                      {intl.formatMessage(messages.loadingfolders)}
+                    </option>
+                  )}
+                  {!isValidating &&
+                    serverData &&
+                    serverData.rootFolders.map((folder) => (
+                      <option
+                        key={`folder-list${folder.id}`}
+                        value={folder.path}
+                      >
+                        {folder.path} ({formatBytes(folder.freeSpace ?? 0)})
+                        {isAnime &&
+                        serverData.server.activeAnimeDirectory === folder.path
+                          ? ` ${intl.formatMessage(messages.default)}`
+                          : !isAnime &&
+                            serverData.server.activeDirectory === folder.path
+                          ? ` ${intl.formatMessage(messages.default)}`
+                          : ''}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
+          </>
+        )}
         {hasPermission(Permission.MANAGE_REQUESTS) &&
           hasPermission(Permission.MANAGE_USERS) &&
           selectedUser && (
