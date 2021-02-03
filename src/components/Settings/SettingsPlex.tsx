@@ -44,7 +44,6 @@ const messages = defineMessages({
   port: 'Port',
   ssl: 'SSL',
   timeout: 'Timeout',
-  ms: 'ms',
   save: 'Save Changes',
   saving: 'Saving…',
   plexlibraries: 'Plex Libraries',
