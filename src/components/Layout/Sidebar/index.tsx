@@ -176,7 +176,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                     <div className="flex-shrink-0 flex items-center px-4">
                       <span className="text-xl text-gray-50">
                         <a href="/">
-                          <img src="/logo.png" alt="Overseerr Logo" />
+                          <img src="/logo.png" alt="Logo" />
                         </a>
                       </span>
                     </div>
@@ -238,7 +238,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
               <div className="flex items-center flex-shrink-0 px-4">
                 <span className="text-2xl text-gray-50">
                   <a href="/">
-                    <img src="/logo.png" alt="Overseerr Logo" />
+                    <img src="/logo.png" alt="Logo" />
                   </a>
                 </span>
               </div>

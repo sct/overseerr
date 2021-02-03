@@ -7,7 +7,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import Header from '../Common/Header';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
-import Head from 'next/head';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   discovertv: 'Popular Series',
@@ -69,12 +69,7 @@ const DiscoverTv: React.FC = () => {
 
   return (
     <>
-      <Head>
-        <title>
-          {intl.formatMessage(messages.discovertv)} -{' '}
-          {settings.currentSettings.applicationTitle}
-        </title>
-      </Head>
+      <PageTitle title={intl.formatMessage(messages.discovertv)} />
       <div className="mt-1 mb-5">
         <Header>
           <FormattedMessage {...messages.discovertv} />

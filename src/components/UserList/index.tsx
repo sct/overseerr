@@ -20,8 +20,7 @@ import * as Yup from 'yup';
 import AddUserIcon from '../../assets/useradd.svg';
 import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
-import Head from 'next/head';
-import useSettings from '../../hooks/useSettings';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   users: 'Users',
@@ -68,7 +67,6 @@ const messages = defineMessages({
 const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
-  const settings = useSettings();
   const { addToast } = useToasts();
   const { data, error, revalidate } = useSWR<User[]>('/api/v1/user');
   const [isDeleting, setDeleting] = useState(false);
@@ -182,12 +180,7 @@ const UserList: React.FC = () => {
 
   return (
     <>
-      <Head>
-        <title>
-          {intl.formatMessage(messages.users)} -{' '}
-          {settings.currentSettings.applicationTitle}
-        </title>
-      </Head>
+      <PageTitle title={intl.formatMessage(messages.users)} />
       <Transition
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"

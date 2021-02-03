@@ -11,8 +11,7 @@ import PermissionEdit from '../PermissionEdit';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { UserType } from '../../../server/constants/user';
-import Head from 'next/head';
-import useSettings from '../../hooks/useSettings';
+import PageTitle from '../Common/PageTitle';
 
 export const messages = defineMessages({
   edituser: 'Edit User',
@@ -30,7 +29,6 @@ export const messages = defineMessages({
 const UserEdit: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
-  const settings = useSettings();
   const { addToast } = useToasts();
   const { user: currentUser } = useUser();
   const { user, error, revalidate } = useUser({
@@ -87,106 +85,103 @@ const UserEdit: React.FC = () => {
       }}
     >
       {({ isSubmitting, handleSubmit }) => (
-        <Form>
-          <Head>
-            <title>
-              {intl.formatMessage(messages.edituser)} -{' '}
-              {settings.currentSettings.applicationTitle}
-            </title>
-          </Head>
-          <div>
-            <div className="flex flex-col justify-between sm:flex-row">
-              <Header>
-                <FormattedMessage {...messages.edituser} />
-              </Header>
-            </div>
-            {user?.userType === UserType.PLEX && (
+        <>
+          <PageTitle title={intl.formatMessage(messages.edituser)} />
+          <Form>
+            <div>
+              <div className="flex flex-col justify-between sm:flex-row">
+                <Header>
+                  <FormattedMessage {...messages.edituser} />
+                </Header>
+              </div>
+              {user?.userType === UserType.PLEX && (
+                <div className="form-row">
+                  <label htmlFor="plexUsername" className="text-label">
+                    {intl.formatMessage(messages.plexUsername)}
+                  </label>
+                  <div className="form-input">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <Field
+                        id="plexUsername"
+                        name="plexUsername"
+                        type="text"
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="form-row">
-                <label htmlFor="plexUsername" className="text-label">
-                  {intl.formatMessage(messages.plexUsername)}
+                <label htmlFor="username" className="text-label">
+                  {intl.formatMessage(messages.username)}
                 </label>
                 <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm">
-                    <Field
-                      id="plexUsername"
-                      name="plexUsername"
-                      type="text"
-                      readOnly
+                    <Field id="username" name="username" type="text" />
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="email" className="text-label">
+                  <FormattedMessage {...messages.email} />
+                </label>
+                <div className="form-input">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
+                    <Field id="email" name="email" type="text" readOnly />
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <span className="text-label">
+                  <FormattedMessage {...messages.avatar} />
+                </span>
+                <div className="form-input">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
+                    <img
+                      className="w-40 h-40 rounded-full"
+                      src={user?.avatar}
+                      alt=""
                     />
                   </div>
                 </div>
               </div>
-            )}
-            <div className="form-row">
-              <label htmlFor="username" className="text-label">
-                {intl.formatMessage(messages.username)}
-              </label>
-              <div className="form-input">
-                <div className="flex max-w-lg rounded-md shadow-sm">
-                  <Field id="username" name="username" type="text" />
+            </div>
+            <div role="group" aria-labelledby="group-label" className="group">
+              <div className="form-row">
+                <span id="group-label" className="group-label">
+                  <FormattedMessage {...messages.permissions} />
+                </span>
+                <div className="form-input">
+                  <div className="max-w-lg">
+                    <PermissionEdit
+                      user={currentUser}
+                      currentPermission={currentPermission}
+                      onUpdate={(newPermission) =>
+                        setCurrentPermission(newPermission)
+                      }
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="form-row">
-              <label htmlFor="email" className="text-label">
-                <FormattedMessage {...messages.email} />
-              </label>
-              <div className="form-input">
-                <div className="flex max-w-lg rounded-md shadow-sm">
-                  <Field id="email" name="email" type="text" readOnly />
-                </div>
+            <div className="actions">
+              <div className="flex justify-end">
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <Button
+                    buttonType="primary"
+                    type="submit"
+                    disabled={isSubmitting}
+                    onClick={() => handleSubmit}
+                  >
+                    {isSubmitting
+                      ? intl.formatMessage(messages.saving)
+                      : intl.formatMessage(messages.save)}
+                  </Button>
+                </span>
               </div>
             </div>
-            <div className="form-row">
-              <span className="text-label">
-                <FormattedMessage {...messages.avatar} />
-              </span>
-              <div className="form-input">
-                <div className="flex max-w-lg rounded-md shadow-sm">
-                  <img
-                    className="w-40 h-40 rounded-full"
-                    src={user?.avatar}
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div role="group" aria-labelledby="group-label" className="group">
-            <div className="form-row">
-              <span id="group-label" className="group-label">
-                <FormattedMessage {...messages.permissions} />
-              </span>
-              <div className="form-input">
-                <div className="max-w-lg">
-                  <PermissionEdit
-                    user={currentUser}
-                    currentPermission={currentPermission}
-                    onUpdate={(newPermission) =>
-                      setCurrentPermission(newPermission)
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="actions">
-            <div className="flex justify-end">
-              <span className="inline-flex ml-3 rounded-md shadow-sm">
-                <Button
-                  buttonType="primary"
-                  type="submit"
-                  disabled={isSubmitting}
-                  onClick={() => handleSubmit}
-                >
-                  {isSubmitting
-                    ? intl.formatMessage(messages.saving)
-                    : intl.formatMessage(messages.save)}
-                </Button>
-              </span>
-            </div>
-          </div>
-        </Form>
+          </Form>
+        </>
       )}
     </Formik>
   );

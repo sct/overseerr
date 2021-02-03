@@ -10,8 +10,7 @@ import axios from 'axios';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Badge from '../Common/Badge';
 import LanguagePicker from '../Layout/LanguagePicker';
-import Head from 'next/head';
-import useSettings from '../../hooks/useSettings';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   setup: 'Setup',
@@ -28,7 +27,6 @@ const messages = defineMessages({
 
 const Setup: React.FC = () => {
   const intl = useIntl();
-  const settings = useSettings();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [plexSettingsComplete, setPlexSettingsComplete] = useState(false);
@@ -47,110 +45,109 @@ const Setup: React.FC = () => {
   };
 
   return (
-    <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900">
-      <Head>
-        <title>
-          {intl.formatMessage(messages.setup)} -{' '}
-          {settings.currentSettings.applicationTitle}
-        </title>
-      </Head>
-      <ImageFader
-        backgroundImages={[
-          '/images/rotate1.jpg',
-          '/images/rotate2.jpg',
-          '/images/rotate3.jpg',
-          '/images/rotate4.jpg',
-          '/images/rotate5.jpg',
-          '/images/rotate6.jpg',
-        ]}
-      />
-      <div className="absolute z-50 top-4 right-4">
-        <LanguagePicker />
-      </div>
-      <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
-        <img
-          src="/logo.png"
-          className="w-auto mx-auto mb-10 max-h-32"
-          alt="Overseerr Logo"
+    <>
+      <PageTitle title={intl.formatMessage(messages.setup)} />
+      <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900">
+        <ImageFader
+          backgroundImages={[
+            '/images/rotate1.jpg',
+            '/images/rotate2.jpg',
+            '/images/rotate3.jpg',
+            '/images/rotate4.jpg',
+            '/images/rotate5.jpg',
+            '/images/rotate6.jpg',
+          ]}
         />
-        <nav className="relative z-50">
-          <ul
-            className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md md:flex md:divide-y-0"
-            style={{ backdropFilter: 'blur(5px)' }}
-          >
-            <SetupSteps
-              stepNumber={1}
-              description={intl.formatMessage(messages.loginwithplex)}
-              active={currentStep === 1}
-              completed={currentStep > 1}
-            />
-            <SetupSteps
-              stepNumber={2}
-              description={intl.formatMessage(messages.configureplex)}
-              active={currentStep === 2}
-              completed={currentStep > 2}
-            />
-            <SetupSteps
-              stepNumber={3}
-              description={intl.formatMessage(messages.configureservices)}
-              active={currentStep === 3}
-              isLastStep
-            />
-          </ul>
-        </nav>
-        <div className="w-full p-4 mt-10 text-white bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md">
-          {currentStep === 1 && (
-            <LoginWithPlex onComplete={() => setCurrentStep(2)} />
-          )}
-          {currentStep === 2 && (
-            <div>
-              <SettingsPlex onComplete={() => setPlexSettingsComplete(true)} />
-              <div className="mt-4 text-sm text-gray-500">
-                <span className="mr-2">
-                  <Badge>{intl.formatMessage(messages.tip)}</Badge>
-                </span>
-                {intl.formatMessage(messages.syncingbackground)}
-              </div>
-              <div className="actions">
-                <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      disabled={!plexSettingsComplete}
-                      onClick={() => setCurrentStep(3)}
-                    >
-                      <FormattedMessage {...messages.continue} />
-                    </Button>
+        <div className="absolute z-50 top-4 right-4">
+          <LanguagePicker />
+        </div>
+        <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
+          <img
+            src="/logo.png"
+            className="w-auto mx-auto mb-10 max-h-32"
+            alt="Logo"
+          />
+          <nav className="relative z-50">
+            <ul
+              className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md md:flex md:divide-y-0"
+              style={{ backdropFilter: 'blur(5px)' }}
+            >
+              <SetupSteps
+                stepNumber={1}
+                description={intl.formatMessage(messages.loginwithplex)}
+                active={currentStep === 1}
+                completed={currentStep > 1}
+              />
+              <SetupSteps
+                stepNumber={2}
+                description={intl.formatMessage(messages.configureplex)}
+                active={currentStep === 2}
+                completed={currentStep > 2}
+              />
+              <SetupSteps
+                stepNumber={3}
+                description={intl.formatMessage(messages.configureservices)}
+                active={currentStep === 3}
+                isLastStep
+              />
+            </ul>
+          </nav>
+          <div className="w-full p-4 mt-10 text-white bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md">
+            {currentStep === 1 && (
+              <LoginWithPlex onComplete={() => setCurrentStep(2)} />
+            )}
+            {currentStep === 2 && (
+              <div>
+                <SettingsPlex
+                  onComplete={() => setPlexSettingsComplete(true)}
+                />
+                <div className="mt-4 text-sm text-gray-500">
+                  <span className="mr-2">
+                    <Badge>{intl.formatMessage(messages.tip)}</Badge>
                   </span>
+                  {intl.formatMessage(messages.syncingbackground)}
+                </div>
+                <div className="actions">
+                  <div className="flex justify-end">
+                    <span className="inline-flex ml-3 rounded-md shadow-sm">
+                      <Button
+                        buttonType="primary"
+                        disabled={!plexSettingsComplete}
+                        onClick={() => setCurrentStep(3)}
+                      >
+                        <FormattedMessage {...messages.continue} />
+                      </Button>
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          {currentStep === 3 && (
-            <div>
-              <SettingsServices />
-              <div className="actions">
-                <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      onClick={() => finishSetup()}
-                      disabled={isUpdating}
-                    >
-                      {isUpdating ? (
-                        <FormattedMessage {...messages.finishing} />
-                      ) : (
-                        <FormattedMessage {...messages.finish} />
-                      )}
-                    </Button>
-                  </span>
+            )}
+            {currentStep === 3 && (
+              <div>
+                <SettingsServices />
+                <div className="actions">
+                  <div className="flex justify-end">
+                    <span className="inline-flex ml-3 rounded-md shadow-sm">
+                      <Button
+                        buttonType="primary"
+                        onClick={() => finishSetup()}
+                        disabled={isUpdating}
+                      >
+                        {isUpdating ? (
+                          <FormattedMessage {...messages.finishing} />
+                        ) : (
+                          <FormattedMessage {...messages.finish} />
+                        )}
+                      </Button>
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

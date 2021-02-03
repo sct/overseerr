@@ -11,7 +11,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Header from '../Common/Header';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
-import Head from 'next/head';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   trending: 'Trending',
@@ -76,12 +76,7 @@ const Trending: React.FC = () => {
 
   return (
     <>
-      <Head>
-        <title>
-          {intl.formatMessage(messages.trending)} -{' '}
-          {settings.currentSettings.applicationTitle}
-        </title>
-      </Head>
+      <PageTitle title={intl.formatMessage(messages.trending)} />
       <div className="mt-1 mb-5">
         <Header>
           <FormattedMessage {...messages.trending} />

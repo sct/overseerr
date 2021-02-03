@@ -7,7 +7,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Header from '../Common/Header';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
-import Head from 'next/head';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   upcomingmovies: 'Upcoming Movies',
@@ -71,12 +71,7 @@ const UpcomingMovies: React.FC = () => {
 
   return (
     <>
-      <Head>
-        <title>
-          {intl.formatMessage(messages.upcomingmovies)} -{' '}
-          {settings.currentSettings.applicationTitle}
-        </title>
-      </Head>
+      <PageTitle title={intl.formatMessage(messages.upcomingmovies)} />
       <div className="mt-1 mb-5">
         <Header>
           <FormattedMessage {...messages.upcomingmovies} />
