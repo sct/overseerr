@@ -38,8 +38,6 @@ const messages = defineMessages({
   trustProxyTip:
     'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
   localLogin: 'Enable Local User Sign-In',
-  localLoginTip:
-    'Disabling this option only prevents new sign-ins (no user data is deleted)',
   validationApplicationTitle: 'You must provide an application title',
 });
 
@@ -271,9 +269,6 @@ const SettingsMain: React.FC = () => {
                 <div className="form-row">
                   <label htmlFor="localLogin" className="checkbox-label">
                     <span>{intl.formatMessage(messages.localLogin)}</span>
-                    <span className="label-tip">
-                      {intl.formatMessage(messages.localLoginTip)}
-                    </span>
                   </label>
                   <div className="form-input">
                     <Field
