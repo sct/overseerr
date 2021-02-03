@@ -20,7 +20,6 @@ import * as Yup from 'yup';
 import AddUserIcon from '../../assets/useradd.svg';
 import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
-import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   userlist: 'User List',
@@ -61,15 +60,11 @@ const messages = defineMessages({
   passwordinfodescription:
     'Email notifications need to be configured and enabled in order to automatically generate passwords.',
   autogeneratepassword: 'Automatically generate password',
-  localLoginDisabled: 'Local User Sign-In Disabled',
-  localLoginDisabledMessage:
-    'The "Enable Local User Sign-In" setting is currently disabled. While local users can still be created and managed here, this setting will need to be enabled in order to grant local users access to Overseerr.',
 });
 
 const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
-  const settings = useSettings();
   const { addToast } = useToasts();
   const { data, error, revalidate } = useSWR<User[]>('/api/v1/user');
   const [isDeleting, setDeleting] = useState(false);
@@ -385,13 +380,6 @@ const UserList: React.FC = () => {
           </Button>
         </div>
       </div>
-      {!settings.currentSettings.localLogin && (
-        <div className="mt-4 -mb-5">
-          <Alert title={intl.formatMessage(messages.localLoginDisabled)}>
-            {intl.formatMessage(messages.localLoginDisabledMessage)}
-          </Alert>
-        </div>
-      )}
       <Table>
         <thead>
           <tr>

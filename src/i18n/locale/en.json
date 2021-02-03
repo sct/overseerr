@@ -579,8 +579,6 @@
   "components.UserList.importfromplex": "Import Users from Plex",
   "components.UserList.importfromplexerror": "Something went wrong while importing users from Plex.",
   "components.UserList.lastupdated": "Last Updated",
-  "components.UserList.localLoginDisabled": "Local User Sign-In Disabled",
-  "components.UserList.localLoginDisabledMessage": "The \"Enable Local User Sign-In\" setting is currently disabled. While local users can still be created and managed here, this setting will need to be enabled in order to grant local users access to Overseerr.",
   "components.UserList.localuser": "Local User",
   "components.UserList.password": "Password",
   "components.UserList.passwordinfo": "Password Information",
