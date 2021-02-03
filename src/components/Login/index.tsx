@@ -10,8 +10,10 @@ import LanguagePicker from '../Layout/LanguagePicker';
 import LocalLogin from './LocalLogin';
 import Accordion from '../Common/Accordion';
 import useSettings from '../../hooks/useSettings';
+import Head from 'next/head';
 
 const messages = defineMessages({
+  signin: 'Sign In',
   signinheader: 'Sign in to continue',
   signinwithplex: 'Use your Plex account',
   signinwithoverseerr: 'Use your Overseerr account',
@@ -59,6 +61,12 @@ const Login: React.FC = () => {
 
   return (
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
+      <Head>
+        <title>
+          {intl.formatMessage(messages.signin)} -{' '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',

@@ -9,6 +9,8 @@ import Error from '../../../pages/_error';
 import Header from '../../Common/Header';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PersonCard from '../../PersonCard';
+import useSettings from '../../../hooks/useSettings';
+import Head from 'next/head';
 
 const messages = defineMessages({
   fullcrew: 'Full Crew',
@@ -17,6 +19,7 @@ const messages = defineMessages({
 const MovieCrew: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
+  const settings = useSettings();
   const { locale } = useContext(LanguageContext);
   const { data, error } = useSWR<MovieDetails>(
     `/api/v1/movie/${router.query.movieId}?language=${locale}`
@@ -32,6 +35,12 @@ const MovieCrew: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          {intl.formatMessage(messages.fullcrew)} - {data.title} -{' '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <div className="mt-1 mb-5">
         <Header
           subtext={

@@ -2,8 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
+import Head from 'next/head';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
+  settings: 'Settings',
   menuGeneralSettings: 'General Settings',
   menuPlexSettings: 'Plex',
   menuServices: 'Services',
@@ -22,6 +25,7 @@ interface SettingsRoute {
 const SettingsLayout: React.FC = ({ children }) => {
   const router = useRouter();
   const intl = useIntl();
+  const settings = useSettings();
 
   const settingsRoutes: SettingsRoute[] = [
     {
@@ -91,6 +95,12 @@ const SettingsLayout: React.FC = ({ children }) => {
   };
   return (
     <>
+      <Head>
+        <title>
+          {intl.formatMessage(messages.settings)} -{' '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <div className="mt-6">
         <div className="sm:hidden">
           <select

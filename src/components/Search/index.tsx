@@ -10,8 +10,11 @@ import ListView from '../Common/ListView';
 import { LanguageContext } from '../../context/LanguageContext';
 import { defineMessages, useIntl } from 'react-intl';
 import Header from '../Common/Header';
+import Head from 'next/head';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
+  search: 'Search',
   searchresults: 'Search Results',
 });
 
@@ -26,6 +29,7 @@ const Search: React.FC = () => {
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
   const router = useRouter();
+  const settings = useSettings();
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
@@ -65,6 +69,12 @@ const Search: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          {intl.formatMessage(messages.search)} -{' '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <div className="mt-1 mb-5">
         <Header>{intl.formatMessage(messages.searchresults)}</Header>
       </div>

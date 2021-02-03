@@ -20,6 +20,7 @@ const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
   apikey: 'API Key',
+  applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
   toastApiKeySuccess: 'New API key generated!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
@@ -82,6 +83,7 @@ const SettingsMain: React.FC = () => {
       <div className="section">
         <Formik
           initialValues={{
+            applicationTitle: data?.applicationTitle,
             applicationUrl: data?.applicationUrl,
             csrfProtection: data?.csrfProtection,
             defaultPermissions: data?.defaultPermissions ?? 0,
@@ -93,6 +95,7 @@ const SettingsMain: React.FC = () => {
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/settings/main', {
+                applicationTitle: values.applicationTitle,
                 applicationUrl: values.applicationUrl,
                 csrfProtection: values.csrfProtection,
                 defaultPermissions: values.defaultPermissions,
@@ -160,6 +163,21 @@ const SettingsMain: React.FC = () => {
                     </div>
                   </div>
                 )}
+                <div className="form-row">
+                  <label htmlFor="applicationTitle" className="text-label">
+                    {intl.formatMessage(messages.applicationTitle)}
+                  </label>
+                  <div className="form-input">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <Field
+                        id="applicationTitle"
+                        name="applicationTitle"
+                        type="text"
+                        placeholder="Overseerr"
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div className="form-row">
                   <label htmlFor="applicationUrl" className="text-label">
                     {intl.formatMessage(messages.applicationurl)}

@@ -94,6 +94,9 @@ components:
           type: string
           example: 'anapikey'
           readOnly: true
+        applicationTitle:
+          type: string
+          example: Overseerr
         applicationUrl:
           type: string
           example: https://os.example.com

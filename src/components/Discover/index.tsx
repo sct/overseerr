@@ -8,8 +8,11 @@ import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaI
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
 import RequestCard from '../RequestCard';
 import MediaSlider from '../MediaSlider';
+import Head from 'next/head';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
+  discover: 'Discover',
   recentrequests: 'Recent Requests',
   popularmovies: 'Popular Movies',
   populartv: 'Popular Series',
@@ -21,6 +24,7 @@ const messages = defineMessages({
 
 const Discover: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
     '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded'
@@ -35,6 +39,12 @@ const Discover: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          {intl.formatMessage(messages.discover)} -{' '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
           <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">

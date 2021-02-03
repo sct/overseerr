@@ -20,8 +20,11 @@ import * as Yup from 'yup';
 import AddUserIcon from '../../assets/useradd.svg';
 import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
+import Head from 'next/head';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
+  users: 'Users',
   userlist: 'User List',
   importfromplex: 'Import Users from Plex',
   importfromplexerror: 'Something went wrong while importing users from Plex.',
@@ -65,6 +68,7 @@ const messages = defineMessages({
 const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const { data, error, revalidate } = useSWR<User[]>('/api/v1/user');
   const [isDeleting, setDeleting] = useState(false);
@@ -178,6 +182,12 @@ const UserList: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          {intl.formatMessage(messages.users)} -{' '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <Transition
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"

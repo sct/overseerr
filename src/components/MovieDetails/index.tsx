@@ -36,6 +36,7 @@ import MediaSlider from '../MediaSlider';
 import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -83,6 +84,7 @@ interface MovieDetailsProps {
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const { hasPermission } = useUser();
   const router = useRouter();
+  const settings = useSettings();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
   const [showManager, setShowManager] = useState(false);
@@ -138,7 +140,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       }}
     >
       <Head>
-        <title>{data.title} - Overseerr</title>
+        <title>
+          {data.title} - {settings.currentSettings.applicationTitle}
+        </title>
       </Head>
 
       <SlideOver

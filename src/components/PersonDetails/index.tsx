@@ -12,6 +12,8 @@ import { LanguageContext } from '../../context/LanguageContext';
 import ImageFader from '../Common/ImageFader';
 import Ellipsis from '../../assets/ellipsis.svg';
 import { groupBy } from 'lodash';
+import Head from 'next/head';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   appearsin: 'Appears in',
@@ -22,6 +24,7 @@ const messages = defineMessages({
 
 const PersonDetails: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const { locale } = useContext(LanguageContext);
   const router = useRouter();
   const { data, error } = useSWR<PersonDetail>(
@@ -172,6 +175,11 @@ const PersonDetails: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          {data.name} - {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       {(sortedCrew || sortedCast) && (
         <div className="absolute top-0 left-0 right-0 z-0 h-96">
           <ImageFader

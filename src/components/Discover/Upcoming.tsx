@@ -3,10 +3,11 @@ import { useSWRInfinite } from 'swr';
 import type { MovieResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
 import { LanguageContext } from '../../context/LanguageContext';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Header from '../Common/Header';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
+import Head from 'next/head';
 
 const messages = defineMessages({
   upcomingmovies: 'Upcoming Movies',
@@ -20,6 +21,7 @@ interface SearchResult {
 }
 
 const UpcomingMovies: React.FC = () => {
+  const intl = useIntl();
   const settings = useSettings();
   const { locale } = useContext(LanguageContext);
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
@@ -69,6 +71,12 @@ const UpcomingMovies: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          {intl.formatMessage(messages.upcomingmovies)} -{' '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <div className="mt-1 mb-5">
         <Header>
           <FormattedMessage {...messages.upcomingmovies} />

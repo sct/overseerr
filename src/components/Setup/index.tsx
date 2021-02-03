@@ -10,8 +10,11 @@ import axios from 'axios';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import Badge from '../Common/Badge';
 import LanguagePicker from '../Layout/LanguagePicker';
+import Head from 'next/head';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
+  setup: 'Setup',
   finish: 'Finish Setup',
   finishing: 'Finishing…',
   continue: 'Continue',
@@ -25,6 +28,7 @@ const messages = defineMessages({
 
 const Setup: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [plexSettingsComplete, setPlexSettingsComplete] = useState(false);
@@ -44,6 +48,12 @@ const Setup: React.FC = () => {
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900">
+      <Head>
+        <title>
+          {intl.formatMessage(messages.setup)} -{' '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
@@ -65,7 +75,7 @@ const Setup: React.FC = () => {
         />
         <nav className="relative z-50">
           <ul
-            className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md  md:flex md:divide-y-0"
+            className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md md:flex md:divide-y-0"
             style={{ backdropFilter: 'blur(5px)' }}
           >
             <SetupSteps

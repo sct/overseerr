@@ -18,6 +18,7 @@ import Modal from '../Common/Modal';
 import Slider from '../Slider';
 import TitleCard from '../TitleCard';
 import Transition from '../Transition';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   overviewunavailable: 'Overview unavailable.',
@@ -39,6 +40,7 @@ interface CollectionDetailsProps {
 const CollectionDetails: React.FC<CollectionDetailsProps> = ({
   collection,
 }) => {
+  const settings = useSettings();
   const intl = useIntl();
   const router = useRouter();
   const { addToast } = useToasts();
@@ -109,7 +111,9 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
       }}
     >
       <Head>
-        <title>{data.name} - Overseerr</title>
+        <title>
+          {data.name} - {settings.currentSettings.applicationTitle}
+        </title>
       </Head>
       <Transition
         enter="opacity-0 transition duration-300"

@@ -9,6 +9,7 @@ import type { TvDetails } from '../../../server/models/Tv';
 import Header from '../Common/Header';
 import { MediaStatus } from '../../../server/constants/media';
 import useSettings from '../../hooks/useSettings';
+import Head from 'next/head';
 
 const messages = defineMessages({
   similar: 'Similar Series',
@@ -77,6 +78,13 @@ const TvSimilar: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          {intl.formatMessage(messages.similar)} -{' '}
+          {tvData && tvData.name + ' - '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <div className="mt-1 mb-5">
         <Header
           subtext={

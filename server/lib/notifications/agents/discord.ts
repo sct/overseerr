@@ -203,7 +203,10 @@ class DiscordAgent
       description: payload.message,
       color,
       timestamp: new Date().toISOString(),
-      author: { name: 'Overseerr', url: settings.main.applicationUrl },
+      author: {
+        name: settings.main.applicationTitle,
+        url: settings.main.applicationUrl,
+      },
       fields: [
         ...fields,
         // If we have extra data, map it to fields for discord notifications
@@ -236,6 +239,7 @@ class DiscordAgent
   ): Promise<boolean> {
     logger.debug('Sending discord notification', { label: 'Notifications' });
     try {
+      const settings = getSettings();
       const webhookUrl = this.getSettings().options.webhookUrl;
 
       if (!webhookUrl) {
@@ -243,7 +247,7 @@ class DiscordAgent
       }
 
       await axios.post(webhookUrl, {
-        username: 'Overseerr',
+        username: settings.main.applicationTitle,
         embeds: [this.buildEmbed(type, payload)],
       } as DiscordWebhookPayload);
 

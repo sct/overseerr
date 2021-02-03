@@ -38,6 +38,7 @@ import MediaSlider from '../MediaSlider';
 import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -84,6 +85,7 @@ interface TvDetailsProps {
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const { hasPermission } = useUser();
   const router = useRouter();
+  const settings = useSettings();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
   const [showRequestModal, setShowRequestModal] = useState(false);
@@ -157,7 +159,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       }}
     >
       <Head>
-        <title>{data.name} - Overseerr</title>
+        <title>
+          {data.name} - {settings.currentSettings.applicationTitle}
+        </title>
       </Head>
       <RequestModal
         tmdbId={data.id}

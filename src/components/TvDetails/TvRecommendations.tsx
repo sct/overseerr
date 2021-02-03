@@ -9,6 +9,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { TvDetails } from '../../../server/models/Tv';
 import { MediaStatus } from '../../../server/constants/media';
 import useSettings from '../../hooks/useSettings';
+import Head from 'next/head';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
@@ -77,6 +78,13 @@ const TvRecommendations: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          {intl.formatMessage(messages.recommendations)} -{' '}
+          {tvData && tvData.name + ' - '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <div className="mt-1 mb-5">
         <Header
           subtext={

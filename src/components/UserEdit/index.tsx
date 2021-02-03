@@ -11,6 +11,8 @@ import PermissionEdit from '../PermissionEdit';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { UserType } from '../../../server/constants/user';
+import Head from 'next/head';
+import useSettings from '../../hooks/useSettings';
 
 export const messages = defineMessages({
   edituser: 'Edit User',
@@ -28,6 +30,7 @@ export const messages = defineMessages({
 const UserEdit: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const { user: currentUser } = useUser();
   const { user, error, revalidate } = useUser({
@@ -85,6 +88,12 @@ const UserEdit: React.FC = () => {
     >
       {({ isSubmitting, handleSubmit }) => (
         <Form>
+          <Head>
+            <title>
+              {intl.formatMessage(messages.edituser)} -{' '}
+              {settings.currentSettings.applicationTitle}
+            </title>
+          </Head>
           <div>
             <div className="flex flex-col justify-between sm:flex-row">
               <Header>

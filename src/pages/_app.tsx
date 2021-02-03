@@ -117,7 +117,6 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
             <InteractionProvider>
               <ToastProvider components={{ Toast }}>
                 <Head>
-                  <title>Overseerr</title>
                   <meta
                     name="viewport"
                     content="width=device-width, initial-scale=1"
@@ -139,6 +138,7 @@ CoreApp.getInitialProps = async (initialProps) => {
   let user = undefined;
   let currentSettings: PublicSettingsResponse = {
     initialized: false,
+    applicationTitle: '',
     hideAvailable: false,
     movie4kEnabled: false,
     series4kEnabled: false,

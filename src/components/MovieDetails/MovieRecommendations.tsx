@@ -9,6 +9,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
+import Head from 'next/head';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
@@ -77,6 +78,13 @@ const MovieRecommendations: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          {intl.formatMessage(messages.recommendations)} -{' '}
+          {movieData && movieData.title + ' - '}
+          {settings.currentSettings.applicationTitle}
+        </title>
+      </Head>
       <div className="mt-1 mb-5">
         <Header
           subtext={
