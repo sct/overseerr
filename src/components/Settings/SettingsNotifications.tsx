@@ -27,7 +27,7 @@ const messages = defineMessages({
   notificationsettingssaved: 'Notification settings saved!',
   notificationsettingsfailed: 'Notification settings failed to save.',
   enablenotifications: 'Enable Notifications',
-  autoapprovedrequests: 'Enable Notifications for Auto-Approved Requests',
+  autoapprovedrequests: 'Enable Notifications for Automatic Approvals',
 });
 
 interface SettingsRoute {

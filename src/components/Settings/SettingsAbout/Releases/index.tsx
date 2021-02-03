@@ -15,7 +15,7 @@ const messages = defineMessages({
   releasedataMissing: 'Release data unavailable. Is GitHub down?',
   versionChangelog: 'Version Changelog',
   viewongithub: 'View on GitHub',
-  latestversion: 'Latest Version',
+  latestversion: 'Latest',
   currentversion: 'Current Version',
   viewchangelog: 'View Changelog',
   runningDevelop: 'You are running a develop version of Overseerr!',

@@ -20,7 +20,7 @@ const messages = defineMessages({
   supportoverseerr: 'Support Overseerr',
   helppaycoffee: 'Help Pay for Coffee',
   documentation: 'Documentation',
-  preferredmethod: 'Preferred Method',
+  preferredmethod: 'Preferred',
 });
 
 const SettingsAbout: React.FC = () => {

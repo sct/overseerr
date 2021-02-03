@@ -47,7 +47,7 @@ const messages = defineMessages({
   localuser: 'Local User',
   createlocaluser: 'Create Local User',
   createuser: 'Create User',
-  creating: 'Creating',
+  creating: 'Creating…',
   create: 'Create',
   validationemailrequired: 'Must enter a valid email address',
   validationpasswordminchars:
