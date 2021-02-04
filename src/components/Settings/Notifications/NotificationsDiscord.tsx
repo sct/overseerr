@@ -14,13 +14,13 @@ const messages = defineMessages({
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
-  validationWebhookUrlRequired: 'You must provide a webhook URL',
   webhookUrlPlaceholder: 'Server Settings → Integrations → Webhooks',
   discordsettingssaved: 'Discord notification settings saved!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
   notificationtypes: 'Notification Types',
+  validationWebhookUrl: 'You must provide a valid URL',
 });
 
 const NotificationsDiscord: React.FC = () => {
@@ -31,9 +31,9 @@ const NotificationsDiscord: React.FC = () => {
   );
 
   const NotificationsDiscordSchema = Yup.object().shape({
-    webhookUrl: Yup.string().required(
-      intl.formatMessage(messages.validationWebhookUrlRequired)
-    ),
+    webhookUrl: Yup.string()
+      .required(intl.formatMessage(messages.validationWebhookUrl))
+      .url(intl.formatMessage(messages.validationWebhookUrl)),
   });
 
   if (!data && !error) {

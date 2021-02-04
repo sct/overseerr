@@ -52,6 +52,8 @@ const messages = defineMessages({
   preventSearch: 'Disable Auto-Search',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
+  validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
+  validationBaseUrlTrailingSlash: 'Base URL must not end in a trailing slash',
 });
 
 interface TestResponse {
@@ -112,6 +114,27 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
       .test(
         'no-trailing-slash',
         intl.formatMessage(messages.validationApplicationUrlTrailingSlash),
+        (value) => {
+          if (value?.substr(value.length - 1) === '/') {
+            return false;
+          }
+          return true;
+        }
+      ),
+    baseUrl: Yup.string()
+      .test(
+        'leading-slash',
+        intl.formatMessage(messages.validationBaseUrlLeadingSlash),
+        (value) => {
+          if (value && value?.substr(0, 1) !== '/') {
+            return false;
+          }
+          return true;
+        }
+      )
+      .test(
+        'no-trailing-slash',
+        intl.formatMessage(messages.validationBaseUrlTrailingSlash),
         (value) => {
           if (value?.substr(value.length - 1) === '/') {
             return false;

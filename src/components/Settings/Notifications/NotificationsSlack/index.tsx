@@ -15,7 +15,6 @@ const messages = defineMessages({
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
-  validationWebhookUrlRequired: 'You must provide a webhook URL',
   webhookUrlPlaceholder: 'Webhook URL',
   slacksettingssaved: 'Slack notification settings saved!',
   slacksettingsfailed: 'Slack notification settings failed to save.',
@@ -25,6 +24,7 @@ const messages = defineMessages({
   settingupslackDescription:
     'To use Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and use the provided webhook URL below.',
   notificationtypes: 'Notification Types',
+  validationWebhookUrl: 'You must provide a valid URL',
 });
 
 const NotificationsSlack: React.FC = () => {
@@ -35,9 +35,9 @@ const NotificationsSlack: React.FC = () => {
   );
 
   const NotificationsSlackSchema = Yup.object().shape({
-    webhookUrl: Yup.string().required(
-      intl.formatMessage(messages.validationWebhookUrlRequired)
-    ),
+    webhookUrl: Yup.string()
+      .required(intl.formatMessage(messages.validationWebhookUrl))
+      .url(intl.formatMessage(messages.validationWebhookUrl)),
   });
 
   if (!data && !error) {
