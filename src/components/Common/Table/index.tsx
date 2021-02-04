@@ -71,9 +71,9 @@ const TD: React.FC<TDProps> = ({
 const Table: React.FC = ({ children }) => {
   return (
     <div className="flex flex-col">
-      <div className="my-2 overflow-x-auto -mx-6 md:mx-0 lg:mx-0">
-        <div className="py-2 align-middle inline-block min-w-full">
-          <div className="shadow overflow-hidden sm:rounded-lg">
+      <div className="my-2 -mx-4 overflow-x-auto md:mx-0 lg:mx-0">
+        <div className="inline-block min-w-full py-2 align-middle">
+          <div className="overflow-hidden shadow sm:rounded-lg">
             <table className="min-w-full">{children}</table>
           </div>
         </div>
