@@ -405,7 +405,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                                       alt=""
                                       className="flex-shrink-0 w-6 h-6 rounded-full"
                                     />
-                                    <span className="block ml-3">
+                                    <span className="flex-shrink-0 block ml-3">
                                       {user.displayName}
                                     </span>
                                     <span className="ml-1 text-gray-400 truncate">
