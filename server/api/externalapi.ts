@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import NodeCache from 'node-cache';
-import logger from '../logger';
 
 // 5 minute default TTL (in seconds)
 const DEFAULT_TTL = 300;
@@ -66,9 +65,6 @@ class ExternalAPI {
 
     if (cachedItem) {
       const keyTtl = this.cache?.getTtl(cacheKey) ?? 0;
-      logger.debug(`Loaded item from cache: ${cacheKey}`, {
-        keyTtl,
-      });
 
       // If the item has passed our rolling check, fetch again in background
       if (

@@ -39,6 +39,8 @@ const messages = defineMessages({
     'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
   localLogin: 'Enable Local User Sign-In',
   validationApplicationTitle: 'You must provide an application title',
+  validationApplicationUrl: 'You must provide a valid URL',
+  validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
 });
 
 const SettingsMain: React.FC = () => {
@@ -52,6 +54,18 @@ const SettingsMain: React.FC = () => {
     applicationTitle: Yup.string().required(
       intl.formatMessage(messages.validationApplicationTitle)
     ),
+    applicationUrl: Yup.string()
+      .url(intl.formatMessage(messages.validationApplicationUrl))
+      .test(
+        'no-trailing-slash',
+        intl.formatMessage(messages.validationApplicationUrlTrailingSlash),
+        (value) => {
+          if (value?.substr(value.length - 1) === '/') {
+            return false;
+          }
+          return true;
+        }
+      ),
   });
 
   const regenerate = async () => {
@@ -200,6 +214,9 @@ const SettingsMain: React.FC = () => {
                         placeholder="https://os.example.com"
                       />
                     </div>
+                    {errors.applicationUrl && touched.applicationUrl && (
+                      <div className="error">{errors.applicationUrl}</div>
+                    )}
                   </div>
                 </div>
                 <div className="form-row">

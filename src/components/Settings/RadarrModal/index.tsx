@@ -50,6 +50,8 @@ const messages = defineMessages({
   loadingrootfolders: 'Loading root folders…',
   testFirstRootFolders: 'Test connection to load root folders',
   preventSearch: 'Disable Auto-Search',
+  validationApplicationUrl: 'You must provide a valid URL',
+  validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
 });
 
 interface TestResponse {
@@ -105,6 +107,18 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     minimumAvailability: Yup.string().required(
       intl.formatMessage(messages.validationMinimumAvailabilityRequired)
     ),
+    externalUrl: Yup.string()
+      .url(intl.formatMessage(messages.validationApplicationUrl))
+      .test(
+        'no-trailing-slash',
+        intl.formatMessage(messages.validationApplicationUrlTrailingSlash),
+        (value) => {
+          if (value?.substr(value.length - 1) === '/') {
+            return false;
+          }
+          return true;
+        }
+      ),
   });
 
   const testConnection = useCallback(

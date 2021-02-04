@@ -50,6 +50,8 @@ const messages = defineMessages({
   externalUrl: 'External URL',
   externalUrlPlaceholder: 'External URL pointing to your Sonarr server',
   preventSearch: 'Disable Auto-Search',
+  validationApplicationUrl: 'You must provide a valid URL',
+  validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
 });
 
 interface TestResponse {
@@ -102,6 +104,18 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
     activeProfileId: Yup.string().required(
       intl.formatMessage(messages.validationProfileRequired)
     ),
+    externalUrl: Yup.string()
+      .url(intl.formatMessage(messages.validationApplicationUrl))
+      .test(
+        'no-trailing-slash',
+        intl.formatMessage(messages.validationApplicationUrlTrailingSlash),
+        (value) => {
+          if (value?.substr(value.length - 1) === '/') {
+            return false;
+          }
+          return true;
+        }
+      ),
   });
 
   const testConnection = useCallback(
