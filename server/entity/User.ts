@@ -8,7 +8,11 @@ import {
   RelationCount,
   AfterLoad,
 } from 'typeorm';
-import { Permission, hasPermission } from '../lib/permissions';
+import {
+  Permission,
+  hasPermission,
+  PermissionCheckOptions,
+} from '../lib/permissions';
 import { MediaRequest } from './MediaRequest';
 import bcrypt from 'bcrypt';
 import path from 'path';
@@ -85,8 +89,11 @@ export class User {
     return filtered;
   }
 
-  public hasPermission(permissions: Permission | Permission[]): boolean {
-    return !!hasPermission(permissions, this.permissions);
+  public hasPermission(
+    permissions: Permission | Permission[],
+    options?: PermissionCheckOptions
+  ): boolean {
+    return !!hasPermission(permissions, this.permissions, options);
   }
 
   public passwordMatch(password: string): Promise<boolean> {

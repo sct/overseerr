@@ -39,6 +39,8 @@ export const messages = defineMessages({
   advancedrequest: 'Advanced Requests',
   advancedrequestDescription:
     'Grants permission to use advanced request options. (Ex. Changing servers/profiles/paths)',
+  viewrequests: 'View Requests',
+  viewrequestsDescription: "Grants permission to view other user's requests.",
 });
 
 interface PermissionEditProps {
@@ -84,6 +86,12 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
           name: intl.formatMessage(messages.advancedrequest),
           description: intl.formatMessage(messages.advancedrequestDescription),
           permission: Permission.REQUEST_ADVANCED,
+        },
+        {
+          id: 'viewrequests',
+          name: intl.formatMessage(messages.viewrequests),
+          description: intl.formatMessage(messages.viewrequestsDescription),
+          permission: Permission.REQUEST_VIEW,
         },
       ],
     },

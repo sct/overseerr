@@ -57,7 +57,8 @@ requestRoutes.get('/', async (req, res, next) => {
     }
 
     const [requests, requestCount] = req.user?.hasPermission(
-      Permission.MANAGE_REQUESTS
+      [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+      { type: 'or' }
     )
       ? await requestRepository.findAndCount({
           order: sortFilter,
@@ -102,10 +103,10 @@ requestRoutes.post(
 
       if (
         req.body.userId &&
-        !(
-          req.user?.hasPermission(Permission.MANAGE_USERS) &&
-          req.user?.hasPermission(Permission.MANAGE_REQUESTS)
-        )
+        !req.user?.hasPermission([
+          Permission.MANAGE_USERS,
+          Permission.MANAGE_REQUESTS,
+        ])
       ) {
         return next({
           status: 403,

@@ -13,6 +13,11 @@ export enum Permission {
   REQUEST_4K_MOVIE = 2048,
   REQUEST_4K_TV = 4096,
   REQUEST_ADVANCED = 8192,
+  REQUEST_VIEW = 16384,
+}
+
+export interface PermissionCheckOptions {
+  type: 'and' | 'or';
 }
 
 /**
@@ -22,10 +27,12 @@ export enum Permission {
  *
  * @param permissions Single permission or array of permissions
  * @param value users current permission value
+ * @param options Extra options to control permission check behavior (mainly for arrays)
  */
 export const hasPermission = (
   permissions: Permission | Permission[],
-  value: number
+  value: number,
+  options: PermissionCheckOptions = { type: 'and' }
 ): boolean => {
   let total = 0;
 
@@ -35,8 +42,15 @@ export const hasPermission = (
   }
 
   if (Array.isArray(permissions)) {
-    // Combine all permission values into one
-    total = permissions.reduce((a, v) => a + v, 0);
+    if (value & Permission.ADMIN) {
+      return true;
+    }
+    switch (options.type) {
+      case 'and':
+        return permissions.every((permission) => !!(value & permission));
+      case 'or':
+        return permissions.some((permission) => !!(value & permission));
+    }
   } else {
     total = permissions;
   }

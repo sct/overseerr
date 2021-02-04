@@ -114,6 +114,8 @@
   "components.PermissionEdit.settingsDescription": "Grants permission to modify all Overseerr settings. A user must have this permission to grant it to others.",
   "components.PermissionEdit.users": "Manage Users",
   "components.PermissionEdit.usersDescription": "Grants permission to manage Overseerr users. Users with this permission cannot modify users with Administrator privilege, or grant it.",
+  "components.PermissionEdit.viewrequests": "View Requests",
+  "components.PermissionEdit.viewrequestsDescription": "Grants permission to view other user's requests.",
   "components.PermissionEdit.vote": "Vote",
   "components.PermissionEdit.voteDescription": "Grants permission to vote on requests (voting not yet implemented)",
   "components.PersonDetails.appearsin": "Appears in",

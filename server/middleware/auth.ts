@@ -1,6 +1,6 @@
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
-import { Permission } from '../lib/permissions';
+import { Permission, PermissionCheckOptions } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 
 export const checkUser: Middleware = async (req, _res, next) => {
@@ -34,10 +34,11 @@ export const checkUser: Middleware = async (req, _res, next) => {
 };
 
 export const isAuthenticated = (
-  permissions?: Permission | Permission[]
+  permissions?: Permission | Permission[],
+  options?: PermissionCheckOptions
 ): Middleware => {
   const authMiddleware: Middleware = (req, res, next) => {
-    if (!req.user || !req.user.hasPermission(permissions ?? 0)) {
+    if (!req.user || !req.user.hasPermission(permissions ?? 0, options)) {
       res.status(403).json({
         status: 403,
         error: 'You do not have permission to access this endpoint',

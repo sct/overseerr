@@ -322,8 +322,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             </div>
           </>
         )}
-        {hasPermission(Permission.MANAGE_REQUESTS) &&
-          hasPermission(Permission.MANAGE_USERS) &&
+        {hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS]) &&
           selectedUser && (
             <div className="mt-0 sm:mt-2">
               <Listbox

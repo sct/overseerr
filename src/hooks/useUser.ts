@@ -1,5 +1,9 @@
 import useSwr from 'swr';
-import { hasPermission, Permission } from '../../server/lib/permissions';
+import {
+  hasPermission,
+  Permission,
+  PermissionCheckOptions,
+} from '../../server/lib/permissions';
 import { UserType } from '../../server/constants/user';
 
 export { Permission, UserType };
@@ -20,7 +24,10 @@ interface UserHookResponse {
   loading: boolean;
   error: string;
   revalidate: () => Promise<boolean>;
-  hasPermission: (permission: Permission | Permission[]) => boolean;
+  hasPermission: (
+    permission: Permission | Permission[],
+    options?: PermissionCheckOptions
+  ) => boolean;
 }
 
 export const useUser = ({
@@ -37,8 +44,11 @@ export const useUser = ({
     }
   );
 
-  const checkPermission = (permission: Permission | Permission[]): boolean => {
-    return hasPermission(permission, data?.permissions ?? 0);
+  const checkPermission = (
+    permission: Permission | Permission[],
+    options?: PermissionCheckOptions
+  ): boolean => {
+    return hasPermission(permission, data?.permissions ?? 0, options);
   };
 
   return {
