@@ -387,15 +387,17 @@ const UserList: React.FC = () => {
         <thead>
           <tr>
             <Table.TH>
-              <input
-                type="checkbox"
-                id="selectAll"
-                name="selectAll"
-                checked={isAllUsersSelected()}
-                onChange={() => {
-                  toggleAllUsers();
-                }}
-              />
+              {(data ?? []).length > 1 && (
+                <input
+                  type="checkbox"
+                  id="selectAll"
+                  name="selectAll"
+                  checked={isAllUsersSelected()}
+                  onChange={() => {
+                    toggleAllUsers();
+                  }}
+                />
+              )}
             </Table.TH>
             <Table.TH>{intl.formatMessage(messages.username)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
@@ -404,13 +406,15 @@ const UserList: React.FC = () => {
             <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.lastupdated)}</Table.TH>
             <Table.TH className="text-right">
-              <Button
-                buttonType="warning"
-                onClick={() => setShowBulkEditModal(true)}
-                disabled={selectedUsers.length === 0}
-              >
-                {intl.formatMessage(messages.bulkedit)}
-              </Button>
+              {(data ?? []).length > 1 && (
+                <Button
+                  buttonType="warning"
+                  onClick={() => setShowBulkEditModal(true)}
+                  disabled={selectedUsers.length === 0}
+                >
+                  {intl.formatMessage(messages.bulkedit)}
+                </Button>
+              )}
             </Table.TH>
           </tr>
         </thead>
