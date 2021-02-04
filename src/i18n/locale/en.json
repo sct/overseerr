@@ -148,7 +148,6 @@
   "components.RequestCard.seasons": "Seasons",
   "components.RequestList.RequestItem.failedretry": "Something went wrong while retrying the request.",
   "components.RequestList.RequestItem.notavailable": "N/A",
-  "components.RequestList.RequestItem.requestedby": "Requested by {username}",
   "components.RequestList.RequestItem.seasons": "Seasons",
   "components.RequestList.filterAll": "All",
   "components.RequestList.filterApproved": "Approved",
