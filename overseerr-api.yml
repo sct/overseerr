@@ -1477,6 +1477,24 @@ paths:
                     example: 1.0.0
                   commitTag:
                     type: string
+  /status/appdata:
+    get:
+      summary: Get /app/data volume status
+      description: For Docker installs, returns whether or not the /app/data volume mount was configured properly. Always returns true for non-Docker installs.
+      security: []
+      tags:
+        - public
+      responses:
+        '200':
+          description: /app/data volume status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  appData:
+                    type: boolean
+                    example: true
   /settings/main:
     get:
       summary: Get main settings
