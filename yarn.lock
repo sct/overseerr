@@ -62,10 +62,10 @@
     call-me-maybe "^1.0.1"
     js-yaml "^3.13.1"
 
-"@babel/cli@^7.12.10":
-  version "7.12.10"
-  resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.12.10.tgz#67a1015b1cd505bde1696196febf910c4c339a48"
-  integrity sha512-+y4ZnePpvWs1fc/LhZRTHkTesbXkyBYuOB+5CyodZqrEuETXi3zOVfpAQIdgC3lXbHLTDG9dQosxR9BhvLKDLQ==
+"@babel/cli@^7.12.13":
+  version "7.12.13"
+  resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.12.13.tgz#ae2c6a75fa43f3db4bca0659799b0dfca3f5212b"
+  integrity sha512-Zto3HPeE0GRmaxobUl7NvFTo97NKe1zdAuWqTO8oka7nE0IIqZ4CFvuRZe1qf+ZMd7eHMhwqrecjwc10mjXo/g==
   dependencies:
     commander "^4.0.1"
     convert-source-map "^1.1.0"
@@ -2172,7 +2172,7 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
   integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
 
-"@types/multer@^1.4.2":
+"@types/multer@^1.4.5":
   version "1.4.5"
   resolved "https://registry.yarnpkg.com/@types/multer/-/multer-1.4.5.tgz#db0557562307e9adb6661a9500c334cd7ddd0cd9"
   integrity sha512-9b/0a8JyrR0r2nQhL73JR86obWL7cogfX12augvlrvcpciCo/hkvEsgu80Z4S2g2DHGVXHr8pUIi1VhqFJ8Ufw==
@@ -2196,10 +2196,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.10.tgz#5958a82e41863cfc71f2307b3748e3491ba03785"
   integrity sha512-J32dgx2hw8vXrSbu4ZlVhn1Nm3GbeCFNw2FWL8S5QKucHGY0cyNwjdQdO+KMBZ4wpmC7KhLCiNsdk1RFRIYUQQ==
 
-"@types/node@^14.14.22":
-  version "14.14.22"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.22.tgz#0d29f382472c4ccf3bd96ff0ce47daf5b7b84b18"
-  integrity sha512-g+f/qj/cNcqKkc3tFqlXOYjrmZA+jNBiDzbP3kH+B+otKFqAdPgVTGP1IeKRdMml/aE69as5S4FqtxAbl+LaMw==
+"@types/node@^14.14.24":
+  version "14.14.24"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.24.tgz#541c00e4f7c41c8f108bd5b045248b5224c62946"
+  integrity sha512-6BAlkS4seVjszhrwN0W1WabqWwuJwcYF36Z1rPPyQm80LGRKsIeUPdzI51TezXenjetFNy1gRTpuDn1NBg33LA==
 
 "@types/nodemailer@*", "@types/nodemailer@^6.4.0":
   version "6.4.0"
@@ -2267,10 +2267,10 @@
     "@types/prop-types" "*"
     csstype "^3.0.2"
 
-"@types/react@^17.0.0":
-  version "17.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.0.tgz#5af3eb7fad2807092f0046a1302b7823e27919b8"
-  integrity sha512-aj/L7RIMsRlWML3YB6KZiXB3fV2t41+5RBGYF8z+tAKU43Px8C3cYUZsDvf1/+Bm4FK21QWBrDutu8ZJ/70qOw==
+"@types/react@^17.0.1":
+  version "17.0.1"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.1.tgz#eb1f1407dea8da3bc741879c1192aa703ab9975b"
+  integrity sha512-w8t9f53B2ei4jeOqf/gxtc2Sswnc3LBK5s0DyJcg5xd10tMHXts2N31cKjWfH9IC/JvEPa/YF1U4YeP1t4R6HQ==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -6052,12 +6052,12 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express-openapi-validator@^4.10.9:
-  version "4.10.9"
-  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-4.10.9.tgz#cad485c12516cefde971135edef8c855c6facbf0"
-  integrity sha512-bsjNn9N3wzib7J3l9w1yOhvqz4lBX6ZAkaTBOjjmXVxCkkxr6VUkw0vgT28k183jR41aYYmKKJu4wUE7O3RlWQ==
+express-openapi-validator@^4.10.11:
+  version "4.10.11"
+  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-4.10.11.tgz#9486777e217d0b1834c8e7e26936ab9125e864c6"
+  integrity sha512-Pvw3O7L2b5JNj6W8EuvjTh9FAD1CqaJ8mpafKzYfvbMFJX7LlLGal60n5VTjjtci45gkaJMVNrj6nBu0h/2y4g==
   dependencies:
-    "@types/multer" "^1.4.2"
+    "@types/multer" "^1.4.5"
     ajv "^6.12.6"
     content-type "^1.0.4"
     json-schema-ref-parser "^9.0.6"
