@@ -9,7 +9,6 @@ import { useToasts } from 'react-toast-notifications';
 import Header from '../Common/Header';
 import PermissionEdit from '../PermissionEdit';
 import { Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import { UserType } from '../../../server/constants/user';
 import PageTitle from '../Common/PageTitle';
 
@@ -48,10 +47,6 @@ const UserEdit: React.FC = () => {
     return <LoadingSpinner />;
   }
 
-  const UserEditSchema = Yup.object().shape({
-    username: Yup.string(),
-  });
-
   return (
     <Formik
       initialValues={{
@@ -59,7 +54,6 @@ const UserEdit: React.FC = () => {
         username: user?.username,
         email: user?.email,
       }}
-      validationSchema={UserEditSchema}
       onSubmit={async (values) => {
         try {
           await axios.put(`/api/v1/user/${user?.id}`, {
