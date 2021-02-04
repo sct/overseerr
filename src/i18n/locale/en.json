@@ -506,8 +506,6 @@
   "components.Setup.configureplex": "Configure Plex",
   "components.Setup.configureservices": "Configure Services",
   "components.Setup.continue": "Continue",
-  "components.Setup.dockerVolumeMissing": "Docker Volume Mount Missing",
-  "components.Setup.dockerVolumeMissingDescription": "The <code>/app/config</code> volume mount was not configured properly. All data will be cleared when the container is stopped or restarted.",
   "components.Setup.finish": "Finish Setup",
   "components.Setup.finishing": "Finishing…",
   "components.Setup.loginwithplex": "Log in with Plex",

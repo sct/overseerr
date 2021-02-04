@@ -24,9 +24,6 @@ const messages = defineMessages({
   tip: 'Tip',
   syncingbackground:
     'Syncing will run in the background. You can continue the setup process in the meantime.',
-  dockerVolumeMissing: 'Docker Volume Mount Missing',
-  dockerVolumeMissingDescription:
-    'The <code>/app/config</code> volume mount was not configured properly. All data will be cleared when the container is stopped or restarted.',
 });
 
 const Setup: React.FC = () => {
