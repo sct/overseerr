@@ -143,7 +143,6 @@
   "components.RequestButton.viewrequest": "View Request",
   "components.RequestButton.viewrequest4k": "View 4K Request",
   "components.RequestCard.all": "All",
-  "components.RequestCard.requestedby": "Requested by {username}",
   "components.RequestCard.seasons": "Seasons",
   "components.RequestList.RequestItem.failedretry": "Something went wrong while retrying the request.",
   "components.RequestList.RequestItem.notavailable": "N/A",
