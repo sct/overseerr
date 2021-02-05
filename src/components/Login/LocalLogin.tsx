@@ -12,7 +12,8 @@ const messages = defineMessages({
   validationpasswordrequired: 'Password required',
   loginerror: 'Something went wrong while trying to sign in.',
   signingin: 'Signing in…',
-  signin: 'Sign in',
+  signin: 'Sign In',
+  forgotpassword: 'Forgot Password?',
 });
 
 interface LocalLoginProps {
@@ -95,9 +96,14 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                   </div>
                 )}
               </div>
-              <div className="actions">
-                <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
+              <div className="pt-5 mt-8 border-t border-gray-700">
+                <div className="flex justify-between">
+                  <span className="inline-flex rounded-md shadow-sm">
+                    <Button as="a" buttonType="ghost" href="/resetpassword">
+                      {intl.formatMessage(messages.forgotpassword)}
+                    </Button>
+                  </span>
+                  <span className="inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"

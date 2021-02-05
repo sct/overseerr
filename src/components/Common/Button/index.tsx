@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import React from 'react';
 
 export type ButtonType =
   | 'default'
@@ -8,18 +8,35 @@ export type ButtonType =
   | 'success'
   | 'ghost';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+// Helper type to override types (overrides onClick)
+type MergeElementProps<
+  T extends React.ElementType,
+  P extends Record<string, unknown>
+> = Omit<React.ComponentProps<T>, keyof P> & P;
+
+type ElementTypes = 'button' | 'a';
+
+type BaseProps<P> = {
   buttonType?: ButtonType;
   buttonSize?: 'default' | 'lg' | 'md' | 'sm';
-}
+  // Had to do declare this manually as typescript would assume e was of type any otherwise
+  onClick?: (
+    e: React.MouseEvent<P extends 'a' ? HTMLAnchorElement : HTMLButtonElement>
+  ) => void;
+};
 
-const Button: React.FC<ButtonProps> = ({
+type ButtonProps<P extends React.ElementType> = {
+  as?: P;
+} & MergeElementProps<P, BaseProps<P>>;
+
+function Button<P extends ElementTypes = 'button'>({
   buttonType = 'default',
   buttonSize = 'default',
+  as,
   children,
   className,
   ...props
-}) => {
+}: ButtonProps<P>): JSX.Element {
   const buttonStyle = [
     'inline-flex items-center justify-center border border-transparent leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150',
   ];
@@ -68,14 +85,28 @@ const Button: React.FC<ButtonProps> = ({
     default:
       buttonStyle.push('px-4 py-2 text-sm');
   }
-  if (className) {
-    buttonStyle.push(className);
+
+  buttonStyle.push(className ?? '');
+
+  if (as === 'a') {
+    return (
+      <a
+        className={buttonStyle.join(' ')}
+        {...(props as React.ComponentProps<'a'>)}
+      >
+        <span className="flex items-center">{children}</span>
+      </a>
+    );
+  } else {
+    return (
+      <button
+        className={buttonStyle.join(' ')}
+        {...(props as React.ComponentProps<'button'>)}
+      >
+        <span className="flex items-center">{children}</span>
+      </button>
+    );
   }
-  return (
-    <button className={buttonStyle.join(' ')} {...props}>
-      <span className="flex items-center">{children}</span>
-    </button>
-  );
-};
+}
 
 export default Button;

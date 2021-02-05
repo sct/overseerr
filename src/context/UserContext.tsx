@@ -25,7 +25,7 @@ export const UserContext: React.FC<UserContextProps> = ({
 
   useEffect(() => {
     if (
-      !router.pathname.match(/(setup|login)/) &&
+      !router.pathname.match(/(setup|login|resetpassword)/) &&
       (!user || error) &&
       !routing.current
     ) {

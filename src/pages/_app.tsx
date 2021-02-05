@@ -91,7 +91,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
     });
   }, [currentLocale]);
 
-  if (router.pathname.match(/(login|setup)/)) {
+  if (router.pathname.match(/(login|setup|resetpassword)/)) {
     component = <Component {...pageProps} />;
   } else {
     component = (
@@ -184,7 +184,7 @@ CoreApp.getInitialProps = async (initialProps) => {
         // If there is no user, and ctx.res is set (to check if we are on the server side)
         // _AND_ we are not already on the login or setup route, redirect to /login with a 307
         // before anything actually renders
-        if (!router.pathname.match(/(login|setup)/)) {
+        if (!router.pathname.match(/(login|setup|resetpassword)/)) {
           ctx.res.writeHead(307, {
             Location: '/login',
           });

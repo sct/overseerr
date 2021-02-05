@@ -46,7 +46,7 @@ router.post('/', async (req, res, next) => {
     if (passedExplicitPassword) {
       await user?.setPassword(body.password);
     } else {
-      await user?.resetPassword();
+      await user?.generatePassword();
     }
 
     await userRepository.save(user);

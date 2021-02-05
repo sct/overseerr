@@ -21,6 +21,7 @@ import logger from '../logger';
 import { getSettings } from '../lib/settings';
 import { default as generatePassword } from 'secure-random-password';
 import { UserType } from '../constants/user';
+import { v4 as uuid } from 'uuid';
 
 @Entity()
 export class User {
@@ -28,7 +29,11 @@ export class User {
     return users.map((u) => u.filter());
   }
 
-  static readonly filteredFields: string[] = ['plexToken', 'password'];
+  static readonly filteredFields: string[] = [
+    'plexToken',
+    'password',
+    'resetPasswordGuid',
+  ];
 
   public displayName: string;
 
@@ -46,6 +51,12 @@ export class User {
 
   @Column({ nullable: true, select: false })
   public password?: string;
+
+  @Column({ nullable: true, select: false })
+  public resetPasswordGuid?: string;
+
+  @Column({ type: 'date', nullable: true })
+  public recoveryLinkExpirationDate?: Date | null;
 
   @Column({ type: 'integer', default: UserType.PLEX })
   public userType: UserType;
@@ -111,18 +122,18 @@ export class User {
     this.password = hashedPassword;
   }
 
-  public async resetPassword(): Promise<void> {
+  public async generatePassword(): Promise<void> {
     const password = generatePassword.randomPassword({ length: 16 });
     this.setPassword(password);
 
     const applicationUrl = getSettings().main.applicationUrl;
     try {
-      logger.info(`Sending password email for ${this.email}`, {
-        label: 'User creation',
+      logger.info(`Sending generated password email for ${this.email}`, {
+        label: 'User Management',
       });
       const email = new PreparedEmail();
       await email.send({
-        template: path.join(__dirname, '../templates/email/password'),
+        template: path.join(__dirname, '../templates/email/generatedpassword'),
         message: {
           to: this.email,
         },
@@ -132,8 +143,43 @@ export class User {
         },
       });
     } catch (e) {
-      logger.error('Failed to send out password email', {
-        label: 'User creation',
+      logger.error('Failed to send out generated password email', {
+        label: 'User Management',
+        message: e.message,
+      });
+    }
+  }
+
+  public async resetPassword(): Promise<void> {
+    const guid = uuid();
+    this.resetPasswordGuid = guid;
+
+    // 24 hours into the future
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 1);
+    this.recoveryLinkExpirationDate = targetDate;
+
+    const applicationUrl = getSettings().main.applicationUrl;
+    const resetPasswordLink = `${applicationUrl}/resetpassword/${guid}`;
+
+    try {
+      logger.info(`Sending reset password email for ${this.email}`, {
+        label: 'User Management',
+      });
+      const email = new PreparedEmail();
+      await email.send({
+        template: path.join(__dirname, '../templates/email/resetpassword'),
+        message: {
+          to: this.email,
+        },
+        locals: {
+          resetPasswordLink,
+          applicationUrl: resetPasswordLink,
+        },
+      });
+    } catch (e) {
+      logger.error('Failed to send out reset password email', {
+        label: 'User Management',
         message: e.message,
       });
     }
