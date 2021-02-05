@@ -647,7 +647,22 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
-            {data.nextEpisodeToAir ? (
+            {data.firstAirDate && (
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.firstAirDate} />
+                </span>
+                <span className="flex-1 text-sm text-right text-gray-400">
+                  <FormattedDate
+                    value={new Date(data.firstAirDate)}
+                    year="numeric"
+                    month="long"
+                    day="numeric"
+                  />
+                </span>
+              </div>
+            )}
+            {data.nextEpisodeToAir && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
                   <FormattedMessage {...messages.nextAirDate} />
@@ -661,22 +676,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   />
                 </span>
               </div>
-            ) : (
-              data.firstAirDate && (
-                <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
-                  <span className="text-sm">
-                    <FormattedMessage {...messages.firstAirDate} />
-                  </span>
-                  <span className="flex-1 text-sm text-right text-gray-400">
-                    <FormattedDate
-                      value={new Date(data.firstAirDate)}
-                      year="numeric"
-                      month="long"
-                      day="numeric"
-                    />
-                  </span>
-                </div>
-              )
             )}
             <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
               <span className="text-sm">
