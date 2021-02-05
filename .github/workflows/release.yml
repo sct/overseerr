@@ -60,6 +60,8 @@ jobs:
           fetch-depth: 0
       - name: Switch to master branch
         run: git checkout master
+      - name: Pull latest changes
+        run: git pull
 
       - name: Prepare
         id: prepare
