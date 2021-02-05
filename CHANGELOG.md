@@ -1,3 +1,59 @@
+# [1.19.0](https://github.com/sct/overseerr/compare/v1.18.0...v1.19.0) (2021-02-05)
+
+
+### Bug Fixes
+
+* **api:** filter out adult content from combined credits ([3052f12](https://github.com/sct/overseerr/commit/3052f12c91b3ce86128324e3698fff61bbce3f2a))
+* **cache:** use formatted numbers for displaying cache counts ([6c437c5](https://github.com/sct/overseerr/commit/6c437c515fc01b9fe4461968875e23542bae7542))
+* **email:** make image a link to the action url in request template ([ee0a7bd](https://github.com/sct/overseerr/commit/ee0a7bd8c0b3a79c292b0abceb2f780f3889e49f)), closes [#834](https://github.com/sct/overseerr/issues/834)
+* **frontend:** add github sponsor link to about page ([7c192d5](https://github.com/sct/overseerr/commit/7c192d54f422a5f2b55750535d2382e313f1d011))
+* **frontend:** correctly show 4k download tracker activity ([a7314f8](https://github.com/sct/overseerr/commit/a7314f876ea528fdec0fb0a2adaa36a01afcdf38))
+* **frontend:** fix possible division by zero in download status ([#839](https://github.com/sct/overseerr/issues/839)) ([c97c96a](https://github.com/sct/overseerr/commit/c97c96a30c50db7735f06c6d2d2f6193fb7da55e))
+* **frontend:** match request button color on titlecards to other request buttons ([5b39911](https://github.com/sct/overseerr/commit/5b39911e024513fab7a62948e653cee08fd166c7))
+* **frontend:** set 4k status on RequestItem when request is for 4k ([a3b00c3](https://github.com/sct/overseerr/commit/a3b00c3458b868506d4158fb24f0369fa5daefc5))
+* **frontend:** use consistent spinner style on TitleCard/Plex Presets ([cf7ebc4](https://github.com/sct/overseerr/commit/cf7ebc488db33725444c428b4244d780ab9d123b))
+* **html:** th elements should be nested under tr, not directly under thead ([#801](https://github.com/sct/overseerr/issues/801)) ([6e9ac27](https://github.com/sct/overseerr/commit/6e9ac275e19d56de8c7a366db970c7321f26fc8a))
+* **lang:** Add missing source strings & remove local user sign-in setting tip ([#828](https://github.com/sct/overseerr/issues/828)) ([c0769d4](https://github.com/sct/overseerr/commit/c0769d4f8f2bad88e4638d8c3cbcc0414b3ef6fb))
+* **lang:** Edit English language strings ([#820](https://github.com/sct/overseerr/issues/820)) ([f54df21](https://github.com/sct/overseerr/commit/f54df214af86d90ea8d7cfcd4e39022215c3568c))
+* **lang:** translate language names & change zh-Hant language code to zh-TW ([#793](https://github.com/sct/overseerr/issues/793)) ([3c5ae36](https://github.com/sct/overseerr/commit/3c5ae360fd179d794a78cc918fe97a09216ca6b2))
+* **notif/ui:** Use custom application title in notifications & sign-in page ([#849](https://github.com/sct/overseerr/issues/849)) ([38c76b5](https://github.com/sct/overseerr/commit/38c76b55e0039c489cb6a4a0a298aa6385406db4))
+* **radarr:** correctly set requested status after sending to radarr (with auto approve) ([ec44841](https://github.com/sct/overseerr/commit/ec448413569ddc2f24bb856d29084169979f9f05))
+* **sonarr-sync:** sonarr sync will no longer set shows with no episodes to partially available ([d20bd53](https://github.com/sct/overseerr/commit/d20bd530edaadc5887b0361358da80153e36505c)), closes [#796](https://github.com/sct/overseerr/issues/796)
+* **ui:** Add additional URL & email input validation ([#843](https://github.com/sct/overseerr/issues/843)) ([3f9bfeb](https://github.com/sct/overseerr/commit/3f9bfeb01a67b2b587c7548b02ee826722e65c0f))
+* **ui:** Don't display empty dropdown when no trailer available ([#804](https://github.com/sct/overseerr/issues/804)) ([95c2a21](https://github.com/sct/overseerr/commit/95c2a2169799d96413b47ab24506b330435643eb))
+* **ui:** dont show bulk edit options on user list if there is only one user ([b658ddf](https://github.com/sct/overseerr/commit/b658ddf5cf61b2bb9b93cb1a4ca716cd75e18bb4))
+* **ui:** Dynamically generate path to config in warning message ([#851](https://github.com/sct/overseerr/issues/851)) ([b531a64](https://github.com/sct/overseerr/commit/b531a642f601f4ef9bf39c2f5915402157e55372))
+* **ui:** fix tables extending outside viewport in mobile formats ([e270999](https://github.com/sct/overseerr/commit/e270999745f97c2860f6a5b84e897dc6da8d6001))
+* **ui:** Hide 'Mark 4k as Available' button if 4k not enabled ([#833](https://github.com/sct/overseerr/issues/833)) ([e4a50c3](https://github.com/sct/overseerr/commit/e4a50c33f105b440243885d72a9e96595a525447))
+* **ui:** Limit max width of forms & lists ([#845](https://github.com/sct/overseerr/issues/845)) ([b9d14a9](https://github.com/sct/overseerr/commit/b9d14a9fd0f3c94d8267755147a87fe3b77fa2c3))
+* **ui:** prevent names from getting squished in AdvancedRequester user selector ([06e9411](https://github.com/sct/overseerr/commit/06e941171a1d019fbb178624167c026f6df5271c))
+* **ui:** remove yup validation from display name on user edit page ([63d7e2b](https://github.com/sct/overseerr/commit/63d7e2b39858fcb1cc0819a680eebccded7f4451))
+* **ui:** Restore original port input size ([#814](https://github.com/sct/overseerr/issues/814)) ([1ccafc0](https://github.com/sct/overseerr/commit/1ccafc0ebd368d798f9571b83910336efa317e37))
+* **ui:** show request as option even if there are no radarr/sonarr servers ([b116281](https://github.com/sct/overseerr/commit/b116281196c264b4ec35b07f1b4ffa717e50ade5))
+* **ui:** uniform-size checkboxes, vertically-aligned form labels, and fixes for other UI imperfections/inconsistencies ([#737](https://github.com/sct/overseerr/issues/737)) ([e34fbf7](https://github.com/sct/overseerr/commit/e34fbf72fda34d69b9f25563fa81f88b3c20912a))
+* **ui:** Use minimum char validation message ([#850](https://github.com/sct/overseerr/issues/850)) ([7456bea](https://github.com/sct/overseerr/commit/7456bea2ae600a28cb933278ffb310b63a474d6a))
+* **ui:** validate application url and service external urls ([026795d](https://github.com/sct/overseerr/commit/026795d4c940cb4797d3e68089456a4c3defbb21))
+* **ui:** when PersonCard has no profilePath, correctly position name/role content ([3ffd5ab](https://github.com/sct/overseerr/commit/3ffd5ab0ee8ffa63199d1428e37206f9b59fb7a5))
+
+
+### Features
+
+* **cache:** add cache table and flush cache option to settings ([996bd9f](https://github.com/sct/overseerr/commit/996bd9f14ed0f56767892c169b071be4f0f628d0))
+* **cache:** external API cache ([#786](https://github.com/sct/overseerr/issues/786)) ([20289b5](https://github.com/sct/overseerr/commit/20289b5960a93545cdff9331a1a7b613f382e702))
+* **docker:** Check for /app/config volume mount during setup ([#826](https://github.com/sct/overseerr/issues/826)) ([1e5f88f](https://github.com/sct/overseerr/commit/1e5f88f462b0c69db5f6ab8e0249a5905bc6952a))
+* **frontend:** add TheTVDB external link ([#800](https://github.com/sct/overseerr/issues/800)) ([72cffd7](https://github.com/sct/overseerr/commit/72cffd74a75984ba98c456c0ec006ec378a8dcec))
+* **lang:** add support for Hungarian language ([cfacb15](https://github.com/sct/overseerr/commit/cfacb151b52d08e19d2fcd603fb4bbcd78707cdf))
+* **lang:** translations update from Weblate ([#791](https://github.com/sct/overseerr/issues/791)) ([42295e0](https://github.com/sct/overseerr/commit/42295e076a7579b226d57407a20cb0ba044e9ec1))
+* **lang:** translations update from Weblate ([#819](https://github.com/sct/overseerr/issues/819)) ([9e5e4c2](https://github.com/sct/overseerr/commit/9e5e4c22f5b25df96f47875d599ed8685791382a))
+* **lang:** translations update from Weblate ([#841](https://github.com/sct/overseerr/issues/841)) ([e4f9b8a](https://github.com/sct/overseerr/commit/e4f9b8a9848f3af00e86fc7108c823ed0584609f))
+* **lang:** translations update from Weblate ([#852](https://github.com/sct/overseerr/issues/852)) ([c5be00e](https://github.com/sct/overseerr/commit/c5be00eebfd2b0e65295edbe282cbba22fffa660))
+* **ui:** Add local login setting ([#817](https://github.com/sct/overseerr/issues/817)) ([9d0d5b8](https://github.com/sct/overseerr/commit/9d0d5b86aae025e4647bb664c6412d42192e2fe7))
+* **ui:** added next airing date to TV Shows ([#842](https://github.com/sct/overseerr/issues/842)) ([4eae02a](https://github.com/sct/overseerr/commit/4eae02a7e14e377fd69ddd4a43774cb7e3d1855b))
+* new permission to allow users to see other users requests ([033ba9d](https://github.com/sct/overseerr/commit/033ba9d41bddf6dc1c4512d8404f747e57923bca)), closes [#840](https://github.com/sct/overseerr/issues/840)
+* request as another user ([59150f9](https://github.com/sct/overseerr/commit/59150f955f7003672ef19eb9d37156e93b79c97d))
+* **tv:** show cast for the entire show instead of only the last season ([#778](https://github.com/sct/overseerr/issues/778)) ([b239598](https://github.com/sct/overseerr/commit/b239598e64d33b78dc5d7972878840149aff360a)), closes [#775](https://github.com/sct/overseerr/issues/775)
+* **ui:** Add custom title functionality ([#825](https://github.com/sct/overseerr/issues/825)) ([35c6bfc](https://github.com/sct/overseerr/commit/35c6bfc0216bf879353b3ee546b439a06c8e6121))
+
 # [1.18.0](https://github.com/sct/overseerr/compare/v1.17.2...v1.18.0) (2021-01-30)
 
 
