@@ -12,8 +12,8 @@ const messages = defineMessages({
   validationpasswordrequired: 'Password required',
   loginerror: 'Something went wrong while trying to sign in.',
   signingin: 'Signing in…',
-  signin: 'Sign in',
-  forgotpassword: 'Forgot password?',
+  signin: 'Sign In',
+  forgotpassword: 'Forgot Password?',
 });
 
 interface LocalLoginProps {

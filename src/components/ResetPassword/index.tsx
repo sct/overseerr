@@ -9,12 +9,13 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 
 const messages = defineMessages({
-  resetpassword: 'Reset your password',
+  resetpassword: 'Reset Password',
   password: 'Password',
   confirmpassword: 'Confirm Password',
-  validationpasswordrequired: 'Password required',
-  validationconfirmpasswordrequired: 'Confirm Password required',
+  validationpasswordrequired: 'You must provide a password',
   validationpasswordmatch: 'Password must match',
+  validationpasswordminchars:
+    'Password is too short; should be a minimum of 8 characters',
   gobacklogin: 'Go Back to Login Page',
   successmessage:
     'If the link is valid and is connected to a user then the password has been reset.',
@@ -30,9 +31,9 @@ const ResetPassword: React.FC = () => {
   const ResetSchema = Yup.object().shape({
     password: Yup.string()
       .required(intl.formatMessage(messages.validationpasswordrequired))
-      .min(8),
+      .min(8, intl.formatMessage(messages.validationpasswordminchars)),
     confirmPassword: Yup.string()
-      .required(intl.formatMessage(messages.validationconfirmpasswordrequired))
+      .required(intl.formatMessage(messages.validationpasswordmatch))
       .test(
         'passwords-match',
         intl.formatMessage(messages.validationpasswordmatch),

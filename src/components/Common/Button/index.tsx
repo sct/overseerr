@@ -8,10 +8,10 @@ export type ButtonType =
   | 'success'
   | 'ghost';
 
-// Helper type to override types (override's onClick)
+// Helper type to override types (overrides onClick)
 type MergeElementProps<
   T extends React.ElementType,
-  P extends Record<string, any>
+  P extends Record<string, unknown>
 > = Omit<React.ComponentProps<T>, keyof P> & P;
 
 type ElementTypes = 'button' | 'a';
@@ -85,11 +85,9 @@ function Button<P extends ElementTypes = 'button'>({
     default:
       buttonStyle.push('px-4 py-2 text-sm');
   }
-  if (className) {
-    buttonStyle.push(className ?? '');
-  }
 
-  // const Element = as || 'button';
+  buttonStyle.push(className ?? '');
+
   if (as === 'a') {
     return (
       <a

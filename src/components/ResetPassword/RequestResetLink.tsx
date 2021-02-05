@@ -12,9 +12,9 @@ const messages = defineMessages({
   emailresetlink: 'Email me a Recovery Link',
   email: 'Email',
   validationemailrequired: 'Must be a valid email address',
-  gobacklogin: 'Go Back to Login Page',
+  gobacklogin: 'Go Back to Sign-In Page',
   successmessage:
-    'If the email is connected to a user then a link to reset the password has been sent.',
+    'A password reset link will be sent to the provided email address if it is associated with a valid user.',
 });
 
 const ResetPassword: React.FC = () => {
@@ -85,9 +85,6 @@ const ResetPassword: React.FC = () => {
 
                   if (response.status === 200) {
                     setSubmitted(true);
-                    // setTimeout(() => {
-                    //   router.push('/login');
-                    // }, 3000);
                   }
                 }}
               >
