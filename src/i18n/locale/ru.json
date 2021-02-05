@@ -310,5 +310,7 @@
   "components.CollectionDetails.movies": "Фильмы",
   "components.CollectionDetails.requesting": "Запрашивается…",
   "components.CollectionDetails.requestcollection": "Запросить Коллекцию",
-  "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> успешно запрошено!"
+  "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> успешно запрошено!",
+  "components.Login.email": "Адрес электронной почты",
+  "components.Common.ListView.noresults": "Нет результатов."
 }
