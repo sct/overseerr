@@ -6,12 +6,12 @@ import Alert from '../Common/Alert';
 const messages = defineMessages({
   dockerVolumeMissing: 'Docker Volume Mount Missing',
   dockerVolumeMissingDescription:
-    'The <code>/app/config</code> volume mount was not configured properly. All data will be cleared when the container is stopped or restarted.',
+    'The <code>{appDataPath}</code> volume mount was not configured properly. All data will be cleared when the container is stopped or restarted.',
 });
 
 const AppDataWarning: React.FC = () => {
   const intl = useIntl();
-  const { data, error } = useSWR<{ appData: boolean }>(
+  const { data, error } = useSWR<{ appData: boolean; appDataPath: string }>(
     '/api/v1/status/appdata'
   );
 
@@ -31,6 +31,7 @@ const AppDataWarning: React.FC = () => {
             code: function code(msg) {
               return <code className="bg-opacity-50">{msg}</code>;
             },
+            appDataPath: data.appDataPath,
           })}
         </Alert>
       )}

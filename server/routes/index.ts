@@ -15,7 +15,7 @@ import personRoutes from './person';
 import collectionRoutes from './collection';
 import { getAppVersion, getCommitTag } from '../utils/appVersion';
 import serviceRoutes from './service';
-import { appDataStatus } from '../utils/appDataVolume';
+import { appDataStatus, appDataPath } from '../utils/appDataVolume';
 
 const router = Router();
 
@@ -31,6 +31,7 @@ router.get('/status', (req, res) => {
 router.get('/status/appdata', (_req, res) => {
   return res.status(200).json({
     appData: appDataStatus(),
+    appDataPath: appDataPath(),
   });
 });
 

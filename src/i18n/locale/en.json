@@ -1,6 +1,6 @@
 {
   "components.AppDataWarning.dockerVolumeMissing": "Docker Volume Mount Missing",
-  "components.AppDataWarning.dockerVolumeMissingDescription": "The <code>/app/config</code> volume mount was not configured properly. All data will be cleared when the container is stopped or restarted.",
+  "components.AppDataWarning.dockerVolumeMissingDescription": "The <code>{appDataPath}</code> volume mount was not configured properly. All data will be cleared when the container is stopped or restarted.",
   "components.CollectionDetails.movies": "Movies",
   "components.CollectionDetails.numberofmovies": "Number of Movies: {count}",
   "components.CollectionDetails.overview": "Overview",
