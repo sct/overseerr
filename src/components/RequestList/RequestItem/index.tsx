@@ -166,7 +166,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               <img
                 src={requestData.requestedBy.avatar}
                 alt=""
-                className="w-4 mr-1 rounded-full sm:mr-2 sm:w-5"
+                className="w-5 mr-2 rounded-full"
               />
               <span className="text-sm">
                 {requestData.requestedBy.displayName}
@@ -224,7 +224,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 <img
                   src={requestData.modifiedBy.avatar}
                   alt=""
-                  className="w-4 mr-1 rounded-full sm:mr-2 sm:w-5"
+                  className="w-5 mr-2 rounded-full"
                 />
                 <span className="text-sm">
                   {requestData.modifiedBy.displayName} (
