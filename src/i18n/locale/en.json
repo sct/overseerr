@@ -36,7 +36,7 @@
   "components.Login.signin": "Sign In",
   "components.Login.signingin": "Signing in…",
   "components.Login.signinheader": "Sign in to continue",
-  "components.Login.signinwithoverseerr": "Use your Overseerr account",
+  "components.Login.signinwithoverseerr": "Use your {applicationTitle} account",
   "components.Login.signinwithplex": "Use your Plex account",
   "components.Login.validationemailrequired": "Not a valid email address",
   "components.Login.validationpasswordrequired": "Password required",

@@ -118,7 +118,7 @@ class PlexAPI {
       options: {
         identifier: settings.clientId,
         product: 'Overseerr',
-        deviceName: 'Overseerr',
+        deviceName: settings.main.applicationTitle,
         platform: 'Overseerr',
       },
     });
