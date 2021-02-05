@@ -680,5 +680,15 @@
   "components.Setup.setup": "Configuratie",
   "components.RequestModal.AdvancedRequester.requestas": "Aanvragen als",
   "components.Discover.discover": "Ontdekken",
-  "components.Settings.validationApplicationTitle": "Je moet een toepassingstitel opgeven"
+  "components.Settings.validationApplicationTitle": "Je moet een toepassingstitel opgeven",
+  "components.AppDataWarning.dockerVolumeMissingDescription": "De volumekoppeling <code>/app/config</code> was niet correct geconfigureerd. Alle gegevens zullen worden gewist wanneer de container wordt gestopt of opnieuw wordt gestart.",
+  "components.AppDataWarning.dockerVolumeMissing": "Docker-volumekoppeling ontbreekt",
+  "components.Settings.validationApplicationUrlTrailingSlash": "URL mag niet eindigen op een schuine streep",
+  "components.Settings.validationApplicationUrl": "Je moet een geldige URL opgeven",
+  "components.Settings.SonarrModal.validationApplicationUrlTrailingSlash": "URL mag niet eindigen op een schuine streep",
+  "components.Settings.SonarrModal.validationApplicationUrl": "Je moet een geldige URL opgeven",
+  "components.Settings.RadarrModal.validationApplicationUrlTrailingSlash": "URL mag niet eindigen op een schuine streep",
+  "components.Settings.RadarrModal.validationApplicationUrl": "Je moet een geldige URL opgeven",
+  "components.PermissionEdit.viewrequestsDescription": "Geeft toestemming om de verzoeken van andere gebruikers te bekijken.",
+  "components.PermissionEdit.viewrequests": "Verzoeken bekijken"
 }
