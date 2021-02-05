@@ -9,6 +9,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
@@ -77,17 +78,22 @@ const MovieRecommendations: React.FC = () => {
 
   return (
     <>
-      <Header
-        subtext={
-          movieData && !movieError
-            ? intl.formatMessage(messages.recommendationssubtext, {
-                title: movieData.title,
-              })
-            : ''
-        }
-      >
-        <FormattedMessage {...messages.recommendations} />
-      </Header>
+      <PageTitle
+        title={[intl.formatMessage(messages.recommendations), movieData?.title]}
+      />
+      <div className="mt-1 mb-5">
+        <Header
+          subtext={
+            movieData && !movieError
+              ? intl.formatMessage(messages.recommendationssubtext, {
+                  title: movieData.title,
+                })
+              : ''
+          }
+        >
+          <FormattedMessage {...messages.recommendations} />
+        </Header>
+      </div>
       <ListView
         items={titles}
         isEmpty={isEmpty}

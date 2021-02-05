@@ -2,7 +2,7 @@ import type {
   TmdbMovieResult,
   TmdbPersonResult,
   TmdbTvResult,
-} from '../api/themoviedb';
+} from '../api/themoviedb/interfaces';
 import { MediaType as MainMediaType } from '../constants/media';
 import Media from '../entity/Media';
 

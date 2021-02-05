@@ -1,8 +1,8 @@
-import {
+import type {
   TmdbPersonCreditCast,
   TmdbPersonCreditCrew,
   TmdbPersonDetail,
-} from '../api/themoviedb';
+} from '../api/themoviedb/interfaces';
 import Media from '../entity/Media';
 
 export interface PersonDetail {

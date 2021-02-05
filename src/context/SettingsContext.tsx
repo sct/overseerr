@@ -8,9 +8,11 @@ export interface SettingsContextProps {
 
 const defaultSettings = {
   initialized: false,
+  applicationTitle: 'Overseerr',
+  hideAvailable: false,
+  localLogin: false,
   movie4kEnabled: false,
   series4kEnabled: false,
-  hideAvailable: false,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

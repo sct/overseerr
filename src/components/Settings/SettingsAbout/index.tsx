@@ -6,6 +6,7 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import { SettingsAboutResponse } from '../../../../server/interfaces/api/settingsInterfaces';
 import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
 import Releases from './Releases';
+import Badge from '../../Common/Badge';
 
 const messages = defineMessages({
   overseerrinformation: 'Overseerr Information',
@@ -19,6 +20,7 @@ const messages = defineMessages({
   supportoverseerr: 'Support Overseerr',
   helppaycoffee: 'Help Pay for Coffee',
   documentation: 'Documentation',
+  preferredmethod: 'Preferred',
 });
 
 const SettingsAbout: React.FC = () => {
@@ -37,7 +39,7 @@ const SettingsAbout: React.FC = () => {
 
   return (
     <>
-      <div className="mb-8">
+      <div className="section">
         <List title={intl.formatMessage(messages.overseerrinformation)}>
           <List.Item title={intl.formatMessage(messages.version)}>
             {data.version}
@@ -55,7 +57,7 @@ const SettingsAbout: React.FC = () => {
           )}
         </List>
       </div>
-      <div className="mb-8">
+      <div className="section">
         <List title={intl.formatMessage(messages.gettingsupport)}>
           <List.Item title={intl.formatMessage(messages.documentation)}>
             <a
@@ -89,11 +91,24 @@ const SettingsAbout: React.FC = () => {
           </List.Item>
         </List>
       </div>
-      <div className="mb-8">
+      <div className="section">
         <List title={intl.formatMessage(messages.supportoverseerr)}>
           <List.Item
             title={`${intl.formatMessage(messages.helppaycoffee)} ☕️`}
           >
+            <a
+              href="https://github.com/sponsors/sct"
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-500 hover:underline"
+            >
+              https://github.com/sponsors/sct
+            </a>
+            <Badge className="ml-2">
+              {intl.formatMessage(messages.preferredmethod)}
+            </Badge>
+          </List.Item>
+          <List.Item title="">
             <a
               href="https://patreon.com/overseerr"
               target="_blank"
@@ -105,7 +120,7 @@ const SettingsAbout: React.FC = () => {
           </List.Item>
         </List>
       </div>
-      <div className="mb-8">
+      <div className="section">
         <Releases currentVersion={data.version} />
       </div>
     </>

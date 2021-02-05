@@ -12,7 +12,6 @@ import NotificationTypeSelector from '../../NotificationTypeSelector';
 const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
-  validationFromRequired: 'You must provide a sender address',
   validationSmtpHostRequired: 'You must provide an SMTP host',
   validationSmtpPortRequired: 'You must provide an SMTP port',
   agentenabled: 'Enable Agent',
@@ -31,6 +30,7 @@ const messages = defineMessages({
     'SSL should be disabled on standard TLS connections (port 587)',
   senderName: 'Sender Name',
   notificationtypes: 'Notification Types',
+  validationEmail: 'You must provide a valid email address',
 });
 
 const NotificationsEmail: React.FC = () => {
@@ -41,9 +41,9 @@ const NotificationsEmail: React.FC = () => {
   );
 
   const NotificationsEmailSchema = Yup.object().shape({
-    emailFrom: Yup.string().required(
-      intl.formatMessage(messages.validationFromRequired)
-    ),
+    emailFrom: Yup.string()
+      .required(intl.formatMessage(messages.validationEmail))
+      .email(intl.formatMessage(messages.validationEmail)),
     smtpHost: Yup.string().required(
       intl.formatMessage(messages.validationSmtpHostRequired)
     ),
@@ -124,113 +124,86 @@ const NotificationsEmail: React.FC = () => {
         };
 
         return (
-          <Form>
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-              <label
-                htmlFor="enabled"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-              >
+          <Form className="section">
+            <div className="form-row">
+              <label htmlFor="enabled" className="checkbox-label">
                 {intl.formatMessage(messages.agentenabled)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
-                <Field
-                  type="checkbox"
-                  id="enabled"
-                  name="enabled"
-                  className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                />
+              <div className="form-input">
+                <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-              <label
-                htmlFor="emailFrom"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-              >
+            <div className="form-row">
+              <label htmlFor="emailFrom" className="text-label">
                 {intl.formatMessage(messages.emailsender)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="emailFrom"
                     name="emailFrom"
                     type="text"
                     placeholder="no-reply@example.com"
-                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
                 {errors.emailFrom && touched.emailFrom && (
-                  <div className="mt-2 text-red-500">{errors.emailFrom}</div>
+                  <div className="error">{errors.emailFrom}</div>
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-              <label
-                htmlFor="senderName"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-              >
+            <div className="form-row">
+              <label htmlFor="senderName" className="text-label">
                 {intl.formatMessage(messages.senderName)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="senderName"
                     name="senderName"
                     placeholder="Overseerr"
                     type="text"
-                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-              <label
-                htmlFor="smtpHost"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-              >
+            <div className="form-row">
+              <label htmlFor="smtpHost" className="text-label">
                 {intl.formatMessage(messages.smtpHost)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="smtpHost"
                     name="smtpHost"
                     type="text"
                     placeholder="localhost"
-                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
                 {errors.smtpHost && touched.smtpHost && (
-                  <div className="mt-2 text-red-500">{errors.smtpHost}</div>
+                  <div className="error">{errors.smtpHost}</div>
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-              <label
-                htmlFor="smtpPort"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-              >
+            <div className="form-row">
+              <label htmlFor="smtpPort" className="text-label">
                 {intl.formatMessage(messages.smtpPort)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="smtpPort"
                     name="smtpPort"
                     type="text"
                     placeholder="465"
-                    className="block w-24 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
                 {errors.smtpPort && touched.smtpPort && (
-                  <div className="mt-2 text-red-500">{errors.smtpPort}</div>
+                  <div className="error">{errors.smtpPort}</div>
                 )}
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-              <label
-                htmlFor="secure"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-              >
+            <div className="form-row">
+              <label htmlFor="secure" className="checkbox-label">
                 <div className="flex flex-col">
                   <span>{intl.formatMessage(messages.enableSsl)}</span>
                   <span className="text-gray-500">
@@ -238,93 +211,63 @@ const NotificationsEmail: React.FC = () => {
                   </span>
                 </div>
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
-                <Field
-                  type="checkbox"
-                  id="secure"
-                  name="secure"
-                  className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
-                />
+              <div className="form-input">
+                <Field type="checkbox" id="secure" name="secure" />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200">
-              <label
-                htmlFor="allowSelfSigned"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-              >
+            <div className="form-row">
+              <label htmlFor="allowSelfSigned" className="checkbox-label">
                 {intl.formatMessage(messages.allowselfsigned)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <Field
                   type="checkbox"
                   id="allowSelfSigned"
                   name="allowSelfSigned"
-                  className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                 />
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-              <label
-                htmlFor="authUser"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-              >
+            <div className="form-row">
+              <label htmlFor="authUser" className="text-label">
                 {intl.formatMessage(messages.authUser)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
-                  <Field
-                    id="authUser"
-                    name="authUser"
-                    type="text"
-                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
-                  />
+                  <Field id="authUser" name="authUser" type="text" />
                 </div>
               </div>
             </div>
-            <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-              <label
-                htmlFor="authPass"
-                className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-              >
+            <div className="form-row">
+              <label htmlFor="authPass" className="text-label">
                 {intl.formatMessage(messages.authPass)}
               </label>
-              <div className="mt-1 sm:mt-0 sm:col-span-2">
+              <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field
                     id="authPass"
                     name="authPass"
                     type="password"
                     autoComplete="off"
-                    className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-6">
-              <div role="group" aria-labelledby="label-permissions">
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
-                  <div>
-                    <div
-                      className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
-                      id="label-types"
-                    >
-                      {intl.formatMessage(messages.notificationtypes)}
-                    </div>
-                  </div>
-                  <div className="mt-4 sm:mt-0 sm:col-span-2">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
+            <div role="group" aria-labelledby="group-label" className="group">
+              <div className="form-row">
+                <span id="group-label" className="group-label">
+                  {intl.formatMessage(messages.notificationtypes)}
+                </span>
+                <div className="form-input">
+                  <div className="max-w-lg">
+                    <NotificationTypeSelector
+                      currentTypes={values.types}
+                      onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-            <div className="pt-5 mt-8 border-t border-gray-700">
+            <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button

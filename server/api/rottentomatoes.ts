@@ -1,4 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
+import cacheManager from '../lib/cache';
+import ExternalAPI from './externalapi';
 
 interface RTMovieOldSearchResult {
   id: number;
@@ -55,17 +56,19 @@ export interface RTRating {
  * Unfortunately, we need to do it by searching for the movie name, so it's
  * not always accurate.
  */
-class RottenTomatoes {
-  private axios: AxiosInstance;
-
+class RottenTomatoes extends ExternalAPI {
   constructor() {
-    this.axios = axios.create({
-      baseURL: 'https://www.rottentomatoes.com/api/private',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
+    super(
+      'https://www.rottentomatoes.com/api/private',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        nodeCache: cacheManager.getCache('rt').data,
+      }
+    );
   }
 
   /**
@@ -85,33 +88,30 @@ class RottenTomatoes {
     year: number
   ): Promise<RTRating | null> {
     try {
-      const response = await this.axios.get<RTMovieSearchResponse>(
-        '/v1.0/movies',
-        {
-          params: { q: name },
-        }
-      );
+      const data = await this.get<RTMovieSearchResponse>('/v1.0/movies', {
+        params: { q: name },
+      });
 
       // First, attempt to match exact name and year
-      let movie = response.data.movies.find(
+      let movie = data.movies.find(
         (movie) => movie.year === year && movie.title === name
       );
 
       // If we don't find a movie, try to match partial name and year
       if (!movie) {
-        movie = response.data.movies.find(
+        movie = data.movies.find(
           (movie) => movie.year === year && movie.title.includes(name)
         );
       }
 
       // If we still dont find a movie, try to match just on year
       if (!movie) {
-        movie = response.data.movies.find((movie) => movie.year === year);
+        movie = data.movies.find((movie) => movie.year === year);
       }
 
       // One last try, try exact name match only
       if (!movie) {
-        movie = response.data.movies.find((movie) => movie.title === name);
+        movie = data.movies.find((movie) => movie.title === name);
       }
 
       if (!movie) {
@@ -139,19 +139,14 @@ class RottenTomatoes {
     year?: number
   ): Promise<RTRating | null> {
     try {
-      const response = await this.axios.get<RTMultiSearchResponse>(
-        '/v2.0/search/',
-        {
-          params: { q: name, limit: 10 },
-        }
-      );
+      const data = await this.get<RTMultiSearchResponse>('/v2.0/search/', {
+        params: { q: name, limit: 10 },
+      });
 
-      let tvshow: RTTvSearchResult | undefined = response.data.tvSeries[0];
+      let tvshow: RTTvSearchResult | undefined = data.tvSeries[0];
 
       if (year) {
-        tvshow = response.data.tvSeries.find(
-          (series) => series.startYear === year
-        );
+        tvshow = data.tvSeries.find((series) => series.startYear === year);
       }
 
       if (!tvshow) {

@@ -15,7 +15,8 @@ import { User } from './User';
 import Media from './Media';
 import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
 import { getSettings } from '../lib/settings';
-import TheMovieDb, { ANIME_KEYWORD_ID } from '../api/themoviedb';
+import TheMovieDb from '../api/themoviedb';
+import { ANIME_KEYWORD_ID } from '../api/themoviedb/constants';
 import RadarrAPI from '../api/radarr';
 import logger from '../logger';
 import SeasonRequest from './SeasonRequest';
@@ -414,6 +415,15 @@ export class MediaRequest {
             searchNow: !radarrSettings.preventSearch,
           })
           .then(async (radarrMovie) => {
+            // We grab media again here to make sure we have the latest version of it
+            const media = await mediaRepository.findOne({
+              where: { id: this.media.id },
+            });
+
+            if (!media) {
+              throw new Error('Media data is missing');
+            }
+
             media[this.is4k ? 'externalServiceId4k' : 'externalServiceId'] =
               radarrMovie.id;
             media[this.is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =

@@ -16,21 +16,21 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr">
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-31-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-32-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
-**Overseerr** is a free and open source software application for managing requests for your media library. It integrates with your existing services such as **Sonarr**, **Radarr** and **Plex**!
+**Overseerr** is a free and open source software application for managing requests for your media library. It integrates with your existing services such as **[Sonarr](https://sonarr.tv/)**, **[Radarr](https://radarr.video/)** and **[Plex](https://www.plex.tv/)**!
 
 ## Current Features
 
 - Full Plex integration. Login and manage user access with Plex!
-- Integrates easily with your existing services. Currently Overseerr supports Sonarr and Radarr. More to come!
-- Syncs to your Plex library to know what titles you already have.
+- Easy integration with your existing services. Currently Overseerr supports Sonarr and Radarr. More to come!
+- Plex libraries sync to know what titles you already have.
 - Complex request system allowing users to request individual seasons or movies in a friendly, easy to use UI.
-- Incredibly simple request management UI. Don't dig through the app to simply approve recent requests.
-- Granular permission system
-- Mobile friendly design, for when you need to approve requests on the go!
+- Incredibly simple request management UI. Don't dig through the app to simply approve recent requests!
+- Granular permission system.
+- Mobile-friendly design, for when you need to approve requests on the go!
 
 ## In Development
 
@@ -46,19 +46,18 @@
 
 ## Getting Started
 
-Check out our documentation for steps on how to install and run Overseerr:
+Check out our documentation for instructions on how to install and run Overseerr:
 
 https://docs.overseerr.dev/getting-started/installation
 
 ## Running Overseerr
 
-Currently, Overseerr is only distributed through Docker images. If you have Docker, you can run Overseerr as per:
+Currently, Overseerr is primarily distributed as Docker images. If you have Docker, you can run Overseerr with:
 
 ```
 docker run -d \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
-  -e PROXY=<yes|no>
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
   --restart unless-stopped \
@@ -67,7 +66,7 @@ docker run -d \
 
 After running Overseerr for the first time, configure it by visiting the web UI at http://[address]:5055 and completing the setup steps.
 
-⚠️ Overseerr is currently under very heavy, rapid development and things are likely to break often. We need all the help we can get to find bugs and get them fixed to hit a more stable release. If you would like to help test the bleeding edge, please use the image **sctx/overseerr:develop** instead! ⚠️
+⚠️ Overseerr is currently under very heavy, rapid development and things are likely to break often. We need all the help we can get to find bugs and get them fixed to hit a more stable release. If you would like to help test the bleeding edge, please use the `sctx/overseerr:develop` image instead! ⚠️
 
 ## Preview
 
@@ -78,11 +77,13 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 - Check out the [Overseerr Documentation](https://docs.overseerr.dev/) before asking for help. Your question might already be in the [FAQ](https://docs.overseerr.dev/support/faq).
 - You can get support on [Discord](https://discord.gg/PkCWJSeCk7).
 - You can ask questions in the Help category of our [GitHub Discussions](https://github.com/sct/overseerr/discussions).
-- Bugs/Feature Requests can be opened via a [GitHub issue](https://github.com/sct/overseerr/issues).
+- Bug reports and feature requests can be submitted via [GitHub Issues](https://github.com/sct/overseerr/issues).
 
 ## API Documentation
 
-Full API documentation will soon be published automatically and available outside of running the app. Currently, you can access the API docs by running Overseerr locally and visiting http://localhost:5055/api-docs
+Our documentation is built on every commit and hosted at https://api-docs.overseerr.dev
+
+Also, you can access the API docs by running Overseerr locally and visiting http://localhost:5055/api-docs
 
 ## Community
 
@@ -144,6 +145,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/chriscpritchard"><img src="https://avatars1.githubusercontent.com/u/1839074?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Chris Pritchard</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=chriscpritchard" title="Code">💻</a> <a href="https://github.com/sct/overseerr/commits?author=chriscpritchard" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Tamberlox"><img src="https://avatars3.githubusercontent.com/u/56069014?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tamberlox</b></sub></a><br /><a href="#translation-Tamberlox" title="Translation">🌍</a></td>
     <td align="center"><a href="https://hmnd.io"><img src="https://avatars.githubusercontent.com/u/12853597?v=4?s=100" width="100px;" alt=""/><br /><sub><b>David</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=hmnd" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.douglas-parker.com"><img src="https://avatars.githubusercontent.com/u/18235822?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Douglas Parker</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=douglasparker" title="Documentation">📖</a></td>
   </tr>
 </table>
 

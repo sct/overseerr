@@ -2,7 +2,8 @@ import { uniqWith } from 'lodash';
 import { getRepository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import SonarrAPI, { SonarrSeries } from '../../api/sonarr';
-import TheMovieDb, { TmdbTvDetails } from '../../api/themoviedb';
+import TheMovieDb from '../../api/themoviedb';
+import { TmdbTvDetails } from '../../api/themoviedb/interfaces';
 import { MediaStatus, MediaType } from '../../constants/media';
 import Media from '../../entity/Media';
 import Season from '../../entity/Season';
@@ -242,9 +243,19 @@ class JobSonarrSync {
         isAllSeasons || shouldStayAvailable
           ? MediaStatus.AVAILABLE
           : media.seasons.some(
-              (season) => season.status !== MediaStatus.UNKNOWN
+              (season) =>
+                season[server4k ? 'status4k' : 'status'] ===
+                  MediaStatus.AVAILABLE ||
+                season[server4k ? 'status4k' : 'status'] ===
+                  MediaStatus.PARTIALLY_AVAILABLE
             )
           ? MediaStatus.PARTIALLY_AVAILABLE
+          : media.seasons.some(
+              (season) =>
+                season[server4k ? 'status4k' : 'status'] ===
+                MediaStatus.PROCESSING
+            )
+          ? MediaStatus.PROCESSING
           : MediaStatus.UNKNOWN;
 
       await mediaRepository.save(media);

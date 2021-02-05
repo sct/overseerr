@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
 import useSWR from 'swr';
 import { useToasts } from 'react-toast-notifications';
-import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
+import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
 import axios from 'axios';
 import {
   MediaStatus,
@@ -103,6 +103,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           serverId: requestOverrides?.server,
           profileId: requestOverrides?.profile,
           rootFolder: requestOverrides?.folder,
+          userId: requestOverrides?.user?.id,
           seasons: selectedSeasons,
         });
       } else {
@@ -150,6 +151,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           serverId: requestOverrides.server,
           profileId: requestOverrides.profile,
           rootFolder: requestOverrides.folder,
+          userId: requestOverrides?.user?.id,
         };
       }
       const response = await axios.post<MediaRequest>('/api/v1/request', {
@@ -391,7 +393,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                             toggleAllSeasons();
                           }
                         }}
-                        className="relative inline-flex items-center justify-center flex-shrink-0 w-10 h-5 cursor-pointer group focus:outline-none"
+                        className="relative inline-flex items-center justify-center flex-shrink-0 w-10 h-5 pt-2 cursor-pointer focus:outline-none"
                       >
                         <span
                           aria-hidden="true"
@@ -451,7 +453,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                   toggleSeason(season.seasonNumber);
                                 }
                               }}
-                              className={`group relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none ${
+                              className={`pt-2 relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none ${
                                 mediaSeason ||
                                 (!!seasonRequest &&
                                   !editingSeasons.includes(season.seasonNumber))
@@ -550,7 +552,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           </div>
         </div>
       </div>
-      {hasPermission(Permission.REQUEST_ADVANCED) && (
+      {(hasPermission(Permission.REQUEST_ADVANCED) ||
+        hasPermission(Permission.MANAGE_REQUESTS)) && (
         <div className="mt-4">
           <AdvancedRequester
             type="tv"
@@ -559,6 +562,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
               (keyword) => keyword.id === ANIME_KEYWORD_ID
             )}
             onChange={(overrides) => setRequestOverrides(overrides)}
+            requestUser={editRequest?.requestedBy}
             defaultOverrides={
               editRequest
                 ? {

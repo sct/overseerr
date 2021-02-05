@@ -58,7 +58,7 @@ class SlackAgent
     payload: NotificationPayload
   ): SlackBlockEmbed {
     const settings = getSettings();
-    let header = 'Overseerr';
+    let header = settings.main.applicationTitle;
     let actionUrl: string | undefined;
 
     const fields: EmbedField[] = [];
@@ -191,7 +191,7 @@ class SlackAgent
             value: 'open_overseerr',
             text: {
               type: 'plain_text',
-              text: 'Open Overseerr',
+              text: `Open ${settings.main.applicationTitle}`,
             },
           },
         ],

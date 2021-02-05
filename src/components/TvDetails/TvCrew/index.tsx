@@ -9,6 +9,7 @@ import Error from '../../../pages/_error';
 import Header from '../../Common/Header';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PersonCard from '../../PersonCard';
+import PageTitle from '../../Common/PageTitle';
 
 const messages = defineMessages({
   fullseriescrew: 'Full Series Crew',
@@ -32,15 +33,20 @@ const TvCrew: React.FC = () => {
 
   return (
     <>
-      <Header
-        subtext={
-          <Link href={`/tv/${data.id}`}>
-            <a className="hover:underline">{data.name}</a>
-          </Link>
-        }
-      >
-        {intl.formatMessage(messages.fullseriescrew)}
-      </Header>
+      <PageTitle
+        title={[intl.formatMessage(messages.fullseriescrew), data.name]}
+      />
+      <div className="mt-1 mb-5">
+        <Header
+          subtext={
+            <Link href={`/tv/${data.id}`}>
+              <a className="hover:underline">{data.name}</a>
+            </Link>
+          }
+        >
+          {intl.formatMessage(messages.fullseriescrew)}
+        </Header>
+      </div>
       <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
         {data?.credits.crew.map((person, index) => {
           return (

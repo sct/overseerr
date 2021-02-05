@@ -1,6 +1,7 @@
-import Axios, { AxiosInstance } from 'axios';
+import cacheManager from '../lib/cache';
 import { RadarrSettings } from '../lib/settings';
 import logger from '../logger';
+import ExternalAPI from './externalapi';
 
 interface RadarrMovieOptions {
   title: string;
@@ -73,21 +74,23 @@ interface QueueResponse {
   records: QueueItem[];
 }
 
-class RadarrAPI {
+class RadarrAPI extends ExternalAPI {
   static buildRadarrUrl(radarrSettings: RadarrSettings, path?: string): string {
     return `${radarrSettings.useSsl ? 'https' : 'http'}://${
       radarrSettings.hostname
     }:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}${path}`;
   }
 
-  private axios: AxiosInstance;
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
-    this.axios = Axios.create({
-      baseURL: url,
-      params: {
+    super(
+      url,
+      {
         apikey: apiKey,
       },
-    });
+      {
+        nodeCache: cacheManager.getCache('radarr').data,
+      }
+    );
   }
 
   public getMovies = async (): Promise<RadarrMovie[]> => {
@@ -238,9 +241,13 @@ class RadarrAPI {
 
   public getProfiles = async (): Promise<RadarrProfile[]> => {
     try {
-      const response = await this.axios.get<RadarrProfile[]>(`/profile`);
+      const data = await this.getRolling<RadarrProfile[]>(
+        `/profile`,
+        undefined,
+        3600
+      );
 
-      return response.data;
+      return data;
     } catch (e) {
       throw new Error(`[Radarr] Failed to retrieve profiles: ${e.message}`);
     }
@@ -248,9 +255,13 @@ class RadarrAPI {
 
   public getRootFolders = async (): Promise<RadarrRootFolder[]> => {
     try {
-      const response = await this.axios.get<RadarrRootFolder[]>(`/rootfolder`);
+      const data = await this.getRolling<RadarrRootFolder[]>(
+        `/rootfolder`,
+        undefined,
+        3600
+      );
 
-      return response.data;
+      return data;
     } catch (e) {
       throw new Error(`[Radarr] Failed to retrieve root folders: ${e.message}`);
     }

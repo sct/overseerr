@@ -1,4 +1,4 @@
-FROM node:12.18-alpine AS BUILD_IMAGE
+FROM node:14.15-alpine AS BUILD_IMAGE
 
 ARG COMMIT_TAG
 ENV COMMIT_TAG=${COMMIT_TAG}
@@ -11,24 +11,22 @@ RUN yarn --frozen-lockfile && \
 
 # remove development dependencies
 RUN yarn install --production --ignore-scripts --prefer-offline
-RUN yarn cache clean
 
-FROM node:12.18-alpine
+RUN rm -rf src && \
+  rm -rf server
 
-ARG COMMIT_TAG
-ENV COMMIT_TAG=${COMMIT_TAG}
-
-RUN apk add tzdata
-
-COPY . /app
-WORKDIR /app
-
-# copy from build image
-COPY --from=BUILD_IMAGE /app/dist ./dist
-COPY --from=BUILD_IMAGE /app/.next ./.next
-COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
+RUN touch config/DOCKER
 
 RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
+
+
+FROM node:14.15-alpine
+
+RUN apk add --no-cache tzdata
+
+# copy from build image
+COPY --from=BUILD_IMAGE /app /app
+WORKDIR /app
 
 CMD yarn start
 

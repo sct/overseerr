@@ -20,31 +20,33 @@ import { SettingsProvider } from '../context/SettingsContext';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocales): Promise<any> => {
   switch (locale) {
-    case 'ja':
-      return import('../i18n/locale/ja.json');
-    case 'fr':
-      return import('../i18n/locale/fr.json');
-    case 'nb-NO':
-      return import('../i18n/locale/nb_NO.json');
     case 'de':
       return import('../i18n/locale/de.json');
-    case 'ru':
-      return import('../i18n/locale/ru.json');
-    case 'nl':
-      return import('../i18n/locale/nl.json');
     case 'es':
       return import('../i18n/locale/es.json');
+    case 'fr':
+      return import('../i18n/locale/fr.json');
     case 'it':
       return import('../i18n/locale/it.json');
+    case 'ja':
+      return import('../i18n/locale/ja.json');
+    case 'hu':
+      return import('../i18n/locale/hu.json');
+    case 'nb-NO':
+      return import('../i18n/locale/nb_NO.json');
+    case 'nl':
+      return import('../i18n/locale/nl.json');
     case 'pt-BR':
       return import('../i18n/locale/pt_BR.json');
     case 'pt-PT':
       return import('../i18n/locale/pt_PT.json');
+    case 'ru':
+      return import('../i18n/locale/ru.json');
     case 'sr':
       return import('../i18n/locale/sr.json');
     case 'sv':
       return import('../i18n/locale/sv.json');
-    case 'zh-Hant':
+    case 'zh-TW':
       return import('../i18n/locale/zh_Hant.json');
     default:
       return import('../i18n/locale/en.json');
@@ -137,9 +139,11 @@ CoreApp.getInitialProps = async (initialProps) => {
   let user = undefined;
   let currentSettings: PublicSettingsResponse = {
     initialized: false,
+    applicationTitle: '',
     hideAvailable: false,
     movie4kEnabled: false,
     series4kEnabled: false,
+    localLogin: true,
   };
 
   let locale = 'en';

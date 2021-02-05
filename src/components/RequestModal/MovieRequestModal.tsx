@@ -87,6 +87,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           serverId: requestOverrides.server,
           profileId: requestOverrides.profile,
           rootFolder: requestOverrides.folder,
+          userId: requestOverrides.user?.id,
         };
       }
       const response = await axios.post<MediaRequest>('/api/v1/request', {
@@ -169,6 +170,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         serverId: requestOverrides?.server,
         profileId: requestOverrides?.profile,
         rootFolder: requestOverrides?.folder,
+        userId: requestOverrides?.user?.id,
       });
 
       addToast(<span>{intl.formatMessage(messages.requestedited)}</span>, {
@@ -227,11 +229,13 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
             username: activeRequest.requestedBy.displayName,
           }
         )}
-        {hasPermission(Permission.REQUEST_ADVANCED) && (
+        {(hasPermission(Permission.REQUEST_ADVANCED) ||
+          hasPermission(Permission.MANAGE_REQUESTS)) && (
           <div className="mt-4">
             <AdvancedRequester
               type="movie"
               is4k={is4k}
+              requestUser={editRequest?.requestedBy}
               defaultOverrides={
                 editRequest
                   ? {
@@ -279,7 +283,8 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           </Alert>
         </p>
       )}
-      {hasPermission(Permission.REQUEST_ADVANCED) && (
+      {(hasPermission(Permission.REQUEST_ADVANCED) ||
+        hasPermission(Permission.MANAGE_REQUESTS)) && (
         <AdvancedRequester
           type="movie"
           is4k={is4k}

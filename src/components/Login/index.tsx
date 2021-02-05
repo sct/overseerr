@@ -9,11 +9,14 @@ import Transition from '../Transition';
 import LanguagePicker from '../Layout/LanguagePicker';
 import LocalLogin from './LocalLogin';
 import Accordion from '../Common/Accordion';
+import useSettings from '../../hooks/useSettings';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
+  signin: 'Sign In',
   signinheader: 'Sign in to continue',
   signinwithplex: 'Use your Plex account',
-  signinwithoverseerr: 'Use your Overseerr account',
+  signinwithoverseerr: 'Use your {applicationTitle} account',
 });
 
 const Login: React.FC = () => {
@@ -23,6 +26,7 @@ const Login: React.FC = () => {
   const [authToken, setAuthToken] = useState<string | undefined>(undefined);
   const { user, revalidate } = useUser();
   const router = useRouter();
+  const settings = useSettings();
 
   // Effect that is triggered when the `authToken` comes back from the Plex OAuth
   // We take the token and attempt to login. If we get a success message, we will
@@ -57,6 +61,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
+      <PageTitle title={intl.formatMessage(messages.signin)} />
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
@@ -71,11 +76,7 @@ const Login: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
-        <img
-          src="/logo.png"
-          className="w-auto mx-auto max-h-32"
-          alt="Overseerr Logo"
-        />
+        <img src="/logo.png" className="w-auto mx-auto max-h-32" alt="Logo" />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
           <FormattedMessage {...messages.signinheader} />
         </h2>
@@ -124,10 +125,14 @@ const Login: React.FC = () => {
               {({ openIndexes, handleClick, AccordionContent }) => (
                 <>
                   <button
-                    className={`text-sm w-full focus:outline-none transition-colors duration-200 py-2 bg-gray-800 hover:bg-gray-700 bg-opacity-70 hover:bg-opacity-70 sm:rounded-t-lg text-center text-gray-400 ${
+                    className={`w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 sm:rounded-t-lg ${
                       openIndexes.includes(0) && 'text-indigo-500'
+                    } ${
+                      settings.currentSettings.localLogin &&
+                      'hover:bg-gray-700 hover:cursor-pointer'
                     }`}
                     onClick={() => handleClick(0)}
+                    disabled={!settings.currentSettings.localLogin}
                   >
                     {intl.formatMessage(messages.signinwithplex)}
                   </button>
@@ -139,21 +144,28 @@ const Login: React.FC = () => {
                       />
                     </div>
                   </AccordionContent>
-                  <button
-                    className={`text-sm w-full focus:outline-none transition-colors duration-200 py-2 bg-gray-800 hover:bg-gray-700 bg-opacity-70 hover:bg-opacity-70 text-center text-gray-400 ${
-                      openIndexes.includes(1)
-                        ? 'text-indigo-500'
-                        : 'sm:rounded-b-lg '
-                    }`}
-                    onClick={() => handleClick(1)}
-                  >
-                    {intl.formatMessage(messages.signinwithoverseerr)}
-                  </button>
-                  <AccordionContent isOpen={openIndexes.includes(1)}>
-                    <div className="px-10 py-8">
-                      <LocalLogin revalidate={revalidate} />
+                  {settings.currentSettings.localLogin && (
+                    <div>
+                      <button
+                        className={`w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 sm:rounded-t-lg hover:bg-gray-700 hover:cursor-pointer ${
+                          openIndexes.includes(1)
+                            ? 'text-indigo-500'
+                            : 'sm:rounded-b-lg '
+                        }`}
+                        onClick={() => handleClick(1)}
+                      >
+                        {intl.formatMessage(messages.signinwithoverseerr, {
+                          applicationTitle:
+                            settings.currentSettings.applicationTitle,
+                        })}
+                      </button>
+                      <AccordionContent isOpen={openIndexes.includes(1)}>
+                        <div className="px-10 py-8">
+                          <LocalLogin revalidate={revalidate} />
+                        </div>
+                      </AccordionContent>
                     </div>
-                  </AccordionContent>
+                  )}
                 </>
               )}
             </Accordion>

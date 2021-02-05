@@ -179,20 +179,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
             leaveTo="opacity-0"
           >
             <div className="absolute top-0 bottom-0 left-0 right-0 z-40 flex items-center justify-center text-white bg-gray-800 bg-opacity-75 rounded-lg">
-              <svg
-                className="w-10 h-10 animate-spin"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
+              <Spinner className="w-10 h-10" />
             </div>
           </Transition>
 
@@ -254,7 +241,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       e.preventDefault();
                       setShowRequestModal(true);
                     }}
-                    className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-500 rounded-sm h-7 hover:bg-indigo-400 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
+                    className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-600 rounded-md h-7 hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
                   >
                     <svg
                       className="w-4 mr-1"

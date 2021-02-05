@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -18,6 +17,7 @@ import Modal from '../Common/Modal';
 import Slider from '../Slider';
 import TitleCard from '../TitleCard';
 import Transition from '../Transition';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   overviewunavailable: 'Overview unavailable.',
@@ -108,9 +108,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
-      <Head>
-        <title>{data.name} - Overseerr</title>
-      </Head>
+      <PageTitle title={data.name} />
       <Transition
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"

@@ -115,7 +115,7 @@ server {
     # HTTP Strict Transport Security
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
     # Reduce XSS risks (Content-Security-Policy) - uncomment to use and add URLs whenever necessary
-    # add_header Content-Security-Policy "default-src 'self'; connect-src 'self' https://plex.tv; style-src 'self' 'unsafe-inline' https://rsms.me/inter/inter.css; script-src 'self'; img-src 'self' data: https://plex.tv https://assets.plex.tv https://gravatar.com https://i2.wp.com https://image.tmdb.org; font-src 'self' https://rsms.me/inter/font-files/" always;
+    # add_header Content-Security-Policy "default-src 'self'; connect-src 'self' https://plex.tv; style-src 'self' 'unsafe-inline' https://rsms.me/inter/inter.css; script-src 'self' 'unsafe-inline'; img-src 'self' data: https://plex.tv https://assets.plex.tv https://gravatar.com https://secure.gravatar.com https://i2.wp.com https://image.tmdb.org; font-src 'self' https://rsms.me/inter/font-files/" always;
     # Prevent some categories of XSS attacks (X-XSS-Protection)
     add_header X-XSS-Protection "1; mode=block" always;
     # Provide clickjacking protection (X-Frame-Options)

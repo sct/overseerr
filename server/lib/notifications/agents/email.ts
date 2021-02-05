@@ -36,7 +36,7 @@ class EmailAgent
 
   private async sendMediaRequestEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const applicationUrl = getSettings().main.applicationUrl;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
@@ -65,6 +65,7 @@ class EmailAgent
                 ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
                 : undefined,
               applicationUrl,
+              applicationTitle,
               requestType: 'New Request',
             },
           });
@@ -81,7 +82,7 @@ class EmailAgent
 
   private async sendMediaFailedEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const applicationUrl = getSettings().main.applicationUrl;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
@@ -111,6 +112,7 @@ class EmailAgent
                 ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
                 : undefined,
               applicationUrl,
+              applicationTitle,
               requestType: 'Failed Request',
             },
           });
@@ -127,7 +129,7 @@ class EmailAgent
 
   private async sendMediaApprovedEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const applicationUrl = getSettings().main.applicationUrl;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const email = new PreparedEmail();
 
@@ -149,6 +151,7 @@ class EmailAgent
             ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
             : undefined,
           applicationUrl,
+          applicationTitle,
           requestType: 'Request Approved',
         },
       });
@@ -164,7 +167,7 @@ class EmailAgent
 
   private async sendMediaDeclinedEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const applicationUrl = getSettings().main.applicationUrl;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const email = new PreparedEmail();
 
@@ -186,6 +189,7 @@ class EmailAgent
             ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
             : undefined,
           applicationUrl,
+          applicationTitle,
           requestType: 'Request Declined',
         },
       });
@@ -201,7 +205,7 @@ class EmailAgent
 
   private async sendMediaAvailableEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const applicationUrl = getSettings().main.applicationUrl;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const email = new PreparedEmail();
 
@@ -223,6 +227,7 @@ class EmailAgent
             ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
             : undefined,
           applicationUrl,
+          applicationTitle,
           requestType: 'Now Available',
         },
       });
@@ -238,7 +243,7 @@ class EmailAgent
 
   private async sendTestEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const applicationUrl = getSettings().main.applicationUrl;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const email = new PreparedEmail();
 
@@ -250,6 +255,7 @@ class EmailAgent
         locals: {
           body: payload.message,
           applicationUrl,
+          applicationTitle,
         },
       });
       return true;

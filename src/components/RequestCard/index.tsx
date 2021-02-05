@@ -17,7 +17,6 @@ import globalMessages from '../../i18n/globalMessages';
 import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
-  requestedby: 'Requested by {username}',
   seasons: 'Seasons',
   all: 'All',
 });
@@ -106,10 +105,15 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             {isMovie(title) ? title.title : title.name}
           </Link>
         </h2>
-        <div className="text-xs truncate sm:text-sm">
-          {intl.formatMessage(messages.requestedby, {
-            username: requestData.requestedBy.displayName,
-          })}
+        <div className="flex items-center">
+          <img
+            src={requestData.requestedBy.avatar}
+            alt=""
+            className="w-4 mr-1 rounded-full sm:mr-2 sm:w-5"
+          />
+          <span className="text-xs truncate sm:text-sm">
+            {requestData.requestedBy.displayName}
+          </span>
         </div>
         {requestData.media.status && (
           <div className="mt-1 sm:mt-2">

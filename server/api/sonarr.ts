@@ -1,6 +1,7 @@
-import Axios, { AxiosInstance } from 'axios';
+import cacheManager from '../lib/cache';
 import { SonarrSettings } from '../lib/settings';
 import logger from '../logger';
+import ExternalAPI from './externalapi';
 
 interface SonarrSeason {
   seasonNumber: number;
@@ -119,21 +120,23 @@ interface AddSeriesOptions {
   searchNow?: boolean;
 }
 
-class SonarrAPI {
+class SonarrAPI extends ExternalAPI {
   static buildSonarrUrl(sonarrSettings: SonarrSettings, path?: string): string {
     return `${sonarrSettings.useSsl ? 'https' : 'http'}://${
       sonarrSettings.hostname
     }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}${path}`;
   }
 
-  private axios: AxiosInstance;
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
-    this.axios = Axios.create({
-      baseURL: url,
-      params: {
+    super(
+      url,
+      {
         apikey: apiKey,
       },
-    });
+      {
+        nodeCache: cacheManager.getCache('sonarr').data,
+      }
+    );
   }
 
   public async getSeries(): Promise<SonarrSeries[]> {
@@ -280,9 +283,13 @@ class SonarrAPI {
 
   public async getProfiles(): Promise<SonarrProfile[]> {
     try {
-      const response = await this.axios.get<SonarrProfile[]>('/profile');
+      const data = await this.getRolling<SonarrProfile[]>(
+        '/profile',
+        undefined,
+        3600
+      );
 
-      return response.data;
+      return data;
     } catch (e) {
       logger.error('Something went wrong while retrieving Sonarr profiles.', {
         label: 'Sonarr API',
@@ -294,9 +301,13 @@ class SonarrAPI {
 
   public async getRootFolders(): Promise<SonarrRootFolder[]> {
     try {
-      const response = await this.axios.get<SonarrRootFolder[]>('/rootfolder');
+      const data = await this.getRolling<SonarrRootFolder[]>(
+        '/rootfolder',
+        undefined,
+        3600
+      );
 
-      return response.data;
+      return data;
     } catch (e) {
       logger.error(
         'Something went wrong while retrieving Sonarr root folders.',

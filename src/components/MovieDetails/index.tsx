@@ -27,7 +27,6 @@ import RTAudFresh from '../../assets/rt_aud_fresh.svg';
 import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import Error from '../../pages/_error';
-import Head from 'next/head';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import StatusBadge from '../StatusBadge';
@@ -36,6 +35,8 @@ import MediaSlider from '../MediaSlider';
 import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import PageTitle from '../Common/PageTitle';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -81,6 +82,7 @@ interface MovieDetailsProps {
 }
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
+  const settings = useSettings();
   const { hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
@@ -137,10 +139,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
-      <Head>
-        <title>{data.title} - Overseerr</title>
-      </Head>
-
+      <PageTitle title={data.title} />
       <SlideOver
         show={showManager}
         title={intl.formatMessage(messages.manageModalTitle)}
@@ -163,57 +162,73 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     <DownloadBlock downloadItem={status} />
                   </li>
                 ))}
+                {data.mediaInfo?.downloadStatus4k?.map((status, index) => (
+                  <li
+                    key={`dl-status-${status.externalId}-${index}`}
+                    className="border-b border-gray-700 last:border-b-0"
+                  >
+                    <DownloadBlock downloadItem={status} is4k />
+                  </li>
+                ))}
               </ul>
             </div>
           </>
         )}
         {data?.mediaInfo &&
           (data.mediaInfo.status !== MediaStatus.AVAILABLE ||
-            data.mediaInfo.status4k !== MediaStatus.AVAILABLE) && (
-            <div className="flex flex-col mb-6 sm:flex-row flex-nowrap">
+            (data.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
+              settings.currentSettings.movie4kEnabled)) && (
+            <div className="mb-6">
               {data?.mediaInfo &&
                 data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
-                  <Button
-                    onClick={() => markAvailable()}
-                    className="w-full mb-2 sm:mb-0 sm:mr-1 last:mr-0"
-                    buttonType="success"
-                  >
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
+                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
+                    <Button
+                      onClick={() => markAvailable()}
+                      className="w-full sm:mb-0"
+                      buttonType="success"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span>{intl.formatMessage(messages.markavailable)}</span>
-                  </Button>
+                      <svg
+                        className="w-5 h-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>{intl.formatMessage(messages.markavailable)}</span>
+                    </Button>
+                  </div>
                 )}
               {data?.mediaInfo &&
-                data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
-                  <Button
-                    onClick={() => markAvailable(true)}
-                    className="w-full sm:ml-1 first:ml-0"
-                    buttonType="success"
-                  >
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
+                data?.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
+                settings.currentSettings.movie4kEnabled && (
+                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
+                    <Button
+                      onClick={() => markAvailable(true)}
+                      className="w-full sm:mb-0"
+                      buttonType="success"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span>{intl.formatMessage(messages.mark4kavailable)}</span>
-                  </Button>
+                      <svg
+                        className="w-5 h-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>
+                        {intl.formatMessage(messages.mark4kavailable)}
+                      </span>
+                    </Button>
+                  </div>
                 )}
             </div>
           )}
@@ -403,10 +418,17 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 }
               }}
             >
-              {data.mediaInfo?.plexUrl ||
-              (data.mediaInfo?.plexUrl4k &&
-                (hasPermission(Permission.REQUEST_4K) ||
-                  hasPermission(Permission.REQUEST_4K_MOVIE))) ? (
+              {(
+                trailerUrl
+                  ? data.mediaInfo?.plexUrl ||
+                    (data.mediaInfo?.plexUrl4k &&
+                      (hasPermission(Permission.REQUEST_4K) ||
+                        hasPermission(Permission.REQUEST_4K_MOVIE)))
+                  : data.mediaInfo?.plexUrl &&
+                    data.mediaInfo?.plexUrl4k &&
+                    (hasPermission(Permission.REQUEST_4K) ||
+                      hasPermission(Permission.REQUEST_4K_MOVIE))
+              ) ? (
                 <>
                   {data.mediaInfo?.plexUrl &&
                     data.mediaInfo?.plexUrl4k &&
@@ -421,17 +443,16 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         {intl.formatMessage(messages.play4konplex)}
                       </ButtonWithDropdown.Item>
                     )}
-                  {(data.mediaInfo?.plexUrl || data.mediaInfo?.plexUrl4k) &&
-                    trailerUrl && (
-                      <ButtonWithDropdown.Item
-                        onClick={() => {
-                          window.open(trailerUrl, '_blank');
-                        }}
-                        buttonType="ghost"
-                      >
-                        {intl.formatMessage(messages.watchtrailer)}
-                      </ButtonWithDropdown.Item>
-                    )}
+                  {trailerUrl && (
+                    <ButtonWithDropdown.Item
+                      onClick={() => {
+                        window.open(trailerUrl, '_blank');
+                      }}
+                      buttonType="ghost"
+                    >
+                      {intl.formatMessage(messages.watchtrailer)}
+                    </ButtonWithDropdown.Item>
+                  )}
                 </>
               ) : null}
             </ButtonWithDropdown>
@@ -671,6 +692,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <ExternalLinkBlock
               mediaType="movie"
               tmdbId={data.id}
+              tvdbId={data.externalIds.tvdbId}
               imdbId={data.externalIds.imdbId}
               rtUrl={ratingData?.url}
               plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}

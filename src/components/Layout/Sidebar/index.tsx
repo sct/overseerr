@@ -176,7 +176,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                     <div className="flex-shrink-0 flex items-center px-4">
                       <span className="text-xl text-gray-50">
                         <a href="/">
-                          <img src="/logo.png" alt="Overseerr Logo" />
+                          <img src="/logo.png" alt="Logo" />
                         </a>
                       </span>
                     </div>
@@ -201,7 +201,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                               }}
                               role="button"
                               tabIndex={0}
-                              className={`group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
+                              className={`flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
                                 ${
                                   router.pathname.match(
                                     sidebarLink.activeRegExp
@@ -238,7 +238,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
               <div className="flex items-center flex-shrink-0 px-4">
                 <span className="text-2xl text-gray-50">
                   <a href="/">
-                    <img src="/logo.png" alt="Overseerr Logo" />
+                    <img src="/logo.png" alt="Logo" />
                   </a>
                 </span>
               </div>
@@ -255,7 +255,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                       as={sidebarLink.as}
                     >
                       <a
-                        className={`group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
+                        className={`flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
                                 ${
                                   router.pathname.match(
                                     sidebarLink.activeRegExp

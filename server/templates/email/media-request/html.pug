@@ -54,7 +54,7 @@ div(role='article' aria-roledescription='email' aria-label='' lang='en')
               color: #a8aaaf;\
               text-decoration: none;\
               ')
-                | Overseerr
+                | #{applicationTitle}
           tr
             td(style='width: 100%' width='100%')
               table.sm-w-full(align='center' style='\
@@ -75,8 +75,8 @@ div(role='article' aria-roledescription='email' aria-label='' lang='en')
                         tr
                           td
                             table(cellpadding='0' cellspacing='0' role='presentation')
-                              img(src=imageUrl alt='')
-                              p
+                              a(href=actionUrl style='color: #3869d4')
+                                img(src=imageUrl alt='')
         p(style='\
         font-size: 16px;\
         line-height: 24px;\
@@ -92,7 +92,7 @@ div(role='article' aria-roledescription='email' aria-label='' lang='en')
         margin-bottom: 20px;\
         color: #51545e;\
         ')
-          a(href=actionUrl style='color: #3869d4') Open Media in Overseerr
+          a(href=actionUrl style='color: #3869d4') Open in #{applicationTitle}
 tr
   td
     table.sm-w-full(align='center' style='\
@@ -111,4 +111,4 @@ tr
           text-align: center;\
           color: #a8aaaf;\
           ')
-            | Overseerr.
+            | #{applicationTitle}

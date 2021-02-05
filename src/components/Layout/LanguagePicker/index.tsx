@@ -17,61 +17,65 @@ type AvailableLanguageObject = Record<
 >;
 
 const availableLanguages: AvailableLanguageObject = {
+  de: {
+    code: 'de',
+    display: 'Deutsch',
+  },
   en: {
     code: 'en',
     display: 'English',
   },
-  ja: {
-    code: 'ja',
-    display: 'Japanese',
+  es: {
+    code: 'es',
+    display: 'Español',
   },
   fr: {
     code: 'fr',
     display: 'Français',
   },
-  'nb-NO': {
-    code: 'nb-NO',
-    display: 'Norwegian Bokmål',
+  it: {
+    code: 'it',
+    display: 'Italiano',
   },
-  de: {
-    code: 'de',
-    display: 'German',
-  },
-  ru: {
-    code: 'ru',
-    display: 'Russian',
+  hu: {
+    code: 'hu',
+    display: 'Magyar',
   },
   nl: {
     code: 'nl',
     display: 'Nederlands',
   },
-  es: {
-    code: 'es',
-    display: 'Spanish',
-  },
-  it: {
-    code: 'it',
-    display: 'Italian',
+  'nb-NO': {
+    code: 'nb-NO',
+    display: 'Norsk Bokmål',
   },
   'pt-BR': {
     code: 'pt-BR',
-    display: 'Portuguese (Brazil)',
+    display: 'Português (Brasil)',
   },
   'pt-PT': {
     code: 'pt-PT',
-    display: 'Portuguese (Portugal)',
-  },
-  sr: {
-    code: 'sr',
-    display: 'Serbian',
+    display: 'Português (Portugal)',
   },
   sv: {
     code: 'sv',
-    display: 'Swedish',
+    display: 'Svenska',
   },
-  'zh-Hant': {
-    code: 'zh-Hant',
-    display: 'Chinese (Traditional)',
+  ru: {
+    code: 'ru',
+    display: 'pусский',
+  },
+  sr: {
+    code: 'sr',
+    display: 'српски језик‬',
+  },
+  ja: {
+    code: 'ja',
+    display: '日本語',
+  },
+  'zh-TW': {
+    code: 'zh-TW',
+    display: '中文（臺灣）',
   },
 };
 
@@ -113,10 +117,10 @@ const LanguagePicker: React.FC = () => {
         leaveTo="transform opacity-0 scale-95"
       >
         <div
-          className="absolute right-0 w-48 mt-2 origin-top-right rounded-md shadow-lg"
+          className="absolute right-0 w-56 mt-2 origin-top-right rounded-md shadow-lg"
           ref={dropdownRef}
         >
-          <div className="px-2 py-2 bg-gray-700 rounded-md ring-1 ring-black ring-opacity-5">
+          <div className="px-3 py-2 bg-gray-700 rounded-md ring-1 ring-black ring-opacity-5">
             <div>
               <label
                 htmlFor="language"
@@ -126,7 +130,7 @@ const LanguagePicker: React.FC = () => {
               </label>
               <select
                 id="language"
-                className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white bg-gray-700 border-gray-600 form-select focus:outline-none focus:ring-indigo focus:border-blue-800 sm:text-sm sm:leading-5"
+                className="rounded-md"
                 onChange={(e) =>
                   setLocale && setLocale(e.target.value as AvailableLocales)
                 }

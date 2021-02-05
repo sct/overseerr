@@ -92,8 +92,8 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
       >
         {text}
       </button>
-      <span className="relative z-10 block -ml-px">
-        {children && (
+      {children && (
+        <span className="relative z-10 block -ml-px">
           <button
             type="button"
             className={`relative inline-flex items-center h-full px-2 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out rounded-r-md focus:z-10 ${styleClasses.dropdownSideButtonClasses}`}
@@ -117,25 +117,25 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
               </svg>
             )}
           </button>
-        )}
-        <Transition
-          show={isOpen}
-          enter="transition ease-out duration-100 opacity-0"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75 opacity-100"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <div className="absolute right-0 w-56 mt-2 -mr-1 origin-top-right rounded-md shadow-lg">
-            <div
-              className={`rounded-md ring-1 ring-black ring-opacity-5 ${styleClasses.dropdownClasses}`}
-            >
-              <div className="py-1">{children}</div>
+          <Transition
+            show={isOpen}
+            enter="transition ease-out duration-100 opacity-0"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75 opacity-100"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <div className="absolute right-0 w-56 mt-2 -mr-1 origin-top-right rounded-md shadow-lg">
+              <div
+                className={`rounded-md ring-1 ring-black ring-opacity-5 ${styleClasses.dropdownClasses}`}
+              >
+                <div className="py-1">{children}</div>
+              </div>
             </div>
-          </div>
-        </Transition>
-      </span>
+          </Transition>
+        </span>
+      )}
     </span>
   );
 };

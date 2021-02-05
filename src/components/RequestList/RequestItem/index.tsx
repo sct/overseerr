@@ -27,7 +27,6 @@ import { useToasts } from 'react-toast-notifications';
 import RequestModal from '../../RequestModal';
 
 const messages = defineMessages({
-  requestedby: 'Requested by {username}',
   seasons: 'Seasons',
   notavailable: 'N/A',
   failedretry: 'Something went wrong while retrying the request.',
@@ -102,7 +101,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
   if (!title && !error) {
     return (
-      <tr className="w-full h-24 bg-gray-800 animate-pulse" ref={ref}>
+      <tr className="w-full h-24 animate-pulse" ref={ref}>
         <td colSpan={6}></td>
       </tr>
     );
@@ -110,14 +109,14 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
   if (!title || !requestData) {
     return (
-      <tr className="w-full h-24 bg-gray-800 animate-pulse">
+      <tr className="w-full h-24 animate-pulse">
         <td colSpan={6}></td>
       </tr>
     );
   }
 
   return (
-    <tr className="relative w-full h-24 p-2 text-white bg-gray-800">
+    <tr className="relative w-full h-24 p-2">
       <RequestModal
         show={showEditModal}
         tmdbId={request.media.tmdbId}
@@ -163,10 +162,15 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 {isMovie(title) ? title.title : title.name}
               </a>
             </Link>
-            <div className="text-sm">
-              {intl.formatMessage(messages.requestedby, {
-                username: requestData.requestedBy.displayName,
-              })}
+            <div className="flex items-center">
+              <img
+                src={requestData.requestedBy.avatar}
+                alt=""
+                className="w-5 mr-2 rounded-full"
+              />
+              <span className="text-sm">
+                {requestData.requestedBy.displayName}
+              </span>
             </div>
             {requestData.seasons.length > 0 && (
               <div className="items-center hidden mt-2 text-sm sm:flex">
@@ -193,7 +197,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
           </Badge>
         ) : (
           <StatusBadge
-            status={requestData.media.status}
+            status={requestData.media[requestData.is4k ? 'status4k' : 'status']}
             inProgress={
               (
                 requestData.media[
@@ -201,6 +205,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 ] ?? []
               ).length > 0
             }
+            is4k={requestData.is4k}
           />
         )}
       </Table.TD>
@@ -215,16 +220,24 @@ const RequestItem: React.FC<RequestItemProps> = ({
         <div className="flex flex-col">
           {requestData.modifiedBy ? (
             <span className="text-sm text-gray-300">
-              {requestData.modifiedBy.displayName}
-              (
-              <FormattedRelativeTime
-                value={Math.floor(
-                  (new Date(requestData.updatedAt).getTime() - Date.now()) /
-                    1000
-                )}
-                updateIntervalInSeconds={1}
-              />
-              )
+              <div className="flex items-center">
+                <img
+                  src={requestData.modifiedBy.avatar}
+                  alt=""
+                  className="w-5 mr-2 rounded-full"
+                />
+                <span className="text-sm">
+                  {requestData.modifiedBy.displayName} (
+                  <FormattedRelativeTime
+                    value={Math.floor(
+                      (new Date(requestData.updatedAt).getTime() - Date.now()) /
+                        1000
+                    )}
+                    updateIntervalInSeconds={1}
+                  />
+                  )
+                </span>
+              </div>
             </span>
           ) : (
             <span className="text-sm text-gray-300">N/A</span>

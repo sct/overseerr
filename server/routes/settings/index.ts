@@ -16,6 +16,7 @@ import { SettingsAboutResponse } from '../../interfaces/api/settingsInterfaces';
 import notificationRoutes from './notifications';
 import sonarrRoutes from './sonarr';
 import radarrRoutes from './radarr';
+import cacheManager, { AvailableCacheIds } from '../../lib/cache';
 
 const settingsRoutes = Router();
 
@@ -270,6 +271,32 @@ settingsRoutes.get<{ jobId: string }>(
       nextExecutionTime: scheduledJob.job.nextInvocation(),
       running: scheduledJob.running ? scheduledJob.running() : false,
     });
+  }
+);
+
+settingsRoutes.get('/cache', (req, res) => {
+  const caches = cacheManager.getAllCaches();
+
+  return res.status(200).json(
+    Object.values(caches).map((cache) => ({
+      id: cache.id,
+      name: cache.name,
+      stats: cache.getStats(),
+    }))
+  );
+});
+
+settingsRoutes.get<{ cacheId: AvailableCacheIds }>(
+  '/cache/:cacheId/flush',
+  (req, res, next) => {
+    const cache = cacheManager.getCache(req.params.cacheId);
+
+    if (cache) {
+      cache.flush();
+      return res.status(204).send();
+    }
+
+    next({ status: 404, message: 'Cache does not exist.' });
   }
 );
 

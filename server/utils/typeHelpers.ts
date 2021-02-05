@@ -2,7 +2,7 @@ import type {
   TmdbMovieResult,
   TmdbTvResult,
   TmdbPersonResult,
-} from '../api/themoviedb';
+} from '../api/themoviedb/interfaces';
 
 export const isMovie = (
   movie: TmdbMovieResult | TmdbTvResult | TmdbPersonResult

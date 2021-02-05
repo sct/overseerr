@@ -3,19 +3,19 @@ import {
   ProductionCompany,
   Cast,
   Crew,
-  mapCast,
+  mapAggregateCast,
   mapCrew,
   ExternalIds,
   mapExternalIds,
   Keyword,
   mapVideos,
 } from './common';
-import {
+import type {
   TmdbTvEpisodeResult,
   TmdbTvSeasonResult,
   TmdbTvDetails,
   TmdbSeasonWithEpisodes,
-} from '../api/themoviedb';
+} from '../api/themoviedb/interfaces';
 import type Media from '../entity/Media';
 import { Video } from './Movie';
 
@@ -193,7 +193,7 @@ export const mapTvDetails = (
     : undefined,
   posterPath: show.poster_path,
   credits: {
-    cast: show.credits.cast.map(mapCast),
+    cast: show.aggregate_credits.cast.map(mapAggregateCast),
     crew: show.credits.crew.map(mapCrew),
   },
   externalIds: mapExternalIds(show.external_ids),

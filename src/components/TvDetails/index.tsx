@@ -27,8 +27,7 @@ import RTRotten from '../../assets/rt_rotten.svg';
 import RTAudFresh from '../../assets/rt_aud_fresh.svg';
 import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
-import Head from 'next/head';
-import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb';
+import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import { Crew } from '../../../server/models/common';
@@ -38,9 +37,12 @@ import MediaSlider from '../MediaSlider';
 import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import PageTitle from '../Common/PageTitle';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
+  nextAirDate: 'Next Air Date',
   userrating: 'User Rating',
   status: 'Status',
   originallanguage: 'Original Language',
@@ -82,6 +84,7 @@ interface TvDetailsProps {
 }
 
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
+  const settings = useSettings();
   const { hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
@@ -156,9 +159,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
-      <Head>
-        <title>{data.name} - Overseerr</title>
-      </Head>
+      <PageTitle title={data.name} />
       <RequestModal
         tmdbId={data.id}
         show={showRequestModal}
@@ -191,20 +192,29 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     <DownloadBlock downloadItem={status} />
                   </li>
                 ))}
+                {data.mediaInfo?.downloadStatus4k?.map((status, index) => (
+                  <li
+                    key={`dl-status-${status.externalId}-${index}`}
+                    className="border-b border-gray-700 last:border-b-0"
+                  >
+                    <DownloadBlock downloadItem={status} is4k />
+                  </li>
+                ))}
               </ul>
             </div>
           </>
         )}
         {data?.mediaInfo &&
           (data.mediaInfo.status !== MediaStatus.AVAILABLE ||
-            data.mediaInfo.status4k !== MediaStatus.AVAILABLE) && (
+            (data.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
+              settings.currentSettings.series4kEnabled)) && (
             <div className="mb-6">
-              <div className="flex flex-col sm:flex-row flex-nowrap">
-                {data?.mediaInfo &&
-                  data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
+              {data?.mediaInfo &&
+                data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
+                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
                     <Button
                       onClick={() => markAvailable()}
-                      className="w-full mb-2 sm:mb-0 sm:mr-1 last:mr-0"
+                      className="w-full sm:mb-0"
                       buttonType="success"
                     >
                       <svg
@@ -221,12 +231,15 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       </svg>
                       <span>{intl.formatMessage(messages.markavailable)}</span>
                     </Button>
-                  )}
-                {data?.mediaInfo &&
-                  data?.mediaInfo.status4k !== MediaStatus.AVAILABLE && (
+                  </div>
+                )}
+              {data?.mediaInfo &&
+                data?.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
+                settings.currentSettings.series4kEnabled && (
+                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
                     <Button
                       onClick={() => markAvailable(true)}
-                      className="w-full sm:ml-1 first:ml-0"
+                      className="w-full sm:mb-0"
                       buttonType="success"
                     >
                       <svg
@@ -245,8 +258,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                         {intl.formatMessage(messages.mark4kavailable)}
                       </span>
                     </Button>
-                  )}
-              </div>
+                  </div>
+                )}
               <div className="mt-3 text-xs text-gray-300">
                 {intl.formatMessage(messages.allseasonsmarkedavailable)}
               </div>
@@ -433,35 +446,41 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 }
               }}
             >
-              {data.mediaInfo?.plexUrl ||
-              (data.mediaInfo?.plexUrl4k &&
-                (hasPermission(Permission.REQUEST_4K) ||
-                  hasPermission(Permission.REQUEST_4K_TV))) ? (
-                <>
-                  {data.mediaInfo?.plexUrl &&
+              {(
+                trailerUrl
+                  ? data.mediaInfo?.plexUrl ||
+                    (data.mediaInfo?.plexUrl4k &&
+                      (hasPermission(Permission.REQUEST_4K) ||
+                        hasPermission(Permission.REQUEST_4K_TV)))
+                  : data.mediaInfo?.plexUrl &&
                     data.mediaInfo?.plexUrl4k &&
                     (hasPermission(Permission.REQUEST_4K) ||
-                      hasPermission(Permission.REQUEST_4K_TV)) && (
-                      <ButtonWithDropdown.Item
-                        onClick={() => {
-                          window.open(data.mediaInfo?.plexUrl4k, '_blank');
-                        }}
-                        buttonType="ghost"
-                      >
-                        {intl.formatMessage(messages.play4konplex)}
-                      </ButtonWithDropdown.Item>
-                    )}
-                  {(data.mediaInfo?.plexUrl || data.mediaInfo?.plexUrl4k) &&
-                    trailerUrl && (
-                      <ButtonWithDropdown.Item
-                        onClick={() => {
-                          window.open(trailerUrl, '_blank');
-                        }}
-                        buttonType="ghost"
-                      >
-                        {intl.formatMessage(messages.watchtrailer)}
-                      </ButtonWithDropdown.Item>
-                    )}
+                      hasPermission(Permission.REQUEST_4K_TV))
+              ) ? (
+                <>
+                  {data.mediaInfo?.plexUrl &&
+                  data.mediaInfo?.plexUrl4k &&
+                  (hasPermission(Permission.REQUEST_4K) ||
+                    hasPermission(Permission.REQUEST_4K_TV)) ? (
+                    <ButtonWithDropdown.Item
+                      onClick={() => {
+                        window.open(data.mediaInfo?.plexUrl4k, '_blank');
+                      }}
+                      buttonType="ghost"
+                    >
+                      {intl.formatMessage(messages.play4konplex)}
+                    </ButtonWithDropdown.Item>
+                  ) : null}
+                  {trailerUrl ? (
+                    <ButtonWithDropdown.Item
+                      onClick={() => {
+                        window.open(trailerUrl, '_blank');
+                      }}
+                      buttonType="ghost"
+                    >
+                      {intl.formatMessage(messages.watchtrailer)}
+                    </ButtonWithDropdown.Item>
+                  ) : null}
                 </>
               ) : null}
             </ButtonWithDropdown>
@@ -643,6 +662,21 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
+            {data.nextEpisodeToAir && (
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.nextAirDate} />
+                </span>
+                <span className="flex-1 text-sm text-right text-gray-400">
+                  <FormattedDate
+                    value={new Date(data.nextEpisodeToAir?.airDate)}
+                    year="numeric"
+                    month="long"
+                    day="numeric"
+                  />
+                </span>
+              </div>
+            )}
             <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
               <span className="text-sm">
                 <FormattedMessage {...messages.status} />
@@ -682,6 +716,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             <ExternalLinkBlock
               mediaType="tv"
               tmdbId={data.id}
+              tvdbId={data.externalIds.tvdbId}
               imdbId={data.externalIds.imdbId}
               rtUrl={ratingData?.url}
               plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}

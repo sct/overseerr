@@ -12,6 +12,7 @@ import { useToasts } from 'react-toast-notifications';
 import Badge from '../Common/Badge';
 import globalMessages from '../../i18n/globalMessages';
 import PermissionEdit from '../PermissionEdit';
+import * as Yup from 'yup';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -20,6 +21,7 @@ const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
   apikey: 'API Key',
+  applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
   toastApiKeySuccess: 'New API key generated!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
@@ -29,10 +31,16 @@ const messages = defineMessages({
   hideAvailable: 'Hide Available Media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
-    'Sets external API access to read-only (Overseerr must be reloaded for changes to take effect)',
+    'Sets external API access to read-only (requires HTTPS and Overseerr must be reloaded for changes to take effect)',
+  csrfProtectionHoverTip:
+    'Do NOT enable this unless you understand what you are doing!',
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
     'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
+  localLogin: 'Enable Local User Sign-In',
+  validationApplicationTitle: 'You must provide an application title',
+  validationApplicationUrl: 'You must provide a valid URL',
+  validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
 });
 
 const SettingsMain: React.FC = () => {
@@ -42,6 +50,23 @@ const SettingsMain: React.FC = () => {
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
   );
+  const MainSettingsSchema = Yup.object().shape({
+    applicationTitle: Yup.string().required(
+      intl.formatMessage(messages.validationApplicationTitle)
+    ),
+    applicationUrl: Yup.string()
+      .url(intl.formatMessage(messages.validationApplicationUrl))
+      .test(
+        'no-trailing-slash',
+        intl.formatMessage(messages.validationApplicationUrlTrailingSlash),
+        (value) => {
+          if (value?.substr(value.length - 1) === '/') {
+            return false;
+          }
+          return true;
+        }
+      ),
+  });
 
   const regenerate = async () => {
     try {
@@ -66,31 +91,36 @@ const SettingsMain: React.FC = () => {
 
   return (
     <>
-      <div>
-        <h3 className="text-lg font-medium leading-6 text-gray-200">
+      <div className="mb-6">
+        <h3 className="heading">
           {intl.formatMessage(messages.generalsettings)}
         </h3>
-        <p className="max-w-2xl mt-1 text-sm leading-5 text-gray-500">
+        <p className="description">
           {intl.formatMessage(messages.generalsettingsDescription)}
         </p>
       </div>
-      <div className="mt-6 sm:mt-5">
+      <div className="section">
         <Formik
           initialValues={{
+            applicationTitle: data?.applicationTitle,
             applicationUrl: data?.applicationUrl,
             csrfProtection: data?.csrfProtection,
             defaultPermissions: data?.defaultPermissions ?? 0,
             hideAvailable: data?.hideAvailable,
+            localLogin: data?.localLogin,
             trustProxy: data?.trustProxy,
           }}
           enableReinitialize
+          validationSchema={MainSettingsSchema}
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/settings/main', {
+                applicationTitle: values.applicationTitle,
                 applicationUrl: values.applicationUrl,
                 csrfProtection: values.csrfProtection,
                 defaultPermissions: values.defaultPermissions,
                 hideAvailable: values.hideAvailable,
+                localLogin: values.localLogin,
                 trustProxy: values.trustProxy,
               });
 
@@ -108,23 +138,20 @@ const SettingsMain: React.FC = () => {
             }
           }}
         >
-          {({ isSubmitting, values, setFieldValue }) => {
+          {({ errors, touched, isSubmitting, values, setFieldValue }) => {
             return (
-              <Form>
+              <Form className="section">
                 {userHasPermission(Permission.ADMIN) && (
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                    <label
-                      htmlFor="username"
-                      className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                    >
+                  <div className="form-row">
+                    <label htmlFor="apiKey" className="text-label">
                       {intl.formatMessage(messages.apikey)}
                     </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <div className="form-input">
                       <div className="flex max-w-lg rounded-md shadow-sm">
                         <input
                           type="text"
                           id="apiKey"
-                          className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-none form-input rounded-l-md sm:text-sm sm:leading-5"
+                          className="rounded-l-only"
                           value={data?.apiKey}
                           readOnly
                         />
@@ -137,7 +164,7 @@ const SettingsMain: React.FC = () => {
                             e.preventDefault();
                             regenerate();
                           }}
-                          className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-500 border border-gray-500 rounded-r-md hover:bg-indigo-400 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
+                          className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 rounded-r-md hover:bg-indigo-500 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
                         >
                           <svg
                             className="w-5 h-5"
@@ -156,40 +183,50 @@ const SettingsMain: React.FC = () => {
                     </div>
                   </div>
                 )}
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
+                <div className="form-row">
+                  <label htmlFor="applicationTitle" className="text-label">
+                    {intl.formatMessage(messages.applicationTitle)}
+                  </label>
+                  <div className="form-input">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <Field
+                        id="applicationTitle"
+                        name="applicationTitle"
+                        type="text"
+                        placeholder="Overseerr"
+                      />
+                    </div>
+                    {errors.applicationTitle && touched.applicationTitle && (
+                      <div className="error">{errors.applicationTitle}</div>
+                    )}
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="applicationUrl" className="text-label">
                     {intl.formatMessage(messages.applicationurl)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
                       <Field
                         id="applicationUrl"
                         name="applicationUrl"
                         type="text"
                         placeholder="https://os.example.com"
-                        className="flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                       />
                     </div>
+                    {errors.applicationUrl && touched.applicationUrl && (
+                      <div className="error">{errors.applicationUrl}</div>
+                    )}
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="trustProxy"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
-                    <div className="flex flex-col">
-                      <span className="mr-2">
-                        {intl.formatMessage(messages.trustProxy)}
-                      </span>
-                      <span className="text-gray-500">
-                        {intl.formatMessage(messages.trustProxyTip)}
-                      </span>
-                    </div>
+                <div className="form-row">
+                  <label htmlFor="trustProxy" className="checkbox-label">
+                    <span>{intl.formatMessage(messages.trustProxy)}</span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.trustProxyTip)}
+                    </span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="trustProxy"
@@ -197,41 +234,37 @@ const SettingsMain: React.FC = () => {
                       onChange={() => {
                         setFieldValue('trustProxy', !values.trustProxy);
                       }}
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="csrfProtection"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
-                    <div className="flex flex-col">
-                      <span className="mr-2">
-                        {intl.formatMessage(messages.csrfProtection)}
-                      </span>
-                      <span className="text-gray-500">
-                        {intl.formatMessage(messages.csrfProtectionTip)}
-                      </span>
-                    </div>
+                <div className="form-row">
+                  <label htmlFor="csrfProtection" className="checkbox-label">
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.csrfProtection)}
+                    </span>
+                    <Badge badgeType="danger">
+                      {intl.formatMessage(globalMessages.advanced)}
+                    </Badge>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.csrfProtectionTip)}
+                    </span>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="csrfProtection"
                       name="csrfProtection"
+                      title={intl.formatMessage(
+                        messages.csrfProtectionHoverTip
+                      )}
                       onChange={() => {
                         setFieldValue('csrfProtection', !values.csrfProtection);
                       }}
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-800">
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-5 text-gray-400 sm:mt-px"
-                  >
+                <div className="form-row">
+                  <label htmlFor="hideAvailable" className="checkbox-label">
                     <span className="mr-2">
                       {intl.formatMessage(messages.hideAvailable)}
                     </span>
@@ -239,7 +272,7 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(globalMessages.experimental)}
                     </Badge>
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="hideAvailable"
@@ -247,38 +280,46 @@ const SettingsMain: React.FC = () => {
                       onChange={() => {
                         setFieldValue('hideAvailable', !values.hideAvailable);
                       }}
-                      className="w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md form-checkbox"
                     />
                   </div>
                 </div>
-                <div className="mt-6">
-                  <div role="group" aria-labelledby="label-permissions">
-                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
-                      <div>
-                        <div
-                          className="text-base font-medium leading-6 text-gray-400 sm:text-sm sm:leading-5"
-                          id="label-permissions"
-                        >
-                          {intl.formatMessage(messages.defaultPermissions)}
-                        </div>
-                      </div>
-                      <div className="mt-4 sm:mt-0 sm:col-span-2">
-                        <div className="max-w-lg">
-                          <PermissionEdit
-                            currentPermission={values.defaultPermissions}
-                            onUpdate={(newPermissions) =>
-                              setFieldValue(
-                                'defaultPermissions',
-                                newPermissions
-                              )
-                            }
-                          />
-                        </div>
+                <div className="form-row">
+                  <label htmlFor="localLogin" className="checkbox-label">
+                    <span>{intl.formatMessage(messages.localLogin)}</span>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="localLogin"
+                      name="localLogin"
+                      onChange={() => {
+                        setFieldValue('localLogin', !values.localLogin);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div
+                  role="group"
+                  aria-labelledby="group-label"
+                  className="group"
+                >
+                  <div className="form-row">
+                    <span id="group-label" className="group-label">
+                      {intl.formatMessage(messages.defaultPermissions)}
+                    </span>
+                    <div className="form-input">
+                      <div className="max-w-lg">
+                        <PermissionEdit
+                          currentPermission={values.defaultPermissions}
+                          onUpdate={(newPermissions) =>
+                            setFieldValue('defaultPermissions', newPermissions)
+                          }
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="pt-5 mt-8 border-t border-gray-700">
+                <div className="actions">
                   <div className="flex justify-end">
                     <span className="inline-flex ml-3 rounded-md shadow-sm">
                       <Button

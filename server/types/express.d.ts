@@ -4,10 +4,6 @@ import type { User } from '../entity/User';
 
 declare global {
   namespace Express {
-    export interface Session {
-      userId?: number;
-    }
-
     export interface Request {
       user?: User;
     }
@@ -18,4 +14,12 @@ declare global {
     res: Response,
     next: NextFunction
   ) => Promise<void | NextFunction> | void | NextFunction;
+}
+
+// Declaration merging to apply our own types to SessionData
+// See: (https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/express-session/index.d.ts#L23)
+declare module 'express-session' {
+  export interface SessionData {
+    userId: number;
+  }
 }
