@@ -77,7 +77,7 @@ const ResetPassword: React.FC = () => {
             {hasSubmitted ? (
               <>
                 <p className="text-md text-gray-300">
-                  {intl.formatMessage(messages.successmessage)}
+                  {intl.formatMessage(messages.resetpasswordsuccessmessage)}
                 </p>
                 <span className="flex rounded-md shadow-sm justify-center mt-4">
                   <Button as="a" href="/login" buttonType="ghost">
