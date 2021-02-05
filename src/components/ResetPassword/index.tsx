@@ -16,8 +16,8 @@ const messages = defineMessages({
   validationpasswordmatch: 'Password must match',
   validationpasswordminchars:
     'Password is too short; should be a minimum of 8 characters',
-  gobacklogin: 'Go Back to Login Page',
-  successmessage:
+  gobacklogin: 'Go Back to Sign-In Page',
+  resetpasswordsuccessmessage:
     'If the link is valid and is connected to a user then the password has been reset.',
 });
 

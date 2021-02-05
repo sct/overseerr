@@ -8,12 +8,12 @@ import * as Yup from 'yup';
 import axios from 'axios';
 
 const messages = defineMessages({
-  forgotpassword: 'Forgot your password?',
-  emailresetlink: 'Email me a Recovery Link',
+  forgotpassword: 'Forgot Your Password?',
+  emailresetlink: 'Email Me a Recovery Link',
   email: 'Email',
-  validationemailrequired: 'Must be a valid email address',
+  validationemailrequired: 'You must provide a valid email address',
   gobacklogin: 'Go Back to Sign-In Page',
-  successmessage:
+  requestresetlinksuccessmessage:
     'A password reset link will be sent to the provided email address if it is associated with a valid user.',
 });
 
