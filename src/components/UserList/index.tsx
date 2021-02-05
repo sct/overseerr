@@ -174,7 +174,12 @@ const UserList: React.FC = () => {
       .required(intl.formatMessage(messages.validationEmail))
       .email(intl.formatMessage(messages.validationEmail)),
     password: Yup.lazy((value) =>
-      !value ? Yup.string() : Yup.string().min(8)
+      !value
+        ? Yup.string()
+        : Yup.string().min(
+            8,
+            intl.formatMessage(messages.validationpasswordminchars)
+          )
     ),
   });
 
