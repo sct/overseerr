@@ -1479,14 +1479,14 @@ paths:
                     type: string
   /status/appdata:
     get:
-      summary: Get /app/data volume status
-      description: For Docker installs, returns whether or not the /app/data volume mount was configured properly. Always returns true for non-Docker installs.
+      summary: Get application data volume status
+      description: For Docker installs, returns whether or not the volume mount was configured properly. Always returns true for non-Docker installs.
       security: []
       tags:
         - public
       responses:
         '200':
-          description: /app/data volume status
+          description: Application data volume status and path
           content:
             application/json:
               schema:
@@ -1495,6 +1495,9 @@ paths:
                   appData:
                     type: boolean
                     example: true
+                  appDataPath:
+                    type: string
+                    example: /app/config
   /settings/main:
     get:
       summary: Get main settings
