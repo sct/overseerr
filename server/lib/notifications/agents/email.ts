@@ -36,9 +36,7 @@ class EmailAgent
 
   private async sendMediaRequestEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const settings = getSettings();
-    const applicationUrl = settings.main.applicationUrl;
-    const applicationTitle = settings.main.applicationTitle;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
@@ -84,9 +82,7 @@ class EmailAgent
 
   private async sendMediaFailedEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const settings = getSettings();
-    const applicationUrl = settings.main.applicationUrl;
-    const applicationTitle = settings.main.applicationTitle;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
@@ -133,9 +129,7 @@ class EmailAgent
 
   private async sendMediaApprovedEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const settings = getSettings();
-    const applicationUrl = settings.main.applicationUrl;
-    const applicationTitle = settings.main.applicationTitle;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const email = new PreparedEmail();
 
@@ -173,9 +167,7 @@ class EmailAgent
 
   private async sendMediaDeclinedEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const settings = getSettings();
-    const applicationUrl = settings.main.applicationUrl;
-    const applicationTitle = settings.main.applicationTitle;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const email = new PreparedEmail();
 
@@ -213,9 +205,7 @@ class EmailAgent
 
   private async sendMediaAvailableEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const settings = getSettings();
-    const applicationUrl = settings.main.applicationUrl;
-    const applicationTitle = settings.main.applicationTitle;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const email = new PreparedEmail();
 
@@ -253,9 +243,7 @@ class EmailAgent
 
   private async sendTestEmail(payload: NotificationPayload) {
     // This is getting main settings for the whole app
-    const settings = getSettings();
-    const applicationUrl = settings.main.applicationUrl;
-    const applicationTitle = settings.main.applicationTitle;
+    const { applicationUrl, applicationTitle } = getSettings().main;
     try {
       const email = new PreparedEmail();
 
