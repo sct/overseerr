@@ -51,7 +51,6 @@ const messages = defineMessages({
   createuser: 'Create User',
   creating: 'Creating…',
   create: 'Create',
-  validationemailrequired: 'Must enter a valid email address',
   validationpasswordminchars:
     'Password is too short; should be a minimum of 8 characters',
   usercreatedfailed: 'Something went wrong while creating the user.',
@@ -62,6 +61,7 @@ const messages = defineMessages({
   passwordinfodescription:
     'Email notifications need to be configured and enabled in order to automatically generate passwords.',
   autogeneratepassword: 'Automatically generate password',
+  validationEmail: 'You must provide a valid email address',
 });
 
 const UserList: React.FC = () => {
@@ -171,8 +171,8 @@ const UserList: React.FC = () => {
 
   const CreateUserSchema = Yup.object().shape({
     email: Yup.string()
-      .email()
-      .required(intl.formatMessage(messages.validationemailrequired)),
+      .required(intl.formatMessage(messages.validationEmail))
+      .email(intl.formatMessage(messages.validationEmail)),
     password: Yup.lazy((value) =>
       !value ? Yup.string() : Yup.string().min(8)
     ),
