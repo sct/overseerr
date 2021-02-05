@@ -696,5 +696,13 @@
   "components.RequestModal.AdvancedRequester.requestas": "Solicitar Como",
   "components.Discover.discover": "Explorar",
   "components.AppDataWarning.dockerVolumeMissingDescription": "O ponto de montagem <code>/app/config</code> não foi corretamente configurado. Todos dados serão perdidos quando o container parar ou reiniciar.",
-  "components.AppDataWarning.dockerVolumeMissing": "Faltando Ponto de Montagem do Volume Docker"
+  "components.AppDataWarning.dockerVolumeMissing": "Faltando Ponto de Montagem do Volume Docker",
+  "components.Settings.validationApplicationUrlTrailingSlash": "A URL não pode terminar com uma barra",
+  "components.Settings.validationApplicationUrl": "Você deve prover uma URL válida",
+  "components.Settings.SonarrModal.validationApplicationUrlTrailingSlash": "A URL não pode terminar com uma barra",
+  "components.Settings.SonarrModal.validationApplicationUrl": "Você deve prover uma URL válida",
+  "components.Settings.RadarrModal.validationApplicationUrlTrailingSlash": "A URL não pode terminar com uma barra",
+  "components.Settings.RadarrModal.validationApplicationUrl": "Você deve prover uma URL válida",
+  "components.PermissionEdit.viewrequestsDescription": "Concede permissão para visualizar solicitações de outros usuários.",
+  "components.PermissionEdit.viewrequests": "Visualizar Solicitações"
 }

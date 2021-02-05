@@ -27,7 +27,6 @@ import { useToasts } from 'react-toast-notifications';
 import RequestModal from '../../RequestModal';
 
 const messages = defineMessages({
-  requestedby: 'Requested by {username}',
   seasons: 'Seasons',
   notavailable: 'N/A',
   failedretry: 'Something went wrong while retrying the request.',
@@ -163,10 +162,15 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 {isMovie(title) ? title.title : title.name}
               </a>
             </Link>
-            <div className="text-sm">
-              {intl.formatMessage(messages.requestedby, {
-                username: requestData.requestedBy.displayName,
-              })}
+            <div className="flex items-center">
+              <img
+                src={requestData.requestedBy.avatar}
+                alt=""
+                className="w-5 mr-2 rounded-full"
+              />
+              <span className="text-sm">
+                {requestData.requestedBy.displayName}
+              </span>
             </div>
             {requestData.seasons.length > 0 && (
               <div className="items-center hidden mt-2 text-sm sm:flex">
@@ -216,18 +220,24 @@ const RequestItem: React.FC<RequestItemProps> = ({
         <div className="flex flex-col">
           {requestData.modifiedBy ? (
             <span className="text-sm text-gray-300">
-              <span className="mr-1">{requestData.modifiedBy.displayName}</span>
-              <span>
-                (
-                <FormattedRelativeTime
-                  value={Math.floor(
-                    (new Date(requestData.updatedAt).getTime() - Date.now()) /
-                      1000
-                  )}
-                  updateIntervalInSeconds={1}
+              <div className="flex items-center">
+                <img
+                  src={requestData.modifiedBy.avatar}
+                  alt=""
+                  className="w-5 mr-2 rounded-full"
                 />
-                )
-              </span>
+                <span className="text-sm">
+                  {requestData.modifiedBy.displayName} (
+                  <FormattedRelativeTime
+                    value={Math.floor(
+                      (new Date(requestData.updatedAt).getTime() - Date.now()) /
+                        1000
+                    )}
+                    updateIntervalInSeconds={1}
+                  />
+                  )
+                </span>
+              </div>
             </span>
           ) : (
             <span className="text-sm text-gray-300">N/A</span>

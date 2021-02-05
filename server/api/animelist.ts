@@ -8,7 +8,9 @@ const UPDATE_INTERVAL_MSEC = 24 * 3600 * 1000; // how often to download new mapp
 // originally at https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml
 const MAPPING_URL =
   'https://raw.githubusercontent.com/Anime-Lists/anime-lists/master/anime-list.xml';
-const LOCAL_PATH = path.join(__dirname, '../../config/anime-list.xml');
+const LOCAL_PATH = process.env.CONFIG_DIRECTORY
+  ? `${process.env.CONFIG_DIRECTORY}/anime-list.xml`
+  : path.join(__dirname, '../../config/anime-list.xml');
 
 const mappingRegexp = new RegExp(/;[0-9]+-([0-9]+)/g);
 

@@ -98,7 +98,7 @@ class TelegramAgent
 
     if (settings.main.applicationUrl && payload.media) {
       const actionUrl = `${settings.main.applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`;
-      message += `\[Open in Overseerr\]\(${actionUrl}\)`;
+      message += `\[Open in ${settings.main.applicationTitle}\]\(${actionUrl}\)`;
     }
     /* eslint-enable */
 

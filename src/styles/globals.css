@@ -50,7 +50,7 @@ body {
 }
 
 .form-row {
-  @apply mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start;
+  @apply max-w-6xl mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start;
 }
 
 .form-input {
