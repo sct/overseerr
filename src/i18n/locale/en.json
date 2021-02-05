@@ -551,6 +551,7 @@
   "components.TvDetails.mark4kavailable": "Mark 4K as Available",
   "components.TvDetails.markavailable": "Mark as Available",
   "components.TvDetails.network": "Network",
+  "components.TvDetails.nextAirDate": "Next Air Date",
   "components.TvDetails.opensonarr": "Open Series in Sonarr",
   "components.TvDetails.opensonarr4k": "Open Series in 4K Sonarr",
   "components.TvDetails.originallanguage": "Original Language",

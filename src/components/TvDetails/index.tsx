@@ -42,6 +42,7 @@ import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
+  nextAirDate: 'Next Air Date',
   userrating: 'User Rating',
   status: 'Status',
   originallanguage: 'Original Language',
@@ -654,6 +655,21 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <span className="flex-1 text-sm text-right text-gray-400">
                   <FormattedDate
                     value={new Date(data.firstAirDate)}
+                    year="numeric"
+                    month="long"
+                    day="numeric"
+                  />
+                </span>
+              </div>
+            )}
+            {data.nextEpisodeToAir && (
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.nextAirDate} />
+                </span>
+                <span className="flex-1 text-sm text-right text-gray-400">
+                  <FormattedDate
+                    value={new Date(data.nextEpisodeToAir?.airDate)}
                     year="numeric"
                     month="long"
                     day="numeric"
