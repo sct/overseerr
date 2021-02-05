@@ -12,7 +12,6 @@ import NotificationTypeSelector from '../../NotificationTypeSelector';
 const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
-  validationFromRequired: 'You must provide a sender address',
   validationSmtpHostRequired: 'You must provide an SMTP host',
   validationSmtpPortRequired: 'You must provide an SMTP port',
   agentenabled: 'Enable Agent',
@@ -31,6 +30,7 @@ const messages = defineMessages({
     'SSL should be disabled on standard TLS connections (port 587)',
   senderName: 'Sender Name',
   notificationtypes: 'Notification Types',
+  validationEmail: 'You must provide a valid email address',
 });
 
 const NotificationsEmail: React.FC = () => {
@@ -41,9 +41,9 @@ const NotificationsEmail: React.FC = () => {
   );
 
   const NotificationsEmailSchema = Yup.object().shape({
-    emailFrom: Yup.string().required(
-      intl.formatMessage(messages.validationFromRequired)
-    ),
+    emailFrom: Yup.string()
+      .required(intl.formatMessage(messages.validationEmail))
+      .email(intl.formatMessage(messages.validationEmail)),
     smtpHost: Yup.string().required(
       intl.formatMessage(messages.validationSmtpHostRequired)
     ),

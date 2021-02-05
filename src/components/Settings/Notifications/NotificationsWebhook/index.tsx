@@ -37,7 +37,6 @@ const messages = defineMessages({
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
   authheader: 'Authorization Header',
-  validationWebhookUrlRequired: 'You must provide a webhook URL',
   validationJsonPayloadRequired: 'You must provide a JSON Payload',
   webhookUrlPlaceholder: 'Remote webhook URL',
   webhooksettingssaved: 'Webhook notification settings saved!',
@@ -49,6 +48,7 @@ const messages = defineMessages({
   resetPayloadSuccess: 'JSON reset to default payload.',
   customJson: 'Custom JSON Payload',
   templatevariablehelp: 'Template Variable Help',
+  validationWebhookUrl: 'You must provide a valid URL',
 });
 
 const NotificationsWebhook: React.FC = () => {
@@ -59,9 +59,13 @@ const NotificationsWebhook: React.FC = () => {
   );
 
   const NotificationsWebhookSchema = Yup.object().shape({
-    webhookUrl: Yup.string().required(
-      intl.formatMessage(messages.validationWebhookUrlRequired)
-    ),
+    webhookUrl: Yup.string()
+      .required(intl.formatMessage(messages.validationWebhookUrl))
+      .matches(
+        // eslint-disable-next-line
+        /^(https?:)?\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/,
+        intl.formatMessage(messages.validationWebhookUrl)
+      ),
     jsonPayload: Yup.string()
       .required(intl.formatMessage(messages.validationJsonPayloadRequired))
       .test('validate-json', 'Invalid JSON', (value) => {

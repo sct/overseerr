@@ -11,6 +11,7 @@ import PermissionEdit from '../PermissionEdit';
 import { Field, Form, Formik } from 'formik';
 import { UserType } from '../../../server/constants/user';
 import PageTitle from '../Common/PageTitle';
+import * as Yup from 'yup';
 
 export const messages = defineMessages({
   edituser: 'Edit User',
@@ -23,6 +24,7 @@ export const messages = defineMessages({
   saving: 'Saving…',
   usersaved: 'User saved!',
   userfail: 'Something went wrong while saving the user.',
+  validationEmail: 'You must provide a valid email address',
 });
 
 const UserEdit: React.FC = () => {
@@ -43,6 +45,12 @@ const UserEdit: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
+  const UserEditSchema = Yup.object().shape({
+    email: Yup.string()
+      .required(intl.formatMessage(messages.validationEmail))
+      .email(intl.formatMessage(messages.validationEmail)),
+  });
+
   if (!user && !error) {
     return <LoadingSpinner />;
   }
@@ -54,6 +62,7 @@ const UserEdit: React.FC = () => {
         username: user?.username,
         email: user?.email,
       }}
+      validationSchema={UserEditSchema}
       onSubmit={async (values) => {
         try {
           await axios.put(`/api/v1/user/${user?.id}`, {
@@ -78,7 +87,7 @@ const UserEdit: React.FC = () => {
         }
       }}
     >
-      {({ isSubmitting, handleSubmit }) => (
+      {({ errors, touched, isSubmitting, handleSubmit }) => (
         <Form>
           <PageTitle title={intl.formatMessage(messages.edituser)} />
           <div>
@@ -122,6 +131,9 @@ const UserEdit: React.FC = () => {
                 <div className="flex max-w-lg rounded-md shadow-sm">
                   <Field id="email" name="email" type="text" readOnly />
                 </div>
+                {errors.email && touched.email && (
+                  <div className="error">{errors.email}</div>
+                )}
               </div>
             </div>
             <div className="form-row">
