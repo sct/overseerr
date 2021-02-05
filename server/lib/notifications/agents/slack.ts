@@ -191,7 +191,7 @@ class SlackAgent
             value: 'open_overseerr',
             text: {
               type: 'plain_text',
-              text: 'Open Overseerr',
+              text: `Open ${settings.main.applicationTitle}`,
             },
           },
         ],

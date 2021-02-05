@@ -16,7 +16,7 @@ const messages = defineMessages({
   signin: 'Sign In',
   signinheader: 'Sign in to continue',
   signinwithplex: 'Use your Plex account',
-  signinwithoverseerr: 'Use your Overseerr account',
+  signinwithoverseerr: 'Use your {applicationTitle} account',
 });
 
 const Login: React.FC = () => {
@@ -154,7 +154,10 @@ const Login: React.FC = () => {
                         }`}
                         onClick={() => handleClick(1)}
                       >
-                        {intl.formatMessage(messages.signinwithoverseerr)}
+                        {intl.formatMessage(messages.signinwithoverseerr, {
+                          applicationTitle:
+                            settings.currentSettings.applicationTitle,
+                        })}
                       </button>
                       <AccordionContent isOpen={openIndexes.includes(1)}>
                         <div className="px-10 py-8">

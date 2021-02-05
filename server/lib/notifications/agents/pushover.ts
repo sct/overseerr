@@ -66,7 +66,7 @@ class PushoverAgent
         message += `<b>Status</b>\nProcessing Request\n`;
         break;
       case Notification.MEDIA_AVAILABLE:
-        messageTitle = 'Now available!';
+        messageTitle = 'Now Available';
         message += `${title}\n\n`;
         message += `${plot}\n\n`;
         message += `<b>Requested By</b>\n${username}\n\n`;
@@ -81,7 +81,6 @@ class PushoverAgent
         break;
       case Notification.TEST_NOTIFICATION:
         messageTitle = 'Test Notification';
-        message += `${title}\n\n`;
         message += `${plot}\n\n`;
         message += `<b>Requested By</b>\n${username}\n`;
         break;
@@ -89,7 +88,7 @@ class PushoverAgent
 
     if (settings.main.applicationUrl && payload.media) {
       const actionUrl = `${settings.main.applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`;
-      message += `<a href="${actionUrl}">Open in Overseerr</a>`;
+      message += `<a href="${actionUrl}">Open in ${settings.main.applicationTitle}</a>`;
     }
 
     return { title: messageTitle, message };
