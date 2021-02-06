@@ -90,6 +90,8 @@ serviceRoutes.get('/sonarr', async (req, res) => {
       activeProfileId: sonarr.activeProfileId,
       activeAnimeProfileId: sonarr.activeAnimeProfileId,
       activeAnimeDirectory: sonarr.activeAnimeDirectory,
+      activeLanguageProfileId: sonarr.activeLanguageProfileId,
+      activeAnimeLanguageProfileId: sonarr.activeAnimeLanguageProfileId,
     })
   );
 
@@ -121,6 +123,7 @@ serviceRoutes.get<{ sonarrId: string }>(
 
     const profiles = await sonarr.getProfiles();
     const rootFolders = await sonarr.getRootFolders();
+    const languageProfiles = await sonarr.getLanguageProfiles();
 
     return res.status(200).json({
       server: {
@@ -132,6 +135,9 @@ serviceRoutes.get<{ sonarrId: string }>(
         activeProfileId: sonarrSettings.activeProfileId,
         activeAnimeProfileId: sonarrSettings.activeAnimeProfileId,
         activeAnimeDirectory: sonarrSettings.activeAnimeDirectory,
+        activeLanguageProfileId: sonarrSettings.activeLanguageProfileId,
+        activeAnimeLanguageProfileId:
+          sonarrSettings.activeAnimeLanguageProfileId,
       },
       profiles: profiles.map((profile) => ({
         id: profile.id,
@@ -143,6 +149,7 @@ serviceRoutes.get<{ sonarrId: string }>(
         path: folder.path,
         totalSpace: folder.totalSpace,
       })),
+      languageProfiles: languageProfiles,
     } as ServiceCommonServerWithDetails);
   }
 );

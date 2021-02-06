@@ -46,6 +46,7 @@ sonarrRoutes.post('/test', async (req, res, next) => {
 
     const profiles = await sonarr.getProfiles();
     const folders = await sonarr.getRootFolders();
+    const languageProfiles = await sonarr.getLanguageProfiles();
 
     return res.status(200).json({
       profiles,
@@ -53,6 +54,7 @@ sonarrRoutes.post('/test', async (req, res, next) => {
         id: folder.id,
         path: folder.path,
       })),
+      languageProfiles,
     });
   } catch (e) {
     logger.error('Failed to test Sonarr', {
