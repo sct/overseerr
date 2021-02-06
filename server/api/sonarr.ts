@@ -345,9 +345,8 @@ class SonarrAPI extends ExternalAPI {
           message: e.message,
         }
       );
-      return [];
 
-      // throw new Error('Failed to get language profiles');
+      throw new Error('Failed to get language profiles');
     }
   }
 
