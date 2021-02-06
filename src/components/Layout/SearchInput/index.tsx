@@ -16,8 +16,8 @@ const SearchInput: React.FC = () => {
         <label htmlFor="search_field" className="sr-only">
           Search
         </label>
-        <div className="relative w-full text-white focus-within:text-gray-200">
-          <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
+        <div className="relative flex items-center w-full text-white focus-within:text-gray-200">
+          <div className="absolute inset-y-0 flex items-center pointer-events-none left-4">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -29,7 +29,7 @@ const SearchInput: React.FC = () => {
           <input
             id="search_field"
             style={{ paddingRight: searchValue.length > 0 ? '1.75rem' : '' }}
-            className="block w-full h-full py-2 pl-8 text-white placeholder-gray-300 bg-gray-600 border-transparent rounded-md focus:border-transparent focus:outline-none focus:ring-0 focus:placeholder-gray-400 sm:text-base"
+            className="block w-full py-2 pl-10 text-white placeholder-gray-300 bg-gray-900 border border-gray-600 rounded-full focus:border-gray-500 focus:outline-none focus:ring-0 focus:placeholder-gray-400 sm:text-base"
             placeholder={intl.formatMessage(messages.searchPlaceholder)}
             type="search"
             value={searchValue}
@@ -43,7 +43,7 @@ const SearchInput: React.FC = () => {
           />
           {searchValue.length > 0 && (
             <button
-              className="absolute inset-y-0 right-0 p-1 m-auto text-gray-400 transition border-none outline-none h-7 w-7 focus:outline-none focus:border-none hover:text-white"
+              className="absolute inset-y-0 p-1 m-auto text-gray-400 transition border-none outline-none right-2 h-7 w-7 focus:outline-none focus:border-none hover:text-white"
               onClick={() => clear()}
             >
               <ClearButton />

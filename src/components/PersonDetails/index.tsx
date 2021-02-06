@@ -175,7 +175,7 @@ const PersonDetails: React.FC = () => {
     <>
       <PageTitle title={data.name} />
       {(sortedCrew || sortedCast) && (
-        <div className="absolute top-0 left-0 right-0 z-0 h-96">
+        <div className="absolute left-0 right-0 z-0 -top-16 h-96">
           <ImageFader
             isDarker
             backgroundImages={[...(sortedCast ?? []), ...(sortedCrew ?? [])]
@@ -188,7 +188,7 @@ const PersonDetails: React.FC = () => {
           />
         </div>
       )}
-      <div className="relative z-10 flex flex-col items-center mt-8 mb-8 md:flex-row md:items-start">
+      <div className="relative z-10 flex flex-col items-center mt-4 mb-8 md:flex-row md:items-start">
         {data.profilePath && (
           <div
             style={{
