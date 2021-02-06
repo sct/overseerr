@@ -1,3 +1,10 @@
+## [1.19.1](https://github.com/sct/overseerr/compare/v1.19.0...v1.19.1) (2021-02-06)
+
+
+### Bug Fixes
+
+* **ui:** Fix webhook URL validation regex ([#864](https://github.com/sct/overseerr/issues/864)) ([726f62b](https://github.com/sct/overseerr/commit/726f62b9b69b5078e718f129e26abdf358f5cb06))
+
 # [1.19.0](https://github.com/sct/overseerr/compare/v1.18.0...v1.19.0) (2021-02-05)
 
 
