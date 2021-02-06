@@ -147,10 +147,10 @@ const Login: React.FC = () => {
                   {settings.currentSettings.localLogin && (
                     <div>
                       <button
-                        className={`w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 sm:rounded-t-lg hover:bg-gray-700 hover:cursor-pointer ${
+                        className={`w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 hover:bg-gray-700 hover:cursor-pointer ${
                           openIndexes.includes(1)
                             ? 'text-indigo-500'
-                            : 'sm:rounded-b-lg '
+                            : 'sm:rounded-b-lg'
                         }`}
                         onClick={() => handleClick(1)}
                       >
