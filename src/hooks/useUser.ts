@@ -17,6 +17,9 @@ export interface User {
   avatar: string;
   permissions: number;
   userType: number;
+  createdAt: string;
+  updatedAt: string;
+  requestCount: number;
 }
 
 interface UserHookResponse {

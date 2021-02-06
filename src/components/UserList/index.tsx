@@ -21,6 +21,7 @@ import AddUserIcon from '../../assets/useradd.svg';
 import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
 import PageTitle from '../Common/PageTitle';
+import Link from 'next/link';
 
 const messages = defineMessages({
   users: 'Users',
@@ -493,9 +494,11 @@ const UserList: React.FC = () => {
                     />
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-medium leading-5">
-                      {user.displayName}
-                    </div>
+                    <Link href={`/users/${user.id}`}>
+                      <a className="text-sm font-medium leading-5">
+                        {user.displayName}
+                      </a>
+                    </Link>
                     <div className="text-sm leading-5 text-gray-300">
                       {user.email}
                     </div>

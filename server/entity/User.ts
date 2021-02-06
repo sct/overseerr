@@ -25,15 +25,14 @@ import { v4 as uuid } from 'uuid';
 
 @Entity()
 export class User {
-  public static filterMany(users: User[]): Partial<User>[] {
-    return users.map((u) => u.filter());
+  public static filterMany(
+    users: User[],
+    showFiltered?: boolean
+  ): Partial<User>[] {
+    return users.map((u) => u.filter(showFiltered));
   }
 
-  static readonly filteredFields: string[] = [
-    'plexToken',
-    'password',
-    'resetPasswordGuid',
-  ];
+  static readonly filteredFields: string[] = ['email'];
 
   public displayName: string;
 
@@ -89,11 +88,11 @@ export class User {
     Object.assign(this, init);
   }
 
-  public filter(): Partial<User> {
+  public filter(showFiltered?: boolean): Partial<User> {
     const filtered: Partial<User> = Object.assign(
       {},
       ...(Object.keys(this) as (keyof User)[])
-        .filter((k) => !User.filteredFields.includes(k))
+        .filter((k) => showFiltered || !User.filteredFields.includes(k))
         .map((k) => ({ [k]: this[k] }))
     );
 

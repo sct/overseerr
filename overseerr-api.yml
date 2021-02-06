@@ -2876,6 +2876,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+  /user/{userId}/requests:
+    get:
+      summary: Get user by ID
+      description: |
+        Retrieves a user's requests in a JSON object.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 20
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+      responses:
+        '200':
+          description: User's requests returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaRequest'
+
   /search:
     get:
       summary: Search for movies, TV shows, or people

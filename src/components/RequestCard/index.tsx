@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { TvDetails } from '../../../server/models/Tv';
@@ -37,9 +37,10 @@ const RequestCardPlaceholder: React.FC = () => {
 
 interface RequestCardProps {
   request: MediaRequest;
+  onTitleData?: (requestId: number, title: MovieDetails | TvDetails) => void;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
+const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });
@@ -68,6 +69,12 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
       revalidate();
     }
   };
+
+  useEffect(() => {
+    if (title && onTitleData) {
+      onTitleData(request.id, title);
+    }
+  }, [title, onTitleData, request]);
 
   if (!title && !error) {
     return (

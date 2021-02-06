@@ -35,7 +35,7 @@ router.get('/status/appdata', (_req, res) => {
   });
 });
 
-router.use('/user', isAuthenticated(Permission.MANAGE_USERS), user);
+router.use('/user', user);
 router.get('/settings/public', (_req, res) => {
   const settings = getSettings();
 

@@ -38,7 +38,7 @@ function Button<P extends ElementTypes = 'button'>({
   ...props
 }: ButtonProps<P>): JSX.Element {
   const buttonStyle = [
-    'inline-flex items-center justify-center border border-transparent leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150',
+    'inline-flex items-center justify-center border border-transparent leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer',
   ];
   switch (buttonType) {
     case 'primary':
