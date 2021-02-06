@@ -22,7 +22,7 @@ const messages = defineMessages({
   loadingfolders: 'Loading folders…',
   requestas: 'Request As',
   languageprofile: 'Language Profile',
-  loadinglanguages: 'Loading folders…',
+  loadinglanguages: 'Loading languages…',
 });
 
 export type RequestOverrides = {

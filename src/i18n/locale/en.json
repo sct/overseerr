@@ -171,7 +171,7 @@
   "components.RequestModal.AdvancedRequester.destinationserver": "Destination Server",
   "components.RequestModal.AdvancedRequester.languageprofile": "Language Profile",
   "components.RequestModal.AdvancedRequester.loadingfolders": "Loading folders…",
-  "components.RequestModal.AdvancedRequester.loadinglanguages": "Loading folders…",
+  "components.RequestModal.AdvancedRequester.loadinglanguages": "Loading languages…",
   "components.RequestModal.AdvancedRequester.loadingprofiles": "Loading profiles…",
   "components.RequestModal.AdvancedRequester.qualityprofile": "Quality Profile",
   "components.RequestModal.AdvancedRequester.requestas": "Request As",
