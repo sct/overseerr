@@ -37,7 +37,7 @@ const ListView: React.FC<ListViewProps> = ({
           {intl.formatMessage(messages.noresults)}
         </div>
       )}
-      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
+      <ul className="cardList">
         {items?.map((title) => {
           let titleCard: React.ReactNode;
 
@@ -90,22 +90,12 @@ const ListView: React.FC<ListViewProps> = ({
               break;
           }
 
-          return (
-            <li
-              key={title.id}
-              className="flex flex-col items-center col-span-1 text-center"
-            >
-              {titleCard}
-            </li>
-          );
+          return <li key={title.id}>{titleCard}</li>;
         })}
         {isLoading &&
           !isReachingEnd &&
           [...Array(20)].map((_item, i) => (
-            <li
-              key={`placeholder-${i}`}
-              className="flex flex-col items-center col-span-1 text-center"
-            >
+            <li key={`placeholder-${i}`}>
               <TitleCard.Placeholder canExpand />
             </li>
           ))}
