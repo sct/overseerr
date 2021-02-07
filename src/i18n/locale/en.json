@@ -438,6 +438,7 @@
   "components.Settings.SonarrModal.validationBaseUrlLeadingSlash": "Base URL must have a leading slash",
   "components.Settings.SonarrModal.validationBaseUrlTrailingSlash": "Base URL must not end in a trailing slash",
   "components.Settings.SonarrModal.validationHostnameRequired": "You must provide a hostname/IP",
+  "components.Settings.SonarrModal.validationLanguageProfileRequired": "You must select a language profile",
   "components.Settings.SonarrModal.validationNameRequired": "You must provide a server name",
   "components.Settings.SonarrModal.validationPortRequired": "You must provide a port",
   "components.Settings.SonarrModal.validationProfileRequired": "You must select a quality profile",

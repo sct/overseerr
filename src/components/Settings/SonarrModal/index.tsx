@@ -16,7 +16,8 @@ const messages = defineMessages({
   validationPortRequired: 'You must provide a port',
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
-  validationProfileRequired: 'You must select a profile',
+  validationProfileRequired: 'You must select a quality profile',
+  validationLanguageProfileRequired: 'You must select a language profile',
   toastSonarrTestSuccess: 'Sonarr connection established!',
   toastSonarrTestFailure: 'Failed to connect to Sonarr.',
   saving: 'Saving…',
@@ -115,6 +116,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
     ),
     activeProfileId: Yup.string().required(
       intl.formatMessage(messages.validationProfileRequired)
+    ),
+    activeLanguageProfileId: Yup.number().required(
+      intl.formatMessage(messages.validationLanguageProfileRequired)
     ),
     externalUrl: Yup.string()
       .url(intl.formatMessage(messages.validationApplicationUrl))
