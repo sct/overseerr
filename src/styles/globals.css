@@ -16,8 +16,8 @@ body {
 }
 
 ul.cardList {
-  @apply grid gap-6;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  @apply grid justify-between gap-4;
+  grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
 }
 
 ul.cardList > li {
