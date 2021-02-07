@@ -66,6 +66,10 @@ ul.cardList > li {
   @apply text-white sm:col-span-2;
 }
 
+.label-required {
+  @apply text-red-500;
+}
+
 .label-tip {
   @apply block text-gray-500;
 }

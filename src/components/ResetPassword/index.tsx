@@ -128,9 +128,7 @@ const ResetPassword: React.FC = () => {
                             />
                           </div>
                           {errors.password && touched.password && (
-                            <div className="mt-2 text-red-500">
-                              {errors.password}
-                            </div>
+                            <div className="error">{errors.password}</div>
                           )}
                         </div>
                         <label
@@ -151,7 +149,7 @@ const ResetPassword: React.FC = () => {
                           </div>
                           {errors.confirmPassword &&
                             touched.confirmPassword && (
-                              <div className="mt-2 text-red-500">
+                              <div className="error">
                                 {errors.confirmPassword}
                               </div>
                             )}
