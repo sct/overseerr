@@ -15,12 +15,12 @@ body {
   background: #f19a30;
 }
 
-.cardList {
-  @apply grid w-full grid-cols-2 gap-6 sm:grid-cols-none sm:gap-0 sm:flex sm:flex-wrap sm:-mx-2;
+ul.cardList {
+  @apply grid max-w-6xl grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8;
 }
 
-.cardList > li {
-  @apply flex flex-col items-center col-span-1 text-center sm:flex-none sm:mb-4 sm:mx-2 sm:inline-block sm:w-36 md:w-44;
+ul.cardList > li {
+  @apply flex flex-col items-center col-span-1 text-center;
 }
 
 .titleCard {
