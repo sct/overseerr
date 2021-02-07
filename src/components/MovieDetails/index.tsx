@@ -131,6 +131,18 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     revalidate();
   };
 
+  const movieAttributes = [];
+
+  if (data.runtime) {
+    movieAttributes.push(
+      intl.formatMessage({ ...messages.runtime }, { minutes: data.runtime })
+    );
+  }
+
+  if (data.genres.length) {
+    movieAttributes.push(data.genres.map((g) => g.name).join(', '));
+  }
+
   return (
     <div
       className="px-4 pt-16 -mx-4 -mt-16 bg-center bg-cover"
@@ -359,18 +371,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             )}
           </h1>
           <span className="mt-1 text-xs lg:text-base lg:mt-0">
-            {data.runtime || data.genres.length ? (
-              <>
-                {data.runtime ? (
-                  <FormattedMessage
-                    {...messages.runtime}
-                    values={{ minutes: data.runtime }}
-                  />
-                ) : null}
-                {data.runtime && data.genres.length ? ' | ' : ''}
-                {data.genres.map((g) => g.name).join(', ')}
-              </>
-            ) : null}
+            {movieAttributes.join(' | ')}
           </span>
         </div>
         <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
