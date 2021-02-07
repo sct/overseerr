@@ -2449,7 +2449,6 @@ paths:
       description: Returns the currently logged-in user.
       tags:
         - auth
-        - users
       responses:
         '200':
           description: Object containing the logged-in user in JSON
@@ -2533,7 +2532,7 @@ paths:
       description: Sends a reset password email to the email if the user exists
       security: []
       tags:
-        - users
+        - auth
       responses:
         '200':
           description: OK
@@ -2562,7 +2561,7 @@ paths:
       description: Resets the password for a user if the given guid is connected to a user
       security: []
       tags:
-        - users
+        - auth
       responses:
         '200':
           description: OK
