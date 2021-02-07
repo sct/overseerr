@@ -376,7 +376,14 @@ components:
         activeDirectory:
           type: string
           example: '/tv/'
+        activeLanguageProfileId:
+          type: number
+          example: 1
+          nullable: true
         activeAnimeProfileId:
+          type: number
+          nullable: true
+        activeAnimeLanguageProfileId:
           type: number
           nullable: true
         activeAnimeProfileName:
@@ -3062,6 +3069,8 @@ paths:
                   type: number
                 rootFolder:
                   type: string
+                languageProfileId:
+                  type: number
               required:
                 - mediaType
                 - mediaId

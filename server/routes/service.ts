@@ -90,6 +90,8 @@ serviceRoutes.get('/sonarr', async (req, res) => {
       activeProfileId: sonarr.activeProfileId,
       activeAnimeProfileId: sonarr.activeAnimeProfileId,
       activeAnimeDirectory: sonarr.activeAnimeDirectory,
+      activeLanguageProfileId: sonarr.activeLanguageProfileId,
+      activeAnimeLanguageProfileId: sonarr.activeAnimeLanguageProfileId,
     })
   );
 
@@ -119,31 +121,40 @@ serviceRoutes.get<{ sonarrId: string }>(
       }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}/api`,
     });
 
-    const profiles = await sonarr.getProfiles();
-    const rootFolders = await sonarr.getRootFolders();
+    try {
+      const profiles = await sonarr.getProfiles();
+      const rootFolders = await sonarr.getRootFolders();
+      const languageProfiles = await sonarr.getLanguageProfiles();
 
-    return res.status(200).json({
-      server: {
-        id: sonarrSettings.id,
-        name: sonarrSettings.name,
-        is4k: sonarrSettings.is4k,
-        isDefault: sonarrSettings.isDefault,
-        activeDirectory: sonarrSettings.activeDirectory,
-        activeProfileId: sonarrSettings.activeProfileId,
-        activeAnimeProfileId: sonarrSettings.activeAnimeProfileId,
-        activeAnimeDirectory: sonarrSettings.activeAnimeDirectory,
-      },
-      profiles: profiles.map((profile) => ({
-        id: profile.id,
-        name: profile.name,
-      })),
-      rootFolders: rootFolders.map((folder) => ({
-        id: folder.id,
-        freeSpace: folder.freeSpace,
-        path: folder.path,
-        totalSpace: folder.totalSpace,
-      })),
-    } as ServiceCommonServerWithDetails);
+      return res.status(200).json({
+        server: {
+          id: sonarrSettings.id,
+          name: sonarrSettings.name,
+          is4k: sonarrSettings.is4k,
+          isDefault: sonarrSettings.isDefault,
+          activeDirectory: sonarrSettings.activeDirectory,
+          activeProfileId: sonarrSettings.activeProfileId,
+          activeAnimeProfileId: sonarrSettings.activeAnimeProfileId,
+          activeAnimeDirectory: sonarrSettings.activeAnimeDirectory,
+          activeLanguageProfileId: sonarrSettings.activeLanguageProfileId,
+          activeAnimeLanguageProfileId:
+            sonarrSettings.activeAnimeLanguageProfileId,
+        },
+        profiles: profiles.map((profile) => ({
+          id: profile.id,
+          name: profile.name,
+        })),
+        rootFolders: rootFolders.map((folder) => ({
+          id: folder.id,
+          freeSpace: folder.freeSpace,
+          path: folder.path,
+          totalSpace: folder.totalSpace,
+        })),
+        languageProfiles: languageProfiles,
+      } as ServiceCommonServerWithDetails);
+    } catch (e) {
+      next({ status: 500, message: e.message });
+    }
   }
 );
 

@@ -250,6 +250,7 @@ requestRoutes.post(
           serverId: req.body.serverId,
           profileId: req.body.profileId,
           rootFolder: req.body.rootFolder,
+          languageProfileId: req.body.languageProfileId,
           seasons: finalSeasons.map(
             (sn) =>
               new SeasonRequest({

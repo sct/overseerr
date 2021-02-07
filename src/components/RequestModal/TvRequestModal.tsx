@@ -103,6 +103,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           serverId: requestOverrides?.server,
           profileId: requestOverrides?.profile,
           rootFolder: requestOverrides?.folder,
+          languageProfileId: requestOverrides?.language,
           userId: requestOverrides?.user?.id,
           seasons: selectedSeasons,
         });
@@ -151,6 +152,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           serverId: requestOverrides.server,
           profileId: requestOverrides.profile,
           rootFolder: requestOverrides.folder,
+          languageProfileId: requestOverrides.language,
           userId: requestOverrides?.user?.id,
         };
       }
@@ -569,6 +571,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                     folder: editRequest.rootFolder,
                     profile: editRequest.profileId,
                     server: editRequest.serverId,
+                    language: editRequest.languageProfileId,
                   }
                 : undefined
             }

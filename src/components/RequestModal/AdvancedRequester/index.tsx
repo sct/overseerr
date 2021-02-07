@@ -21,12 +21,15 @@ const messages = defineMessages({
   loadingprofiles: 'Loading profiles…',
   loadingfolders: 'Loading folders…',
   requestas: 'Request As',
+  languageprofile: 'Language Profile',
+  loadinglanguages: 'Loading languages…',
 });
 
 export type RequestOverrides = {
   server?: number;
   profile?: number;
   folder?: string;
+  language?: number;
   user?: User;
 };
 
@@ -69,6 +72,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   const [selectedFolder, setSelectedFolder] = useState<string>(
     defaultOverrides?.folder ?? ''
   );
+
+  const [selectedLanguage, setSelectedLanguage] = useState<number>(
+    defaultOverrides?.language ?? -1
+  );
+
   const {
     data: serverData,
     isValidating,
@@ -135,6 +143,13 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             ? serverData.server.activeAnimeDirectory
             : serverData.server.activeDirectory)
       );
+      const defaultLanguage = serverData.languageProfiles?.find(
+        (language) =>
+          language.id ===
+          (isAnime
+            ? serverData.server.activeAnimeLanguageProfileId
+            : serverData.server.activeLanguageProfileId)
+      );
 
       if (
         defaultProfile &&
@@ -149,7 +164,15 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         defaultFolder.path !== selectedFolder &&
         (!defaultOverrides || defaultOverrides.folder === null)
       ) {
-        setSelectedFolder(defaultFolder?.path ?? '');
+        setSelectedFolder(defaultFolder.path ?? '');
+      }
+
+      if (
+        defaultLanguage &&
+        defaultLanguage.id !== selectedLanguage &&
+        (!defaultOverrides || defaultOverrides.language === null)
+      ) {
+        setSelectedLanguage(defaultLanguage.id);
       }
     }
   }, [serverData]);
@@ -178,10 +201,19 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     ) {
       setSelectedFolder(defaultOverrides.folder);
     }
+
+    if (
+      defaultOverrides &&
+      defaultOverrides.language !== null &&
+      defaultOverrides.language !== undefined
+    ) {
+      setSelectedLanguage(defaultOverrides.language);
+    }
   }, [
     defaultOverrides?.server,
     defaultOverrides?.folder,
     defaultOverrides?.profile,
+    defaultOverrides?.language,
   ]);
 
   useEffect(() => {
@@ -191,9 +223,16 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         profile: selectedProfile !== -1 ? selectedProfile : undefined,
         server: selectedServer ?? undefined,
         user: selectedUser ?? undefined,
+        language: selectedLanguage ?? undefined,
       });
     }
-  }, [selectedFolder, selectedServer, selectedProfile, selectedUser]);
+  }, [
+    selectedFolder,
+    selectedServer,
+    selectedProfile,
+    selectedUser,
+    selectedLanguage,
+  ]);
 
   if (!data && !error) {
     return (
@@ -225,7 +264,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         {!!data && selectedServer !== null && (
           <>
             <div className="flex flex-col items-center justify-between md:flex-row">
-              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
+              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
                 <label htmlFor="server" className="text-label">
                   {intl.formatMessage(messages.destinationserver)}
                 </label>
@@ -247,8 +286,8 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   ))}
                 </select>
               </div>
-              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:pr-4 md:mb-0">
-                <label htmlFor="server" className="text-label">
+              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
+                <label htmlFor="profile" className="text-label">
                   {intl.formatMessage(messages.qualityprofile)}
                 </label>
                 <select
@@ -283,8 +322,12 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                     ))}
                 </select>
               </div>
-              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/3 md:mb-0">
-                <label htmlFor="server" className="text-label">
+              <div
+                className={`flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0 ${
+                  type === 'tv' ? 'md:pr-4' : ''
+                }`}
+              >
+                <label htmlFor="folder" className="text-label">
                   {intl.formatMessage(messages.rootfolder)}
                 </label>
                 <select
@@ -319,6 +362,50 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                     ))}
                 </select>
               </div>
+              {type === 'tv' && (
+                <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0">
+                  <label htmlFor="language" className="text-label">
+                    {intl.formatMessage(messages.languageprofile)}
+                  </label>
+                  <select
+                    id="language"
+                    name="language"
+                    value={selectedLanguage}
+                    onChange={(e) =>
+                      setSelectedLanguage(parseInt(e.target.value))
+                    }
+                    onBlur={(e) =>
+                      setSelectedLanguage(parseInt(e.target.value))
+                    }
+                    className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                  >
+                    {isValidating && (
+                      <option value="">
+                        {intl.formatMessage(messages.loadinglanguages)}
+                      </option>
+                    )}
+                    {!isValidating &&
+                      serverData &&
+                      serverData.languageProfiles?.map((language) => (
+                        <option
+                          key={`folder-list${language.id}`}
+                          value={language.id}
+                        >
+                          {language.name}
+                          {isAnime &&
+                          serverData.server.activeAnimeLanguageProfileId ===
+                            language.id
+                            ? ` ${intl.formatMessage(messages.default)}`
+                            : !isAnime &&
+                              serverData.server.activeLanguageProfileId ===
+                                language.id
+                            ? ` ${intl.formatMessage(messages.default)}`
+                            : ''}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              )}
             </div>
           </>
         )}

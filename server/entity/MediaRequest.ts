@@ -78,6 +78,9 @@ export class MediaRequest {
   @Column({ nullable: true })
   public rootFolder: string;
 
+  @Column({ nullable: true })
+  public languageProfileId: number;
+
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
   }
@@ -559,6 +562,11 @@ export class MediaRequest {
             ? sonarrSettings.activeAnimeProfileId
             : sonarrSettings.activeProfileId;
 
+        let languageProfile =
+          seriesType === 'anime' && sonarrSettings.activeAnimeLanguageProfileId
+            ? sonarrSettings.activeAnimeLanguageProfileId
+            : sonarrSettings.activeLanguageProfileId;
+
         if (
           this.rootFolder &&
           this.rootFolder !== '' &&
@@ -577,10 +585,24 @@ export class MediaRequest {
           });
         }
 
+        if (
+          this.languageProfileId &&
+          this.languageProfileId !== languageProfile
+        ) {
+          languageProfile = this.languageProfileId;
+          logger.info(
+            `Request has an override Language Profile: ${languageProfile}`,
+            {
+              label: 'Media Request',
+            }
+          );
+        }
+
         // Run this asynchronously so we don't wait for it on the UI side
         sonarr
           .addSeries({
             profileId: qualityProfile,
+            languageProfileId: languageProfile,
             rootFolderPath: rootFolder,
             title: series.name,
             tvdbid: tvdbId,
