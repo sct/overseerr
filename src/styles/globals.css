@@ -16,7 +16,8 @@ body {
 }
 
 ul.cardList {
-  @apply grid max-w-6xl grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8;
+  @apply grid gap-6;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
 }
 
 ul.cardList > li {
