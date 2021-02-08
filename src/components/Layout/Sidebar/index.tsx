@@ -33,7 +33,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'dashboard',
     svgIcon: (
       <svg
-        className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
+        className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -54,7 +54,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'requests',
     svgIcon: (
       <svg
-        className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
+        className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -75,7 +75,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'users',
     svgIcon: (
       <svg
-        className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
+        className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +91,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'settings',
     svgIcon: (
       <svg
-        className="mr-3 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150"
+        className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -125,7 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
     <>
       <div className="md:hidden">
         <Transition show={open}>
-          <div className="fixed inset-0 flex z-40">
+          <div className="fixed inset-0 z-40 flex">
             <Transition
               enter="transition-opacity ease-linear duration-300"
               enterFrom="opacity-0"
@@ -147,15 +147,15 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
               leaveTo="-translate-x-full"
             >
               <>
-                <div className="relative flex-1 flex flex-col max-w-xs w-full bg-gray-800">
-                  <div className="absolute top-0 right-0 -mr-14 p-1">
+                <div className="relative flex flex-col flex-1 w-full max-w-xs bg-gray-800">
+                  <div className="absolute top-0 right-0 p-1 -mr-14">
                     <button
-                      className="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600"
+                      className="flex items-center justify-center w-12 h-12 rounded-full focus:outline-none focus:bg-gray-600"
                       aria-label="Close sidebar"
                       onClick={() => setClosed()}
                     >
                       <svg
-                        className="h-6 w-6 text-white"
+                        className="w-6 h-6 text-white"
                         stroke="currentColor"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -173,14 +173,14 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                     ref={navRef}
                     className="flex-1 h-0 pt-5 pb-4 overflow-y-auto"
                   >
-                    <div className="flex-shrink-0 flex items-center px-4">
+                    <div className="flex items-center flex-shrink-0 px-4">
                       <span className="text-xl text-gray-50">
                         <a href="/">
                           <img src="/logo.png" alt="Logo" />
                         </a>
                       </span>
                     </div>
-                    <nav className="mt-5 px-2 space-y-1">
+                    <nav className="px-2 mt-5 space-y-1">
                       {SidebarLinks.filter((link) =>
                         link.requiredPermission
                           ? hasPermission(link.requiredPermission)
@@ -231,10 +231,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
         </Transition>
       </div>
 
-      <div className="hidden md:flex md:flex-shrink-0 top-0 bottom-0 left-0 fixed">
+      <div className="fixed top-0 bottom-0 left-0 hidden md:flex md:flex-shrink-0">
         <div className="flex flex-col w-64">
-          <div className="flex flex-col h-0 flex-1 bg-gray-800">
-            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+          <div className="flex flex-col flex-1 h-0 bg-gray-800">
+            <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center flex-shrink-0 px-4">
                 <span className="text-2xl text-gray-50">
                   <a href="/">
@@ -242,7 +242,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                   </a>
                 </span>
               </div>
-              <nav className="mt-5 flex-1 px-2 bg-gray-800 space-y-1">
+              <nav className="flex-1 px-2 mt-5 space-y-1 bg-gray-800">
                 {SidebarLinks.filter((link) =>
                   link.requiredPermission
                     ? hasPermission(link.requiredPermission)
@@ -255,7 +255,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                       as={sidebarLink.as}
                     >
                       <a
-                        className={`flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
+                        className={`flex group items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white hover:text-gray-100 hover:bg-gray-700 focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
                                 ${
                                   router.pathname.match(
                                     sidebarLink.activeRegExp

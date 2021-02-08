@@ -178,7 +178,11 @@ const NotificationsPushover: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div role="group" aria-labelledby="group-label" className="group">
+              <div
+                role="group"
+                aria-labelledby="group-label"
+                className="form-group"
+              >
                 <div className="form-row">
                   <span id="group-label" className="group-label">
                     {intl.formatMessage(messages.notificationtypes)}

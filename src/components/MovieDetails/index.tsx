@@ -131,6 +131,18 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     revalidate();
   };
 
+  const movieAttributes = [];
+
+  if (data.runtime) {
+    movieAttributes.push(
+      intl.formatMessage({ ...messages.runtime }, { minutes: data.runtime })
+    );
+  }
+
+  if (data.genres.length) {
+    movieAttributes.push(data.genres.map((g) => g.name).join(', '));
+  }
+
   return (
     <div
       className="px-4 pt-16 -mx-4 -mt-16 bg-center bg-cover"
@@ -354,19 +366,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </div>
           <h1 className="text-2xl lg:text-4xl">
             {data.title}{' '}
-            <span className="text-2xl">({data.releaseDate.slice(0, 4)})</span>
+            {data.releaseDate && (
+              <span className="text-2xl">({data.releaseDate.slice(0, 4)})</span>
+            )}
           </h1>
           <span className="mt-1 text-xs lg:text-base lg:mt-0">
-            {(data.runtime ?? 0) > 0 && (
-              <>
-                <FormattedMessage
-                  {...messages.runtime}
-                  values={{ minutes: data.runtime }}
-                />{' '}
-                |{' '}
-              </>
-            )}
-            {data.genres.map((g) => g.name).join(', ')}
+            {movieAttributes.join(' | ')}
           </span>
         </div>
         <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
@@ -568,38 +573,38 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             </div>
           )}
           <div className="bg-gray-900 border border-gray-800 rounded-lg shadow">
-            {(data.voteCount > 0 || ratingData) && (
+            {(data.voteCount ||
+              (ratingData?.criticsRating && ratingData?.criticsScore) ||
+              (ratingData?.audienceRating && ratingData?.audienceScore)) && (
               <div className="flex items-center justify-center px-4 py-2 border-b border-gray-800 last:border-b-0">
-                {ratingData?.criticsRating &&
-                  (ratingData?.criticsScore ?? 0) > 0 && (
-                    <>
-                      <span className="text-sm">
-                        {ratingData.criticsRating === 'Rotten' ? (
-                          <RTRotten className="w-6 mr-1" />
-                        ) : (
-                          <RTFresh className="w-6 mr-1" />
-                        )}
-                      </span>
-                      <span className="mr-4 text-sm text-gray-400 last:mr-0">
-                        {ratingData.criticsScore}%
-                      </span>
-                    </>
-                  )}
-                {ratingData?.audienceRating &&
-                  (ratingData?.audienceScore ?? 0) > 0 && (
-                    <>
-                      <span className="text-sm">
-                        {ratingData.audienceRating === 'Spilled' ? (
-                          <RTAudRotten className="w-6 mr-1" />
-                        ) : (
-                          <RTAudFresh className="w-6 mr-1" />
-                        )}
-                      </span>
-                      <span className="mr-4 text-sm text-gray-400 last:mr-0">
-                        {ratingData.audienceScore}%
-                      </span>
-                    </>
-                  )}
+                {ratingData?.criticsRating && ratingData?.criticsScore && (
+                  <>
+                    <span className="text-sm">
+                      {ratingData.criticsRating === 'Rotten' ? (
+                        <RTRotten className="w-6 mr-1" />
+                      ) : (
+                        <RTFresh className="w-6 mr-1" />
+                      )}
+                    </span>
+                    <span className="mr-4 text-sm text-gray-400 last:mr-0">
+                      {ratingData.criticsScore}%
+                    </span>
+                  </>
+                )}
+                {ratingData?.audienceRating && ratingData?.audienceScore && (
+                  <>
+                    <span className="text-sm">
+                      {ratingData.audienceRating === 'Spilled' ? (
+                        <RTAudRotten className="w-6 mr-1" />
+                      ) : (
+                        <RTAudFresh className="w-6 mr-1" />
+                      )}
+                    </span>
+                    <span className="mr-4 text-sm text-gray-400 last:mr-0">
+                      {ratingData.audienceScore}%
+                    </span>
+                  </>
+                )}
                 {data.voteCount > 0 && (
                   <>
                     <span className="text-sm">
@@ -612,19 +617,21 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 )}
               </div>
             )}
-            <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
-              <span className="text-sm">
-                <FormattedMessage {...messages.releasedate} />
-              </span>
-              <span className="flex-1 text-sm text-right text-gray-400">
-                <FormattedDate
-                  value={new Date(data.releaseDate)}
-                  year="numeric"
-                  month="long"
-                  day="numeric"
-                />
-              </span>
-            </div>
+            {data.releaseDate && (
+              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
+                <span className="text-sm">
+                  <FormattedMessage {...messages.releasedate} />
+                </span>
+                <span className="flex-1 text-sm text-right text-gray-400">
+                  <FormattedDate
+                    value={new Date(data.releaseDate)}
+                    year="numeric"
+                    month="long"
+                    day="numeric"
+                  />
+                </span>
+              </div>
+            )}
             <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
               <span className="text-sm">
                 <FormattedMessage {...messages.status} />
@@ -700,45 +707,49 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </div>
         </div>
       </div>
-      <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
-        <div className="flex-1 min-w-0">
-          <Link href="/movie/[movieId]/cast" as={`/movie/${data.id}/cast`}>
-            <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-              <span>
-                <FormattedMessage {...messages.cast} />
-              </span>
-              <svg
-                className="w-6 h-6 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </a>
-          </Link>
-        </div>
-      </div>
-      <Slider
-        sliderKey="cast"
-        isLoading={false}
-        isEmpty={false}
-        items={data?.credits.cast.slice(0, 20).map((person) => (
-          <PersonCard
-            key={`cast-item-${person.id}`}
-            personId={person.id}
-            name={person.name}
-            subName={person.character}
-            profilePath={person.profilePath}
+      {data.credits.cast.length > 0 && (
+        <>
+          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
+            <div className="flex-1 min-w-0">
+              <Link href="/movie/[movieId]/cast" as={`/movie/${data.id}/cast`}>
+                <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
+                  <span>
+                    <FormattedMessage {...messages.cast} />
+                  </span>
+                  <svg
+                    className="w-6 h-6 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </a>
+              </Link>
+            </div>
+          </div>
+          <Slider
+            sliderKey="cast"
+            isLoading={false}
+            isEmpty={false}
+            items={data.credits.cast.slice(0, 20).map((person) => (
+              <PersonCard
+                key={`cast-item-${person.id}`}
+                personId={person.id}
+                name={person.name}
+                subName={person.character}
+                profilePath={person.profilePath}
+              />
+            ))}
           />
-        ))}
-      />
+        </>
+      )}
       <MediaSlider
         sliderKey="recommendations"
         title={intl.formatMessage(messages.recommendations)}

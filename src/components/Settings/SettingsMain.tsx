@@ -301,7 +301,7 @@ const SettingsMain: React.FC = () => {
                 <div
                   role="group"
                   aria-labelledby="group-label"
-                  className="group"
+                  className="form-group"
                 >
                   <div className="form-row">
                     <span id="group-label" className="group-label">
