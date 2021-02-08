@@ -92,13 +92,10 @@ const PersonDetails: React.FC = () => {
           </div>
         </div>
       </div>
-      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
+      <ul className="cardList">
         {sortedCast?.map((media, index) => {
           return (
-            <li
-              key={`list-cast-item-${media.id}-${index}`}
-              className="flex flex-col items-center col-span-1 text-center"
-            >
+            <li key={`list-cast-item-${media.id}-${index}`}>
               <TitleCard
                 id={media.id}
                 title={media.mediaType === 'movie' ? media.title : media.name}
@@ -137,13 +134,10 @@ const PersonDetails: React.FC = () => {
           </div>
         </div>
       </div>
-      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
+      <ul className="cardList">
         {sortedCrew?.map((media, index) => {
           return (
-            <li
-              key={`list-crew-item-${media.id}-${index}`}
-              className="flex flex-col items-center col-span-1 text-center"
-            >
+            <li key={`list-crew-item-${media.id}-${index}`}>
               <TitleCard
                 id={media.id}
                 title={media.mediaType === 'movie' ? media.title : media.name}
