@@ -291,7 +291,7 @@ export interface TmdbRelease extends TmdbRating {
   release_dates: {
     certification: string;
     iso_639_1?: string;
-    note: string;
+    note?: string;
     release_date: string;
     type: number;
   }[];
