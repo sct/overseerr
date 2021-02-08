@@ -15,6 +15,15 @@ body {
   background: #f19a30;
 }
 
+ul.cardList {
+  @apply grid gap-4;
+  grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
+}
+
+ul.cardList > li {
+  @apply flex flex-col items-center col-span-1 text-center;
+}
+
 .titleCard {
   @apply relative bg-gray-800 bg-cover rounded-lg;
   padding-bottom: 150%;
