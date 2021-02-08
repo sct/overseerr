@@ -13,6 +13,7 @@ import RequestCard from '../RequestCard';
 import { MovieDetails } from '../../../server/models/Movie';
 import { TvDetails } from '../../../server/models/Tv';
 import ImageFader from '../Common/ImageFader';
+import PageTitle from '../Common/PageTitle';
 
 type MediaTitle = MovieDetails | TvDetails;
 
@@ -53,6 +54,7 @@ const UserProfile: React.FC = () => {
 
   return (
     <>
+      <PageTitle title={data.displayName} />
       {Object.keys(availableTitles).length > 0 && (
         <div className="absolute left-0 right-0 z-0 -top-16 h-96">
           <ImageFader

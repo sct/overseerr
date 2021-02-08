@@ -112,16 +112,18 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             {isMovie(title) ? title.title : title.name}
           </Link>
         </h2>
-        <div className="flex items-center">
-          <img
-            src={requestData.requestedBy.avatar}
-            alt=""
-            className="w-4 mr-1 rounded-full sm:mr-2 sm:w-5"
-          />
-          <span className="text-xs truncate sm:text-sm">
-            {requestData.requestedBy.displayName}
-          </span>
-        </div>
+        <Link href={`/users/${requestData.requestedBy.id}`}>
+          <a className="flex items-center group">
+            <img
+              src={requestData.requestedBy.avatar}
+              alt=""
+              className="w-4 mr-1 rounded-full sm:mr-2 sm:w-5"
+            />
+            <span className="text-xs truncate sm:text-sm group-hover:underline">
+              {requestData.requestedBy.displayName}
+            </span>
+          </a>
+        </Link>
         {requestData.media.status && (
           <div className="mt-1 sm:mt-2">
             <StatusBadge
