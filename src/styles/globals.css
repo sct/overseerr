@@ -114,7 +114,7 @@ input.port {
   @apply mt-2 text-sm text-red-500;
 }
 
-.group {
+.form-group {
   @apply mt-6 text-white;
 }
 

@@ -257,7 +257,11 @@ const NotificationsWebhook: React.FC = () => {
               </div>
             </div>
             <div className="mt-8">
-              <div role="group" aria-labelledby="group-label" className="group">
+              <div
+                role="group"
+                aria-labelledby="group-label"
+                className="form-group"
+              >
                 <div className="sm:grid sm:grid-cols-4 sm:gap-4">
                   <div>
                     <div id="group-label" className="group-label">
