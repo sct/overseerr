@@ -710,7 +710,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     htmlFor="activeAnimeLanguageProfileId"
                     className="text-label"
                   >
-                    {intl.formatMessage(messages.animerootfolder)}
+                    {intl.formatMessage(messages.animelanguageprofile)}
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
