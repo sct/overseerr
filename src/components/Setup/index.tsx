@@ -35,7 +35,7 @@ const Setup: React.FC = () => {
 
   const finishSetup = async () => {
     setIsUpdating(false);
-    const response = await axios.get<{ initialized: boolean }>(
+    const response = await axios.post<{ initialized: boolean }>(
       '/api/v1/settings/initialize'
     );
 

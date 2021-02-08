@@ -184,7 +184,7 @@ authRoutes.post('/local', async (req, res, next) => {
   }
 });
 
-authRoutes.get('/logout', (req, res, next) => {
+authRoutes.post('/logout', (req, res, next) => {
   req.session?.destroy((err) => {
     if (err) {
       return next({

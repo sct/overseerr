@@ -489,7 +489,7 @@ requestRoutes.post<{
   }
 );
 
-requestRoutes.get<{
+requestRoutes.post<{
   requestId: string;
   status: 'pending' | 'approve' | 'decline';
 }>(

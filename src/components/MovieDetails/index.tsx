@@ -123,10 +123,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   };
 
   const markAvailable = async (is4k = false) => {
-    await axios.get(`/api/v1/media/${data?.mediaInfo?.id}/available`, {
-      params: {
-        is4k,
-      },
+    await axios.post(`/api/v1/media/${data?.mediaInfo?.id}/available`, {
+      is4k,
     });
     revalidate();
   };
