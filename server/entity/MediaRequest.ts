@@ -538,7 +538,9 @@ export class MediaRequest {
         const tvdbId = series.external_ids.tvdb_id ?? media.tvdbId;
 
         if (!tvdbId) {
-          this.handleRemoveParentUpdate();
+          const requestRepository = getRepository(MediaRequest);
+          await mediaRepository.remove(media);
+          await requestRepository.remove(this);
           throw new Error('Series was missing tvdb id');
         }
 
