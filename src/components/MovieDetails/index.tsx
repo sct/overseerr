@@ -129,9 +129,14 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     revalidate();
   };
 
-  const movieAttributes = [];
+  const movieAttributes: React.ReactNode[] = [];
 
-  if (data.releases.results.length > 0) {
+  if (
+    data.releases.results.length &&
+    (data.releases.results.find((r) => r.iso_3166_1 === 'US')?.release_dates[0]
+      .certification ||
+      data.releases.results[0].release_dates[0].certification)
+  ) {
     movieAttributes.push(
       <span className="p-0.5 py-0 border rounded-md">
         {data.releases.results.find((r) => r.iso_3166_1 === 'US')
@@ -380,7 +385,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </h1>
           <span className="mt-1 text-xs lg:text-base lg:mt-0">
             {movieAttributes
-              .map<React.ReactNode>((t, k) => <span key={k}>{t}</span>)
+              .map((t, k) => <span key={k}>{t}</span>)
               .reduce((prev, curr) => (
                 <>
                   {prev} | {curr}

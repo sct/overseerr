@@ -133,9 +133,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     revalidate();
   };
 
-  const seriesAttributes = [];
+  const seriesAttributes: React.ReactNode[] = [];
 
-  if (data.contentRatings.results.length > 0) {
+  if (data.contentRatings.results.length) {
     seriesAttributes.push(
       <span className="p-0.5 py-0 border rounded-md">
         {data.contentRatings.results.find((r) => r.iso_3166_1 === 'US')
@@ -408,7 +408,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </h1>
           <span className="mt-1 text-xs lg:text-base lg:mt-0">
             {seriesAttributes
-              .map<React.ReactNode>((t, k) => <span key={k}>{t}</span>)
+              .map((t, k) => <span key={k}>{t}</span>)
               .reduce((prev, curr) => (
                 <>
                   {prev} | {curr}
