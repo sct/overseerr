@@ -11,6 +11,7 @@ const extraEncodes: [RegExp, string][] = [
   [/\(/g, '%28'],
   [/\)/g, '%29'],
   [/!/g, '%21'],
+  [/\*/g, '%2A'],
 ];
 
 const encodeURIExtraParams = (string: string): string => {
