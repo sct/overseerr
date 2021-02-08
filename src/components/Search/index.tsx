@@ -53,7 +53,7 @@ const Search: React.FC = () => {
   };
 
   if (error) {
-    return <div>{error}</div>;
+    console.error(error);
   }
 
   const titles = data?.reduce(
@@ -73,7 +73,7 @@ const Search: React.FC = () => {
       </div>
       <ListView
         items={titles}
-        isEmpty={isEmpty}
+        isEmpty={isEmpty || error}
         isLoading={
           isLoadingInitialData || (isLoadingMore && (titles?.length ?? 0) > 0)
         }
