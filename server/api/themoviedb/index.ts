@@ -145,7 +145,7 @@ class TheMovieDb extends ExternalAPI {
         {
           params: {
             language,
-            append_to_response: 'credits,external_ids,videos',
+            append_to_response: 'credits,external_ids,videos,release_dates',
           },
         },
         43200
@@ -171,7 +171,7 @@ class TheMovieDb extends ExternalAPI {
           params: {
             language,
             append_to_response:
-              'aggregate_credits,credits,external_ids,keywords,videos',
+              'aggregate_credits,credits,external_ids,keywords,videos,content_ratings',
           },
         },
         43200
