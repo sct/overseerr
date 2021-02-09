@@ -11,6 +11,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { defineMessages, useIntl } from 'react-intl';
 import Header from '../Common/Header';
 import PageTitle from '../Common/PageTitle';
+import Error from '../../pages/_error';
 
 const messages = defineMessages({
   search: 'Search',
@@ -53,7 +54,7 @@ const Search: React.FC = () => {
   };
 
   if (error) {
-    return <div>{error}</div>;
+    return <Error statusCode={error.code} />;
   }
 
   const titles = data?.reduce(
