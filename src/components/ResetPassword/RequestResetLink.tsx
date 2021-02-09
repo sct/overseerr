@@ -109,9 +109,7 @@ const ResetPassword: React.FC = () => {
                             />
                           </div>
                           {errors.email && touched.email && (
-                            <div className="mt-2 text-red-500">
-                              {errors.email}
-                            </div>
+                            <div className="error">{errors.email}</div>
                           )}
                         </div>
                       </div>

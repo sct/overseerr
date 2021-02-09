@@ -342,7 +342,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="name" className="text-label">
                     {intl.formatMessage(messages.servername)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -367,7 +367,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="hostname" className="text-label">
                     {intl.formatMessage(messages.hostname)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -394,7 +394,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="port" className="text-label">
                     {intl.formatMessage(messages.port)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <Field
@@ -432,7 +432,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="apiKey" className="text-label">
                     {intl.formatMessage(messages.apiKey)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -481,7 +481,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="activeProfileId" className="text-label">
                     {intl.formatMessage(messages.qualityprofile)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -519,7 +519,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="rootFolder" className="text-label">
                     {intl.formatMessage(messages.rootfolder)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -555,7 +555,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="minimumAvailability" className="text-label">
                     {intl.formatMessage(messages.minimumAvailability)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
