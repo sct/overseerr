@@ -197,7 +197,11 @@ const RequestItem: React.FC<RequestItemProps> = ({
           </Badge>
         ) : (
           <StatusBadge
-            status={requestData.media[requestData.is4k ? 'status4k' : 'status']}
+            status={
+              requestData.status === MediaRequestStatus.AVAILABLE
+                ? MediaStatus.AVAILABLE
+                : requestData.media[requestData.is4k ? 'status4k' : 'status']
+            }
             inProgress={
               (
                 requestData.media[
