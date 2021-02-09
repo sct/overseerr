@@ -133,6 +133,26 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     revalidate();
   };
 
+  const seriesAttributes: React.ReactNode[] = [];
+
+  if (
+    data.contentRatings.results.length &&
+    data.contentRatings.results.find(
+      (r) => r.iso_3166_1 === 'US' || data.contentRatings.results[0].rating
+    )
+  ) {
+    seriesAttributes.push(
+      <span className="p-0.5 py-0 border rounded-md">
+        {data.contentRatings.results.find((r) => r.iso_3166_1 === 'US')
+          ?.rating || data.contentRatings.results[0].rating}
+      </span>
+    );
+  }
+
+  if (data.genres.length) {
+    seriesAttributes.push(data.genres.map((g) => g.name).join(', '));
+  }
+
   const isComplete =
     data.seasons.filter((season) => season.seasonNumber !== 0).length <=
     (
@@ -392,7 +412,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             )}
           </h1>
           <span className="mt-1 text-xs lg:text-base lg:mt-0">
-            {data.genres.map((g) => g.name).join(', ')}
+            {seriesAttributes
+              .map((t, k) => <span key={k}>{t}</span>)
+              .reduce((prev, curr) => (
+                <>
+                  {prev} | {curr}
+                </>
+              ))}
           </span>
         </div>
         <div className="flex flex-wrap justify-center flex-shrink-0 mt-4 sm:flex-nowrap sm:justify-end lg:mt-0">

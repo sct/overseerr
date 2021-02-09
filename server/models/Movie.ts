@@ -1,4 +1,7 @@
-import type { TmdbMovieDetails } from '../api/themoviedb/interfaces';
+import type {
+  TmdbMovieDetails,
+  TmdbMovieReleaseResult,
+} from '../api/themoviedb/interfaces';
 import {
   ProductionCompany,
   Genre,
@@ -48,6 +51,7 @@ export interface MovieDetails {
     name: string;
   }[];
   releaseDate: string;
+  releases: TmdbMovieReleaseResult;
   revenue: number;
   runtime?: number;
   spokenLanguages: {
@@ -95,6 +99,7 @@ export const mapMovieDetails = (
   })),
   productionCountries: movie.production_countries,
   releaseDate: movie.release_date,
+  releases: movie.release_dates,
   revenue: movie.revenue,
   spokenLanguages: movie.spoken_languages,
   status: movie.status,
