@@ -4,8 +4,13 @@ import { v4 as uuid } from 'uuid';
 import SonarrAPI, { SonarrSeries } from '../../api/sonarr';
 import TheMovieDb from '../../api/themoviedb';
 import { TmdbTvDetails } from '../../api/themoviedb/interfaces';
-import { MediaStatus, MediaType } from '../../constants/media';
+import {
+  MediaStatus,
+  MediaType,
+  MediaRequestStatus,
+} from '../../constants/media';
 import Media from '../../entity/Media';
+import { MediaRequest } from '../../entity/MediaRequest';
 import Season from '../../entity/Season';
 import { getSettings, SonarrSettings } from '../../lib/settings';
 import logger from '../../logger';
@@ -259,6 +264,34 @@ class JobSonarrSync {
           : MediaStatus.UNKNOWN;
 
       await mediaRepository.save(media);
+
+      if (
+        media[server4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
+        media[server4k ? 'status4k' : 'status'] ===
+          MediaStatus.PARTIALLY_AVAILABLE
+      ) {
+        const requestRepository = getRepository(MediaRequest);
+        const requests = await requestRepository.find({
+          where: { media: media, is4k: server4k },
+        });
+        const request = requests.find((request) =>
+          request.seasons.every((requestSeason) =>
+            media.seasons
+              .filter(
+                (season) =>
+                  season[server4k ? 'status4k' : 'status'] ===
+                  MediaStatus.AVAILABLE
+              )
+              .map(({ seasonNumber }) => seasonNumber)
+              .includes(requestSeason.seasonNumber)
+          )
+        );
+
+        if (request && request.status !== MediaRequestStatus.AVAILABLE) {
+          request.status = MediaRequestStatus.AVAILABLE;
+          await requestRepository.save(request);
+        }
+      }
     } else {
       const tmdb = new TheMovieDb();
       let tvShow: TmdbTvDetails;

@@ -2,8 +2,13 @@ import { uniqWith } from 'lodash';
 import { getRepository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import RadarrAPI, { RadarrMovie } from '../../api/radarr';
-import { MediaStatus, MediaType } from '../../constants/media';
+import {
+  MediaStatus,
+  MediaType,
+  MediaRequestStatus,
+} from '../../constants/media';
 import Media from '../../entity/Media';
+import { MediaRequest } from '../../entity/MediaRequest';
 import { getSettings, RadarrSettings } from '../../lib/settings';
 import logger from '../../logger';
 
@@ -110,7 +115,7 @@ class JobRadarrSync {
 
     if (media) {
       let isChanged = false;
-      if (media.status === MediaStatus.AVAILABLE) {
+      if (media[server4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE) {
         this.log(`Movie already available: ${radarrMovie.title}`);
       } else {
         media[server4k ? 'status4k' : 'status'] = radarrMovie.downloaded
@@ -122,6 +127,23 @@ class JobRadarrSync {
           } to status ${MediaStatus[media[server4k ? 'status4k' : 'status']]}`
         );
         isChanged = true;
+      }
+
+      const requestRepository = getRepository(MediaRequest);
+      const relatedRequests = await requestRepository.find({
+        where: { media: media, is4k: server4k },
+      });
+
+      if (
+        media[server4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE &&
+        relatedRequests.length > 0
+      ) {
+        relatedRequests.forEach((request) => {
+          if (request.status !== MediaRequestStatus.AVAILABLE) {
+            request.status = MediaRequestStatus.AVAILABLE;
+            requestRepository.save(request);
+          }
+        });
       }
 
       if (
