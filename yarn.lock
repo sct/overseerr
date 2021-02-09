@@ -1358,17 +1358,10 @@
   dependencies:
     tslib "^2.0.1"
 
-"@formatjs/ecma402-abstract@1.5.2":
+"@formatjs/ecma402-abstract@1.5.2", "@formatjs/ecma402-abstract@^1.2.1":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@formatjs/ecma402-abstract/-/ecma402-abstract-1.5.2.tgz#6c20c24f814ebf8e9dd46e34310a67895853a931"
   integrity sha512-rscxoLyIwH2x+l15Z4eD580ioO3CkFVoWDLgDtgiOnWzDzpL5EigDRg9V4mINb8W6bQRT1xnCxiRwvw3bgvqrA==
-  dependencies:
-    tslib "^2.0.1"
-
-"@formatjs/ecma402-abstract@^1.2.1":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@formatjs/ecma402-abstract/-/ecma402-abstract-1.2.4.tgz#0f11e0309bc885d53ddc823e36d04d520fda7674"
-  integrity sha512-5XEuvm+bImBmSFlhbE9FeRQKXWtpt+WIYRsma96bneoNMnUMeCADHJxNNSA5JSY4TlrjVZFHW3jE4HYm10bLbA==
   dependencies:
     tslib "^2.0.1"
 
@@ -1411,10 +1404,10 @@
     "@formatjs/ecma402-abstract" "1.5.2"
     tslib "^2.0.1"
 
-"@formatjs/intl@1.6.6":
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/@formatjs/intl/-/intl-1.6.6.tgz#e95e9e317da45005b944d154c24417cce2fd7814"
-  integrity sha512-j9J4HG6hJ++aZFj2zCCh4QBSMyoxwqc2R4YyBBix9lzpALNjTW3xPkvhjV3KWN+zujRy89utSqWF+LqxxTO7LA==
+"@formatjs/intl@1.6.7":
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl/-/intl-1.6.7.tgz#308fac0e5653909266e2f619ef1ebe1c401053eb"
+  integrity sha512-LvJPfwW+MEeTqgXp0B5BsHl60XMmNZ05gksnmFU5v72najRkjt/Bje1JFsOHa4RK0IvrF5ZuG8taQjOtVITNnw==
   dependencies:
     "@formatjs/ecma402-abstract" "1.5.2"
     "@formatjs/intl-datetimeformat" "3.2.7"
@@ -11672,13 +11665,13 @@ react-intersection-observer@^8.31.0:
   resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.31.0.tgz#0ed21aaf93c4c0475b22b0ccaba6169076d01605"
   integrity sha512-XraIC/tkrD9JtrmVA7ypEN1QIpKc52mXBH1u/bz/aicRLo8QQEJQAMUTb8mz4B6dqpPwyzgjrr7Ljv/2ACDtqw==
 
-react-intl@^5.12.0:
-  version "5.12.0"
-  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-5.12.0.tgz#297868c7a7b8ac568ac457dddbf200a39a19014f"
-  integrity sha512-SWIt2+OFEGR8XjqDYpOBQLKVN3cR+1eJZGlHIAlZWw/562YE4OkXyFlK7e/Gk9KHS4xl9FwCBD7FScjfcDvm0g==
+react-intl@^5.12.2:
+  version "5.12.2"
+  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-5.12.2.tgz#7126a93b22bcb251ad75c6183a3b04b7b20087b5"
+  integrity sha512-retZ4h8q8n2YpTQWgLx4Zzn1qbP3BwI/eEhXLtsXtubUZi8CYK7/NGrH2+HLY06DfU9osyQA2VnKo1Zgh1kCpw==
   dependencies:
     "@formatjs/ecma402-abstract" "1.5.2"
-    "@formatjs/intl" "1.6.6"
+    "@formatjs/intl" "1.6.7"
     "@formatjs/intl-displaynames" "4.0.5"
     "@formatjs/intl-listformat" "5.0.5"
     "@formatjs/intl-relativetimeformat" "8.0.4"
