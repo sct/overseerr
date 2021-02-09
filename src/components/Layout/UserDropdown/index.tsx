@@ -16,7 +16,7 @@ const UserDropdown: React.FC = () => {
   useClickOutside(dropdownRef, () => setDropdownOpen(false));
 
   const logout = async () => {
-    const response = await axios.get('/api/v1/auth/logout');
+    const response = await axios.post('/api/v1/auth/logout');
 
     if (response.data?.status === 'ok') {
       revalidate();
@@ -24,16 +24,16 @@ const UserDropdown: React.FC = () => {
   };
 
   return (
-    <div className="ml-3 relative">
+    <div className="relative ml-3">
       <div>
         <button
-          className="max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring"
+          className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring"
           id="user-menu"
           aria-label="User menu"
           aria-haspopup="true"
           onClick={() => setDropdownOpen(true)}
         >
-          <img className="h-8 w-8 rounded-full" src={user?.avatar} alt="" />
+          <img className="w-8 h-8 rounded-full" src={user?.avatar} alt="" />
         </button>
       </div>
       <Transition
@@ -46,18 +46,18 @@ const UserDropdown: React.FC = () => {
         leaveTo="transform opacity-0 scale-95"
       >
         <div
-          className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg"
+          className="absolute right-0 w-48 mt-2 origin-top-right rounded-md shadow-lg"
           ref={dropdownRef}
         >
           <div
-            className="py-1 rounded-md bg-gray-700 ring-1 ring-black ring-opacity-5"
+            className="py-1 bg-gray-700 rounded-md ring-1 ring-black ring-opacity-5"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
             <a
               href="#"
-              className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition ease-in-out duration-150"
+              className="block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
               role="menuitem"
               onClick={() => logout()}
             >

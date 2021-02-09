@@ -54,7 +54,7 @@ settingsRoutes.post('/main', (req, res) => {
   return res.status(200).json(settings.main);
 });
 
-settingsRoutes.get('/main/regenerate', (req, res, next) => {
+settingsRoutes.post('/main/regenerate', (req, res, next) => {
   const settings = getSettings();
 
   const main = settings.regenerateApiKey();
@@ -210,10 +210,14 @@ settingsRoutes.get('/plex/library', async (req, res) => {
   return res.status(200).json(settings.plex.libraries);
 });
 
-settingsRoutes.get('/plex/sync', (req, res) => {
-  if (req.query.cancel) {
+settingsRoutes.get('/plex/sync', (_req, res) => {
+  return res.status(200).json(jobPlexFullSync.status());
+});
+
+settingsRoutes.post('/plex/sync', (req, res) => {
+  if (req.body.cancel) {
     jobPlexFullSync.cancel();
-  } else if (req.query.start) {
+  } else if (req.body.start) {
     jobPlexFullSync.run();
   }
   return res.status(200).json(jobPlexFullSync.status());
@@ -231,7 +235,7 @@ settingsRoutes.get('/jobs', (_req, res) => {
   );
 });
 
-settingsRoutes.get<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
+settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
   const scheduledJob = scheduledJobs.find((job) => job.id === req.params.jobId);
 
   if (!scheduledJob) {
@@ -249,7 +253,7 @@ settingsRoutes.get<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
   });
 });
 
-settingsRoutes.get<{ jobId: string }>(
+settingsRoutes.post<{ jobId: string }>(
   '/jobs/:jobId/cancel',
   (req, res, next) => {
     const scheduledJob = scheduledJobs.find(
@@ -286,7 +290,7 @@ settingsRoutes.get('/cache', (req, res) => {
   );
 });
 
-settingsRoutes.get<{ cacheId: AvailableCacheIds }>(
+settingsRoutes.post<{ cacheId: AvailableCacheIds }>(
   '/cache/:cacheId/flush',
   (req, res, next) => {
     const cache = cacheManager.getCache(req.params.cacheId);
@@ -300,7 +304,7 @@ settingsRoutes.get<{ cacheId: AvailableCacheIds }>(
   }
 );
 
-settingsRoutes.get(
+settingsRoutes.post(
   '/initialize',
   isAuthenticated(Permission.ADMIN),
   (_req, res) => {

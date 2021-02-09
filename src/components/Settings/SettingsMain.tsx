@@ -70,7 +70,7 @@ const SettingsMain: React.FC = () => {
 
   const regenerate = async () => {
     try {
-      await axios.get('/api/v1/settings/main/regenerate');
+      await axios.post('/api/v1/settings/main/regenerate');
 
       revalidate();
       addToast(intl.formatMessage(messages.toastApiKeySuccess), {

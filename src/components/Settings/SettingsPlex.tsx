@@ -212,19 +212,15 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   };
 
   const startScan = async () => {
-    await axios.get('/api/v1/settings/plex/sync', {
-      params: {
-        start: true,
-      },
+    await axios.post('/api/v1/settings/plex/sync', {
+      start: true,
     });
     revalidateSync();
   };
 
   const cancelScan = async () => {
-    await axios.get('/api/v1/settings/plex/sync', {
-      params: {
-        cancel: true,
-      },
+    await axios.post('/api/v1/settings/plex/sync', {
+      cancel: true,
     });
     revalidateSync();
   };

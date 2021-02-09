@@ -83,7 +83,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
     request: MediaRequest,
     type: 'approve' | 'decline'
   ) => {
-    const response = await axios.get(`/api/v1/request/${request.id}/${type}`);
+    const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
 
     if (response) {
       onUpdate();
@@ -100,7 +100,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
 
     await Promise.all(
       requests.map(async (request) => {
-        return axios.get(`/api/v1/request/${request.id}/${type}`);
+        return axios.post(`/api/v1/request/${request.id}/${type}`);
       })
     );
 

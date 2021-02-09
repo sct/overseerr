@@ -62,7 +62,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
   });
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
-    const response = await axios.get(`/api/v1/request/${request.id}/${type}`);
+    const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
 
     if (response) {
       revalidate();

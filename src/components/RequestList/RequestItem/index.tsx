@@ -70,7 +70,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   const [isRetrying, setRetrying] = useState(false);
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
-    const response = await axios.get(`/api/v1/request/${request.id}/${type}`);
+    const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
 
     if (response) {
       revalidate();

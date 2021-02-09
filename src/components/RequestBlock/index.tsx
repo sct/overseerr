@@ -30,7 +30,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
 
   const updateRequest = async (type: 'approve' | 'decline'): Promise<void> => {
     setIsUpdating(true);
-    await axios.get(`/api/v1/request/${request.id}/${type}`);
+    await axios.post(`/api/v1/request/${request.id}/${type}`);
 
     if (onUpdate) {
       onUpdate();
