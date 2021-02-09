@@ -13358,10 +13358,10 @@ swagger-ui-express@^4.1.6:
   dependencies:
     swagger-ui-dist "^3.18.1"
 
-swr@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-0.4.1.tgz#4bb1f9e994a8f8d7a2e9220dbc7aef296bc4a673"
-  integrity sha512-/jQWPjCwy7rNbEJKpuObfbtJHtneTKhlzjy8VkuAEGg/kkYhZoKWVdGtIXrz9vuTGdy/grLVWpA6DfiNk9ECWg==
+swr@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-0.4.2.tgz#4a9ed5e9948088af145c79d716d294cb99712a29"
+  integrity sha512-SKGxcAfyijj/lE5ja5zVMDqJNudASH3WZPRUakDVOePTM18FnsXgugndjl9BSRwj+jokFCulMDe7F2pQL+VhEw==
   dependencies:
     dequal "2.0.2"
 
