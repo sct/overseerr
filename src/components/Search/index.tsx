@@ -11,6 +11,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { defineMessages, useIntl } from 'react-intl';
 import Header from '../Common/Header';
 import PageTitle from '../Common/PageTitle';
+import Error from '../../pages/_error';
 
 const messages = defineMessages({
   search: 'Search',
@@ -53,7 +54,7 @@ const Search: React.FC = () => {
   };
 
   if (error) {
-    console.error(error);
+    return <Error statusCode={error.code} />;
   }
 
   const titles = data?.reduce(
@@ -73,7 +74,7 @@ const Search: React.FC = () => {
       </div>
       <ListView
         items={titles}
-        isEmpty={isEmpty || error}
+        isEmpty={isEmpty}
         isLoading={
           isLoadingInitialData || (isLoadingMore && (titles?.length ?? 0) > 0)
         }
