@@ -36,7 +36,10 @@ export class MediaSubscriber implements EntitySubscriberInterface {
               media: entity,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
             });
+            request['status'] = MediaRequestStatus.AVAILABLE;
           });
+
+          await requestRepository.save(relatedRequests);
         }
       }
     }
@@ -97,7 +100,10 @@ export class MediaSubscriber implements EntitySubscriberInterface {
               },
             ],
           });
+          request['status'] = MediaRequestStatus.AVAILABLE;
         }
+
+        await requestRepository.save(requests);
       }
     }
   }

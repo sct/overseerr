@@ -212,6 +212,11 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                   {intl.formatMessage(globalMessages.pending)}
                 </Badge>
               )}
+              {request.status === MediaRequestStatus.AVAILABLE && (
+                <Badge badgeType="success">
+                  {intl.formatMessage(globalMessages.available)}
+                </Badge>
+              )}
             </div>
           </div>
           <div className="flex items-center mt-2 text-sm leading-5 text-gray-300 sm:mt-0">
