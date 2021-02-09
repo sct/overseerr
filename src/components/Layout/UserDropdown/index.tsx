@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 const messages = defineMessages({
   myprofile: 'My Profile',
+  settings: 'User Settings',
   signout: 'Sign Out',
 });
 
@@ -57,7 +58,7 @@ const UserDropdown: React.FC = () => {
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
-            <Link href={`/users/${user?.id}`}>
+            <Link href={`/profile`}>
               <a
                 className="block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
                 role="menuitem"
@@ -70,6 +71,21 @@ const UserDropdown: React.FC = () => {
                 onClick={() => setDropdownOpen(false)}
               >
                 <FormattedMessage {...messages.myprofile} />
+              </a>
+            </Link>
+            <Link href={`/profile/settings`}>
+              <a
+                className="block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+                role="menuitem"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setDropdownOpen(false);
+                  }
+                }}
+                onClick={() => setDropdownOpen(false)}
+              >
+                <FormattedMessage {...messages.settings} />
               </a>
             </Link>
             <a

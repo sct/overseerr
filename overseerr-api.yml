@@ -2915,7 +2915,61 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MediaRequest'
-
+  /user/{userId}/settings/main:
+    get:
+      summary: Get general settings for a user
+      description: Returns general settings for a specific user. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User general settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: 'Mr User'
+    post:
+      summary: Update general settings for a user
+      description: Updates and returns general settings for a specific user. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Updated user general settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: 'Mr User'
   /search:
     get:
       summary: Search for movies, TV shows, or people

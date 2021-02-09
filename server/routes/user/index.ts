@@ -1,15 +1,16 @@
 import { Router } from 'express';
 import { getRepository, Not } from 'typeorm';
-import PlexTvAPI from '../api/plextv';
-import { MediaRequest } from '../entity/MediaRequest';
-import { User } from '../entity/User';
-import { hasPermission, Permission } from '../lib/permissions';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
+import PlexTvAPI from '../../api/plextv';
+import { MediaRequest } from '../../entity/MediaRequest';
+import { User } from '../../entity/User';
+import { hasPermission, Permission } from '../../lib/permissions';
+import { getSettings } from '../../lib/settings';
+import logger from '../../logger';
 import gravatarUrl from 'gravatar-url';
-import { UserType } from '../constants/user';
-import { isAuthenticated } from '../middleware/auth';
-import { UserRequestsResponse } from '../interfaces/api/userInterfaces';
+import { UserType } from '../../constants/user';
+import { isAuthenticated } from '../../middleware/auth';
+import { UserRequestsResponse } from '../../interfaces/api/userInterfaces';
+import userSettingsRoutes from './usersettings';
 
 const router = Router();
 
@@ -106,6 +107,8 @@ router.get<{ id: string }>('/:id', async (req, res, next) => {
     next({ status: 404, message: 'User not found' });
   }
 });
+
+router.use('/:id/settings', userSettingsRoutes);
 
 router.get<{ id: string }, UserRequestsResponse>(
   '/:id/requests',
