@@ -1537,7 +1537,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MainSettings'
   /settings/main/regenerate:
-    get:
+    post:
       summary: Get main settings with newly-generated API key
       description: Returns main settings in a JSON object, using the new API key.
       tags:
@@ -1612,21 +1612,50 @@ paths:
                   $ref: '#/components/schemas/PlexLibrary'
   /settings/plex/sync:
     get:
+      summary: Get status of full Plex library sync
+      description: Returns sync progress in a JSON array.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Status of Plex sync
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  running:
+                    type: boolean
+                    example: false
+                  progress:
+                    type: number
+                    example: 0
+                  total:
+                    type: number
+                    example: 100
+                  currentLibrary:
+                    $ref: '#/components/schemas/PlexLibrary'
+                  libraries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PlexLibrary'
+    post:
       summary: Start full Plex library sync
       description: Runs a full Plex library sync and returns the progress in a JSON array.
       tags:
         - settings
-      parameters:
-        - in: query
-          name: cancel
-          schema:
-            type: boolean
-            example: false
-        - in: query
-          name: start
-          schema:
-            type: boolean
-            example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cancel:
+                  type: boolean
+                  example: false
+                start:
+                  type: boolean
+                  example: false
       responses:
         '200':
           description: Status of Plex sync
@@ -1946,7 +1975,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PublicSettings'
   /settings/initialize:
-    get:
+    post:
       summary: Initialize application
       description: Sets the app as initialized, allowing the user to navigate to pages other than the setup page.
       tags:
@@ -1990,7 +2019,7 @@ paths:
                       type: boolean
                       example: false
   /settings/jobs/{jobId}/run:
-    get:
+    post:
       summary: Invoke a specific job
       description: Invokes a specific job to run. Will return the new job status in JSON format.
       tags:
@@ -2025,7 +2054,7 @@ paths:
                     type: boolean
                     example: false
   /settings/jobs/{jobId}/cancel:
-    get:
+    post:
       summary: Cancel a specific job
       description: Cancels a specific job. Will return the new job status in JSON format.
       tags:
@@ -2095,7 +2124,7 @@ paths:
                         vsize:
                           type: number
   /settings/cache/{cacheId}/flush:
-    get:
+    post:
       summary: Flush a specific cache
       description: Flushes all data from the cache ID provided
       tags:
@@ -2511,7 +2540,7 @@ paths:
                 - email
                 - password
   /auth/logout:
-    get:
+    post:
       summary: Sign out and clear session cookie
       description: Completely clear the session cookie and associated values, effectively signing the user out.
       tags:
@@ -3187,10 +3216,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/MediaRequest'
   /request/{requestId}/{status}:
-    get:
-      summary: Update a requests status
+    post:
+      summary: Update a request's status
       description: |
-        Updates a requests status to approved or declined. Also returns the request in a JSON object.
+        Updates a request's status to approved or declined. Also returns the request in a JSON object.
 
         Requires the `MANAGE_REQUESTS` permission or `ADMIN`.
       tags:
@@ -3681,9 +3710,9 @@ paths:
         '204':
           description: Succesfully removed media item
   /media/{mediaId}/{status}:
-    get:
+    post:
       summary: Update media status
-      description: Updates a medias status and returns the media in JSON format
+      description: Updates a media item's status and returns the media in JSON format
       tags:
         - media
       parameters:
@@ -3702,12 +3731,15 @@ paths:
           schema:
             type: string
             enum: [available, partial, processing, pending, unknown]
-        - in: query
-          name: is4k
-          description: 4K Status
-          example: false
-          schema:
-            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is4k:
+                  type: boolean
+                  example: false
       responses:
         '200':
           description: Returned media
