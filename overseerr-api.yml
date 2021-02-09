@@ -644,6 +644,41 @@ components:
                 type: string
         releaseDate:
           type: string
+        releases:
+          type: object
+          properties:
+            results:
+              type: array
+              items:
+                type: object
+                properties:
+                  iso_3166_1:
+                    type: string
+                    example: 'US'
+                  rating:
+                    type: string
+                    nullable: true
+                  release_dates:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        certification:
+                          type: string
+                          example: 'PG-13'
+                        iso_639_1:
+                          type: string
+                          nullable: true
+                        note:
+                          type: string
+                          nullable: true
+                          example: 'Blu ray'
+                        release_date:
+                          type: string
+                          example: '2017-07-12T00:00:00.000Z'
+                        type:
+                          type: number
+                          example: 1
         revenue:
           type: number
           nullable: true
@@ -752,6 +787,20 @@ components:
           type: string
         posterPath:
           type: string
+        contentRatings:
+          type: object
+          properties:
+            results:
+              type: array
+              items:
+                type: object
+                properties:
+                  iso_3166_1:
+                    type: string
+                    example: 'US'
+                  rating:
+                    type: string
+                    example: 'TV-14'
         createdBy:
           type: array
           items:
