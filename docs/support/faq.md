@@ -76,7 +76,7 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### Is is possible to set user roles in Overseerr?
 
-**A:** Unfortunately, this is not possible yet. It is planned!
+**A:** The user roles can be set for each user individually on the **Users** page. The list of permissions is one that is still growing, so if you have any suggestions, [make a feature request](https://github.com/sct/overseerr/issues/new/choose) on GitHub.
 
 ## Requests
 
