@@ -13,8 +13,7 @@
     "migration:generate": "ts-node --project server/tsconfig.json ./node_modules/.bin/typeorm migration:generate",
     "migration:create": "ts-node --project server/tsconfig.json ./node_modules/.bin/typeorm migration:create",
     "migration:run": "ts-node --project server/tsconfig.json ./node_modules/.bin/typeorm migration:run",
-    "format": "prettier --write .",
-    "postinstall": "husky install"
+    "format": "prettier --write ."
   },
   "license": "MIT",
   "dependencies": {
@@ -106,6 +105,7 @@
     "autoprefixer": "^10.2.4",
     "babel-plugin-react-intl": "^8.2.25",
     "babel-plugin-react-intl-auto": "^3.3.0",
+    "commitizen": "^4.2.3",
     "copyfiles": "^2.4.1",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.19.0",
@@ -116,7 +116,7 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "extract-react-intl-messages": "^4.1.1",
-    "husky": "5",
+    "husky": "4.3.8",
     "lint-staged": "^10.5.4",
     "nodemon": "^2.0.7",
     "postcss": "^8.2.5",
@@ -130,6 +130,18 @@
   },
   "resolutions": {
     "sqlite3/node-gyp": "^5.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
+      "commit-msg": "[[ -n $HUSKY_BYPASS ]] || commitlint -E HUSKY_GIT_PARAMS"
+    }
   },
   "lint-staged": {
     "**/*.{ts,tsx,js}": [
