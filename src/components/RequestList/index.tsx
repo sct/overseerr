@@ -22,6 +22,7 @@ const messages = defineMessages({
   filterAll: 'All',
   filterPending: 'Pending',
   filterApproved: 'Approved',
+  filterAvailable: 'Available',
   noresults: 'No results.',
   showallrequests: 'Show All Requests',
   sortAdded: 'Request Date',
@@ -92,6 +93,9 @@ const RequestList: React.FC = () => {
               </option>
               <option value="approved">
                 {intl.formatMessage(messages.filterApproved)}
+              </option>
+              <option value="available">
+                {intl.formatMessage(messages.filterAvailable)}
               </option>
             </select>
           </div>
