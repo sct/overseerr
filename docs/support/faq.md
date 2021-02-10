@@ -72,7 +72,7 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### Can I create local users in Overseerr?
 
-**A:** Not at this time. But it is a planned feature!
+**A:** Head to **Settings -&gt; Users** and hit **Create Local User**. Keep in mind that local user accounts need a valid email address.
 
 ### Is is possible to set user roles in Overseerr?
 
