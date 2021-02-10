@@ -319,9 +319,23 @@ requestRoutes.get('/count', async (_req, res, next) => {
     const pendingCount = await requestRepository.count({
       status: MediaRequestStatus.PENDING,
     });
-    const approvedCount = await requestRepository.count({
-      status: MediaRequestStatus.APPROVED,
-    });
+
+    const approvedCount = await requestRepository
+      .createQueryBuilder('request')
+      .leftJoinAndSelect('request.media', 'media')
+      .leftJoinAndSelect('request.seasons', 'seasons')
+      .leftJoinAndSelect('request.modifiedBy', 'modifiedBy')
+      .leftJoinAndSelect('request.requestedBy', 'requestedBy')
+      .where('request.status = :requestStatus', {
+        requestStatus: MediaRequestStatus.APPROVED,
+      })
+      .andWhere(
+        '(request.is4k = false AND media.status != :availableStatus) OR (request.is4k = true AND media.status4k != :availableStatus)',
+        {
+          availableStatus: MediaStatus.AVAILABLE,
+        }
+      )
+      .getCount();
 
     return res.status(200).json({
       pending: pendingCount,
