@@ -32,7 +32,7 @@ The most secure method, but also the most inconvenient, is to set up a VPN tunne
 
 ### Can I make 4K requests?
 
-**A:** 4K requests are not supported just yet but they will be supported in the future!
+**A:** Yes! When adding your 4K Sonarr/Radarr server, tick the `4K Server` checkbox. You also need to tick the `Default Server` checkbox if the Sonarr/Radarr server you're adding is the default one you want your requests to go to for 4K content (there needs to be a default Sonarr/Radarr server for **both** 4K **and** non-4K content).
 
 ### Some media is missing from Overseerr that I know is in Plex!
 
