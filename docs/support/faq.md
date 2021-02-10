@@ -8,7 +8,7 @@ If you can't find a solution here, please ask on [Discord](https://discord.gg/Pk
 
 ### I receive 409 or 400 errors when requesting a movie or tv show!
 
-**A:** Verify your are running radarr and sonarr v3. Overseerr was developed for v3 and is not currently backward compatible.
+**A:** Verify your are running Radarr and Sonarr v3. Overseerr was developed for v3 and is not currently backward compatible.
 
 ### How do I keep Overseerr up-to-date?
 
@@ -80,9 +80,9 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ## Requests
 
-### I approved a requested movie and radarr didn't search for it!
+### I approved a requested movie and Radarr didn't search for it!
 
-**A:** Check your minimum availability in radarr. If an added item does not meet the minimum availability, no search will be performed. Also verify that radarr did not search for it by checking the radarr logs. Lastly, verify the item was not already being monitored by radarr. Currently there is no state sync with radarr.
+**A:** Check your minimum availability in Radarr. If an added item does not meet the minimum availability, no search will be performed. Also verify that Radarr did not search for it by checking the Radarr logs. Lastly, verify the item was not already being monitored by Radarr. Currently there is no state sync with Radarr.
 
 ### Help! My request still shows "requested" even though it's in Plex!?!
 
