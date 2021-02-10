@@ -286,10 +286,31 @@ class JobSonarrSync {
               .includes(requestSeason.seasonNumber)
           )
         );
-
         if (request && request.status !== MediaRequestStatus.AVAILABLE) {
           request.status = MediaRequestStatus.AVAILABLE;
           await requestRepository.save(request);
+        } else {
+          const partiallyAvailableRequest = requests.find((request) =>
+            request.seasons.some((requestSeason) =>
+              media.seasons
+                .filter(
+                  (season) =>
+                    season[server4k ? 'status4k' : 'status'] ===
+                    MediaStatus.AVAILABLE
+                )
+                .map(({ seasonNumber }) => seasonNumber)
+                .includes(requestSeason.seasonNumber)
+            )
+          );
+          if (
+            partiallyAvailableRequest &&
+            partiallyAvailableRequest.status !==
+              MediaRequestStatus.PARTIALLY_AVAILABLE
+          ) {
+            partiallyAvailableRequest.status =
+              MediaRequestStatus.PARTIALLY_AVAILABLE;
+            await requestRepository.save(partiallyAvailableRequest);
+          }
         }
       }
     } else {

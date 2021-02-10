@@ -3,6 +3,7 @@ export enum MediaRequestStatus {
   APPROVED,
   DECLINED,
   AVAILABLE,
+  PARTIALLY_AVAILABLE,
 }
 
 export enum MediaType {

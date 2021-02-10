@@ -200,6 +200,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
             status={
               requestData.status === MediaRequestStatus.AVAILABLE
                 ? MediaStatus.AVAILABLE
+                : requestData.status === MediaRequestStatus.PARTIALLY_AVAILABLE
+                ? MediaStatus.PARTIALLY_AVAILABLE
                 : requestData.media[requestData.is4k ? 'status4k' : 'status']
             }
             inProgress={

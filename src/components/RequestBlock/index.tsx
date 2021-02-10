@@ -212,6 +212,11 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                   {intl.formatMessage(globalMessages.pending)}
                 </Badge>
               )}
+              {request.status === MediaRequestStatus.PARTIALLY_AVAILABLE && (
+                <Badge badgeType="success">
+                  {intl.formatMessage(globalMessages.partiallyavailable)}
+                </Badge>
+              )}
               {request.status === MediaRequestStatus.AVAILABLE && (
                 <Badge badgeType="success">
                   {intl.formatMessage(globalMessages.available)}

@@ -123,43 +123,22 @@ class JobPlexSync {
             let changedExisting = false;
             const requestRepository = getRepository(MediaRequest);
 
-            if (hasOtherResolution || (!this.enable4kMovie && has4k)) {
-              if (existing.status !== MediaStatus.AVAILABLE) {
-                existing.status = MediaStatus.AVAILABLE;
-                existing.mediaAddedAt = new Date(plexitem.addedAt * 1000);
-                changedExisting = true;
-              }
-
-              const relatedRequests = await requestRepository.find({
-                where: { media: existing, is4k: false },
-              });
-              if (relatedRequests.length > 0) {
-                relatedRequests.forEach((request) => {
-                  if (request.status !== MediaRequestStatus.AVAILABLE) {
-                    request.status = MediaRequestStatus.AVAILABLE;
-                    requestRepository.save(request);
-                  }
-                });
-              }
+            if (
+              (hasOtherResolution || (!this.enable4kMovie && has4k)) &&
+              existing.status !== MediaStatus.AVAILABLE
+            ) {
+              existing.status = MediaStatus.AVAILABLE;
+              existing.mediaAddedAt = new Date(plexitem.addedAt * 1000);
+              changedExisting = true;
             }
 
-            if (has4k && this.enable4kMovie) {
-              if (existing.status4k !== MediaStatus.AVAILABLE) {
-                existing.status4k = MediaStatus.AVAILABLE;
-                changedExisting = true;
-              }
-
-              const relatedRequests = await requestRepository.find({
-                where: { media: existing, is4k: true },
-              });
-              if (relatedRequests.length > 0) {
-                relatedRequests.forEach((request) => {
-                  if (request.status !== MediaRequestStatus.AVAILABLE) {
-                    request.status = MediaRequestStatus.AVAILABLE;
-                    requestRepository.save(request);
-                  }
-                });
-              }
+            if (
+              has4k &&
+              this.enable4kMovie &&
+              existing.status4k !== MediaStatus.AVAILABLE
+            ) {
+              existing.status4k = MediaStatus.AVAILABLE;
+              changedExisting = true;
             }
 
             if (!existing.mediaAddedAt && !changedExisting) {
@@ -195,6 +174,24 @@ class JobPlexSync {
                 `Title already exists and no new media types found ${metadata.title}`
               );
             }
+
+            [true, false].forEach(async (is4k) => {
+              if (
+                existing[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE
+              ) {
+                const relatedRequests = await requestRepository.find({
+                  where: { media: existing, is4k: is4k },
+                });
+                if (relatedRequests.length > 0) {
+                  relatedRequests.forEach((request) => {
+                    if (request.status !== MediaRequestStatus.AVAILABLE) {
+                      request.status = MediaRequestStatus.AVAILABLE;
+                      requestRepository.save(request);
+                    }
+                  });
+                }
+              }
+            });
           } else {
             newMedia.status =
               hasOtherResolution || (!this.enable4kMovie && has4k)
@@ -691,47 +688,55 @@ class JobPlexSync {
             const requests = await requestRepository.find({
               where: { media: media },
             });
-
-            if (
-              media.status === MediaStatus.AVAILABLE ||
-              media.status === MediaStatus.PARTIALLY_AVAILABLE
-            ) {
-              const request = requests.find((request) =>
-                request.seasons.every((requestSeason) =>
-                  media.seasons
-                    .filter((season) => season.status === MediaStatus.AVAILABLE)
-                    .map(({ seasonNumber }) => seasonNumber)
-                    .includes(requestSeason.seasonNumber)
-                )
-              );
-              if (request && request.status !== MediaRequestStatus.AVAILABLE) {
-                request.status = MediaRequestStatus.AVAILABLE;
-                await requestRepository.save(request);
-              }
-            }
-
-            if (
-              media.status4k === MediaStatus.AVAILABLE ||
-              media.status4k === MediaStatus.PARTIALLY_AVAILABLE
-            ) {
-              const request4k = requests.find((request) =>
-                request.seasons.every((requestSeason) =>
-                  media.seasons
-                    .filter(
-                      (season) => season.status4k === MediaStatus.AVAILABLE
-                    )
-                    .map(({ seasonNumber }) => seasonNumber)
-                    .includes(requestSeason.seasonNumber)
-                )
-              );
+            [true, false].forEach(async (is4k) => {
               if (
-                request4k &&
-                request4k.status !== MediaRequestStatus.AVAILABLE
+                media[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
+                media[is4k ? 'status4k' : 'status'] ===
+                  MediaStatus.PARTIALLY_AVAILABLE
               ) {
-                request4k.status = MediaRequestStatus.AVAILABLE;
-                await requestRepository.save(request4k);
+                const availableRequest = requests.find((request) =>
+                  request.seasons.every((requestSeason) =>
+                    media.seasons
+                      .filter(
+                        (season) =>
+                          season[is4k ? 'status4k' : 'status'] ===
+                          MediaStatus.AVAILABLE
+                      )
+                      .map(({ seasonNumber }) => seasonNumber)
+                      .includes(requestSeason.seasonNumber)
+                  )
+                );
+                if (
+                  availableRequest &&
+                  availableRequest.status !== MediaRequestStatus.AVAILABLE
+                ) {
+                  availableRequest.status = MediaRequestStatus.AVAILABLE;
+                  await requestRepository.save(availableRequest);
+                } else {
+                  const partiallyAvailableRequest = requests.find((request) =>
+                    request.seasons.some((requestSeason) =>
+                      media.seasons
+                        .filter(
+                          (season) =>
+                            season[is4k ? 'status4k' : 'status'] ===
+                            MediaStatus.AVAILABLE
+                        )
+                        .map(({ seasonNumber }) => seasonNumber)
+                        .includes(requestSeason.seasonNumber)
+                    )
+                  );
+                  if (
+                    partiallyAvailableRequest &&
+                    partiallyAvailableRequest.status !==
+                      MediaRequestStatus.PARTIALLY_AVAILABLE
+                  ) {
+                    partiallyAvailableRequest.status =
+                      MediaRequestStatus.PARTIALLY_AVAILABLE;
+                    await requestRepository.save(partiallyAvailableRequest);
+                  }
+                }
               }
-            }
+            });
           } else {
             const newMedia = new Media({
               mediaType: MediaType.TV,
