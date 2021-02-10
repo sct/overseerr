@@ -28,7 +28,7 @@ The most secure method, but also the most inconvenient, is to set up a VPN tunne
 
 ### Where can I find the changelog?
 
-**A:** You can find the changelog in the **Settings -&gt; About** page in your instance. You can also find it on github [here](https://github.com/sct/overseerr/releases).
+**A:** You can find the changelog in the **Settings &rarr; About** page in your instance. You can also find it on github [here](https://github.com/sct/overseerr/releases).
 
 ### Can I make 4K requests?
 
@@ -68,7 +68,7 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### Why can't I see all my Plex users?
 
-**A:** Navigate to your **User List** in Overseerr and click **Import Users from Plex** button. Don't forget to check the default user permissions in the **Settings -&gt; General Settings** page beforehand.
+**A:** Navigate to your **User List** in Overseerr and click **Import Users from Plex** button. Don't forget to check the default user permissions in the **Settings &rarr; General Settings** page beforehand.
 
 ### Can I create local users in Overseerr?
 
