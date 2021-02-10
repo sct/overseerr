@@ -57,9 +57,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
         )}
         {loggedInUser?.id === user.id && (
           <Link href={`/profile/settings`}>
-            <Button buttonType="primary" as="a">
+            <Button as="a">
               <svg
-                className="w-5 h-5 mr-1"
+                className="w-5 h-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +70,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
                   clipRule="evenodd"
                 />
               </svg>
-              <span>Settings</span>
             </Button>
           </Link>
         )}
