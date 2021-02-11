@@ -30,6 +30,7 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.splat(),
     winston.format.timestamp(),
+    winston.format.json(),
     hformat
   ),
   transports: [

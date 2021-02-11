@@ -16,6 +16,7 @@ import notificationRoutes from './notifications';
 import sonarrRoutes from './sonarr';
 import radarrRoutes from './radarr';
 import cacheManager, { AvailableCacheIds } from '../../lib/cache';
+import logger from '../../logger';
 import { plexFullScanner } from '../../lib/scanners/plex';
 
 const settingsRoutes = Router();
@@ -221,6 +222,20 @@ settingsRoutes.post('/plex/sync', (req, res) => {
     plexFullScanner.run();
   }
   return res.status(200).json(plexFullScanner.status());
+});
+
+settingsRoutes.get('/logs', (req, res) => {
+  const options = {
+    rows: Number(req.query.rows),
+    fields: null,
+  };
+
+  return logger.query(options, (err, results) => {
+    if (err) {
+      return res.status(500).json(err);
+    }
+    return res.status(200).json(results.file);
+  });
 });
 
 settingsRoutes.get('/jobs', (_req, res) => {
