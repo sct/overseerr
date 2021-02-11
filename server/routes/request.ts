@@ -96,7 +96,7 @@ requestRoutes.get('/', async (req, res, next) => {
       );
 
     if (
-      req.user?.hasPermission(
+      !req.user?.hasPermission(
         [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
         { type: 'or' }
       )
