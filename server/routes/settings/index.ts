@@ -225,35 +225,12 @@ settingsRoutes.post('/plex/sync', (req, res) => {
 });
 
 settingsRoutes.get('/logs', (req, res) => {
-  const pageSize = req.query.take ? Number(req.query.take) : 100;
-  // const filter = req.query.filter ? req.query.filter : 'all';
-
   const options = {
-    rows: pageSize,
+    rows: Number(req.query.rows),
     fields: null,
   };
 
-  // a `rows` query parameter here??
-
-  // logger.query(options, (err, results) => {
-  //   if (err) {
-  //     return res.status(500).json(err);
-  //   }
-  //   return res
-  //     .status(200)
-  //     .json(
-  //       results.file.filter(
-  //         (row: {
-  //           timestamp: string;
-  //           level: string;
-  //           label: string;
-  //           message: string;
-  //         }) => row.label === filter
-  //       )
-  //     );
-  // });
-
-  logger.query(options, (err, results) => {
+  return logger.query(options, (err, results) => {
     if (err) {
       return res.status(500).json(err);
     }
