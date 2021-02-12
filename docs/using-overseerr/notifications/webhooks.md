@@ -45,8 +45,9 @@ These variables are only included in media related notifications, such as reques
 - `{{media_tmdbid}}` Media's TMDb ID.
 - `{{media_imdbid}}` Media's IMDb ID.
 - `{{media_tvdbid}}` Media's TVDB ID.
-- `{{media_status}}` Media's availability status. (Ex. `AVAILABLE` or `PENDING`)
-- `{{media_status4k}}` Media's 4K availability status. (Ex. `AVAILABLE` or `PENDING`)
+- `{{media_status}}` Media's availability status (e.g., `AVAILABLE` or `PENDING`).
+- `{{media_status4k}}` Media's 4K availability status.(e.g., `AVAILABLE` or `PENDING`).
+- `{{request_id}}` Request ID.
 
 ### Special Key Variables
 

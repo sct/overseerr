@@ -27,6 +27,7 @@ const KeyMap: Record<string, string | KeyMapFunction> = {
     payload.media?.status ? MediaStatus[payload.media?.status] : '',
   media_status4k: (payload) =>
     payload.media?.status ? MediaStatus[payload.media?.status4k] : '',
+  request_id: 'requestId',
 };
 
 class WebhookAgent

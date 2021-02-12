@@ -10,6 +10,7 @@ export interface NotificationPayload {
   image?: string;
   message?: string;
   extra?: { name: string; value: string }[];
+  requestId?: number;
 }
 
 export abstract class BaseAgent<T extends NotificationAgentConfig> {

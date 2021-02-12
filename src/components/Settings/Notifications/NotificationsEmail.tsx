@@ -204,12 +204,10 @@ const NotificationsEmail: React.FC = () => {
             </div>
             <div className="form-row">
               <label htmlFor="secure" className="checkbox-label">
-                <div className="flex flex-col">
-                  <span>{intl.formatMessage(messages.enableSsl)}</span>
-                  <span className="text-gray-500">
-                    {intl.formatMessage(messages.ssldisabletip)}
-                  </span>
-                </div>
+                <span>{intl.formatMessage(messages.enableSsl)}</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.ssldisabletip)}
+                </span>
               </label>
               <div className="form-input">
                 <Field type="checkbox" id="secure" name="secure" />

@@ -29,6 +29,7 @@ const defaultPayload = {
     status4k: '{{media_status4k}}',
   },
   '{{extra}}': [],
+  request_id: '{{request_id}}',
 };
 
 const messages = defineMessages({
