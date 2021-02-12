@@ -100,8 +100,14 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       if (response.data) {
         if (onComplete) {
           onComplete(
-            hasPermission(Permission.AUTO_APPROVE) ||
-              hasPermission(Permission.AUTO_APPROVE_MOVIE)
+            hasPermission(
+              is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE
+            ) ||
+              hasPermission(
+                is4k
+                  ? Permission.AUTO_APPROVE_4K_MOVIE
+                  : Permission.AUTO_APPROVE_MOVIE
+              )
               ? MediaStatus.PROCESSING
               : MediaStatus.PENDING
           );
@@ -275,8 +281,14 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       iconSvg={<DownloadIcon className="w-6 h-6" />}
     >
       {(hasPermission(Permission.MANAGE_REQUESTS) ||
-        hasPermission(Permission.AUTO_APPROVE) ||
-        hasPermission(Permission.AUTO_APPROVE_MOVIE)) && (
+        hasPermission(
+          is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE
+        ) ||
+        hasPermission(
+          is4k
+            ? Permission.AUTO_APPROVE_4K_MOVIE
+            : Permission.AUTO_APPROVE_MOVIE
+        )) && (
         <p className="mt-6">
           <Alert title={intl.formatMessage(messages.autoapproval)} type="info">
             {intl.formatMessage(messages.requestadmin)}

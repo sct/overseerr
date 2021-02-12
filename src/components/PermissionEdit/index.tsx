@@ -21,15 +21,24 @@ export const messages = defineMessages({
   vote: 'Vote',
   voteDescription:
     'Grants permission to vote on requests (voting not yet implemented)',
-  autoapprove: 'Auto Approve',
+  autoapprove: 'Auto-Approve',
   autoapproveDescription:
-    'Grants auto approval for any requests made by this user.',
-  autoapproveMovies: 'Auto Approve Movies',
+    'Grants automatic approval for all non-4K requests made by this user.',
+  autoapproveMovies: 'Auto-Approve Movies',
   autoapproveMoviesDescription:
-    'Grants auto approve for movie requests made by this user.',
-  autoapproveSeries: 'Auto Approve Series',
+    'Grants automatic approval for non-4K movie requests made by this user.',
+  autoapproveSeries: 'Auto-Approve Series',
   autoapproveSeriesDescription:
-    'Grants auto approve for series requests made by this user.',
+    'Grants automatic approval for non-4K series requests made by this user.',
+  autoapprove4k: 'Auto-Approve 4K',
+  autoapprove4kDescription:
+    'Grants automatic approval for all 4K requests made by this user.',
+  autoapprove4kMovies: 'Auto-Approve 4K Movies',
+  autoapprove4kMoviesDescription:
+    'Grants automatic approval for 4K movie requests made by this user.',
+  autoapprove4kSeries: 'Auto-Approve 4K Series',
+  autoapprove4kSeriesDescription:
+    'Grants automatic approval for 4K series requests made by this user.',
   request4k: 'Request 4K',
   request4kDescription: 'Grants permission to request 4K movies and series.',
   request4kMovies: 'Request 4K Movies',
@@ -142,6 +151,30 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
             messages.autoapproveSeriesDescription
           ),
           permission: Permission.AUTO_APPROVE_TV,
+        },
+      ],
+    },
+    {
+      id: 'autoapprove4k',
+      name: intl.formatMessage(messages.autoapprove4k),
+      description: intl.formatMessage(messages.autoapprove4kDescription),
+      permission: Permission.AUTO_APPROVE_4K,
+      children: [
+        {
+          id: 'autoapprove4k-movies',
+          name: intl.formatMessage(messages.autoapprove4kMovies),
+          description: intl.formatMessage(
+            messages.autoapprove4kMoviesDescription
+          ),
+          permission: Permission.AUTO_APPROVE_4K_MOVIE,
+        },
+        {
+          id: 'autoapprove4k-tv',
+          name: intl.formatMessage(messages.autoapprove4kSeries),
+          description: intl.formatMessage(
+            messages.autoapprove4kSeriesDescription
+          ),
+          permission: Permission.AUTO_APPROVE_4K_TV,
         },
       ],
     },
