@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getRepository, Not } from 'typeorm';
+import { getRepository, Not, FindOneOptions } from 'typeorm';
 import PlexTvAPI from '../api/plextv';
 import { MediaRequest } from '../entity/MediaRequest';
 import { User } from '../entity/User';
@@ -11,10 +11,43 @@ import { UserType } from '../constants/user';
 
 const router = Router();
 
-router.get('/', async (_req, res) => {
+router.get('/', async (req, res) => {
   const userRepository = getRepository(User);
 
-  const users = await userRepository.find();
+  let sortFilter: FindOneOptions<MediaRequest>['order'] = {
+    id: 'ASC',
+  };
+
+  switch (req.query.sort) {
+    case 'updated':
+      sortFilter = {
+        updatedAt: 'DESC',
+      };
+      break;
+  }
+
+  let users = await userRepository.find({
+    order: sortFilter,
+  });
+
+  switch (req.query.sort) {
+    case 'requests':
+      users = users.sort(
+        (user1, user2) => user2.requestCount - user1.requestCount
+      );
+      break;
+    case 'username':
+      users = users.sort((user1, user2) => {
+        if (user1.displayName > user2.displayName) {
+          return 1;
+        }
+        if (user1.displayName < user2.displayName) {
+          return -1;
+        }
+        return 0;
+      });
+      break;
+  }
 
   return res.status(200).json(User.filterMany(users));
 });
