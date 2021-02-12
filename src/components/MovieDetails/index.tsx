@@ -384,13 +384,14 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             )}
           </h1>
           <span className="mt-1 text-xs lg:text-base lg:mt-0">
-            {movieAttributes
-              .map((t, k) => <span key={k}>{t}</span>)
-              .reduce((prev, curr) => (
-                <>
-                  {prev} | {curr}
-                </>
-              ))}
+            {movieAttributes.length > 0 &&
+              movieAttributes
+                .map((t, k) => <span key={k}>{t}</span>)
+                .reduce((prev, curr) => (
+                  <>
+                    {prev} | {curr}
+                  </>
+                ))}
           </span>
         </div>
         <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">

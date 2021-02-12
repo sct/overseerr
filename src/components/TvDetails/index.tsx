@@ -412,13 +412,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             )}
           </h1>
           <span className="mt-1 text-xs lg:text-base lg:mt-0">
-            {seriesAttributes
-              .map((t, k) => <span key={k}>{t}</span>)
-              .reduce((prev, curr) => (
-                <>
-                  {prev} | {curr}
-                </>
-              ))}
+            {seriesAttributes.length > 0 &&
+              seriesAttributes
+                .map((t, k) => <span key={k}>{t}</span>)
+                .reduce((prev, curr) => (
+                  <>
+                    {prev} | {curr}
+                  </>
+                ))}
           </span>
         </div>
         <div className="flex flex-wrap justify-center flex-shrink-0 mt-4 sm:flex-nowrap sm:justify-end lg:mt-0">
