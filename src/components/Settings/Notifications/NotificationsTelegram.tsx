@@ -28,6 +28,8 @@ const messages = defineMessages({
     Additionally, you need the chat ID for the chat you want the bot to send notifications to.\
     You can do this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
   notificationtypes: 'Notification Types',
+  sendSilently: 'Send Silently',
+  sendSilentlyTip: 'Send notifications with no sound',
 });
 
 const NotificationsTelegram: React.FC = () => {
@@ -57,6 +59,7 @@ const NotificationsTelegram: React.FC = () => {
         types: data?.types,
         botAPI: data?.options.botAPI,
         chatId: data?.options.chatId,
+        sendSilently: data?.options.sendSilently,
       }}
       validationSchema={NotificationsTelegramSchema}
       onSubmit={async (values) => {
@@ -67,6 +70,7 @@ const NotificationsTelegram: React.FC = () => {
             options: {
               botAPI: values.botAPI,
               chatId: values.chatId,
+              sendSilently: values.sendSilently,
             },
           });
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
@@ -91,6 +95,7 @@ const NotificationsTelegram: React.FC = () => {
             options: {
               botAPI: values.botAPI,
               chatId: values.chatId,
+              sendSilently: values.sendSilently,
             },
           });
 
@@ -176,6 +181,21 @@ const NotificationsTelegram: React.FC = () => {
                   {errors.chatId && touched.chatId && (
                     <div className="error">{errors.chatId}</div>
                   )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="sendSilently" className="checkbox-label">
+                  <span>{intl.formatMessage(messages.sendSilently)}</span>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.sendSilentlyTip)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <Field
+                    type="checkbox"
+                    id="sendSilently"
+                    name="sendSilently"
+                  />
                 </div>
               </div>
               <div

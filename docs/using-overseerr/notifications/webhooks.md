@@ -45,8 +45,8 @@ These variables are only included in media related notifications, such as reques
 - `{{media_tmdbid}}` Media's TMDb ID.
 - `{{media_imdbid}}` Media's IMDb ID.
 - `{{media_tvdbid}}` Media's TVDB ID.
-- `{{media_status}}` Media's availability status. (Ex. `AVAILABLE` or `PENDING`)
-- `{{media_status4k}}` Media's 4K availability status. (Ex. `AVAILABLE` or `PENDING`)
+- `{{media_status}}` Media's availability status (e.g., `AVAILABLE` or `PENDING`).
+- `{{media_status4k}}` Media's 4K availability status (e.g., `AVAILABLE` or `PENDING`).
 
 ### Special Key Variables
 
@@ -54,3 +54,4 @@ These variables must be used as a key in the JSON Payload. (Ex, `"{{extra}}": []
 
 - `{{extra}}` This will override the value of the property to be the pre-formatted "extra" array that can come along with certain notifications. Using this variable is _not required_.
 - `{{media}}` This will override the value of the property to `null` if there is no media object passed along with the notification.
+- `{{request}}` This will override the value of the property to `null` if there is no request object passed along with the notification.

@@ -58,77 +58,61 @@ class SlackAgent
     payload: NotificationPayload
   ): SlackBlockEmbed {
     const settings = getSettings();
-    let header = settings.main.applicationTitle;
+    let header = '';
     let actionUrl: string | undefined;
 
     const fields: EmbedField[] = [];
 
+    if (payload.request) {
+      fields.push({
+        type: 'mrkdwn',
+        text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
+      });
+    }
+
     switch (type) {
       case Notification.MEDIA_PENDING:
         header = 'New Request';
-        fields.push(
-          {
-            type: 'mrkdwn',
-            text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
-          },
-          {
-            type: 'mrkdwn',
-            text: '*Status*\nPending Approval',
-          }
-        );
-        if (settings.main.applicationUrl) {
-          actionUrl = `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`;
-        }
+        fields.push({
+          type: 'mrkdwn',
+          text: '*Status*\nPending Approval',
+        });
         break;
       case Notification.MEDIA_APPROVED:
         header = 'Request Approved';
-        fields.push(
-          {
-            type: 'mrkdwn',
-            text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
-          },
-          {
-            type: 'mrkdwn',
-            text: '*Status*\nProcessing Request',
-          }
-        );
-        if (settings.main.applicationUrl) {
-          actionUrl = `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`;
-        }
+        fields.push({
+          type: 'mrkdwn',
+          text: '*Status*\nProcessing',
+        });
+        break;
+      case Notification.MEDIA_AVAILABLE:
+        header = 'Now Available';
+        fields.push({
+          type: 'mrkdwn',
+          text: '*Status*\nAvailable',
+        });
         break;
       case Notification.MEDIA_DECLINED:
         header = 'Request Declined';
-        fields.push(
-          {
-            type: 'mrkdwn',
-            text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
-          },
-          {
-            type: 'mrkdwn',
-            text: '*Status*\nDeclined',
-          }
-        );
-        if (settings.main.applicationUrl) {
-          actionUrl = `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`;
-        }
+        fields.push({
+          type: 'mrkdwn',
+          text: '*Status*\nDeclined',
+        });
         break;
-      case Notification.MEDIA_AVAILABLE:
-        header = 'Now available!';
-        fields.push(
-          {
-            type: 'mrkdwn',
-            text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
-          },
-          {
-            type: 'mrkdwn',
-            text: '*Status*\nAvailable',
-          }
-        );
+      case Notification.MEDIA_FAILED:
+        header = 'Failed Request';
+        fields.push({
+          type: 'mrkdwn',
+          text: '*Status*\nFailed',
+        });
+        break;
+      case Notification.TEST_NOTIFICATION:
+        header = 'Test Notification';
+        break;
+    }
 
-        if (settings.main.applicationUrl) {
-          actionUrl = `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`;
-        }
-        break;
+    if (settings.main.applicationUrl && payload.media) {
+      actionUrl = `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`;
     }
 
     const blocks: EmbedBlock[] = [
@@ -139,14 +123,17 @@ class SlackAgent
           text: header,
         },
       },
-      {
+    ];
+
+    if (type !== Notification.TEST_NOTIFICATION) {
+      blocks.push({
         type: 'section',
         text: {
           type: 'mrkdwn',
           text: `*${payload.subject}*`,
         },
-      },
-    ];
+      });
+    }
 
     if (payload.message) {
       blocks.push({
@@ -191,7 +178,7 @@ class SlackAgent
             value: 'open_overseerr',
             text: {
               type: 'plain_text',
-              text: `Open ${settings.main.applicationTitle}`,
+              text: `Open in ${settings.main.applicationTitle}`,
             },
           },
         ],
