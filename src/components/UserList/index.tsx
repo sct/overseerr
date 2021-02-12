@@ -414,9 +414,6 @@ const UserList: React.FC = () => {
               onChange={(e) => {
                 setCurrentSort(e.target.value as Sort);
               }}
-              onBlur={(e) => {
-                setCurrentSort(e.target.value as Sort);
-              }}
               value={currentSort}
               className="text-sm rounded-r-only"
             >

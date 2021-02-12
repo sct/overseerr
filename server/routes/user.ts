@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getRepository, Not, FindOneOptions } from 'typeorm';
+import { getRepository, Not } from 'typeorm';
 import PlexTvAPI from '../api/plextv';
 import { MediaRequest } from '../entity/MediaRequest';
 import { User } from '../entity/User';
@@ -12,42 +12,34 @@ import { UserType } from '../constants/user';
 const router = Router();
 
 router.get('/', async (req, res) => {
-  const userRepository = getRepository(User);
-
-  let sortFilter: FindOneOptions<MediaRequest>['order'] = {
-    id: 'ASC',
-  };
+  let query = getRepository(User).createQueryBuilder('user');
 
   switch (req.query.sort) {
     case 'updated':
-      sortFilter = {
-        updatedAt: 'DESC',
-      };
-      break;
-  }
-
-  let users = await userRepository.find({
-    order: sortFilter,
-  });
-
-  switch (req.query.sort) {
-    case 'requests':
-      users = users.sort(
-        (user1, user2) => user2.requestCount - user1.requestCount
-      );
+      query = query.orderBy('user.updatedAt', 'DESC');
       break;
     case 'username':
-      users = users.sort((user1, user2) => {
-        if (user1.displayName > user2.displayName) {
-          return 1;
-        }
-        if (user1.displayName < user2.displayName) {
-          return -1;
-        }
-        return 0;
-      });
+      query = query.orderBy(
+        '(CASE WHEN user.username IS NULL THEN user.plexUsername ELSE user.username END)',
+        'ASC'
+      );
+      break;
+    case 'requests':
+      query = query
+        .addSelect((subQuery) => {
+          return subQuery
+            .select('COUNT(request.id)', 'requestCount')
+            .from(MediaRequest, 'request')
+            .where('request.requestedBy.id = user.id');
+        }, 'requestCount')
+        .orderBy('requestCount', 'DESC');
+      break;
+    default:
+      query = query.orderBy('user.id', 'ASC');
       break;
   }
+
+  const users = await query.getMany();
 
   return res.status(200).json(User.filterMany(users));
 });

@@ -81,10 +81,6 @@ const RequestList: React.FC = () => {
                 setPageIndex(0);
                 setCurrentFilter(e.target.value as Filter);
               }}
-              onBlur={(e) => {
-                setPageIndex(0);
-                setCurrentFilter(e.target.value as Filter);
-              }}
               value={currentFilter}
               className="text-sm rounded-r-only"
             >
