@@ -8,7 +8,7 @@ If you can't find a solution here, please ask on [Discord](https://discord.gg/Pk
 
 ### I receive 409 or 400 errors when requesting a movie or tv show!
 
-**A:** Verify your are running radarr and sonarr v3. Overseerr was developed for v3 and is not currently backward compatible.
+**A:** Verify you are running Radarr and Sonarr v3. Overseerr was developed for v3 and is not currently backward-compatible.
 
 ### How do I keep Overseerr up-to-date?
 
@@ -28,11 +28,11 @@ The most secure method, but also the most inconvenient, is to set up a VPN tunne
 
 ### Where can I find the changelog?
 
-**A:** You can find the changelog in the **Settings -&gt; About** page in your instance. You can also find it on github [here](https://github.com/sct/overseerr/releases).
+**A:** You can find the changelog in the **Settings &rarr; About** page in your instance. You can also find it on github [here](https://github.com/sct/overseerr/releases).
 
 ### Can I make 4K requests?
 
-**A:** 4K requests are not supported just yet but they will be supported in the future!
+**A:** Yes! When adding your 4K Sonarr/Radarr server in **Settings &rarr; Services**, tick the `4K Server` checkbox. You also need to tick the `Default Server` checkbox if it is the default server you would like to use for 4K content requests. (To enable 4K requests, there need to be default Sonarr/Radarr servers for both 4K content **and** non-4K content.)
 
 ### Some media is missing from Overseerr that I know is in Plex!
 
@@ -68,21 +68,21 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ### Why can't I see all my Plex users?
 
-**A:** Navigate to your **User List** in Overseerr and click **Import Users from Plex** button. Don't forget to check the default user permissions in the **Settings -&gt; General Settings** page beforehand.
+**A:** Navigate to your **User List** in Overseerr and click **Import Users from Plex** button. Don't forget to check the default user permissions in the **Settings &rarr; General Settings** page beforehand.
 
 ### Can I create local users in Overseerr?
 
-**A:** Not at this time. But it is a planned feature!
+**A:** Head to the **Users** page and hit **Create Local User**. Keep in mind that local user accounts need a valid email address.
 
 ### Is is possible to set user roles in Overseerr?
 
-**A:** Unfortunately, this is not possible yet. It is planned!
+**A:** User roles can be set for each user on the **Users** page. The list of assignable permissions is one that is still growing, so if you have any suggestions, [make a feature request](https://github.com/sct/overseerr/issues/new/choose) on GitHub.
 
 ## Requests
 
-### I approved a requested movie and radarr didn't search for it!
+### I approved a requested movie and Radarr didn't search for it!
 
-**A:** Check your minimum availability in radarr. If an added item does not meet the minimum availability, no search will be performed. Also verify that radarr did not search for it by checking the radarr logs. Lastly, verify the item was not already being monitored by radarr. Currently there is no state sync with radarr.
+**A:** Check the minimum availability setting in your Radarr server. If a movie does not meet the minimum availability requirement, no search will be performed. Also verify that Radarr did not perform a search, by checking the Radarr logs. Lastly, verify that the item was not already being monitored by Radarr prior to approving the request.
 
 ### Help! My request still shows "requested" even though it's in Plex!?!
 
