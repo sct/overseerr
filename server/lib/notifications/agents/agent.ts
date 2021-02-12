@@ -1,5 +1,6 @@
 import { Notification } from '..';
 import Media from '../../../entity/Media';
+import { MediaRequest } from '../../../entity/MediaRequest';
 import { User } from '../../../entity/User';
 import { NotificationAgentConfig } from '../../settings';
 
@@ -10,7 +11,7 @@ export interface NotificationPayload {
   image?: string;
   message?: string;
   extra?: { name: string; value: string }[];
-  requestId?: number;
+  request?: MediaRequest;
 }
 
 export abstract class BaseAgent<T extends NotificationAgentConfig> {

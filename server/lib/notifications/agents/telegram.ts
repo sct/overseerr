@@ -103,8 +103,7 @@ class TelegramAgent
         break;
       case Notification.TEST_NOTIFICATION:
         message += `\*Test Notification\*`;
-        message += `\n\n${plot}\n\n`;
-        message += `\n\n\*Requested By\*\n${user}`;
+        message += `\n\n${plot}`;
         break;
     }
 

@@ -98,11 +98,13 @@ class DiscordAgent
 
     const fields: Field[] = [];
 
-    fields.push({
-      name: 'Requested By',
-      value: payload.notifyUser.displayName ?? '',
-      inline: true,
-    });
+    if (payload.request) {
+      fields.push({
+        name: 'Requested By',
+        value: payload.notifyUser.displayName ?? '',
+        inline: true,
+      });
+    }
 
     switch (type) {
       case Notification.MEDIA_PENDING:

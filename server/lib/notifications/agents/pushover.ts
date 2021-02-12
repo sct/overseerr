@@ -113,7 +113,6 @@ class PushoverAgent
       case Notification.TEST_NOTIFICATION:
         messageTitle = 'Test Notification';
         message += `${plot}`;
-        message += `\n\n<b>Requested By</b>\n${username}`;
         break;
     }
 

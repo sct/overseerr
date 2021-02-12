@@ -111,7 +111,7 @@ export class MediaRequest {
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
           notifyUser: this.requestedBy,
           media,
-          requestId: this.id,
+          request: this,
         });
       }
 
@@ -131,7 +131,7 @@ export class MediaRequest {
                 .join(', '),
             },
           ],
-          requestId: this.id,
+          request: this,
         });
       }
     }
@@ -179,7 +179,7 @@ export class MediaRequest {
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
             notifyUser: this.requestedBy,
             media,
-            requestId: this.id,
+            request: this,
           }
         );
       } else if (this.media.mediaType === MediaType.TV) {
@@ -202,7 +202,7 @@ export class MediaRequest {
                   .join(', '),
               },
             ],
-            requestId: this.id,
+            request: this,
           }
         );
       }
@@ -458,7 +458,7 @@ export class MediaRequest {
               notifyUser: admin,
               media,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-              requestId: this.id,
+              request: this,
             });
           });
         logger.info('Sent request to Radarr', { label: 'Media Request' });
@@ -664,7 +664,7 @@ export class MediaRequest {
                     .join(', '),
                 },
               ],
-              requestId: this.id,
+              request: this,
             });
           });
         logger.info('Sent request to Sonarr', { label: 'Media Request' });

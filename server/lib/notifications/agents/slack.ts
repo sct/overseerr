@@ -63,10 +63,12 @@ class SlackAgent
 
     const fields: EmbedField[] = [];
 
-    fields.push({
-      type: 'mrkdwn',
-      text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
-    });
+    if (payload.request) {
+      fields.push({
+        type: 'mrkdwn',
+        text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
+      });
+    }
 
     switch (type) {
       case Notification.MEDIA_PENDING:
