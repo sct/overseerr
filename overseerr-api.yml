@@ -27,13 +27,13 @@ tags:
   - name: tv
     description: Endpoints related to retrieving TV series and their details.
   - name: person
-    description: Endpoints related to retrieving Person details.
+    description: Endpoints related to retrieving person details.
   - name: media
     description: Endpoints related to media management.
   - name: collection
-    description: Endpoints related to retrieving Collection details.
+    description: Endpoints related to retrieving collection details.
   - name: service
-    description: Endpoinst related to getting Service (Radarr/Sonarr) details.
+    description: Endpoints related to getting service (Radarr/Sonarr) details.
 servers:
   - url: '{server}/api/v1'
     variables:
@@ -3095,7 +3095,7 @@ paths:
           schema:
             type: string
             nullable: true
-            enum: [all, available, approved, pending, unavailable]
+            enum: [all, approved, available, pending, processing, unavailable]
         - in: query
           name: sort
           schema:
@@ -3187,6 +3187,12 @@ paths:
                   approved:
                     type: number
                     example: 10
+                  processing:
+                    type: number
+                    example: 4
+                  available:
+                    type: number
+                    example: 6
                 required:
                   - pending
                   - approved

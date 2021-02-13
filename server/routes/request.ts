@@ -22,8 +22,9 @@ requestRoutes.get('/', async (req, res, next) => {
     let statusFilter: MediaRequestStatus[];
 
     switch (req.query.filter) {
-      case 'available':
       case 'approved':
+      case 'processing':
+      case 'available':
         statusFilter = [MediaRequestStatus.APPROVED];
         break;
       case 'pending':
@@ -49,8 +50,7 @@ requestRoutes.get('/', async (req, res, next) => {
       case 'available':
         mediaStatusFilter = [MediaStatus.AVAILABLE];
         break;
-      case 'approved':
-      case 'pending':
+      case 'processing':
       case 'unavailable':
         mediaStatusFilter = [
           MediaStatus.UNKNOWN,
@@ -316,16 +316,23 @@ requestRoutes.get('/count', async (_req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
 
   try {
-    const pendingCount = await requestRepository.count({
-      status: MediaRequestStatus.PENDING,
-    });
-
-    const approvedCount = await requestRepository
+    const query = requestRepository
       .createQueryBuilder('request')
-      .leftJoinAndSelect('request.media', 'media')
-      .leftJoinAndSelect('request.seasons', 'seasons')
-      .leftJoinAndSelect('request.modifiedBy', 'modifiedBy')
-      .leftJoinAndSelect('request.requestedBy', 'requestedBy')
+      .leftJoinAndSelect('request.media', 'media');
+
+    const pendingCount = await query
+      .where('request.status = :requestStatus', {
+        requestStatus: MediaRequestStatus.PENDING,
+      })
+      .getCount();
+
+    const approvedCount = await query
+      .where('request.status = :requestStatus', {
+        requestStatus: MediaRequestStatus.APPROVED,
+      })
+      .getCount();
+
+    const processingCount = await query
       .where('request.status = :requestStatus', {
         requestStatus: MediaRequestStatus.APPROVED,
       })
@@ -337,9 +344,23 @@ requestRoutes.get('/count', async (_req, res, next) => {
       )
       .getCount();
 
+    const availableCount = await query
+      .where('request.status = :requestStatus', {
+        requestStatus: MediaRequestStatus.APPROVED,
+      })
+      .andWhere(
+        '(request.is4k = false AND media.status = :availableStatus) OR (request.is4k = true AND media.status4k = :availableStatus)',
+        {
+          availableStatus: MediaStatus.AVAILABLE,
+        }
+      )
+      .getCount();
+
     return res.status(200).json({
       pending: pendingCount,
       approved: approvedCount,
+      processing: processingCount,
+      available: availableCount,
     });
   } catch (e) {
     next({ status: 500, message: e.message });
