@@ -9,18 +9,18 @@ export const messages = defineMessages({
     'Full administrator access. Bypasses all permission checks.',
   users: 'Manage Users',
   usersDescription:
-    'Grants permission to manage Overseerr users. Users with this permission cannot modify users with Administrator privilege, or grant it.',
+    'Grants permission to manage Overseerr users. Users with this permission cannot modify users with or grant the Admin privilege.',
   settings: 'Manage Settings',
   settingsDescription:
     'Grants permission to modify all Overseerr settings. A user must have this permission to grant it to others.',
   managerequests: 'Manage Requests',
   managerequestsDescription:
-    'Grants permission to manage Overseerr requests. This includes approving and denying requests.',
+    'Grants permission to manage Overseerr requests. This includes approving and denying requests. All requests made by a user with this permission will be automatically approved regardless of whether or not they have Auto-Approve permissions.',
   request: 'Request',
   requestDescription: 'Grants permission to request movies and series.',
   vote: 'Vote',
   voteDescription:
-    'Grants permission to vote on requests (voting not yet implemented)',
+    'Grants permission to vote on requests (voting not yet implemented).',
   autoapprove: 'Auto-Approve',
   autoapproveDescription:
     'Grants automatic approval for all non-4K requests made by this user.',
@@ -47,9 +47,9 @@ export const messages = defineMessages({
   request4kTvDescription: 'Grants permission to request 4K Series.',
   advancedrequest: 'Advanced Requests',
   advancedrequestDescription:
-    'Grants permission to use advanced request options. (Ex. Changing servers/profiles/paths)',
+    'Grants permission to use advanced request options (e.g., changing servers, profiles, or paths).',
   viewrequests: 'View Requests',
-  viewrequestsDescription: "Grants permission to view other user's requests.",
+  viewrequestsDescription: "Grants permission to view other users' requests.",
 });
 
 interface PermissionEditProps {
