@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
     case 'updated':
       query = query.orderBy('user.updatedAt', 'DESC');
       break;
-    case 'username':
+    case 'displayname':
       query = query.orderBy(
         '(CASE WHEN user.username IS NULL THEN user.plexUsername ELSE user.username END)',
         'ASC'

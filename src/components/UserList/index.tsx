@@ -29,7 +29,7 @@ const messages = defineMessages({
   importfromplexerror: 'Something went wrong while importing users from Plex.',
   importedfromplex:
     '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex.',
-  username: 'Username',
+  displayName: 'Display Name',
   totalrequests: 'Total Requests',
   usertype: 'User Type',
   role: 'Role',
@@ -64,11 +64,11 @@ const messages = defineMessages({
   validationEmail: 'You must provide a valid email address',
   sortCreated: 'Creation Date',
   sortUpdated: 'Last Updated',
-  sortUsername: 'Username',
+  sortDisplayName: 'Display Name',
   sortRequests: 'Request Count',
 });
 
-type Sort = 'created' | 'updated' | 'requests' | 'username';
+type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 
 const UserList: React.FC = () => {
   const intl = useIntl();
@@ -426,8 +426,8 @@ const UserList: React.FC = () => {
               <option value="requests">
                 {intl.formatMessage(messages.sortRequests)}
               </option>
-              <option value="username">
-                {intl.formatMessage(messages.sortUsername)}
+              <option value="displayname">
+                {intl.formatMessage(messages.sortDisplayName)}
               </option>
             </select>
           </div>
@@ -449,7 +449,7 @@ const UserList: React.FC = () => {
                 />
               )}
             </Table.TH>
-            <Table.TH>{intl.formatMessage(messages.username)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.displayName)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.usertype)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
