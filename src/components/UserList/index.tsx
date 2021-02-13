@@ -29,7 +29,7 @@ const messages = defineMessages({
   importfromplexerror: 'Something went wrong while importing users from Plex.',
   importedfromplex:
     '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex.',
-  displayName: 'Display Name',
+  user: 'User',
   totalrequests: 'Total Requests',
   usertype: 'User Type',
   role: 'Role',
@@ -39,7 +39,6 @@ const messages = defineMessages({
   bulkedit: 'Bulk Edit',
   delete: 'Delete',
   admin: 'Admin',
-  user: 'User',
   plexuser: 'Plex User',
   deleteuser: 'Delete User',
   userdeleted: 'User deleted',
@@ -449,7 +448,7 @@ const UserList: React.FC = () => {
                 />
               )}
             </Table.TH>
-            <Table.TH>{intl.formatMessage(messages.displayName)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.user)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.usertype)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
