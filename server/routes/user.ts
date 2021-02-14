@@ -11,10 +11,35 @@ import { UserType } from '../constants/user';
 
 const router = Router();
 
-router.get('/', async (_req, res) => {
-  const userRepository = getRepository(User);
+router.get('/', async (req, res) => {
+  let query = getRepository(User).createQueryBuilder('user');
 
-  const users = await userRepository.find();
+  switch (req.query.sort) {
+    case 'updated':
+      query = query.orderBy('user.updatedAt', 'DESC');
+      break;
+    case 'displayname':
+      query = query.orderBy(
+        '(CASE WHEN user.username IS NULL THEN user.plexUsername ELSE user.username END)',
+        'ASC'
+      );
+      break;
+    case 'requests':
+      query = query
+        .addSelect((subQuery) => {
+          return subQuery
+            .select('COUNT(request.id)', 'requestCount')
+            .from(MediaRequest, 'request')
+            .where('request.requestedBy.id = user.id');
+        }, 'requestCount')
+        .orderBy('requestCount', 'DESC');
+      break;
+    default:
+      query = query.orderBy('user.id', 'ASC');
+      break;
+  }
+
+  const users = await query.getMany();
 
   return res.status(200).json(User.filterMany(users));
 });

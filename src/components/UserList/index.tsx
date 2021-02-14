@@ -29,7 +29,7 @@ const messages = defineMessages({
   importfromplexerror: 'Something went wrong while importing users from Plex.',
   importedfromplex:
     '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex.',
-  username: 'Username',
+  user: 'User',
   totalrequests: 'Total Requests',
   usertype: 'User Type',
   role: 'Role',
@@ -39,7 +39,6 @@ const messages = defineMessages({
   bulkedit: 'Bulk Edit',
   delete: 'Delete',
   admin: 'Admin',
-  user: 'User',
   plexuser: 'Plex User',
   deleteuser: 'Delete User',
   userdeleted: 'User deleted',
@@ -62,13 +61,22 @@ const messages = defineMessages({
     'Email notifications need to be configured and enabled in order to automatically generate passwords.',
   autogeneratepassword: 'Automatically generate password',
   validationEmail: 'You must provide a valid email address',
+  sortCreated: 'Creation Date',
+  sortUpdated: 'Last Updated',
+  sortDisplayName: 'Display Name',
+  sortRequests: 'Request Count',
 });
+
+type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 
 const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
   const { addToast } = useToasts();
-  const { data, error, revalidate } = useSWR<User[]>('/api/v1/user');
+  const [currentSort, setCurrentSort] = useState<Sort>('created');
+  const { data, error, revalidate } = useSWR<User[]>(
+    `/api/v1/user?sort=${currentSort}`
+  );
   const [isDeleting, setDeleting] = useState(false);
   const [isImporting, setImporting] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
@@ -368,24 +376,60 @@ const UserList: React.FC = () => {
         />
       </Transition>
 
-      <div className="flex flex-col justify-between md:items-end md:flex-row">
+      <div className="flex flex-col justify-between lg:items-end lg:flex-row">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
-        <div className="flex flex-row justify-between mt-2 sm:flex-row md:mb-0">
-          <Button
-            className="flex-grow mr-2 outline"
-            buttonType="primary"
-            onClick={() => setCreateModal({ isOpen: true })}
-          >
-            {intl.formatMessage(messages.createlocaluser)}
-          </Button>
-          <Button
-            className="flex-grow outline"
-            buttonType="primary"
-            disabled={isImporting}
-            onClick={() => importFromPlex()}
-          >
-            {intl.formatMessage(messages.importfromplex)}
-          </Button>
+        <div className="flex flex-col flex-grow mt-2 lg:flex-row lg:flex-grow-0">
+          <div className="flex flex-row justify-between flex-grow mb-2 lg:mb-0 lg:flex-grow-0">
+            <Button
+              className="flex-grow mr-2 outline"
+              buttonType="primary"
+              onClick={() => setCreateModal({ isOpen: true })}
+            >
+              {intl.formatMessage(messages.createlocaluser)}
+            </Button>
+            <Button
+              className="flex-grow outline lg:mr-2"
+              buttonType="primary"
+              disabled={isImporting}
+              onClick={() => importFromPlex()}
+            >
+              {intl.formatMessage(messages.importfromplex)}
+            </Button>
+          </div>
+          <div className="flex flex-grow mb-2 lg:mb-0 lg:flex-grow-0">
+            <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
+              <svg
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z" />
+              </svg>
+            </span>
+            <select
+              id="sort"
+              name="sort"
+              onChange={(e) => {
+                setCurrentSort(e.target.value as Sort);
+              }}
+              value={currentSort}
+              className="text-sm rounded-r-only"
+            >
+              <option value="created">
+                {intl.formatMessage(messages.sortCreated)}
+              </option>
+              <option value="updated">
+                {intl.formatMessage(messages.sortUpdated)}
+              </option>
+              <option value="requests">
+                {intl.formatMessage(messages.sortRequests)}
+              </option>
+              <option value="displayname">
+                {intl.formatMessage(messages.sortDisplayName)}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
       <Table>
@@ -404,7 +448,7 @@ const UserList: React.FC = () => {
                 />
               )}
             </Table.TH>
-            <Table.TH>{intl.formatMessage(messages.username)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.user)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.usertype)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>

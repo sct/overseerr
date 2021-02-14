@@ -2669,6 +2669,13 @@ paths:
       description: Returns all users in a JSON array.
       tags:
         - users
+      parameters:
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [created, updated, requests, displayname]
+            default: created
       responses:
         '200':
           description: A JSON array of all users
