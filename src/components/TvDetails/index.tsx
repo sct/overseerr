@@ -378,7 +378,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
           <div className="mb-2">
             {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
-              <span className="md:mr-2">
+              <span className="lg:mr-2">
                 <StatusBadge
                   status={data.mediaInfo?.status}
                   inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
@@ -426,7 +426,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           {(trailerUrl ||
             data.mediaInfo?.plexUrl ||
             data.mediaInfo?.plexUrl4k) && (
-            <div className="mb-3 md:mb-0">
+            <div className="mb-3 sm:mb-0">
               <ButtonWithDropdown
                 buttonType="ghost"
                 text={
