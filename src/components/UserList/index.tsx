@@ -414,7 +414,7 @@ const UserList: React.FC = () => {
                 setCurrentSort(e.target.value as Sort);
               }}
               value={currentSort}
-              className="text-sm rounded-r-only"
+              className="rounded-r-only"
             >
               <option value="created">
                 {intl.formatMessage(messages.sortCreated)}

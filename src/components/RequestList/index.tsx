@@ -84,7 +84,7 @@ const RequestList: React.FC = () => {
                 setCurrentFilter(e.target.value as Filter);
               }}
               value={currentFilter}
-              className="text-sm rounded-r-only"
+              className="rounded-r-only"
             >
               <option value="all">
                 {intl.formatMessage(messages.filterAll)}
@@ -126,7 +126,7 @@ const RequestList: React.FC = () => {
                 setCurrentSort(e.target.value as Sort);
               }}
               value={currentSort}
-              className="text-sm rounded-r-only"
+              className="rounded-r-only"
             >
               <option value="added">
                 {intl.formatMessage(messages.sortAdded)}
