@@ -523,13 +523,6 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                 {intl.formatMessage(globalMessages.requested)}
                               </Badge>
                             )}
-                            {!mediaSeason &&
-                              seasonRequest?.status ===
-                                MediaRequestStatus.AVAILABLE && (
-                                <Badge badgeType="success">
-                                  {intl.formatMessage(globalMessages.available)}
-                                </Badge>
-                              )}
                             {mediaSeason?.[is4k ? 'status4k' : 'status'] ===
                               MediaStatus.PARTIALLY_AVAILABLE && (
                               <Badge badgeType="success">

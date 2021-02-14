@@ -2,7 +2,6 @@ export enum MediaRequestStatus {
   PENDING = 1,
   APPROVED,
   DECLINED,
-  AVAILABLE,
 }
 
 export enum MediaType {
