@@ -365,8 +365,12 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       }
     >
       {(hasPermission(Permission.MANAGE_REQUESTS) ||
-        hasPermission(Permission.AUTO_APPROVE) ||
-        hasPermission(Permission.AUTO_APPROVE_TV)) &&
+        hasPermission(
+          is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE
+        ) ||
+        hasPermission(
+          is4k ? Permission.AUTO_APPROVE_4K_TV : Permission.AUTO_APPROVE_TV
+        )) &&
         !editRequest && (
           <p className="mt-6">
             <Alert
