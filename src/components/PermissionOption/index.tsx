@@ -25,12 +25,23 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
   user,
   parent,
 }) => {
+  const autoApprovePermissions = [
+    Permission.AUTO_APPROVE,
+    Permission.AUTO_APPROVE_MOVIE,
+    Permission.AUTO_APPROVE_TV,
+    Permission.AUTO_APPROVE_4K,
+    Permission.AUTO_APPROVE_4K_MOVIE,
+    Permission.AUTO_APPROVE_4K_TV,
+  ];
+
   return (
     <>
       <div
         className={`relative flex items-start first:mt-0 mt-4 ${
           (option.permission !== Permission.ADMIN &&
             hasPermission(Permission.ADMIN, currentPermission)) ||
+          (autoApprovePermissions.includes(option.permission) &&
+            hasPermission(Permission.MANAGE_REQUESTS, currentPermission)) ||
           (!!parent?.permission &&
             hasPermission(parent.permission, currentPermission)) ||
           (user && user.id !== 1 && option.permission === Permission.ADMIN) ||
@@ -49,6 +60,8 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
             disabled={
               (option.permission !== Permission.ADMIN &&
                 hasPermission(Permission.ADMIN, currentPermission)) ||
+              (autoApprovePermissions.includes(option.permission) &&
+                hasPermission(Permission.MANAGE_REQUESTS, currentPermission)) ||
               (!!parent?.permission &&
                 hasPermission(parent.permission, currentPermission)) ||
               (user &&
@@ -68,7 +81,9 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
             checked={
               hasPermission(option.permission, currentPermission) ||
               (!!parent?.permission &&
-                hasPermission(parent.permission, currentPermission))
+                hasPermission(parent.permission, currentPermission)) ||
+              (autoApprovePermissions.includes(option.permission) &&
+                hasPermission(Permission.MANAGE_REQUESTS, currentPermission))
             }
           />
         </div>
