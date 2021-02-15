@@ -148,13 +148,9 @@
   "components.PersonDetails.nobiography": "No biography available.",
   "components.PlexLoginButton.loading": "Loading…",
   "components.PlexLoginButton.signingin": "Signing in…",
-<<<<<<< HEAD
-  "components.PlexLoginButton.signinwithplex": "Sign In",
   "components.RegionSelector.regionDefault": "All Regions",
   "components.RegionSelector.regionServerDefault": "{applicationTitle} Default ({region})",
-=======
   "components.PlexLoginButton.signinwithplex": "Sign In with Plex",
->>>>>>> feat(all): add initial Jellyfin/Emby support
   "components.RequestBlock.profilechanged": "Quality Profile",
   "components.RequestBlock.requestoverrides": "Request Overrides",
   "components.RequestBlock.rootfolder": "Root Folder",
