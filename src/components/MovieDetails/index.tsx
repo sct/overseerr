@@ -486,7 +486,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     />
                   </svg>
                   <span>
-                    {data.mediaInfo?.mediaUrl || data.mediaInfo?.mediaUrl
+                    {data.mediaInfo?.mediaUrl || data.mediaInfo?.mediaUrl4k
                       ? intl.formatMessage(
                           settings.currentSettings.mediaServerType ==
                             MediaServerType.PLEX

@@ -16,6 +16,7 @@ import { InteractionProvider } from '../context/InteractionContext';
 import StatusChecker from '../components/StatusChacker';
 import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
 import { SettingsProvider } from '../context/SettingsContext';
+import { MediaServerType } from '../../server/constants/server';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocales): Promise<any> => {
@@ -146,7 +147,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     localLogin: true,
     region: '',
     originalLanguage: '',
-    mediaServerType: 'PLEX',
+    mediaServerType: MediaServerType.NOT_CONFIGURED,
   };
 
   let locale = 'en';

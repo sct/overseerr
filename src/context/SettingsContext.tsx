@@ -1,6 +1,7 @@
 import React from 'react';
 import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
 import useSWR from 'swr';
+import { MediaServerType } from '../../server/constants/server';
 
 export interface SettingsContextProps {
   currentSettings: PublicSettingsResponse;
@@ -15,7 +16,7 @@ const defaultSettings = {
   series4kEnabled: false,
   region: '',
   originalLanguage: '',
-  mediaServerType: 'PLEX',
+  mediaServerType: MediaServerType.NOT_CONFIGURED,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

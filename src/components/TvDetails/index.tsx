@@ -33,11 +33,7 @@ import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import PageTitle from '../Common/PageTitle';
 import useSettings from '../../hooks/useSettings';
-<<<<<<< HEAD
 import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
-=======
-import { MediaServerType } from '../../../server/constants/server';
->>>>>>> 2fe4add... feat(rebase): rebase
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
