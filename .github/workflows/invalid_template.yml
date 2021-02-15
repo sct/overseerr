@@ -14,6 +14,6 @@ jobs:
           support-label: 'invalid:template-incomplete'
           issue-comment: >
             :wave: @{issue-author}, please edit your issue and follow the template provided.
-          close-issue: false
-          lock-issue: false
+          close-issue: true
+          lock-issue: true
           issue-lock-reason: 'resolved'
