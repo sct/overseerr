@@ -108,7 +108,7 @@
     "commitizen": "^4.2.3",
     "copyfiles": "^2.4.1",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^7.19.0",
+    "eslint": "^7.20.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-formatjs": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
