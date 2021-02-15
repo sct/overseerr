@@ -108,11 +108,11 @@ export class User {
   }
 
   public passwordMatch(password: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.password) {
         resolve(bcrypt.compare(password, this.password));
       } else {
-        return reject(false);
+        return resolve(false);
       }
     });
   }
