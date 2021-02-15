@@ -4,8 +4,18 @@ import { mapMovieResult, mapTvResult, mapPersonResult } from '../models/Search';
 import Media from '../entity/Media';
 import { isMovie, isPerson } from '../utils/typeHelpers';
 import { MediaType } from '../constants/media';
+import { getSettings } from '../lib/settings';
 
 const discoverRoutes = Router();
+const settings = getSettings();
+
+discoverRoutes.get('/regions', async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const regions = await tmdb.getRegions();
+
+  return res.status(200).json(regions);
+});
 
 discoverRoutes.get('/movies', async (req, res) => {
   const tmdb = new TheMovieDb();
@@ -13,6 +23,7 @@ discoverRoutes.get('/movies', async (req, res) => {
   const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
     language: req.query.language as string,
+    region: settings.main.region,
   });
 
   const media = await Media.getRelatedMedia(
@@ -40,6 +51,7 @@ discoverRoutes.get('/movies/upcoming', async (req, res) => {
   const data = await tmdb.getUpcomingMovies({
     page: Number(req.query.page),
     language: req.query.language as string,
+    region: settings.main.region,
   });
 
   const media = await Media.getRelatedMedia(
@@ -67,6 +79,7 @@ discoverRoutes.get('/tv', async (req, res) => {
   const data = await tmdb.getDiscoverTv({
     page: Number(req.query.page),
     language: req.query.language as string,
+    region: settings.main.region,
   });
 
   const media = await Media.getRelatedMedia(

@@ -1,7 +1,7 @@
 import React from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
-import type { MainSettings } from '../../../server/lib/settings';
+import type { MainSettings, Region } from '../../../server/lib/settings';
 import CopyButton from './CopyButton';
 import { Form, Formik, Field } from 'formik';
 import axios from 'axios';
@@ -23,6 +23,8 @@ const messages = defineMessages({
   apikey: 'API Key',
   applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
+  region: 'Default Region',
+  regionDefault: 'All',
   toastApiKeySuccess: 'New API key generated!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
   toastSettingsSuccess: 'Settings successfully saved!',
@@ -49,6 +51,9 @@ const SettingsMain: React.FC = () => {
   const intl = useIntl();
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
+  );
+  const { data: regions, error: regionsError } = useSWR<Region[]>(
+    '/api/v1/discover/regions'
   );
   const MainSettingsSchema = Yup.object().shape({
     applicationTitle: Yup.string().required(
@@ -85,7 +90,7 @@ const SettingsMain: React.FC = () => {
     }
   };
 
-  if (!data && !error) {
+  if (!data && !error && !regions && !regionsError) {
     return <LoadingSpinner />;
   }
 
@@ -108,6 +113,7 @@ const SettingsMain: React.FC = () => {
             defaultPermissions: data?.defaultPermissions ?? 0,
             hideAvailable: data?.hideAvailable,
             localLogin: data?.localLogin,
+            region: data?.region,
             trustProxy: data?.trustProxy,
           }}
           enableReinitialize
@@ -121,6 +127,7 @@ const SettingsMain: React.FC = () => {
                 defaultPermissions: values.defaultPermissions,
                 hideAvailable: values.hideAvailable,
                 localLogin: values.localLogin,
+                region: values.region,
                 trustProxy: values.trustProxy,
               });
 
@@ -217,6 +224,28 @@ const SettingsMain: React.FC = () => {
                     {errors.applicationUrl && touched.applicationUrl && (
                       <div className="error">{errors.applicationUrl}</div>
                     )}
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="region" className="text-label">
+                    {intl.formatMessage(messages.region)}
+                  </label>
+                  <div className="form-input">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <Field as="select" id="region" name="region">
+                        <option value="">
+                          {intl.formatMessage(messages.regionDefault)}
+                        </option>
+                        {regions?.map((region: Region) => (
+                          <option
+                            key={region.iso_3166_1}
+                            value={region.iso_3166_1}
+                          >
+                            {region.english_name}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
                   </div>
                 </div>
                 <div className="form-row">

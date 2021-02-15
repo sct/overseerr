@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash';
 import cacheManager from '../../lib/cache';
 import ExternalAPI from '../externalapi';
 import {
@@ -6,6 +7,7 @@ import {
   TmdbMovieDetails,
   TmdbPersonCombinedCredits,
   TmdbPersonDetail,
+  TmdbRegion,
   TmdbSearchMovieResponse,
   TmdbSearchMultiResponse,
   TmdbSearchTvResponse,
@@ -25,6 +27,7 @@ interface DiscoverMovieOptions {
   page?: number;
   includeAdult?: boolean;
   language?: string;
+  region?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -45,6 +48,7 @@ interface DiscoverMovieOptions {
 interface DiscoverTvOptions {
   page?: number;
   language?: string;
+  region?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -343,6 +347,7 @@ class TheMovieDb extends ExternalAPI {
     page = 1,
     includeAdult = false,
     language = 'en',
+    region = '',
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const data = await this.get<TmdbSearchMovieResponse>('/discover/movie', {
@@ -351,6 +356,8 @@ class TheMovieDb extends ExternalAPI {
           page,
           include_adult: includeAdult,
           language,
+          with_release_type: 3,
+          region: region,
         },
       });
 
@@ -364,6 +371,7 @@ class TheMovieDb extends ExternalAPI {
     sortBy = 'popularity.desc',
     page = 1,
     language = 'en',
+    region = '',
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
@@ -371,6 +379,8 @@ class TheMovieDb extends ExternalAPI {
           sort_by: sortBy,
           page,
           language,
+          with_release_type: 6,
+          region: region,
         },
       });
 
@@ -383,9 +393,11 @@ class TheMovieDb extends ExternalAPI {
   public getUpcomingMovies = async ({
     page = 1,
     language = 'en',
+    region = '',
   }: {
     page: number;
     language: string;
+    region: string;
   }): Promise<TmdbUpcomingMoviesResponse> => {
     try {
       const data = await this.get<TmdbUpcomingMoviesResponse>(
@@ -394,6 +406,7 @@ class TheMovieDb extends ExternalAPI {
           params: {
             page,
             language,
+            region,
           },
         }
       );
@@ -594,6 +607,24 @@ class TheMovieDb extends ExternalAPI {
       throw new Error(`[TMDB] Failed to fetch collection: ${e.message}`);
     }
   }
+
+  public async getRegions(): Promise<TmdbRegion[]> {
+    try {
+      if (!regions) {
+        const response = await this.axios.get<TmdbRegion[]>(
+          '/configuration/countries'
+        );
+
+        regions = sortBy(response.data, 'english_name');
+      }
+
+      return regions;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch countries: ${e.message}`);
+    }
+  }
 }
+
+let regions: TmdbRegion[] | undefined;
 
 export default TheMovieDb;

@@ -10,6 +10,11 @@ export interface Library {
   enabled: boolean;
 }
 
+export interface Region {
+  iso_3166_1: string;
+  english_name: string;
+}
+
 export interface PlexSettings {
   name: string;
   machineId?: string;
@@ -58,6 +63,7 @@ export interface MainSettings {
   defaultPermissions: number;
   hideAvailable: boolean;
   localLogin: boolean;
+  region: string;
   trustProxy: boolean;
 }
 
@@ -177,6 +183,7 @@ class Settings {
         defaultPermissions: Permission.REQUEST,
         hideAvailable: false,
         localLogin: true,
+        region: '',
         trustProxy: false,
       },
       plex: {

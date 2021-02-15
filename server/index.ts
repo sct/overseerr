@@ -25,6 +25,7 @@ import PushoverAgent from './lib/notifications/agents/pushover';
 import WebhookAgent from './lib/notifications/agents/webhook';
 import { getClientIp } from '@supercharge/request-ip';
 import PushbulletAgent from './lib/notifications/agents/pushbullet';
+import TheMovieDb from './api/themoviedb';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -47,6 +48,9 @@ app
 
     // Load Settings
     const settings = getSettings().load();
+
+    // Load regions from tmdb
+    await new TheMovieDb().getRegions();
 
     // Register Notification Agents
     notificationManager.registerAgents([

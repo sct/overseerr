@@ -370,3 +370,8 @@ export interface TmdbCollection {
   backdrop_path?: string;
   parts: TmdbMovieResult[];
 }
+
+export interface TmdbRegion {
+  iso_3166_1: string;
+  english_name: string;
+}
