@@ -89,7 +89,7 @@ requestRoutes.get('/', async (req, res, next) => {
         requestStatus: statusFilter,
       })
       .andWhere(
-        '(request.is4k = false AND media.status IN (:...mediaStatus)) OR (request.is4k = true AND media.status4k IN (:...mediaStatus))',
+        '((request.is4k = 0 AND media.status IN (:...mediaStatus)) OR (request.is4k = 1 AND media.status4k IN (:...mediaStatus)))',
         {
           mediaStatus: mediaStatusFilter,
         }
@@ -101,7 +101,7 @@ requestRoutes.get('/', async (req, res, next) => {
         { type: 'or' }
       )
     ) {
-      query = query.andWhere('request.requestedBy.id = :id', {
+      query = query.andWhere('requestedBy.id = :id', {
         id: req.user?.id,
       });
     }
