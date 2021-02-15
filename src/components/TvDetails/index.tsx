@@ -422,11 +422,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 ))}
           </span>
         </div>
-        <div className="flex flex-wrap justify-center flex-shrink-0 w-screen mt-4 md:w-auto sm:flex-nowrap sm:justify-end lg:mt-0">
+        <div className="flex flex-wrap justify-center flex-shrink-0 mt-2 space-y-2 sm:space-y-0 sm:flex-nowrap sm:justify-end sm:mt-4">
           {(trailerUrl ||
             data.mediaInfo?.plexUrl ||
             data.mediaInfo?.plexUrl4k) && (
-            <div className="mb-3 sm:mb-0">
+            <div className="mt-2 sm:mt-0">
               <ButtonWithDropdown
                 buttonType="ghost"
                 text={
