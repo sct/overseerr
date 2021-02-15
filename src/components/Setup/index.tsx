@@ -19,8 +19,8 @@ const messages = defineMessages({
   finish: 'Finish Setup',
   finishing: 'Finishing…',
   continue: 'Continue',
-  authorize: 'Authorize',
-  connectmediaserver: 'Connect Media Server',
+  signin: 'Sign In',
+  configuremediaserver: 'Configure Media Server',
   configureservices: 'Configure Services',
   tip: 'Tip',
   syncingbackground:
@@ -83,13 +83,13 @@ const Setup: React.FC = () => {
           >
             <SetupSteps
               stepNumber={1}
-              description={intl.formatMessage(messages.authorize)}
+              description={intl.formatMessage(messages.signin)}
               active={currentStep === 1}
               completed={currentStep > 1}
             />
             <SetupSteps
               stepNumber={2}
-              description={intl.formatMessage(messages.connectmediaserver)}
+              description={intl.formatMessage(messages.configuremediaserver)}
               active={currentStep === 2}
               completed={currentStep > 2}
             />

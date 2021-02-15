@@ -3,7 +3,7 @@ import PlexOAuth from '../../utils/plex';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  signinwithplex: 'Sign In with Plex',
+  signinwithplex: 'Sign In',
   loading: 'Loading…',
   signingin: 'Signing in…',
 });

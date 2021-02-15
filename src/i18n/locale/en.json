@@ -590,12 +590,9 @@
   "components.Settings.validationApplicationUrlTrailingSlash": "URL must not end in a trailing slash",
   "components.Settings.validationHostnameRequired": "You must provide a hostname/IP",
   "components.Settings.validationPortRequired": "You must provide a port",
-<<<<<<< HEAD
   "components.Settings.webhook": "Webhook",
   "components.Setup.configureplex": "Configure Plex",
-=======
   "components.Setup.authorize": "Authorize",
->>>>>>> feat(all): add initial Jellyfin/Emby support
   "components.Setup.configureservices": "Configure Services",
   "components.Setup.connectmediaserver": "Connect Media Server",
   "components.Setup.continue": "Continue",
