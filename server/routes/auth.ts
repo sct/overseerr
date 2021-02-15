@@ -181,6 +181,7 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
         : body.hostname;
     // First we need to attempt to log the user in to jellyfin
     const jellyfinserver = new JellyfinAPI(hostname ?? '');
+    settings.jellyfin.name = await jellyfinserver.getServerName();
 
     const account = await jellyfinserver.login(body.username, body.password);
 

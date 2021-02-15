@@ -31,7 +31,10 @@ const Setup: React.FC = () => {
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [msSettingsComplete, setMSSettingsComplete] = useState(false);
+  const [
+    mediaServerSettingsComplete,
+    setMediaServerSettingsComplete,
+  ] = useState(false);
   const [mediaServerType, setMediaServerType] = useState('');
   const router = useRouter();
 
@@ -114,10 +117,12 @@ const Setup: React.FC = () => {
           {currentStep === 2 && (
             <div>
               {mediaServerType == 'PLEX' ? (
-                <SettingsPlex onComplete={() => setMSSettingsComplete(true)} />
+                <SettingsPlex
+                  onComplete={() => setMediaServerSettingsComplete(true)}
+                />
               ) : (
                 <SettingsJellyfin
-                  onComplete={() => setMSSettingsComplete(true)}
+                  onComplete={() => setMediaServerSettingsComplete(true)}
                 />
               )}
               <div className="mt-4 text-sm text-gray-500">
@@ -131,7 +136,7 @@ const Setup: React.FC = () => {
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
-                      disabled={!msSettingsComplete}
+                      disabled={!mediaServerSettingsComplete}
                       onClick={() => setCurrentStep(3)}
                     >
                       <FormattedMessage {...messages.continue} />

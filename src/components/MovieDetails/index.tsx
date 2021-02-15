@@ -74,10 +74,8 @@ const messages = defineMessages({
   openradarr: 'Open Movie in Radarr',
   openradarr4k: 'Open Movie in 4K Radarr',
   downloadstatus: 'Download Status',
-  playonplex: 'Play on Plex',
-  play4konplex: 'Play 4K on Plex',
-  playonjellyfin: 'Play on Jellyfin',
-  play4konjellyfin: 'Play 4K on Jellyfin',
+  play: 'Play on {mediaServerName}',
+  play4k: 'Play 4K on {mediaServerName}',
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark 4K as Available',
 });
@@ -396,8 +394,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 <StatusBadge
                   status={data.mediaInfo?.status}
                   inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
-                  plexUrl={data.mediaInfo?.mediaUrl}
-                  plexUrl4k={data.mediaInfo?.mediaUrl4k}
+                  mediaUrl={data.mediaInfo?.mediaUrl}
+                  mediaUrl4k={data.mediaInfo?.mediaUrl4k}
                 />
               </span>
             )}
@@ -406,8 +404,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 status={data.mediaInfo?.status4k}
                 is4k
                 inProgress={(data.mediaInfo?.downloadStatus4k ?? []).length > 0}
-                plexUrl={data.mediaInfo?.mediaUrl}
-                plexUrl4k={
+                mediaUrl={data.mediaInfo?.mediaUrl}
+                mediaUrl4k={
                   data.mediaInfo?.mediaUrl4k &&
                   (hasPermission(Permission.REQUEST_4K) ||
                     hasPermission(Permission.REQUEST_4K_MOVIE))
@@ -487,21 +485,23 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   </svg>
                   <span>
                     {data.mediaInfo?.mediaUrl || data.mediaInfo?.mediaUrl4k
-                      ? intl.formatMessage(
-                          settings.currentSettings.mediaServerType ==
+                      ? intl.formatMessage(messages.play, {
+                          mediaServerName:
+                            settings.currentSettings.mediaServerType ===
                             MediaServerType.PLEX
-                            ? messages.playonplex
-                            : messages.playonjellyfin
-                        )
+                              ? 'Plex'
+                              : settings.currentSettings.jellyfinServerName,
+                        })
                       : data.mediaInfo?.mediaUrl4k &&
                         (hasPermission(Permission.REQUEST_4K) ||
                           hasPermission(Permission.REQUEST_4K_MOVIE))
-                      ? intl.formatMessage(
-                          settings.currentSettings.mediaServerType ==
+                      ? intl.formatMessage(messages.play4k, {
+                          mediaServerName:
+                            settings.currentSettings.mediaServerType ===
                             MediaServerType.PLEX
-                            ? messages.playonplex
-                            : messages.playonjellyfin
-                        )
+                              ? 'Plex'
+                              : settings.currentSettings.jellyfinServerName,
+                        })
                       : intl.formatMessage(messages.watchtrailer)}
                   </span>
                 </>
@@ -538,12 +538,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         }}
                         buttonType="ghost"
                       >
-                        {intl.formatMessage(
-                          settings.currentSettings.mediaServerType ==
+                        {intl.formatMessage(messages.play4k, {
+                          mediaServerName:
+                            settings.currentSettings.mediaServerType ===
                             MediaServerType.PLEX
-                            ? messages.play4konplex
-                            : messages.play4konjellyfin
-                        )}
+                              ? 'Plex'
+                              : settings.currentSettings.jellyfinServerName,
+                        })}
                       </ButtonWithDropdown.Item>
                     )}
                   {trailerUrl && (

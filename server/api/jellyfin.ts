@@ -71,19 +71,18 @@ export interface JellyfinLibraryItemExtended extends JellyfinLibraryItem {
 
 class JellyfinAPI {
   private authToken?: string;
+  private userId?: string;
   private jellyfinHost: string;
   private axios: AxiosInstance;
 
-  constructor(jellyfinHost: string, authToken?: string) {
+  constructor(jellyfinHost: string, authToken?: string, userId?: string) {
     this.jellyfinHost = jellyfinHost;
     this.authToken = authToken;
+    this.userId = userId;
 
     let authHeaderVal = '';
     if (this.authToken) {
-      authHeaderVal =
-        'MediaBrowser Client="Overseerr", Device="Axios", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6ODUuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84NS4wfDE2MTI5MjcyMDM5NzM1", Version="10.8.0", Token="' +
-        authToken +
-        '"';
+      authHeaderVal = `MediaBrowser Client="Overseerr", Device="Axios", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6ODUuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84NS4wfDE2MTI5MjcyMDM5NzM1", Version="10.8.0", Token="${authToken}"`;
     } else {
       authHeaderVal =
         'MediaBrowser Client="Overseerr", Device="Axios", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6ODUuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84NS4wfDE2MTI5MjcyMDM5NzM1", Version="10.8.0"';
@@ -117,9 +116,26 @@ class JellyfinAPI {
     }
   }
 
+  public async getServerName(): Promise<string> {
+    try {
+      const account = await this.axios.get<JellyfinUserResponse>(
+        `/System/Info/Public'}`
+      );
+      return account.data.ServerName;
+    } catch (e) {
+      logger.error(
+        `Something went wrong while getting the server name from the Jellyfin server: ${e.message}`,
+        { label: 'Jellyfin API' }
+      );
+      throw new Error('girl idk');
+    }
+  }
+
   public async getUser(): Promise<JellyfinUserResponse> {
     try {
-      const account = await this.axios.get<JellyfinUserResponse>('/Users/Me');
+      const account = await this.axios.get<JellyfinUserResponse>(
+        `/Users/${this.userId ?? 'Me'}`
+      );
       return account.data;
     } catch (e) {
       logger.error(

@@ -552,7 +552,7 @@ class JobJellyfinSync {
       this.running = true;
       const userRepository = getRepository(User);
       const admin = await userRepository.findOne({
-        select: ['id', 'jellyfinAuthToken'],
+        select: ['id', 'jellyfinAuthToken', 'jellyfinId'],
         order: { id: 'ASC' },
       });
 
@@ -562,7 +562,8 @@ class JobJellyfinSync {
 
       this.jfClient = new JellyfinAPI(
         settings.jellyfin.hostname ?? '',
-        admin.jellyfinAuthToken ?? ''
+        admin.jellyfinAuthToken ?? '',
+        admin.jellyfinId ?? ''
       );
 
       this.libraries = settings.jellyfin.libraries.filter(

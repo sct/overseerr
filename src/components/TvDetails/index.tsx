@@ -67,10 +67,8 @@ const messages = defineMessages({
   opensonarr: 'Open Series in Sonarr',
   opensonarr4k: 'Open Series in 4K Sonarr',
   downloadstatus: 'Download Status',
-  playonplex: 'Play on Plex',
-  play4konplex: 'Play 4K on Plex',
-  playonjellyfin: 'Play on Jellyfin',
-  play4konjellyfin: 'Play 4K on Jellyfin',
+  play: 'Play on {mediaServerName}',
+  play4k: 'Play 4K on {mediaServerName}',
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark 4K as Available',
   allseasonsmarkedavailable: '* All seasons will be marked as available.',
@@ -413,8 +411,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <StatusBadge
                   status={data.mediaInfo?.status}
                   inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
-                  plexUrl={data.mediaInfo?.mediaUrl}
-                  plexUrl4k={data.mediaInfo?.mediaUrl4k}
+                  mediaUrl={data.mediaInfo?.mediaUrl}
+                  mediaUrl4k={data.mediaInfo?.mediaUrl4k}
                 />
               </span>
             )}
@@ -422,8 +420,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               <StatusBadge
                 status={data.mediaInfo?.status}
                 inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
-                plexUrl={data.mediaInfo?.mediaUrl}
-                plexUrl4k={
+                mediaUrl={data.mediaInfo?.mediaUrl}
+                mediaUrl4k={
                   data.mediaInfo?.mediaUrl4k &&
                   (hasPermission(Permission.REQUEST_4K) ||
                     hasPermission(Permission.REQUEST_4K_TV))

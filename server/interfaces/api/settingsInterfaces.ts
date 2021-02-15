@@ -7,6 +7,7 @@ export interface SettingsAboutResponse {
 
 export interface PublicSettingsResponse {
   jellyfinHost?: string;
+  jellyfinServerName?: string;
   initialized: boolean;
   applicationTitle: string;
   hideAvailable: boolean;

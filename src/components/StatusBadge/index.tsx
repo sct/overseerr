@@ -13,25 +13,25 @@ interface StatusBadgeProps {
   status?: MediaStatus;
   is4k?: boolean;
   inProgress?: boolean;
-  plexUrl?: string;
-  plexUrl4k?: string;
+  mediaUrl?: string;
+  mediaUrl4k?: string;
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({
   status,
   is4k = false,
   inProgress = false,
-  plexUrl,
-  plexUrl4k,
+  mediaUrl,
+  mediaUrl4k,
 }) => {
   const intl = useIntl();
 
   if (is4k) {
     switch (status) {
       case MediaStatus.AVAILABLE:
-        if (plexUrl4k) {
+        if (mediaUrl4k) {
           return (
-            <a href={plexUrl4k} target="_blank" rel="noopener noreferrer">
+            <a href={mediaUrl4k} target="_blank" rel="noopener noreferrer">
               <Badge
                 badgeType="success"
                 className="transition cursor-pointer hover:bg-green-400"
@@ -52,9 +52,9 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
           </Badge>
         );
       case MediaStatus.PARTIALLY_AVAILABLE:
-        if (plexUrl4k) {
+        if (mediaUrl4k) {
           return (
-            <a href={plexUrl4k} target="_blank" rel="noopener noreferrer">
+            <a href={mediaUrl4k} target="_blank" rel="noopener noreferrer">
               <Badge
                 badgeType="success"
                 className="transition cursor-pointer hover:bg-green-400"
@@ -104,9 +104,9 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   switch (status) {
     case MediaStatus.AVAILABLE:
-      if (plexUrl) {
+      if (mediaUrl) {
         return (
-          <a href={plexUrl} target="_blank" rel="noopener noreferrer">
+          <a href={mediaUrl} target="_blank" rel="noopener noreferrer">
             <Badge
               badgeType="success"
               className="transition cursor-pointer hover:bg-green-400"
@@ -129,9 +129,9 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
         </Badge>
       );
     case MediaStatus.PARTIALLY_AVAILABLE:
-      if (plexUrl) {
+      if (mediaUrl) {
         return (
-          <a href={plexUrl} target="_blank" rel="noopener noreferrer">
+          <a href={mediaUrl} target="_blank" rel="noopener noreferrer">
             <Badge
               badgeType="success"
               className="transition cursor-pointer hover:bg-green-400"

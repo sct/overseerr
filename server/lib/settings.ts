@@ -99,6 +99,7 @@ interface FullPublicSettings extends PublicSettings {
   originalLanguage: string;
   mediaServerType: number;
   jellyfinHost?: string;
+  jellyfinServerName?: string;
 }
 
 export interface NotificationAgentConfig {
@@ -368,17 +369,10 @@ class Settings {
       series4kEnabled: this.data.sonarr.some(
         (sonarr) => sonarr.is4k && sonarr.isDefault
       ),
-<<<<<<< HEAD
       region: this.data.main.region,
       originalLanguage: this.data.main.originalLanguage,
-=======
       mediaServerType: this.main.mediaServerType,
-<<<<<<< HEAD
-      jfHost: this.jellyfin.hostname ?? '',
->>>>>>> feat(all): add initial Jellyfin/Emby support
-=======
       jellyfinHost: this.jellyfin.hostname,
->>>>>>> feat(rebase): rebase
     };
   }
 
