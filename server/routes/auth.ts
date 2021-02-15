@@ -176,7 +176,10 @@ authRoutes.post('/local', async (req, res, next) => {
 
     return res.status(200).json(user?.filter() ?? {});
   } catch (e) {
-    logger.error(e.message, { label: 'Auth' });
+    logger.error('Something went wrong when trying to authenticate', {
+      label: 'Auth',
+      error: e.message,
+    });
     return next({
       status: 500,
       message: 'Something went wrong.',
