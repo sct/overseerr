@@ -5,10 +5,19 @@ on:
     branches: [develop]
 
 jobs:
-  test:
-    name: Lint & Test Build
+  jobs:
+    name: Job Check
     runs-on: ubuntu-20.04
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+  test:
+    name: Lint & Test Build
+    needs: jobs
+    runs-on: ubuntu-20.04
     container: node:12.18-alpine
     steps:
       - name: checkout
@@ -30,7 +39,7 @@ jobs:
       matrix:
         architecture:
           - amd64
-          - arm64
+          #- arm64 Disable until there is a workaround or fix.
           - armhf
     steps:
       - name: Checkout Code
