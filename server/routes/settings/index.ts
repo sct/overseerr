@@ -227,7 +227,9 @@ settingsRoutes.post('/plex/sync', (req, res) => {
 
 settingsRoutes.get('/jellyfin', (_req, res) => {
   const settings = getSettings();
-  res.status(200).json(settings.jellyfin);
+
+  //DO NOT RETURN ADMIN USER CREDENTIALS!!
+  res.status(200).json(omit(settings.jellyfin, ['adminUser', 'adminPass']));
 });
 
 settingsRoutes.post('/jellyfin', (req, res) => {

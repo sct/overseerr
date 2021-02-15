@@ -127,7 +127,7 @@ class JobJellyfinSync {
             (hasOtherResolution || (has4k && !this.enable4kMovie)) &&
             existing.jellyfinMediaID !== metadata.Id
           ) {
-            existing.jellyfinMediaID !== metadata.Id;
+            existing.jellyfinMediaID = metadata.Id;
             changedExisting = true;
           }
 
