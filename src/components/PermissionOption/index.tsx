@@ -8,7 +8,29 @@ export interface PermissionItem {
   description: string;
   permission: Permission;
   children?: PermissionItem[];
+  requires?: PermissionRequirement[];
 }
+
+interface PermissionRequirement {
+  permissions: Permission[];
+  type?: 'and' | 'or';
+}
+
+const hasRequirement = (
+  requirement: PermissionRequirement,
+  currentPermission: number
+): boolean => {
+  switch (requirement.type) {
+    case 'or':
+      return requirement.permissions.some(
+        (permission) => !!(permission & currentPermission)
+      );
+    default:
+      return requirement.permissions.every(
+        (permission) => !!(permission & currentPermission)
+      );
+  }
+};
 
 interface PermissionOptionProps {
   option: PermissionItem;
@@ -47,7 +69,11 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
           (user && user.id !== 1 && option.permission === Permission.ADMIN) ||
           (user &&
             !hasPermission(Permission.MANAGE_SETTINGS, user.permissions) &&
-            option.permission === Permission.MANAGE_SETTINGS)
+            option.permission === Permission.MANAGE_SETTINGS) ||
+          (option.requires &&
+            !option.requires.every((requirement) =>
+              hasRequirement(requirement, currentPermission)
+            ))
             ? 'opacity-50'
             : ''
         }`}
@@ -69,7 +95,11 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
                 option.permission === Permission.ADMIN) ||
               (user &&
                 !hasPermission(Permission.MANAGE_SETTINGS, user.permissions) &&
-                option.permission === Permission.MANAGE_SETTINGS)
+                option.permission === Permission.MANAGE_SETTINGS) ||
+              (option.requires &&
+                !option.requires.every((requirement) =>
+                  hasRequirement(requirement, currentPermission)
+                ))
             }
             onChange={() => {
               onUpdate(
@@ -79,11 +109,18 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
               );
             }}
             checked={
-              hasPermission(option.permission, currentPermission) ||
-              (!!parent?.permission &&
-                hasPermission(parent.permission, currentPermission)) ||
-              (autoApprovePermissions.includes(option.permission) &&
-                hasPermission(Permission.MANAGE_REQUESTS, currentPermission))
+              (hasPermission(option.permission, currentPermission) ||
+                (!!parent?.permission &&
+                  hasPermission(parent.permission, currentPermission)) ||
+                (autoApprovePermissions.includes(option.permission) &&
+                  hasPermission(
+                    Permission.MANAGE_REQUESTS,
+                    currentPermission
+                  ))) &&
+              (!option.requires ||
+                option.requires.every((requirement) =>
+                  hasRequirement(requirement, currentPermission)
+                ))
             }
           />
         </div>
