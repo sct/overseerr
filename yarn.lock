@@ -1481,10 +1481,10 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.1.0.tgz#6c9eafc78c1529248f8f4d92b0799a712b6052c6"
   integrity sha512-i9YbZPN3QgfighY/1X1Pu118VUz2Fmmhd6b2n0/O8YVgGGfw0FbUYoA97k7FkpGJ+pLCFEDLUmAPPV4D1kpeFw==
 
-"@headlessui/react@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-0.3.0.tgz#252f15a51a45d33d51b8870b39e0802d32a19053"
-  integrity sha512-5v/04u6BK4G19Yj09kwmvvKYEAMoCWFrI4lUEYqEpE7qflvZEQQ9DFhed/MbK/5ReZX3mEKAIM6lGdUJezKv9w==
+"@headlessui/react@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-0.3.1.tgz#62d8df3b49f7e212f81f7fa4ba3cefb8945720ec"
+  integrity sha512-GnAVXCLmDs3CFvmvYo4Iu/LqAWVIoS+bGo+eMADnbWgF8BeMX13sWMyb8eOdj7N9nqY9QA2AsMzqYdAIbbsRIw==
 
 "@iarna/cli@^1.2.0":
   version "1.2.0"
