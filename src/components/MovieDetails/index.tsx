@@ -148,7 +148,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
 
   if (data.runtime) {
     movieAttributes.push(
-      intl.formatMessage({ ...messages.runtime }, { minutes: data.runtime })
+      intl.formatMessage(messages.runtime, { minutes: data.runtime })
     );
   }
 
