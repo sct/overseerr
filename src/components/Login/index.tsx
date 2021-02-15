@@ -12,6 +12,7 @@ import LocalLogin from './LocalLogin';
 import Accordion from '../Common/Accordion';
 import useSettings from '../../hooks/useSettings';
 import PageTitle from '../Common/PageTitle';
+import { MediaServerType } from '../../../server/constants/server';
 
 const messages = defineMessages({
   signin: 'Sign In',
@@ -136,13 +137,15 @@ const Login: React.FC = () => {
                     onClick={() => handleClick(0)}
                     disabled={!settings.currentSettings.localLogin}
                   >
-                    {settings.currentSettings.mediaServerType == 'PLEX'
+                    {settings.currentSettings.mediaServerType ==
+                    MediaServerType.PLEX
                       ? intl.formatMessage(messages.signinwithplex)
                       : intl.formatMessage(messages.signinwithjellyfin)}
                   </button>
                   <AccordionContent isOpen={openIndexes.includes(0)}>
                     <div className="px-10 py-8">
-                      {settings.currentSettings.mediaServerType == 'PLEX' ? (
+                      {settings.currentSettings.mediaServerType ==
+                      MediaServerType.PLEX ? (
                         <PlexLoginButton
                           isProcessing={isProcessing}
                           onAuthToken={(authToken) => setAuthToken(authToken)}

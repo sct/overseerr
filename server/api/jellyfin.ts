@@ -14,6 +14,7 @@ export interface JellyfinLoginResponse {
   User: JellyfinUserResponse;
   AccessToken: string;
 }
+
 export interface JellyfinLibrary {
   type: 'show' | 'movie';
   key: string;
@@ -45,6 +46,7 @@ export interface JellyfinMediaStream {
   Language?: string;
   DisplayTitle: string;
 }
+
 export interface JellyfinMediaSource {
   Protocol: string;
   Id: string;
@@ -66,6 +68,7 @@ export interface JellyfinLibraryItemExtended extends JellyfinLibraryItem {
   IsHD?: boolean;
   DateCreated?: string;
 }
+
 class JellyfinAPI {
   private authToken?: string;
   private jellyfinHost: string;
@@ -78,12 +81,12 @@ class JellyfinAPI {
     let authHeaderVal = '';
     if (this.authToken) {
       authHeaderVal =
-        'MediaBrowser Client="Jellyfin Web", Device="Firefox", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6ODUuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84NS4wfDE2MTI5MjcyMDM5NzM1", Version="10.8.0", Token="' +
+        'MediaBrowser Client="Overseerr", Device="Axios", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6ODUuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84NS4wfDE2MTI5MjcyMDM5NzM1", Version="10.8.0", Token="' +
         authToken +
         '"';
     } else {
       authHeaderVal =
-        'MediaBrowser Client="Jellyfin Web", Device="Firefox", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6ODUuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84NS4wfDE2MTI5MjcyMDM5NzM1", Version="10.8.0"';
+        'MediaBrowser Client="Overseerr", Device="Axios", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6ODUuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84NS4wfDE2MTI5MjcyMDM5NzM1", Version="10.8.0"';
     }
 
     this.axios = axios.create({
@@ -131,8 +134,7 @@ class JellyfinAPI {
     try {
       const account = await this.axios.get<any>('/Library/MediaFolders');
 
-      // eslint-disable-next-line prefer-const
-      let response: JellyfinLibrary[] = [];
+      const response: JellyfinLibrary[] = [];
 
       account.data.Items.forEach((Item: any) => {
         const library: JellyfinLibrary = {

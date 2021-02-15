@@ -15,6 +15,7 @@ import { uniqWith } from 'lodash';
 import { v4 as uuid } from 'uuid';
 import animeList from '../../api/animelist';
 import AsyncLock from '../../utils/asyncLock';
+import { MediaServerType } from '../../constants/server';
 
 const BUNDLE_SIZE = 20;
 const UPDATE_RATE = 4 * 1000;
@@ -803,7 +804,7 @@ class JobPlexSync {
   public async run(): Promise<void> {
     const settings = getSettings();
 
-    if (settings.main.mediaServerType != 'PLEX') {
+    if (settings.main.mediaServerType != MediaServerType.PLEX) {
       return;
     }
 

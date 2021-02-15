@@ -18,6 +18,7 @@ import { getSettings } from '../lib/settings';
 import RadarrAPI from '../api/radarr';
 import downloadTracker, { DownloadingItem } from '../lib/downloadtracker';
 import SonarrAPI from '../api/sonarr';
+import { MediaServerType } from '../constants/server';
 
 @Entity()
 class Media {
@@ -134,45 +135,40 @@ class Media {
   public ratingKey4k?: string;
 
   @Column({ nullable: true })
-  public jellyfinMediaID?: string;
+  public jellyfinMediaId?: string;
 
   @Column({ nullable: true })
-  public jellyfinMediaID4k?: string;
+  public jellyfinMediaId4k?: string;
 
   public serviceUrl?: string;
   public serviceUrl4k?: string;
   public downloadStatus?: DownloadingItem[] = [];
   public downloadStatus4k?: DownloadingItem[] = [];
 
-  public plexUrl?: string;
-  public plexUrl4k?: string;
-
-  public jellyfinUrl?: string;
-  public jellyfinUrl4k?: string;
+  public mediaUrl?: string;
+  public mediaUrl4k?: string;
 
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
   }
 
   @AfterLoad()
-  public setPlexUrls(): void {
-    const machineId = getSettings().plex.machineId;
-    if (this.ratingKey) {
-      this.plexUrl = `https://app.plex.tv/desktop#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey}`;
-    }
-    if (this.ratingKey4k) {
-      this.plexUrl4k = `https://app.plex.tv/desktop#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey4k}`;
-    }
-  }
-
-  @AfterLoad()
-  public setJellyfinUrls(): void {
-    const jellyfinSettings = getSettings().jellyfin;
-    if (this.jellyfinMediaID) {
-      this.jellyfinUrl = `${jellyfinSettings.hostname}/web/#!/details?id=${this.jellyfinMediaID}&context=home&serverId=${jellyfinSettings.serverID}`;
-    }
-    if (this.jellyfinMediaID4k) {
-      this.jellyfinUrl4k = `${jellyfinSettings.hostname}/web/#!/details?id=${this.jellyfinMediaID4k}&context=home&serverId=${jellyfinSettings.serverID}`;
+  public setMediaUrls(): void {
+    const settings = getSettings();
+    if (settings.main.mediaServerType == MediaServerType.PLEX) {
+      if (this.ratingKey) {
+        this.mediaUrl = `https://app.plex.tv/desktop#!/server/${settings.plex.machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey}`;
+      }
+      if (this.ratingKey4k) {
+        this.mediaUrl4k = `https://app.plex.tv/desktop#!/server/${settings.plex.machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey4k}`;
+      }
+    } else {
+      if (this.jellyfinMediaId) {
+        this.mediaUrl = `${settings.jellyfin.hostname}/web/#!/details?id=${this.jellyfinMediaId}&context=home&serverId=${settings.jellyfin.serverID}`;
+      }
+      if (this.jellyfinMediaId4k) {
+        this.mediaUrl4k = `${settings.jellyfin.hostname}/web/#!/details?id=${this.jellyfinMediaId4k}&context=home&serverId=${settings.jellyfin.serverID}`;
+      }
     }
   }
 

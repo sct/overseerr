@@ -8,6 +8,7 @@ import { Permission } from '../lib/permissions';
 import logger from '../logger';
 import { getSettings } from '../lib/settings';
 import { UserType } from '../constants/user';
+import { MediaServerType } from '../constants/server';
 
 const authRoutes = Router();
 
@@ -32,12 +33,17 @@ authRoutes.post('/plex', async (req, res, next) => {
   const userRepository = getRepository(User);
   const body = req.body as {
     authToken?: string;
-    mediaServerType?: string;
-    jellyfinHostname?: string;
   };
 
   if (!body.authToken) {
     return res.status(500).json({ error: 'You must provide an auth token' });
+  }
+
+  if (
+    settings.main.mediaServerType != MediaServerType.PLEX &&
+    settings.main.mediaServerType != MediaServerType.NOT_CONFIGURED
+  ) {
+    return res.status(500).json({ error: 'Plex login disabled' });
   }
   try {
     // First we need to use this auth token to get the users email from plex.tv
@@ -80,6 +86,9 @@ authRoutes.post('/plex', async (req, res, next) => {
           userType: UserType.PLEX,
         });
         await userRepository.save(user);
+
+        //Since we created the admin user, go ahead and set the mediaservertype to PLEX
+        settings.main.mediaServerType = MediaServerType.PLEX;
       }
 
       // Double check that we didn't create the first admin user before running this
@@ -138,7 +147,10 @@ authRoutes.post('/plex', async (req, res, next) => {
   }
 });
 
+//Stop LGTM from alerting
+// eslint-disable-next-line prettier/prettier
 authRoutes.post('/jellyfin', async (req, res, next) => {
+  //lgtm [js/missing-rate-limiting]
   const settings = getSettings();
   const userRepository = getRepository(User);
   const body = req.body as {
@@ -149,7 +161,7 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
 
   //Make sure jellyfin login is enabled, but only if jellyfin is not already configured
   if (
-    settings.main.mediaServerType != 'JELLYFIN' &&
+    settings.main.mediaServerType != MediaServerType.JELLYFIN &&
     settings.jellyfin.hostname != ''
   ) {
     return res.status(500).json({ error: 'Jellyfin login is disabled' });
@@ -170,10 +182,10 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
       settings.jellyfin.hostname != ''
         ? settings.jellyfin.hostname
         : body.hostname;
-    // First we need to use this auth token to get the users email from plex tv
-    const plextv = new JellyfinAPI(hostname ?? '');
+    // First we need to attempt to log the user in to jellyfin
+    const jellyfinserver = new JellyfinAPI(hostname ?? '');
 
-    const account = await plextv.login(body.username, body.password);
+    const account = await jellyfinserver.login(body.username, body.password);
 
     // Next let's see if the user already exists
     let user = await userRepository.findOne({
@@ -181,12 +193,12 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
     });
 
     if (user) {
-      // Let's check if their plex token is up to date
+      // Let's check if their authtoken is up to date
       if (user.jellyfinAuthToken !== account.AccessToken) {
         user.jellyfinAuthToken = account.AccessToken;
       }
 
-      // Update the users avatar with their plex thumbnail (incase it changed)
+      // Update the users avatar with their jellyfin profile pic (incase it changed)
       user.avatar = `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`;
       user.email = account.User.Name;
       user.jellyfinUsername = account.User.Name;
@@ -215,30 +227,16 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
         //Update hostname in settings if it doesn't exist (initial configuration)
         //Also set mediaservertype to JELLYFIN
         if (settings.jellyfin.hostname == '') {
-          settings.main.mediaServerType = 'JELLYFIN';
+          settings.main.mediaServerType = MediaServerType.JELLYFIN;
           settings.jellyfin.hostname = body.hostname ?? '';
           settings.save();
         }
-      }
-
-      // Double check that we didn't create the first admin user before running this
-      if (!user) {
-        user = new User({
-          email: account.User.Name,
-          jellyfinUsername: account.User.Name,
-          jellyfinId: account.User.Id,
-          jellyfinAuthToken: account.AccessToken,
-          permissions: settings.main.defaultPermissions,
-          avatar: `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`,
-          userType: UserType.JELLYFIN,
-        });
-        await userRepository.save(user);
       }
     }
 
     // Set logged in session
     if (req.session) {
-      req.session.userId = user.id;
+      req.session.userId = user?.id;
     }
 
     return res.status(200).json(user?.filter() ?? {});

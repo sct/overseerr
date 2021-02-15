@@ -206,6 +206,7 @@ export class User {
 
   @AfterLoad()
   public setDisplayName(): void {
-    this.displayName = this.username || this.plexUsername;
+    this.displayName =
+      this.username || this.plexUsername || this.jellyfinUsername;
   }
 }

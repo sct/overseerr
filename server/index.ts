@@ -133,7 +133,6 @@ app
      * OpenAPI validator. Otherwise, they are treated as objects instead of strings
      * and response validation will fail
      */
-
     server.use((_req, res, next) => {
       const original = res.json;
       res.json = function jsonp(json) {

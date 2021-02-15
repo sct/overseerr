@@ -14,6 +14,7 @@ import globalMessages from '../../i18n/globalMessages';
 import PermissionEdit from '../PermissionEdit';
 import * as Yup from 'yup';
 import RegionSelector from '../RegionSelector';
+import { MediaServerType } from '../../../server/constants/server';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -123,7 +124,8 @@ const SettingsMain: React.FC = () => {
             region: data?.region,
             originalLanguage: data?.originalLanguage,
             trustProxy: data?.trustProxy,
-            useJellyfin: data?.mediaServerType == 'JELLYFIN' ? true : false,
+            useJellyfin:
+              data?.mediaServerType == MediaServerType.JELLYFIN ? true : false,
           }}
           enableReinitialize
           validationSchema={MainSettingsSchema}
@@ -139,7 +141,9 @@ const SettingsMain: React.FC = () => {
                 region: values.region,
                 originalLanguage: values.originalLanguage,
                 trustProxy: values.trustProxy,
-                mediaServerType: values.useJellyfin ? 'JELLYFIN' : 'PLEX',
+                mediaServerType: values.useJellyfin
+                  ? MediaServerType.JELLYFIN
+                  : MediaServerType.PLEX,
               });
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {

@@ -35,7 +35,11 @@ import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import PageTitle from '../Common/PageTitle';
 import useSettings from '../../hooks/useSettings';
+<<<<<<< HEAD
 import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+=======
+import { MediaServerType } from '../../../server/constants/server';
+>>>>>>> 2fe4add... feat(rebase): rebase
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -392,12 +396,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 <StatusBadge
                   status={data.mediaInfo?.status}
                   inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
-                  plexUrl={
-                    data.mediaInfo?.plexUrl ?? data.mediaInfo?.jellyfinUrl
-                  }
-                  plexUrl4k={
-                    data.mediaInfo?.plexUrl4k ?? data.mediaInfo?.jellyfinUrl4k
-                  }
+                  plexUrl={data.mediaInfo?.mediaUrl}
+                  plexUrl4k={data.mediaInfo?.mediaUrl4k}
                 />
               </span>
             )}
@@ -406,12 +406,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 status={data.mediaInfo?.status4k}
                 is4k
                 inProgress={(data.mediaInfo?.downloadStatus4k ?? []).length > 0}
-                plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.jellyfinUrl}
+                plexUrl={data.mediaInfo?.mediaUrl}
                 plexUrl4k={
-                  data.mediaInfo?.plexUrl4k &&
+                  data.mediaInfo?.mediaUrl4k &&
                   (hasPermission(Permission.REQUEST_4K) ||
                     hasPermission(Permission.REQUEST_4K_MOVIE))
-                    ? data.mediaInfo.plexUrl4k ?? data.mediaInfo?.jellyfinUrl4k
+                    ? data.mediaInfo.mediaUrl4k
                     : undefined
                 }
               />
@@ -453,9 +453,114 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </span>
         </div>
         <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
+<<<<<<< HEAD
           <div className="mb-3 sm:mb-0">
             <PlayButton links={mediaLinks} />
           </div>
+=======
+          {trailerUrl ||
+          data.mediaInfo?.mediaUrl ||
+          data.mediaInfo?.mediaUrl4k ? (
+            <ButtonWithDropdown
+              buttonType="ghost"
+              text={
+                <>
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>
+                    {data.mediaInfo?.mediaUrl || data.mediaInfo?.mediaUrl
+                      ? intl.formatMessage(
+                          settings.currentSettings.mediaServerType ==
+                            MediaServerType.PLEX
+                            ? messages.playonplex
+                            : messages.playonjellyfin
+                        )
+                      : data.mediaInfo?.mediaUrl4k &&
+                        (hasPermission(Permission.REQUEST_4K) ||
+                          hasPermission(Permission.REQUEST_4K_MOVIE))
+                      ? intl.formatMessage(
+                          settings.currentSettings.mediaServerType ==
+                            MediaServerType.PLEX
+                            ? messages.playonplex
+                            : messages.playonjellyfin
+                        )
+                      : intl.formatMessage(messages.watchtrailer)}
+                  </span>
+                </>
+              }
+              onClick={() => {
+                if (data.mediaInfo?.mediaUrl) {
+                  window.open(data.mediaInfo?.mediaUrl, '_blank');
+                } else if (data.mediaInfo?.mediaUrl4k) {
+                  window.open(data.mediaInfo?.mediaUrl4k, '_blank');
+                } else if (trailerUrl) {
+                  window.open(trailerUrl, '_blank');
+                }
+              }}
+            >
+              {(
+                trailerUrl
+                  ? data.mediaInfo?.mediaUrl ||
+                    (data.mediaInfo?.mediaUrl4k &&
+                      (hasPermission(Permission.REQUEST_4K) ||
+                        hasPermission(Permission.REQUEST_4K_MOVIE)))
+                  : data.mediaInfo?.mediaUrl &&
+                    data.mediaInfo?.mediaUrl4k &&
+                    (hasPermission(Permission.REQUEST_4K) ||
+                      hasPermission(Permission.REQUEST_4K_MOVIE))
+              ) ? (
+                <>
+                  {data.mediaInfo?.mediaUrl &&
+                    data.mediaInfo?.mediaUrl4k &&
+                    (hasPermission(Permission.REQUEST_4K) ||
+                      hasPermission(Permission.REQUEST_4K_MOVIE)) && (
+                      <ButtonWithDropdown.Item
+                        onClick={() => {
+                          window.open(data.mediaInfo?.mediaUrl4k, '_blank');
+                        }}
+                        buttonType="ghost"
+                      >
+                        {intl.formatMessage(
+                          settings.currentSettings.mediaServerType ==
+                            MediaServerType.PLEX
+                            ? messages.play4konplex
+                            : messages.play4konjellyfin
+                        )}
+                      </ButtonWithDropdown.Item>
+                    )}
+                  {trailerUrl && (
+                    <ButtonWithDropdown.Item
+                      onClick={() => {
+                        window.open(trailerUrl, '_blank');
+                      }}
+                      buttonType="ghost"
+                    >
+                      {intl.formatMessage(messages.watchtrailer)}
+                    </ButtonWithDropdown.Item>
+                  )}
+                </>
+              ) : null}
+            </ButtonWithDropdown>
+          ) : null}
+>>>>>>> 2fe4add... feat(rebase): rebase
           <div className="mb-3 sm:mb-0">
             <RequestButton
               mediaType="movie"
@@ -696,7 +801,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               tvdbId={data.externalIds.tvdbId}
               imdbId={data.externalIds.imdbId}
               rtUrl={ratingData?.url}
-              plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}
+              plexUrl={data.mediaInfo?.mediaUrl ?? data.mediaInfo?.mediaUrl4k}
             />
           </div>
         </div>

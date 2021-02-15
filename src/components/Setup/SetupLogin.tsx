@@ -27,7 +27,7 @@ const SetupLogin: React.FC<LoginWithMediaServerProps> = ({ onComplete }) => {
 
   useEffect(() => {
     const login = async () => {
-      const response = await axios.post('/api/v1/auth/login', {
+      const response = await axios.post('/api/v1/auth/plex', {
         authToken: authToken,
       });
 

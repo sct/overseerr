@@ -128,7 +128,7 @@ components:
           type: boolean
           example: true
         mediaServerType:
-          type: string
+          type: number
           example: 'PLEX | JELLYFIN'
         defaultPermissions:
           type: number

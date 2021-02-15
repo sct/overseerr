@@ -22,6 +22,8 @@ import BulkEditModal from './BulkEditModal';
 import PageTitle from '../Common/PageTitle';
 import Link from 'next/link';
 import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
+import useSettings from '../../hooks/useSettings';
+import { MediaServerType } from '../../../server/constants/server';
 
 const messages = defineMessages({
   users: 'Users',
@@ -78,6 +80,7 @@ type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const [pageIndex, setPageIndex] = useState(0);
   const [currentSort, setCurrentSort] = useState<Sort>('created');
@@ -408,14 +411,17 @@ const UserList: React.FC = () => {
             >
               {intl.formatMessage(messages.createlocaluser)}
             </Button>
-            <Button
-              className="flex-grow outline lg:mr-2"
-              buttonType="primary"
-              disabled={isImporting}
-              onClick={() => importFromPlex()}
-            >
-              {intl.formatMessage(messages.importfromplex)}
-            </Button>
+            {settings.currentSettings.mediaServerType ==
+              MediaServerType.PLEX && (
+              <Button
+                className="flex-grow outline lg:mr-2"
+                buttonType="primary"
+                disabled={isImporting}
+                onClick={() => importFromPlex()}
+              >
+                {intl.formatMessage(messages.importfromplex)}
+              </Button>
+            )}
           </div>
           <div className="flex flex-grow mb-2 lg:mb-0 lg:flex-grow-0">
             <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">

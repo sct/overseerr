@@ -33,7 +33,11 @@ import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
 import PageTitle from '../Common/PageTitle';
 import useSettings from '../../hooks/useSettings';
+<<<<<<< HEAD
 import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+=======
+import { MediaServerType } from '../../../server/constants/server';
+>>>>>>> 2fe4add... feat(rebase): rebase
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -413,12 +417,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <StatusBadge
                   status={data.mediaInfo?.status}
                   inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
-                  plexUrl={
-                    data.mediaInfo?.plexUrl ?? data.mediaInfo?.jellyfinUrl
-                  }
-                  plexUrl4k={
-                    data.mediaInfo?.plexUrl4k ?? data.mediaInfo?.jellyfinUrl4k
-                  }
+                  plexUrl={data.mediaInfo?.mediaUrl}
+                  plexUrl4k={data.mediaInfo?.mediaUrl4k}
                 />
               </span>
             )}
@@ -426,12 +426,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               <StatusBadge
                 status={data.mediaInfo?.status}
                 inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
-                plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.jellyfinUrl}
+                plexUrl={data.mediaInfo?.mediaUrl}
                 plexUrl4k={
-                  data.mediaInfo?.plexUrl4k &&
+                  data.mediaInfo?.mediaUrl4k &&
                   (hasPermission(Permission.REQUEST_4K) ||
                     hasPermission(Permission.REQUEST_4K_TV))
-                    ? data.mediaInfo.plexUrl4k ?? data.mediaInfo?.jellyfinUrl4k
+                    ? data.mediaInfo.mediaUrl4k
                     : undefined
                 }
               />
@@ -709,7 +709,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               tvdbId={data.externalIds.tvdbId}
               imdbId={data.externalIds.imdbId}
               rtUrl={ratingData?.url}
-              plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}
+              plexUrl={data.mediaInfo?.mediaUrl ?? data.mediaInfo?.mediaUrl4k}
             />
           </div>
         </div>

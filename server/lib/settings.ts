@@ -3,6 +3,7 @@ import path from 'path';
 import { merge } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { Permission } from './permissions';
+import { MediaServerType } from '../constants/server';
 
 export interface Library {
   id: string;
@@ -81,7 +82,7 @@ export interface MainSettings {
   region: string;
   originalLanguage: string;
   trustProxy: boolean;
-  mediaServerType: string;
+  mediaServerType: number;
 }
 
 interface PublicSettings {
@@ -96,8 +97,8 @@ interface FullPublicSettings extends PublicSettings {
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
-  mediaServerType: string;
-  jfHost?: string;
+  mediaServerType: number;
+  jellyfinHost?: string;
 }
 
 export interface NotificationAgentConfig {
@@ -208,7 +209,7 @@ class Settings {
         region: '',
         originalLanguage: '',
         trustProxy: false,
-        mediaServerType: '',
+        mediaServerType: MediaServerType.NOT_CONFIGURED,
       },
       plex: {
         name: '',
@@ -372,8 +373,12 @@ class Settings {
       originalLanguage: this.data.main.originalLanguage,
 =======
       mediaServerType: this.main.mediaServerType,
+<<<<<<< HEAD
       jfHost: this.jellyfin.hostname ?? '',
 >>>>>>> feat(all): add initial Jellyfin/Emby support
+=======
+      jellyfinHost: this.jellyfin.hostname,
+>>>>>>> feat(rebase): rebase
     };
   }
 

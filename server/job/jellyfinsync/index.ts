@@ -11,6 +11,7 @@ import Season from '../../entity/Season';
 import { uniqWith } from 'lodash';
 import { v4 as uuid } from 'uuid';
 import AsyncLock from '../../utils/asyncLock';
+import { MediaServerType } from '../../constants/server';
 
 const BUNDLE_SIZE = 20;
 const UPDATE_RATE = 4 * 1000;
@@ -125,18 +126,18 @@ class JobJellyfinSync {
 
           if (
             (hasOtherResolution || (has4k && !this.enable4kMovie)) &&
-            existing.jellyfinMediaID !== metadata.Id
+            existing.jellyfinMediaId !== metadata.Id
           ) {
-            existing.jellyfinMediaID = metadata.Id;
+            existing.jellyfinMediaId = metadata.Id;
             changedExisting = true;
           }
 
           if (
             has4k &&
             this.enable4kMovie &&
-            existing.jellyfinMediaID4k !== metadata.Id
+            existing.jellyfinMediaId4k !== metadata.Id
           ) {
-            existing.jellyfinMediaID4k = metadata.Id;
+            existing.jellyfinMediaId4k = metadata.Id;
             changedExisting = true;
           }
 
@@ -162,11 +163,11 @@ class JobJellyfinSync {
               : MediaStatus.UNKNOWN;
           newMedia.mediaType = MediaType.MOVIE;
           newMedia.mediaAddedAt = new Date(metadata.DateCreated ?? '');
-          newMedia.jellyfinMediaID =
+          newMedia.jellyfinMediaId =
             hasOtherResolution || (!this.enable4kMovie && has4k)
               ? metadata.Id
               : undefined;
-          newMedia.jellyfinMediaID4k =
+          newMedia.jellyfinMediaId4k =
             has4k && this.enable4kMovie ? metadata.Id : undefined;
           await mediaRepository.save(newMedia);
           this.log(`Saved ${metadata.Name}`);
@@ -212,7 +213,7 @@ class JobJellyfinSync {
             return;
           }
 
-          // Lets get the available seasons from Plex
+          // Lets get the available seasons from Jellyfin
           const seasons = tvShow.seasons;
           const media = await this.getExisting(tvShow.id, MediaType.TV);
 
@@ -229,7 +230,6 @@ class JobJellyfinSync {
             ) ?? []
           ).length;
 
-          //girl bye idk what's happening here! LMFAO
           for (const season of seasons) {
             const JellyfinSeasons = await this.jfClient.getSeasons(Id);
             const matchedJellyfinSeason = JellyfinSeasons.find(
@@ -242,7 +242,7 @@ class JobJellyfinSync {
 
             // Check if we found the matching season and it has all the available episodes
             if (matchedJellyfinSeason) {
-              // If we have a matched Plex season, get its children metadata so we can check details
+              // If we have a matched Jellyfin season, get its children metadata so we can check details
               const episodes = await this.jfClient.getEpisodes(
                 Id,
                 matchedJellyfinSeason.Id
@@ -279,18 +279,18 @@ class JobJellyfinSync {
               if (
                 media &&
                 (totalStandard > 0 || (total4k > 0 && !this.enable4kShow)) &&
-                media.jellyfinMediaID !== Id
+                media.jellyfinMediaId !== Id
               ) {
-                media.jellyfinMediaID = Id;
+                media.jellyfinMediaId = Id;
               }
 
               if (
                 media &&
                 total4k > 0 &&
                 this.enable4kShow &&
-                media.jellyfinMediaID4k !== Id
+                media.jellyfinMediaId4k !== Id
               ) {
-                media.jellyfinMediaID4k = Id;
+                media.jellyfinMediaId4k = Id;
               }
 
               if (existingSeason) {
@@ -438,8 +438,8 @@ class JobJellyfinSync {
               tmdbId: tvShow.id,
               tvdbId: tvShow.external_ids.tvdb_id,
               mediaAddedAt: new Date(metadata.DateCreated ?? ''),
-              jellyfinMediaID: Id,
-              jellyfinMediaID4k: Id,
+              jellyfinMediaId: Id,
+              jellyfinMediaId4k: Id,
               status: isAllStandardSeasons
                 ? MediaStatus.AVAILABLE
                 : newSeasons.some(
@@ -538,7 +538,7 @@ class JobJellyfinSync {
   public async run(): Promise<void> {
     const settings = getSettings();
 
-    if (settings.main.mediaServerType != 'JELLYFIN') {
+    if (settings.main.mediaServerType != MediaServerType.JELLYFIN) {
       return;
     }
 
