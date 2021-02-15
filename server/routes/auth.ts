@@ -147,10 +147,7 @@ authRoutes.post('/plex', async (req, res, next) => {
   }
 });
 
-//Stop LGTM from alerting
-// eslint-disable-next-line prettier/prettier
 authRoutes.post('/jellyfin', async (req, res, next) => {
-  //lgtm [js/missing-rate-limiting]
   const settings = getSettings();
   const userRepository = getRepository(User);
   const body = req.body as {
