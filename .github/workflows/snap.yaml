@@ -30,7 +30,7 @@ jobs:
       matrix:
         architecture:
           - amd64
-          - arm64
+          #- arm64 Disable until there is a workaround or fix.
           - armhf
     steps:
       - name: Checkout Code
