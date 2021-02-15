@@ -599,6 +599,7 @@
   "components.Setup.signin": "Sign In",
   "components.Setup.signinMessage": "Get started by signing in",
   "components.Setup.signinWithJellyfin": "Use Jellyfin",
+  "components.Setup.signinWithPlex": "Sign in with Plex",
   "components.Setup.syncingbackground": "Syncing will run in the background. You can continue the setup process in the meantime.",
   "components.Setup.tip": "Tip",
   "components.Setup.welcome": "Welcome to Overseerr",

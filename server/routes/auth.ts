@@ -197,7 +197,11 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
       }
 
       // Update the users avatar with their jellyfin profile pic (incase it changed)
-      user.avatar = `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`;
+      if (typeof account.User.PrimaryImageTag !== undefined) {
+        user.avatar = `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`;
+      } else {
+        user.avatar = '/images/os_logo_square.png';
+      }
       user.email = account.User.Name;
       user.jellyfinUsername = account.User.Name;
 
@@ -217,7 +221,10 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
           jellyfinId: account.User.Id,
           jellyfinAuthToken: account.AccessToken,
           permissions: Permission.ADMIN,
-          avatar: `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`,
+          avatar:
+            typeof account.User.PrimaryImageTag !== undefined
+              ? `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`
+              : '/images/os_logo_square.png',
           userType: UserType.JELLYFIN,
         });
         await userRepository.save(user);

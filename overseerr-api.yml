@@ -129,7 +129,7 @@ components:
           example: true
         mediaServerType:
           type: number
-          example: 'PLEX | JELLYFIN'
+          example: 1
         defaultPermissions:
           type: number
           example: 32

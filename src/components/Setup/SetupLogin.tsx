@@ -4,12 +4,14 @@ import PlexLoginButton from '../PlexLoginButton';
 import JellyfinLogin from '../Login/JellyfinLogin';
 import axios from 'axios';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import LoadingSpinner from '../Common/LoadingSpinner';
+import Accordion from '../Common/Accordion';
+import { MediaServerType } from '../../../server/constants/server';
 
 const messages = defineMessages({
   welcome: 'Welcome to Overseerr',
-  signinMessage: 'Get started by logging in with an account',
-  signinWithJellyfin: 'Use Jellyfin',
+  signinMessage: 'Get started by signing in',
+  signinWithJellyfin: 'Use your Jellyfin account',
+  signinWithPlex: 'Use your Plex account',
 });
 
 interface LoginWithMediaServerProps {
@@ -18,7 +20,9 @@ interface LoginWithMediaServerProps {
 
 const SetupLogin: React.FC<LoginWithMediaServerProps> = ({ onComplete }) => {
   const [authToken, setAuthToken] = useState<string | undefined>(undefined);
-  const [mediaServerType, setMediaServerType] = useState<string>('');
+  const [mediaServerType, setMediaServerType] = useState<number>(
+    MediaServerType.NOT_CONFIGURED
+  );
   const { user, revalidate } = useUser();
 
   // Effect that is triggered when the `authToken` comes back from the Plex OAuth
@@ -35,7 +39,7 @@ const SetupLogin: React.FC<LoginWithMediaServerProps> = ({ onComplete }) => {
         revalidate();
       }
     };
-    if (authToken && mediaServerType == 'PLEX') {
+    if (authToken && mediaServerType == MediaServerType.PLEX) {
       login();
     }
   }, [authToken, mediaServerType, revalidate]);
@@ -48,40 +52,59 @@ const SetupLogin: React.FC<LoginWithMediaServerProps> = ({ onComplete }) => {
 
   return (
     <div>
-      {mediaServerType == '' ? (
-        <React.Fragment>
-          <div className="flex justify-center mb-2 text-xl font-bold">
-            <FormattedMessage {...messages.welcome} />
-          </div>
-          <div className="flex justify-center pb-6 mb-2 text-sm">
-            <FormattedMessage {...messages.signinMessage} />
-          </div>
-          <div className="flex items-center justify-center pb-4">
-            <PlexLoginButton
-              onAuthToken={(authToken) => {
-                setMediaServerType('PLEX');
-                setAuthToken(authToken);
-              }}
-            />
-          </div>
-          <hr className="m-auto border-gray-600 w-60"></hr>
-          <span className="block w-full rounded-md shadow-sm">
+      <div className="flex justify-center mb-2 text-xl font-bold">
+        <FormattedMessage {...messages.welcome} />
+      </div>
+      <div className="flex justify-center pb-6 mb-2 text-sm">
+        <FormattedMessage {...messages.signinMessage} />
+      </div>
+      <Accordion single atLeastOne>
+        {({ openIndexes, handleClick, AccordionContent }) => (
+          <>
             <button
-              type="button"
-              onClick={() => {
-                setMediaServerType('JELLYFIN');
-              }}
-              className="jellyfin-button"
+              className={`w-full py-2 text-sm text-center hover:bg-gray-700 hover:cursor-pointer text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none sm:rounded-t-lg ${
+                openIndexes.includes(0) && 'text-indigo-500'
+              }`}
+              onClick={() => handleClick(0)}
             >
-              <FormattedMessage {...messages.signinWithJellyfin} />
+              <FormattedMessage {...messages.signinWithPlex} />
             </button>
-          </span>
-        </React.Fragment>
-      ) : mediaServerType == 'JELLYFIN' ? (
-        <JellyfinLogin initial={true} revalidate={revalidate} />
-      ) : (
-        <LoadingSpinner></LoadingSpinner>
-      )}
+            <AccordionContent
+              className="bg-opacity-90"
+              isOpen={openIndexes.includes(0)}
+            >
+              <div className="px-10 py-8">
+                <PlexLoginButton
+                  onAuthToken={(authToken) => {
+                    setMediaServerType(MediaServerType.PLEX);
+                    setAuthToken(authToken);
+                  }}
+                />
+              </div>
+            </AccordionContent>
+            <div>
+              <button
+                className={`w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none hover:bg-gray-700 hover:cursor-pointer ${
+                  openIndexes.includes(1)
+                    ? 'text-indigo-500'
+                    : 'sm:rounded-b-lg'
+                }`}
+                onClick={() => handleClick(1)}
+              >
+                <FormattedMessage {...messages.signinWithJellyfin} />
+              </button>
+              <AccordionContent
+                className="bg-opacity-90"
+                isOpen={openIndexes.includes(1)}
+              >
+                <div className="px-10 py-8">
+                  <JellyfinLogin initial={true} revalidate={revalidate} />
+                </div>
+              </AccordionContent>
+            </div>
+          </>
+        )}
+      </Accordion>
     </div>
   );
 };

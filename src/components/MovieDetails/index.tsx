@@ -490,7 +490,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                             settings.currentSettings.mediaServerType ===
                             MediaServerType.PLEX
                               ? 'Plex'
-                              : settings.currentSettings.jellyfinServerName,
+                              : 'Jellyfin',
                         })
                       : data.mediaInfo?.mediaUrl4k &&
                         (hasPermission(Permission.REQUEST_4K) ||
@@ -500,7 +500,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                             settings.currentSettings.mediaServerType ===
                             MediaServerType.PLEX
                               ? 'Plex'
-                              : settings.currentSettings.jellyfinServerName,
+                              : 'Jellyfin',
                         })
                       : intl.formatMessage(messages.watchtrailer)}
                   </span>
@@ -543,7 +543,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                             settings.currentSettings.mediaServerType ===
                             MediaServerType.PLEX
                               ? 'Plex'
-                              : settings.currentSettings.jellyfinServerName,
+                              : 'Jellyfin',
                         })}
                       </ButtonWithDropdown.Item>
                     )}

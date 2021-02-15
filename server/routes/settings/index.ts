@@ -260,8 +260,6 @@ settingsRoutes.get('/jellyfin/library', async (req, res) => {
     const newLibraries: Library[] = libraries
       // Remove libraries that are not movie or show
       .filter((library) => library.type === 'movie' || library.type === 'show')
-      // Remove libraries that do not have a metadata agent set (usually personal video libraries)
-      .filter((library) => library.agent !== 'com.plexapp.agents.none')
       .map((library) => {
         const existing = settings.plex.libraries.find(
           (l) => l.id === library.key && l.name === library.title
