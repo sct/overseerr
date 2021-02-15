@@ -35,6 +35,7 @@ const messages = defineMessages({
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   defaultPermissions: 'Default User Permissions',
+  useJellyfin: 'Use Jellyfin as Media Server',
   hideAvailable: 'Hide Available Media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
@@ -122,6 +123,7 @@ const SettingsMain: React.FC = () => {
             region: data?.region,
             originalLanguage: data?.originalLanguage,
             trustProxy: data?.trustProxy,
+            useJellyfin: data?.mediaServerType == 'JELLYFIN' ? true : false,
           }}
           enableReinitialize
           validationSchema={MainSettingsSchema}
@@ -137,6 +139,7 @@ const SettingsMain: React.FC = () => {
                 region: values.region,
                 originalLanguage: values.originalLanguage,
                 trustProxy: values.trustProxy,
+                mediaServerType: values.useJellyfin ? 'JELLYFIN' : 'PLEX',
               });
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -356,6 +359,21 @@ const SettingsMain: React.FC = () => {
                       name="localLogin"
                       onChange={() => {
                         setFieldValue('localLogin', !values.localLogin);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="useJellyfin" className="checkbox-label">
+                    <span>{intl.formatMessage(messages.useJellyfin)}</span>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="useJellyfin"
+                      name="useJellyfin"
+                      onChange={() => {
+                        setFieldValue('useJellyfin', !values.useJellyfin);
                       }}
                     />
                   </div>

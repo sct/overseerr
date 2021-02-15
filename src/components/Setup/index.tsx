@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import Button from '../Common/Button';
 import ImageFader from '../Common/ImageFader';
 import SettingsPlex from '../Settings/SettingsPlex';
+import SettingsJellyfin from '../Settings/SettingsJellyfin';
 import SettingsServices from '../Settings/SettingsServices';
-import LoginWithPlex from './LoginWithPlex';
+import SetupLogin from './SetupLogin';
 import SetupSteps from './SetupSteps';
 import axios from 'axios';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
@@ -18,8 +19,8 @@ const messages = defineMessages({
   finish: 'Finish Setup',
   finishing: 'Finishing…',
   continue: 'Continue',
-  loginwithplex: 'Login with Plex',
-  configureplex: 'Configure Plex',
+  authorize: 'Authorize',
+  connectmediaserver: 'Connect Media Server',
   configureservices: 'Configure Services',
   tip: 'Tip',
   syncingbackground:
@@ -30,7 +31,8 @@ const Setup: React.FC = () => {
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [plexSettingsComplete, setPlexSettingsComplete] = useState(false);
+  const [msSettingsComplete, setMSSettingsComplete] = useState(false);
+  const [mediaServerType, setMediaServerType] = useState('');
   const router = useRouter();
 
   const finishSetup = async () => {
@@ -43,6 +45,12 @@ const Setup: React.FC = () => {
     if (response.data.initialized) {
       router.push('/');
     }
+  };
+
+  const getMediaServerType = async () => {
+    const MainSettings = await axios.get('/api/v1/settings/main');
+    setMediaServerType(MainSettings.data.mediaServerType);
+    return;
   };
 
   return (
@@ -75,13 +83,13 @@ const Setup: React.FC = () => {
           >
             <SetupSteps
               stepNumber={1}
-              description={intl.formatMessage(messages.loginwithplex)}
+              description={intl.formatMessage(messages.authorize)}
               active={currentStep === 1}
               completed={currentStep > 1}
             />
             <SetupSteps
               stepNumber={2}
-              description={intl.formatMessage(messages.configureplex)}
+              description={intl.formatMessage(messages.connectmediaserver)}
               active={currentStep === 2}
               completed={currentStep > 2}
             />
@@ -95,11 +103,23 @@ const Setup: React.FC = () => {
         </nav>
         <div className="w-full p-4 mt-10 text-white bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md">
           {currentStep === 1 && (
-            <LoginWithPlex onComplete={() => setCurrentStep(2)} />
+            <SetupLogin
+              onComplete={() => {
+                getMediaServerType().then(() => {
+                  setCurrentStep(2);
+                });
+              }}
+            />
           )}
           {currentStep === 2 && (
             <div>
-              <SettingsPlex onComplete={() => setPlexSettingsComplete(true)} />
+              {mediaServerType == 'PLEX' ? (
+                <SettingsPlex onComplete={() => setMSSettingsComplete(true)} />
+              ) : (
+                <SettingsJellyfin
+                  onComplete={() => setMSSettingsComplete(true)}
+                />
+              )}
               <div className="mt-4 text-sm text-gray-500">
                 <span className="mr-2">
                   <Badge>{intl.formatMessage(messages.tip)}</Badge>
@@ -111,7 +131,7 @@ const Setup: React.FC = () => {
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
-                      disabled={!plexSettingsComplete}
+                      disabled={!msSettingsComplete}
                       onClick={() => setCurrentStep(3)}
                     >
                       <FormattedMessage {...messages.continue} />

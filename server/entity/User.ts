@@ -48,6 +48,9 @@ export class User {
   public plexUsername: string;
 
   @Column({ nullable: true })
+  public jellyfinUsername: string;
+
+  @Column({ nullable: true })
   public username?: string;
 
   @Column({ nullable: true, select: false })
@@ -64,6 +67,12 @@ export class User {
 
   @Column({ nullable: true, select: false })
   public plexId?: number;
+
+  @Column({ nullable: true, select: false })
+  public jellyfinId?: string;
+
+  @Column({ nullable: true, select: false })
+  public jellyfinAuthToken?: string;
 
   @Column({ nullable: true, select: false })
   public plexToken?: string;

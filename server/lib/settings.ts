@@ -30,6 +30,15 @@ export interface PlexSettings {
   libraries: Library[];
 }
 
+export interface JellyfinSettings {
+  name: string;
+  hostname?: string;
+  libraries: Library[];
+  adminUser: string;
+  adminPass: string;
+  serverID: string;
+}
+
 interface DVRSettings {
   id: number;
   name: string;
@@ -72,6 +81,7 @@ export interface MainSettings {
   region: string;
   originalLanguage: string;
   trustProxy: boolean;
+  mediaServerType: string;
 }
 
 interface PublicSettings {
@@ -86,6 +96,8 @@ interface FullPublicSettings extends PublicSettings {
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
+  mediaServerType: string;
+  jfHost?: string;
 }
 
 export interface NotificationAgentConfig {
@@ -168,6 +180,7 @@ interface AllSettings {
   clientId: string;
   main: MainSettings;
   plex: PlexSettings;
+  jellyfin: JellyfinSettings;
   radarr: RadarrSettings[];
   sonarr: SonarrSettings[];
   public: PublicSettings;
@@ -195,6 +208,7 @@ class Settings {
         region: '',
         originalLanguage: '',
         trustProxy: false,
+        mediaServerType: '',
       },
       plex: {
         name: '',
@@ -202,6 +216,14 @@ class Settings {
         port: 32400,
         useSsl: false,
         libraries: [],
+      },
+      jellyfin: {
+        name: '',
+        hostname: '',
+        libraries: [],
+        adminUser: '',
+        adminPass: '',
+        serverID: '',
       },
       radarr: [],
       sonarr: [],
@@ -301,6 +323,14 @@ class Settings {
     this.data.plex = data;
   }
 
+  get jellyfin(): JellyfinSettings {
+    return this.data.jellyfin;
+  }
+
+  set jellyfin(data: JellyfinSettings) {
+    this.data.jellyfin = data;
+  }
+
   get radarr(): RadarrSettings[] {
     return this.data.radarr;
   }
@@ -337,8 +367,13 @@ class Settings {
       series4kEnabled: this.data.sonarr.some(
         (sonarr) => sonarr.is4k && sonarr.isDefault
       ),
+<<<<<<< HEAD
       region: this.data.main.region,
       originalLanguage: this.data.main.originalLanguage,
+=======
+      mediaServerType: this.main.mediaServerType,
+      jfHost: this.jellyfin.hostname ?? '',
+>>>>>>> feat(all): add initial Jellyfin/Emby support
     };
   }
 

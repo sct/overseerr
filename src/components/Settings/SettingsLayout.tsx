@@ -8,6 +8,7 @@ const messages = defineMessages({
   settings: 'Settings',
   menuGeneralSettings: 'General Settings',
   menuPlexSettings: 'Plex',
+  menuJellyfinSettings: 'Jellyfin',
   menuServices: 'Services',
   menuNotifications: 'Notifications',
   menuLogs: 'Logs',
@@ -35,6 +36,11 @@ const SettingsLayout: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.menuPlexSettings),
       route: '/settings/plex',
       regex: /^\/settings\/plex/,
+    },
+    {
+      text: intl.formatMessage(messages.menuJellyfinSettings),
+      route: '/settings/jellyfin',
+      regex: /^\/settings\/jellyfin/,
     },
     {
       text: intl.formatMessage(messages.menuServices),

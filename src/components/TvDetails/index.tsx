@@ -69,6 +69,8 @@ const messages = defineMessages({
   downloadstatus: 'Download Status',
   playonplex: 'Play on Plex',
   play4konplex: 'Play 4K on Plex',
+  playonjellyfin: 'Play on Jellyfin',
+  play4konjellyfin: 'Play 4K on Jellyfin',
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark 4K as Available',
   allseasonsmarkedavailable: '* All seasons will be marked as available.',
@@ -406,11 +408,32 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
           <div className="mb-2 space-x-2">
-            <span className="ml-2 lg:ml-0">
+            {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
+              <span className="ml-2 lg:ml-0">
+                <StatusBadge
+                  status={data.mediaInfo?.status}
+                  inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
+                  plexUrl={
+                    data.mediaInfo?.plexUrl ?? data.mediaInfo?.jellyfinUrl
+                  }
+                  plexUrl4k={
+                    data.mediaInfo?.plexUrl4k ?? data.mediaInfo?.jellyfinUrl4k
+                  }
+                />
+              </span>
+            )}
+            <span>
               <StatusBadge
                 status={data.mediaInfo?.status}
                 inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
-                plexUrl={data.mediaInfo?.plexUrl}
+                plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.jellyfinUrl}
+                plexUrl4k={
+                  data.mediaInfo?.plexUrl4k &&
+                  (hasPermission(Permission.REQUEST_4K) ||
+                    hasPermission(Permission.REQUEST_4K_TV))
+                    ? data.mediaInfo.plexUrl4k ?? data.mediaInfo?.jellyfinUrl4k
+                    : undefined
+                }
               />
             </span>
             {settings.currentSettings.series4kEnabled &&

@@ -146,6 +146,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     localLogin: true,
     region: '',
     originalLanguage: '',
+    mediaServerType: 'PLEX',
   };
 
   let locale = 'en';

@@ -15,6 +15,7 @@ const defaultSettings = {
   series4kEnabled: false,
   region: '',
   originalLanguage: '',
+  mediaServerType: 'PLEX',
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
 import PlexTvAPI from '../api/plextv';
+import JellyfinAPI from '../api/jellyfin';
 import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
@@ -29,7 +30,11 @@ authRoutes.get('/me', isAuthenticated(), async (req, res) => {
 authRoutes.post('/plex', async (req, res, next) => {
   const settings = getSettings();
   const userRepository = getRepository(User);
-  const body = req.body as { authToken?: string };
+  const body = req.body as {
+    authToken?: string;
+    mediaServerType?: string;
+    jellyfinHostname?: string;
+  };
 
   if (!body.authToken) {
     return res.status(500).json({ error: 'You must provide an auth token' });
@@ -130,6 +135,126 @@ authRoutes.post('/plex', async (req, res, next) => {
       status: 500,
       message: 'Something went wrong. Is your auth token valid?',
     });
+  }
+});
+
+authRoutes.post('/jellyfin', async (req, res, next) => {
+  const settings = getSettings();
+  const userRepository = getRepository(User);
+  const body = req.body as {
+    username?: string;
+    password?: string;
+    hostname?: string;
+  };
+
+  //Make sure jellyfin login is enabled, but only if jellyfin is not already configured
+  if (
+    settings.main.mediaServerType != 'JELLYFIN' &&
+    settings.jellyfin.hostname != ''
+  ) {
+    return res.status(500).json({ error: 'Jellyfin login is disabled' });
+  } else if (!body.username || !body.password) {
+    return res
+      .status(500)
+      .json({ error: 'You must provide an username and a password' });
+  } else if (settings.jellyfin.hostname != '' && body.hostname) {
+    return res
+      .status(500)
+      .json({ error: 'Jellyfin hostname already configured' });
+  } else if (settings.jellyfin.hostname == '' && !body.hostname) {
+    return res.status(500).json({ error: 'No hostname provided.' });
+  }
+
+  try {
+    const hostname =
+      settings.jellyfin.hostname != ''
+        ? settings.jellyfin.hostname
+        : body.hostname;
+    // First we need to use this auth token to get the users email from plex tv
+    const plextv = new JellyfinAPI(hostname ?? '');
+
+    const account = await plextv.login(body.username, body.password);
+
+    // Next let's see if the user already exists
+    let user = await userRepository.findOne({
+      where: { jellyfinId: account.User.Id },
+    });
+
+    if (user) {
+      // Let's check if their plex token is up to date
+      if (user.jellyfinAuthToken !== account.AccessToken) {
+        user.jellyfinAuthToken = account.AccessToken;
+      }
+
+      // Update the users avatar with their plex thumbnail (incase it changed)
+      user.avatar = `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`;
+      user.email = account.User.Name;
+      user.jellyfinUsername = account.User.Name;
+
+      if (user.username === account.User.Name) {
+        user.username = '';
+      }
+      await userRepository.save(user);
+    } else {
+      // Here we check if it's the first user. If it is, we create the user with no check
+      // and give them admin permissions
+      const totalUsers = await userRepository.count();
+
+      if (totalUsers === 0) {
+        user = new User({
+          email: account.User.Name,
+          jellyfinUsername: account.User.Name,
+          jellyfinId: account.User.Id,
+          jellyfinAuthToken: account.AccessToken,
+          permissions: Permission.ADMIN,
+          avatar: `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`,
+          userType: UserType.JELLYFIN,
+        });
+        await userRepository.save(user);
+
+        //Update hostname in settings if it doesn't exist (initial configuration)
+        //Also set mediaservertype to JELLYFIN
+        if (settings.jellyfin.hostname == '') {
+          settings.main.mediaServerType = 'JELLYFIN';
+          settings.jellyfin.hostname = body.hostname ?? '';
+          settings.save();
+        }
+      }
+
+      // Double check that we didn't create the first admin user before running this
+      if (!user) {
+        user = new User({
+          email: account.User.Name,
+          jellyfinUsername: account.User.Name,
+          jellyfinId: account.User.Id,
+          jellyfinAuthToken: account.AccessToken,
+          permissions: settings.main.defaultPermissions,
+          avatar: `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`,
+          userType: UserType.JELLYFIN,
+        });
+        await userRepository.save(user);
+      }
+    }
+
+    // Set logged in session
+    if (req.session) {
+      req.session.userId = user.id;
+    }
+
+    return res.status(200).json(user?.filter() ?? {});
+  } catch (e) {
+    if (e.message != 'Unauthorized') {
+      logger.error(e.message, { label: 'Auth' });
+      return next({
+        status: 500,
+        message: 'Something went wrong. Is your auth token valid?',
+      });
+    } else {
+      return next({
+        status: 401,
+        message: 'CREDENTIAL_ERROR',
+      });
+    }
   }
 });
 

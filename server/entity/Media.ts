@@ -133,6 +133,12 @@ class Media {
   @Column({ nullable: true })
   public ratingKey4k?: string;
 
+  @Column({ nullable: true })
+  public jellyfinMediaID?: string;
+
+  @Column({ nullable: true })
+  public jellyfinMediaID4k?: string;
+
   public serviceUrl?: string;
   public serviceUrl4k?: string;
   public downloadStatus?: DownloadingItem[] = [];
@@ -140,6 +146,9 @@ class Media {
 
   public plexUrl?: string;
   public plexUrl4k?: string;
+
+  public jellyfinUrl?: string;
+  public jellyfinUrl4k?: string;
 
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
@@ -153,6 +162,17 @@ class Media {
     }
     if (this.ratingKey4k) {
       this.plexUrl4k = `https://app.plex.tv/desktop#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey4k}`;
+    }
+  }
+
+  @AfterLoad()
+  public setJellyfinUrls(): void {
+    const jellyfinSettings = getSettings().jellyfin;
+    if (this.jellyfinMediaID) {
+      this.jellyfinUrl = `${jellyfinSettings.hostname}/web/#!/details?id=${this.jellyfinMediaID}&context=home&serverId=${jellyfinSettings.serverID}`;
+    }
+    if (this.jellyfinMediaID4k) {
+      this.jellyfinUrl4k = `${jellyfinSettings.hostname}/web/#!/details?id=${this.jellyfinMediaID4k}&context=home&serverId=${jellyfinSettings.serverID}`;
     }
   }
 

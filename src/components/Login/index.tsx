@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PlexLoginButton from '../PlexLoginButton';
+import JellyfinLogin from './JellyfinLogin';
 import { useUser } from '../../hooks/useUser';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
@@ -16,6 +17,7 @@ const messages = defineMessages({
   signin: 'Sign In',
   signinheader: 'Sign in to continue',
   signinwithplex: 'Use your Plex account',
+  signinwithjellyfin: 'Use your Jellyfin account',
   signinwithoverseerr: 'Use your {applicationTitle} account',
 });
 
@@ -134,14 +136,20 @@ const Login: React.FC = () => {
                     onClick={() => handleClick(0)}
                     disabled={!settings.currentSettings.localLogin}
                   >
-                    {intl.formatMessage(messages.signinwithplex)}
+                    {settings.currentSettings.mediaServerType == 'PLEX'
+                      ? intl.formatMessage(messages.signinwithplex)
+                      : intl.formatMessage(messages.signinwithjellyfin)}
                   </button>
                   <AccordionContent isOpen={openIndexes.includes(0)}>
                     <div className="px-10 py-8">
-                      <PlexLoginButton
-                        isProcessing={isProcessing}
-                        onAuthToken={(authToken) => setAuthToken(authToken)}
-                      />
+                      {settings.currentSettings.mediaServerType == 'PLEX' ? (
+                        <PlexLoginButton
+                          isProcessing={isProcessing}
+                          onAuthToken={(authToken) => setAuthToken(authToken)}
+                        />
+                      ) : (
+                        <JellyfinLogin revalidate={revalidate} />
+                      )}
                     </div>
                   </AccordionContent>
                   {settings.currentSettings.localLogin && (

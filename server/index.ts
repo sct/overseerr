@@ -120,7 +120,8 @@ app
         }).connect(sessionRespository) as Store,
       })
     );
-    const apiDocs = YAML.load(API_SPEC_PATH);
+    //const apiDocs = YAML.load(API_SPEC_PATH);
+    /*
     server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
     server.use(
       OpenApiValidator.middleware({
@@ -133,6 +134,7 @@ app
      * OpenAPI validator. Otherwise, they are treated as objects instead of strings
      * and response validation will fail
      */
+    /*
     server.use((_req, res, next) => {
       const original = res.json;
       res.json = function jsonp(json) {
@@ -140,6 +142,7 @@ app
       };
       next();
     });
+    */
     server.use('/api/v1', routes);
     server.get('*', (req, res) => handle(req, res));
     server.use(

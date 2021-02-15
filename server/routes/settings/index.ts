@@ -4,7 +4,9 @@ import { getRepository } from 'typeorm';
 import { User } from '../../entity/User';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
+import JellyfinAPI from '../../api/jellyfin';
 import { jobPlexFullSync } from '../../job/plexsync';
+import { jobJellyfinFullSync } from '../../job/jellyfinsync';
 import { scheduledJobs } from '../../job/schedule';
 import { Permission } from '../../lib/permissions';
 import { isAuthenticated } from '../../middleware/auth';
@@ -221,6 +223,80 @@ settingsRoutes.post('/plex/sync', (req, res) => {
     jobPlexFullSync.run();
   }
   return res.status(200).json(jobPlexFullSync.status());
+});
+
+settingsRoutes.get('/jellyfin', (_req, res) => {
+  const settings = getSettings();
+  res.status(200).json(settings.jellyfin);
+});
+
+settingsRoutes.post('/jellyfin', (req, res) => {
+  const settings = getSettings();
+
+  settings.jellyfin = merge(settings.jellyfin, req.body);
+  settings.save();
+
+  return res.status(200).json(settings.jellyfin);
+});
+
+settingsRoutes.get('/jellyfin/library', async (req, res) => {
+  const settings = getSettings();
+
+  if (req.query.sync) {
+    const userRepository = getRepository(User);
+    const admin = await userRepository.findOneOrFail({
+      select: ['id', 'jellyfinAuthToken'],
+      order: { id: 'ASC' },
+    });
+    const jellyfinClient = new JellyfinAPI(
+      settings.jellyfin.hostname ?? '',
+      admin.jellyfinAuthToken ?? ''
+    );
+
+    const libraries = await jellyfinClient.getLibraries();
+
+    const newLibraries: Library[] = libraries
+      // Remove libraries that are not movie or show
+      .filter((library) => library.type === 'movie' || library.type === 'show')
+      // Remove libraries that do not have a metadata agent set (usually personal video libraries)
+      .filter((library) => library.agent !== 'com.plexapp.agents.none')
+      .map((library) => {
+        const existing = settings.plex.libraries.find(
+          (l) => l.id === library.key && l.name === library.title
+        );
+
+        return {
+          id: library.key,
+          name: library.title,
+          enabled: existing?.enabled ?? false,
+        };
+      });
+
+    settings.jellyfin.libraries = newLibraries;
+  }
+
+  const enabledLibraries = req.query.enable
+    ? (req.query.enable as string).split(',')
+    : [];
+  settings.jellyfin.libraries = settings.jellyfin.libraries.map((library) => ({
+    ...library,
+    enabled: enabledLibraries.includes(library.id),
+  }));
+  settings.save();
+  return res.status(200).json(settings.jellyfin.libraries);
+});
+
+settingsRoutes.get('/jellyfin/sync', (_req, res) => {
+  return res.status(200).json(jobJellyfinFullSync.status());
+});
+
+settingsRoutes.post('/jellyfin/sync', (req, res) => {
+  if (req.body.cancel) {
+    jobJellyfinFullSync.cancel();
+  } else if (req.body.start) {
+    jobJellyfinFullSync.run();
+  }
+  return res.status(200).json(jobJellyfinFullSync.status());
 });
 
 settingsRoutes.get('/jobs', (_req, res) => {

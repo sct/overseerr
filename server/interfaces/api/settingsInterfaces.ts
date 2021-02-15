@@ -6,6 +6,7 @@ export interface SettingsAboutResponse {
 }
 
 export interface PublicSettingsResponse {
+  jfHost?: string;
   initialized: boolean;
   applicationTitle: string;
   hideAvailable: boolean;
@@ -14,6 +15,7 @@ export interface PublicSettingsResponse {
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
+  mediaServerType: string;
 }
 
 export interface CacheItem {

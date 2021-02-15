@@ -802,6 +802,11 @@ class JobPlexSync {
 
   public async run(): Promise<void> {
     const settings = getSettings();
+
+    if (settings.main.mediaServerType != 'PLEX') {
+      return;
+    }
+
     const sessionId = uuid();
     this.sessionId = sessionId;
     logger.info('Plex Sync Starting', { sessionId, label: 'Plex Sync' });

@@ -11,6 +11,11 @@ body {
   background-color: #cc7b19;
 }
 
+.jellyfin-button {
+  @apply flex justify-center w-full px-4 py-2 text-sm font-medium text-center text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md disabled:opacity-50;
+  background-color: #00A4DC;
+}
+
 .plex-button:hover {
   background: #f19a30;
 }
