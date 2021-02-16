@@ -20,16 +20,9 @@ const hasRequirement = (
   requirement: PermissionRequirement,
   currentPermission: number
 ): boolean => {
-  switch (requirement.type) {
-    case 'or':
-      return requirement.permissions.some(
-        (permission) => !!(permission & currentPermission)
-      );
-    default:
-      return requirement.permissions.every(
-        (permission) => !!(permission & currentPermission)
-      );
-  }
+  return hasPermission(requirement.permissions, currentPermission, {
+    type: requirement.type ?? 'and',
+  });
 };
 
 interface PermissionOptionProps {
