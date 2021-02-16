@@ -264,7 +264,7 @@ class JobJellyfinSync {
 
                   ExtendedEpisodeData.MediaSources?.some((MediaSource) => {
                     return MediaSource.MediaStreams.some((MediaStream) => {
-                      if (MediaStream.Type == 'Video') {
+                      if (MediaStream.Type === 'Video') {
                         if (MediaStream.Width ?? 0 < 2000) {
                           totalStandard++;
                         }
@@ -552,7 +552,12 @@ class JobJellyfinSync {
       this.running = true;
       const userRepository = getRepository(User);
       const admin = await userRepository.findOne({
-        select: ['id', 'jellyfinAuthToken', 'jellyfinId'],
+        select: [
+          'id',
+          'jellyfinAuthToken',
+          'jellyfinUserId',
+          'jellyfinDeviceId',
+        ],
         order: { id: 'ASC' },
       });
 
@@ -562,9 +567,11 @@ class JobJellyfinSync {
 
       this.jfClient = new JellyfinAPI(
         settings.jellyfin.hostname ?? '',
-        admin.jellyfinAuthToken ?? '',
-        admin.jellyfinId ?? ''
+        admin.jellyfinAuthToken,
+        admin.jellyfinDeviceId
       );
+
+      this.jfClient.setUserId(admin.jellyfinUserId ?? '');
 
       this.libraries = settings.jellyfin.libraries.filter(
         (library) => library.enabled

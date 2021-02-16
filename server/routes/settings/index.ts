@@ -228,8 +228,7 @@ settingsRoutes.post('/plex/sync', (req, res) => {
 settingsRoutes.get('/jellyfin', (_req, res) => {
   const settings = getSettings();
 
-  //DO NOT RETURN ADMIN USER CREDENTIALS!!
-  res.status(200).json(omit(settings.jellyfin, ['adminUser', 'adminPass']));
+  res.status(200).json(settings.jellyfin);
 });
 
 settingsRoutes.post('/jellyfin', (req, res) => {
@@ -247,30 +246,28 @@ settingsRoutes.get('/jellyfin/library', async (req, res) => {
   if (req.query.sync) {
     const userRepository = getRepository(User);
     const admin = await userRepository.findOneOrFail({
-      select: ['id', 'jellyfinAuthToken'],
+      select: ['id', 'jellyfinAuthToken', 'jellyfinDeviceId'],
       order: { id: 'ASC' },
     });
     const jellyfinClient = new JellyfinAPI(
       settings.jellyfin.hostname ?? '',
-      admin.jellyfinAuthToken ?? ''
+      admin.jellyfinAuthToken ?? '',
+      admin.jellyfinDeviceId ?? ''
     );
 
     const libraries = await jellyfinClient.getLibraries();
 
-    const newLibraries: Library[] = libraries
-      // Remove libraries that are not movie or show
-      .filter((library) => library.type === 'movie' || library.type === 'show')
-      .map((library) => {
-        const existing = settings.plex.libraries.find(
-          (l) => l.id === library.key && l.name === library.title
-        );
+    const newLibraries: Library[] = libraries.map((library) => {
+      const existing = settings.jellyfin.libraries.find(
+        (l) => l.id === library.key && l.name === library.title
+      );
 
-        return {
-          id: library.key,
-          name: library.title,
-          enabled: existing?.enabled ?? false,
-        };
-      });
+      return {
+        id: library.key,
+        name: library.title,
+        enabled: existing?.enabled ?? false,
+      };
+    });
 
     settings.jellyfin.libraries = newLibraries;
   }

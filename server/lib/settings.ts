@@ -35,9 +35,7 @@ export interface JellyfinSettings {
   name: string;
   hostname?: string;
   libraries: Library[];
-  adminUser: string;
-  adminPass: string;
-  serverID: string;
+  serverId: string;
 }
 
 interface DVRSettings {
@@ -223,9 +221,7 @@ class Settings {
         name: '',
         hostname: '',
         libraries: [],
-        adminUser: '',
-        adminPass: '',
-        serverID: '',
+        serverId: '',
       },
       radarr: [],
       sonarr: [],

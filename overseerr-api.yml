@@ -2818,7 +2818,7 @@ paths:
   /auth/jellyfin:
     post:
       summary: Sign in using a Jellyfin username and password
-      description: Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main Plex server, they will also have an account created, but without any permissions.
+      description: Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the Jellyfin server, they will also have an account created, but without any permissions.
       security: []
       tags:
         - auth
@@ -2841,6 +2841,8 @@ paths:
                 password:
                   type: string
                 hostname:
+                  type: string
+                email:
                   type: string
               required:
                 - username

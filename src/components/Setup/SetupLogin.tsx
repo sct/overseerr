@@ -62,18 +62,18 @@ const SetupLogin: React.FC<LoginWithMediaServerProps> = ({ onComplete }) => {
         {({ openIndexes, handleClick, AccordionContent }) => (
           <>
             <button
-              className={`w-full py-2 text-sm text-center hover:bg-gray-700 hover:cursor-pointer text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none sm:rounded-t-lg ${
+              className={`w-full py-2 text-sm text-center hover:bg-gray-700 hover:cursor-pointer text-gray-400 transition-colors duration-200 bg-gray-900 cursor-default focus:outline-none sm:rounded-t-lg ${
                 openIndexes.includes(0) && 'text-indigo-500'
-              }`}
+              } ${openIndexes.includes(1) && 'border-b border-gray-500'}`}
               onClick={() => handleClick(0)}
             >
               <FormattedMessage {...messages.signinWithPlex} />
             </button>
-            <AccordionContent
-              className="bg-opacity-90"
-              isOpen={openIndexes.includes(0)}
-            >
-              <div className="px-10 py-8">
+            <AccordionContent isOpen={openIndexes.includes(0)}>
+              <div
+                className="px-10 py-8"
+                style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
+              >
                 <PlexLoginButton
                   onAuthToken={(authToken) => {
                     setMediaServerType(MediaServerType.PLEX);
@@ -84,7 +84,7 @@ const SetupLogin: React.FC<LoginWithMediaServerProps> = ({ onComplete }) => {
             </AccordionContent>
             <div>
               <button
-                className={`w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none hover:bg-gray-700 hover:cursor-pointer ${
+                className={`w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-900 cursor-default focus:outline-none hover:bg-gray-700 hover:cursor-pointer ${
                   openIndexes.includes(1)
                     ? 'text-indigo-500'
                     : 'sm:rounded-b-lg'
@@ -93,11 +93,11 @@ const SetupLogin: React.FC<LoginWithMediaServerProps> = ({ onComplete }) => {
               >
                 <FormattedMessage {...messages.signinWithJellyfin} />
               </button>
-              <AccordionContent
-                className="bg-opacity-90"
-                isOpen={openIndexes.includes(1)}
-              >
-                <div className="px-10 py-8">
+              <AccordionContent isOpen={openIndexes.includes(1)}>
+                <div
+                  className="px-10 py-8 rounded-b-lg"
+                  style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
+                >
                   <JellyfinLogin initial={true} revalidate={revalidate} />
                 </div>
               </AccordionContent>

@@ -104,7 +104,10 @@ const Setup: React.FC = () => {
             />
           </ul>
         </nav>
-        <div className="w-full p-4 mt-10 text-white bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md">
+        <div
+          style={{ backdropFilter: 'blur(5px)' }}
+          className="w-full p-4 mt-10 text-white bg-gray-800 border border-gray-600 rounded-md bg-opacity-40"
+        >
           {currentStep === 1 && (
             <SetupLogin
               onComplete={() => {

@@ -65,16 +65,19 @@ export class User {
   @Column({ type: 'integer', default: UserType.PLEX })
   public userType: UserType;
 
-  @Column({ nullable: true, select: false })
+  @Column({ nullable: true })
   public plexId?: number;
 
-  @Column({ nullable: true, select: false })
-  public jellyfinId?: string;
+  @Column({ nullable: true })
+  public jellyfinUserId?: string;
 
-  @Column({ nullable: true, select: false })
+  @Column({ nullable: true })
+  public jellyfinDeviceId?: string;
+
+  @Column({ nullable: true })
   public jellyfinAuthToken?: string;
 
-  @Column({ nullable: true, select: false })
+  @Column({ nullable: true })
   public plexToken?: string;
 
   @Column({ type: 'integer', default: 0 })

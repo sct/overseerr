@@ -75,17 +75,16 @@ class JellyfinAPI {
   private jellyfinHost: string;
   private axios: AxiosInstance;
 
-  constructor(jellyfinHost: string, authToken?: string, userId?: string) {
+  constructor(jellyfinHost: string, authToken?: string, deviceId?: string) {
+    console.log(jellyfinHost, deviceId, authToken);
     this.jellyfinHost = jellyfinHost;
     this.authToken = authToken;
-    this.userId = userId;
 
     let authHeaderVal = '';
     if (this.authToken) {
-      authHeaderVal = `MediaBrowser Client="Overseerr", Device="Axios", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6ODUuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84NS4wfDE2MTI5MjcyMDM5NzM1", Version="10.8.0", Token="${authToken}"`;
+      authHeaderVal = `MediaBrowser Client="Overseerr", Device="Axios", DeviceId="${deviceId}", Version="10.8.0", Token="${authToken}"`;
     } else {
-      authHeaderVal =
-        'MediaBrowser Client="Overseerr", Device="Axios", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6ODUuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84NS4wfDE2MTI5MjcyMDM5NzM1", Version="10.8.0"';
+      authHeaderVal = `MediaBrowser Client="Overseerr", Device="Axios", DeviceId="${deviceId}", Version="10.8.0"`;
     }
 
     this.axios = axios.create({
@@ -114,6 +113,11 @@ class JellyfinAPI {
     } catch (e) {
       throw new Error('Unauthorized');
     }
+  }
+
+  public setUserId(userId: string): void {
+    this.userId = userId;
+    return;
   }
 
   public async getServerName(): Promise<string> {
@@ -150,19 +154,21 @@ class JellyfinAPI {
     try {
       const account = await this.axios.get<any>('/Library/MediaFolders');
 
-      const response: JellyfinLibrary[] = [];
-
-      account.data.Items.forEach((Item: any) => {
-        const library: JellyfinLibrary = {
+      const response: JellyfinLibrary[] = account.data.Items.filter(
+        (Item: any) => {
+          return (
+            Item.Type === 'CollectionFolder' &&
+            (Item.CollectionType === 'tvshows' ||
+              Item.CollectionType === 'movies')
+          );
+        }
+      ).map((Item: any) => {
+        return <JellyfinLibrary>{
           key: Item.Id,
           title: Item.Name,
-          type: Item.CollectionType == 'movies' ? 'movie' : 'show',
+          type: Item.CollectionType === 'movies' ? 'movie' : 'show',
           agent: 'jellyfin',
         };
-
-        if (Item.Type == 'CollectionFolder') {
-          response.push(library);
-        }
       });
 
       return response;
@@ -178,9 +184,7 @@ class JellyfinAPI {
   public async getLibraryContents(id: string): Promise<JellyfinLibraryItem[]> {
     try {
       const contents = await this.axios.get<any>(
-        `/Users/${
-          (await this.getUser()).Id
-        }/Items?SortBy=SortName&SortOrder=Ascending&Recursive=true&StartIndex=0&ParentId=${id}`
+        `/Users/${this.userId}/Items?SortBy=SortName&SortOrder=Ascending&Recursive=true&StartIndex=0&ParentId=${id}`
       );
 
       return contents.data.Items;
@@ -196,9 +200,7 @@ class JellyfinAPI {
   public async getRecentlyAdded(id: string): Promise<JellyfinLibraryItem[]> {
     try {
       const contents = await this.axios.get<any>(
-        `/Users/${
-          (await this.getUser()).Id
-        }/Items/Latest?Limit=50&ParentId=${id}`
+        `/Users/${this.userId}/Items/Latest?Limit=50&ParentId=${id}`
       );
 
       return contents.data.Items;
@@ -214,7 +216,7 @@ class JellyfinAPI {
   public async getItemData(id: string): Promise<JellyfinLibraryItemExtended> {
     try {
       const contents = await this.axios.get<any>(
-        `/Users/${(await this.getUser()).Id}/Items/${id}`
+        `/Users/${this.userId}/Items/${id}`
       );
 
       return contents.data;

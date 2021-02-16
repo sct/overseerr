@@ -164,10 +164,10 @@ class Media {
       }
     } else {
       if (this.jellyfinMediaId) {
-        this.mediaUrl = `${settings.jellyfin.hostname}/web/#!/details?id=${this.jellyfinMediaId}&context=home&serverId=${settings.jellyfin.serverID}`;
+        this.mediaUrl = `${settings.jellyfin.hostname}/web/#!/details?id=${this.jellyfinMediaId}&context=home&serverId=${settings.jellyfin.serverId}`;
       }
       if (this.jellyfinMediaId4k) {
-        this.mediaUrl4k = `${settings.jellyfin.hostname}/web/#!/details?id=${this.jellyfinMediaId4k}&context=home&serverId=${settings.jellyfin.serverID}`;
+        this.mediaUrl4k = `${settings.jellyfin.hostname}/web/#!/details?id=${this.jellyfinMediaId4k}&context=home&serverId=${settings.jellyfin.serverId}`;
       }
     }
   }
