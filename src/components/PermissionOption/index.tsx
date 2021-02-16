@@ -16,15 +16,6 @@ interface PermissionRequirement {
   type?: 'and' | 'or';
 }
 
-const hasRequirement = (
-  requirement: PermissionRequirement,
-  currentPermission: number
-): boolean => {
-  return hasPermission(requirement.permissions, currentPermission, {
-    type: requirement.type ?? 'and',
-  });
-};
-
 interface PermissionOptionProps {
   option: PermissionItem;
   currentPermission: number;
@@ -65,7 +56,9 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
             option.permission === Permission.MANAGE_SETTINGS) ||
           (option.requires &&
             !option.requires.every((requirement) =>
-              hasRequirement(requirement, currentPermission)
+              hasPermission(requirement.permissions, currentPermission, {
+                type: requirement.type ?? 'and',
+              })
             ))
             ? 'opacity-50'
             : ''
@@ -91,7 +84,9 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
                 option.permission === Permission.MANAGE_SETTINGS) ||
               (option.requires &&
                 !option.requires.every((requirement) =>
-                  hasRequirement(requirement, currentPermission)
+                  hasPermission(requirement.permissions, currentPermission, {
+                    type: requirement.type ?? 'and',
+                  })
                 ))
             }
             onChange={() => {
@@ -112,7 +107,9 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
                   ))) &&
               (!option.requires ||
                 option.requires.every((requirement) =>
-                  hasRequirement(requirement, currentPermission)
+                  hasPermission(requirement.permissions, currentPermission, {
+                    type: requirement.type ?? 'and',
+                  })
                 ))
             }
           />
