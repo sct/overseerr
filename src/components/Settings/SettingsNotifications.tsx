@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import DiscordLogo from '../../assets/extlogos/discord_white.svg';
+import DiscordLogo from '../../assets/extlogos/discord.svg';
 import SlackLogo from '../../assets/extlogos/slack.svg';
 import TelegramLogo from '../../assets/extlogos/telegram.svg';
+import PushbulletLogo from '../../assets/extlogos/pushbullet.svg';
 import PushoverLogo from '../../assets/extlogos/pushover.svg';
 import Bolt from '../../assets/bolt.svg';
 import { Field, Form, Formik } from 'formik';
@@ -94,6 +95,17 @@ const settingsRoutes: SettingsRoute[] = [
     ),
     route: '/settings/notifications/telegram',
     regex: /^\/settings\/notifications\/telegram/,
+  },
+  {
+    text: 'Pushbullet',
+    content: (
+      <span className="flex items-center">
+        <PushbulletLogo className="h-4 mr-2" />
+        Pushbullet
+      </span>
+    ),
+    route: '/settings/notifications/pushbullet',
+    regex: /^\/settings\/notifications\/pushbullet/,
   },
   {
     text: 'Pushover',

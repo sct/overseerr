@@ -4,11 +4,12 @@ Overseerr already supports a good number of notification agents, such as **Disco
 
 ## Currently Supported Notification Agents
 
-- Email
 - Discord
+- Email
+- Pushbullet
+- Pushover
 - Slack
 - Telegram
-- Pushover
 - [Webhooks](./webhooks.md)
 
 ## Setting Up Notifications

@@ -111,12 +111,17 @@ export interface NotificationAgentTelegram extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentPushbullet extends NotificationAgentConfig {
+  options: {
+    accessToken: string;
+  };
+}
+
 export interface NotificationAgentPushover extends NotificationAgentConfig {
   options: {
     accessToken: string;
     userToken: string;
     priority: number;
-    sound: string;
   };
 }
 
@@ -129,11 +134,12 @@ export interface NotificationAgentWebhook extends NotificationAgentConfig {
 }
 
 interface NotificationAgents {
-  email: NotificationAgentEmail;
   discord: NotificationAgentDiscord;
+  email: NotificationAgentEmail;
+  pushbullet: NotificationAgentPushbullet;
+  pushover: NotificationAgentPushover;
   slack: NotificationAgentSlack;
   telegram: NotificationAgentTelegram;
-  pushover: NotificationAgentPushover;
   webhook: NotificationAgentWebhook;
 }
 
@@ -224,6 +230,13 @@ class Settings {
               sendSilently: false,
             },
           },
+          pushbullet: {
+            enabled: false,
+            types: 0,
+            options: {
+              accessToken: '',
+            },
+          },
           pushover: {
             enabled: false,
             types: 0,
@@ -231,7 +244,6 @@ class Settings {
               accessToken: '',
               userToken: '',
               priority: 0,
-              sound: '',
             },
           },
           webhook: {
