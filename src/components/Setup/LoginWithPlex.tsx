@@ -23,7 +23,7 @@ const LoginWithPlex: React.FC<LoginWithPlexProps> = ({ onComplete }) => {
 
   useEffect(() => {
     const login = async () => {
-      const response = await axios.post('/api/v1/auth/login', { authToken });
+      const response = await axios.post('/api/v1/auth/plex', { authToken });
 
       if (response.data?.email) {
         revalidate();

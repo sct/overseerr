@@ -29,13 +29,13 @@ const Login: React.FC = () => {
   const settings = useSettings();
 
   // Effect that is triggered when the `authToken` comes back from the Plex OAuth
-  // We take the token and attempt to login. If we get a success message, we will
+  // We take the token and attempt to sign in. If we get a success message, we will
   // ask swr to revalidate the user which _should_ come back with a valid user.
   useEffect(() => {
     const login = async () => {
       setProcessing(true);
       try {
-        const response = await axios.post('/api/v1/auth/login', { authToken });
+        const response = await axios.post('/api/v1/auth/plex', { authToken });
 
         if (response.data?.id) {
           revalidate();
