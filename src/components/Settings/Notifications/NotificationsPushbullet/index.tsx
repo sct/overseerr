@@ -22,7 +22,7 @@ const messages = defineMessages({
   test: 'Test',
   settingUpPushbullet: 'Setting Up Pushbullet Notifications',
   settingUpPushbulletDescription:
-    'To set up Pushbullet, you need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink>.',
+    'To configure Pushbullet notifications, you need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink> and enter it below.',
   notificationTypes: 'Notification Types',
 });
 

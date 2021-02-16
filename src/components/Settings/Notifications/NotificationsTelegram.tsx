@@ -24,9 +24,9 @@ const messages = defineMessages({
   test: 'Test',
   settinguptelegram: 'Setting Up Telegram Notifications',
   settinguptelegramDescription:
-    'To setup Telegram you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
-    Additionally, you need the chat ID for the chat you want the bot to send notifications to.\
-    You can do this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
+    'To configure Telegram notifications, you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
+    Additionally, you need the chat ID for the chat where you would like the bot to send notifications.\
+    You can get this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
   notificationtypes: 'Notification Types',
   sendSilently: 'Send Silently',
   sendSilentlyTip: 'Send notifications with no sound',
