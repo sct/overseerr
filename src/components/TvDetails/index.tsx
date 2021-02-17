@@ -376,9 +376,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           />
         </div>
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
-          <div className="mb-2">
+          <div className="mb-2 space-x-2">
             {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
-              <span className="lg:mr-2">
+              <span className="ml-2 lg:ml-0">
                 <StatusBadge
                   status={data.mediaInfo?.status}
                   inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
@@ -422,11 +422,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 ))}
           </span>
         </div>
-        <div className="flex flex-wrap justify-center flex-shrink-0 mt-2 space-y-2 sm:space-y-0 sm:flex-nowrap sm:justify-end sm:mt-4">
+        <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
           {(trailerUrl ||
             data.mediaInfo?.plexUrl ||
             data.mediaInfo?.plexUrl4k) && (
-            <div className="mt-2 sm:mt-0">
+            <div className="mb-3 sm:mb-0">
               <ButtonWithDropdown
                 buttonType="ghost"
                 text={
