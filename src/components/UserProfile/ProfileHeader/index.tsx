@@ -17,7 +17,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
       <div className="flex items-end space-x-5 justify-items-end">
         <div className="flex-shrink-0">
           <div className="relative">
-            <img className="w-24 h-24 rounded-full" src={user.avatar} alt="" />
+            <img
+              className="w-24 h-24 bg-gray-600 rounded-full"
+              src={user.avatar}
+              alt=""
+            />
             <span
               className="absolute inset-0 rounded-full shadow-inner"
               aria-hidden="true"
@@ -25,12 +29,20 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
           </div>
         </div>
         <div className="pt-1.5">
-          <h1 className="mb-1">
-            <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 to-purple-400">
-              {user.displayName}
-            </span>
+          <h1 className="flex flex-col mb-1 sm:items-center sm:flex-row">
+            <Link
+              href={
+                user.id === loggedInUser?.id ? '/profile' : `/users/${user.id}`
+              }
+            >
+              <a className="text-lg font-bold text-transparent sm:text-2xl bg-clip-text bg-gradient-to-br from-indigo-400 to-purple-400 hover:to-purple-200">
+                {user.displayName}
+              </a>
+            </Link>
             {user.email && (
-              <span className="ml-2 text-lg text-gray-400">({user.email})</span>
+              <span className="text-sm text-gray-400 sm:text-lg sm:ml-2">
+                ({user.email})
+              </span>
             )}
           </h1>
           <p className="text-sm font-medium text-gray-400">
@@ -40,26 +52,19 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
         </div>
       </div>
       <div className="flex flex-col-reverse mt-6 space-y-4 space-y-reverse justify-stretch sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
-        {hasPermission(Permission.MANAGE_USERS) && (
-          <Link href={`/users/${user.id}/edit`}>
-            <Button buttonType="warning" as="a">
-              <svg
-                className="w-5 h-5 mr-1"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-              </svg>
-              <span>Edit User</span>
-            </Button>
-          </Link>
-        )}
-        {loggedInUser?.id === user.id && (
-          <Link href={`/profile/settings`}>
+        {(loggedInUser?.id === user.id ||
+          hasPermission(Permission.MANAGE_USERS)) && (
+          <Link
+            href={
+              loggedInUser?.id === user.id
+                ? `/profile/settings`
+                : `/users/${user.id}/settings`
+            }
+            passHref
+          >
             <Button as="a">
               <svg
-                className="w-5 h-5"
+                className="w-5 h-5 mr-1"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -70,6 +75,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
                   clipRule="evenodd"
                 />
               </svg>
+              Settings
             </Button>
           </Link>
         )}

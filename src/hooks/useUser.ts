@@ -18,8 +18,8 @@ export interface User {
   avatar: string;
   permissions: number;
   userType: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   requestCount: number;
 }
 

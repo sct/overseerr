@@ -5,15 +5,16 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import { UserType, useUser } from '../../../../hooks/useUser';
+import { useUser } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
-import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 
 const messages = defineMessages({
-  generalsettings: 'General Settings',
-  displayName: 'Display Name',
+  notificationsettings: 'Notification Settings',
+  enableNotifications: 'Enable Notifications',
+  discordId: 'Discord ID',
   save: 'Save Changes',
   saving: 'Saving…',
   plexuser: 'Plex User',
@@ -22,13 +23,13 @@ const messages = defineMessages({
   toastSettingsFailure: 'Something went wrong while saving settings.',
 });
 
-const UserGeneralSettings: React.FC = () => {
+const UserNotificationSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
   const { user, mutate } = useUser({ id: Number(router.query.userId) });
-  const { data, error, revalidate } = useSWR<{ username?: string }>(
-    user ? `/api/v1/user/${user?.id}/settings/main` : null
+  const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
+    user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
 
   if (!data && !error) {
@@ -43,19 +44,24 @@ const UserGeneralSettings: React.FC = () => {
     <>
       <div className="mb-6">
         <h3 className="heading">
-          {intl.formatMessage(messages.generalsettings)}
+          {intl.formatMessage(messages.notificationsettings)}
         </h3>
       </div>
       <Formik
         initialValues={{
-          displayName: data?.username,
+          enableNotifications: data?.enableNotifications,
+          discordId: data?.discordId,
         }}
         enableReinitialize
         onSubmit={async (values) => {
           try {
-            await axios.post(`/api/v1/user/${user?.id}/settings/main`, {
-              username: values.displayName,
-            });
+            await axios.post(
+              `/api/v1/user/${user?.id}/settings/notifications`,
+              {
+                enableNotifications: values.enableNotifications,
+                discordId: values.discordId,
+              }
+            );
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
               autoDismiss: true,
@@ -76,36 +82,29 @@ const UserGeneralSettings: React.FC = () => {
           return (
             <Form className="section">
               <div className="form-row">
-                <div className="text-label">Account Type</div>
-                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
-                  <div className="flex items-center max-w-lg">
-                    {user?.userType === UserType.PLEX ? (
-                      <Badge badgeType="warning">
-                        {intl.formatMessage(messages.plexuser)}
-                      </Badge>
-                    ) : (
-                      <Badge badgeType="default">
-                        {intl.formatMessage(messages.localuser)}
-                      </Badge>
-                    )}
-                  </div>
+                <label htmlFor="enableNotifications" className="checkbox-label">
+                  <span className="mr-2">
+                    {intl.formatMessage(messages.enableNotifications)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <Field
+                    type="checkbox"
+                    id="enableNotifications"
+                    name="enableNotifications"
+                  />
                 </div>
               </div>
               <div className="form-row">
-                <label htmlFor="displayName" className="text-label">
-                  {intl.formatMessage(messages.displayName)}
+                <label htmlFor="discordId" className="text-label">
+                  {intl.formatMessage(messages.discordId)}
                 </label>
                 <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm">
-                    <Field
-                      id="displayName"
-                      name="displayName"
-                      type="text"
-                      placeholder={user?.displayName}
-                    />
+                    <Field id="discordId" name="discordId" type="text" />
                   </div>
-                  {errors.displayName && touched.displayName && (
-                    <div className="error">{errors.displayName}</div>
+                  {errors.discordId && touched.discordId && (
+                    <div className="error">{errors.discordId}</div>
                   )}
                 </div>
               </div>
@@ -132,4 +131,4 @@ const UserGeneralSettings: React.FC = () => {
   );
 };
 
-export default UserGeneralSettings;
+export default UserNotificationSettings;

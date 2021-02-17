@@ -7,6 +7,7 @@ import {
   OneToMany,
   RelationCount,
   AfterLoad,
+  OneToOne,
 } from 'typeorm';
 import {
   Permission,
@@ -22,6 +23,7 @@ import { getSettings } from '../lib/settings';
 import { default as generatePassword } from 'secure-random-password';
 import { UserType } from '../constants/user';
 import { v4 as uuid } from 'uuid';
+import { UserSettings } from './UserSettings';
 
 @Entity()
 export class User {
@@ -77,6 +79,13 @@ export class User {
 
   @OneToMany(() => MediaRequest, (request) => request.requestedBy)
   public requests: MediaRequest[];
+
+  @OneToOne(() => UserSettings, (settings) => settings.user, {
+    cascade: true,
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  public settings?: UserSettings;
 
   @CreateDateColumn()
   public createdAt: Date;

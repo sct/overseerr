@@ -6,6 +6,7 @@ import Button from '../Common/Button';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import Link from 'next/link';
 
 const messages = defineMessages({
   forgotpassword: 'Forgot Your Password?',
@@ -60,13 +61,15 @@ const ResetPassword: React.FC = () => {
           <div className="px-10 py-8">
             {hasSubmitted ? (
               <>
-                <p className="text-md text-gray-300">
+                <p className="text-gray-300 text-md">
                   {intl.formatMessage(messages.requestresetlinksuccessmessage)}
                 </p>
-                <span className="flex rounded-md shadow-sm justify-center mt-4">
-                  <Button as="a" href="/login" buttonType="ghost">
-                    {intl.formatMessage(messages.gobacklogin)}
-                  </Button>
+                <span className="flex justify-center mt-4 rounded-md shadow-sm">
+                  <Link href="/login" passHref>
+                    <Button as="a" buttonType="ghost">
+                      {intl.formatMessage(messages.gobacklogin)}
+                    </Button>
+                  </Link>
                 </span>
               </>
             ) : (
@@ -105,7 +108,7 @@ const ResetPassword: React.FC = () => {
                               name="email"
                               type="text"
                               placeholder="name@example.com"
-                              className="text-white flex-1 block w-full min-w-0 transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
+                              className="flex-1 block w-full min-w-0 text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                             />
                           </div>
                           {errors.email && touched.email && (

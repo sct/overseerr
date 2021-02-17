@@ -1,18 +1,17 @@
 import axios from 'axios';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import { UserType, useUser } from '../../../../hooks/useUser';
+import { useUser } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
-import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import PermissionEdit from '../../../PermissionEdit';
 
 const messages = defineMessages({
-  generalsettings: 'General Settings',
   displayName: 'Display Name',
   save: 'Save Changes',
   saving: 'Saving…',
@@ -20,15 +19,17 @@ const messages = defineMessages({
   localuser: 'Local User',
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
+  permissions: 'Permissions',
 });
 
-const UserGeneralSettings: React.FC = () => {
+const UserPermissions: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
+  const { user: currentUser } = useUser();
   const { user, mutate } = useUser({ id: Number(router.query.userId) });
-  const { data, error, revalidate } = useSWR<{ username?: string }>(
-    user ? `/api/v1/user/${user?.id}/settings/main` : null
+  const { data, error, revalidate } = useSWR<{ permissions?: number }>(
+    user ? `/api/v1/user/${user?.id}/settings/permissions` : null
   );
 
   if (!data && !error) {
@@ -42,19 +43,17 @@ const UserGeneralSettings: React.FC = () => {
   return (
     <>
       <div className="mb-6">
-        <h3 className="heading">
-          {intl.formatMessage(messages.generalsettings)}
-        </h3>
+        <h3 className="heading">{intl.formatMessage(messages.permissions)}</h3>
       </div>
       <Formik
         initialValues={{
-          displayName: data?.username,
+          currentPermissions: data?.permissions,
         }}
         enableReinitialize
         onSubmit={async (values) => {
           try {
-            await axios.post(`/api/v1/user/${user?.id}/settings/main`, {
-              username: values.displayName,
+            await axios.post(`/api/v1/user/${user?.id}/settings/permissions`, {
+              permissions: values.currentPermissions ?? 0,
             });
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -72,41 +71,29 @@ const UserGeneralSettings: React.FC = () => {
           }
         }}
       >
-        {({ errors, touched, isSubmitting }) => {
+        {({ isSubmitting, setFieldValue, values }) => {
           return (
             <Form className="section">
-              <div className="form-row">
-                <div className="text-label">Account Type</div>
-                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
-                  <div className="flex items-center max-w-lg">
-                    {user?.userType === UserType.PLEX ? (
-                      <Badge badgeType="warning">
-                        {intl.formatMessage(messages.plexuser)}
-                      </Badge>
-                    ) : (
-                      <Badge badgeType="default">
-                        {intl.formatMessage(messages.localuser)}
-                      </Badge>
-                    )}
+              <div
+                role="group"
+                aria-labelledby="group-label"
+                className="form-group"
+              >
+                <div className="form-row">
+                  <span id="group-label" className="group-label">
+                    {intl.formatMessage(messages.permissions)}
+                  </span>
+                  <div className="form-input">
+                    <div className="max-w-lg">
+                      <PermissionEdit
+                        user={currentUser}
+                        currentPermission={values.currentPermissions ?? 0}
+                        onUpdate={(newPermission) =>
+                          setFieldValue('currentPermissions', newPermission)
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="displayName" className="text-label">
-                  {intl.formatMessage(messages.displayName)}
-                </label>
-                <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
-                    <Field
-                      id="displayName"
-                      name="displayName"
-                      type="text"
-                      placeholder={user?.displayName}
-                    />
-                  </div>
-                  {errors.displayName && touched.displayName && (
-                    <div className="error">{errors.displayName}</div>
-                  )}
                 </div>
               </div>
               <div className="actions">
@@ -132,4 +119,4 @@ const UserGeneralSettings: React.FC = () => {
   );
 };
 
-export default UserGeneralSettings;
+export default UserPermissions;
