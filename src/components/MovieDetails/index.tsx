@@ -350,9 +350,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           />
         </div>
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
-          <div className="mb-2">
+          <div className="mb-2 space-x-2">
             {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
-              <span className="lg:mr-2">
+              <span className="ml-2 lg:ml-0">
                 <StatusBadge
                   status={data.mediaInfo?.status}
                   inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
