@@ -560,7 +560,6 @@
   "components.Settings.validationApplicationUrl": "You must provide a valid URL",
   "components.Settings.validationApplicationUrlTrailingSlash": "URL must not end in a trailing slash",
   "components.Settings.validationHostnameRequired": "You must provide a hostname/IP",
-  "components.Settings.validationPageSize": "You must provide a valid page size",
   "components.Settings.validationPortRequired": "You must provide a port",
   "components.Setup.configureplex": "Configure Plex",
   "components.Setup.configureservices": "Configure Services",

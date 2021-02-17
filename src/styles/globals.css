@@ -102,7 +102,8 @@ select.rounded-r-only {
   @apply rounded-l-none;
 }
 
-input.short {
+input.short,
+select.short {
   @apply w-24;
 }
 

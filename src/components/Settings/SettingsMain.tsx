@@ -44,7 +44,6 @@ const messages = defineMessages({
   pageSize: 'Page Size',
   pageSizeTip:
     'Number of items to show per page (applies to the <RequestsLink>Requests</RequestsLink> and <UsersLink>Users</UsersLink> pages only)',
-  validationPageSize: 'You must provide a valid page size',
 });
 
 const SettingsMain: React.FC = () => {
@@ -70,10 +69,6 @@ const SettingsMain: React.FC = () => {
           return true;
         }
       ),
-    pageSize: Yup.number()
-      .required(intl.formatMessage(messages.validationPageSize))
-      .integer(intl.formatMessage(messages.validationPageSize))
-      .positive(intl.formatMessage(messages.validationPageSize)),
   });
 
   const regenerate = async () => {
@@ -329,12 +324,17 @@ const SettingsMain: React.FC = () => {
                   </label>
                   <div className="form-input">
                     <Field
-                      type="text"
+                      as="select"
                       id="pageSize"
                       name="pageSize"
-                      placeholder="10"
                       className="short"
-                    />
+                    >
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </Field>
                     {errors.pageSize && touched.pageSize && (
                       <div className="error">{errors.pageSize}</div>
                     )}
