@@ -8,6 +8,12 @@ export interface PermissionItem {
   description: string;
   permission: Permission;
   children?: PermissionItem[];
+  requires?: PermissionRequirement[];
+}
+
+interface PermissionRequirement {
+  permissions: Permission[];
+  type?: 'and' | 'or';
 }
 
 interface PermissionOptionProps {
@@ -47,7 +53,13 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
           (user && user.id !== 1 && option.permission === Permission.ADMIN) ||
           (user &&
             !hasPermission(Permission.MANAGE_SETTINGS, user.permissions) &&
-            option.permission === Permission.MANAGE_SETTINGS)
+            option.permission === Permission.MANAGE_SETTINGS) ||
+          (option.requires &&
+            !option.requires.every((requirement) =>
+              hasPermission(requirement.permissions, currentPermission, {
+                type: requirement.type ?? 'and',
+              })
+            ))
             ? 'opacity-50'
             : ''
         }`}
@@ -69,7 +81,13 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
                 option.permission === Permission.ADMIN) ||
               (user &&
                 !hasPermission(Permission.MANAGE_SETTINGS, user.permissions) &&
-                option.permission === Permission.MANAGE_SETTINGS)
+                option.permission === Permission.MANAGE_SETTINGS) ||
+              (option.requires &&
+                !option.requires.every((requirement) =>
+                  hasPermission(requirement.permissions, currentPermission, {
+                    type: requirement.type ?? 'and',
+                  })
+                ))
             }
             onChange={() => {
               onUpdate(
@@ -79,11 +97,20 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
               );
             }}
             checked={
-              hasPermission(option.permission, currentPermission) ||
-              (!!parent?.permission &&
-                hasPermission(parent.permission, currentPermission)) ||
-              (autoApprovePermissions.includes(option.permission) &&
-                hasPermission(Permission.MANAGE_REQUESTS, currentPermission))
+              (hasPermission(option.permission, currentPermission) ||
+                (!!parent?.permission &&
+                  hasPermission(parent.permission, currentPermission)) ||
+                (autoApprovePermissions.includes(option.permission) &&
+                  hasPermission(
+                    Permission.MANAGE_REQUESTS,
+                    currentPermission
+                  ))) &&
+              (!option.requires ||
+                option.requires.every((requirement) =>
+                  hasPermission(requirement.permissions, currentPermission, {
+                    type: requirement.type ?? 'and',
+                  })
+                ))
             }
           />
         </div>
