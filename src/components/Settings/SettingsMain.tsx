@@ -41,7 +41,7 @@ const messages = defineMessages({
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
-  pageSize: 'Page Size',
+  pageSize: 'Maximum Page Size',
   pageSizeTip:
     'Number of items to show per page (applies to the <RequestsLink>Requests</RequestsLink> and <UsersLink>Users</UsersLink> pages only)',
 });

@@ -512,7 +512,7 @@
   "components.Settings.notificationsettingsfailed": "Notification settings failed to save.",
   "components.Settings.notificationsettingssaved": "Notification settings saved!",
   "components.Settings.notrunning": "Not Running",
-  "components.Settings.pageSize": "Page Size",
+  "components.Settings.pageSize": "Maximum Page Size",
   "components.Settings.pageSizeTip": "Number of items to show per page (applies to the <RequestsLink>Requests</RequestsLink> and <UsersLink>Users</UsersLink> pages only)",
   "components.Settings.plexlibraries": "Plex Libraries",
   "components.Settings.plexlibrariesDescription": "The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.",
