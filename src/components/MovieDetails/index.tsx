@@ -394,11 +394,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 ))}
           </span>
         </div>
-        <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-2 space-y-2 sm:space-y-0 sm:justify-end sm:flex-nowrap sm:mt-4">
+        <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
           {(trailerUrl ||
             data.mediaInfo?.plexUrl ||
             data.mediaInfo?.plexUrl4k) && (
-            <div className="mt-2 sm:mt-0">
+            <div className="mb-3 sm:mb-0">
               <ButtonWithDropdown
                 buttonType="ghost"
                 text={
