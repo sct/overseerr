@@ -41,6 +41,10 @@ const messages = defineMessages({
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
+  pageSize: 'Page Size',
+  pageSizeTip:
+    'Number of items to show per page (applies to the <RequestsLink>Requests</RequestsLink> and <UsersLink>Users</UsersLink> pages only)',
+  validationPageSize: 'You must provide a valid page size',
 });
 
 const SettingsMain: React.FC = () => {
@@ -66,6 +70,10 @@ const SettingsMain: React.FC = () => {
           return true;
         }
       ),
+    pageSize: Yup.number()
+      .required(intl.formatMessage(messages.validationPageSize))
+      .integer(intl.formatMessage(messages.validationPageSize))
+      .positive(intl.formatMessage(messages.validationPageSize)),
   });
 
   const regenerate = async () => {
@@ -108,6 +116,7 @@ const SettingsMain: React.FC = () => {
             defaultPermissions: data?.defaultPermissions ?? 0,
             hideAvailable: data?.hideAvailable,
             localLogin: data?.localLogin,
+            pageSize: data?.pageSize ?? 10,
             trustProxy: data?.trustProxy,
           }}
           enableReinitialize
@@ -121,6 +130,7 @@ const SettingsMain: React.FC = () => {
                 defaultPermissions: values.defaultPermissions,
                 hideAvailable: values.hideAvailable,
                 localLogin: values.localLogin,
+                pageSize: Number(values.pageSize),
                 trustProxy: values.trustProxy,
               });
 
@@ -281,6 +291,53 @@ const SettingsMain: React.FC = () => {
                         setFieldValue('hideAvailable', !values.hideAvailable);
                       }}
                     />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="pageSize" className="text-label">
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.pageSize)}
+                    </span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.pageSizeTip, {
+                        RequestsLink: function RequestsLink(msg) {
+                          return (
+                            <a
+                              href="/requests"
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-gray-100 underline transition duration-300 hover:text-white"
+                            >
+                              {msg}
+                            </a>
+                          );
+                        },
+                        UsersLink: function UsersLink(msg) {
+                          return (
+                            <a
+                              href="/users"
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-gray-100 underline transition duration-300 hover:text-white"
+                            >
+                              {msg}
+                            </a>
+                          );
+                        },
+                      })}
+                    </span>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="text"
+                      id="pageSize"
+                      name="pageSize"
+                      placeholder="10"
+                      className="short"
+                    />
+                    {errors.pageSize && touched.pageSize && (
+                      <div className="error">{errors.pageSize}</div>
+                    )}
                   </div>
                 </div>
                 <div className="form-row">

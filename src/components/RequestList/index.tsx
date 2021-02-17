@@ -8,6 +8,7 @@ import Table from '../Common/Table';
 import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   requests: 'Requests',
@@ -35,13 +36,15 @@ type Sort = 'added' | 'modified';
 
 const RequestList: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const [pageIndex, setPageIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState<Filter>('pending');
   const [currentSort, setCurrentSort] = useState<Sort>('added');
+  const pageSize = settings.currentSettings.pageSize;
 
   const { data, error, revalidate } = useSWR<RequestResultsResponse>(
-    `/api/v1/request?take=10&skip=${
-      pageIndex * 10
+    `/api/v1/request?take=${pageSize}&skip=${
+      pageIndex * pageSize
     }&filter=${currentFilter}&sort=${currentSort}`
   );
   if (!data && !error) {
@@ -190,11 +193,11 @@ const RequestList: React.FC = () => {
                 <div className="hidden sm:block">
                   <p className="text-sm">
                     {intl.formatMessage(messages.showingresults, {
-                      from: pageIndex * 10,
+                      from: pageIndex * pageSize,
                       to:
-                        data.results.length < 10
-                          ? pageIndex * 10 + data.results.length
-                          : (pageIndex + 1) * 10,
+                        data.results.length < pageSize
+                          ? pageIndex * pageSize + data.results.length
+                          : (pageIndex + 1) * pageSize,
                       total: data.pageInfo.results,
                       strong: function strong(msg) {
                         return <span className="font-medium">{msg}</span>;

@@ -21,6 +21,8 @@ import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
 import PageTitle from '../Common/PageTitle';
 import Link from 'next/link';
+import useSettings from '../../hooks/useSettings';
+import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
 
 const messages = defineMessages({
   users: 'Users',
@@ -65,6 +67,10 @@ const messages = defineMessages({
   sortUpdated: 'Last Updated',
   sortDisplayName: 'Display Name',
   sortRequests: 'Request Count',
+  next: 'Next',
+  previous: 'Previous',
+  showingResults:
+    'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
 });
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
@@ -72,11 +78,18 @@ type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
+  const settings = useSettings();
   const { addToast } = useToasts();
+  const [pageIndex, setPageIndex] = useState(0);
   const [currentSort, setCurrentSort] = useState<Sort>('created');
-  const { data, error, revalidate } = useSWR<User[]>(
-    `/api/v1/user?sort=${currentSort}`
+  const pageSize = settings.currentSettings.pageSize;
+
+  const { data, error, revalidate } = useSWR<UserResultsResponse>(
+    `/api/v1/user?take=${pageSize}&skip=${
+      pageIndex * pageSize
+    }&sort=${currentSort}`
   );
+
   const [isDeleting, setDeleting] = useState(false);
   const [isImporting, setImporting] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
@@ -99,7 +112,7 @@ const UserList: React.FC = () => {
   const isAllUsersSelected = () => {
     return (
       selectedUsers.length ===
-      data?.filter((user) => user.id !== currentUser?.id).length
+      data?.results.filter((user) => user.id !== currentUser?.id).length
     );
   };
   const isUserSelected = (userId: number) => selectedUsers.includes(userId);
@@ -107,10 +120,12 @@ const UserList: React.FC = () => {
     if (
       data &&
       selectedUsers.length >= 0 &&
-      selectedUsers.length < data?.length - 1
+      selectedUsers.length < data?.results.length - 1
     ) {
       setSelectedUsers(
-        data.filter((user) => isUserPermsEditable(user.id)).map((u) => u.id)
+        data.results
+          .filter((user) => isUserPermsEditable(user.id))
+          .map((u) => u.id)
       );
     } else {
       setSelectedUsers([]);
@@ -190,6 +205,13 @@ const UserList: React.FC = () => {
           )
     ),
   });
+
+  if (!data) {
+    return <LoadingSpinner />;
+  }
+
+  const hasNextPage = data.pageInfo.pages > pageIndex + 1;
+  const hasPrevPage = pageIndex > 0;
 
   return (
     <>
@@ -372,7 +394,7 @@ const UserList: React.FC = () => {
             revalidate();
           }}
           selectedUserIds={selectedUsers}
-          users={data}
+          users={data.results}
         />
       </Transition>
 
@@ -411,6 +433,7 @@ const UserList: React.FC = () => {
               id="sort"
               name="sort"
               onChange={(e) => {
+                setPageIndex(0);
                 setCurrentSort(e.target.value as Sort);
               }}
               value={currentSort}
@@ -436,7 +459,7 @@ const UserList: React.FC = () => {
         <thead>
           <tr>
             <Table.TH>
-              {(data ?? []).length > 1 && (
+              {(data.results ?? []).length > 1 && (
                 <input
                   type="checkbox"
                   id="selectAll"
@@ -455,7 +478,7 @@ const UserList: React.FC = () => {
             <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.lastupdated)}</Table.TH>
             <Table.TH className="text-right">
-              {(data ?? []).length > 1 && (
+              {(data.results ?? []).length > 1 && (
                 <Button
                   buttonType="warning"
                   onClick={() => setShowBulkEditModal(true)}
@@ -468,7 +491,7 @@ const UserList: React.FC = () => {
           </tr>
         </thead>
         <Table.TBody>
-          {data?.map((user) => (
+          {data?.results.map((user) => (
             <tr key={`user-list-${user.id}`}>
               <Table.TD>
                 {isUserPermsEditable(user.id) && (
@@ -554,6 +577,46 @@ const UserList: React.FC = () => {
               </Table.TD>
             </tr>
           ))}
+          <tr className="bg-gray-700">
+            <Table.TD colSpan={8} noPadding>
+              <nav
+                className="flex items-center justify-between px-6 py-3"
+                aria-label="Pagination"
+              >
+                <div className="hidden sm:block">
+                  <p className="text-sm">
+                    {intl.formatMessage(messages.showingResults, {
+                      from: pageIndex * pageSize,
+                      to:
+                        data.results.length < pageSize
+                          ? pageIndex * pageSize + data.results.length
+                          : (pageIndex + 1) * pageSize,
+                      total: data.pageInfo.results,
+                      strong: function strong(msg) {
+                        return <span className="font-medium">{msg}</span>;
+                      },
+                    })}
+                  </p>
+                </div>
+                <div className="flex justify-start flex-1 sm:justify-end">
+                  <span className="mr-2">
+                    <Button
+                      disabled={!hasPrevPage}
+                      onClick={() => setPageIndex((current) => current - 1)}
+                    >
+                      {intl.formatMessage(messages.previous)}
+                    </Button>
+                  </span>
+                  <Button
+                    disabled={!hasNextPage}
+                    onClick={() => setPageIndex((current) => current + 1)}
+                  >
+                    {intl.formatMessage(messages.next)}
+                  </Button>
+                </div>
+              </nav>
+            </Table.TD>
+          </tr>
         </Table.TBody>
       </Table>
     </>

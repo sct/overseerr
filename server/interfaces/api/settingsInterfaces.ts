@@ -10,6 +10,7 @@ export interface PublicSettingsResponse {
   applicationTitle: string;
   hideAvailable: boolean;
   localLogin: boolean;
+  pageSize: number;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
 }
