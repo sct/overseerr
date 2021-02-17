@@ -212,7 +212,7 @@ class PlexTvAPI {
     return parsedXml;
   }
 
-  public async checkUserAccess(authUser: PlexUser): Promise<boolean> {
+  public async checkUserAccess(userId: number): Promise<boolean> {
     const settings = getSettings();
 
     try {
@@ -224,11 +224,11 @@ class PlexTvAPI {
 
       const users = friends.MediaContainer.User;
 
-      const user = users.find((u) => Number(u.$.id) === authUser.id);
+      const user = users.find((u) => Number(u.$.id) === userId);
 
       if (!user) {
         throw new Error(
-          'This user does not exist on the main plex accounts shared list'
+          "This user does not exist on the main Plex account's shared list"
         );
       }
 
