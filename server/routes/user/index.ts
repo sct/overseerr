@@ -333,7 +333,11 @@ router.post(
           await userRepository.save(user);
         } else {
           // Check to make sure it's a real account
-          if (account.email && account.username) {
+          if (
+            account.email &&
+            account.username &&
+            (await mainPlexTv.checkUserAccess(Number(account.id)))
+          ) {
             const newUser = new User({
               plexUsername: account.username,
               email: account.email,

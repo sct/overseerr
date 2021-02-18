@@ -87,7 +87,7 @@ authRoutes.post('/login', async (req, res, next) => {
         });
         const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
-        if (await mainPlexTv.checkUserAccess(account)) {
+        if (await mainPlexTv.checkUserAccess(account.id)) {
           user = new User({
             email: account.email,
             plexUsername: account.username,
