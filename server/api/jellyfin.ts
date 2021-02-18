@@ -76,7 +76,6 @@ class JellyfinAPI {
   private axios: AxiosInstance;
 
   constructor(jellyfinHost: string, authToken?: string, deviceId?: string) {
-    console.log(jellyfinHost, deviceId, authToken);
     this.jellyfinHost = jellyfinHost;
     this.authToken = authToken;
 

@@ -716,6 +716,7 @@
   "components.UserProfile.UserSettings.UserGeneralSettings.plexuser": "Plex User",
   "components.UserProfile.UserSettings.UserGeneralSettings.region": "Discover Region",
   "components.UserProfile.UserSettings.UserGeneralSettings.regionTip": "Filter content by region (only applies to the \"Popular\" and \"Upcoming\" categories)",
+  "components.UserProfile.UserSettings.UserGeneralSettings.mediaServerUser": "{mediaServerName} User",
   "components.UserProfile.UserSettings.UserGeneralSettings.save": "Save Changes",
   "components.UserProfile.UserSettings.UserGeneralSettings.saving": "Saving…",
   "components.UserProfile.UserSettings.UserGeneralSettings.toastSettingsFailure": "Something went wrong while saving settings.",
