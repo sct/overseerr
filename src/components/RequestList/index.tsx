@@ -186,7 +186,7 @@ const RequestList: React.FC = () => {
           <tr className="bg-gray-700">
             <Table.TD colSpan={6} noPadding>
               <nav
-                className="flex items-center px-6 py-3"
+                className="flex items-center w-full px-6 py-3"
                 aria-label="Pagination"
               >
                 <div className="hidden lg:flex lg:flex-1">
@@ -204,7 +204,7 @@ const RequestList: React.FC = () => {
                     })}
                   </p>
                 </div>
-                <div className="hidden lg:justify-center lg:flex lg:flex-1">
+                <div className="flex justify-start flex-1 lg:justify-center">
                   <span className="items-center text-sm">
                     {intl.formatMessage(messages.resultsperpage, {
                       pageSize: (
@@ -228,7 +228,7 @@ const RequestList: React.FC = () => {
                     })}
                   </span>
                 </div>
-                <div className="justify-start lg:flex lg:flex-1 lg:justify-end">
+                <div className="flex justify-end flex-1">
                   <Button
                     className="mr-2"
                     disabled={!hasPrevPage}

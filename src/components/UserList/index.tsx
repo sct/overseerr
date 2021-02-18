@@ -68,7 +68,7 @@ const messages = defineMessages({
   sortRequests: 'Request Count',
   next: 'Next',
   previous: 'Previous',
-  showingResults:
+  showingresults:
     'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
   resultsperpage: 'Display {pageSize} results per page',
 });
@@ -579,12 +579,12 @@ const UserList: React.FC = () => {
           <tr className="bg-gray-700">
             <Table.TD colSpan={8} noPadding>
               <nav
-                className="flex items-center px-6 py-3"
+                className="flex items-center w-full px-6 py-3"
                 aria-label="Pagination"
               >
                 <div className="hidden lg:flex lg:flex-1">
                   <p className="text-sm">
-                    {intl.formatMessage(messages.showingResults, {
+                    {intl.formatMessage(messages.showingresults, {
                       from: pageIndex * currentPageSize,
                       to:
                         data.results.length < currentPageSize
@@ -597,7 +597,7 @@ const UserList: React.FC = () => {
                     })}
                   </p>
                 </div>
-                <div className="hidden lg:justify-center lg:flex lg:flex-1">
+                <div className="flex justify-start flex-1 lg:justify-center">
                   <span className="items-center text-sm">
                     {intl.formatMessage(messages.resultsperpage, {
                       pageSize: (
@@ -621,7 +621,7 @@ const UserList: React.FC = () => {
                     })}
                   </span>
                 </div>
-                <div className="justify-start lg:flex lg:flex-1 lg:justify-end">
+                <div className="flex justify-end flex-1">
                   <Button
                     className="mr-2"
                     disabled={!hasPrevPage}
