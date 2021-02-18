@@ -4,7 +4,10 @@ import TvdbLogo from '../../assets/services/tvdb.svg';
 import ImdbLogo from '../../assets/services/imdb.svg';
 import RTLogo from '../../assets/services/rt.svg';
 import PlexLogo from '../../assets/services/plex.svg';
+import JellyfinLogo from '../../assets/services/jellyfin.svg';
 import { MediaType } from '../../../server/constants/media';
+import useSettings from '../../hooks/useSettings';
+import { MediaServerType } from '../../../server/constants/server';
 
 interface ExternalLinkBlockProps {
   mediaType: 'movie' | 'tv';
@@ -12,7 +15,7 @@ interface ExternalLinkBlockProps {
   tvdbId?: number;
   imdbId?: string;
   rtUrl?: string;
-  plexUrl?: string;
+  mediaUrl?: string;
 }
 
 const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
@@ -21,18 +24,27 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
   tvdbId,
   imdbId,
   rtUrl,
-  plexUrl,
+  mediaUrl,
 }) => {
+  const settings = useSettings();
   return (
     <div className="flex items-center justify-end">
-      {plexUrl && (
+      {mediaUrl && (
         <a
-          href={plexUrl}
-          className="w-8 mx-2 transition duration-300 opacity-50 hover:opacity-100"
+          href={mediaUrl}
+          className={`${
+            settings.currentSettings.mediaServerType === MediaServerType.PLEX
+              ? 'w-8'
+              : 'w-14'
+          } mx-2 transition duration-300 opacity-50 hover:opacity-100`}
           target="_blank"
           rel="noreferrer"
         >
-          <PlexLogo />
+          {settings.currentSettings.mediaServerType === MediaServerType.PLEX ? (
+            <PlexLogo />
+          ) : (
+            <JellyfinLogo />
+          )}
         </a>
       )}
       {tmdbId && (

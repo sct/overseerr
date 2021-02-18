@@ -34,6 +34,7 @@ import DownloadBlock from '../DownloadBlock';
 import PageTitle from '../Common/PageTitle';
 import useSettings from '../../hooks/useSettings';
 import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+import { MediaServerType } from '../../../server/constants/server';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -112,22 +113,28 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   const mediaLinks: PlayButtonLink[] = [];
 
-  if (data.mediaInfo?.plexUrl) {
+  if (data.mediaInfo?.mediaUrl) {
     mediaLinks.push({
-      text: intl.formatMessage(messages.playonplex),
-      url: data.mediaInfo?.plexUrl,
+      text:
+        settings.currentSettings.mediaServerType === MediaServerType.JELLYFIN
+          ? intl.formatMessage(messages.play, { mediaServerName: 'Jellyfin' })
+          : intl.formatMessage(messages.play, { mediaServerName: 'Plex' }),
+      url: data.mediaInfo?.mediaUrl,
     });
   }
 
   if (
-    data.mediaInfo?.plexUrl4k &&
+    data.mediaInfo?.mediaUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
       type: 'or',
     })
   ) {
     mediaLinks.push({
-      text: intl.formatMessage(messages.play4konplex),
-      url: data.mediaInfo?.plexUrl4k,
+      text:
+        settings.currentSettings.mediaServerType === MediaServerType.JELLYFIN
+          ? intl.formatMessage(messages.play4k, { mediaServerName: 'Jellyfin' })
+          : intl.formatMessage(messages.play4k, { mediaServerName: 'Plex' }),
+      url: data.mediaInfo?.mediaUrl4k,
     });
   }
 
@@ -703,7 +710,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               tvdbId={data.externalIds.tvdbId}
               imdbId={data.externalIds.imdbId}
               rtUrl={ratingData?.url}
-              plexUrl={data.mediaInfo?.mediaUrl ?? data.mediaInfo?.mediaUrl4k}
+              mediaUrl={data.mediaInfo?.mediaUrl ?? data.mediaInfo?.mediaUrl4k}
             />
           </div>
         </div>

@@ -209,7 +209,7 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
       }
 
       // Update the users avatar with their jellyfin profile pic (incase it changed)
-      if (typeof account.User.PrimaryImageTag !== undefined) {
+      if (account.User.PrimaryImageTag) {
         user.avatar = `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`;
       } else {
         user.avatar = '/os_logo_square.png';
@@ -233,10 +233,9 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
           jellyfinDeviceId: deviceId,
           jellyfinAuthToken: account.AccessToken,
           permissions: Permission.ADMIN,
-          avatar:
-            typeof account.User.PrimaryImageTag !== undefined
-              ? `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`
-              : '/os_logo_square.png',
+          avatar: account.User.PrimaryImageTag
+            ? `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`
+            : '/os_logo_square.png',
           userType: UserType.JELLYFIN,
         });
         await userRepository.save(user);
@@ -263,10 +262,9 @@ authRoutes.post('/jellyfin', async (req, res, next) => {
           jellyfinDeviceId: deviceId,
           jellyfinAuthToken: account.AccessToken,
           permissions: settings.main.defaultPermissions,
-          avatar:
-            typeof account.User.PrimaryImageTag !== undefined
-              ? `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`
-              : '/os_logo_square.png',
+          avatar: account.User.PrimaryImageTag
+            ? `${hostname}/Users/${account.User.Id}/Images/Primary/?tag=${account.User.PrimaryImageTag}&quality=90`
+            : '/os_logo_square.png',
           userType: UserType.JELLYFIN,
         });
         await userRepository.save(user);

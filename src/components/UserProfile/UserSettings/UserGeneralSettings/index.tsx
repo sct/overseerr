@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { Language } from '../../../../../server/lib/settings';
+import { MediaServerType } from '../../../../../server/constants/server';
 import useSettings from '../../../../hooks/useSettings';
 import { UserType, useUser } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
@@ -19,7 +20,7 @@ const messages = defineMessages({
   displayName: 'Display Name',
   save: 'Save Changes',
   saving: 'Saving…',
-  plexuser: 'Plex User',
+  mediaServerUser: '{mediaServerName} User',
   localuser: 'Local User',
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
@@ -35,6 +36,7 @@ const messages = defineMessages({
 
 const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const router = useRouter();
   const { user, mutate } = useUser({ id: Number(router.query.userId) });
@@ -105,13 +107,19 @@ const UserGeneralSettings: React.FC = () => {
                 <div className="text-label">Account Type</div>
                 <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex items-center max-w-lg">
-                    {user?.userType === UserType.PLEX ? (
+                    {user?.userType === UserType.LOCAL ? (
                       <Badge badgeType="warning">
-                        {intl.formatMessage(messages.plexuser)}
+                        {intl.formatMessage(messages.localuser)}
                       </Badge>
                     ) : (
                       <Badge badgeType="default">
-                        {intl.formatMessage(messages.localuser)}
+                        {intl.formatMessage(messages.mediaServerUser, {
+                          mediaServerName:
+                            settings.currentSettings.mediaServerType ===
+                            MediaServerType.PLEX
+                              ? 'Plex'
+                              : 'Jellyfin',
+                        })}
                       </Badge>
                     )}
                   </div>
