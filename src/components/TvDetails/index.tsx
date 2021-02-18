@@ -178,7 +178,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     )
   ) {
     seriesAttributes.push(
-      <span className="p-0.5 py-0 border rounded-md">
+      <span className="p-0.5 py-0 border rounded-md "
         {data.contentRatings.results.find((r) => r.iso_3166_1 === region)
           ?.rating || data.contentRatings.results[0].rating}
       </span>
