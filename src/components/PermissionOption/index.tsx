@@ -18,17 +18,19 @@ interface PermissionRequirement {
 
 interface PermissionOptionProps {
   option: PermissionItem;
+  actingUser?: User;
+  currentUser?: User;
   currentPermission: number;
-  user?: User;
   parent?: PermissionItem;
   onUpdate: (newPermissions: number) => void;
 }
 
 const PermissionOption: React.FC<PermissionOptionProps> = ({
   option,
+  actingUser,
+  currentUser,
   currentPermission,
   onUpdate,
-  user,
   parent,
 }) => {
   const autoApprovePermissions = [
@@ -44,15 +46,21 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
     <>
       <div
         className={`relative flex items-start first:mt-0 mt-4 ${
+          (currentUser && currentUser.id === 1) ||
           (option.permission !== Permission.ADMIN &&
             hasPermission(Permission.ADMIN, currentPermission)) ||
           (autoApprovePermissions.includes(option.permission) &&
             hasPermission(Permission.MANAGE_REQUESTS, currentPermission)) ||
           (!!parent?.permission &&
             hasPermission(parent.permission, currentPermission)) ||
-          (user && user.id !== 1 && option.permission === Permission.ADMIN) ||
-          (user &&
-            !hasPermission(Permission.MANAGE_SETTINGS, user.permissions) &&
+          (actingUser &&
+            !hasPermission(Permission.ADMIN, actingUser.permissions) &&
+            option.permission === Permission.ADMIN) ||
+          (actingUser &&
+            !hasPermission(
+              Permission.MANAGE_SETTINGS,
+              actingUser.permissions
+            ) &&
             option.permission === Permission.MANAGE_SETTINGS) ||
           (option.requires &&
             !option.requires.every((requirement) =>
@@ -70,17 +78,21 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
             name="permissions"
             type="checkbox"
             disabled={
+              (currentUser && currentUser.id === 1) ||
               (option.permission !== Permission.ADMIN &&
                 hasPermission(Permission.ADMIN, currentPermission)) ||
               (autoApprovePermissions.includes(option.permission) &&
                 hasPermission(Permission.MANAGE_REQUESTS, currentPermission)) ||
               (!!parent?.permission &&
                 hasPermission(parent.permission, currentPermission)) ||
-              (user &&
-                user.id !== 1 &&
+              (actingUser &&
+                !hasPermission(Permission.ADMIN, actingUser.permissions) &&
                 option.permission === Permission.ADMIN) ||
-              (user &&
-                !hasPermission(Permission.MANAGE_SETTINGS, user.permissions) &&
+              (actingUser &&
+                !hasPermission(
+                  Permission.MANAGE_SETTINGS,
+                  actingUser.permissions
+                ) &&
                 option.permission === Permission.MANAGE_SETTINGS) ||
               (option.requires &&
                 !option.requires.every((requirement) =>

@@ -86,7 +86,8 @@ const UserPermissions: React.FC = () => {
                   <div className="form-input">
                     <div className="max-w-lg">
                       <PermissionEdit
-                        user={currentUser}
+                        actingUser={currentUser}
+                        currentUser={user}
                         currentPermission={values.currentPermissions ?? 0}
                         onUpdate={(newPermission) =>
                           setFieldValue('currentPermissions', newPermission)
