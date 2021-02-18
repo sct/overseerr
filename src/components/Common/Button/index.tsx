@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ForwardedRef } from 'react';
 
 export type ButtonType =
   | 'default'
@@ -16,6 +16,10 @@ type MergeElementProps<
 
 type ElementTypes = 'button' | 'a';
 
+type Element<P extends ElementTypes = 'button'> = P extends 'a'
+  ? HTMLAnchorElement
+  : HTMLButtonElement;
+
 type BaseProps<P> = {
   buttonType?: ButtonType;
   buttonSize?: 'default' | 'lg' | 'md' | 'sm';
@@ -29,16 +33,19 @@ type ButtonProps<P extends React.ElementType> = {
   as?: P;
 } & MergeElementProps<P, BaseProps<P>>;
 
-function Button<P extends ElementTypes = 'button'>({
-  buttonType = 'default',
-  buttonSize = 'default',
-  as,
-  children,
-  className,
-  ...props
-}: ButtonProps<P>): JSX.Element {
+function Button<P extends ElementTypes = 'button'>(
+  {
+    buttonType = 'default',
+    buttonSize = 'default',
+    as,
+    children,
+    className,
+    ...props
+  }: ButtonProps<P>,
+  ref?: React.Ref<Element<P>>
+): JSX.Element {
   const buttonStyle = [
-    'inline-flex items-center justify-center border border-transparent leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150',
+    'inline-flex items-center justify-center border border-transparent leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer',
   ];
   switch (buttonType) {
     case 'primary':
@@ -93,6 +100,7 @@ function Button<P extends ElementTypes = 'button'>({
       <a
         className={buttonStyle.join(' ')}
         {...(props as React.ComponentProps<'a'>)}
+        ref={ref as ForwardedRef<HTMLAnchorElement>}
       >
         <span className="flex items-center">{children}</span>
       </a>
@@ -102,6 +110,7 @@ function Button<P extends ElementTypes = 'button'>({
       <button
         className={buttonStyle.join(' ')}
         {...(props as React.ComponentProps<'button'>)}
+        ref={ref as ForwardedRef<HTMLButtonElement>}
       >
         <span className="flex items-center">{children}</span>
       </button>
@@ -109,4 +118,4 @@ function Button<P extends ElementTypes = 'button'>({
   }
 }
 
-export default Button;
+export default React.forwardRef(Button) as typeof Button;

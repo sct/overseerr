@@ -3,13 +3,17 @@ import Transition from '../../Transition';
 import { useUser } from '../../../hooks/useUser';
 import axios from 'axios';
 import useClickOutside from '../../../hooks/useClickOutside';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
+import Link from 'next/link';
 
 const messages = defineMessages({
+  myprofile: 'Profile',
+  settings: 'Settings',
   signout: 'Sign Out',
 });
 
 const UserDropdown: React.FC = () => {
+  const intl = useIntl();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, revalidate } = useUser();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -55,13 +59,43 @@ const UserDropdown: React.FC = () => {
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
+            <Link href={`/profile`}>
+              <a
+                className="block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+                role="menuitem"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setDropdownOpen(false);
+                  }
+                }}
+                onClick={() => setDropdownOpen(false)}
+              >
+                {intl.formatMessage(messages.myprofile)}
+              </a>
+            </Link>
+            <Link href={`/profile/settings`}>
+              <a
+                className="block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+                role="menuitem"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setDropdownOpen(false);
+                  }
+                }}
+                onClick={() => setDropdownOpen(false)}
+              >
+                {intl.formatMessage(messages.settings)}
+              </a>
+            </Link>
             <a
               href="#"
               className="block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
               role="menuitem"
               onClick={() => logout()}
             >
-              <FormattedMessage {...messages.signout} />
+              {intl.formatMessage(messages.signout)}
             </a>
           </div>
         </div>

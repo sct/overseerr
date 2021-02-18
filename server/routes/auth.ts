@@ -23,7 +23,7 @@ authRoutes.get('/me', isAuthenticated(), async (req, res) => {
     where: { id: req.user.id },
   });
 
-  return res.status(200).json(user.filter());
+  return res.status(200).json(user);
 });
 
 authRoutes.post('/login', async (req, res, next) => {

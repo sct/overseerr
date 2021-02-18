@@ -5,7 +5,6 @@ import { User, useUser } from '../../hooks/useUser';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
-import { messages as userEditMessages } from '../UserEdit';
 
 interface BulkEditProps {
   selectedUserIds: number[];
@@ -17,6 +16,11 @@ interface BulkEditProps {
 
 const messages = defineMessages({
   userssaved: 'Users saved',
+  save: 'Save Changes',
+  saving: 'Saving…',
+  userfail: 'Something went wrong while saving the user.',
+  permissions: 'Permissions',
+  edituser: 'Edit User',
 });
 
 const BulkEditModal: React.FC<BulkEditProps> = ({
@@ -53,7 +57,7 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
         autoDismiss: true,
       });
     } catch (e) {
-      addToast(intl.formatMessage(userEditMessages.userfail), {
+      addToast(intl.formatMessage(messages.userfail), {
         appearance: 'error',
         autoDismiss: true,
       });
@@ -81,12 +85,12 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
 
   return (
     <Modal
-      title={intl.formatMessage(userEditMessages.edituser)}
+      title={intl.formatMessage(messages.edituser)}
       onOk={() => {
         updateUsers();
       }}
       okDisabled={isSaving}
-      okText={intl.formatMessage(userEditMessages.save)}
+      okText={intl.formatMessage(messages.save)}
       onCancel={onCancel}
     >
       <div className="mt-6 mb-6">
@@ -94,7 +98,7 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
           <div className="form-row">
             <div>
               <div id="group-label" className="group-label">
-                <FormattedMessage {...userEditMessages.permissions} />
+                <FormattedMessage {...messages.permissions} />
               </div>
             </div>
             <div className="form-input">

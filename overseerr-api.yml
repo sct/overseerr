@@ -82,11 +82,23 @@ components:
           readOnly: true
           items:
             $ref: '#/components/schemas/MediaRequest'
+        settings:
+          $ref: '#/components/schemas/UserSettings'
       required:
         - id
         - email
         - createdAt
         - updatedAt
+    UserSettings:
+      type: object
+      properties:
+        enableNotifications:
+          type: boolean
+          default: true
+        discordId:
+          type: string
+      required:
+        - enableNotifications
     MainSettings:
       type: object
       properties:
@@ -1514,6 +1526,17 @@ components:
               searchForMissingEpisodes:
                 type: boolean
                 nullable: true
+    UserSettingsNotifications:
+      type: object
+      properties:
+        enableNotifications:
+          type: boolean
+          default: true
+        discordId:
+          type: string
+          nullable: true
+      required:
+        - enableNotifications
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -2876,6 +2899,250 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+  /user/{userId}/requests:
+    get:
+      summary: Get user by ID
+      description: |
+        Retrieves a user's requests in a JSON object.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 20
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+      responses:
+        '200':
+          description: User's requests returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaRequest'
+  /user/{userId}/settings/main:
+    get:
+      summary: Get general settings for a user
+      description: Returns general settings for a specific user. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User general settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: 'Mr User'
+    post:
+      summary: Update general settings for a user
+      description: Updates and returns general settings for a specific user. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Updated user general settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: 'Mr User'
+  /user/{userId}/settings/password:
+    get:
+      summary: Get password page informatiom
+      description: Returns important data for the password page to function correctly. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User password page information returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hasPassword:
+                    type: boolean
+                    example: true
+    post:
+      summary: Update password for a user
+      description: Updates a user's password. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  nullable: true
+                newPassword:
+                  type: string
+              required:
+                - newPassword
+      responses:
+        '204':
+          description: User password updated
+  /user/{userId}/settings/notifications:
+    get:
+      summary: Get notification settings for a user
+      description: Returns notification settings for a specific user. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User notification settings returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsNotifications'
+    post:
+      summary: Update notification settings for a user
+      description: Updates and returns notification settings for a specific user. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSettingsNotifications'
+      responses:
+        '200':
+          description: Updated user notification settings returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsNotifications'
+  /user/{userId}/settings/permissions:
+    get:
+      summary: Get permission settings for a user
+      description: Returns permission settings for a specific user. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User permission settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  permissions:
+                    type: number
+                    example: 2
+    post:
+      summary: Update permission settings for a user
+      description: Updates and returns permission settings for a specific user. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                permissions:
+                  type: number
+              required:
+                - permissions
+      responses:
+        '200':
+          description: Updated user general settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  permissions:
+                    type: number
+                    example: 2
   /search:
     get:
       summary: Search for movies, TV shows, or people

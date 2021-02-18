@@ -162,16 +162,18 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 {isMovie(title) ? title.title : title.name}
               </a>
             </Link>
-            <div className="flex items-center">
-              <img
-                src={requestData.requestedBy.avatar}
-                alt=""
-                className="w-5 mr-2 rounded-full"
-              />
-              <span className="text-sm">
-                {requestData.requestedBy.displayName}
-              </span>
-            </div>
+            <Link href={`/users/${requestData.requestedBy.id}`}>
+              <a className="flex items-center mt-1">
+                <img
+                  src={requestData.requestedBy.avatar}
+                  alt=""
+                  className="w-5 mr-2 rounded-full"
+                />
+                <span className="text-sm hover:underline">
+                  {requestData.requestedBy.displayName}
+                </span>
+              </a>
+            </Link>
             {requestData.seasons.length > 0 && (
               <div className="items-center hidden mt-2 text-sm sm:flex">
                 <span className="mr-2">

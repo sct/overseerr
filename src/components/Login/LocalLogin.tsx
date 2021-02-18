@@ -4,6 +4,7 @@ import Button from '../Common/Button';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import Link from 'next/link';
 
 const messages = defineMessages({
   email: 'Email Address',
@@ -99,9 +100,11 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
               <div className="pt-5 mt-8 border-t border-gray-700">
                 <div className="flex justify-between">
                   <span className="inline-flex rounded-md shadow-sm">
-                    <Button as="a" buttonType="ghost" href="/resetpassword">
-                      {intl.formatMessage(messages.forgotpassword)}
-                    </Button>
+                    <Link href="/resetpassword" passHref>
+                      <Button as="a" buttonType="ghost">
+                        {intl.formatMessage(messages.forgotpassword)}
+                      </Button>
+                    </Link>
                   </span>
                   <span className="inline-flex rounded-md shadow-sm">
                     <Button

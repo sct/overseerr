@@ -74,6 +74,12 @@ interface DiscordWebhookPayload {
   username: string;
   avatar_url?: string;
   tts: boolean;
+  content?: string;
+  allowed_mentions?: {
+    parse?: ('users' | 'roles' | 'everyone')[];
+    roles?: string[];
+    users?: string[];
+  };
 }
 
 class DiscordAgent
@@ -204,9 +210,24 @@ class DiscordAgent
         return false;
       }
 
+      const mentionedUsers: string[] = [];
+      let content = undefined;
+
+      if (
+        payload.notifyUser.settings?.enableNotifications &&
+        payload.notifyUser.settings?.discordId
+      ) {
+        mentionedUsers.push(payload.notifyUser.settings.discordId);
+        content = `<@${payload.notifyUser.settings.discordId}>`;
+      }
+
       await axios.post(webhookUrl, {
         username: settings.main.applicationTitle,
         embeds: [this.buildEmbed(type, payload)],
+        content,
+        allowed_mentions: {
+          users: mentionedUsers,
+        },
       } as DiscordWebhookPayload);
 
       return true;
@@ -214,6 +235,7 @@ class DiscordAgent
       logger.error('Error sending Discord notification', {
         label: 'Notifications',
         message: e.message,
+        response: e.response.data,
       });
       return false;
     }

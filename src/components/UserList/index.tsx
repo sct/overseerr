@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
-import type { User } from '../../../server/entity/User';
 import Badge from '../Common/Badge';
 import { FormattedDate, defineMessages, useIntl } from 'react-intl';
 import Button from '../Common/Button';
 import { hasPermission } from '../../../server/lib/permissions';
-import { Permission, UserType, useUser } from '../../hooks/useUser';
+import { Permission, User, UserType, useUser } from '../../hooks/useUser';
 import { useRouter } from 'next/router';
 import Header from '../Common/Header';
 import Table from '../Common/Table';
@@ -21,6 +20,7 @@ import AddUserIcon from '../../assets/useradd.svg';
 import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
 import PageTitle from '../Common/PageTitle';
+import Link from 'next/link';
 
 const messages = defineMessages({
   users: 'Users',
@@ -485,17 +485,21 @@ const UserList: React.FC = () => {
               </Table.TD>
               <Table.TD>
                 <div className="flex items-center">
-                  <div className="flex-shrink-0 w-10 h-10">
-                    <img
-                      className="w-10 h-10 rounded-full"
-                      src={user.avatar}
-                      alt=""
-                    />
-                  </div>
+                  <Link href={`/users/${user.id}`}>
+                    <a className="flex-shrink-0 w-10 h-10">
+                      <img
+                        className="w-10 h-10 rounded-full"
+                        src={user.avatar}
+                        alt=""
+                      />
+                    </a>
+                  </Link>
                   <div className="ml-4">
-                    <div className="text-sm font-medium leading-5">
-                      {user.displayName}
-                    </div>
+                    <Link href={`/users/${user.id}`}>
+                      <a className="text-sm font-medium leading-5">
+                        {user.displayName}
+                      </a>
+                    </Link>
                     <div className="text-sm leading-5 text-gray-300">
                       {user.email}
                     </div>
@@ -533,8 +537,8 @@ const UserList: React.FC = () => {
                   className="mr-2"
                   onClick={() =>
                     router.push(
-                      '/users/[userId]/edit',
-                      `/users/${user.id}/edit`
+                      '/users/[userId]/settings',
+                      `/users/${user.id}/settings`
                     )
                   }
                 >

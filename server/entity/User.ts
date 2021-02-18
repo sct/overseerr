@@ -7,6 +7,7 @@ import {
   OneToMany,
   RelationCount,
   AfterLoad,
+  OneToOne,
 } from 'typeorm';
 import {
   Permission,
@@ -22,18 +23,18 @@ import { getSettings } from '../lib/settings';
 import { default as generatePassword } from 'secure-random-password';
 import { UserType } from '../constants/user';
 import { v4 as uuid } from 'uuid';
+import { UserSettings } from './UserSettings';
 
 @Entity()
 export class User {
-  public static filterMany(users: User[]): Partial<User>[] {
-    return users.map((u) => u.filter());
+  public static filterMany(
+    users: User[],
+    showFiltered?: boolean
+  ): Partial<User>[] {
+    return users.map((u) => u.filter(showFiltered));
   }
 
-  static readonly filteredFields: string[] = [
-    'plexToken',
-    'password',
-    'resetPasswordGuid',
-  ];
+  static readonly filteredFields: string[] = ['email'];
 
   public displayName: string;
 
@@ -79,6 +80,13 @@ export class User {
   @OneToMany(() => MediaRequest, (request) => request.requestedBy)
   public requests: MediaRequest[];
 
+  @OneToOne(() => UserSettings, (settings) => settings.user, {
+    cascade: true,
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  public settings?: UserSettings;
+
   @CreateDateColumn()
   public createdAt: Date;
 
@@ -89,11 +97,11 @@ export class User {
     Object.assign(this, init);
   }
 
-  public filter(): Partial<User> {
+  public filter(showFiltered?: boolean): Partial<User> {
     const filtered: Partial<User> = Object.assign(
       {},
       ...(Object.keys(this) as (keyof User)[])
-        .filter((k) => !User.filteredFields.includes(k))
+        .filter((k) => showFiltered || !User.filteredFields.includes(k))
         .map((k) => ({ [k]: this[k] }))
     );
 
