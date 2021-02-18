@@ -89,7 +89,7 @@ jobs:
           path: ${{ steps.build.outputs.snap }}
 
       - name: Review Snap Package
-        uses: diddlesnaps/snapcraft-review-tools-action@v1
+        uses: diddlesnaps/snapcraft-review-tools-action@v1.2.0
         with:
           snap: ${{ steps.build.outputs.snap }}
 
