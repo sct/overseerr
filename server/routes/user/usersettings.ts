@@ -37,7 +37,7 @@ userSettingsRoutes.get<{ id: string }, { username?: string }>(
       });
 
       if (!user) {
-        return next({ status: 404, message: 'User not found' });
+        return next({ status: 404, message: 'User not found.' });
       }
 
       return res.status(200).json({ username: user.username });
@@ -60,7 +60,7 @@ userSettingsRoutes.post<
     });
 
     if (!user) {
-      return next({ status: 404, message: 'User not found' });
+      return next({ status: 404, message: 'User not found.' });
     }
 
     user.username = req.body.username;
@@ -86,7 +86,7 @@ userSettingsRoutes.get<{ id: string }, { hasPassword: boolean }>(
       });
 
       if (!user) {
-        return next({ status: 404, message: 'User not found' });
+        return next({ status: 404, message: 'User not found.' });
       }
 
       return res.status(200).json({ hasPassword: !!user.password });
@@ -114,7 +114,7 @@ userSettingsRoutes.post<
     });
 
     if (!user || !userWithPassword) {
-      return next({ status: 404, message: 'User not found' });
+      return next({ status: 404, message: 'User not found.' });
     }
 
     if (req.body.newPassword.length < 8) {
@@ -174,7 +174,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
       });
 
       if (!user) {
-        return next({ status: 404, message: 'User not found' });
+        return next({ status: 404, message: 'User not found.' });
       }
 
       return res.status(200).json({
@@ -200,7 +200,7 @@ userSettingsRoutes.post<
     });
 
     if (!user) {
-      return next({ status: 404, message: 'User not found' });
+      return next({ status: 404, message: 'User not found.' });
     }
 
     if (!user.settings) {
@@ -237,7 +237,7 @@ userSettingsRoutes.get<{ id: string }, { permissions?: number }>(
       });
 
       if (!user) {
-        return next({ status: 404, message: 'User not found' });
+        return next({ status: 404, message: 'User not found.' });
       }
 
       return res.status(200).json({ permissions: user.permissions });
@@ -263,7 +263,7 @@ userSettingsRoutes.post<
       });
 
       if (!user) {
-        return next({ status: 404, message: 'User not found' });
+        return next({ status: 404, message: 'User not found.' });
       }
 
       user.permissions = req.body.permissions;

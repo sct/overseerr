@@ -104,7 +104,7 @@ router.get<{ id: string }>('/:id', async (req, res, next) => {
       .status(200)
       .json(user.filter(req.user?.hasPermission(Permission.MANAGE_USERS)));
   } catch (e) {
-    next({ status: 404, message: 'User not found' });
+    next({ status: 404, message: 'User not found.' });
   }
 });
 
@@ -125,7 +125,7 @@ router.get<{ id: string }, UserRequestsResponse>(
       });
 
       if (!user) {
-        return next({ status: 404, message: 'User not found' });
+        return next({ status: 404, message: 'User not found.' });
       }
 
       const [requests, requestCount] = await requestRepository.findAndCount({
@@ -229,7 +229,7 @@ router.put<{ id: string }>(
 
       return res.status(200).json(user.filter());
     } catch (e) {
-      next({ status: 404, message: 'User not found' });
+      next({ status: 404, message: 'User not found.' });
     }
   }
 );
@@ -247,7 +247,7 @@ router.delete<{ id: string }>(
       });
 
       if (!user) {
-        return next({ status: 404, message: 'User not found' });
+        return next({ status: 404, message: 'User not found.' });
       }
 
       if (user.id === 1) {
