@@ -15,7 +15,7 @@ const isOwnProfileOrAdmin = (): Middleware => {
     ) {
       return next({
         status: 403,
-        message: 'You do not have permission to view this users settings.',
+        message: "You do not have permission to view this user's settings.",
       });
     }
     next();

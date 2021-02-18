@@ -12,10 +12,16 @@ import { TvDetails } from '../../../server/models/Tv';
 import ImageFader from '../Common/ImageFader';
 import PageTitle from '../Common/PageTitle';
 import ProfileHeader from './ProfileHeader';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  recentrequests: 'Recent Requests',
+});
 
 type MediaTitle = MovieDetails | TvDetails;
 
 const UserProfile: React.FC = () => {
+  const intl = useIntl();
   const router = useRouter();
   const { user, error } = useUser({
     id: Number(router.query.userId),
@@ -72,7 +78,7 @@ const UserProfile: React.FC = () => {
       <div className="relative z-40 mt-6 mb-4 md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
           <div className="inline-flex items-center text-xl leading-7 text-gray-300 cursor-default sm:text-2xl sm:leading-9 sm:truncate">
-            <span>Recent Requests</span>
+            <span>{intl.formatMessage(messages.recentrequests)}</span>
           </div>
         </div>
       </div>

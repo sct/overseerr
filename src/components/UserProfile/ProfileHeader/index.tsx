@@ -1,14 +1,23 @@
 import Link from 'next/link';
 import React from 'react';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import { Permission, User, useUser } from '../../../hooks/useUser';
 import Button from '../../Common/Button';
 
+const messages = defineMessages({
+  settings: 'Edit Settings',
+  profile: 'View Profile',
+});
+
 interface ProfileHeaderProps {
   user: User;
+  isSettingsPage?: boolean;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+  user,
+  isSettingsPage,
+}) => {
   const intl = useIntl();
   const { user: loggedInUser, hasPermission } = useUser();
 
@@ -53,7 +62,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
       </div>
       <div className="flex flex-col-reverse mt-6 space-y-4 space-y-reverse justify-stretch sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
         {(loggedInUser?.id === user.id ||
-          hasPermission(Permission.MANAGE_USERS)) && (
+          hasPermission(Permission.MANAGE_USERS)) &&
+        !isSettingsPage ? (
           <Link
             href={
               loggedInUser?.id === user.id
@@ -75,7 +85,30 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
                   clipRule="evenodd"
                 />
               </svg>
-              Settings
+              {intl.formatMessage(messages.settings)}
+            </Button>
+          </Link>
+        ) : (
+          <Link
+            href={
+              loggedInUser?.id === user.id ? `/profile` : `/users/${user.id}`
+            }
+            passHref
+          >
+            <Button as="a">
+              <svg
+                className="w-5 h-5 mr-1"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              {intl.formatMessage(messages.profile)}
             </Button>
           </Link>
         )}

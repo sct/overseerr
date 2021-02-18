@@ -13,7 +13,7 @@ import LoadingSpinner from '../../../Common/LoadingSpinner';
 import * as Yup from 'yup';
 
 const messages = defineMessages({
-  changepassword: 'Change Password',
+  password: 'Password',
   currentpassword: 'Current Password',
   newpassword: 'New Password',
   confirmpassword: 'Confirm Password',
@@ -22,11 +22,12 @@ const messages = defineMessages({
   toastSettingsSuccess: 'Password changed!',
   toastSettingsFailure:
     'Something went wrong while changing the password. Is your current password correct?',
-  validationCurrentPassword: 'Current password is required.',
-  validationNewPassword: 'A new password is required.',
-  validationNewPasswordLength: 'Password must be at least 8 characters.',
-  validationConfirmPassword: 'You must confirm the password.',
-  validationConfirmPasswordSame: 'Passwords must match.',
+  validationCurrentPassword: 'You must provide your current password',
+  validationNewPassword: 'You must provide a new password',
+  validationNewPasswordLength:
+    'Password is too short; should be a minimum of 8 characters',
+  validationConfirmPassword: 'You must confirm your new password',
+  validationConfirmPasswordSame: 'Password must match',
   nopasswordset: 'No Password Set',
   nopasswordsetDescription:
     'This user account currently does not have an Overseerr-specific password.  Configure a password below to allow this account to sign-in as a "local user."',
@@ -72,9 +73,7 @@ const UserPasswordChange: React.FC = () => {
   return (
     <>
       <div className="mb-6">
-        <h3 className="heading">
-          {intl.formatMessage(messages.changepassword)}
-        </h3>
+        <h3 className="heading">{intl.formatMessage(messages.password)}</h3>
       </div>
       <Formik
         initialValues={{

@@ -3,16 +3,17 @@ import Transition from '../../Transition';
 import { useUser } from '../../../hooks/useUser';
 import axios from 'axios';
 import useClickOutside from '../../../hooks/useClickOutside';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import Link from 'next/link';
 
 const messages = defineMessages({
-  myprofile: 'My Profile',
-  settings: 'User Settings',
+  myprofile: 'Profile',
+  settings: 'Settings',
   signout: 'Sign Out',
 });
 
 const UserDropdown: React.FC = () => {
+  const intl = useIntl();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, revalidate } = useUser();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -70,7 +71,7 @@ const UserDropdown: React.FC = () => {
                 }}
                 onClick={() => setDropdownOpen(false)}
               >
-                <FormattedMessage {...messages.myprofile} />
+                {intl.formatMessage(messages.myprofile)}
               </a>
             </Link>
             <Link href={`/profile/settings`}>
@@ -85,7 +86,7 @@ const UserDropdown: React.FC = () => {
                 }}
                 onClick={() => setDropdownOpen(false)}
               >
-                <FormattedMessage {...messages.settings} />
+                {intl.formatMessage(messages.settings)}
               </a>
             </Link>
             <a
@@ -94,7 +95,7 @@ const UserDropdown: React.FC = () => {
               role="menuitem"
               onClick={() => logout()}
             >
-              <FormattedMessage {...messages.signout} />
+              {intl.formatMessage(messages.signout)}
             </a>
           </div>
         </div>

@@ -11,7 +11,7 @@ import ProfileHeader from '../ProfileHeader';
 const messages = defineMessages({
   settings: 'User Settings',
   menuGeneralSettings: 'General Settings',
-  menuChangePass: 'Change Password',
+  menuChangePass: 'Password',
   menuNotifications: 'Notifications',
   menuPermissions: 'Permissions',
 });
@@ -105,7 +105,7 @@ const UserSettings: React.FC = ({ children }) => {
   return (
     <>
       <PageTitle title={intl.formatMessage(messages.settings)} />
-      <ProfileHeader user={user} />
+      <ProfileHeader user={user} isSettingsPage />
       <div className="mt-6">
         <div className="sm:hidden">
           <select
