@@ -13,36 +13,29 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
-  agentenabled: 'Enable Agent',
+  agentEnabled: 'Enable Agent',
   accessToken: 'Access Token',
-  userToken: 'User Token',
   validationAccessTokenRequired: 'You must provide an access token.',
-  validationUserTokenRequired: 'You must provide a user token.',
-  pushoversettingssaved: 'Pushover notification settings saved!',
-  pushoversettingsfailed: 'Pushover notification settings failed to save.',
-  testsent: 'Test notification sent!',
+  pushbulletSettingsSaved: 'Pushbullet notification settings saved!',
+  pushbulletSettingsFailed: 'Pushbullet notification settings failed to save.',
+  testSent: 'Test notification sent!',
   test: 'Test',
-  settinguppushover: 'Setting Up Pushover Notifications',
-  settinguppushoverDescription:
-    'To configure Pushover notifications, you need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and get the access token.\
-    When setting up the application, you can use one of the icons in the <IconLink>public folder</IconLink> on GitHub.\
-    You also need the Pushover user token, which can be found on the start page when you log in.',
-  notificationtypes: 'Notification Types',
+  settingUpPushbullet: 'Setting Up Pushbullet Notifications',
+  settingUpPushbulletDescription:
+    'To configure Pushbullet notifications, you need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink> and enter it below.',
+  notificationTypes: 'Notification Types',
 });
 
-const NotificationsPushover: React.FC = () => {
+const NotificationsPushbullet: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/pushover'
+    '/api/v1/settings/notifications/pushbullet'
   );
 
-  const NotificationsPushoverSchema = Yup.object().shape({
+  const NotificationsPushbulletSchema = Yup.object().shape({
     accessToken: Yup.string().required(
       intl.formatMessage(messages.validationAccessTokenRequired)
-    ),
-    userToken: Yup.string().required(
-      intl.formatMessage(messages.validationUserTokenRequired)
     ),
   });
 
@@ -56,25 +49,23 @@ const NotificationsPushover: React.FC = () => {
         enabled: data?.enabled,
         types: data?.types,
         accessToken: data?.options.accessToken,
-        userToken: data?.options.userToken,
       }}
-      validationSchema={NotificationsPushoverSchema}
+      validationSchema={NotificationsPushbulletSchema}
       onSubmit={async (values) => {
         try {
-          await axios.post('/api/v1/settings/notifications/pushover', {
+          await axios.post('/api/v1/settings/notifications/pushbullet', {
             enabled: values.enabled,
             types: values.types,
             options: {
               accessToken: values.accessToken,
-              userToken: values.userToken,
             },
           });
-          addToast(intl.formatMessage(messages.pushoversettingssaved), {
+          addToast(intl.formatMessage(messages.pushbulletSettingsSaved), {
             appearance: 'success',
             autoDismiss: true,
           });
         } catch (e) {
-          addToast(intl.formatMessage(messages.pushoversettingsfailed), {
+          addToast(intl.formatMessage(messages.pushbulletSettingsFailed), {
             appearance: 'error',
             autoDismiss: true,
           });
@@ -85,16 +76,15 @@ const NotificationsPushover: React.FC = () => {
     >
       {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
-          await axios.post('/api/v1/settings/notifications/pushover/test', {
+          await axios.post('/api/v1/settings/notifications/pushbullet/test', {
             enabled: true,
             types: values.types,
             options: {
               accessToken: values.accessToken,
-              userToken: values.userToken,
             },
           });
 
-          addToast(intl.formatMessage(messages.testsent), {
+          addToast(intl.formatMessage(messages.testSent), {
             appearance: 'info',
             autoDismiss: true,
           });
@@ -103,26 +93,14 @@ const NotificationsPushover: React.FC = () => {
         return (
           <>
             <Alert
-              title={intl.formatMessage(messages.settinguppushover)}
+              title={intl.formatMessage(messages.settingUpPushbullet)}
               type="info"
             >
-              {intl.formatMessage(messages.settinguppushoverDescription, {
-                RegisterApplicationLink: function RegisterApplicationLink(msg) {
+              {intl.formatMessage(messages.settingUpPushbulletDescription, {
+                CreateAccessTokenLink: function CreateAccessTokenLink(msg) {
                   return (
                     <a
-                      href="https://pushover.net/apps/build"
-                      className="text-indigo-100 hover:text-white hover:underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {msg}
-                    </a>
-                  );
-                },
-                IconLink: function IconLink(msg) {
-                  return (
-                    <a
-                      href="https://github.com/sct/overseerr/tree/develop/public"
+                      href="https://www.pushbullet.com/#settings"
                       className="text-indigo-100 hover:text-white hover:underline"
                       target="_blank"
                       rel="noreferrer"
@@ -136,7 +114,7 @@ const NotificationsPushover: React.FC = () => {
             <Form className="section">
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">
-                  {intl.formatMessage(messages.agentenabled)}
+                  {intl.formatMessage(messages.agentEnabled)}
                 </label>
                 <div className="form-input">
                   <Field type="checkbox" id="enabled" name="enabled" />
@@ -160,24 +138,6 @@ const NotificationsPushover: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div className="form-row">
-                <label htmlFor="userToken" className="text-label">
-                  {intl.formatMessage(messages.userToken)}
-                </label>
-                <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
-                    <Field
-                      id="userToken"
-                      name="userToken"
-                      type="text"
-                      placeholder={intl.formatMessage(messages.userToken)}
-                    />
-                  </div>
-                  {errors.userToken && touched.userToken && (
-                    <div className="error">{errors.userToken}</div>
-                  )}
-                </div>
-              </div>
               <div
                 role="group"
                 aria-labelledby="group-label"
@@ -185,7 +145,7 @@ const NotificationsPushover: React.FC = () => {
               >
                 <div className="form-row">
                   <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.notificationtypes)}
+                    {intl.formatMessage(messages.notificationTypes)}
                   </span>
                   <div className="form-input">
                     <div className="max-w-lg">
@@ -235,4 +195,4 @@ const NotificationsPushover: React.FC = () => {
   );
 };
 
-export default NotificationsPushover;
+export default NotificationsPushbullet;

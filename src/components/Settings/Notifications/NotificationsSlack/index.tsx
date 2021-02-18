@@ -22,7 +22,7 @@ const messages = defineMessages({
   test: 'Test',
   settingupslack: 'Setting Up Slack Notifications',
   settingupslackDescription:
-    'To use Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and use the provided webhook URL below.',
+    'To configure Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and enter the webhook URL below.',
   notificationtypes: 'Notification Types',
   validationWebhookUrl: 'You must provide a valid URL',
 });

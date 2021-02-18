@@ -1124,6 +1124,20 @@ components:
               type: string
             chatId:
               type: string
+    PushbulletSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            accessToken:
+              type: string
     PushoverSettings:
       type: object
       properties:
@@ -1142,8 +1156,6 @@ components:
               type: string
             priority:
               type: number
-            sound:
-              type: string
     NotificationSettings:
       type: object
       properties:
@@ -2356,6 +2368,52 @@ paths:
       responses:
         '204':
           description: Test notification attempted
+  /settings/notifications/pushbullet:
+    get:
+      summary: Get Pushbullet notification settings
+      description: Returns current Pushbullet notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned Pushbullet settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushbulletSettings'
+    post:
+      summary: Update Pushbullet notification settings
+      description: Update Pushbullet notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushbulletSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushbulletSettings'
+  /settings/notifications/pushbullet/test:
+    post:
+      summary: Test Pushover settings
+      description: Sends a test notification to the Pushover agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushoverSettings'
+      responses:
+        '204':
+          description: Test notification attempted
   /settings/notifications/pushover:
     get:
       summary: Get Pushover notification settings
@@ -2370,7 +2428,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PushoverSettings'
     post:
-      summary: Update pushover notification settings
+      summary: Update Pushover notification settings
       description: Update Pushover notification settings with the provided values.
       tags:
         - settings

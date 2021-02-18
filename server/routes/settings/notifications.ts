@@ -7,6 +7,7 @@ import SlackAgent from '../../lib/notifications/agents/slack';
 import TelegramAgent from '../../lib/notifications/agents/telegram';
 import PushoverAgent from '../../lib/notifications/agents/pushover';
 import WebhookAgent from '../../lib/notifications/agents/webhook';
+import PushbulletAgent from '../../lib/notifications/agents/pushbullet';
 
 const notificationRoutes = Router();
 
@@ -126,6 +127,40 @@ notificationRoutes.post('/telegram/test', (req, res, next) => {
 
   const telegramAgent = new TelegramAgent(req.body);
   telegramAgent.send(Notification.TEST_NOTIFICATION, {
+    notifyUser: req.user,
+    subject: 'Test Notification',
+    message:
+      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+  });
+
+  return res.status(204).send();
+});
+
+notificationRoutes.get('/pushbullet', (_req, res) => {
+  const settings = getSettings();
+
+  res.status(200).json(settings.notifications.agents.pushbullet);
+});
+
+notificationRoutes.post('/pushbullet', (req, res) => {
+  const settings = getSettings();
+
+  settings.notifications.agents.pushbullet = req.body;
+  settings.save();
+
+  res.status(200).json(settings.notifications.agents.pushbullet);
+});
+
+notificationRoutes.post('/pushbullet/test', (req, res, next) => {
+  if (!req.user) {
+    return next({
+      status: 500,
+      message: 'User information missing from request',
+    });
+  }
+
+  const pushbulletAgent = new PushbulletAgent(req.body);
+  pushbulletAgent.send(Notification.TEST_NOTIFICATION, {
     notifyUser: req.user,
     subject: 'Test Notification',
     message:
