@@ -8,7 +8,6 @@ import Table from '../Common/Table';
 import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
-import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   requests: 'Requests',
@@ -18,6 +17,7 @@ const messages = defineMessages({
   modifiedBy: 'Last Modified By',
   showingresults:
     'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
+  resultsperpage: 'Display {pageSize} results per page',
   next: 'Next',
   previous: 'Previous',
   filterAll: 'All',
@@ -36,15 +36,14 @@ type Sort = 'added' | 'modified';
 
 const RequestList: React.FC = () => {
   const intl = useIntl();
-  const settings = useSettings();
   const [pageIndex, setPageIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState<Filter>('pending');
   const [currentSort, setCurrentSort] = useState<Sort>('added');
-  const pageSize = settings.currentSettings.pageSize;
+  const [currentPageSize, setCurrentPageSize] = useState<number>(10);
 
   const { data, error, revalidate } = useSWR<RequestResultsResponse>(
-    `/api/v1/request?take=${pageSize}&skip=${
-      pageIndex * pageSize
+    `/api/v1/request?take=${currentPageSize}&skip=${
+      pageIndex * currentPageSize
     }&filter=${currentFilter}&sort=${currentSort}`
   );
   if (!data && !error) {
@@ -187,17 +186,17 @@ const RequestList: React.FC = () => {
           <tr className="bg-gray-700">
             <Table.TD colSpan={6} noPadding>
               <nav
-                className="flex items-center justify-between px-6 py-3"
+                className="flex items-center px-6 py-3"
                 aria-label="Pagination"
               >
-                <div className="hidden sm:block">
+                <div className="hidden lg:flex lg:flex-1">
                   <p className="text-sm">
                     {intl.formatMessage(messages.showingresults, {
-                      from: pageIndex * pageSize,
+                      from: pageIndex * currentPageSize,
                       to:
-                        data.results.length < pageSize
-                          ? pageIndex * pageSize + data.results.length
-                          : (pageIndex + 1) * pageSize,
+                        data.results.length < currentPageSize
+                          ? pageIndex * currentPageSize + data.results.length
+                          : (pageIndex + 1) * currentPageSize,
                       total: data.pageInfo.results,
                       strong: function strong(msg) {
                         return <span className="font-medium">{msg}</span>;
@@ -205,15 +204,38 @@ const RequestList: React.FC = () => {
                     })}
                   </p>
                 </div>
-                <div className="flex justify-start flex-1 sm:justify-end">
-                  <span className="mr-2">
-                    <Button
-                      disabled={!hasPrevPage}
-                      onClick={() => setPageIndex((current) => current - 1)}
-                    >
-                      {intl.formatMessage(messages.previous)}
-                    </Button>
+                <div className="hidden lg:justify-center lg:flex lg:flex-1">
+                  <span className="items-center text-sm">
+                    {intl.formatMessage(messages.resultsperpage, {
+                      pageSize: (
+                        <select
+                          id="pageSize"
+                          name="pageSize"
+                          onChange={(e) => {
+                            setPageIndex(0);
+                            setCurrentPageSize(Number(e.target.value));
+                          }}
+                          value={currentPageSize}
+                          className="inline short"
+                        >
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="25">25</option>
+                          <option value="50">50</option>
+                          <option value="100">100</option>
+                        </select>
+                      ),
+                    })}
                   </span>
+                </div>
+                <div className="justify-start lg:flex lg:flex-1 lg:justify-end">
+                  <Button
+                    className="mr-2"
+                    disabled={!hasPrevPage}
+                    onClick={() => setPageIndex((current) => current - 1)}
+                  >
+                    {intl.formatMessage(messages.previous)}
+                  </Button>
                   <Button
                     disabled={!hasNextPage}
                     onClick={() => setPageIndex((current) => current + 1)}

@@ -58,7 +58,6 @@ export interface MainSettings {
   defaultPermissions: number;
   hideAvailable: boolean;
   localLogin: boolean;
-  pageSize: number;
   trustProxy: boolean;
 }
 
@@ -70,7 +69,6 @@ interface FullPublicSettings extends PublicSettings {
   applicationTitle: string;
   hideAvailable: boolean;
   localLogin: boolean;
-  pageSize: number;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
 }
@@ -179,7 +177,6 @@ class Settings {
         defaultPermissions: Permission.REQUEST,
         hideAvailable: false,
         localLogin: true,
-        pageSize: 10,
         trustProxy: false,
       },
       plex: {
@@ -317,7 +314,6 @@ class Settings {
       applicationTitle: this.data.main.applicationTitle,
       hideAvailable: this.data.main.hideAvailable,
       localLogin: this.data.main.localLogin,
-      pageSize: this.data.main.pageSize,
       movie4kEnabled: this.data.radarr.some(
         (radarr) => radarr.is4k && radarr.isDefault
       ),

@@ -124,9 +124,6 @@ components:
         localLogin:
           type: boolean
           example: true
-        pageSize:
-          type: number
-          example: 10
         defaultPermissions:
           type: number
           example: 32
@@ -1071,9 +1068,6 @@ components:
           type: number
           example: 1
         pages:
-          type: number
-          example: 10
-        pageSize:
           type: number
           example: 10
         results:

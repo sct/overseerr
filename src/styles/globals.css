@@ -104,7 +104,7 @@ select.rounded-r-only {
 
 input.short,
 select.short {
-  @apply w-24;
+  @apply w-20;
 }
 
 .protocol {
