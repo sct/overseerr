@@ -137,7 +137,9 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           okDisabled={isRequesting}
           okButtonType="primary"
           onCancel={() => setRequestModal(false)}
-          title={intl.formatMessage(messages.requestcollection)}
+          title={intl.formatMessage(
+            is4k ? messages.requestcollection4k : messages.requestcollection
+          )}
           iconSvg={
             <svg
               className="w-6 h-6"
