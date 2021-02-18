@@ -1,10 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
-import {
-  FormattedMessage,
-  FormattedDate,
-  defineMessages,
-  useIntl,
-} from 'react-intl';
+import { FormattedDate, defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import Button from '../Common/Button';
@@ -36,9 +31,9 @@ import RequestButton from '../RequestButton';
 import MediaSlider from '../MediaSlider';
 import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
-import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import PageTitle from '../Common/PageTitle';
 import useSettings from '../../hooks/useSettings';
+import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -114,10 +109,38 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     return <Error statusCode={404} />;
   }
 
+  const mediaLinks: PlayButtonLink[] = [];
+
+  if (data.mediaInfo?.plexUrl) {
+    mediaLinks.push({
+      text: intl.formatMessage(messages.playonplex),
+      url: data.mediaInfo?.plexUrl,
+    });
+  }
+
+  if (
+    data.mediaInfo?.plexUrl4k &&
+    hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+      type: 'or',
+    })
+  ) {
+    mediaLinks.push({
+      text: intl.formatMessage(messages.play4konplex),
+      url: data.mediaInfo?.plexUrl4k,
+    });
+  }
+
   const trailerUrl = data.relatedVideos
     ?.filter((r) => r.type === 'Trailer')
     .sort((a, b) => a.size - b.size)
     .pop()?.url;
+
+  if (trailerUrl) {
+    mediaLinks.push({
+      text: intl.formatMessage(messages.watchtrailer),
+      url: trailerUrl,
+    });
+  }
 
   const deleteMedia = async () => {
     if (data?.mediaInfo?.id) {
@@ -423,95 +446,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </span>
         </div>
         <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
-          {(trailerUrl ||
-            data.mediaInfo?.plexUrl ||
-            data.mediaInfo?.plexUrl4k) && (
-            <div className="mb-3 sm:mb-0">
-              <ButtonWithDropdown
-                buttonType="ghost"
-                text={
-                  <>
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span>
-                      {data.mediaInfo?.plexUrl
-                        ? intl.formatMessage(messages.playonplex)
-                        : data.mediaInfo?.plexUrl4k &&
-                          (hasPermission(Permission.REQUEST_4K) ||
-                            hasPermission(Permission.REQUEST_4K_TV))
-                        ? intl.formatMessage(messages.play4konplex)
-                        : intl.formatMessage(messages.watchtrailer)}
-                    </span>
-                  </>
-                }
-                onClick={() => {
-                  if (data.mediaInfo?.plexUrl) {
-                    window.open(data.mediaInfo?.plexUrl, '_blank');
-                  } else if (data.mediaInfo?.plexUrl4k) {
-                    window.open(data.mediaInfo?.plexUrl4k, '_blank');
-                  } else if (trailerUrl) {
-                    window.open(trailerUrl, '_blank');
-                  }
-                }}
-              >
-                {(
-                  trailerUrl
-                    ? data.mediaInfo?.plexUrl ||
-                      (data.mediaInfo?.plexUrl4k &&
-                        (hasPermission(Permission.REQUEST_4K) ||
-                          hasPermission(Permission.REQUEST_4K_TV)))
-                    : data.mediaInfo?.plexUrl &&
-                      data.mediaInfo?.plexUrl4k &&
-                      (hasPermission(Permission.REQUEST_4K) ||
-                        hasPermission(Permission.REQUEST_4K_TV))
-                ) ? (
-                  <>
-                    {data.mediaInfo?.plexUrl &&
-                    data.mediaInfo?.plexUrl4k &&
-                    (hasPermission(Permission.REQUEST_4K) ||
-                      hasPermission(Permission.REQUEST_4K_TV)) ? (
-                      <ButtonWithDropdown.Item
-                        onClick={() => {
-                          window.open(data.mediaInfo?.plexUrl4k, '_blank');
-                        }}
-                        buttonType="ghost"
-                      >
-                        {intl.formatMessage(messages.play4konplex)}
-                      </ButtonWithDropdown.Item>
-                    ) : null}
-                    {trailerUrl ? (
-                      <ButtonWithDropdown.Item
-                        onClick={() => {
-                          window.open(trailerUrl, '_blank');
-                        }}
-                        buttonType="ghost"
-                      >
-                        {intl.formatMessage(messages.watchtrailer)}
-                      </ButtonWithDropdown.Item>
-                    ) : null}
-                  </>
-                ) : null}
-              </ButtonWithDropdown>
-            </div>
-          )}
+          <div className="mb-3 sm:mb-0">
+            <PlayButton links={mediaLinks} />
+          </div>
           <div className="mb-3 sm:mb-0">
             <RequestButton
               mediaType="tv"
@@ -556,7 +493,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       <div className="flex flex-col pt-8 pb-4 text-white md:flex-row">
         <div className="flex-1 md:mr-8">
           <h2 className="text-xl md:text-2xl">
-            <FormattedMessage {...messages.overview} />
+            {intl.formatMessage(messages.overview)}
           </h2>
           <p className="pt-2 text-sm md:text-base">
             {data.overview
@@ -618,11 +555,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
         <div className="w-full mt-8 md:w-80 md:mt-0">
           <div className="bg-gray-900 border border-gray-800 rounded-lg shadow">
-            {(data.voteCount ||
-              (ratingData?.criticsRating && ratingData?.criticsScore) ||
-              (ratingData?.audienceRating && ratingData?.audienceScore)) && (
+            {(!!data.voteCount ||
+              (ratingData?.criticsRating && !!ratingData?.criticsScore) ||
+              (ratingData?.audienceRating && !!ratingData?.audienceScore)) && (
               <div className="flex items-center justify-center px-4 py-2 border-b border-gray-800 last:border-b-0">
-                {ratingData?.criticsRating && ratingData?.criticsScore && (
+                {ratingData?.criticsRating && !!ratingData?.criticsScore && (
                   <>
                     <span className="text-sm">
                       {ratingData.criticsRating === 'Rotten' ? (
@@ -636,7 +573,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     </span>
                   </>
                 )}
-                {ratingData?.audienceRating && ratingData?.audienceScore && (
+                {ratingData?.audienceRating && !!ratingData?.audienceScore && (
                   <>
                     <span className="text-sm">
                       {ratingData.audienceRating === 'Spilled' ? (
@@ -650,7 +587,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     </span>
                   </>
                 )}
-                {data.voteCount > 0 && (
+                {!!data.voteCount && (
                   <>
                     <span className="text-sm">
                       <TmdbLogo className="w-6 mr-2" />
@@ -677,7 +614,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.firstAirDate && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  <FormattedMessage {...messages.firstAirDate} />
+                  {intl.formatMessage(messages.firstAirDate)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   <FormattedDate
@@ -692,7 +629,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.nextEpisodeToAir && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  <FormattedMessage {...messages.nextAirDate} />
+                  {intl.formatMessage(messages.nextAirDate)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   <FormattedDate
@@ -706,7 +643,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             )}
             <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
               <span className="text-sm">
-                <FormattedMessage {...messages.status} />
+                {intl.formatMessage(messages.status)}
               </span>
               <span className="flex-1 text-sm text-right text-gray-400">
                 {data.status}
@@ -717,7 +654,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             ) && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  <FormattedMessage {...messages.originallanguage} />
+                  {intl.formatMessage(messages.originallanguage)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   {
@@ -731,7 +668,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.networks.length > 0 && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  <FormattedMessage {...messages.network} />
+                  {intl.formatMessage(messages.network)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   {data.networks.map((n) => n.name).join(', ')}
@@ -757,9 +694,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             <div className="flex-1 min-w-0">
               <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
                 <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-                  <span>
-                    <FormattedMessage {...messages.cast} />
-                  </span>
+                  <span>{intl.formatMessage(messages.cast)}</span>
                   <svg
                     className="w-6 h-6 ml-2"
                     fill="none"
