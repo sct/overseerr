@@ -162,9 +162,9 @@ const RequestList: React.FC = () => {
           })}
 
           {data.results.length === 0 && (
-            <tr className="relative w-full h-24 p-2 text-white">
+            <tr className="relative h-24 p-2 text-white">
               <Table.TD colSpan={6} noPadding>
-                <div className="flex flex-col items-center justify-center p-6">
+                <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
                   <span className="text-base">
                     {intl.formatMessage(messages.noresults)}
                   </span>
@@ -186,7 +186,7 @@ const RequestList: React.FC = () => {
           <tr className="bg-gray-700">
             <Table.TD colSpan={6} noPadding>
               <nav
-                className="flex items-center w-full px-6 py-3"
+                className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
                 aria-label="Pagination"
               >
                 <div className="hidden lg:flex lg:flex-1">
@@ -204,8 +204,8 @@ const RequestList: React.FC = () => {
                     })}
                   </p>
                 </div>
-                <div className="flex justify-start flex-1 lg:justify-center">
-                  <span className="items-center text-sm">
+                <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
+                  <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
                     {intl.formatMessage(messages.resultsperpage, {
                       pageSize: (
                         <select
@@ -228,9 +228,8 @@ const RequestList: React.FC = () => {
                     })}
                   </span>
                 </div>
-                <div className="flex justify-end flex-1">
+                <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
                   <Button
-                    className="mr-2"
                     disabled={!hasPrevPage}
                     onClick={() => setPageIndex((current) => current - 1)}
                   >
