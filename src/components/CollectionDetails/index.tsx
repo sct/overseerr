@@ -12,6 +12,7 @@ import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
+import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import Modal from '../Common/Modal';
 import Slider from '../Slider';
@@ -29,6 +30,9 @@ const messages = defineMessages({
   requestcollection: 'Request Collection',
   requestswillbecreated:
     'The following titles will have requests created for them:',
+  requestcollection4k: 'Request Collection in 4K',
+  requestswillbecreated4k:
+    'The following titles will have 4K requests created for them:',
   requestSuccess: '<strong>{title}</strong> successfully requested!',
 });
 
@@ -45,6 +49,8 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
   const { locale } = useContext(LanguageContext);
   const [requestModal, setRequestModal] = useState(false);
   const [isRequesting, setRequesting] = useState(false);
+  const [is4k, setIs4k] = useState(false);
+
   const { data, error, revalidate } = useSWR<Collection>(
     `/api/v1/collection/${router.query.collectionId}?language=${locale}`,
     {
@@ -62,7 +68,9 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
   }
 
   const requestableParts = data.parts.filter(
-    (part) => !part.mediaInfo || part.mediaInfo.status === MediaStatus.UNKNOWN
+    (part) =>
+      !part.mediaInfo ||
+      part.mediaInfo[is4k ? 'status4k' : 'status'] === MediaStatus.UNKNOWN
   );
 
   const requestBundle = async () => {
@@ -73,6 +81,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           await axios.post<MediaRequest>('/api/v1/request', {
             mediaId: part.id,
             mediaType: 'movie',
+            is4k: is4k,
           });
         })
       );
@@ -146,13 +155,20 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
             </svg>
           }
         >
-          <p>{intl.formatMessage(messages.requestswillbecreated)}</p>
+          <p>
+            {intl.formatMessage(
+              is4k
+                ? messages.requestswillbecreated4k
+                : messages.requestswillbecreated
+            )}
+          </p>
           <ul className="py-4 pl-8 list-disc">
             {data.parts
               .filter(
                 (part) =>
                   !part.mediaInfo ||
-                  part.mediaInfo?.status === MediaStatus.UNKNOWN
+                  part.mediaInfo[is4k ? 'status4k' : 'status'] ===
+                    MediaStatus.UNKNOWN
               )
               .map((part) => (
                 <li key={`request-part-${part.id}`}>{part.title}</li>
@@ -171,17 +187,26 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
         <div className="flex flex-col mt-4 text-center text-white md:mr-4 md:mt-0 md:text-left">
           <div className="mb-2">
             {data.parts.every(
-              (part) => part.mediaInfo?.status === MediaStatus.AVAILABLE
+              (part) =>
+                part.mediaInfo &&
+                part.mediaInfo[is4k ? 'status4k' : 'status'] ===
+                  MediaStatus.AVAILABLE
             ) && (
               <Badge badgeType="success">
                 {intl.formatMessage(globalMessages.available)}
               </Badge>
             )}
             {!data.parts.every(
-              (part) => part.mediaInfo?.status === MediaStatus.AVAILABLE
+              (part) =>
+                part.mediaInfo &&
+                part.mediaInfo[is4k ? 'status4k' : 'status'] ===
+                  MediaStatus.AVAILABLE
             ) &&
               data.parts.some(
-                (part) => part.mediaInfo?.status === MediaStatus.AVAILABLE
+                (part) =>
+                  part.mediaInfo &&
+                  part.mediaInfo[is4k ? 'status4k' : 'status'] ===
+                    MediaStatus.AVAILABLE
               ) && (
                 <Badge badgeType="success">
                   {intl.formatMessage(globalMessages.partiallyavailable)}
@@ -196,28 +221,89 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           </span>
         </div>
         <div className="flex justify-end flex-1 mt-4 md:mt-0">
-          {data.parts.some(
-            (part) =>
-              !part.mediaInfo || part.mediaInfo?.status === MediaStatus.UNKNOWN
-          ) && (
-            <Button buttonType="primary" onClick={() => setRequestModal(true)}>
-              <svg
-                className="w-4 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+          <div className="mb-3 sm:mb-0">
+            {data.parts.some(
+              (part) =>
+                !part.mediaInfo || part.mediaInfo.status === MediaStatus.UNKNOWN
+            ) ? (
+              <ButtonWithDropdown
+                buttonType="primary"
+                onClick={() => {
+                  setRequestModal(true);
+                  setIs4k(false);
+                }}
+                text={
+                  <>
+                    <svg
+                      className="w-4 mr-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                    <span>
+                      {intl.formatMessage(messages.requestcollection)}
+                    </span>
+                  </>
+                }
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              {intl.formatMessage(messages.requestcollection)}
-            </Button>
-          )}
+                {data.parts.some(
+                  (part) =>
+                    !part.mediaInfo ||
+                    part.mediaInfo.status4k === MediaStatus.UNKNOWN
+                ) && (
+                  <ButtonWithDropdown.Item
+                    buttonType="primary"
+                    onClick={() => {
+                      setRequestModal(true);
+                      setIs4k(true);
+                    }}
+                  >
+                    {intl.formatMessage(messages.requestcollection4k)}
+                  </ButtonWithDropdown.Item>
+                )}
+              </ButtonWithDropdown>
+            ) : (
+              data.parts.some(
+                (part) =>
+                  !part.mediaInfo ||
+                  part.mediaInfo.status4k === MediaStatus.UNKNOWN
+              ) && (
+                <Button
+                  buttonType="primary"
+                  onClick={() => {
+                    setRequestModal(true);
+                    setIs4k(true);
+                  }}
+                >
+                  <svg
+                    className="w-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
+                  </svg>
+                  <span>
+                    {intl.formatMessage(messages.requestcollection4k)}
+                  </span>
+                </Button>
+              )
+            )}
+          </div>
         </div>
       </div>
       <div className="flex flex-col pt-8 pb-4 text-white md:flex-row">

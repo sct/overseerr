@@ -550,7 +550,6 @@ const RequestButton: React.FC<RequestButtonProps> = ({
                 onClick={button.action}
                 key={`request-option-${button.id}`}
               >
-                {button.svg}
                 {button.text}
               </ButtonWithDropdown.Item>
             ))
