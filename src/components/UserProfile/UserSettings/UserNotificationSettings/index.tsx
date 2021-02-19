@@ -17,7 +17,7 @@ const messages = defineMessages({
   enableNotifications: 'Enable Notifications',
   discordId: 'Discord User ID',
   discordIdTip:
-    'The <FindDiscordIdLink>18-digit ID number</FindDiscordIdLink> for your Discord user account',
+    'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your Discord user account',
   validationDiscordId: 'You must provide a valid Discord user ID',
   save: 'Save Changes',
   saving: 'Saving…',
@@ -39,7 +39,7 @@ const UserNotificationSettings: React.FC = () => {
   const UserNotificationSettingsSchema = Yup.object().shape({
     discordId: Yup.string()
       .optional()
-      .matches(/^\d{18}$/, intl.formatMessage(messages.validationDiscordId)),
+      .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
   if (!data && !error) {

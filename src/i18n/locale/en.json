@@ -676,7 +676,7 @@
   "components.UserProfile.UserSettings.UserGeneralSettings.toastSettingsFailure": "Something went wrong while saving settings.",
   "components.UserProfile.UserSettings.UserGeneralSettings.toastSettingsSuccess": "Settings successfully saved!",
   "components.UserProfile.UserSettings.UserNotificationSettings.discordId": "Discord ID",
-  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "The <FindDiscordIdLink>18-digit ID number</FindDiscordIdLink> for your Discord user account",
+  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your Discord user account",
   "components.UserProfile.UserSettings.UserNotificationSettings.enableNotifications": "Enable Notifications",
   "components.UserProfile.UserSettings.UserNotificationSettings.localuser": "Local User",
   "components.UserProfile.UserSettings.UserNotificationSettings.notificationsettings": "Notification Settings",
