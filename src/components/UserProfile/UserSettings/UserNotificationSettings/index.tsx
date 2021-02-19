@@ -38,7 +38,7 @@ const UserNotificationSettings: React.FC = () => {
 
   const UserNotificationSettingsSchema = Yup.object().shape({
     discordId: Yup.string().matches(
-      /\d{18}/,
+      /^\d{18}$/,
       intl.formatMessage(messages.validationDiscordId)
     ),
   });
