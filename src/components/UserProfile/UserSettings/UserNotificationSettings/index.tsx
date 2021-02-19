@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useContext } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -11,7 +11,6 @@ import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import * as Yup from 'yup';
-import { LanguageContext } from '../../../../context/LanguageContext';
 
 const messages = defineMessages({
   notificationsettings: 'Notification Settings',
@@ -30,7 +29,6 @@ const messages = defineMessages({
 
 const UserNotificationSettings: React.FC = () => {
   const intl = useIntl();
-  const { locale } = useContext(LanguageContext);
   const { addToast } = useToasts();
   const router = useRouter();
   const { user, mutate } = useUser({ id: Number(router.query.userId) });
@@ -115,32 +113,9 @@ const UserNotificationSettings: React.FC = () => {
                   <span className="label-tip">
                     {intl.formatMessage(messages.discordIdTip, {
                       FindDiscordIdLink: function FindDiscordIdLink(msg) {
-                        const discordSupportLocales = [
-                          'da',
-                          'de',
-                          'es',
-                          'fr',
-                          'it',
-                          'ja',
-                          'ko',
-                          'nl',
-                          'pl',
-                          'pt-br',
-                          'ru',
-                          'sv',
-                          'tr',
-                          'zh-tw',
-                        ];
-
                         return (
                           <a
-                            href={`https://support.discord.com/hc/${
-                              discordSupportLocales.includes(
-                                locale.toLowerCase()
-                              )
-                                ? locale.toLowerCase()
-                                : 'en-us'
-                            }/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-`}
+                            href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
                             target="_blank"
                             rel="noreferrer"
                             className="text-gray-100 underline transition duration-300 hover:text-white"
