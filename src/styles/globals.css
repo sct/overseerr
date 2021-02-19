@@ -102,8 +102,9 @@ select.rounded-r-only {
   @apply rounded-l-none;
 }
 
-input.port {
-  @apply w-24;
+input.short,
+select.short {
+  @apply w-20;
 }
 
 .protocol {

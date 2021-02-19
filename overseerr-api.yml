@@ -1070,9 +1070,6 @@ components:
         pages:
           type: number
           example: 10
-        pageSize:
-          type: number
-          example: 10
         results:
           type: number
           example: 100
@@ -2747,10 +2744,22 @@ paths:
   /user:
     get:
       summary: Get all users
-      description: Returns all users in a JSON array.
+      description: Returns all users in a JSON object.
       tags:
         - users
       parameters:
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 20
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
         - in: query
           name: sort
           schema:
@@ -2763,9 +2772,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                    $ref: '#/components/schemas/User'
     post:
       summary: Create new user
       description: |

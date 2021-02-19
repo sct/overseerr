@@ -431,7 +431,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       name="port"
                       type="text"
                       placeholder="8989"
-                      className="port"
+                      className="short"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setIsValidated(false);
                         setFieldValue('port', e.target.value);

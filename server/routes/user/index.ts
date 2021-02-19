@@ -9,46 +9,63 @@ import logger from '../../logger';
 import gravatarUrl from 'gravatar-url';
 import { UserType } from '../../constants/user';
 import { isAuthenticated } from '../../middleware/auth';
+import { UserResultsResponse } from '../../interfaces/api/userInterfaces';
 import { UserRequestsResponse } from '../../interfaces/api/userInterfaces';
 import userSettingsRoutes from './usersettings';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
-  let query = getRepository(User).createQueryBuilder('user');
+router.get('/', async (req, res, next) => {
+  try {
+    const pageSize = req.query.take ? Number(req.query.take) : 10;
+    const skip = req.query.skip ? Number(req.query.skip) : 0;
+    let query = getRepository(User).createQueryBuilder('user');
 
-  switch (req.query.sort) {
-    case 'updated':
-      query = query.orderBy('user.updatedAt', 'DESC');
-      break;
-    case 'displayname':
-      query = query.orderBy(
-        '(CASE WHEN user.username IS NULL THEN user.plexUsername ELSE user.username END)',
-        'ASC'
-      );
-      break;
-    case 'requests':
-      query = query
-        .addSelect((subQuery) => {
-          return subQuery
-            .select('COUNT(request.id)', 'requestCount')
-            .from(MediaRequest, 'request')
-            .where('request.requestedBy.id = user.id');
-        }, 'requestCount')
-        .orderBy('requestCount', 'DESC');
-      break;
-    default:
-      query = query.orderBy('user.id', 'ASC');
-      break;
+    switch (req.query.sort) {
+      case 'updated':
+        query = query.orderBy('user.updatedAt', 'DESC');
+        break;
+      case 'displayname':
+        query = query.orderBy(
+          '(CASE WHEN user.username IS NULL THEN user.plexUsername ELSE user.username END)',
+          'ASC'
+        );
+        break;
+      case 'requests':
+        query = query
+          .addSelect((subQuery) => {
+            return subQuery
+              .select('COUNT(request.id)', 'requestCount')
+              .from(MediaRequest, 'request')
+              .where('request.requestedBy.id = user.id');
+          }, 'requestCount')
+          .orderBy('requestCount', 'DESC');
+        break;
+      default:
+        query = query.orderBy('user.id', 'ASC');
+        break;
+    }
+
+    const [users, userCount] = await query
+      .take(pageSize)
+      .skip(skip)
+      .getManyAndCount();
+
+    return res.status(200).json({
+      pageInfo: {
+        pages: Math.ceil(userCount / pageSize),
+        pageSize,
+        results: userCount,
+        page: Math.ceil(skip / pageSize) + 1,
+      },
+      results: User.filterMany(
+        users,
+        req.user?.hasPermission(Permission.MANAGE_USERS)
+      ),
+    } as UserResultsResponse);
+  } catch (e) {
+    next({ status: 500, message: e.message });
   }
-
-  const users = await query.getMany();
-
-  return res
-    .status(200)
-    .json(
-      User.filterMany(users, req.user?.hasPermission(Permission.MANAGE_USERS))
-    );
 });
 
 router.post(

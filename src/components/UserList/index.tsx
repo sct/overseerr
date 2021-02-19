@@ -21,6 +21,7 @@ import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
 import PageTitle from '../Common/PageTitle';
 import Link from 'next/link';
+import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
 
 const messages = defineMessages({
   users: 'Users',
@@ -65,6 +66,11 @@ const messages = defineMessages({
   sortUpdated: 'Last Updated',
   sortDisplayName: 'Display Name',
   sortRequests: 'Request Count',
+  next: 'Next',
+  previous: 'Previous',
+  showingresults:
+    'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
+  resultsperpage: 'Display {pageSize} results per page',
 });
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
@@ -73,10 +79,16 @@ const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
   const { addToast } = useToasts();
+  const [pageIndex, setPageIndex] = useState(0);
   const [currentSort, setCurrentSort] = useState<Sort>('created');
-  const { data, error, revalidate } = useSWR<User[]>(
-    `/api/v1/user?sort=${currentSort}`
+  const [currentPageSize, setCurrentPageSize] = useState<number>(10);
+
+  const { data, error, revalidate } = useSWR<UserResultsResponse>(
+    `/api/v1/user?take=${currentPageSize}&skip=${
+      pageIndex * currentPageSize
+    }&sort=${currentSort}`
   );
+
   const [isDeleting, setDeleting] = useState(false);
   const [isImporting, setImporting] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
@@ -99,7 +111,7 @@ const UserList: React.FC = () => {
   const isAllUsersSelected = () => {
     return (
       selectedUsers.length ===
-      data?.filter((user) => user.id !== currentUser?.id).length
+      data?.results.filter((user) => user.id !== currentUser?.id).length
     );
   };
   const isUserSelected = (userId: number) => selectedUsers.includes(userId);
@@ -107,10 +119,12 @@ const UserList: React.FC = () => {
     if (
       data &&
       selectedUsers.length >= 0 &&
-      selectedUsers.length < data?.length - 1
+      selectedUsers.length < data?.results.length - 1
     ) {
       setSelectedUsers(
-        data.filter((user) => isUserPermsEditable(user.id)).map((u) => u.id)
+        data.results
+          .filter((user) => isUserPermsEditable(user.id))
+          .map((u) => u.id)
       );
     } else {
       setSelectedUsers([]);
@@ -190,6 +204,13 @@ const UserList: React.FC = () => {
           )
     ),
   });
+
+  if (!data) {
+    return <LoadingSpinner />;
+  }
+
+  const hasNextPage = data.pageInfo.pages > pageIndex + 1;
+  const hasPrevPage = pageIndex > 0;
 
   return (
     <>
@@ -372,7 +393,7 @@ const UserList: React.FC = () => {
             revalidate();
           }}
           selectedUserIds={selectedUsers}
-          users={data}
+          users={data.results}
         />
       </Transition>
 
@@ -411,6 +432,7 @@ const UserList: React.FC = () => {
               id="sort"
               name="sort"
               onChange={(e) => {
+                setPageIndex(0);
                 setCurrentSort(e.target.value as Sort);
               }}
               value={currentSort}
@@ -436,7 +458,7 @@ const UserList: React.FC = () => {
         <thead>
           <tr>
             <Table.TH>
-              {(data ?? []).length > 1 && (
+              {(data.results ?? []).length > 1 && (
                 <input
                   type="checkbox"
                   id="selectAll"
@@ -455,7 +477,7 @@ const UserList: React.FC = () => {
             <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.lastupdated)}</Table.TH>
             <Table.TH className="text-right">
-              {(data ?? []).length > 1 && (
+              {(data.results ?? []).length > 1 && (
                 <Button
                   buttonType="warning"
                   onClick={() => setShowBulkEditModal(true)}
@@ -468,7 +490,7 @@ const UserList: React.FC = () => {
           </tr>
         </thead>
         <Table.TBody>
-          {data?.map((user) => (
+          {data?.results.map((user) => (
             <tr key={`user-list-${user.id}`}>
               <Table.TD>
                 {isUserPermsEditable(user.id) && (
@@ -554,6 +576,69 @@ const UserList: React.FC = () => {
               </Table.TD>
             </tr>
           ))}
+          <tr className="bg-gray-700">
+            <Table.TD colSpan={8} noPadding>
+              <nav
+                className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
+                aria-label="Pagination"
+              >
+                <div className="hidden lg:flex lg:flex-1">
+                  <p className="text-sm">
+                    {data.results.length > 0 &&
+                      intl.formatMessage(messages.showingresults, {
+                        from: pageIndex * currentPageSize + 1,
+                        to:
+                          data.results.length < currentPageSize
+                            ? pageIndex * currentPageSize + data.results.length
+                            : (pageIndex + 1) * currentPageSize,
+                        total: data.pageInfo.results,
+                        strong: function strong(msg) {
+                          return <span className="font-medium">{msg}</span>;
+                        },
+                      })}
+                  </p>
+                </div>
+                <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
+                  <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
+                    {intl.formatMessage(messages.resultsperpage, {
+                      pageSize: (
+                        <select
+                          id="pageSize"
+                          name="pageSize"
+                          onChange={(e) => {
+                            setPageIndex(0);
+                            setCurrentPageSize(Number(e.target.value));
+                          }}
+                          value={currentPageSize}
+                          className="inline short"
+                        >
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="25">25</option>
+                          <option value="50">50</option>
+                          <option value="100">100</option>
+                        </select>
+                      ),
+                    })}
+                  </span>
+                </div>
+                <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
+                  <Button
+                    disabled={!hasPrevPage}
+                    onClick={() => setPageIndex((current) => current - 1)}
+                  >
+                    {intl.formatMessage(messages.previous)}
+                  </Button>
+                  <Button
+                    disabled={!hasNextPage}
+                    onClick={() => setPageIndex((current) => current + 1)}
+                  >
+                    {intl.formatMessage(messages.next)}
+                  </Button>
+                </div>
+              </nav>
+            </Table.TD>
+          </tr>
         </Table.TBody>
       </Table>
     </>

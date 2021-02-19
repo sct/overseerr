@@ -14,9 +14,8 @@ import { User } from '../entity/User';
 const requestRoutes = Router();
 
 requestRoutes.get('/', async (req, res, next) => {
-  const requestRepository = getRepository(MediaRequest);
   try {
-    const pageSize = req.query.take ? Number(req.query.take) : 20;
+    const pageSize = req.query.take ? Number(req.query.take) : 10;
     const skip = req.query.skip ? Number(req.query.skip) : 0;
 
     let statusFilter: MediaRequestStatus[];
@@ -79,7 +78,7 @@ requestRoutes.get('/', async (req, res, next) => {
         sortFilter = 'request.id';
     }
 
-    let query = requestRepository
+    let query = getRepository(MediaRequest)
       .createQueryBuilder('request')
       .leftJoinAndSelect('request.media', 'media')
       .leftJoinAndSelect('request.seasons', 'seasons')
