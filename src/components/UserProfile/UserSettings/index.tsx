@@ -7,6 +7,7 @@ import Error from '../../../pages/_error';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import ProfileHeader from '../ProfileHeader';
+import useSettings from '../../../hooks/useSettings';
 
 const messages = defineMessages({
   settings: 'User Settings',
@@ -26,6 +27,7 @@ interface SettingsRoute {
 
 const UserSettings: React.FC = ({ children }) => {
   const router = useRouter();
+  const settings = useSettings();
   const { hasPermission } = useUser();
   const { user, error } = useUser({ id: Number(router.query.userId) });
   const intl = useIntl();
@@ -73,6 +75,14 @@ const UserSettings: React.FC = ({ children }) => {
     regex: RegExp;
     isMobile?: boolean;
   }> = ({ children, route, regex, isMobile = false }) => {
+    if (
+      route === '/settings/password' &&
+      !settings.currentSettings.localLogin &&
+      !hasPermission(Permission.MANAGE_SETTINGS)
+    ) {
+      return null;
+    }
+
     const finalRoute = router.asPath.includes('/profile')
       ? `/profile${route}`
       : `/users/${user.id}${route}`;

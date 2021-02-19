@@ -11,6 +11,7 @@ import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import * as Yup from 'yup';
+import useSettings from '../../../../hooks/useSettings';
 
 const messages = defineMessages({
   password: 'Password',
@@ -30,10 +31,12 @@ const messages = defineMessages({
   validationConfirmPasswordSame: 'Password must match',
   nopasswordset: 'No Password Set',
   nopasswordsetDescription:
-    'This user account currently does not have an Overseerr-specific password.  Configure a password below to allow this account to sign-in as a "local user."',
+    'This user account currently does not have a password specifically for {applicationTitle}.\
+    Configure a password below to enable this account to sign in as a "local user."',
 });
 
 const UserPasswordChange: React.FC = () => {
+  const settings = useSettings();
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -114,7 +117,9 @@ const UserPasswordChange: React.FC = () => {
                   type="warning"
                   title={intl.formatMessage(messages.nopasswordset)}
                 >
-                  {intl.formatMessage(messages.nopasswordsetDescription)}
+                  {intl.formatMessage(messages.nopasswordsetDescription, {
+                    applicationTitle: settings.currentSettings.applicationTitle,
+                  })}
                 </Alert>
               )}
               {data.hasPassword && user?.id === currentUser?.id && (

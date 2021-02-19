@@ -134,7 +134,7 @@ export class User {
     const password = generatePassword.randomPassword({ length: 16 });
     this.setPassword(password);
 
-    const applicationUrl = getSettings().main.applicationUrl;
+    const { applicationTitle, applicationUrl } = getSettings().main;
     try {
       logger.info(`Sending generated password email for ${this.email}`, {
         label: 'User Management',
@@ -148,6 +148,7 @@ export class User {
         locals: {
           password: password,
           applicationUrl,
+          applicationTitle,
         },
       });
     } catch (e) {
@@ -167,7 +168,7 @@ export class User {
     targetDate.setDate(targetDate.getDate() + 1);
     this.recoveryLinkExpirationDate = targetDate;
 
-    const applicationUrl = getSettings().main.applicationUrl;
+    const { applicationTitle, applicationUrl } = getSettings().main;
     const resetPasswordLink = `${applicationUrl}/resetpassword/${guid}`;
 
     try {
@@ -183,6 +184,7 @@ export class User {
         locals: {
           resetPasswordLink,
           applicationUrl: resetPasswordLink,
+          applicationTitle,
         },
       });
     } catch (e) {
