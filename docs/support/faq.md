@@ -6,9 +6,9 @@ If you can't find a solution here, please ask on [Discord](https://discord.gg/Pk
 
 ## General
 
-### I receive 409 or 400 errors when requesting a movie or tv show!
+### I receive 409 or 400 errors when requesting a movie or TV series!
 
-**A:** Verify you are running Radarr and Sonarr v3. Overseerr was developed for v3 and is not currently backward-compatible.
+**A:** Verify you are running Radarr and Sonarr v3. Overseerr was developed for v3 and is not currently backwards-compatible with previous versions.
 
 ### How do I keep Overseerr up-to-date?
 
@@ -24,11 +24,11 @@ The most secure method, but also the most inconvenient, is to set up a VPN tunne
 
 ### Overseerr is amazing! But it is not translated in my language yet! Can I help with translations?
 
-**A:** You sure can! We are using Weblate for translations! Check it out [here](https://hosted.weblate.org/engage/overseerr/). If your language is not listed please open an [enhancement request in issues](https://github.com/sct/overseerr/issues/new/choose).
+**A:** You sure can! We are using [Weblate](https://hosted.weblate.org/engage/overseerr/) for translations. If your language is not listed, please [open a feature request on GitHub](https://github.com/sct/overseerr/issues/new/choose).
 
 ### Where can I find the changelog?
 
-**A:** You can find the changelog in the **Settings &rarr; About** page in your instance. You can also find it on github [here](https://github.com/sct/overseerr/releases).
+**A:** You can find the changelog in the **Settings &rarr; About** page in your Overseerr instance. You can also find it on [GitHub](https://github.com/sct/overseerr/releases).
 
 ### Can I make 4K requests?
 
@@ -59,6 +59,10 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 2. New Plex Movie agent `<Guid id="tmdb://464052"/>`
 3. TheTVDB agent `guid="com.plexapp.agents.thetvdb://78874/1/1"`
 4. Legacy Plex Movie agent `guid="com.plexapp.agents.imdb://tt0765446"`
+
+### TV series requests are failing after I updated Overseerr!
+
+**A:** Language profile support for Sonarr was added in [#860](https://github.com/sct/overseerr/pull/860), along with a new "Language Profile" required setting. If your TV series requests are failing, please make sure that you have a default language profile configured for each of your Sonarr servers in **Settings &rarr; Services**.
 
 ### Where can I find the logs?
 
