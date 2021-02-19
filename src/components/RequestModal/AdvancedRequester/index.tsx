@@ -10,6 +10,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { formatBytes } from '../../../utils/numberHelpers';
 import { Listbox, Transition } from '@headlessui/react';
 import { Permission, User, useUser } from '../../../hooks/useUser';
+import type { UserResultsResponse } from '../../../../server/interfaces/api/userInterfaces';
 
 const messages = defineMessages({
   advancedoptions: 'Advanced Options',
@@ -97,17 +98,17 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     requestUser ?? null
   );
 
-  const { data: userData } = useSWR<User[]>(
+  const { data: userData } = useSWR<UserResultsResponse>(
     hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS])
-      ? '/api/v1/user'
+      ? '/api/v1/user?take=1000'
       : null
   );
 
   useEffect(() => {
-    if (userData && !requestUser) {
-      setSelectedUser(userData.find((u) => u.id === user?.id) ?? null);
+    if (userData?.results && !requestUser) {
+      setSelectedUser(userData.results.find((u) => u.id === user?.id) ?? null);
     }
-  }, [userData]);
+  }, [userData?.results]);
 
   useEffect(() => {
     let defaultServer = data?.find(
@@ -471,7 +472,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                           static
                           className="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
                         >
-                          {userData?.map((user) => (
+                          {userData?.results.map((user) => (
                             <Listbox.Option key={user.id} value={user}>
                               {({ selected, active }) => (
                                 <div
