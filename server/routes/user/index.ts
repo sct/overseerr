@@ -58,7 +58,10 @@ router.get('/', async (req, res, next) => {
         results: userCount,
         page: Math.ceil(skip / pageSize) + 1,
       },
-      results: User.filterMany(users),
+      results: User.filterMany(
+        users,
+        req.user?.hasPermission(Permission.MANAGE_USERS)
+      ),
     } as UserResultsResponse);
   } catch (e) {
     next({ status: 500, message: e.message });
