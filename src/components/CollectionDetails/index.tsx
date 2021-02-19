@@ -179,16 +179,16 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           </ul>
         </Modal>
       </Transition>
-      <div className="flex flex-col items-center pt-4 md:flex-row md:items-end">
-        <div className="flex-shrink-0 md:mr-4">
+      <div className="flex flex-col items-center pt-4 lg:flex-row lg:items-end">
+        <div className="lg:mr-4">
           <img
             src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
             alt=""
-            className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-52"
+            className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-44 lg:w-52"
           />
         </div>
-        <div className="flex flex-col mt-4 text-center text-white md:mr-4 md:mt-0 md:text-left">
-          <div className="mb-2">
+        <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
+          <div className="mb-2 space-x-2">
             {data.parts.every(
               (part) =>
                 part.mediaInfo &&
@@ -217,13 +217,13 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
               )}
           </div>
           <h1 className="text-2xl md:text-4xl">{data.name}</h1>
-          <span className="mt-1 text-xs md:text-base md:mt-0">
+          <span className="mt-1 text-xs lg:text-base lg:mt-0">
             {intl.formatMessage(messages.numberofmovies, {
               count: data.parts.length,
             })}
           </span>
         </div>
-        <div className="flex justify-end flex-1 mt-4 md:mt-0">
+        <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
           <div className="mb-3 sm:mb-0">
             {data.parts.some(
               (part) =>
