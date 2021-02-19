@@ -226,7 +226,12 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
           <div className="mb-2 space-x-2">
             <span className="ml-2 lg:ml-0">
-              <StatusBadge status={collectionStatus} />
+              <StatusBadge
+                status={collectionStatus}
+                inProgress={data.parts.some(
+                  (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
+                )}
+              />
             </span>
             {hasPermission(
               [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
@@ -235,7 +240,14 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
               }
             ) && (
               <span>
-                <StatusBadge status={collectionStatus4k} is4k />
+                <StatusBadge
+                  status={collectionStatus4k}
+                  is4k
+                  inProgress={data.parts.some(
+                    (part) =>
+                      (part.mediaInfo?.downloadStatus4k ?? []).length > 0
+                  )}
+                />
               </span>
             )}
           </div>
