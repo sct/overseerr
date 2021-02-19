@@ -199,10 +199,10 @@ class JellyfinAPI {
   public async getRecentlyAdded(id: string): Promise<JellyfinLibraryItem[]> {
     try {
       const contents = await this.axios.get<any>(
-        `/Users/${this.userId}/Items/Latest?Limit=50&ParentId=${id}`
+        `/Users/${this.userId}/Items/Latest?Limit=12&ParentId=${id}`
       );
 
-      return contents.data.Items;
+      return contents.data;
     } catch (e) {
       logger.error(
         `Something went wrong while getting library content from the Jellyfin server: ${e.message}`,
