@@ -10,6 +10,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useIsTouch } from '../../hooks/useIsTouch';
 import globalMessages from '../../i18n/globalMessages';
 import Spinner from '../../assets/spinner.svg';
+import { useUser, Permission } from '../../hooks/useUser';
 
 const messages = defineMessages({
   movie: 'Movie',
@@ -42,6 +43,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
 }) => {
   const isTouch = useIsTouch();
   const intl = useIntl();
+  const { hasPermission } = useUser();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(status);
   const [showDetail, setShowDetail] = useState(false);
@@ -204,7 +206,8 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   <div className="flex items-end w-full h-full">
                     <div
                       className={`px-2 text-white ${
-                        currentStatus && currentStatus !== MediaStatus.UNKNOWN
+                        !hasPermission(Permission.REQUEST) ||
+                        (currentStatus && currentStatus !== MediaStatus.UNKNOWN)
                           ? 'pb-2'
                           : 'pb-11'
                       }`}
@@ -218,8 +221,9 @@ const TitleCard: React.FC<TitleCardProps> = ({
                         className="text-xs whitespace-normal"
                         style={{
                           WebkitLineClamp:
-                            currentStatus &&
-                            currentStatus !== MediaStatus.UNKNOWN
+                            !hasPermission(Permission.REQUEST) ||
+                            (currentStatus &&
+                              currentStatus !== MediaStatus.UNKNOWN)
                               ? 5
                               : 3,
                           display: '-webkit-box',
@@ -235,33 +239,34 @@ const TitleCard: React.FC<TitleCardProps> = ({
               </Link>
 
               <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-2">
-                {(!currentStatus || currentStatus === MediaStatus.UNKNOWN) && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setShowRequestModal(true);
-                    }}
-                    className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-600 rounded-md h-7 hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
-                  >
-                    <svg
-                      className="w-4 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                {hasPermission(Permission.REQUEST) &&
+                  (!currentStatus || currentStatus === MediaStatus.UNKNOWN) && (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowRequestModal(true);
+                      }}
+                      className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-600 rounded-md h-7 hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      />
-                    </svg>
-                    <span className="text-xs">
-                      {intl.formatMessage(globalMessages.request)}
-                    </span>
-                  </button>
-                )}
+                      <svg
+                        className="w-4 mr-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        />
+                      </svg>
+                      <span className="text-xs">
+                        {intl.formatMessage(globalMessages.request)}
+                      </span>
+                    </button>
+                  )}
               </div>
             </div>
           </Transition>
