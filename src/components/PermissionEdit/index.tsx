@@ -53,15 +53,17 @@ export const messages = defineMessages({
 });
 
 interface PermissionEditProps {
+  actingUser?: User;
+  currentUser?: User;
   currentPermission: number;
-  user?: User;
   onUpdate: (newPermissions: number) => void;
 }
 
 export const PermissionEdit: React.FC<PermissionEditProps> = ({
+  actingUser,
+  currentUser,
   currentPermission,
   onUpdate,
-  user,
 }) => {
   const intl = useIntl();
 
@@ -216,7 +218,8 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
         <PermissionOption
           key={`permission-option-${permissionItem.id}`}
           option={permissionItem}
-          user={user}
+          actingUser={actingUser}
+          currentUser={currentUser}
           currentPermission={currentPermission}
           onUpdate={(newPermission) => onUpdate(newPermission)}
         />

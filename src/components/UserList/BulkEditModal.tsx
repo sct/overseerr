@@ -104,7 +104,7 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
             <div className="form-input">
               <div className="max-w-lg">
                 <PermissionEdit
-                  user={currentUser}
+                  actingUser={currentUser}
                   currentPermission={currentPermission}
                   onUpdate={(newPermission) =>
                     setCurrentPermission(newPermission)

@@ -266,6 +266,13 @@ userSettingsRoutes.post<
         return next({ status: 404, message: 'User not found.' });
       }
 
+      if (user.id === 1) {
+        return next({
+          status: 500,
+          message: 'Permissions for user with ID 1 cannot be modified',
+        });
+      }
+
       user.permissions = req.body.permissions;
 
       await userRepository.save(user);
