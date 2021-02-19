@@ -10,7 +10,6 @@ import type { Collection } from '../../../server/models/Collection';
 import { LanguageContext } from '../../context/LanguageContext';
 import Error from '../../pages/_error';
 import StatusBadge from '../StatusBadge';
-import Button from '../Common/Button';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import Modal from '../Common/Modal';
@@ -259,18 +258,15 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           </span>
         </div>
         <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
-          {hasPermission(Permission.REQUEST) && (
-            <div className="mb-3 sm:mb-0">
-              {data.parts.some(
-                (part) =>
-                  !part.mediaInfo ||
-                  part.mediaInfo.status === MediaStatus.UNKNOWN
-              ) ? (
+          {hasPermission(Permission.REQUEST) &&
+            (collectionStatus !== MediaStatus.AVAILABLE ||
+              collectionStatus4k !== MediaStatus.AVAILABLE) && (
+              <div className="mb-3 sm:mb-0">
                 <ButtonWithDropdown
                   buttonType="primary"
                   onClick={() => {
                     setRequestModal(true);
-                    setIs4k(false);
+                    setIs4k(collectionStatus === MediaStatus.AVAILABLE);
                   }}
                   text={
                     <>
@@ -289,7 +285,11 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                         />
                       </svg>
                       <span>
-                        {intl.formatMessage(messages.requestcollection)}
+                        {intl.formatMessage(
+                          collectionStatus === MediaStatus.AVAILABLE
+                            ? messages.requestcollection4k
+                            : messages.requestcollection
+                        )}
                       </span>
                     </>
                   }
@@ -298,11 +298,8 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                     [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
                     { type: 'or' }
                   ) &&
-                    data.parts.some(
-                      (part) =>
-                        !part.mediaInfo ||
-                        part.mediaInfo.status4k === MediaStatus.UNKNOWN
-                    ) && (
+                    collectionStatus !== MediaStatus.AVAILABLE &&
+                    collectionStatus4k !== MediaStatus.AVAILABLE && (
                       <ButtonWithDropdown.Item
                         buttonType="primary"
                         onClick={() => {
@@ -324,49 +321,14 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                           />
                         </svg>
-                        {intl.formatMessage(messages.requestcollection4k)}
+                        <span>
+                          {intl.formatMessage(messages.requestcollection4k)}
+                        </span>
                       </ButtonWithDropdown.Item>
                     )}
                 </ButtonWithDropdown>
-              ) : (
-                hasPermission(
-                  [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
-                  { type: 'or' }
-                ) &&
-                data.parts.some(
-                  (part) =>
-                    !part.mediaInfo ||
-                    part.mediaInfo.status4k === MediaStatus.UNKNOWN
-                ) && (
-                  <Button
-                    buttonType="primary"
-                    onClick={() => {
-                      setRequestModal(true);
-                      setIs4k(true);
-                    }}
-                  >
-                    <svg
-                      className="w-4 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      />
-                    </svg>
-                    <span>
-                      {intl.formatMessage(messages.requestcollection4k)}
-                    </span>
-                  </Button>
-                )
-              )}
-            </div>
-          )}
+              </div>
+            )}
         </div>
       </div>
       <div className="flex flex-col pt-8 pb-4 text-white md:flex-row">
