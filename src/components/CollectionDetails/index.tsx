@@ -30,6 +30,7 @@ const messages = defineMessages({
   requestcollection: 'Request Collection',
   requestswillbecreated:
     'The following titles will have requests created for them:',
+  request4k: 'Request 4K',
   requestcollection4k: 'Request Collection in 4K',
   requestswillbecreated4k:
     'The following titles will have 4K requests created for them:',
@@ -132,7 +133,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           okText={
             isRequesting
               ? intl.formatMessage(messages.requesting)
-              : intl.formatMessage(messages.request)
+              : intl.formatMessage(is4k ? messages.request4k : messages.request)
           }
           okDisabled={isRequesting}
           okButtonType="primary"

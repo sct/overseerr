@@ -6,6 +6,7 @@
   "components.CollectionDetails.overview": "Overview",
   "components.CollectionDetails.overviewunavailable": "Overview unavailable.",
   "components.CollectionDetails.request": "Request",
+  "components.CollectionDetails.request4k": "Request 4K",
   "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> successfully requested!",
   "components.CollectionDetails.requestcollection": "Request Collection",
   "components.CollectionDetails.requestcollection4k": "Request Collection in 4K",
