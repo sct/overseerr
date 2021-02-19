@@ -147,6 +147,7 @@ router.get<{ id: string }, UserRequestsResponse>(
 
       const [requests, requestCount] = await requestRepository.findAndCount({
         where: { requestedBy: user },
+        order: { id: 'DESC' },
         take: pageSize,
         skip,
       });
