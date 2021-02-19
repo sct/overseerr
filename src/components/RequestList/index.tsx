@@ -191,17 +191,18 @@ const RequestList: React.FC = () => {
               >
                 <div className="hidden lg:flex lg:flex-1">
                   <p className="text-sm">
-                    {intl.formatMessage(messages.showingresults, {
-                      from: pageIndex * currentPageSize,
-                      to:
-                        data.results.length < currentPageSize
-                          ? pageIndex * currentPageSize + data.results.length
-                          : (pageIndex + 1) * currentPageSize,
-                      total: data.pageInfo.results,
-                      strong: function strong(msg) {
-                        return <span className="font-medium">{msg}</span>;
-                      },
-                    })}
+                    {data.results.length > 0 &&
+                      intl.formatMessage(messages.showingresults, {
+                        from: pageIndex * currentPageSize + 1,
+                        to:
+                          data.results.length < currentPageSize
+                            ? pageIndex * currentPageSize + data.results.length
+                            : (pageIndex + 1) * currentPageSize,
+                        total: data.pageInfo.results,
+                        strong: function strong(msg) {
+                          return <span className="font-medium">{msg}</span>;
+                        },
+                      })}
                   </p>
                 </div>
                 <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
