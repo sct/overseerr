@@ -37,10 +37,9 @@ const UserNotificationSettings: React.FC = () => {
   );
 
   const UserNotificationSettingsSchema = Yup.object().shape({
-    discordId: Yup.string().matches(
-      /^\d{18}$/,
-      intl.formatMessage(messages.validationDiscordId)
-    ),
+    discordId: Yup.string()
+      .optional()
+      .matches(/^\d{18}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
   if (!data && !error) {
