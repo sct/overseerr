@@ -90,7 +90,9 @@ When adding new UI text, please be sure to adhere to the following guidelines:
 
 ## Translation
 
-We use [Weblate](https://hosted.weblate.org/engage/overseerr/) for our translations so please feel free to contribute to localizing Overseerr!
+We use [Weblate](https://hosted.weblate.org/engage/overseerr/) for our translations, and your help with localizing Overseerr would be greatly appreciated! If your language is not listed below, please [open a feature request on GitHub](https://github.com/sct/overseerr/issues/new/choose).
+
+<a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/multi-auto.svg" alt="Translation status" /></a>
 
 ## Attribution
 
