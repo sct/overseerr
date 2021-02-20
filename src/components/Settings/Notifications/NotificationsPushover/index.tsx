@@ -16,8 +16,8 @@ const messages = defineMessages({
   agentenabled: 'Enable Agent',
   accessToken: 'Application/API Token',
   userToken: 'User Key',
-  validationAccessTokenRequired: 'You must provide an application token',
-  validationUserTokenRequired: 'You must provide a user key',
+  validationAccessTokenRequired: 'You must provide a valid application token',
+  validationUserTokenRequired: 'You must provide a valid user key',
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   testsent: 'Test notification sent!',
@@ -38,12 +38,18 @@ const NotificationsPushover: React.FC = () => {
   );
 
   const NotificationsPushoverSchema = Yup.object().shape({
-    accessToken: Yup.string().required(
-      intl.formatMessage(messages.validationAccessTokenRequired)
-    ),
-    userToken: Yup.string().required(
-      intl.formatMessage(messages.validationUserTokenRequired)
-    ),
+    accessToken: Yup.string()
+      .required(intl.formatMessage(messages.validationAccessTokenRequired))
+      .matches(
+        /^a[A-Za-z0-9]{29}$/,
+        intl.formatMessage(messages.validationAccessTokenRequired)
+      ),
+    userToken: Yup.string()
+      .required(intl.formatMessage(messages.validationUserTokenRequired))
+      .matches(
+        /^[ug][A-Za-z0-9]{29}$/,
+        intl.formatMessage(messages.validationUserTokenRequired)
+      ),
   });
 
   if (!data && !error) {
