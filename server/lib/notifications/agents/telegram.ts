@@ -78,7 +78,7 @@ class TelegramAgent
         message += `\*Now Available\*`;
         message += `\n\n\*${title}\*`;
         if (plot) {
-          message += `\n${plot}\n\n`;
+          message += `\n${plot}`;
         }
         message += `\n\n\*Requested By\*\n${user}`;
         message += `\n\n\*Status\*\nAvailable`;
