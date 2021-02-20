@@ -25,7 +25,7 @@ const messages = defineMessages({
   notificationAgentsSettings: 'Notification Agents',
   notificationAgentSettingsDescription:
     'Choose the types of notifications to send, and which notification agents to use.',
-  notificationsettingssaved: 'Notification settings saved!',
+  notificationsettingssaved: 'Notification settings saved successfully!',
   notificationsettingsfailed: 'Notification settings failed to save.',
   enablenotifications: 'Enable Notifications',
   autoapprovedrequests: 'Enable Notifications for Automatic Approvals',

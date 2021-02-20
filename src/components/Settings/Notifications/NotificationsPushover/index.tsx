@@ -14,19 +14,19 @@ const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
-  accessToken: 'Access Token',
-  userToken: 'User Token',
-  validationAccessTokenRequired: 'You must provide an access token.',
-  validationUserTokenRequired: 'You must provide a user token.',
-  pushoversettingssaved: 'Pushover notification settings saved!',
+  accessToken: 'Application/API Token',
+  userToken: 'User Key',
+  validationAccessTokenRequired: 'You must provide an application token',
+  validationUserTokenRequired: 'You must provide a user key',
+  pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
   settinguppushover: 'Setting Up Pushover Notifications',
   settinguppushoverDescription:
-    'To configure Pushover notifications, you need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and get the access token.\
-    When setting up the application, you can use one of the icons in the <IconLink>public folder</IconLink> on GitHub.\
-    You also need the Pushover user token, which can be found on the start page when you log in.',
+    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API key below.\
+    (You can use one of our <IconLink>official icons on GitHub</IconLink>.)\
+    You will need also need your user key.',
   notificationtypes: 'Notification Types',
 });
 

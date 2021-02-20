@@ -15,8 +15,7 @@ const messages = defineMessages({
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
-  webhookUrlPlaceholder: 'Webhook URL',
-  slacksettingssaved: 'Slack notification settings saved!',
+  slacksettingssaved: 'Slack notification settings saved successfully!',
   slacksettingsfailed: 'Slack notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
@@ -131,14 +130,7 @@ const NotificationsSlack: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm">
-                    <Field
-                      id="webhookUrl"
-                      name="webhookUrl"
-                      type="text"
-                      placeholder={intl.formatMessage(
-                        messages.webhookUrlPlaceholder
-                      )}
-                    />
+                    <Field id="webhookUrl" name="webhookUrl" type="text" />
                   </div>
                   {errors.webhookUrl && touched.webhookUrl && (
                     <div className="error">{errors.webhookUrl}</div>

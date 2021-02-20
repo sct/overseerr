@@ -21,7 +21,7 @@ const messages = defineMessages({
   enableSsl: 'Enable SSL',
   authUser: 'SMTP Username',
   authPass: 'SMTP Password',
-  emailsettingssaved: 'Email notification settings saved!',
+  emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
   test: 'Test',
   testsent: 'Test notification sent!',

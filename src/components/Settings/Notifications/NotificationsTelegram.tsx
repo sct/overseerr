@@ -16,17 +16,17 @@ const messages = defineMessages({
   agentenabled: 'Enable Agent',
   botAPI: 'Bot API',
   chatId: 'Chat ID',
-  validationBotAPIRequired: 'You must provide a Bot API key.',
-  validationChatIdRequired: 'You must provide a Chat ID.',
-  telegramsettingssaved: 'Telegram notification settings saved!',
+  validationBotAPIRequired: 'You must provide a Bot API key',
+  validationChatIdRequired: 'You must provide a Chat ID',
+  telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
   settinguptelegram: 'Setting Up Telegram Notifications',
   settinguptelegramDescription:
-    'To configure Telegram notifications, you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
-    Additionally, you need the chat ID for the chat where you would like the bot to send notifications.\
-    You can get this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
+    'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
+    Additionally, you will need the chat ID for the chat to which you would like to send notifications.\
+    You can get this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat.',
   notificationtypes: 'Notification Types',
   sendSilently: 'Send Silently',
   sendSilentlyTip: 'Send notifications with no sound',
