@@ -203,7 +203,7 @@ const NotificationsEmail: React.FC = () => {
                   {intl.formatMessage(messages.smtpPort)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="flex max-w-lg rounded-md shadow-sm sm:max-w-xs">
                     <Field
                       id="smtpPort"
                       name="smtpPort"
