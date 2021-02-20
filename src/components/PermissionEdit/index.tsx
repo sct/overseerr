@@ -6,7 +6,7 @@ import { useIntl, defineMessages } from 'react-intl';
 export const messages = defineMessages({
   admin: 'Admin',
   adminDescription:
-    'Full administrator access. Bypasses all permission checks.',
+    'Full administrator access. Bypasses all other permission checks.',
   users: 'Manage Users',
   usersDescription:
     'Grants permission to manage Overseerr users. Users with this permission cannot modify users with or grant the Admin privilege.',
