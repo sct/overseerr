@@ -1,4 +1,4 @@
-# Frequently Asked Questions
+# Frequently Asked Questions (FAQ)
 
 {% hint style="info" %}
 If you can't find a solution here, please ask on [Discord](https://discord.gg/PkCWJSeCk7). Please do not post questions on the GitHub issues tracker.
@@ -48,7 +48,7 @@ Check the Overseerr logs for media items that are missing. The logs will contain
 4. If the item is now seen by Overseerr then repeat step 2 for each missing item. If you have a large amount of items missing then a full metadata refresh is recommended for that library.
 5. Run a full scan on Overseerr after refreshing all unmatched items.
 
-Perform these steps to verify the media item has a guid Overseerr can match.
+Perform these steps to verify the media item has a GUID Overseerr can match.
 
 1. Go to the media item in Plex and **"Get info"** and click on **"View XML"**.
 2. Verify that the media item has the same format of one of the examples below.
@@ -68,7 +68,7 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 **A:** The logs are located at `<Overseeerr-install-directory>/logs/overseerr.log`
 
-## User Management
+## User management
 
 ### Why can't I see all my Plex users?
 
@@ -94,6 +94,6 @@ Perform these steps to verify the media item has a guid Overseerr can match.
 
 ## Notifications
 
-### I am getting "Username and Password not accepted" when sending email notifications to gmail!
+### I am getting "Username and Password not accepted" when attempting to send email notifications via Gmail!
 
-**A:** If you have 2-Step Verification enabled on your account you will need to create an app password. More details can be found [here](https://support.google.com/mail/answer/185833).
+**A:** If you have 2-Step Verification enabled on your account, you will need to create an [app password](https://support.google.com/mail/answer/185833).
