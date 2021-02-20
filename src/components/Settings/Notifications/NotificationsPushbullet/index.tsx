@@ -16,7 +16,8 @@ const messages = defineMessages({
   agentEnabled: 'Enable Agent',
   accessToken: 'Access Token',
   validationAccessTokenRequired: 'You must provide an access token',
-  pushbulletSettingsSaved: 'Pushbullet notification settings saved successfully!',
+  pushbulletSettingsSaved:
+    'Pushbullet notification settings saved successfully!',
   pushbulletSettingsFailed: 'Pushbullet notification settings failed to save.',
   testSent: 'Test notification sent!',
   test: 'Test',
