@@ -209,6 +209,7 @@ const NotificationsEmail: React.FC = () => {
                       name="smtpPort"
                       type="text"
                       placeholder="465"
+                      className="short"
                     />
                   </div>
                   {errors.smtpPort && touched.smtpPort && (
