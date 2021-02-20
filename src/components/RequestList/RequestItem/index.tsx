@@ -190,7 +190,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
         </div>
       </Table.TD>
       <Table.TD>
-        {requestData.media.status === MediaStatus.UNKNOWN ||
+        {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
+          MediaStatus.UNKNOWN ||
         requestData.status === MediaRequestStatus.DECLINED ? (
           <Badge badgeType="danger">
             {requestData.status === MediaRequestStatus.DECLINED
@@ -247,7 +248,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
         </div>
       </Table.TD>
       <Table.TD alignText="right">
-        {requestData.media.status === MediaStatus.UNKNOWN &&
+        {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
+          MediaStatus.UNKNOWN &&
           requestData.status !== MediaRequestStatus.DECLINED &&
           hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button

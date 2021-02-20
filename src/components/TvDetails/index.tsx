@@ -400,31 +400,28 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
           <div className="mb-2 space-x-2">
-            {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
-              <span className="ml-2 lg:ml-0">
-                <StatusBadge
-                  status={data.mediaInfo?.status}
-                  inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
-                  plexUrl={data.mediaInfo?.plexUrl}
-                  plexUrl4k={data.mediaInfo?.plexUrl4k}
-                />
-              </span>
-            )}
-            <span>
+            <span className="ml-2 lg:ml-0">
               <StatusBadge
-                status={data.mediaInfo?.status4k}
-                is4k
+                status={data.mediaInfo?.status}
                 inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
                 plexUrl={data.mediaInfo?.plexUrl}
-                plexUrl4k={
-                  data.mediaInfo?.plexUrl4k &&
-                  (hasPermission(Permission.REQUEST_4K) ||
-                    hasPermission(Permission.REQUEST_4K_TV))
-                    ? data.mediaInfo.plexUrl4k
-                    : undefined
-                }
               />
             </span>
+            {settings.currentSettings.series4kEnabled &&
+              hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+                type: 'or',
+              }) && (
+                <span>
+                  <StatusBadge
+                    status={data.mediaInfo?.status4k}
+                    is4k
+                    inProgress={
+                      (data.mediaInfo?.downloadStatus ?? []).length > 0
+                    }
+                    plexUrl4k={data.mediaInfo?.plexUrl4k}
+                  />
+                </span>
+              )}
           </div>
           <h1 className="text-2xl lg:text-4xl">
             {data.name}{' '}
