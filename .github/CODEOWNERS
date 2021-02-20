@@ -9,4 +9,4 @@ docs/  @TheCatLady @samwiseg0
 snap/  @samwiseg0
 
 # i18n locale files
-i18n/locale/ @sct @TheCatLady
+src/i18n/locale/ @sct @TheCatLady
