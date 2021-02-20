@@ -18,6 +18,7 @@ import TitleCard from '../TitleCard';
 import Transition from '../Transition';
 import PageTitle from '../Common/PageTitle';
 import { useUser, Permission } from '../../hooks/useUser';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   overviewunavailable: 'Overview unavailable.',
@@ -45,6 +46,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
 }) => {
   const intl = useIntl();
   const router = useRouter();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const { locale } = useContext(LanguageContext);
   const { hasPermission } = useUser();
@@ -232,23 +234,24 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                 )}
               />
             </span>
-            {hasPermission(
-              [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
-              {
-                type: 'or',
-              }
-            ) && (
-              <span>
-                <StatusBadge
-                  status={collectionStatus4k}
-                  is4k
-                  inProgress={data.parts.some(
-                    (part) =>
-                      (part.mediaInfo?.downloadStatus4k ?? []).length > 0
-                  )}
-                />
-              </span>
-            )}
+            {settings.currentSettings.movie4kEnabled &&
+              hasPermission(
+                [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+                {
+                  type: 'or',
+                }
+              ) && (
+                <span>
+                  <StatusBadge
+                    status={collectionStatus4k}
+                    is4k
+                    inProgress={data.parts.some(
+                      (part) =>
+                        (part.mediaInfo?.downloadStatus4k ?? []).length > 0
+                    )}
+                  />
+                </span>
+              )}
           </div>
           <h1 className="text-2xl md:text-4xl">{data.name}</h1>
           <span className="mt-1 text-xs lg:text-base lg:mt-0">
@@ -260,7 +263,12 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
         <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
           {hasPermission(Permission.REQUEST) &&
             (collectionStatus !== MediaStatus.AVAILABLE ||
-              collectionStatus4k !== MediaStatus.AVAILABLE) && (
+              (settings.currentSettings.movie4kEnabled &&
+                hasPermission(
+                  [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+                  { type: 'or' }
+                ) &&
+                collectionStatus4k !== MediaStatus.AVAILABLE)) && (
               <div className="mb-3 sm:mb-0">
                 <ButtonWithDropdown
                   buttonType="primary"
@@ -294,10 +302,11 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                     </>
                   }
                 >
-                  {hasPermission(
-                    [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
-                    { type: 'or' }
-                  ) &&
+                  {settings.currentSettings.movie4kEnabled &&
+                    hasPermission(
+                      [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+                      { type: 'or' }
+                    ) &&
                     collectionStatus !== MediaStatus.AVAILABLE &&
                     collectionStatus4k !== MediaStatus.AVAILABLE && (
                       <ButtonWithDropdown.Item

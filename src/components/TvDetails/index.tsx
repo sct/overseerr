@@ -407,18 +407,21 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 plexUrl={data.mediaInfo?.plexUrl}
               />
             </span>
-            {hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
-              type: 'or',
-            }) && (
-              <span>
-                <StatusBadge
-                  status={data.mediaInfo?.status4k}
-                  is4k
-                  inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
-                  plexUrl4k={data.mediaInfo?.plexUrl4k}
-                />
-              </span>
-            )}
+            {settings.currentSettings.series4kEnabled &&
+              hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+                type: 'or',
+              }) && (
+                <span>
+                  <StatusBadge
+                    status={data.mediaInfo?.status4k}
+                    is4k
+                    inProgress={
+                      (data.mediaInfo?.downloadStatus ?? []).length > 0
+                    }
+                    plexUrl4k={data.mediaInfo?.plexUrl4k}
+                  />
+                </span>
+              )}
           </div>
           <h1 className="text-2xl lg:text-4xl">
             {data.name}{' '}

@@ -385,23 +385,24 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 plexUrl={data.mediaInfo?.plexUrl}
               />
             </span>
-            {hasPermission(
-              [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
-              {
-                type: 'or',
-              }
-            ) && (
-              <span>
-                <StatusBadge
-                  status={data.mediaInfo?.status4k}
-                  is4k
-                  inProgress={
-                    (data.mediaInfo?.downloadStatus4k ?? []).length > 0
-                  }
-                  plexUrl4k={data.mediaInfo?.plexUrl4k}
-                />
-              </span>
-            )}
+            {settings.currentSettings.movie4kEnabled &&
+              hasPermission(
+                [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+                {
+                  type: 'or',
+                }
+              ) && (
+                <span>
+                  <StatusBadge
+                    status={data.mediaInfo?.status4k}
+                    is4k
+                    inProgress={
+                      (data.mediaInfo?.downloadStatus4k ?? []).length > 0
+                    }
+                    plexUrl4k={data.mediaInfo?.plexUrl4k}
+                  />
+                </span>
+              )}
           </div>
           <h1 className="text-2xl lg:text-4xl">
             {data.title}{' '}
