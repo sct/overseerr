@@ -305,7 +305,7 @@
   "components.Settings.Notifications.discordsettingsfailed": "Discord notification settings failed to save.",
   "components.Settings.Notifications.discordsettingssaved": "Discord notification settings saved successfully!",
   "components.Settings.Notifications.emailNotificationTypesAlert": "Notification Email Recipients",
-  "components.Settings.Notifications.emailNotificationTypesAlertDescription": "For the \"Media Requested\" and \"Media Failed\" notification types, notifications will only be went to users with the \"Manage Requests\" permission.",
+  "components.Settings.Notifications.emailNotificationTypesAlertDescription": "For the \"Media Requested\" and \"Media Failed\" notification types, notifications will only be sent to users with the \"Manage Requests\" permission.",
   "components.Settings.Notifications.emailsender": "Sender Address",
   "components.Settings.Notifications.emailsettingsfailed": "Email notification settings failed to save.",
   "components.Settings.Notifications.emailsettingssaved": "Email notification settings saved successfully!",

@@ -35,7 +35,7 @@ const messages = defineMessages({
   emailNotificationTypesAlert: 'Notification Email Recipients',
   emailNotificationTypesAlertDescription:
     'For the "Media Requested" and "Media Failed" notification types,\
-    notifications will only be went to users with the "Manage Requests" permission.',
+    notifications will only be sent to users with the "Manage Requests" permission.',
 });
 
 const NotificationsEmail: React.FC = () => {
