@@ -20,7 +20,3 @@
 
 - [Reverse Proxy Examples](extending-overseerr/reverse-proxy-examples.md)
 - [Fail2ban Filter](extending-overseerr/fail2ban.md)
-
-## Contributing
-
-- [UI Text Style Guide](contributing/ui-text-style-guide.md)

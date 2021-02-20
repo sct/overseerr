@@ -10,15 +10,15 @@ The following configuration options are available:
 
 The URL you would like to post notifications to. Your JSON will be sent as the body of the request.
 
-### Authorization header
+### Authorization Header
 
 Custom authorization header. Anything entered for this will be sent as an `Authorization` header.
 
-### JSON payload (required)
+### JSON Payload (required)
 
 Customize the JSON payload to suit your needs. Overseerr provides several [template variables](./webhooks.md#template-variables) for use in the payload, which will be replaced with the relevant data when the notifications are triggered.
 
-## Template variables
+## Template Variables
 
 ### General
 
