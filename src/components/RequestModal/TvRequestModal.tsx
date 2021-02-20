@@ -39,13 +39,10 @@ const messages = defineMessages({
   notrequested: 'Not Requested',
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request edited.',
-  requestcancelled: 'Request cancelled.',
+  requestcancelled: 'Request canceled.',
   autoapproval: 'Automatic Approval',
   requesterror: 'Something went wrong while submitting the request.',
   next: 'Next',
-  notvdbid: 'No TVDB ID was found for the item on TMDb.',
-  notvdbiddescription:
-    'Either add the TVDB ID to TMDb and try again later, or select the correct match below:',
   backbutton: 'Back',
 });
 

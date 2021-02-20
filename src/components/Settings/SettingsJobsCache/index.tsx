@@ -21,7 +21,7 @@ const messages = defineMessages({
   runnow: 'Run Now',
   canceljob: 'Cancel Job',
   jobstarted: '{jobname} started.',
-  jobcancelled: '{jobname} cancelled.',
+  jobcancelled: '{jobname} canceled.',
   process: 'Process',
   command: 'Command',
   cache: 'Cache',
