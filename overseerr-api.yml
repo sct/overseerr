@@ -2148,7 +2148,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Cancelled job returned
+          description: Canceled job returned
           content:
             application/json:
               schema:
