@@ -1,45 +1,45 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Submit a report to help us improve
 title: ''
 labels: 'awaiting-triage, type:bug'
 assignees: ''
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+#### Description
 
-**What version of Overseerr are you running?**
-Please fill in the version you are currently running.
+Please provide a clear and concise description of the bug or issue.
 
-You can find it under: Settings -> About -> Version
+#### Version
 
-**To Reproduce**
-Steps to reproduce the behavior:
+What version of Overseerr are you running? (You can find this in Settings → About → Version.)
 
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+#### Steps to Reproduce
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+Please tell us how we can reproduce the undesired behavior.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+1. Go to [...]
+2. Click on [...]
+3. Scroll down to [...]
+4. See error in [...]
 
-**Desktop (please complete the following information):**
+#### Expected Behavior
 
-- OS: [e.g. iOS]
-- Browser [e.g. chrome, safari]
-- Version [e.g. 22]
+Please provide a clear and concise description of what you expected to happen.
 
-**Smartphone (please complete the following information):**
+#### Screenshots
 
-- Device: [e.g. iPhone6]
-- OS: [e.g. iOS8.1]
-- Browser [e.g. stock browser, safari]
-- Version [e.g. 22]
+If applicable, please provide screenshots depicting the problem.
 
-**Additional context**
-Add any other context about the problem here.
+#### Device
+
+What device were you using when you encountered this issue? Please provide this information to help us reproduce and investigate the bug.
+
+- **Platform:** [e.g., desktop, smartphone, tablet]
+- **Device:** [e.g., iPhone X, Surface Pro, Samsung Galaxy Tab]
+- **OS:** [e.g., iOS 8.1, Windows 10, Android 11]
+- **Browser:** [e.g., Chrome, Safari, Edge, Firefox]
+
+#### Additional Context
+
+Please provide any additional information that may be relevant or helpful.
