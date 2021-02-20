@@ -119,7 +119,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           await axios.post<MediaRequest>('/api/v1/request', {
             mediaId: part.id,
             mediaType: 'movie',
-            is4k: is4k,
+            is4k,
           });
         })
       );
