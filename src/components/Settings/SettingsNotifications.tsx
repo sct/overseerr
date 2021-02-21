@@ -131,7 +131,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       content: (
         <span className="flex items-center">
           <Bolt className="h-4 mr-2" />
-          {intl.formatMessage(messages.email)}
+          {intl.formatMessage(messages.webhook)}
         </span>
       ),
       route: '/settings/notifications/webhook',
