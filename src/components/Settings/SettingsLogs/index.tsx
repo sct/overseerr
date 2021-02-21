@@ -206,39 +206,6 @@ const SettingsLogs: React.FC = () => {
           </Table.TBody>
         </Table>
       </div>
-      <h3 className="text-lg font-medium leading-6 text-gray-200">
-        {intl.formatMessage(messages.logs)}
-      </h3>
-      <p className="text-sm leading-5 text-gray-500">
-        {intl.formatMessage(messages.logsDescription)}
-      </p>
-
-      <div className="mt-4 text-sm">
-        {data?.map((row: any, index: any) => (
-          <div key={`log-list-${index}`} className="space-x-2 text-gray-300">
-            <span className="inline">
-              <FormattedDate
-                value={row.timestamp}
-                year="numeric"
-                month="short"
-                day="2-digit"
-              />
-              &nbsp;
-              <FormattedTime
-                value={row.timestamp}
-                hour="numeric"
-                minute="numeric"
-                second="numeric"
-                hour12={false}
-              />
-            </span>
-            <span className="inline">
-              [{row.level}][{row.label}]:
-            </span>
-            <span className="inline">{row.message}</span>
-          </div>
-        ))}
-      </div>
     </>
   );
 };
