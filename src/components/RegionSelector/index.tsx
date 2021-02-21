@@ -21,7 +21,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
   onChange,
 }) => {
   const intl = useIntl();
-  const { data: regions } = useSWR<Region[]>('/api/v1/discover/regions');
+  const { data: regions } = useSWR<Region[]>('/api/v1/regions');
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
 
   useEffect(() => {
@@ -61,16 +61,17 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                   </span>
                   <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                     <svg
-                      className="w-5 h-5 text-gray-400"
-                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
                       fill="none"
-                      stroke="currentColor"
+                      viewBox="0 0 20 20"
+                      className="w-5 h-5 text-gray-500"
                     >
                       <path
-                        d="M7 7l3-3 3 3m0 6l-3 3-3-3"
-                        strokeWidth="1.5"
+                        stroke="#6b7280"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        d="M6 8l4 4 4-4"
                       />
                     </svg>
                   </span>

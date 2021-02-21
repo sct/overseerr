@@ -1,7 +1,7 @@
 import React from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
-import type { MainSettings, Region } from '../../../server/lib/settings';
+import type { MainSettings, Language } from '../../../server/lib/settings';
 import CopyButton from './CopyButton';
 import { Form, Formik, Field } from 'formik';
 import axios from 'axios';
@@ -25,6 +25,11 @@ const messages = defineMessages({
   applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
   region: 'Discovery Region',
+  regionTip:
+    'Filter content by region (this will only apply to the "Popular" and "Upcoming" categories)',
+  originallanguage: 'Discovery Language',
+  originallanguageTip:
+    'Filter content by original language (this will only apply to the "Popular" and "Upcoming" categories)',
   toastApiKeySuccess: 'New API key generated!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
   toastSettingsSuccess: 'Settings successfully saved!',
@@ -52,8 +57,8 @@ const SettingsMain: React.FC = () => {
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
   );
-  const { data: regions, error: regionsError } = useSWR<Region[]>(
-    '/api/v1/discover/regions'
+  const { data: languages, error: languagesError } = useSWR<Language[]>(
+    '/api/v1/languages'
   );
   const MainSettingsSchema = Yup.object().shape({
     applicationTitle: Yup.string().required(
@@ -90,7 +95,7 @@ const SettingsMain: React.FC = () => {
     }
   };
 
-  if (!data && !error && !regions && !regionsError) {
+  if (!data && !error && !languages && !languagesError) {
     return <LoadingSpinner />;
   }
 
@@ -114,6 +119,7 @@ const SettingsMain: React.FC = () => {
             hideAvailable: data?.hideAvailable,
             localLogin: data?.localLogin,
             region: data?.region,
+            originalLanguage: data?.originalLanguage,
             trustProxy: data?.trustProxy,
           }}
           enableReinitialize
@@ -128,6 +134,7 @@ const SettingsMain: React.FC = () => {
                 hideAvailable: values.hideAvailable,
                 localLogin: values.localLogin,
                 region: values.region,
+                originalLanguage: values.originalLanguage,
                 trustProxy: values.trustProxy,
               });
 
@@ -272,7 +279,10 @@ const SettingsMain: React.FC = () => {
                 </div>
                 <div className="form-row">
                   <label htmlFor="region" className="text-label">
-                    {intl.formatMessage(messages.region)}
+                    <span>{intl.formatMessage(messages.region)}</span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.regionTip)}
+                    </span>
                   </label>
                   <div className="form-input">
                     <RegionSelector
@@ -280,6 +290,36 @@ const SettingsMain: React.FC = () => {
                       name="region"
                       onChange={setFieldValue}
                     />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="originalLanguage" className="text-label">
+                    <span>{intl.formatMessage(messages.originallanguage)}</span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.originallanguageTip)}
+                    </span>
+                  </label>
+                  <div className="form-input">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <Field
+                        as="select"
+                        id="originalLanguage"
+                        name="originalLanguage"
+                      >
+                        <option value="">All</option>
+                        {languages?.map((language) => (
+                          <option
+                            key={`language-key-${language.iso_639_1}`}
+                            value={language.iso_639_1}
+                          >
+                            {intl.formatDisplayName(language.iso_639_1, {
+                              type: 'language',
+                              fallback: 'none',
+                            }) ?? language.english_name}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
                   </div>
                 </div>
                 <div className="form-row">

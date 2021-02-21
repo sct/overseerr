@@ -375,3 +375,9 @@ export interface TmdbRegion {
   iso_3166_1: string;
   english_name: string;
 }
+
+export interface TmdbLanguage {
+  iso_639_1: string;
+  english_name: string;
+  name: string;
+}

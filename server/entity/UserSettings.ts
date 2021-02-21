@@ -28,4 +28,7 @@ export class UserSettings {
 
   @Column({ nullable: true })
   public region?: string;
+
+  @Column({ nullable: true })
+  public originalLanguage?: string;
 }

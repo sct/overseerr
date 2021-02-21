@@ -8,19 +8,13 @@ import { getSettings } from '../lib/settings';
 
 const discoverRoutes = Router();
 
-discoverRoutes.get('/regions', async (req, res) => {
-  const tmdb = new TheMovieDb();
-
-  const regions = await tmdb.getRegions();
-
-  return res.status(200).json(regions);
-});
-
 discoverRoutes.get('/movies', async (req, res) => {
   const settings = getSettings();
-  const tmdb = new TheMovieDb(
-    req.user?.settings?.region ?? settings.main.region
-  );
+  const tmdb = new TheMovieDb({
+    region: req.user?.settings?.region ?? settings.main.region,
+    originalLanguage:
+      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
+  });
 
   const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
@@ -48,13 +42,22 @@ discoverRoutes.get('/movies', async (req, res) => {
 
 discoverRoutes.get('/movies/upcoming', async (req, res) => {
   const settings = getSettings();
-  const tmdb = new TheMovieDb(
-    req.user?.settings?.region ?? settings.main.region
-  );
+  const tmdb = new TheMovieDb({
+    region: req.user?.settings?.region ?? settings.main.region,
+    originalLanguage:
+      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
+  });
 
-  const data = await tmdb.getUpcomingMovies({
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const date = new Date(now.getTime() - offset * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
+
+  const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
     language: req.query.language as string,
+    primaryReleaseDateGte: date,
   });
 
   const media = await Media.getRelatedMedia(
@@ -78,9 +81,11 @@ discoverRoutes.get('/movies/upcoming', async (req, res) => {
 
 discoverRoutes.get('/tv', async (req, res) => {
   const settings = getSettings();
-  const tmdb = new TheMovieDb(
-    req.user?.settings?.region ?? settings.main.region
-  );
+  const tmdb = new TheMovieDb({
+    region: req.user?.settings?.region ?? settings.main.region,
+    originalLanguage:
+      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
+  });
 
   const data = await tmdb.getDiscoverTv({
     page: Number(req.query.page),
@@ -106,11 +111,52 @@ discoverRoutes.get('/tv', async (req, res) => {
   });
 });
 
+discoverRoutes.get('/tv/upcoming', async (req, res) => {
+  const settings = getSettings();
+  const tmdb = new TheMovieDb({
+    region: req.user?.settings?.region ?? settings.main.region,
+    originalLanguage:
+      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
+  });
+
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const date = new Date(now.getTime() - offset * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
+
+  const data = await tmdb.getDiscoverTv({
+    page: Number(req.query.page),
+    language: req.query.language as string,
+    firstAirDateGte: date,
+  });
+
+  const media = await Media.getRelatedMedia(
+    data.results.map((result) => result.id)
+  );
+
+  return res.status(200).json({
+    page: data.page,
+    totalPages: data.total_pages,
+    totalResults: data.total_results,
+    results: data.results.map((result) =>
+      mapTvResult(
+        result,
+        media.find(
+          (med) => med.tmdbId === result.id && med.mediaType === MediaType.TV
+        )
+      )
+    ),
+  });
+});
+
 discoverRoutes.get('/trending', async (req, res) => {
   const settings = getSettings();
-  const tmdb = new TheMovieDb(
-    req.user?.settings?.region ?? settings.main.region
-  );
+  const tmdb = new TheMovieDb({
+    region: req.user?.settings?.region ?? settings.main.region,
+    originalLanguage:
+      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
+  });
 
   const data = await tmdb.getAllTrending({
     page: Number(req.query.page),

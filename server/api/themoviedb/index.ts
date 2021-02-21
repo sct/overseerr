@@ -4,6 +4,7 @@ import ExternalAPI from '../externalapi';
 import {
   TmdbCollection,
   TmdbExternalIdResponse,
+  TmdbLanguage,
   TmdbMovieDetails,
   TmdbPersonCombinedCredits,
   TmdbPersonDetail,
@@ -27,6 +28,8 @@ interface DiscoverMovieOptions {
   page?: number;
   includeAdult?: boolean;
   language?: string;
+  primaryReleaseDateGte?: string;
+  primaryReleaseDateLte?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -47,6 +50,8 @@ interface DiscoverMovieOptions {
 interface DiscoverTvOptions {
   page?: number;
   language?: string;
+  firstAirDateGte?: string;
+  firstAirDateLte?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -60,7 +65,11 @@ interface DiscoverTvOptions {
 
 class TheMovieDb extends ExternalAPI {
   private region?: string;
-  constructor(region?: string) {
+  private originalLanguage?: string;
+  constructor({
+    region,
+    originalLanguage,
+  }: { region?: string; originalLanguage?: string } = {}) {
     super(
       'https://api.themoviedb.org/3',
       {
@@ -71,6 +80,7 @@ class TheMovieDb extends ExternalAPI {
       }
     );
     this.region = region;
+    this.originalLanguage = originalLanguage;
   }
 
   public searchMulti = async ({
@@ -347,6 +357,8 @@ class TheMovieDb extends ExternalAPI {
     page = 1,
     includeAdult = false,
     language = 'en',
+    primaryReleaseDateGte,
+    primaryReleaseDateLte,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const data = await this.get<TmdbSearchMovieResponse>('/discover/movie', {
@@ -355,8 +367,11 @@ class TheMovieDb extends ExternalAPI {
           page,
           include_adult: includeAdult,
           language,
-          with_release_type: 3,
+          with_release_type: '3|2',
           region: this.region,
+          with_original_language: this.originalLanguage,
+          'primary_release_date.gte': primaryReleaseDateGte,
+          'primary_release_date.lte': primaryReleaseDateLte,
         },
       });
 
@@ -369,19 +384,41 @@ class TheMovieDb extends ExternalAPI {
   public getDiscoverTv = async ({
     sortBy = 'popularity.desc',
     page = 1,
-    language = 'en',
+    language = 'en-US',
+    firstAirDateGte,
+    firstAirDateLte,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
-    try {
-      const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
-        params: {
-          sort_by: sortBy,
-          page,
-          language,
-          region: this.region,
-        },
-      });
+    const params: Record<string, string | number> = {
+      sort_by: sortBy,
+      page,
+      language,
+    };
 
-      return data;
+    if (this.region) {
+      params['region'] = this.region;
+    }
+
+    if (firstAirDateGte) {
+      params['first_air_date.gte'] = firstAirDateGte;
+    }
+
+    if (firstAirDateLte) {
+      params['first_air_date.lte'] = firstAirDateLte;
+    }
+
+    if (this.originalLanguage) {
+      params['with_original_language'] = this.originalLanguage;
+    }
+
+    try {
+      const response = await this.axios.get<TmdbSearchTvResponse>(
+        '/discover/tv',
+        {
+          params,
+        }
+      );
+
+      return response.data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch discover tv: ${e.message}`);
     }
@@ -402,6 +439,7 @@ class TheMovieDb extends ExternalAPI {
             page,
             language,
             region: this.region,
+            originalLanguage: this.originalLanguage,
           },
         }
       );
@@ -617,6 +655,22 @@ class TheMovieDb extends ExternalAPI {
       return regions;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch countries: ${e.message}`);
+    }
+  }
+
+  public async getLanguages(): Promise<TmdbLanguage[]> {
+    try {
+      const data = await this.get<TmdbLanguage[]>(
+        '/configuration/languages',
+        {},
+        86400 // 24 hours
+      );
+
+      const languages = sortBy(data, 'english_name');
+
+      return languages;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch langauges: ${e.message}`);
     }
   }
 }
