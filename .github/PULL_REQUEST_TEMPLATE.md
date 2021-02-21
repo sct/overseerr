@@ -8,6 +8,6 @@
 - [ ] Translation keys `yarn i18n:extract`
 - [ ] Database migration (if required)
 
-#### Issues Fixed
+#### Issues Fixed or Closed
 
 - Fixes #XXXX
