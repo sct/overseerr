@@ -4593,6 +4593,11 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
+country-code-emoji@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/country-code-emoji/-/country-code-emoji-2.2.0.tgz#afc99b8bbaff9cb038e370dc46faabbd7af48f64"
+  integrity sha512-iK7tw8pRbFIad7a3UDbx13SJpZj4ZReozc6oW6K6Wu4sAphQkJVxK8qfaPjFIXp22RoP/238WEDrKpIWxxI9CQ==
+
 country-language@^0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/country-language/-/country-language-0.1.7.tgz#7870f4ba125db9a6071f19737bd9ef9343ae35db"

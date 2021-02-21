@@ -10,6 +10,7 @@ import Error from '../../../../pages/_error';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import RegionSelector from '../../../RegionSelector';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -27,9 +28,10 @@ const UserGeneralSettings: React.FC = () => {
   const { addToast } = useToasts();
   const router = useRouter();
   const { user, mutate } = useUser({ id: Number(router.query.userId) });
-  const { data, error, revalidate } = useSWR<{ username?: string }>(
-    user ? `/api/v1/user/${user?.id}/settings/main` : null
-  );
+  const { data, error, revalidate } = useSWR<{
+    username?: string;
+    region?: string;
+  }>(user ? `/api/v1/user/${user?.id}/settings/main` : null);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -49,12 +51,14 @@ const UserGeneralSettings: React.FC = () => {
       <Formik
         initialValues={{
           displayName: data?.username,
+          region: data?.region,
         }}
         enableReinitialize
         onSubmit={async (values) => {
           try {
             await axios.post(`/api/v1/user/${user?.id}/settings/main`, {
               username: values.displayName,
+              region: values.region,
             });
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -72,7 +76,7 @@ const UserGeneralSettings: React.FC = () => {
           }
         }}
       >
-        {({ errors, touched, isSubmitting }) => {
+        {({ errors, touched, isSubmitting, values, setFieldValue }) => {
           return (
             <Form className="section">
               <div className="form-row">
@@ -107,6 +111,18 @@ const UserGeneralSettings: React.FC = () => {
                   {errors.displayName && touched.displayName && (
                     <div className="error">{errors.displayName}</div>
                   )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="displayName" className="text-label">
+                  Discovery Region
+                </label>
+                <div className="form-input">
+                  <RegionSelector
+                    name="region"
+                    value={values.region ?? ''}
+                    onChange={setFieldValue}
+                  />
                 </div>
               </div>
               <div className="actions">

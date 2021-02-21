@@ -27,7 +27,6 @@ interface DiscoverMovieOptions {
   page?: number;
   includeAdult?: boolean;
   language?: string;
-  region?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -48,7 +47,6 @@ interface DiscoverMovieOptions {
 interface DiscoverTvOptions {
   page?: number;
   language?: string;
-  region?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -61,7 +59,8 @@ interface DiscoverTvOptions {
 }
 
 class TheMovieDb extends ExternalAPI {
-  constructor() {
+  private region?: string;
+  constructor(region?: string) {
     super(
       'https://api.themoviedb.org/3',
       {
@@ -71,6 +70,7 @@ class TheMovieDb extends ExternalAPI {
         nodeCache: cacheManager.getCache('tmdb').data,
       }
     );
+    this.region = region;
   }
 
   public searchMulti = async ({
@@ -347,7 +347,6 @@ class TheMovieDb extends ExternalAPI {
     page = 1,
     includeAdult = false,
     language = 'en',
-    region = '',
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const data = await this.get<TmdbSearchMovieResponse>('/discover/movie', {
@@ -357,7 +356,7 @@ class TheMovieDb extends ExternalAPI {
           include_adult: includeAdult,
           language,
           with_release_type: 3,
-          region: region,
+          region: this.region,
         },
       });
 
@@ -371,7 +370,6 @@ class TheMovieDb extends ExternalAPI {
     sortBy = 'popularity.desc',
     page = 1,
     language = 'en',
-    region = '',
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
@@ -379,8 +377,7 @@ class TheMovieDb extends ExternalAPI {
           sort_by: sortBy,
           page,
           language,
-          with_release_type: 6,
-          region: region,
+          region: this.region,
         },
       });
 
@@ -393,11 +390,9 @@ class TheMovieDb extends ExternalAPI {
   public getUpcomingMovies = async ({
     page = 1,
     language = 'en',
-    region = '',
   }: {
     page: number;
     language: string;
-    region: string;
   }): Promise<TmdbUpcomingMoviesResponse> => {
     try {
       const data = await this.get<TmdbUpcomingMoviesResponse>(
@@ -406,7 +401,7 @@ class TheMovieDb extends ExternalAPI {
           params: {
             page,
             language,
-            region,
+            region: this.region,
           },
         }
       );
@@ -433,6 +428,7 @@ class TheMovieDb extends ExternalAPI {
           params: {
             page,
             language,
+            region: this.region,
           },
         }
       );

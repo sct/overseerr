@@ -7,7 +7,6 @@ import { MediaType } from '../constants/media';
 import { getSettings } from '../lib/settings';
 
 const discoverRoutes = Router();
-const settings = getSettings();
 
 discoverRoutes.get('/regions', async (req, res) => {
   const tmdb = new TheMovieDb();
@@ -18,12 +17,14 @@ discoverRoutes.get('/regions', async (req, res) => {
 });
 
 discoverRoutes.get('/movies', async (req, res) => {
-  const tmdb = new TheMovieDb();
+  const settings = getSettings();
+  const tmdb = new TheMovieDb(
+    req.user?.settings?.region ?? settings.main.region
+  );
 
   const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
     language: req.query.language as string,
-    region: settings.main.region,
   });
 
   const media = await Media.getRelatedMedia(
@@ -46,12 +47,14 @@ discoverRoutes.get('/movies', async (req, res) => {
 });
 
 discoverRoutes.get('/movies/upcoming', async (req, res) => {
-  const tmdb = new TheMovieDb();
+  const settings = getSettings();
+  const tmdb = new TheMovieDb(
+    req.user?.settings?.region ?? settings.main.region
+  );
 
   const data = await tmdb.getUpcomingMovies({
     page: Number(req.query.page),
     language: req.query.language as string,
-    region: settings.main.region,
   });
 
   const media = await Media.getRelatedMedia(
@@ -74,12 +77,14 @@ discoverRoutes.get('/movies/upcoming', async (req, res) => {
 });
 
 discoverRoutes.get('/tv', async (req, res) => {
-  const tmdb = new TheMovieDb();
+  const settings = getSettings();
+  const tmdb = new TheMovieDb(
+    req.user?.settings?.region ?? settings.main.region
+  );
 
   const data = await tmdb.getDiscoverTv({
     page: Number(req.query.page),
     language: req.query.language as string,
-    region: settings.main.region,
   });
 
   const media = await Media.getRelatedMedia(
@@ -102,7 +107,10 @@ discoverRoutes.get('/tv', async (req, res) => {
 });
 
 discoverRoutes.get('/trending', async (req, res) => {
-  const tmdb = new TheMovieDb();
+  const settings = getSettings();
+  const tmdb = new TheMovieDb(
+    req.user?.settings?.region ?? settings.main.region
+  );
 
   const data = await tmdb.getAllTrending({
     page: Number(req.query.page),

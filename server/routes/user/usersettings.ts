@@ -25,7 +25,7 @@ const isOwnProfileOrAdmin = (): Middleware => {
 
 const userSettingsRoutes = Router({ mergeParams: true });
 
-userSettingsRoutes.get<{ id: string }, { username?: string }>(
+userSettingsRoutes.get<{ id: string }, { username?: string; region?: string }>(
   '/main',
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
@@ -40,7 +40,9 @@ userSettingsRoutes.get<{ id: string }, { username?: string }>(
         return next({ status: 404, message: 'User not found.' });
       }
 
-      return res.status(200).json({ username: user.username });
+      return res
+        .status(200)
+        .json({ username: user.username, region: user.settings?.region });
     } catch (e) {
       next({ status: 500, message: e.message });
     }
@@ -49,8 +51,8 @@ userSettingsRoutes.get<{ id: string }, { username?: string }>(
 
 userSettingsRoutes.post<
   { id: string },
-  { username?: string },
-  { username?: string }
+  { username?: string; region?: string },
+  { username?: string; region?: string }
 >('/main', isOwnProfileOrAdmin(), async (req, res, next) => {
   const userRepository = getRepository(User);
 
@@ -64,6 +66,14 @@ userSettingsRoutes.post<
     }
 
     user.username = req.body.username;
+    if (!user.settings) {
+      user.settings = new UserSettings({
+        user: req.user,
+        region: req.body.region,
+      });
+    } else {
+      user.settings.region = req.body.region;
+    }
 
     await userRepository.save(user);
 
