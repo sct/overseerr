@@ -30,8 +30,7 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.splat(),
     winston.format.timestamp(),
-    winston.format.json(),
-    hformat
+    winston.format.json()
   ),
   transports: [
     new winston.transports.Console({
@@ -42,17 +41,20 @@ const logger = winston.createLogger({
         hformat
       ),
     }),
-    new winston.transports.DailyRotateFile({
-      filename: process.env.CONFIG_DIRECTORY
-        ? `${process.env.CONFIG_DIRECTORY}/logs/overseerr-%DATE%.log`
-        : path.join(__dirname, '../config/logs/overseerr-%DATE%.log'),
-      datePattern: 'YYYY-MM-DD',
-      zippedArchive: true,
-      maxSize: '20m',
-      maxFiles: '7d',
-      createSymlink: true,
-      symlinkName: 'overseerr.log',
+    new winston.transports.File({
+      filename: path.join(__dirname, '../config/logs/overseerr.log'),
     }),
+    // new winston.transports.DailyRotateFile({
+    //   filename: process.env.CONFIG_DIRECTORY
+    //     ? `${process.env.CONFIG_DIRECTORY}/logs/overseerr-%DATE%.log`
+    //     : path.join(__dirname, '../config/logs/overseerr-%DATE%.log'),
+    //   datePattern: 'YYYY-MM-DD',
+    //   zippedArchive: true,
+    //   maxSize: '20m',
+    //   maxFiles: '7d',
+    //   createSymlink: true,
+    //   symlinkName: 'overseerr.log',
+    // }),
   ],
 });
 
