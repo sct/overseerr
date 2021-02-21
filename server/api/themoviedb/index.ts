@@ -610,13 +610,13 @@ class TheMovieDb extends ExternalAPI {
 
   public async getRegions(): Promise<TmdbRegion[]> {
     try {
-      if (!regions) {
-        const response = await this.axios.get<TmdbRegion[]>(
-          '/configuration/countries'
-        );
+      const data = await this.get<TmdbRegion[]>(
+        '/configuration/countries',
+        {},
+        86400 // 24 hours
+      );
 
-        regions = sortBy(response.data, 'english_name');
-      }
+      const regions = sortBy(data, 'english_name');
 
       return regions;
     } catch (e) {
@@ -624,7 +624,5 @@ class TheMovieDb extends ExternalAPI {
     }
   }
 }
-
-let regions: TmdbRegion[] | undefined;
 
 export default TheMovieDb;

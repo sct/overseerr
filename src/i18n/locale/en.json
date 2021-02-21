@@ -521,7 +521,7 @@
   "components.Settings.port": "Port",
   "components.Settings.radarrSettingsDescription": "Configure your Radarr connection below. You can have multiple Radarr configurations, but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server which is used for new requests.",
   "components.Settings.radarrsettings": "Radarr Settings",
-  "components.Settings.region": "Default Region",
+  "components.Settings.region": "Discovery Region",
   "components.Settings.regionDefault": "All",
   "components.Settings.save": "Save Changes",
   "components.Settings.saving": "Saving…",

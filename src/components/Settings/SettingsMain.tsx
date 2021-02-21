@@ -23,7 +23,7 @@ const messages = defineMessages({
   apikey: 'API Key',
   applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
-  region: 'Default Region',
+  region: 'Discovery Region',
   regionDefault: 'All',
   toastApiKeySuccess: 'New API key generated!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
@@ -227,28 +227,6 @@ const SettingsMain: React.FC = () => {
                   </div>
                 </div>
                 <div className="form-row">
-                  <label htmlFor="region" className="text-label">
-                    {intl.formatMessage(messages.region)}
-                  </label>
-                  <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
-                      <Field as="select" id="region" name="region">
-                        <option value="">
-                          {intl.formatMessage(messages.regionDefault)}
-                        </option>
-                        {regions?.map((region: Region) => (
-                          <option
-                            key={region.iso_3166_1}
-                            value={region.iso_3166_1}
-                          >
-                            {region.english_name}
-                          </option>
-                        ))}
-                      </Field>
-                    </div>
-                  </div>
-                </div>
-                <div className="form-row">
                   <label htmlFor="trustProxy" className="checkbox-label">
                     <span>{intl.formatMessage(messages.trustProxy)}</span>
                     <span className="label-tip">
@@ -290,6 +268,28 @@ const SettingsMain: React.FC = () => {
                         setFieldValue('csrfProtection', !values.csrfProtection);
                       }}
                     />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="region" className="text-label">
+                    {intl.formatMessage(messages.region)}
+                  </label>
+                  <div className="form-input">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <Field as="select" id="region" name="region">
+                        <option value="">
+                          {intl.formatMessage(messages.regionDefault)}
+                        </option>
+                        {regions?.map((region: Region) => (
+                          <option
+                            key={region.iso_3166_1}
+                            value={region.iso_3166_1}
+                          >
+                            {region.english_name}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
                   </div>
                 </div>
                 <div className="form-row">
