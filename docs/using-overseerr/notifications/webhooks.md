@@ -6,7 +6,7 @@ Webhooks let you post a custom JSON payload to any endpoint you like. You can al
 
 The following configuration options are available:
 
-### Webhook URL (Required)
+### Webhook URL (required)
 
 The URL you would like to post notifications to. Your JSON will be sent as the body of the request.
 
@@ -14,22 +14,20 @@ The URL you would like to post notifications to. Your JSON will be sent as the b
 
 Custom authorization header. Anything entered for this will be sent as an `Authorization` header.
 
-### Custom JSON Payload (Required)
+### JSON Payload (required)
 
-Design your JSON payload as you see fit. JSON is validated before you can save or test. Overseerr provides several [template variables](./webhooks.md#template-variables) for use in the payload which will be replaced with actual values when the notifications are sent.
-
-You can always reset back to the default custom payload setting by clicking the `Reset to Default JSON Payload` button under the editor.
+Customize the JSON payload to suit your needs. Overseerr provides several [template variables](./webhooks.md#template-variables) for use in the payload, which will be replaced with the relevant data when the notifications are triggered.
 
 ## Template Variables
 
-### Main
+### General
 
 - `{{notification_type}}` The type of notification. (Ex. `MEDIA_PENDING` or `MEDIA_APPROVED`)
 - `{{subject}}` The notification subject message. (For request notifications, this is the media title)
 - `{{message}}` Notification message body. (For request notifications, this is the media's overview/synopsis)
 - `{{image}}` Associated image with the request. (For request notifications, this is the media's poster)
 
-### Notify User
+### User
 
 These variables are usually the target user of the notification.
 
@@ -49,10 +47,10 @@ These variables are only included in media related notifications, such as reques
 - `{{media_status}}` Media's availability status (e.g., `AVAILABLE` or `PENDING`).
 - `{{media_status4k}}` Media's 4K availability status (e.g., `AVAILABLE` or `PENDING`).
 
-### Special Key Variables
+### Special
 
-These variables must be used as a key in the JSON Payload. (Ex, `"{{extra}}": []`).
+The following variables must be used as a key in the JSON payload (e.g., `"{{extra}}": []`).
 
-- `{{extra}}` This will override the value of the property to be the pre-formatted "extra" array that can come along with certain notifications. Using this variable is _not required_.
-- `{{media}}` This will override the value of the property to `null` if there is no media object passed along with the notification.
-- `{{request}}` This will override the value of the property to `null` if there is no request object passed along with the notification.
+- `{{request}}` This object will be `null` if there is no relevant request object for the notification.
+- `{{media}}` This object will be `null` if there is no relevant media object for the notification.
+- `{{extra}}` This object will contain the "extra" array of additional data for certain notifications.

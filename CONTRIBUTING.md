@@ -1,6 +1,6 @@
 # Contributing to Overseerr
 
-All help is welcome and greatly appreciated. If you would like to contribute to the project the steps below can get you started:
+All help is welcome and greatly appreciated. If you would like to contribute to the project, the instructions below can get you started...
 
 ## Development
 
@@ -14,29 +14,31 @@ All help is welcome and greatly appreciated. If you would like to contribute to 
 ### Getting Started
 
 1. [Fork](https://help.github.com/articles/fork-a-repo/) the repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device.
-   ```
+
+   ```bash
    git clone https://github.com/YOUR_USERNAME/overseerr.git
    cd overseerr/
    ```
+
 2. Add the remote upstream.
 
-   ```
+   ```bash
    git remote add upstream https://github.com/sct/overseerr.git
    ```
 
 3. Create a new branch
 
-   ```
+   ```bash
    git checkout -b BRANCH_NAME develop
    ```
 
-   - Its recommended to name the branch something relevant to the feature or fix you are working on.
+   - It is recommended to name the branch something relevant to the feature or fix you are working on.
    - An example of this would be `fix-title-cards` or `feature-new-system`.
    - Bad examples would be `patch` or `bug`.
 
 4. Run development environment
 
-   ```
+   ```bash
    yarn
    yarn dev
    ```
@@ -47,9 +49,9 @@ All help is welcome and greatly appreciated. If you would like to contribute to 
 
 6. Follow the [guidelines](#contributing-code).
 
-7. Should you need to update your fork you can do so by rebasing from upstream.
+7. Should you need to update your fork, you can do so by rebasing from `upstream`:
 
-   ```
+   ```bash
    git fetch upstream
    git rebase upstream/develop
    git push origin BRANCH_NAME -f
@@ -61,18 +63,36 @@ All help is welcome and greatly appreciated. If you would like to contribute to 
 - All commits **must** follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
   - It is okay if you squash your PR down to be a single commit that fits this standard.
   - PRs with commits not following this standard will not be merged.
-- Please make meaningful commits, or squash them
-- Always rebase your commit to the latest `develop` branch. Do not merge develop into your branch.
-- It is your responsibility to keep your branch up to date. It will not be merged unless its rebased off the latest develop branch.
-- You can create a Draft pull request early to get feedback on your work.
+- Please make meaningful commits, or squash them.
+- Always rebase your commit to the latest `develop` branch. Do not merge `develop` into your branch.
+- It is your responsibility to keep your branch up to date. It will not be merged unless its rebased off the latest `develop` branch.
+- You can create a "draft" pull request early to get feedback on your work.
 - Your code must be formatted correctly or the tests will fail.
-  - We use Prettier to format our codebase. It should auto run with a git hook, but its recommended to have a Prettier extension installed in your editor and have it format on save.
+  - We use Prettier to format our codebase. It should automatically run with a `git` hook, but it is recommended to have the Prettier extension installed in your editor and format on save.
 - If you have questions or need help, you can reach out in [GitHub Discussions](https://github.com/sct/overseerr/discussions) or in our [Discord](https://discord.gg/PkCWJSeCk7).
-- Only open pull requests to `develop`. Never `master`. Any PR's opened to master will be closed.
+- Only open pull requests to `develop`. Never `master`. Any PRs opened to `master` will be closed.
+
+### UI Text Style
+
+When adding new UI text, please be sure to adhere to the following guidelines:
+
+1. Be concise and clear, and use as few words as possible to make your point.
+2. Use the Oxford comma where appropriate.
+3. Use the appropriate Unicode characters for ellipses, arrows, and other special characters/symbols.
+4. Capitalize proper nouns, such as Plex, Radarr, Sonarr, Telegram, Slack, Pushover, etc. Be sure to also use the official capitalization for any abbreviations; e.g., TMDb and IMDb have a lowercase 'b', whereas TheTVDB has a capital 'B'.
+5. Title case headings, button text, and form labels. Note that verbs such as "is" should be capitalized, whereas prepositions like "from" should be lowercase (unless as the first or last word of the string, in which case they are also capitalized).
+6. Capitalize the first word in validation error messages, dropdowns, and form "tips." These strings should not end in punctuation.
+7. Ensure that toast notification strings are complete sentences ending in punctuation.
+8. If an additional description or "tip" is required for a form field, it should be styled using the global CSS class `label-tip`.
+9. In full sentences, abbreviations like "info" or "auto" should not be used in place of full words, unless referencing the name/label of a specific setting or option which has an abbreviation in its name.
+10. Do your best to check for spelling errors and grammatical mistakes.
+11. Do not misspell "Overseerr."
 
 ## Translation
 
-We use [Weblate](https://hosted.weblate.org/engage/overseerr/) for our translations so please feel free to contribute to localizing Overseerr!
+We use [Weblate](https://hosted.weblate.org/engage/overseerr/) for our translations, and your help with localizing Overseerr would be greatly appreciated! If your language is not listed below, please [open a feature request on GitHub](https://github.com/sct/overseerr/issues/new/choose).
+
+<a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/multi-auto.svg" alt="Translation status" /></a>
 
 ## Attribution
 
