@@ -311,7 +311,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
             ))}
           </select>
         </div>
-        <div className="hidden sm:block">
+        <div className="hidden overflow-x-scroll overflow-y-hidden sm:block hide-scrollbar">
           <nav className="flex space-x-4" aria-label="Tabs">
             {settingsRoutes.map((route, index) => (
               <SettingsLink
