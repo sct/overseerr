@@ -24,10 +24,10 @@ const messages = defineMessages({
   apikey: 'API Key',
   applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
-  region: 'Discovery Region',
+  region: 'Discover Region',
   regionTip:
     'Filter content by region (this will only apply to the "Popular" and "Upcoming" categories)',
-  originallanguage: 'Discovery Language',
+  originallanguage: 'Discover Language',
   originallanguageTip:
     'Filter content by original language (this will only apply to the "Popular" and "Upcoming" categories)',
   toastApiKeySuccess: 'New API key generated!',

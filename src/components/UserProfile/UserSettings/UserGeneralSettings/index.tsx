@@ -22,10 +22,10 @@ const messages = defineMessages({
   localuser: 'Local User',
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
-  region: 'Discovery Region',
+  region: 'Discover Region',
   regionTip:
     'Filter content by region (this will only apply to the "Popular" and "Upcoming" categories)',
-  originallanguage: 'Discovery Language',
+  originallanguage: 'Discover Language',
   originallanguageTip:
     'Filter content by original language (this will only apply to the "Popular" and "Upcoming" categories)',
 });
