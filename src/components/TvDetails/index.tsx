@@ -416,7 +416,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     status={data.mediaInfo?.status4k}
                     is4k
                     inProgress={
-                      (data.mediaInfo?.downloadStatus ?? []).length > 0
+                      (data.mediaInfo?.downloadStatus4k ?? []).length > 0
                     }
                     plexUrl4k={data.mediaInfo?.plexUrl4k}
                   />
