@@ -10,6 +10,7 @@ import {
 import Table from '../../Common/Table';
 import Button from '../../Common/Button';
 import Badge from '../../Common/Badge';
+import { LogsResultsResponse } from '../../../../server/interfaces/api/settingsInterfaces';
 
 const messages = defineMessages({
   logs: 'Logs',
@@ -40,14 +41,16 @@ const SettingsLogs: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState<Filter>('debug');
   const [currentPageSize, setCurrentPageSize] = useState<number>(25);
 
-  const { data, error } = useSWR(
+  const { data, error } = useSWR<LogsResultsResponse>(
     `/api/v1/settings/logs?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&filter=${currentFilter}`,
     {
-      refreshInterval: 2,
+      refreshInterval: 5000,
     }
   );
+
+  const { data: appDataResponse } = useSWR('/api/v1/status/appdata');
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -70,7 +73,7 @@ const SettingsLogs: React.FC = () => {
               code: function code(msg) {
                 return <code className="bg-opacity-50">{msg}</code>;
               },
-              configDir: '/config',
+              configDir: appDataResponse.appDataPath,
             })}
           </p>
           <div className="flex justify-end">
@@ -93,7 +96,7 @@ const SettingsLogs: React.FC = () => {
                 id="filter"
                 name="filter"
                 onChange={(e) => {
-                  // setPageIndex(0);
+                  setPageIndex(0);
                   setCurrentFilter(e.target.value as Filter);
                 }}
                 value={currentFilter}
@@ -128,7 +131,7 @@ const SettingsLogs: React.FC = () => {
             {data?.results.map(
               (
                 row: {
-                  timestamp: string;
+                  time: string;
                   level: string;
                   label: string;
                   message: string;
@@ -140,14 +143,14 @@ const SettingsLogs: React.FC = () => {
                     <Table.TD>
                       <div className="flex items-center py-0 text-gray-300">
                         <FormattedDate
-                          value={row.timestamp}
+                          value={row.time}
                           year="numeric"
                           month="short"
                           day="2-digit"
                         />
                         <> </>
                         <FormattedTime
-                          value={row.timestamp}
+                          value={row.time}
                           hour="numeric"
                           minute="numeric"
                           second="numeric"
@@ -158,16 +161,24 @@ const SettingsLogs: React.FC = () => {
                     <Table.TD>
                       <div className="flex items-center py-0 text-gray-300">
                         {row.level === 'debug' && (
-                          <Badge badgeType="default">{row.level}</Badge>
+                          <Badge badgeType="default">
+                            {row.level.toUpperCase()}
+                          </Badge>
                         )}
                         {row.level === 'info' && (
-                          <Badge badgeType="success">{row.level}</Badge>
+                          <Badge badgeType="success">
+                            {row.level.toUpperCase()}
+                          </Badge>
                         )}
                         {row.level === 'warn' && (
-                          <Badge badgeType="warning">{row.level}</Badge>
+                          <Badge badgeType="warning">
+                            {row.level.toUpperCase()}
+                          </Badge>
                         )}
                         {row.level === 'error' && (
-                          <Badge badgeType="danger">{row.level}</Badge>
+                          <Badge badgeType="danger">
+                            {row.level.toUpperCase()}
+                          </Badge>
                         )}
                       </div>
                     </Table.TD>

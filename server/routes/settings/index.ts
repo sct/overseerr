@@ -250,7 +250,8 @@ settingsRoutes.get('/logs', (req, res, next) => {
   }
 
   const options = {
-    rows: pageSize,
+    // only get 1000 most recent rows
+    rows: 1000,
     fields: null,
   };
 
@@ -272,14 +273,16 @@ settingsRoutes.get('/logs', (req, res, next) => {
       }) => filter.includes(row.level)
     );
 
+    const displayedLogs = filteredLogs.slice(skip, skip + pageSize);
+
     return res.status(200).json({
       pageInfo: {
-        pages: 1,
+        pages: Math.ceil(filteredLogs.length / pageSize),
         pageSize,
         results: filteredLogs.length,
         page: Math.ceil(skip / pageSize) + 1,
       },
-      results: filteredLogs,
+      results: displayedLogs,
     } as LogsResultsResponse);
   });
 });
