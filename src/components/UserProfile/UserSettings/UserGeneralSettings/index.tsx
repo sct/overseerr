@@ -24,10 +24,10 @@ const messages = defineMessages({
   toastSettingsFailure: 'Something went wrong while saving settings.',
   region: 'Discover Region',
   regionTip:
-    'Filter content by region (this will only apply to the "Popular" and "Upcoming" categories)',
+    'Filter content by region (only applies to the "Popular" and "Upcoming" categories)',
   originallanguage: 'Discover Language',
   originallanguageTip:
-    'Filter content by original language (this will only apply to the "Popular" and "Upcoming" categories)',
+    'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
 });
 
 const UserGeneralSettings: React.FC = () => {

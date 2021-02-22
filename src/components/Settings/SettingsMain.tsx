@@ -26,10 +26,10 @@ const messages = defineMessages({
   applicationurl: 'Application URL',
   region: 'Discover Region',
   regionTip:
-    'Filter content by region (this will only apply to the "Popular" and "Upcoming" categories)',
+    'Filter content by region (only applies to the "Popular" and "Upcoming" categories)',
   originallanguage: 'Discover Language',
   originallanguageTip:
-    'Filter content by original language (this will only apply to the "Popular" and "Upcoming" categories)',
+    'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
   toastApiKeySuccess: 'New API key generated!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
   toastSettingsSuccess: 'Settings successfully saved!',
