@@ -1,7 +1,7 @@
 import type { PaginatedResponse } from './common';
 
 export type LogMessage = {
-  time: string;
+  timestamp: string;
   level: string;
   label: string;
   message: string;

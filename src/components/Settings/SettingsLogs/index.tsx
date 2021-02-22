@@ -131,7 +131,7 @@ const SettingsLogs: React.FC = () => {
             {data?.results.map(
               (
                 row: {
-                  time: string;
+                  timestamp: string;
                   level: string;
                   label: string;
                   message: string;
@@ -143,14 +143,14 @@ const SettingsLogs: React.FC = () => {
                     <Table.TD>
                       <div className="flex items-center py-0 text-gray-300">
                         <FormattedDate
-                          value={row.time}
+                          value={row.timestamp}
                           year="numeric"
                           month="short"
                           day="2-digit"
                         />
                         <> </>
                         <FormattedTime
-                          value={row.time}
+                          value={row.timestamp}
                           hour="numeric"
                           minute="numeric"
                           second="numeric"
