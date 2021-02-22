@@ -15,14 +15,15 @@ const messages = defineMessages({
   saving: 'Saving…',
   agentEnabled: 'Enable Agent',
   accessToken: 'Access Token',
-  validationAccessTokenRequired: 'You must provide an access token.',
-  pushbulletSettingsSaved: 'Pushbullet notification settings saved!',
+  validationAccessTokenRequired: 'You must provide an access token',
+  pushbulletSettingsSaved:
+    'Pushbullet notification settings saved successfully!',
   pushbulletSettingsFailed: 'Pushbullet notification settings failed to save.',
   testSent: 'Test notification sent!',
   test: 'Test',
   settingUpPushbullet: 'Setting Up Pushbullet Notifications',
   settingUpPushbulletDescription:
-    'To configure Pushbullet notifications, you need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink> and enter it below.',
+    'To configure Pushbullet notifications, you will need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink> and enter it below.',
   notificationTypes: 'Notification Types',
 });
 

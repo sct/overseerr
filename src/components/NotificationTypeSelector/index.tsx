@@ -5,15 +5,17 @@ import NotificationType from './NotificationType';
 const messages = defineMessages({
   mediarequested: 'Media Requested',
   mediarequestedDescription:
-    'Sends a notification when new media is requested. For certain agents, this will only send the notification to admins or users with the "Manage Requests" permission.',
+    'Sends a notification when media is requested and requires approval.',
   mediaapproved: 'Media Approved',
-  mediaapprovedDescription: 'Sends a notification when media is approved.',
+  mediaapprovedDescription:
+    'Sends a notification when media is approved.\
+    By default, automatically approved requests will not trigger notifications.',
   mediaavailable: 'Media Available',
   mediaavailableDescription:
     'Sends a notification when media becomes available.',
   mediafailed: 'Media Failed',
   mediafailedDescription:
-    'Sends a notification when media fails to be added to services (Radarr/Sonarr). For certain agents, this will only send the notification to admins or users with the "Manage Requests" permission.',
+    'Sends a notification when media fails to be added to Radarr or Sonarr.',
   mediadeclined: 'Media Declined',
   mediadeclinedDescription: 'Sends a notification when a request is declined.',
 });
