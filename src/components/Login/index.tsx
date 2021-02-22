@@ -37,7 +37,7 @@ const Login: React.FC = () => {
       try {
         const response = await axios.post('/api/v1/auth/login', { authToken });
 
-        if (response.data?.email) {
+        if (response.data?.id) {
           revalidate();
         }
       } catch (e) {
