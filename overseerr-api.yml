@@ -3322,6 +3322,45 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/TvResult'
+  /discover/tv/upcoming:
+    get:
+      summary: Discover Upcoming TV shows
+      description: Returns a list of upcoming TV shows in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TvResult'
   /discover/trending:
     get:
       summary: Trending movies and TV
@@ -4275,6 +4314,49 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SonarrSeries'
+  /regions:
+    get:
+      summary: Regions supported by TMDb
+      description: Returns a list of regions in a JSON object.
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  iso_3166_1:
+                    type: string
+                    example: US
+                  english_name:
+                    type: string
+                    example: United States of America
+  /languages:
+    get:
+      summary: Languages supported by TMDb
+      description: Returns a list of languages in a JSON object.
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  iso_639_1:
+                    type: string
+                    example: en
+                  english_name:
+                    type: string
+                    example: English
+                  name:
+                    type: string
+                    example: English
 
 security:
   - cookieAuth: []
