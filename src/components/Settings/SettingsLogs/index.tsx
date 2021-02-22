@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import Error from '../../../pages/_error';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import {
   FormattedDate,
@@ -9,42 +8,46 @@ import {
   defineMessages,
 } from 'react-intl';
 import Table from '../../Common/Table';
+import Button from '../../Common/Button';
+import Badge from '../../Common/Badge';
 
 const messages = defineMessages({
   logs: 'Logs',
   logsDescription:
-    "You can access your logs directly in <code>stdout</code> (container logs) or by looking in <code>'<Overseeerr-install-directory'>/logs/overseerr.log</code>",
-  time: 'Time',
-  level: 'Level',
+    'You can also view these logs directly via <code>stdout</code>, or in <code>{configDir}/logs/overseerr.log</code>',
+  time: 'Timestamp',
+  level: 'Severity',
   label: 'Label',
   message: 'Message',
-  filterAll: 'All',
-  filterError: 'Error',
-  filterInfo: 'Info',
   filterDebug: 'Debug',
-  sortTime: 'Time',
-  sortLevel: 'Level',
-  sortLabel: 'Label',
+  filterInfo: 'Info',
+  filterWarn: 'Warning',
+  filterError: 'Error',
+  noresults: 'No results.',
+  showall: 'Show All Logs',
+  showingresults:
+    'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
+  resultsperpage: 'Display {pageSize} results per page',
+  next: 'Next',
+  previous: 'Previous',
 });
 
-type Filter = 'all' | 'error' | 'info' | 'debug';
-type Sort = 'time' | 'level' | 'label';
+type Filter = 'debug' | 'info' | 'warn' | 'error';
 
 const SettingsLogs: React.FC = () => {
   const intl = useIntl();
-  // const [pageIndex, setPageIndex] = useState(0);
-  const [currentFilter, setCurrentFilter] = useState<Filter>('info');
-  const [currentSort, setCurrentSort] = useState<Sort>('time');
+  const [pageIndex, setPageIndex] = useState(0);
+  const [currentFilter, setCurrentFilter] = useState<Filter>('debug');
+  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
+
   const { data, error } = useSWR(
-    `/api/v1/settings/logs?take=100&filter=${currentFilter}&sort=${currentSort}`,
+    `/api/v1/settings/logs?take=${currentPageSize}&skip=${
+      pageIndex * currentPageSize
+    }&filter=${currentFilter}`,
     {
       refreshInterval: 2,
     }
   );
-
-  if (error) {
-    return <Error statusCode={500} />;
-  }
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -54,20 +57,24 @@ const SettingsLogs: React.FC = () => {
     return <LoadingSpinner />;
   }
 
+  const hasNextPage = data.pageInfo.pages > pageIndex + 1;
+  const hasPrevPage = pageIndex > 0;
+
   return (
     <>
       <div className="mb-2">
         <h3 className="heading">{intl.formatMessage(messages.logs)}</h3>
-        <div className="flex flex-col justify-between lg:items-end lg:flex-row">
+        <div className="flex flex-col justify-between lg:flex-row">
           <p className="description">
             {intl.formatMessage(messages.logsDescription, {
               code: function code(msg) {
                 return <code className="bg-opacity-50">{msg}</code>;
               },
+              configDir: '/config',
             })}
           </p>
-          <div className="flex flex-col flex-grow sm:flex-row lg:flex-grow-0">
-            <div className="flex flex-grow mb-2 sm:mb-0 sm:mr-2 lg:flex-grow-0">
+          <div className="flex justify-end">
+            <div className="flex flex-grow mt-4 mb-2 lg:mt-0 sm:mb-0 lg:flex-grow-0">
               <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
                 <svg
                   className="w-6 h-6"
@@ -92,53 +99,17 @@ const SettingsLogs: React.FC = () => {
                 value={currentFilter}
                 className="rounded-r-only"
               >
-                <option value="all">
-                  {intl.formatMessage(messages.filterAll)}
-                </option>
-                <option value="error">
-                  {intl.formatMessage(messages.filterError)}
+                <option value="debug">
+                  {intl.formatMessage(messages.filterDebug)}
                 </option>
                 <option value="info">
                   {intl.formatMessage(messages.filterInfo)}
                 </option>
-                <option value="debug">
-                  {intl.formatMessage(messages.filterDebug)}
+                <option value="warn">
+                  {intl.formatMessage(messages.filterWarn)}
                 </option>
-              </select>
-            </div>
-            <div className="flex flex-grow mb-2 sm:mb-0 lg:flex-grow-0">
-              <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default sm:text-sm rounded-l-md">
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z" />
-                </svg>
-              </span>
-              <select
-                id="sort"
-                name="sort"
-                onChange={(e) => {
-                  // setPageIndex(0);
-                  setCurrentSort(e.target.value as Sort);
-                }}
-                onBlur={(e) => {
-                  // setPageIndex(0);
-                  setCurrentSort(e.target.value as Sort);
-                }}
-                value={currentSort}
-                className="rounded-r-only"
-              >
-                <option value="time">
-                  {intl.formatMessage(messages.sortTime)}
-                </option>
-                <option value="level">
-                  {intl.formatMessage(messages.sortLevel)}
-                </option>
-                <option value="label">
-                  {intl.formatMessage(messages.sortLabel)}
+                <option value="error">
+                  {intl.formatMessage(messages.filterError)}
                 </option>
               </select>
             </div>
@@ -154,7 +125,7 @@ const SettingsLogs: React.FC = () => {
             </tr>
           </thead>
           <Table.TBody>
-            {data?.map(
+            {data?.results.map(
               (
                 row: {
                   timestamp: string;
@@ -186,7 +157,18 @@ const SettingsLogs: React.FC = () => {
                     </Table.TD>
                     <Table.TD>
                       <div className="flex items-center py-0 text-gray-300">
-                        {row.level}
+                        {row.level === 'debug' && (
+                          <Badge badgeType="default">{row.level}</Badge>
+                        )}
+                        {row.level === 'info' && (
+                          <Badge badgeType="success">{row.level}</Badge>
+                        )}
+                        {row.level === 'warn' && (
+                          <Badge badgeType="warning">{row.level}</Badge>
+                        )}
+                        {row.level === 'error' && (
+                          <Badge badgeType="danger">{row.level}</Badge>
+                        )}
                       </div>
                     </Table.TD>
                     <Table.TD>
@@ -203,6 +185,93 @@ const SettingsLogs: React.FC = () => {
                 );
               }
             )}
+
+            {data.results.length === 0 && (
+              <tr className="relative h-24 p-2 text-white">
+                <Table.TD colSpan={4} noPadding>
+                  <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
+                    <span className="text-base">
+                      {intl.formatMessage(messages.noresults)}
+                    </span>
+                    {currentFilter !== 'debug' && (
+                      <div className="mt-4">
+                        <Button
+                          buttonSize="sm"
+                          buttonType="primary"
+                          onClick={() => setCurrentFilter('debug')}
+                        >
+                          {intl.formatMessage(messages.showall)}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </Table.TD>
+              </tr>
+            )}
+            <tr className="bg-gray-700">
+              <Table.TD colSpan={6} noPadding>
+                <nav
+                  className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
+                  aria-label="Pagination"
+                >
+                  <div className="hidden lg:flex lg:flex-1">
+                    <p className="text-sm">
+                      {data.results.length > 0 &&
+                        intl.formatMessage(messages.showingresults, {
+                          from: pageIndex * currentPageSize + 1,
+                          to:
+                            data.results.length < currentPageSize
+                              ? pageIndex * currentPageSize +
+                                data.results.length
+                              : (pageIndex + 1) * currentPageSize,
+                          total: data.pageInfo.results,
+                          strong: function strong(msg) {
+                            return <span className="font-medium">{msg}</span>;
+                          },
+                        })}
+                    </p>
+                  </div>
+                  <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
+                    <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
+                      {intl.formatMessage(messages.resultsperpage, {
+                        pageSize: (
+                          <select
+                            id="pageSize"
+                            name="pageSize"
+                            onChange={(e) => {
+                              setPageIndex(0);
+                              setCurrentPageSize(Number(e.target.value));
+                            }}
+                            value={currentPageSize}
+                            className="inline short"
+                          >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                          </select>
+                        ),
+                      })}
+                    </span>
+                  </div>
+                  <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
+                    <Button
+                      disabled={!hasPrevPage}
+                      onClick={() => setPageIndex((current) => current - 1)}
+                    >
+                      {intl.formatMessage(messages.previous)}
+                    </Button>
+                    <Button
+                      disabled={!hasNextPage}
+                      onClick={() => setPageIndex((current) => current + 1)}
+                    >
+                      {intl.formatMessage(messages.next)}
+                    </Button>
+                  </div>
+                </nav>
+              </Table.TD>
+            </tr>
           </Table.TBody>
         </Table>
       </div>

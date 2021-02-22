@@ -11,7 +11,10 @@ import { merge, omit } from 'lodash';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { getAppVersion } from '../../utils/appVersion';
-import { SettingsAboutResponse } from '../../interfaces/api/settingsInterfaces';
+import {
+  LogsResultsResponse,
+  SettingsAboutResponse,
+} from '../../interfaces/api/settingsInterfaces';
 import notificationRoutes from './notifications';
 import sonarrRoutes from './sonarr';
 import radarrRoutes from './radarr';
@@ -224,40 +227,60 @@ settingsRoutes.post('/plex/sync', (req, res) => {
   return res.status(200).json(plexFullScanner.status());
 });
 
-settingsRoutes.get('/logs', (req, res) => {
-  const pageSize = req.query.take ? Number(req.query.take) : 100;
-  // const filter = req.query.filter ? req.query.filter : 'all';
+settingsRoutes.get('/logs', (req, res, next) => {
+  const pageSize = req.query.take ? Number(req.query.take) : 25;
+  const skip = req.query.skip ? Number(req.query.skip) : 0;
+
+  let filter: string[] = [];
+  switch (req.query.filter) {
+    case 'debug':
+      filter.push('debug');
+    // falls through
+    case 'info':
+      filter.push('info');
+    // falls through
+    case 'warn':
+      filter.push('warn');
+    // falls through
+    case 'error':
+      filter.push('error');
+      break;
+    default:
+      filter = ['debug', 'info', 'warn', 'error'];
+  }
 
   const options = {
     rows: pageSize,
     fields: null,
   };
 
-  // a `rows` query parameter here??
-
-  // logger.query(options, (err, results) => {
-  //   if (err) {
-  //     return res.status(500).json(err);
-  //   }
-  //   return res
-  //     .status(200)
-  //     .json(
-  //       results.file.filter(
-  //         (row: {
-  //           timestamp: string;
-  //           level: string;
-  //           label: string;
-  //           message: string;
-  //         }) => row.label === filter
-  //       )
-  //     );
-  // });
-
   logger.query(options, (err, results) => {
     if (err) {
-      return res.status(500).json(err);
+      logger.error(err.message);
+      return next({
+        status: 500,
+        message: 'Something went wrong while fetching logs.',
+      });
     }
-    return res.status(200).json(results.file);
+
+    const filteredLogs = results.file.filter(
+      (row: {
+        timestamp: string;
+        level: string;
+        label: string;
+        message: string;
+      }) => filter.includes(row.level)
+    );
+
+    return res.status(200).json({
+      pageInfo: {
+        pages: 1,
+        pageSize,
+        results: filteredLogs.length,
+        page: Math.ceil(skip / pageSize) + 1,
+      },
+      results: filteredLogs,
+    } as LogsResultsResponse);
   });
 });
 

@@ -2291,11 +2291,24 @@ paths:
         - settings
       parameters:
         - in: query
-          name: rows
+          name: take
           schema:
             type: number
-            example: 1000
-            default: 1000
+            nullable: true
+            example: 25
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+        - in: query
+          name: filter
+          schema:
+            type: string
+            nullable: true
+            enum: [debug, info, warn, error]
+            default: debug
       responses:
         '200':
           description: Server log returned
