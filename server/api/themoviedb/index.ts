@@ -52,6 +52,7 @@ interface DiscoverTvOptions {
   language?: string;
   firstAirDateGte?: string;
   firstAirDateLte?: string;
+  includeEmptyReleaseDate?: boolean;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -387,34 +388,22 @@ class TheMovieDb extends ExternalAPI {
     language = 'en-US',
     firstAirDateGte,
     firstAirDateLte,
+    includeEmptyReleaseDate = false,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
-    const params: Record<string, string | number> = {
-      sort_by: sortBy,
-      page,
-      language,
-    };
-
-    if (this.region) {
-      params['region'] = this.region;
-    }
-
-    if (firstAirDateGte) {
-      params['first_air_date.gte'] = firstAirDateGte;
-    }
-
-    if (firstAirDateLte) {
-      params['first_air_date.lte'] = firstAirDateLte;
-    }
-
-    if (this.originalLanguage) {
-      params['with_original_language'] = this.originalLanguage;
-    }
-
     try {
       const response = await this.axios.get<TmdbSearchTvResponse>(
         '/discover/tv',
         {
-          params,
+          params: {
+            sort_by: sortBy,
+            page,
+            language,
+            region: this.region,
+            'first_air_date.gte': firstAirDateGte,
+            'first_air_date.lte': firstAirDateLte,
+            with_original_language: this.originalLanguage,
+            include_null_first_air_dates: includeEmptyReleaseDate,
+          },
         }
       );
 
