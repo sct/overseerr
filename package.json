@@ -94,7 +94,7 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/react-toast-notifications": "^2.4.0",
-    "@types/react-transition-group": "^4.4.0",
+    "@types/react-transition-group": "^4.4.1",
     "@types/secure-random-password": "^0.2.0",
     "@types/swagger-ui-express": "^4.1.2",
     "@types/uuid": "^8.3.0",
