@@ -27,6 +27,7 @@
     "bowser": "^2.11.0",
     "connect-typeorm": "^1.1.4",
     "cookie-parser": "^1.4.5",
+    "country-code-emoji": "^2.2.0",
     "csurf": "^1.11.0",
     "email-templates": "^8.0.3",
     "express": "^4.17.1",

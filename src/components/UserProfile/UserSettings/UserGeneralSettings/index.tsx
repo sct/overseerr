@@ -5,11 +5,13 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import { Language } from '../../../../../server/lib/settings';
 import { UserType, useUser } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import RegionSelector from '../../../RegionSelector';
 
 const messages = defineMessages({
   generalsettings: 'General Settings',
@@ -20,6 +22,12 @@ const messages = defineMessages({
   localuser: 'Local User',
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
+  region: 'Discover Region',
+  regionTip:
+    'Filter content by region (only applies to the "Popular" and "Upcoming" categories)',
+  originallanguage: 'Discover Language',
+  originallanguageTip:
+    'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
 });
 
 const UserGeneralSettings: React.FC = () => {
@@ -27,15 +35,25 @@ const UserGeneralSettings: React.FC = () => {
   const { addToast } = useToasts();
   const router = useRouter();
   const { user, mutate } = useUser({ id: Number(router.query.userId) });
-  const { data, error, revalidate } = useSWR<{ username?: string }>(
-    user ? `/api/v1/user/${user?.id}/settings/main` : null
+  const { data, error, revalidate } = useSWR<{
+    username?: string;
+    region?: string;
+    originalLanguage?: string;
+  }>(user ? `/api/v1/user/${user?.id}/settings/main` : null);
+
+  const { data: languages, error: languagesError } = useSWR<Language[]>(
+    '/api/v1/languages'
   );
 
   if (!data && !error) {
     return <LoadingSpinner />;
   }
 
-  if (!data) {
+  if (!languages && !languagesError) {
+    return <LoadingSpinner />;
+  }
+
+  if (!data || !languages) {
     return <Error statusCode={500} />;
   }
 
@@ -49,12 +67,16 @@ const UserGeneralSettings: React.FC = () => {
       <Formik
         initialValues={{
           displayName: data?.username,
+          region: data?.region,
+          originalLanguage: data?.originalLanguage,
         }}
         enableReinitialize
         onSubmit={async (values) => {
           try {
             await axios.post(`/api/v1/user/${user?.id}/settings/main`, {
               username: values.displayName,
+              region: values.region,
+              originalLanguage: values.originalLanguage,
             });
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -72,7 +94,7 @@ const UserGeneralSettings: React.FC = () => {
           }
         }}
       >
-        {({ errors, touched, isSubmitting }) => {
+        {({ errors, touched, isSubmitting, values, setFieldValue }) => {
           return (
             <Form className="section">
               <div className="form-row">
@@ -107,6 +129,51 @@ const UserGeneralSettings: React.FC = () => {
                   {errors.displayName && touched.displayName && (
                     <div className="error">{errors.displayName}</div>
                   )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="displayName" className="text-label">
+                  <span>{intl.formatMessage(messages.region)}</span>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.regionTip)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <RegionSelector
+                    name="region"
+                    value={values.region ?? ''}
+                    onChange={setFieldValue}
+                  />
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="originalLanguage" className="text-label">
+                  <span>{intl.formatMessage(messages.originallanguage)}</span>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.originallanguageTip)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
+                    <Field
+                      as="select"
+                      id="originalLanguage"
+                      name="originalLanguage"
+                    >
+                      <option value="">All</option>
+                      {languages?.map((language) => (
+                        <option
+                          key={`language-key-${language.iso_639_1}`}
+                          value={language.iso_639_1}
+                        >
+                          {intl.formatDisplayName(language.iso_639_1, {
+                            type: 'language',
+                            fallback: 'none',
+                          }) ?? language.english_name}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
                 </div>
               </div>
               <div className="actions">

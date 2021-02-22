@@ -1,11 +1,14 @@
+import { sortBy } from 'lodash';
 import cacheManager from '../../lib/cache';
 import ExternalAPI from '../externalapi';
 import {
   TmdbCollection,
   TmdbExternalIdResponse,
+  TmdbLanguage,
   TmdbMovieDetails,
   TmdbPersonCombinedCredits,
   TmdbPersonDetail,
+  TmdbRegion,
   TmdbSearchMovieResponse,
   TmdbSearchMultiResponse,
   TmdbSearchTvResponse,
@@ -25,6 +28,8 @@ interface DiscoverMovieOptions {
   page?: number;
   includeAdult?: boolean;
   language?: string;
+  primaryReleaseDateGte?: string;
+  primaryReleaseDateLte?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -45,6 +50,9 @@ interface DiscoverMovieOptions {
 interface DiscoverTvOptions {
   page?: number;
   language?: string;
+  firstAirDateGte?: string;
+  firstAirDateLte?: string;
+  includeEmptyReleaseDate?: boolean;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -57,7 +65,12 @@ interface DiscoverTvOptions {
 }
 
 class TheMovieDb extends ExternalAPI {
-  constructor() {
+  private region?: string;
+  private originalLanguage?: string;
+  constructor({
+    region,
+    originalLanguage,
+  }: { region?: string; originalLanguage?: string } = {}) {
     super(
       'https://api.themoviedb.org/3',
       {
@@ -67,6 +80,8 @@ class TheMovieDb extends ExternalAPI {
         nodeCache: cacheManager.getCache('tmdb').data,
       }
     );
+    this.region = region;
+    this.originalLanguage = originalLanguage;
   }
 
   public searchMulti = async ({
@@ -343,6 +358,8 @@ class TheMovieDb extends ExternalAPI {
     page = 1,
     includeAdult = false,
     language = 'en',
+    primaryReleaseDateGte,
+    primaryReleaseDateLte,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const data = await this.get<TmdbSearchMovieResponse>('/discover/movie', {
@@ -351,6 +368,11 @@ class TheMovieDb extends ExternalAPI {
           page,
           include_adult: includeAdult,
           language,
+          with_release_type: '3|2',
+          region: this.region,
+          with_original_language: this.originalLanguage,
+          'primary_release_date.gte': primaryReleaseDateGte,
+          'primary_release_date.lte': primaryReleaseDateLte,
         },
       });
 
@@ -363,7 +385,10 @@ class TheMovieDb extends ExternalAPI {
   public getDiscoverTv = async ({
     sortBy = 'popularity.desc',
     page = 1,
-    language = 'en',
+    language = 'en-US',
+    firstAirDateGte,
+    firstAirDateLte,
+    includeEmptyReleaseDate = false,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
@@ -371,6 +396,11 @@ class TheMovieDb extends ExternalAPI {
           sort_by: sortBy,
           page,
           language,
+          region: this.region,
+          'first_air_date.gte': firstAirDateGte,
+          'first_air_date.lte': firstAirDateLte,
+          with_original_language: this.originalLanguage,
+          include_null_first_air_dates: includeEmptyReleaseDate,
         },
       });
 
@@ -394,6 +424,8 @@ class TheMovieDb extends ExternalAPI {
           params: {
             page,
             language,
+            region: this.region,
+            originalLanguage: this.originalLanguage,
           },
         }
       );
@@ -420,6 +452,7 @@ class TheMovieDb extends ExternalAPI {
           params: {
             page,
             language,
+            region: this.region,
           },
         }
       );
@@ -592,6 +625,38 @@ class TheMovieDb extends ExternalAPI {
       return data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch collection: ${e.message}`);
+    }
+  }
+
+  public async getRegions(): Promise<TmdbRegion[]> {
+    try {
+      const data = await this.get<TmdbRegion[]>(
+        '/configuration/countries',
+        {},
+        86400 // 24 hours
+      );
+
+      const regions = sortBy(data, 'english_name');
+
+      return regions;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch countries: ${e.message}`);
+    }
+  }
+
+  public async getLanguages(): Promise<TmdbLanguage[]> {
+    try {
+      const data = await this.get<TmdbLanguage[]>(
+        '/configuration/languages',
+        {},
+        86400 // 24 hours
+      );
+
+      const languages = sortBy(data, 'english_name');
+
+      return languages;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch langauges: ${e.message}`);
     }
   }
 }

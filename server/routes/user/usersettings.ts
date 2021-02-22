@@ -2,7 +2,10 @@ import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { User } from '../../entity/User';
 import { UserSettings } from '../../entity/UserSettings';
-import { UserSettingsNotificationsResponse } from '../../interfaces/api/userSettingsInterfaces';
+import {
+  UserSettingsGeneralResponse,
+  UserSettingsNotificationsResponse,
+} from '../../interfaces/api/userSettingsInterfaces';
 import { Permission } from '../../lib/permissions';
 import logger from '../../logger';
 import { isAuthenticated } from '../../middleware/auth';
@@ -25,7 +28,7 @@ const isOwnProfileOrAdmin = (): Middleware => {
 
 const userSettingsRoutes = Router({ mergeParams: true });
 
-userSettingsRoutes.get<{ id: string }, { username?: string }>(
+userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
   '/main',
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
@@ -40,7 +43,11 @@ userSettingsRoutes.get<{ id: string }, { username?: string }>(
         return next({ status: 404, message: 'User not found.' });
       }
 
-      return res.status(200).json({ username: user.username });
+      return res.status(200).json({
+        username: user.username,
+        region: user.settings?.region,
+        originalLanguage: user.settings?.originalLanguage,
+      });
     } catch (e) {
       next({ status: 500, message: e.message });
     }
@@ -49,8 +56,8 @@ userSettingsRoutes.get<{ id: string }, { username?: string }>(
 
 userSettingsRoutes.post<
   { id: string },
-  { username?: string },
-  { username?: string }
+  UserSettingsGeneralResponse,
+  UserSettingsGeneralResponse
 >('/main', isOwnProfileOrAdmin(), async (req, res, next) => {
   const userRepository = getRepository(User);
 
@@ -64,6 +71,16 @@ userSettingsRoutes.post<
     }
 
     user.username = req.body.username;
+    if (!user.settings) {
+      user.settings = new UserSettings({
+        user: req.user,
+        region: req.body.region,
+        originalLanguage: req.body.originalLanguage,
+      });
+    } else {
+      user.settings.region = req.body.region;
+      user.settings.originalLanguage = req.body.originalLanguage;
+    }
 
     await userRepository.save(user);
 
