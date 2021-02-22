@@ -146,7 +146,8 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                           >
                             {intl.formatDisplayName(region.iso_3166_1, {
                               type: 'region',
-                            })}
+                              fallback: 'none',
+                            }) ?? region.english_name}
                           </span>
                           {selected && (
                             <span
