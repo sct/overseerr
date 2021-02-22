@@ -58,7 +58,7 @@
     "react-use-clipboard": "1.0.7",
     "reflect-metadata": "^0.1.13",
     "secure-random-password": "^0.2.2",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "^5.0.2",
     "swagger-ui-express": "^4.1.6",
     "swr": "^0.4.2",
     "typeorm": "^0.2.31",
