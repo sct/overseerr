@@ -391,23 +391,20 @@ class TheMovieDb extends ExternalAPI {
     includeEmptyReleaseDate = false,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
-      const response = await this.axios.get<TmdbSearchTvResponse>(
-        '/discover/tv',
-        {
-          params: {
-            sort_by: sortBy,
-            page,
-            language,
-            region: this.region,
-            'first_air_date.gte': firstAirDateGte,
-            'first_air_date.lte': firstAirDateLte,
-            with_original_language: this.originalLanguage,
-            include_null_first_air_dates: includeEmptyReleaseDate,
-          },
-        }
-      );
+      const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
+        params: {
+          sort_by: sortBy,
+          page,
+          language,
+          region: this.region,
+          'first_air_date.gte': firstAirDateGte,
+          'first_air_date.lte': firstAirDateLte,
+          with_original_language: this.originalLanguage,
+          include_null_first_air_dates: includeEmptyReleaseDate,
+        },
+      });
 
-      return response.data;
+      return data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch discover tv: ${e.message}`);
     }
