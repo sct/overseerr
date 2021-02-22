@@ -3957,6 +3957,8 @@ paths:
       summary: Get all requests
       description: |
         Returns all requests if the user has the `ADMIN` or `MANAGE_REQUESTS` permissions. Otherwise, only the logged-in user's requests are returned.
+
+        If the `requestedBy` parameter is specified, only requests from that particular user ID will be returned.
       tags:
         - request
       parameters:
@@ -3984,6 +3986,12 @@ paths:
             type: string
             enum: [added, modified]
             default: added
+        - in: query
+          name: requestedBy
+          schema:
+            type: number
+            nullable: true
+            example: 1
       responses:
         '200':
           description: Requests returned
@@ -4593,7 +4601,7 @@ paths:
                     type: number
   /media:
     get:
-      summary: Return media
+      summary: Get media
       description: Returns all media (can be filtered and limited) in a JSON object.
       tags:
         - media
