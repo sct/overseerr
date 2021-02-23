@@ -2025,6 +2025,11 @@
   dependencies:
     "@types/express" "*"
 
+"@types/country-flag-icons@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/country-flag-icons/-/country-flag-icons-1.2.0.tgz#5d13276405a5701ca29bbd7f1026f45c0d2962be"
+  integrity sha512-96aveJfAw9iSfBxAD8DCgFYjMFmLIGa+vBvg3cKiHjX+o4Szz5HHv2DSbEVm9a4kLixsYkioGB4SnJs17Zypzw==
+
 "@types/csurf@^1.11.0":
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/@types/csurf/-/csurf-1.11.0.tgz#2809e89f55f12a2df8cd2826c06dfd66600dd14d"
@@ -4593,10 +4598,10 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-country-code-emoji@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/country-code-emoji/-/country-code-emoji-2.2.0.tgz#afc99b8bbaff9cb038e370dc46faabbd7af48f64"
-  integrity sha512-iK7tw8pRbFIad7a3UDbx13SJpZj4ZReozc6oW6K6Wu4sAphQkJVxK8qfaPjFIXp22RoP/238WEDrKpIWxxI9CQ==
+country-flag-icons@^1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/country-flag-icons/-/country-flag-icons-1.2.9.tgz#cee7d150b23d3532adcc1e22c2ebb59962e04633"
+  integrity sha512-qn1cKt9PJrghEb1IbyIIqHcvNLPJ8mul0lbz6lFSBmzbGqYC38PJ4wPSIT0gV/iB/DbPylHE04zJNedrj1BXvA==
 
 country-language@^0.1.7:
   version "0.1.7"
