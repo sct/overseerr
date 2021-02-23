@@ -99,12 +99,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     `/api/v1/movie/${router.query.movieId}/ratings`
   );
 
-  const { data: userSettings } = useSWR<{
-    username?: string;
-    region?: string;
-    originalLanguage?: string;
-  }>(user ? `/api/v1/user/${user?.id}/settings/main` : null);
-
   const sortedCrew = useMemo(() => sortCrewPriority(data?.credits.crew ?? []), [
     data,
   ]);
@@ -164,8 +158,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     revalidate();
   };
 
-  const region = userSettings?.region
-    ? userSettings.region
+  const region = user?.settings?.region
+    ? user.settings.region
     : settings.currentSettings.region
     ? settings.currentSettings.region
     : 'US';

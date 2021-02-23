@@ -6,6 +6,7 @@ import {
 } from '../../server/lib/permissions';
 import { UserType } from '../../server/constants/user';
 import { mutateCallback } from 'swr/dist/types';
+import { UserSettings } from '../../server/entity/UserSettings';
 
 export { Permission, UserType };
 
@@ -21,6 +22,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   requestCount: number;
+  settings?: UserSettings;
 }
 
 interface UserHookResponse {
