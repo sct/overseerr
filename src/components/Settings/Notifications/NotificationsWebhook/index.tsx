@@ -29,6 +29,9 @@ const defaultPayload = {
     status4k: '{{media_status4k}}',
   },
   '{{extra}}': [],
+  '{{request}}': {
+    request_id: '{{request_id}}',
+  },
 };
 
 const messages = defineMessages({
@@ -37,16 +40,15 @@ const messages = defineMessages({
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
   authheader: 'Authorization Header',
-  validationJsonPayloadRequired: 'You must provide a JSON Payload',
-  webhookUrlPlaceholder: 'Remote webhook URL',
-  webhooksettingssaved: 'Webhook notification settings saved!',
+  validationJsonPayloadRequired: 'You must provide a valid JSON payload',
+  webhooksettingssaved: 'Webhook notification settings saved successfully!',
   webhooksettingsfailed: 'Webhook notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
   notificationtypes: 'Notification Types',
-  resetPayload: 'Reset to Default JSON Payload',
-  resetPayloadSuccess: 'JSON reset to default payload.',
-  customJson: 'Custom JSON Payload',
+  resetPayload: 'Reset to Default',
+  resetPayloadSuccess: 'JSON payload reset successfully!',
+  customJson: 'JSON Payload',
   templatevariablehelp: 'Template Variable Help',
   validationWebhookUrl: 'You must provide a valid URL',
 });
@@ -68,14 +70,18 @@ const NotificationsWebhook: React.FC = () => {
       ),
     jsonPayload: Yup.string()
       .required(intl.formatMessage(messages.validationJsonPayloadRequired))
-      .test('validate-json', 'Invalid JSON', (value) => {
-        try {
-          JSON.parse(value ?? '');
-          return true;
-        } catch (e) {
-          return false;
+      .test(
+        'validate-json',
+        intl.formatMessage(messages.validationJsonPayloadRequired),
+        (value) => {
+          try {
+            JSON.parse(value ?? '');
+            return true;
+          } catch (e) {
+            return false;
+          }
         }
-      }),
+      ),
   });
 
   if (!data && !error) {
@@ -170,14 +176,7 @@ const NotificationsWebhook: React.FC = () => {
               </label>
               <div className="form-input">
                 <div className="flex max-w-lg rounded-md shadow-sm">
-                  <Field
-                    id="webhookUrl"
-                    name="webhookUrl"
-                    type="text"
-                    placeholder={intl.formatMessage(
-                      messages.webhookUrlPlaceholder
-                    )}
-                  />
+                  <Field id="webhookUrl" name="webhookUrl" type="text" />
                 </div>
                 {errors.webhookUrl && touched.webhookUrl && (
                   <div className="error">{errors.webhookUrl}</div>
@@ -257,7 +256,11 @@ const NotificationsWebhook: React.FC = () => {
               </div>
             </div>
             <div className="mt-8">
-              <div role="group" aria-labelledby="group-label" className="group">
+              <div
+                role="group"
+                aria-labelledby="group-label"
+                className="form-group"
+              >
                 <div className="sm:grid sm:grid-cols-4 sm:gap-4">
                   <div>
                     <div id="group-label" className="group-label">

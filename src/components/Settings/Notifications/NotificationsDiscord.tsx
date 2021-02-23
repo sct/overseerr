@@ -15,7 +15,7 @@ const messages = defineMessages({
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
   webhookUrlPlaceholder: 'Server Settings → Integrations → Webhooks',
-  discordsettingssaved: 'Discord notification settings saved!',
+  discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
@@ -117,7 +117,11 @@ const NotificationsDiscord: React.FC = () => {
                 )}
               </div>
             </div>
-            <div role="group" aria-labelledby="group-label" className="group">
+            <div
+              role="group"
+              aria-labelledby="group-label"
+              className="form-group"
+            >
               <div className="form-row">
                 <span id="group-label" className="group-label">
                   {intl.formatMessage(messages.notificationtypes)}

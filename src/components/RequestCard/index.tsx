@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { TvDetails } from '../../../server/models/Tv';
@@ -37,9 +37,10 @@ const RequestCardPlaceholder: React.FC = () => {
 
 interface RequestCardProps {
   request: MediaRequest;
+  onTitleData?: (requestId: number, title: MovieDetails | TvDetails) => void;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
+const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });
@@ -62,12 +63,18 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
   });
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
-    const response = await axios.get(`/api/v1/request/${request.id}/${type}`);
+    const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
 
     if (response) {
       revalidate();
     }
   };
+
+  useEffect(() => {
+    if (title && onTitleData) {
+      onTitleData(request.id, title);
+    }
+  }, [title, onTitleData, request]);
 
   if (!title && !error) {
     return (
@@ -105,16 +112,18 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             {isMovie(title) ? title.title : title.name}
           </Link>
         </h2>
-        <div className="flex items-center">
-          <img
-            src={requestData.requestedBy.avatar}
-            alt=""
-            className="w-4 mr-1 rounded-full sm:mr-2 sm:w-5"
-          />
-          <span className="text-xs truncate sm:text-sm">
-            {requestData.requestedBy.displayName}
-          </span>
-        </div>
+        <Link href={`/users/${requestData.requestedBy.id}`}>
+          <a className="flex items-center group">
+            <img
+              src={requestData.requestedBy.avatar}
+              alt=""
+              className="w-4 mr-1 rounded-full sm:mr-2 sm:w-5"
+            />
+            <span className="text-xs truncate sm:text-sm group-hover:underline">
+              {requestData.requestedBy.displayName}
+            </span>
+          </a>
+        </Link>
         {requestData.media.status && (
           <div className="mt-1 sm:mt-2">
             <StatusBadge

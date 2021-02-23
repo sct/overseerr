@@ -89,7 +89,7 @@ const LanguagePicker: React.FC = () => {
     <div className="relative">
       <div>
         <button
-          className="p-1 text-gray-400 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring focus:text-white"
+          className="p-1 text-gray-400 rounded-full hover:bg-gray-600 hover:text-white focus:outline-none focus:ring focus:text-white"
           aria-label="Language Picker"
           onClick={() => setDropdownOpen(true)}
         >

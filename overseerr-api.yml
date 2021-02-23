@@ -27,13 +27,13 @@ tags:
   - name: tv
     description: Endpoints related to retrieving TV series and their details.
   - name: person
-    description: Endpoints related to retrieving Person details.
+    description: Endpoints related to retrieving person details.
   - name: media
     description: Endpoints related to media management.
   - name: collection
-    description: Endpoints related to retrieving Collection details.
+    description: Endpoints related to retrieving collection details.
   - name: service
-    description: Endpoinst related to getting Service (Radarr/Sonarr) details.
+    description: Endpoints related to getting service (Radarr/Sonarr) details.
 servers:
   - url: '{server}/api/v1'
     variables:
@@ -82,11 +82,23 @@ components:
           readOnly: true
           items:
             $ref: '#/components/schemas/MediaRequest'
+        settings:
+          $ref: '#/components/schemas/UserSettings'
       required:
         - id
         - email
         - createdAt
         - updatedAt
+    UserSettings:
+      type: object
+      properties:
+        enableNotifications:
+          type: boolean
+          default: true
+        discordId:
+          type: string
+      required:
+        - enableNotifications
     MainSettings:
       type: object
       properties:
@@ -376,7 +388,14 @@ components:
         activeDirectory:
           type: string
           example: '/tv/'
+        activeLanguageProfileId:
+          type: number
+          example: 1
+          nullable: true
         activeAnimeProfileId:
+          type: number
+          nullable: true
+        activeAnimeLanguageProfileId:
           type: number
           nullable: true
         activeAnimeProfileName:
@@ -637,6 +656,41 @@ components:
                 type: string
         releaseDate:
           type: string
+        releases:
+          type: object
+          properties:
+            results:
+              type: array
+              items:
+                type: object
+                properties:
+                  iso_3166_1:
+                    type: string
+                    example: 'US'
+                  rating:
+                    type: string
+                    nullable: true
+                  release_dates:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        certification:
+                          type: string
+                          example: 'PG-13'
+                        iso_639_1:
+                          type: string
+                          nullable: true
+                        note:
+                          type: string
+                          nullable: true
+                          example: 'Blu ray'
+                        release_date:
+                          type: string
+                          example: '2017-07-12T00:00:00.000Z'
+                        type:
+                          type: number
+                          example: 1
         revenue:
           type: number
           nullable: true
@@ -745,6 +799,20 @@ components:
           type: string
         posterPath:
           type: string
+        contentRatings:
+          type: object
+          properties:
+            results:
+              type: array
+              items:
+                type: object
+                properties:
+                  iso_3166_1:
+                    type: string
+                    example: 'US'
+                  rating:
+                    type: string
+                    example: 'TV-14'
         createdBy:
           type: array
           items:
@@ -1002,9 +1070,6 @@ components:
         pages:
           type: number
           example: 10
-        pageSize:
-          type: number
-          example: 10
         results:
           type: number
           example: 100
@@ -1068,6 +1133,20 @@ components:
               type: string
             chatId:
               type: string
+    PushbulletSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            accessToken:
+              type: string
     PushoverSettings:
       type: object
       properties:
@@ -1086,8 +1165,6 @@ components:
               type: string
             priority:
               type: number
-            sound:
-              type: string
     NotificationSettings:
       type: object
       properties:
@@ -1446,6 +1523,17 @@ components:
               searchForMissingEpisodes:
                 type: boolean
                 nullable: true
+    UserSettingsNotifications:
+      type: object
+      properties:
+        enableNotifications:
+          type: boolean
+          default: true
+        discordId:
+          type: string
+          nullable: true
+      required:
+        - enableNotifications
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -1530,7 +1618,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MainSettings'
   /settings/main/regenerate:
-    get:
+    post:
       summary: Get main settings with newly-generated API key
       description: Returns main settings in a JSON object, using the new API key.
       tags:
@@ -1605,21 +1693,50 @@ paths:
                   $ref: '#/components/schemas/PlexLibrary'
   /settings/plex/sync:
     get:
+      summary: Get status of full Plex library sync
+      description: Returns sync progress in a JSON array.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Status of Plex sync
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  running:
+                    type: boolean
+                    example: false
+                  progress:
+                    type: number
+                    example: 0
+                  total:
+                    type: number
+                    example: 100
+                  currentLibrary:
+                    $ref: '#/components/schemas/PlexLibrary'
+                  libraries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PlexLibrary'
+    post:
       summary: Start full Plex library sync
       description: Runs a full Plex library sync and returns the progress in a JSON array.
       tags:
         - settings
-      parameters:
-        - in: query
-          name: cancel
-          schema:
-            type: boolean
-            example: false
-        - in: query
-          name: start
-          schema:
-            type: boolean
-            example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cancel:
+                  type: boolean
+                  example: false
+                start:
+                  type: boolean
+                  example: false
       responses:
         '200':
           description: Status of Plex sync
@@ -1939,7 +2056,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PublicSettings'
   /settings/initialize:
-    get:
+    post:
       summary: Initialize application
       description: Sets the app as initialized, allowing the user to navigate to pages other than the setup page.
       tags:
@@ -1983,7 +2100,7 @@ paths:
                       type: boolean
                       example: false
   /settings/jobs/{jobId}/run:
-    get:
+    post:
       summary: Invoke a specific job
       description: Invokes a specific job to run. Will return the new job status in JSON format.
       tags:
@@ -2018,7 +2135,7 @@ paths:
                     type: boolean
                     example: false
   /settings/jobs/{jobId}/cancel:
-    get:
+    post:
       summary: Cancel a specific job
       description: Cancels a specific job. Will return the new job status in JSON format.
       tags:
@@ -2031,7 +2148,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Cancelled job returned
+          description: Canceled job returned
           content:
             application/json:
               schema:
@@ -2088,7 +2205,7 @@ paths:
                         vsize:
                           type: number
   /settings/cache/{cacheId}/flush:
-    get:
+    post:
       summary: Flush a specific cache
       description: Flushes all data from the cache ID provided
       tags:
@@ -2271,6 +2388,52 @@ paths:
       responses:
         '204':
           description: Test notification attempted
+  /settings/notifications/pushbullet:
+    get:
+      summary: Get Pushbullet notification settings
+      description: Returns current Pushbullet notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned Pushbullet settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushbulletSettings'
+    post:
+      summary: Update Pushbullet notification settings
+      description: Update Pushbullet notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushbulletSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushbulletSettings'
+  /settings/notifications/pushbullet/test:
+    post:
+      summary: Test Pushover settings
+      description: Sends a test notification to the Pushover agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushoverSettings'
+      responses:
+        '204':
+          description: Test notification attempted
   /settings/notifications/pushover:
     get:
       summary: Get Pushover notification settings
@@ -2285,7 +2448,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PushoverSettings'
     post:
-      summary: Update pushover notification settings
+      summary: Update Pushover notification settings
       description: Update Pushover notification settings with the provided values.
       tags:
         - settings
@@ -2504,7 +2667,7 @@ paths:
                 - email
                 - password
   /auth/logout:
-    get:
+    post:
       summary: Sign out and clear session cookie
       description: Completely clear the session cookie and associated values, effectively signing the user out.
       tags:
@@ -2520,21 +2683,103 @@ paths:
                   status:
                     type: string
                     example: 'ok'
+  /auth/reset-password:
+    post:
+      summary: Send a reset password email
+      description: Sends a reset password email to the email if the user exists
+      security: []
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'ok'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+              required:
+                - email
+  /auth/reset-password/{guid}:
+    post:
+      summary: Reset the password for a user
+      description: Resets the password for a user if the given guid is connected to a user
+      security: []
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'ok'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
   /user:
     get:
       summary: Get all users
-      description: Returns all users in a JSON array.
+      description: Returns all users in a JSON object.
       tags:
         - users
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 20
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [created, updated, requests, displayname]
+            default: created
       responses:
         '200':
           description: A JSON array of all users
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                    $ref: '#/components/schemas/User'
     post:
       summary: Create new user
       description: |
@@ -2603,7 +2848,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-
   /user/{userId}:
     get:
       summary: Get user by ID
@@ -2669,6 +2913,250 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+  /user/{userId}/requests:
+    get:
+      summary: Get user by ID
+      description: |
+        Retrieves a user's requests in a JSON object.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 20
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+      responses:
+        '200':
+          description: User's requests returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaRequest'
+  /user/{userId}/settings/main:
+    get:
+      summary: Get general settings for a user
+      description: Returns general settings for a specific user. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User general settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: 'Mr User'
+    post:
+      summary: Update general settings for a user
+      description: Updates and returns general settings for a specific user. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Updated user general settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: 'Mr User'
+  /user/{userId}/settings/password:
+    get:
+      summary: Get password page informatiom
+      description: Returns important data for the password page to function correctly. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User password page information returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hasPassword:
+                    type: boolean
+                    example: true
+    post:
+      summary: Update password for a user
+      description: Updates a user's password. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  nullable: true
+                newPassword:
+                  type: string
+              required:
+                - newPassword
+      responses:
+        '204':
+          description: User password updated
+  /user/{userId}/settings/notifications:
+    get:
+      summary: Get notification settings for a user
+      description: Returns notification settings for a specific user. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User notification settings returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsNotifications'
+    post:
+      summary: Update notification settings for a user
+      description: Updates and returns notification settings for a specific user. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSettingsNotifications'
+      responses:
+        '200':
+          description: Updated user notification settings returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsNotifications'
+  /user/{userId}/settings/permissions:
+    get:
+      summary: Get permission settings for a user
+      description: Returns permission settings for a specific user. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User permission settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  permissions:
+                    type: number
+                    example: 2
+    post:
+      summary: Update permission settings for a user
+      description: Updates and returns permission settings for a specific user. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                permissions:
+                  type: number
+              required:
+                - permissions
+      responses:
+        '200':
+          description: Updated user general settings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  permissions:
+                    type: number
+                    example: 2
   /search:
     get:
       summary: Search for movies, TV shows, or people
@@ -2834,6 +3322,45 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/TvResult'
+  /discover/tv/upcoming:
+    get:
+      summary: Discover Upcoming TV shows
+      description: Returns a list of upcoming TV shows in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TvResult'
   /discover/trending:
     get:
       summary: Trending movies and TV
@@ -2946,7 +3473,7 @@ paths:
           schema:
             type: string
             nullable: true
-            enum: [all, available, approved, pending, unavailable]
+            enum: [all, approved, available, pending, processing, unavailable]
         - in: query
           name: sort
           schema:
@@ -3005,6 +3532,8 @@ paths:
                   type: number
                 rootFolder:
                   type: string
+                languageProfileId:
+                  type: number
               required:
                 - mediaType
                 - mediaId
@@ -3036,6 +3565,12 @@ paths:
                   approved:
                     type: number
                     example: 10
+                  processing:
+                    type: number
+                    example: 4
+                  available:
+                    type: number
+                    example: 6
                 required:
                   - pending
                   - approved
@@ -3121,10 +3656,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/MediaRequest'
   /request/{requestId}/{status}:
-    get:
-      summary: Update a requests status
+    post:
+      summary: Update a request's status
       description: |
-        Updates a requests status to approved or declined. Also returns the request in a JSON object.
+        Updates a request's status to approved or declined. Also returns the request in a JSON object.
 
         Requires the `MANAGE_REQUESTS` permission or `ADMIN`.
       tags:
@@ -3615,9 +4150,9 @@ paths:
         '204':
           description: Succesfully removed media item
   /media/{mediaId}/{status}:
-    get:
+    post:
       summary: Update media status
-      description: Updates a medias status and returns the media in JSON format
+      description: Updates a media item's status and returns the media in JSON format
       tags:
         - media
       parameters:
@@ -3636,12 +4171,15 @@ paths:
           schema:
             type: string
             enum: [available, partial, processing, pending, unknown]
-        - in: query
-          name: is4k
-          description: 4K Status
-          example: false
-          schema:
-            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is4k:
+                  type: boolean
+                  example: false
       responses:
         '200':
           description: Returned media
@@ -3776,6 +4314,49 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SonarrSeries'
+  /regions:
+    get:
+      summary: Regions supported by TMDb
+      description: Returns a list of regions in a JSON object.
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  iso_3166_1:
+                    type: string
+                    example: US
+                  english_name:
+                    type: string
+                    example: United States of America
+  /languages:
+    get:
+      summary: Languages supported by TMDb
+      description: Returns a list of languages in a JSON object.
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  iso_639_1:
+                    type: string
+                    example: en
+                  english_name:
+                    type: string
+                    example: English
+                  name:
+                    type: string
+                    example: English
 
 security:
   - cookieAuth: []

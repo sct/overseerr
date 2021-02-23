@@ -8,6 +8,7 @@ interface TelegramPayload {
   text: string;
   parse_mode: string;
   chat_id: string;
+  disable_notification: boolean;
 }
 
 class TelegramAgent
@@ -56,49 +57,59 @@ class TelegramAgent
     /* eslint-disable no-useless-escape */
     switch (type) {
       case Notification.MEDIA_PENDING:
-        message += `\*New Request\*\n`;
-        message += `${title}\n\n`;
-        message += `${plot}\n\n`;
-        message += `\*Requested By\*\n${user}\n\n`;
-        message += `\*Status\*\nPending Approval\n`;
-
+        message += `\*New Request\*`;
+        message += `\n\n\*${title}\*`;
+        if (plot) {
+          message += `\n${plot}`;
+        }
+        message += `\n\n\*Requested By\*\n${user}`;
+        message += `\n\n\*Status\*\nPending Approval`;
         break;
       case Notification.MEDIA_APPROVED:
-        message += `\*Request Approved\*\n`;
-        message += `${title}\n\n`;
-        message += `${plot}\n\n`;
-        message += `\*Requested By\*\n${user}\n\n`;
-        message += `\*Status\*\nProcessing Request\n`;
-
-        break;
-      case Notification.MEDIA_DECLINED:
-        message += `\*Request Declined\*\n`;
-        message += `${title}\n\n`;
-        message += `${plot}\n\n`;
-        message += `\*Requested By\*\n${user}\n\n`;
-        message += `\*Status\*\nDeclined\n`;
-
+        message += `\*Request Approved\*`;
+        message += `\n\n\*${title}\*`;
+        if (plot) {
+          message += `\n${plot}`;
+        }
+        message += `\n\n\*Requested By\*\n${user}`;
+        message += `\n\n\*Status\*\nProcessing`;
         break;
       case Notification.MEDIA_AVAILABLE:
-        message += `\*Now available\\!\*\n`;
-        message += `${title}\n\n`;
-        message += `${plot}\n\n`;
-        message += `\*Requested By\*\n${user}\n\n`;
-        message += `\*Status\*\nAvailable\n`;
-
+        message += `\*Now Available\*`;
+        message += `\n\n\*${title}\*`;
+        if (plot) {
+          message += `\n${plot}`;
+        }
+        message += `\n\n\*Requested By\*\n${user}`;
+        message += `\n\n\*Status\*\nAvailable`;
+        break;
+      case Notification.MEDIA_DECLINED:
+        message += `\*Request Declined\*`;
+        message += `\n\n\*${title}\*`;
+        if (plot) {
+          message += `\n${plot}`;
+        }
+        message += `\n\n\*Requested By\*\n${user}`;
+        message += `\n\n\*Status\*\nDeclined`;
+        break;
+      case Notification.MEDIA_FAILED:
+        message += `\*Failed Request\*`;
+        message += `\n\n\*${title}\*`;
+        if (plot) {
+          message += `\n${plot}`;
+        }
+        message += `\n\n\*Requested By\*\n${user}`;
+        message += `\n\n\*Status\*\nFailed`;
         break;
       case Notification.TEST_NOTIFICATION:
-        message += `\*Test Notification\*\n`;
-        message += `${title}\n\n`;
-        message += `${plot}\n\n`;
-        message += `\*Requested By\*\n${user}\n`;
-
+        message += `\*Test Notification\*`;
+        message += `\n\n${plot}`;
         break;
     }
 
     if (settings.main.applicationUrl && payload.media) {
       const actionUrl = `${settings.main.applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`;
-      message += `\[Open in ${settings.main.applicationTitle}\]\(${actionUrl}\)`;
+      message += `\n\n\[Open in ${settings.main.applicationTitle}\]\(${actionUrl}\)`;
     }
     /* eslint-enable */
 
@@ -119,6 +130,7 @@ class TelegramAgent
         text: this.buildMessage(type, payload),
         parse_mode: 'MarkdownV2',
         chat_id: `${this.getSettings().options.chatId}`,
+        disable_notification: this.getSettings().options.sendSilently,
       } as TelegramPayload);
 
       return true;

@@ -78,6 +78,9 @@ export class MediaRequest {
   @Column({ nullable: true })
   public rootFolder: string;
 
+  @Column({ nullable: true })
+  public languageProfileId: number;
+
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
   }
@@ -108,6 +111,7 @@ export class MediaRequest {
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
           notifyUser: this.requestedBy,
           media,
+          request: this,
         });
       }
 
@@ -127,6 +131,7 @@ export class MediaRequest {
                 .join(', '),
             },
           ],
+          request: this,
         });
       }
     }
@@ -174,6 +179,7 @@ export class MediaRequest {
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
             notifyUser: this.requestedBy,
             media,
+            request: this,
           }
         );
       } else if (this.media.mediaType === MediaType.TV) {
@@ -196,6 +202,7 @@ export class MediaRequest {
                   .join(', '),
               },
             ],
+            request: this,
           }
         );
       }
@@ -380,9 +387,7 @@ export class MediaRequest {
         const tmdb = new TheMovieDb();
         const radarr = new RadarrAPI({
           apiKey: radarrSettings.apiKey,
-          url: `${radarrSettings.useSsl ? 'https' : 'http'}://${
-            radarrSettings.hostname
-          }:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}/api`,
+          url: RadarrAPI.buildRadarrUrl(radarrSettings, '/api/v3'),
         });
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
 
@@ -451,6 +456,7 @@ export class MediaRequest {
               notifyUser: admin,
               media,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+              request: this,
             });
           });
         logger.info('Sent request to Radarr', { label: 'Media Request' });
@@ -527,15 +533,15 @@ export class MediaRequest {
         const tmdb = new TheMovieDb();
         const sonarr = new SonarrAPI({
           apiKey: sonarrSettings.apiKey,
-          url: `${sonarrSettings.useSsl ? 'https' : 'http'}://${
-            sonarrSettings.hostname
-          }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}/api`,
+          url: SonarrAPI.buildSonarrUrl(sonarrSettings, '/api/v3'),
         });
         const series = await tmdb.getTvShow({ tvId: media.tmdbId });
         const tvdbId = series.external_ids.tvdb_id ?? media.tvdbId;
 
         if (!tvdbId) {
-          this.handleRemoveParentUpdate();
+          const requestRepository = getRepository(MediaRequest);
+          await mediaRepository.remove(media);
+          await requestRepository.remove(this);
           throw new Error('Series was missing tvdb id');
         }
 
@@ -559,6 +565,11 @@ export class MediaRequest {
             ? sonarrSettings.activeAnimeProfileId
             : sonarrSettings.activeProfileId;
 
+        let languageProfile =
+          seriesType === 'anime' && sonarrSettings.activeAnimeLanguageProfileId
+            ? sonarrSettings.activeAnimeLanguageProfileId
+            : sonarrSettings.activeLanguageProfileId;
+
         if (
           this.rootFolder &&
           this.rootFolder !== '' &&
@@ -577,10 +588,24 @@ export class MediaRequest {
           });
         }
 
+        if (
+          this.languageProfileId &&
+          this.languageProfileId !== languageProfile
+        ) {
+          languageProfile = this.languageProfileId;
+          logger.info(
+            `Request has an override Language Profile: ${languageProfile}`,
+            {
+              label: 'Media Request',
+            }
+          );
+        }
+
         // Run this asynchronously so we don't wait for it on the UI side
         sonarr
           .addSeries({
             profileId: qualityProfile,
+            languageProfileId: languageProfile,
             rootFolderPath: rootFolder,
             title: series.name,
             tvdbid: tvdbId,
@@ -635,6 +660,7 @@ export class MediaRequest {
                     .join(', '),
                 },
               ],
+              request: this,
             });
           });
         logger.info('Sent request to Sonarr', { label: 'Media Request' });

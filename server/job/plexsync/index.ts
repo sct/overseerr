@@ -353,6 +353,25 @@ class JobPlexSync {
     }
   }
 
+  // movies with hama agent actually are tv shows with at least one episode in it
+  // try to get first episode of any season - cannot hardcode season or episode number
+  // because sometimes user can have it in other season/ep than s01e01
+  private async processHamaMovie(
+    metadata: PlexMetadata,
+    tmdbMovie: TmdbMovieDetails | undefined,
+    tmdbMovieId: number
+  ) {
+    const season = metadata.Children?.Metadata[0];
+    if (season) {
+      const episodes = await this.plexClient.getChildrenMetadata(
+        season.ratingKey
+      );
+      if (episodes) {
+        await this.processMovieWithId(episodes[0], tmdbMovie, tmdbMovieId);
+      }
+    }
+  }
+
   private async processShow(plexitem: PlexLibraryItem) {
     const mediaRepository = getRepository(Media);
 
@@ -431,8 +450,8 @@ class JobPlexSync {
             // if lookup of tvshow above failed, then try movie with tmdbid/imdbid
             // note - some tv shows have imdbid set too, that's why this need to go second
             if (result?.tmdbId) {
-              return await this.processMovieWithId(
-                plexitem,
+              return await this.processHamaMovie(
+                metadata,
                 undefined,
                 result.tmdbId
               );
@@ -440,8 +459,8 @@ class JobPlexSync {
               const tmdbMovie = await this.tmdb.getMovieByImdbId({
                 imdbId: result.imdbId,
               });
-              return await this.processMovieWithId(
-                plexitem,
+              return await this.processHamaMovie(
+                metadata,
                 tmdbMovie,
                 tmdbMovie.id
               );
@@ -524,15 +543,18 @@ class JobPlexSync {
               if (existingSeason) {
                 // These ternary statements look super confusing, but they are simply
                 // setting the status to AVAILABLE if all of a type is there, partially if some,
-                // and then not modifying the status if there are 0 items
+                // and then not modifying the status if there are 0 items.
+                // If the season was already available, we don't modify it as well.
                 existingSeason.status =
-                  totalStandard === season.episode_count
+                  totalStandard === season.episode_count ||
+                  existingSeason.status === MediaStatus.AVAILABLE
                     ? MediaStatus.AVAILABLE
                     : totalStandard > 0
                     ? MediaStatus.PARTIALLY_AVAILABLE
                     : existingSeason.status;
                 existingSeason.status4k =
-                  this.enable4kShow && total4k === season.episode_count
+                  (this.enable4kShow && total4k === season.episode_count) ||
+                  existingSeason.status4k === MediaStatus.AVAILABLE
                     ? MediaStatus.AVAILABLE
                     : this.enable4kShow && total4k > 0
                     ? MediaStatus.PARTIALLY_AVAILABLE

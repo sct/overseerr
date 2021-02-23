@@ -4,15 +4,11 @@
 Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported.
 {% endhint %}
 
-## LE/SWAG
+## [SWAG (Secure Web Application Gateway, formerly known as `letsencrypt`)](https://github.com/linuxserver/docker-swag)
 
-### Subdomain
+A sample proxy configuration is included in SWAG. However, this page is still the only source of truth, so the SWAG sample configuration is not guaranteed to be up-to-date. If you find an inconsistency, please [report it to the LinuxServer team](https://github.com/linuxserver/reverse-proxy-confs/issues/new) or [submit a pull request to update it](https://github.com/linuxserver/reverse-proxy-confs/pulls).
 
-A sample is bundled in SWAG. This page is still the only source of truth, so the sample is not guaranteed to be up to date. If you catch an inconsistency, report it to the linuxserver team, or do a pull-request against the proxy-confs repository to update the sample.
-
-Rename the sample file `overseerr.subdomain.conf.sample` to `overseerr.subdomain.conf` in the `proxy-confs`folder, or create `overseerr.subdomain.conf` in the same folder with the example below.
-
-Example Configuration:
+To use the bundled configuration file, simply rename `overseerr.subdomain.conf.sample` in the `proxy-confs` folder to `overseerr.subdomain.conf`. Alternatively, create a new file `overseerr.subdomain.conf` in `proxy-confs` with the following configuration:
 
 ```nginx
 server {
@@ -41,11 +37,7 @@ server {
 
 ## Traefik \(v2\)
 
-Add the labels to the Overseerr service in your `docker-compose` file. A basic example for a `docker-compose` file using Traefik can be found [here](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/).
-
-### Subdomain
-
-Example Configuration:
+Add the following labels to the Overseerr service in your `docker-compose.yml` file:
 
 ```text
 labels:
@@ -59,31 +51,11 @@ labels:
   - "traefik.http.services.overseerr-svc.loadbalancer.server.port=5055"
 ```
 
-## LE/NGINX
+For more information, see the Traefik documentation for a [basic example](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/).
 
-### Subdomain
+## `nginx`
 
-Take the configuration below and place it in `/etc/nginx/sites-available/overseerr.example.com.conf`.
-
-Create a symlink to `/etc/nginx/sites-enabled`:
-
-```text
-sudo ln -s /etc/nginx/sites-available/overseerr.example.com.conf /etc/nginx/sites-enabled/overseerr.example.com.conf
-```
-
-Test the configuration:
-
-```text
-sudo nginx -t
-```
-
-Reload your configuration for NGINX:
-
-```text
-sudo systemctl reload nginx
-```
-
-Example Configuration:
+Add the following configuration to a new file `/etc/nginx/sites-available/overseerr.example.com.conf`:
 
 ```text
 server {
@@ -132,4 +104,22 @@ server {
         proxy_pass http://127.0.0.1:5055;
     }
 }
+```
+
+Then, create a symlink to `/etc/nginx/sites-enabled`:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/overseerr.example.com.conf /etc/nginx/sites-enabled/overseerr.example.com.conf
+```
+
+Next, test the configuration:
+
+```bash
+sudo nginx -t
+```
+
+Finally, reload `nginx` for the new configuration to take effect:
+
+```bash
+sudo systemctl reload nginx
 ```

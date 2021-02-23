@@ -21,7 +21,7 @@ const messages = defineMessages({
   runnow: 'Run Now',
   canceljob: 'Cancel Job',
   jobstarted: '{jobname} started.',
-  jobcancelled: '{jobname} cancelled.',
+  jobcancelled: '{jobname} canceled.',
   process: 'Process',
   command: 'Command',
   cache: 'Cache',
@@ -63,7 +63,7 @@ const SettingsJobs: React.FC = () => {
   }
 
   const runJob = async (job: Job) => {
-    await axios.get(`/api/v1/settings/jobs/${job.id}/run`);
+    await axios.post(`/api/v1/settings/jobs/${job.id}/run`);
     addToast(
       intl.formatMessage(messages.jobstarted, {
         jobname: job.name,
@@ -77,7 +77,7 @@ const SettingsJobs: React.FC = () => {
   };
 
   const cancelJob = async (job: Job) => {
-    await axios.get(`/api/v1/settings/jobs/${job.id}/cancel`);
+    await axios.post(`/api/v1/settings/jobs/${job.id}/cancel`);
     addToast(intl.formatMessage(messages.jobcancelled, { jobname: job.name }), {
       appearance: 'error',
       autoDismiss: true,
@@ -86,7 +86,7 @@ const SettingsJobs: React.FC = () => {
   };
 
   const flushCache = async (cache: CacheItem) => {
-    await axios.get(`/api/v1/settings/cache/${cache.id}/flush`);
+    await axios.post(`/api/v1/settings/cache/${cache.id}/flush`);
     addToast(
       intl.formatMessage(messages.cacheflushed, { cachename: cache.name }),
       {

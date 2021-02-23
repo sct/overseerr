@@ -225,7 +225,8 @@
       "profile": "https://github.com/ankarhem",
       "contributions": [
         "doc",
-        "code"
+        "code",
+        "translation"
       ]
     },
     {
@@ -262,7 +263,8 @@
       "profile": "https://github.com/TheCatLady",
       "contributions": [
         "code",
-        "translation"
+        "translation",
+        "doc"
       ]
     },
     {
@@ -300,6 +302,15 @@
       "profile": "https://www.douglas-parker.com",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "dancarter",
+      "name": "Daniel Carter",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4387516?v=4",
+      "profile": "https://github.com/dancarter",
+      "contributions": [
+        "code"
       ]
     }
   ],

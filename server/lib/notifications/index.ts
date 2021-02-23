@@ -49,7 +49,7 @@ class NotificationManager {
       label: 'Notifications',
     });
     this.activeAgents.forEach((agent) => {
-      if (settings.enabled && agent.shouldSend(type)) {
+      if (settings.enabled && agent.shouldSend(type, payload)) {
         agent.send(type, payload);
       }
     });

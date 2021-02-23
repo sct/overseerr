@@ -92,13 +92,10 @@ const PersonDetails: React.FC = () => {
           </div>
         </div>
       </div>
-      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
+      <ul className="cardList">
         {sortedCast?.map((media, index) => {
           return (
-            <li
-              key={`list-cast-item-${media.id}-${index}`}
-              className="flex flex-col items-center col-span-1 text-center"
-            >
+            <li key={`list-cast-item-${media.id}-${index}`}>
               <TitleCard
                 id={media.id}
                 title={media.mediaType === 'movie' ? media.title : media.name}
@@ -137,13 +134,10 @@ const PersonDetails: React.FC = () => {
           </div>
         </div>
       </div>
-      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
+      <ul className="cardList">
         {sortedCrew?.map((media, index) => {
           return (
-            <li
-              key={`list-crew-item-${media.id}-${index}`}
-              className="flex flex-col items-center col-span-1 text-center"
-            >
+            <li key={`list-crew-item-${media.id}-${index}`}>
               <TitleCard
                 id={media.id}
                 title={media.mediaType === 'movie' ? media.title : media.name}
@@ -175,7 +169,7 @@ const PersonDetails: React.FC = () => {
     <>
       <PageTitle title={data.name} />
       {(sortedCrew || sortedCast) && (
-        <div className="absolute top-0 left-0 right-0 z-0 h-96">
+        <div className="absolute left-0 right-0 z-0 -top-16 h-96">
           <ImageFader
             isDarker
             backgroundImages={[...(sortedCast ?? []), ...(sortedCrew ?? [])]
@@ -188,7 +182,7 @@ const PersonDetails: React.FC = () => {
           />
         </div>
       )}
-      <div className="relative z-10 flex flex-col items-center mt-8 mb-8 md:flex-row md:items-start">
+      <div className="relative z-10 flex flex-col items-center mt-4 mb-8 md:flex-row md:items-start">
         {data.profilePath && (
           <div
             style={{

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
-import { getRepository, FindOperator, FindOneOptions, In } from 'typeorm';
+import { getRepository } from 'typeorm';
 import { MediaRequest } from '../entity/MediaRequest';
 import TheMovieDb from '../api/themoviedb';
 import Media from '../entity/Media';
@@ -14,66 +14,102 @@ import { User } from '../entity/User';
 const requestRoutes = Router();
 
 requestRoutes.get('/', async (req, res, next) => {
-  const requestRepository = getRepository(MediaRequest);
   try {
-    const pageSize = req.query.take ? Number(req.query.take) : 20;
+    const pageSize = req.query.take ? Number(req.query.take) : 10;
     const skip = req.query.skip ? Number(req.query.skip) : 0;
 
-    let statusFilter:
-      | MediaRequestStatus
-      | FindOperator<string | MediaRequestStatus>
-      | undefined = undefined;
+    let statusFilter: MediaRequestStatus[];
+
+    switch (req.query.filter) {
+      case 'approved':
+      case 'processing':
+      case 'available':
+        statusFilter = [MediaRequestStatus.APPROVED];
+        break;
+      case 'pending':
+        statusFilter = [MediaRequestStatus.PENDING];
+        break;
+      case 'unavailable':
+        statusFilter = [
+          MediaRequestStatus.PENDING,
+          MediaRequestStatus.APPROVED,
+        ];
+        break;
+      default:
+        statusFilter = [
+          MediaRequestStatus.PENDING,
+          MediaRequestStatus.APPROVED,
+          MediaRequestStatus.DECLINED,
+        ];
+    }
+
+    let mediaStatusFilter: MediaStatus[];
 
     switch (req.query.filter) {
       case 'available':
-        statusFilter = MediaRequestStatus.AVAILABLE;
+        mediaStatusFilter = [MediaStatus.AVAILABLE];
         break;
-      case 'approved':
-        statusFilter = MediaRequestStatus.APPROVED;
-        break;
-      case 'pending':
-        statusFilter = MediaRequestStatus.PENDING;
-        break;
+      case 'processing':
       case 'unavailable':
-        statusFilter = In([
-          MediaRequestStatus.PENDING,
-          MediaRequestStatus.APPROVED,
-        ]);
+        mediaStatusFilter = [
+          MediaStatus.UNKNOWN,
+          MediaStatus.PENDING,
+          MediaStatus.PROCESSING,
+          MediaStatus.PARTIALLY_AVAILABLE,
+        ];
         break;
       default:
-        statusFilter = In(Object.values(MediaRequestStatus));
+        mediaStatusFilter = [
+          MediaStatus.UNKNOWN,
+          MediaStatus.PENDING,
+          MediaStatus.PROCESSING,
+          MediaStatus.PARTIALLY_AVAILABLE,
+          MediaStatus.AVAILABLE,
+        ];
     }
 
-    let sortFilter: FindOneOptions<MediaRequest>['order'] = {
-      id: 'DESC',
-    };
+    let sortFilter: string;
 
     switch (req.query.sort) {
       case 'modified':
-        sortFilter = {
-          updatedAt: 'DESC',
-        };
+        sortFilter = 'request.updatedAt';
         break;
+      default:
+        sortFilter = 'request.id';
     }
 
-    const [requests, requestCount] = req.user?.hasPermission(
-      [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
-      { type: 'or' }
-    )
-      ? await requestRepository.findAndCount({
-          order: sortFilter,
-          relations: ['media', 'modifiedBy'],
-          where: { status: statusFilter },
-          take: Number(req.query.take) ?? 20,
-          skip,
-        })
-      : await requestRepository.findAndCount({
-          where: { requestedBy: { id: req.user?.id }, status: statusFilter },
-          relations: ['media', 'modifiedBy'],
-          order: sortFilter,
-          take: Number(req.query.limit) ?? 20,
-          skip,
-        });
+    let query = getRepository(MediaRequest)
+      .createQueryBuilder('request')
+      .leftJoinAndSelect('request.media', 'media')
+      .leftJoinAndSelect('request.seasons', 'seasons')
+      .leftJoinAndSelect('request.modifiedBy', 'modifiedBy')
+      .leftJoinAndSelect('request.requestedBy', 'requestedBy')
+      .where('request.status IN (:...requestStatus)', {
+        requestStatus: statusFilter,
+      })
+      .andWhere(
+        '((request.is4k = 0 AND media.status IN (:...mediaStatus)) OR (request.is4k = 1 AND media.status4k IN (:...mediaStatus)))',
+        {
+          mediaStatus: mediaStatusFilter,
+        }
+      );
+
+    if (
+      !req.user?.hasPermission(
+        [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+        { type: 'or' }
+      )
+    ) {
+      query = query.andWhere('requestedBy.id = :id', {
+        id: req.user?.id,
+      });
+    }
+
+    const [requests, requestCount] = await query
+      .orderBy(sortFilter, 'DESC')
+      .take(pageSize)
+      .skip(skip)
+      .getManyAndCount();
 
     return res.status(200).json({
       pageInfo: {
@@ -176,13 +212,29 @@ requestRoutes.post(
           requestedBy: requestUser,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
           status:
-            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
-            req.user?.hasPermission(Permission.AUTO_APPROVE_MOVIE)
+            req.user?.hasPermission(
+              req.body.is4k
+                ? Permission.AUTO_APPROVE_4K
+                : Permission.AUTO_APPROVE
+            ) ||
+            req.user?.hasPermission(
+              req.body.is4k
+                ? Permission.AUTO_APPROVE_4K_MOVIE
+                : Permission.AUTO_APPROVE_MOVIE
+            )
               ? MediaRequestStatus.APPROVED
               : MediaRequestStatus.PENDING,
           modifiedBy:
-            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
-            req.user?.hasPermission(Permission.AUTO_APPROVE_MOVIE)
+            req.user?.hasPermission(
+              req.body.is4k
+                ? Permission.AUTO_APPROVE_4K
+                : Permission.AUTO_APPROVE
+            ) ||
+            req.user?.hasPermission(
+              req.body.is4k
+                ? Permission.AUTO_APPROVE_4K_MOVIE
+                : Permission.AUTO_APPROVE_MOVIE
+            )
               ? req.user
               : undefined,
           is4k: req.body.is4k,
@@ -237,26 +289,51 @@ requestRoutes.post(
           requestedBy: requestUser,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
           status:
-            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
-            req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
+            req.user?.hasPermission(
+              req.body.is4k
+                ? Permission.AUTO_APPROVE_4K
+                : Permission.AUTO_APPROVE
+            ) ||
+            req.user?.hasPermission(
+              req.body.is4k
+                ? Permission.AUTO_APPROVE_4K_TV
+                : Permission.AUTO_APPROVE_TV
+            )
               ? MediaRequestStatus.APPROVED
               : MediaRequestStatus.PENDING,
           modifiedBy:
-            req.user?.hasPermission(Permission.AUTO_APPROVE) ||
-            req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
+            req.user?.hasPermission(
+              req.body.is4k
+                ? Permission.AUTO_APPROVE_4K
+                : Permission.AUTO_APPROVE
+            ) ||
+            req.user?.hasPermission(
+              req.body.is4k
+                ? Permission.AUTO_APPROVE_4K_TV
+                : Permission.AUTO_APPROVE_TV
+            )
               ? req.user
               : undefined,
           is4k: req.body.is4k,
           serverId: req.body.serverId,
           profileId: req.body.profileId,
           rootFolder: req.body.rootFolder,
+          languageProfileId: req.body.languageProfileId,
           seasons: finalSeasons.map(
             (sn) =>
               new SeasonRequest({
                 seasonNumber: sn,
                 status:
-                  req.user?.hasPermission(Permission.AUTO_APPROVE) ||
-                  req.user?.hasPermission(Permission.AUTO_APPROVE_TV)
+                  req.user?.hasPermission(
+                    req.body.is4k
+                      ? Permission.AUTO_APPROVE_4K
+                      : Permission.AUTO_APPROVE
+                  ) ||
+                  req.user?.hasPermission(
+                    req.body.is4k
+                      ? Permission.AUTO_APPROVE_4K_TV
+                      : Permission.AUTO_APPROVE_TV
+                  )
                     ? MediaRequestStatus.APPROVED
                     : MediaRequestStatus.PENDING,
               })
@@ -278,16 +355,51 @@ requestRoutes.get('/count', async (_req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
 
   try {
-    const pendingCount = await requestRepository.count({
-      status: MediaRequestStatus.PENDING,
-    });
-    const approvedCount = await requestRepository.count({
-      status: MediaRequestStatus.APPROVED,
-    });
+    const query = requestRepository
+      .createQueryBuilder('request')
+      .leftJoinAndSelect('request.media', 'media');
+
+    const pendingCount = await query
+      .where('request.status = :requestStatus', {
+        requestStatus: MediaRequestStatus.PENDING,
+      })
+      .getCount();
+
+    const approvedCount = await query
+      .where('request.status = :requestStatus', {
+        requestStatus: MediaRequestStatus.APPROVED,
+      })
+      .getCount();
+
+    const processingCount = await query
+      .where('request.status = :requestStatus', {
+        requestStatus: MediaRequestStatus.APPROVED,
+      })
+      .andWhere(
+        '(request.is4k = false AND media.status != :availableStatus) OR (request.is4k = true AND media.status4k != :availableStatus)',
+        {
+          availableStatus: MediaStatus.AVAILABLE,
+        }
+      )
+      .getCount();
+
+    const availableCount = await query
+      .where('request.status = :requestStatus', {
+        requestStatus: MediaRequestStatus.APPROVED,
+      })
+      .andWhere(
+        '(request.is4k = false AND media.status = :availableStatus) OR (request.is4k = true AND media.status4k = :availableStatus)',
+        {
+          availableStatus: MediaStatus.AVAILABLE,
+        }
+      )
+      .getCount();
 
     return res.status(200).json({
       pending: pendingCount,
       approved: approvedCount,
+      processing: processingCount,
+      available: availableCount,
     });
   } catch (e) {
     next({ status: 500, message: e.message });
@@ -488,7 +600,7 @@ requestRoutes.post<{
   }
 );
 
-requestRoutes.get<{
+requestRoutes.post<{
   requestId: string;
   status: 'pending' | 'approve' | 'decline';
 }>(

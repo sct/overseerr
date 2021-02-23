@@ -1,10 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
-import {
-  FormattedMessage,
-  FormattedDate,
-  defineMessages,
-  useIntl,
-} from 'react-intl';
+import { FormattedDate, defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import Button from '../Common/Button';
@@ -36,9 +31,9 @@ import RequestButton from '../RequestButton';
 import MediaSlider from '../MediaSlider';
 import ConfirmButton from '../Common/ConfirmButton';
 import DownloadBlock from '../DownloadBlock';
-import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import PageTitle from '../Common/PageTitle';
 import useSettings from '../../hooks/useSettings';
+import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -85,12 +80,13 @@ interface TvDetailsProps {
 
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const settings = useSettings();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showManager, setShowManager] = useState(false);
+
   const { data, error, revalidate } = useSWR<TvDetailsType>(
     `/api/v1/tv/${router.query.tvId}?language=${locale}`,
     {
@@ -114,10 +110,38 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     return <Error statusCode={404} />;
   }
 
+  const mediaLinks: PlayButtonLink[] = [];
+
+  if (data.mediaInfo?.plexUrl) {
+    mediaLinks.push({
+      text: intl.formatMessage(messages.playonplex),
+      url: data.mediaInfo?.plexUrl,
+    });
+  }
+
+  if (
+    data.mediaInfo?.plexUrl4k &&
+    hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+      type: 'or',
+    })
+  ) {
+    mediaLinks.push({
+      text: intl.formatMessage(messages.play4konplex),
+      url: data.mediaInfo?.plexUrl4k,
+    });
+  }
+
   const trailerUrl = data.relatedVideos
     ?.filter((r) => r.type === 'Trailer')
     .sort((a, b) => a.size - b.size)
     .pop()?.url;
+
+  if (trailerUrl) {
+    mediaLinks.push({
+      text: intl.formatMessage(messages.watchtrailer),
+      url: trailerUrl,
+    });
+  }
 
   const deleteMedia = async () => {
     if (data?.mediaInfo?.id) {
@@ -127,13 +151,36 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   };
 
   const markAvailable = async (is4k = false) => {
-    await axios.get(`/api/v1/media/${data?.mediaInfo?.id}/available`, {
-      params: {
-        is4k,
-      },
+    await axios.post(`/api/v1/media/${data?.mediaInfo?.id}/available`, {
+      is4k,
     });
     revalidate();
   };
+
+  const region = user?.settings?.region
+    ? user.settings.region
+    : settings.currentSettings.region
+    ? settings.currentSettings.region
+    : 'US';
+  const seriesAttributes: React.ReactNode[] = [];
+
+  if (
+    data.contentRatings.results.length &&
+    data.contentRatings.results.find(
+      (r) => r.iso_3166_1 === region || data.contentRatings.results[0].rating
+    )
+  ) {
+    seriesAttributes.push(
+      <span className="p-0.5 py-0 border rounded-md">
+        {data.contentRatings.results.find((r) => r.iso_3166_1 === region)
+          ?.rating || data.contentRatings.results[0].rating}
+      </span>
+    );
+  }
+
+  if (data.genres.length) {
+    seriesAttributes.push(data.genres.map((g) => g.name).join(', '));
+  }
 
   const isComplete =
     data.seasons.filter((season) => season.seasonNumber !== 0).length <=
@@ -153,7 +200,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   return (
     <div
-      className="px-4 pt-4 -mx-4 -mt-2 bg-center bg-cover"
+      className="px-4 pt-16 -mx-4 -mt-16 bg-center bg-cover"
       style={{
         height: 493,
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
@@ -358,133 +405,53 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           />
         </div>
         <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
-          <div className="mb-2">
-            {data.mediaInfo && data.mediaInfo.status !== MediaStatus.UNKNOWN && (
-              <span className="mr-2">
-                <StatusBadge
-                  status={data.mediaInfo?.status}
-                  inProgress={(data.mediaInfo.downloadStatus ?? []).length > 0}
-                  plexUrl={data.mediaInfo?.plexUrl}
-                  plexUrl4k={data.mediaInfo?.plexUrl4k}
-                />
-              </span>
-            )}
-            <span>
+          <div className="mb-2 space-x-2">
+            <span className="ml-2 lg:ml-0">
               <StatusBadge
-                status={data.mediaInfo?.status4k}
-                is4k
+                status={data.mediaInfo?.status}
                 inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
                 plexUrl={data.mediaInfo?.plexUrl}
-                plexUrl4k={
-                  data.mediaInfo?.plexUrl4k &&
-                  (hasPermission(Permission.REQUEST_4K) ||
-                    hasPermission(Permission.REQUEST_4K_TV))
-                    ? data.mediaInfo.plexUrl4k
-                    : undefined
-                }
               />
             </span>
+            {settings.currentSettings.series4kEnabled &&
+              hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+                type: 'or',
+              }) && (
+                <span>
+                  <StatusBadge
+                    status={data.mediaInfo?.status4k}
+                    is4k
+                    inProgress={
+                      (data.mediaInfo?.downloadStatus4k ?? []).length > 0
+                    }
+                    plexUrl4k={data.mediaInfo?.plexUrl4k}
+                  />
+                </span>
+              )}
           </div>
           <h1 className="text-2xl lg:text-4xl">
-            <span>{data.name}</span>
+            {data.name}{' '}
             {data.firstAirDate && (
-              <span className="ml-2 text-2xl">
+              <span className="text-2xl">
                 ({data.firstAirDate.slice(0, 4)})
               </span>
             )}
           </h1>
           <span className="mt-1 text-xs lg:text-base lg:mt-0">
-            {data.genres.map((g) => g.name).join(', ')}
+            {seriesAttributes.length > 0 &&
+              seriesAttributes
+                .map((t, k) => <span key={k}>{t}</span>)
+                .reduce((prev, curr) => (
+                  <>
+                    {prev} | {curr}
+                  </>
+                ))}
           </span>
         </div>
-        <div className="flex flex-wrap justify-center flex-shrink-0 mt-4 sm:flex-nowrap sm:justify-end lg:mt-0">
-          {(trailerUrl ||
-            data.mediaInfo?.plexUrl ||
-            data.mediaInfo?.plexUrl4k) && (
-            <ButtonWithDropdown
-              buttonType="ghost"
-              text={
-                <>
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span>
-                    {data.mediaInfo?.plexUrl
-                      ? intl.formatMessage(messages.playonplex)
-                      : data.mediaInfo?.plexUrl4k &&
-                        (hasPermission(Permission.REQUEST_4K) ||
-                          hasPermission(Permission.REQUEST_4K_TV))
-                      ? intl.formatMessage(messages.play4konplex)
-                      : intl.formatMessage(messages.watchtrailer)}
-                  </span>
-                </>
-              }
-              onClick={() => {
-                if (data.mediaInfo?.plexUrl) {
-                  window.open(data.mediaInfo?.plexUrl, '_blank');
-                } else if (data.mediaInfo?.plexUrl4k) {
-                  window.open(data.mediaInfo?.plexUrl4k, '_blank');
-                } else if (trailerUrl) {
-                  window.open(trailerUrl, '_blank');
-                }
-              }}
-            >
-              {(
-                trailerUrl
-                  ? data.mediaInfo?.plexUrl ||
-                    (data.mediaInfo?.plexUrl4k &&
-                      (hasPermission(Permission.REQUEST_4K) ||
-                        hasPermission(Permission.REQUEST_4K_TV)))
-                  : data.mediaInfo?.plexUrl &&
-                    data.mediaInfo?.plexUrl4k &&
-                    (hasPermission(Permission.REQUEST_4K) ||
-                      hasPermission(Permission.REQUEST_4K_TV))
-              ) ? (
-                <>
-                  {data.mediaInfo?.plexUrl &&
-                  data.mediaInfo?.plexUrl4k &&
-                  (hasPermission(Permission.REQUEST_4K) ||
-                    hasPermission(Permission.REQUEST_4K_TV)) ? (
-                    <ButtonWithDropdown.Item
-                      onClick={() => {
-                        window.open(data.mediaInfo?.plexUrl4k, '_blank');
-                      }}
-                      buttonType="ghost"
-                    >
-                      {intl.formatMessage(messages.play4konplex)}
-                    </ButtonWithDropdown.Item>
-                  ) : null}
-                  {trailerUrl ? (
-                    <ButtonWithDropdown.Item
-                      onClick={() => {
-                        window.open(trailerUrl, '_blank');
-                      }}
-                      buttonType="ghost"
-                    >
-                      {intl.formatMessage(messages.watchtrailer)}
-                    </ButtonWithDropdown.Item>
-                  ) : null}
-                </>
-              ) : null}
-            </ButtonWithDropdown>
-          )}
+        <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
+          <div className="mb-3 sm:mb-0">
+            <PlayButton links={mediaLinks} />
+          </div>
           <div className="mb-3 sm:mb-0">
             <RequestButton
               mediaType="tv"
@@ -529,7 +496,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       <div className="flex flex-col pt-8 pb-4 text-white md:flex-row">
         <div className="flex-1 md:mr-8">
           <h2 className="text-xl md:text-2xl">
-            <FormattedMessage {...messages.overview} />
+            {intl.formatMessage(messages.overview)}
           </h2>
           <p className="pt-2 text-sm md:text-base">
             {data.overview
@@ -591,39 +558,39 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
         <div className="w-full mt-8 md:w-80 md:mt-0">
           <div className="bg-gray-900 border border-gray-800 rounded-lg shadow">
-            {(data.voteCount > 0 || ratingData) && (
+            {(!!data.voteCount ||
+              (ratingData?.criticsRating && !!ratingData?.criticsScore) ||
+              (ratingData?.audienceRating && !!ratingData?.audienceScore)) && (
               <div className="flex items-center justify-center px-4 py-2 border-b border-gray-800 last:border-b-0">
-                {ratingData?.criticsRating &&
-                  (ratingData?.criticsScore ?? 0) > 0 && (
-                    <>
-                      <span className="text-sm">
-                        {ratingData.criticsRating === 'Rotten' ? (
-                          <RTRotten className="w-6 mr-1" />
-                        ) : (
-                          <RTFresh className="w-6 mr-1" />
-                        )}
-                      </span>
-                      <span className="mr-4 text-sm text-gray-400 last:mr-0">
-                        {ratingData.criticsScore}%
-                      </span>
-                    </>
-                  )}
-                {ratingData?.audienceRating &&
-                  (ratingData?.audienceScore ?? 0) > 0 && (
-                    <>
-                      <span className="text-sm">
-                        {ratingData.audienceRating === 'Spilled' ? (
-                          <RTAudRotten className="w-6 mr-1" />
-                        ) : (
-                          <RTAudFresh className="w-6 mr-1" />
-                        )}
-                      </span>
-                      <span className="mr-4 text-sm text-gray-400 last:mr-0">
-                        {ratingData.audienceScore}%
-                      </span>
-                    </>
-                  )}
-                {data.voteCount > 0 && (
+                {ratingData?.criticsRating && !!ratingData?.criticsScore && (
+                  <>
+                    <span className="text-sm">
+                      {ratingData.criticsRating === 'Rotten' ? (
+                        <RTRotten className="w-6 mr-1" />
+                      ) : (
+                        <RTFresh className="w-6 mr-1" />
+                      )}
+                    </span>
+                    <span className="mr-4 text-sm text-gray-400 last:mr-0">
+                      {ratingData.criticsScore}%
+                    </span>
+                  </>
+                )}
+                {ratingData?.audienceRating && !!ratingData?.audienceScore && (
+                  <>
+                    <span className="text-sm">
+                      {ratingData.audienceRating === 'Spilled' ? (
+                        <RTAudRotten className="w-6 mr-1" />
+                      ) : (
+                        <RTAudFresh className="w-6 mr-1" />
+                      )}
+                    </span>
+                    <span className="mr-4 text-sm text-gray-400 last:mr-0">
+                      {ratingData.audienceScore}%
+                    </span>
+                  </>
+                )}
+                {!!data.voteCount && (
                   <>
                     <span className="text-sm">
                       <TmdbLogo className="w-6 mr-2" />
@@ -650,7 +617,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.firstAirDate && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  <FormattedMessage {...messages.firstAirDate} />
+                  {intl.formatMessage(messages.firstAirDate)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   <FormattedDate
@@ -665,7 +632,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.nextEpisodeToAir && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  <FormattedMessage {...messages.nextAirDate} />
+                  {intl.formatMessage(messages.nextAirDate)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   <FormattedDate
@@ -679,7 +646,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             )}
             <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
               <span className="text-sm">
-                <FormattedMessage {...messages.status} />
+                {intl.formatMessage(messages.status)}
               </span>
               <span className="flex-1 text-sm text-right text-gray-400">
                 {data.status}
@@ -690,7 +657,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             ) && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  <FormattedMessage {...messages.originallanguage} />
+                  {intl.formatMessage(messages.originallanguage)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   {
@@ -704,7 +671,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.networks.length > 0 && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  <FormattedMessage {...messages.network} />
+                  {intl.formatMessage(messages.network)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   {data.networks.map((n) => n.name).join(', ')}
@@ -724,45 +691,47 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </div>
         </div>
       </div>
-      <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
-        <div className="flex-1 min-w-0">
-          <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
-            <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-              <span>
-                <FormattedMessage {...messages.cast} />
-              </span>
-              <svg
-                className="w-6 h-6 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </a>
-          </Link>
-        </div>
-      </div>
-      <Slider
-        sliderKey="cast"
-        isLoading={false}
-        isEmpty={false}
-        items={data?.credits.cast.slice(0, 20).map((person) => (
-          <PersonCard
-            key={`cast-item-${person.id}`}
-            personId={person.id}
-            name={person.name}
-            subName={person.character}
-            profilePath={person.profilePath}
+      {data.credits.cast.length > 0 && (
+        <>
+          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
+            <div className="flex-1 min-w-0">
+              <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
+                <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
+                  <span>{intl.formatMessage(messages.cast)}</span>
+                  <svg
+                    className="w-6 h-6 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </a>
+              </Link>
+            </div>
+          </div>
+          <Slider
+            sliderKey="cast"
+            isLoading={false}
+            isEmpty={false}
+            items={data.credits.cast.slice(0, 20).map((person) => (
+              <PersonCard
+                key={`cast-item-${person.id}`}
+                personId={person.id}
+                name={person.name}
+                subName={person.character}
+                profilePath={person.profilePath}
+              />
+            ))}
           />
-        ))}
-      />
+        </>
+      )}
       <MediaSlider
         sliderKey="recommendations"
         title={intl.formatMessage(messages.recommendations)}

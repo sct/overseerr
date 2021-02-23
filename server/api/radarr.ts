@@ -242,7 +242,7 @@ class RadarrAPI extends ExternalAPI {
   public getProfiles = async (): Promise<RadarrProfile[]> => {
     try {
       const data = await this.getRolling<RadarrProfile[]>(
-        `/profile`,
+        `/qualityProfile`,
         undefined,
         3600
       );

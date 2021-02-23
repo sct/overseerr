@@ -122,20 +122,18 @@ const SettingsLayout: React.FC = ({ children }) => {
             ))}
           </select>
         </div>
-        <div className="hidden sm:block">
-          <div className="border-b border-gray-600">
-            <nav className="flex -mb-px">
-              {settingsRoutes.map((route, index) => (
-                <SettingsLink
-                  route={route.route}
-                  regex={route.regex}
-                  key={`standard-settings-link-${index}`}
-                >
-                  {route.text}
-                </SettingsLink>
-              ))}
-            </nav>
-          </div>
+        <div className="hidden overflow-x-scroll overflow-y-hidden border-b border-gray-600 sm:block hide-scrollbar">
+          <nav className="flex -mb-px">
+            {settingsRoutes.map((route, index) => (
+              <SettingsLink
+                route={route.route}
+                regex={route.regex}
+                key={`standard-settings-link-${index}`}
+              >
+                {route.text}
+              </SettingsLink>
+            ))}
+          </nav>
         </div>
       </div>
       <div className="mt-10 text-white">{children}</div>

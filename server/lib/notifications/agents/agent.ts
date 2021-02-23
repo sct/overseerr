@@ -1,5 +1,6 @@
 import { Notification } from '..';
 import Media from '../../../entity/Media';
+import { MediaRequest } from '../../../entity/MediaRequest';
 import { User } from '../../../entity/User';
 import { NotificationAgentConfig } from '../../settings';
 
@@ -10,6 +11,7 @@ export interface NotificationPayload {
   image?: string;
   message?: string;
   extra?: { name: string; value: string }[];
+  request?: MediaRequest;
 }
 
 export abstract class BaseAgent<T extends NotificationAgentConfig> {
@@ -22,6 +24,6 @@ export abstract class BaseAgent<T extends NotificationAgentConfig> {
 }
 
 export interface NotificationAgent {
-  shouldSend(type: Notification): boolean;
+  shouldSend(type: Notification, payload: NotificationPayload): boolean;
   send(type: Notification, payload: NotificationPayload): Promise<boolean>;
 }

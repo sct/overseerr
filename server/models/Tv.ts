@@ -15,6 +15,7 @@ import type {
   TmdbTvSeasonResult,
   TmdbTvDetails,
   TmdbSeasonWithEpisodes,
+  TmdbTvRatingResult,
 } from '../api/themoviedb/interfaces';
 import type Media from '../entity/Media';
 import { Video } from './Movie';
@@ -58,6 +59,7 @@ export interface TvDetails {
   id: number;
   backdropPath?: string;
   posterPath?: string;
+  contentRatings: TmdbTvRatingResult;
   createdBy: {
     id: number;
     name: string;
@@ -174,6 +176,7 @@ export const mapTvDetails = (
     originCountry: company.origin_country,
     logoPath: company.logo_path,
   })),
+  contentRatings: show.content_ratings,
   spokenLanguages: show.spoken_languages.map((language) => ({
     englishName: language.english_name,
     iso_639_1: language.iso_639_1,

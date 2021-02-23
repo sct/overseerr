@@ -5,6 +5,7 @@ import {
   PermissionCheckOptions,
 } from '../../server/lib/permissions';
 import { UserType } from '../../server/constants/user';
+import { mutateCallback } from 'swr/dist/types';
 
 export { Permission, UserType };
 
@@ -17,6 +18,17 @@ export interface User {
   avatar: string;
   permissions: number;
   userType: number;
+  createdAt: Date;
+  updatedAt: Date;
+  requestCount: number;
+  settings?: UserSettings;
+}
+
+export interface UserSettings {
+  enableNotifications: boolean;
+  discordId?: string;
+  region?: string;
+  originalLanguage?: string;
 }
 
 interface UserHookResponse {
@@ -24,6 +36,10 @@ interface UserHookResponse {
   loading: boolean;
   error: string;
   revalidate: () => Promise<boolean>;
+  mutate: (
+    data?: User | Promise<User> | mutateCallback<User> | undefined,
+    shouldRevalidate?: boolean | undefined
+  ) => Promise<User | undefined>;
   hasPermission: (
     permission: Permission | Permission[],
     options?: PermissionCheckOptions
@@ -34,7 +50,7 @@ export const useUser = ({
   id,
   initialData,
 }: { id?: number; initialData?: User } = {}): UserHookResponse => {
-  const { data, error, revalidate } = useSwr<User>(
+  const { data, error, revalidate, mutate } = useSwr<User>(
     id ? `/api/v1/user/${id}` : `/api/v1/auth/me`,
     {
       initialData,
@@ -57,5 +73,6 @@ export const useUser = ({
     error,
     revalidate,
     hasPermission: checkPermission,
+    mutate,
   };
 };

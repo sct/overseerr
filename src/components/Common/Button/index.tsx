@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import React, { ForwardedRef } from 'react';
 
 export type ButtonType =
   | 'default'
@@ -8,20 +8,44 @@ export type ButtonType =
   | 'success'
   | 'ghost';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+// Helper type to override types (overrides onClick)
+type MergeElementProps<
+  T extends React.ElementType,
+  P extends Record<string, unknown>
+> = Omit<React.ComponentProps<T>, keyof P> & P;
+
+type ElementTypes = 'button' | 'a';
+
+type Element<P extends ElementTypes = 'button'> = P extends 'a'
+  ? HTMLAnchorElement
+  : HTMLButtonElement;
+
+type BaseProps<P> = {
   buttonType?: ButtonType;
   buttonSize?: 'default' | 'lg' | 'md' | 'sm';
-}
+  // Had to do declare this manually as typescript would assume e was of type any otherwise
+  onClick?: (
+    e: React.MouseEvent<P extends 'a' ? HTMLAnchorElement : HTMLButtonElement>
+  ) => void;
+};
 
-const Button: React.FC<ButtonProps> = ({
-  buttonType = 'default',
-  buttonSize = 'default',
-  children,
-  className,
-  ...props
-}) => {
+type ButtonProps<P extends React.ElementType> = {
+  as?: P;
+} & MergeElementProps<P, BaseProps<P>>;
+
+function Button<P extends ElementTypes = 'button'>(
+  {
+    buttonType = 'default',
+    buttonSize = 'default',
+    as,
+    children,
+    className,
+    ...props
+  }: ButtonProps<P>,
+  ref?: React.Ref<Element<P>>
+): JSX.Element {
   const buttonStyle = [
-    'inline-flex items-center justify-center border border-transparent leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150',
+    'inline-flex items-center justify-center border border-transparent leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer',
   ];
   switch (buttonType) {
     case 'primary':
@@ -68,14 +92,30 @@ const Button: React.FC<ButtonProps> = ({
     default:
       buttonStyle.push('px-4 py-2 text-sm');
   }
-  if (className) {
-    buttonStyle.push(className);
-  }
-  return (
-    <button className={buttonStyle.join(' ')} {...props}>
-      <span className="flex items-center">{children}</span>
-    </button>
-  );
-};
 
-export default Button;
+  buttonStyle.push(className ?? '');
+
+  if (as === 'a') {
+    return (
+      <a
+        className={buttonStyle.join(' ')}
+        {...(props as React.ComponentProps<'a'>)}
+        ref={ref as ForwardedRef<HTMLAnchorElement>}
+      >
+        <span className="flex items-center">{children}</span>
+      </a>
+    );
+  } else {
+    return (
+      <button
+        className={buttonStyle.join(' ')}
+        {...(props as React.ComponentProps<'button'>)}
+        ref={ref as ForwardedRef<HTMLButtonElement>}
+      >
+        <span className="flex items-center">{children}</span>
+      </button>
+    );
+  }
+}
+
+export default React.forwardRef(Button) as typeof Button;

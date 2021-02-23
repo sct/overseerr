@@ -39,13 +39,12 @@ sonarrRoutes.post('/test', async (req, res, next) => {
   try {
     const sonarr = new SonarrAPI({
       apiKey: req.body.apiKey,
-      url: `${req.body.useSsl ? 'https' : 'http'}://${req.body.hostname}:${
-        req.body.port
-      }${req.body.baseUrl ?? ''}/api`,
+      url: SonarrAPI.buildSonarrUrl(req.body, '/api/v3'),
     });
 
     const profiles = await sonarr.getProfiles();
     const folders = await sonarr.getRootFolders();
+    const languageProfiles = await sonarr.getLanguageProfiles();
 
     return res.status(200).json({
       profiles,
@@ -53,6 +52,7 @@ sonarrRoutes.post('/test', async (req, res, next) => {
         id: folder.id,
         path: folder.path,
       })),
+      languageProfiles,
     });
   } catch (e) {
     logger.error('Failed to test Sonarr', {

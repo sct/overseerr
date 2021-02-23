@@ -23,12 +23,12 @@ const messages = defineMessages({
   cancelrequest:
     'This will remove your request. Are you sure you want to continue?',
   requestSuccess: '<strong>{title}</strong> successfully requested!',
-  requestCancel: 'Request for <strong>{title}</strong> cancelled',
+  requestCancel: 'Request for <strong>{title}</strong> canceled',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
   close: 'Close',
   cancel: 'Cancel Request',
-  cancelling: 'Cancelling…',
+  cancelling: 'Canceling…',
   pendingrequest: 'Pending request for {title}',
   pending4krequest: 'Pending request for {title} in 4K',
   requesting: 'Requesting…',
@@ -100,8 +100,14 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       if (response.data) {
         if (onComplete) {
           onComplete(
-            hasPermission(Permission.AUTO_APPROVE) ||
-              hasPermission(Permission.AUTO_APPROVE_MOVIE)
+            hasPermission(
+              is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE
+            ) ||
+              hasPermission(
+                is4k
+                  ? Permission.AUTO_APPROVE_4K_MOVIE
+                  : Permission.AUTO_APPROVE_MOVIE
+              )
               ? MediaStatus.PROCESSING
               : MediaStatus.PENDING
           );
@@ -275,8 +281,14 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       iconSvg={<DownloadIcon className="w-6 h-6" />}
     >
       {(hasPermission(Permission.MANAGE_REQUESTS) ||
-        hasPermission(Permission.AUTO_APPROVE) ||
-        hasPermission(Permission.AUTO_APPROVE_MOVIE)) && (
+        hasPermission(
+          is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE
+        ) ||
+        hasPermission(
+          is4k
+            ? Permission.AUTO_APPROVE_4K_MOVIE
+            : Permission.AUTO_APPROVE_MOVIE
+        )) && (
         <p className="mt-6">
           <Alert title={intl.formatMessage(messages.autoapproval)} type="info">
             {intl.formatMessage(messages.requestadmin)}

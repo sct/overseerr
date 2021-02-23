@@ -35,6 +35,7 @@ export class MediaSubscriber implements EntitySubscriberInterface {
               message: movie.overview,
               media: entity,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+              request: request,
             });
           });
         }
@@ -96,6 +97,7 @@ export class MediaSubscriber implements EntitySubscriberInterface {
                   .join(', '),
               },
             ],
+            request: request,
           });
         }
       }

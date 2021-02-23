@@ -14,20 +14,22 @@ const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
-  botAPI: 'Bot API',
+  botAPI: 'Bot Authentication Token',
   chatId: 'Chat ID',
-  validationBotAPIRequired: 'You must provide a Bot API key.',
-  validationChatIdRequired: 'You must provide a Chat ID.',
-  telegramsettingssaved: 'Telegram notification settings saved!',
+  validationBotAPIRequired: 'You must provide a bot authentication token',
+  validationChatIdRequired: 'You must provide a valid chat ID',
+  telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
   settinguptelegram: 'Setting Up Telegram Notifications',
   settinguptelegramDescription:
-    'To setup Telegram you need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
-    Additionally, you need the chat ID for the chat you want the bot to send notifications to.\
-    You can do this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat or group chat.',
+    'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
+    Additionally, you will need the chat ID for the chat to which you would like to send notifications.\
+    You can get this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat.',
   notificationtypes: 'Notification Types',
+  sendSilently: 'Send Silently',
+  sendSilentlyTip: 'Send notifications with no sound',
 });
 
 const NotificationsTelegram: React.FC = () => {
@@ -41,9 +43,9 @@ const NotificationsTelegram: React.FC = () => {
     botAPI: Yup.string().required(
       intl.formatMessage(messages.validationBotAPIRequired)
     ),
-    chatId: Yup.string().required(
-      intl.formatMessage(messages.validationChatIdRequired)
-    ),
+    chatId: Yup.string()
+      .required(intl.formatMessage(messages.validationChatIdRequired))
+      .matches(/^\d+$/, intl.formatMessage(messages.validationChatIdRequired)),
   });
 
   if (!data && !error) {
@@ -57,6 +59,7 @@ const NotificationsTelegram: React.FC = () => {
         types: data?.types,
         botAPI: data?.options.botAPI,
         chatId: data?.options.chatId,
+        sendSilently: data?.options.sendSilently,
       }}
       validationSchema={NotificationsTelegramSchema}
       onSubmit={async (values) => {
@@ -67,6 +70,7 @@ const NotificationsTelegram: React.FC = () => {
             options: {
               botAPI: values.botAPI,
               chatId: values.chatId,
+              sendSilently: values.sendSilently,
             },
           });
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
@@ -91,6 +95,7 @@ const NotificationsTelegram: React.FC = () => {
             options: {
               botAPI: values.botAPI,
               chatId: values.chatId,
+              sendSilently: values.sendSilently,
             },
           });
 
@@ -178,7 +183,26 @@ const NotificationsTelegram: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div role="group" aria-labelledby="group-label" className="group">
+              <div className="form-row">
+                <label htmlFor="sendSilently" className="checkbox-label">
+                  <span>{intl.formatMessage(messages.sendSilently)}</span>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.sendSilentlyTip)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <Field
+                    type="checkbox"
+                    id="sendSilently"
+                    name="sendSilently"
+                  />
+                </div>
+              </div>
+              <div
+                role="group"
+                aria-labelledby="group-label"
+                className="form-group"
+              >
                 <div className="form-row">
                   <span id="group-label" className="group-label">
                     {intl.formatMessage(messages.notificationtypes)}

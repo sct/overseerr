@@ -15,6 +15,15 @@ body {
   background: #f19a30;
 }
 
+ul.cardList {
+  @apply grid gap-4;
+  grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
+}
+
+ul.cardList > li {
+  @apply flex flex-col items-center col-span-1 text-center;
+}
+
 .titleCard {
   @apply relative bg-gray-800 bg-cover rounded-lg;
   padding-bottom: 150%;
@@ -57,6 +66,10 @@ body {
   @apply text-white sm:col-span-2;
 }
 
+.label-required {
+  @apply text-red-500;
+}
+
 .label-tip {
   @apply block text-gray-500;
 }
@@ -89,8 +102,9 @@ select.rounded-r-only {
   @apply rounded-l-none;
 }
 
-input.port {
-  @apply w-24;
+input.short,
+select.short {
+  @apply w-20;
 }
 
 .protocol {
@@ -105,7 +119,7 @@ input.port {
   @apply mt-2 text-sm text-red-500;
 }
 
-.group {
+.form-group {
   @apply mt-6 text-white;
 }
 

@@ -5,10 +5,19 @@ on:
     branches: [develop]
 
 jobs:
-  test:
-    name: Lint & Test Build
+  jobs:
+    name: Job Check
     runs-on: ubuntu-20.04
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+  test:
+    name: Lint & Test Build
+    needs: jobs
+    runs-on: ubuntu-20.04
     container: node:12.18-alpine
     steps:
       - name: checkout
@@ -48,6 +57,8 @@ jobs:
 
       - name: Set Up QEMU
         uses: docker/setup-qemu-action@v1
+        with:
+          image: tonistiigi/binfmt@sha256:df15403e06a03c2f461c1f7938b171fda34a5849eb63a70e2a2109ed5a778bde
 
       - name: Build Snap Package
         uses: diddlesnaps/snapcraft-multiarch-action@v1
@@ -62,7 +73,7 @@ jobs:
           path: ${{ steps.build.outputs.snap }}
 
       - name: Review Snap Package
-        uses: diddlesnaps/snapcraft-review-tools-action@v1
+        uses: diddlesnaps/snapcraft-review-tools-action@v1.2.0
         with:
           snap: ${{ steps.build.outputs.snap }}
 
@@ -79,7 +90,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status
-        uses: technote-space/workflow-conclusion-action@v1
+        uses: technote-space/workflow-conclusion-action@v2.1.2
 
       - name: Combine Job Status
         id: status

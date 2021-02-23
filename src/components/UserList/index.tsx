@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
-import type { User } from '../../../server/entity/User';
 import Badge from '../Common/Badge';
 import { FormattedDate, defineMessages, useIntl } from 'react-intl';
 import Button from '../Common/Button';
 import { hasPermission } from '../../../server/lib/permissions';
-import { Permission, UserType, useUser } from '../../hooks/useUser';
+import { Permission, User, UserType, useUser } from '../../hooks/useUser';
 import { useRouter } from 'next/router';
 import Header from '../Common/Header';
 import Table from '../Common/Table';
@@ -21,6 +20,8 @@ import AddUserIcon from '../../assets/useradd.svg';
 import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
 import PageTitle from '../Common/PageTitle';
+import Link from 'next/link';
+import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
 
 const messages = defineMessages({
   users: 'Users',
@@ -29,7 +30,7 @@ const messages = defineMessages({
   importfromplexerror: 'Something went wrong while importing users from Plex.',
   importedfromplex:
     '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex.',
-  username: 'Username',
+  user: 'User',
   totalrequests: 'Total Requests',
   usertype: 'User Type',
   role: 'Role',
@@ -39,7 +40,6 @@ const messages = defineMessages({
   bulkedit: 'Bulk Edit',
   delete: 'Delete',
   admin: 'Admin',
-  user: 'User',
   plexuser: 'Plex User',
   deleteuser: 'Delete User',
   userdeleted: 'User deleted',
@@ -62,13 +62,33 @@ const messages = defineMessages({
     'Email notifications need to be configured and enabled in order to automatically generate passwords.',
   autogeneratepassword: 'Automatically generate password',
   validationEmail: 'You must provide a valid email address',
+  sortCreated: 'Creation Date',
+  sortUpdated: 'Last Updated',
+  sortDisplayName: 'Display Name',
+  sortRequests: 'Request Count',
+  next: 'Next',
+  previous: 'Previous',
+  showingresults:
+    'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
+  resultsperpage: 'Display {pageSize} results per page',
 });
+
+type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 
 const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
   const { addToast } = useToasts();
-  const { data, error, revalidate } = useSWR<User[]>('/api/v1/user');
+  const [pageIndex, setPageIndex] = useState(0);
+  const [currentSort, setCurrentSort] = useState<Sort>('created');
+  const [currentPageSize, setCurrentPageSize] = useState<number>(10);
+
+  const { data, error, revalidate } = useSWR<UserResultsResponse>(
+    `/api/v1/user?take=${currentPageSize}&skip=${
+      pageIndex * currentPageSize
+    }&sort=${currentSort}`
+  );
+
   const [isDeleting, setDeleting] = useState(false);
   const [isImporting, setImporting] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
@@ -91,7 +111,7 @@ const UserList: React.FC = () => {
   const isAllUsersSelected = () => {
     return (
       selectedUsers.length ===
-      data?.filter((user) => user.id !== currentUser?.id).length
+      data?.results.filter((user) => user.id !== currentUser?.id).length
     );
   };
   const isUserSelected = (userId: number) => selectedUsers.includes(userId);
@@ -99,10 +119,12 @@ const UserList: React.FC = () => {
     if (
       data &&
       selectedUsers.length >= 0 &&
-      selectedUsers.length < data?.length - 1
+      selectedUsers.length < data?.results.length - 1
     ) {
       setSelectedUsers(
-        data.filter((user) => isUserPermsEditable(user.id)).map((u) => u.id)
+        data.results
+          .filter((user) => isUserPermsEditable(user.id))
+          .map((u) => u.id)
       );
     } else {
       setSelectedUsers([]);
@@ -182,6 +204,13 @@ const UserList: React.FC = () => {
           )
     ),
   });
+
+  if (!data) {
+    return <LoadingSpinner />;
+  }
+
+  const hasNextPage = data.pageInfo.pages > pageIndex + 1;
+  const hasPrevPage = pageIndex > 0;
 
   return (
     <>
@@ -364,35 +393,72 @@ const UserList: React.FC = () => {
             revalidate();
           }}
           selectedUserIds={selectedUsers}
-          users={data}
+          users={data.results}
         />
       </Transition>
 
-      <div className="flex flex-col justify-between md:items-end md:flex-row">
+      <div className="flex flex-col justify-between lg:items-end lg:flex-row">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
-        <div className="flex flex-row justify-between mt-2 sm:flex-row md:mb-0">
-          <Button
-            className="flex-grow mr-2 outline"
-            buttonType="primary"
-            onClick={() => setCreateModal({ isOpen: true })}
-          >
-            {intl.formatMessage(messages.createlocaluser)}
-          </Button>
-          <Button
-            className="flex-grow outline"
-            buttonType="primary"
-            disabled={isImporting}
-            onClick={() => importFromPlex()}
-          >
-            {intl.formatMessage(messages.importfromplex)}
-          </Button>
+        <div className="flex flex-col flex-grow mt-2 lg:flex-row lg:flex-grow-0">
+          <div className="flex flex-row justify-between flex-grow mb-2 lg:mb-0 lg:flex-grow-0">
+            <Button
+              className="flex-grow mr-2 outline"
+              buttonType="primary"
+              onClick={() => setCreateModal({ isOpen: true })}
+            >
+              {intl.formatMessage(messages.createlocaluser)}
+            </Button>
+            <Button
+              className="flex-grow outline lg:mr-2"
+              buttonType="primary"
+              disabled={isImporting}
+              onClick={() => importFromPlex()}
+            >
+              {intl.formatMessage(messages.importfromplex)}
+            </Button>
+          </div>
+          <div className="flex flex-grow mb-2 lg:mb-0 lg:flex-grow-0">
+            <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
+              <svg
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z" />
+              </svg>
+            </span>
+            <select
+              id="sort"
+              name="sort"
+              onChange={(e) => {
+                setPageIndex(0);
+                setCurrentSort(e.target.value as Sort);
+              }}
+              value={currentSort}
+              className="rounded-r-only"
+            >
+              <option value="created">
+                {intl.formatMessage(messages.sortCreated)}
+              </option>
+              <option value="updated">
+                {intl.formatMessage(messages.sortUpdated)}
+              </option>
+              <option value="requests">
+                {intl.formatMessage(messages.sortRequests)}
+              </option>
+              <option value="displayname">
+                {intl.formatMessage(messages.sortDisplayName)}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
       <Table>
         <thead>
           <tr>
             <Table.TH>
-              {(data ?? []).length > 1 && (
+              {(data.results ?? []).length > 1 && (
                 <input
                   type="checkbox"
                   id="selectAll"
@@ -404,14 +470,14 @@ const UserList: React.FC = () => {
                 />
               )}
             </Table.TH>
-            <Table.TH>{intl.formatMessage(messages.username)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.user)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.usertype)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.lastupdated)}</Table.TH>
             <Table.TH className="text-right">
-              {(data ?? []).length > 1 && (
+              {(data.results ?? []).length > 1 && (
                 <Button
                   buttonType="warning"
                   onClick={() => setShowBulkEditModal(true)}
@@ -424,7 +490,7 @@ const UserList: React.FC = () => {
           </tr>
         </thead>
         <Table.TBody>
-          {data?.map((user) => (
+          {data?.results.map((user) => (
             <tr key={`user-list-${user.id}`}>
               <Table.TD>
                 {isUserPermsEditable(user.id) && (
@@ -441,17 +507,21 @@ const UserList: React.FC = () => {
               </Table.TD>
               <Table.TD>
                 <div className="flex items-center">
-                  <div className="flex-shrink-0 w-10 h-10">
-                    <img
-                      className="w-10 h-10 rounded-full"
-                      src={user.avatar}
-                      alt=""
-                    />
-                  </div>
+                  <Link href={`/users/${user.id}`}>
+                    <a className="flex-shrink-0 w-10 h-10">
+                      <img
+                        className="w-10 h-10 rounded-full"
+                        src={user.avatar}
+                        alt=""
+                      />
+                    </a>
+                  </Link>
                   <div className="ml-4">
-                    <div className="text-sm font-medium leading-5">
-                      {user.displayName}
-                    </div>
+                    <Link href={`/users/${user.id}`}>
+                      <a className="text-sm font-medium leading-5">
+                        {user.displayName}
+                      </a>
+                    </Link>
                     <div className="text-sm leading-5 text-gray-300">
                       {user.email}
                     </div>
@@ -489,8 +559,8 @@ const UserList: React.FC = () => {
                   className="mr-2"
                   onClick={() =>
                     router.push(
-                      '/users/[userId]/edit',
-                      `/users/${user.id}/edit`
+                      '/users/[userId]/settings',
+                      `/users/${user.id}/settings`
                     )
                   }
                 >
@@ -506,6 +576,69 @@ const UserList: React.FC = () => {
               </Table.TD>
             </tr>
           ))}
+          <tr className="bg-gray-700">
+            <Table.TD colSpan={8} noPadding>
+              <nav
+                className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
+                aria-label="Pagination"
+              >
+                <div className="hidden lg:flex lg:flex-1">
+                  <p className="text-sm">
+                    {data.results.length > 0 &&
+                      intl.formatMessage(messages.showingresults, {
+                        from: pageIndex * currentPageSize + 1,
+                        to:
+                          data.results.length < currentPageSize
+                            ? pageIndex * currentPageSize + data.results.length
+                            : (pageIndex + 1) * currentPageSize,
+                        total: data.pageInfo.results,
+                        strong: function strong(msg) {
+                          return <span className="font-medium">{msg}</span>;
+                        },
+                      })}
+                  </p>
+                </div>
+                <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
+                  <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
+                    {intl.formatMessage(messages.resultsperpage, {
+                      pageSize: (
+                        <select
+                          id="pageSize"
+                          name="pageSize"
+                          onChange={(e) => {
+                            setPageIndex(0);
+                            setCurrentPageSize(Number(e.target.value));
+                          }}
+                          value={currentPageSize}
+                          className="inline short"
+                        >
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="25">25</option>
+                          <option value="50">50</option>
+                          <option value="100">100</option>
+                        </select>
+                      ),
+                    })}
+                  </span>
+                </div>
+                <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
+                  <Button
+                    disabled={!hasPrevPage}
+                    onClick={() => setPageIndex((current) => current - 1)}
+                  >
+                    {intl.formatMessage(messages.previous)}
+                  </Button>
+                  <Button
+                    disabled={!hasNextPage}
+                    onClick={() => setPageIndex((current) => current + 1)}
+                  >
+                    {intl.formatMessage(messages.next)}
+                  </Button>
+                </div>
+              </nav>
+            </Table.TD>
+          </tr>
         </Table.TBody>
       </Table>
     </>

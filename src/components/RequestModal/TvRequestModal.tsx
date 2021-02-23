@@ -39,13 +39,10 @@ const messages = defineMessages({
   notrequested: 'Not Requested',
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request edited.',
-  requestcancelled: 'Request cancelled.',
+  requestcancelled: 'Request canceled.',
   autoapproval: 'Automatic Approval',
   requesterror: 'Something went wrong while submitting the request.',
   next: 'Next',
-  notvdbid: 'No TVDB ID was found for the item on TMDb.',
-  notvdbiddescription:
-    'Either add the TVDB ID to TMDb and try again later, or select the correct match below:',
   backbutton: 'Back',
 });
 
@@ -103,6 +100,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           serverId: requestOverrides?.server,
           profileId: requestOverrides?.profile,
           rootFolder: requestOverrides?.folder,
+          languageProfileId: requestOverrides?.language,
           userId: requestOverrides?.user?.id,
           seasons: selectedSeasons,
         });
@@ -151,6 +149,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           serverId: requestOverrides.server,
           profileId: requestOverrides.profile,
           rootFolder: requestOverrides.folder,
+          languageProfileId: requestOverrides.language,
           userId: requestOverrides?.user?.id,
         };
       }
@@ -363,8 +362,12 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       }
     >
       {(hasPermission(Permission.MANAGE_REQUESTS) ||
-        hasPermission(Permission.AUTO_APPROVE) ||
-        hasPermission(Permission.AUTO_APPROVE_TV)) &&
+        hasPermission(
+          is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE
+        ) ||
+        hasPermission(
+          is4k ? Permission.AUTO_APPROVE_4K_TV : Permission.AUTO_APPROVE_TV
+        )) &&
         !editRequest && (
           <p className="mt-6">
             <Alert
@@ -521,13 +524,6 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                 {intl.formatMessage(globalMessages.requested)}
                               </Badge>
                             )}
-                            {!mediaSeason &&
-                              seasonRequest?.status ===
-                                MediaRequestStatus.AVAILABLE && (
-                                <Badge badgeType="success">
-                                  {intl.formatMessage(globalMessages.available)}
-                                </Badge>
-                              )}
                             {mediaSeason?.[is4k ? 'status4k' : 'status'] ===
                               MediaStatus.PARTIALLY_AVAILABLE && (
                               <Badge badgeType="success">
@@ -569,6 +565,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                     folder: editRequest.rootFolder,
                     profile: editRequest.profileId,
                     server: editRequest.serverId,
+                    language: editRequest.languageProfileId,
                   }
                 : undefined
             }

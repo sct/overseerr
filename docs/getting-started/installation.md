@@ -163,6 +163,11 @@ This version can break any moment. Be prepared to troubleshoot any issues that a
 {% endtab %}
 
 {% tab title="Swizzin" %}
+
+{% hint style="danger" %}
+This implementation is not yet merged to master due to missing functionality. You can beta test the limited implementation or follow the status on [the pull request](https://github.com/swizzin/swizzin/pull/567).
+{% endhint %}
+
 The installation is not implemented via Docker, but barebones. The latest release version of Overseerr will be used.
 Please see the [swizzin documentation](https://swizzin.ltd/applications/overseerr) for more information.
 

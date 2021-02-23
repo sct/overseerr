@@ -4,25 +4,26 @@ Overseerr already supports a good number of notification agents, such as **Disco
 
 ## Currently Supported Notification Agents
 
-- Email
 - Discord
+- Email
+- Pushbullet
+- Pushover
 - Slack
 - Telegram
-- Pushover
 - [Webhooks](./webhooks.md)
 
 ## Setting Up Notifications
 
 Configuring your notifications is _very simple_. First, you will need to visit the **Settings** page and click **Notifications** in the menu. This will present you with all of the currently available notification agents. Click on each one individually to configure them.
 
-You must configure which type of notifications you want to send _per agent_. If no types are selected, you will not receive any notifications!
+You must configure which type of notifications you want to send _per agent_. If no types are selected, you will not receive notifications!
 
-Some agents may have specific configuration gotchas that will be covered in each notification agents documentation page.
+Some agents may have specific configuration "gotchas" covered in their documentation pages.
 
 {% hint style="danger" %}
-Currently, you will **not receive notifications** for any auto-approved requests. However, you will still receive a notification when the media becomes available.
+You will **not receive notifications** for any automatically approved requests unless the "Enable Notifications for Automatic Approvals" setting is enabled.
 {% endhint %}
 
-## Requesting new agents
+## Requesting New Notification Agents
 
-If we do not currently support a notification agent you would like, feel free to request it on our [GitHub Issues](https://github.com/sct/overseerr/issues). Make sure to search first to see if someone else already requested it!
+If we do not currently support a notification agent you would like, feel free to request it on [GitHub](https://github.com/sct/overseerr/issues). However, please be sure to search first and confirm that there is not already an existing request for the agent!

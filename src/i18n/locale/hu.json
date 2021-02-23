@@ -61,8 +61,8 @@
   "components.PermissionEdit.managerequests": "Kérések kezelése",
   "components.PermissionEdit.autoapproveMoviesDescription": "Automatikusan jóváhagyja a felhasználó minden film kérését.",
   "components.PermissionEdit.autoapproveSeriesDescription": "Automatikusan jóváhagyja a felhasználó minden sorozat kérését.",
-  "components.PermissionEdit.autoapproveSeries": "Automatikus jóváhagyás sorozatokhoz",
-  "components.PermissionEdit.autoapproveMovies": "Automatikus jóváhagyás filmekhez",
+  "components.PermissionEdit.autoapproveSeries": "Sorozatok automatikus jóváhagyása",
+  "components.PermissionEdit.autoapproveMovies": "Filmek automatikus jóváhagyása",
   "components.PermissionEdit.autoapproveDescription": "Automatikusan jóváhagyja a felhasználó minden kérését.",
   "components.PermissionEdit.autoapprove": "Automatikus jóváhagyás",
   "components.PermissionEdit.advancedrequestDescription": "Engedélyt ad a speciális kérési opciók használatára; pl. szerverek, profilok, útvonalak megváltoztatása.",
@@ -80,7 +80,7 @@
   "components.MovieDetails.runtime": "{minutes} perc",
   "components.MovieDetails.revenue": "Bevétel",
   "components.MovieDetails.releasedate": "Megjelenés dátuma",
-  "components.MovieDetails.manageModalClearMediaWarning": "Ezzel véglegesen törlődik az ehhez a filmhez tartozó összes adat, beleértve a hozzá kapcsolódó kéréseket. Ha ez a film létezik a Plex könyvtárban, a média adatok újra létrehozásra kerülnek a következő szinkronizálásnál.",
+  "components.MovieDetails.manageModalClearMediaWarning": "* Ezzel véglegesen törlődik az ehhez a filmhez tartozó összes adat, beleértve a hozzá kapcsolódó kéréseket. Ha ez a film létezik a Plex könyvtárban, a média adatok újra létrehozásra kerülnek a következő szinkronizálásnál.",
   "components.MovieDetails.recommendations": "Ajánlások",
   "components.MovieDetails.pending": "Függőben lévő",
   "components.MovieDetails.overviewunavailable": "Áttekintés nem elérhető.",
@@ -102,7 +102,7 @@
   "components.Login.validationpasswordrequired": "Jelszó szükséges",
   "components.Login.validationemailrequired": "Nem érvényes e-mail cím",
   "components.Login.signinwithplex": "Bejelentkezés Plex fiókkal",
-  "components.Login.signinwithoverseerr": "Bejelentkezés Overseerr fiókkal",
+  "components.Login.signinwithoverseerr": "Bejelentkezés {applicationTitle} fiókkal",
   "components.Login.signinheader": "Jelentkezz be a folytatáshoz",
   "components.Login.signingin": "Bejelentkezés…",
   "components.Login.signin": "Bejelentkezés",
@@ -336,5 +336,8 @@
   "components.RequestList.showingresults": "Találatok mutatása: <strong>{from}</strong> - <strong>{to}</strong> (Összesen: <strong>{total}</strong>)",
   "components.RequestList.RequestItem.notavailable": "Nem elérhető",
   "components.RequestBlock.profilechanged": "Profil megváltoztatva",
-  "components.NotificationTypeSelector.mediarequestedDescription": "Értesítést küld új kérések elküldésekor."
+  "components.NotificationTypeSelector.mediarequestedDescription": "Értesítést küld új kérések elküldésekor.",
+  "components.PermissionEdit.viewrequests": "Kérések megtekintése",
+  "components.Discover.discover": "Felfedezés",
+  "components.Login.forgotpassword": "Elfelejtett jelszó?"
 }

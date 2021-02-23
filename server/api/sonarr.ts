@@ -112,12 +112,18 @@ interface AddSeriesOptions {
   tvdbid: number;
   title: string;
   profileId: number;
+  languageProfileId?: number;
   seasons: number[];
   seasonFolder: boolean;
   rootFolderPath: string;
   seriesType: SonarrSeries['seriesType'];
   monitored?: boolean;
   searchNow?: boolean;
+}
+
+export interface LanguageProfile {
+  id: number;
+  name: string;
 }
 
 class SonarrAPI extends ExternalAPI {
@@ -235,7 +241,8 @@ class SonarrAPI extends ExternalAPI {
         {
           tvdbId: options.tvdbid,
           title: options.title,
-          profileId: options.profileId,
+          qualityProfileId: options.profileId,
+          languageProfileId: options.languageProfileId,
           seasons: this.buildSeasonList(
             options.seasons,
             series.seasons.map((season) => ({
@@ -284,7 +291,7 @@ class SonarrAPI extends ExternalAPI {
   public async getProfiles(): Promise<SonarrProfile[]> {
     try {
       const data = await this.getRolling<SonarrProfile[]>(
-        '/profile',
+        '/qualityProfile',
         undefined,
         3600
       );
@@ -318,6 +325,28 @@ class SonarrAPI extends ExternalAPI {
       );
 
       throw new Error('Failed to get root folders');
+    }
+  }
+
+  public async getLanguageProfiles(): Promise<LanguageProfile[]> {
+    try {
+      const data = await this.getRolling<LanguageProfile[]>(
+        '/languageprofile',
+        undefined,
+        3600
+      );
+
+      return data;
+    } catch (e) {
+      logger.error(
+        'Something went wrong while retrieving Sonarr language profiles.',
+        {
+          label: 'Sonarr API',
+          message: e.message,
+        }
+      );
+
+      throw new Error('Failed to get language profiles');
     }
   }
 

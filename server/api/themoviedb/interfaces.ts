@@ -136,6 +136,7 @@ export interface TmdbMovieDetails {
     name: string;
   }[];
   release_date: string;
+  release_dates: TmdbMovieReleaseResult;
   revenue: number;
   runtime?: number;
   spoken_languages: {
@@ -205,6 +206,7 @@ export interface TmdbTvSeasonResult {
 export interface TmdbTvDetails {
   id: number;
   backdrop_path?: string;
+  content_ratings: TmdbTvRatingResult;
   created_by: {
     id: number;
     credit_id: string;
@@ -272,6 +274,29 @@ export interface TmdbVideoResult {
   results: TmdbVideo[];
 }
 
+export interface TmdbTvRatingResult {
+  results: TmdbRating[];
+}
+
+export interface TmdbRating {
+  iso_3166_1: string;
+  rating: string;
+}
+
+export interface TmdbMovieReleaseResult {
+  results: TmdbRelease[];
+}
+
+export interface TmdbRelease extends TmdbRating {
+  release_dates: {
+    certification: string;
+    iso_639_1?: string;
+    note?: string;
+    release_date: string;
+    type: number;
+  }[];
+}
+
 export interface TmdbKeyword {
   id: number;
   name: string;
@@ -316,6 +341,7 @@ export interface TmdbPersonCredit {
   adult: boolean;
   release_date: string;
 }
+
 export interface TmdbPersonCreditCast extends TmdbPersonCredit {
   character: string;
 }
@@ -343,4 +369,15 @@ export interface TmdbCollection {
   poster_path?: string;
   backdrop_path?: string;
   parts: TmdbMovieResult[];
+}
+
+export interface TmdbRegion {
+  iso_3166_1: string;
+  english_name: string;
+}
+
+export interface TmdbLanguage {
+  iso_639_1: string;
+  english_name: string;
+  name: string;
 }

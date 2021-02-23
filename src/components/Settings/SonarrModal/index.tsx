@@ -16,7 +16,8 @@ const messages = defineMessages({
   validationPortRequired: 'You must provide a port',
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
-  validationProfileRequired: 'You must select a profile',
+  validationProfileRequired: 'You must select a quality profile',
+  validationLanguageProfileRequired: 'You must select a language profile',
   toastSonarrTestSuccess: 'Sonarr connection established!',
   toastSonarrTestFailure: 'Failed to connect to Sonarr.',
   saving: 'Saving…',
@@ -35,17 +36,22 @@ const messages = defineMessages({
   baseUrl: 'Base URL',
   baseUrlPlaceholder: 'Example: /sonarr',
   qualityprofile: 'Quality Profile',
+  languageprofile: 'Language Profile',
   rootfolder: 'Root Folder',
   animequalityprofile: 'Anime Quality Profile',
+  animelanguageprofile: 'Anime Language Profile',
   animerootfolder: 'Anime Root Folder',
   seasonfolders: 'Season Folders',
   server4k: '4K Server',
   selectQualityProfile: 'Select quality profile',
   selectRootFolder: 'Select root folder',
+  selectLanguageProfile: 'Select language profile',
   loadingprofiles: 'Loading quality profiles…',
   testFirstQualityProfiles: 'Test connection to load quality profiles',
   loadingrootfolders: 'Loading root folders…',
   testFirstRootFolders: 'Test connection to load root folders',
+  loadinglanguageprofiles: 'Loading language profiles…',
+  testFirstLanguageProfiles: 'Test connection to load language profiles',
   syncEnabled: 'Enable Sync',
   externalUrl: 'External URL',
   externalUrlPlaceholder: 'External URL pointing to your Sonarr server',
@@ -64,6 +70,10 @@ interface TestResponse {
   rootFolders: {
     id: number;
     path: string;
+  }[];
+  languageProfiles: {
+    id: number;
+    name: string;
   }[];
 }
 
@@ -86,6 +96,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
   const [testResponse, setTestResponse] = useState<TestResponse>({
     profiles: [],
     rootFolders: [],
+    languageProfiles: [],
   });
   const SonarrSettingsSchema = Yup.object().shape({
     name: Yup.string().required(
@@ -105,6 +116,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
     ),
     activeProfileId: Yup.string().required(
       intl.formatMessage(messages.validationProfileRequired)
+    ),
+    activeLanguageProfileId: Yup.number().required(
+      intl.formatMessage(messages.validationLanguageProfileRequired)
     ),
     externalUrl: Yup.string()
       .url(intl.formatMessage(messages.validationApplicationUrl))
@@ -224,8 +238,10 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
           apiKey: sonarr?.apiKey,
           baseUrl: sonarr?.baseUrl,
           activeProfileId: sonarr?.activeProfileId,
+          activeLanguageProfileId: sonarr?.activeLanguageProfileId,
           rootFolder: sonarr?.activeDirectory,
           activeAnimeProfileId: sonarr?.activeAnimeProfileId,
+          activeAnimeLanguageProfileId: sonarr?.activeAnimeLanguageProfileId,
           activeAnimeRootFolder: sonarr?.activeAnimeDirectory,
           isDefault: sonarr?.isDefault ?? false,
           is4k: sonarr?.is4k ?? false,
@@ -252,10 +268,16 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               useSsl: values.ssl,
               baseUrl: values.baseUrl,
               activeProfileId: Number(values.activeProfileId),
+              activeLanguageProfileId: values.activeLanguageProfileId
+                ? Number(values.activeLanguageProfileId)
+                : undefined,
               activeProfileName: profileName,
               activeDirectory: values.rootFolder,
               activeAnimeProfileId: values.activeAnimeProfileId
                 ? Number(values.activeAnimeProfileId)
+                : undefined,
+              activeAnimeLanguageProfileId: values.activeAnimeLanguageProfileId
+                ? Number(values.activeAnimeLanguageProfileId)
                 : undefined,
               activeAnimeProfileName: animeProfileName ?? undefined,
               activeAnimeDirectory: values.activeAnimeRootFolder,
@@ -349,7 +371,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="name" className="text-label">
                     {intl.formatMessage(messages.servername)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -374,7 +396,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="hostname" className="text-label">
                     {intl.formatMessage(messages.hostname)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -401,7 +423,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="port" className="text-label">
                     {intl.formatMessage(messages.port)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <Field
@@ -409,7 +431,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       name="port"
                       type="text"
                       placeholder="8989"
-                      className="port"
+                      className="short"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setIsValidated(false);
                         setFieldValue('port', e.target.value);
@@ -439,7 +461,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="apiKey" className="text-label">
                     {intl.formatMessage(messages.apiKey)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -488,7 +510,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="activeProfileId" className="text-label">
                     {intl.formatMessage(messages.qualityprofile)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -526,7 +548,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 <div className="form-row">
                   <label htmlFor="rootFolder" className="text-label">
                     {intl.formatMessage(messages.rootfolder)}
-                    <span className="text-red-500">*</span>
+                    <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
                     <div className="flex max-w-lg rounded-md shadow-sm">
@@ -557,6 +579,54 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {errors.rootFolder && touched.rootFolder && (
                       <div className="error">{errors.rootFolder}</div>
                     )}
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label
+                    htmlFor="activeLanguageProfileId"
+                    className="text-label"
+                  >
+                    {intl.formatMessage(messages.languageprofile)}
+                    <span className="label-required">*</span>
+                  </label>
+                  <div className="form-input">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <Field
+                        as="select"
+                        id="activeLanguageProfileId"
+                        name="activeLanguageProfileId"
+                        disabled={!isValidated || isTesting}
+                      >
+                        <option value="">
+                          {isTesting
+                            ? intl.formatMessage(
+                                messages.loadinglanguageprofiles
+                              )
+                            : !isValidated
+                            ? intl.formatMessage(
+                                messages.testFirstLanguageProfiles
+                              )
+                            : intl.formatMessage(
+                                messages.selectLanguageProfile
+                              )}
+                        </option>
+                        {testResponse.languageProfiles.length > 0 &&
+                          testResponse.languageProfiles.map((language) => (
+                            <option
+                              key={`loaded-profile-${language.id}`}
+                              value={language.id}
+                            >
+                              {language.name}
+                            </option>
+                          ))}
+                      </Field>
+                    </div>
+                    {errors.activeLanguageProfileId &&
+                      touched.activeLanguageProfileId && (
+                        <div className="error">
+                          {errors.activeLanguageProfileId}
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
@@ -632,6 +702,53 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {errors.activeAnimeRootFolder &&
                       touched.activeAnimeRootFolder && (
                         <div className="error">{errors.rootFolder}</div>
+                      )}
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label
+                    htmlFor="activeAnimeLanguageProfileId"
+                    className="text-label"
+                  >
+                    {intl.formatMessage(messages.animelanguageprofile)}
+                  </label>
+                  <div className="form-input">
+                    <div className="flex max-w-lg rounded-md shadow-sm">
+                      <Field
+                        as="select"
+                        id="activeAnimeLanguageProfileId"
+                        name="activeAnimeLanguageProfileId"
+                        disabled={!isValidated || isTesting}
+                      >
+                        <option value="">
+                          {isTesting
+                            ? intl.formatMessage(
+                                messages.loadinglanguageprofiles
+                              )
+                            : !isValidated
+                            ? intl.formatMessage(
+                                messages.testFirstLanguageProfiles
+                              )
+                            : intl.formatMessage(
+                                messages.selectLanguageProfile
+                              )}
+                        </option>
+                        {testResponse.languageProfiles.length > 0 &&
+                          testResponse.languageProfiles.map((language) => (
+                            <option
+                              key={`loaded-profile-${language.id}`}
+                              value={language.id}
+                            >
+                              {language.name}
+                            </option>
+                          ))}
+                      </Field>
+                    </div>
+                    {errors.activeAnimeLanguageProfileId &&
+                      touched.activeAnimeLanguageProfileId && (
+                        <div className="error">
+                          {errors.activeAnimeLanguageProfileId}
+                        </div>
                       )}
                   </div>
                 </div>

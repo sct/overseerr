@@ -21,12 +21,13 @@ class EmailAgent
     return settings.notifications.agents.email;
   }
 
-  public shouldSend(type: Notification): boolean {
+  public shouldSend(type: Notification, payload: NotificationPayload): boolean {
     const settings = this.getSettings();
 
     if (
       settings.enabled &&
-      hasNotificationType(type, this.getSettings().types)
+      hasNotificationType(type, this.getSettings().types) &&
+      (payload.notifyUser.settings?.enableNotifications ?? true)
     ) {
       return true;
     }

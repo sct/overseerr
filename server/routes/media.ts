@@ -82,7 +82,7 @@ mediaRoutes.get('/', async (req, res, next) => {
   }
 });
 
-mediaRoutes.get<
+mediaRoutes.post<
   {
     id: string;
     status: 'available' | 'partial' | 'processing' | 'pending' | 'unknown';
@@ -102,7 +102,7 @@ mediaRoutes.get<
       return next({ status: 404, message: 'Media does not exist.' });
     }
 
-    const is4k = Boolean(req.query.is4k);
+    const is4k = Boolean(req.body.is4k);
 
     switch (req.params.status) {
       case 'available':

@@ -15,14 +15,13 @@ const messages = defineMessages({
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
-  webhookUrlPlaceholder: 'Webhook URL',
-  slacksettingssaved: 'Slack notification settings saved!',
+  slacksettingssaved: 'Slack notification settings saved successfully!',
   slacksettingsfailed: 'Slack notification settings failed to save.',
   testsent: 'Test notification sent!',
   test: 'Test',
   settingupslack: 'Setting Up Slack Notifications',
   settingupslackDescription:
-    'To use Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and use the provided webhook URL below.',
+    'To configure Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and enter the webhook URL below.',
   notificationtypes: 'Notification Types',
   validationWebhookUrl: 'You must provide a valid URL',
 });
@@ -131,21 +130,18 @@ const NotificationsSlack: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="flex max-w-lg rounded-md shadow-sm">
-                    <Field
-                      id="webhookUrl"
-                      name="webhookUrl"
-                      type="text"
-                      placeholder={intl.formatMessage(
-                        messages.webhookUrlPlaceholder
-                      )}
-                    />
+                    <Field id="webhookUrl" name="webhookUrl" type="text" />
                   </div>
                   {errors.webhookUrl && touched.webhookUrl && (
                     <div className="error">{errors.webhookUrl}</div>
                   )}
                 </div>
               </div>
-              <div role="group" aria-labelledby="group-label" className="group">
+              <div
+                role="group"
+                aria-labelledby="group-label"
+                className="form-group"
+              >
                 <div className="form-row">
                   <span id="group-label" className="group-label">
                     {intl.formatMessage(messages.notificationtypes)}

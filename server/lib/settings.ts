@@ -10,6 +10,17 @@ export interface Library {
   enabled: boolean;
 }
 
+export interface Region {
+  iso_3166_1: string;
+  english_name: string;
+}
+
+export interface Language {
+  iso_639_1: string;
+  english_name: string;
+  name: string;
+}
+
 export interface PlexSettings {
   name: string;
   machineId?: string;
@@ -45,6 +56,8 @@ export interface SonarrSettings extends DVRSettings {
   activeAnimeProfileId?: number;
   activeAnimeProfileName?: string;
   activeAnimeDirectory?: string;
+  activeAnimeLanguageProfileId?: number;
+  activeLanguageProfileId?: number;
   enableSeasonFolders: boolean;
 }
 
@@ -56,6 +69,8 @@ export interface MainSettings {
   defaultPermissions: number;
   hideAvailable: boolean;
   localLogin: boolean;
+  region: string;
+  originalLanguage: string;
   trustProxy: boolean;
 }
 
@@ -69,6 +84,7 @@ interface FullPublicSettings extends PublicSettings {
   localLogin: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
+  region: string;
 }
 
 export interface NotificationAgentConfig {
@@ -105,6 +121,13 @@ export interface NotificationAgentTelegram extends NotificationAgentConfig {
   options: {
     botAPI: string;
     chatId: string;
+    sendSilently: boolean;
+  };
+}
+
+export interface NotificationAgentPushbullet extends NotificationAgentConfig {
+  options: {
+    accessToken: string;
   };
 }
 
@@ -113,7 +136,6 @@ export interface NotificationAgentPushover extends NotificationAgentConfig {
     accessToken: string;
     userToken: string;
     priority: number;
-    sound: string;
   };
 }
 
@@ -126,11 +148,12 @@ export interface NotificationAgentWebhook extends NotificationAgentConfig {
 }
 
 interface NotificationAgents {
-  email: NotificationAgentEmail;
   discord: NotificationAgentDiscord;
+  email: NotificationAgentEmail;
+  pushbullet: NotificationAgentPushbullet;
+  pushover: NotificationAgentPushover;
   slack: NotificationAgentSlack;
   telegram: NotificationAgentTelegram;
-  pushover: NotificationAgentPushover;
   webhook: NotificationAgentWebhook;
 }
 
@@ -168,6 +191,8 @@ class Settings {
         defaultPermissions: Permission.REQUEST,
         hideAvailable: false,
         localLogin: true,
+        region: '',
+        originalLanguage: '',
         trustProxy: false,
       },
       plex: {
@@ -218,6 +243,14 @@ class Settings {
             options: {
               botAPI: '',
               chatId: '',
+              sendSilently: false,
+            },
+          },
+          pushbullet: {
+            enabled: false,
+            types: 0,
+            options: {
+              accessToken: '',
             },
           },
           pushover: {
@@ -227,7 +260,6 @@ class Settings {
               accessToken: '',
               userToken: '',
               priority: 0,
-              sound: '',
             },
           },
           webhook: {
@@ -304,6 +336,7 @@ class Settings {
       series4kEnabled: this.data.sonarr.some(
         (sonarr) => sonarr.is4k && sonarr.isDefault
       ),
+      region: this.data.main.region,
     };
   }
 

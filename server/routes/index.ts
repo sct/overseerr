@@ -16,6 +16,7 @@ import collectionRoutes from './collection';
 import { getAppVersion, getCommitTag } from '../utils/appVersion';
 import serviceRoutes from './service';
 import { appDataStatus, appDataPath } from '../utils/appDataVolume';
+import TheMovieDb from '../api/themoviedb';
 
 const router = Router();
 
@@ -35,7 +36,7 @@ router.get('/status/appdata', (_req, res) => {
   });
 });
 
-router.use('/user', isAuthenticated(Permission.MANAGE_USERS), user);
+router.use('/user', isAuthenticated(), user);
 router.get('/settings/public', (_req, res) => {
   const settings = getSettings();
 
@@ -56,6 +57,22 @@ router.use('/person', isAuthenticated(), personRoutes);
 router.use('/collection', isAuthenticated(), collectionRoutes);
 router.use('/service', isAuthenticated(), serviceRoutes);
 router.use('/auth', authRoutes);
+
+router.get('/regions', isAuthenticated(), async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const regions = await tmdb.getRegions();
+
+  return res.status(200).json(regions);
+});
+
+router.get('/languages', isAuthenticated(), async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const languages = await tmdb.getLanguages();
+
+  return res.status(200).json(languages);
+});
 
 router.get('/', (_req, res) => {
   return res.status(200).json({

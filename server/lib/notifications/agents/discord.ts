@@ -74,6 +74,12 @@ interface DiscordWebhookPayload {
   username: string;
   avatar_url?: string;
   tts: boolean;
+  content?: string;
+  allowed_mentions?: {
+    parse?: ('users' | 'roles' | 'everyone')[];
+    roles?: string[];
+    users?: string[];
+  };
 }
 
 class DiscordAgent
@@ -98,104 +104,62 @@ class DiscordAgent
 
     const fields: Field[] = [];
 
+    if (payload.request) {
+      fields.push({
+        name: 'Requested By',
+        value: payload.notifyUser.displayName ?? '',
+        inline: true,
+      });
+    }
+
     switch (type) {
       case Notification.MEDIA_PENDING:
         color = EmbedColors.ORANGE;
-        fields.push(
-          {
-            name: 'Requested By',
-            value: payload.notifyUser.displayName ?? '',
-            inline: true,
-          },
-          {
-            name: 'Status',
-            value: 'Pending Approval',
-            inline: true,
-          }
-        );
-
-        if (settings.main.applicationUrl) {
-          fields.push({
-            name: 'View Media',
-            value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-          });
-        }
+        fields.push({
+          name: 'Status',
+          value: 'Pending Approval',
+          inline: true,
+        });
         break;
       case Notification.MEDIA_APPROVED:
         color = EmbedColors.PURPLE;
-        fields.push(
-          {
-            name: 'Requested By',
-            value: payload.notifyUser.displayName ?? '',
-            inline: true,
-          },
-          {
-            name: 'Status',
-            value: 'Processing Request',
-            inline: true,
-          }
-        );
-
-        if (settings.main.applicationUrl) {
-          fields.push({
-            name: 'View Media',
-            value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-          });
-        }
+        fields.push({
+          name: 'Status',
+          value: 'Processing',
+          inline: true,
+        });
         break;
       case Notification.MEDIA_AVAILABLE:
         color = EmbedColors.GREEN;
-        fields.push(
-          {
-            name: 'Requested By',
-            value: payload.notifyUser.displayName ?? '',
-            inline: true,
-          },
-          {
-            name: 'Status',
-            value: 'Available',
-            inline: true,
-          }
-        );
-
-        if (settings.main.applicationUrl) {
-          fields.push({
-            name: 'View Media',
-            value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-          });
-        }
+        fields.push({
+          name: 'Status',
+          value: 'Available',
+          inline: true,
+        });
         break;
       case Notification.MEDIA_DECLINED:
         color = EmbedColors.RED;
-        fields.push(
-          {
-            name: 'Requested By',
-            value: payload.notifyUser.displayName ?? '',
-            inline: true,
-          },
-          {
-            name: 'Status',
-            value: 'Declined',
-            inline: true,
-          }
-        );
-
-        if (settings.main.applicationUrl) {
-          fields.push({
-            name: 'View Media',
-            value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-          });
-        }
+        fields.push({
+          name: 'Status',
+          value: 'Declined',
+          inline: true,
+        });
         break;
       case Notification.MEDIA_FAILED:
         color = EmbedColors.RED;
-        if (settings.main.applicationUrl) {
-          fields.push({
-            name: 'View Media',
-            value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-          });
-        }
+        fields.push({
+          name: 'Status',
+          value: 'Failed',
+          inline: true,
+        });
         break;
+    }
+
+    if (settings.main.applicationUrl && payload.media) {
+      fields.push({
+        name: `Open in ${settings.main.applicationTitle}`,
+        value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
+      });
     }
 
     return {
@@ -246,9 +210,24 @@ class DiscordAgent
         return false;
       }
 
+      const mentionedUsers: string[] = [];
+      let content = undefined;
+
+      if (
+        payload.notifyUser.settings?.enableNotifications &&
+        payload.notifyUser.settings?.discordId
+      ) {
+        mentionedUsers.push(payload.notifyUser.settings.discordId);
+        content = `<@${payload.notifyUser.settings.discordId}>`;
+      }
+
       await axios.post(webhookUrl, {
         username: settings.main.applicationTitle,
         embeds: [this.buildEmbed(type, payload)],
+        content,
+        allowed_mentions: {
+          users: mentionedUsers,
+        },
       } as DiscordWebhookPayload);
 
       return true;
@@ -256,6 +235,7 @@ class DiscordAgent
       logger.error('Error sending Discord notification', {
         label: 'Notifications',
         message: e.message,
+        response: e.response.data,
       });
       return false;
     }

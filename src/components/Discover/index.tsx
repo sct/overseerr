@@ -15,6 +15,7 @@ const messages = defineMessages({
   recentrequests: 'Recent Requests',
   popularmovies: 'Popular Movies',
   populartv: 'Popular Series',
+  upcomingtv: 'Upcoming Series',
   recentlyAdded: 'Recently Added',
   nopending: 'No Pending Requests',
   upcoming: 'Upcoming Movies',
@@ -98,12 +99,6 @@ const Discover: React.FC = () => {
         emptyMessage={intl.formatMessage(messages.nopending)}
       />
       <MediaSlider
-        sliderKey="upcoming"
-        title={intl.formatMessage(messages.upcoming)}
-        linkUrl="/discover/movies/upcoming"
-        url="/api/v1/discover/movies/upcoming"
-      />
-      <MediaSlider
         sliderKey="trending"
         title={intl.formatMessage(messages.trending)}
         url="/api/v1/discover/trending"
@@ -116,10 +111,22 @@ const Discover: React.FC = () => {
         linkUrl="/discover/movies"
       />
       <MediaSlider
+        sliderKey="upcoming"
+        title={intl.formatMessage(messages.upcoming)}
+        linkUrl="/discover/movies/upcoming"
+        url="/api/v1/discover/movies/upcoming"
+      />
+      <MediaSlider
         sliderKey="popular-tv"
         title={intl.formatMessage(messages.populartv)}
         url="/api/v1/discover/tv"
         linkUrl="/discover/tv"
+      />
+      <MediaSlider
+        sliderKey="upcoming-tv"
+        title={intl.formatMessage(messages.upcomingtv)}
+        url="/api/v1/discover/tv/upcoming"
+        linkUrl="/discover/tv/upcoming"
       />
     </>
   );

@@ -1,4 +1,4 @@
-# Table of contents
+# Table of Contents
 
 - [Introduction](README.md)
 
@@ -13,10 +13,10 @@
 
 ## Support
 
-- [Frequently Asked Questions](support/faq.md)
+- [Frequently Asked Questions (FAQ)](support/faq.md)
 - [Asking for Support](support/asking-for-support.md)
 
 ## Extending Overseerr
 
-* [Reverse Proxy Examples](extending-overseerr/reverse-proxy-examples.md)
-* [Fail2ban Filter](extending-overseerr/fail2ban.md)
+- [Reverse Proxy Examples](extending-overseerr/reverse-proxy-examples.md)
+- [Fail2ban Filter](extending-overseerr/fail2ban.md)

@@ -12,6 +12,7 @@ export interface PublicSettingsResponse {
   localLogin: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
+  region: string;
 }
 
 export interface CacheItem {

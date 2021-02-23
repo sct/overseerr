@@ -1,13 +1,13 @@
 #### Description
 
-#### Screenshot (if UI related)
+#### Screenshot (if UI-related)
 
-#### Todos
+#### To-Dos
 
-- [ ] Sucessfully builds `yarn build`
-- [ ] Translation Keys `yarn i18n:extract`
-- [ ] Database migration created (if required)
+- [ ] Successful build `yarn build`
+- [ ] Translation keys `yarn i18n:extract`
+- [ ] Database migration (if required)
 
-#### Issues Fixed or Closed by this PR
+#### Issues Fixed or Closed
 
 - Fixes #XXXX
