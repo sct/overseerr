@@ -53,6 +53,7 @@ class TelegramAgent
     const title = this.escapeText(payload.subject);
     const plot = this.escapeText(payload.message);
     const user = this.escapeText(payload.notifyUser.displayName);
+    const applicationTitle = this.escapeText(settings.main.applicationTitle);
 
     /* eslint-disable no-useless-escape */
     switch (type) {
@@ -109,7 +110,7 @@ class TelegramAgent
 
     if (settings.main.applicationUrl && payload.media) {
       const actionUrl = `${settings.main.applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`;
-      message += `\n\n\[Open in ${settings.main.applicationTitle}\]\(${actionUrl}\)`;
+      message += `\n\n\[Open in ${applicationTitle}\]\(${actionUrl}\)`;
     }
     /* eslint-enable */
 
