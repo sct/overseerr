@@ -21,6 +21,14 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   requestCount: number;
+  settings?: UserSettings;
+}
+
+export interface UserSettings {
+  enableNotifications: boolean;
+  discordId?: string;
+  region?: string;
+  originalLanguage?: string;
 }
 
 interface UserHookResponse {

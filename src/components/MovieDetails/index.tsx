@@ -82,17 +82,19 @@ interface MovieDetailsProps {
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const settings = useSettings();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
   const [showManager, setShowManager] = useState(false);
+
   const { data, error, revalidate } = useSWR<MovieDetailsType>(
     `/api/v1/movie/${router.query.movieId}?language=${locale}`,
     {
       initialData: movie,
     }
   );
+
   const { data: ratingData } = useSWR<RTRating>(
     `/api/v1/movie/${router.query.movieId}/ratings`
   );
@@ -156,17 +158,22 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     revalidate();
   };
 
+  const region = user?.settings?.region
+    ? user.settings.region
+    : settings.currentSettings.region
+    ? settings.currentSettings.region
+    : 'US';
   const movieAttributes: React.ReactNode[] = [];
 
   if (
     data.releases.results.length &&
-    (data.releases.results.find((r) => r.iso_3166_1 === 'US')?.release_dates[0]
-      .certification ||
+    (data.releases.results.find((r) => r.iso_3166_1 === region)
+      ?.release_dates[0].certification ||
       data.releases.results[0].release_dates[0].certification)
   ) {
     movieAttributes.push(
       <span className="p-0.5 py-0 border rounded-md">
-        {data.releases.results.find((r) => r.iso_3166_1 === 'US')
+        {data.releases.results.find((r) => r.iso_3166_1 === region)
           ?.release_dates[0].certification ||
           data.releases.results[0].release_dates[0].certification}
       </span>

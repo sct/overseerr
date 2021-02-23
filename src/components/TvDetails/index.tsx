@@ -80,12 +80,13 @@ interface TvDetailsProps {
 
 const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const settings = useSettings();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showManager, setShowManager] = useState(false);
+
   const { data, error, revalidate } = useSWR<TvDetailsType>(
     `/api/v1/tv/${router.query.tvId}?language=${locale}`,
     {
@@ -156,17 +157,22 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     revalidate();
   };
 
+  const region = user?.settings?.region
+    ? user.settings.region
+    : settings.currentSettings.region
+    ? settings.currentSettings.region
+    : 'US';
   const seriesAttributes: React.ReactNode[] = [];
 
   if (
     data.contentRatings.results.length &&
     data.contentRatings.results.find(
-      (r) => r.iso_3166_1 === 'US' || data.contentRatings.results[0].rating
+      (r) => r.iso_3166_1 === region || data.contentRatings.results[0].rating
     )
   ) {
     seriesAttributes.push(
       <span className="p-0.5 py-0 border rounded-md">
-        {data.contentRatings.results.find((r) => r.iso_3166_1 === 'US')
+        {data.contentRatings.results.find((r) => r.iso_3166_1 === region)
           ?.rating || data.contentRatings.results[0].rating}
       </span>
     );

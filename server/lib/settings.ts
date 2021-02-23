@@ -84,6 +84,7 @@ interface FullPublicSettings extends PublicSettings {
   localLogin: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
+  region: string;
 }
 
 export interface NotificationAgentConfig {
@@ -335,6 +336,7 @@ class Settings {
       series4kEnabled: this.data.sonarr.some(
         (sonarr) => sonarr.is4k && sonarr.isDefault
       ),
+      region: this.data.main.region,
     };
   }
 
