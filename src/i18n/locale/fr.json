@@ -791,7 +791,7 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.toastSettingsSuccess": "Les paramètres ont été enregistrés avec succès !",
   "components.UserProfile.UserSettings.UserNotificationSettings.toastSettingsFailure": "Un problème est survenu pendant l'enregistrement des paramètres.",
   "components.UserProfile.UserSettings.UserNotificationSettings.enableNotifications": "Activer les notifications",
-  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "L'<FindDiscordIdLink>ID</FindDiscordIdLink> de votre compte Discord",
+  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "L''<FindDiscordIdLink>ID</FindDiscordIdLink> de votre compte Discord",
   "components.UserProfile.UserSettings.UserGeneralSettings.toastSettingsSuccess": "Les paramètres ont été enregistrés avec succès !",
   "components.UserProfile.UserSettings.UserGeneralSettings.toastSettingsFailure": "Un problème est survenu pendant l'enregistrement des paramètres.",
   "components.UserProfile.UserSettings.UserGeneralSettings.saving": "Enregistrement…",
