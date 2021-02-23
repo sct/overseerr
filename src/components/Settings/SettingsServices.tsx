@@ -41,7 +41,7 @@ interface ServerInstanceProps {
   name: string;
   isDefault?: boolean;
   isDefault4K?: boolean;
-  address: string;
+  hostname: string;
   port: number;
   isSSL?: boolean;
   externalUrl?: string;
@@ -53,7 +53,7 @@ interface ServerInstanceProps {
 
 const ServerInstance: React.FC<ServerInstanceProps> = ({
   name,
-  address,
+  hostname,
   port,
   profileName,
   isDefault4K = false,
@@ -66,13 +66,22 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
 }) => {
   const intl = useIntl();
 
+  const internalUrl =
+    (isSSL ? 'https://' : 'http://') + hostname + ':' + String(port);
+  const serviceUrl = externalUrl ?? internalUrl;
+
   return (
     <li className="col-span-1 bg-gray-700 rounded-lg shadow">
       <div className="flex items-center justify-between w-full p-6 space-x-6">
         <div className="flex-1 truncate">
           <div className="flex items-center mb-2 space-x-3">
             <h3 className="font-medium leading-5 text-white truncate">
-              {name}
+              <a
+                href={serviceUrl}
+                className="transition duration-300 hover:underline hover:text-white"
+              >
+                {name}
+              </a>
             </h3>
             {isDefault && <Badge>{intl.formatMessage(messages.default)}</Badge>}
             {isDefault4K && (
@@ -90,8 +99,12 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
             <span className="mr-2 font-bold">
               {intl.formatMessage(messages.address)}
             </span>
-            {isSSL ? 'https://' : 'http://'}
-            {address}:{port}
+            <a
+              href={internalUrl}
+              className="transition duration-300 hover:underline hover:text-white"
+            >
+              {internalUrl}
+            </a>
           </p>
           <p className="mt-1 text-sm leading-5 text-gray-300 truncate">
             <span className="mr-2 font-bold">
@@ -100,22 +113,13 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
             {profileName}
           </p>
         </div>
-        {externalUrl && (
-          <a href={externalUrl} className="opacity-50 hover:opacity-100">
-            <img
-              className="flex-shrink-0 w-10 h-10"
-              src={`/images/${isSonarr ? 'sonarr' : 'radarr'}_logo.svg`}
-              alt=""
-            />
-          </a>
-        )}
-        {!externalUrl && (
+        <a href={serviceUrl} className="opacity-50 hover:opacity-100">
           <img
-            className="flex-shrink-0 w-10 h-10 opacity-50"
+            className="flex-shrink-0 w-10 h-10"
             src={`/images/${isSonarr ? 'sonarr' : 'radarr'}_logo.svg`}
             alt=""
           />
-        )}
+        </a>
       </div>
       <div className="border-t border-gray-800">
         <div className="flex -mt-px">
@@ -280,7 +284,7 @@ const SettingsServices: React.FC = () => {
                 <ServerInstance
                   key={`radarr-config-${radarr.id}`}
                   name={radarr.name}
-                  address={radarr.hostname}
+                  hostname={radarr.hostname}
                   port={radarr.port}
                   profileName={radarr.activeProfileName}
                   isSSL={radarr.useSsl}
@@ -351,7 +355,7 @@ const SettingsServices: React.FC = () => {
                 <ServerInstance
                   key={`sonarr-config-${sonarr.id}`}
                   name={sonarr.name}
-                  address={sonarr.hostname}
+                  hostname={sonarr.hostname}
                   port={sonarr.port}
                   profileName={sonarr.activeProfileName}
                   isSSL={sonarr.useSsl}
