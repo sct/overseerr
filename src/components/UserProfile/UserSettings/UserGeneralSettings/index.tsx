@@ -28,6 +28,7 @@ const messages = defineMessages({
   originallanguage: 'Discover Language',
   originallanguageTip:
     'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
+  originalLanguageDefault: 'All Languages',
 });
 
 const UserGeneralSettings: React.FC = () => {
@@ -160,7 +161,9 @@ const UserGeneralSettings: React.FC = () => {
                       id="originalLanguage"
                       name="originalLanguage"
                     >
-                      <option value="">All</option>
+                      <option value="">
+                        {intl.formatMessage(messages.originalLanguageDefault)}
+                      </option>
                       {languages?.map((language) => (
                         <option
                           key={`language-key-${language.iso_639_1}`}

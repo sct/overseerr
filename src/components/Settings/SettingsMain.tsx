@@ -48,6 +48,7 @@ const messages = defineMessages({
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
+  originalLanguageDefault: 'All Languages',
 });
 
 const SettingsMain: React.FC = () => {
@@ -306,7 +307,9 @@ const SettingsMain: React.FC = () => {
                         id="originalLanguage"
                         name="originalLanguage"
                       >
-                        <option value="">All</option>
+                        <option value="">
+                          {intl.formatMessage(messages.originalLanguageDefault)}
+                        </option>
                         {languages?.map((language) => (
                           <option
                             key={`language-key-${language.iso_639_1}`}

@@ -6,7 +6,7 @@ import type { Region } from '../../../server/lib/settings';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  regionDefault: 'All',
+  regionDefault: 'All Regions',
 });
 
 interface RegionSelectorProps {
