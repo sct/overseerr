@@ -387,9 +387,7 @@ export class MediaRequest {
         const tmdb = new TheMovieDb();
         const radarr = new RadarrAPI({
           apiKey: radarrSettings.apiKey,
-          url: `${radarrSettings.useSsl ? 'https' : 'http'}://${
-            radarrSettings.hostname
-          }:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}/api`,
+          url: RadarrAPI.buildRadarrUrl(radarrSettings, '/api/v3'),
         });
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
 
@@ -535,9 +533,7 @@ export class MediaRequest {
         const tmdb = new TheMovieDb();
         const sonarr = new SonarrAPI({
           apiKey: sonarrSettings.apiKey,
-          url: `${sonarrSettings.useSsl ? 'https' : 'http'}://${
-            sonarrSettings.hostname
-          }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}/api`,
+          url: SonarrAPI.buildSonarrUrl(sonarrSettings, '/api/v3'),
         });
         const series = await tmdb.getTvShow({ tvId: media.tmdbId });
         const tvdbId = series.external_ids.tvdb_id ?? media.tvdbId;

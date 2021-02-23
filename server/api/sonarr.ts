@@ -291,7 +291,7 @@ class SonarrAPI extends ExternalAPI {
   public async getProfiles(): Promise<SonarrProfile[]> {
     try {
       const data = await this.getRolling<SonarrProfile[]>(
-        '/profile',
+        '/qualityProfile',
         undefined,
         3600
       );
@@ -331,7 +331,7 @@ class SonarrAPI extends ExternalAPI {
   public async getLanguageProfiles(): Promise<LanguageProfile[]> {
     try {
       const data = await this.getRolling<LanguageProfile[]>(
-        '/v3/languageprofile',
+        '/languageprofile',
         undefined,
         3600
       );

@@ -39,9 +39,7 @@ sonarrRoutes.post('/test', async (req, res, next) => {
   try {
     const sonarr = new SonarrAPI({
       apiKey: req.body.apiKey,
-      url: `${req.body.useSsl ? 'https' : 'http'}://${req.body.hostname}:${
-        req.body.port
-      }${req.body.baseUrl ?? ''}/api`,
+      url: SonarrAPI.buildSonarrUrl(req.body, '/api/v3'),
     });
 
     const profiles = await sonarr.getProfiles();

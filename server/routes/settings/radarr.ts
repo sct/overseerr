@@ -39,9 +39,7 @@ radarrRoutes.post('/test', async (req, res, next) => {
   try {
     const radarr = new RadarrAPI({
       apiKey: req.body.apiKey,
-      url: `${req.body.useSsl ? 'https' : 'http'}://${req.body.hostname}:${
-        req.body.port
-      }${req.body.baseUrl ?? ''}/api`,
+      url: RadarrAPI.buildRadarrUrl(req.body, '/api/v3'),
     });
 
     const profiles = await radarr.getProfiles();
@@ -112,9 +110,7 @@ radarrRoutes.get<{ id: string }>('/:id/profiles', async (req, res) => {
 
   const radarr = new RadarrAPI({
     apiKey: radarrSettings.apiKey,
-    url: `${radarrSettings.useSsl ? 'https' : 'http'}://${
-      radarrSettings.hostname
-    }:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}/api`,
+    url: RadarrAPI.buildRadarrUrl(radarrSettings, '/api/v3'),
   });
 
   const profiles = await radarr.getProfiles();

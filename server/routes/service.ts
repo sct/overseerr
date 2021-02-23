@@ -46,9 +46,7 @@ serviceRoutes.get<{ radarrId: string }>(
 
     const radarr = new RadarrAPI({
       apiKey: radarrSettings.apiKey,
-      url: `${radarrSettings.useSsl ? 'https' : 'http'}://${
-        radarrSettings.hostname
-      }:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}/api`,
+      url: RadarrAPI.buildRadarrUrl(radarrSettings, '/api/v3'),
     });
 
     const profiles = await radarr.getProfiles();
@@ -116,9 +114,7 @@ serviceRoutes.get<{ sonarrId: string }>(
 
     const sonarr = new SonarrAPI({
       apiKey: sonarrSettings.apiKey,
-      url: `${sonarrSettings.useSsl ? 'https' : 'http'}://${
-        sonarrSettings.hostname
-      }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}/api`,
+      url: SonarrAPI.buildSonarrUrl(sonarrSettings, '/api/v3'),
     });
 
     try {
