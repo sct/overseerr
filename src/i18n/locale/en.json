@@ -680,6 +680,7 @@
   "components.UserProfile.UserSettings.UserGeneralSettings.displayName": "Display Name",
   "components.UserProfile.UserSettings.UserGeneralSettings.generalsettings": "General Settings",
   "components.UserProfile.UserSettings.UserGeneralSettings.localuser": "Local User",
+  "components.UserProfile.UserSettings.UserGeneralSettings.originalLanguageDefault": "All Languages",
   "components.UserProfile.UserSettings.UserGeneralSettings.originallanguage": "Discover Language",
   "components.UserProfile.UserSettings.UserGeneralSettings.originallanguageTip": "Filter content by original language (only applies to the \"Popular\" and \"Upcoming\" categories)",
   "components.UserProfile.UserSettings.UserGeneralSettings.plexuser": "Plex User",
