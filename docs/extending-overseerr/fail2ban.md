@@ -8,7 +8,7 @@ To use Fail2ban with Overseerr, create a new file named `overseerr.local` in you
 
 ```
 [Definition]
-failregex = .*\[info\]\[Auth\]\: Failed login attempt.*"ip":"<HOST>"
+failregex = .*\[info\]\[Auth\]\: Failed sign-in attempt.*"ip":"<HOST>"
 ```
 
-You can then add a jail using this filter in `jail.local`.  Please see the [Fail2ban documetation](https://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jails) for details on how to configure the jail.
+You can then add a jail using this filter in `jail.local`. Please see the [Fail2ban documetation](https://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jails) for details on how to configure the jail.
