@@ -241,7 +241,7 @@ class SonarrAPI extends ExternalAPI {
         {
           tvdbId: options.tvdbid,
           title: options.title,
-          profileId: options.profileId,
+          qualityProfileId: options.profileId,
           languageProfileId: options.languageProfileId,
           seasons: this.buildSeasonList(
             options.seasons,
