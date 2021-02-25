@@ -17,7 +17,7 @@ const messages = defineMessages({
   botAPI: 'Bot Authentication Token',
   chatId: 'Chat ID',
   validationBotAPIRequired: 'You must provide a bot authentication token',
-  validationChatIdRequired: 'You must provide a valid chat ID',
+  validationChatIdRequired: 'You must provide a chat ID',
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   testsent: 'Test notification sent!',
@@ -43,9 +43,9 @@ const NotificationsTelegram: React.FC = () => {
     botAPI: Yup.string().required(
       intl.formatMessage(messages.validationBotAPIRequired)
     ),
-    chatId: Yup.string()
-      .required(intl.formatMessage(messages.validationChatIdRequired))
-      .matches(/^\d+$/, intl.formatMessage(messages.validationChatIdRequired)),
+    chatId: Yup.string().required(
+      intl.formatMessage(messages.validationChatIdRequired)
+    ),
   });
 
   if (!data && !error) {
