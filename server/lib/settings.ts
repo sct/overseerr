@@ -120,6 +120,7 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
 
 export interface NotificationAgentTelegram extends NotificationAgentConfig {
   options: {
+    botUsername: string;
     botAPI: string;
     chatId: string;
     sendSilently: boolean;
@@ -242,6 +243,7 @@ class Settings {
             enabled: false,
             types: 0,
             options: {
+              botUsername: '',
               botAPI: '',
               chatId: '',
               sendSilently: false,

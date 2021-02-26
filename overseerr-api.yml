@@ -97,6 +97,10 @@ components:
           default: true
         discordId:
           type: string
+        telegramChatId:
+          type: string
+        telegramSendSilently:
+          type: boolean
       required:
         - enableNotifications
     MainSettings:
@@ -1544,6 +1548,12 @@ components:
           default: true
         discordId:
           type: string
+          nullable: true
+        telegramChatId:
+          type: string
+          nullable: true
+        telegramSendSilently:
+          type: boolean
           nullable: true
       required:
         - enableNotifications

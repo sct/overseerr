@@ -134,6 +134,19 @@ class TelegramAgent
         disable_notification: this.getSettings().options.sendSilently,
       } as TelegramPayload);
 
+      if (
+        payload.notifyUser.settings?.enableNotifications &&
+        payload.notifyUser.settings?.telegramChatId
+      ) {
+        await axios.post(endpoint, {
+          text: this.buildMessage(type, payload),
+          parse_mode: 'MarkdownV2',
+          chat_id: `${payload.notifyUser.settings.telegramChatId}`,
+          disable_notification:
+            payload.notifyUser.settings.telegramSendSilently,
+        } as TelegramPayload);
+      }
+
       return true;
     } catch (e) {
       logger.error('Error sending Telegram notification', {
