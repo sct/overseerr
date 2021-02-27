@@ -167,13 +167,7 @@ const UserGeneralSettings: React.FC = () => {
                     >
                       <option value="">
                         {intl.formatMessage(messages.languageServerDefault, {
-                          language: intl.formatDisplayName(
-                            currentSettings.originalLanguage,
-                            {
-                              type: 'language',
-                              fallback: 'none',
-                            }
-                          )
+                          language: currentSettings.originalLanguage
                             ? intl.formatDisplayName(
                                 currentSettings.originalLanguage,
                                 {
