@@ -30,7 +30,7 @@ const messages = defineMessages({
   originallanguageTip:
     'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
   originalLanguageDefault: 'All Languages',
-  languageServerDefault: '{applicationTitle} Default ({language})',
+  languageServerDefault: 'Default ({language})',
 });
 
 const UserGeneralSettings: React.FC = () => {
@@ -167,15 +167,23 @@ const UserGeneralSettings: React.FC = () => {
                     >
                       <option value="">
                         {intl.formatMessage(messages.languageServerDefault, {
-                          applicationTitle: currentSettings.applicationTitle,
-                          language:
-                            intl.formatDisplayName(
-                              currentSettings.originalLanguage,
-                              {
-                                type: 'language',
-                                fallback: 'none',
-                              }
-                            ) ?? currentSettings.originalLanguage,
+                          language: intl.formatDisplayName(
+                            currentSettings.originalLanguage,
+                            {
+                              type: 'language',
+                              fallback: 'none',
+                            }
+                          )
+                            ? intl.formatDisplayName(
+                                currentSettings.originalLanguage,
+                                {
+                                  type: 'language',
+                                  fallback: 'none',
+                                }
+                              )
+                            : intl.formatMessage(
+                                messages.originalLanguageDefault
+                              ),
                         })}
                       </option>
                       <option value="all">

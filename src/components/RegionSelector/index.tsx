@@ -9,7 +9,7 @@ import 'country-flag-icons/3x2/flags.css';
 
 const messages = defineMessages({
   regionDefault: 'All Regions',
-  regionServerDefault: '{applicationTitle} Default ({region})',
+  regionServerDefault: 'Default ({region})',
 });
 
 interface RegionSelectorProps {
@@ -82,13 +82,17 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                         }) ?? selectedRegion.english_name
                       : isUserSetting && selectedRegion?.iso_3166_1 !== 'all'
                       ? intl.formatMessage(messages.regionServerDefault, {
-                          applicationTitle: currentSettings.applicationTitle,
-                          region: currentSettings.region
-                            ? intl.formatDisplayName(currentSettings.region, {
-                                type: 'region',
-                                fallback: 'none',
-                              }) ?? currentSettings.region
-                            : intl.formatMessage(messages.regionDefault),
+                          region:
+                            currentSettings.region &&
+                            intl.formatDisplayName(currentSettings.region, {
+                              type: 'region',
+                              fallback: 'none',
+                            })
+                              ? intl.formatDisplayName(currentSettings.region, {
+                                  type: 'region',
+                                  fallback: 'none',
+                                })
+                              : intl.formatMessage(messages.regionDefault),
                         })
                       : intl.formatMessage(messages.regionDefault)}
                   </span>
@@ -138,17 +142,20 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                             } block truncate`}
                           >
                             {intl.formatMessage(messages.regionServerDefault, {
-                              applicationTitle:
-                                currentSettings.applicationTitle,
-                              region: currentSettings.region
-                                ? intl.formatDisplayName(
-                                    currentSettings.region,
-                                    {
-                                      type: 'region',
-                                      fallback: 'none',
-                                    }
-                                  ) ?? currentSettings.region
-                                : intl.formatMessage(messages.regionDefault),
+                              region:
+                                currentSettings.region &&
+                                intl.formatDisplayName(currentSettings.region, {
+                                  type: 'region',
+                                  fallback: 'none',
+                                })
+                                  ? intl.formatDisplayName(
+                                      currentSettings.region,
+                                      {
+                                        type: 'region',
+                                        fallback: 'none',
+                                      }
+                                    )
+                                  : intl.formatMessage(messages.regionDefault),
                             })}
                           </span>
                           {selected && (
