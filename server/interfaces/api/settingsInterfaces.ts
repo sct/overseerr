@@ -13,6 +13,7 @@ export interface PublicSettingsResponse {
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
   region: string;
+  originalLanguage: string;
 }
 
 export interface CacheItem {
