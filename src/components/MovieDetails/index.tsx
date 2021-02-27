@@ -431,7 +431,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     inProgress={
                       (data.mediaInfo?.downloadStatus4k ?? []).length > 0
                     }
-                    plexUrl4k={data.mediaInfo?.plexUrl4k}
+                    mediaUrl4k={data.mediaInfo?.mediaUrl4k}
                   />
                 </span>
               )}
