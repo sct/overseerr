@@ -14,6 +14,7 @@ const defaultSettings = {
   movie4kEnabled: false,
   series4kEnabled: false,
   region: '',
+  originalLanguage: '',
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({
