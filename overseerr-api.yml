@@ -2087,9 +2087,6 @@ paths:
                     id:
                       type: string
                       example: job-name
-                    name:
-                      type: string
-                      example: A Job Name
                     type:
                       type: string
                       enum: [process, command]
