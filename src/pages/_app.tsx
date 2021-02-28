@@ -145,6 +145,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     series4kEnabled: false,
     localLogin: true,
     region: '',
+    originalLanguage: '',
   };
 
   let locale = 'en';

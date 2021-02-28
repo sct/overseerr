@@ -85,6 +85,7 @@ interface FullPublicSettings extends PublicSettings {
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
   region: string;
+  originalLanguage: string;
 }
 
 export interface NotificationAgentConfig {
@@ -337,6 +338,7 @@ class Settings {
         (sonarr) => sonarr.is4k && sonarr.isDefault
       ),
       region: this.data.main.region,
+      originalLanguage: this.data.main.originalLanguage,
     };
   }
 

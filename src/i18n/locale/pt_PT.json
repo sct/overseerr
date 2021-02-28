@@ -35,7 +35,7 @@
   "components.Settings.Notifications.validationSmtpPortRequired": "Você deve fornecer a porta SMTP",
   "components.Settings.Notifications.validationSmtpHostRequired": "Você deve fornecer um servidor SMTP",
   "components.Settings.Notifications.validationFromRequired": "Você deve fornecer um endereço do remetente",
-  "components.Settings.Notifications.validationChatIdRequired": "Você deve fornecer um ID de chat válido",
+  "components.Settings.Notifications.validationChatIdRequired": "Você deve fornecer um ID de chat",
   "components.Settings.Notifications.validationBotAPIRequired": "Você deve fornecer um token de autenticação de bot",
   "components.Settings.Notifications.telegramsettingssaved": "Configurações de notificação Telegram salvas com sucesso!",
   "components.Settings.Notifications.telegramsettingsfailed": "Falhou o salvar das configurações de notificação Telegram.",
@@ -85,7 +85,7 @@
   "components.Settings.Notifications.NotificationsSlack.slacksettingssaved": "Configurações de notificação Slack salvas com sucesso!",
   "components.Settings.Notifications.NotificationsSlack.slacksettingsfailed": "Falhou o salvar das configurações de notificação do Slack.",
   "components.Settings.Notifications.NotificationsSlack.settingupslackDescription": "Para configurar notificações Slack, você precisará criar uma integração <WebhookLink>Webhook de entrada</WebhookLink> insire o URL do webhook fornecido abaixo.",
-  "components.Settings.Notifications.NotificationsPushover.settinguppushoverDescription": "Para configurar notificações Pushover, você precisará <RegisterApplicationLink>registrar uma aplicação</RegisterApplicationLink> e inserir a chave API abaixo. (Você pode utilizar um dos nossos <IconLink>ícones oficiais no GitHub</IconLink>.) Você também precisará da sua chave de utilizador.",
+  "components.Settings.Notifications.NotificationsPushover.settinguppushoverDescription": "Para configurar notificações Pushover, você precisará <RegisterApplicationLink>registrar uma aplicação</RegisterApplicationLink> e inserir o token do API abaixo. (Você pode utilizar um dos nossos <IconLink>ícones oficiais no GitHub</IconLink>.) Você também precisará da sua chave de utilizador.",
   "components.Settings.Notifications.NotificationsPushover.settinguppushover": "Configurando Notificações Pushover",
   "components.Settings.Notifications.NotificationsSlack.settingupslack": "Configurando Notificações Slack",
   "components.Settings.save": "Salvar Mudanças",
@@ -824,5 +824,7 @@
   "components.Settings.Notifications.emailNotificationTypesAlertDescription": "Para os tipos de notificação \"Mídia Solicitada\" e \"Mídia Falhou\", as notificações serão enviadas apenas para utilizadores com a permissão \"Gerir Solicitações\".",
   "components.Settings.Notifications.emailNotificationTypesAlert": "Destinatários de E-Mail de Notificação",
   "components.UserProfile.UserSettings.UserGeneralSettings.originalLanguageDefault": "Todas as Idiomas",
-  "components.Settings.originalLanguageDefault": "Todas as Idiomas"
+  "components.Settings.originalLanguageDefault": "Todas as Idiomas",
+  "components.UserProfile.UserSettings.UserGeneralSettings.languageServerDefault": "Padrão ({language})",
+  "components.RegionSelector.regionServerDefault": "Padrão ({region})"
 }
