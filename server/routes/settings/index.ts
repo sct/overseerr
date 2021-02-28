@@ -227,6 +227,7 @@ settingsRoutes.get('/jobs', (_req, res) => {
   return res.status(200).json(
     scheduledJobs.map((job) => ({
       id: job.id,
+      name: job.name,
       type: job.type,
       nextExecutionTime: job.job.nextInvocation(),
       running: job.running ? job.running() : false,
@@ -245,6 +246,7 @@ settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
 
   return res.status(200).json({
     id: scheduledJob.id,
+    name: scheduledJob.name,
     type: scheduledJob.type,
     nextExecutionTime: scheduledJob.job.nextInvocation(),
     running: scheduledJob.running ? scheduledJob.running() : false,
@@ -268,6 +270,7 @@ settingsRoutes.post<{ jobId: string }>(
 
     return res.status(200).json({
       id: scheduledJob.id,
+      name: scheduledJob.name,
       type: scheduledJob.type,
       nextExecutionTime: scheduledJob.job.nextInvocation(),
       running: scheduledJob.running ? scheduledJob.running() : false,

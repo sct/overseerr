@@ -7,9 +7,9 @@ import downloadTracker from '../lib/downloadtracker';
 
 interface ScheduledJob {
   id: string;
-  job: schedule.Job;
   name: string;
   type: 'process' | 'command';
+  job: schedule.Job;
   running?: () => boolean;
   cancelFn?: () => void;
 }

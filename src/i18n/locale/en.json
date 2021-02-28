@@ -427,6 +427,7 @@
   "components.Settings.SettingsJobsCache.radarr-sync": "Radarr Sync",
   "components.Settings.SettingsJobsCache.runnow": "Run Now",
   "components.Settings.SettingsJobsCache.sonarr-sync": "Sonarr Sync",
+  "components.Settings.SettingsJobsCache.unknownJob": "Unknown Job",
   "components.Settings.SonarrModal.add": "Add Server",
   "components.Settings.SonarrModal.animelanguageprofile": "Anime Language Profile",
   "components.Settings.SonarrModal.animequalityprofile": "Anime Quality Profile",

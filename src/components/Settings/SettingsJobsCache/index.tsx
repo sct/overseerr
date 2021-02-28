@@ -40,6 +40,7 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   cacheksize: 'Key Size',
   cachevsize: 'Value Size',
   flushcache: 'Flush Cache',
+  unknownJob: 'Unknown Job',
   'plex-recently-added-sync': 'Plex Recently Added Sync',
   'plex-full-sync': 'Plex Full Library Sync',
   'radarr-sync': 'Radarr Sync',
@@ -77,7 +78,7 @@ const SettingsJobs: React.FC = () => {
     await axios.post(`/api/v1/settings/jobs/${job.id}/run`);
     addToast(
       intl.formatMessage(messages.jobstarted, {
-        jobname: intl.formatMessage(messages[job.id]),
+        jobname: intl.formatMessage(messages[job.id] ?? messages.unknownJob),
       }),
       {
         appearance: 'success',
@@ -91,7 +92,7 @@ const SettingsJobs: React.FC = () => {
     await axios.post(`/api/v1/settings/jobs/${job.id}/cancel`);
     addToast(
       intl.formatMessage(messages.jobcancelled, {
-        jobname: intl.formatMessage(messages[job.id]),
+        jobname: intl.formatMessage(messages[job.id] ?? messages.unknownJob),
       }),
       {
         appearance: 'error',
@@ -137,7 +138,11 @@ const SettingsJobs: React.FC = () => {
                 <Table.TD>
                   <div className="flex items-center text-sm leading-5 text-white">
                     {job.running && <Spinner className="w-5 h-5 mr-2" />}
-                    <span>{intl.formatMessage(messages[job.id])}</span>
+                    <span>
+                      {intl.formatMessage(
+                        messages[job.id] ?? messages.unknownJob
+                      )}
+                    </span>
                   </div>
                 </Table.TD>
                 <Table.TD>
