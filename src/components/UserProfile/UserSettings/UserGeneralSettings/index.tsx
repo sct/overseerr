@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { Language } from '../../../../../server/lib/settings';
+import useSettings from '../../../../hooks/useSettings';
 import { UserType, useUser } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
 import Badge from '../../../Common/Badge';
@@ -29,6 +30,7 @@ const messages = defineMessages({
   originallanguageTip:
     'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
   originalLanguageDefault: 'All Languages',
+  languageServerDefault: 'Default ({language})',
 });
 
 const UserGeneralSettings: React.FC = () => {
@@ -36,6 +38,7 @@ const UserGeneralSettings: React.FC = () => {
   const { addToast } = useToasts();
   const router = useRouter();
   const { user, mutate } = useUser({ id: Number(router.query.userId) });
+  const { currentSettings } = useSettings();
   const { data, error, revalidate } = useSWR<{
     username?: string;
     region?: string;
@@ -57,6 +60,11 @@ const UserGeneralSettings: React.FC = () => {
   if (!data || !languages) {
     return <Error statusCode={500} />;
   }
+
+  const defaultLanguageNameFallback =
+    languages.find(
+      (language) => language.iso_639_1 === currentSettings.originalLanguage
+    )?.english_name ?? currentSettings.originalLanguage;
 
   return (
     <>
@@ -143,6 +151,7 @@ const UserGeneralSettings: React.FC = () => {
                   <RegionSelector
                     name="region"
                     value={values.region ?? ''}
+                    isUserSetting
                     onChange={setFieldValue}
                   />
                 </div>
@@ -162,6 +171,21 @@ const UserGeneralSettings: React.FC = () => {
                       name="originalLanguage"
                     >
                       <option value="">
+                        {intl.formatMessage(messages.languageServerDefault, {
+                          language: currentSettings.originalLanguage
+                            ? intl.formatDisplayName(
+                                currentSettings.originalLanguage,
+                                {
+                                  type: 'language',
+                                  fallback: 'none',
+                                }
+                              ) ?? defaultLanguageNameFallback
+                            : intl.formatMessage(
+                                messages.originalLanguageDefault
+                              ),
+                        })}
+                      </option>
+                      <option value="all">
                         {intl.formatMessage(messages.originalLanguageDefault)}
                       </option>
                       {languages?.map((language) => (

@@ -43,7 +43,7 @@
   "components.PersonDetails.crewmember": "Stáb tag",
   "components.PersonDetails.ascharacter": "mint {character}",
   "components.PersonDetails.appearsin": "Szerepel a következőkben",
-  "components.PermissionEdit.voteDescription": "Engedélyt ad a kérelmek szavazására. (A szavazás funkció még nincs implementálva)",
+  "components.PermissionEdit.voteDescription": "Engedélyt ad a kérelmek szavazására. (A szavazás funkció még nincs implementálva).",
   "components.PermissionEdit.vote": "Szavazás",
   "components.PermissionEdit.usersDescription": "Engedélyt ad az Overseerr felhasználók kezelésére. Az ezzel az engedéllyel rendelkező felhasználók nem módosíthatják a rendszergazdai jogosultsággal rendelkező felhasználókat, és nem adhatják meg a jogosultságot más felhasználónak.",
   "components.PermissionEdit.users": "Felhasználók kezelése",

@@ -19,7 +19,8 @@ jobs:
             to get help with Overseerr.
 
             - [Discord](https://discord.gg/PkCWJSeCk7)
+
             - [GitHub Discussions](https://github.com/sct/overseerr/discussions)
           close-issue: true
-          lock-issue: false
+          lock-issue: true
           issue-lock-reason: 'off-topic'

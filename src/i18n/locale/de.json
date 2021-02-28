@@ -408,7 +408,7 @@
   "components.UserEdit.autoapproveSeriesDescription": "Gewährt die automatische Genehmigung für Serienanfragen von diesem Benutzer.",
   "components.UserEdit.autoapproveMoviesDescription": "Gewährt die automatische Genehmigung für Filmanfragen von diesem Benutzer.",
   "components.Settings.Notifications.NotificationsSlack.validationWebhookUrlRequired": "Du musst eine Webhook-URL angeben",
-  "components.Settings.Notifications.validationChatIdRequired": "Du musst eine gültige Chat-ID angeben",
+  "components.Settings.Notifications.validationChatIdRequired": "Du musst eine Chat-ID angeben",
   "components.Settings.Notifications.validationBotAPIRequired": "Du musst ein Bot-Authentifizierungstoken angeben",
   "components.Settings.Notifications.telegramsettingssaved": "Telegram-Benachrichtigungseinstellungen erfolgreich gespeichert!",
   "components.Settings.Notifications.telegramsettingsfailed": "Telegram-Benachrichtigungseinstellungen konnten nicht gespeichert werden.",
@@ -445,7 +445,7 @@
   "components.Settings.Notifications.NotificationsPushover.notificationtypes": "Benachrichtigungsarten",
   "components.Settings.Notifications.NotificationsPushover.pushoversettingsfailed": "Pushover-Benachrichtigungseinstellungen konnten nicht gespeichert werden.",
   "components.Settings.Notifications.NotificationsPushover.agentenabled": "Agent aktivieren",
-  "components.Settings.Notifications.NotificationsPushover.accessToken": "Anwendungs-/API Token",
+  "components.Settings.Notifications.NotificationsPushover.accessToken": "Anwendungs-/API-Token",
   "components.RequestList.sortModified": "Zuletzt geändert",
   "components.RequestList.sortAdded": "Anfragedatum",
   "components.RequestList.showallrequests": "Zeige alle Anfragen",
@@ -830,5 +830,7 @@
   "components.Settings.Notifications.emailNotificationTypesAlert": "E-Mail-Benachrichtigungen-Empfänger",
   "components.RegionSelector.regionDefault": "Alle Regionen",
   "components.UserProfile.UserSettings.UserGeneralSettings.originalLanguageDefault": "Alle Sprachen",
-  "components.Settings.originalLanguageDefault": "Alle Sprachen"
+  "components.Settings.originalLanguageDefault": "Alle Sprachen",
+  "components.UserProfile.UserSettings.UserGeneralSettings.languageServerDefault": "Standard ({language})",
+  "components.RegionSelector.regionServerDefault": "Standard ({region})"
 }

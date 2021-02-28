@@ -449,7 +449,7 @@
   "components.Settings.RadarrModal.validationNameRequired": "必須輸入伺服器名稱",
   "components.Settings.RadarrModal.validationHostnameRequired": "必須輸入主機名稱或 IP 位址",
   "components.Settings.RadarrModal.validationApiKeyRequired": "必須輸入應用程式密鑰",
-  "components.Settings.Notifications.validationChatIdRequired": "必須輸入有效 Chat ID",
+  "components.Settings.Notifications.validationChatIdRequired": "必須輸入 Chat ID",
   "components.Settings.Notifications.NotificationsWebhook.validationJsonPayloadRequired": "必須輸入有效的 JSON 有效負載",
   "components.Settings.Notifications.NotificationsWebhook.authheader": "Authorization 頭欄位",
   "components.Settings.RadarrModal.minimumAvailability": "最低狀態",
@@ -807,5 +807,8 @@
   "components.Settings.SettingsJobsCache.jobsDescription": "Overseerr 將定時運行以下的維護任務。手動執行工作不會影響它正常的時間表。",
   "components.Settings.plexsettingsDescription": "關於 Plex 伺服器的設置。Overseerr 將定時執行媒體庫掃描。",
   "components.UserProfile.UserSettings.UserGeneralSettings.originalLanguageDefault": "所有語言",
-  "components.Settings.originalLanguageDefault": "所有語言"
+  "components.Settings.originalLanguageDefault": "所有語言",
+  "components.Settings.manualscanDescription": "在正常情況下，Overseerr 會每24小時掃描您的 Plex 媒體庫。最近添加的媒體將更頻繁掃描。設置新的 Plex 伺服器時，我們建議您執行一次手動掃描！",
+  "components.UserProfile.UserSettings.UserGeneralSettings.languageServerDefault": "默認（{language}）",
+  "components.RegionSelector.regionServerDefault": "默認（{region}）"
 }
