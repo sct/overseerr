@@ -70,7 +70,8 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
               <span className="inline-block w-full rounded-md shadow-sm">
                 <Listbox.Button className="relative flex items-center w-full py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5">
                   {((selectedRegion && hasFlag(selectedRegion?.iso_3166_1)) ||
-                    (!selectedRegion &&
+                    (isUserSetting &&
+                      !selectedRegion &&
                       currentSettings.region &&
                       hasFlag(currentSettings.region))) && (
                     <span className="h-4 mr-2 overflow-hidden text-base leading-4">
