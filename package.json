@@ -70,7 +70,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.17",
+    "@babel/cli": "^7.13.0",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@semantic-release/changelog": "^5.0.1",
