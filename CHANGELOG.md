@@ -1,3 +1,19 @@
+## [1.20.1](https://github.com/sct/overseerr/compare/v1.20.0...v1.20.1) (2021-02-28)
+
+
+### Bug Fixes
+
+* **notif:** escape application title in Telegram notifications ([#1012](https://github.com/sct/overseerr/issues/1012)) ([5560abf](https://github.com/sct/overseerr/commit/5560abf459b0350ff30b5e71d4208418fc8f3b3e))
+* **notif:** fixed typo in pushover hint ([#1029](https://github.com/sct/overseerr/issues/1029)) ([e9f2fe9](https://github.com/sct/overseerr/commit/e9f2fe910d72fa41bc27673ed43291211c3cac65))
+* **notifications:** correctly send tv auto approval notifications ([537850f](https://github.com/sct/overseerr/commit/537850f414a88df24c78794a2fd68e1e24ff73d1)), closes [#1041](https://github.com/sct/overseerr/issues/1041)
+* **plex-sync:** no longer incorrectly sets 4k availability when there isnt any ([3f9a116](https://github.com/sct/overseerr/commit/3f9a116b17d78eeb04f0f125a4f3af6f907c83dd)), closes [#990](https://github.com/sct/overseerr/issues/990)
+* **ui:** for server default options, display "All" region/language option instead of empty string ([#1042](https://github.com/sct/overseerr/issues/1042)) ([3fed26c](https://github.com/sct/overseerr/commit/3fed26cfbe74cb662ca531fd37b69f159a051ac1))
+* **ui:** show translated string on sonarr sucesss/failure toast messages ([#1035](https://github.com/sct/overseerr/issues/1035)) ([eefcbcd](https://github.com/sct/overseerr/commit/eefcbcd3ddfa5258ee24dbbbd79de5bf50310f27))
+* **ui:** use country-flag-icons instead of country-flag-emoji for RegionSelector ([#1011](https://github.com/sct/overseerr/issues/1011)) ([abcd7c9](https://github.com/sct/overseerr/commit/abcd7c997584c1310bd8b313ac38f30e335af8d7))
+* add missing default value for settings context ([084917f](https://github.com/sct/overseerr/commit/084917f02d399e2d29bb9927e033c2e6533f586c))
+* added missing language default for ssr context defaults ([9ce88ab](https://github.com/sct/overseerr/commit/9ce88abcc85d744d77172cd2357fdb4ff60dc5e4))
+* allow users to override language/region settings ([69294a7](https://github.com/sct/overseerr/commit/69294a7c4c5bbe55c5cd276786cdfd48ddbff889)), closes [#1013](https://github.com/sct/overseerr/issues/1013)
+
 # [1.20.0](https://github.com/sct/overseerr/compare/v1.19.1...v1.20.0) (2021-02-23)
 
 
