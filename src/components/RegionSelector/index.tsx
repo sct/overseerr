@@ -86,7 +86,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                             ? intl.formatDisplayName(currentSettings.region, {
                                 type: 'region',
                                 fallback: 'none',
-                              })
+                              }) ?? currentSettings.region
                             : intl.formatMessage(messages.regionDefault),
                         })
                       : intl.formatMessage(messages.regionDefault)}
@@ -149,7 +149,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                                       type: 'region',
                                       fallback: 'none',
                                     }
-                                  )
+                                  ) ?? currentSettings.region
                                 : intl.formatMessage(messages.regionDefault),
                             })}
                           </span>

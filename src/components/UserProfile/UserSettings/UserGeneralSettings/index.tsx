@@ -174,7 +174,7 @@ const UserGeneralSettings: React.FC = () => {
                                   type: 'language',
                                   fallback: 'none',
                                 }
-                              )
+                              ) ?? currentSettings.originalLanguage
                             : intl.formatMessage(
                                 messages.originalLanguageDefault
                               ),
