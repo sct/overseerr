@@ -38,6 +38,10 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     []
   );
 
+  const defaultRegionNameFallback =
+    regions?.find((region) => region.iso_3166_1 === currentSettings.region)
+      ?.english_name ?? currentSettings.region;
+
   useEffect(() => {
     if (regions && value) {
       if (value === 'all') {
@@ -91,11 +95,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                             ? intl.formatDisplayName(currentSettings.region, {
                                 type: 'region',
                                 fallback: 'none',
-                              }) ??
-                              regions?.find(
-                                (region) =>
-                                  region.iso_3166_1 === currentSettings.region
-                              )?.english_name
+                              }) ?? defaultRegionNameFallback
                             : intl.formatMessage(messages.regionDefault),
                         })
                       : intl.formatMessage(messages.regionDefault)}
@@ -162,12 +162,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                                       type: 'region',
                                       fallback: 'none',
                                     }
-                                  ) ??
-                                  regions?.find(
-                                    (region) =>
-                                      region.iso_3166_1 ===
-                                      currentSettings.region
-                                  )?.english_name
+                                  ) ?? defaultRegionNameFallback
                                 : intl.formatMessage(messages.regionDefault),
                             })}
                           </span>
