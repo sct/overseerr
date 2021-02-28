@@ -140,14 +140,15 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                               : 'text-gray-300'
                           } cursor-default select-none relative py-2 pl-8 pr-4 flex items-center`}
                         >
-                          {currentSettings.region &&
-                            hasFlag(currentSettings.region) && (
-                              <span className="h-4 mr-2 overflow-hidden text-base leading-4">
-                                <span
-                                  className={`flag:${currentSettings.region}`}
-                                />
-                              </span>
-                            )}
+                          <span className="mr-2 text-base">
+                            <span
+                              className={
+                                hasFlag(currentSettings.region)
+                                  ? `flag:${currentSettings.region}`
+                                  : 'pr-6'
+                              }
+                            />
+                          </span>
                           <span
                             className={`${
                               selected ? 'font-semibold' : 'font-normal'
