@@ -65,13 +65,18 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
             <div className="relative">
               <span className="inline-block w-full rounded-md shadow-sm">
                 <Listbox.Button className="relative flex items-center w-full py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5">
-                  {((selectedRegion &&
-                    selectedRegion.iso_3166_1 !== 'all' &&
-                    hasFlag(selectedRegion?.iso_3166_1)) ||
-                    (currentSettings.region &&
+                  {((selectedRegion && hasFlag(selectedRegion?.iso_3166_1)) ||
+                    (!selectedRegion &&
+                      currentSettings.region &&
                       hasFlag(currentSettings.region))) && (
                     <span className="h-4 mr-2 overflow-hidden text-base leading-4">
-                      <span className={`flag:${selectedRegion?.iso_3166_1}`} />
+                      <span
+                        className={`flag:${
+                          selectedRegion
+                            ? selectedRegion.iso_3166_1
+                            : currentSettings.region
+                        }`}
+                      />
                     </span>
                   )}
                   <span className="block truncate">
@@ -131,11 +136,14 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                               : 'text-gray-300'
                           } cursor-default select-none relative py-2 pl-8 pr-4 flex items-center`}
                         >
-                          {currentSettings.region && (
-                            <span className="mr-2 text-lg">
-                              {countryCodeEmoji(currentSettings.region)}
-                            </span>
-                          )}
+                          {currentSettings.region &&
+                            hasFlag(currentSettings.region) && (
+                              <span className="h-4 mr-2 overflow-hidden text-base leading-4">
+                                <span
+                                  className={`flag:${currentSettings.region}`}
+                                />
+                              </span>
+                            )}
                           <span
                             className={`${
                               selected ? 'font-semibold' : 'font-normal'
