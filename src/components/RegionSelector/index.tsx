@@ -91,7 +91,11 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                             ? intl.formatDisplayName(currentSettings.region, {
                                 type: 'region',
                                 fallback: 'none',
-                              }) ?? currentSettings.region
+                              }) ??
+                              regions?.find(
+                                (region) =>
+                                  region.iso_3166_1 === currentSettings.region
+                              )?.english_name
                             : intl.formatMessage(messages.regionDefault),
                         })
                       : intl.formatMessage(messages.regionDefault)}
@@ -157,7 +161,12 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                                       type: 'region',
                                       fallback: 'none',
                                     }
-                                  ) ?? currentSettings.region
+                                  ) ??
+                                  regions?.find(
+                                    (region) =>
+                                      region.iso_3166_1 ===
+                                      currentSettings.region
+                                  )?.english_name
                                 : intl.formatMessage(messages.regionDefault),
                             })}
                           </span>
