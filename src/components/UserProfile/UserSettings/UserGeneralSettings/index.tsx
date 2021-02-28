@@ -61,6 +61,11 @@ const UserGeneralSettings: React.FC = () => {
     return <Error statusCode={500} />;
   }
 
+  const defaultLanguageNameFallback =
+    languages.find(
+      (language) => language.iso_639_1 === currentSettings.originalLanguage
+    )?.english_name ?? currentSettings.originalLanguage;
+
   return (
     <>
       <div className="mb-6">
@@ -174,7 +179,7 @@ const UserGeneralSettings: React.FC = () => {
                                   type: 'language',
                                   fallback: 'none',
                                 }
-                              ) ?? currentSettings.originalLanguage
+                              ) ?? defaultLanguageNameFallback
                             : intl.formatMessage(
                                 messages.originalLanguageDefault
                               ),
