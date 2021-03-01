@@ -7,7 +7,6 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { Language } from '../../../../../server/lib/settings';
 import useSettings from '../../../../hooks/useSettings';
-import { hasPermission } from '../../../../../server/lib/permissions';
 import { UserType, useUser, Permission } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
 import Badge from '../../../Common/Badge';
@@ -43,7 +42,9 @@ const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
-  const { user, mutate } = useUser({ id: Number(router.query.userId) });
+  const { user, hasPermission, mutate } = useUser({
+    id: Number(router.query.userId),
+  });
   const { currentSettings } = useSettings();
   const { data, error, revalidate } = useSWR<{
     username?: string;
@@ -138,7 +139,7 @@ const UserGeneralSettings: React.FC = () => {
                   <div className="flex items-center max-w-lg">
                     {user?.id === 1
                       ? intl.formatMessage(messages.owner)
-                      : hasPermission(Permission.ADMIN, user?.permissions ?? 0)
+                      : hasPermission(Permission.ADMIN)
                       ? intl.formatMessage(messages.admin)
                       : intl.formatMessage(messages.user)}
                   </div>
