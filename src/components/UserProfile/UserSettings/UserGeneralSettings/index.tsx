@@ -7,7 +7,8 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { Language } from '../../../../../server/lib/settings';
 import useSettings from '../../../../hooks/useSettings';
-import { UserType, useUser } from '../../../../hooks/useUser';
+import { hasPermission } from '../../../../../server/lib/permissions';
+import { UserType, useUser, Permission } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
@@ -19,8 +20,13 @@ const messages = defineMessages({
   displayName: 'Display Name',
   save: 'Save Changes',
   saving: 'Saving…',
+  accounttype: 'Account Type',
   plexuser: 'Plex User',
   localuser: 'Local User',
+  role: 'Role',
+  owner: 'Owner',
+  admin: 'Admin',
+  user: 'User',
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   region: 'Discover Region',
@@ -107,7 +113,9 @@ const UserGeneralSettings: React.FC = () => {
           return (
             <Form className="section">
               <div className="form-row">
-                <div className="text-label">Account Type</div>
+                <div className="text-label">
+                  {intl.formatMessage(messages.accounttype)}
+                </div>
                 <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex items-center max-w-lg">
                     {user?.userType === UserType.PLEX ? (
@@ -119,6 +127,20 @@ const UserGeneralSettings: React.FC = () => {
                         {intl.formatMessage(messages.localuser)}
                       </Badge>
                     )}
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="text-label">
+                  {intl.formatMessage(messages.role)}
+                </div>
+                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                  <div className="flex items-center max-w-lg">
+                    {user?.id === 1
+                      ? intl.formatMessage(messages.owner)
+                      : hasPermission(Permission.ADMIN, user?.permissions ?? 0)
+                      ? intl.formatMessage(messages.admin)
+                      : intl.formatMessage(messages.user)}
                   </div>
                 </div>
               </div>
