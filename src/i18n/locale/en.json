@@ -708,6 +708,8 @@
   "components.UserProfile.UserSettings.UserPasswordChange.newpassword": "New Password",
   "components.UserProfile.UserSettings.UserPasswordChange.nopasswordset": "No Password Set",
   "components.UserProfile.UserSettings.UserPasswordChange.nopasswordsetDescription": "This user account currently does not have a password specifically for {applicationTitle}. Configure a password below to enable this account to sign in as a \"local user.\"",
+  "components.UserProfile.UserSettings.UserPasswordChange.nopermission": "No Permission",
+  "components.UserProfile.UserSettings.UserPasswordChange.nopermissionDescription": "You do not have permission to modify this user's password.",
   "components.UserProfile.UserSettings.UserPasswordChange.password": "Password",
   "components.UserProfile.UserSettings.UserPasswordChange.save": "Save Changes",
   "components.UserProfile.UserSettings.UserPasswordChange.saving": "Saving…",

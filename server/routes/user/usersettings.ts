@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
+import { canMakePermissionsChange } from '.';
 import { User } from '../../entity/User';
 import { UserSettings } from '../../entity/UserSettings';
 import {
@@ -21,6 +22,7 @@ const isOwnProfileOrAdmin = (): Middleware => {
         message: "You do not have permission to view this user's settings.",
       });
     }
+
     next();
   };
   return authMiddleware;
@@ -137,7 +139,19 @@ userSettingsRoutes.post<
     if (req.body.newPassword.length < 8) {
       return next({
         status: 400,
-        message: 'Password must be at least 8 characters',
+        message: 'Password must be at least 8 characters.',
+      });
+    }
+
+    if (
+      (user.id === 1 && req.user?.id !== 1) ||
+      (user.hasPermission(Permission.ADMIN) &&
+        user.id !== req.user?.id &&
+        req.user?.id !== 1)
+    ) {
+      return next({
+        status: 403,
+        message: "You do not have permission to modify this user's password.",
       });
     }
 
@@ -283,13 +297,20 @@ userSettingsRoutes.post<
         return next({ status: 404, message: 'User not found.' });
       }
 
-      if (user.id === 1) {
+      // Only let the owner user modify themselves
+      if (user.id === 1 && req.user?.id !== 1) {
         return next({
-          status: 500,
-          message: 'Permissions for user with ID 1 cannot be modified',
+          status: 403,
+          message: 'You do not have permission to modify this user',
         });
       }
 
+      if (!canMakePermissionsChange(req.body.permissions, req.user)) {
+        return next({
+          status: 403,
+          message: 'You do not have permission to grant this level of access',
+        });
+      }
       user.permissions = req.body.permissions;
 
       await userRepository.save(user);
