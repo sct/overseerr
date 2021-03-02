@@ -33,7 +33,7 @@ const messages = defineMessages({
   nopasswordsetDescription:
     'This user account currently does not have a password specifically for {applicationTitle}.\
     Configure a password below to enable this account to sign in as a "local user."',
-  nopermission: 'No Permission',
+  nopermission: 'Unauthorized',
   nopermissionDescription:
     "You do not have permission to modify this user's password.",
 });
