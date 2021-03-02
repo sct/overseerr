@@ -189,7 +189,19 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   }
 
   if (data.genres.length) {
-    seriesAttributes.push(data.genres.map((g) => g.name).join(', '));
+    seriesAttributes.push(
+      data.genres
+        .map((g) => (
+          <Link href={`/discover/tv/genre/${g.id}`} key={`genre-${g.id}`}>
+            <a className="hover:underline">{g.name}</a>
+          </Link>
+        ))
+        .reduce((prev, curr) => (
+          <>
+            {prev}, {curr}
+          </>
+        ))
+    );
   }
 
   const isComplete =

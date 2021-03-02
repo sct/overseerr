@@ -38,6 +38,7 @@ discoverRoutes.get('/movies', async (req, res) => {
   const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
     language: req.query.language as string,
+    genre: req.query.genre ? Number(req.query.genre) : undefined,
   });
 
   const media = await Media.getRelatedMedia(
@@ -99,6 +100,7 @@ discoverRoutes.get('/tv', async (req, res) => {
   const data = await tmdb.getDiscoverTv({
     page: Number(req.query.page),
     language: req.query.language as string,
+    genre: req.query.genre ? Number(req.query.genre) : undefined,
   });
 
   const media = await Media.getRelatedMedia(

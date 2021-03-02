@@ -3,7 +3,7 @@ import { useSWRInfinite } from 'swr';
 import type { MovieResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
 import { LanguageContext } from '../../context/LanguageContext';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import Header from '../Common/Header';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
@@ -73,9 +73,7 @@ const UpcomingMovies: React.FC = () => {
     <>
       <PageTitle title={intl.formatMessage(messages.upcomingmovies)} />
       <div className="mt-1 mb-5">
-        <Header>
-          <FormattedMessage {...messages.upcomingmovies} />
-        </Header>
+        <Header>{intl.formatMessage(messages.upcomingmovies)}</Header>
       </div>
       <ListView
         items={titles}

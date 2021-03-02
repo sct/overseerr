@@ -381,3 +381,12 @@ export interface TmdbLanguage {
   english_name: string;
   name: string;
 }
+
+export interface TmdbGenresResult {
+  genres: TmdbGenre[];
+}
+
+export interface TmdbGenre {
+  id: number;
+  name: string;
+}

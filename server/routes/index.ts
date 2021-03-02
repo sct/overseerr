@@ -74,6 +74,22 @@ router.get('/languages', isAuthenticated(), async (req, res) => {
   return res.status(200).json(languages);
 });
 
+router.get('/genres/movie', isAuthenticated(), async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const genres = await tmdb.getMovieGenres();
+
+  return res.status(200).json(genres);
+});
+
+router.get('/genres/tv', isAuthenticated(), async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const genres = await tmdb.getTvGenres();
+
+  return res.status(200).json(genres);
+});
+
 router.get('/', (_req, res) => {
   return res.status(200).json({
     api: 'Overseerr API',

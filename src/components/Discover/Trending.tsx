@@ -7,7 +7,7 @@ import type {
 } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
 import { LanguageContext } from '../../context/LanguageContext';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import Header from '../Common/Header';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
@@ -78,9 +78,7 @@ const Trending: React.FC = () => {
     <>
       <PageTitle title={intl.formatMessage(messages.trending)} />
       <div className="mt-1 mb-5">
-        <Header>
-          <FormattedMessage {...messages.trending} />
-        </Header>
+        <Header>{intl.formatMessage(messages.trending)}</Header>
       </div>
       <ListView
         items={titles}
