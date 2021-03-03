@@ -378,7 +378,6 @@ class TheMovieDb extends ExternalAPI {
           page,
           include_adult: includeAdult,
           language,
-          with_release_type: '3|2',
           region: this.region,
           with_original_language: this.originalLanguage,
           'primary_release_date.gte': primaryReleaseDateGte,
@@ -422,7 +421,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDb] Failed to fetch discover tv: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch discover TV: ${e.message}`);
     }
   };
 
