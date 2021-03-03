@@ -72,6 +72,7 @@ const messages = defineMessages({
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark 4K as Available',
   allseasonsmarkedavailable: '* All seasons will be marked as available.',
+  seasons: '{seasonCount} Seasons',
 });
 
 interface TvDetailsProps {
@@ -178,12 +179,21 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     );
   }
 
+  const seasonCount = data.seasons.filter((season) => season.seasonNumber !== 0)
+    .length;
+
+  if (seasonCount) {
+    seriesAttributes.push(
+      intl.formatMessage(messages.seasons, { seasonCount: seasonCount })
+    );
+  }
+
   if (data.genres.length) {
     seriesAttributes.push(data.genres.map((g) => g.name).join(', '));
   }
 
   const isComplete =
-    data.seasons.filter((season) => season.seasonNumber !== 0).length <=
+    seasonCount <=
     (
       data.mediaInfo?.seasons.filter(
         (season) => season.status === MediaStatus.AVAILABLE
@@ -191,7 +201,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     ).length;
 
   const is4kComplete =
-    data.seasons.filter((season) => season.seasonNumber !== 0).length <=
+    seasonCount <=
     (
       data.mediaInfo?.seasons.filter(
         (season) => season.status4k === MediaStatus.AVAILABLE
