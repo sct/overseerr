@@ -25,6 +25,25 @@ docker run -d \
 
 {% endtab %}
 
+
+{% tab title="Compose" %}
+```yaml
+overseerr:
+  image: sctx/overseerr:latest
+  container_name: overseerr
+  restart: unless-stopped
+  hostname: overseerr
+  ports:
+    - 5055:5055
+  environment:
+    - TZ=Asia/Tokyo
+    - LOG_LEVEL=info
+  volumes:
+    - $PWD/config:/app/config/
+```
+
+{% endtab %}
+
 {% tab title="UID/GID" %}
 
 ```text
