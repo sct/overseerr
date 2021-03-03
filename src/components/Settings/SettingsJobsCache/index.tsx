@@ -1,7 +1,12 @@
 import React from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../../Common/LoadingSpinner';
-import { FormattedRelativeTime, defineMessages, useIntl } from 'react-intl';
+import {
+  FormattedRelativeTime,
+  defineMessages,
+  useIntl,
+  MessageDescriptor,
+} from 'react-intl';
 import Button from '../../Common/Button';
 import Table from '../../Common/Table';
 import Spinner from '../../../assets/spinner.svg';
@@ -11,7 +16,7 @@ import Badge from '../../Common/Badge';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
 import { formatBytes } from '../../../utils/numberHelpers';
 
-const messages = defineMessages({
+const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   jobs: 'Jobs',
   jobsDescription:
     'Overseerr performs certain maintenance tasks as regularly-scheduled jobs, but they can also be manually triggered below. Manually running a job will not alter its schedule.',
@@ -35,6 +40,13 @@ const messages = defineMessages({
   cacheksize: 'Key Size',
   cachevsize: 'Value Size',
   flushcache: 'Flush Cache',
+  unknownJob: 'Unknown Job',
+  'plex-recently-added-sync': 'Plex Recently Added Sync',
+  'plex-full-sync': 'Plex Full Library Sync',
+  'radarr-sync': 'Radarr Sync',
+  'sonarr-sync': 'Sonarr Sync',
+  'download-sync': 'Download Sync',
+  'download-sync-reset': 'Download Sync Reset',
 });
 
 interface Job {
@@ -66,7 +78,7 @@ const SettingsJobs: React.FC = () => {
     await axios.post(`/api/v1/settings/jobs/${job.id}/run`);
     addToast(
       intl.formatMessage(messages.jobstarted, {
-        jobname: job.name,
+        jobname: intl.formatMessage(messages[job.id] ?? messages.unknownJob),
       }),
       {
         appearance: 'success',
@@ -78,10 +90,15 @@ const SettingsJobs: React.FC = () => {
 
   const cancelJob = async (job: Job) => {
     await axios.post(`/api/v1/settings/jobs/${job.id}/cancel`);
-    addToast(intl.formatMessage(messages.jobcancelled, { jobname: job.name }), {
-      appearance: 'error',
-      autoDismiss: true,
-    });
+    addToast(
+      intl.formatMessage(messages.jobcancelled, {
+        jobname: intl.formatMessage(messages[job.id] ?? messages.unknownJob),
+      }),
+      {
+        appearance: 'error',
+        autoDismiss: true,
+      }
+    );
     revalidate();
   };
 
@@ -121,7 +138,11 @@ const SettingsJobs: React.FC = () => {
                 <Table.TD>
                   <div className="flex items-center text-sm leading-5 text-white">
                     {job.running && <Spinner className="w-5 h-5 mr-2" />}
-                    <span>{job.name}</span>
+                    <span>
+                      {intl.formatMessage(
+                        messages[job.id] ?? messages.unknownJob
+                      )}
+                    </span>
                   </div>
                 </Table.TD>
                 <Table.TD>
