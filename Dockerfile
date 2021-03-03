@@ -1,4 +1,4 @@
-FROM node:14.15-alpine AS BUILD_IMAGE
+FROM node:14.16-alpine AS BUILD_IMAGE
 
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
@@ -29,7 +29,7 @@ RUN touch config/DOCKER
 RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
 
 
-FROM node:14.15-alpine
+FROM node:14.16-alpine
 
 RUN apk add --no-cache tzdata
 
