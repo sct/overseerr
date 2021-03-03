@@ -390,3 +390,23 @@ export interface TmdbGenre {
   id: number;
   name: string;
 }
+
+export interface TmdbStudio {
+  id: number;
+  name: string;
+  description?: string;
+  headquarters?: string;
+  homepage?: string;
+  logo_path?: string;
+  origin_country?: string;
+  parent_company?: TmdbStudio;
+}
+
+export interface TmdbNetwork {
+  id: number;
+  name: string;
+  headquarters?: string;
+  homepage?: string;
+  logo_path?: string;
+  origin_country?: string;
+}

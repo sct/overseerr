@@ -9,11 +9,15 @@ import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
 import PageTitle from '../Common/PageTitle';
 import { useRouter } from 'next/router';
-import { TmdbGenre } from '../../../server/api/themoviedb/interfaces';
+import {
+  TmdbGenre,
+  TmdbNetwork,
+} from '../../../server/api/themoviedb/interfaces';
 
 const messages = defineMessages({
   discovertv: 'Popular Series',
   genreSeries: '{genre} Series',
+  networkSeries: '{network} Series',
 });
 
 interface SearchResult {
@@ -32,6 +36,10 @@ const DiscoverTv: React.FC = () => {
   const { data: genres } = useSWR<TmdbGenre[]>('/api/v1/genres/tv');
   const genre = genres?.find((g) => g.id === Number(router.query.genreId));
 
+  const { data: network } = useSWR<TmdbNetwork>(
+    `/api/v1/network/${router.query.networkId}`
+  );
+
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
@@ -40,7 +48,7 @@ const DiscoverTv: React.FC = () => {
 
       return `/api/v1/discover/tv?page=${pageIndex + 1}&language=${locale}${
         genre ? `&genre=${genre.id}` : ''
-      }`;
+      }${network ? `&network=${network.id}` : ''}`;
     },
     {
       initialSize: 3,
@@ -79,6 +87,8 @@ const DiscoverTv: React.FC = () => {
 
   const title = genre
     ? intl.formatMessage(messages.genreSeries, { genre: genre.name })
+    : network
+    ? intl.formatMessage(messages.networkSeries, { network: network.name })
     : intl.formatMessage(messages.discovertv);
 
   return (

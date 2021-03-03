@@ -9,11 +9,15 @@ import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
 import PageTitle from '../Common/PageTitle';
 import { useRouter } from 'next/router';
-import { TmdbGenre } from '../../../server/api/themoviedb/interfaces';
+import {
+  TmdbStudio,
+  TmdbGenre,
+} from '../../../server/api/themoviedb/interfaces';
 
 const messages = defineMessages({
   discovermovies: 'Popular Movies',
   genreMovies: '{genre} Movies',
+  studioMovies: '{studio} Movies',
 });
 
 interface SearchResult {
@@ -32,6 +36,10 @@ const DiscoverMovies: React.FC = () => {
   const { data: genres } = useSWR<TmdbGenre[]>('/api/v1/genres/movie');
   const genre = genres?.find((g) => g.id === Number(router.query.genreId));
 
+  const { data: studio } = useSWR<TmdbStudio>(
+    `/api/v1/studio/${router.query.studioId}`
+  );
+
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
@@ -40,7 +48,7 @@ const DiscoverMovies: React.FC = () => {
 
       return `/api/v1/discover/movies?page=${pageIndex + 1}&language=${locale}${
         genre ? `&genre=${genre.id}` : ''
-      }`;
+      }${studio ? `&studio=${studio.id}` : ''}`;
     },
     {
       initialSize: 3,
@@ -80,6 +88,8 @@ const DiscoverMovies: React.FC = () => {
 
   const title = genre
     ? intl.formatMessage(messages.genreMovies, { genre: genre.name })
+    : studio
+    ? intl.formatMessage(messages.studioMovies, { studio: studio.name })
     : intl.formatMessage(messages.discovermovies);
 
   return (

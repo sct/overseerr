@@ -3,11 +3,13 @@ import cacheManager from '../../lib/cache';
 import ExternalAPI from '../externalapi';
 import {
   TmdbCollection,
+  TmdbStudio,
   TmdbExternalIdResponse,
   TmdbGenre,
   TmdbGenresResult,
   TmdbLanguage,
   TmdbMovieDetails,
+  TmdbNetwork,
   TmdbPersonCombinedCredits,
   TmdbPersonDetail,
   TmdbRegion,
@@ -33,6 +35,7 @@ interface DiscoverMovieOptions {
   primaryReleaseDateGte?: string;
   primaryReleaseDateLte?: string;
   genre?: number;
+  studio?: number;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -57,6 +60,7 @@ interface DiscoverTvOptions {
   firstAirDateLte?: string;
   includeEmptyReleaseDate?: boolean;
   genre?: number;
+  network?: number;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -365,6 +369,7 @@ class TheMovieDb extends ExternalAPI {
     primaryReleaseDateGte,
     primaryReleaseDateLte,
     genre,
+    studio,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const data = await this.get<TmdbSearchMovieResponse>('/discover/movie', {
@@ -379,6 +384,7 @@ class TheMovieDb extends ExternalAPI {
           'primary_release_date.gte': primaryReleaseDateGte,
           'primary_release_date.lte': primaryReleaseDateLte,
           with_genres: genre,
+          with_companies: studio,
         },
       });
 
@@ -396,6 +402,7 @@ class TheMovieDb extends ExternalAPI {
     firstAirDateLte,
     includeEmptyReleaseDate = false,
     genre,
+    network,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
@@ -409,6 +416,7 @@ class TheMovieDb extends ExternalAPI {
           with_original_language: this.originalLanguage,
           include_null_first_air_dates: includeEmptyReleaseDate,
           with_genres: genre,
+          with_networks: network,
         },
       });
 
@@ -665,6 +673,26 @@ class TheMovieDb extends ExternalAPI {
       return languages;
     } catch (e) {
       throw new Error(`[TMDb] Failed to fetch langauges: ${e.message}`);
+    }
+  }
+
+  public async getStudio(studioId: number): Promise<TmdbStudio> {
+    try {
+      const data = await this.get<TmdbStudio>(`/company/${studioId}`);
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDb] Failed to fetch movie studio: ${e.message}`);
+    }
+  }
+
+  public async getNetwork(networkId: number): Promise<TmdbNetwork> {
+    try {
+      const data = await this.get<TmdbNetwork>(`/network/${networkId}`);
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDb] Failed to fetch TV network: ${e.message}`);
     }
   }
 

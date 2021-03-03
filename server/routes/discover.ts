@@ -39,6 +39,7 @@ discoverRoutes.get('/movies', async (req, res) => {
     page: Number(req.query.page),
     language: req.query.language as string,
     genre: req.query.genre ? Number(req.query.genre) : undefined,
+    studio: req.query.studio ? Number(req.query.studio) : undefined,
   });
 
   const media = await Media.getRelatedMedia(
@@ -101,6 +102,7 @@ discoverRoutes.get('/tv', async (req, res) => {
     page: Number(req.query.page),
     language: req.query.language as string,
     genre: req.query.genre ? Number(req.query.genre) : undefined,
+    network: req.query.network ? Number(req.query.network) : undefined,
   });
 
   const media = await Media.getRelatedMedia(

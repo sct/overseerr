@@ -672,7 +672,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   {intl.formatMessage(messages.studio)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
-                  {data.productionCompanies[0]?.name}
+                  <Link
+                    href={`/discover/movies/studio/${data.productionCompanies[0].id}`}
+                  >
+                    <a className="hover:underline">
+                      {data.productionCompanies[0].name}
+                    </a>
+                  </Link>
                 </span>
               </div>
             )}

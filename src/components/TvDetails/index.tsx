@@ -696,7 +696,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   {intl.formatMessage(messages.network)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
-                  {data.networks.map((n) => n.name).join(', ')}
+                  {data.networks
+                    .map((n) => (
+                      <Link
+                        href={`/discover/tv/network/${n.id}`}
+                        key={`network-${n.id}`}
+                      >
+                        <a className="hover:underline">{n.name}</a>
+                      </Link>
+                    ))
+                    .reduce((prev, curr) => (
+                      <>
+                        {prev}, {curr}
+                      </>
+                    ))}
                 </span>
               </div>
             )}

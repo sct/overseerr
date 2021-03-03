@@ -3228,6 +3228,11 @@ paths:
           schema:
             type: number
             example: 10751
+        - in: query
+          name: studio
+          schema:
+            type: number
+            example: 2
       responses:
         '200':
           description: Results
@@ -3311,6 +3316,11 @@ paths:
           schema:
             type: number
             example: 18
+        - in: query
+          name: network
+          schema:
+            type: number
+            example: 1
       responses:
         '200':
           description: Results
@@ -4371,6 +4381,46 @@ paths:
                     name:
                       type: string
                       example: English
+  /studio/{studioId}:
+    get:
+      summary: Get movie studio details
+      description: Returns movie studio details in a JSON object.
+      tags:
+        - tmdb
+      parameters:
+        - in: path
+          name: studioId
+          required: true
+          schema:
+            type: number
+            example: 2
+      responses:
+        '200':
+          description: Movie studio details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionCompany'
+  /network/{networkId}:
+    get:
+      summary: Get TV network details
+      description: Returns TV network details in a JSON object.
+      tags:
+        - tmdb
+      parameters:
+        - in: path
+          name: networkId
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        '200':
+          description: TV network details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionCompany'
   /genres/movie:
     get:
       summary: Get list of official TMDb movie genres
