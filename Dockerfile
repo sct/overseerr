@@ -22,12 +22,13 @@ RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
 
 FROM node:14.16-alpine
 
-RUN apk add --no-cache tzdata
+RUN apk add --no-cache tzdata tini
 
 # copy from build image
 COPY --from=BUILD_IMAGE /app /app
 WORKDIR /app
 
-CMD yarn start
+ENTRYPOINT [ "/sbin/tini", "--" ]
+CMD [ "yarn", "start" ]
 
 EXPOSE 5055
