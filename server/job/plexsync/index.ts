@@ -666,7 +666,9 @@ class JobPlexSync {
               isAllStandardSeasons || shouldStayAvailable
                 ? MediaStatus.AVAILABLE
                 : media.seasons.some(
-                    (season) => season.status !== MediaStatus.UNKNOWN
+                    (season) =>
+                      season.status === MediaStatus.PARTIALLY_AVAILABLE ||
+                      season.status === MediaStatus.AVAILABLE
                   )
                 ? MediaStatus.PARTIALLY_AVAILABLE
                 : MediaStatus.UNKNOWN;
@@ -675,7 +677,9 @@ class JobPlexSync {
                 ? MediaStatus.AVAILABLE
                 : this.enable4kShow &&
                   media.seasons.some(
-                    (season) => season.status4k !== MediaStatus.UNKNOWN
+                    (season) =>
+                      season.status4k === MediaStatus.PARTIALLY_AVAILABLE ||
+                      season.status4k === MediaStatus.AVAILABLE
                   )
                 ? MediaStatus.PARTIALLY_AVAILABLE
                 : MediaStatus.UNKNOWN;
@@ -691,7 +695,9 @@ class JobPlexSync {
               status: isAllStandardSeasons
                 ? MediaStatus.AVAILABLE
                 : newSeasons.some(
-                    (season) => season.status !== MediaStatus.UNKNOWN
+                    (season) =>
+                      season.status === MediaStatus.PARTIALLY_AVAILABLE ||
+                      season.status === MediaStatus.AVAILABLE
                   )
                 ? MediaStatus.PARTIALLY_AVAILABLE
                 : MediaStatus.UNKNOWN,
@@ -700,7 +706,9 @@ class JobPlexSync {
                   ? MediaStatus.AVAILABLE
                   : this.enable4kShow &&
                     newSeasons.some(
-                      (season) => season.status4k !== MediaStatus.UNKNOWN
+                      (season) =>
+                        season.status4k === MediaStatus.PARTIALLY_AVAILABLE ||
+                        season.status4k === MediaStatus.AVAILABLE
                     )
                   ? MediaStatus.PARTIALLY_AVAILABLE
                   : MediaStatus.UNKNOWN,

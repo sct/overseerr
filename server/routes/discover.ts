@@ -5,16 +5,35 @@ import Media from '../entity/Media';
 import { isMovie, isPerson } from '../utils/typeHelpers';
 import { MediaType } from '../constants/media';
 import { getSettings } from '../lib/settings';
+import { User } from '../entity/User';
+
+const createTmdbWithRegionLanaguage = (user?: User): TheMovieDb => {
+  const settings = getSettings();
+
+  const region =
+    user?.settings?.region === 'all'
+      ? ''
+      : user?.settings?.region
+      ? user?.settings?.region
+      : settings.main.region;
+
+  const originalLanguage =
+    user?.settings?.originalLanguage === 'all'
+      ? ''
+      : user?.settings?.originalLanguage
+      ? user?.settings?.originalLanguage
+      : settings.main.originalLanguage;
+
+  return new TheMovieDb({
+    region,
+    originalLanguage,
+  });
+};
 
 const discoverRoutes = Router();
 
 discoverRoutes.get('/movies', async (req, res) => {
-  const settings = getSettings();
-  const tmdb = new TheMovieDb({
-    region: req.user?.settings?.region ?? settings.main.region,
-    originalLanguage:
-      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
-  });
+  const tmdb = createTmdbWithRegionLanaguage(req.user);
 
   const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
@@ -41,12 +60,7 @@ discoverRoutes.get('/movies', async (req, res) => {
 });
 
 discoverRoutes.get('/movies/upcoming', async (req, res) => {
-  const settings = getSettings();
-  const tmdb = new TheMovieDb({
-    region: req.user?.settings?.region ?? settings.main.region,
-    originalLanguage:
-      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
-  });
+  const tmdb = createTmdbWithRegionLanaguage(req.user);
 
   const now = new Date();
   const offset = now.getTimezoneOffset();
@@ -80,12 +94,7 @@ discoverRoutes.get('/movies/upcoming', async (req, res) => {
 });
 
 discoverRoutes.get('/tv', async (req, res) => {
-  const settings = getSettings();
-  const tmdb = new TheMovieDb({
-    region: req.user?.settings?.region ?? settings.main.region,
-    originalLanguage:
-      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
-  });
+  const tmdb = createTmdbWithRegionLanaguage(req.user);
 
   const data = await tmdb.getDiscoverTv({
     page: Number(req.query.page),
@@ -112,12 +121,7 @@ discoverRoutes.get('/tv', async (req, res) => {
 });
 
 discoverRoutes.get('/tv/upcoming', async (req, res) => {
-  const settings = getSettings();
-  const tmdb = new TheMovieDb({
-    region: req.user?.settings?.region ?? settings.main.region,
-    originalLanguage:
-      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
-  });
+  const tmdb = createTmdbWithRegionLanaguage(req.user);
 
   const now = new Date();
   const offset = now.getTimezoneOffset();
@@ -151,12 +155,7 @@ discoverRoutes.get('/tv/upcoming', async (req, res) => {
 });
 
 discoverRoutes.get('/trending', async (req, res) => {
-  const settings = getSettings();
-  const tmdb = new TheMovieDb({
-    region: req.user?.settings?.region ?? settings.main.region,
-    originalLanguage:
-      req.user?.settings?.originalLanguage ?? settings.main.originalLanguage,
-  });
+  const tmdb = createTmdbWithRegionLanaguage(req.user);
 
   const data = await tmdb.getAllTrending({
     page: Number(req.query.page),

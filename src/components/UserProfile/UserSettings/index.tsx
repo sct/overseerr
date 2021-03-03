@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Permission, useUser } from '../../../hooks/useUser';
+import { useUser } from '../../../hooks/useUser';
+import { Permission, hasPermission } from '../../../../server/lib/permissions';
 import Error from '../../../pages/_error';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
@@ -28,7 +29,7 @@ interface SettingsRoute {
 const UserSettings: React.FC = ({ children }) => {
   const router = useRouter();
   const settings = useSettings();
-  const { hasPermission } = useUser();
+  const { user: currentUser } = useUser();
   const { user, error } = useUser({ id: Number(router.query.userId) });
   const intl = useIntl();
 
@@ -77,8 +78,14 @@ const UserSettings: React.FC = ({ children }) => {
   }> = ({ children, route, regex, isMobile = false }) => {
     if (
       route === '/settings/password' &&
-      !settings.currentSettings.localLogin &&
-      !hasPermission(Permission.MANAGE_SETTINGS)
+      ((!settings.currentSettings.localLogin &&
+        !hasPermission(
+          Permission.MANAGE_SETTINGS,
+          currentUser?.permissions ?? 0
+        )) ||
+        (currentUser?.id !== 1 &&
+          currentUser?.id !== user?.id &&
+          hasPermission(Permission.ADMIN, user?.permissions ?? 0)))
     ) {
       return null;
     }
@@ -133,6 +140,7 @@ const UserSettings: React.FC = ({ children }) => {
                 route.requiredPermission
                   ? hasPermission(
                       route.requiredPermission,
+                      currentUser?.permissions ?? 0,
                       route.permissionType
                     )
                   : true
@@ -157,6 +165,7 @@ const UserSettings: React.FC = ({ children }) => {
                   route.requiredPermission
                     ? hasPermission(
                         route.requiredPermission,
+                        currentUser?.permissions ?? 0,
                         route.permissionType
                       )
                     : true

@@ -6,7 +6,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { Language } from '../../../../../server/lib/settings';
-import { UserType, useUser } from '../../../../hooks/useUser';
+import useSettings from '../../../../hooks/useSettings';
+import { UserType, useUser, Permission } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
@@ -18,8 +19,13 @@ const messages = defineMessages({
   displayName: 'Display Name',
   save: 'Save Changes',
   saving: 'Saving…',
+  accounttype: 'Account Type',
   plexuser: 'Plex User',
   localuser: 'Local User',
+  role: 'Role',
+  owner: 'Owner',
+  admin: 'Admin',
+  user: 'User',
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   region: 'Discover Region',
@@ -29,13 +35,17 @@ const messages = defineMessages({
   originallanguageTip:
     'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
   originalLanguageDefault: 'All Languages',
+  languageServerDefault: 'Default ({language})',
 });
 
 const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
-  const { user, mutate } = useUser({ id: Number(router.query.userId) });
+  const { user, hasPermission, mutate } = useUser({
+    id: Number(router.query.userId),
+  });
+  const { currentSettings } = useSettings();
   const { data, error, revalidate } = useSWR<{
     username?: string;
     region?: string;
@@ -57,6 +67,11 @@ const UserGeneralSettings: React.FC = () => {
   if (!data || !languages) {
     return <Error statusCode={500} />;
   }
+
+  const defaultLanguageNameFallback =
+    languages.find(
+      (language) => language.iso_639_1 === currentSettings.originalLanguage
+    )?.english_name ?? currentSettings.originalLanguage;
 
   return (
     <>
@@ -99,7 +114,9 @@ const UserGeneralSettings: React.FC = () => {
           return (
             <Form className="section">
               <div className="form-row">
-                <div className="text-label">Account Type</div>
+                <div className="text-label">
+                  {intl.formatMessage(messages.accounttype)}
+                </div>
                 <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex items-center max-w-lg">
                     {user?.userType === UserType.PLEX ? (
@@ -111,6 +128,20 @@ const UserGeneralSettings: React.FC = () => {
                         {intl.formatMessage(messages.localuser)}
                       </Badge>
                     )}
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="text-label">
+                  {intl.formatMessage(messages.role)}
+                </div>
+                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                  <div className="flex items-center max-w-lg">
+                    {user?.id === 1
+                      ? intl.formatMessage(messages.owner)
+                      : hasPermission(Permission.ADMIN)
+                      ? intl.formatMessage(messages.admin)
+                      : intl.formatMessage(messages.user)}
                   </div>
                 </div>
               </div>
@@ -143,6 +174,7 @@ const UserGeneralSettings: React.FC = () => {
                   <RegionSelector
                     name="region"
                     value={values.region ?? ''}
+                    isUserSetting
                     onChange={setFieldValue}
                   />
                 </div>
@@ -162,6 +194,21 @@ const UserGeneralSettings: React.FC = () => {
                       name="originalLanguage"
                     >
                       <option value="">
+                        {intl.formatMessage(messages.languageServerDefault, {
+                          language: currentSettings.originalLanguage
+                            ? intl.formatDisplayName(
+                                currentSettings.originalLanguage,
+                                {
+                                  type: 'language',
+                                  fallback: 'none',
+                                }
+                              ) ?? defaultLanguageNameFallback
+                            : intl.formatMessage(
+                                messages.originalLanguageDefault
+                              ),
+                        })}
+                      </option>
+                      <option value="all">
                         {intl.formatMessage(messages.originalLanguageDefault)}
                       </option>
                       {languages?.map((language) => (

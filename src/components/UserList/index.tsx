@@ -32,13 +32,14 @@ const messages = defineMessages({
     '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex.',
   user: 'User',
   totalrequests: 'Total Requests',
-  usertype: 'User Type',
+  accounttype: 'Account Type',
   role: 'Role',
   created: 'Created',
   lastupdated: 'Last Updated',
   edit: 'Edit',
   bulkedit: 'Bulk Edit',
   delete: 'Delete',
+  owner: 'Owner',
   admin: 'Admin',
   plexuser: 'Plex User',
   deleteuser: 'Delete User',
@@ -472,7 +473,7 @@ const UserList: React.FC = () => {
             </Table.TH>
             <Table.TH>{intl.formatMessage(messages.user)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.usertype)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.accounttype)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.lastupdated)}</Table.TH>
@@ -543,7 +544,9 @@ const UserList: React.FC = () => {
                 )}
               </Table.TD>
               <Table.TD>
-                {hasPermission(Permission.ADMIN, user.permissions)
+                {user.id === 1
+                  ? intl.formatMessage(messages.owner)
+                  : hasPermission(Permission.ADMIN, user.permissions)
                   ? intl.formatMessage(messages.admin)
                   : intl.formatMessage(messages.user)}
               </Table.TD>

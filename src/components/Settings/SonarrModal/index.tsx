@@ -185,7 +185,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
         setIsValidated(true);
         setTestResponse(response.data);
         if (initialLoad.current) {
-          addToast('Sonarr connection established!', {
+          addToast(intl.formatMessage(messages.toastSonarrTestSuccess), {
             appearance: 'success',
             autoDismiss: true,
           });
@@ -193,7 +193,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
       } catch (e) {
         setIsValidated(false);
         if (initialLoad.current) {
-          addToast('Failed to connect to Sonarr server', {
+          addToast(intl.formatMessage(messages.toastSonarrTestFailure), {
             appearance: 'error',
             autoDismiss: true,
           });

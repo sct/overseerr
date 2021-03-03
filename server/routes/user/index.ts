@@ -167,7 +167,10 @@ router.get<{ id: string }, UserRequestsResponse>(
   }
 );
 
-const canMakePermissionsChange = (permissions: number, user?: User) =>
+export const canMakePermissionsChange = (
+  permissions: number,
+  user?: User
+): boolean =>
   // Only let the owner grant admin privileges
   !(hasPermission(Permission.ADMIN, permissions) && user?.id !== 1) ||
   // Only let users with the manage settings permission, grant the same permission

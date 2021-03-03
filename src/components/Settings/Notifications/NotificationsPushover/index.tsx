@@ -24,9 +24,9 @@ const messages = defineMessages({
   test: 'Test',
   settinguppushover: 'Setting Up Pushover Notifications',
   settinguppushoverDescription:
-    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API key below.\
+    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below.\
     (You can use one of our <IconLink>official icons on GitHub</IconLink>.)\
-    You will need also need your user key.',
+    You will also need your user key.',
   notificationtypes: 'Notification Types',
 });
 
