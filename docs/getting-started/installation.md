@@ -31,15 +31,14 @@ docker run -d \
 overseerr:
   image: sctx/overseerr:latest
   container_name: overseerr
-  restart: unless-stopped
-  hostname: overseerr
+  environment:
+    - LOG_LEVEL=info
+    - TZ=Asia/Tokyo
   ports:
     - 5055:5055
-  environment:
-    - TZ=Asia/Tokyo
-    - LOG_LEVEL=info
   volumes:
-    - $PWD/config:/app/config/
+    - /path/to/appdata/config:/app/config
+  restart: unless-stopped
 ```
 
 {% endtab %}
