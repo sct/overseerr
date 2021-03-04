@@ -1,6 +1,7 @@
 import type {
   TmdbMovieDetails,
   TmdbMovieReleaseResult,
+  TmdbProductionCompany,
 } from '../api/themoviedb/interfaces';
 import {
   ProductionCompany,
@@ -79,6 +80,18 @@ export interface MovieDetails {
   plexUrl?: string;
 }
 
+export const mapProductionCompany = (
+  company: TmdbProductionCompany
+): ProductionCompany => ({
+  id: company.id,
+  name: company.name,
+  originCountry: company.origin_country,
+  description: company.description,
+  headquarters: company.headquarters,
+  homepage: company.homepage,
+  logoPath: company.logo_path,
+});
+
 export const mapMovieDetails = (
   movie: TmdbMovieDetails,
   media?: Media
@@ -91,12 +104,7 @@ export const mapMovieDetails = (
   originalLanguage: movie.original_language,
   originalTitle: movie.original_title,
   popularity: movie.popularity,
-  productionCompanies: movie.production_companies.map((company) => ({
-    id: company.id,
-    logoPath: company.logo_path,
-    originCountry: company.origin_country,
-    name: company.name,
-  })),
+  productionCompanies: movie.production_companies.map(mapProductionCompany),
   productionCountries: movie.production_countries,
   releaseDate: movie.release_date,
   releases: movie.release_dates,

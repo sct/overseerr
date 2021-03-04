@@ -1,9 +1,9 @@
 import React from 'react';
 import { NextPage } from 'next';
-import DiscoverMovies from '../../../../../components/Discover/DiscoverMovies';
+import DiscoverMovieGenre from '../../../../../components/Discover/DiscoverMovieGenre';
 
 const DiscoverMoviesGenrePage: NextPage = () => {
-  return <DiscoverMovies />;
+  return <DiscoverMovieGenre />;
 };
 
 export default DiscoverMoviesGenrePage;

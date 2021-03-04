@@ -1,9 +1,9 @@
 import React from 'react';
 import { NextPage } from 'next';
-import DiscoverTv from '../../../../../components/Discover/DiscoverTv';
+import DiscoverTvGenre from '../../../../../components/Discover/DiscoverTvGenre';
 
 const DiscoverTvGenrePage: NextPage = () => {
-  return <DiscoverTv />;
+  return <DiscoverTvGenre />;
 };
 
 export default DiscoverTvGenrePage;

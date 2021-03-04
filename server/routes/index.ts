@@ -17,6 +17,8 @@ import { getAppVersion, getCommitTag } from '../utils/appVersion';
 import serviceRoutes from './service';
 import { appDataStatus, appDataPath } from '../utils/appDataVolume';
 import TheMovieDb from '../api/themoviedb';
+import { mapProductionCompany } from '../models/Movie';
+import { mapNetwork } from '../models/Tv';
 
 const router = Router();
 
@@ -79,7 +81,7 @@ router.get<{ id: string }>('/studio/:id', async (req, res) => {
 
   const studio = await tmdb.getStudio(Number(req.params.id));
 
-  return res.status(200).json(studio);
+  return res.status(200).json(mapProductionCompany(studio));
 });
 
 router.get<{ id: string }>('/network/:id', async (req, res) => {
@@ -87,7 +89,7 @@ router.get<{ id: string }>('/network/:id', async (req, res) => {
 
   const network = await tmdb.getNetwork(Number(req.params.id));
 
-  return res.status(200).json(network);
+  return res.status(200).json(mapNetwork(network));
 });
 
 router.get('/genres/movie', isAuthenticated(), async (req, res) => {

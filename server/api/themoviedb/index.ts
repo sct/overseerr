@@ -3,7 +3,6 @@ import cacheManager from '../../lib/cache';
 import ExternalAPI from '../externalapi';
 import {
   TmdbCollection,
-  TmdbStudio,
   TmdbExternalIdResponse,
   TmdbGenre,
   TmdbGenresResult,
@@ -19,6 +18,7 @@ import {
   TmdbSeasonWithEpisodes,
   TmdbTvDetails,
   TmdbUpcomingMoviesResponse,
+  TmdbProductionCompany,
 } from './interfaces';
 
 interface SearchOptions {
@@ -675,9 +675,11 @@ class TheMovieDb extends ExternalAPI {
     }
   }
 
-  public async getStudio(studioId: number): Promise<TmdbStudio> {
+  public async getStudio(studioId: number): Promise<TmdbProductionCompany> {
     try {
-      const data = await this.get<TmdbStudio>(`/company/${studioId}`);
+      const data = await this.get<TmdbProductionCompany>(
+        `/company/${studioId}`
+      );
 
       return data;
     } catch (e) {
@@ -695,11 +697,19 @@ class TheMovieDb extends ExternalAPI {
     }
   }
 
-  public async getMovieGenres(): Promise<TmdbGenre[]> {
+  public async getMovieGenres({
+    language = 'en',
+  }: {
+    language?: string;
+  } = {}): Promise<TmdbGenre[]> {
     try {
       const data = await this.get<TmdbGenresResult>(
         '/genre/movie/list',
-        {},
+        {
+          params: {
+            language,
+          },
+        },
         86400 // 24 hours
       );
 
@@ -711,11 +721,19 @@ class TheMovieDb extends ExternalAPI {
     }
   }
 
-  public async getTvGenres(): Promise<TmdbGenre[]> {
+  public async getTvGenres({
+    language = 'en',
+  }: {
+    language?: string;
+  } = {}): Promise<TmdbGenre[]> {
     try {
       const data = await this.get<TmdbGenresResult>(
         '/genre/tv/list',
-        {},
+        {
+          params: {
+            language,
+          },
+        },
         86400 // 24 hours
       );
 
