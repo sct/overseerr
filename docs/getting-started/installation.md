@@ -25,8 +25,8 @@ docker run -d \
 
 {% endtab %}
 
-
 {% tab title="Compose" %}
+
 ```yaml
 overseerr:
   image: sctx/overseerr:latest
