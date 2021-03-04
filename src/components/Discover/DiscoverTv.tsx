@@ -9,8 +9,6 @@ import Error from '../../pages/_error';
 
 const messages = defineMessages({
   discovertv: 'Popular Series',
-  genreSeries: '{genre} Series',
-  networkSeries: '{network} Series',
 });
 
 const DiscoverTv: React.FC = () => {

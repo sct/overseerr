@@ -9,8 +9,6 @@ import Error from '../../pages/_error';
 
 const messages = defineMessages({
   discovermovies: 'Popular Movies',
-  genreMovies: '{genre} Movies',
-  studioMovies: '{studio} Movies',
 });
 
 const DiscoverMovies: React.FC = () => {
