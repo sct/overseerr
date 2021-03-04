@@ -187,7 +187,19 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   }
 
   if (data.genres.length) {
-    movieAttributes.push(data.genres.map((g) => g.name).join(', '));
+    movieAttributes.push(
+      data.genres
+        .map((g) => (
+          <Link href={`/discover/movies/genre/${g.id}`} key={`genre-${g.id}`}>
+            <a className="hover:underline">{g.name}</a>
+          </Link>
+        ))
+        .reduce((prev, curr) => (
+          <>
+            {prev}, {curr}
+          </>
+        ))
+    );
   }
 
   return (
@@ -660,7 +672,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   {intl.formatMessage(messages.studio)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
-                  {data.productionCompanies[0]?.name}
+                  <Link
+                    href={`/discover/movies/studio/${data.productionCompanies[0].id}`}
+                  >
+                    <a className="hover:underline">
+                      {data.productionCompanies[0].name}
+                    </a>
+                  </Link>
                 </span>
               </div>
             )}
