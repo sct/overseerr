@@ -33,7 +33,9 @@ const DiscoverMovies: React.FC = () => {
   const settings = useSettings();
   const { locale } = useContext(LanguageContext);
 
-  const { data: genres } = useSWR<TmdbGenre[]>('/api/v1/genres/movie');
+  const { data: genres } = useSWR<TmdbGenre[]>(
+    `/api/v1/genres/movie?language=${locale}`
+  );
   const genre = genres?.find((g) => g.id === Number(router.query.genreId));
 
   const { data: studio } = useSWR<TmdbStudio>(

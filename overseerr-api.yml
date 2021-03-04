@@ -4427,6 +4427,12 @@ paths:
       description: Returns a list of genres in a JSON array.
       tags:
         - tmdb
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
       responses:
         '200':
           description: Results
@@ -4449,6 +4455,12 @@ paths:
       description: Returns a list of genres in a JSON array.
       tags:
         - tmdb
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
       responses:
         '200':
           description: Results

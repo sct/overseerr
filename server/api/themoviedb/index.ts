@@ -695,11 +695,15 @@ class TheMovieDb extends ExternalAPI {
     }
   }
 
-  public async getMovieGenres(): Promise<TmdbGenre[]> {
+  public async getMovieGenres(language = 'en'): Promise<TmdbGenre[]> {
     try {
       const data = await this.get<TmdbGenresResult>(
         '/genre/movie/list',
-        {},
+        {
+          params: {
+            language,
+          },
+        },
         86400 // 24 hours
       );
 
@@ -711,11 +715,15 @@ class TheMovieDb extends ExternalAPI {
     }
   }
 
-  public async getTvGenres(): Promise<TmdbGenre[]> {
+  public async getTvGenres(language = 'en'): Promise<TmdbGenre[]> {
     try {
       const data = await this.get<TmdbGenresResult>(
         '/genre/tv/list',
-        {},
+        {
+          params: {
+            language,
+          },
+        },
         86400 // 24 hours
       );
 

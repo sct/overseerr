@@ -93,7 +93,7 @@ router.get<{ id: string }>('/network/:id', async (req, res) => {
 router.get('/genres/movie', isAuthenticated(), async (req, res) => {
   const tmdb = new TheMovieDb();
 
-  const genres = await tmdb.getMovieGenres();
+  const genres = await tmdb.getMovieGenres(req.query.language as string);
 
   return res.status(200).json(genres);
 });
@@ -101,7 +101,7 @@ router.get('/genres/movie', isAuthenticated(), async (req, res) => {
 router.get('/genres/tv', isAuthenticated(), async (req, res) => {
   const tmdb = new TheMovieDb();
 
-  const genres = await tmdb.getTvGenres();
+  const genres = await tmdb.getTvGenres(req.query.language as string);
 
   return res.status(200).json(genres);
 });
