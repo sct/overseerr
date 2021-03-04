@@ -631,7 +631,7 @@
   "components.TvDetails.playonplex": "Play on Plex",
   "components.TvDetails.recommendations": "Recommendations",
   "components.TvDetails.recommendationssubtext": "If you liked {title}, you might also like…",
-  "components.TvDetails.seasons": "{seasonCount} Seasons",
+  "components.TvDetails.seasons": "{seasonCount, plural, one {# Season} other {# Seasons}}",
   "components.TvDetails.showtype": "Show Type",
   "components.TvDetails.similar": "Similar Series",
   "components.TvDetails.similarsubtext": "Other series similar to {title}",
