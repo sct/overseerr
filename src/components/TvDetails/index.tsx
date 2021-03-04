@@ -72,7 +72,7 @@ const messages = defineMessages({
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark 4K as Available',
   allseasonsmarkedavailable: '* All seasons will be marked as available.',
-  seasons: '{seasonCount} Seasons',
+  seasons: '{seasonCount, plural, one {# Season} other {# Seasons}}',
 });
 
 interface TvDetailsProps {
