@@ -27,18 +27,23 @@ docker run -d \
 
 {% tab title="Compose" %}
 
+docker-compose.yml
 ```yaml
-overseerr:
-  image: sctx/overseerr:latest
-  container_name: overseerr
-  environment:
-    - LOG_LEVEL=info
-    - TZ=Asia/Tokyo
-  ports:
-    - 5055:5055
-  volumes:
-    - /path/to/appdata/config:/app/config
-  restart: unless-stopped
+---
+version: "3"
+
+services:
+  overseerr:
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    environment:
+      - LOG_LEVEL=info
+      - TZ=Asia/Tokyo
+    ports:
+      - 5055:5055
+    volumes:
+      - /path/to/appdata/config:/app/config
+    restart: unless-stopped
 ```
 
 {% endtab %}
