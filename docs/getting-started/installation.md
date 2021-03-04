@@ -27,7 +27,8 @@ docker run -d \
 
 {% tab title="Compose" %}
 
-docker-compose.yml
+**docker-compose.yml:**
+
 ```yaml
 ---
 version: "3"
