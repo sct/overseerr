@@ -136,7 +136,9 @@ class TelegramAgent
 
       if (
         payload.notifyUser.settings?.enableNotifications &&
-        payload.notifyUser.settings?.telegramChatId
+        payload.notifyUser.settings?.telegramChatId &&
+        payload.notifyUser.settings?.telegramChatId !==
+          this.getSettings().options.chatId
       ) {
         await axios.post(endpoint, {
           text: this.buildMessage(type, payload),
