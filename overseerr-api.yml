@@ -574,6 +574,19 @@ components:
           type: string
         name:
           type: string
+    Network:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        logoPath:
+          type: string
+          nullable: true
+        originCountry:
+          type: string
+        name:
+          type: string
     RelatedVideo:
       type: object
       properties:
@@ -3223,6 +3236,16 @@ paths:
           schema:
             type: string
             example: en
+        - in: query
+          name: genre
+          schema:
+            type: number
+            example: 18
+        - in: query
+          name: studio
+          schema:
+            type: number
+            example: 1
       responses:
         '200':
           description: Results
@@ -3240,6 +3263,100 @@ paths:
                   totalResults:
                     type: number
                     example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieResult'
+  /discover/movies/genre/{genreId}:
+    get:
+      summary: Discover movies by genre
+      description: Returns a list of movies based on the provided genre ID in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: genreId
+          required: true
+          schema:
+            type: string
+            example: '1'
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  genre:
+                    $ref: '#/components/schemas/Genre'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieResult'
+  /discover/movies/studio/{studioId}:
+    get:
+      summary: Discover movies by studio
+      description: Returns a list of movies based on the provided studio ID in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: studioId
+          required: true
+          schema:
+            type: string
+            example: '1'
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  studio:
+                    $ref: '#/components/schemas/ProductionCompany'
                   results:
                     type: array
                     items:
@@ -3301,6 +3418,16 @@ paths:
           schema:
             type: string
             example: en
+        - in: query
+          name: genre
+          schema:
+            type: number
+            example: 18
+        - in: query
+          name: network
+          schema:
+            type: number
+            example: 1
       responses:
         '200':
           description: Results
@@ -3318,6 +3445,100 @@ paths:
                   totalResults:
                     type: number
                     example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TvResult'
+  /discover/tv/genre/{genreId}:
+    get:
+      summary: Discover TV shows by genre
+      description: Returns a list of TV shows based on the provided genre ID in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: genreId
+          required: true
+          schema:
+            type: string
+            example: '1'
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  genre:
+                    $ref: '#/components/schemas/Genre'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TvResult'
+  /discover/tv/network/{networkId}:
+    get:
+      summary: Discover TV shows by network
+      description: Returns a list of TV shows based on the provided network ID in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: networkId
+          required: true
+          schema:
+            type: string
+            example: '1'
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  network:
+                    $ref: '#/components/schemas/Network'
                   results:
                     type: array
                     items:
@@ -4326,14 +4547,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  iso_3166_1:
-                    type: string
-                    example: US
-                  english_name:
-                    type: string
-                    example: United States of America
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iso_3166_1:
+                      type: string
+                      example: US
+                    english_name:
+                      type: string
+                      example: United States of America
   /languages:
     get:
       summary: Languages supported by TMDb
@@ -4346,17 +4569,103 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  iso_639_1:
-                    type: string
-                    example: en
-                  english_name:
-                    type: string
-                    example: English
-                  name:
-                    type: string
-                    example: English
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iso_639_1:
+                      type: string
+                      example: en
+                    english_name:
+                      type: string
+                      example: English
+                    name:
+                      type: string
+                      example: English
+  /studio/{studioId}:
+    get:
+      summary: Get movie studio details
+      description: Returns movie studio details in a JSON object.
+      tags:
+        - tmdb
+      parameters:
+        - in: path
+          name: studioId
+          required: true
+          schema:
+            type: number
+            example: 2
+      responses:
+        '200':
+          description: Movie studio details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionCompany'
+  /network/{networkId}:
+    get:
+      summary: Get TV network details
+      description: Returns TV network details in a JSON object.
+      tags:
+        - tmdb
+      parameters:
+        - in: path
+          name: networkId
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        '200':
+          description: TV network details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionCompany'
+  /genres/movie:
+    get:
+      summary: Get list of official TMDb movie genres
+      description: Returns a list of genres in a JSON array.
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 10751
+                    name:
+                      type: string
+                      example: Family
+  /genres/tv:
+    get:
+      summary: Get list of official TMDb movie genres
+      description: Returns a list of genres in a JSON array.
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 18
+                    name:
+                      type: string
+                      example: Drama
 
 security:
   - cookieAuth: []
