@@ -3223,6 +3223,16 @@ paths:
           schema:
             type: string
             example: en
+        - in: query
+          name: genre
+          schema:
+            type: number
+            example: 10751
+        - in: query
+          name: studio
+          schema:
+            type: number
+            example: 2
       responses:
         '200':
           description: Results
@@ -3301,6 +3311,16 @@ paths:
           schema:
             type: string
             example: en
+        - in: query
+          name: genre
+          schema:
+            type: number
+            example: 18
+        - in: query
+          name: network
+          schema:
+            type: number
+            example: 1
       responses:
         '200':
           description: Results
@@ -4326,14 +4346,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  iso_3166_1:
-                    type: string
-                    example: US
-                  english_name:
-                    type: string
-                    example: United States of America
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iso_3166_1:
+                      type: string
+                      example: US
+                    english_name:
+                      type: string
+                      example: United States of America
   /languages:
     get:
       summary: Languages supported by TMDb
@@ -4346,17 +4368,103 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  iso_639_1:
-                    type: string
-                    example: en
-                  english_name:
-                    type: string
-                    example: English
-                  name:
-                    type: string
-                    example: English
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iso_639_1:
+                      type: string
+                      example: en
+                    english_name:
+                      type: string
+                      example: English
+                    name:
+                      type: string
+                      example: English
+  /studio/{studioId}:
+    get:
+      summary: Get movie studio details
+      description: Returns movie studio details in a JSON object.
+      tags:
+        - tmdb
+      parameters:
+        - in: path
+          name: studioId
+          required: true
+          schema:
+            type: number
+            example: 2
+      responses:
+        '200':
+          description: Movie studio details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionCompany'
+  /network/{networkId}:
+    get:
+      summary: Get TV network details
+      description: Returns TV network details in a JSON object.
+      tags:
+        - tmdb
+      parameters:
+        - in: path
+          name: networkId
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        '200':
+          description: TV network details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionCompany'
+  /genres/movie:
+    get:
+      summary: Get list of official TMDb movie genres
+      description: Returns a list of genres in a JSON array.
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 10751
+                    name:
+                      type: string
+                      example: Family
+  /genres/tv:
+    get:
+      summary: Get list of official TMDb movie genres
+      description: Returns a list of genres in a JSON array.
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 18
+                    name:
+                      type: string
+                      example: Drama
 
 security:
   - cookieAuth: []

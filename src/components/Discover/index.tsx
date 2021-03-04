@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
 import Slider from '../Slider';
 import Link from 'next/link';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
 import RequestCard from '../RequestCard';
@@ -42,9 +42,7 @@ const Discover: React.FC = () => {
       <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
           <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-            <span>
-              <FormattedMessage {...messages.recentlyAdded} />
-            </span>
+            <span>{intl.formatMessage(messages.recentlyAdded)}</span>
           </div>
         </div>
       </div>
@@ -64,9 +62,7 @@ const Discover: React.FC = () => {
         <div className="flex-1 min-w-0">
           <Link href="/requests">
             <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-              <span>
-                <FormattedMessage {...messages.recentrequests} />
-              </span>
+              <span>{intl.formatMessage(messages.recentrequests)}</span>
               <svg
                 className="w-6 h-6 ml-2"
                 fill="none"

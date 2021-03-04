@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useSWRInfinite } from 'swr';
 import type { TvResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
 import Header from '../Common/Header';
 import useSettings from '../../hooks/useSettings';
@@ -73,9 +73,7 @@ const DiscoverTvUpcoming: React.FC = () => {
     <>
       <PageTitle title={intl.formatMessage(messages.upcomingtv)} />
       <div className="mt-1 mb-5">
-        <Header>
-          <FormattedMessage {...messages.upcomingtv} />
-        </Header>
+        <Header>{intl.formatMessage(messages.upcomingtv)}</Header>
       </div>
       <ListView
         items={titles}

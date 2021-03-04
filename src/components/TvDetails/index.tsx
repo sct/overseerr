@@ -189,7 +189,19 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   }
 
   if (data.genres.length) {
-    seriesAttributes.push(data.genres.map((g) => g.name).join(', '));
+    seriesAttributes.push(
+      data.genres
+        .map((g) => (
+          <Link href={`/discover/tv/genre/${g.id}`} key={`genre-${g.id}`}>
+            <a className="hover:underline">{g.name}</a>
+          </Link>
+        ))
+        .reduce((prev, curr) => (
+          <>
+            {prev}, {curr}
+          </>
+        ))
+    );
   }
 
   const isComplete =
@@ -684,7 +696,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   {intl.formatMessage(messages.network)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
-                  {data.networks.map((n) => n.name).join(', ')}
+                  {data.networks
+                    .map((n) => (
+                      <Link
+                        href={`/discover/tv/network/${n.id}`}
+                        key={`network-${n.id}`}
+                      >
+                        <a className="hover:underline">{n.name}</a>
+                      </Link>
+                    ))
+                    .reduce((prev, curr) => (
+                      <>
+                        {prev}, {curr}
+                      </>
+                    ))}
                 </span>
               </div>
             )}

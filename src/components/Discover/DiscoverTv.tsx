@@ -1,16 +1,23 @@
 import React, { useContext } from 'react';
-import { useSWRInfinite } from 'swr';
+import useSWR, { useSWRInfinite } from 'swr';
 import type { TvResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import { LanguageContext } from '../../context/LanguageContext';
 import Header from '../Common/Header';
 import useSettings from '../../hooks/useSettings';
 import { MediaStatus } from '../../../server/constants/media';
 import PageTitle from '../Common/PageTitle';
+import { useRouter } from 'next/router';
+import {
+  TmdbGenre,
+  TmdbNetwork,
+} from '../../../server/api/themoviedb/interfaces';
 
 const messages = defineMessages({
   discovertv: 'Popular Series',
+  genreSeries: '{genre} Series',
+  networkSeries: '{network} Series',
 });
 
 interface SearchResult {
@@ -21,16 +28,27 @@ interface SearchResult {
 }
 
 const DiscoverTv: React.FC = () => {
+  const router = useRouter();
   const intl = useIntl();
   const settings = useSettings();
   const { locale } = useContext(LanguageContext);
+
+  const { data: genres } = useSWR<TmdbGenre[]>('/api/v1/genres/tv');
+  const genre = genres?.find((g) => g.id === Number(router.query.genreId));
+
+  const { data: network } = useSWR<TmdbNetwork>(
+    `/api/v1/network/${router.query.networkId}`
+  );
+
   const { data, error, size, setSize } = useSWRInfinite<SearchResult>(
     (pageIndex: number, previousPageData: SearchResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
         return null;
       }
 
-      return `/api/v1/discover/tv?page=${pageIndex + 1}&language=${locale}`;
+      return `/api/v1/discover/tv?page=${pageIndex + 1}&language=${locale}${
+        genre ? `&genre=${genre.id}` : ''
+      }${network ? `&network=${network.id}` : ''}`;
     },
     {
       initialSize: 3,
@@ -67,13 +85,17 @@ const DiscoverTv: React.FC = () => {
   const isReachingEnd =
     isEmpty || (data && data[data.length - 1]?.results.length < 20);
 
+  const title = genre
+    ? intl.formatMessage(messages.genreSeries, { genre: genre.name })
+    : network
+    ? intl.formatMessage(messages.networkSeries, { network: network.name })
+    : intl.formatMessage(messages.discovertv);
+
   return (
     <>
-      <PageTitle title={intl.formatMessage(messages.discovertv)} />
+      <PageTitle title={title} />
       <div className="mt-1 mb-5">
-        <Header>
-          <FormattedMessage {...messages.discovertv} />
-        </Header>
+        <Header>{title}</Header>
       </div>
       <ListView
         items={titles}

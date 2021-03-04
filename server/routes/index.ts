@@ -74,6 +74,38 @@ router.get('/languages', isAuthenticated(), async (req, res) => {
   return res.status(200).json(languages);
 });
 
+router.get<{ id: string }>('/studio/:id', async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const studio = await tmdb.getStudio(Number(req.params.id));
+
+  return res.status(200).json(studio);
+});
+
+router.get<{ id: string }>('/network/:id', async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const network = await tmdb.getNetwork(Number(req.params.id));
+
+  return res.status(200).json(network);
+});
+
+router.get('/genres/movie', isAuthenticated(), async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const genres = await tmdb.getMovieGenres();
+
+  return res.status(200).json(genres);
+});
+
+router.get('/genres/tv', isAuthenticated(), async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const genres = await tmdb.getTvGenres();
+
+  return res.status(200).json(genres);
+});
+
 router.get('/', (_req, res) => {
   return res.status(200).json({
     api: 'Overseerr API',
