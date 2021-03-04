@@ -1716,13 +1716,13 @@ paths:
                   $ref: '#/components/schemas/PlexLibrary'
   /settings/plex/sync:
     get:
-      summary: Get status of full Plex library sync
-      description: Returns sync progress in a JSON array.
+      summary: Get status of full Plex library scan
+      description: Returns scan progress in a JSON array.
       tags:
         - settings
       responses:
         '200':
-          description: Status of Plex sync
+          description: Status of Plex scan
           content:
             application/json:
               schema:
@@ -1744,8 +1744,8 @@ paths:
                     items:
                       $ref: '#/components/schemas/PlexLibrary'
     post:
-      summary: Start full Plex library sync
-      description: Runs a full Plex library sync and returns the progress in a JSON array.
+      summary: Start full Plex library scan
+      description: Runs a full Plex library scan and returns the progress in a JSON array.
       tags:
         - settings
       requestBody:
@@ -1762,7 +1762,7 @@ paths:
                   example: false
       responses:
         '200':
-          description: Status of Plex sync
+          description: Status of Plex scan
           content:
             application/json:
               schema:

@@ -32,7 +32,7 @@ class JobRadarrSync {
     const settings = getSettings();
     const sessionId = uuid();
     this.sessionId = sessionId;
-    this.log('Radarr sync starting', 'info', { sessionId });
+    this.log('Radarr scan starting', 'info', { sessionId });
 
     try {
       this.running = true;
@@ -75,7 +75,7 @@ class JobRadarrSync {
         }
       }
 
-      this.log('Radarr sync complete', 'info');
+      this.log('Radarr scan complete', 'info');
     } catch (e) {
       this.log('Something went wrong.', 'error', { errorMessage: e.message });
     } finally {
@@ -241,7 +241,7 @@ class JobRadarrSync {
     level: 'info' | 'error' | 'debug' | 'warn' = 'debug',
     optional?: Record<string, unknown>
   ): void {
-    logger[level](message, { label: 'Radarr Sync', ...optional });
+    logger[level](message, { label: 'Radarr Scan', ...optional });
   }
 }
 

@@ -52,7 +52,7 @@ const messages = defineMessages({
   testFirstRootFolders: 'Test connection to load root folders',
   loadinglanguageprofiles: 'Loading language profiles…',
   testFirstLanguageProfiles: 'Test connection to load language profiles',
-  syncEnabled: 'Enable Sync',
+  syncEnabled: 'Enable Scan',
   externalUrl: 'External URL',
   externalUrlPlaceholder: 'External URL pointing to your Sonarr server',
   preventSearch: 'Disable Auto-Search',

@@ -41,12 +41,12 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   cachevsize: 'Value Size',
   flushcache: 'Flush Cache',
   unknownJob: 'Unknown Job',
-  'plex-recently-added-sync': 'Plex Recently Added Sync',
-  'plex-full-sync': 'Plex Full Library Sync',
-  'radarr-sync': 'Radarr Sync',
-  'sonarr-sync': 'Sonarr Sync',
-  'download-sync': 'Download Sync',
-  'download-sync-reset': 'Download Sync Reset',
+  'plex-recently-added-scan': 'Plex Recently Added Scan',
+  'plex-full-scan': 'Plex Full Library Scan',
+  'radarr-scan': 'Radarr Scan',
+  'sonarr-scan': 'Sonarr Scan',
+  'download-scan': 'Download Scan',
+  'download-scan-reset': 'Download Scan Reset',
 });
 
 interface Job {
