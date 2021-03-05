@@ -20,14 +20,12 @@ const messages = defineMessages({
     'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your Discord user account',
   validationDiscordId: 'You must provide a valid Discord user ID',
   telegramChatId: 'Telegram Chat ID',
-  telegramChatIdTip:
-    'The Chat ID can be aquired by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat.',
+  telegramChatIdTip: 'Add <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat',
   telegramChatIdTipLong:
-    'Start a chat by clicking <TelegramBotLink>here</TelegramBotLink>.\
-    Then get the group Chat ID by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to that chat and send /my_id to the chat',
-  sendSilently: 'Send Silently',
-  sendSilentlyDescription: 'Send telegram notifications silently',
-  validationTelegramChatId: 'You must provide a valid Telegram Chat ID',
+    '<TelegramBotLink>Start a chat</TelegramBotLink>, add <GetIdBotLink>@get_id_bot</GetIdBotLink>, and issue the <code>/my_id</code> command',
+  sendSilently: 'Send Telegram Messages Silently',
+  sendSilentlyDescription: 'Send notifications with no sound',
+  validationTelegramChatId: 'You must provide a valid Telegram chat ID',
   save: 'Save Changes',
   saving: 'Saving…',
   plexuser: 'Plex User',
@@ -47,10 +45,10 @@ const UserNotificationSettings: React.FC = () => {
 
   const UserNotificationSettingsSchema = Yup.object().shape({
     discordId: Yup.string()
-      .optional()
+      .nullable()
       .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
     telegramChatId: Yup.string()
-      .optional()
+      .nullable()
       .matches(
         /^[-]?\d+$/,
         intl.formatMessage(messages.validationTelegramChatId)
@@ -183,6 +181,9 @@ const UserNotificationSettings: React.FC = () => {
                                 {msg}
                               </a>
                             );
+                          },
+                          code: function code(msg) {
+                            return <code>{msg}</code>;
                           },
                         })
                       : intl.formatMessage(messages.telegramChatIdTip, {
