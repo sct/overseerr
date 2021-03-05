@@ -165,6 +165,7 @@
   "components.RequestButton.viewrequest4k": "View 4K Request",
   "components.RequestCard.all": "All",
   "components.RequestCard.seasons": "Seasons",
+  "components.RequestCard.status": "Status",
   "components.RequestList.RequestItem.all": "All",
   "components.RequestList.RequestItem.areyousure": "Are you sure?",
   "components.RequestList.RequestItem.failedretry": "Something went wrong while retrying the request.",

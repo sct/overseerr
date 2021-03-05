@@ -54,6 +54,10 @@ ul.cardList > li {
   @apply max-w-2xl mt-1 text-sm leading-5 text-gray-500;
 }
 
+img.avatar-sm {
+  @apply w-5 mr-1 pr-0.5 rounded-full;
+}
+
 .card-field {
   @apply flex items-center my-0.5 sm:my-1 text-sm;
 }

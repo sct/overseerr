@@ -5,7 +5,10 @@ import type { TvDetails } from '../../../server/models/Tv';
 import type { MovieDetails } from '../../../server/models/Movie';
 import useSWR from 'swr';
 import { LanguageContext } from '../../context/LanguageContext';
-import { MediaRequestStatus } from '../../../server/constants/media';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+} from '../../../server/constants/media';
 import Badge from '../Common/Badge';
 import { useUser, Permission } from '../../hooks/useUser';
 import axios from 'axios';
@@ -17,6 +20,7 @@ import globalMessages from '../../i18n/globalMessages';
 import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
+  status: 'Status',
   seasons: 'Seasons',
   all: 'All',
 });
@@ -116,8 +120,8 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             <a className="flex items-center group">
               <img
                 src={requestData.requestedBy.avatar}
-                alt=""
-                className="w-5 mr-1 pr-0.5 rounded-full"
+                alt={requestData.requestedBy.displayName}
+                className="avatar-sm"
               />
               <span className="truncate group-hover:underline">
                 {requestData.requestedBy.displayName}
@@ -125,15 +129,23 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             </a>
           </Link>
         </div>
-        {requestData.media.status && (
-          <div className="card-field">
+        <div className="card-field">
+          <span className="card-field-name">
+            {intl.formatMessage(messages.status)}
+          </span>
+          {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
+            MediaStatus.UNKNOWN ||
+          requestData.status === MediaRequestStatus.DECLINED ? (
+            <Badge badgeType="danger">
+              {requestData.status === MediaRequestStatus.DECLINED
+                ? intl.formatMessage(globalMessages.declined)
+                : intl.formatMessage(globalMessages.failed)}
+            </Badge>
+          ) : (
             <StatusBadge
               status={
-                requestData.is4k
-                  ? requestData.media.status4k
-                  : requestData.media.status
+                requestData.media[requestData.is4k ? 'status4k' : 'status']
               }
-              is4k={requestData.is4k}
               inProgress={
                 (
                   requestData.media[
@@ -141,9 +153,10 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   ] ?? []
                 ).length > 0
               }
+              is4k={requestData.is4k}
             />
-          </div>
-        )}
+          )}
+        </div>
         {request.seasons.length > 0 && (
           <div className="card-field">
             <span className="card-field-name">
@@ -218,26 +231,25 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             </div>
           )}
       </div>
-      <div className="flex-shrink-0 w-20 sm:w-28">
-        <Link
-          href={request.type === 'movie' ? '/movie/[movieId]' : '/tv/[tvId]'}
-          as={
-            request.type === 'movie'
-              ? `/movie/${request.media.tmdbId}`
-              : `/tv/${request.media.tmdbId}`
-          }
-        >
+      <Link
+        href={
+          request.type === 'movie'
+            ? `/movie/${requestData.media.tmdbId}`
+            : `/tv/${requestData.media.tmdbId}`
+        }
+      >
+        <a className="flex-shrink-0 w-20 sm:w-28">
           <img
             src={
               title.posterPath
                 ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
                 : '/images/overseerr_poster_not_found.png'
             }
-            alt=""
+            alt={isMovie(title) ? title.title : title.name}
             className="w-20 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md"
           />
-        </Link>
-      </div>
+        </a>
+      </Link>
     </div>
   );
 };
