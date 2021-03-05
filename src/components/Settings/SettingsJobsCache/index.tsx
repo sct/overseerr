@@ -45,8 +45,8 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   'plex-full-scan': 'Plex Full Library Scan',
   'radarr-scan': 'Radarr Scan',
   'sonarr-scan': 'Sonarr Scan',
-  'download-scan': 'Download Scan',
-  'download-scan-reset': 'Download Scan Reset',
+  'download-sync': 'Download Sync',
+  'download-sync-reset': 'Download Sync Reset',
 });
 
 interface Job {

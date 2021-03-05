@@ -73,24 +73,24 @@ export const startJobs = (): void => {
     cancelFn: () => jobSonarrSync.cancel(),
   });
 
-  // Run download scan
+  // Run download sync
   scheduledJobs.push({
-    id: 'download-scan',
-    name: 'Download Scan',
+    id: 'download-sync',
+    name: 'Download Sync',
     type: 'command',
     job: schedule.scheduleJob('0 * * * * *', () => {
-      logger.debug('Starting scheduled job: Download Scan', { label: 'Jobs' });
+      logger.debug('Starting scheduled job: Download Sync', { label: 'Jobs' });
       downloadTracker.updateDownloads();
     }),
   });
 
-  // Reset download scan
+  // Reset download sync
   scheduledJobs.push({
-    id: 'download-scan-reset',
-    name: 'Download Scan Reset',
+    id: 'download-sync-reset',
+    name: 'Download Sync Reset',
     type: 'command',
     job: schedule.scheduleJob('0 0 1 * * *', () => {
-      logger.info('Starting scheduled job: Download Scan Reset', {
+      logger.info('Starting scheduled job: Download Sync Reset', {
         label: 'Jobs',
       });
       downloadTracker.resetDownloadTracker();
