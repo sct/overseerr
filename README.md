@@ -12,7 +12,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-34-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-35-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -141,6 +141,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.douglas-parker.com"><img src="https://avatars.githubusercontent.com/u/18235822?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Douglas Parker</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=douglasparker" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/dancarter"><img src="https://avatars.githubusercontent.com/u/4387516?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Daniel Carter</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=dancarter" title="Code">💻</a></td>
     <td align="center"><a href="https://nuro.dev"><img src="https://avatars.githubusercontent.com/u/4991309?v=4?s=100" width="100px;" alt=""/><br /><sub><b>nuro</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=NuroDev" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/onedr0p"><img src="https://avatars.githubusercontent.com/u/213795?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ᗪєνιη ᗷυнʟ</b></sub></a><br /><a href="#infra-onedr0p" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 
