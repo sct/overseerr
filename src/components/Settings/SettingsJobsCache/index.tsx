@@ -19,7 +19,9 @@ import { formatBytes } from '../../../utils/numberHelpers';
 const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   jobs: 'Jobs',
   jobsDescription:
-    'Overseerr performs certain maintenance tasks as regularly-scheduled jobs, but they can also be manually triggered below. Manually running a job will not alter its schedule.',
+    'Overseerr performs certain maintenance tasks as regularly-scheduled jobs,\
+    but they can also be manually triggered below.\
+    Manually running a job will not alter its schedule.',
   jobname: 'Job Name',
   jobtype: 'Type',
   nextexecution: 'Next Execution',
