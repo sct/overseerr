@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { canMakePermissionsChange } from '.';
 import { User } from '../../entity/User';
+import { getSettings } from '../../lib/settings';
 import { UserSettings } from '../../entity/UserSettings';
 import {
   UserSettingsGeneralResponse,
@@ -198,6 +199,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
     const userRepository = getRepository(User);
+    const settings = getSettings();
 
     try {
       const user = await userRepository.findOne({
@@ -210,7 +212,11 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
 
       return res.status(200).json({
         enableNotifications: user.settings?.enableNotifications ?? true,
+        telegramBotUsername:
+          settings?.notifications.agents.telegram.options.botUsername,
         discordId: user.settings?.discordId,
+        telegramChatId: user.settings?.telegramChatId,
+        telegramSendSilently: user?.settings?.telegramSendSilently,
       });
     } catch (e) {
       next({ status: 500, message: e.message });
@@ -239,10 +245,14 @@ userSettingsRoutes.post<
         user: req.user,
         enableNotifications: req.body.enableNotifications,
         discordId: req.body.discordId,
+        telegramChatId: req.body.telegramChatId,
+        telegramSendSilently: req.body.telegramSendSilently,
       });
     } else {
       user.settings.enableNotifications = req.body.enableNotifications;
       user.settings.discordId = req.body.discordId;
+      user.settings.telegramChatId = req.body.telegramChatId;
+      user.settings.telegramSendSilently = req.body.telegramSendSilently;
     }
 
     userRepository.save(user);
@@ -250,6 +260,8 @@ userSettingsRoutes.post<
     return res.status(200).json({
       enableNotifications: user.settings.enableNotifications,
       discordId: user.settings.discordId,
+      telegramChatId: user.settings.telegramChatId,
+      telegramSendSilently: user.settings.telegramSendSilently,
     });
   } catch (e) {
     next({ status: 500, message: e.message });

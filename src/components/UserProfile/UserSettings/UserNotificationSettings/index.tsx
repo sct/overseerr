@@ -19,6 +19,15 @@ const messages = defineMessages({
   discordIdTip:
     'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your Discord user account',
   validationDiscordId: 'You must provide a valid Discord user ID',
+  telegramChatId: 'Telegram Chat ID',
+  telegramChatIdTip:
+    'The Chat ID can be aquired by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat.',
+  telegramChatIdTipLong:
+    'Start a chat by clicking <TelegramBotLink>here</TelegramBotLink>.\
+    Then get the group Chat ID by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to that chat and send /my_id to the chat',
+  sendSilently: 'Send Silently',
+  sendSilentlyDescription: 'Send telegram notifications silently',
+  validationTelegramChatId: 'You must provide a valid Telegram Chat ID',
   save: 'Save Changes',
   saving: 'Saving…',
   plexuser: 'Plex User',
@@ -40,6 +49,12 @@ const UserNotificationSettings: React.FC = () => {
     discordId: Yup.string()
       .optional()
       .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
+    telegramChatId: Yup.string()
+      .optional()
+      .matches(
+        /^[-]?\d+$/,
+        intl.formatMessage(messages.validationTelegramChatId)
+      ),
   });
 
   if (!data && !error) {
@@ -61,6 +76,8 @@ const UserNotificationSettings: React.FC = () => {
         initialValues={{
           enableNotifications: data?.enableNotifications,
           discordId: data?.discordId,
+          telegramChatId: data?.telegramChatId,
+          telegramSendSilently: data?.telegramSendSilently,
         }}
         validationSchema={UserNotificationSettingsSchema}
         enableReinitialize
@@ -71,6 +88,8 @@ const UserNotificationSettings: React.FC = () => {
               {
                 enableNotifications: values.enableNotifications,
                 discordId: values.discordId,
+                telegramChatId: values.telegramChatId,
+                telegramSendSilently: values.telegramSendSilently,
               }
             );
 
@@ -133,6 +152,86 @@ const UserNotificationSettings: React.FC = () => {
                   {errors.discordId && touched.discordId && (
                     <div className="error">{errors.discordId}</div>
                   )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="telegramChatId" className="text-label">
+                  <span>{intl.formatMessage(messages.telegramChatId)}</span>
+                  <span className="label-tip">
+                    {data?.telegramBotUsername
+                      ? intl.formatMessage(messages.telegramChatIdTipLong, {
+                          TelegramBotLink: function TelegramBotLink(msg) {
+                            return (
+                              <a
+                                href={`https://telegram.me/${data.telegramBotUsername}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-gray-100 underline transition duration-300 hover:text-white"
+                              >
+                                {msg}
+                              </a>
+                            );
+                          },
+                          GetIdBotLink: function GetIdBotLink(msg) {
+                            return (
+                              <a
+                                href="https://telegram.me/get_id_bot"
+                                className="text-gray-100 underline transition duration-300 hover:text-white"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {msg}
+                              </a>
+                            );
+                          },
+                        })
+                      : intl.formatMessage(messages.telegramChatIdTip, {
+                          GetIdBotLink: function GetIdBotLink(msg) {
+                            return (
+                              <a
+                                href="https://telegram.me/get_id_bot"
+                                className="text-gray-100 underline transition duration-300 hover:text-white"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {msg}
+                              </a>
+                            );
+                          },
+                        })}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
+                    <Field
+                      id="telegramChatId"
+                      name="telegramChatId"
+                      type="text"
+                    />
+                  </div>
+                  {errors.telegramChatId && touched.telegramChatId && (
+                    <div className="error">{errors.telegramChatId}</div>
+                  )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label
+                  htmlFor="telegramSendSilently"
+                  className="checkbox-label"
+                >
+                  <span className="mr-2">
+                    {intl.formatMessage(messages.sendSilently)}
+                  </span>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.sendSilentlyDescription)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <Field
+                    type="checkbox"
+                    id="telegramSendSilently"
+                    name="telegramSendSilently"
+                  />
                 </div>
               </div>
               <div className="actions">
