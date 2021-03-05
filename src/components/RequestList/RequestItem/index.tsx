@@ -200,7 +200,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               )}
             </div>
           </div>
-          <div className="z-10 flex flex-col justify-between w-full mt-4 text-sm sm:mt-0 lg:flex-1 lg:ml-4">
+          <div className="z-10 flex flex-col justify-between w-full mt-4 text-sm sm:mt-0 lg:flex-1 sm:ml-2">
             <div className="card-field">
               <span className="card-field-name">
                 {intl.formatMessage(messages.status)}
