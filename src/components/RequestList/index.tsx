@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
 import LoadingSpinner from '../Common/LoadingSpinner';
@@ -10,10 +10,6 @@ import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   requests: 'Requests',
-  mediaInfo: 'Media Info',
-  status: 'Status',
-  requestedAt: 'Requested At',
-  modifiedBy: 'Last Modified By',
   showingresults:
     'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
   resultsperpage: 'Display {pageSize} results per page',
@@ -45,6 +41,32 @@ const RequestList: React.FC = () => {
       pageIndex * currentPageSize
     }&filter=${currentFilter}&sort=${currentSort}`
   );
+
+  // Restore last set filter values on component mount
+  useEffect(() => {
+    const filterString = window.localStorage.getItem('rl-filter-settings');
+
+    if (filterString) {
+      const filterSettings = JSON.parse(filterString);
+
+      setCurrentFilter(filterSettings.currentFilter);
+      setCurrentSort(filterSettings.currentSort);
+      setCurrentPageSize(filterSettings.currentPageSize);
+    }
+  }, []);
+
+  // Set fitler values to local storage any time they are changed
+  useEffect(() => {
+    window.localStorage.setItem(
+      'rl-filter-settings',
+      JSON.stringify({
+        currentFilter,
+        currentSort,
+        currentPageSize,
+      })
+    );
+  }, [currentFilter, currentSort, currentPageSize]);
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -151,7 +173,7 @@ const RequestList: React.FC = () => {
       })}
 
       {data.results.length === 0 && (
-        <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
+        <div className="flex flex-col items-center justify-center w-screen p-6 text-white lg:w-full">
           <span className="text-base">
             {intl.formatMessage(messages.noresults)}
           </span>

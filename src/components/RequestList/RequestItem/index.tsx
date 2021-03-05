@@ -26,6 +26,9 @@ const messages = defineMessages({
   notavailable: 'N/A',
   failedretry: 'Something went wrong while retrying the request.',
   areyousure: 'Are you sure?',
+  status: 'Status',
+  requested: 'Requested',
+  modifiedby: 'Modified By',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -98,7 +101,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title && !error) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-md sm:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-md lg:h-32 animate-pulse"
         ref={ref}
       />
     );
@@ -107,7 +110,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title || !requestData) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-md sm:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-md lg:h-32 animate-pulse"
         ref={ref}
       />
     );
@@ -127,14 +130,14 @@ const RequestItem: React.FC<RequestItemProps> = ({
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex flex-col justify-between w-full p-4 overflow-hidden text-white bg-gray-800 rounded-md shadow-md sm:h-32 sm:flex-row">
+      <div className="relative flex flex-col justify-between w-full p-4 overflow-hidden text-white bg-gray-800 rounded-md shadow-md lg:h-32 lg:flex-row">
         <div
-          className="absolute inset-0 z-0 w-full bg-center bg-cover sm:w-1/2"
+          className="absolute inset-0 z-0 w-full bg-center bg-cover lg:w-2/3"
           style={{
             backgroundImage: `linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
           }}
         />
-        <div className="relative z-10 flex w-full sm:w-2/5">
+        <div className="relative z-10 flex w-full lg:w-60 xl:w-80 2xl:w-96">
           <img
             src={
               title.posterPath
@@ -142,9 +145,9 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 : '/images/overseerr_poster_not_found.png'
             }
             alt=""
-            className="h-full transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer w-14 sm:w-auto sm:h-full transform-gpu hover:scale-105 hover:shadow-md"
+            className="h-full transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer w-14 lg:w-auto lg:h-full transform-gpu hover:scale-105 hover:shadow-md"
           />
-          <div className="flex flex-col justify-start ml-2 overflow-hidden sm:justify-center sm:ml-4">
+          <div className="flex flex-col justify-start ml-2 overflow-hidden lg:justify-center lg:ml-4">
             <Link
               href={
                 requestData.type === 'movie'
@@ -152,7 +155,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   : `/tv/${requestData.media.tmdbId}`
               }
             >
-              <a className="min-w-0 mr-2 text-lg text-white truncate sm:text-xl hover:underline">
+              <a className="min-w-0 mr-2 text-lg text-white truncate lg:text-xl hover:underline">
                 {isMovie(title) ? title.title : title.name}
               </a>
             </Link>
@@ -182,9 +185,9 @@ const RequestItem: React.FC<RequestItemProps> = ({
             )}
           </div>
         </div>
-        <div className="z-10 flex flex-col justify-between w-full mt-4 text-sm sm:mt-0 sm:w-2/5">
+        <div className="z-10 flex flex-col justify-between w-full mt-4 text-sm lg:mt-0 lg:flex-1 lg:ml-4">
           <div className="flex items-center my-1">
-            <span className="mr-2">Status</span>
+            <span className="mr-2">{intl.formatMessage(messages.status)}</span>
             {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
               MediaStatus.UNKNOWN ||
             requestData.status === MediaRequestStatus.DECLINED ? (
@@ -206,17 +209,23 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   ).length > 0
                 }
                 is4k={requestData.is4k}
+                plexUrl={requestData.media.plexUrl}
+                plexUrl4k={requestData.media.plexUrl4k}
               />
             )}
           </div>
           <div className="flex items-center my-1">
-            <span className="mr-2">Requested</span>
+            <span className="mr-2">
+              {intl.formatMessage(messages.requested)}
+            </span>
             <span className="text-gray-300">
               {intl.formatDate(requestData.createdAt)}
             </span>
           </div>
           <div className="flex items-center my-1">
-            <span className="mr-2">Modified By</span>
+            <span className="mr-2">
+              {intl.formatMessage(messages.modifiedby)}
+            </span>
             <span>
               {requestData.modifiedBy ? (
                 <span className="text-sm text-gray-300">
@@ -248,13 +257,13 @@ const RequestItem: React.FC<RequestItemProps> = ({
             </span>
           </div>
         </div>
-        <div className="z-10 flex flex-row justify-between w-full mt-4 flex-nowrap sm:flex-col sm:mt-0 sm:items-end sm:w-1/5">
+        <div className="z-10 flex flex-row justify-between w-full mt-4 flex-nowrap lg:flex-col lg:mt-0 lg:items-end lg:justify-around lg:w-64">
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
               <Button
-                className="w-full mr-2 sm:mr-0"
+                className="w-full mr-2 lg:mr-0"
                 buttonType="primary"
                 disabled={isRetrying}
                 onClick={() => retryRequest()}
@@ -326,7 +335,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                       </span>
                     </Button>
                   </span>
-                  <span className="w-full mr-2 sm:mr-0">
+                  <span className="w-full mr-2 lg:mr-0">
                     <Button
                       className="w-full"
                       buttonType="danger"
