@@ -49,9 +49,9 @@ const DiscoverMovieStudio: React.FC = () => {
           {firstResultData?.studio.logoPath ? (
             <div className="flex justify-center mb-6">
               <img
-                src={`//image.tmdb.org/t/p/w780_filter(negate,000,666)/${firstResultData?.studio.logoPath}`}
-                alt=""
-                className="text-white max-h-24 sm:max-h-32"
+                src={`//image.tmdb.org/t/p/w780_filter(negate,000,666)/${firstResultData.studio.logoPath}`}
+                alt={firstResultData.studio.name}
+                className="max-h-24 sm:max-h-32"
               />
             </div>
           ) : (
