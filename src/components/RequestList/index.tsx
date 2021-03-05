@@ -4,7 +4,6 @@ import type { RequestResultsResponse } from '../../../server/interfaces/api/requ
 import LoadingSpinner from '../Common/LoadingSpinner';
 import RequestItem from './RequestItem';
 import Header from '../Common/Header';
-import Table from '../Common/Table';
 import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
@@ -60,7 +59,7 @@ const RequestList: React.FC = () => {
   return (
     <>
       <PageTitle title={intl.formatMessage(messages.requests)} />
-      <div className="flex flex-col justify-between lg:items-end lg:flex-row">
+      <div className="flex flex-col justify-between mb-4 lg:items-end lg:flex-row">
         <Header>{intl.formatMessage(messages.requests)}</Header>
         <div className="flex flex-col flex-grow mt-2 sm:flex-row lg:flex-grow-0">
           <div className="flex flex-grow mb-2 sm:mb-0 sm:mr-2 lg:flex-grow-0">
@@ -140,114 +139,96 @@ const RequestList: React.FC = () => {
           </div>
         </div>
       </div>
-      <Table>
-        <thead>
-          <tr>
-            <Table.TH>{intl.formatMessage(messages.mediaInfo)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.status)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.requestedAt)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.modifiedBy)}</Table.TH>
-            <Table.TH></Table.TH>
-          </tr>
-        </thead>
-        <Table.TBody>
-          {data.results.map((request) => {
-            return (
-              <RequestItem
-                request={request}
-                key={`request-list-${request.id}`}
-                revalidateList={() => revalidate()}
-              />
-            );
-          })}
+      {data.results.map((request) => {
+        return (
+          <div className="py-2" key={`request-list-${request.id}`}>
+            <RequestItem
+              request={request}
+              revalidateList={() => revalidate()}
+            />
+          </div>
+        );
+      })}
 
-          {data.results.length === 0 && (
-            <tr className="relative h-24 p-2 text-white">
-              <Table.TD colSpan={6} noPadding>
-                <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
-                  <span className="text-base">
-                    {intl.formatMessage(messages.noresults)}
-                  </span>
-                  {currentFilter !== 'all' && (
-                    <div className="mt-4">
-                      <Button
-                        buttonSize="sm"
-                        buttonType="primary"
-                        onClick={() => setCurrentFilter('all')}
-                      >
-                        {intl.formatMessage(messages.showallrequests)}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </Table.TD>
-            </tr>
-          )}
-          <tr className="bg-gray-700">
-            <Table.TD colSpan={6} noPadding>
-              <nav
-                className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
-                aria-label="Pagination"
+      {data.results.length === 0 && (
+        <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
+          <span className="text-base">
+            {intl.formatMessage(messages.noresults)}
+          </span>
+          {currentFilter !== 'all' && (
+            <div className="mt-4">
+              <Button
+                buttonSize="sm"
+                buttonType="primary"
+                onClick={() => setCurrentFilter('all')}
               >
-                <div className="hidden lg:flex lg:flex-1">
-                  <p className="text-sm">
-                    {data.results.length > 0 &&
-                      intl.formatMessage(messages.showingresults, {
-                        from: pageIndex * currentPageSize + 1,
-                        to:
-                          data.results.length < currentPageSize
-                            ? pageIndex * currentPageSize + data.results.length
-                            : (pageIndex + 1) * currentPageSize,
-                        total: data.pageInfo.results,
-                        strong: function strong(msg) {
-                          return <span className="font-medium">{msg}</span>;
-                        },
-                      })}
-                  </p>
-                </div>
-                <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
-                  <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
-                    {intl.formatMessage(messages.resultsperpage, {
-                      pageSize: (
-                        <select
-                          id="pageSize"
-                          name="pageSize"
-                          onChange={(e) => {
-                            setPageIndex(0);
-                            setCurrentPageSize(Number(e.target.value));
-                          }}
-                          value={currentPageSize}
-                          className="inline short"
-                        >
-                          <option value="5">5</option>
-                          <option value="10">10</option>
-                          <option value="25">25</option>
-                          <option value="50">50</option>
-                          <option value="100">100</option>
-                        </select>
-                      ),
-                    })}
-                  </span>
-                </div>
-                <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
-                  <Button
-                    disabled={!hasPrevPage}
-                    onClick={() => setPageIndex((current) => current - 1)}
+                {intl.formatMessage(messages.showallrequests)}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+      <div className="mt-6 text-white">
+        <nav
+          className="flex flex-col items-center py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
+          aria-label="Pagination"
+        >
+          <div className="hidden lg:flex lg:flex-1">
+            <p className="text-sm">
+              {data.results.length > 0 &&
+                intl.formatMessage(messages.showingresults, {
+                  from: pageIndex * currentPageSize + 1,
+                  to:
+                    data.results.length < currentPageSize
+                      ? pageIndex * currentPageSize + data.results.length
+                      : (pageIndex + 1) * currentPageSize,
+                  total: data.pageInfo.results,
+                  strong: function strong(msg) {
+                    return <span className="font-medium">{msg}</span>;
+                  },
+                })}
+            </p>
+          </div>
+          <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
+            <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
+              {intl.formatMessage(messages.resultsperpage, {
+                pageSize: (
+                  <select
+                    id="pageSize"
+                    name="pageSize"
+                    onChange={(e) => {
+                      setPageIndex(0);
+                      setCurrentPageSize(Number(e.target.value));
+                    }}
+                    value={currentPageSize}
+                    className="inline short"
                   >
-                    {intl.formatMessage(messages.previous)}
-                  </Button>
-                  <Button
-                    disabled={!hasNextPage}
-                    onClick={() => setPageIndex((current) => current + 1)}
-                  >
-                    {intl.formatMessage(messages.next)}
-                  </Button>
-                </div>
-              </nav>
-            </Table.TD>
-          </tr>
-        </Table.TBody>
-      </Table>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                ),
+              })}
+            </span>
+          </div>
+          <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
+            <Button
+              disabled={!hasPrevPage}
+              onClick={() => setPageIndex((current) => current - 1)}
+            >
+              {intl.formatMessage(messages.previous)}
+            </Button>
+            <Button
+              disabled={!hasNextPage}
+              onClick={() => setPageIndex((current) => current + 1)}
+            >
+              {intl.formatMessage(messages.next)}
+            </Button>
+          </div>
+        </nav>
+      </div>
     </>
   );
 };
