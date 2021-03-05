@@ -100,32 +100,33 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
       }}
     >
       <div className="flex flex-col flex-1 min-w-0 pr-4">
-        <h2 className="overflow-hidden text-base text-white cursor-pointer sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
-          <Link
-            href={request.type === 'movie' ? '/movie/[movieId]' : '/tv/[tvId]'}
-            as={
-              request.type === 'movie'
-                ? `/movie/${request.media.tmdbId}`
-                : `/tv/${request.media.tmdbId}`
-            }
-          >
+        <Link
+          href={
+            request.type === 'movie'
+              ? `/movie/${requestData.media.tmdbId}`
+              : `/tv/${requestData.media.tmdbId}`
+          }
+        >
+          <a className="overflow-hidden text-base text-white cursor-pointer sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
             {isMovie(title) ? title.title : title.name}
-          </Link>
-        </h2>
-        <Link href={`/users/${requestData.requestedBy.id}`}>
-          <a className="flex items-center group">
-            <img
-              src={requestData.requestedBy.avatar}
-              alt=""
-              className="w-4 mr-1 rounded-full sm:mr-2 sm:w-5"
-            />
-            <span className="text-xs truncate sm:text-sm group-hover:underline">
-              {requestData.requestedBy.displayName}
-            </span>
           </a>
         </Link>
+        <div className="card-field">
+          <Link href={`/users/${requestData.requestedBy.id}`}>
+            <a className="flex items-center group">
+              <img
+                src={requestData.requestedBy.avatar}
+                alt=""
+                className="w-5 mr-1 pr-0.5 rounded-full"
+              />
+              <span className="truncate group-hover:underline">
+                {requestData.requestedBy.displayName}
+              </span>
+            </a>
+          </Link>
+        </div>
         {requestData.media.status && (
-          <div className="mt-1 sm:mt-2">
+          <div className="card-field">
             <StatusBadge
               status={
                 requestData.is4k
@@ -144,8 +145,10 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
           </div>
         )}
         {request.seasons.length > 0 && (
-          <div className="items-center hidden mt-2 text-sm sm:flex">
-            <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
+          <div className="card-field">
+            <span className="card-field-name">
+              {intl.formatMessage(messages.seasons)}
+            </span>
             {!isMovie(title) &&
             title.seasons.filter((season) => season.seasonNumber !== 0)
               .length === request.seasons.length ? (
