@@ -5,7 +5,10 @@ import type { TvDetails } from '../../../server/models/Tv';
 import type { MovieDetails } from '../../../server/models/Movie';
 import useSWR from 'swr';
 import { LanguageContext } from '../../context/LanguageContext';
-import { MediaRequestStatus } from '../../../server/constants/media';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+} from '../../../server/constants/media';
 import Badge from '../Common/Badge';
 import { useUser, Permission } from '../../hooks/useUser';
 import axios from 'axios';
@@ -17,6 +20,7 @@ import globalMessages from '../../i18n/globalMessages';
 import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
+  status: 'Status',
   seasons: 'Seasons',
   all: 'All',
 });
@@ -100,39 +104,48 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
       }}
     >
       <div className="flex flex-col flex-1 min-w-0 pr-4">
-        <h2 className="overflow-hidden text-base text-white cursor-pointer sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
-          <Link
-            href={request.type === 'movie' ? '/movie/[movieId]' : '/tv/[tvId]'}
-            as={
-              request.type === 'movie'
-                ? `/movie/${request.media.tmdbId}`
-                : `/tv/${request.media.tmdbId}`
-            }
-          >
+        <Link
+          href={
+            request.type === 'movie'
+              ? `/movie/${requestData.media.tmdbId}`
+              : `/tv/${requestData.media.tmdbId}`
+          }
+        >
+          <a className="overflow-hidden text-base text-white cursor-pointer sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
             {isMovie(title) ? title.title : title.name}
-          </Link>
-        </h2>
-        <Link href={`/users/${requestData.requestedBy.id}`}>
-          <a className="flex items-center group">
-            <img
-              src={requestData.requestedBy.avatar}
-              alt=""
-              className="w-4 mr-1 rounded-full sm:mr-2 sm:w-5"
-            />
-            <span className="text-xs truncate sm:text-sm group-hover:underline">
-              {requestData.requestedBy.displayName}
-            </span>
           </a>
         </Link>
-        {requestData.media.status && (
-          <div className="mt-1 sm:mt-2">
+        <div className="card-field">
+          <Link href={`/users/${requestData.requestedBy.id}`}>
+            <a className="flex items-center group">
+              <img
+                src={requestData.requestedBy.avatar}
+                alt=""
+                className="avatar-sm"
+              />
+              <span className="truncate group-hover:underline">
+                {requestData.requestedBy.displayName}
+              </span>
+            </a>
+          </Link>
+        </div>
+        <div className="card-field">
+          <span className="card-field-name">
+            {intl.formatMessage(messages.status)}
+          </span>
+          {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
+            MediaStatus.UNKNOWN ||
+          requestData.status === MediaRequestStatus.DECLINED ? (
+            <Badge badgeType="danger">
+              {requestData.status === MediaRequestStatus.DECLINED
+                ? intl.formatMessage(globalMessages.declined)
+                : intl.formatMessage(globalMessages.failed)}
+            </Badge>
+          ) : (
             <StatusBadge
               status={
-                requestData.is4k
-                  ? requestData.media.status4k
-                  : requestData.media.status
+                requestData.media[requestData.is4k ? 'status4k' : 'status']
               }
-              is4k={requestData.is4k}
               inProgress={
                 (
                   requestData.media[
@@ -140,12 +153,15 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   ] ?? []
                 ).length > 0
               }
+              is4k={requestData.is4k}
             />
-          </div>
-        )}
+          )}
+        </div>
         {request.seasons.length > 0 && (
-          <div className="items-center hidden mt-2 text-sm sm:flex">
-            <span className="mr-2">{intl.formatMessage(messages.seasons)}</span>
+          <div className="card-field">
+            <span className="card-field-name">
+              {intl.formatMessage(messages.seasons)}
+            </span>
             {!isMovie(title) &&
             title.seasons.filter((season) => season.seasonNumber !== 0)
               .length === request.seasons.length ? (
@@ -215,15 +231,14 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             </div>
           )}
       </div>
-      <div className="flex-shrink-0 w-20 sm:w-28">
-        <Link
-          href={request.type === 'movie' ? '/movie/[movieId]' : '/tv/[tvId]'}
-          as={
-            request.type === 'movie'
-              ? `/movie/${request.media.tmdbId}`
-              : `/tv/${request.media.tmdbId}`
-          }
-        >
+      <Link
+        href={
+          request.type === 'movie'
+            ? `/movie/${requestData.media.tmdbId}`
+            : `/tv/${requestData.media.tmdbId}`
+        }
+      >
+        <a className="flex-shrink-0 w-20 sm:w-28">
           <img
             src={
               title.posterPath
@@ -233,8 +248,8 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             alt=""
             className="w-20 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md"
           />
-        </Link>
-      </div>
+        </a>
+      </Link>
     </div>
   );
 };

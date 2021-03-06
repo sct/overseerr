@@ -23,12 +23,14 @@ import ConfirmButton from '../../Common/ConfirmButton';
 
 const messages = defineMessages({
   seasons: 'Seasons',
+  all: 'All',
   notavailable: 'N/A',
   failedretry: 'Something went wrong while retrying the request.',
   areyousure: 'Are you sure?',
   status: 'Status',
   requested: 'Requested',
-  modifiedby: 'Modified By',
+  modified: 'Modified',
+  modifieduserdate: '{date} by {user}',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -130,114 +132,122 @@ const RequestItem: React.FC<RequestItemProps> = ({
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex flex-col justify-between w-full p-4 overflow-hidden text-white bg-gray-800 rounded-md shadow-md lg:h-32 lg:flex-row">
+      <div className="relative flex flex-col justify-between w-full p-4 overflow-hidden text-gray-400 bg-gray-800 rounded-md shadow-md lg:h-32 lg:flex-row">
         <div
           className="absolute inset-0 z-0 w-full bg-center bg-cover lg:w-2/3"
           style={{
             backgroundImage: `linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
           }}
         />
-        <div className="relative z-10 flex w-full lg:w-60 xl:w-80 2xl:w-96">
-          <img
-            src={
-              title.posterPath
-                ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
-                : '/images/overseerr_poster_not_found.png'
-            }
-            alt=""
-            className="h-full transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer w-14 lg:w-auto lg:h-full transform-gpu hover:scale-105 hover:shadow-md"
-          />
-          <div className="flex flex-col justify-start ml-2 overflow-hidden lg:justify-center lg:ml-4">
-            <Link
-              href={
-                requestData.type === 'movie'
-                  ? `/movie/${requestData.media.tmdbId}`
-                  : `/tv/${requestData.media.tmdbId}`
+        <div className="relative flex flex-col justify-between w-full overflow-hidden sm:flex-row">
+          <div className="relative z-10 flex w-full overflow-hidden lg:w-1/2 xl:w-7/12 2xl:w-2/3">
+            <img
+              src={
+                title.posterPath
+                  ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                  : '/images/overseerr_poster_not_found.png'
               }
-            >
-              <a className="min-w-0 mr-2 text-lg text-white truncate lg:text-xl hover:underline">
-                {isMovie(title) ? title.title : title.name}
-              </a>
-            </Link>
-            <Link href={`/users/${requestData.requestedBy.id}`}>
-              <a className="flex items-center mt-2">
-                <img
-                  src={requestData.requestedBy.avatar}
-                  alt=""
-                  className="w-5 mr-2 rounded-full"
-                />
-                <span className="text-sm hover:underline">
-                  {requestData.requestedBy.displayName}
-                </span>
-              </a>
-            </Link>
-            {requestData.seasons.length > 0 && (
-              <div className="flex items-center mt-2 text-sm">
-                <span className="mr-2">
-                  {intl.formatMessage(messages.seasons)}
-                </span>
-                {requestData.seasons.map((season) => (
-                  <span key={`season-${season.id}`} className="mr-2">
-                    <Badge>{season.seasonNumber}</Badge>
-                  </span>
-                ))}
+              alt=""
+              className="h-full transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer w-14 lg:w-auto lg:h-full transform-gpu hover:scale-105 hover:shadow-md"
+            />
+            <div className="flex flex-col justify-center ml-2 overflow-hidden lg:ml-4">
+              <Link
+                href={
+                  requestData.type === 'movie'
+                    ? `/movie/${requestData.media.tmdbId}`
+                    : `/tv/${requestData.media.tmdbId}`
+                }
+              >
+                <a className="min-w-0 mr-2 text-lg text-white truncate lg:text-xl hover:underline">
+                  {isMovie(title) ? title.title : title.name}
+                </a>
+              </Link>
+              <div className="card-field">
+                <Link href={`/users/${requestData.requestedBy.id}`}>
+                  <a className="flex items-center group">
+                    <img
+                      src={requestData.requestedBy.avatar}
+                      alt=""
+                      className="avatar-sm"
+                    />
+                    <span className="text-sm text-gray-300 truncate group-hover:underline">
+                      {requestData.requestedBy.displayName}
+                    </span>
+                  </a>
+                </Link>
               </div>
-            )}
+              {request.seasons.length > 0 && (
+                <div className="card-field">
+                  <span className="card-field-name">
+                    {intl.formatMessage(messages.seasons)}
+                  </span>
+                  {!isMovie(title) &&
+                  title.seasons.filter((season) => season.seasonNumber !== 0)
+                    .length === request.seasons.length ? (
+                    <span className="mr-2 uppercase">
+                      <Badge>{intl.formatMessage(messages.all)}</Badge>
+                    </span>
+                  ) : (
+                    <div className="flex overflow-x-scroll hide-scrollbar flex-nowrap">
+                      {request.seasons.map((season) => (
+                        <span key={`season-${season.id}`} className="mr-2">
+                          <Badge>{season.seasonNumber}</Badge>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="z-10 flex flex-col justify-between w-full mt-4 text-sm lg:mt-0 lg:flex-1 lg:ml-4">
-          <div className="flex items-center my-1">
-            <span className="mr-2">{intl.formatMessage(messages.status)}</span>
-            {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
-              MediaStatus.UNKNOWN ||
-            requestData.status === MediaRequestStatus.DECLINED ? (
-              <Badge badgeType="danger">
-                {requestData.status === MediaRequestStatus.DECLINED
-                  ? intl.formatMessage(globalMessages.declined)
-                  : intl.formatMessage(globalMessages.failed)}
-              </Badge>
-            ) : (
-              <StatusBadge
-                status={
-                  requestData.media[requestData.is4k ? 'status4k' : 'status']
-                }
-                inProgress={
-                  (
-                    requestData.media[
-                      requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
-                    ] ?? []
-                  ).length > 0
-                }
-                is4k={requestData.is4k}
-                plexUrl={requestData.media.plexUrl}
-                plexUrl4k={requestData.media.plexUrl4k}
-              />
-            )}
-          </div>
-          <div className="flex items-center my-1">
-            <span className="mr-2">
-              {intl.formatMessage(messages.requested)}
-            </span>
-            <span className="text-gray-300">
-              {intl.formatDate(requestData.createdAt)}
-            </span>
-          </div>
-          <div className="flex items-center my-1">
-            <span className="mr-2">
-              {intl.formatMessage(messages.modifiedby)}
-            </span>
-            <span>
-              {requestData.modifiedBy ? (
-                <span className="text-sm text-gray-300">
-                  <Link href={`/users/${requestData.modifiedBy.id}`}>
-                    <a className="flex items-center">
-                      <img
-                        src={requestData.modifiedBy.avatar}
-                        alt=""
-                        className="w-5 mr-2 rounded-full"
-                      />
-                      <span className="text-sm">
-                        {requestData.modifiedBy.displayName} (
+          <div className="z-10 flex flex-col justify-between w-full mt-4 text-sm sm:mt-0 lg:flex-1 sm:ml-2">
+            <div className="card-field">
+              <span className="card-field-name">
+                {intl.formatMessage(messages.status)}
+              </span>
+              {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
+                MediaStatus.UNKNOWN ||
+              requestData.status === MediaRequestStatus.DECLINED ? (
+                <Badge badgeType="danger">
+                  {requestData.status === MediaRequestStatus.DECLINED
+                    ? intl.formatMessage(globalMessages.declined)
+                    : intl.formatMessage(globalMessages.failed)}
+                </Badge>
+              ) : (
+                <StatusBadge
+                  status={
+                    requestData.media[requestData.is4k ? 'status4k' : 'status']
+                  }
+                  inProgress={
+                    (
+                      requestData.media[
+                        requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
+                      ] ?? []
+                    ).length > 0
+                  }
+                  is4k={requestData.is4k}
+                  plexUrl={requestData.media.plexUrl}
+                  plexUrl4k={requestData.media.plexUrl4k}
+                />
+              )}
+            </div>
+            <div className="card-field">
+              <span className="card-field-name">
+                {intl.formatMessage(messages.requested)}
+              </span>
+              <span className="text-gray-300">
+                {intl.formatDate(requestData.createdAt)}
+              </span>
+            </div>
+            <div className="card-field">
+              <span className="card-field-name">
+                {intl.formatMessage(messages.modified)}
+              </span>
+              <span className="truncate">
+                {requestData.modifiedBy ? (
+                  <span className="flex text-sm text-gray-300">
+                    {intl.formatMessage(messages.modifieduserdate, {
+                      date: (
                         <FormattedRelativeTime
                           value={Math.floor(
                             (new Date(requestData.updatedAt).getTime() -
@@ -246,15 +256,28 @@ const RequestItem: React.FC<RequestItemProps> = ({
                           )}
                           updateIntervalInSeconds={1}
                         />
-                        )
-                      </span>
-                    </a>
-                  </Link>
-                </span>
-              ) : (
-                <span className="text-sm text-gray-300">N/A</span>
-              )}
-            </span>
+                      ),
+                      user: (
+                        <Link href={`/users/${requestData.modifiedBy.id}`}>
+                          <a className="flex items-center group">
+                            <img
+                              src={requestData.modifiedBy.avatar}
+                              alt=""
+                              className="ml-1 pl-0.5 avatar-sm"
+                            />
+                            <span className="text-sm truncate group-hover:underline">
+                              {requestData.modifiedBy.displayName}
+                            </span>
+                          </a>
+                        </Link>
+                      ),
+                    })}
+                  </span>
+                ) : (
+                  <span className="text-sm text-gray-300">N/A</span>
+                )}
+              </span>
+            </div>
           </div>
         </div>
         <div className="z-10 flex flex-row justify-between w-full mt-4 flex-nowrap lg:flex-col lg:mt-0 lg:items-end lg:justify-around lg:w-64">

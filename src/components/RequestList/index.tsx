@@ -173,14 +173,13 @@ const RequestList: React.FC = () => {
       })}
 
       {data.results.length === 0 && (
-        <div className="flex flex-col items-center justify-center w-screen p-6 text-white lg:w-full">
-          <span className="text-base">
+        <div className="flex flex-col items-center justify-center w-full py-24 text-white">
+          <span className="text-2xl text-gray-400">
             {intl.formatMessage(messages.noresults)}
           </span>
           {currentFilter !== 'all' && (
             <div className="mt-4">
               <Button
-                buttonSize="sm"
                 buttonType="primary"
                 onClick={() => setCurrentFilter('all')}
               >
@@ -190,9 +189,9 @@ const RequestList: React.FC = () => {
           )}
         </div>
       )}
-      <div className="mt-6 text-white">
+      <div className="actions">
         <nav
-          className="flex flex-col items-center py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
+          className="flex flex-col items-center mb-3 space-y-3 sm:space-y-0 sm:flex-row"
           aria-label="Pagination"
         >
           <div className="hidden lg:flex lg:flex-1">
@@ -212,7 +211,7 @@ const RequestList: React.FC = () => {
             </p>
           </div>
           <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
-            <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
+            <span className="items-center -mt-3 text-sm truncate sm:mt-0">
               {intl.formatMessage(messages.resultsperpage, {
                 pageSize: (
                   <select
