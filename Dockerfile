@@ -1,10 +1,19 @@
 FROM node:14.16-alpine AS BUILD_IMAGE
 
+ARG TARGETPLATFORM
+ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
+
 ARG COMMIT_TAG
 ENV COMMIT_TAG=${COMMIT_TAG}
 
 COPY . /app
 WORKDIR /app
+
+RUN \
+  case "${TARGETPLATFORM}" in \
+    'linux/arm64') apk add --no-cache python make g++ ;; \
+    'linux/arm/v7') apk add --no-cache python make g++ ;; \
+  esac
 
 RUN yarn --frozen-lockfile && \
   yarn build
