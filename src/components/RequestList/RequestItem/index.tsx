@@ -147,7 +147,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
                   : '/images/overseerr_poster_not_found.png'
               }
-              alt={isMovie(title) ? title.title : title.name}
+              alt=""
               className="h-full transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer w-14 lg:w-auto lg:h-full transform-gpu hover:scale-105 hover:shadow-md"
             />
             <div className="flex flex-col justify-center ml-2 overflow-hidden lg:ml-4">
@@ -167,7 +167,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   <a className="flex items-center group">
                     <img
                       src={requestData.requestedBy.avatar}
-                      alt={requestData.requestedBy.displayName}
+                      alt=""
                       className="avatar-sm"
                     />
                     <span className="text-sm text-gray-300 truncate group-hover:underline">
@@ -262,7 +262,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                           <a className="flex items-center group">
                             <img
                               src={requestData.modifiedBy.avatar}
-                              alt={requestData.modifiedBy.displayName}
+                              alt=""
                               className="ml-1 pl-0.5 avatar-sm"
                             />
                             <span className="text-sm truncate group-hover:underline">

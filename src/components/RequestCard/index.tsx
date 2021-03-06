@@ -120,7 +120,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             <a className="flex items-center group">
               <img
                 src={requestData.requestedBy.avatar}
-                alt={requestData.requestedBy.displayName}
+                alt=""
                 className="avatar-sm"
               />
               <span className="truncate group-hover:underline">
@@ -245,7 +245,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                 ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
                 : '/images/overseerr_poster_not_found.png'
             }
-            alt={isMovie(title) ? title.title : title.name}
+            alt=""
             className="w-20 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md"
           />
         </a>
