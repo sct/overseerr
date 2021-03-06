@@ -136,7 +136,9 @@ const RequestItem: React.FC<RequestItemProps> = ({
         <div
           className="absolute inset-0 z-0 w-full bg-center bg-cover lg:w-2/3"
           style={{
-            backgroundImage: `linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
+            backgroundImage: title.backdropPath
+              ? `linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`
+              : undefined,
           }}
         />
         <div className="relative flex flex-col justify-between w-full sm:flex-row">

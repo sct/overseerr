@@ -7,6 +7,7 @@ import Header from '../Common/Header';
 import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
+import { useRouter } from 'next/router';
 
 const messages = defineMessages({
   requests: 'Requests',
@@ -30,11 +31,14 @@ type Filter = 'all' | 'pending' | 'approved' | 'processing' | 'available';
 type Sort = 'added' | 'modified';
 
 const RequestList: React.FC = () => {
+  const router = useRouter();
   const intl = useIntl();
-  const [pageIndex, setPageIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState<Filter>('pending');
   const [currentSort, setCurrentSort] = useState<Sort>('added');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
+
+  const page = router.query.page ? Number(router.query.page) : 1;
+  const pageIndex = page - 1;
 
   const { data, error, revalidate } = useSWR<RequestResultsResponse>(
     `/api/v1/request?take=${currentPageSize}&skip=${
@@ -103,8 +107,8 @@ const RequestList: React.FC = () => {
               id="filter"
               name="filter"
               onChange={(e) => {
-                setPageIndex(0);
                 setCurrentFilter(e.target.value as Filter);
+                router.push(router.pathname);
               }}
               value={currentFilter}
               className="rounded-r-only"
@@ -141,12 +145,8 @@ const RequestList: React.FC = () => {
               id="sort"
               name="sort"
               onChange={(e) => {
-                setPageIndex(0);
                 setCurrentSort(e.target.value as Sort);
-              }}
-              onBlur={(e) => {
-                setPageIndex(0);
-                setCurrentSort(e.target.value as Sort);
+                router.push(router.pathname);
               }}
               value={currentSort}
               className="rounded-r-only"
@@ -218,8 +218,10 @@ const RequestList: React.FC = () => {
                     id="pageSize"
                     name="pageSize"
                     onChange={(e) => {
-                      setPageIndex(0);
                       setCurrentPageSize(Number(e.target.value));
+                      router
+                        .push(router.pathname)
+                        .then(() => window.scrollTo(0, 0));
                     }}
                     value={currentPageSize}
                     className="inline short"
@@ -237,13 +239,25 @@ const RequestList: React.FC = () => {
           <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
             <Button
               disabled={!hasPrevPage}
-              onClick={() => setPageIndex((current) => current - 1)}
+              onClick={() =>
+                router
+                  .push(`${router.pathname}?page=${page - 1}`, undefined, {
+                    shallow: true,
+                  })
+                  .then(() => window.scrollTo(0, 0))
+              }
             >
               {intl.formatMessage(messages.previous)}
             </Button>
             <Button
               disabled={!hasNextPage}
-              onClick={() => setPageIndex((current) => current + 1)}
+              onClick={() =>
+                router
+                  .push(`${router.pathname}?page=${page + 1}`, undefined, {
+                    shallow: true,
+                  })
+                  .then(() => window.scrollTo(0, 0))
+              }
             >
               {intl.formatMessage(messages.next)}
             </Button>
