@@ -63,6 +63,7 @@ module.exports = {
     margin: ['first', 'last', 'responsive'],
     boxShadow: ['group-focus'],
     opacity: ['disabled', 'hover', 'group-hover'],
+    scale: ['group-hover'],
     zIndex: ['hover', 'responsive'],
   },
   plugins: [
