@@ -49,8 +49,8 @@ const messages = defineMessages({
   plexlibraries: 'Plex Libraries',
   plexlibrariesDescription:
     'The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.',
-  syncing: 'Syncing',
-  sync: 'Sync Plex Libraries',
+  scanning: 'Scanning…',
+  scan: 'Scan Plex Libraries',
   manualscan: 'Manual Library Scan',
   manualscanDescription:
     "Normally, this will only be run once every 24 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one-time full manual library scan is recommended!",
@@ -563,8 +563,8 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
             />
           </svg>
           {isSyncing
-            ? intl.formatMessage(messages.syncing)
-            : intl.formatMessage(messages.sync)}
+            ? intl.formatMessage(messages.scanning)
+            : intl.formatMessage(messages.scan)}
         </Button>
         <ul className="grid grid-cols-1 gap-5 mt-6 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {data?.libraries.map((library) => (

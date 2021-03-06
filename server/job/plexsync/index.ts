@@ -77,7 +77,7 @@ class JobPlexSync {
 
         if (!metadata.Guid) {
           logger.debug('No Guid metadata for this title. Skipping', {
-            label: 'Plex Sync',
+            label: 'Plex Scan',
             ratingKey: plexitem.ratingKey,
           });
           return;
@@ -794,7 +794,7 @@ class JobPlexSync {
     level: 'info' | 'error' | 'debug' | 'warn' = 'debug',
     optional?: Record<string, unknown>
   ): void {
-    logger[level](message, { label: 'Plex Sync', ...optional });
+    logger[level](message, { label: 'Plex Scan', ...optional });
   }
 
   // checks if any of this.libraries has Hama agent set in Plex
@@ -812,7 +812,7 @@ class JobPlexSync {
     const settings = getSettings();
     const sessionId = uuid();
     this.sessionId = sessionId;
-    logger.info('Plex Sync Starting', { sessionId, label: 'Plex Sync' });
+    logger.info('Plex scan starting', { sessionId, label: 'Plex Scan' });
     try {
       this.running = true;
       const userRepository = getRepository(User);
@@ -822,7 +822,7 @@ class JobPlexSync {
       });
 
       if (!admin) {
-        return this.log('No admin configured. Plex sync skipped.', 'warn');
+        return this.log('No admin configured. Plex scan skipped.', 'warn');
       }
 
       this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
@@ -896,7 +896,7 @@ class JobPlexSync {
       );
     } catch (e) {
       logger.error('Sync interrupted', {
-        label: 'Plex Sync',
+        label: 'Plex Scan',
         errorMessage: e.message,
       });
     } finally {

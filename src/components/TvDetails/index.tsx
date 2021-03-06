@@ -56,7 +56,8 @@ const messages = defineMessages({
   manageModalNoRequests: 'No Requests',
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
-    'This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next sync.',
+    'This will irreversibly remove all data for this TV series, including any requests.\
+    If this item exists in your Plex library, the media information will be recreated during the next scan.',
   approve: 'Approve',
   decline: 'Decline',
   showtype: 'Show Type',

@@ -19,7 +19,9 @@ import { formatBytes } from '../../../utils/numberHelpers';
 const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   jobs: 'Jobs',
   jobsDescription:
-    'Overseerr performs certain maintenance tasks as regularly-scheduled jobs, but they can also be manually triggered below. Manually running a job will not alter its schedule.',
+    'Overseerr performs certain maintenance tasks as regularly-scheduled jobs,\
+    but they can also be manually triggered below.\
+    Manually running a job will not alter its schedule.',
   jobname: 'Job Name',
   jobtype: 'Type',
   nextexecution: 'Next Execution',
@@ -41,10 +43,10 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   cachevsize: 'Value Size',
   flushcache: 'Flush Cache',
   unknownJob: 'Unknown Job',
-  'plex-recently-added-sync': 'Plex Recently Added Sync',
-  'plex-full-sync': 'Plex Full Library Sync',
-  'radarr-sync': 'Radarr Sync',
-  'sonarr-sync': 'Sonarr Sync',
+  'plex-recently-added-scan': 'Plex Recently Added Scan',
+  'plex-full-scan': 'Plex Full Library Scan',
+  'radarr-scan': 'Radarr Scan',
+  'sonarr-scan': 'Sonarr Scan',
   'download-sync': 'Download Sync',
   'download-sync-reset': 'Download Sync Reset',
 });
