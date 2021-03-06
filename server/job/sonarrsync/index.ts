@@ -35,7 +35,7 @@ class JobSonarrSync {
     const settings = getSettings();
     const sessionId = uuid();
     this.sessionId = sessionId;
-    this.log('Sonarr sync starting', 'info', { sessionId });
+    this.log('Sonarr scan starting', 'info', { sessionId });
 
     try {
       this.running = true;
@@ -78,7 +78,7 @@ class JobSonarrSync {
         }
       }
 
-      this.log('Sonarr sync complete', 'info');
+      this.log('Sonarr scan complete', 'info');
     } catch (e) {
       this.log('Something went wrong.', 'error', { errorMessage: e.message });
     } finally {
@@ -374,7 +374,7 @@ class JobSonarrSync {
     level: 'info' | 'error' | 'debug' | 'warn' = 'debug',
     optional?: Record<string, unknown>
   ): void {
-    logger[level](message, { label: 'Sonarr Sync', ...optional });
+    logger[level](message, { label: 'Sonarr Scan', ...optional });
   }
 }
 

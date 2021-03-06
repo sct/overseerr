@@ -54,6 +54,18 @@ ul.cardList > li {
   @apply max-w-2xl mt-1 text-sm leading-5 text-gray-500;
 }
 
+img.avatar-sm {
+  @apply w-5 mr-1 pr-0.5 rounded-full;
+}
+
+.card-field {
+  @apply flex items-center my-0.5 sm:my-1 text-sm;
+}
+
+.card-field-name {
+  @apply mr-2 font-medium;
+}
+
 .section {
   @apply mt-6 mb-10 text-white;
 }
@@ -75,7 +87,7 @@ ul.cardList > li {
 }
 
 .actions {
-  @apply pt-5 mt-8 border-t border-gray-700;
+  @apply pt-5 mt-8 text-white border-t border-gray-700;
 }
 
 input[type='checkbox'] {
@@ -104,7 +116,7 @@ select.rounded-r-only {
 
 input.short,
 select.short {
-  @apply w-20;
+  width: 4.875rem;
 }
 
 .protocol {
