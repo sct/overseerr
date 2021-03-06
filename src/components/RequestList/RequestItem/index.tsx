@@ -139,17 +139,27 @@ const RequestItem: React.FC<RequestItemProps> = ({
             backgroundImage: `linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
           }}
         />
-        <div className="relative flex flex-col justify-between w-full overflow-hidden sm:flex-row">
-          <div className="relative z-10 flex w-full overflow-hidden lg:w-1/2 xl:w-7/12 2xl:w-2/3">
-            <img
-              src={
-                title.posterPath
-                  ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
-                  : '/images/overseerr_poster_not_found.png'
+        <div className="relative flex flex-col justify-between w-full sm:flex-row">
+          <div className="relative z-10 flex items-center w-full lg:w-1/2 xl:w-7/12 2xl:w-2/3">
+            <Link
+              href={
+                requestData.type === 'movie'
+                  ? `/movie/${requestData.media.tmdbId}`
+                  : `/tv/${requestData.media.tmdbId}`
               }
-              alt=""
-              className="h-full transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer w-14 lg:w-auto lg:h-full transform-gpu hover:scale-105 hover:shadow-md"
-            />
+            >
+              <a className="flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md lg:w-14 transform-gpu hover:scale-105">
+                <img
+                  src={
+                    title.posterPath
+                      ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                      : '/images/overseerr_poster_not_found.png'
+                  }
+                  alt=""
+                  className="object-cover"
+                />
+              </a>
+            </Link>
             <div className="flex flex-col justify-center ml-2 overflow-hidden lg:ml-4">
               <Link
                 href={
