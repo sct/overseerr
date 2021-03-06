@@ -15,7 +15,7 @@ RUN \
     'linux/arm/v7') apk add --no-cache python make g++ ;; \
   esac
 
-RUN yarn --frozen-lockfile && \
+RUN yarn --frozen-lockfile --network-timeout 1000000 && \
   yarn build
 
 # remove development dependencies
