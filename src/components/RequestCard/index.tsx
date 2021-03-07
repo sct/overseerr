@@ -111,7 +111,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
               : `/tv/${requestData.media.tmdbId}`
           }
         >
-          <a className="overflow-hidden text-base text-white cursor-pointer sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
+          <a className="pb-0.5 sm:pb-1 overflow-hidden text-base text-white cursor-pointer sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
             {isMovie(title) ? title.title : title.name}
           </a>
         </Link>

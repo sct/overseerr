@@ -132,7 +132,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex flex-col justify-between w-full p-4 overflow-hidden text-gray-400 bg-gray-800 rounded-md shadow-md lg:h-32 lg:flex-row">
+      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 rounded-md shadow-md lg:h-32 lg:flex-row">
         <div
           className="absolute inset-0 z-0 w-full bg-center bg-cover lg:w-2/3"
           style={{
@@ -141,8 +141,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
               : undefined,
           }}
         />
-        <div className="relative flex flex-col justify-between w-full sm:flex-row">
-          <div className="relative z-10 flex items-center w-full lg:w-1/2 xl:w-7/12 2xl:w-2/3">
+        <div className="relative flex flex-col justify-between w-full overflow-hidden sm:flex-row">
+          <div className="relative z-10 flex items-center w-full pl-4 pr-4 overflow-hidden lg:w-1/2 xl:w-7/12 2xl:w-2/3 sm:pr-0">
             <Link
               href={
                 requestData.type === 'movie'
@@ -162,18 +162,20 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 />
               </a>
             </Link>
-            <div className="flex flex-col justify-center ml-2 overflow-hidden lg:ml-4">
-              <Link
-                href={
-                  requestData.type === 'movie'
-                    ? `/movie/${requestData.media.tmdbId}`
-                    : `/tv/${requestData.media.tmdbId}`
-                }
-              >
-                <a className="min-w-0 mr-2 text-lg text-white truncate lg:text-xl hover:underline">
-                  {isMovie(title) ? title.title : title.name}
-                </a>
-              </Link>
+            <div className="flex flex-col justify-center pl-2 overflow-hidden lg:pl-4">
+              <div className="card-field">
+                <Link
+                  href={
+                    requestData.type === 'movie'
+                      ? `/movie/${requestData.media.tmdbId}`
+                      : `/tv/${requestData.media.tmdbId}`
+                  }
+                >
+                  <a className="min-w-0 mr-2 text-lg text-white truncate lg:text-xl hover:underline">
+                    {isMovie(title) ? title.title : title.name}
+                  </a>
+                </Link>
+              </div>
               <div className="card-field">
                 <Link href={`/users/${requestData.requestedBy.id}`}>
                   <a className="flex items-center group">
@@ -212,7 +214,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               )}
             </div>
           </div>
-          <div className="z-10 flex flex-col justify-between w-full mt-4 text-sm sm:mt-0 lg:flex-1 sm:ml-2">
+          <div className="z-10 flex flex-col justify-between w-full pr-4 mt-4 ml-2 text-sm sm:mt-0 lg:flex-1 lg:pr-0">
             <div className="card-field">
               <span className="card-field-name">
                 {intl.formatMessage(messages.status)}
@@ -275,7 +277,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                             <img
                               src={requestData.modifiedBy.avatar}
                               alt=""
-                              className="ml-1 pl-0.5 avatar-sm"
+                              className="ml-1.5 avatar-sm"
                             />
                             <span className="text-sm truncate group-hover:underline">
                               {requestData.modifiedBy.displayName}
@@ -292,7 +294,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             </div>
           </div>
         </div>
-        <div className="z-10 flex flex-row justify-between w-full mt-4 flex-nowrap lg:flex-col lg:mt-0 lg:items-end lg:justify-around lg:w-64">
+        <div className="z-10 flex flex-row justify-between w-full pl-4 pr-4 mt-4 flex-nowrap lg:flex-col lg:mt-0 lg:items-end lg:justify-around lg:w-64 lg:pl-0">
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&
