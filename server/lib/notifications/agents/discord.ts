@@ -71,7 +71,7 @@ interface DiscordRichEmbed {
 
 interface DiscordWebhookPayload {
   embeds: DiscordRichEmbed[];
-  username: string;
+  username?: string;
   avatar_url?: string;
   tts: boolean;
   content?: string;
@@ -203,7 +203,11 @@ class DiscordAgent
   ): Promise<boolean> {
     logger.debug('Sending discord notification', { label: 'Notifications' });
     try {
-      const { botUsername, webhookUrl } = this.getSettings().options;
+      const {
+        botUsername,
+        botAvatarUrl,
+        webhookUrl,
+      } = this.getSettings().options;
 
       if (!webhookUrl) {
         return false;
@@ -222,6 +226,7 @@ class DiscordAgent
 
       await axios.post(webhookUrl, {
         username: botUsername,
+        avatar_url: botAvatarUrl,
         embeds: [this.buildEmbed(type, payload)],
         content,
         allowed_mentions: {

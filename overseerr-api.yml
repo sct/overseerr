@@ -1104,6 +1104,8 @@ components:
           properties:
             botUsername:
               type: string
+            botAvatarUrl:
+              type: string
             webhookUrl:
               type: string
     SlackSettings:

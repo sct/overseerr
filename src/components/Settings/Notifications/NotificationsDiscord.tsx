@@ -14,6 +14,7 @@ const messages = defineMessages({
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
   botUsername: 'Bot Username',
+  botAvatarUrl: 'Bot Avatar URL',
   webhookUrl: 'Webhook URL',
   webhookUrlPlaceholder: 'Server Settings → Integrations → Webhooks',
   discordsettingssaved: 'Discord notification settings saved successfully!',
@@ -21,7 +22,7 @@ const messages = defineMessages({
   testsent: 'Test notification sent!',
   test: 'Test',
   notificationtypes: 'Notification Types',
-  validationWebhookUrl: 'You must provide a valid URL',
+  validationUrl: 'You must provide a valid URL',
 });
 
 const NotificationsDiscord: React.FC = () => {
@@ -32,9 +33,12 @@ const NotificationsDiscord: React.FC = () => {
   );
 
   const NotificationsDiscordSchema = Yup.object().shape({
+    botAvatarUrl: Yup.string()
+      .nullable()
+      .url(intl.formatMessage(messages.validationUrl)),
     webhookUrl: Yup.string()
-      .required(intl.formatMessage(messages.validationWebhookUrl))
-      .url(intl.formatMessage(messages.validationWebhookUrl)),
+      .required(intl.formatMessage(messages.validationUrl))
+      .url(intl.formatMessage(messages.validationUrl)),
   });
 
   if (!data && !error) {
@@ -47,6 +51,7 @@ const NotificationsDiscord: React.FC = () => {
         enabled: data.enabled,
         types: data.types,
         botUsername: data?.options.botUsername,
+        botAvatarUrl: data?.options.botAvatarUrl,
         webhookUrl: data.options.webhookUrl,
       }}
       validationSchema={NotificationsDiscordSchema}
@@ -57,6 +62,7 @@ const NotificationsDiscord: React.FC = () => {
             types: values.types,
             options: {
               botUsername: values.botUsername,
+              botAvatarUrl: values.botAvatarUrl,
               webhookUrl: values.webhookUrl,
             },
           });
@@ -81,6 +87,7 @@ const NotificationsDiscord: React.FC = () => {
             types: values.types,
             options: {
               botUsername: values.botUsername,
+              botAvatarUrl: values.botAvatarUrl,
               webhookUrl: values.webhookUrl,
             },
           });
@@ -116,6 +123,24 @@ const NotificationsDiscord: React.FC = () => {
                 </div>
                 {errors.botUsername && touched.botUsername && (
                   <div className="error">{errors.botUsername}</div>
+                )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="botAvatarUrl" className="text-label">
+                {intl.formatMessage(messages.botAvatarUrl)}
+              </label>
+              <div className="form-input">
+                <div className="flex max-w-lg rounded-md shadow-sm">
+                  <Field
+                    id="botAvatarUrl"
+                    name="botAvatarUrl"
+                    type="text"
+                    placeholder={intl.formatMessage(messages.botAvatarUrl)}
+                  />
+                </div>
+                {errors.botAvatarUrl && touched.botAvatarUrl && (
+                  <div className="error">{errors.botAvatarUrl}</div>
                 )}
               </div>
             </div>
