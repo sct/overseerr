@@ -203,8 +203,7 @@ class DiscordAgent
   ): Promise<boolean> {
     logger.debug('Sending discord notification', { label: 'Notifications' });
     try {
-      const settings = getSettings();
-      const webhookUrl = this.getSettings().options.webhookUrl;
+      const { botUsername, webhookUrl } = this.getSettings().options;
 
       if (!webhookUrl) {
         return false;
@@ -222,7 +221,7 @@ class DiscordAgent
       }
 
       await axios.post(webhookUrl, {
-        username: settings.main.applicationTitle,
+        username: botUsername,
         embeds: [this.buildEmbed(type, payload)],
         content,
         allowed_mentions: {

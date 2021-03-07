@@ -95,6 +95,7 @@ export interface NotificationAgentConfig {
 }
 export interface NotificationAgentDiscord extends NotificationAgentConfig {
   options: {
+    botUsername?: string;
     webhookUrl: string;
   };
 }
@@ -120,7 +121,7 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
 
 export interface NotificationAgentTelegram extends NotificationAgentConfig {
   options: {
-    botUsername: string;
+    botUsername?: string;
     botAPI: string;
     chatId: string;
     sendSilently: boolean;
@@ -229,6 +230,7 @@ class Settings {
             enabled: false,
             types: 0,
             options: {
+              botUsername: '',
               webhookUrl: '',
             },
           },

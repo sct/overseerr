@@ -13,6 +13,7 @@ const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
+  botUsername: 'Bot Username',
   webhookUrl: 'Webhook URL',
   webhookUrlPlaceholder: 'Server Settings → Integrations → Webhooks',
   discordsettingssaved: 'Discord notification settings saved successfully!',
@@ -45,6 +46,7 @@ const NotificationsDiscord: React.FC = () => {
       initialValues={{
         enabled: data.enabled,
         types: data.types,
+        botUsername: data?.options.botUsername,
         webhookUrl: data.options.webhookUrl,
       }}
       validationSchema={NotificationsDiscordSchema}
@@ -54,6 +56,7 @@ const NotificationsDiscord: React.FC = () => {
             enabled: values.enabled,
             types: values.types,
             options: {
+              botUsername: values.botUsername,
               webhookUrl: values.webhookUrl,
             },
           });
@@ -77,6 +80,7 @@ const NotificationsDiscord: React.FC = () => {
             enabled: true,
             types: values.types,
             options: {
+              botUsername: values.botUsername,
               webhookUrl: values.webhookUrl,
             },
           });
@@ -95,6 +99,24 @@ const NotificationsDiscord: React.FC = () => {
               </label>
               <div className="form-input">
                 <Field type="checkbox" id="enabled" name="enabled" />
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="botUsername" className="text-label">
+                {intl.formatMessage(messages.botUsername)}
+              </label>
+              <div className="form-input">
+                <div className="flex max-w-lg rounded-md shadow-sm">
+                  <Field
+                    id="botUsername"
+                    name="botUsername"
+                    type="text"
+                    placeholder={intl.formatMessage(messages.botUsername)}
+                  />
+                </div>
+                {errors.botUsername && touched.botUsername && (
+                  <div className="error">{errors.botUsername}</div>
+                )}
               </div>
             </div>
             <div className="form-row">
