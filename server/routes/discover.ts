@@ -65,7 +65,7 @@ discoverRoutes.get('/movies', async (req, res) => {
 
 discoverRoutes.get<{ language: string }>(
   '/movies/language/:language',
-  async (req, res) => {
+  async (req, res, next) => {
     const tmdb = createTmdbWithRegionLanaguage(req.user);
 
     const languages = await tmdb.getLanguages();
@@ -73,6 +73,10 @@ discoverRoutes.get<{ language: string }>(
     const language = languages.find(
       (lang) => lang.iso_639_1 === req.params.language
     );
+
+    if (!language) {
+      return next({ status: 404, message: 'Unable to retrieve language' });
+    }
 
     const data = await tmdb.getDiscoverMovies({
       page: Number(req.query.page),
@@ -243,7 +247,7 @@ discoverRoutes.get('/tv', async (req, res) => {
 
 discoverRoutes.get<{ language: string }>(
   '/tv/language/:language',
-  async (req, res) => {
+  async (req, res, next) => {
     const tmdb = createTmdbWithRegionLanaguage(req.user);
 
     const languages = await tmdb.getLanguages();
@@ -251,6 +255,10 @@ discoverRoutes.get<{ language: string }>(
     const language = languages.find(
       (lang) => lang.iso_639_1 === req.params.language
     );
+
+    if (!language) {
+      return next({ status: 404, message: 'Unable to retrieve language' });
+    }
 
     const data = await tmdb.getDiscoverTv({
       page: Number(req.query.page),
