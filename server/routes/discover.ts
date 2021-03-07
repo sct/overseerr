@@ -63,6 +63,45 @@ discoverRoutes.get('/movies', async (req, res) => {
   });
 });
 
+discoverRoutes.get<{ language: string }>(
+  '/movies/language/:language',
+  async (req, res) => {
+    const tmdb = createTmdbWithRegionLanaguage(req.user);
+
+    const languages = await tmdb.getLanguages();
+
+    const language = languages.find(
+      (lang) => lang.iso_639_1 === req.params.language
+    );
+
+    const data = await tmdb.getDiscoverMovies({
+      page: Number(req.query.page),
+      language: req.query.language as string,
+      originalLanguage: req.params.language as string,
+    });
+
+    const media = await Media.getRelatedMedia(
+      data.results.map((result) => result.id)
+    );
+
+    return res.status(200).json({
+      page: data.page,
+      totalPages: data.total_pages,
+      totalResults: data.total_results,
+      language,
+      results: data.results.map((result) =>
+        mapMovieResult(
+          result,
+          media.find(
+            (req) =>
+              req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+          )
+        )
+      ),
+    });
+  }
+);
+
 discoverRoutes.get<{ genreId: string }>(
   '/movies/genre/:genreId',
   async (req, res) => {
@@ -201,6 +240,44 @@ discoverRoutes.get('/tv', async (req, res) => {
     ),
   });
 });
+
+discoverRoutes.get<{ language: string }>(
+  '/tv/language/:language',
+  async (req, res) => {
+    const tmdb = createTmdbWithRegionLanaguage(req.user);
+
+    const languages = await tmdb.getLanguages();
+
+    const language = languages.find(
+      (lang) => lang.iso_639_1 === req.params.language
+    );
+
+    const data = await tmdb.getDiscoverTv({
+      page: Number(req.query.page),
+      language: req.query.language as string,
+      originalLanguage: req.params.language as string,
+    });
+
+    const media = await Media.getRelatedMedia(
+      data.results.map((result) => result.id)
+    );
+
+    return res.status(200).json({
+      page: data.page,
+      totalPages: data.total_pages,
+      totalResults: data.total_results,
+      language,
+      results: data.results.map((result) =>
+        mapTvResult(
+          result,
+          media.find(
+            (req) => req.tmdbId === result.id && req.mediaType === MediaType.TV
+          )
+        )
+      ),
+    });
+  }
+);
 
 discoverRoutes.get<{ genreId: string }>(
   '/tv/genre/:genreId',
