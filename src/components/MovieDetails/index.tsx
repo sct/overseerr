@@ -64,7 +64,7 @@ const messages = defineMessages({
     If this item exists in your Plex library, the media information will be recreated during the next scan.',
   approve: 'Approve',
   decline: 'Decline',
-  studio: 'Studio',
+  studio: '{studioCount, plural, one {Studio} other {Studios}}',
   viewfullcrew: 'View Full Crew',
   view: 'View',
   areyousure: 'Are you sure?',
@@ -667,19 +667,24 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
-            {data.productionCompanies[0] && (
+            {data.productionCompanies.length > 0 && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  {intl.formatMessage(messages.studio)}
+                  {intl.formatMessage(messages.studio, {
+                    studioCount: data.productionCompanies.length,
+                  })}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
-                  <Link
-                    href={`/discover/movies/studio/${data.productionCompanies[0].id}`}
-                  >
-                    <a className="hover:underline">
-                      {data.productionCompanies[0].name}
-                    </a>
-                  </Link>
+                  {data.productionCompanies.map((s) => {
+                    return (
+                      <Link
+                        href={`/discover/movies/studio/${s.id}`}
+                        key={`studio-${s.id}`}
+                      >
+                        <a className="block hover:underline">{s.name}</a>
+                      </Link>
+                    );
+                  })}
                 </span>
               </div>
             )}

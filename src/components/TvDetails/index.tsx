@@ -62,7 +62,7 @@ const messages = defineMessages({
   decline: 'Decline',
   showtype: 'Show Type',
   anime: 'Anime',
-  network: 'Network',
+  network: '{networkCount, plural, one {Network} other {Networks}}',
   viewfullcrew: 'View Full Crew',
   areyousure: 'Are you sure?',
   opensonarr: 'Open Series in Sonarr',
@@ -694,7 +694,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.networks.length > 0 && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  {intl.formatMessage(messages.network)}
+                  {intl.formatMessage(messages.network, {
+                    networkCount: data.networks.length,
+                  })}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
                   {data.networks
