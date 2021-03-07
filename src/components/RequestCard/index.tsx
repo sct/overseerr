@@ -159,7 +159,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
         </div>
         {request.seasons.length > 0 && (
           <div className="card-field">
-            <span className="card-field-name">
+            <span className="hidden sm:block card-field-name">
               {intl.formatMessage(messages.seasons)}
             </span>
             {!isMovie(title) &&
