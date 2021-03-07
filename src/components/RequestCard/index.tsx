@@ -130,7 +130,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
           </Link>
         </div>
         <div className="card-field">
-          <span className="card-field-name">
+          <span className="hidden sm:block card-field-name">
             {intl.formatMessage(messages.status)}
           </span>
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
