@@ -1,7 +1,7 @@
 # Reverse Proxy Examples
 
 {% hint style="warning" %}
-Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported.
+Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported. However, a Nginx subfolder workaround configuration is provided below to use at your own risk.
 {% endhint %}
 
 ## [SWAG (Secure Web Application Gateway, formerly known as `letsencrypt`)](https://github.com/linuxserver/docker-swag)
@@ -53,11 +53,11 @@ labels:
 
 For more information, see the Traefik documentation for a [basic example](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/).
 
-## `nginx`
+## `nginx` (subdomain)
 
 Add the following configuration to a new file `/etc/nginx/sites-available/overseerr.example.com.conf`:
 
-```text
+```nginx
 server {
     listen 80;
     server_name overseerr.example.com;
@@ -110,6 +110,55 @@ Then, create a symlink to `/etc/nginx/sites-enabled`:
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/overseerr.example.com.conf /etc/nginx/sites-enabled/overseerr.example.com.conf
+```
+
+Next, test the configuration:
+
+```bash
+sudo nginx -t
+```
+
+Finally, reload `nginx` for the new configuration to take effect:
+
+```bash
+sudo systemctl reload nginx
+```
+
+## `nginx` (subfolder)
+
+{% hint style="warning" %}
+Nginx subfolder reverse proxy is unsupported. The sub filters may stop working when Overseerr is updated. Use at your own risk!
+{% endhint %}
+
+Add the following location block to your existing `nginx.conf` file.
+
+```nginx
+location ^~ /overseerr {
+    set $app 'overseerr';
+    # Remove /overseerr path to pass to the app
+    rewrite ^/overseerr/?(.*)$ /$1 break;
+    proxy_pass http://127.0.0.1:5055;  # NO TRAILING SLASH
+    # Redirect location headers
+    proxy_redirect ^ /$app;
+    proxy_redirect /setup /$app/setup;
+    proxy_redirect /login /$app/login;
+    # Sub filters to replace hardcoded paths
+    proxy_set_header Accept-Encoding "";
+    sub_filter_once off;
+    sub_filter_types *;
+    sub_filter 'href="/"' 'href="/$app"';
+    sub_filter 'href="/login"' 'href="/$app/login"';
+    sub_filter 'href:"/"' 'href:"/$app"';
+    sub_filter '/_next' '/$app/_next';
+    sub_filter '/api/v1' '/$app/api/v1';
+    sub_filter '/login/plex/loading' '/$app/login/plex/loading';
+    sub_filter '/images/' '/$app/images/';
+    sub_filter '/android-' '/$app/android-';
+    sub_filter '/apple-' '/$app/apple-';
+    sub_filter '/favicon' '/$app/favicon';
+    sub_filter '/logo.png' '/$app/logo.png';
+    sub_filter '/site.webmanifest' '/$app/site.webmanifest';
+}
 ```
 
 Next, test the configuration:
