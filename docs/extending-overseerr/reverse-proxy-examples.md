@@ -6,7 +6,7 @@ Base URLs cannot be configured in Overseerr. With this limitation, only subdomai
 
 ## SWAG
 
-A sample proxy configuration is included in [SWAG](https://github.com/linuxserver/docker-swag). However, this page is still the only source of truth, so the SWAG sample configuration is not guaranteed to be up-to-date. If you find an inconsistency, please [report it to the LinuxServer team](https://github.com/linuxserver/reverse-proxy-confs/issues/new) or [submit a pull request to update it](https://github.com/linuxserver/reverse-proxy-confs/pulls).
+A sample proxy configuration is included in [SWAG (Secure Web Application Gateway)](https://github.com/linuxserver/docker-swag). However, this page is still the only source of truth, so the SWAG sample configuration is not guaranteed to be up-to-date. If you find an inconsistency, please [report it to the LinuxServer team](https://github.com/linuxserver/reverse-proxy-confs/issues/new) or [submit a pull request to update it](https://github.com/linuxserver/reverse-proxy-confs/pulls).
 
 To use the bundled configuration file, simply rename `overseerr.subdomain.conf.sample` in the `proxy-confs` folder to `overseerr.subdomain.conf`. Alternatively, create a new file `overseerr.subdomain.conf` in `proxy-confs` with the following configuration:
 
