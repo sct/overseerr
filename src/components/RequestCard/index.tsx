@@ -129,8 +129,30 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             </a>
           </Link>
         </div>
-        <div className="card-field">
-          <span className="card-field-name">
+        {request.seasons.length > 0 && (
+          <div className="sm:flex items-center my-0.5 sm:my-1 text-sm hidden">
+            <span className="mr-2 font-medium">
+              {intl.formatMessage(messages.seasons)}
+            </span>
+            {!isMovie(title) &&
+            title.seasons.filter((season) => season.seasonNumber !== 0)
+              .length === request.seasons.length ? (
+              <span className="mr-2 uppercase">
+                <Badge>{intl.formatMessage(messages.all)}</Badge>
+              </span>
+            ) : (
+              <div className="overflow-x-scroll hide-scrollbar">
+                {request.seasons.map((season) => (
+                  <span key={`season-${season.id}`} className="mr-2">
+                    <Badge>{season.seasonNumber}</Badge>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        <div className="flex items-center mt-2 text-sm sm:mt-1">
+          <span className="hidden mr-2 font-medium sm:block">
             {intl.formatMessage(messages.status)}
           </span>
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
@@ -157,28 +179,6 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             />
           )}
         </div>
-        {request.seasons.length > 0 && (
-          <div className="card-field">
-            <span className="card-field-name">
-              {intl.formatMessage(messages.seasons)}
-            </span>
-            {!isMovie(title) &&
-            title.seasons.filter((season) => season.seasonNumber !== 0)
-              .length === request.seasons.length ? (
-              <span className="mr-2 uppercase">
-                <Badge>{intl.formatMessage(messages.all)}</Badge>
-              </span>
-            ) : (
-              <div className="overflow-x-scroll hide-scrollbar">
-                {request.seasons.map((season) => (
-                  <span key={`season-${season.id}`} className="mr-2">
-                    <Badge>{season.seasonNumber}</Badge>
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
         {requestData.status === MediaRequestStatus.PENDING &&
           hasPermission(Permission.MANAGE_REQUESTS) && (
             <div className="flex items-end flex-1">
