@@ -81,7 +81,7 @@ discoverRoutes.get<{ language: string }>(
     const data = await tmdb.getDiscoverMovies({
       page: Number(req.query.page),
       language: req.query.language as string,
-      originalLanguage: req.params.language as string,
+      originalLanguage: req.params.language,
     });
 
     const media = await Media.getRelatedMedia(
@@ -271,7 +271,7 @@ discoverRoutes.get<{ language: string }>(
     const data = await tmdb.getDiscoverTv({
       page: Number(req.query.page),
       language: req.query.language as string,
-      originalLanguage: req.params.language as string,
+      originalLanguage: req.params.language,
     });
 
     const media = await Media.getRelatedMedia(
