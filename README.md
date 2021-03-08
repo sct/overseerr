@@ -12,7 +12,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-36-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-37-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -145,6 +145,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/JonnyWong16"><img src="https://avatars.githubusercontent.com/u/9099342?v=4?s=100" width="100px;" alt=""/><br /><sub><b>JonnyWong16</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=JonnyWong16" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/Roxedus"><img src="https://avatars.githubusercontent.com/u/7110194?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Roxedus</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Roxedus" title="Documentation">📖</a></td>
   </tr>
 </table>
 
