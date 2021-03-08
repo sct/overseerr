@@ -108,7 +108,7 @@ discoverRoutes.get<{ language: string }>(
 
 discoverRoutes.get<{ genreId: string }>(
   '/movies/genre/:genreId',
-  async (req, res) => {
+  async (req, res, next) => {
     const tmdb = createTmdbWithRegionLanaguage(req.user);
 
     const genres = await tmdb.getMovieGenres({
@@ -118,6 +118,10 @@ discoverRoutes.get<{ genreId: string }>(
     const genre = genres.find(
       (genre) => genre.id === Number(req.params.genreId)
     );
+
+    if (!genre) {
+      return next({ status: 404, message: 'Unable to retrieve genre' });
+    }
 
     const data = await tmdb.getDiscoverMovies({
       page: Number(req.query.page),
@@ -149,10 +153,18 @@ discoverRoutes.get<{ genreId: string }>(
 
 discoverRoutes.get<{ studioId: string }>(
   '/movies/studio/:studioId',
-  async (req, res) => {
+  async (req, res, next) => {
     const tmdb = new TheMovieDb();
 
-    const studio = await tmdb.getStudio(Number(req.params.studioId));
+    const studio = await tmdb
+      .getStudio(Number(req.params.studioId))
+      .catch(async () => {
+        return undefined;
+      });
+
+    if (!studio) {
+      return next({ status: 404, message: 'Unable to retrieve studio' });
+    }
 
     const data = await tmdb.getDiscoverMovies({
       page: Number(req.query.page),
@@ -289,7 +301,7 @@ discoverRoutes.get<{ language: string }>(
 
 discoverRoutes.get<{ genreId: string }>(
   '/tv/genre/:genreId',
-  async (req, res) => {
+  async (req, res, next) => {
     const tmdb = createTmdbWithRegionLanaguage(req.user);
 
     const genres = await tmdb.getTvGenres({
@@ -299,6 +311,10 @@ discoverRoutes.get<{ genreId: string }>(
     const genre = genres.find(
       (genre) => genre.id === Number(req.params.genreId)
     );
+
+    if (!genre) {
+      return next({ status: 404, message: 'Unable to retrieve genre' });
+    }
 
     const data = await tmdb.getDiscoverTv({
       page: Number(req.query.page),
@@ -329,10 +345,18 @@ discoverRoutes.get<{ genreId: string }>(
 
 discoverRoutes.get<{ networkId: string }>(
   '/tv/network/:networkId',
-  async (req, res) => {
+  async (req, res, next) => {
     const tmdb = new TheMovieDb();
 
-    const network = await tmdb.getNetwork(Number(req.params.networkId));
+    const network = await tmdb
+      .getNetwork(Number(req.params.networkId))
+      .catch(async () => {
+        return undefined;
+      });
+
+    if (!network) {
+      return next({ status: 404, message: 'Unable to retrieve network' });
+    }
 
     const data = await tmdb.getDiscoverTv({
       page: Number(req.query.page),
