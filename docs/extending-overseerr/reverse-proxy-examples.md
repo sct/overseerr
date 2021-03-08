@@ -4,9 +4,9 @@
 Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported. However, a Nginx subfolder workaround configuration is provided below to use at your own risk.
 {% endhint %}
 
-## [SWAG (Secure Web Application Gateway, formerly known as `letsencrypt`)](https://github.com/linuxserver/docker-swag)
+## SWAG
 
-A sample proxy configuration is included in SWAG. However, this page is still the only source of truth, so the SWAG sample configuration is not guaranteed to be up-to-date. If you find an inconsistency, please [report it to the LinuxServer team](https://github.com/linuxserver/reverse-proxy-confs/issues/new) or [submit a pull request to update it](https://github.com/linuxserver/reverse-proxy-confs/pulls).
+A sample proxy configuration is included in [SWAG](https://github.com/linuxserver/docker-swag). However, this page is still the only source of truth, so the SWAG sample configuration is not guaranteed to be up-to-date. If you find an inconsistency, please [report it to the LinuxServer team](https://github.com/linuxserver/reverse-proxy-confs/issues/new) or [submit a pull request to update it](https://github.com/linuxserver/reverse-proxy-confs/pulls).
 
 To use the bundled configuration file, simply rename `overseerr.subdomain.conf.sample` in the `proxy-confs` folder to `overseerr.subdomain.conf`. Alternatively, create a new file `overseerr.subdomain.conf` in `proxy-confs` with the following configuration:
 
@@ -53,7 +53,9 @@ labels:
 
 For more information, see the Traefik documentation for a [basic example](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/).
 
-## `nginx` (subdomain)
+## Nginx
+
+### Subdomain
 
 Add the following configuration to a new file `/etc/nginx/sites-available/overseerr.example.com.conf`:
 
@@ -124,7 +126,7 @@ Finally, reload `nginx` for the new configuration to take effect:
 sudo systemctl reload nginx
 ```
 
-## `nginx` (subfolder)
+### Subfolder
 
 {% hint style="warning" %}
 Nginx subfolder reverse proxy is unsupported. The sub filters may stop working when Overseerr is updated. Use at your own risk!
