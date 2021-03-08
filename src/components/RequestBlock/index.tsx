@@ -10,7 +10,7 @@ import RequestModal from '../RequestModal';
 import useRequestOverride from '../../hooks/useRequestOverride';
 
 const messages = defineMessages({
-  seasons: 'Seasons',
+  seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   requestoverrides: 'Request Overrides',
   server: 'Server',
   profilechanged: 'Profile Changed',
@@ -234,7 +234,11 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
         </div>
         {(request.seasons ?? []).length > 0 && (
           <div className="flex flex-col mt-2 text-sm">
-            <div className="mb-2">{intl.formatMessage(messages.seasons)}</div>
+            <div className="mb-1 font-medium text-gray-300">
+              {intl.formatMessage(messages.seasons, {
+                seasonCount: request.seasons.length,
+              })}
+            </div>
             <div>
               {request.seasons.map((season) => (
                 <span
