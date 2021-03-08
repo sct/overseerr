@@ -24,6 +24,7 @@ jobs:
         run: yarn lint
       - name: build
         run: yarn build
+
   build_and_push:
     name: Build & Publish to Docker Hub
     needs: test
@@ -77,6 +78,7 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
   discord:
     name: Send Discord Notification
     needs: build_and_push
