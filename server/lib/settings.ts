@@ -61,6 +61,11 @@ export interface SonarrSettings extends DVRSettings {
   enableSeasonFolders: boolean;
 }
 
+interface Quota {
+  quotaQuantity: number | undefined;
+  quotaPeriod: number | undefined;
+}
+
 export interface MainSettings {
   apiKey: string;
   applicationTitle: string;
@@ -68,6 +73,10 @@ export interface MainSettings {
   csrfProtection: boolean;
   cacheImages: boolean;
   defaultPermissions: number;
+  defaultQuotas: {
+    movie: Quota;
+    tv: Quota;
+  };
   hideAvailable: boolean;
   localLogin: boolean;
   region: string;
@@ -199,6 +208,16 @@ class Settings {
         csrfProtection: false,
         cacheImages: false,
         defaultPermissions: Permission.REQUEST,
+        defaultQuotas: {
+          movie: {
+            quotaPeriod: undefined,
+            quotaQuantity: undefined,
+          },
+          tv: {
+            quotaPeriod: undefined,
+            quotaQuantity: undefined,
+          },
+        },
         hideAvailable: false,
         localLogin: true,
         region: '',

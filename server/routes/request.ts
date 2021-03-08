@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { isAuthenticated } from '../middleware/auth';
 import { Permission } from '../lib/permissions';
-import { getRepository } from 'typeorm';
+import { getRepository, MoreThan } from 'typeorm';
 import { MediaRequest } from '../entity/MediaRequest';
 import TheMovieDb from '../api/themoviedb';
 import Media from '../entity/Media';
@@ -154,8 +154,74 @@ requestRoutes.post(
         });
       }
 
+      /* Quota Guard Start */
+      if (
+        req.body.mediaType === MediaType.MOVIE &&
+        requestUser &&
+        requestUser.movieQuotaPeriod > 0 &&
+        requestUser.movieQuotaQuantity > 0
+      ) {
+        const date = new Date();
+        date.setDate(date.getDate() - requestUser.movieQuotaPeriod);
+
+        // YYYY-MM-DD format
+        const quotaStartDate = date.toJSON().split('T')[0];
+        const moviesRequestedDuringPeriod = await requestRepository.find({
+          where: {
+            requestedBy: requestUser,
+            createdAt: MoreThan(quotaStartDate),
+            type: MediaType.MOVIE,
+          },
+        });
+
+        if (
+          moviesRequestedDuringPeriod.length >= requestUser.movieQuotaQuantity
+        ) {
+          return next({
+            status: 403,
+            message: 'Movie Quota Exceeded',
+          });
+        }
+      }
+
+      if (
+        req.body.mediaType === MediaType.TV &&
+        requestUser &&
+        requestUser.tvQuotaPeriod > 0 &&
+        requestUser.tvQuotaQuantity > 0
+      ) {
+        const date = new Date();
+        date.setDate(date.getDate() - requestUser.tvQuotaPeriod);
+
+        // YYYY-MM-DD format
+        const quotaStartDate = date.toJSON().split('T')[0];
+        const showsRequestedDuringPeriod = await requestRepository.find({
+          where: {
+            requestedBy: requestUser,
+            createdAt: MoreThan(quotaStartDate),
+            type: MediaType.TV,
+          },
+        });
+
+        const seasonsRequestedDuringPeriod = showsRequestedDuringPeriod.reduce(
+          (total, request) => request.seasons.length + total,
+          0
+        );
+
+        if (
+          seasonsRequestedDuringPeriod + req.body.seasons.length >
+          requestUser.tvQuotaQuantity
+        ) {
+          return next({
+            status: 403,
+            message: 'TV Quota Exceeded',
+          });
+        }
+      }
+      /* Quota Guard End */
+
       const tmdbMedia =
-        req.body.mediaType === 'movie'
+        req.body.mediaType === MediaType.MOVIE
           ? await tmdb.getMovie({ movieId: req.body.mediaId })
           : await tmdb.getTvShow({ tvId: req.body.mediaId });
 
@@ -182,7 +248,7 @@ requestRoutes.post(
         }
       }
 
-      if (req.body.mediaType === 'movie') {
+      if (req.body.mediaType === MediaType.MOVIE) {
         const existing = await requestRepository.findOne({
           where: {
             media: {
@@ -247,7 +313,7 @@ requestRoutes.post(
 
         await requestRepository.save(request);
         return res.status(201).json(request);
-      } else if (req.body.mediaType === 'tv') {
+      } else if (req.body.mediaType === MediaType.TV) {
         const requestedSeasons = req.body.seasons as number[];
         let existingSeasons: number[] = [];
 
@@ -458,14 +524,14 @@ requestRoutes.put<{ requestId: string }>(
         });
       }
 
-      if (req.body.mediaType === 'movie') {
+      if (req.body.mediaType === MediaType.MOVIE) {
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;
         request.rootFolder = req.body.rootFolder;
         request.requestedBy = requestUser as User;
 
         requestRepository.save(request);
-      } else if (req.body.mediaType === 'tv') {
+      } else if (req.body.mediaType === MediaType.TV) {
         const mediaRepository = getRepository(Media);
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;

@@ -80,6 +80,18 @@ export class User {
   @OneToMany(() => MediaRequest, (request) => request.requestedBy)
   public requests: MediaRequest[];
 
+  @Column({ nullable: true })
+  public movieQuotaQuantity: number;
+
+  @Column({ nullable: true })
+  public movieQuotaPeriod: number;
+
+  @Column({ nullable: true })
+  public tvQuotaQuantity: number;
+
+  @Column({ nullable: true })
+  public tvQuotaPeriod: number;
+
   @OneToOne(() => UserSettings, (settings) => settings.user, {
     cascade: true,
     eager: true,

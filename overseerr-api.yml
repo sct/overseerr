@@ -3033,6 +3033,51 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MediaRequest'
+  /user/{userId}/quota:
+    get:
+      summary: Get quotas for a specific user
+      description: |
+        Returns quota details for a user in a JSON object. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User quota details in JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movie:
+                    type: object
+                    properties:
+                      quotaPeriod:
+                        type: number
+                        example: 7
+                      quotaQuantity:
+                        type: number
+                        example: 10
+                      quotaRequestCount:
+                        type: number
+                        example: 5
+                  tv:
+                    type: object
+                    properties:
+                      quotaPeriod:
+                        type: number
+                        example: 7
+                      quotaQuantity:
+                        type: number
+                        example: 10
+                      quotaRequestCount:
+                        type: number
+                        example: 5
   /user/{userId}/settings/main:
     get:
       summary: Get general settings for a user

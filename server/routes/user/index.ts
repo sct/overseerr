@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getRepository, Not } from 'typeorm';
+import { getRepository, Not, MoreThan } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
@@ -12,6 +12,7 @@ import { isAuthenticated } from '../../middleware/auth';
 import { UserResultsResponse } from '../../interfaces/api/userInterfaces';
 import { UserRequestsResponse } from '../../interfaces/api/userInterfaces';
 import userSettingsRoutes from './usersettings';
+import { MediaType } from '../../constants/media';
 
 const router = Router();
 
@@ -379,5 +380,74 @@ router.post(
     }
   }
 );
+
+router.get<{ id: string }>('/:id/quota', async (req, res, next) => {
+  try {
+    const userRepository = getRepository(User);
+    const requestRepository = getRepository(MediaRequest);
+
+    if (
+      Number(req.params.id) !== req.user?.id &&
+      !req.user?.hasPermission(Permission.MANAGE_USERS)
+    ) {
+      res.status(403).json({
+        status: 403,
+        error: 'You do not have permission to access this endpoint',
+      });
+    }
+
+    const user = await userRepository.findOneOrFail({
+      where: { id: Number(req.params.id) },
+    });
+
+    // Count movie requests made during quota period
+    const movieDate = new Date();
+    movieDate.setDate(movieDate.getDate() - user.movieQuotaPeriod);
+    // YYYY-MM-DD format
+    const movieQuotaStartDate = movieDate.toJSON().split('T')[0];
+    const movieRequestsDuringPeriod = await requestRepository.find({
+      where: {
+        requestedBy: user,
+        createdAt: MoreThan(movieQuotaStartDate),
+        type: MediaType.MOVIE,
+      },
+    });
+
+    // Count tv season requests made during quota period
+    const tvDate = new Date();
+    tvDate.setDate(movieDate.getDate() - user.movieQuotaPeriod);
+    // YYYY-MM-DD format
+    const tvQuotaStartDate = tvDate.toJSON().split('T')[0];
+    const tvRequestsDuringPeriod = await requestRepository.find({
+      where: {
+        relations: ['requests', 'user'],
+        requestedBy: user,
+        createdAt: MoreThan(tvQuotaStartDate),
+        type: MediaType.TV,
+      },
+    });
+
+    console.log(tvRequestsDuringPeriod);
+
+    const movie = {
+      quotaPeriod: user.movieQuotaPeriod,
+      quotaQuantity: user.movieQuotaQuantity,
+      quotaRequestCount: movieRequestsDuringPeriod.length,
+    };
+
+    const tv = {
+      quotaPeriod: user.tvQuotaPeriod,
+      quotaQuantity: user.tvQuotaQuantity,
+      quotaRequestCount: tvRequestsDuringPeriod.length,
+    };
+
+    return res.status(200).json({
+      movie: movie,
+      tv: tv,
+    });
+  } catch (e) {
+    next({ status: 404, message: 'User not found' });
+  }
+});
 
 export default router;
