@@ -55,7 +55,8 @@ For more information, see the Traefik documentation for a [basic example](https:
 
 ## Nginx
 
-### Subdomain
+{% tabs %}
+{% tab title="Subdomain" %}
 
 Add the following configuration to a new file `/etc/nginx/sites-available/overseerr.example.com.conf`:
 
@@ -113,20 +114,9 @@ Then, create a symlink to `/etc/nginx/sites-enabled`:
 ```bash
 sudo ln -s /etc/nginx/sites-available/overseerr.example.com.conf /etc/nginx/sites-enabled/overseerr.example.com.conf
 ```
+{% endtab %}
 
-Next, test the configuration:
-
-```bash
-sudo nginx -t
-```
-
-Finally, reload `nginx` for the new configuration to take effect:
-
-```bash
-sudo systemctl reload nginx
-```
-
-### Subfolder
+{% tab title="Subfolder" %}
 
 {% hint style="warning" %}
 Nginx subfolder reverse proxy is unsupported. The sub filters may stop working when Overseerr is updated. Use at your own risk!
@@ -162,6 +152,8 @@ location ^~ /overseerr {
     sub_filter '/site.webmanifest' '/$app/site.webmanifest';
 }
 ```
+{% endtab %}
+{% endtabs %}
 
 Next, test the configuration:
 
