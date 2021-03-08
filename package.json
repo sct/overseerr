@@ -124,7 +124,7 @@
     "postcss": "^8.2.6",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.2.1",
-    "semantic-release": "^17.4.0",
+    "semantic-release": "^17.4.1",
     "semantic-release-docker": "^2.2.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "ts-node": "^9.1.1",
