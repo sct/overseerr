@@ -1102,6 +1102,10 @@ components:
         options:
           type: object
           properties:
+            botUsername:
+              type: string
+            botAvatarUrl:
+              type: string
             webhookUrl:
               type: string
     SlackSettings:
@@ -1146,10 +1150,14 @@ components:
         options:
           type: object
           properties:
+            botUsername:
+              type: string
             botAPI:
               type: string
             chatId:
               type: string
+            sendSilently:
+              type: boolean
     PushbulletSettings:
       type: object
       properties:
