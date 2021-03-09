@@ -35,7 +35,7 @@ const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
 ): DiscoverResult<T, S> => {
   const settings = useSettings();
   const { locale } = useContext(LanguageContext);
-  const { data, error, size, setSize } = useSWRInfinite<
+  const { data, error, size, setSize, isValidating } = useSWRInfinite<
     BaseSearchResult<T> & S
   >(
     (pageIndex: number, previousPageData) => {
@@ -63,7 +63,10 @@ const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
   const isLoadingInitialData = !data && !error;
   const isLoadingMore =
     isLoadingInitialData ||
-    (size > 0 && !!data && typeof data[size - 1] === 'undefined');
+    (size > 0 &&
+      !!data &&
+      typeof data[size - 1] === 'undefined' &&
+      isValidating);
 
   const fetchMore = () => {
     setSize(size + 1);

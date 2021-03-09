@@ -38,7 +38,7 @@ const ListView: React.FC<ListViewProps> = ({
         </div>
       )}
       <ul className="cardList">
-        {items?.map((title) => {
+        {items?.map((title, index) => {
           let titleCard: React.ReactNode;
 
           switch (title.mediaType) {
@@ -90,7 +90,7 @@ const ListView: React.FC<ListViewProps> = ({
               break;
           }
 
-          return <li key={title.id}>{titleCard}</li>;
+          return <li key={`${title.id}-${index}`}>{titleCard}</li>;
         })}
         {isLoading &&
           !isReachingEnd &&
