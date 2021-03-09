@@ -107,7 +107,7 @@ discoverRoutes.get<{ genreId: string }>(
 discoverRoutes.get<{ studioId: string }>(
   '/movies/studio/:studioId',
   async (req, res) => {
-    const tmdb = createTmdbWithRegionLanaguage(req.user);
+    const tmdb = new TheMovieDb();
 
     const studio = await tmdb.getStudio(Number(req.params.studioId));
 
@@ -245,7 +245,7 @@ discoverRoutes.get<{ genreId: string }>(
 discoverRoutes.get<{ networkId: string }>(
   '/tv/network/:networkId',
   async (req, res) => {
-    const tmdb = createTmdbWithRegionLanaguage(req.user);
+    const tmdb = new TheMovieDb();
 
     const network = await tmdb.getNetwork(Number(req.params.networkId));
 
