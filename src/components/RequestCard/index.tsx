@@ -98,9 +98,9 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
 
   return (
     <div
-      className="relative flex p-4 text-gray-400 bg-gray-800 bg-center bg-cover rounded-xl w-72 sm:w-96"
+      className="relative flex p-4 text-gray-400 bg-gray-700 bg-center bg-cover shadow rounded-xl w-72 sm:w-96 ring-1 ring-gray-700"
       style={{
-        backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
+        backgroundImage: `linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
       }}
     >
       <div className="flex flex-col flex-1 min-w-0 pr-4">
