@@ -9,6 +9,8 @@ import type { RequestResultsResponse } from '../../../server/interfaces/api/requ
 import RequestCard from '../RequestCard';
 import MediaSlider from '../MediaSlider';
 import PageTitle from '../Common/PageTitle';
+import StudioSlider from './StudioSlider';
+import NetworkSlider from './NetworkSlider';
 
 const messages = defineMessages({
   discover: 'Discover',
@@ -112,6 +114,7 @@ const Discover: React.FC = () => {
         linkUrl="/discover/movies/upcoming"
         url="/api/v1/discover/movies/upcoming"
       />
+      <StudioSlider />
       <MediaSlider
         sliderKey="popular-tv"
         title={intl.formatMessage(messages.populartv)}
@@ -124,6 +127,7 @@ const Discover: React.FC = () => {
         url="/api/v1/discover/tv/upcoming"
         linkUrl="/discover/tv/upcoming"
       />
+      <NetworkSlider />
     </>
   );
 };

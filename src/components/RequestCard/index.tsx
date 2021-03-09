@@ -31,7 +31,7 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
 
 const RequestCardPlaceholder: React.FC = () => {
   return (
-    <div className="relative p-4 bg-gray-700 rounded-lg w-72 sm:w-96 animate-pulse">
+    <div className="relative p-4 bg-gray-700 rounded-xl w-72 sm:w-96 animate-pulse">
       <div className="w-20 sm:w-28">
         <div className="w-full" style={{ paddingBottom: '150%' }} />
       </div>
@@ -98,7 +98,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
 
   return (
     <div
-      className="relative flex p-4 text-gray-400 bg-gray-800 bg-center bg-cover rounded-md w-72 sm:w-96"
+      className="relative flex p-4 text-gray-400 bg-gray-800 bg-center bg-cover rounded-xl w-72 sm:w-96"
       style={{
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
       }}

@@ -37,8 +37,8 @@ const PersonCard: React.FC<PersonCardProps> = ({
         <div
           className={`relative ${
             canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'
-          } rounded-lg text-white shadow-lg transition ease-in-out duration-150 cursor-pointer transform-gpu ${
-            isHovered ? 'bg-gray-600 scale-105' : 'bg-gray-700 scale-100'
+          } rounded-xl text-white shadow transition ease-in-out duration-150 cursor-pointer transform-gpu ring-1 ring-gray-700 ${
+            isHovered ? 'bg-gray-700 scale-105' : 'bg-gray-800 scale-100'
           }`}
         >
           <div style={{ paddingBottom: '150%' }}>
@@ -47,7 +47,7 @@ const PersonCard: React.FC<PersonCardProps> = ({
                 {profilePath ? (
                   <img
                     src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${profilePath}`}
-                    className="object-cover w-3/4 h-full bg-center bg-cover rounded-full"
+                    className="object-cover w-3/4 h-full bg-center bg-cover rounded-full ring-1 ring-gray-700"
                     alt=""
                   />
                 ) : (
@@ -79,7 +79,11 @@ const PersonCard: React.FC<PersonCardProps> = ({
                   {subName}
                 </div>
               )}
-              <div className="absolute bottom-0 left-0 right-0 h-12 rounded-b-lg bg-gradient-to-t from-gray-700" />
+              <div
+                className={`absolute bottom-0 left-0 right-0 h-12 rounded-b-xl bg-gradient-to-t ${
+                  isHovered ? 'from-gray-800' : 'from-gray-900'
+                }`}
+              />
             </div>
           </div>
         </div>

@@ -49,7 +49,7 @@ const DiscoverTvNetwork: React.FC = () => {
           {firstResultData?.network.logoPath ? (
             <div className="flex justify-center mb-6">
               <img
-                src={`//image.tmdb.org/t/p/w780_filter(negate,000,666)/${firstResultData.network.logoPath}`}
+                src={`//image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)${firstResultData.network.logoPath}`}
                 alt={firstResultData.network.name}
                 className="max-h-24 sm:max-h-32"
               />

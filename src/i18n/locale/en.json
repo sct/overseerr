@@ -18,6 +18,8 @@
   "components.Discover.DiscoverNetwork.networkSeries": "{network} Series",
   "components.Discover.DiscoverStudio.studioMovies": "{studio} Movies",
   "components.Discover.DiscoverTvGenre.genreSeries": "{genre} Series",
+  "components.Discover.NetworkSlider.networks": "Networks",
+  "components.Discover.StudioSlider.studios": "Studios",
   "components.Discover.discover": "Discover",
   "components.Discover.discovermovies": "Popular Movies",
   "components.Discover.discovertv": "Popular Series",

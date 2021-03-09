@@ -103,7 +103,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title && !error) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-md lg:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-xl lg:h-32 animate-pulse"
         ref={ref}
       />
     );
@@ -112,7 +112,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title || !requestData) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-md lg:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-xl lg:h-32 animate-pulse"
         ref={ref}
       />
     );
@@ -132,7 +132,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 rounded-md shadow-md lg:h-32 lg:flex-row">
+      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl lg:h-32 lg:flex-row">
         <div
           className="absolute inset-0 z-0 w-full bg-center bg-cover lg:w-2/3"
           style={{

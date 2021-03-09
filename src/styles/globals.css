@@ -25,7 +25,7 @@ ul.cardList > li {
 }
 
 .titleCard {
-  @apply relative bg-gray-800 bg-cover rounded-lg;
+  @apply relative bg-gray-800 bg-cover;
   padding-bottom: 150%;
 }
 
