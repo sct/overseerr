@@ -21,15 +21,15 @@ export abstract class BaseAgent<T extends NotificationAgentConfig> {
   }
 
   protected abstract getSettings(): T;
+
+  protected userNotificationTypes: Notification[] = [
+    Notification.MEDIA_APPROVED,
+    Notification.MEDIA_DECLINED,
+    Notification.MEDIA_AVAILABLE,
+  ];
 }
 
 export interface NotificationAgent {
   shouldSend(type: Notification, payload: NotificationPayload): boolean;
   send(type: Notification, payload: NotificationPayload): Promise<boolean>;
 }
-
-export const userNotificationTypes: Notification[] = [
-  Notification.MEDIA_APPROVED,
-  Notification.MEDIA_DECLINED,
-  Notification.MEDIA_AVAILABLE,
-];

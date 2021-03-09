@@ -3,12 +3,7 @@ import { hasNotificationType, Notification } from '..';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentTelegram } from '../../settings';
 import { MediaType } from '../../../constants/media';
-import {
-  BaseAgent,
-  NotificationAgent,
-  NotificationPayload,
-  userNotificationTypes,
-} from './agent';
+import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface TelegramMessagePayload {
   text: string;
@@ -180,7 +175,7 @@ class TelegramAgent
 
       // Send user notification
       if (
-        userNotificationTypes.includes(type) &&
+        this.userNotificationTypes.includes(type) &&
         payload.notifyUser.settings?.enableNotifications &&
         payload.notifyUser.settings?.telegramChatId &&
         payload.notifyUser.settings?.telegramChatId !==
