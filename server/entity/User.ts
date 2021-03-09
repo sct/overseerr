@@ -8,6 +8,9 @@ import {
   RelationCount,
   AfterLoad,
   OneToOne,
+  getRepository,
+  Not,
+  MoreThan,
 } from 'typeorm';
 import {
   Permission,
@@ -24,6 +27,8 @@ import { default as generatePassword } from 'secure-random-password';
 import { UserType } from '../constants/user';
 import { v4 as uuid } from 'uuid';
 import { UserSettings } from './UserSettings';
+import { MediaType, MediaRequestStatus } from '../constants/media';
+import SeasonRequest from './SeasonRequest';
 
 @Entity()
 export class User {
@@ -81,16 +86,16 @@ export class User {
   public requests: MediaRequest[];
 
   @Column({ nullable: true })
-  public movieQuotaQuantity: number;
+  public movieQuotaLimit: number;
 
   @Column({ nullable: true })
-  public movieQuotaPeriod: number;
+  public movieQuotaDays: number;
 
   @Column({ nullable: true })
-  public tvQuotaQuantity: number;
+  public tvQuotaLimit: number;
 
   @Column({ nullable: true })
-  public tvQuotaPeriod: number;
+  public tvQuotaDays: number;
 
   @OneToOne(() => UserSettings, (settings) => settings.user, {
     cascade: true,
@@ -210,5 +215,95 @@ export class User {
   @AfterLoad()
   public setDisplayName(): void {
     this.displayName = this.username || this.plexUsername;
+  }
+
+  public async getQuota(): Promise<{
+    movie: {
+      days: number | undefined;
+      limit: number | undefined;
+      used: number;
+      remaining: number | undefined;
+    };
+    tv: {
+      days: number | undefined;
+      limit: number | undefined;
+      used: number;
+      remaining: number | undefined;
+    };
+  }> {
+    const requestRepository = getRepository(MediaRequest);
+
+    // Count movie requests made during quota period
+    const movieDate = new Date();
+    if (this.movieQuotaDays) {
+      movieDate.setDate(movieDate.getDate() - this.movieQuotaDays);
+    } else {
+      movieDate.setDate(0);
+    }
+    // YYYY-MM-DD format
+    const movieQuotaStartDate = movieDate.toJSON().split('T')[0];
+    const movieQuotaUsed = await requestRepository.count({
+      where: {
+        requestedBy: this,
+        createdAt: MoreThan(movieQuotaStartDate),
+        type: MediaType.MOVIE,
+        status: Not(MediaRequestStatus.DECLINED),
+      },
+    });
+
+    // Count tv season requests made during quota period
+    const tvDate = new Date();
+    if (this.tvQuotaDays) {
+      tvDate.setDate(tvDate.getDate() - this.tvQuotaDays);
+    } else {
+      tvDate.setDate(0);
+    }
+    // YYYY-MM-DD format
+    const tvQuotaStartDate = tvDate.toJSON().split('T')[0];
+    const tvQuotaUsed = (
+      await requestRepository
+        .createQueryBuilder('request')
+        .leftJoin('request.seasons', 'seasons')
+        .leftJoin('request.requestedBy', 'requestedBy')
+        .where('request.type = :requestType', {
+          requestType: MediaType.TV,
+        })
+        .andWhere('requestedBy.id = :userId', {
+          userId: this.id,
+        })
+        .andWhere('request.createdAt > :date', {
+          date: tvQuotaStartDate,
+        })
+        .andWhere('request.status != :declinedStatus', {
+          declinedStatus: MediaRequestStatus.DECLINED,
+        })
+        .addSelect((subQuery) => {
+          return subQuery
+            .select('COUNT(season.id)', 'seasonCount')
+            .from(SeasonRequest, 'season')
+            .leftJoin('season.request', 'parentRequest')
+            .where('parentRequest.id = request.id');
+        }, 'seasonCount')
+        .getMany()
+    ).reduce((sum: number, req: MediaRequest) => sum + req.seasonCount, 0);
+
+    return {
+      movie: {
+        days: this.movieQuotaDays,
+        limit: this.movieQuotaLimit,
+        used: movieQuotaUsed,
+        remaining: this.movieQuotaLimit
+          ? this.movieQuotaLimit - movieQuotaUsed
+          : undefined,
+      },
+      tv: {
+        days: this.tvQuotaDays,
+        limit: this.tvQuotaLimit,
+        used: tvQuotaUsed,
+        remaining: this.tvQuotaLimit
+          ? this.tvQuotaLimit - tvQuotaUsed
+          : undefined,
+      },
+    };
   }
 }

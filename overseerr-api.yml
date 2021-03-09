@@ -3057,27 +3057,33 @@ paths:
                   movie:
                     type: object
                     properties:
-                      quotaPeriod:
+                      days:
                         type: number
                         example: 7
-                      quotaQuantity:
+                      limit:
                         type: number
                         example: 10
-                      quotaRequestCount:
+                      used:
                         type: number
-                        example: 5
+                        example: 6
+                      remaining:
+                        type: number
+                        example: 4
                   tv:
                     type: object
                     properties:
-                      quotaPeriod:
+                      days:
                         type: number
                         example: 7
-                      quotaQuantity:
+                      limit:
                         type: number
                         example: 10
-                      quotaRequestCount:
+                      used:
                         type: number
-                        example: 5
+                        example: 6
+                      remaining:
+                        type: number
+                        example: 4
   /user/{userId}/settings/main:
     get:
       summary: Get general settings for a user

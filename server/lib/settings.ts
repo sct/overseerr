@@ -62,8 +62,8 @@ export interface SonarrSettings extends DVRSettings {
 }
 
 interface Quota {
-  quotaQuantity: number | undefined;
-  quotaPeriod: number | undefined;
+  quotaLimit: number | undefined;
+  quotaDays: number | undefined;
 }
 
 export interface MainSettings {
@@ -210,12 +210,12 @@ class Settings {
         defaultPermissions: Permission.REQUEST,
         defaultQuotas: {
           movie: {
-            quotaPeriod: undefined,
-            quotaQuantity: undefined,
+            quotaDays: undefined,
+            quotaLimit: undefined,
           },
           tv: {
-            quotaPeriod: undefined,
-            quotaQuantity: undefined,
+            quotaDays: undefined,
+            quotaLimit: undefined,
           },
         },
         hideAvailable: false,

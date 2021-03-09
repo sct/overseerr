@@ -158,11 +158,11 @@ requestRoutes.post(
       if (
         req.body.mediaType === MediaType.MOVIE &&
         requestUser &&
-        requestUser.movieQuotaPeriod > 0 &&
-        requestUser.movieQuotaQuantity > 0
+        requestUser.movieQuotaDays > 0 &&
+        requestUser.movieQuotaLimit > 0
       ) {
         const date = new Date();
-        date.setDate(date.getDate() - requestUser.movieQuotaPeriod);
+        date.setDate(date.getDate() - requestUser.movieQuotaDays);
 
         // YYYY-MM-DD format
         const quotaStartDate = date.toJSON().split('T')[0];
@@ -174,9 +174,7 @@ requestRoutes.post(
           },
         });
 
-        if (
-          moviesRequestedDuringPeriod.length >= requestUser.movieQuotaQuantity
-        ) {
+        if (moviesRequestedDuringPeriod.length >= requestUser.movieQuotaLimit) {
           return next({
             status: 403,
             message: 'Movie Quota Exceeded',
@@ -187,11 +185,11 @@ requestRoutes.post(
       if (
         req.body.mediaType === MediaType.TV &&
         requestUser &&
-        requestUser.tvQuotaPeriod > 0 &&
-        requestUser.tvQuotaQuantity > 0
+        requestUser.tvQuotaDays > 0 &&
+        requestUser.tvQuotaLimit > 0
       ) {
         const date = new Date();
-        date.setDate(date.getDate() - requestUser.tvQuotaPeriod);
+        date.setDate(date.getDate() - requestUser.tvQuotaDays);
 
         // YYYY-MM-DD format
         const quotaStartDate = date.toJSON().split('T')[0];
@@ -210,7 +208,7 @@ requestRoutes.post(
 
         if (
           seasonsRequestedDuringPeriod + req.body.seasons.length >
-          requestUser.tvQuotaQuantity
+          requestUser.tvQuotaLimit
         ) {
           return next({
             status: 403,

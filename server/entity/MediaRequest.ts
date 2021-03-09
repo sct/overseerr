@@ -10,6 +10,7 @@ import {
   getRepository,
   OneToMany,
   AfterRemove,
+  RelationCount,
 } from 'typeorm';
 import { User } from './User';
 import Media from './Media';
@@ -59,6 +60,9 @@ export class MediaRequest {
 
   @Column({ type: 'varchar' })
   public type: MediaType;
+
+  @RelationCount((request: MediaRequest) => request.seasons)
+  public seasonCount: number;
 
   @OneToMany(() => SeasonRequest, (season) => season.request, {
     eager: true,
