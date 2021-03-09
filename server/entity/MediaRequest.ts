@@ -144,7 +144,7 @@ export class MediaRequest {
    * auto approved content
    */
   @AfterUpdate()
-  public async notifyApprovedOrDeclined(): Promise<void> {
+  public async notifyApprovedOrDeclined(autoApproved = false): Promise<void> {
     if (
       this.status === MediaRequestStatus.APPROVED ||
       this.status === MediaRequestStatus.DECLINED
@@ -171,7 +171,9 @@ export class MediaRequest {
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
         notificationManager.sendNotification(
           this.status === MediaRequestStatus.APPROVED
-            ? Notification.MEDIA_APPROVED
+            ? autoApproved
+              ? Notification.MEDIA_AUTO_APPROVED
+              : Notification.MEDIA_APPROVED
             : Notification.MEDIA_DECLINED,
           {
             subject: movie.title,
@@ -211,13 +213,8 @@ export class MediaRequest {
 
   @AfterInsert()
   public async autoapprovalNotification(): Promise<void> {
-    const settings = getSettings().notifications;
-
-    if (
-      settings.autoapprovalEnabled &&
-      this.status === MediaRequestStatus.APPROVED
-    ) {
-      this.notifyApprovedOrDeclined();
+    if (this.status === MediaRequestStatus.APPROVED) {
+      this.notifyApprovedOrDeclined(true);
     }
   }
 

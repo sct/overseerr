@@ -2,7 +2,12 @@ import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentDiscord } from '../../settings';
-import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import {
+  BaseAgent,
+  NotificationAgent,
+  NotificationPayload,
+  userNotificationTypes,
+} from './agent';
 
 enum EmbedColors {
   DEFAULT = 0,
@@ -122,6 +127,7 @@ class DiscordAgent
         });
         break;
       case Notification.MEDIA_APPROVED:
+      case Notification.MEDIA_AUTO_APPROVED:
         color = EmbedColors.PURPLE;
         fields.push({
           name: 'Status',
@@ -217,6 +223,7 @@ class DiscordAgent
       let content = undefined;
 
       if (
+        userNotificationTypes.includes(type) &&
         payload.notifyUser.settings?.enableNotifications &&
         payload.notifyUser.settings?.discordId
       ) {

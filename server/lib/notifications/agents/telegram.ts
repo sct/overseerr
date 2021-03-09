@@ -2,7 +2,13 @@ import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentTelegram } from '../../settings';
-import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import { MediaType } from '../../../constants/media';
+import {
+  BaseAgent,
+  NotificationAgent,
+  NotificationPayload,
+  userNotificationTypes,
+} from './agent';
 
 interface TelegramMessagePayload {
   text: string;
@@ -66,7 +72,9 @@ class TelegramAgent
     /* eslint-disable no-useless-escape */
     switch (type) {
       case Notification.MEDIA_PENDING:
-        message += `\*New Request\*`;
+        message += `\*New ${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request\*`;
         message += `\n\n\*${title}\*`;
         if (plot) {
           message += `\n${plot}`;
@@ -75,7 +83,20 @@ class TelegramAgent
         message += `\n\n\*Status\*\nPending Approval`;
         break;
       case Notification.MEDIA_APPROVED:
-        message += `\*Request Approved\*`;
+        message += `\*${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Approved\*`;
+        message += `\n\n\*${title}\*`;
+        if (plot) {
+          message += `\n${plot}`;
+        }
+        message += `\n\n\*Requested By\*\n${user}`;
+        message += `\n\n\*Status\*\nProcessing`;
+        break;
+      case Notification.MEDIA_AUTO_APPROVED:
+        message += `\*${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Automatically Approved\*`;
         message += `\n\n\*${title}\*`;
         if (plot) {
           message += `\n${plot}`;
@@ -84,7 +105,9 @@ class TelegramAgent
         message += `\n\n\*Status\*\nProcessing`;
         break;
       case Notification.MEDIA_AVAILABLE:
-        message += `\*Now Available\*`;
+        message += `\*${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Now Available\*`;
         message += `\n\n\*${title}\*`;
         if (plot) {
           message += `\n${plot}`;
@@ -93,7 +116,9 @@ class TelegramAgent
         message += `\n\n\*Status\*\nAvailable`;
         break;
       case Notification.MEDIA_DECLINED:
-        message += `\*Request Declined\*`;
+        message += `\*${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Declined\*`;
         message += `\n\n\*${title}\*`;
         if (plot) {
           message += `\n${plot}`;
@@ -102,7 +127,9 @@ class TelegramAgent
         message += `\n\n\*Status\*\nDeclined`;
         break;
       case Notification.MEDIA_FAILED:
-        message += `\*Failed Request\*`;
+        message += `\*Failed ${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request\*`;
         message += `\n\n\*${title}\*`;
         if (plot) {
           message += `\n${plot}`;
@@ -135,6 +162,7 @@ class TelegramAgent
         this.getSettings().options.botAPI
       }/${payload.image ? 'sendPhoto' : 'sendMessage'}`;
 
+      // Send system notification
       await (payload.image
         ? axios.post(endpoint, {
             photo: payload.image,
@@ -150,7 +178,9 @@ class TelegramAgent
             disable_notification: this.getSettings().options.sendSilently,
           } as TelegramMessagePayload));
 
+      // Send user notification
       if (
+        userNotificationTypes.includes(type) &&
         payload.notifyUser.settings?.enableNotifications &&
         payload.notifyUser.settings?.telegramChatId &&
         payload.notifyUser.settings?.telegramChatId !==

@@ -27,3 +27,9 @@ export interface NotificationAgent {
   shouldSend(type: Notification, payload: NotificationPayload): boolean;
   send(type: Notification, payload: NotificationPayload): Promise<boolean>;
 }
+
+export const userNotificationTypes: Notification[] = [
+  Notification.MEDIA_APPROVED,
+  Notification.MEDIA_DECLINED,
+  Notification.MEDIA_AVAILABLE,
+];

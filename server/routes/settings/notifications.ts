@@ -15,7 +15,6 @@ notificationRoutes.get('/', (_req, res) => {
   const settings = getSettings().notifications;
   return res.status(200).json({
     enabled: settings.enabled,
-    autoapprovalEnabled: settings.autoapprovalEnabled,
   });
 });
 
@@ -24,13 +23,11 @@ notificationRoutes.post('/', (req, res) => {
 
   Object.assign(settings.notifications, {
     enabled: req.body.enabled,
-    autoapprovalEnabled: req.body.autoapprovalEnabled,
   });
   settings.save();
 
   return res.status(200).json({
     enabled: settings.notifications.enabled,
-    autoapprovalEnabled: settings.notifications.autoapprovalEnabled,
   });
 });
 

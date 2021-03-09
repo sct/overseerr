@@ -32,9 +32,9 @@ const messages = defineMessages({
   senderName: 'Sender Name',
   notificationtypes: 'Notification Types',
   validationEmail: 'You must provide a valid email address',
-  emailNotificationTypesAlert: 'Notification Email Recipients',
+  emailNotificationTypesAlert: 'Email Notification Recipients',
   emailNotificationTypesAlertDescription:
-    'For the "Media Requested" and "Media Failed" notification types,\
+    '"Media Requested," "Media Automatically Approved," and "Media Failed" email\
     notifications will only be sent to users with the "Manage Requests" permission.',
 });
 
