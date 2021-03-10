@@ -49,19 +49,6 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
     <>
       <div
         className={`relative flex items-start first:mt-0 mt-4 ${
-          ((option.permission === Permission.REQUEST_4K ||
-            option.permission === Permission.AUTO_APPROVE_4K) &&
-            !settings.currentSettings.movie4kEnabled &&
-            !settings.currentSettings.series4kEnabled) ||
-          ((option.permission === Permission.REQUEST_4K_MOVIE ||
-            option.permission === Permission.AUTO_APPROVE_4K_MOVIE) &&
-            !settings.currentSettings.movie4kEnabled) ||
-          ((option.permission === Permission.REQUEST_4K_TV ||
-            option.permission === Permission.AUTO_APPROVE_4K_TV) &&
-            !settings.currentSettings.series4kEnabled)
-            ? 'hidden'
-            : ''
-        } ${
           (currentUser && currentUser.id === 1) ||
           (option.permission !== Permission.ADMIN &&
             hasPermission(Permission.ADMIN, currentPermission)) ||
@@ -83,7 +70,17 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
               hasPermission(requirement.permissions, currentPermission, {
                 type: requirement.type ?? 'and',
               })
-            ))
+            )) ||
+          ((option.permission === Permission.REQUEST_4K ||
+            option.permission === Permission.AUTO_APPROVE_4K) &&
+            (!settings.currentSettings.movie4kEnabled ||
+              !settings.currentSettings.series4kEnabled)) ||
+          ((option.permission === Permission.REQUEST_4K_MOVIE ||
+            option.permission === Permission.AUTO_APPROVE_4K_MOVIE) &&
+            !settings.currentSettings.movie4kEnabled) ||
+          ((option.permission === Permission.REQUEST_4K_TV ||
+            option.permission === Permission.AUTO_APPROVE_4K_TV) &&
+            !settings.currentSettings.series4kEnabled)
             ? 'opacity-50'
             : ''
         }`}
@@ -115,7 +112,17 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
                   hasPermission(requirement.permissions, currentPermission, {
                     type: requirement.type ?? 'and',
                   })
-                ))
+                )) ||
+              ((option.permission === Permission.REQUEST_4K ||
+                option.permission === Permission.AUTO_APPROVE_4K) &&
+                (!settings.currentSettings.movie4kEnabled ||
+                  !settings.currentSettings.series4kEnabled)) ||
+              ((option.permission === Permission.REQUEST_4K_MOVIE ||
+                option.permission === Permission.AUTO_APPROVE_4K_MOVIE) &&
+                !settings.currentSettings.movie4kEnabled) ||
+              ((option.permission === Permission.REQUEST_4K_TV ||
+                option.permission === Permission.AUTO_APPROVE_4K_TV) &&
+                !settings.currentSettings.series4kEnabled)
             }
             onChange={() => {
               onUpdate(
@@ -138,7 +145,17 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
                   hasPermission(requirement.permissions, currentPermission, {
                     type: requirement.type ?? 'and',
                   })
-                ))
+                )) &&
+              ((option.permission !== Permission.REQUEST_4K &&
+                option.permission !== Permission.AUTO_APPROVE) ||
+                (settings.currentSettings.movie4kEnabled &&
+                  settings.currentSettings.series4kEnabled)) &&
+              ((option.permission !== Permission.REQUEST_4K_MOVIE &&
+                option.permission !== Permission.AUTO_APPROVE_MOVIE) ||
+                settings.currentSettings.movie4kEnabled) &&
+              ((option.permission !== Permission.REQUEST_4K_TV &&
+                option.permission !== Permission.AUTO_APPROVE_TV) ||
+                settings.currentSettings.series4kEnabled)
             }
           />
         </div>
