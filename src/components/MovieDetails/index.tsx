@@ -651,19 +651,23 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
-            {data.spokenLanguages.some(
-              (lng) => lng.iso_639_1 === data.originalLanguage
-            ) && (
+            {data.originalLanguage && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
                   {intl.formatMessage(messages.originallanguage)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
-                  {
-                    data.spokenLanguages.find(
-                      (lng) => lng.iso_639_1 === data.originalLanguage
-                    )?.name
-                  }
+                  <Link href={`/discover/tv/language/${data.originalLanguage}`}>
+                    <a className="hover:underline">
+                      {intl.formatDisplayName(data.originalLanguage, {
+                        type: 'language',
+                        fallback: 'none',
+                      }) ??
+                        data.spokenLanguages.find(
+                          (lng) => lng.iso_639_1 === data.originalLanguage
+                        )?.name}
+                    </a>
+                  </Link>
                 </span>
               </div>
             )}
