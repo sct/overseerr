@@ -1,9 +1,9 @@
 import schedule from 'node-schedule';
-import { jobPlexFullSync, jobPlexRecentSync } from './plexsync';
 import logger from '../logger';
 import { jobRadarrSync } from './radarrsync';
 import { jobSonarrSync } from './sonarrsync';
 import downloadTracker from '../lib/downloadtracker';
+import { plexFullScanner, plexRecentScanner } from '../lib/scanners/plex';
 
 interface ScheduledJob {
   id: string;
@@ -26,10 +26,10 @@ export const startJobs = (): void => {
       logger.info('Starting scheduled job: Plex Recently Added Scan', {
         label: 'Jobs',
       });
-      jobPlexRecentSync.run();
+      plexRecentScanner.run();
     }),
-    running: () => jobPlexRecentSync.status().running,
-    cancelFn: () => jobPlexRecentSync.cancel(),
+    running: () => plexRecentScanner.status().running,
+    cancelFn: () => plexRecentScanner.cancel(),
   });
 
   // Run full plex scan every 24 hours
@@ -41,10 +41,10 @@ export const startJobs = (): void => {
       logger.info('Starting scheduled job: Plex Full Library Scan', {
         label: 'Jobs',
       });
-      jobPlexFullSync.run();
+      plexFullScanner.run();
     }),
-    running: () => jobPlexFullSync.status().running,
-    cancelFn: () => jobPlexFullSync.cancel(),
+    running: () => plexFullScanner.status().running,
+    cancelFn: () => plexFullScanner.cancel(),
   });
 
   // Run full radarr scan every 24 hours

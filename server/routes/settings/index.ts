@@ -4,7 +4,6 @@ import { getRepository } from 'typeorm';
 import { User } from '../../entity/User';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
-import { jobPlexFullSync } from '../../job/plexsync';
 import { scheduledJobs } from '../../job/schedule';
 import { Permission } from '../../lib/permissions';
 import { isAuthenticated } from '../../middleware/auth';
@@ -17,6 +16,7 @@ import notificationRoutes from './notifications';
 import sonarrRoutes from './sonarr';
 import radarrRoutes from './radarr';
 import cacheManager, { AvailableCacheIds } from '../../lib/cache';
+import { plexFullScanner } from '../../lib/scanners/plex';
 
 const settingsRoutes = Router();
 
@@ -211,16 +211,16 @@ settingsRoutes.get('/plex/library', async (req, res) => {
 });
 
 settingsRoutes.get('/plex/sync', (_req, res) => {
-  return res.status(200).json(jobPlexFullSync.status());
+  return res.status(200).json(plexFullScanner.status());
 });
 
 settingsRoutes.post('/plex/sync', (req, res) => {
   if (req.body.cancel) {
-    jobPlexFullSync.cancel();
+    plexFullScanner.cancel();
   } else if (req.body.start) {
-    jobPlexFullSync.run();
+    plexFullScanner.run();
   }
-  return res.status(200).json(jobPlexFullSync.status());
+  return res.status(200).json(plexFullScanner.status());
 });
 
 settingsRoutes.get('/jobs', (_req, res) => {
