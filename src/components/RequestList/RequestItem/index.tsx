@@ -22,7 +22,7 @@ import RequestModal from '../../RequestModal';
 import ConfirmButton from '../../Common/ConfirmButton';
 
 const messages = defineMessages({
-  seasons: 'Seasons',
+  seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   all: 'All',
   notavailable: 'N/A',
   failedretry: 'Something went wrong while retrying the request.',
@@ -190,13 +190,19 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   </a>
                 </Link>
               </div>
-              {request.seasons.length > 0 && (
+              {!isMovie(title) && request.seasons.length > 0 && (
                 <div className="card-field">
                   <span className="card-field-name">
-                    {intl.formatMessage(messages.seasons)}
+                    {intl.formatMessage(messages.seasons, {
+                      seasonCount:
+                        title.seasons.filter(
+                          (season) => season.seasonNumber !== 0
+                        ).length === request.seasons.length
+                          ? 0
+                          : request.seasons.length,
+                    })}
                   </span>
-                  {!isMovie(title) &&
-                  title.seasons.filter((season) => season.seasonNumber !== 0)
+                  {title.seasons.filter((season) => season.seasonNumber !== 0)
                     .length === request.seasons.length ? (
                     <span className="mr-2 uppercase">
                       <Badge>{intl.formatMessage(messages.all)}</Badge>
