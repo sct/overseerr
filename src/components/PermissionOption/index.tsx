@@ -1,6 +1,7 @@
 import React from 'react';
 import { hasPermission } from '../../../server/lib/permissions';
 import { Permission, User } from '../../hooks/useUser';
+import useSettings from '../../hooks/useSettings';
 
 export interface PermissionItem {
   id: string;
@@ -33,6 +34,8 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
   onUpdate,
   parent,
 }) => {
+  const settings = useSettings();
+
   const autoApprovePermissions = [
     Permission.AUTO_APPROVE,
     Permission.AUTO_APPROVE_MOVIE,
@@ -46,6 +49,19 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
     <>
       <div
         className={`relative flex items-start first:mt-0 mt-4 ${
+          ((option.permission === Permission.REQUEST_4K ||
+            option.permission === Permission.AUTO_APPROVE_4K) &&
+            !settings.currentSettings.movie4kEnabled &&
+            !settings.currentSettings.series4kEnabled) ||
+          ((option.permission === Permission.REQUEST_4K_MOVIE ||
+            option.permission === Permission.AUTO_APPROVE_4K_MOVIE) &&
+            !settings.currentSettings.movie4kEnabled) ||
+          ((option.permission === Permission.REQUEST_4K_TV ||
+            option.permission === Permission.AUTO_APPROVE_4K_TV) &&
+            !settings.currentSettings.series4kEnabled)
+            ? 'hidden'
+            : ''
+        } ${
           (currentUser && currentUser.id === 1) ||
           (option.permission !== Permission.ADMIN &&
             hasPermission(Permission.ADMIN, currentPermission)) ||
