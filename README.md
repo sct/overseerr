@@ -12,7 +12,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-39-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-40-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -149,6 +149,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Roxedus"><img src="https://avatars.githubusercontent.com/u/7110194?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Roxedus</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Roxedus" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/WoisWoi"><img src="https://avatars.githubusercontent.com/u/75491231?v=4?s=100" width="100px;" alt=""/><br /><sub><b>WoisWoi</b></sub></a><br /><a href="#translation-WoisWoi" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/HubDuck"><img src="https://avatars.githubusercontent.com/u/77843475?v=4?s=100" width="100px;" alt=""/><br /><sub><b>HubDuck</b></sub></a><br /><a href="#translation-HubDuck" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/costaht"><img src="https://avatars.githubusercontent.com/u/50637431?v=4?s=100" width="100px;" alt=""/><br /><sub><b>costaht</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=costaht" title="Documentation">📖</a> <a href="#translation-costaht" title="Translation">🌍</a></td>
   </tr>
 </table>
 
