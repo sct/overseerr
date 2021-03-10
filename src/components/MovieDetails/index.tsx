@@ -657,7 +657,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   {intl.formatMessage(messages.originallanguage)}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
-                  <Link href={`/discover/tv/language/${data.originalLanguage}`}>
+                  <Link
+                    href={`/discover/movies/language/${data.originalLanguage}`}
+                  >
                     <a className="hover:underline">
                       {intl.formatDisplayName(data.originalLanguage, {
                         type: 'language',
