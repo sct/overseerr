@@ -34,6 +34,7 @@ interface DiscoverMovieOptions {
   language?: string;
   primaryReleaseDateGte?: string;
   primaryReleaseDateLte?: string;
+  originalLanguage?: string;
   genre?: number;
   studio?: number;
   sortBy?:
@@ -59,6 +60,7 @@ interface DiscoverTvOptions {
   firstAirDateGte?: string;
   firstAirDateLte?: string;
   includeEmptyReleaseDate?: boolean;
+  originalLanguage?: string;
   genre?: number;
   network?: number;
   sortBy?:
@@ -368,6 +370,7 @@ class TheMovieDb extends ExternalAPI {
     language = 'en',
     primaryReleaseDateGte,
     primaryReleaseDateLte,
+    originalLanguage,
     genre,
     studio,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
@@ -379,7 +382,7 @@ class TheMovieDb extends ExternalAPI {
           include_adult: includeAdult,
           language,
           region: this.region,
-          with_original_language: this.originalLanguage,
+          with_original_language: originalLanguage ?? this.originalLanguage,
           'primary_release_date.gte': primaryReleaseDateGte,
           'primary_release_date.lte': primaryReleaseDateLte,
           with_genres: genre,
@@ -400,6 +403,7 @@ class TheMovieDb extends ExternalAPI {
     firstAirDateGte,
     firstAirDateLte,
     includeEmptyReleaseDate = false,
+    originalLanguage,
     genre,
     network,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
@@ -412,7 +416,7 @@ class TheMovieDb extends ExternalAPI {
           region: this.region,
           'first_air_date.gte': firstAirDateGte,
           'first_air_date.lte': firstAirDateLte,
-          with_original_language: this.originalLanguage,
+          with_original_language: originalLanguage ?? this.originalLanguage,
           include_null_first_air_dates: includeEmptyReleaseDate,
           with_genres: genre,
           with_networks: network,
