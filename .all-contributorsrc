@@ -357,6 +357,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "HubDuck",
+      "name": "HubDuck",
+      "avatar_url": "https://avatars.githubusercontent.com/u/77843475?v=4",
+      "profile": "https://github.com/HubDuck",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
