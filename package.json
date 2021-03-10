@@ -189,7 +189,7 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "docker buildx build -t sctx/overseerr --build-arg COMMIT_TAG=$GITHUB_SHA --platform linux/amd64,linux/arm64,linux/arm/v7 -f Dockerfile ."
+          "prepareCmd": "docker buildx build -t sctx/overseerr --load --build-arg COMMIT_TAG=$GITHUB_SHA --platform linux/amd64,linux/arm64,linux/arm/v7 -f Dockerfile ."
         }
       ],
       "semantic-release-docker",
