@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import useSWR from 'swr';
@@ -41,8 +41,10 @@ interface ServerInstanceProps {
   name: string;
   isDefault?: boolean;
   isDefault4K?: boolean;
-  address: string;
+  hostname: string;
+  port: number;
   isSSL?: boolean;
+  externalUrl?: string;
   profileName: string;
   isSonarr?: boolean;
   onEdit: () => void;
@@ -51,57 +53,73 @@ interface ServerInstanceProps {
 
 const ServerInstance: React.FC<ServerInstanceProps> = ({
   name,
-  address,
+  hostname,
+  port,
   profileName,
   isDefault4K = false,
   isDefault = false,
   isSSL = false,
   isSonarr = false,
+  externalUrl,
   onEdit,
   onDelete,
 }) => {
+  const intl = useIntl();
+
+  const internalUrl =
+    (isSSL ? 'https://' : 'http://') + hostname + ':' + String(port);
+  const serviceUrl = externalUrl ?? internalUrl;
+
   return (
     <li className="col-span-1 bg-gray-700 rounded-lg shadow">
       <div className="flex items-center justify-between w-full p-6 space-x-6">
         <div className="flex-1 truncate">
           <div className="flex items-center mb-2 space-x-3">
             <h3 className="font-medium leading-5 text-white truncate">
-              {name}
+              <a
+                href={serviceUrl}
+                className="transition duration-300 hover:underline hover:text-white"
+              >
+                {name}
+              </a>
             </h3>
-            {isDefault && (
-              <Badge>
-                <FormattedMessage {...messages.default} />
-              </Badge>
-            )}
+            {isDefault && <Badge>{intl.formatMessage(messages.default)}</Badge>}
             {isDefault4K && (
               <Badge badgeType="warning">
-                <FormattedMessage {...messages.default4k} />
+                {intl.formatMessage(messages.default4k)}
               </Badge>
             )}
             {isSSL && (
               <Badge badgeType="success">
-                <FormattedMessage {...messages.ssl} />
+                {intl.formatMessage(messages.ssl)}
               </Badge>
             )}
           </div>
           <p className="mt-1 text-sm leading-5 text-gray-300 truncate">
             <span className="mr-2 font-bold">
-              <FormattedMessage {...messages.address} />
+              {intl.formatMessage(messages.address)}
             </span>
-            {address}
+            <a
+              href={internalUrl}
+              className="transition duration-300 hover:underline hover:text-white"
+            >
+              {internalUrl}
+            </a>
           </p>
           <p className="mt-1 text-sm leading-5 text-gray-300 truncate">
             <span className="mr-2 font-bold">
-              <FormattedMessage {...messages.activeProfile} />
-            </span>{' '}
+              {intl.formatMessage(messages.activeProfile)}
+            </span>
             {profileName}
           </p>
         </div>
-        <img
-          className="flex-shrink-0 w-10 h-10"
-          src={`/images/${isSonarr ? 'sonarr' : 'radarr'}_logo.svg`}
-          alt=""
-        />
+        <a href={serviceUrl} className="opacity-50 hover:opacity-100">
+          <img
+            className="flex-shrink-0 w-10 h-10"
+            src={`/images/${isSonarr ? 'sonarr' : 'radarr'}_logo.svg`}
+            alt={isSonarr ? 'Sonarr' : 'Radarr'}
+          />
+        </a>
       </div>
       <div className="border-t border-gray-800">
         <div className="flex -mt-px">
@@ -118,9 +136,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               >
                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
               </svg>
-              <span className="ml-3">
-                <FormattedMessage {...messages.edit} />
-              </span>
+              <span className="ml-3">{intl.formatMessage(messages.edit)}</span>
             </button>
           </div>
           <div className="flex flex-1 w-0 -ml-px">
@@ -141,7 +157,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
                 />
               </svg>
               <span className="ml-3">
-                <FormattedMessage {...messages.delete} />
+                {intl.formatMessage(messages.delete)}
               </span>
             </button>
           </div>
@@ -200,10 +216,10 @@ const SettingsServices: React.FC = () => {
     <>
       <div className="mb-6">
         <h3 className="heading">
-          <FormattedMessage {...messages.radarrsettings} />
+          {intl.formatMessage(messages.radarrsettings)}
         </h3>
         <p className="description">
-          <FormattedMessage {...messages.radarrSettingsDescription} />
+          {intl.formatMessage(messages.radarrSettingsDescription)}
         </p>
       </div>
       {editRadarrModal.open && (
@@ -248,7 +264,7 @@ const SettingsServices: React.FC = () => {
           }
           title="Delete Server"
         >
-          <FormattedMessage {...messages.deleteserverconfirm} />
+          {intl.formatMessage(messages.deleteserverconfirm)}
         </Modal>
       </Transition>
       <div className="section">
@@ -268,11 +284,13 @@ const SettingsServices: React.FC = () => {
                 <ServerInstance
                   key={`radarr-config-${radarr.id}`}
                   name={radarr.name}
-                  address={radarr.hostname}
+                  hostname={radarr.hostname}
+                  port={radarr.port}
                   profileName={radarr.activeProfileName}
                   isSSL={radarr.useSsl}
                   isDefault={radarr.isDefault && !radarr.is4k}
                   isDefault4K={radarr.is4k && radarr.isDefault}
+                  externalUrl={radarr.externalUrl}
                   onEdit={() => setEditRadarrModal({ open: true, radarr })}
                   onDelete={() =>
                     setDeleteServerModal({
@@ -304,7 +322,7 @@ const SettingsServices: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <FormattedMessage {...messages.addradarr} />
+                    {intl.formatMessage(messages.addradarr)}
                   </Button>
                 </div>
               </li>
@@ -314,10 +332,10 @@ const SettingsServices: React.FC = () => {
       </div>
       <div className="mt-10 mb-6">
         <h3 className="heading">
-          <FormattedMessage {...messages.sonarrsettings} />
+          {intl.formatMessage(messages.sonarrsettings)}
         </h3>
         <p className="description">
-          <FormattedMessage {...messages.sonarrSettingsDescription} />
+          {intl.formatMessage(messages.sonarrSettingsDescription)}
         </p>
       </div>
       <div className="section">
@@ -337,12 +355,14 @@ const SettingsServices: React.FC = () => {
                 <ServerInstance
                   key={`sonarr-config-${sonarr.id}`}
                   name={sonarr.name}
-                  address={sonarr.hostname}
+                  hostname={sonarr.hostname}
+                  port={sonarr.port}
                   profileName={sonarr.activeProfileName}
                   isSSL={sonarr.useSsl}
                   isSonarr
                   isDefault4K={sonarr.isDefault && sonarr.is4k}
                   isDefault={sonarr.isDefault && !sonarr.is4k}
+                  externalUrl={sonarr.externalUrl}
                   onEdit={() => setEditSonarrModal({ open: true, sonarr })}
                   onDelete={() =>
                     setDeleteServerModal({
@@ -373,7 +393,7 @@ const SettingsServices: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <FormattedMessage {...messages.addsonarr} />
+                    {intl.formatMessage(messages.addsonarr)}
                   </Button>
                 </div>
               </li>

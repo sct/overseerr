@@ -211,32 +211,34 @@ requestRoutes.post(
           media,
           requestedBy: requestUser,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
-          status:
-            req.user?.hasPermission(
+          status: req.user?.hasPermission(
+            [
               req.body.is4k
                 ? Permission.AUTO_APPROVE_4K
-                : Permission.AUTO_APPROVE
-            ) ||
-            req.user?.hasPermission(
+                : Permission.AUTO_APPROVE,
               req.body.is4k
                 ? Permission.AUTO_APPROVE_4K_MOVIE
-                : Permission.AUTO_APPROVE_MOVIE
-            )
-              ? MediaRequestStatus.APPROVED
-              : MediaRequestStatus.PENDING,
-          modifiedBy:
-            req.user?.hasPermission(
+                : Permission.AUTO_APPROVE_MOVIE,
+              Permission.MANAGE_REQUESTS,
+            ],
+            { type: 'or' }
+          )
+            ? MediaRequestStatus.APPROVED
+            : MediaRequestStatus.PENDING,
+          modifiedBy: req.user?.hasPermission(
+            [
               req.body.is4k
                 ? Permission.AUTO_APPROVE_4K
-                : Permission.AUTO_APPROVE
-            ) ||
-            req.user?.hasPermission(
+                : Permission.AUTO_APPROVE,
               req.body.is4k
                 ? Permission.AUTO_APPROVE_4K_MOVIE
-                : Permission.AUTO_APPROVE_MOVIE
-            )
-              ? req.user
-              : undefined,
+                : Permission.AUTO_APPROVE_MOVIE,
+              Permission.MANAGE_REQUESTS,
+            ],
+            { type: 'or' }
+          )
+            ? req.user
+            : undefined,
           is4k: req.body.is4k,
           serverId: req.body.serverId,
           profileId: req.body.profileId,
@@ -286,32 +288,34 @@ requestRoutes.post(
           media,
           requestedBy: requestUser,
           // If the user is an admin or has the "auto approve" permission, automatically approve the request
-          status:
-            req.user?.hasPermission(
+          status: req.user?.hasPermission(
+            [
               req.body.is4k
                 ? Permission.AUTO_APPROVE_4K
-                : Permission.AUTO_APPROVE
-            ) ||
-            req.user?.hasPermission(
+                : Permission.AUTO_APPROVE,
               req.body.is4k
                 ? Permission.AUTO_APPROVE_4K_TV
-                : Permission.AUTO_APPROVE_TV
-            )
-              ? MediaRequestStatus.APPROVED
-              : MediaRequestStatus.PENDING,
-          modifiedBy:
-            req.user?.hasPermission(
+                : Permission.AUTO_APPROVE_TV,
+              Permission.MANAGE_REQUESTS,
+            ],
+            { type: 'or' }
+          )
+            ? MediaRequestStatus.APPROVED
+            : MediaRequestStatus.PENDING,
+          modifiedBy: req.user?.hasPermission(
+            [
               req.body.is4k
                 ? Permission.AUTO_APPROVE_4K
-                : Permission.AUTO_APPROVE
-            ) ||
-            req.user?.hasPermission(
+                : Permission.AUTO_APPROVE,
               req.body.is4k
                 ? Permission.AUTO_APPROVE_4K_TV
-                : Permission.AUTO_APPROVE_TV
-            )
-              ? req.user
-              : undefined,
+                : Permission.AUTO_APPROVE_TV,
+              Permission.MANAGE_REQUESTS,
+            ],
+            { type: 'or' }
+          )
+            ? req.user
+            : undefined,
           is4k: req.body.is4k,
           serverId: req.body.serverId,
           profileId: req.body.profileId,
@@ -321,19 +325,20 @@ requestRoutes.post(
             (sn) =>
               new SeasonRequest({
                 seasonNumber: sn,
-                status:
-                  req.user?.hasPermission(
+                status: req.user?.hasPermission(
+                  [
                     req.body.is4k
                       ? Permission.AUTO_APPROVE_4K
-                      : Permission.AUTO_APPROVE
-                  ) ||
-                  req.user?.hasPermission(
+                      : Permission.AUTO_APPROVE,
                     req.body.is4k
                       ? Permission.AUTO_APPROVE_4K_TV
-                      : Permission.AUTO_APPROVE_TV
-                  )
-                    ? MediaRequestStatus.APPROVED
-                    : MediaRequestStatus.PENDING,
+                      : Permission.AUTO_APPROVE_TV,
+                    Permission.MANAGE_REQUESTS,
+                  ],
+                  { type: 'or' }
+                )
+                  ? MediaRequestStatus.APPROVED
+                  : MediaRequestStatus.PENDING,
               })
           ),
         });

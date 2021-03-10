@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import RequestItem from './RequestItem';
 import Header from '../Common/Header';
-import Table from '../Common/Table';
 import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
+import { useRouter } from 'next/router';
 
 const messages = defineMessages({
   requests: 'Requests',
-  mediaInfo: 'Media Info',
-  status: 'Status',
-  requestedAt: 'Requested At',
-  modifiedBy: 'Last Modified By',
   showingresults:
     'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
   resultsperpage: 'Display {pageSize} results per page',
@@ -35,17 +31,46 @@ type Filter = 'all' | 'pending' | 'approved' | 'processing' | 'available';
 type Sort = 'added' | 'modified';
 
 const RequestList: React.FC = () => {
+  const router = useRouter();
   const intl = useIntl();
-  const [pageIndex, setPageIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState<Filter>('pending');
   const [currentSort, setCurrentSort] = useState<Sort>('added');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
+
+  const page = router.query.page ? Number(router.query.page) : 1;
+  const pageIndex = page - 1;
 
   const { data, error, revalidate } = useSWR<RequestResultsResponse>(
     `/api/v1/request?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&filter=${currentFilter}&sort=${currentSort}`
   );
+
+  // Restore last set filter values on component mount
+  useEffect(() => {
+    const filterString = window.localStorage.getItem('rl-filter-settings');
+
+    if (filterString) {
+      const filterSettings = JSON.parse(filterString);
+
+      setCurrentFilter(filterSettings.currentFilter);
+      setCurrentSort(filterSettings.currentSort);
+      setCurrentPageSize(filterSettings.currentPageSize);
+    }
+  }, []);
+
+  // Set fitler values to local storage any time they are changed
+  useEffect(() => {
+    window.localStorage.setItem(
+      'rl-filter-settings',
+      JSON.stringify({
+        currentFilter,
+        currentSort,
+        currentPageSize,
+      })
+    );
+  }, [currentFilter, currentSort, currentPageSize]);
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -60,7 +85,7 @@ const RequestList: React.FC = () => {
   return (
     <>
       <PageTitle title={intl.formatMessage(messages.requests)} />
-      <div className="flex flex-col justify-between lg:items-end lg:flex-row">
+      <div className="flex flex-col justify-between mb-4 lg:items-end lg:flex-row">
         <Header>{intl.formatMessage(messages.requests)}</Header>
         <div className="flex flex-col flex-grow mt-2 sm:flex-row lg:flex-grow-0">
           <div className="flex flex-grow mb-2 sm:mb-0 sm:mr-2 lg:flex-grow-0">
@@ -82,8 +107,8 @@ const RequestList: React.FC = () => {
               id="filter"
               name="filter"
               onChange={(e) => {
-                setPageIndex(0);
                 setCurrentFilter(e.target.value as Filter);
+                router.push(router.pathname);
               }}
               value={currentFilter}
               className="rounded-r-only"
@@ -120,12 +145,8 @@ const RequestList: React.FC = () => {
               id="sort"
               name="sort"
               onChange={(e) => {
-                setPageIndex(0);
                 setCurrentSort(e.target.value as Sort);
-              }}
-              onBlur={(e) => {
-                setPageIndex(0);
-                setCurrentSort(e.target.value as Sort);
+                router.push(router.pathname);
               }}
               value={currentSort}
               className="rounded-r-only"
@@ -140,114 +161,109 @@ const RequestList: React.FC = () => {
           </div>
         </div>
       </div>
-      <Table>
-        <thead>
-          <tr>
-            <Table.TH>{intl.formatMessage(messages.mediaInfo)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.status)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.requestedAt)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.modifiedBy)}</Table.TH>
-            <Table.TH></Table.TH>
-          </tr>
-        </thead>
-        <Table.TBody>
-          {data.results.map((request) => {
-            return (
-              <RequestItem
-                request={request}
-                key={`request-list-${request.id}`}
-                revalidateList={() => revalidate()}
-              />
-            );
-          })}
+      {data.results.map((request) => {
+        return (
+          <div className="py-2" key={`request-list-${request.id}`}>
+            <RequestItem
+              request={request}
+              revalidateList={() => revalidate()}
+            />
+          </div>
+        );
+      })}
 
-          {data.results.length === 0 && (
-            <tr className="relative h-24 p-2 text-white">
-              <Table.TD colSpan={6} noPadding>
-                <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
-                  <span className="text-base">
-                    {intl.formatMessage(messages.noresults)}
-                  </span>
-                  {currentFilter !== 'all' && (
-                    <div className="mt-4">
-                      <Button
-                        buttonSize="sm"
-                        buttonType="primary"
-                        onClick={() => setCurrentFilter('all')}
-                      >
-                        {intl.formatMessage(messages.showallrequests)}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </Table.TD>
-            </tr>
-          )}
-          <tr className="bg-gray-700">
-            <Table.TD colSpan={6} noPadding>
-              <nav
-                className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
-                aria-label="Pagination"
+      {data.results.length === 0 && (
+        <div className="flex flex-col items-center justify-center w-full py-24 text-white">
+          <span className="text-2xl text-gray-400">
+            {intl.formatMessage(messages.noresults)}
+          </span>
+          {currentFilter !== 'all' && (
+            <div className="mt-4">
+              <Button
+                buttonType="primary"
+                onClick={() => setCurrentFilter('all')}
               >
-                <div className="hidden lg:flex lg:flex-1">
-                  <p className="text-sm">
-                    {data.results.length > 0 &&
-                      intl.formatMessage(messages.showingresults, {
-                        from: pageIndex * currentPageSize + 1,
-                        to:
-                          data.results.length < currentPageSize
-                            ? pageIndex * currentPageSize + data.results.length
-                            : (pageIndex + 1) * currentPageSize,
-                        total: data.pageInfo.results,
-                        strong: function strong(msg) {
-                          return <span className="font-medium">{msg}</span>;
-                        },
-                      })}
-                  </p>
-                </div>
-                <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
-                  <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
-                    {intl.formatMessage(messages.resultsperpage, {
-                      pageSize: (
-                        <select
-                          id="pageSize"
-                          name="pageSize"
-                          onChange={(e) => {
-                            setPageIndex(0);
-                            setCurrentPageSize(Number(e.target.value));
-                          }}
-                          value={currentPageSize}
-                          className="inline short"
-                        >
-                          <option value="5">5</option>
-                          <option value="10">10</option>
-                          <option value="25">25</option>
-                          <option value="50">50</option>
-                          <option value="100">100</option>
-                        </select>
-                      ),
-                    })}
-                  </span>
-                </div>
-                <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
-                  <Button
-                    disabled={!hasPrevPage}
-                    onClick={() => setPageIndex((current) => current - 1)}
+                {intl.formatMessage(messages.showallrequests)}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+      <div className="actions">
+        <nav
+          className="flex flex-col items-center mb-3 space-y-3 sm:space-y-0 sm:flex-row"
+          aria-label="Pagination"
+        >
+          <div className="hidden lg:flex lg:flex-1">
+            <p className="text-sm">
+              {data.results.length > 0 &&
+                intl.formatMessage(messages.showingresults, {
+                  from: pageIndex * currentPageSize + 1,
+                  to:
+                    data.results.length < currentPageSize
+                      ? pageIndex * currentPageSize + data.results.length
+                      : (pageIndex + 1) * currentPageSize,
+                  total: data.pageInfo.results,
+                  strong: function strong(msg) {
+                    return <span className="font-medium">{msg}</span>;
+                  },
+                })}
+            </p>
+          </div>
+          <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
+            <span className="items-center -mt-3 text-sm truncate sm:mt-0">
+              {intl.formatMessage(messages.resultsperpage, {
+                pageSize: (
+                  <select
+                    id="pageSize"
+                    name="pageSize"
+                    onChange={(e) => {
+                      setCurrentPageSize(Number(e.target.value));
+                      router
+                        .push(router.pathname)
+                        .then(() => window.scrollTo(0, 0));
+                    }}
+                    value={currentPageSize}
+                    className="inline short"
                   >
-                    {intl.formatMessage(messages.previous)}
-                  </Button>
-                  <Button
-                    disabled={!hasNextPage}
-                    onClick={() => setPageIndex((current) => current + 1)}
-                  >
-                    {intl.formatMessage(messages.next)}
-                  </Button>
-                </div>
-              </nav>
-            </Table.TD>
-          </tr>
-        </Table.TBody>
-      </Table>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                ),
+              })}
+            </span>
+          </div>
+          <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
+            <Button
+              disabled={!hasPrevPage}
+              onClick={() =>
+                router
+                  .push(`${router.pathname}?page=${page - 1}`, undefined, {
+                    shallow: true,
+                  })
+                  .then(() => window.scrollTo(0, 0))
+              }
+            >
+              {intl.formatMessage(messages.previous)}
+            </Button>
+            <Button
+              disabled={!hasNextPage}
+              onClick={() =>
+                router
+                  .push(`${router.pathname}?page=${page + 1}`, undefined, {
+                    shallow: true,
+                  })
+                  .then(() => window.scrollTo(0, 0))
+              }
+            >
+              {intl.formatMessage(messages.next)}
+            </Button>
+          </div>
+        </nav>
+      </div>
     </>
   );
 };

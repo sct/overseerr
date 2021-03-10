@@ -60,10 +60,11 @@ const messages = defineMessages({
   manageModalNoRequests: 'No Requests',
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
-    'This will irreversibly remove all data for this movie, including any requests. If this item exists in your Plex library, the media information will be recreated during the next sync.',
+    'This will irreversibly remove all data for this movie, including any requests.\
+    If this item exists in your Plex library, the media information will be recreated during the next scan.',
   approve: 'Approve',
   decline: 'Decline',
-  studio: 'Studio',
+  studio: '{studioCount, plural, one {Studio} other {Studios}}',
   viewfullcrew: 'View Full Crew',
   view: 'View',
   areyousure: 'Are you sure?',
@@ -187,7 +188,19 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   }
 
   if (data.genres.length) {
-    movieAttributes.push(data.genres.map((g) => g.name).join(', '));
+    movieAttributes.push(
+      data.genres
+        .map((g) => (
+          <Link href={`/discover/movies/genre/${g.id}`} key={`genre-${g.id}`}>
+            <a className="hover:underline">{g.name}</a>
+          </Link>
+        ))
+        .reduce((prev, curr) => (
+          <>
+            {prev}, {curr}
+          </>
+        ))
+    );
   }
 
   return (
@@ -654,13 +667,24 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
-            {data.productionCompanies[0] && (
+            {data.productionCompanies.length > 0 && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  {intl.formatMessage(messages.studio)}
+                  {intl.formatMessage(messages.studio, {
+                    studioCount: data.productionCompanies.length,
+                  })}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
-                  {data.productionCompanies[0]?.name}
+                  {data.productionCompanies.map((s) => {
+                    return (
+                      <Link
+                        href={`/discover/movies/studio/${s.id}`}
+                        key={`studio-${s.id}`}
+                      >
+                        <a className="block hover:underline">{s.name}</a>
+                      </Link>
+                    );
+                  })}
                 </span>
               </div>
             )}

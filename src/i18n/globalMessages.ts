@@ -23,6 +23,7 @@ const globalMessages = defineMessages({
   edit: 'Edit',
   experimental: 'Experimental',
   advanced: 'Advanced',
+  loading: 'Loading…',
 });
 
 export default globalMessages;

@@ -17,13 +17,13 @@ interface ScheduledJob {
 export const scheduledJobs: ScheduledJob[] = [];
 
 export const startJobs = (): void => {
-  // Run recently added plex sync every 5 minutes
+  // Run recently added plex scan every 5 minutes
   scheduledJobs.push({
-    id: 'plex-recently-added-sync',
-    name: 'Plex Recently Added Sync',
+    id: 'plex-recently-added-scan',
+    name: 'Plex Recently Added Scan',
     type: 'process',
     job: schedule.scheduleJob('0 */5 * * * *', () => {
-      logger.info('Starting scheduled job: Plex Recently Added Sync', {
+      logger.info('Starting scheduled job: Plex Recently Added Scan', {
         label: 'Jobs',
       });
       jobPlexRecentSync.run();
@@ -32,39 +32,41 @@ export const startJobs = (): void => {
     cancelFn: () => jobPlexRecentSync.cancel(),
   });
 
-  // Run full plex sync every 24 hours
+  // Run full plex scan every 24 hours
   scheduledJobs.push({
-    id: 'plex-full-sync',
-    name: 'Plex Full Library Sync',
+    id: 'plex-full-scan',
+    name: 'Plex Full Library Scan',
     type: 'process',
     job: schedule.scheduleJob('0 0 3 * * *', () => {
-      logger.info('Starting scheduled job: Plex Full Sync', { label: 'Jobs' });
+      logger.info('Starting scheduled job: Plex Full Library Scan', {
+        label: 'Jobs',
+      });
       jobPlexFullSync.run();
     }),
     running: () => jobPlexFullSync.status().running,
     cancelFn: () => jobPlexFullSync.cancel(),
   });
 
-  // Run full radarr sync every 24 hours
+  // Run full radarr scan every 24 hours
   scheduledJobs.push({
-    id: 'radarr-sync',
-    name: 'Radarr Sync',
+    id: 'radarr-scan',
+    name: 'Radarr Scan',
     type: 'process',
     job: schedule.scheduleJob('0 0 4 * * *', () => {
-      logger.info('Starting scheduled job: Radarr Sync', { label: 'Jobs' });
+      logger.info('Starting scheduled job: Radarr Scan', { label: 'Jobs' });
       jobRadarrSync.run();
     }),
     running: () => jobRadarrSync.status().running,
     cancelFn: () => jobRadarrSync.cancel(),
   });
 
-  // Run full sonarr sync every 24 hours
+  // Run full sonarr scan every 24 hours
   scheduledJobs.push({
-    id: 'sonarr-sync',
-    name: 'Sonarr Sync',
+    id: 'sonarr-scan',
+    name: 'Sonarr Scan',
     type: 'process',
     job: schedule.scheduleJob('0 30 4 * * *', () => {
-      logger.info('Starting scheduled job: Sonarr Sync', { label: 'Jobs' });
+      logger.info('Starting scheduled job: Sonarr Scan', { label: 'Jobs' });
       jobSonarrSync.run();
     }),
     running: () => jobSonarrSync.status().running,

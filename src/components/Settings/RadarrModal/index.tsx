@@ -35,7 +35,7 @@ const messages = defineMessages({
   apiKeyPlaceholder: 'Your Radarr API key',
   baseUrl: 'Base URL',
   baseUrlPlaceholder: 'Example: /radarr',
-  syncEnabled: 'Enable Sync',
+  syncEnabled: 'Enable Scan',
   externalUrl: 'External URL',
   externalUrlPlaceholder: 'External URL pointing to your Radarr server',
   qualityprofile: 'Quality Profile',

@@ -14,6 +14,7 @@ const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
+  botUsername: 'Bot Username',
   botAPI: 'Bot Authentication Token',
   chatId: 'Chat ID',
   validationBotAPIRequired: 'You must provide a bot authentication token',
@@ -43,9 +44,12 @@ const NotificationsTelegram: React.FC = () => {
     botAPI: Yup.string().required(
       intl.formatMessage(messages.validationBotAPIRequired)
     ),
-    chatId: Yup.string().required(
-      intl.formatMessage(messages.validationChatIdRequired)
-    ),
+    chatId: Yup.string()
+      .required(intl.formatMessage(messages.validationChatIdRequired))
+      .matches(
+        /^[-]?\d+$/,
+        intl.formatMessage(messages.validationChatIdRequired)
+      ),
   });
 
   if (!data && !error) {
@@ -57,6 +61,7 @@ const NotificationsTelegram: React.FC = () => {
       initialValues={{
         enabled: data?.enabled,
         types: data?.types,
+        botUsername: data?.options.botUsername,
         botAPI: data?.options.botAPI,
         chatId: data?.options.chatId,
         sendSilently: data?.options.sendSilently,
@@ -71,6 +76,7 @@ const NotificationsTelegram: React.FC = () => {
               botAPI: values.botAPI,
               chatId: values.chatId,
               sendSilently: values.sendSilently,
+              botUsername: values.botUsername,
             },
           });
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
@@ -96,6 +102,7 @@ const NotificationsTelegram: React.FC = () => {
               botAPI: values.botAPI,
               chatId: values.chatId,
               sendSilently: values.sendSilently,
+              botUsername: values.botUsername,
             },
           });
 
@@ -145,6 +152,24 @@ const NotificationsTelegram: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <Field type="checkbox" id="enabled" name="enabled" />
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="botUsername" className="text-label">
+                  {intl.formatMessage(messages.botUsername)}
+                </label>
+                <div className="form-input">
+                  <div className="flex max-w-lg rounded-md shadow-sm">
+                    <Field
+                      id="botUsername"
+                      name="botUsername"
+                      type="text"
+                      placeholder={intl.formatMessage(messages.botUsername)}
+                    />
+                  </div>
+                  {errors.botUsername && touched.botUsername && (
+                    <div className="error">{errors.botUsername}</div>
+                  )}
                 </div>
               </div>
               <div className="form-row">

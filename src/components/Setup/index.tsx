@@ -22,8 +22,9 @@ const messages = defineMessages({
   configureplex: 'Configure Plex',
   configureservices: 'Configure Services',
   tip: 'Tip',
-  syncingbackground:
-    'Syncing will run in the background. You can continue the setup process in the meantime.',
+  scanbackground:
+    'Scanning will run in the background.\
+    You can continue the setup process in the meantime.',
 });
 
 const Setup: React.FC = () => {
@@ -104,7 +105,7 @@ const Setup: React.FC = () => {
                 <span className="mr-2">
                   <Badge>{intl.formatMessage(messages.tip)}</Badge>
                 </span>
-                {intl.formatMessage(messages.syncingbackground)}
+                {intl.formatMessage(messages.scanbackground)}
               </div>
               <div className="actions">
                 <div className="flex justify-end">

@@ -56,12 +56,13 @@ const messages = defineMessages({
   manageModalNoRequests: 'No Requests',
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
-    'This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next sync.',
+    'This will irreversibly remove all data for this TV series, including any requests.\
+    If this item exists in your Plex library, the media information will be recreated during the next scan.',
   approve: 'Approve',
   decline: 'Decline',
   showtype: 'Show Type',
   anime: 'Anime',
-  network: 'Network',
+  network: '{networkCount, plural, one {Network} other {Networks}}',
   viewfullcrew: 'View Full Crew',
   areyousure: 'Are you sure?',
   opensonarr: 'Open Series in Sonarr',
@@ -72,6 +73,7 @@ const messages = defineMessages({
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark 4K as Available',
   allseasonsmarkedavailable: '* All seasons will be marked as available.',
+  seasons: '{seasonCount, plural, one {# Season} other {# Seasons}}',
 });
 
 interface TvDetailsProps {
@@ -178,12 +180,33 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     );
   }
 
+  const seasonCount = data.seasons.filter((season) => season.seasonNumber !== 0)
+    .length;
+
+  if (seasonCount) {
+    seriesAttributes.push(
+      intl.formatMessage(messages.seasons, { seasonCount: seasonCount })
+    );
+  }
+
   if (data.genres.length) {
-    seriesAttributes.push(data.genres.map((g) => g.name).join(', '));
+    seriesAttributes.push(
+      data.genres
+        .map((g) => (
+          <Link href={`/discover/tv/genre/${g.id}`} key={`genre-${g.id}`}>
+            <a className="hover:underline">{g.name}</a>
+          </Link>
+        ))
+        .reduce((prev, curr) => (
+          <>
+            {prev}, {curr}
+          </>
+        ))
+    );
   }
 
   const isComplete =
-    data.seasons.filter((season) => season.seasonNumber !== 0).length <=
+    seasonCount <=
     (
       data.mediaInfo?.seasons.filter(
         (season) => season.status === MediaStatus.AVAILABLE
@@ -191,7 +214,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     ).length;
 
   const is4kComplete =
-    data.seasons.filter((season) => season.seasonNumber !== 0).length <=
+    seasonCount <=
     (
       data.mediaInfo?.seasons.filter(
         (season) => season.status4k === MediaStatus.AVAILABLE
@@ -671,10 +694,25 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             {data.networks.length > 0 && (
               <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
                 <span className="text-sm">
-                  {intl.formatMessage(messages.network)}
+                  {intl.formatMessage(messages.network, {
+                    networkCount: data.networks.length,
+                  })}
                 </span>
                 <span className="flex-1 text-sm text-right text-gray-400">
-                  {data.networks.map((n) => n.name).join(', ')}
+                  {data.networks
+                    .map((n) => (
+                      <Link
+                        href={`/discover/tv/network/${n.id}`}
+                        key={`network-${n.id}`}
+                      >
+                        <a className="hover:underline">{n.name}</a>
+                      </Link>
+                    ))
+                    .reduce((prev, curr) => (
+                      <>
+                        {prev}, {curr}
+                      </>
+                    ))}
                 </span>
               </div>
             )}
