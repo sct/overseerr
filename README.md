@@ -47,6 +47,7 @@ Currently, Overseerr is primarily distributed as Docker images. If you have Dock
 
 ```
 docker run -d \
+  --name overseerr \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
   -p 5055:5055 \

@@ -15,6 +15,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ```bash
 docker run -d \
+  --name overseerr \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
   -p 5055:5055 \
@@ -53,6 +54,7 @@ services:
 
 ```text
 docker run -d \
+  --name overseerr \
   --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ] \
   -e LOG_LEVEL=info \
   -e TZ=Asia/Tokyo \
