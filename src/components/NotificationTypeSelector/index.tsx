@@ -8,8 +8,7 @@ const messages = defineMessages({
     'Sends a notification when media is requested and requires approval.',
   mediaapproved: 'Media Approved',
   mediaapprovedDescription:
-    'Sends a notification when requested media is approved.\
-    Does not send notifications for automatically approved requests.',
+    'Sends a notification when requested media is manually approved.',
   mediaAutoApproved: 'Media Automatically Approved',
   mediaAutoApprovedDescription:
     'Sends a notification when requested media is automatically approved.',
@@ -80,16 +79,16 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
       value: Notification.MEDIA_PENDING,
     },
     {
-      id: 'media-approved',
-      name: intl.formatMessage(messages.mediaapproved),
-      description: intl.formatMessage(messages.mediaapprovedDescription),
-      value: Notification.MEDIA_APPROVED,
-    },
-    {
       id: 'media-auto-approved',
       name: intl.formatMessage(messages.mediaAutoApproved),
       description: intl.formatMessage(messages.mediaAutoApprovedDescription),
       value: Notification.MEDIA_AUTO_APPROVED,
+    },
+    {
+      id: 'media-approved',
+      name: intl.formatMessage(messages.mediaapproved),
+      description: intl.formatMessage(messages.mediaapprovedDescription),
+      value: Notification.MEDIA_APPROVED,
     },
     {
       id: 'media-declined',
