@@ -108,7 +108,9 @@ class EmailAgent
               to: user.email,
             },
             locals: {
-              body: `A new request for the following media could not be added to ${
+              body: `A new request for the following ${
+                payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+              } could not be added to ${
                 payload.media?.mediaType === MediaType.TV ? 'Sonarr' : 'Radarr'
               }`,
               mediaName: payload.subject,
