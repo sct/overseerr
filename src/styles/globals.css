@@ -37,6 +37,10 @@ ul.cardList > li {
   @apply inline-flex items-center text-xl leading-7 text-gray-300 sm:text-2xl sm:leading-9 sm:truncate;
 }
 
+a.slider-title {
+  @apply hover:text-white;
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */

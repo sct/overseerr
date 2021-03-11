@@ -60,7 +60,7 @@ const Discover: React.FC = () => {
       />
       <div className="slider-header">
         <Link href="/requests">
-          <a className="slider-title hover:text-white">
+          <a className="slider-title">
             <span>{intl.formatMessage(messages.recentrequests)}</span>
             <svg
               className="w-6 h-6 ml-2"

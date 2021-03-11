@@ -138,7 +138,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
       <div className="slider-header">
         {linkUrl ? (
           <Link href={linkUrl}>
-            <a className="slider-title hover:text-white">
+            <a className="slider-title">
               <span>{title}</span>
               <svg
                 className="w-6 h-6 ml-2"
