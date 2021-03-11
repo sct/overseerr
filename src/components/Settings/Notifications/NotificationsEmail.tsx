@@ -203,15 +203,13 @@ const NotificationsEmail: React.FC = () => {
                   {intl.formatMessage(messages.smtpPort)}
                 </label>
                 <div className="form-input">
-                  <div className="form-input-field sm:max-w-xs">
-                    <Field
-                      id="smtpPort"
-                      name="smtpPort"
-                      type="text"
-                      placeholder="465"
-                      className="short"
-                    />
-                  </div>
+                  <Field
+                    id="smtpPort"
+                    name="smtpPort"
+                    type="text"
+                    placeholder="465"
+                    className="short"
+                  />
                   {errors.smtpPort && touched.smtpPort && (
                     <div className="error">{errors.smtpPort}</div>
                   )}
