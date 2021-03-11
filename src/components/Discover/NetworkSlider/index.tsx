@@ -123,11 +123,9 @@ const NetworkSlider: React.FC = () => {
 
   return (
     <>
-      <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
-        <div className="flex-1 min-w-0">
-          <div className="inline-flex items-center text-xl leading-7 text-gray-300 cursor-default sm:text-2xl sm:leading-9 sm:truncate">
-            <span>{intl.formatMessage(messages.networks)}</span>
-          </div>
+      <div className="slider-header">
+        <div className="slider-title">
+          <span>{intl.formatMessage(messages.networks)}</span>
         </div>
       </div>
       <Slider
