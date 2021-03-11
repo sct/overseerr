@@ -7,6 +7,10 @@ import Button from '../../Common/Button';
 const messages = defineMessages({
   settings: 'Edit Settings',
   profile: 'View Profile',
+  joindate: 'Joined {joindate}',
+  requests:
+    '{requestCount} {requestCount, plural, one {Request} other {Requests}}',
+  userid: 'User ID: {userid}',
 });
 
 interface ProfileHeaderProps {
@@ -20,6 +24,19 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 }) => {
   const intl = useIntl();
   const { user: loggedInUser, hasPermission } = useUser();
+
+  const subtextItems: React.ReactNode[] = [
+    intl.formatMessage(messages.joindate, {
+      joindate: intl.formatDate(user.createdAt),
+    }),
+    intl.formatMessage(messages.requests, {
+      requestCount: user.requestCount,
+    }),
+  ];
+
+  if (hasPermission(Permission.MANAGE_REQUESTS)) {
+    subtextItems.push(intl.formatMessage(messages.userid, { userid: user.id }));
+  }
 
   return (
     <div className="relative z-40 mt-6 mb-12 md:flex md:items-end md:justify-between md:space-x-5">
@@ -55,8 +72,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             )}
           </h1>
           <p className="text-sm font-medium text-gray-400">
-            Joined {intl.formatDate(user.createdAt)} |{' '}
-            {intl.formatNumber(user.requestCount)} Requests
+            {subtextItems.reduce((prev, curr) => (
+              <>
+                {prev} | {curr}
+              </>
+            ))}
           </p>
         </div>
       </div>
