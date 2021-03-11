@@ -37,7 +37,7 @@ const PersonCard: React.FC<PersonCardProps> = ({
         <div
           className={`relative ${
             canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'
-          } rounded-xl text-white shadow transition ease-in-out duration-150 cursor-pointer transform-gpu ring-1 ring-gray-700 ${
+          } rounded-xl text-white shadow transition ease-in-out duration-150 cursor-pointer transform-gpu ring-1 ring-gray-700 hover:ring-gray-500 ${
             isHovered ? 'bg-gray-700 scale-105' : 'bg-gray-800 scale-100'
           }`}
         >
