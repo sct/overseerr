@@ -165,13 +165,11 @@ class BaseScanner<T> {
         if (changedExisting) {
           await mediaRepository.save(existing);
           this.log(
-            `Request for ${title} exists. New media types set to AVAILABLE`,
+            `Media for ${title} exists. Changed were detected and the title will be updated.`,
             'info'
           );
         } else {
-          this.log(
-            `Title already exists and no new media types found ${title}`
-          );
+          this.log(`Title already exists and no changes detected for ${title}`);
         }
       } else {
         const newMedia = new Media();
