@@ -35,10 +35,10 @@ const messages = defineMessages({
   emailNotificationTypesAlert: 'Email Notification Recipients',
   emailNotificationTypesAlertDescription:
     '<strong>Media Requested</strong>, <strong>Media Automatically Approved</strong>, and <strong>Media Failed</strong>\
-    email notifications are only sent to users with the <strong>Manage Requests</strong> permission.',
+    email notifications are sent to all users with the <strong>Manage Requests</strong> permission.',
   emailNotificationTypesAlertDescriptionPt2:
-    'Likewise, <strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong>\
-    email notifications are only sent to the user who submitted the request.',
+    '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong>\
+    email notifications are sent to the user who submitted the request.',
 });
 
 const NotificationsEmail: React.FC = () => {
