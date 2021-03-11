@@ -211,17 +211,40 @@ const UserGeneralSettings: React.FC = () => {
                       <option value="all">
                         {intl.formatMessage(messages.originalLanguageDefault)}
                       </option>
-                      {languages?.map((language) => (
-                        <option
-                          key={`language-key-${language.iso_639_1}`}
-                          value={language.iso_639_1}
-                        >
-                          {intl.formatDisplayName(language.iso_639_1, {
-                            type: 'language',
-                            fallback: 'none',
-                          }) ?? language.english_name}
-                        </option>
-                      ))}
+                      {languages
+                        ?.sort((lang1, lang2) => {
+                          const lang1Name =
+                            intl.formatDisplayName(lang1.iso_639_1, {
+                              type: 'language',
+                              fallback: 'none',
+                            }) ?? lang1.english_name;
+                          const lang2Name =
+                            intl.formatDisplayName(lang2.iso_639_1, {
+                              type: 'language',
+                              fallback: 'none',
+                            }) ?? lang2.english_name;
+
+                          if (lang1Name > lang2Name) {
+                            return 1;
+                          }
+
+                          if (lang1Name < lang2Name) {
+                            return -1;
+                          }
+
+                          return 0;
+                        })
+                        .map((language) => (
+                          <option
+                            key={`language-key-${language.iso_639_1}`}
+                            value={language.iso_639_1}
+                          >
+                            {intl.formatDisplayName(language.iso_639_1, {
+                              type: 'language',
+                              fallback: 'none',
+                            }) ?? language.english_name}
+                          </option>
+                        ))}
                     </Field>
                   </div>
                 </div>
