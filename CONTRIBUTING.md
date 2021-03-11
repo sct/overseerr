@@ -35,9 +35,9 @@ All help is welcome and greatly appreciated! If you would like to contribute to 
 
    - It is recommended to give your branch a meaningful name, relevant to the feature or fix you are working on.
      - Good examples:
-       - `docs/docker`
-       - `feature/new-system`
-       - `fix/title-cards`
+       - `docs-docker`
+       - `feature-new-system`
+       - `fix-title-cards`
      - Bad examples:
        - `bug`
        - `docs`
