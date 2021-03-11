@@ -37,7 +37,7 @@ class PlexScanner
   private isRecentOnly = false;
 
   public constructor(isRecentOnly = false) {
-    super('Plex Scanner');
+    super('Plex Scan');
     this.isRecentOnly = isRecentOnly;
   }
 
@@ -102,14 +102,14 @@ class PlexScanner
             return mediaA.ratingKey === mediaB.ratingKey;
           });
 
-          await this.loop(this.processItems.bind(this), { sessionId });
+          await this.loop(this.processItem.bind(this), { sessionId });
         }
       } else {
         for (const library of this.libraries) {
           this.currentLibrary = library;
           this.log(`Beginning to process library: ${library.name}`, 'info');
           this.items = await this.plexClient.getLibraryContents(library.id);
-          await this.loop(this.processItems.bind(this), { sessionId });
+          await this.loop(this.processItem.bind(this), { sessionId });
         }
       }
       this.log(
@@ -125,27 +125,23 @@ class PlexScanner
     }
   }
 
-  private async processItems(slicedItems: PlexLibraryItem[]) {
-    await Promise.all(
-      slicedItems.map(async (plexitem) => {
-        try {
-          if (plexitem.type === 'movie') {
-            await this.processPlexMovie(plexitem);
-          } else if (
-            plexitem.type === 'show' ||
-            plexitem.type === 'episode' ||
-            plexitem.type === 'season'
-          ) {
-            await this.processPlexShow(plexitem);
-          }
-        } catch (e) {
-          this.log('Failed to process Plex media', 'error', {
-            errorMessage: e.message,
-            title: plexitem.title,
-          });
-        }
-      })
-    );
+  private async processItem(plexitem: PlexLibraryItem) {
+    try {
+      if (plexitem.type === 'movie') {
+        await this.processPlexMovie(plexitem);
+      } else if (
+        plexitem.type === 'show' ||
+        plexitem.type === 'episode' ||
+        plexitem.type === 'season'
+      ) {
+        await this.processPlexShow(plexitem);
+      }
+    } catch (e) {
+      this.log('Failed to process Plex media', 'error', {
+        errorMessage: e.message,
+        title: plexitem.title,
+      });
+    }
   }
 
   private async processPlexMovie(plexitem: PlexLibraryItem) {
