@@ -226,7 +226,7 @@ class SlackAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending slack notification', { label: 'Notifications' });
+    logger.debug('Sending Slack notification', { label: 'Notifications' });
     try {
       const webhookUrl = this.getSettings().options.webhookUrl;
 

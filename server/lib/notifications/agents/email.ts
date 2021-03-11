@@ -78,7 +78,7 @@ class EmailAgent
         });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -130,7 +130,7 @@ class EmailAgent
         });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -172,7 +172,7 @@ class EmailAgent
       });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -222,7 +222,7 @@ class EmailAgent
         });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -264,7 +264,7 @@ class EmailAgent
       });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -306,7 +306,7 @@ class EmailAgent
       });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -333,7 +333,7 @@ class EmailAgent
       });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });

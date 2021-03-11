@@ -202,7 +202,7 @@ class DiscordAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending discord notification', { label: 'Notifications' });
+    logger.debug('Sending Discord notification', { label: 'Notifications' });
     try {
       const {
         botUsername,

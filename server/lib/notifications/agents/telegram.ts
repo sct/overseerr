@@ -151,7 +151,7 @@ class TelegramAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending telegram notification', { label: 'Notifications' });
+    logger.debug('Sending Telegram notification', { label: 'Notifications' });
     try {
       const endpoint = `${this.baseUrl}bot${
         this.getSettings().options.botAPI
