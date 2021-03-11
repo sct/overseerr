@@ -404,12 +404,12 @@ class BaseScanner<T> {
         // the status
         const shouldStayAvailable =
           media.status === MediaStatus.AVAILABLE &&
-          newSeasons.length &&
-          newSeasons.every((season) => season.status === MediaStatus.UNKNOWN);
+          newSeasons.filter((season) => season.status !== MediaStatus.UNKNOWN)
+            .length === 0;
         const shouldStayAvailable4k =
           media.status4k === MediaStatus.AVAILABLE &&
-          newSeasons.length &&
-          newSeasons.every((season) => season.status4k === MediaStatus.UNKNOWN);
+          newSeasons.filter((season) => season.status4k !== MediaStatus.UNKNOWN)
+            .length === 0;
 
         media.status =
           isAllStandardSeasons || shouldStayAvailable
