@@ -78,6 +78,10 @@ img.avatar-sm {
   @apply text-white sm:col-span-2;
 }
 
+.form-input-field {
+  @apply flex max-w-lg rounded-md shadow-sm;
+}
+
 .label-required {
   @apply text-red-500;
 }

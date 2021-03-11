@@ -148,7 +148,7 @@ const UserPasswordChange: React.FC = () => {
                     {intl.formatMessage(messages.currentpassword)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="currentPassword"
                         name="currentPassword"
@@ -166,7 +166,7 @@ const UserPasswordChange: React.FC = () => {
                   {intl.formatMessage(messages.newpassword)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field id="newPassword" name="newPassword" type="text" />
                   </div>
                   {errors.newPassword && touched.newPassword && (
@@ -179,7 +179,7 @@ const UserPasswordChange: React.FC = () => {
                   {intl.formatMessage(messages.confirmpassword)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="confirmPassword"
                       name="confirmPassword"

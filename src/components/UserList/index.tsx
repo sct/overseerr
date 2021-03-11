@@ -326,7 +326,7 @@ const UserList: React.FC = () => {
                       {intl.formatMessage(messages.email)}
                     </label>
                     <div className="form-input">
-                      <div className="flex max-w-lg rounded-md shadow-sm">
+                      <div className="form-input-field">
                         <Field
                           id="email"
                           name="email"
@@ -357,7 +357,7 @@ const UserList: React.FC = () => {
                       {intl.formatMessage(messages.password)}
                     </label>
                     <div className="form-input">
-                      <div className="flex max-w-lg rounded-md shadow-sm">
+                      <div className="form-input-field">
                         <Field
                           id="password"
                           name="password"

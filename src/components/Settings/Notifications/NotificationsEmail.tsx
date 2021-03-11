@@ -152,7 +152,7 @@ const NotificationsEmail: React.FC = () => {
                   {intl.formatMessage(messages.emailsender)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="emailFrom"
                       name="emailFrom"
@@ -170,7 +170,7 @@ const NotificationsEmail: React.FC = () => {
                   {intl.formatMessage(messages.senderName)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="senderName"
                       name="senderName"
@@ -185,7 +185,7 @@ const NotificationsEmail: React.FC = () => {
                   {intl.formatMessage(messages.smtpHost)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="smtpHost"
                       name="smtpHost"
@@ -203,7 +203,7 @@ const NotificationsEmail: React.FC = () => {
                   {intl.formatMessage(messages.smtpPort)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm sm:max-w-xs">
+                  <div className="form-input-field sm:max-w-xs">
                     <Field
                       id="smtpPort"
                       name="smtpPort"
@@ -245,7 +245,7 @@ const NotificationsEmail: React.FC = () => {
                   {intl.formatMessage(messages.authUser)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field id="authUser" name="authUser" type="text" />
                   </div>
                 </div>
@@ -255,7 +255,7 @@ const NotificationsEmail: React.FC = () => {
                   {intl.formatMessage(messages.authPass)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="authPass"
                       name="authPass"

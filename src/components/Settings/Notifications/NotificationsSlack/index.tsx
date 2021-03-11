@@ -129,7 +129,7 @@ const NotificationsSlack: React.FC = () => {
                   {intl.formatMessage(messages.webhookUrl)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field id="webhookUrl" name="webhookUrl" type="text" />
                   </div>
                   {errors.webhookUrl && touched.webhookUrl && (

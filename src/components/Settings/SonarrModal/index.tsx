@@ -374,7 +374,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="name"
                         name="name"
@@ -399,7 +399,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <span className="protocol">
                         {values.ssl ? 'https://' : 'http://'}
                       </span>
@@ -464,7 +464,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="apiKey"
                         name="apiKey"
@@ -488,7 +488,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="baseUrl"
                         name="baseUrl"
@@ -513,7 +513,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="activeProfileId"
@@ -551,7 +551,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="rootFolder"
@@ -590,7 +590,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="activeLanguageProfileId"
@@ -634,7 +634,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.animequalityprofile)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="activeAnimeProfileId"
@@ -674,7 +674,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.animerootfolder)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="activeAnimeRootFolder"
@@ -713,7 +713,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.animelanguageprofile)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="activeAnimeLanguageProfileId"
@@ -772,7 +772,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.externalUrl)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="externalUrl"
                         name="externalUrl"

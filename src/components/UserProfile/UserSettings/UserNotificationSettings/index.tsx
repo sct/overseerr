@@ -144,7 +144,7 @@ const UserNotificationSettings: React.FC = () => {
                   </span>
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field id="discordId" name="discordId" type="text" />
                   </div>
                   {errors.discordId && touched.discordId && (
@@ -203,7 +203,7 @@ const UserNotificationSettings: React.FC = () => {
                   </span>
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="telegramChatId"
                       name="telegramChatId"

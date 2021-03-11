@@ -102,7 +102,7 @@ const ResetPassword: React.FC = () => {
                           {intl.formatMessage(messages.email)}
                         </label>
                         <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
-                          <div className="flex max-w-lg rounded-md shadow-sm">
+                          <div className="form-input-field">
                             <Field
                               id="email"
                               name="email"

@@ -150,7 +150,7 @@ const UserGeneralSettings: React.FC = () => {
                   {intl.formatMessage(messages.displayName)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="displayName"
                       name="displayName"
@@ -187,7 +187,7 @@ const UserGeneralSettings: React.FC = () => {
                   </span>
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       as="select"
                       id="originalLanguage"

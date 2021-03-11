@@ -126,7 +126,7 @@ const NotificationsPushbullet: React.FC = () => {
                   {intl.formatMessage(messages.accessToken)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="accessToken"
                       name="accessToken"
