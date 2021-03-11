@@ -300,13 +300,13 @@ const RequestItem: React.FC<RequestItemProps> = ({
             </div>
           </div>
         </div>
-        <div className="z-10 flex flex-row justify-between w-full pl-4 pr-4 mt-4 flex-nowrap lg:flex-col lg:mt-0 lg:items-end lg:justify-around lg:w-64 lg:pl-0">
+        <div className="z-10 flex flex-col justify-between w-full pl-4 pr-4 mt-4 space-y-2 lg:mt-0 lg:items-end lg:justify-around lg:w-96 lg:pl-0">
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
               <Button
-                className="w-full mr-2 lg:mr-0"
+                className="w-full"
                 buttonType="primary"
                 disabled={isRetrying}
                 onClick={() => retryRequest()}
@@ -354,8 +354,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
           {requestData.status === MediaRequestStatus.PENDING &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
               <>
-                <div className="flex flex-row w-full">
-                  <span className="w-full mr-2">
+                <div className="flex flex-row w-full space-x-2">
+                  <span className="w-full">
                     <Button
                       className="w-full"
                       buttonType="success"
@@ -378,7 +378,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                       </span>
                     </Button>
                   </span>
-                  <span className="w-full mr-2 lg:mr-0">
+                  <span className="w-full">
                     <Button
                       className="w-full"
                       buttonType="danger"
