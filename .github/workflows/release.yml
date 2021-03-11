@@ -31,7 +31,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: 12
       - name: Install dependencies
@@ -108,7 +108,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status
-        uses: technote-space/workflow-conclusion-action@v2.1.2
+        uses: technote-space/workflow-conclusion-action@v2.1.5
 
       - name: Combine Job Status
         id: status

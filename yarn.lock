@@ -5261,11 +5261,6 @@ deprecation@^2.0.0, deprecation@^2.3.1:
   resolved "https://registry.yarnpkg.com/deprecation/-/deprecation-2.3.1.tgz#6368cbdb40abf3373b525ac87e4a260c3a700919"
   integrity sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==
 
-dequal@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/dequal/-/dequal-2.0.2.tgz#85ca22025e3a87e65ef75a7a437b35284a7e319d"
-  integrity sha512-q9K8BlJVxK7hQYqa6XISGmBZbtQQWVXSrRrWreHC94rMt1QL/Impruc+7p2CYSYuVIUr+YCt6hjrs1kkdJRTug==
-
 des.js@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/des.js/-/des.js-1.0.1.tgz#5382142e1bdc53f85d86d53e5f4aa7deb91e0843"
@@ -13503,12 +13498,10 @@ swagger-ui-express@^4.1.6:
   dependencies:
     swagger-ui-dist "^3.18.1"
 
-swr@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-0.5.0.tgz#08648a752230a034cab7bb307c0b89af6f0efbba"
-  integrity sha512-zybQScVRZcEfZ6wXJJXvHrbooLs/XepV5Zoaz7o6esheDiQotEd0y56AwNJ2QBiPo2G/AbdhIC2Dm0csYpJrJQ==
-  dependencies:
-    dequal "2.0.2"
+swr@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-0.5.1.tgz#47173f120340cb44937ad70366b01d1b3d2de1e7"
+  integrity sha512-hDGCe4h6ZOtloyJNpSu6NhvG+8pfWzNSVhXznNCSe23zkeeTVtiItqWitxeUISFVHbSyzADkm7bulAe6mbTqwA==
 
 table@^6.0.4:
   version "6.0.4"
@@ -14604,17 +14597,17 @@ widest-line@^3.1.0:
   dependencies:
     string-width "^4.0.0"
 
-winston-daily-rotate-file@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/winston-daily-rotate-file/-/winston-daily-rotate-file-4.5.0.tgz#3914ac57c4bdae1138170bec85af0c2217b253b1"
-  integrity sha512-/HqeWiU48dzGqcrABRlxYWVMdL6l3uKCtFSJyrqK+E2rLnSFNsgYpvwx15EgTitBLNzH69lQd/+z2ASryV2aqw==
+winston-daily-rotate-file@^4.5.1:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/winston-daily-rotate-file/-/winston-daily-rotate-file-4.5.1.tgz#5f55e26d5aef0e841041a5ee904496a591741ca0"
+  integrity sha512-Uv1KeBneTKFZ9R3J6SmI61vOoPEofxS+GZGEwYRPc7QFE1fpEz648eGWxLnOeo8CBrANwsd+GfK5DCd4Ab1xAQ==
   dependencies:
     file-stream-rotator "^0.5.7"
     object-hash "^2.0.1"
     triple-beam "^1.3.0"
-    winston-transport "^4.2.0"
+    winston-transport "^4.4.0"
 
-winston-transport@^4.2.0, winston-transport@^4.4.0:
+winston-transport@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/winston-transport/-/winston-transport-4.4.0.tgz#17af518daa690d5b2ecccaa7acf7b20ca7925e59"
   integrity sha512-Lc7/p3GtqtqPBYYtS6KCN3c77/2QCev51DvcJKbkFPQNoj1sinkGwLGFDxkXY9J6p9+EPnYs+D90uwbnaiURTw==

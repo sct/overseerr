@@ -60,11 +60,11 @@
     "secure-random-password": "^0.2.2",
     "sqlite3": "^5.0.2",
     "swagger-ui-express": "^4.1.6",
-    "swr": "^0.5.0",
+    "swr": "^0.5.1",
     "typeorm": "^0.2.31",
     "uuid": "^8.3.2",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.0",
+    "winston-daily-rotate-file": "^4.5.1",
     "xml2js": "^0.4.23",
     "yamljs": "^0.3.0",
     "yup": "^0.32.9"
