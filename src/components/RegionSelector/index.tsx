@@ -241,15 +241,11 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                           fallback: 'none',
                         }) ?? region2.english_name;
 
-                      if (region1Name > region2Name) {
-                        return 1;
-                      }
-
-                      if (region1Name < region2Name) {
-                        return -1;
-                      }
-
-                      return 0;
+                      return region1Name === region2Name
+                        ? 0
+                        : region1Name > region2Name
+                        ? 1
+                        : -1;
                     })
                     .map((region) => (
                       <Listbox.Option key={region.iso_3166_1} value={region}>

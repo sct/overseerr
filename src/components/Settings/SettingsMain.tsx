@@ -319,15 +319,11 @@ const SettingsMain: React.FC = () => {
                                 fallback: 'none',
                               }) ?? lang2.english_name;
 
-                            if (lang1Name > lang2Name) {
-                              return 1;
-                            }
-
-                            if (lang1Name < lang2Name) {
-                              return -1;
-                            }
-
-                            return 0;
+                            return lang1Name === lang2Name
+                              ? 0
+                              : lang1Name > lang2Name
+                              ? 1
+                              : -1;
                           })
                           .map((language) => (
                             <option
