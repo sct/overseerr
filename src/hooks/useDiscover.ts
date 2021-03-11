@@ -31,7 +31,8 @@ interface DiscoverResult<T, S> {
 
 const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
   endpoint: string,
-  options?: Record<string, unknown>
+  options?: Record<string, unknown>,
+  { hideAvailable = true } = {}
 ): DiscoverResult<T, S> => {
   const settings = useSettings();
   const { locale } = useContext(LanguageContext);
@@ -74,7 +75,7 @@ const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
 
   let titles = (data ?? []).reduce((a, v) => [...a, ...v.results], [] as T[]);
 
-  if (settings.currentSettings.hideAvailable) {
+  if (settings.currentSettings.hideAvailable && hideAvailable) {
     titles = titles.filter(
       (i) =>
         (i.mediaType === 'movie' || i.mediaType === 'tv') &&

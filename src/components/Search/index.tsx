@@ -29,9 +29,13 @@ const Search: React.FC = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<MovieResult | TvResult | PersonResult>(`/api/v1/search`, {
-    query: router.query.query,
-  });
+  } = useDiscover<MovieResult | TvResult | PersonResult>(
+    `/api/v1/search`,
+    {
+      query: router.query.query,
+    },
+    { hideAvailable: false }
+  );
 
   if (error) {
     return <Error statusCode={500} />;
