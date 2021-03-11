@@ -58,7 +58,7 @@ docker run -d \
 
 After running Overseerr for the first time, configure it by visiting the web UI at http://[address]:5055 and completing the setup steps
 
-For more information or alternative installation methods, please see the [Overseerr documentation](https://docs.overseerr.dev/getting-started/installation).
+For more information and alternative installation methods, please see the [Overseerr documentation](https://docs.overseerr.dev/getting-started/installation).
 
 ⚠️ Overseerr is currently under very heavy, rapid development and things are likely to break often. We need all the help we can get to find bugs and get them fixed to hit a more stable release. If you would like to help test the bleeding edge, please use the `sctx/overseerr:develop` image instead! ⚠️
 
