@@ -11,7 +11,6 @@ import { useUser, Permission } from '../../hooks/useUser';
 import { useToasts } from 'react-toast-notifications';
 import Badge from '../Common/Badge';
 import globalMessages from '../../i18n/globalMessages';
-import PermissionEdit from '../PermissionEdit';
 import * as Yup from 'yup';
 import RegionSelector from '../RegionSelector';
 
@@ -34,7 +33,6 @@ const messages = defineMessages({
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
-  defaultPermissions: 'Default User Permissions',
   hideAvailable: 'Hide Available Media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
@@ -44,7 +42,6 @@ const messages = defineMessages({
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
     'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
-  localLogin: 'Enable Local User Sign-In',
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
@@ -116,9 +113,7 @@ const SettingsMain: React.FC = () => {
             applicationTitle: data?.applicationTitle,
             applicationUrl: data?.applicationUrl,
             csrfProtection: data?.csrfProtection,
-            defaultPermissions: data?.defaultPermissions ?? 0,
             hideAvailable: data?.hideAvailable,
-            localLogin: data?.localLogin,
             region: data?.region,
             originalLanguage: data?.originalLanguage,
             trustProxy: data?.trustProxy,
@@ -131,9 +126,7 @@ const SettingsMain: React.FC = () => {
                 applicationTitle: values.applicationTitle,
                 applicationUrl: values.applicationUrl,
                 csrfProtection: values.csrfProtection,
-                defaultPermissions: values.defaultPermissions,
                 hideAvailable: values.hideAvailable,
-                localLogin: values.localLogin,
                 region: values.region,
                 originalLanguage: values.originalLanguage,
                 trustProxy: values.trustProxy,
@@ -343,42 +336,6 @@ const SettingsMain: React.FC = () => {
                         setFieldValue('hideAvailable', !values.hideAvailable);
                       }}
                     />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <label htmlFor="localLogin" className="checkbox-label">
-                    <span>{intl.formatMessage(messages.localLogin)}</span>
-                  </label>
-                  <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="localLogin"
-                      name="localLogin"
-                      onChange={() => {
-                        setFieldValue('localLogin', !values.localLogin);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  role="group"
-                  aria-labelledby="group-label"
-                  className="form-group"
-                >
-                  <div className="form-row">
-                    <span id="group-label" className="group-label">
-                      {intl.formatMessage(messages.defaultPermissions)}
-                    </span>
-                    <div className="form-input">
-                      <div className="max-w-lg">
-                        <PermissionEdit
-                          currentPermission={values.defaultPermissions}
-                          onUpdate={(newPermissions) =>
-                            setFieldValue('defaultPermissions', newPermissions)
-                          }
-                        />
-                      </div>
-                    </div>
                   </div>
                 </div>
                 <div className="actions">
