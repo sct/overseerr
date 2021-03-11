@@ -1,9 +1,9 @@
 import schedule from 'node-schedule';
-import { jobPlexFullSync, jobPlexRecentSync } from './plexsync';
 import logger from '../logger';
-import { jobRadarrSync } from './radarrsync';
-import { jobSonarrSync } from './sonarrsync';
 import downloadTracker from '../lib/downloadtracker';
+import { plexFullScanner, plexRecentScanner } from '../lib/scanners/plex';
+import { radarrScanner } from '../lib/scanners/radarr';
+import { sonarrScanner } from '../lib/scanners/sonarr';
 
 interface ScheduledJob {
   id: string;
@@ -26,10 +26,10 @@ export const startJobs = (): void => {
       logger.info('Starting scheduled job: Plex Recently Added Scan', {
         label: 'Jobs',
       });
-      jobPlexRecentSync.run();
+      plexRecentScanner.run();
     }),
-    running: () => jobPlexRecentSync.status().running,
-    cancelFn: () => jobPlexRecentSync.cancel(),
+    running: () => plexRecentScanner.status().running,
+    cancelFn: () => plexRecentScanner.cancel(),
   });
 
   // Run full plex scan every 24 hours
@@ -41,10 +41,10 @@ export const startJobs = (): void => {
       logger.info('Starting scheduled job: Plex Full Library Scan', {
         label: 'Jobs',
       });
-      jobPlexFullSync.run();
+      plexFullScanner.run();
     }),
-    running: () => jobPlexFullSync.status().running,
-    cancelFn: () => jobPlexFullSync.cancel(),
+    running: () => plexFullScanner.status().running,
+    cancelFn: () => plexFullScanner.cancel(),
   });
 
   // Run full radarr scan every 24 hours
@@ -54,10 +54,10 @@ export const startJobs = (): void => {
     type: 'process',
     job: schedule.scheduleJob('0 0 4 * * *', () => {
       logger.info('Starting scheduled job: Radarr Scan', { label: 'Jobs' });
-      jobRadarrSync.run();
+      radarrScanner.run();
     }),
-    running: () => jobRadarrSync.status().running,
-    cancelFn: () => jobRadarrSync.cancel(),
+    running: () => radarrScanner.status().running,
+    cancelFn: () => radarrScanner.cancel(),
   });
 
   // Run full sonarr scan every 24 hours
@@ -67,10 +67,10 @@ export const startJobs = (): void => {
     type: 'process',
     job: schedule.scheduleJob('0 30 4 * * *', () => {
       logger.info('Starting scheduled job: Sonarr Scan', { label: 'Jobs' });
-      jobSonarrSync.run();
+      sonarrScanner.run();
     }),
-    running: () => jobSonarrSync.status().running,
-    cancelFn: () => jobSonarrSync.cancel(),
+    running: () => sonarrScanner.status().running,
+    cancelFn: () => sonarrScanner.cancel(),
   });
 
   // Run download sync
