@@ -662,15 +662,17 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
+            <div className="media-fact">
+              <ExternalLinkBlock
+                mediaType="movie"
+                tmdbId={data.id}
+                tvdbId={data.externalIds.tvdbId}
+                imdbId={data.externalIds.imdbId}
+                rtUrl={ratingData?.url}
+                plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}
+              />
+            </div>
           </div>
-          <ExternalLinkBlock
-            mediaType="movie"
-            tmdbId={data.id}
-            tvdbId={data.externalIds.tvdbId}
-            imdbId={data.externalIds.imdbId}
-            rtUrl={ratingData?.url}
-            plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}
-          />
         </div>
       </div>
       {data.credits.cast.length > 0 && (
