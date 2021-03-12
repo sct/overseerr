@@ -12,7 +12,7 @@ jobs:
   test:
     name: Lint & Test Build
     runs-on: ubuntu-20.04
-    container: node:12.18-alpine
+    container: node:14.16-alpine
     steps:
       - name: checkout
         uses: actions/checkout@v2
