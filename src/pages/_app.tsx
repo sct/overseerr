@@ -16,6 +16,7 @@ import { InteractionProvider } from '../context/InteractionContext';
 import StatusChecker from '../components/StatusChacker';
 import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
 import { SettingsProvider } from '../context/SettingsContext';
+import LoadingBar from '../components/LoadingBar';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocales): Promise<any> => {
@@ -113,6 +114,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
           defaultLocale="en"
           messages={loadedMessages}
         >
+          <LoadingBar />
           <SettingsProvider currentSettings={currentSettings}>
             <InteractionProvider>
               <ToastProvider components={{ Toast }}>

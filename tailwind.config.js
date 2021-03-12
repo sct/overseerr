@@ -7,6 +7,7 @@ module.exports = {
     extend: {
       transitionProperty: {
         'max-height': 'max-height',
+        width: 'width',
       },
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
