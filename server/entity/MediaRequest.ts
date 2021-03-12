@@ -188,7 +188,9 @@ export class MediaRequest {
         const tv = await tmdb.getTvShow({ tvId: this.media.tmdbId });
         notificationManager.sendNotification(
           this.status === MediaRequestStatus.APPROVED
-            ? Notification.MEDIA_APPROVED
+            ? autoApproved
+              ? Notification.MEDIA_AUTO_APPROVED
+              : Notification.MEDIA_APPROVED
             : Notification.MEDIA_DECLINED,
           {
             subject: tv.name,
