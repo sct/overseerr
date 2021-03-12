@@ -1196,9 +1196,6 @@ components:
         enabled:
           type: boolean
           example: true
-        autoapprovalEnabled:
-          type: boolean
-          example: false
     NotificationEmailSettings:
       type: object
       properties:
