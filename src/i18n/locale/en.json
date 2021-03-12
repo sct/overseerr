@@ -2,7 +2,7 @@
   "components.AppDataWarning.dockerVolumeMissing": "Docker Volume Mount Missing",
   "components.AppDataWarning.dockerVolumeMissingDescription": "The <code>{appDataPath}</code> volume mount was not configured properly. All data will be cleared when the container is stopped or restarted.",
   "components.CollectionDetails.movies": "Movies",
-  "components.CollectionDetails.numberofmovies": "Number of Movies: {count}",
+  "components.CollectionDetails.numberofmovies": "{count} Movies",
   "components.CollectionDetails.overview": "Overview",
   "components.CollectionDetails.overviewunavailable": "Overview unavailable.",
   "components.CollectionDetails.request": "Request",

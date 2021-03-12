@@ -19,12 +19,13 @@ import Transition from '../Transition';
 import PageTitle from '../Common/PageTitle';
 import { useUser, Permission } from '../../hooks/useUser';
 import useSettings from '../../hooks/useSettings';
+import Link from 'next/link';
 
 const messages = defineMessages({
   overviewunavailable: 'Overview unavailable.',
   overview: 'Overview',
   movies: 'Movies',
-  numberofmovies: 'Number of Movies: {count}',
+  numberofmovies: '{count} Movies',
   requesting: 'Requesting…',
   request: 'Request',
   requestcollection: 'Request Collection',
@@ -60,6 +61,10 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
       initialData: collection,
       revalidateOnMount: true,
     }
+  );
+
+  const { data: genres } = useSWR<{ id: number; name: string }[]>(
+    `/api/v1/genres/movie?language=${locale}`
   );
 
   if (!data && !error) {
@@ -146,6 +151,35 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
       revalidate();
     }
   };
+
+  const collectionAttributes: React.ReactNode[] = [];
+
+  collectionAttributes.push(
+    intl.formatMessage(messages.numberofmovies, {
+      count: data.parts.length,
+    })
+  );
+
+  if (genres && data.parts[0].genreIds.length) {
+    collectionAttributes.push(
+      data.parts[0].genreIds
+        .map((genreId) => (
+          <Link
+            href={`/discover/movies/genre/${genreId}`}
+            key={`genre-${genreId}`}
+          >
+            <a className="hover:underline">
+              {genres.find((g) => g.id === genreId)?.name}
+            </a>
+          </Link>
+        ))
+        .reduce((prev, curr) => (
+          <>
+            {prev}, {curr}
+          </>
+        ))
+    );
+  }
 
   return (
     <div
@@ -249,9 +283,14 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           </div>
           <h1>{data.name}</h1>
           <span className="media-attributes">
-            {intl.formatMessage(messages.numberofmovies, {
-              count: data.parts.length,
-            })}
+            {collectionAttributes.length > 0 &&
+              collectionAttributes
+                .map((t, k) => <span key={k}>{t}</span>)
+                .reduce((prev, curr) => (
+                  <>
+                    {prev} | {curr}
+                  </>
+                ))}
           </span>
         </div>
         <div className="media-actions">
