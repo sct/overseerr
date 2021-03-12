@@ -12571,10 +12571,10 @@ secure-random@^1.1.2:
   resolved "https://registry.yarnpkg.com/secure-random/-/secure-random-1.1.2.tgz#ed103b460a851632d420d46448b2a900a41e7f7c"
   integrity sha512-H2bdSKERKdBV1SwoqYm6C0y+9EA94v6SUBOWO8kDndc4NoUih7Dv6Tsgma7zO1lv27wIvjlD0ZpMQk7um5dheQ==
 
-semantic-release-docker-buildx@^0.0.0-development:
-  version "0.0.0-development"
-  resolved "https://registry.yarnpkg.com/semantic-release-docker-buildx/-/semantic-release-docker-buildx-0.0.0-development.tgz#c71df764298034fb388a1661f82fbc093342bf02"
-  integrity sha512-b+3QORi4ukNRymMQj3M45ips+8b/YHQ/VpREGY7iRVz9Gs+3mL4BDDEhzoLwwrnTQHpyBdbCg+b0TzEbhIHAFw==
+semantic-release-docker-buildx@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/semantic-release-docker-buildx/-/semantic-release-docker-buildx-1.0.0.tgz#5be6bd1d89748cd0b68ad54018caab20e982fadf"
+  integrity sha512-G3IcT4ncQX4ZiIptBmMVxh9r7t57Am6UdK+AANK4ZmtpcH8tdkmmEZTISweR0ht+Bu664+ih8i9hPNf1nT9aeQ==
   dependencies:
     execa "^5.0.0"
 
