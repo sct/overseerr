@@ -31,7 +31,7 @@ ul.cardList > li {
 }
 
 .slider-header {
-  @apply flex mt-6 mb-4;
+  @apply relative z-10 flex mt-6 mb-4;
 }
 
 .slider-title {
