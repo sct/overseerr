@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import Badge from '../Common/Badge';
-import { FormattedDate, defineMessages, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import Button from '../Common/Button';
 import { hasPermission } from '../../../server/lib/permissions';
 import { Permission, User, UserType, useUser } from '../../hooks/useUser';
@@ -551,10 +551,18 @@ const UserList: React.FC = () => {
                   : intl.formatMessage(messages.user)}
               </Table.TD>
               <Table.TD>
-                <FormattedDate value={user.createdAt} />
+                {intl.formatDate(user.createdAt, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
               </Table.TD>
               <Table.TD>
-                <FormattedDate value={user.updatedAt} />
+                {intl.formatDate(user.updatedAt, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
               </Table.TD>
               <Table.TD alignText="right">
                 <Button

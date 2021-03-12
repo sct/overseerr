@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import { FormattedDate, useIntl, defineMessages } from 'react-intl';
+import { useIntl, defineMessages } from 'react-intl';
 import Badge from '../Common/Badge';
 import { MediaRequestStatus } from '../../../server/constants/media';
 import Button from '../Common/Button';
@@ -228,7 +228,11 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               />
             </svg>
             <span>
-              <FormattedDate value={request.createdAt} />
+              {intl.formatDate(request.createdAt, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
             </span>
           </div>
         </div>

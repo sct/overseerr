@@ -1,10 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
-import {
-  defineMessages,
-  FormattedNumber,
-  FormattedDate,
-  useIntl,
-} from 'react-intl';
+import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
 import type { MovieDetails as MovieDetailsType } from '../../../server/models/Movie';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
@@ -588,12 +583,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.releasedate)}</span>
                 <span className="media-fact-value">
-                  <FormattedDate
-                    value={new Date(data.releaseDate)}
-                    year="numeric"
-                    month="long"
-                    day="numeric"
-                  />
+                  {intl.formatDate(data.releaseDate, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </span>
               </div>
             )}

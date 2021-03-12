@@ -27,7 +27,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
   const subtextItems: React.ReactNode[] = [
     intl.formatMessage(messages.joindate, {
-      joindate: intl.formatDate(user.createdAt),
+      joindate: intl.formatDate(user.createdAt, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
     }),
     intl.formatMessage(messages.requests, {
       requestCount: user.requestCount,
@@ -39,7 +43,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   }
 
   return (
-    <div className="relative z-40 mt-6 mb-12 md:flex md:items-end md:justify-between md:space-x-5">
+    <div className="relative z-40 mt-6 mb-12 lg:flex lg:items-end lg:justify-between lg:space-x-5">
       <div className="flex items-end space-x-5 justify-items-end">
         <div className="flex-shrink-0">
           <div className="relative">
@@ -80,7 +84,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </p>
         </div>
       </div>
-      <div className="flex flex-col-reverse mt-6 space-y-4 space-y-reverse justify-stretch sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
+      <div className="flex flex-col-reverse mt-6 space-y-4 space-y-reverse justify-stretch lg:flex-row lg:justify-end lg:space-x-reverse lg:space-y-0 lg:space-x-3">
         {(loggedInUser?.id === user.id ||
           (user.id !== 1 && hasPermission(Permission.MANAGE_USERS))) &&
         !isSettingsPage ? (

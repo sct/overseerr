@@ -1,5 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
-import { FormattedDate, defineMessages, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import Button from '../Common/Button';
@@ -617,12 +617,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.firstAirDate)}</span>
                 <span className="media-fact-value">
-                  <FormattedDate
-                    value={new Date(data.firstAirDate)}
-                    year="numeric"
-                    month="long"
-                    day="numeric"
-                  />
+                  {intl.formatDate(data.firstAirDate, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </span>
               </div>
             )}
@@ -630,12 +629,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.nextAirDate)}</span>
                 <span className="media-fact-value">
-                  <FormattedDate
-                    value={new Date(data.nextEpisodeToAir?.airDate)}
-                    year="numeric"
-                    month="long"
-                    day="numeric"
-                  />
+                  {intl.formatDate(data.nextEpisodeToAir.airDate, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </span>
               </div>
             )}
