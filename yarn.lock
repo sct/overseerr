@@ -13468,10 +13468,10 @@ swagger-ui-express@^4.1.6:
   dependencies:
     swagger-ui-dist "^3.18.1"
 
-swr@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-0.5.1.tgz#47173f120340cb44937ad70366b01d1b3d2de1e7"
-  integrity sha512-hDGCe4h6ZOtloyJNpSu6NhvG+8pfWzNSVhXznNCSe23zkeeTVtiItqWitxeUISFVHbSyzADkm7bulAe6mbTqwA==
+swr@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-0.5.2.tgz#b7b32c3b10237ca0b4b167accfa7ce37dda356f8"
+  integrity sha512-uHCk7XmA8EGJOv9m2NRQLaiCo+JTsSdlSXc0dqyuLRKG3gzep0iOTwyz7XKL+3iC8ZyUjq+w6Kl/SneqIL1ncA==
 
 table@^6.0.4:
   version "6.0.4"
