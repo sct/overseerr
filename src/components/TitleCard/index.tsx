@@ -81,8 +81,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default titleCard ring-1 ring-gray-700 rounded-xl ${
-          showDetail ? 'scale-105 shadow-lg' : 'shadow'
+        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default titleCard rounded-xl ring-1 ${
+          showDetail
+            ? 'scale-105 shadow-lg ring-gray-500'
+            : 'shadow ring-gray-700'
         }`}
         style={{
           backgroundImage: image

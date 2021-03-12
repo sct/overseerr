@@ -37,8 +37,10 @@ const PersonCard: React.FC<PersonCardProps> = ({
         <div
           className={`relative ${
             canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'
-          } rounded-xl text-white shadow transition ease-in-out duration-150 cursor-pointer transform-gpu ring-1 ring-gray-700 ${
-            isHovered ? 'bg-gray-700 scale-105' : 'bg-gray-800 scale-100'
+          } rounded-xl text-white shadow transition ease-in-out duration-150 cursor-pointer transform-gpu ring-1 ${
+            isHovered
+              ? 'bg-gray-700 scale-105 ring-gray-500'
+              : 'bg-gray-800 scale-100 ring-gray-700'
           }`}
         >
           <div style={{ paddingBottom: '150%' }}>

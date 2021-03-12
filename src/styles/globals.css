@@ -29,6 +29,18 @@ ul.cardList > li {
   padding-bottom: 150%;
 }
 
+.slider-header {
+  @apply flex mt-6 mb-4;
+}
+
+.slider-title {
+  @apply inline-flex items-center text-xl leading-7 text-gray-300 sm:text-2xl sm:leading-9 sm:truncate;
+}
+
+a.slider-title {
+  @apply hover:text-white;
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -76,6 +88,10 @@ img.avatar-sm {
 
 .form-input {
   @apply text-white sm:col-span-2;
+}
+
+.form-input-field {
+  @apply flex max-w-lg rounded-md shadow-sm;
 }
 
 .label-required {

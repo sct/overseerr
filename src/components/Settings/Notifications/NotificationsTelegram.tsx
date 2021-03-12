@@ -159,7 +159,7 @@ const NotificationsTelegram: React.FC = () => {
                   {intl.formatMessage(messages.botUsername)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="botUsername"
                       name="botUsername"
@@ -177,7 +177,7 @@ const NotificationsTelegram: React.FC = () => {
                   {intl.formatMessage(messages.botAPI)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="botAPI"
                       name="botAPI"
@@ -195,7 +195,7 @@ const NotificationsTelegram: React.FC = () => {
                   {intl.formatMessage(messages.chatId)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="chatId"
                       name="chatId"

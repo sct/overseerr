@@ -113,7 +113,7 @@ const NotificationsDiscord: React.FC = () => {
                 {intl.formatMessage(messages.botUsername)}
               </label>
               <div className="form-input">
-                <div className="flex max-w-lg rounded-md shadow-sm">
+                <div className="form-input-field">
                   <Field
                     id="botUsername"
                     name="botUsername"
@@ -131,7 +131,7 @@ const NotificationsDiscord: React.FC = () => {
                 {intl.formatMessage(messages.botAvatarUrl)}
               </label>
               <div className="form-input">
-                <div className="flex max-w-lg rounded-md shadow-sm">
+                <div className="form-input-field">
                   <Field
                     id="botAvatarUrl"
                     name="botAvatarUrl"
@@ -149,7 +149,7 @@ const NotificationsDiscord: React.FC = () => {
                 {intl.formatMessage(messages.webhookUrl)}
               </label>
               <div className="form-input">
-                <div className="flex max-w-lg rounded-md shadow-sm">
+                <div className="form-input-field">
                   <Field
                     id="webhookUrl"
                     name="webhookUrl"

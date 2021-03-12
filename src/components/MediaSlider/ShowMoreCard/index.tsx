@@ -33,7 +33,7 @@ const ShowMoreCard: React.FC<ShowMoreCardProps> = ({ url, posters }) => {
         <div
           className={`relative w-36 sm:w-36 md:w-44
          rounded-xl text-white shadow-lg overflow-hidden transition ease-in-out duration-150 cursor-pointer transform-gpu ${
-           isHovered ? 'bg-gray-500 scale-105' : 'bg-gray-600 scale-100'
+           isHovered ? 'bg-gray-500 scale-105' : 'bg-gray-700 scale-100'
          }`}
         >
           <div style={{ paddingBottom: '150%' }}>

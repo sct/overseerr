@@ -31,7 +31,7 @@ const UserDropdown: React.FC = () => {
     <div className="relative ml-3">
       <div>
         <button
-          className="flex items-center max-w-xs text-sm rounded-full ring-1 ring-gray-700 focus:outline-none focus:ring-gray-500"
+          className="flex items-center max-w-xs text-sm rounded-full ring-1 ring-gray-700 focus:outline-none focus:ring-gray-500 hover:ring-gray-500"
           id="user-menu"
           aria-label="User menu"
           aria-haspopup="true"

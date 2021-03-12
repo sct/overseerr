@@ -13,9 +13,11 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ image, url, name }) => {
   return (
     <Link href={url}>
       <a
-        className={`relative flex items-center justify-center h-32 w-64 sm:h-36 sm:w-72 p-8 shadow transition ease-in-out duration-150 cursor-pointer transform-gpu ${
-          isHovered ? 'bg-gray-700 scale-105' : 'bg-gray-800 scale-100'
-        } ring-1 ring-gray-700 rounded-xl`}
+        className={`relative flex items-center justify-center h-32 w-64 sm:h-36 sm:w-72 p-8 shadow transition ease-in-out duration-150 cursor-pointer transform-gpu ring-1 ${
+          isHovered
+            ? 'bg-gray-700 scale-105 ring-gray-500'
+            : 'bg-gray-800 scale-100 ring-gray-700'
+        } rounded-xl`}
         onMouseEnter={() => {
           setHovered(true);
         }}

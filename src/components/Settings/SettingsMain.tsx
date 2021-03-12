@@ -155,7 +155,7 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(messages.apikey)}
                     </label>
                     <div className="form-input">
-                      <div className="flex max-w-lg rounded-md shadow-sm">
+                      <div className="form-input-field">
                         <input
                           type="text"
                           id="apiKey"
@@ -196,7 +196,7 @@ const SettingsMain: React.FC = () => {
                     {intl.formatMessage(messages.applicationTitle)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="applicationTitle"
                         name="applicationTitle"
@@ -214,7 +214,7 @@ const SettingsMain: React.FC = () => {
                     {intl.formatMessage(messages.applicationurl)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="applicationUrl"
                         name="applicationUrl"
@@ -294,7 +294,7 @@ const SettingsMain: React.FC = () => {
                     </span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="originalLanguage"
