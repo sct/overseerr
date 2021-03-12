@@ -254,6 +254,7 @@ export interface TmdbTvDetails {
   }[];
   seasons: TmdbTvSeasonResult[];
   status: string;
+  tagline?: string;
   type: string;
   vote_average: number;
   vote_count: number;

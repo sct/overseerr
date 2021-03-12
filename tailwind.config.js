@@ -62,7 +62,7 @@ module.exports = {
     padding: ['first', 'last', 'responsive'],
     borderWidth: ['first', 'last'],
     margin: ['first', 'last', 'responsive'],
-    boxShadow: ['group-focus'],
+    boxShadow: ['group-focus', 'responsive'],
     opacity: ['disabled', 'hover', 'group-hover'],
     ringColor: ['focus', 'focus-within', 'hover', 'active'],
     scale: ['hover', 'focus', 'group-hover'],

@@ -149,7 +149,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
 
   return (
     <div
-      className="px-4 pt-16 -mx-4 -mt-16 bg-center bg-cover"
+      className="media-page"
       style={{
         height: 493,
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
@@ -216,24 +216,20 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           </ul>
         </Modal>
       </Transition>
-      <div className="flex flex-col items-center pt-4 lg:flex-row lg:items-end">
-        <div className="lg:mr-4">
-          <img
-            src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
-            alt=""
-            className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-44 lg:w-52"
-          />
-        </div>
-        <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
-          <div className="mb-2 space-x-2">
-            <span className="ml-2 lg:ml-0">
-              <StatusBadge
-                status={collectionStatus}
-                inProgress={data.parts.some(
-                  (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
-                )}
-              />
-            </span>
+      <div className="media-header">
+        <img
+          src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
+          alt=""
+          className="media-poster"
+        />
+        <div className="media-title">
+          <div className="media-status">
+            <StatusBadge
+              status={collectionStatus}
+              inProgress={data.parts.some(
+                (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
+              )}
+            />
             {settings.currentSettings.movie4kEnabled &&
               hasPermission(
                 [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
@@ -241,26 +237,24 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                   type: 'or',
                 }
               ) && (
-                <span>
-                  <StatusBadge
-                    status={collectionStatus4k}
-                    is4k
-                    inProgress={data.parts.some(
-                      (part) =>
-                        (part.mediaInfo?.downloadStatus4k ?? []).length > 0
-                    )}
-                  />
-                </span>
+                <StatusBadge
+                  status={collectionStatus4k}
+                  is4k
+                  inProgress={data.parts.some(
+                    (part) =>
+                      (part.mediaInfo?.downloadStatus4k ?? []).length > 0
+                  )}
+                />
               )}
           </div>
-          <h1 className="text-2xl md:text-4xl">{data.name}</h1>
-          <span className="mt-1 text-xs lg:text-base lg:mt-0">
+          <h1>{data.name}</h1>
+          <span className="media-attributes">
             {intl.formatMessage(messages.numberofmovies, {
               count: data.parts.length,
             })}
           </span>
         </div>
-        <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
+        <div className="media-actions">
           {hasPermission(Permission.REQUEST) &&
             (collectionStatus !== MediaStatus.AVAILABLE ||
               (settings.currentSettings.movie4kEnabled &&
@@ -269,15 +263,52 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                   { type: 'or' }
                 ) &&
                 collectionStatus4k !== MediaStatus.AVAILABLE)) && (
-              <div className="mb-3 sm:mb-0">
-                <ButtonWithDropdown
-                  buttonType="primary"
-                  onClick={() => {
-                    setRequestModal(true);
-                    setIs4k(collectionStatus === MediaStatus.AVAILABLE);
-                  }}
-                  text={
-                    <>
+              <ButtonWithDropdown
+                buttonType="primary"
+                onClick={() => {
+                  setRequestModal(true);
+                  setIs4k(collectionStatus === MediaStatus.AVAILABLE);
+                }}
+                text={
+                  <>
+                    <svg
+                      className="w-4 mr-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                    <span>
+                      {intl.formatMessage(
+                        collectionStatus === MediaStatus.AVAILABLE
+                          ? messages.requestcollection4k
+                          : messages.requestcollection
+                      )}
+                    </span>
+                  </>
+                }
+              >
+                {settings.currentSettings.movie4kEnabled &&
+                  hasPermission(
+                    [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+                    { type: 'or' }
+                  ) &&
+                  collectionStatus !== MediaStatus.AVAILABLE &&
+                  collectionStatus4k !== MediaStatus.AVAILABLE && (
+                    <ButtonWithDropdown.Item
+                      buttonType="primary"
+                      onClick={() => {
+                        setRequestModal(true);
+                        setIs4k(true);
+                      }}
+                    >
                       <svg
                         className="w-4 mr-1"
                         fill="none"
@@ -293,70 +324,27 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                         />
                       </svg>
                       <span>
-                        {intl.formatMessage(
-                          collectionStatus === MediaStatus.AVAILABLE
-                            ? messages.requestcollection4k
-                            : messages.requestcollection
-                        )}
+                        {intl.formatMessage(messages.requestcollection4k)}
                       </span>
-                    </>
-                  }
-                >
-                  {settings.currentSettings.movie4kEnabled &&
-                    hasPermission(
-                      [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
-                      { type: 'or' }
-                    ) &&
-                    collectionStatus !== MediaStatus.AVAILABLE &&
-                    collectionStatus4k !== MediaStatus.AVAILABLE && (
-                      <ButtonWithDropdown.Item
-                        buttonType="primary"
-                        onClick={() => {
-                          setRequestModal(true);
-                          setIs4k(true);
-                        }}
-                      >
-                        <svg
-                          className="w-4 mr-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                          />
-                        </svg>
-                        <span>
-                          {intl.formatMessage(messages.requestcollection4k)}
-                        </span>
-                      </ButtonWithDropdown.Item>
-                    )}
-                </ButtonWithDropdown>
-              </div>
+                    </ButtonWithDropdown.Item>
+                  )}
+              </ButtonWithDropdown>
             )}
         </div>
       </div>
-      <div className="flex flex-col pt-8 pb-4 text-white md:flex-row">
-        <div className="flex-1 md:mr-8">
-          <h2 className="text-xl md:text-2xl">
-            {intl.formatMessage(messages.overview)}
-          </h2>
-          <p className="pt-2 text-sm md:text-base">
+      <div className="media-overview">
+        <div className="flex-1">
+          <h2>{intl.formatMessage(messages.overview)}</h2>
+          <p>
             {data.overview
               ? data.overview
               : intl.formatMessage(messages.overviewunavailable)}
           </p>
         </div>
       </div>
-      <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
-        <div className="flex-1 min-w-0">
-          <div className="inline-flex items-center text-xl leading-7 text-white sm:text-2xl sm:leading-9 sm:truncate">
-            <span>{intl.formatMessage(messages.movies)}</span>
-          </div>
+      <div className="slider-header">
+        <div className="slider-title">
+          <span>{intl.formatMessage(messages.movies)}</span>
         </div>
       </div>
       <Slider

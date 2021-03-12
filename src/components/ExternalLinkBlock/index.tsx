@@ -24,7 +24,7 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
   plexUrl,
 }) => {
   return (
-    <div className="flex items-center justify-end">
+    <div className="flex items-center justify-center mt-4 lg:justify-end">
       {plexUrl && (
         <a
           href={plexUrl}

@@ -904,6 +904,8 @@ components:
             $ref: '#/components/schemas/Season'
         status:
           type: string
+        tagline:
+          type: string
         type:
           type: string
         voteAverage:
