@@ -7,6 +7,7 @@ import { getRepository } from 'typeorm';
 import { User } from '../../../entity/User';
 import { Permission } from '../../permissions';
 import PreparedEmail from '../../email';
+import { MediaType } from '../../../constants/media';
 
 class EmailAgent
   extends BaseAgent<NotificationAgentEmail>
@@ -57,7 +58,9 @@ class EmailAgent
               to: user.email,
             },
             locals: {
-              body: 'A user has requested new media!',
+              body: `A user has requested a new ${
+                payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+              }!`,
               mediaName: payload.subject,
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
@@ -67,13 +70,15 @@ class EmailAgent
                 : undefined,
               applicationUrl,
               applicationTitle,
-              requestType: 'New Request',
+              requestType: `New ${
+                payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+              } Request`,
             },
           });
         });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -103,8 +108,11 @@ class EmailAgent
               to: user.email,
             },
             locals: {
-              body:
-                "A user's new request has failed to add to Sonarr or Radarr",
+              body: `A new request for the following ${
+                payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+              } could not be added to ${
+                payload.media?.mediaType === MediaType.TV ? 'Sonarr' : 'Radarr'
+              }`,
               mediaName: payload.subject,
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
@@ -114,13 +122,15 @@ class EmailAgent
                 : undefined,
               applicationUrl,
               applicationTitle,
-              requestType: 'Failed Request',
+              requestType: `Failed ${
+                payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+              } Request`,
             },
           });
         });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -143,7 +153,9 @@ class EmailAgent
           to: payload.notifyUser.email,
         },
         locals: {
-          body: 'Your request for the following media has been approved:',
+          body: `Your request for the following ${
+            payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+          } has been approved:`,
           mediaName: payload.subject,
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
@@ -153,12 +165,64 @@ class EmailAgent
             : undefined,
           applicationUrl,
           applicationTitle,
-          requestType: 'Request Approved',
+          requestType: `${
+            payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+          } Request Approved`,
         },
       });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
+        label: 'Notifications',
+        message: e.message,
+      });
+      return false;
+    }
+  }
+
+  private async sendMediaAutoApprovedEmail(payload: NotificationPayload) {
+    // This is getting main settings for the whole app
+    const { applicationUrl, applicationTitle } = getSettings().main;
+    try {
+      const userRepository = getRepository(User);
+      const users = await userRepository.find();
+
+      // Send to all users with the manage requests permission (or admins)
+      users
+        .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
+        .forEach((user) => {
+          const email = new PreparedEmail();
+
+          email.send({
+            template: path.join(
+              __dirname,
+              '../../../templates/email/media-request'
+            ),
+            message: {
+              to: user.email,
+            },
+            locals: {
+              body: `A new request for the following ${
+                payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+              } has been automatically approved:`,
+              mediaName: payload.subject,
+              imageUrl: payload.image,
+              timestamp: new Date().toTimeString(),
+              requestedBy: payload.notifyUser.displayName,
+              actionUrl: applicationUrl
+                ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+                : undefined,
+              applicationUrl,
+              applicationTitle,
+              requestType: `${
+                payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+              } Request Automatically Approved`,
+            },
+          });
+        });
+      return true;
+    } catch (e) {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -181,7 +245,9 @@ class EmailAgent
           to: payload.notifyUser.email,
         },
         locals: {
-          body: 'Your request for the following media was declined:',
+          body: `Your request for the following ${
+            payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+          } was declined:`,
           mediaName: payload.subject,
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
@@ -191,12 +257,14 @@ class EmailAgent
             : undefined,
           applicationUrl,
           applicationTitle,
-          requestType: 'Request Declined',
+          requestType: `${
+            payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+          } Request Declined`,
         },
       });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -219,7 +287,9 @@ class EmailAgent
           to: payload.notifyUser.email,
         },
         locals: {
-          body: 'Your requested media is now available!',
+          body: `The following ${
+            payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+          } you requested is now available!`,
           mediaName: payload.subject,
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
@@ -229,12 +299,14 @@ class EmailAgent
             : undefined,
           applicationUrl,
           applicationTitle,
-          requestType: 'Now Available',
+          requestType: `${
+            payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+          } Now Available`,
         },
       });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -261,7 +333,7 @@ class EmailAgent
       });
       return true;
     } catch (e) {
-      logger.error('Mail notification failed to send', {
+      logger.error('Email notification failed to send', {
         label: 'Notifications',
         message: e.message,
       });
@@ -281,6 +353,9 @@ class EmailAgent
         break;
       case Notification.MEDIA_APPROVED:
         this.sendMediaApprovedEmail(payload);
+        break;
+      case Notification.MEDIA_AUTO_APPROVED:
+        this.sendMediaAutoApprovedEmail(payload);
         break;
       case Notification.MEDIA_DECLINED:
         this.sendMediaDeclinedEmail(payload);

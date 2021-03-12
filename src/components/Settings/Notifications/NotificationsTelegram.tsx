@@ -27,7 +27,7 @@ const messages = defineMessages({
   settinguptelegramDescription:
     'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
     Additionally, you will need the chat ID for the chat to which you would like to send notifications.\
-    You can get this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat.',
+    You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
   notificationtypes: 'Notification Types',
   sendSilently: 'Send Silently',
   sendSilentlyTip: 'Send notifications with no sound',
@@ -142,6 +142,9 @@ const NotificationsTelegram: React.FC = () => {
                       {msg}
                     </a>
                   );
+                },
+                code: function code(msg) {
+                  return <code className="bg-opacity-50">{msg}</code>;
                 },
               })}
             </Alert>

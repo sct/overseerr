@@ -63,7 +63,7 @@ a.slider-title {
 }
 
 .description {
-  @apply max-w-2xl mt-1 text-sm leading-5 text-gray-500;
+  @apply max-w-4xl mt-1 text-sm leading-5 text-gray-500;
 }
 
 img.avatar-sm {

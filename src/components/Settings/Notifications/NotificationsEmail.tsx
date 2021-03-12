@@ -32,10 +32,13 @@ const messages = defineMessages({
   senderName: 'Sender Name',
   notificationtypes: 'Notification Types',
   validationEmail: 'You must provide a valid email address',
-  emailNotificationTypesAlert: 'Notification Email Recipients',
+  emailNotificationTypesAlert: 'Email Notification Recipients',
   emailNotificationTypesAlertDescription:
-    'For the "Media Requested" and "Media Failed" notification types,\
-    notifications will only be sent to users with the "Manage Requests" permission.',
+    '<strong>Media Requested</strong>, <strong>Media Automatically Approved</strong>, and <strong>Media Failed</strong>\
+    email notifications are sent to all users with the <strong>Manage Requests</strong> permission.',
+  emailNotificationTypesAlertDescriptionPt2:
+    '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong>\
+    email notifications are sent to the user who submitted the request.',
 });
 
 const NotificationsEmail: React.FC = () => {
@@ -134,9 +137,34 @@ const NotificationsEmail: React.FC = () => {
               title={intl.formatMessage(messages.emailNotificationTypesAlert)}
               type="info"
             >
-              {intl.formatMessage(
-                messages.emailNotificationTypesAlertDescription
-              )}
+              <p className="mb-2">
+                {intl.formatMessage(
+                  messages.emailNotificationTypesAlertDescription,
+                  {
+                    strong: function strong(msg) {
+                      return (
+                        <strong className="font-normal text-indigo-100">
+                          {msg}
+                        </strong>
+                      );
+                    },
+                  }
+                )}
+              </p>
+              <p>
+                {intl.formatMessage(
+                  messages.emailNotificationTypesAlertDescriptionPt2,
+                  {
+                    strong: function strong(msg) {
+                      return (
+                        <strong className="font-normal text-indigo-100">
+                          {msg}
+                        </strong>
+                      );
+                    },
+                  }
+                )}
+              </p>
             </Alert>
             <Form className="section">
               <div className="form-row">

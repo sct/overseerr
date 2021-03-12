@@ -122,6 +122,7 @@ class DiscordAgent
         });
         break;
       case Notification.MEDIA_APPROVED:
+      case Notification.MEDIA_AUTO_APPROVED:
         color = EmbedColors.PURPLE;
         fields.push({
           name: 'Status',
@@ -201,7 +202,7 @@ class DiscordAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending discord notification', { label: 'Notifications' });
+    logger.debug('Sending Discord notification', { label: 'Notifications' });
     try {
       const {
         botUsername,
@@ -217,6 +218,7 @@ class DiscordAgent
       let content = undefined;
 
       if (
+        this.userNotificationTypes.includes(type) &&
         payload.notifyUser.settings?.enableNotifications &&
         payload.notifyUser.settings?.discordId
       ) {

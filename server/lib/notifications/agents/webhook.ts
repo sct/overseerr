@@ -138,7 +138,7 @@ class WebhookAgent
 
       return true;
     } catch (e) {
-      logger.error('Error sending Webhook notification', {
+      logger.error('Error sending webhook notification', {
         label: 'Notifications',
         errorMessage: e.message,
       });

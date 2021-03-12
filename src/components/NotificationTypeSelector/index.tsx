@@ -8,16 +8,19 @@ const messages = defineMessages({
     'Sends a notification when media is requested and requires approval.',
   mediaapproved: 'Media Approved',
   mediaapprovedDescription:
-    'Sends a notification when media is approved.\
-    By default, automatically approved requests will not trigger notifications.',
+    'Sends a notification when requested media is manually approved.',
+  mediaAutoApproved: 'Media Automatically Approved',
+  mediaAutoApprovedDescription:
+    'Sends a notification when requested media is automatically approved.',
   mediaavailable: 'Media Available',
   mediaavailableDescription:
-    'Sends a notification when media becomes available.',
+    'Sends a notification when requested media becomes available.',
   mediafailed: 'Media Failed',
   mediafailedDescription:
-    'Sends a notification when media fails to be added to Radarr or Sonarr.',
+    'Sends a notification when requested media fails to be added to Radarr or Sonarr.',
   mediadeclined: 'Media Declined',
-  mediadeclinedDescription: 'Sends a notification when a request is declined.',
+  mediadeclinedDescription:
+    'Sends a notification when a media request is declined.',
 });
 
 export const hasNotificationType = (
@@ -46,6 +49,7 @@ export enum Notification {
   MEDIA_FAILED = 16,
   TEST_NOTIFICATION = 32,
   MEDIA_DECLINED = 64,
+  MEDIA_AUTO_APPROVED = 128,
 }
 
 export interface NotificationItem {
@@ -73,6 +77,12 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
       name: intl.formatMessage(messages.mediarequested),
       description: intl.formatMessage(messages.mediarequestedDescription),
       value: Notification.MEDIA_PENDING,
+    },
+    {
+      id: 'media-auto-approved',
+      name: intl.formatMessage(messages.mediaAutoApproved),
+      description: intl.formatMessage(messages.mediaAutoApprovedDescription),
+      value: Notification.MEDIA_AUTO_APPROVED,
     },
     {
       id: 'media-approved',

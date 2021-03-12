@@ -3,6 +3,7 @@ import { hasNotificationType, Notification } from '..';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentPushover } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import { MediaType } from '../../../constants/media';
 
 interface PushoverPayload {
   token: string;
@@ -64,7 +65,9 @@ class PushoverAgent
 
     switch (type) {
       case Notification.MEDIA_PENDING:
-        messageTitle = 'New Request';
+        messageTitle = `New ${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request`;
         message += `<b>${title}</b>`;
         if (plot) {
           message += `\n${plot}`;
@@ -73,7 +76,20 @@ class PushoverAgent
         message += `\n\n<b>Status</b>\nPending Approval`;
         break;
       case Notification.MEDIA_APPROVED:
-        messageTitle = 'Request Approved';
+        messageTitle = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Approved`;
+        message += `<b>${title}</b>`;
+        if (plot) {
+          message += `\n${plot}`;
+        }
+        message += `\n\n<b>Requested By</b>\n${username}`;
+        message += `\n\n<b>Status</b>\nProcessing`;
+        break;
+      case Notification.MEDIA_AUTO_APPROVED:
+        messageTitle = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Automatically Approved`;
         message += `<b>${title}</b>`;
         if (plot) {
           message += `\n${plot}`;
@@ -82,7 +98,9 @@ class PushoverAgent
         message += `\n\n<b>Status</b>\nProcessing`;
         break;
       case Notification.MEDIA_AVAILABLE:
-        messageTitle = 'Now Available';
+        messageTitle = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Now Available`;
         message += `<b>${title}</b>`;
         if (plot) {
           message += `\n${plot}`;
@@ -91,7 +109,9 @@ class PushoverAgent
         message += `\n\n<b>Status</b>\nAvailable`;
         break;
       case Notification.MEDIA_DECLINED:
-        messageTitle = 'Request Declined';
+        messageTitle = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Declined`;
         message += `<b>${title}</b>`;
         if (plot) {
           message += `\n${plot}`;
@@ -101,7 +121,9 @@ class PushoverAgent
         priority = 1;
         break;
       case Notification.MEDIA_FAILED:
-        messageTitle = 'Failed Request';
+        messageTitle = `Failed ${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request`;
         message += `<b>${title}</b>`;
         if (plot) {
           message += `\n${plot}`;
