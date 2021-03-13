@@ -45,8 +45,8 @@ interface RequestButtonProps {
   onUpdate: () => void;
   tmdbId: number;
   media?: Media;
-  isShowComplete?: boolean;
-  is4kShowComplete?: boolean;
+  isAllRequested?: boolean;
+  is4kAllRequested?: boolean;
 }
 
 const RequestButton: React.FC<RequestButtonProps> = ({
@@ -54,8 +54,8 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   onUpdate,
   media,
   mediaType,
-  isShowComplete = false,
-  is4kShowComplete = false,
+  isAllRequested = false,
+  is4kAllRequested = false,
 }) => {
   const intl = useIntl();
   const settings = useSettings();
@@ -143,7 +143,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
     media &&
     media.status !== MediaStatus.AVAILABLE &&
     media.status !== MediaStatus.UNKNOWN &&
-    !isShowComplete
+    !isAllRequested
   ) {
     buttons.push({
       id: 'request-more',
@@ -210,7 +210,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
     media &&
     media.status4k !== MediaStatus.AVAILABLE &&
     media.status4k !== MediaStatus.UNKNOWN &&
-    !is4kShowComplete &&
+    !is4kAllRequested &&
     settings.currentSettings.series4kEnabled
   ) {
     buttons.push({
