@@ -18,12 +18,10 @@ const messages = defineMessages({
   qualityprofile: 'Quality Profile',
   rootfolder: 'Root Folder',
   animenote: '* This series is an anime.',
-  default: '(Default)',
-  loadingprofiles: 'Loading profiles…',
-  loadingfolders: 'Loading folders…',
+  default: ' (Default)',
   requestas: 'Request As',
   languageprofile: 'Language Profile',
-  loadinglanguages: 'Loading languages…',
+  loading: 'Loading…',
 });
 
 export type RequestOverrides = {
@@ -281,7 +279,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                     <option key={`server-list-${server.id}`} value={server.id}>
                       {server.name}
                       {server.isDefault && server.is4k === is4k
-                        ? ` ${intl.formatMessage(messages.default)}`
+                        ? intl.formatMessage(messages.default)
                         : ''}
                     </option>
                   ))}
@@ -298,10 +296,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   onChange={(e) => setSelectedProfile(Number(e.target.value))}
                   onBlur={(e) => setSelectedProfile(Number(e.target.value))}
                   className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                  disabled={isValidating || !serverData}
                 >
-                  {isValidating && (
+                  {(isValidating || !serverData) && (
                     <option value="">
-                      {intl.formatMessage(messages.loadingprofiles)}
+                      {intl.formatMessage(messages.loading)}
                     </option>
                   )}
                   {!isValidating &&
@@ -338,10 +337,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   onChange={(e) => setSelectedFolder(e.target.value)}
                   onBlur={(e) => setSelectedFolder(e.target.value)}
                   className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                  disabled={isValidating || !serverData}
                 >
-                  {isValidating && (
+                  {(isValidating || !serverData) && (
                     <option value="">
-                      {intl.formatMessage(messages.loadingfolders)}
+                      {intl.formatMessage(messages.loading)}
                     </option>
                   )}
                   {!isValidating &&
@@ -379,10 +379,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                       setSelectedLanguage(parseInt(e.target.value))
                     }
                     className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                    disabled={isValidating || !serverData}
                   >
-                    {isValidating && (
+                    {(isValidating || !serverData) && (
                       <option value="">
-                        {intl.formatMessage(messages.loadinglanguages)}
+                        {intl.formatMessage(messages.loading)}
                       </option>
                     )}
                     {!isValidating &&
