@@ -279,7 +279,7 @@ const SettingsServices: React.FC = () => {
                   <p>{intl.formatMessage(messages.nodefaultdescription)}</p>
                 </Alert>
               )}
-            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
               {radarrData.map((radarr) => (
                 <ServerInstance
                   key={`radarr-config-${radarr.id}`}
@@ -350,7 +350,7 @@ const SettingsServices: React.FC = () => {
                   <p>{intl.formatMessage(messages.nodefaultdescription)}</p>
                 </Alert>
               )}
-            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
               {sonarrData.map((sonarr) => (
                 <ServerInstance
                   key={`sonarr-config-${sonarr.id}`}
