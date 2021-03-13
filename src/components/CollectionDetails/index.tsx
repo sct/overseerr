@@ -110,6 +110,17 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
     collectionStatus4k = MediaStatus.PARTIALLY_AVAILABLE;
   }
 
+  const hasRequestable =
+    data.parts.filter(
+      (part) => !part.mediaInfo || part.mediaInfo.status === MediaStatus.UNKNOWN
+    ).length > 0;
+
+  const hasRequestable4k =
+    data.parts.filter(
+      (part) =>
+        !part.mediaInfo || part.mediaInfo.status4k === MediaStatus.UNKNOWN
+    ).length > 0;
+
   const requestableParts = data.parts.filter(
     (part) =>
       !part.mediaInfo ||
@@ -295,18 +306,18 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
         </div>
         <div className="media-actions">
           {hasPermission(Permission.REQUEST) &&
-            (collectionStatus !== MediaStatus.AVAILABLE ||
+            (hasRequestable ||
               (settings.currentSettings.movie4kEnabled &&
                 hasPermission(
                   [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
                   { type: 'or' }
                 ) &&
-                collectionStatus4k !== MediaStatus.AVAILABLE)) && (
+                hasRequestable4k)) && (
               <ButtonWithDropdown
                 buttonType="primary"
                 onClick={() => {
                   setRequestModal(true);
-                  setIs4k(collectionStatus === MediaStatus.AVAILABLE);
+                  setIs4k(!hasRequestable);
                 }}
                 text={
                   <>
@@ -326,9 +337,9 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                     </svg>
                     <span>
                       {intl.formatMessage(
-                        collectionStatus === MediaStatus.AVAILABLE
-                          ? messages.requestcollection4k
-                          : messages.requestcollection
+                        hasRequestable
+                          ? messages.requestcollection
+                          : messages.requestcollection4k
                       )}
                     </span>
                   </>
@@ -339,8 +350,8 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                     [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
                     { type: 'or' }
                   ) &&
-                  collectionStatus !== MediaStatus.AVAILABLE &&
-                  collectionStatus4k !== MediaStatus.AVAILABLE && (
+                  hasRequestable &&
+                  hasRequestable4k && (
                     <ButtonWithDropdown.Item
                       buttonType="primary"
                       onClick={() => {
