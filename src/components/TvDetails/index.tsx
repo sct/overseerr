@@ -485,7 +485,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             >
               <svg
                 className="w-5"
-                style={{ height: 18 }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
