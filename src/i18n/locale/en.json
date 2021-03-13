@@ -242,7 +242,7 @@
   "components.RequestModal.requesttitle": "Request {title}",
   "components.RequestModal.season": "Season",
   "components.RequestModal.seasonnumber": "Season {number}",
-  "components.RequestModal.selectseason": "Select season(s)",
+  "components.RequestModal.selectseason": "Select Season(s)",
   "components.RequestModal.status": "Status",
   "components.ResetPassword.confirmpassword": "Confirm Password",
   "components.ResetPassword.email": "Email Address",

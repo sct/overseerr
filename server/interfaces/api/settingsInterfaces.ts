@@ -14,6 +14,7 @@ export interface PublicSettingsResponse {
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
+  partialRequestsEnabled: boolean;
 }
 
 export interface CacheItem {

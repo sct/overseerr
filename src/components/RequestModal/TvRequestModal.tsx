@@ -19,6 +19,7 @@ import SeasonRequest from '../../../server/entity/SeasonRequest';
 import Alert from '../Common/Alert';
 import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 import SearchByNameModal from './SearchByNameModal';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',
@@ -30,7 +31,8 @@ const messages = defineMessages({
   requesting: 'Requesting…',
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
-  selectseason: 'Select season(s)',
+  request: 'Request',
+  selectseason: 'Select Season(s)',
   season: 'Season',
   numberofepisodes: '# of Episodes',
   status: 'Status',
@@ -63,6 +65,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   editRequest,
   is4k = false,
 }) => {
+  const settings = useSettings();
   const { addToast } = useToasts();
   const editingSeasons: number[] = (editRequest?.seasons ?? []).map(
     (season) => season.seasonNumber
@@ -135,9 +138,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   };
 
   const sendRequest = async () => {
-    if (selectedSeasons.length === 0) {
+    if (
+      settings.currentSettings.partialRequestsEnabled &&
+      selectedSeasons.length === 0
+    ) {
       return;
     }
+
     if (onUpdating) {
       onUpdating(true);
     }
@@ -158,7 +165,15 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         tvdbId: tvdbId ?? data?.externalIds.tvdbId,
         mediaType: 'tv',
         is4k,
-        seasons: selectedSeasons,
+        seasons: settings.currentSettings.partialRequestsEnabled
+          ? selectedSeasons
+          : data?.seasons
+              .filter((season) => season.seasonNumber !== 0)
+              .filter(
+                (season) =>
+                  !getAllRequestedSeasons().includes(season.seasonNumber)
+              )
+              .map((season) => season.seasonNumber),
         ...overrideParams,
       });
 
@@ -329,15 +344,26 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       okText={
         editRequest && selectedSeasons.length === 0
           ? 'Cancel Request'
+          : !settings.currentSettings.partialRequestsEnabled
+          ? intl.formatMessage(messages.request)
           : selectedSeasons.length === 0
           ? intl.formatMessage(messages.selectseason)
           : intl.formatMessage(messages.requestseasons, {
               seasonCount: selectedSeasons.length,
             })
       }
-      okDisabled={editRequest ? false : selectedSeasons.length === 0}
+      okDisabled={
+        editRequest
+          ? false
+          : settings.currentSettings.partialRequestsEnabled &&
+            selectedSeasons.length === 0
+      }
       okButtonType={
-        editRequest && selectedSeasons.length === 0 ? 'danger' : `primary`
+        editRequest &&
+        settings.currentSettings.partialRequestsEnabled &&
+        selectedSeasons.length === 0
+          ? 'danger'
+          : `primary`
       }
       cancelText={
         tvdbId
@@ -378,7 +404,11 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
             </Alert>
           </p>
         )}
-      <div className="flex flex-col">
+      <div
+        className={`flex flex-col ${
+          !settings.currentSettings.partialRequestsEnabled && 'hidden'
+        }`}
+      >
         <div className="-mx-4 sm:mx-0">
           <div className="inline-block min-w-full py-2 align-middle">
             <div className="overflow-hidden shadow sm:rounded-lg">

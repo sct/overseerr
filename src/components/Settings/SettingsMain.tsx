@@ -46,6 +46,7 @@ const messages = defineMessages({
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   originalLanguageDefault: 'All Languages',
+  partialRequestsEnabled: 'Enable Partial Series Requests',
 });
 
 const SettingsMain: React.FC = () => {
@@ -116,6 +117,7 @@ const SettingsMain: React.FC = () => {
             hideAvailable: data?.hideAvailable,
             region: data?.region,
             originalLanguage: data?.originalLanguage,
+            partialRequestsEnabled: data?.partialRequestsEnabled,
             trustProxy: data?.trustProxy,
           }}
           enableReinitialize
@@ -129,6 +131,7 @@ const SettingsMain: React.FC = () => {
                 hideAvailable: values.hideAvailable,
                 region: values.region,
                 originalLanguage: values.originalLanguage,
+                partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
               });
 
@@ -334,6 +337,29 @@ const SettingsMain: React.FC = () => {
                       name="hideAvailable"
                       onChange={() => {
                         setFieldValue('hideAvailable', !values.hideAvailable);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label
+                    htmlFor="partialRequestsEnabled"
+                    className="checkbox-label"
+                  >
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.partialRequestsEnabled)}
+                    </span>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="partialRequestsEnabled"
+                      name="partialRequestsEnabled"
+                      onChange={() => {
+                        setFieldValue(
+                          'partialRequestsEnabled',
+                          !values.partialRequestsEnabled
+                        );
                       }}
                     />
                   </div>
