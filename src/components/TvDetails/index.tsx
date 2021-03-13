@@ -10,10 +10,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import { useUser, Permission } from '../../hooks/useUser';
 import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
-import {
-  MediaStatus,
-  MediaRequestStatus,
-} from '../../../server/constants/media';
+import { MediaStatus } from '../../../server/constants/media';
 import RequestModal from '../RequestModal';
 import axios from 'axios';
 import SlideOver from '../Common/SlideOver';
@@ -210,27 +207,21 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     );
   }
 
-  const requestedSeasonsCount = (data.mediaInfo?.requests ?? [])
-    .filter(
-      (request) =>
-        request.is4k === false && request.status !== MediaRequestStatus.DECLINED
-    )
-    .reduce((total, curr) => {
-      return total + curr.seasons.length;
-    }, 0);
+  const isComplete =
+    seasonCount <=
+    (
+      data.mediaInfo?.seasons.filter(
+        (season) => season.status === MediaStatus.AVAILABLE
+      ) ?? []
+    ).length;
 
-  const requested4kSeasonsCount = (data.mediaInfo?.requests ?? [])
-    .filter(
-      (request) =>
-        request.is4k === true && request.status !== MediaRequestStatus.DECLINED
-    )
-    .reduce((total, curr) => {
-      return total + curr.seasons.length;
-    }, 0);
-
-  const isAllRequested = seasonCount <= requestedSeasonsCount;
-
-  const is4kAllRequested = seasonCount <= requested4kSeasonsCount;
+  const is4kComplete =
+    seasonCount <=
+    (
+      data.mediaInfo?.seasons.filter(
+        (season) => season.status4k === MediaStatus.AVAILABLE
+      ) ?? []
+    ).length;
 
   return (
     <div
@@ -483,8 +474,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             onUpdate={() => revalidate()}
             tmdbId={data?.id}
             media={data?.mediaInfo}
-            isAllRequested={isAllRequested}
-            is4kAllRequested={is4kAllRequested}
+            isShowComplete={isComplete}
+            is4kShowComplete={is4kComplete}
           />
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
