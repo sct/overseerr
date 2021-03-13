@@ -31,7 +31,7 @@ const messages = defineMessages({
   requesting: 'Requesting…',
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
-  request: 'Request',
+  requestall: 'Request All Seasons',
   selectseason: 'Select Season(s)',
   season: 'Season',
   numberofepisodes: '# of Episodes',
@@ -345,7 +345,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         editRequest && selectedSeasons.length === 0
           ? 'Cancel Request'
           : !settings.currentSettings.partialRequestsEnabled
-          ? intl.formatMessage(messages.request)
+          ? intl.formatMessage(messages.requestall)
           : selectedSeasons.length === 0
           ? intl.formatMessage(messages.selectseason)
           : intl.formatMessage(messages.requestseasons, {
@@ -404,18 +404,19 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
             </Alert>
           </p>
         )}
-      <div
-        className={`flex flex-col ${
-          !settings.currentSettings.partialRequestsEnabled && 'hidden'
-        }`}
-      >
+      <div className="flex flex-col">
         <div className="-mx-4 sm:mx-0">
           <div className="inline-block min-w-full py-2 align-middle">
             <div className="overflow-hidden shadow sm:rounded-lg">
               <table className="min-w-full">
                 <thead>
                   <tr>
-                    <th className="w-16 px-4 py-3 bg-gray-500">
+                    <th
+                      className={`w-16 px-4 py-3 bg-gray-500 ${
+                        !settings.currentSettings.partialRequestsEnabled &&
+                        'hidden'
+                      }`}
+                    >
                       <span
                         role="checkbox"
                         tabIndex={0}
@@ -468,7 +469,12 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                       );
                       return (
                         <tr key={`season-${season.id}`}>
-                          <td className="px-4 py-4 text-sm font-medium leading-5 text-gray-100 whitespace-nowrap">
+                          <td
+                            className={`px-4 py-4 text-sm font-medium leading-5 text-gray-100 whitespace-nowrap ${
+                              !settings.currentSettings
+                                .partialRequestsEnabled && 'hidden'
+                            }`}
+                          >
                             <span
                               role="checkbox"
                               tabIndex={0}

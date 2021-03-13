@@ -233,6 +233,7 @@
   "components.RequestModal.requestCancel": "Request for <strong>{title}</strong> canceled.",
   "components.RequestModal.requestSuccess": "<strong>{title}</strong> requested.",
   "components.RequestModal.requestadmin": "Your request will be immediately approved.",
+  "components.RequestModal.requestall": "Request All Seasons",
   "components.RequestModal.requestcancelled": "Request canceled.",
   "components.RequestModal.requestedited": "Request edited.",
   "components.RequestModal.requesterror": "Something went wrong while submitting the request.",
