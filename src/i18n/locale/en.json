@@ -343,7 +343,7 @@
   "components.Settings.Notifications.test": "Test",
   "components.Settings.Notifications.testsent": "Test notification sent!",
   "components.Settings.Notifications.validationBotAPIRequired": "You must provide a bot authentication token",
-  "components.Settings.Notifications.validationChatIdRequired": "You must provide a chat ID",
+  "components.Settings.Notifications.validationChatIdRequired": "You must provide a valid chat ID",
   "components.Settings.Notifications.validationEmail": "You must provide a valid email address",
   "components.Settings.Notifications.validationSmtpHostRequired": "You must provide an SMTP host",
   "components.Settings.Notifications.validationSmtpPortRequired": "You must provide an SMTP port",

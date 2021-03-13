@@ -41,13 +41,13 @@ const NotificationsPushover: React.FC = () => {
     accessToken: Yup.string()
       .required(intl.formatMessage(messages.validationAccessTokenRequired))
       .matches(
-        /^a[A-Za-z0-9]{29}$/,
+        /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationAccessTokenRequired)
       ),
     userToken: Yup.string()
       .required(intl.formatMessage(messages.validationUserTokenRequired))
       .matches(
-        /^[ug][A-Za-z0-9]{29}$/,
+        /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationUserTokenRequired)
       ),
   });
