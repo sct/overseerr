@@ -15,8 +15,8 @@ import { groupBy } from 'lodash';
 import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
-  appearsin: 'Acting',
-  crewmember: 'Production',
+  appearsin: 'Appearances',
+  crewmember: 'Crew',
   ascharacter: 'as {character}',
   nobiography: 'No biography available.',
 });
