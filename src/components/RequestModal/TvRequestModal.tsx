@@ -32,6 +32,7 @@ const messages = defineMessages({
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
   requestall: 'Request All Seasons',
+  alreadyrequested: 'Already Requested',
   selectseason: 'Select Season(s)',
   season: 'Season',
   numberofepisodes: '# of Episodes',
@@ -345,7 +346,10 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         editRequest && selectedSeasons.length === 0
           ? 'Cancel Request'
           : !settings.currentSettings.partialRequestsEnabled
-          ? intl.formatMessage(messages.requestall)
+          ? getAllRequestedSeasons().length >=
+            (data?.mediaInfo?.seasons ?? []).length
+            ? intl.formatMessage(messages.alreadyrequested)
+            : intl.formatMessage(messages.requestall)
           : selectedSeasons.length === 0
           ? intl.formatMessage(messages.selectseason)
           : intl.formatMessage(messages.requestseasons, {
@@ -355,8 +359,10 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       okDisabled={
         editRequest
           ? false
-          : settings.currentSettings.partialRequestsEnabled &&
-            selectedSeasons.length === 0
+          : getAllRequestedSeasons().length >=
+              (data?.mediaInfo?.seasons ?? []).length ||
+            (settings.currentSettings.partialRequestsEnabled &&
+              selectedSeasons.length === 0)
       }
       okButtonType={
         editRequest &&
@@ -387,13 +393,16 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         </svg>
       }
     >
-      {(hasPermission(Permission.MANAGE_REQUESTS) ||
-        hasPermission(
-          is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE
-        ) ||
-        hasPermission(
-          is4k ? Permission.AUTO_APPROVE_4K_TV : Permission.AUTO_APPROVE_TV
-        )) &&
+      {hasPermission(
+        [
+          Permission.MANAGE_REQUESTS,
+          is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE,
+          is4k ? Permission.AUTO_APPROVE_4K_TV : Permission.AUTO_APPROVE_TV,
+        ],
+        { type: 'or' }
+      ) &&
+        getAllRequestedSeasons().length <
+          (data?.mediaInfo?.seasons ?? []).length &&
         !editRequest && (
           <p className="mt-6">
             <Alert

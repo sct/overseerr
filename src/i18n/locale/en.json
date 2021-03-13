@@ -213,6 +213,7 @@
   "components.RequestModal.SearchByNameModal.nosummary": "No summary for this title was found.",
   "components.RequestModal.SearchByNameModal.notvdbid": "Manual Match Required",
   "components.RequestModal.SearchByNameModal.notvdbiddescription": "We couldn't automatically match your request. Please select the correct match from the list below:",
+  "components.RequestModal.alreadyrequested": "Already Requested",
   "components.RequestModal.autoapproval": "Automatic Approval",
   "components.RequestModal.backbutton": "Back",
   "components.RequestModal.cancel": "Cancel Request",
