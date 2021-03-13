@@ -557,6 +557,7 @@
   "components.Settings.originalLanguageDefault": "All Languages",
   "components.Settings.originallanguage": "Discover Language",
   "components.Settings.originallanguageTip": "Filter content by original language (only applies to the \"Popular\" and \"Upcoming\" categories)",
+  "components.Settings.partialRequestsEnabled": "Enable Partial Series Requests",
   "components.Settings.plexlibraries": "Plex Libraries",
   "components.Settings.plexlibrariesDescription": "The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.",
   "components.Settings.plexsettings": "Plex Settings",
