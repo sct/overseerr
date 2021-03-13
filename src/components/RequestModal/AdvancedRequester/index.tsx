@@ -266,7 +266,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
           <>
             <div className="flex flex-col items-center justify-between md:flex-row">
               <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
-                <label htmlFor="server" className="text-label">
+                <label htmlFor="server">
                   {intl.formatMessage(messages.destinationserver)}
                 </label>
                 <select
@@ -288,7 +288,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 </select>
               </div>
               <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
-                <label htmlFor="profile" className="text-label">
+                <label htmlFor="profile">
                   {intl.formatMessage(messages.qualityprofile)}
                 </label>
                 <select
@@ -328,7 +328,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   type === 'tv' ? 'md:pr-4' : ''
                 }`}
               >
-                <label htmlFor="folder" className="text-label">
+                <label htmlFor="folder">
                   {intl.formatMessage(messages.rootfolder)}
                 </label>
                 <select
@@ -365,7 +365,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               </div>
               {type === 'tv' && (
                 <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0">
-                  <label htmlFor="language" className="text-label">
+                  <label htmlFor="language">
                     {intl.formatMessage(messages.languageprofile)}
                   </label>
                   <select
@@ -412,7 +412,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         )}
         {hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS]) &&
           selectedUser && (
-            <div className="mt-0 sm:mt-2">
+            <div className="first:mt-0 sm:mt-4">
               <Listbox
                 as="div"
                 value={selectedUser}
@@ -421,7 +421,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               >
                 {({ open }) => (
                   <>
-                    <Listbox.Label className="text-label">
+                    <Listbox.Label>
                       {intl.formatMessage(messages.requestas)}
                     </Listbox.Label>
                     <div className="relative">
