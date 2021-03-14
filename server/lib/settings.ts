@@ -117,6 +117,8 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
     authPass?: string;
     allowSelfSigned: boolean;
     senderName: string;
+    pgpPrivateKey?: string;
+    pgpPassword?: string;
   };
 }
 

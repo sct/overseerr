@@ -9,6 +9,8 @@ import * as Yup from 'yup';
 import { useToasts } from 'react-toast-notifications';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
 import Alert from '../../Common/Alert';
+import Badge from '../../Common/Badge';
+import globalMessages from '../../../i18n/globalMessages';
 
 const messages = defineMessages({
   save: 'Save Changes',
@@ -39,7 +41,26 @@ const messages = defineMessages({
   emailNotificationTypesAlertDescriptionPt2:
     '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong>\
     email notifications are sent to the user who submitted the request.',
+  pgpPrivateKey: '<PgpLink>PGP</PgpLink> Private Key',
+  pgpPrivateKeyTip:
+    'Sign encrypted email messages (PGP password is also required)',
+  pgpPassword: '<PgpLink>PGP</PgpLink> Password',
+  pgpPasswordTip:
+    'Sign encrypted email messages (PGP private key is also required)',
 });
+
+export function PgpLink(msg: string): JSX.Element {
+  return (
+    <a
+      href="https://www.openpgp.org/"
+      target="_blank"
+      rel="noreferrer"
+      className="text-gray-100 underline transition duration-300 hover:text-white"
+    >
+      {msg}
+    </a>
+  );
+}
 
 const NotificationsEmail: React.FC = () => {
   const intl = useIntl();
@@ -77,6 +98,8 @@ const NotificationsEmail: React.FC = () => {
         authPass: data.options.authPass,
         allowSelfSigned: data.options.allowSelfSigned,
         senderName: data.options.senderName,
+        pgpPrivateKey: data.options.pgpPrivateKey,
+        pgpPassword: data.options.pgpPassword,
       }}
       validationSchema={NotificationsEmailSchema}
       onSubmit={async (values) => {
@@ -93,6 +116,8 @@ const NotificationsEmail: React.FC = () => {
               authPass: values.authPass,
               allowSelfSigned: values.allowSelfSigned,
               senderName: values.senderName,
+              pgpPrivateKey: values.pgpPrivateKey,
+              pgpPassword: values.pgpPassword,
             },
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {
@@ -122,6 +147,8 @@ const NotificationsEmail: React.FC = () => {
               authUser: values.authUser,
               authPass: values.authPass,
               senderName: values.senderName,
+              pgpPrivateKey: values.pgpPrivateKey,
+              pgpPassword: values.pgpPassword,
             },
           });
 
@@ -285,6 +312,56 @@ const NotificationsEmail: React.FC = () => {
                     <Field
                       id="authPass"
                       name="authPass"
+                      type="password"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="pgpPrivateKey" className="text-label">
+                  <span className="mr-2">
+                    {intl.formatMessage(messages.pgpPrivateKey, {
+                      PgpLink: PgpLink,
+                    })}
+                  </span>
+                  <Badge badgeType="danger">
+                    {intl.formatMessage(globalMessages.advanced)}
+                  </Badge>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.pgpPrivateKeyTip)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field
+                      id="pgpPrivateKey"
+                      name="pgpPrivateKey"
+                      as="textarea"
+                      rows="3"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="pgpPassword" className="text-label">
+                  <span className="mr-2">
+                    {intl.formatMessage(messages.pgpPassword, {
+                      PgpLink: PgpLink,
+                    })}
+                  </span>
+                  <Badge badgeType="danger">
+                    {intl.formatMessage(globalMessages.advanced)}
+                  </Badge>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.pgpPasswordTip)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field
+                      id="pgpPassword"
+                      name="pgpPassword"
                       type="password"
                       autoComplete="off"
                     />
