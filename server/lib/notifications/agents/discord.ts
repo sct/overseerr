@@ -156,15 +156,14 @@ class DiscordAgent
         break;
     }
 
-    if (settings.main.applicationUrl && payload.media) {
-      fields.push({
-        name: `Open in ${settings.main.applicationTitle}`,
-        value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-      });
-    }
+    const url =
+      settings.main.applicationUrl && payload.media
+        ? `${settings.main.applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`
+        : undefined;
 
     return {
       title: payload.subject,
+      url,
       description: payload.message,
       color,
       timestamp: new Date().toISOString(),
