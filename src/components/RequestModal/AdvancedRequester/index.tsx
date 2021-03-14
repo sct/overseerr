@@ -18,7 +18,8 @@ const messages = defineMessages({
   qualityprofile: 'Quality Profile',
   rootfolder: 'Root Folder',
   animenote: '* This series is an anime.',
-  default: ' (Default)',
+  default: '{name} (Default)',
+  folder: '{path} ({space})',
   requestas: 'Request As',
   languageprofile: 'Language Profile',
   loading: 'Loading…',
@@ -277,10 +278,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 >
                   {data.map((server) => (
                     <option key={`server-list-${server.id}`} value={server.id}>
-                      {server.name}
                       {server.isDefault && server.is4k === is4k
-                        ? intl.formatMessage(messages.default)
-                        : ''}
+                        ? intl.formatMessage(messages.default, {
+                            name: server.name,
+                          })
+                        : server.name}
                     </option>
                   ))}
                 </select>
@@ -310,14 +312,17 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                         key={`profile-list${profile.id}`}
                         value={profile.id}
                       >
-                        {profile.name}
                         {isAnime &&
                         serverData.server.activeAnimeProfileId === profile.id
-                          ? intl.formatMessage(messages.default)
+                          ? intl.formatMessage(messages.default, {
+                              name: profile.name,
+                            })
                           : !isAnime &&
                             serverData.server.activeProfileId === profile.id
-                          ? intl.formatMessage(messages.default)
-                          : ''}
+                          ? intl.formatMessage(messages.default, {
+                              name: profile.name,
+                            })
+                          : profile.name}
                       </option>
                     ))}
                 </select>
@@ -351,14 +356,26 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                         key={`folder-list${folder.id}`}
                         value={folder.path}
                       >
-                        {folder.path} ({formatBytes(folder.freeSpace ?? 0)})
                         {isAnime &&
                         serverData.server.activeAnimeDirectory === folder.path
-                          ? intl.formatMessage(messages.default)
+                          ? intl.formatMessage(messages.default, {
+                              name: intl.formatMessage(messages.folder, {
+                                path: folder.path,
+                                space: formatBytes(folder.freeSpace ?? 0),
+                              }),
+                            })
                           : !isAnime &&
                             serverData.server.activeDirectory === folder.path
-                          ? intl.formatMessage(messages.default)
-                          : ''}
+                          ? intl.formatMessage(messages.default, {
+                              name: intl.formatMessage(messages.folder, {
+                                path: folder.path,
+                                space: formatBytes(folder.freeSpace ?? 0),
+                              }),
+                            })
+                          : intl.formatMessage(messages.folder, {
+                              path: folder.path,
+                              space: formatBytes(folder.freeSpace ?? 0),
+                            })}
                       </option>
                     ))}
                 </select>
@@ -393,16 +410,19 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                           key={`folder-list${language.id}`}
                           value={language.id}
                         >
-                          {language.name}
                           {isAnime &&
                           serverData.server.activeAnimeLanguageProfileId ===
                             language.id
-                            ? intl.formatMessage(messages.default)
+                            ? intl.formatMessage(messages.default, {
+                                name: language.name,
+                              })
                             : !isAnime &&
                               serverData.server.activeLanguageProfileId ===
                                 language.id
-                            ? intl.formatMessage(messages.default)
-                            : ''}
+                            ? intl.formatMessage(messages.default, {
+                                name: language.name,
+                              })
+                            : language.name}
                         </option>
                       ))}
                   </select>
