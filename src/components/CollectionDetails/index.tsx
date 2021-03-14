@@ -20,6 +20,7 @@ import PageTitle from '../Common/PageTitle';
 import { useUser, Permission } from '../../hooks/useUser';
 import useSettings from '../../hooks/useSettings';
 import Link from 'next/link';
+import { uniq } from 'lodash';
 
 const messages = defineMessages({
   overviewunavailable: 'Overview unavailable.',
@@ -171,9 +172,14 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
     })
   );
 
-  if (genres && data.parts[0].genreIds.length) {
+  if (genres && data.parts.some((part) => part.genreIds.length)) {
     collectionAttributes.push(
-      data.parts[0].genreIds
+      uniq(
+        data.parts.reduce(
+          (genresList: number[], curr) => genresList.concat(curr.genreIds),
+          []
+        )
+      )
         .map((genreId) => (
           <Link
             href={`/discover/movies/genre/${genreId}`}
