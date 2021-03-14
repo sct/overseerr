@@ -73,6 +73,14 @@ userSettingsRoutes.post<
       return next({ status: 404, message: 'User not found.' });
     }
 
+    // "Owner" user settings cannot be modified by other users
+    if (user.id === 1 && req.user?.id !== 1) {
+      return next({
+        status: 403,
+        message: "You do not have permission to modify this user's settings.",
+      });
+    }
+
     user.username = req.body.username;
     if (!user.settings) {
       user.settings = new UserSettings({
@@ -240,6 +248,14 @@ userSettingsRoutes.post<
       return next({ status: 404, message: 'User not found.' });
     }
 
+    // "Owner" user settings cannot be modified by other users
+    if (user.id === 1 && req.user?.id !== 1) {
+      return next({
+        status: 403,
+        message: "You do not have permission to modify this user's settings.",
+      });
+    }
+
     if (!user.settings) {
       user.settings = new UserSettings({
         user: req.user,
@@ -309,8 +325,8 @@ userSettingsRoutes.post<
         return next({ status: 404, message: 'User not found.' });
       }
 
-      // Only let the owner user modify themselves
-      if (user.id === 1 && req.user?.id !== 1) {
+      // "Owner" user permissions cannot be modified, and users cannot set their own permissions
+      if (user.id === 1 || req.user?.id === user.id) {
         return next({
           status: 403,
           message: 'You do not have permission to modify this user',

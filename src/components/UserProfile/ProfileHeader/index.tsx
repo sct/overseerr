@@ -82,7 +82,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       </div>
       <div className="flex flex-col-reverse mt-6 space-y-4 space-y-reverse justify-stretch sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
         {(loggedInUser?.id === user.id ||
-          hasPermission(Permission.MANAGE_USERS)) &&
+          (user.id !== 1 && hasPermission(Permission.MANAGE_USERS))) &&
         !isSettingsPage ? (
           <Link
             href={
@@ -109,28 +109,30 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </Button>
           </Link>
         ) : (
-          <Link
-            href={
-              loggedInUser?.id === user.id ? `/profile` : `/users/${user.id}`
-            }
-            passHref
-          >
-            <Button as="a">
-              <svg
-                className="w-5 h-5 mr-1"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              {intl.formatMessage(messages.profile)}
-            </Button>
-          </Link>
+          isSettingsPage && (
+            <Link
+              href={
+                loggedInUser?.id === user.id ? `/profile` : `/users/${user.id}`
+              }
+              passHref
+            >
+              <Button as="a">
+                <svg
+                  className="w-5 h-5 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {intl.formatMessage(messages.profile)}
+              </Button>
+            </Link>
+          )
         )}
       </div>
     </div>

@@ -559,6 +559,7 @@ const UserList: React.FC = () => {
               <Table.TD alignText="right">
                 <Button
                   buttonType="warning"
+                  disabled={user.id === 1 && currentUser?.id !== 1}
                   className="mr-2"
                   onClick={() =>
                     router.push(
@@ -571,7 +572,11 @@ const UserList: React.FC = () => {
                 </Button>
                 <Button
                   buttonType="danger"
-                  disabled={hasPermission(Permission.ADMIN, user.permissions)}
+                  disabled={
+                    user.id === 1 ||
+                    (currentUser?.id !== 1 &&
+                      hasPermission(Permission.ADMIN, user.permissions))
+                  }
                   onClick={() => setDeleteModal({ isOpen: true, user })}
                 >
                   {intl.formatMessage(messages.delete)}
