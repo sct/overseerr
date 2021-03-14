@@ -21,8 +21,8 @@ const messages = defineMessages({
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   permissions: 'Permissions',
-  nopermission: 'Unauthorized',
-  nopermissionDescription: 'You cannot modify your own permissions.',
+  unauthorized: 'Unauthorized',
+  unauthorizedDescription: 'You cannot modify your own permissions.',
 });
 
 const UserPermissions: React.FC = () => {
@@ -51,8 +51,8 @@ const UserPermissions: React.FC = () => {
             {intl.formatMessage(messages.permissions)}
           </h3>
         </div>
-        <Alert title={intl.formatMessage(messages.nopermission)} type="error">
-          {intl.formatMessage(messages.nopermissionDescription)}
+        <Alert title={intl.formatMessage(messages.unauthorized)} type="error">
+          {intl.formatMessage(messages.unauthorizedDescription)}
         </Alert>
       </>
     );

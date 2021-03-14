@@ -17,8 +17,8 @@ const messages = defineMessages({
   menuChangePass: 'Password',
   menuNotifications: 'Notifications',
   menuPermissions: 'Permissions',
-  nopermission: 'Unauthorized',
-  nopermissionDescription:
+  unauthorized: 'Unauthorized',
+  unauthorizedDescription:
     "You do not have permission to modify this user's settings.",
 });
 
@@ -118,8 +118,8 @@ const UserSettings: React.FC = ({ children }) => {
         <PageTitle title={intl.formatMessage(messages.settings)} />
         <ProfileHeader user={user} isSettingsPage />
         <div className="mt-6">
-          <Alert title={intl.formatMessage(messages.nopermission)} type="error">
-            {intl.formatMessage(messages.nopermissionDescription)}
+          <Alert title={intl.formatMessage(messages.unauthorized)} type="error">
+            {intl.formatMessage(messages.unauthorizedDescription)}
           </Alert>
         </div>
       </>
