@@ -21,10 +21,19 @@ export class UserSettings {
   public user: User;
 
   @Column({ default: true })
-  public enableNotifications: boolean;
+  public enableEmail: boolean;
+
+  @Column({ nullable: true })
+  public pgpKey?: string;
+
+  @Column({ default: false })
+  public enableDiscord: boolean;
 
   @Column({ nullable: true })
   public discordId?: string;
+
+  @Column({ default: false })
+  public enableTelegram: boolean;
 
   @Column({ nullable: true })
   public telegramChatId?: string;
@@ -37,7 +46,4 @@ export class UserSettings {
 
   @Column({ nullable: true })
   public originalLanguage?: string;
-
-  @Column({ nullable: true })
-  public pgpKey?: string;
 }

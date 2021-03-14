@@ -92,17 +92,12 @@ components:
     UserSettings:
       type: object
       properties:
-        enableNotifications:
-          type: boolean
-          default: true
         discordId:
           type: string
-        telegramChatId:
+        region:
           type: string
-        telegramSendSilently:
-          type: boolean
-      required:
-        - enableNotifications
+        language:
+          type: string
     MainSettings:
       type: object
       properties:
@@ -1559,20 +1554,27 @@ components:
     UserSettingsNotifications:
       type: object
       properties:
-        enableNotifications:
+        enableEmail:
           type: boolean
           default: true
+        pgpKey:
+          type: string
+          nullable: true
+        enableDiscord:
+          type: boolean
+          default: false
         discordId:
           type: string
           nullable: true
+        enableTelegram:
+          type: boolean
+          default: false
         telegramChatId:
           type: string
           nullable: true
         telegramSendSilently:
           type: boolean
           nullable: true
-      required:
-        - enableNotifications
   securitySchemes:
     cookieAuth:
       type: apiKey

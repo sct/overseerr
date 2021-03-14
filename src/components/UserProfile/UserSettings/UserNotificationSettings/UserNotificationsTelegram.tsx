@@ -15,6 +15,7 @@ import LoadingSpinner from '../../../Common/LoadingSpinner';
 const messages = defineMessages({
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
+  enableTelegram: 'Enable Notifications',
   telegramChatId: 'Chat ID',
   telegramChatIdTip: 'Add <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat',
   telegramChatIdTipLong:
@@ -76,6 +77,18 @@ const UserTelegramSettings: React.FC = () => {
       {({ errors, touched, isSubmitting }) => {
         return (
           <Form className="section">
+            <div className="form-row">
+              <label htmlFor="enableTelegram" className="checkbox-label">
+                {intl.formatMessage(messages.enableTelegram)}
+              </label>
+              <div className="form-input">
+                <Field
+                  type="checkbox"
+                  id="enableTelegram"
+                  name="enableTelegram"
+                />
+              </div>
+            </div>
             <div className="form-row">
               <label htmlFor="telegramChatId" className="text-label">
                 <span>{intl.formatMessage(messages.telegramChatId)}</span>

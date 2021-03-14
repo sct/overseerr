@@ -47,7 +47,7 @@ class EmailAgent
         .filter(
           (user) =>
             user.hasPermission(Permission.MANAGE_REQUESTS) &&
-            (user.settings?.enableNotifications ?? true)
+            (user.settings?.enableEmail ?? true)
         )
         .forEach((user) => {
           const email = new PreparedEmail(user.settings?.pgpKey);
@@ -103,7 +103,7 @@ class EmailAgent
         .filter(
           (user) =>
             user.hasPermission(Permission.MANAGE_REQUESTS) &&
-            (user.settings?.enableNotifications ?? true)
+            (user.settings?.enableEmail ?? true)
         )
         .forEach((user) => {
           const email = new PreparedEmail(user.settings?.pgpKey);
@@ -209,7 +209,7 @@ class EmailAgent
         .filter(
           (user) =>
             user.hasPermission(Permission.MANAGE_REQUESTS) &&
-            (user.settings?.enableNotifications ?? true)
+            (user.settings?.enableEmail ?? true)
         )
         .forEach((user) => {
           const email = new PreparedEmail();

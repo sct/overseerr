@@ -15,6 +15,7 @@ import LoadingSpinner from '../../../Common/LoadingSpinner';
 const messages = defineMessages({
   discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
+  enableDiscord: 'Enable Mentions',
   discordId: 'User ID',
   discordIdTip:
     'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your user account',
@@ -43,12 +44,14 @@ const UserNotificationsDiscord: React.FC = () => {
   return (
     <Formik
       initialValues={{
+        enableDiscord: data?.enableDiscord,
         discordId: data?.discordId,
       }}
       validationSchema={UserNotificationsDiscordSchema}
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
+            enableDiscord: values.enableDiscord,
             discordId: values.discordId,
           });
           addToast(intl.formatMessage(messages.discordsettingssaved), {
@@ -68,6 +71,18 @@ const UserNotificationsDiscord: React.FC = () => {
       {({ errors, touched, isSubmitting }) => {
         return (
           <Form className="section">
+            <div className="form-row">
+              <label htmlFor="enableDiscord" className="checkbox-label">
+                {intl.formatMessage(messages.enableDiscord)}
+              </label>
+              <div className="form-input">
+                <Field
+                  type="checkbox"
+                  id="enableDiscord"
+                  name="enableDiscord"
+                />
+              </div>
+            </div>
             <div className="form-row">
               <label htmlFor="discordId" className="text-label">
                 <span>{intl.formatMessage(messages.discordId)}</span>
