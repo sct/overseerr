@@ -16,6 +16,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   recentrequests: 'Recent Requests',
+  norequests: 'No Requests',
 });
 
 type MediaTitle = MovieDetails | TvDetails;
@@ -95,7 +96,7 @@ const UserProfile: React.FC = () => {
             />
           ))}
           placeholder={<RequestCard.Placeholder />}
-          emptyMessage={'No Requests'}
+          emptyMessage={intl.formatMessage(messages.norequests)}
         />
       </div>
     </>
