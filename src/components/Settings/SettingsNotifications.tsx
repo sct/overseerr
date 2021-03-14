@@ -1,7 +1,5 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -17,6 +15,7 @@ import Error from '../../pages/_error';
 import Button from '../Common/Button';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
+import SettingsTabs, { SettingsRoute } from '../Common/SettingsTabs';
 
 const messages = defineMessages({
   notifications: 'Notifications',
@@ -33,15 +32,7 @@ const messages = defineMessages({
   webhook: 'Webhook',
 });
 
-interface SettingsRoute {
-  text: string;
-  content: React.ReactNode;
-  route: string;
-  regex: RegExp;
-}
-
 const SettingsNotifications: React.FC = ({ children }) => {
-  const router = useRouter();
   const intl = useIntl();
   const { addToast } = useToasts();
   const { data, error, revalidate } = useSWR('/api/v1/settings/notifications');
@@ -138,32 +129,6 @@ const SettingsNotifications: React.FC = ({ children }) => {
       regex: /^\/settings\/notifications\/webhook/,
     },
   ];
-
-  const activeLinkColor = 'bg-indigo-700';
-  const inactiveLinkColor = 'bg-gray-800';
-
-  const SettingsLink: React.FC<{
-    route: string;
-    regex: RegExp;
-    isMobile?: boolean;
-  }> = ({ children, route, regex, isMobile = false }) => {
-    if (isMobile) {
-      return <option value={route}>{children}</option>;
-    }
-
-    return (
-      <Link href={route}>
-        <a
-          className={`whitespace-nowrap ml-8 first:ml-0 px-3 py-2 font-medium text-sm rounded-md ${
-            router.pathname.match(regex) ? activeLinkColor : inactiveLinkColor
-          }`}
-          aria-current="page"
-        >
-          {children}
-        </a>
-      </Link>
-    );
-  };
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -265,51 +230,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
           {intl.formatMessage(messages.notificationAgentSettingsDescription)}
         </p>
       </div>
-      <div>
-        <div className="sm:hidden">
-          <label htmlFor="tabs" className="sr-only">
-            Select a tab
-          </label>
-          <select
-            onChange={(e) => {
-              router.push(e.target.value);
-            }}
-            onBlur={(e) => {
-              router.push(e.target.value);
-            }}
-            defaultValue={
-              settingsRoutes.find(
-                (route) => !!router.pathname.match(route.regex)
-              )?.route
-            }
-            aria-label="Selected tab"
-          >
-            {settingsRoutes.map((route, index) => (
-              <SettingsLink
-                route={route.route}
-                regex={route.regex}
-                isMobile
-                key={`mobile-settings-link-${index}`}
-              >
-                {route.text}
-              </SettingsLink>
-            ))}
-          </select>
-        </div>
-        <div className="hidden overflow-x-scroll overflow-y-hidden sm:block hide-scrollbar">
-          <nav className="flex space-x-4" aria-label="Tabs">
-            {settingsRoutes.map((route, index) => (
-              <SettingsLink
-                route={route.route}
-                regex={route.regex}
-                key={`standard-settings-link-${index}`}
-              >
-                {route.content}
-              </SettingsLink>
-            ))}
-          </nav>
-        </div>
-      </div>
+      <SettingsTabs tabType="button" settingsRoutes={settingsRoutes} />
       <div className="section">{children}</div>
     </>
   );

@@ -5,39 +5,28 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import * as Yup from 'yup';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import DiscordLogo from '../../../../assets/extlogos/discord.svg';
+import TelegramLogo from '../../../../assets/extlogos/telegram.svg';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';
-import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import PageTitle from '../../../Common/PageTitle';
-import { PgpLink } from '../../../Settings/Notifications/NotificationsEmail';
+import SettingsTabs, { SettingsRoute } from '../../../Common/SettingsTabs';
 
 const messages = defineMessages({
   notifications: 'Notifications',
   notificationsettings: 'Notification Settings',
+  notificationAgentsSettings: 'Notification Agents',
   enableNotifications: 'Enable Notifications',
-  discordId: 'Discord ID',
-  discordIdTip:
-    'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your Discord user account',
-  validationDiscordId: 'You must provide a valid Discord user ID',
-  telegramChatId: 'Telegram Chat ID',
-  telegramChatIdTip: 'Add <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat',
-  telegramChatIdTipLong:
-    '<TelegramBotLink>Start a chat</TelegramBotLink>, add <GetIdBotLink>@get_id_bot</GetIdBotLink>, and issue the <code>/my_id</code> command',
-  sendSilently: 'Send Telegram Messages Silently',
-  sendSilentlyDescription: 'Send notifications with no sound',
-  validationTelegramChatId: 'You must provide a valid Telegram chat ID',
+  email: 'Email',
   toastSettingsSuccess: 'Notification settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
-  pgpKey: '<PgpLink>PGP</PgpLink> Public Key',
-  pgpKeyTip: 'Encrypt email messages',
 });
 
-const UserNotificationSettings: React.FC = () => {
+const UserNotificationSettings: React.FC = ({ children }) => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -46,17 +35,54 @@ const UserNotificationSettings: React.FC = () => {
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
 
-  const UserNotificationSettingsSchema = Yup.object().shape({
-    discordId: Yup.string()
-      .nullable()
-      .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
-    telegramChatId: Yup.string()
-      .nullable()
-      .matches(
-        /^[-]?\d+$/,
-        intl.formatMessage(messages.validationTelegramChatId)
+  const settingsRoutes: SettingsRoute[] = [
+    {
+      text: intl.formatMessage(messages.email),
+      content: (
+        <span className="flex items-center">
+          <svg
+            className="h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+            />
+          </svg>
+          {intl.formatMessage(messages.email)}
+        </span>
       ),
-  });
+      route: `/users/${user?.id}/settings/notifications/email`,
+      regex: /\/settings\/notifications\/email/,
+    },
+    {
+      text: 'Discord',
+      content: (
+        <span className="flex items-center">
+          <DiscordLogo className="h-4 mr-2" />
+          Discord
+        </span>
+      ),
+      route: `/users/${user?.id}/settings/notifications/discord`,
+      regex: /\/settings\/notifications\/discord/,
+    },
+    {
+      text: 'Telegram',
+      content: (
+        <span className="flex items-center">
+          <TelegramLogo className="h-4 mr-2" />
+          Telegram
+        </span>
+      ),
+      route: `/users/${user?.id}/settings/notifications/telegram`,
+      regex: /\/settings\/notifications\/telegram/,
+    },
+  ];
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -80,215 +106,83 @@ const UserNotificationSettings: React.FC = () => {
           {intl.formatMessage(messages.notificationsettings)}
         </h3>
       </div>
-      <Formik
-        initialValues={{
-          enableNotifications: data?.enableNotifications,
-          discordId: data?.discordId,
-          telegramChatId: data?.telegramChatId,
-          telegramSendSilently: data?.telegramSendSilently,
-          pgpKey: data?.pgpKey,
-        }}
-        validationSchema={UserNotificationSettingsSchema}
-        enableReinitialize
-        onSubmit={async (values) => {
-          try {
-            await axios.post(
-              `/api/v1/user/${user?.id}/settings/notifications`,
-              {
-                enableNotifications: values.enableNotifications,
-                discordId: values.discordId,
-                telegramChatId: values.telegramChatId,
-                telegramSendSilently: values.telegramSendSilently,
-                pgpKey: values.pgpKey,
-              }
-            );
+      <div className="section">
+        <Formik
+          initialValues={{
+            enableNotifications: data?.enableNotifications,
+          }}
+          enableReinitialize
+          onSubmit={async (values) => {
+            try {
+              await axios.post(
+                `/api/v1/user/${user?.id}/settings/notifications`,
+                {
+                  enableNotifications: values.enableNotifications,
+                }
+              );
 
-            addToast(intl.formatMessage(messages.toastSettingsSuccess), {
-              autoDismiss: true,
-              appearance: 'success',
-            });
-          } catch (e) {
-            addToast(intl.formatMessage(messages.toastSettingsFailure), {
-              autoDismiss: true,
-              appearance: 'error',
-            });
-          } finally {
-            revalidate();
-            mutate();
-          }
-        }}
-      >
-        {({ errors, touched, isSubmitting }) => {
-          return (
-            <Form className="section">
-              <div className="form-row">
-                <label htmlFor="enableNotifications" className="checkbox-label">
-                  <span className="mr-2">
-                    {intl.formatMessage(messages.enableNotifications)}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <Field
-                    type="checkbox"
-                    id="enableNotifications"
-                    name="enableNotifications"
-                  />
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="pgpKey" className="text-label">
-                  <span className="mr-2">
-                    {intl.formatMessage(messages.pgpKey, {
-                      PgpLink: PgpLink,
-                    })}
-                  </span>
-                  <Badge badgeType="danger">
-                    {intl.formatMessage(globalMessages.advanced)}
-                  </Badge>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.pgpKeyTip)}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field id="pgpKey" name="pgpKey" as="textarea" rows="3" />
-                  </div>
-                  {errors.pgpKey && touched.pgpKey && (
-                    <div className="error">{errors.pgpKey}</div>
-                  )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="discordId" className="text-label">
-                  <span>{intl.formatMessage(messages.discordId)}</span>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.discordIdTip, {
-                      FindDiscordIdLink: function FindDiscordIdLink(msg) {
-                        return (
-                          <a
-                            href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-gray-100 underline transition duration-300 hover:text-white"
-                          >
-                            {msg}
-                          </a>
-                        );
-                      },
-                    })}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field id="discordId" name="discordId" type="text" />
-                  </div>
-                  {errors.discordId && touched.discordId && (
-                    <div className="error">{errors.discordId}</div>
-                  )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="telegramChatId" className="text-label">
-                  <span>{intl.formatMessage(messages.telegramChatId)}</span>
-                  <span className="label-tip">
-                    {data?.telegramBotUsername
-                      ? intl.formatMessage(messages.telegramChatIdTipLong, {
-                          TelegramBotLink: function TelegramBotLink(msg) {
-                            return (
-                              <a
-                                href={`https://telegram.me/${data.telegramBotUsername}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-gray-100 underline transition duration-300 hover:text-white"
-                              >
-                                {msg}
-                              </a>
-                            );
-                          },
-                          GetIdBotLink: function GetIdBotLink(msg) {
-                            return (
-                              <a
-                                href="https://telegram.me/get_id_bot"
-                                className="text-gray-100 underline transition duration-300 hover:text-white"
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {msg}
-                              </a>
-                            );
-                          },
-                          code: function code(msg) {
-                            return <code>{msg}</code>;
-                          },
-                        })
-                      : intl.formatMessage(messages.telegramChatIdTip, {
-                          GetIdBotLink: function GetIdBotLink(msg) {
-                            return (
-                              <a
-                                href="https://telegram.me/get_id_bot"
-                                className="text-gray-100 underline transition duration-300 hover:text-white"
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {msg}
-                              </a>
-                            );
-                          },
-                        })}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
+              addToast(intl.formatMessage(messages.toastSettingsSuccess), {
+                autoDismiss: true,
+                appearance: 'success',
+              });
+            } catch (e) {
+              addToast(intl.formatMessage(messages.toastSettingsFailure), {
+                autoDismiss: true,
+                appearance: 'error',
+              });
+            } finally {
+              revalidate();
+              mutate();
+            }
+          }}
+        >
+          {({ isSubmitting }) => {
+            return (
+              <Form className="section">
+                <div className="form-row">
+                  <label
+                    htmlFor="enableNotifications"
+                    className="checkbox-label"
+                  >
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.enableNotifications)}
+                    </span>
+                  </label>
+                  <div className="form-input">
                     <Field
-                      id="telegramChatId"
-                      name="telegramChatId"
-                      type="text"
+                      type="checkbox"
+                      id="enableNotifications"
+                      name="enableNotifications"
                     />
                   </div>
-                  {errors.telegramChatId && touched.telegramChatId && (
-                    <div className="error">{errors.telegramChatId}</div>
-                  )}
                 </div>
-              </div>
-              <div className="form-row">
-                <label
-                  htmlFor="telegramSendSilently"
-                  className="checkbox-label"
-                >
-                  <span className="mr-2">
-                    {intl.formatMessage(messages.sendSilently)}
-                  </span>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.sendSilentlyDescription)}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <Field
-                    type="checkbox"
-                    id="telegramSendSilently"
-                    name="telegramSendSilently"
-                  />
+                <div className="actions">
+                  <div className="flex justify-end">
+                    <span className="inline-flex ml-3 rounded-md shadow-sm">
+                      <Button
+                        buttonType="primary"
+                        type="submit"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting
+                          ? intl.formatMessage(globalMessages.saving)
+                          : intl.formatMessage(globalMessages.save)}
+                      </Button>
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className="actions">
-                <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      type="submit"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting
-                        ? intl.formatMessage(globalMessages.saving)
-                        : intl.formatMessage(globalMessages.save)}
-                    </Button>
-                  </span>
-                </div>
-              </div>
-            </Form>
-          );
-        }}
-      </Formik>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
+      <div className="mt-10 mb-6">
+        <h3 className="heading">
+          {intl.formatMessage(messages.notificationAgentsSettings)}
+        </h3>
+      </div>
+      <SettingsTabs tabType="button" settingsRoutes={settingsRoutes} />
+      <div className="section">{children}</div>
     </>
   );
 };
