@@ -8,12 +8,6 @@ interface BarProps {
   isFinished: boolean;
 }
 
-const domAvailable = !!(
-  typeof window !== 'undefined' &&
-  window.document &&
-  window.document.createElement
-);
-
 const Bar = ({ progress, isFinished }: BarProps) => {
   return (
     <div
@@ -32,15 +26,15 @@ const Bar = ({ progress, isFinished }: BarProps) => {
   );
 };
 
-/* eslint-disable */
-const MemoizedNProgress = React.memo(({ loading }: { loading: boolean }) => (
+const NProgressBar = ({ loading }: { loading: boolean }) => (
   <NProgress isAnimating={loading}>
     {({ isFinished, progress }) => (
       <Bar progress={progress} isFinished={isFinished} />
     )}
   </NProgress>
-));
-/* eslint-enable */
+);
+
+const MemoizedNProgress = React.memo(NProgressBar);
 
 const LoadingBar = (): React.ReactPortal | null => {
   const [mounted, setMounted] = useState(false);
@@ -66,19 +60,12 @@ const LoadingBar = (): React.ReactPortal | null => {
       router.events.off('routeChangeComplete', handleFinishedLoading);
       router.events.off('routeChangeError', handleFinishedLoading);
     };
+  }, [router]);
 
-    // Only want this to run once on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return mounted && domAvailable
+  return mounted
     ? ReactDOM.createPortal(
         <MemoizedNProgress loading={loading} />,
-
-        // This will always exist :)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        document.getElementById('__next')
+        document.body
       )
     : null;
 };
