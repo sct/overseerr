@@ -313,10 +313,10 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                         {profile.name}
                         {isAnime &&
                         serverData.server.activeAnimeProfileId === profile.id
-                          ? ` ${intl.formatMessage(messages.default)}`
+                          ? intl.formatMessage(messages.default)
                           : !isAnime &&
                             serverData.server.activeProfileId === profile.id
-                          ? ` ${intl.formatMessage(messages.default)}`
+                          ? intl.formatMessage(messages.default)
                           : ''}
                       </option>
                     ))}
@@ -354,10 +354,10 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                         {folder.path} ({formatBytes(folder.freeSpace ?? 0)})
                         {isAnime &&
                         serverData.server.activeAnimeDirectory === folder.path
-                          ? ` ${intl.formatMessage(messages.default)}`
+                          ? intl.formatMessage(messages.default)
                           : !isAnime &&
                             serverData.server.activeDirectory === folder.path
-                          ? ` ${intl.formatMessage(messages.default)}`
+                          ? intl.formatMessage(messages.default)
                           : ''}
                       </option>
                     ))}
@@ -397,11 +397,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                           {isAnime &&
                           serverData.server.activeAnimeLanguageProfileId ===
                             language.id
-                            ? ` ${intl.formatMessage(messages.default)}`
+                            ? intl.formatMessage(messages.default)
                             : !isAnime &&
                               serverData.server.activeLanguageProfileId ===
                                 language.id
-                            ? ` ${intl.formatMessage(messages.default)}`
+                            ? intl.formatMessage(messages.default)
                             : ''}
                         </option>
                       ))}
