@@ -18,7 +18,7 @@ const messages = defineMessages({
   botAPI: 'Bot Authentication Token',
   chatId: 'Chat ID',
   validationBotAPIRequired: 'You must provide a bot authentication token',
-  validationChatIdRequired: 'You must provide a chat ID',
+  validationChatIdRequired: 'You must provide a valid chat ID',
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   testsent: 'Test notification sent!',
