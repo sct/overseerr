@@ -225,6 +225,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
         discordId: user.settings?.discordId,
         telegramChatId: user.settings?.telegramChatId,
         telegramSendSilently: user?.settings?.telegramSendSilently,
+        pgpKey: user?.settings?.pgpKey,
       });
     } catch (e) {
       next({ status: 500, message: e.message });
@@ -263,12 +264,14 @@ userSettingsRoutes.post<
         discordId: req.body.discordId,
         telegramChatId: req.body.telegramChatId,
         telegramSendSilently: req.body.telegramSendSilently,
+        pgpKey: req.body.pgpKey,
       });
     } else {
       user.settings.enableNotifications = req.body.enableNotifications;
       user.settings.discordId = req.body.discordId;
       user.settings.telegramChatId = req.body.telegramChatId;
       user.settings.telegramSendSilently = req.body.telegramSendSilently;
+      user.settings.pgpKey = req.body.pgpKey;
     }
 
     userRepository.save(user);
@@ -278,6 +281,7 @@ userSettingsRoutes.post<
       discordId: user.settings.discordId,
       telegramChatId: user.settings.telegramChatId,
       telegramSendSilently: user.settings.telegramSendSilently,
+      pgpKey: user.settings.pgpKey,
     });
   } catch (e) {
     next({ status: 500, message: e.message });

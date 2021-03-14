@@ -47,7 +47,7 @@ class EmailAgent
       users
         .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
         .forEach((user) => {
-          const email = new PreparedEmail();
+          const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
           email.send({
             template: path.join(
@@ -97,7 +97,7 @@ class EmailAgent
       users
         .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
         .forEach((user) => {
-          const email = new PreparedEmail();
+          const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
           email.send({
             template: path.join(
@@ -142,7 +142,7 @@ class EmailAgent
     // This is getting main settings for the whole app
     const { applicationUrl, applicationTitle } = getSettings().main;
     try {
-      const email = new PreparedEmail();
+      const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
       await email.send({
         template: path.join(
@@ -234,7 +234,7 @@ class EmailAgent
     // This is getting main settings for the whole app
     const { applicationUrl, applicationTitle } = getSettings().main;
     try {
-      const email = new PreparedEmail();
+      const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
       await email.send({
         template: path.join(
@@ -276,7 +276,7 @@ class EmailAgent
     // This is getting main settings for the whole app
     const { applicationUrl, applicationTitle } = getSettings().main;
     try {
-      const email = new PreparedEmail();
+      const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
       await email.send({
         template: path.join(
@@ -318,7 +318,7 @@ class EmailAgent
     // This is getting main settings for the whole app
     const { applicationUrl, applicationTitle } = getSettings().main;
     try {
-      const email = new PreparedEmail();
+      const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
       await email.send({
         template: path.join(__dirname, '../../../templates/email/test-email'),

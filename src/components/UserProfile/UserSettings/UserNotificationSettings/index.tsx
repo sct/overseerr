@@ -11,6 +11,9 @@ import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import * as Yup from 'yup';
+import Badge from '../../../Common/Badge';
+import globalMessages from '../../../../i18n/globalMessages';
+import { PgpLink } from '../../../Settings/Notifications/NotificationsEmail';
 
 const messages = defineMessages({
   notificationsettings: 'Notification Settings',
@@ -32,6 +35,8 @@ const messages = defineMessages({
   localuser: 'Local User',
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
+  pgpKey: '<PgpLink>PGP</PgpLink> Public Key',
+  pgpKeyTip: 'Encrypt email messages',
 });
 
 const UserNotificationSettings: React.FC = () => {
@@ -76,6 +81,7 @@ const UserNotificationSettings: React.FC = () => {
           discordId: data?.discordId,
           telegramChatId: data?.telegramChatId,
           telegramSendSilently: data?.telegramSendSilently,
+          pgpKey: data?.pgpKey,
         }}
         validationSchema={UserNotificationSettingsSchema}
         enableReinitialize
@@ -88,6 +94,7 @@ const UserNotificationSettings: React.FC = () => {
                 discordId: values.discordId,
                 telegramChatId: values.telegramChatId,
                 telegramSendSilently: values.telegramSendSilently,
+                pgpKey: values.pgpKey,
               }
             );
 
@@ -121,6 +128,29 @@ const UserNotificationSettings: React.FC = () => {
                     id="enableNotifications"
                     name="enableNotifications"
                   />
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="pgpKey" className="text-label">
+                  <span className="mr-2">
+                    {intl.formatMessage(messages.pgpKey, {
+                      PgpLink: PgpLink,
+                    })}
+                  </span>
+                  <Badge badgeType="danger">
+                    {intl.formatMessage(globalMessages.advanced)}
+                  </Badge>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.pgpKeyTip)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field id="pgpKey" name="pgpKey" as="textarea" rows="3" />
+                  </div>
+                  {errors.pgpKey && touched.pgpKey && (
+                    <div className="error">{errors.pgpKey}</div>
+                  )}
                 </div>
               </div>
               <div className="form-row">
