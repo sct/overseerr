@@ -20,6 +20,7 @@
     "@headlessui/react": "^0.3.1",
     "@supercharge/request-ip": "^1.1.2",
     "@svgr/webpack": "^5.5.0",
+    "@tanem/react-nprogress": "^3.0.57",
     "ace-builds": "^1.4.12",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
