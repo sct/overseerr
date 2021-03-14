@@ -112,7 +112,7 @@ const UserSettings: React.FC = ({ children }) => {
     );
   };
 
-  if (currentUser?.id !== user.id && user.id === 1) {
+  if (currentUser?.id !== 1 && user.id === 1) {
     return (
       <>
         <PageTitle title={intl.formatMessage(messages.settings)} />
