@@ -92,28 +92,15 @@ const UserPermissions: React.FC = () => {
         {({ isSubmitting, setFieldValue, values }) => {
           return (
             <Form className="section">
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.permissions)}
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <PermissionEdit
-                        actingUser={currentUser}
-                        currentUser={user}
-                        currentPermission={values.currentPermissions ?? 0}
-                        onUpdate={(newPermission) =>
-                          setFieldValue('currentPermissions', newPermission)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
+              <div className="max-w-3xl">
+                <PermissionEdit
+                  actingUser={currentUser}
+                  currentUser={user}
+                  currentPermission={values.currentPermissions ?? 0}
+                  onUpdate={(newPermission) =>
+                    setFieldValue('currentPermissions', newPermission)
+                  }
+                />
               </div>
               <div className="actions">
                 <div className="flex justify-end">

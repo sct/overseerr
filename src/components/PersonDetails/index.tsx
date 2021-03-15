@@ -15,8 +15,8 @@ import { groupBy } from 'lodash';
 import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
-  appearsin: 'Appears in',
-  crewmember: 'Crew Member',
+  appearsin: 'Appearances',
+  crewmember: 'Crew',
   ascharacter: 'as {character}',
   nobiography: 'No biography available.',
 });
@@ -85,11 +85,9 @@ const PersonDetails: React.FC = () => {
 
   const cast = (sortedCast ?? []).length > 0 && (
     <>
-      <div className="relative z-10 mt-6 mb-4 md:flex md:items-center md:justify-between">
-        <div className="flex-1 min-w-0">
-          <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-            <span>{intl.formatMessage(messages.appearsin)}</span>
-          </div>
+      <div className="slider-header">
+        <div className="slider-title">
+          <span>{intl.formatMessage(messages.appearsin)}</span>
         </div>
       </div>
       <ul className="cardList">
@@ -127,11 +125,9 @@ const PersonDetails: React.FC = () => {
 
   const crew = (sortedCrew ?? []).length > 0 && (
     <>
-      <div className="relative z-10 mt-6 mb-4 md:flex md:items-center md:justify-between">
-        <div className="flex-1 min-w-0">
-          <div className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-            <span>{intl.formatMessage(messages.crewmember)}</span>
-          </div>
+      <div className="slider-header">
+        <div className="slider-title">
+          <span>{intl.formatMessage(messages.crewmember)}</span>
         </div>
       </div>
       <ul className="cardList">

@@ -256,7 +256,11 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 {intl.formatMessage(messages.requested)}
               </span>
               <span className="text-gray-300">
-                {intl.formatDate(requestData.createdAt)}
+                {intl.formatDate(requestData.createdAt, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
               </span>
             </div>
             <div className="card-field">

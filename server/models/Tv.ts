@@ -91,6 +91,7 @@ export interface TvDetails {
   spokenLanguages: SpokenLanguage[];
   seasons: Season[];
   status: string;
+  tagline?: string;
   type: string;
   voteAverage: number;
   voteCount: number;
@@ -174,6 +175,7 @@ export const mapTvDetails = (
   originCountry: show.origin_country,
   originalLanguage: show.original_language,
   originalName: show.original_name,
+  tagline: show.tagline,
   overview: show.overview,
   popularity: show.popularity,
   productionCompanies: show.production_companies.map((company) => ({
