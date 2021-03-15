@@ -37,11 +37,21 @@ const NotificationsTelegram: React.FC = () => {
   );
 
   const NotificationsTelegramSchema = Yup.object().shape({
-    botAPI: Yup.string().required(
-      intl.formatMessage(messages.validationBotAPIRequired)
-    ),
+    botAPI: Yup.string().when('enabled', {
+      is: true,
+      then: Yup.string().required(
+        intl.formatMessage(messages.validationBotAPIRequired)
+      ),
+      otherwise: Yup.string().nullable(),
+    }),
     chatId: Yup.string()
-      .required(intl.formatMessage(messages.validationChatIdRequired))
+      .when('enabled', {
+        is: true,
+        then: Yup.string().required(
+          intl.formatMessage(messages.validationChatIdRequired)
+        ),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(
         /^[-]?\d+$/,
         intl.formatMessage(messages.validationChatIdRequired)

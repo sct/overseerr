@@ -35,13 +35,25 @@ const NotificationsPushover: React.FC = () => {
 
   const NotificationsPushoverSchema = Yup.object().shape({
     accessToken: Yup.string()
-      .required(intl.formatMessage(messages.validationAccessTokenRequired))
+      .when('enabled', {
+        is: true,
+        then: Yup.string().required(
+          intl.formatMessage(messages.validationAccessTokenRequired)
+        ),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationAccessTokenRequired)
       ),
     userToken: Yup.string()
-      .required(intl.formatMessage(messages.validationUserTokenRequired))
+      .when('enabled', {
+        is: true,
+        then: Yup.string().required(
+          intl.formatMessage(messages.validationUserTokenRequired)
+        ),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationUserTokenRequired)

@@ -319,7 +319,7 @@
   "components.Settings.Notifications.validationBotAPIRequired": "You must provide a bot authentication token",
   "components.Settings.Notifications.validationChatIdRequired": "You must provide a valid chat ID",
   "components.Settings.Notifications.validationEmail": "You must provide a valid email address",
-  "components.Settings.Notifications.validationSmtpHostRequired": "You must provide a hostname or IP address",
+  "components.Settings.Notifications.validationSmtpHostRequired": "You must provide a valid hostname or IP address",
   "components.Settings.Notifications.validationSmtpPortRequired": "You must provide a valid port number",
   "components.Settings.Notifications.validationUrl": "You must provide a valid URL",
   "components.Settings.Notifications.webhookUrl": "Webhook URL",

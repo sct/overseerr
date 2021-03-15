@@ -36,7 +36,13 @@ const UserTelegramSettings: React.FC = () => {
 
   const UserTelegramSettingsSchema = Yup.object().shape({
     telegramChatId: Yup.string()
-      .nullable()
+      .when('enableTelegram', {
+        is: true,
+        then: Yup.string().required(
+          intl.formatMessage(messages.validationTelegramChatId)
+        ),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(
         /^[-]?\d+$/,
         intl.formatMessage(messages.validationTelegramChatId)

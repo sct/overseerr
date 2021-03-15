@@ -33,7 +33,13 @@ const UserNotificationsDiscord: React.FC = () => {
 
   const UserNotificationsDiscordSchema = Yup.object().shape({
     discordId: Yup.string()
-      .nullable()
+      .when('enableDiscord', {
+        is: true,
+        then: Yup.string().required(
+          intl.formatMessage(messages.validationDiscordId)
+        ),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 

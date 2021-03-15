@@ -33,7 +33,13 @@ const NotificationsSlack: React.FC = () => {
 
   const NotificationsSlackSchema = Yup.object().shape({
     webhookUrl: Yup.string()
-      .required(intl.formatMessage(messages.validationWebhookUrl))
+      .when('enabled', {
+        is: true,
+        then: Yup.string().required(
+          intl.formatMessage(messages.validationWebhookUrl)
+        ),
+        otherwise: Yup.string().nullable(),
+      })
       .url(intl.formatMessage(messages.validationWebhookUrl)),
   });
 

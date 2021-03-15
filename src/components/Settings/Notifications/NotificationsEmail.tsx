@@ -13,7 +13,7 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  validationSmtpHostRequired: 'You must provide a hostname or IP address',
+  validationSmtpHostRequired: 'You must provide a valid hostname or IP address',
   validationSmtpPortRequired: 'You must provide a valid port number',
   agentenabled: 'Enable Agent',
   emailsender: 'Sender Address',
@@ -66,10 +66,22 @@ const NotificationsEmail: React.FC = () => {
 
   const NotificationsEmailSchema = Yup.object().shape({
     emailFrom: Yup.string()
-      .required(intl.formatMessage(messages.validationEmail))
+      .when('enabled', {
+        is: true,
+        then: Yup.string().required(
+          intl.formatMessage(messages.validationEmail)
+        ),
+        otherwise: Yup.string().nullable(),
+      })
       .email(intl.formatMessage(messages.validationEmail)),
     smtpHost: Yup.string()
-      .required(intl.formatMessage(messages.validationSmtpHostRequired))
+      .when('enabled', {
+        is: true,
+        then: Yup.string().required(
+          intl.formatMessage(messages.validationSmtpHostRequired)
+        ),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(
         // eslint-disable-next-line
         /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
@@ -77,7 +89,13 @@ const NotificationsEmail: React.FC = () => {
       ),
     smtpPort: Yup.number()
       .typeError(intl.formatMessage(messages.validationSmtpPortRequired))
-      .required(intl.formatMessage(messages.validationSmtpPortRequired)),
+      .when('enabled', {
+        is: true,
+        then: Yup.number().required(
+          intl.formatMessage(messages.validationSmtpPortRequired)
+        ),
+        otherwise: Yup.number().nullable(),
+      }),
   });
 
   if (!data && !error) {
