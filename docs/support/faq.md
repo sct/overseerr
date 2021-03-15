@@ -90,6 +90,10 @@ You can also perform the following to verify the media item has a GUID Overseerr
 
 **A:** See "[Some media is missing from Overseerr that I know is in Plex!](./faq.md#some-media-is-missing-from-overseerr-that-i-know-is-in-plex)" for troubleshooting steps.
 
+### Approved series requests keep failing
+
+**A:** Make sure you have the base url set, that you are using in Sonarr.
+
 ## Notifications
 
 ### I am getting "Username and Password not accepted" when attempting to send email notifications via Gmail!
