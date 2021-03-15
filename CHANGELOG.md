@@ -1,3 +1,60 @@
+# [1.21.0](https://github.com/sct/overseerr/compare/v1.20.1...v1.21.0) (2021-03-15)
+
+
+### Bug Fixes
+
+* do not allow editing of user settings under certain conditions ([#1168](https://github.com/sct/overseerr/issues/1168)) ([001dcd3](https://github.com/sct/overseerr/commit/001dcd328c8d3b1c417fd7c7ee2aa20183b08eef))
+* **frontend:** check for ID instead of email after initial setup Plex login ([#1097](https://github.com/sct/overseerr/issues/1097)) ([778dda6](https://github.com/sct/overseerr/commit/778dda67d54df87347dd79577ef1bdc88d3c1d3f))
+* **frontend:** check if swr is validating to determine if we should fetch new data ([e5f5bdb](https://github.com/sct/overseerr/commit/e5f5bdb95c62eba31a3321a7457d354f0226bf85)), closes [#719](https://github.com/sct/overseerr/issues/719)
+* **frontend:** never hide available content in search results ([d48edeb](https://github.com/sct/overseerr/commit/d48edeb5a9bd8e2edce8bca0fea50e300bb7a1ae))
+* **lang:** add missing i18n strings ([6072e8a](https://github.com/sct/overseerr/commit/6072e8aa9a0f84e50c44a92af303aad15b5f3021))
+* **lang:** edit new Telegram-related strings to conform to style guide ([#1093](https://github.com/sct/overseerr/issues/1093)) ([bdf67e7](https://github.com/sct/overseerr/commit/bdf67e732b6c77cbae768a25edfc9a663ef0108b))
+* **notif:** loosen input validation on Pushover settings ([#1166](https://github.com/sct/overseerr/issues/1166)) ([3148d31](https://github.com/sct/overseerr/commit/3148d312141248653c5d1e42cd2882a67a339163))
+* **notif:** set URL for Discord embeds rather than adding a field for the link ([#1167](https://github.com/sct/overseerr/issues/1167)) ([0bd0912](https://github.com/sct/overseerr/commit/0bd0912613f0db24bd0da4ec956b5119133e35d4))
+* correctly send auto-approval notifictions for series ([8634081](https://github.com/sct/overseerr/commit/8634081c869a2078793ecf06b1b7e249bba0a2f8))
+* **lang:** fix singular form of season count ([#1080](https://github.com/sct/overseerr/issues/1080)) ([b57645d](https://github.com/sct/overseerr/commit/b57645d382361c856281e7a74295afe16c5390f2))
+* **requests:** add plex url to request item ([#1088](https://github.com/sct/overseerr/issues/1088)) ([420038d](https://github.com/sct/overseerr/commit/420038d5ffdd4070df03e5c5cb6ef8d6208fddb5))
+* **sonarr:** correctly search when updating existing sonarr series ([ed0a7fb](https://github.com/sct/overseerr/commit/ed0a7fbdf5122a26fa936e83b76a97c55781782d)), closes [#588](https://github.com/sct/overseerr/issues/588)
+* **ui:** add alt prop to studio/network logos & fix blinking text cursor ([#1095](https://github.com/sct/overseerr/issues/1095)) ([0c4637f](https://github.com/sct/overseerr/commit/0c4637f779d8904037b9cbd5fe9166cf05a891c5))
+* **ui:** add link to poster image on request items ([7289872](https://github.com/sct/overseerr/commit/7289872937d5bb94d027424760ee1ceb94095604))
+* **ui:** correct language usage re: "sync" vs. "scan" ([#1079](https://github.com/sct/overseerr/issues/1079)) ([e98f2b9](https://github.com/sct/overseerr/commit/e98f2b96058fb9c5af77be2e8a1bd07fb8fcca06))
+* **ui:** display "Season" vs. "Seasons" as appropriate, and fix request block "Seasons" formatting ([#1127](https://github.com/sct/overseerr/issues/1127)) ([45886cc](https://github.com/sct/overseerr/commit/45886ccef1bee57dc555060a491834567e45b59c))
+* **ui:** request list button sizes ([#1152](https://github.com/sct/overseerr/issues/1152)) ([fc73592](https://github.com/sct/overseerr/commit/fc73592b69c38191f91a68a020868b8e5ec2e2e2))
+* fix language filter link on movie detail pages ([#1142](https://github.com/sct/overseerr/issues/1142)) ([60d453b](https://github.com/sct/overseerr/commit/60d453b0bbba5e2060f72f40d1dde85ec6b05af4))
+* remove language/region filtering on studio/network results ([#1129](https://github.com/sct/overseerr/issues/1129)) ([109aca8](https://github.com/sct/overseerr/commit/109aca8229dc7b81cac314d84591f1c04c12ac2e))
+* **api:** check correct permissions for auto approve when requests are created ([3c1a72b](https://github.com/sct/overseerr/commit/3c1a72b038fd178b4be4dc082cd1496474148d7e))
+* **frontend:** status, requested by, and modified alignment fix ([#1109](https://github.com/sct/overseerr/issues/1109)) ([1a7dc1a](https://github.com/sct/overseerr/commit/1a7dc1acf57888d3d0285b58c1c97a824a232216))
+* **ui:** don't show "Password" user settings tab if current user lacks perms to modify the password ([#1063](https://github.com/sct/overseerr/issues/1063)) ([b146d11](https://github.com/sct/overseerr/commit/b146d11e2ffecedae76472b0491a4662ca4a4a4e))
+* **ui:** fix Radarr logo alignment ([#1068](https://github.com/sct/overseerr/issues/1068)) ([0fa005a](https://github.com/sct/overseerr/commit/0fa005a99cd868b5a235ae9ce65b4c64b05d0f47))
+* **ui:** fix request list UI behavior when season list is too long ([#1106](https://github.com/sct/overseerr/issues/1106)) ([8507691](https://github.com/sct/overseerr/commit/85076919c6ccbf052699b7d5f4ba8b6e5e5af74d))
+* **ui:** improve responsive design on new request list UI ([#1105](https://github.com/sct/overseerr/issues/1105)) ([1f8b03f](https://github.com/sct/overseerr/commit/1f8b03ff6f67ce76051667de05166da54ed3dc89))
+* **ui:** list all movie studios instead of just the first result ([#1110](https://github.com/sct/overseerr/issues/1110)) ([239202d](https://github.com/sct/overseerr/commit/239202d9c11f27410b0fa084bcc4c824b7136081))
+* add correct permission checks to modifying user password/permissions ([ddfc5e6](https://github.com/sct/overseerr/commit/ddfc5e6aa8fc636931f495d6f23d56367466e3b5))
+
+
+### Features
+
+* add tagline, episode runtime, genres list to media details & clean/refactor CSS into globals ([#1160](https://github.com/sct/overseerr/issues/1160)) ([2f2e002](https://github.com/sct/overseerr/commit/2f2e00237d43bdab85bfadc3c4f2fbcdde4c2e90))
+* **docker:** add tini to docker image ([#1017](https://github.com/sct/overseerr/issues/1017)) ([1629d02](https://github.com/sct/overseerr/commit/1629d02f3d8368bfd5f6fed05382974ae6fce51f))
+* **email:** add pgp support ([#1138](https://github.com/sct/overseerr/issues/1138)) ([9e5adeb](https://github.com/sct/overseerr/commit/9e5adeb610bdc4800ff536412d0ae8a11fb4338d))
+* **frontend:** add loading bar indicator ([#1170](https://github.com/sct/overseerr/issues/1170)) ([3d6b343](https://github.com/sct/overseerr/commit/3d6b3434138fec49c58f2bf74f781d5e2fc2911f))
+* **lang:** localize job names ([#1043](https://github.com/sct/overseerr/issues/1043)) ([594aad9](https://github.com/sct/overseerr/commit/594aad9d3ae9b323677f3af8c434d7664526593d))
+* **lang:** translations update from Weblate ([#1051](https://github.com/sct/overseerr/issues/1051)) ([69bf817](https://github.com/sct/overseerr/commit/69bf817f598babed99964f073259f827b60bd014))
+* **lang:** Translations update from Weblate ([#1131](https://github.com/sct/overseerr/issues/1131)) ([e4686d6](https://github.com/sct/overseerr/commit/e4686d664b52448e32488ff1c4236f72e01e9a29))
+* **notif:** add "Media Automatically Approved" notification type ([#1137](https://github.com/sct/overseerr/issues/1137)) ([f7d2723](https://github.com/sct/overseerr/commit/f7d2723fab2c30564fd23945709cd39b178a6eef))
+* **notif:** add settings for Discord bot username & avatar URL ([#1113](https://github.com/sct/overseerr/issues/1113)) ([3384eb1](https://github.com/sct/overseerr/commit/3384eb1c479114c0246cb22f9a933aa79fb95fcf))
+* **notif:** include poster image in Telegram notifications ([#1112](https://github.com/sct/overseerr/issues/1112)) ([48387e5](https://github.com/sct/overseerr/commit/48387e5b2f26c0c33acd436c6e1cf902d6c32101))
+* **scan:** add support for new plex tv agent ([#1144](https://github.com/sct/overseerr/issues/1144)) ([a51d2a2](https://github.com/sct/overseerr/commit/a51d2a24d51d092a0c6da608e3322f19a37c2d28))
+* **ui:** add user ID to profile header ([6e95c8b](https://github.com/sct/overseerr/commit/6e95c8b7a10e3467bfd2c3df84ccf886fe01ca5c))
+* add genre/studio/network view to Discover results ([#1067](https://github.com/sct/overseerr/issues/1067)) ([f28112f](https://github.com/sct/overseerr/commit/f28112f057df2589f31ae0d0b14e8b50e479fdb7))
+* add language-filtered Discover pages ([#1111](https://github.com/sct/overseerr/issues/1111)) ([7501161](https://github.com/sct/overseerr/commit/75011610e57f03098c8be9375d0c9ba1e3647e9b))
+* add studio/network sliders to discover ([1c6914f](https://github.com/sct/overseerr/commit/1c6914f5ce5c0d171c4609813915b50233a8e3ad))
+* **telegram:** add support for individual chat notifications ([#1027](https://github.com/sct/overseerr/issues/1027)) ([f6d00d8](https://github.com/sct/overseerr/commit/f6d00d8d1559879189f83739193c6e2acafde51d))
+* **ui:** display "Owner" role instead of "Admin" for user ID 1 ([#1050](https://github.com/sct/overseerr/issues/1050)) ([1b55d2d](https://github.com/sct/overseerr/commit/1b55d2dfbc06d900e7370a4ddfd81789a25bf00c))
+* **ui:** display season count on TV details page ([#1078](https://github.com/sct/overseerr/issues/1078)) ([4365231](https://github.com/sct/overseerr/commit/436523139e8f1594c352b17032734b4498d3994f))
+* **ui:** in Settings > Services, make Radarr/Sonarr server names and logos clickable links ([#1008](https://github.com/sct/overseerr/issues/1008)) ([6a1e389](https://github.com/sct/overseerr/commit/6a1e3891aa5f84b6adb1e475a6658a8cd4e34c22))
+* **ui:** request list redesign ([#1099](https://github.com/sct/overseerr/issues/1099)) ([cd21865](https://github.com/sct/overseerr/commit/cd21865c4d5be00c13c372e0b7a058f61ec855a2))
+
 ## [1.20.1](https://github.com/sct/overseerr/compare/v1.20.0...v1.20.1) (2021-02-28)
 
 
