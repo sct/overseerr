@@ -392,7 +392,7 @@
   "components.RequestModal.AdvancedRequester.loadingprofiles": "Загрузка профилей…",
   "components.RequestModal.AdvancedRequester.loadinglanguages": "Загрузка языков…",
   "components.RequestModal.AdvancedRequester.loadingfolders": "Загрузка папок…",
-  "components.RequestModal.AdvancedRequester.default": "(По умолчанию)",
+  "components.RequestModal.AdvancedRequester.default": "{name} (По умолчанию)",
   "components.RequestModal.AdvancedRequester.advancedoptions": "Дополнительные параметры",
   "components.RequestList.sortModified": "Последнее изменение",
   "components.RequestList.sortAdded": "Дата запроса",
