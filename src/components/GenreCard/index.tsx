@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
+import { withProperties } from '../../utils/typeHelpers';
 
 interface GenreCardProps {
   name: string;
@@ -38,7 +39,7 @@ const GenreCard: React.FC<GenreCardProps> = ({ image, url, name }) => {
             isHovered ? 'bg-opacity-10' : 'bg-opacity-30'
           }`}
         />
-        <div className="relative z-20 text-2xl font-bold text-white sm:text-3xl">
+        <div className="relative z-20 w-full text-2xl font-bold text-center text-white truncate whitespace-normal sm:text-3xl">
           {name}
         </div>
       </a>
@@ -46,4 +47,12 @@ const GenreCard: React.FC<GenreCardProps> = ({ image, url, name }) => {
   );
 };
 
-export default GenreCard;
+const GenreCardPlaceholder: React.FC = () => {
+  return (
+    <div
+      className={`relative h-32 w-56 sm:h-40 sm:w-72 animate-pulse rounded-xl bg-gray-700`}
+    ></div>
+  );
+};
+
+export default withProperties(GenreCard, { Placeholder: GenreCardPlaceholder });
