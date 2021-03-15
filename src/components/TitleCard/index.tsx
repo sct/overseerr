@@ -81,12 +81,13 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default titleCard rounded-xl ring-1 ${
+        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default relative bg-gray-800 bg-cover rounded-xl ring-1 ${
           showDetail
             ? 'scale-105 shadow-lg ring-gray-500'
             : 'shadow ring-gray-700'
         }`}
         style={{
+          paddingBottom: '150%',
           backgroundImage: image
             ? `url(//image.tmdb.org/t/p/w300_and_h450_face${image})`
             : `url('/images/overseerr_poster_not_found_logo_top.png')`,

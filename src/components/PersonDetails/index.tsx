@@ -90,7 +90,7 @@ const PersonDetails: React.FC = () => {
           <span>{intl.formatMessage(messages.appearsin)}</span>
         </div>
       </div>
-      <ul className="cardList">
+      <ul className="cards-vertical">
         {sortedCast?.map((media, index) => {
           return (
             <li key={`list-cast-item-${media.id}-${index}`}>
@@ -130,7 +130,7 @@ const PersonDetails: React.FC = () => {
           <span>{intl.formatMessage(messages.crewmember)}</span>
         </div>
       </div>
-      <ul className="cardList">
+      <ul className="cards-vertical">
         {sortedCrew?.map((media, index) => {
           return (
             <li key={`list-crew-item-${media.id}-${index}`}>

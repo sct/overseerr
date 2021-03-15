@@ -45,7 +45,7 @@ const MovieCrew: React.FC = () => {
           {intl.formatMessage(messages.fullcrew)}
         </Header>
       </div>
-      <ul className="cardList">
+      <ul className="cards-vertical">
         {data?.credits.crew.map((person, index) => {
           return (
             <li key={`crew-${person.id}-${index}`}>

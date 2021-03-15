@@ -45,7 +45,7 @@ const MovieCast: React.FC = () => {
           {intl.formatMessage(messages.fullcast)}
         </Header>
       </div>
-      <ul className="cardList">
+      <ul className="cards-vertical">
         {data?.credits.cast.map((person, index) => {
           return (
             <li key={`cast-${person.id}-${index}`}>
