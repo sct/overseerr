@@ -101,6 +101,10 @@ interface FullPublicSettings extends PublicSettings {
   originalLanguage: string;
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
+  notificationsEnabled: boolean;
+  emailEnabled: boolean;
+  discordEnabled: boolean;
+  telegramEnabled: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -368,6 +372,10 @@ class Settings {
       originalLanguage: this.data.main.originalLanguage,
       partialRequestsEnabled: this.data.main.partialRequestsEnabled,
       cacheImages: this.data.main.cacheImages,
+      notificationsEnabled: this.data.notifications.enabled,
+      emailEnabled: this.data.notifications.agents.email.enabled,
+      discordEnabled: this.data.notifications.agents.discord.enabled,
+      telegramEnabled: this.data.notifications.agents.telegram.enabled,
     };
   }
 

@@ -30,6 +30,10 @@ export interface PublicSettingsResponse {
   originalLanguage: string;
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
+  notificationsEnabled: boolean;
+  emailEnabled: boolean;
+  discordEnabled: boolean;
+  telegramEnabled: boolean;
 }
 
 export interface CacheItem {

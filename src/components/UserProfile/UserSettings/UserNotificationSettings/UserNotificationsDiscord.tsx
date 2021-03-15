@@ -7,6 +7,7 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
@@ -24,6 +25,7 @@ const messages = defineMessages({
 
 const UserNotificationsDiscord: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.discordId) });
@@ -77,18 +79,21 @@ const UserNotificationsDiscord: React.FC = () => {
       {({ errors, touched, isSubmitting }) => {
         return (
           <Form className="section">
-            <div className="form-row">
-              <label htmlFor="enableDiscord" className="checkbox-label">
-                {intl.formatMessage(messages.enableDiscord)}
-              </label>
-              <div className="form-input">
-                <Field
-                  type="checkbox"
-                  id="enableDiscord"
-                  name="enableDiscord"
-                />
-              </div>
-            </div>
+            {settings.currentSettings.notificationsEnabled &&
+              settings.currentSettings.discordEnabled && (
+                <div className="form-row">
+                  <label htmlFor="enableDiscord" className="checkbox-label">
+                    {intl.formatMessage(messages.enableDiscord)}
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="enableDiscord"
+                      name="enableDiscord"
+                    />
+                  </div>
+                </div>
+              )}
             <div className="form-row">
               <label htmlFor="discordId" className="text-label">
                 <span>{intl.formatMessage(messages.discordId)}</span>

@@ -58,12 +58,16 @@ const UserSettings: React.FC = ({ children }) => {
     },
     {
       text: intl.formatMessage(messages.menuNotifications),
-      route: `/users/${user?.id}/settings/notifications/email`,
+      route:
+        settings.currentSettings.notificationsEnabled &&
+        settings.currentSettings.emailEnabled
+          ? `/users/${user?.id}/settings/notifications/email`
+          : `/users/${user?.id}/settings/notifications/discord`,
       regex: /\/settings\/notifications/,
     },
     {
       text: intl.formatMessage(messages.menuPermissions),
-      route: '/settings/permissions',
+      route: `/users/${user?.id}/settings/permissions`,
       regex: /\/settings\/permissions/,
       requiredPermission: Permission.MANAGE_USERS,
       hidden: currentUser?.id !== 1 && currentUser?.id === user.id,

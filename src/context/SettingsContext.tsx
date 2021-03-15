@@ -17,6 +17,10 @@ const defaultSettings = {
   originalLanguage: '',
   partialRequestsEnabled: true,
   cacheImages: false,
+  notificationsEnabled: false,
+  emailEnabled: false,
+  discordEnabled: false,
+  telegramEnabled: false,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

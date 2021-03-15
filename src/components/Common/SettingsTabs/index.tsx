@@ -112,6 +112,7 @@ const SettingsTabs: React.FC<{
                 currentPath={router.pathname}
                 route={route.route}
                 regex={route.regex}
+                hidden={route.hidden ?? false}
                 isMobile
                 key={`mobile-settings-link-${index}`}
               >
@@ -130,6 +131,7 @@ const SettingsTabs: React.FC<{
                 currentPath={router.pathname}
                 route={route.route}
                 regex={route.regex}
+                hidden={route.hidden ?? false}
                 key={`standard-settings-link-${index}`}
               >
                 {route.content ?? route.text}
