@@ -36,7 +36,7 @@ const MovieGenreList: React.FC = () => {
         <Header>{intl.formatMessage(messages.moviegenres)}</Header>
       </div>
       <ul className="cards-horizontal">
-        {(data ?? []).map((genre, index) => (
+        {data.map((genre, index) => (
           <li key={`genre-${genre.id}-${index}`}>
             <GenreCard
               name={genre.name}
