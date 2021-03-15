@@ -21,7 +21,7 @@ const GenreCard: React.FC<GenreCardProps> = ({
     <Link href={url}>
       <a
         className={`relative flex items-center justify-center h-32 sm:h-36 ${
-          canExpand ? 'w-full' : 'w-64 sm:w-72'
+          canExpand ? 'w-full' : 'w-56 sm:w-72'
         } p-8 shadow transition ease-in-out duration-300 cursor-pointer transform-gpu ring-1 ${
           isHovered
             ? 'bg-gray-700 scale-105 ring-gray-500 bg-opacity-100'
