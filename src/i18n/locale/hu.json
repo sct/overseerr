@@ -1,5 +1,5 @@
 {
-  "components.RequestModal.AdvancedRequester.default": "(Alapértelmezett)",
+  "components.RequestModal.AdvancedRequester.default": "{name} (Alapértelmezett)",
   "components.RequestModal.AdvancedRequester.animenote": "* Ez a sorozat egy anime.",
   "components.RequestModal.AdvancedRequester.advancedoptions": "További beállítások",
   "components.RequestList.status": "Állapot",
