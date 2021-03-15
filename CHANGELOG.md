@@ -1,3 +1,10 @@
+## [1.21.1](https://github.com/sct/overseerr/compare/v1.21.0...v1.21.1) (2021-03-15)
+
+
+### Bug Fixes
+
+* **lang:** translations update from Weblate ([#1155](https://github.com/sct/overseerr/issues/1155)) ([ebc285c](https://github.com/sct/overseerr/commit/ebc285c758f69846e4a5cb74bb42ca5924d166d4))
+
 # [1.21.0](https://github.com/sct/overseerr/compare/v1.20.1...v1.21.0) (2021-03-15)
 
 
