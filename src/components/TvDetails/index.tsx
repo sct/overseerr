@@ -1,5 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
-import { FormattedDate, defineMessages, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import Button from '../Common/Button';
@@ -56,12 +56,13 @@ const messages = defineMessages({
   manageModalNoRequests: 'No Requests',
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
-    'This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next sync.',
+    'This will irreversibly remove all data for this TV series, including any requests.\
+    If this item exists in your Plex library, the media information will be recreated during the next scan.',
   approve: 'Approve',
   decline: 'Decline',
-  showtype: 'Show Type',
+  showtype: 'Series Type',
   anime: 'Anime',
-  network: 'Network',
+  network: '{networkCount, plural, one {Network} other {Networks}}',
   viewfullcrew: 'View Full Crew',
   areyousure: 'Are you sure?',
   opensonarr: 'Open Series in Sonarr',
@@ -72,6 +73,9 @@ const messages = defineMessages({
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark 4K as Available',
   allseasonsmarkedavailable: '* All seasons will be marked as available.',
+  seasons: '{seasonCount, plural, one {# Season} other {# Seasons}}',
+  episodeRuntime: 'Episode Runtime',
+  episodeRuntimeMinutes: '{runtime} minutes',
 });
 
 interface TvDetailsProps {
@@ -178,12 +182,33 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     );
   }
 
+  const seasonCount = data.seasons.filter((season) => season.seasonNumber !== 0)
+    .length;
+
+  if (seasonCount) {
+    seriesAttributes.push(
+      intl.formatMessage(messages.seasons, { seasonCount: seasonCount })
+    );
+  }
+
   if (data.genres.length) {
-    seriesAttributes.push(data.genres.map((g) => g.name).join(', '));
+    seriesAttributes.push(
+      data.genres
+        .map((g) => (
+          <Link href={`/discover/tv/genre/${g.id}`} key={`genre-${g.id}`}>
+            <a className="hover:underline">{g.name}</a>
+          </Link>
+        ))
+        .reduce((prev, curr) => (
+          <>
+            {prev}, {curr}
+          </>
+        ))
+    );
   }
 
   const isComplete =
-    data.seasons.filter((season) => season.seasonNumber !== 0).length <=
+    seasonCount <=
     (
       data.mediaInfo?.seasons.filter(
         (season) => season.status === MediaStatus.AVAILABLE
@@ -191,7 +216,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     ).length;
 
   const is4kComplete =
-    data.seasons.filter((season) => season.seasonNumber !== 0).length <=
+    seasonCount <=
     (
       data.mediaInfo?.seasons.filter(
         (season) => season.status4k === MediaStatus.AVAILABLE
@@ -200,7 +225,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   return (
     <div
-      className="px-4 pt-16 -mx-4 -mt-16 bg-center bg-cover"
+      className="media-page"
       style={{
         height: 493,
         backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
@@ -392,52 +417,46 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </div>
         )}
       </SlideOver>
-      <div className="flex flex-col items-center pt-4 lg:flex-row lg:items-end">
-        <div className="lg:mr-4">
-          <img
-            src={
-              data.posterPath
-                ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
-                : '/images/overseerr_poster_not_found.png'
-            }
-            alt=""
-            className="w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-44 lg:w-52"
-          />
-        </div>
-        <div className="flex flex-col flex-1 mt-4 text-center text-white lg:mr-4 lg:mt-0 lg:text-left">
-          <div className="mb-2 space-x-2">
-            <span className="ml-2 lg:ml-0">
-              <StatusBadge
-                status={data.mediaInfo?.status}
-                inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
-                plexUrl={data.mediaInfo?.plexUrl}
-              />
-            </span>
+      <div className="media-header">
+        <img
+          src={
+            data.posterPath
+              ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
+              : '/images/overseerr_poster_not_found.png'
+          }
+          alt=""
+          className="media-poster"
+        />
+        <div className="media-title">
+          <div className="media-status">
+            <StatusBadge
+              status={data.mediaInfo?.status}
+              inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
+              plexUrl={data.mediaInfo?.plexUrl}
+            />
             {settings.currentSettings.series4kEnabled &&
               hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
                 type: 'or',
               }) && (
-                <span>
-                  <StatusBadge
-                    status={data.mediaInfo?.status4k}
-                    is4k
-                    inProgress={
-                      (data.mediaInfo?.downloadStatus4k ?? []).length > 0
-                    }
-                    plexUrl4k={data.mediaInfo?.plexUrl4k}
-                  />
-                </span>
+                <StatusBadge
+                  status={data.mediaInfo?.status4k}
+                  is4k
+                  inProgress={
+                    (data.mediaInfo?.downloadStatus4k ?? []).length > 0
+                  }
+                  plexUrl4k={data.mediaInfo?.plexUrl4k}
+                />
               )}
           </div>
-          <h1 className="text-2xl lg:text-4xl">
+          <h1>
             {data.name}{' '}
             {data.firstAirDate && (
-              <span className="text-2xl">
+              <span className="media-year">
                 ({data.firstAirDate.slice(0, 4)})
               </span>
             )}
           </h1>
-          <span className="mt-1 text-xs lg:text-base lg:mt-0">
+          <span className="media-attributes">
             {seriesAttributes.length > 0 &&
               seriesAttributes
                 .map((t, k) => <span key={k}>{t}</span>)
@@ -448,29 +467,24 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 ))}
           </span>
         </div>
-        <div className="relative z-10 flex flex-wrap justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap lg:mt-0">
-          <div className="mb-3 sm:mb-0">
-            <PlayButton links={mediaLinks} />
-          </div>
-          <div className="mb-3 sm:mb-0">
-            <RequestButton
-              mediaType="tv"
-              onUpdate={() => revalidate()}
-              tmdbId={data?.id}
-              media={data?.mediaInfo}
-              isShowComplete={isComplete}
-              is4kShowComplete={is4kComplete}
-            />
-          </div>
+        <div className="media-actions">
+          <PlayButton links={mediaLinks} />
+          <RequestButton
+            mediaType="tv"
+            onUpdate={() => revalidate()}
+            tmdbId={data?.id}
+            media={data?.mediaInfo}
+            isShowComplete={isComplete}
+            is4kShowComplete={is4kComplete}
+          />
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
               buttonType="default"
-              className="mb-3 ml-2 first:ml-0 sm:mb-0"
+              className="ml-2 first:ml-0"
               onClick={() => setShowManager(true)}
             >
               <svg
                 className="w-5"
-                style={{ height: 20 }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -493,17 +507,16 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           )}
         </div>
       </div>
-      <div className="flex flex-col pt-8 pb-4 text-white md:flex-row">
-        <div className="flex-1 md:mr-8">
-          <h2 className="text-xl md:text-2xl">
-            {intl.formatMessage(messages.overview)}
-          </h2>
-          <p className="pt-2 text-sm md:text-base">
+      <div className="media-overview">
+        <div className="media-overview-left">
+          <div className="tagline">{data.tagline}</div>
+          <h2>{intl.formatMessage(messages.overview)}</h2>
+          <p>
             {data.overview
               ? data.overview
               : intl.formatMessage(messages.overviewunavailable)}
           </p>
-          <ul className="grid grid-cols-2 gap-6 mt-6 sm:grid-cols-3">
+          <ul className="media-crew">
             {(data.createdBy.length > 0
               ? [
                   ...data.createdBy.map(
@@ -519,15 +532,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             )
               .slice(0, 6)
               .map((person) => (
-                <li
-                  className="flex flex-col col-span-1"
-                  key={`crew-${person.job}-${person.id}`}
-                >
-                  <span className="font-bold">{person.job}</span>
+                <li key={`crew-${person.job}-${person.id}`}>
+                  <span>{person.job}</span>
                   <Link href={`/person/${person.id}`}>
-                    <a className="text-gray-400 transition duration-300 hover:text-underline hover:text-gray-100">
-                      {person.name}
-                    </a>
+                    <a className="crew-name">{person.name}</a>
                   </Link>
                 </li>
               ))}
@@ -556,165 +564,166 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             </div>
           )}
         </div>
-        <div className="w-full mt-8 md:w-80 md:mt-0">
-          <div className="bg-gray-900 border border-gray-800 rounded-lg shadow">
+        <div className="media-overview-right">
+          <div className="media-facts">
             {(!!data.voteCount ||
               (ratingData?.criticsRating && !!ratingData?.criticsScore) ||
               (ratingData?.audienceRating && !!ratingData?.audienceScore)) && (
-              <div className="flex items-center justify-center px-4 py-2 border-b border-gray-800 last:border-b-0">
+              <div className="media-ratings">
                 {ratingData?.criticsRating && !!ratingData?.criticsScore && (
-                  <>
-                    <span className="text-sm">
-                      {ratingData.criticsRating === 'Rotten' ? (
-                        <RTRotten className="w-6 mr-1" />
-                      ) : (
-                        <RTFresh className="w-6 mr-1" />
-                      )}
-                    </span>
-                    <span className="mr-4 text-sm text-gray-400 last:mr-0">
-                      {ratingData.criticsScore}%
-                    </span>
-                  </>
+                  <span className="media-rating">
+                    {ratingData.criticsRating === 'Rotten' ? (
+                      <RTRotten className="w-6 mr-1" />
+                    ) : (
+                      <RTFresh className="w-6 mr-1" />
+                    )}
+                    {ratingData.criticsScore}%
+                  </span>
                 )}
                 {ratingData?.audienceRating && !!ratingData?.audienceScore && (
-                  <>
-                    <span className="text-sm">
-                      {ratingData.audienceRating === 'Spilled' ? (
-                        <RTAudRotten className="w-6 mr-1" />
-                      ) : (
-                        <RTAudFresh className="w-6 mr-1" />
-                      )}
-                    </span>
-                    <span className="mr-4 text-sm text-gray-400 last:mr-0">
-                      {ratingData.audienceScore}%
-                    </span>
-                  </>
+                  <span className="media-rating">
+                    {ratingData.audienceRating === 'Spilled' ? (
+                      <RTAudRotten className="w-6 mr-1" />
+                    ) : (
+                      <RTAudFresh className="w-6 mr-1" />
+                    )}
+                    {ratingData.audienceScore}%
+                  </span>
                 )}
                 {!!data.voteCount && (
-                  <>
-                    <span className="text-sm">
-                      <TmdbLogo className="w-6 mr-2" />
-                    </span>
-                    <span className="text-sm text-gray-400">
-                      {data.voteAverage}/10
-                    </span>
-                  </>
+                  <span className="media-rating">
+                    <TmdbLogo className="w-6 mr-2" />
+                    {data.voteAverage}/10
+                  </span>
                 )}
               </div>
             )}
             {data.keywords.some(
               (keyword) => keyword.id === ANIME_KEYWORD_ID
             ) && (
-              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
-                <span className="text-sm">
-                  {intl.formatMessage(messages.showtype)}
-                </span>
-                <span className="flex-1 text-sm text-right text-gray-400">
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.showtype)}</span>
+                <span className="media-fact-value">
                   {intl.formatMessage(messages.anime)}
                 </span>
               </div>
             )}
+            <div className="media-fact">
+              <span>{intl.formatMessage(messages.status)}</span>
+              <span className="media-fact-value">{data.status}</span>
+            </div>
             {data.firstAirDate && (
-              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
-                <span className="text-sm">
-                  {intl.formatMessage(messages.firstAirDate)}
-                </span>
-                <span className="flex-1 text-sm text-right text-gray-400">
-                  <FormattedDate
-                    value={new Date(data.firstAirDate)}
-                    year="numeric"
-                    month="long"
-                    day="numeric"
-                  />
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.firstAirDate)}</span>
+                <span className="media-fact-value">
+                  {intl.formatDate(data.firstAirDate, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </span>
               </div>
             )}
             {data.nextEpisodeToAir && (
-              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
-                <span className="text-sm">
-                  {intl.formatMessage(messages.nextAirDate)}
-                </span>
-                <span className="flex-1 text-sm text-right text-gray-400">
-                  <FormattedDate
-                    value={new Date(data.nextEpisodeToAir?.airDate)}
-                    year="numeric"
-                    month="long"
-                    day="numeric"
-                  />
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.nextAirDate)}</span>
+                <span className="media-fact-value">
+                  {intl.formatDate(data.nextEpisodeToAir.airDate, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </span>
               </div>
             )}
-            <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
-              <span className="text-sm">
-                {intl.formatMessage(messages.status)}
-              </span>
-              <span className="flex-1 text-sm text-right text-gray-400">
-                {data.status}
-              </span>
-            </div>
-            {data.spokenLanguages.some(
-              (lng) => lng.iso_639_1 === data.originalLanguage
-            ) && (
-              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
-                <span className="text-sm">
-                  {intl.formatMessage(messages.originallanguage)}
+            {data.episodeRunTime.length > 0 && (
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.episodeRuntime)}</span>
+                <span className="media-fact-value">
+                  {intl.formatMessage(messages.episodeRuntimeMinutes, {
+                    runtime: data.episodeRunTime[0],
+                  })}
                 </span>
-                <span className="flex-1 text-sm text-right text-gray-400">
-                  {
-                    data.spokenLanguages.find(
-                      (lng) => lng.iso_639_1 === data.originalLanguage
-                    )?.name
-                  }
+              </div>
+            )}
+            {data.originalLanguage && (
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.originallanguage)}</span>
+                <span className="media-fact-value">
+                  <Link href={`/discover/tv/language/${data.originalLanguage}`}>
+                    <a className="hover:underline">
+                      {intl.formatDisplayName(data.originalLanguage, {
+                        type: 'language',
+                        fallback: 'none',
+                      }) ??
+                        data.spokenLanguages.find(
+                          (lng) => lng.iso_639_1 === data.originalLanguage
+                        )?.name}
+                    </a>
+                  </Link>
                 </span>
               </div>
             )}
             {data.networks.length > 0 && (
-              <div className="flex px-4 py-2 border-b border-gray-800 last:border-b-0">
-                <span className="text-sm">
-                  {intl.formatMessage(messages.network)}
+              <div className="media-fact">
+                <span>
+                  {intl.formatMessage(messages.network, {
+                    networkCount: data.networks.length,
+                  })}
                 </span>
-                <span className="flex-1 text-sm text-right text-gray-400">
-                  {data.networks.map((n) => n.name).join(', ')}
+                <span className="media-fact-value">
+                  {data.networks
+                    .map((n) => (
+                      <Link
+                        href={`/discover/tv/network/${n.id}`}
+                        key={`network-${n.id}`}
+                      >
+                        <a className="hover:underline">{n.name}</a>
+                      </Link>
+                    ))
+                    .reduce((prev, curr) => (
+                      <>
+                        {prev}, {curr}
+                      </>
+                    ))}
                 </span>
               </div>
             )}
-          </div>
-          <div className="mt-4">
-            <ExternalLinkBlock
-              mediaType="tv"
-              tmdbId={data.id}
-              tvdbId={data.externalIds.tvdbId}
-              imdbId={data.externalIds.imdbId}
-              rtUrl={ratingData?.url}
-              plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}
-            />
+            <div className="media-fact">
+              <ExternalLinkBlock
+                mediaType="tv"
+                tmdbId={data.id}
+                tvdbId={data.externalIds.tvdbId}
+                imdbId={data.externalIds.imdbId}
+                rtUrl={ratingData?.url}
+                plexUrl={data.mediaInfo?.plexUrl ?? data.mediaInfo?.plexUrl4k}
+              />
+            </div>
           </div>
         </div>
       </div>
       {data.credits.cast.length > 0 && (
         <>
-          <div className="mt-6 mb-4 md:flex md:items-center md:justify-between">
-            <div className="flex-1 min-w-0">
-              <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
-                <a className="inline-flex items-center text-xl leading-7 text-gray-300 hover:text-white sm:text-2xl sm:leading-9 sm:truncate">
-                  <span>{intl.formatMessage(messages.cast)}</span>
-                  <svg
-                    className="w-6 h-6 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </div>
+          <div className="slider-header">
+            <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
+              <a className="slider-title">
+                <span>{intl.formatMessage(messages.cast)}</span>
+                <svg
+                  className="w-6 h-6 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </a>
+            </Link>
           </div>
           <Slider
             sliderKey="cast"

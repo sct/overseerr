@@ -10,6 +10,7 @@ import Error from '../../../../pages/_error';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import PermissionEdit from '../../../PermissionEdit';
+import Alert from '../../../Common/Alert';
 
 const messages = defineMessages({
   displayName: 'Display Name',
@@ -20,6 +21,8 @@ const messages = defineMessages({
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   permissions: 'Permissions',
+  unauthorized: 'Unauthorized',
+  unauthorizedDescription: 'You cannot modify your own permissions.',
 });
 
 const UserPermissions: React.FC = () => {
@@ -38,6 +41,21 @@ const UserPermissions: React.FC = () => {
 
   if (!data) {
     return <Error statusCode={500} />;
+  }
+
+  if (currentUser?.id !== 1 && currentUser?.id === user?.id) {
+    return (
+      <>
+        <div className="mb-6">
+          <h3 className="heading">
+            {intl.formatMessage(messages.permissions)}
+          </h3>
+        </div>
+        <Alert title={intl.formatMessage(messages.unauthorized)} type="error">
+          {intl.formatMessage(messages.unauthorizedDescription)}
+        </Alert>
+      </>
+    );
   }
 
   return (
@@ -74,28 +92,15 @@ const UserPermissions: React.FC = () => {
         {({ isSubmitting, setFieldValue, values }) => {
           return (
             <Form className="section">
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.permissions)}
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <PermissionEdit
-                        actingUser={currentUser}
-                        currentUser={user}
-                        currentPermission={values.currentPermissions ?? 0}
-                        onUpdate={(newPermission) =>
-                          setFieldValue('currentPermissions', newPermission)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
+              <div className="max-w-3xl">
+                <PermissionEdit
+                  actingUser={currentUser}
+                  currentUser={user}
+                  currentPermission={values.currentPermissions ?? 0}
+                  onUpdate={(newPermission) =>
+                    setFieldValue('currentPermissions', newPermission)
+                  }
+                />
               </div>
               <div className="actions">
                 <div className="flex justify-end">

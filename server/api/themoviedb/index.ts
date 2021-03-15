@@ -4,8 +4,11 @@ import ExternalAPI from '../externalapi';
 import {
   TmdbCollection,
   TmdbExternalIdResponse,
+  TmdbGenre,
+  TmdbGenresResult,
   TmdbLanguage,
   TmdbMovieDetails,
+  TmdbNetwork,
   TmdbPersonCombinedCredits,
   TmdbPersonDetail,
   TmdbRegion,
@@ -15,6 +18,7 @@ import {
   TmdbSeasonWithEpisodes,
   TmdbTvDetails,
   TmdbUpcomingMoviesResponse,
+  TmdbProductionCompany,
 } from './interfaces';
 
 interface SearchOptions {
@@ -30,6 +34,9 @@ interface DiscoverMovieOptions {
   language?: string;
   primaryReleaseDateGte?: string;
   primaryReleaseDateLte?: string;
+  originalLanguage?: string;
+  genre?: number;
+  studio?: number;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -53,6 +60,9 @@ interface DiscoverTvOptions {
   firstAirDateGte?: string;
   firstAirDateLte?: string;
   includeEmptyReleaseDate?: boolean;
+  originalLanguage?: string;
+  genre?: number;
+  network?: number;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -120,7 +130,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch person details: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch person details: ${e.message}`);
     }
   };
 
@@ -142,7 +152,7 @@ class TheMovieDb extends ExternalAPI {
       return data;
     } catch (e) {
       throw new Error(
-        `[TMDB] Failed to fetch person combined credits: ${e.message}`
+        `[TMDb] Failed to fetch person combined credits: ${e.message}`
       );
     }
   };
@@ -168,7 +178,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch movie details: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch movie details: ${e.message}`);
     }
   };
 
@@ -194,7 +204,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch tv show details: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch TV show details: ${e.message}`);
     }
   };
 
@@ -220,7 +230,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch tv show details: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch TV show details: ${e.message}`);
     }
   };
 
@@ -246,7 +256,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch discover movies: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch discover movies: ${e.message}`);
     }
   }
 
@@ -272,7 +282,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch discover movies: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch discover movies: ${e.message}`);
     }
   }
 
@@ -298,7 +308,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch movies by keyword: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch movies by keyword: ${e.message}`);
     }
   }
 
@@ -325,7 +335,7 @@ class TheMovieDb extends ExternalAPI {
       return data;
     } catch (e) {
       throw new Error(
-        `[TMDB] Failed to fetch tv recommendations: ${e.message}`
+        `[TMDb] Failed to fetch TV recommendations: ${e.message}`
       );
     }
   }
@@ -349,7 +359,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch tv similar: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch TV similar: ${e.message}`);
     }
   }
 
@@ -360,6 +370,9 @@ class TheMovieDb extends ExternalAPI {
     language = 'en',
     primaryReleaseDateGte,
     primaryReleaseDateLte,
+    originalLanguage,
+    genre,
+    studio,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const data = await this.get<TmdbSearchMovieResponse>('/discover/movie', {
@@ -368,17 +381,18 @@ class TheMovieDb extends ExternalAPI {
           page,
           include_adult: includeAdult,
           language,
-          with_release_type: '3|2',
           region: this.region,
-          with_original_language: this.originalLanguage,
+          with_original_language: originalLanguage ?? this.originalLanguage,
           'primary_release_date.gte': primaryReleaseDateGte,
           'primary_release_date.lte': primaryReleaseDateLte,
+          with_genres: genre,
+          with_companies: studio,
         },
       });
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch discover movies: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch discover movies: ${e.message}`);
     }
   };
 
@@ -389,6 +403,9 @@ class TheMovieDb extends ExternalAPI {
     firstAirDateGte,
     firstAirDateLte,
     includeEmptyReleaseDate = false,
+    originalLanguage,
+    genre,
+    network,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
@@ -399,14 +416,16 @@ class TheMovieDb extends ExternalAPI {
           region: this.region,
           'first_air_date.gte': firstAirDateGte,
           'first_air_date.lte': firstAirDateLte,
-          with_original_language: this.originalLanguage,
+          with_original_language: originalLanguage ?? this.originalLanguage,
           include_null_first_air_dates: includeEmptyReleaseDate,
+          with_genres: genre,
+          with_networks: network,
         },
       });
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch discover tv: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch discover TV: ${e.message}`);
     }
   };
 
@@ -432,7 +451,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch upcoming movies: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch upcoming movies: ${e.message}`);
     }
   };
 
@@ -459,7 +478,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch all trending: ${e.message}`);
     }
   };
 
@@ -482,7 +501,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch all trending: ${e.message}`);
     }
   };
 
@@ -505,7 +524,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch all trending: ${e.message}`);
     }
   };
 
@@ -537,7 +556,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to find by external ID: ${e.message}`);
+      throw new Error(`[TMDb] Failed to find by external ID: ${e.message}`);
     }
   }
 
@@ -564,11 +583,11 @@ class TheMovieDb extends ExternalAPI {
       }
 
       throw new Error(
-        '[TMDB] Failed to find a title with the provided IMDB id'
+        '[TMDb] Failed to find a title with the provided IMDB id'
       );
     } catch (e) {
       throw new Error(
-        `[TMDB] Failed to get movie by external imdb ID: ${e.message}`
+        `[TMDb] Failed to get movie by external imdb ID: ${e.message}`
       );
     }
   }
@@ -596,11 +615,11 @@ class TheMovieDb extends ExternalAPI {
       }
 
       throw new Error(
-        `[TMDB] Failed to find a TV show with the provided TVDB ID: ${tvdbId}`
+        `[TMDb] Failed to find a TV show with the provided TVDB ID: ${tvdbId}`
       );
     } catch (e) {
       throw new Error(
-        `[TMDB] Failed to get TV show using the external TVDB ID: ${e.message}`
+        `[TMDb] Failed to get TV show using the external TVDB ID: ${e.message}`
       );
     }
   }
@@ -624,7 +643,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch collection: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch collection: ${e.message}`);
     }
   }
 
@@ -640,7 +659,7 @@ class TheMovieDb extends ExternalAPI {
 
       return regions;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch countries: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch countries: ${e.message}`);
     }
   }
 
@@ -656,7 +675,77 @@ class TheMovieDb extends ExternalAPI {
 
       return languages;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch langauges: ${e.message}`);
+      throw new Error(`[TMDb] Failed to fetch langauges: ${e.message}`);
+    }
+  }
+
+  public async getStudio(studioId: number): Promise<TmdbProductionCompany> {
+    try {
+      const data = await this.get<TmdbProductionCompany>(
+        `/company/${studioId}`
+      );
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDb] Failed to fetch movie studio: ${e.message}`);
+    }
+  }
+
+  public async getNetwork(networkId: number): Promise<TmdbNetwork> {
+    try {
+      const data = await this.get<TmdbNetwork>(`/network/${networkId}`);
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDb] Failed to fetch TV network: ${e.message}`);
+    }
+  }
+
+  public async getMovieGenres({
+    language = 'en',
+  }: {
+    language?: string;
+  } = {}): Promise<TmdbGenre[]> {
+    try {
+      const data = await this.get<TmdbGenresResult>(
+        '/genre/movie/list',
+        {
+          params: {
+            language,
+          },
+        },
+        86400 // 24 hours
+      );
+
+      const movieGenres = sortBy(data.genres, 'name');
+
+      return movieGenres;
+    } catch (e) {
+      throw new Error(`[TMDb] Failed to fetch movie genres: ${e.message}`);
+    }
+  }
+
+  public async getTvGenres({
+    language = 'en',
+  }: {
+    language?: string;
+  } = {}): Promise<TmdbGenre[]> {
+    try {
+      const data = await this.get<TmdbGenresResult>(
+        '/genre/tv/list',
+        {
+          params: {
+            language,
+          },
+        },
+        86400 // 24 hours
+      );
+
+      const tvGenres = sortBy(data.genres, 'name');
+
+      return tvGenres;
+    } catch (e) {
+      throw new Error(`[TMDb] Failed to fetch TV genres: ${e.message}`);
     }
   }
 }

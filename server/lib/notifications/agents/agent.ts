@@ -21,6 +21,12 @@ export abstract class BaseAgent<T extends NotificationAgentConfig> {
   }
 
   protected abstract getSettings(): T;
+
+  protected userNotificationTypes: Notification[] = [
+    Notification.MEDIA_APPROVED,
+    Notification.MEDIA_DECLINED,
+    Notification.MEDIA_AVAILABLE,
+  ];
 }
 
 export interface NotificationAgent {

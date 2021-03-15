@@ -3,6 +3,7 @@ import { hasNotificationType, Notification } from '..';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentSlack } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import { MediaType } from '../../../constants/media';
 
 interface EmbedField {
   type: 'plain_text' | 'mrkdwn';
@@ -72,35 +73,54 @@ class SlackAgent
 
     switch (type) {
       case Notification.MEDIA_PENDING:
-        header = 'New Request';
+        header = `New ${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request`;
         fields.push({
           type: 'mrkdwn',
           text: '*Status*\nPending Approval',
         });
         break;
       case Notification.MEDIA_APPROVED:
-        header = 'Request Approved';
+        header = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Approved`;
+        fields.push({
+          type: 'mrkdwn',
+          text: '*Status*\nProcessing',
+        });
+        break;
+      case Notification.MEDIA_AUTO_APPROVED:
+        header = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Automatically Approved`;
         fields.push({
           type: 'mrkdwn',
           text: '*Status*\nProcessing',
         });
         break;
       case Notification.MEDIA_AVAILABLE:
-        header = 'Now Available';
+        header = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Now Available`;
         fields.push({
           type: 'mrkdwn',
           text: '*Status*\nAvailable',
         });
         break;
       case Notification.MEDIA_DECLINED:
-        header = 'Request Declined';
+        header = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Declined`;
         fields.push({
           type: 'mrkdwn',
           text: '*Status*\nDeclined',
         });
         break;
       case Notification.MEDIA_FAILED:
-        header = 'Failed Request';
+        header = `Failed ${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request`;
         fields.push({
           type: 'mrkdwn',
           text: '*Status*\nFailed',
@@ -206,7 +226,7 @@ class SlackAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending slack notification', { label: 'Notifications' });
+    logger.debug('Sending Slack notification', { label: 'Notifications' });
     try {
       const webhookUrl = this.getSettings().options.webhookUrl;
 

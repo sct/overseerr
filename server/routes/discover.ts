@@ -6,6 +6,8 @@ import { isMovie, isPerson } from '../utils/typeHelpers';
 import { MediaType } from '../constants/media';
 import { getSettings } from '../lib/settings';
 import { User } from '../entity/User';
+import { mapProductionCompany } from '../models/Movie';
+import { mapNetwork } from '../models/Tv';
 
 const createTmdbWithRegionLanaguage = (user?: User): TheMovieDb => {
   const settings = getSettings();
@@ -38,6 +40,8 @@ discoverRoutes.get('/movies', async (req, res) => {
   const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
     language: req.query.language as string,
+    genre: req.query.genre ? Number(req.query.genre) : undefined,
+    studio: req.query.studio ? Number(req.query.studio) : undefined,
   });
 
   const media = await Media.getRelatedMedia(
@@ -58,6 +62,133 @@ discoverRoutes.get('/movies', async (req, res) => {
     ),
   });
 });
+
+discoverRoutes.get<{ language: string }>(
+  '/movies/language/:language',
+  async (req, res, next) => {
+    const tmdb = createTmdbWithRegionLanaguage(req.user);
+
+    const languages = await tmdb.getLanguages();
+
+    const language = languages.find(
+      (lang) => lang.iso_639_1 === req.params.language
+    );
+
+    if (!language) {
+      return next({ status: 404, message: 'Unable to retrieve language' });
+    }
+
+    const data = await tmdb.getDiscoverMovies({
+      page: Number(req.query.page),
+      language: req.query.language as string,
+      originalLanguage: req.params.language,
+    });
+
+    const media = await Media.getRelatedMedia(
+      data.results.map((result) => result.id)
+    );
+
+    return res.status(200).json({
+      page: data.page,
+      totalPages: data.total_pages,
+      totalResults: data.total_results,
+      language,
+      results: data.results.map((result) =>
+        mapMovieResult(
+          result,
+          media.find(
+            (req) =>
+              req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+          )
+        )
+      ),
+    });
+  }
+);
+
+discoverRoutes.get<{ genreId: string }>(
+  '/movies/genre/:genreId',
+  async (req, res, next) => {
+    const tmdb = createTmdbWithRegionLanaguage(req.user);
+
+    const genres = await tmdb.getMovieGenres({
+      language: req.query.language as string,
+    });
+
+    const genre = genres.find(
+      (genre) => genre.id === Number(req.params.genreId)
+    );
+
+    if (!genre) {
+      return next({ status: 404, message: 'Unable to retrieve genre' });
+    }
+
+    const data = await tmdb.getDiscoverMovies({
+      page: Number(req.query.page),
+      language: req.query.language as string,
+      genre: Number(req.params.genreId),
+    });
+
+    const media = await Media.getRelatedMedia(
+      data.results.map((result) => result.id)
+    );
+
+    return res.status(200).json({
+      page: data.page,
+      totalPages: data.total_pages,
+      totalResults: data.total_results,
+      genre,
+      results: data.results.map((result) =>
+        mapMovieResult(
+          result,
+          media.find(
+            (req) =>
+              req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+          )
+        )
+      ),
+    });
+  }
+);
+
+discoverRoutes.get<{ studioId: string }>(
+  '/movies/studio/:studioId',
+  async (req, res, next) => {
+    const tmdb = new TheMovieDb();
+
+    try {
+      const studio = await tmdb.getStudio(Number(req.params.studioId));
+
+      const data = await tmdb.getDiscoverMovies({
+        page: Number(req.query.page),
+        language: req.query.language as string,
+        studio: Number(req.params.studioId),
+      });
+
+      const media = await Media.getRelatedMedia(
+        data.results.map((result) => result.id)
+      );
+
+      return res.status(200).json({
+        page: data.page,
+        totalPages: data.total_pages,
+        totalResults: data.total_results,
+        studio: mapProductionCompany(studio),
+        results: data.results.map((result) =>
+          mapMovieResult(
+            result,
+            media.find(
+              (med) =>
+                med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
+            )
+          )
+        ),
+      });
+    } catch (e) {
+      return next({ status: 404, message: 'Unable to retrieve studio' });
+    }
+  }
+);
 
 discoverRoutes.get('/movies/upcoming', async (req, res) => {
   const tmdb = createTmdbWithRegionLanaguage(req.user);
@@ -99,6 +230,8 @@ discoverRoutes.get('/tv', async (req, res) => {
   const data = await tmdb.getDiscoverTv({
     page: Number(req.query.page),
     language: req.query.language as string,
+    genre: req.query.genre ? Number(req.query.genre) : undefined,
+    network: req.query.network ? Number(req.query.network) : undefined,
   });
 
   const media = await Media.getRelatedMedia(
@@ -119,6 +252,131 @@ discoverRoutes.get('/tv', async (req, res) => {
     ),
   });
 });
+
+discoverRoutes.get<{ language: string }>(
+  '/tv/language/:language',
+  async (req, res, next) => {
+    const tmdb = createTmdbWithRegionLanaguage(req.user);
+
+    const languages = await tmdb.getLanguages();
+
+    const language = languages.find(
+      (lang) => lang.iso_639_1 === req.params.language
+    );
+
+    if (!language) {
+      return next({ status: 404, message: 'Unable to retrieve language' });
+    }
+
+    const data = await tmdb.getDiscoverTv({
+      page: Number(req.query.page),
+      language: req.query.language as string,
+      originalLanguage: req.params.language,
+    });
+
+    const media = await Media.getRelatedMedia(
+      data.results.map((result) => result.id)
+    );
+
+    return res.status(200).json({
+      page: data.page,
+      totalPages: data.total_pages,
+      totalResults: data.total_results,
+      language,
+      results: data.results.map((result) =>
+        mapTvResult(
+          result,
+          media.find(
+            (med) => med.tmdbId === result.id && med.mediaType === MediaType.TV
+          )
+        )
+      ),
+    });
+  }
+);
+
+discoverRoutes.get<{ genreId: string }>(
+  '/tv/genre/:genreId',
+  async (req, res, next) => {
+    const tmdb = createTmdbWithRegionLanaguage(req.user);
+
+    const genres = await tmdb.getTvGenres({
+      language: req.query.language as string,
+    });
+
+    const genre = genres.find(
+      (genre) => genre.id === Number(req.params.genreId)
+    );
+
+    if (!genre) {
+      return next({ status: 404, message: 'Unable to retrieve genre' });
+    }
+
+    const data = await tmdb.getDiscoverTv({
+      page: Number(req.query.page),
+      language: req.query.language as string,
+      genre: Number(req.params.genreId),
+    });
+
+    const media = await Media.getRelatedMedia(
+      data.results.map((result) => result.id)
+    );
+
+    return res.status(200).json({
+      page: data.page,
+      totalPages: data.total_pages,
+      totalResults: data.total_results,
+      genre,
+      results: data.results.map((result) =>
+        mapTvResult(
+          result,
+          media.find(
+            (med) => med.tmdbId === result.id && med.mediaType === MediaType.TV
+          )
+        )
+      ),
+    });
+  }
+);
+
+discoverRoutes.get<{ networkId: string }>(
+  '/tv/network/:networkId',
+  async (req, res, next) => {
+    const tmdb = new TheMovieDb();
+
+    try {
+      const network = await tmdb.getNetwork(Number(req.params.networkId));
+
+      const data = await tmdb.getDiscoverTv({
+        page: Number(req.query.page),
+        language: req.query.language as string,
+        network: Number(req.params.networkId),
+      });
+
+      const media = await Media.getRelatedMedia(
+        data.results.map((result) => result.id)
+      );
+
+      return res.status(200).json({
+        page: data.page,
+        totalPages: data.total_pages,
+        totalResults: data.total_results,
+        network: mapNetwork(network),
+        results: data.results.map((result) =>
+          mapTvResult(
+            result,
+            media.find(
+              (med) =>
+                med.tmdbId === result.id && med.mediaType === MediaType.TV
+            )
+          )
+        ),
+      });
+    } catch (e) {
+      return next({ status: 404, message: 'Unable to retrieve network' });
+    }
+  }
+);
 
 discoverRoutes.get('/tv/upcoming', async (req, res) => {
   const tmdb = createTmdbWithRegionLanaguage(req.user);
@@ -175,15 +433,18 @@ discoverRoutes.get('/trending', async (req, res) => {
         ? mapMovieResult(
             result,
             media.find(
-              (req) =>
-                req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+              (med) =>
+                med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
             )
           )
         : isPerson(result)
         ? mapPersonResult(result)
         : mapTvResult(
             result,
-            media.find((req) => req.tmdbId === result.id && MediaType.TV)
+            media.find(
+              (med) =>
+                med.tmdbId === result.id && med.mediaType === MediaType.TV
+            )
           )
     ),
   });
@@ -212,8 +473,8 @@ discoverRoutes.get<{ keywordId: string }>(
         mapMovieResult(
           result,
           media.find(
-            (req) =>
-              req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+            (med) =>
+              med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
           )
         )
       ),

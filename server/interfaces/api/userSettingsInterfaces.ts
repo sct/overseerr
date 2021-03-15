@@ -6,5 +6,9 @@ export interface UserSettingsGeneralResponse {
 
 export interface UserSettingsNotificationsResponse {
   enableNotifications: boolean;
+  telegramBotUsername?: string;
   discordId?: string;
+  telegramChatId?: string;
+  telegramSendSilently?: boolean;
+  pgpKey?: string;
 }

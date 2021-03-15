@@ -9,7 +9,7 @@ jobs:
   test:
     name: Lint & Test Build
     runs-on: ubuntu-20.04
-    container: node:12.18-alpine
+    container: node:14.16-alpine
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -31,9 +31,24 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 14
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
       - name: Install dependencies
         run: yarn
       - name: Release
@@ -108,7 +123,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status
-        uses: technote-space/workflow-conclusion-action@v2.1.2
+        uses: technote-space/workflow-conclusion-action@v2.1.5
 
       - name: Combine Job Status
         id: status

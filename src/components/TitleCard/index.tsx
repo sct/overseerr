@@ -81,8 +81,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default titleCard ${
-          showDetail ? 'scale-105' : ''
+        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default titleCard rounded-xl ring-1 ${
+          showDetail
+            ? 'scale-105 shadow-lg ring-gray-500'
+            : 'shadow ring-gray-700'
         }`}
         style={{
           backgroundImage: image
@@ -104,7 +106,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
         role="link"
         tabIndex={0}
       >
-        <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden shadow">
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
           <div className="absolute left-0 right-0 flex items-center justify-between p-2">
             <div
               className={`rounded-full z-40 pointer-events-none shadow ${
@@ -180,7 +182,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="absolute top-0 bottom-0 left-0 right-0 z-40 flex items-center justify-center text-white bg-gray-800 bg-opacity-75 rounded-lg">
+            <div className="absolute inset-0 z-40 flex items-center justify-center text-white bg-gray-800 bg-opacity-75 rounded-xl">
               <Spinner className="w-10 h-10" />
             </div>
           </Transition>
@@ -194,10 +196,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="absolute top-0 bottom-0 left-0 right-0">
+            <div className="absolute inset-0 overflow-hidden rounded-xl">
               <Link href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}>
                 <a
-                  className="absolute top-0 bottom-0 left-0 right-0 w-full h-full overflow-hidden text-left rounded-lg cursor-pointer"
+                  className="absolute inset-0 w-full h-full overflow-hidden text-left cursor-pointer"
                   style={{
                     background:
                       'linear-gradient(180deg, rgba(45, 55, 72, 0.4) 0%, rgba(45, 55, 72, 0.9) 100%)',

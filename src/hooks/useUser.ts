@@ -5,7 +5,7 @@ import {
   PermissionCheckOptions,
 } from '../../server/lib/permissions';
 import { UserType } from '../../server/constants/user';
-import { mutateCallback } from 'swr/dist/types';
+import { MutatorCallback } from 'swr/dist/types';
 
 export { Permission, UserType };
 
@@ -37,7 +37,7 @@ interface UserHookResponse {
   error: string;
   revalidate: () => Promise<boolean>;
   mutate: (
-    data?: User | Promise<User> | mutateCallback<User> | undefined,
+    data?: User | Promise<User> | MutatorCallback<User> | undefined,
     shouldRevalidate?: boolean | undefined
   ) => Promise<User | undefined>;
   hasPermission: (

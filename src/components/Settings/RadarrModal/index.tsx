@@ -35,7 +35,7 @@ const messages = defineMessages({
   apiKeyPlaceholder: 'Your Radarr API key',
   baseUrl: 'Base URL',
   baseUrlPlaceholder: 'Example: /radarr',
-  syncEnabled: 'Enable Sync',
+  syncEnabled: 'Enable Scan',
   externalUrl: 'External URL',
   externalUrlPlaceholder: 'External URL pointing to your Radarr server',
   qualityprofile: 'Quality Profile',
@@ -345,7 +345,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="name"
                         name="name"
@@ -370,7 +370,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <span className="protocol">
                         {values.ssl ? 'https://' : 'http://'}
                       </span>
@@ -435,7 +435,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="apiKey"
                         name="apiKey"
@@ -459,7 +459,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="baseUrl"
                         name="baseUrl"
@@ -484,7 +484,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="activeProfileId"
@@ -522,7 +522,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="rootFolder"
@@ -558,7 +558,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     <span className="label-required">*</span>
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         as="select"
                         id="minimumAvailability"
@@ -583,7 +583,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.externalUrl)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="externalUrl"
                         name="externalUrl"

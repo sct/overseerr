@@ -312,6 +312,70 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "NuroDev",
+      "name": "nuro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4991309?v=4",
+      "profile": "https://nuro.dev",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "onedr0p",
+      "name": "ᗪєνιη ᗷυнʟ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/213795?v=4",
+      "profile": "https://github.com/onedr0p",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "JonnyWong16",
+      "name": "JonnyWong16",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9099342?v=4",
+      "profile": "https://github.com/JonnyWong16",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Roxedus",
+      "name": "Roxedus",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7110194?v=4",
+      "profile": "https://github.com/Roxedus",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "WoisWoi",
+      "name": "WoisWoi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/75491231?v=4",
+      "profile": "https://github.com/WoisWoi",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "HubDuck",
+      "name": "HubDuck",
+      "avatar_url": "https://avatars.githubusercontent.com/u/77843475?v=4",
+      "profile": "https://github.com/HubDuck",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "costaht",
+      "name": "costaht",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50637431?v=4",
+      "profile": "https://github.com/costaht",
+      "contributions": [
+        "doc",
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",

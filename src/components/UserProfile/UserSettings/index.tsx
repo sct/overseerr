@@ -2,12 +2,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Permission, useUser } from '../../../hooks/useUser';
+import { useUser } from '../../../hooks/useUser';
+import { Permission, hasPermission } from '../../../../server/lib/permissions';
 import Error from '../../../pages/_error';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import ProfileHeader from '../ProfileHeader';
 import useSettings from '../../../hooks/useSettings';
+import Alert from '../../Common/Alert';
 
 const messages = defineMessages({
   settings: 'User Settings',
@@ -15,6 +17,9 @@ const messages = defineMessages({
   menuChangePass: 'Password',
   menuNotifications: 'Notifications',
   menuPermissions: 'Permissions',
+  unauthorized: 'Unauthorized',
+  unauthorizedDescription:
+    "You do not have permission to modify this user's settings.",
 });
 
 interface SettingsRoute {
@@ -23,12 +28,13 @@ interface SettingsRoute {
   regex: RegExp;
   requiredPermission?: Permission | Permission[];
   permissionType?: { type: 'and' | 'or' };
+  hidden?: boolean;
 }
 
 const UserSettings: React.FC = ({ children }) => {
   const router = useRouter();
   const settings = useSettings();
-  const { hasPermission } = useUser();
+  const { user: currentUser } = useUser();
   const { user, error } = useUser({ id: Number(router.query.userId) });
   const intl = useIntl();
 
@@ -50,6 +56,15 @@ const UserSettings: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.menuChangePass),
       route: '/settings/password',
       regex: /\/settings\/password/,
+      hidden:
+        (!settings.currentSettings.localLogin &&
+          !hasPermission(
+            Permission.MANAGE_SETTINGS,
+            currentUser?.permissions ?? 0
+          )) ||
+        (currentUser?.id !== 1 &&
+          currentUser?.id !== user?.id &&
+          hasPermission(Permission.ADMIN, user?.permissions ?? 0)),
     },
     {
       text: intl.formatMessage(messages.menuNotifications),
@@ -61,6 +76,7 @@ const UserSettings: React.FC = ({ children }) => {
       route: '/settings/permissions',
       regex: /\/settings\/permissions/,
       requiredPermission: Permission.MANAGE_USERS,
+      hidden: currentUser?.id !== 1 && currentUser?.id === user.id,
     },
   ];
 
@@ -75,14 +91,6 @@ const UserSettings: React.FC = ({ children }) => {
     regex: RegExp;
     isMobile?: boolean;
   }> = ({ children, route, regex, isMobile = false }) => {
-    if (
-      route === '/settings/password' &&
-      !settings.currentSettings.localLogin &&
-      !hasPermission(Permission.MANAGE_SETTINGS)
-    ) {
-      return null;
-    }
-
     const finalRoute = router.asPath.includes('/profile')
       ? `/profile${route}`
       : `/users/${user.id}${route}`;
@@ -103,6 +111,20 @@ const UserSettings: React.FC = ({ children }) => {
       </Link>
     );
   };
+
+  if (currentUser?.id !== 1 && user.id === 1) {
+    return (
+      <>
+        <PageTitle title={intl.formatMessage(messages.settings)} />
+        <ProfileHeader user={user} isSettingsPage />
+        <div className="mt-6">
+          <Alert title={intl.formatMessage(messages.unauthorized)} type="error">
+            {intl.formatMessage(messages.unauthorizedDescription)}
+          </Alert>
+        </div>
+      </>
+    );
+  }
 
   const currentRoute = settingsRoutes.find(
     (route) => !!router.pathname.match(route.regex)
@@ -129,13 +151,16 @@ const UserSettings: React.FC = ({ children }) => {
             aria-label="Selected tab"
           >
             {settingsRoutes
-              .filter((route) =>
-                route.requiredPermission
-                  ? hasPermission(
-                      route.requiredPermission,
-                      route.permissionType
-                    )
-                  : true
+              .filter(
+                (route) =>
+                  !route.hidden &&
+                  (route.requiredPermission
+                    ? hasPermission(
+                        route.requiredPermission,
+                        currentUser?.permissions ?? 0,
+                        route.permissionType
+                      )
+                    : true)
               )
               .map((route, index) => (
                 <SettingsLink
@@ -153,13 +178,16 @@ const UserSettings: React.FC = ({ children }) => {
           <div className="border-b border-gray-600">
             <nav className="flex -mb-px">
               {settingsRoutes
-                .filter((route) =>
-                  route.requiredPermission
-                    ? hasPermission(
-                        route.requiredPermission,
-                        route.permissionType
-                      )
-                    : true
+                .filter(
+                  (route) =>
+                    !route.hidden &&
+                    (route.requiredPermission
+                      ? hasPermission(
+                          route.requiredPermission,
+                          currentUser?.permissions ?? 0,
+                          route.permissionType
+                        )
+                      : true)
                 )
                 .map((route, index) => (
                   <SettingsLink

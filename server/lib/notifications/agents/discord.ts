@@ -71,7 +71,7 @@ interface DiscordRichEmbed {
 
 interface DiscordWebhookPayload {
   embeds: DiscordRichEmbed[];
-  username: string;
+  username?: string;
   avatar_url?: string;
   tts: boolean;
   content?: string;
@@ -122,6 +122,7 @@ class DiscordAgent
         });
         break;
       case Notification.MEDIA_APPROVED:
+      case Notification.MEDIA_AUTO_APPROVED:
         color = EmbedColors.PURPLE;
         fields.push({
           name: 'Status',
@@ -155,15 +156,14 @@ class DiscordAgent
         break;
     }
 
-    if (settings.main.applicationUrl && payload.media) {
-      fields.push({
-        name: `Open in ${settings.main.applicationTitle}`,
-        value: `${settings.main.applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-      });
-    }
+    const url =
+      settings.main.applicationUrl && payload.media
+        ? `${settings.main.applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`
+        : undefined;
 
     return {
       title: payload.subject,
+      url,
       description: payload.message,
       color,
       timestamp: new Date().toISOString(),
@@ -201,10 +201,13 @@ class DiscordAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending discord notification', { label: 'Notifications' });
+    logger.debug('Sending Discord notification', { label: 'Notifications' });
     try {
-      const settings = getSettings();
-      const webhookUrl = this.getSettings().options.webhookUrl;
+      const {
+        botUsername,
+        botAvatarUrl,
+        webhookUrl,
+      } = this.getSettings().options;
 
       if (!webhookUrl) {
         return false;
@@ -214,6 +217,7 @@ class DiscordAgent
       let content = undefined;
 
       if (
+        this.userNotificationTypes.includes(type) &&
         payload.notifyUser.settings?.enableNotifications &&
         payload.notifyUser.settings?.discordId
       ) {
@@ -222,7 +226,8 @@ class DiscordAgent
       }
 
       await axios.post(webhookUrl, {
-        username: settings.main.applicationTitle,
+        username: botUsername,
+        avatar_url: botAvatarUrl,
         embeds: [this.buildEmbed(type, payload)],
         content,
         allowed_mentions: {

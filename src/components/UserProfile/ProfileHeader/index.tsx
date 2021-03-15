@@ -7,6 +7,10 @@ import Button from '../../Common/Button';
 const messages = defineMessages({
   settings: 'Edit Settings',
   profile: 'View Profile',
+  joindate: 'Joined {joindate}',
+  requests:
+    '{requestCount} {requestCount, plural, one {Request} other {Requests}}',
+  userid: 'User ID: {userid}',
 });
 
 interface ProfileHeaderProps {
@@ -21,8 +25,25 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const intl = useIntl();
   const { user: loggedInUser, hasPermission } = useUser();
 
+  const subtextItems: React.ReactNode[] = [
+    intl.formatMessage(messages.joindate, {
+      joindate: intl.formatDate(user.createdAt, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
+    }),
+    intl.formatMessage(messages.requests, {
+      requestCount: user.requestCount,
+    }),
+  ];
+
+  if (hasPermission(Permission.MANAGE_REQUESTS)) {
+    subtextItems.push(intl.formatMessage(messages.userid, { userid: user.id }));
+  }
+
   return (
-    <div className="relative z-40 mt-6 mb-12 md:flex md:items-end md:justify-between md:space-x-5">
+    <div className="relative z-40 mt-6 mb-12 lg:flex lg:items-end lg:justify-between lg:space-x-5">
       <div className="flex items-end space-x-5 justify-items-end">
         <div className="flex-shrink-0">
           <div className="relative">
@@ -55,14 +76,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             )}
           </h1>
           <p className="text-sm font-medium text-gray-400">
-            Joined {intl.formatDate(user.createdAt)} |{' '}
-            {intl.formatNumber(user.requestCount)} Requests
+            {subtextItems.reduce((prev, curr) => (
+              <>
+                {prev} | {curr}
+              </>
+            ))}
           </p>
         </div>
       </div>
-      <div className="flex flex-col-reverse mt-6 space-y-4 space-y-reverse justify-stretch sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
+      <div className="flex flex-col-reverse mt-6 space-y-4 space-y-reverse justify-stretch lg:flex-row lg:justify-end lg:space-x-reverse lg:space-y-0 lg:space-x-3">
         {(loggedInUser?.id === user.id ||
-          hasPermission(Permission.MANAGE_USERS)) &&
+          (user.id !== 1 && hasPermission(Permission.MANAGE_USERS))) &&
         !isSettingsPage ? (
           <Link
             href={
@@ -89,28 +113,30 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </Button>
           </Link>
         ) : (
-          <Link
-            href={
-              loggedInUser?.id === user.id ? `/profile` : `/users/${user.id}`
-            }
-            passHref
-          >
-            <Button as="a">
-              <svg
-                className="w-5 h-5 mr-1"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              {intl.formatMessage(messages.profile)}
-            </Button>
-          </Link>
+          isSettingsPage && (
+            <Link
+              href={
+                loggedInUser?.id === user.id ? `/profile` : `/users/${user.id}`
+              }
+              passHref
+            >
+              <Button as="a">
+                <svg
+                  className="w-5 h-5 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {intl.formatMessage(messages.profile)}
+              </Button>
+            </Link>
+          )
         )}
       </div>
     </div>

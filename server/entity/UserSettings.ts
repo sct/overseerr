@@ -27,8 +27,17 @@ export class UserSettings {
   public discordId?: string;
 
   @Column({ nullable: true })
+  public telegramChatId?: string;
+
+  @Column({ nullable: true })
+  public telegramSendSilently?: boolean;
+
+  @Column({ nullable: true })
   public region?: string;
 
   @Column({ nullable: true })
   public originalLanguage?: string;
+
+  @Column({ nullable: true })
+  public pgpKey?: string;
 }

@@ -28,7 +28,6 @@ const messages = defineMessages({
   notificationsettingssaved: 'Notification settings saved successfully!',
   notificationsettingsfailed: 'Notification settings failed to save.',
   enablenotifications: 'Enable Notifications',
-  autoapprovedrequests: 'Enable Notifications for Automatic Approvals',
   email: 'Email',
   webhook: 'Webhook',
 });
@@ -187,14 +186,12 @@ const SettingsNotifications: React.FC = ({ children }) => {
         <Formik
           initialValues={{
             enabled: data.enabled,
-            autoapprovalEnabled: data.autoapprovalEnabled,
           }}
           enableReinitialize
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/settings/notifications', {
                 enabled: values.enabled,
-                autoapprovalEnabled: values.autoapprovalEnabled,
               });
               addToast(intl.formatMessage(messages.notificationsettingssaved), {
                 appearance: 'success',
@@ -229,26 +226,6 @@ const SettingsNotifications: React.FC = ({ children }) => {
                       name="enabled"
                       onChange={() => {
                         setFieldValue('enabled', !values.enabled);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <label htmlFor="name" className="checkbox-label">
-                    <span>
-                      {intl.formatMessage(messages.autoapprovedrequests)}
-                    </span>
-                  </label>
-                  <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="autoapprovalEnabled"
-                      name="autoapprovalEnabled"
-                      onChange={() => {
-                        setFieldValue(
-                          'autoapprovalEnabled',
-                          !values.autoapprovalEnabled
-                        );
                       }}
                     />
                   </div>

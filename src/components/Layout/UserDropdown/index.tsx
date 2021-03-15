@@ -31,13 +31,17 @@ const UserDropdown: React.FC = () => {
     <div className="relative ml-3">
       <div>
         <button
-          className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring"
+          className="flex items-center max-w-xs text-sm rounded-full ring-1 ring-gray-700 focus:outline-none focus:ring-gray-500 hover:ring-gray-500"
           id="user-menu"
           aria-label="User menu"
           aria-haspopup="true"
           onClick={() => setDropdownOpen(true)}
         >
-          <img className="w-8 h-8 rounded-full" src={user?.avatar} alt="" />
+          <img
+            className="w-8 h-8 rounded-full sm:w-10 sm:h-10"
+            src={user?.avatar}
+            alt=""
+          />
         </button>
       </div>
       <Transition

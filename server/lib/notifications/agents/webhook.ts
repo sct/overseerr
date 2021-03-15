@@ -20,6 +20,7 @@ const KeyMap: Record<string, string | KeyMapFunction> = {
   notifyuser_email: 'notifyUser.email',
   notifyuser_avatar: 'notifyUser.avatar',
   notifyuser_settings_discordId: 'notifyUser.settings.discordId',
+  notifyuser_settings_telegramChatId: 'notifyUser.settings.telegramChatId',
   media_tmdbid: 'media.tmdbId',
   media_imdbid: 'media.imdbId',
   media_tvdbid: 'media.tvdbId',
@@ -137,7 +138,7 @@ class WebhookAgent
 
       return true;
     } catch (e) {
-      logger.error('Error sending Webhook notification', {
+      logger.error('Error sending webhook notification', {
         label: 'Notifications',
         errorMessage: e.message,
       });

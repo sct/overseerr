@@ -18,12 +18,11 @@ const messages = defineMessages({
   qualityprofile: 'Quality Profile',
   rootfolder: 'Root Folder',
   animenote: '* This series is an anime.',
-  default: '(Default)',
-  loadingprofiles: 'Loading profiles…',
-  loadingfolders: 'Loading folders…',
+  default: '{name} (Default)',
+  folder: '{path} ({space})',
   requestas: 'Request As',
   languageprofile: 'Language Profile',
-  loadinglanguages: 'Loading languages…',
+  loading: 'Loading…',
 });
 
 export type RequestOverrides = {
@@ -266,7 +265,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
           <>
             <div className="flex flex-col items-center justify-between md:flex-row">
               <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
-                <label htmlFor="server" className="text-label">
+                <label htmlFor="server">
                   {intl.formatMessage(messages.destinationserver)}
                 </label>
                 <select
@@ -279,16 +278,17 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 >
                   {data.map((server) => (
                     <option key={`server-list-${server.id}`} value={server.id}>
-                      {server.name}
                       {server.isDefault && server.is4k === is4k
-                        ? ` ${intl.formatMessage(messages.default)}`
-                        : ''}
+                        ? intl.formatMessage(messages.default, {
+                            name: server.name,
+                          })
+                        : server.name}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
-                <label htmlFor="profile" className="text-label">
+                <label htmlFor="profile">
                   {intl.formatMessage(messages.qualityprofile)}
                 </label>
                 <select
@@ -298,10 +298,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   onChange={(e) => setSelectedProfile(Number(e.target.value))}
                   onBlur={(e) => setSelectedProfile(Number(e.target.value))}
                   className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                  disabled={isValidating || !serverData}
                 >
-                  {isValidating && (
+                  {(isValidating || !serverData) && (
                     <option value="">
-                      {intl.formatMessage(messages.loadingprofiles)}
+                      {intl.formatMessage(messages.loading)}
                     </option>
                   )}
                   {!isValidating &&
@@ -311,14 +312,17 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                         key={`profile-list${profile.id}`}
                         value={profile.id}
                       >
-                        {profile.name}
                         {isAnime &&
                         serverData.server.activeAnimeProfileId === profile.id
-                          ? ` ${intl.formatMessage(messages.default)}`
+                          ? intl.formatMessage(messages.default, {
+                              name: profile.name,
+                            })
                           : !isAnime &&
                             serverData.server.activeProfileId === profile.id
-                          ? ` ${intl.formatMessage(messages.default)}`
-                          : ''}
+                          ? intl.formatMessage(messages.default, {
+                              name: profile.name,
+                            })
+                          : profile.name}
                       </option>
                     ))}
                 </select>
@@ -328,7 +332,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   type === 'tv' ? 'md:pr-4' : ''
                 }`}
               >
-                <label htmlFor="folder" className="text-label">
+                <label htmlFor="folder">
                   {intl.formatMessage(messages.rootfolder)}
                 </label>
                 <select
@@ -338,10 +342,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   onChange={(e) => setSelectedFolder(e.target.value)}
                   onBlur={(e) => setSelectedFolder(e.target.value)}
                   className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                  disabled={isValidating || !serverData}
                 >
-                  {isValidating && (
+                  {(isValidating || !serverData) && (
                     <option value="">
-                      {intl.formatMessage(messages.loadingfolders)}
+                      {intl.formatMessage(messages.loading)}
                     </option>
                   )}
                   {!isValidating &&
@@ -351,21 +356,33 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                         key={`folder-list${folder.id}`}
                         value={folder.path}
                       >
-                        {folder.path} ({formatBytes(folder.freeSpace ?? 0)})
                         {isAnime &&
                         serverData.server.activeAnimeDirectory === folder.path
-                          ? ` ${intl.formatMessage(messages.default)}`
+                          ? intl.formatMessage(messages.default, {
+                              name: intl.formatMessage(messages.folder, {
+                                path: folder.path,
+                                space: formatBytes(folder.freeSpace ?? 0),
+                              }),
+                            })
                           : !isAnime &&
                             serverData.server.activeDirectory === folder.path
-                          ? ` ${intl.formatMessage(messages.default)}`
-                          : ''}
+                          ? intl.formatMessage(messages.default, {
+                              name: intl.formatMessage(messages.folder, {
+                                path: folder.path,
+                                space: formatBytes(folder.freeSpace ?? 0),
+                              }),
+                            })
+                          : intl.formatMessage(messages.folder, {
+                              path: folder.path,
+                              space: formatBytes(folder.freeSpace ?? 0),
+                            })}
                       </option>
                     ))}
                 </select>
               </div>
               {type === 'tv' && (
                 <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0">
-                  <label htmlFor="language" className="text-label">
+                  <label htmlFor="language">
                     {intl.formatMessage(messages.languageprofile)}
                   </label>
                   <select
@@ -379,10 +396,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                       setSelectedLanguage(parseInt(e.target.value))
                     }
                     className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                    disabled={isValidating || !serverData}
                   >
-                    {isValidating && (
+                    {(isValidating || !serverData) && (
                       <option value="">
-                        {intl.formatMessage(messages.loadinglanguages)}
+                        {intl.formatMessage(messages.loading)}
                       </option>
                     )}
                     {!isValidating &&
@@ -392,16 +410,19 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                           key={`folder-list${language.id}`}
                           value={language.id}
                         >
-                          {language.name}
                           {isAnime &&
                           serverData.server.activeAnimeLanguageProfileId ===
                             language.id
-                            ? ` ${intl.formatMessage(messages.default)}`
+                            ? intl.formatMessage(messages.default, {
+                                name: language.name,
+                              })
                             : !isAnime &&
                               serverData.server.activeLanguageProfileId ===
                                 language.id
-                            ? ` ${intl.formatMessage(messages.default)}`
-                            : ''}
+                            ? intl.formatMessage(messages.default, {
+                                name: language.name,
+                              })
+                            : language.name}
                         </option>
                       ))}
                   </select>
@@ -412,7 +433,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         )}
         {hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS]) &&
           selectedUser && (
-            <div className="mt-0 sm:mt-2">
+            <div className="first:mt-0 sm:mt-4">
               <Listbox
                 as="div"
                 value={selectedUser}
@@ -421,7 +442,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               >
                 {({ open }) => (
                   <>
-                    <Listbox.Label className="text-label">
+                    <Listbox.Label>
                       {intl.formatMessage(messages.requestas)}
                     </Listbox.Label>
                     <div className="relative">

@@ -24,11 +24,11 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
   plexUrl,
 }) => {
   return (
-    <div className="flex items-center justify-end">
+    <div className="flex items-center justify-center w-full space-x-5">
       {plexUrl && (
         <a
           href={plexUrl}
-          className="w-8 mx-2 transition duration-300 opacity-50 hover:opacity-100"
+          className="w-12 transition duration-300 opacity-50 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >
@@ -38,7 +38,7 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
       {tmdbId && (
         <a
           href={`https://www.themoviedb.org/${mediaType}/${tmdbId}`}
-          className="w-8 mx-2 transition duration-300 opacity-50 hover:opacity-100"
+          className="w-8 transition duration-300 opacity-50 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >
@@ -48,7 +48,7 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
       {tvdbId && mediaType === MediaType.TV && (
         <a
           href={`http://www.thetvdb.com/?tab=series&id=${tvdbId}`}
-          className="w-8 mx-2 transition duration-300 opacity-50 hover:opacity-100"
+          className="transition duration-300 opacity-50 w-9 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >
@@ -58,7 +58,7 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
       {imdbId && (
         <a
           href={`https://www.imdb.com/title/${imdbId}`}
-          className="w-8 mx-2 transition duration-300 opacity-50 hover:opacity-100"
+          className="w-8 transition duration-300 opacity-50 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >
@@ -68,7 +68,7 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
       {rtUrl && (
         <a
           href={`${rtUrl}`}
-          className="mx-2 transition duration-300 opacity-50 w-14 hover:opacity-100"
+          className="transition duration-300 opacity-50 w-14 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >

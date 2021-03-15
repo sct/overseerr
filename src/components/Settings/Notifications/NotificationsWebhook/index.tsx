@@ -175,7 +175,7 @@ const NotificationsWebhook: React.FC = () => {
                 {intl.formatMessage(messages.webhookUrl)}
               </label>
               <div className="form-input">
-                <div className="flex max-w-lg rounded-md shadow-sm">
+                <div className="form-input-field">
                   <Field id="webhookUrl" name="webhookUrl" type="text" />
                 </div>
                 {errors.webhookUrl && touched.webhookUrl && (
@@ -188,7 +188,7 @@ const NotificationsWebhook: React.FC = () => {
                 {intl.formatMessage(messages.authheader)}
               </label>
               <div className="form-input">
-                <div className="flex max-w-lg rounded-md shadow-sm">
+                <div className="form-input-field">
                   <Field id="authHeader" name="authHeader" type="text" />
                 </div>
               </div>
@@ -198,7 +198,7 @@ const NotificationsWebhook: React.FC = () => {
                 {intl.formatMessage(messages.customJson)}
               </label>
               <div className="form-input">
-                <div className="flex max-w-lg rounded-md shadow-sm">
+                <div className="form-input-field">
                   <JSONEditor
                     name="webhook-json-payload"
                     onUpdate={(value) => setFieldValue('jsonPayload', value)}

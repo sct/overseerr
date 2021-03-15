@@ -14,10 +14,11 @@ const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
   agentenabled: 'Enable Agent',
+  botUsername: 'Bot Username',
   botAPI: 'Bot Authentication Token',
   chatId: 'Chat ID',
   validationBotAPIRequired: 'You must provide a bot authentication token',
-  validationChatIdRequired: 'You must provide a chat ID',
+  validationChatIdRequired: 'You must provide a valid chat ID',
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   testsent: 'Test notification sent!',
@@ -26,7 +27,7 @@ const messages = defineMessages({
   settinguptelegramDescription:
     'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
     Additionally, you will need the chat ID for the chat to which you would like to send notifications.\
-    You can get this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat.',
+    You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
   notificationtypes: 'Notification Types',
   sendSilently: 'Send Silently',
   sendSilentlyTip: 'Send notifications with no sound',
@@ -43,9 +44,12 @@ const NotificationsTelegram: React.FC = () => {
     botAPI: Yup.string().required(
       intl.formatMessage(messages.validationBotAPIRequired)
     ),
-    chatId: Yup.string().required(
-      intl.formatMessage(messages.validationChatIdRequired)
-    ),
+    chatId: Yup.string()
+      .required(intl.formatMessage(messages.validationChatIdRequired))
+      .matches(
+        /^[-]?\d+$/,
+        intl.formatMessage(messages.validationChatIdRequired)
+      ),
   });
 
   if (!data && !error) {
@@ -57,6 +61,7 @@ const NotificationsTelegram: React.FC = () => {
       initialValues={{
         enabled: data?.enabled,
         types: data?.types,
+        botUsername: data?.options.botUsername,
         botAPI: data?.options.botAPI,
         chatId: data?.options.chatId,
         sendSilently: data?.options.sendSilently,
@@ -71,6 +76,7 @@ const NotificationsTelegram: React.FC = () => {
               botAPI: values.botAPI,
               chatId: values.chatId,
               sendSilently: values.sendSilently,
+              botUsername: values.botUsername,
             },
           });
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
@@ -96,6 +102,7 @@ const NotificationsTelegram: React.FC = () => {
               botAPI: values.botAPI,
               chatId: values.chatId,
               sendSilently: values.sendSilently,
+              botUsername: values.botUsername,
             },
           });
 
@@ -136,6 +143,9 @@ const NotificationsTelegram: React.FC = () => {
                     </a>
                   );
                 },
+                code: function code(msg) {
+                  return <code className="bg-opacity-50">{msg}</code>;
+                },
               })}
             </Alert>
             <Form className="section">
@@ -148,11 +158,29 @@ const NotificationsTelegram: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
+                <label htmlFor="botUsername" className="text-label">
+                  {intl.formatMessage(messages.botUsername)}
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field
+                      id="botUsername"
+                      name="botUsername"
+                      type="text"
+                      placeholder={intl.formatMessage(messages.botUsername)}
+                    />
+                  </div>
+                  {errors.botUsername && touched.botUsername && (
+                    <div className="error">{errors.botUsername}</div>
+                  )}
+                </div>
+              </div>
+              <div className="form-row">
                 <label htmlFor="botAPI" className="text-label">
                   {intl.formatMessage(messages.botAPI)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="botAPI"
                       name="botAPI"
@@ -170,7 +198,7 @@ const NotificationsTelegram: React.FC = () => {
                   {intl.formatMessage(messages.chatId)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="chatId"
                       name="chatId"

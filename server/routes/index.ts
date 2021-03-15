@@ -17,6 +17,8 @@ import { getAppVersion, getCommitTag } from '../utils/appVersion';
 import serviceRoutes from './service';
 import { appDataStatus, appDataPath } from '../utils/appDataVolume';
 import TheMovieDb from '../api/themoviedb';
+import { mapProductionCompany } from '../models/Movie';
+import { mapNetwork } from '../models/Tv';
 
 const router = Router();
 
@@ -72,6 +74,42 @@ router.get('/languages', isAuthenticated(), async (req, res) => {
   const languages = await tmdb.getLanguages();
 
   return res.status(200).json(languages);
+});
+
+router.get<{ id: string }>('/studio/:id', async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const studio = await tmdb.getStudio(Number(req.params.id));
+
+  return res.status(200).json(mapProductionCompany(studio));
+});
+
+router.get<{ id: string }>('/network/:id', async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const network = await tmdb.getNetwork(Number(req.params.id));
+
+  return res.status(200).json(mapNetwork(network));
+});
+
+router.get('/genres/movie', isAuthenticated(), async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const genres = await tmdb.getMovieGenres({
+    language: req.query.language as string,
+  });
+
+  return res.status(200).json(genres);
+});
+
+router.get('/genres/tv', isAuthenticated(), async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const genres = await tmdb.getTvGenres({
+    language: req.query.language as string,
+  });
+
+  return res.status(200).json(genres);
 });
 
 router.get('/', (_req, res) => {

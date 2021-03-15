@@ -20,9 +20,10 @@
     "@headlessui/react": "^0.3.1",
     "@supercharge/request-ip": "^1.1.2",
     "@svgr/webpack": "^5.5.0",
+    "@tanem/react-nprogress": "^3.0.57",
     "ace-builds": "^1.4.12",
     "axios": "^0.21.1",
-    "bcrypt": "^5.0.0",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "bowser": "^2.11.0",
     "connect-typeorm": "^1.1.4",
@@ -31,7 +32,7 @@
     "csurf": "^1.11.0",
     "email-templates": "^8.0.3",
     "express": "^4.17.1",
-    "express-openapi-validator": "^4.11.0",
+    "express-openapi-validator": "^4.12.4",
     "express-session": "^1.17.1",
     "formik": "^2.2.6",
     "gravatar-url": "^3.1.0",
@@ -40,16 +41,17 @@
     "next": "10.0.3",
     "node-cache": "^5.1.2",
     "node-schedule": "^2.0.0",
-    "nodemailer": "^6.4.18",
+    "nodemailer": "^6.5.0",
     "nookies": "^2.5.2",
+    "openpgp": "^5.0.0-1",
     "plex-api": "^5.3.1",
-    "pug": "^3.0.0",
+    "pug": "^3.0.2",
     "react": "17.0.1",
     "react-ace": "^9.3.0",
     "react-animate-height": "^2.0.23",
     "react-dom": "17.0.1",
     "react-intersection-observer": "^8.31.0",
-    "react-intl": "^5.12.5",
+    "react-intl": "^5.13.2",
     "react-markdown": "^5.0.3",
     "react-spring": "^8.0.27",
     "react-toast-notifications": "^2.4.3",
@@ -60,19 +62,19 @@
     "secure-random-password": "^0.2.2",
     "sqlite3": "^5.0.2",
     "swagger-ui-express": "^4.1.6",
-    "swr": "^0.4.2",
+    "swr": "^0.5.1",
     "typeorm": "^0.2.31",
     "uuid": "^8.3.2",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.0",
+    "winston-daily-rotate-file": "^4.5.1",
     "xml2js": "^0.4.23",
     "yamljs": "^0.3.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.17",
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
+    "@babel/cli": "^7.13.10",
+    "@commitlint/cli": "^12.0.1",
+    "@commitlint/config-conventional": "^12.0.1",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/commit-analyzer": "^8.0.1",
     "@semantic-release/exec": "^5.0.0",
@@ -89,11 +91,11 @@
     "@types/express": "^4.17.11",
     "@types/express-session": "^1.17.3",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^14.14.31",
+    "@types/node": "^14.14.34",
     "@types/node-schedule": "^1.3.1",
-    "@types/nodemailer": "^6.4.0",
-    "@types/react": "^17.0.2",
-    "@types/react-dom": "^17.0.1",
+    "@types/nodemailer": "^6.4.1",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.2",
     "@types/react-toast-notifications": "^2.4.0",
     "@types/react-transition-group": "^4.4.1",
     "@types/secure-random-password": "^0.2.0",
@@ -102,17 +104,17 @@
     "@types/xml2js": "^0.4.8",
     "@types/yamljs": "^0.2.31",
     "@types/yup": "^0.29.11",
-    "@typescript-eslint/eslint-plugin": "^4.15.1",
-    "@typescript-eslint/parser": "^4.15.1",
-    "autoprefixer": "^10.2.4",
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "autoprefixer": "^10.2.5",
     "babel-plugin-react-intl": "^8.2.25",
     "babel-plugin-react-intl-auto": "^3.3.0",
     "commitizen": "^4.2.3",
     "copyfiles": "^2.4.1",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^7.20.0",
+    "eslint": "^7.21.0",
     "eslint-config-prettier": "^7.2.0",
-    "eslint-plugin-formatjs": "^2.12.4",
+    "eslint-plugin-formatjs": "^2.12.7",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
@@ -121,14 +123,14 @@
     "husky": "4.3.8",
     "lint-staged": "^10.5.4",
     "nodemon": "^2.0.7",
-    "postcss": "^8.2.6",
+    "postcss": "^8.2.8",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.2.1",
-    "semantic-release": "^17.3.9",
-    "semantic-release-docker": "^2.2.0",
+    "semantic-release": "^17.4.2",
+    "semantic-release-docker-buildx": "^1.0.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.2.3"
   },
   "resolutions": {
     "sqlite3/node-gyp": "^5.1.0"
@@ -186,13 +188,7 @@
           "message": "chore(release): ${nextRelease.version}"
         }
       ],
-      [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "docker build --build-arg COMMIT_TAG=$GITHUB_SHA -t sctx/overseerr ."
-        }
-      ],
-      "semantic-release-docker",
+      "semantic-release-docker-buildx",
       [
         "@semantic-release/github",
         {
@@ -206,8 +202,19 @@
     "npmPublish": false,
     "publish": [
       {
-        "path": "semantic-release-docker",
-        "name": "sctx/overseerr"
+        "path": "semantic-release-docker-buildx",
+        "buildArgs": {
+          "COMMIT_TAG": "$GITHUB_SHA"
+        },
+        "imageNames": [
+          "sctx/overseerr",
+          "ghcr.io/sct/overseerr"
+        ],
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64",
+          "linux/arm/v7"
+        ]
       },
       "@semantic-release/github"
     ]

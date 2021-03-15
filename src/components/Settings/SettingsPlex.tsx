@@ -49,8 +49,8 @@ const messages = defineMessages({
   plexlibraries: 'Plex Libraries',
   plexlibrariesDescription:
     'The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.',
-  syncing: 'Syncing',
-  sync: 'Sync Plex Libraries',
+  scanning: 'Scanning…',
+  scan: 'Scan Plex Libraries',
   manualscan: 'Manual Library Scan',
   manualscanDescription:
     "Normally, this will only be run once every 24 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one-time full manual library scan is recommended!",
@@ -355,7 +355,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   </div>
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <input
                       type="text"
                       id="name"
@@ -374,7 +374,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   <FormattedMessage {...messages.serverpreset} />
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm input-group">
+                  <div className="form-input-field input-group">
                     <select
                       id="preset"
                       name="preset"
@@ -458,7 +458,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   <FormattedMessage {...messages.hostname} />
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
                       {values.useSsl ? 'https://' : 'http://'}
                     </span>
@@ -480,15 +480,13 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   <FormattedMessage {...messages.port} />
                 </label>
                 <div className="form-input">
-                  <div className="max-w-lg rounded-md shadow-sm sm:max-w-xs">
-                    <Field
-                      type="text"
-                      id="port"
-                      name="port"
-                      placeholder="32400"
-                      className="short"
-                    />
-                  </div>
+                  <Field
+                    type="text"
+                    id="port"
+                    name="port"
+                    placeholder="32400"
+                    className="short"
+                  />
                   {errors.port && touched.port && (
                     <div className="error">{errors.port}</div>
                   )}
@@ -563,8 +561,8 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
             />
           </svg>
           {isSyncing
-            ? intl.formatMessage(messages.syncing)
-            : intl.formatMessage(messages.sync)}
+            ? intl.formatMessage(messages.scanning)
+            : intl.formatMessage(messages.scan)}
         </Button>
         <ul className="grid grid-cols-1 gap-5 mt-6 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {data?.libraries.map((library) => (

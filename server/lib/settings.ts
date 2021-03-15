@@ -95,6 +95,8 @@ export interface NotificationAgentConfig {
 }
 export interface NotificationAgentDiscord extends NotificationAgentConfig {
   options: {
+    botUsername?: string;
+    botAvatarUrl?: string;
     webhookUrl: string;
   };
 }
@@ -115,11 +117,14 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
     authPass?: string;
     allowSelfSigned: boolean;
     senderName: string;
+    pgpPrivateKey?: string;
+    pgpPassword?: string;
   };
 }
 
 export interface NotificationAgentTelegram extends NotificationAgentConfig {
   options: {
+    botUsername?: string;
     botAPI: string;
     chatId: string;
     sendSilently: boolean;
@@ -160,7 +165,6 @@ interface NotificationAgents {
 
 interface NotificationSettings {
   enabled: boolean;
-  autoapprovalEnabled: boolean;
   agents: NotificationAgents;
 }
 
@@ -210,7 +214,6 @@ class Settings {
       },
       notifications: {
         enabled: true,
-        autoapprovalEnabled: false,
         agents: {
           email: {
             enabled: false,
@@ -228,6 +231,8 @@ class Settings {
             enabled: false,
             types: 0,
             options: {
+              botUsername: '',
+              botAvatarUrl: '',
               webhookUrl: '',
             },
           },
@@ -242,6 +247,7 @@ class Settings {
             enabled: false,
             types: 0,
             options: {
+              botUsername: '',
               botAPI: '',
               chatId: '',
               sendSilently: false,

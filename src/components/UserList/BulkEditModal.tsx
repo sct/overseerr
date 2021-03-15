@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PermissionEdit from '../PermissionEdit';
 import Modal from '../Common/Modal';
 import { User, useUser } from '../../hooks/useUser';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
 
@@ -19,8 +19,7 @@ const messages = defineMessages({
   save: 'Save Changes',
   saving: 'Saving…',
   userfail: 'Something went wrong while saving the user.',
-  permissions: 'Permissions',
-  edituser: 'Edit User',
+  edituser: 'Edit User Permissions',
 });
 
 const BulkEditModal: React.FC<BulkEditProps> = ({
@@ -93,27 +92,12 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
       okText={intl.formatMessage(messages.save)}
       onCancel={onCancel}
     >
-      <div className="mt-6 mb-6">
-        <div role="group" aria-labelledby="group-label">
-          <div className="form-row">
-            <div>
-              <div id="group-label" className="group-label">
-                <FormattedMessage {...messages.permissions} />
-              </div>
-            </div>
-            <div className="form-input">
-              <div className="max-w-lg">
-                <PermissionEdit
-                  actingUser={currentUser}
-                  currentPermission={currentPermission}
-                  onUpdate={(newPermission) =>
-                    setCurrentPermission(newPermission)
-                  }
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="mb-6">
+        <PermissionEdit
+          actingUser={currentUser}
+          currentPermission={currentPermission}
+          onUpdate={(newPermission) => setCurrentPermission(newPermission)}
+        />
       </div>
     </Modal>
   );

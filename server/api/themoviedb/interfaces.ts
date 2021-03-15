@@ -109,6 +109,16 @@ export interface TmdbExternalIds {
   twitter_id?: string;
 }
 
+export interface TmdbProductionCompany {
+  id: number;
+  logo_path?: string;
+  name: string;
+  origin_country: string;
+  homepage?: string;
+  headquarters?: string;
+  description?: string;
+}
+
 export interface TmdbMovieDetails {
   id: number;
   imdb_id?: string;
@@ -125,12 +135,7 @@ export interface TmdbMovieDetails {
   original_title: string;
   overview?: string;
   popularity: number;
-  production_companies: {
-    id: number;
-    name: string;
-    logo_path?: string;
-    origin_country: string;
-  }[];
+  production_companies: TmdbProductionCompany[];
   production_countries: {
     iso_3166_1: string;
     name: string;
@@ -227,12 +232,7 @@ export interface TmdbTvDetails {
   last_episode_to_air?: TmdbTvEpisodeResult;
   name: string;
   next_episode_to_air?: TmdbTvEpisodeResult;
-  networks: {
-    id: number;
-    name: string;
-    logo_path: string;
-    origin_country: string;
-  }[];
+  networks: TmdbNetwork[];
   number_of_episodes: number;
   number_of_seasons: number;
   origin_country: string[];
@@ -254,6 +254,7 @@ export interface TmdbTvDetails {
   }[];
   seasons: TmdbTvSeasonResult[];
   status: string;
+  tagline?: string;
   type: string;
   vote_average: number;
   vote_count: number;
@@ -380,4 +381,22 @@ export interface TmdbLanguage {
   iso_639_1: string;
   english_name: string;
   name: string;
+}
+
+export interface TmdbGenresResult {
+  genres: TmdbGenre[];
+}
+
+export interface TmdbGenre {
+  id: number;
+  name: string;
+}
+
+export interface TmdbNetwork {
+  id: number;
+  name: string;
+  headquarters?: string;
+  homepage?: string;
+  logo_path?: string;
+  origin_country?: string;
 }

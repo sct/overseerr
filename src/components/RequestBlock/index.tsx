@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import { FormattedDate, useIntl, defineMessages } from 'react-intl';
+import { useIntl, defineMessages } from 'react-intl';
 import Badge from '../Common/Badge';
 import { MediaRequestStatus } from '../../../server/constants/media';
 import Button from '../Common/Button';
@@ -10,7 +10,7 @@ import RequestModal from '../RequestModal';
 import useRequestOverride from '../../hooks/useRequestOverride';
 
 const messages = defineMessages({
-  seasons: 'Seasons',
+  seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   requestoverrides: 'Request Overrides',
   server: 'Server',
   profilechanged: 'Profile Changed',
@@ -65,12 +65,12 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
           setShowEditModal(false);
         }}
       />
-      <div className="px-4 py-4">
+      <div className="px-4 py-4 text-gray-300">
         <div className="flex items-center justify-between">
-          <div className="flex-col items-center flex-1 min-w-0 mr-6 text-sm leading-5 text-gray-300">
+          <div className="flex-col items-center flex-1 min-w-0 mr-6 text-sm leading-5">
             <div className="flex mb-1 flex-nowrap white">
               <svg
-                className="min-w-0 flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
+                className="min-w-0 flex-shrink-0 mr-1.5 h-5 w-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +88,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
             {request.modifiedBy && (
               <div className="flex flex-nowrap">
                 <svg
-                  className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
+                  className="flex-shrink-0 mr-1.5 h-5 w-5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +191,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
         </div>
         <div className="mt-2 sm:flex sm:justify-between">
           <div className="sm:flex">
-            <div className="flex items-center mr-6 text-sm leading-5 text-gray-300">
+            <div className="flex items-center mr-6 text-sm leading-5">
               {request.is4k && (
                 <span className="mr-1">
                   <Badge badgeType="warning">4K</Badge>
@@ -214,9 +214,9 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               )}
             </div>
           </div>
-          <div className="flex items-center mt-2 text-sm leading-5 text-gray-300 sm:mt-0">
+          <div className="flex items-center mt-2 text-sm leading-5 sm:mt-0">
             <svg
-              className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
+              className="flex-shrink-0 mr-1.5 h-5 w-5"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -228,13 +228,21 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               />
             </svg>
             <span>
-              <FormattedDate value={request.createdAt} />
+              {intl.formatDate(request.createdAt, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
             </span>
           </div>
         </div>
         {(request.seasons ?? []).length > 0 && (
           <div className="flex flex-col mt-2 text-sm">
-            <div className="mb-2">{intl.formatMessage(messages.seasons)}</div>
+            <div className="mb-1 font-medium">
+              {intl.formatMessage(messages.seasons, {
+                seasonCount: request.seasons.length,
+              })}
+            </div>
             <div>
               {request.seasons.map((season) => (
                 <span

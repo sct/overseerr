@@ -7,6 +7,7 @@ import PageTitle from '../Common/PageTitle';
 const messages = defineMessages({
   settings: 'Settings',
   menuGeneralSettings: 'General Settings',
+  menuUsers: 'Users',
   menuPlexSettings: 'Plex',
   menuServices: 'Services',
   menuNotifications: 'Notifications',
@@ -30,6 +31,11 @@ const SettingsLayout: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.menuGeneralSettings),
       route: '/settings/main',
       regex: /^\/settings(\/main)?$/,
+    },
+    {
+      text: intl.formatMessage(messages.menuUsers),
+      route: '/settings/users',
+      regex: /^\/settings\/users/,
     },
     {
       text: intl.formatMessage(messages.menuPlexSettings),

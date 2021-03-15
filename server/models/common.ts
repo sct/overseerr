@@ -14,6 +14,18 @@ export interface ProductionCompany {
   logoPath?: string;
   originCountry: string;
   name: string;
+  description?: string;
+  headquarters?: string;
+  homepage?: string;
+}
+
+export interface TvNetwork {
+  id: number;
+  logoPath?: string;
+  originCountry?: string;
+  name: string;
+  headquarters?: string;
+  homepage?: string;
 }
 
 export interface Keyword {

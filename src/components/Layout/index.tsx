@@ -72,7 +72,7 @@ const Layout: React.FC = ({ children }) => {
           </button>
           <div className="flex justify-between flex-1 pr-4 md:pr-4 md:pl-4">
             <SearchInput />
-            <div className="flex items-center ml-2 md:ml-4">
+            <div className="flex items-center ml-2">
               <LanguagePicker />
               <UserDropdown />
             </div>

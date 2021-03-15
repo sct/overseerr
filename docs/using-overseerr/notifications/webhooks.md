@@ -35,6 +35,7 @@ These variables are usually the target user of the notification.
 - `{{notifyuser_email}}` Target user's email.
 - `{{notifyuser_avatar}}` Target user's avatar.
 - `{{notifyuser_settings_discordId}}` Target user's discord ID (if one is set).
+- `{{notifyuser_settings_telegramChatId}}` Target user's telegram Chat ID (if one is set).
 
 ### Media
 

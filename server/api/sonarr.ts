@@ -207,11 +207,6 @@ class SonarrAPI extends ExternalAPI {
       if (series.id) {
         series.seasons = this.buildSeasonList(options.seasons, series.seasons);
 
-        series.addOptions = {
-          ignoreEpisodesWithFiles: true,
-          searchForMissingEpisodes: options.searchNow,
-        };
-
         const newSeriesResponse = await this.axios.put<SonarrSeries>(
           '/series',
           series
@@ -225,6 +220,9 @@ class SonarrAPI extends ExternalAPI {
             label: 'Sonarr',
             movie: newSeriesResponse.data,
           });
+          if (options.searchNow) {
+            this.searchSeries(newSeriesResponse.data.id);
+          }
         } else {
           logger.error('Failed to update series in Sonarr', {
             label: 'Sonarr',
@@ -347,6 +345,33 @@ class SonarrAPI extends ExternalAPI {
       );
 
       throw new Error('Failed to get language profiles');
+    }
+  }
+
+  public async searchSeries(seriesId: number): Promise<void> {
+    logger.info('Executing series search command', {
+      label: 'Sonarr API',
+      seriesId,
+    });
+    await this.runCommand('SeriesSearch', { seriesId });
+  }
+
+  private async runCommand(
+    commandName: string,
+    options: Record<string, unknown>
+  ): Promise<void> {
+    try {
+      await this.axios.post(`/command`, {
+        name: commandName,
+        ...options,
+      });
+    } catch (e) {
+      logger.error('Something went wrong attempting to run a Sonarr command.', {
+        label: 'Sonarr API',
+        message: e.message,
+      });
+
+      throw new Error('Failed to run Sonarr command.');
     }
   }
 

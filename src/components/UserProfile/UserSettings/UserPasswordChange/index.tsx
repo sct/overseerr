@@ -5,7 +5,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import { useUser } from '../../../../hooks/useUser';
+import { Permission, useUser } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
 import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
@@ -33,6 +33,9 @@ const messages = defineMessages({
   nopasswordsetDescription:
     'This user account currently does not have a password specifically for {applicationTitle}.\
     Configure a password below to enable this account to sign in as a "local user."',
+  nopermission: 'Unauthorized',
+  nopermissionDescription:
+    "You do not have permission to modify this user's password.",
 });
 
 const UserPasswordChange: React.FC = () => {
@@ -41,14 +44,14 @@ const UserPasswordChange: React.FC = () => {
   const { addToast } = useToasts();
   const router = useRouter();
   const { user: currentUser } = useUser();
-  const { user } = useUser({ id: Number(router.query.userId) });
+  const { user, hasPermission } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<{ hasPassword: boolean }>(
     user ? `/api/v1/user/${user?.id}/settings/password` : null
   );
 
   const PasswordChangeSchema = Yup.object().shape({
     currentPassword: Yup.lazy(() =>
-      data?.hasPassword
+      data?.hasPassword && currentUser?.id === user?.id
         ? Yup.string().required(
             intl.formatMessage(messages.validationCurrentPassword)
           )
@@ -71,6 +74,23 @@ const UserPasswordChange: React.FC = () => {
 
   if (!data) {
     return <Error statusCode={500} />;
+  }
+
+  if (
+    currentUser?.id !== user?.id &&
+    hasPermission(Permission.ADMIN) &&
+    currentUser?.id !== 1
+  ) {
+    return (
+      <>
+        <div className="mb-6">
+          <h3 className="heading">{intl.formatMessage(messages.password)}</h3>
+        </div>
+        <Alert title={intl.formatMessage(messages.nopermission)} type="error">
+          {intl.formatMessage(messages.nopermissionDescription)}
+        </Alert>
+      </>
+    );
   }
 
   return (
@@ -128,7 +148,7 @@ const UserPasswordChange: React.FC = () => {
                     {intl.formatMessage(messages.currentpassword)}
                   </label>
                   <div className="form-input">
-                    <div className="flex max-w-lg rounded-md shadow-sm">
+                    <div className="form-input-field">
                       <Field
                         id="currentPassword"
                         name="currentPassword"
@@ -146,7 +166,7 @@ const UserPasswordChange: React.FC = () => {
                   {intl.formatMessage(messages.newpassword)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field id="newPassword" name="newPassword" type="text" />
                   </div>
                   {errors.newPassword && touched.newPassword && (
@@ -159,7 +179,7 @@ const UserPasswordChange: React.FC = () => {
                   {intl.formatMessage(messages.confirmpassword)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="confirmPassword"
                       name="confirmPassword"

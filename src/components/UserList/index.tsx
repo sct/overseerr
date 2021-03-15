@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import Badge from '../Common/Badge';
-import { FormattedDate, defineMessages, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import Button from '../Common/Button';
 import { hasPermission } from '../../../server/lib/permissions';
 import { Permission, User, UserType, useUser } from '../../hooks/useUser';
@@ -32,13 +32,14 @@ const messages = defineMessages({
     '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex.',
   user: 'User',
   totalrequests: 'Total Requests',
-  usertype: 'User Type',
+  accounttype: 'Account Type',
   role: 'Role',
   created: 'Created',
   lastupdated: 'Last Updated',
   edit: 'Edit',
   bulkedit: 'Bulk Edit',
   delete: 'Delete',
+  owner: 'Owner',
   admin: 'Admin',
   plexuser: 'Plex User',
   deleteuser: 'Delete User',
@@ -325,7 +326,7 @@ const UserList: React.FC = () => {
                       {intl.formatMessage(messages.email)}
                     </label>
                     <div className="form-input">
-                      <div className="flex max-w-lg rounded-md shadow-sm">
+                      <div className="form-input-field">
                         <Field
                           id="email"
                           name="email"
@@ -356,7 +357,7 @@ const UserList: React.FC = () => {
                       {intl.formatMessage(messages.password)}
                     </label>
                     <div className="form-input">
-                      <div className="flex max-w-lg rounded-md shadow-sm">
+                      <div className="form-input-field">
                         <Field
                           id="password"
                           name="password"
@@ -472,7 +473,7 @@ const UserList: React.FC = () => {
             </Table.TH>
             <Table.TH>{intl.formatMessage(messages.user)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.usertype)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.accounttype)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.lastupdated)}</Table.TH>
@@ -543,19 +544,30 @@ const UserList: React.FC = () => {
                 )}
               </Table.TD>
               <Table.TD>
-                {hasPermission(Permission.ADMIN, user.permissions)
+                {user.id === 1
+                  ? intl.formatMessage(messages.owner)
+                  : hasPermission(Permission.ADMIN, user.permissions)
                   ? intl.formatMessage(messages.admin)
                   : intl.formatMessage(messages.user)}
               </Table.TD>
               <Table.TD>
-                <FormattedDate value={user.createdAt} />
+                {intl.formatDate(user.createdAt, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
               </Table.TD>
               <Table.TD>
-                <FormattedDate value={user.updatedAt} />
+                {intl.formatDate(user.updatedAt, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
               </Table.TD>
               <Table.TD alignText="right">
                 <Button
                   buttonType="warning"
+                  disabled={user.id === 1 && currentUser?.id !== 1}
                   className="mr-2"
                   onClick={() =>
                     router.push(
@@ -568,7 +580,11 @@ const UserList: React.FC = () => {
                 </Button>
                 <Button
                   buttonType="danger"
-                  disabled={hasPermission(Permission.ADMIN, user.permissions)}
+                  disabled={
+                    user.id === 1 ||
+                    (currentUser?.id !== 1 &&
+                      hasPermission(Permission.ADMIN, user.permissions))
+                  }
                   onClick={() => setDeleteModal({ isOpen: true, user })}
                 >
                   {intl.formatMessage(messages.delete)}

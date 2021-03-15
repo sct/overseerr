@@ -41,13 +41,13 @@ const NotificationsPushover: React.FC = () => {
     accessToken: Yup.string()
       .required(intl.formatMessage(messages.validationAccessTokenRequired))
       .matches(
-        /^a[A-Za-z0-9]{29}$/,
+        /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationAccessTokenRequired)
       ),
     userToken: Yup.string()
       .required(intl.formatMessage(messages.validationUserTokenRequired))
       .matches(
-        /^[ug][A-Za-z0-9]{29}$/,
+        /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationUserTokenRequired)
       ),
   });
@@ -153,7 +153,7 @@ const NotificationsPushover: React.FC = () => {
                   {intl.formatMessage(messages.accessToken)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="accessToken"
                       name="accessToken"
@@ -171,7 +171,7 @@ const NotificationsPushover: React.FC = () => {
                   {intl.formatMessage(messages.userToken)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="userToken"
                       name="userToken"

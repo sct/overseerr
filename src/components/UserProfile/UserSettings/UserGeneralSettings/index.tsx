@@ -7,7 +7,7 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { Language } from '../../../../../server/lib/settings';
 import useSettings from '../../../../hooks/useSettings';
-import { UserType, useUser } from '../../../../hooks/useUser';
+import { UserType, useUser, Permission } from '../../../../hooks/useUser';
 import Error from '../../../../pages/_error';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
@@ -19,8 +19,13 @@ const messages = defineMessages({
   displayName: 'Display Name',
   save: 'Save Changes',
   saving: 'Saving…',
+  accounttype: 'Account Type',
   plexuser: 'Plex User',
   localuser: 'Local User',
+  role: 'Role',
+  owner: 'Owner',
+  admin: 'Admin',
+  user: 'User',
   toastSettingsSuccess: 'Settings successfully saved!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   region: 'Discover Region',
@@ -37,7 +42,9 @@ const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
-  const { user, mutate } = useUser({ id: Number(router.query.userId) });
+  const { user, hasPermission, mutate } = useUser({
+    id: Number(router.query.userId),
+  });
   const { currentSettings } = useSettings();
   const { data, error, revalidate } = useSWR<{
     username?: string;
@@ -107,7 +114,9 @@ const UserGeneralSettings: React.FC = () => {
           return (
             <Form className="section">
               <div className="form-row">
-                <div className="text-label">Account Type</div>
+                <div className="text-label">
+                  {intl.formatMessage(messages.accounttype)}
+                </div>
                 <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex items-center max-w-lg">
                     {user?.userType === UserType.PLEX ? (
@@ -123,11 +132,25 @@ const UserGeneralSettings: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
+                <div className="text-label">
+                  {intl.formatMessage(messages.role)}
+                </div>
+                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                  <div className="flex items-center max-w-lg">
+                    {user?.id === 1
+                      ? intl.formatMessage(messages.owner)
+                      : hasPermission(Permission.ADMIN)
+                      ? intl.formatMessage(messages.admin)
+                      : intl.formatMessage(messages.user)}
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
                 <label htmlFor="displayName" className="text-label">
                   {intl.formatMessage(messages.displayName)}
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       id="displayName"
                       name="displayName"
@@ -164,7 +187,7 @@ const UserGeneralSettings: React.FC = () => {
                   </span>
                 </label>
                 <div className="form-input">
-                  <div className="flex max-w-lg rounded-md shadow-sm">
+                  <div className="form-input-field">
                     <Field
                       as="select"
                       id="originalLanguage"

@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
+import { canMakePermissionsChange } from '.';
 import { User } from '../../entity/User';
+import { getSettings } from '../../lib/settings';
 import { UserSettings } from '../../entity/UserSettings';
 import {
   UserSettingsGeneralResponse,
@@ -21,6 +23,7 @@ const isOwnProfileOrAdmin = (): Middleware => {
         message: "You do not have permission to view this user's settings.",
       });
     }
+
     next();
   };
   return authMiddleware;
@@ -68,6 +71,14 @@ userSettingsRoutes.post<
 
     if (!user) {
       return next({ status: 404, message: 'User not found.' });
+    }
+
+    // "Owner" user settings cannot be modified by other users
+    if (user.id === 1 && req.user?.id !== 1) {
+      return next({
+        status: 403,
+        message: "You do not have permission to modify this user's settings.",
+      });
     }
 
     user.username = req.body.username;
@@ -137,7 +148,19 @@ userSettingsRoutes.post<
     if (req.body.newPassword.length < 8) {
       return next({
         status: 400,
-        message: 'Password must be at least 8 characters',
+        message: 'Password must be at least 8 characters.',
+      });
+    }
+
+    if (
+      (user.id === 1 && req.user?.id !== 1) ||
+      (user.hasPermission(Permission.ADMIN) &&
+        user.id !== req.user?.id &&
+        req.user?.id !== 1)
+    ) {
+      return next({
+        status: 403,
+        message: "You do not have permission to modify this user's password.",
       });
     }
 
@@ -184,6 +207,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
     const userRepository = getRepository(User);
+    const settings = getSettings();
 
     try {
       const user = await userRepository.findOne({
@@ -196,7 +220,12 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
 
       return res.status(200).json({
         enableNotifications: user.settings?.enableNotifications ?? true,
+        telegramBotUsername:
+          settings?.notifications.agents.telegram.options.botUsername,
         discordId: user.settings?.discordId,
+        telegramChatId: user.settings?.telegramChatId,
+        telegramSendSilently: user?.settings?.telegramSendSilently,
+        pgpKey: user?.settings?.pgpKey,
       });
     } catch (e) {
       next({ status: 500, message: e.message });
@@ -220,15 +249,29 @@ userSettingsRoutes.post<
       return next({ status: 404, message: 'User not found.' });
     }
 
+    // "Owner" user settings cannot be modified by other users
+    if (user.id === 1 && req.user?.id !== 1) {
+      return next({
+        status: 403,
+        message: "You do not have permission to modify this user's settings.",
+      });
+    }
+
     if (!user.settings) {
       user.settings = new UserSettings({
         user: req.user,
         enableNotifications: req.body.enableNotifications,
         discordId: req.body.discordId,
+        telegramChatId: req.body.telegramChatId,
+        telegramSendSilently: req.body.telegramSendSilently,
+        pgpKey: req.body.pgpKey,
       });
     } else {
       user.settings.enableNotifications = req.body.enableNotifications;
       user.settings.discordId = req.body.discordId;
+      user.settings.telegramChatId = req.body.telegramChatId;
+      user.settings.telegramSendSilently = req.body.telegramSendSilently;
+      user.settings.pgpKey = req.body.pgpKey;
     }
 
     userRepository.save(user);
@@ -236,6 +279,9 @@ userSettingsRoutes.post<
     return res.status(200).json({
       enableNotifications: user.settings.enableNotifications,
       discordId: user.settings.discordId,
+      telegramChatId: user.settings.telegramChatId,
+      telegramSendSilently: user.settings.telegramSendSilently,
+      pgpKey: user.settings.pgpKey,
     });
   } catch (e) {
     next({ status: 500, message: e.message });
@@ -283,13 +329,20 @@ userSettingsRoutes.post<
         return next({ status: 404, message: 'User not found.' });
       }
 
-      if (user.id === 1) {
+      // "Owner" user permissions cannot be modified, and users cannot set their own permissions
+      if (user.id === 1 || req.user?.id === user.id) {
         return next({
-          status: 500,
-          message: 'Permissions for user with ID 1 cannot be modified',
+          status: 403,
+          message: 'You do not have permission to modify this user',
         });
       }
 
+      if (!canMakePermissionsChange(req.body.permissions, req.user)) {
+        return next({
+          status: 403,
+          message: 'You do not have permission to grant this level of access',
+        });
+      }
       user.permissions = req.body.permissions;
 
       await userRepository.save(user);
