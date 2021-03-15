@@ -8,6 +8,9 @@ import { getSettings } from '../lib/settings';
 import { User } from '../entity/User';
 import { mapProductionCompany } from '../models/Movie';
 import { mapNetwork } from '../models/Tv';
+import logger from '../logger';
+import { sortBy } from 'lodash';
+import { GenreSliderItem } from '../interfaces/api/discoverInterfaces';
 
 const createTmdbWithRegionLanaguage = (user?: User): TheMovieDb => {
   const settings = getSettings();
@@ -479,6 +482,88 @@ discoverRoutes.get<{ keywordId: string }>(
         )
       ),
     });
+  }
+);
+
+discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
+  '/genreslider/movie',
+  async (req, res, next) => {
+    const tmdb = new TheMovieDb();
+
+    try {
+      const mappedGenres: GenreSliderItem[] = [];
+
+      const genres = await tmdb.getMovieGenres({
+        language: req.query.language as string,
+      });
+
+      await Promise.all(
+        genres.map(async (genre) => {
+          const genreData = await tmdb.getDiscoverMovies({ genre: genre.id });
+
+          mappedGenres.push({
+            id: genre.id,
+            name: genre.name,
+            backdrops: genreData.results
+              .filter((title) => !!title.backdrop_path)
+              .map((title) => title.backdrop_path) as string[],
+          });
+        })
+      );
+
+      const sortedData = sortBy(mappedGenres, 'name');
+
+      return res.status(200).json(sortedData);
+    } catch (e) {
+      logger.error('Something went wrong retrieving the movie genre slider', {
+        errorMessage: e.message,
+      });
+      return next({
+        status: 500,
+        message: 'Unable to retrieve movie genre slider.',
+      });
+    }
+  }
+);
+
+discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
+  '/genreslider/tv',
+  async (req, res, next) => {
+    const tmdb = new TheMovieDb();
+
+    try {
+      const mappedGenres: GenreSliderItem[] = [];
+
+      const genres = await tmdb.getTvGenres({
+        language: req.query.language as string,
+      });
+
+      await Promise.all(
+        genres.map(async (genre) => {
+          const genreData = await tmdb.getDiscoverTv({ genre: genre.id });
+
+          mappedGenres.push({
+            id: genre.id,
+            name: genre.name,
+            backdrops: genreData.results
+              .filter((title) => !!title.backdrop_path)
+              .map((title) => title.backdrop_path) as string[],
+          });
+        })
+      );
+
+      const sortedData = sortBy(mappedGenres, 'name');
+
+      return res.status(200).json(sortedData);
+    } catch (e) {
+      logger.error('Something went wrong retrieving the tv genre slider', {
+        errorMessage: e.message,
+      });
+      return next({
+        status: 500,
+        message: 'Unable to retrieve tv genre slider.',
+      });
+    }
   }
 );
 

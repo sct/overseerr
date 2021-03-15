@@ -11,6 +11,8 @@ import MediaSlider from '../MediaSlider';
 import PageTitle from '../Common/PageTitle';
 import StudioSlider from './StudioSlider';
 import NetworkSlider from './NetworkSlider';
+import MovieGenreSlider from './MovieGenreSlider';
+import TvGenreSlider from './TvGenreSlider';
 
 const messages = defineMessages({
   discover: 'Discover',
@@ -104,6 +106,7 @@ const Discover: React.FC = () => {
         url="/api/v1/discover/movies"
         linkUrl="/discover/movies"
       />
+      <MovieGenreSlider />
       <MediaSlider
         sliderKey="upcoming"
         title={intl.formatMessage(messages.upcoming)}
@@ -117,6 +120,7 @@ const Discover: React.FC = () => {
         url="/api/v1/discover/tv"
         linkUrl="/discover/tv"
       />
+      <TvGenreSlider />
       <MediaSlider
         sliderKey="upcoming-tv"
         title={intl.formatMessage(messages.upcomingtv)}
