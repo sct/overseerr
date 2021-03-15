@@ -3780,6 +3780,70 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MovieResult'
+  /discover/genreslider/movie:
+    get:
+      summary: Get genre slider data for movies
+      description: Returns a list of genres with backdrops attached
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Genre slider data returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    backdrops:
+                      type: array
+                      items:
+                        type: string
+                    name:
+                      type: string
+                      example: Genre Name
+  /discover/genreslider/tv:
+    get:
+      summary: Get genre slider data for TV series
+      description: Returns a list of genres with backdrops attached
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Genre slider data returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    backdrops:
+                      type: array
+                      items:
+                        type: string
+                    name:
+                      type: string
+                      example: Genre Name
   /request:
     get:
       summary: Get all requests
