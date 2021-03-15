@@ -11,6 +11,7 @@ import MediaSlider from '../MediaSlider';
 import PageTitle from '../Common/PageTitle';
 import StudioSlider from './StudioSlider';
 import NetworkSlider from './NetworkSlider';
+import GenreSlider from './GenreSlider';
 
 const messages = defineMessages({
   discover: 'Discover',
@@ -98,6 +99,7 @@ const Discover: React.FC = () => {
         url="/api/v1/discover/trending"
         linkUrl="/discover/trending"
       />
+      <GenreSlider />
       <MediaSlider
         sliderKey="popular-movies"
         title={intl.formatMessage(messages.popularmovies)}
