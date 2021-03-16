@@ -2,7 +2,7 @@ import React, { ReactNode, useRef } from 'react';
 import Transition from '../../Transition';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import { useUser, Permission } from '../../../hooks/useUser';
 import useClickOutside from '../../../hooks/useClickOutside';
 
@@ -119,6 +119,7 @@ const SidebarLinks: SidebarLinkProps[] = [
 const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
   const navRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const intl = useIntl();
   const { hasPermission } = useUser();
   useClickOutside(navRef, () => setClosed());
   return (
@@ -212,9 +213,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                               `}
                             >
                               {sidebarLink.svgIcon}
-                              <FormattedMessage
-                                {...messages[sidebarLink.messagesKey]}
-                              />
+                              {intl.formatMessage(
+                                messages[sidebarLink.messagesKey]
+                              )}
                             </a>
                           </Link>
                         );
@@ -266,9 +267,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                               `}
                       >
                         {sidebarLink.svgIcon}
-                        <FormattedMessage
-                          {...messages[sidebarLink.messagesKey]}
-                        />
+                        {intl.formatMessage(messages[sidebarLink.messagesKey])}
                       </a>
                     </Link>
                   );

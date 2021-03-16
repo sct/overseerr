@@ -12,13 +12,13 @@ const messages = defineMessages({
   createsonarr: 'Add New Sonarr Server',
   editsonarr: 'Edit Sonarr Server',
   validationNameRequired: 'You must provide a server name',
-  validationHostnameRequired: 'You must provide a hostname/IP',
-  validationPortRequired: 'You must provide a port',
+  validationHostnameRequired: 'You must provide a hostname or IP address',
+  validationPortRequired: 'You must provide a valid port number',
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
   validationProfileRequired: 'You must select a quality profile',
   validationLanguageProfileRequired: 'You must select a language profile',
-  toastSonarrTestSuccess: 'Sonarr connection established!',
+  toastSonarrTestSuccess: 'Sonarr connection established successfully!',
   toastSonarrTestFailure: 'Failed to connect to Sonarr.',
   saving: 'Saving…',
   save: 'Save Changes',
@@ -28,7 +28,7 @@ const messages = defineMessages({
   defaultserver: 'Default Server',
   servername: 'Server Name',
   servernamePlaceholder: 'A Sonarr Server',
-  hostname: 'Hostname',
+  hostname: 'Hostname or IP Address',
   port: 'Port',
   ssl: 'SSL',
   apiKey: 'API Key',
@@ -109,9 +109,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
         /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
         intl.formatMessage(messages.validationHostnameRequired)
       ),
-    port: Yup.number().required(
-      intl.formatMessage(messages.validationPortRequired)
-    ),
+    port: Yup.number()
+      .typeError(intl.formatMessage(messages.validationPortRequired))
+      .required(intl.formatMessage(messages.validationPortRequired)),
     apiKey: Yup.string().required(
       intl.formatMessage(messages.validationApiKeyRequired)
     ),

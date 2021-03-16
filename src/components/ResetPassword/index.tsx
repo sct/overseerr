@@ -10,16 +10,16 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 const messages = defineMessages({
-  resetpassword: 'Reset Password',
+  passwordreset: 'Password Reset',
+  resetpassword: 'Reset your password',
   password: 'Password',
   confirmpassword: 'Confirm Password',
   validationpasswordrequired: 'You must provide a password',
-  validationpasswordmatch: 'Password must match',
+  validationpasswordmatch: 'Passwords must match',
   validationpasswordminchars:
     'Password is too short; should be a minimum of 8 characters',
-  gobacklogin: 'Go Back to Sign-In Page',
-  resetpasswordsuccessmessage:
-    'If the link is valid and is connected to a user then the password has been reset.',
+  gobacklogin: 'Return to Sign-In Page',
+  resetpasswordsuccessmessage: 'Password reset successfully!',
 });
 
 const ResetPassword: React.FC = () => {
@@ -60,11 +60,7 @@ const ResetPassword: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
-        <img
-          src="/logo.png"
-          className="w-auto mx-auto max-h-32"
-          alt="Overseerr Logo"
-        />
+        <img src="/logo.png" className="max-w-full" alt="Logo" />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
           {intl.formatMessage(messages.resetpassword)}
         </h2>

@@ -7,7 +7,7 @@ import SettingsServices from '../Settings/SettingsServices';
 import LoginWithPlex from './LoginWithPlex';
 import SetupSteps from './SetupSteps';
 import axios from 'axios';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import Badge from '../Common/Badge';
 import LanguagePicker from '../Layout/LanguagePicker';
 import PageTitle from '../Common/PageTitle';
@@ -63,11 +63,7 @@ const Setup: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
-        <img
-          src="/logo.png"
-          className="w-auto mx-auto mb-10 max-h-32"
-          alt="Logo"
-        />
+        <img src="/logo.png" className="max-w-full sm:max-w-md" alt="Logo" />
         <AppDataWarning />
         <nav className="relative z-50">
           <ul
@@ -115,7 +111,7 @@ const Setup: React.FC = () => {
                       disabled={!plexSettingsComplete}
                       onClick={() => setCurrentStep(3)}
                     >
-                      <FormattedMessage {...messages.continue} />
+                      {intl.formatMessage(messages.continue)}
                     </Button>
                   </span>
                 </div>
@@ -133,11 +129,9 @@ const Setup: React.FC = () => {
                       onClick={() => finishSetup()}
                       disabled={isUpdating}
                     >
-                      {isUpdating ? (
-                        <FormattedMessage {...messages.finishing} />
-                      ) : (
-                        <FormattedMessage {...messages.finish} />
-                      )}
+                      {isUpdating
+                        ? intl.formatMessage(messages.finishing)
+                        : intl.formatMessage(messages.finish)}
                     </Button>
                   </span>
                 </div>

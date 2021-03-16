@@ -13,7 +13,7 @@ import Alert from '../../Common/Alert';
 
 const messages = defineMessages({
   settings: 'User Settings',
-  menuGeneralSettings: 'General Settings',
+  menuGeneralSettings: 'General',
   menuChangePass: 'Password',
   menuNotifications: 'Notifications',
   menuPermissions: 'Permissions',
@@ -115,7 +115,9 @@ const UserSettings: React.FC = ({ children }) => {
   if (currentUser?.id !== 1 && user.id === 1) {
     return (
       <>
-        <PageTitle title={intl.formatMessage(messages.settings)} />
+        <PageTitle
+          title={[intl.formatMessage(messages.settings), user.displayName]}
+        />
         <ProfileHeader user={user} isSettingsPage />
         <div className="mt-6">
           <Alert title={intl.formatMessage(messages.unauthorized)} type="error">
@@ -136,7 +138,9 @@ const UserSettings: React.FC = ({ children }) => {
 
   return (
     <>
-      <PageTitle title={intl.formatMessage(messages.settings)} />
+      <PageTitle
+        title={[intl.formatMessage(messages.settings), user.displayName]}
+      />
       <ProfileHeader user={user} isSettingsPage />
       <div className="mt-6">
         <div className="sm:hidden">

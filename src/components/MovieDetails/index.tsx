@@ -1,5 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
-import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import type { MovieDetails as MovieDetailsType } from '../../../server/models/Movie';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
@@ -595,11 +595,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.revenue)}</span>
                 <span className="media-fact-value">
-                  <FormattedNumber
-                    currency="USD"
-                    style="currency"
-                    value={data.revenue}
-                  />
+                  {intl.formatNumber(data.revenue, {
+                    currency: 'USD',
+                    style: 'currency',
+                  })}
                 </span>
               </div>
             )}
@@ -607,11 +606,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.budget)}</span>
                 <span className="media-fact-value">
-                  <FormattedNumber
-                    currency="USD"
-                    style="currency"
-                    value={data.budget}
-                  />
+                  {intl.formatNumber(data.budget, {
+                    currency: 'USD',
+                    style: 'currency',
+                  })}
                 </span>
               </div>
             )}

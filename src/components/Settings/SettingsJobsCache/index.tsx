@@ -15,8 +15,11 @@ import { useToasts } from 'react-toast-notifications';
 import Badge from '../../Common/Badge';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
 import { formatBytes } from '../../../utils/numberHelpers';
+import PageTitle from '../../Common/PageTitle';
 
 const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
+  settings: 'Settings',
+  jobsandcache: 'Jobs & Cache',
   jobs: 'Jobs',
   jobsDescription:
     'Overseerr performs certain maintenance tasks as regularly-scheduled jobs,\
@@ -118,6 +121,12 @@ const SettingsJobs: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.jobsandcache),
+          intl.formatMessage(messages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">{intl.formatMessage(messages.jobs)}</h3>
         <p className="description">

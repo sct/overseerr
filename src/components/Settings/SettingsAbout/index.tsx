@@ -4,18 +4,20 @@ import Error from '../../../pages/_error';
 import List from '../../Common/List';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import { SettingsAboutResponse } from '../../../../server/interfaces/api/settingsInterfaces';
-import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import Releases from './Releases';
 import Badge from '../../Common/Badge';
+import PageTitle from '../../Common/PageTitle';
 
 const messages = defineMessages({
+  settings: 'Settings',
+  about: 'About',
   overseerrinformation: 'Overseerr Information',
   version: 'Version',
   totalmedia: 'Total Media',
   totalrequests: 'Total Requests',
   gettingsupport: 'Getting Support',
   githubdiscussions: 'GitHub Discussions',
-  clickheretojoindiscord: 'Click here to join our Discord server.',
   timezone: 'Timezone',
   supportoverseerr: 'Support Overseerr',
   helppaycoffee: 'Help Pay for Coffee',
@@ -39,16 +41,22 @@ const SettingsAbout: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.about),
+          intl.formatMessage(messages.settings),
+        ]}
+      />
       <div className="section">
         <List title={intl.formatMessage(messages.overseerrinformation)}>
           <List.Item title={intl.formatMessage(messages.version)}>
-            {data.version}
+            <code>{data.version}</code>
           </List.Item>
           <List.Item title={intl.formatMessage(messages.totalmedia)}>
-            <FormattedNumber value={data.totalMediaItems} />
+            {intl.formatNumber(data.totalMediaItems)}
           </List.Item>
           <List.Item title={intl.formatMessage(messages.totalrequests)}>
-            <FormattedNumber value={data.totalRequests} />
+            {intl.formatNumber(data.totalRequests)}
           </List.Item>
           {data.tz && (
             <List.Item title={intl.formatMessage(messages.timezone)}>
@@ -86,7 +94,7 @@ const SettingsAbout: React.FC = () => {
               rel="noreferrer"
               className="text-indigo-500 hover:underline"
             >
-              {intl.formatMessage(messages.clickheretojoindiscord)}
+              https://discord.gg/PkCWJSeCk7
             </a>
           </List.Item>
         </List>

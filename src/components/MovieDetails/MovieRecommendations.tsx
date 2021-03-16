@@ -6,21 +6,20 @@ import { useRouter } from 'next/router';
 import Header from '../Common/Header';
 import type { MovieDetails } from '../../../server/models/Movie';
 import { LanguageContext } from '../../context/LanguageContext';
-import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
 import useDiscover from '../../hooks/useDiscover';
 import Error from '../../pages/_error';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
-  recommendationssubtext: 'If you liked {title}, you might also like…',
 });
 
 const MovieRecommendations: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
   const { locale } = useContext(LanguageContext);
-  const { data: movieData, error: movieError } = useSWR<MovieDetails>(
+  const { data: movieData } = useSWR<MovieDetails>(
     `/api/v1/movie/${router.query.movieId}?language=${locale}`
   );
   const {
@@ -45,16 +44,8 @@ const MovieRecommendations: React.FC = () => {
         title={[intl.formatMessage(messages.recommendations), movieData?.title]}
       />
       <div className="mt-1 mb-5">
-        <Header
-          subtext={
-            movieData && !movieError
-              ? intl.formatMessage(messages.recommendationssubtext, {
-                  title: movieData.title,
-                })
-              : ''
-          }
-        >
-          <FormattedMessage {...messages.recommendations} />
+        <Header subtext={movieData?.title}>
+          {intl.formatMessage(messages.recommendations)}
         </Header>
       </div>
       <ListView

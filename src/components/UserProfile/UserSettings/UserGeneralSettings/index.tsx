@@ -15,6 +15,8 @@ import LoadingSpinner from '../../../Common/LoadingSpinner';
 import RegionSelector from '../../../RegionSelector';
 
 const messages = defineMessages({
+  settings: 'User Settings',
+  general: 'General',
   generalsettings: 'General Settings',
   displayName: 'Display Name',
   save: 'Save Changes',
@@ -26,14 +28,12 @@ const messages = defineMessages({
   owner: 'Owner',
   admin: 'Admin',
   user: 'User',
-  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsSuccess: 'Settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   region: 'Discover Region',
-  regionTip:
-    'Filter content by region (only applies to the "Popular" and "Upcoming" categories)',
+  regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
-  originallanguageTip:
-    'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
+  originallanguageTip: 'Filter content by original language',
   originalLanguageDefault: 'All Languages',
   languageServerDefault: 'Default ({language})',
 });

@@ -9,9 +9,11 @@ import Error from '../../../pages/_error';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
+import PageTitle from '../../Common/PageTitle';
 import Table from '../../Common/Table';
 
 const messages = defineMessages({
+  settings: 'Settings',
   logs: 'Logs',
   logsDescription:
     'You can also view these logs directly via <code>stdout</code>, or in <code>{configDir}/logs/overseerr.log</code>.',
@@ -93,6 +95,12 @@ const SettingsLogs: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.logs),
+          intl.formatMessage(messages.settings),
+        ]}
+      />
       <div className="mb-2">
         <h3 className="heading">{intl.formatMessage(messages.logs)}</h3>
         <p className="description">

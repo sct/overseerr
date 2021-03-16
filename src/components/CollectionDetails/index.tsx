@@ -36,7 +36,7 @@ const messages = defineMessages({
   requestcollection4k: 'Request Collection in 4K',
   requestswillbecreated4k:
     'The following titles will have 4K requests created for them:',
-  requestSuccess: '<strong>{title}</strong> successfully requested!',
+  requestSuccess: '<strong>{title}</strong> requested successfully!',
 });
 
 interface CollectionDetailsProps {

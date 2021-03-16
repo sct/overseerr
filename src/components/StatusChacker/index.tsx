@@ -5,10 +5,10 @@ import Modal from '../Common/Modal';
 import Transition from '../Transition';
 
 const messages = defineMessages({
-  newversionavailable: 'New Version Available',
+  newversionavailable: 'Application Update',
   newversionDescription:
-    'An update is now available. Click the button below to reload the application.',
-  reloadOverseerr: 'Reload Overseerr',
+    'Overseerr has been updated! Please click the button below to reload the page.',
+  reloadOverseerr: 'Reload',
 });
 
 const StatusChecker: React.FC = () => {

@@ -6,7 +6,7 @@ import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   settings: 'Settings',
-  menuGeneralSettings: 'General Settings',
+  menuGeneralSettings: 'General',
   menuUsers: 'Users',
   menuPlexSettings: 'Plex',
   menuServices: 'Services',

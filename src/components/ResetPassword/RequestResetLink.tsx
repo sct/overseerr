@@ -7,13 +7,15 @@ import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import Link from 'next/link';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
-  forgotpassword: 'Forgot Your Password?',
-  emailresetlink: 'Email Me a Recovery Link',
+  passwordreset: 'Password Reset',
+  resetpassword: 'Reset your password',
+  emailresetlink: 'Email a Recovery Link',
   email: 'Email',
   validationemailrequired: 'You must provide a valid email address',
-  gobacklogin: 'Go Back to Sign-In Page',
+  gobacklogin: 'Return to Sign-In Page',
   requestresetlinksuccessmessage:
     'A password reset link will be sent to the provided email address if it is associated with a valid user.',
 });
@@ -30,6 +32,7 @@ const ResetPassword: React.FC = () => {
 
   return (
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
+      <PageTitle title={intl.formatMessage(messages.passwordreset)} />
       <ImageFader
         backgroundImages={[
           '/images/rotate1.jpg',
@@ -44,13 +47,9 @@ const ResetPassword: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
-        <img
-          src="/logo.png"
-          className="w-auto mx-auto max-h-32"
-          alt="Overseerr Logo"
-        />
+        <img src="/logo.png" className="max-w-full" alt="Logo" />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
-          {intl.formatMessage(messages.forgotpassword)}
+          {intl.formatMessage(messages.resetpassword)}
         </h2>
       </div>
       <div className="relative z-50 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
