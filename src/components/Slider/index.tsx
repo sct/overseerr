@@ -163,9 +163,7 @@ const Slider: React.FC<SliderProps> = ({
       <div className="absolute right-0 flex -mt-10 text-gray-400">
         <button
           className={`${
-            scrollPos.isStart
-              ? 'cursor-not-allowed text-gray-800'
-              : 'hover:text-white'
+            scrollPos.isStart ? 'text-gray-800' : 'hover:text-white'
           }`}
           onClick={() => slide(Direction.LEFT)}
           disabled={scrollPos.isStart}
@@ -187,9 +185,7 @@ const Slider: React.FC<SliderProps> = ({
         </button>
         <button
           className={`${
-            scrollPos.isEnd
-              ? 'cursor-not-allowed text-gray-800'
-              : 'hover:text-white'
+            scrollPos.isEnd ? 'text-gray-800' : 'hover:text-white'
           }`}
           onClick={() => slide(Direction.RIGHT)}
           disabled={scrollPos.isEnd}
