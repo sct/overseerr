@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import fs from 'fs';
 import { merge, omit } from 'lodash';
 import path from 'path';
@@ -24,7 +25,6 @@ import { getAppVersion } from '../../utils/appVersion';
 import notificationRoutes from './notifications';
 import radarrRoutes from './radarr';
 import sonarrRoutes from './sonarr';
-import rateLimit from 'express-rate-limit';
 
 const settingsRoutes = Router();
 
