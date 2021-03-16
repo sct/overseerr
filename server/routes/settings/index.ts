@@ -24,6 +24,7 @@ import { getAppVersion } from '../../utils/appVersion';
 import notificationRoutes from './notifications';
 import radarrRoutes from './radarr';
 import sonarrRoutes from './sonarr';
+import rateLimit from 'express-rate-limit';
 
 const settingsRoutes = Router();
 
@@ -230,76 +231,80 @@ settingsRoutes.post('/plex/sync', (req, res) => {
   return res.status(200).json(plexFullScanner.status());
 });
 
-settingsRoutes.get('/logs', (req, res, next) => {
-  const pageSize = req.query.take ? Number(req.query.take) : 25;
-  const skip = req.query.skip ? Number(req.query.skip) : 0;
+settingsRoutes.get(
+  '/logs',
+  rateLimit({ windowMs: 60 * 1000, max: 50 }),
+  (req, res, next) => {
+    const pageSize = req.query.take ? Number(req.query.take) : 25;
+    const skip = req.query.skip ? Number(req.query.skip) : 0;
 
-  let filter: string[] = [];
-  switch (req.query.filter) {
-    case 'debug':
-      filter.push('debug');
-    // falls through
-    case 'info':
-      filter.push('info');
-    // falls through
-    case 'warn':
-      filter.push('warn');
-    // falls through
-    case 'error':
-      filter.push('error');
-      break;
-    default:
-      filter = ['debug', 'info', 'warn', 'error'];
-  }
+    let filter: string[] = [];
+    switch (req.query.filter) {
+      case 'debug':
+        filter.push('debug');
+      // falls through
+      case 'info':
+        filter.push('info');
+      // falls through
+      case 'warn':
+        filter.push('warn');
+      // falls through
+      case 'error':
+        filter.push('error');
+        break;
+      default:
+        filter = ['debug', 'info', 'warn', 'error'];
+    }
 
-  const logFile = process.env.CONFIG_DIRECTORY
-    ? `${process.env.CONFIG_DIRECTORY}/logs/overseerr.log`
-    : path.join(__dirname, '../../../config/logs/overseerr.log');
-  const logs: LogMessage[] = [];
+    const logFile = process.env.CONFIG_DIRECTORY
+      ? `${process.env.CONFIG_DIRECTORY}/logs/overseerr.log`
+      : path.join(__dirname, '../../../config/logs/overseerr.log');
+    const logs: LogMessage[] = [];
 
-  try {
-    fs.readFileSync(logFile)
-      .toString()
-      .split('\n')
-      .forEach((line) => {
-        if (!line.length) return;
+    try {
+      fs.readFileSync(logFile)
+        .toString()
+        .split('\n')
+        .forEach((line) => {
+          if (!line.length) return;
 
-        const timestamp = line.match(new RegExp(/^.{24}/)) || [];
-        const level = line.match(new RegExp(/\s\[\w+\]/)) || [];
-        const label = line.match(new RegExp(/[^\s]\[\w+\s*\w*\]/)) || [];
-        const message = line.match(new RegExp(/:\s.*/)) || [];
+          const timestamp = line.match(new RegExp(/^.{24}/)) || [];
+          const level = line.match(new RegExp(/\s\[\w+\]/)) || [];
+          const label = line.match(new RegExp(/[^\s]\[\w+\s*\w*\]/)) || [];
+          const message = line.match(new RegExp(/:\s.*/)) || [];
 
-        logs.push({
-          timestamp: timestamp[0],
-          level: level.length ? level[0].slice(2, -1) : '',
-          label: label.length ? label[0].slice(2, -1) : '',
-          message: message.length ? message[0].slice(2, -1) : '',
+          logs.push({
+            timestamp: timestamp[0],
+            level: level.length ? level[0].slice(2, -1) : '',
+            label: label.length ? label[0].slice(2, -1) : '',
+            message: message.length ? message[0].slice(2, -1) : '',
+          });
         });
+
+      const filteredLogs = logs
+        .filter((row) => filter.includes(row.level))
+        .reverse();
+
+      const displayedLogs = filteredLogs.slice(skip, skip + pageSize);
+
+      return res.status(200).json({
+        pageInfo: {
+          pages: Math.ceil(filteredLogs.length / pageSize),
+          pageSize,
+          results: filteredLogs.length,
+          page: Math.ceil(skip / pageSize) + 1,
+        },
+        results: displayedLogs,
+      } as LogsResultsResponse);
+    } catch (error) {
+      logger.error(error.message, { label: 'Settings Router' });
+      return next({
+        status: 500,
+        message: 'Something went wrong while fetching the logs',
       });
-
-    const filteredLogs = logs
-      .filter((row) => filter.includes(row.level))
-      .reverse();
-
-    const displayedLogs = filteredLogs.slice(skip, skip + pageSize);
-
-    return res.status(200).json({
-      pageInfo: {
-        pages: Math.ceil(filteredLogs.length / pageSize),
-        pageSize,
-        results: filteredLogs.length,
-        page: Math.ceil(skip / pageSize) + 1,
-      },
-      results: displayedLogs,
-    } as LogsResultsResponse);
-  } catch (error) {
-    logger.error(error.message, { label: 'Settings Router' });
-    return next({
-      status: 500,
-      message: 'Something went wrong while fetching the logs',
-    });
+    }
   }
-});
+);
 
 settingsRoutes.get('/jobs', (_req, res) => {
   return res.status(200).json(
