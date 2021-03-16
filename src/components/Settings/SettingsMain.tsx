@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import type { MainSettings, Language } from '../../../server/lib/settings';
@@ -93,6 +93,25 @@ const SettingsMain: React.FC = () => {
       });
     }
   };
+
+  const sortedLanguages = useMemo(
+    () =>
+      languages?.sort((lang1, lang2) => {
+        const lang1Name =
+          intl.formatDisplayName(lang1.iso_639_1, {
+            type: 'language',
+            fallback: 'none',
+          }) ?? lang1.english_name;
+        const lang2Name =
+          intl.formatDisplayName(lang2.iso_639_1, {
+            type: 'language',
+            fallback: 'none',
+          }) ?? lang2.english_name;
+
+        return lang1Name === lang2Name ? 0 : lang1Name > lang2Name ? 1 : -1;
+      }),
+    [intl, languages]
+  );
 
   if (!data && !error && !languages && !languagesError) {
     return <LoadingSpinner />;
@@ -306,7 +325,7 @@ const SettingsMain: React.FC = () => {
                         <option value="">
                           {intl.formatMessage(messages.originalLanguageDefault)}
                         </option>
-                        {languages?.map((language) => (
+                        {sortedLanguages?.map((language) => (
                           <option
                             key={`language-key-${language.iso_639_1}`}
                             value={language.iso_639_1}

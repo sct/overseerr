@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -54,6 +54,25 @@ const UserGeneralSettings: React.FC = () => {
 
   const { data: languages, error: languagesError } = useSWR<Language[]>(
     '/api/v1/languages'
+  );
+
+  const sortedLanguages = useMemo(
+    () =>
+      languages?.sort((lang1, lang2) => {
+        const lang1Name =
+          intl.formatDisplayName(lang1.iso_639_1, {
+            type: 'language',
+            fallback: 'none',
+          }) ?? lang1.english_name;
+        const lang2Name =
+          intl.formatDisplayName(lang2.iso_639_1, {
+            type: 'language',
+            fallback: 'none',
+          }) ?? lang2.english_name;
+
+        return lang1Name === lang2Name ? 0 : lang1Name > lang2Name ? 1 : -1;
+      }),
+    [intl, languages]
   );
 
   if (!data && !error) {
@@ -211,7 +230,7 @@ const UserGeneralSettings: React.FC = () => {
                       <option value="all">
                         {intl.formatMessage(messages.originalLanguageDefault)}
                       </option>
-                      {languages?.map((language) => (
+                      {sortedLanguages?.map((language) => (
                         <option
                           key={`language-key-${language.iso_639_1}`}
                           value={language.iso_639_1}

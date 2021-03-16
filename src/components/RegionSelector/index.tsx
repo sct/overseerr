@@ -38,6 +38,29 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     []
   );
 
+  const sortedRegions = useMemo(
+    () =>
+      regions?.sort((region1, region2) => {
+        const region1Name =
+          intl.formatDisplayName(region1.iso_3166_1, {
+            type: 'region',
+            fallback: 'none',
+          }) ?? region1.english_name;
+        const region2Name =
+          intl.formatDisplayName(region2.iso_3166_1, {
+            type: 'region',
+            fallback: 'none',
+          }) ?? region2.english_name;
+
+        return region1Name === region2Name
+          ? 0
+          : region1Name > region2Name
+          ? 1
+          : -1;
+      }),
+    [intl, regions]
+  );
+
   const defaultRegionNameFallback =
     regions?.find((region) => region.iso_3166_1 === currentSettings.region)
       ?.english_name ?? currentSettings.region;
@@ -228,7 +251,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                       </div>
                     )}
                   </Listbox.Option>
-                  {regions?.map((region) => (
+                  {sortedRegions?.map((region) => (
                     <Listbox.Option key={region.iso_3166_1} value={region}>
                       {({ selected, active }) => (
                         <div
