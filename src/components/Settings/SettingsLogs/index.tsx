@@ -131,7 +131,6 @@ const SettingsLogs: React.FC = () => {
             </div>
           </div>
         </div>
-        {/* {data && data} */}
         <Table>
           <thead>
             <tr>
