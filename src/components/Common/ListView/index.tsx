@@ -37,7 +37,7 @@ const ListView: React.FC<ListViewProps> = ({
           {intl.formatMessage(messages.noresults)}
         </div>
       )}
-      <ul className="cardList">
+      <ul className="cards-vertical">
         {items?.map((title, index) => {
           let titleCard: React.ReactNode;
 

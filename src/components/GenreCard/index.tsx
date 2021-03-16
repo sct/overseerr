@@ -6,15 +6,23 @@ interface GenreCardProps {
   name: string;
   image: string;
   url: string;
+  canExpand?: boolean;
 }
 
-const GenreCard: React.FC<GenreCardProps> = ({ image, url, name }) => {
+const GenreCard: React.FC<GenreCardProps> = ({
+  image,
+  url,
+  name,
+  canExpand = false,
+}) => {
   const [isHovered, setHovered] = useState(false);
 
   return (
     <Link href={url}>
       <a
-        className={`relative flex items-center justify-center h-32 w-56 sm:h-40 sm:w-72 p-8 shadow transition ease-in-out duration-300 cursor-pointer transform-gpu ring-1 ${
+        className={`relative flex items-center justify-center h-32 sm:h-36 ${
+          canExpand ? 'w-full' : 'w-56 sm:w-72'
+        } p-8 shadow transition ease-in-out duration-300 cursor-pointer transform-gpu ring-1 ${
           isHovered
             ? 'bg-gray-700 scale-105 ring-gray-500 bg-opacity-100'
             : 'bg-gray-800 scale-100 ring-gray-700 bg-opacity-80'
