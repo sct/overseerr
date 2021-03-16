@@ -5,10 +5,6 @@ import path from 'path';
 import { getRepository } from 'typeorm';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
-import { scheduledJobs } from '../../job/schedule';
-import { Permission } from '../../lib/permissions';
-import { isAuthenticated } from '../../middleware/auth';
-import { merge, omit } from 'lodash';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
@@ -17,10 +13,10 @@ import {
   LogsResultsResponse,
   SettingsAboutResponse,
 } from '../../interfaces/api/settingsInterfaces';
-import { jobPlexFullSync } from '../../job/plexsync';
 import { scheduledJobs } from '../../job/schedule';
 import cacheManager, { AvailableCacheIds } from '../../lib/cache';
 import { Permission } from '../../lib/permissions';
+import { plexFullScanner } from '../../lib/scanners/plex';
 import { getSettings, Library, MainSettings } from '../../lib/settings';
 import logger from '../../logger';
 import { isAuthenticated } from '../../middleware/auth';
@@ -28,10 +24,6 @@ import { getAppVersion } from '../../utils/appVersion';
 import notificationRoutes from './notifications';
 import radarrRoutes from './radarr';
 import sonarrRoutes from './sonarr';
-import radarrRoutes from './radarr';
-import cacheManager, { AvailableCacheIds } from '../../lib/cache';
-import logger from '../../logger';
-import { plexFullScanner } from '../../lib/scanners/plex';
 
 const settingsRoutes = Router();
 
