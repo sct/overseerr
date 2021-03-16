@@ -72,6 +72,7 @@ export interface MainSettings {
   region: string;
   originalLanguage: string;
   trustProxy: boolean;
+  partialRequestsEnabled: boolean;
 }
 
 interface PublicSettings {
@@ -86,6 +87,7 @@ interface FullPublicSettings extends PublicSettings {
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
+  partialRequestsEnabled: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -199,6 +201,7 @@ class Settings {
         region: '',
         originalLanguage: '',
         trustProxy: false,
+        partialRequestsEnabled: true,
       },
       plex: {
         name: '',
@@ -345,6 +348,7 @@ class Settings {
       ),
       region: this.data.main.region,
       originalLanguage: this.data.main.originalLanguage,
+      partialRequestsEnabled: this.data.main.partialRequestsEnabled,
     };
   }
 
