@@ -60,7 +60,11 @@ const SettingsLogs: React.FC = () => {
 
   const { data: appData } = useSWR('/api/v1/status/appdata');
 
-  if (!data || (!data && !error)) {
+  if (!data && !error) {
+    return <LoadingSpinner />;
+  }
+
+  if (!data) {
     return <LoadingSpinner />;
   }
 
