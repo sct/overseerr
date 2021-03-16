@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import useSWR from 'swr';
-import LoadingSpinner from '../../Common/LoadingSpinner';
 import {
+  defineMessages,
   FormattedDate,
   FormattedTime,
   useIntl,
-  defineMessages,
 } from 'react-intl';
-import Table from '../../Common/Table';
-import Button from '../../Common/Button';
-import Badge from '../../Common/Badge';
+import useSWR from 'swr';
 import { LogsResultsResponse } from '../../../../server/interfaces/api/settingsInterfaces';
+import Badge from '../../Common/Badge';
+import Button from '../../Common/Button';
+import LoadingSpinner from '../../Common/LoadingSpinner';
+import Table from '../../Common/Table';
 
 const messages = defineMessages({
   logs: 'Logs',
@@ -31,6 +31,8 @@ const messages = defineMessages({
   resultsperpage: 'Display {pageSize} results per page',
   next: 'Next',
   previous: 'Previous',
+  pauseLogs: 'Pause Logs',
+  resumeLogs: 'Resume Logs',
 });
 
 type Filter = 'debug' | 'info' | 'warn' | 'error';
@@ -39,24 +41,26 @@ const SettingsLogs: React.FC = () => {
   const intl = useIntl();
   const [pageIndex, setPageIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState<Filter>('debug');
-  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
+  const [currentPageSize, setCurrentPageSize] = useState(25);
+  const [refreshInterval, setRefreshInterval] = useState(5000);
+
+  const toggleLogs = () => {
+    setRefreshInterval(refreshInterval === 5000 ? 0 : 5000);
+  };
 
   const { data, error } = useSWR<LogsResultsResponse>(
     `/api/v1/settings/logs?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&filter=${currentFilter}`,
     {
-      refreshInterval: 5000,
+      refreshInterval: refreshInterval,
+      revalidateOnFocus: false,
     }
   );
 
-  const { data: appDataResponse } = useSWR('/api/v1/status/appdata');
+  const { data: appData } = useSWR('/api/v1/status/appdata');
 
-  if (!data && !error) {
-    return <LoadingSpinner />;
-  }
-
-  if (!data) {
+  if (!data || (!data && !error)) {
     return <LoadingSpinner />;
   }
 
@@ -73,11 +77,20 @@ const SettingsLogs: React.FC = () => {
               code: function code(msg) {
                 return <code className="bg-opacity-50">{msg}</code>;
               },
-              configDir: appDataResponse.appDataPath,
+              configDir: appData.appDataPath,
             })}
           </p>
           <div className="flex justify-end">
             <div className="flex flex-grow mt-4 mb-2 lg:mt-0 sm:mb-0 lg:flex-grow-0">
+              <Button
+                className="mr-2"
+                buttonType="default"
+                onClick={() => toggleLogs()}
+              >
+                {intl.formatMessage(
+                  refreshInterval ? messages.pauseLogs : messages.resumeLogs
+                )}
+              </Button>
               <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
                 <svg
                   className="w-6 h-6"
@@ -118,6 +131,7 @@ const SettingsLogs: React.FC = () => {
             </div>
           </div>
         </div>
+        {/* {data && data} */}
         <Table>
           <thead>
             <tr>

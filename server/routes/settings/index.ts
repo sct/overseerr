@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { getSettings, Library, MainSettings } from '../../lib/settings';
+import fs from 'fs';
+import { merge, omit } from 'lodash';
+import path from 'path';
 import { getRepository } from 'typeorm';
-import { User } from '../../entity/User';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
 import { scheduledJobs } from '../../job/schedule';
@@ -10,12 +11,22 @@ import { isAuthenticated } from '../../middleware/auth';
 import { merge, omit } from 'lodash';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
-import { getAppVersion } from '../../utils/appVersion';
+import { User } from '../../entity/User';
 import {
+  LogMessage,
   LogsResultsResponse,
   SettingsAboutResponse,
 } from '../../interfaces/api/settingsInterfaces';
+import { jobPlexFullSync } from '../../job/plexsync';
+import { scheduledJobs } from '../../job/schedule';
+import cacheManager, { AvailableCacheIds } from '../../lib/cache';
+import { Permission } from '../../lib/permissions';
+import { getSettings, Library, MainSettings } from '../../lib/settings';
+import logger from '../../logger';
+import { isAuthenticated } from '../../middleware/auth';
+import { getAppVersion } from '../../utils/appVersion';
 import notificationRoutes from './notifications';
+import radarrRoutes from './radarr';
 import sonarrRoutes from './sonarr';
 import radarrRoutes from './radarr';
 import cacheManager, { AvailableCacheIds } from '../../lib/cache';
@@ -249,29 +260,34 @@ settingsRoutes.get('/logs', (req, res, next) => {
       filter = ['debug', 'info', 'warn', 'error'];
   }
 
-  const options = {
-    // only get 1000 most recent rows
-    rows: 1000,
-    fields: null,
-  };
+  const logFile = process.env.CONFIG_DIRECTORY
+    ? `${process.env.CONFIG_DIRECTORY}/logs/overseerr.log`
+    : path.join(__dirname, '../../../config/logs/overseerr.log');
+  const logs: LogMessage[] = [];
 
-  logger.query(options, (err, results) => {
-    if (err) {
-      logger.error(err.message);
-      return next({
-        status: 500,
-        message: 'Something went wrong while fetching logs.',
+  try {
+    fs.readFileSync(logFile)
+      .toString()
+      .split('\n')
+      .forEach((line) => {
+        if (!line.length) return;
+
+        const timestamp = line.match(new RegExp(/^.{24}/)) || [];
+        const level = line.match(new RegExp(/\s\[\w+\]/)) || [];
+        const label = line.match(new RegExp(/[^\s]\[\w+\s*\w*\]/)) || [];
+        const message = line.match(new RegExp(/:\s.*/)) || [];
+
+        logs.push({
+          timestamp: timestamp[0],
+          level: level.length ? level[0].slice(2, -1) : '',
+          label: label.length ? label[0].slice(2, -1) : '',
+          message: message.length ? message[0].slice(2, -1) : '',
+        });
       });
-    }
 
-    const filteredLogs = results.file.filter(
-      (row: {
-        timestamp: string;
-        level: string;
-        label: string;
-        message: string;
-      }) => filter.includes(row.level)
-    );
+    const filteredLogs = logs
+      .filter((row) => filter.includes(row.level))
+      .reverse();
 
     const displayedLogs = filteredLogs.slice(skip, skip + pageSize);
 
@@ -284,7 +300,13 @@ settingsRoutes.get('/logs', (req, res, next) => {
       },
       results: displayedLogs,
     } as LogsResultsResponse);
-  });
+  } catch (error) {
+    logger.error(error.message, { label: 'Settings Router' });
+    return next({
+      status: 500,
+      message: 'Something went wrong while fetching the logs',
+    });
+  }
 });
 
 settingsRoutes.get('/jobs', (_req, res) => {

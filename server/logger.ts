@@ -41,14 +41,6 @@ const logger = winston.createLogger({
         hformat
       ),
     }),
-    new winston.transports.File({
-      filename: path.join(__dirname, '../config/logs/tmp.log'),
-      format: winston.format.combine(
-        winston.format.splat(),
-        winston.format.timestamp(),
-        winston.format.json()
-      ),
-    }),
     new winston.transports.DailyRotateFile({
       filename: process.env.CONFIG_DIRECTORY
         ? `${process.env.CONFIG_DIRECTORY}/logs/overseerr-%DATE%.log`
