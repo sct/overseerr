@@ -148,6 +148,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     localLogin: true,
     region: '',
     originalLanguage: '',
+    partialRequestsEnabled: true,
   };
 
   let locale = 'en';
