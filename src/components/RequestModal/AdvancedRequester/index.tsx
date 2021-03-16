@@ -276,15 +276,20 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   onBlur={(e) => setSelectedServer(Number(e.target.value))}
                   className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
                 >
-                  {data.map((server) => (
-                    <option key={`server-list-${server.id}`} value={server.id}>
-                      {server.isDefault && server.is4k === is4k
-                        ? intl.formatMessage(messages.default, {
-                            name: server.name,
-                          })
-                        : server.name}
-                    </option>
-                  ))}
+                  {data
+                    .filter((server) => server.is4k === is4k)
+                    .map((server) => (
+                      <option
+                        key={`server-list-${server.id}`}
+                        value={server.id}
+                      >
+                        {server.isDefault
+                          ? intl.formatMessage(messages.default, {
+                              name: server.name,
+                            })
+                          : server.name}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
