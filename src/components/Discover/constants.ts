@@ -33,30 +33,31 @@ export const colorTones: Record<AvailableColors, [string, string]> = {
 
 export const genreColorMap: Record<number, [string, string]> = {
   0: colorTones.black,
-  28: colorTones.red,
-  12: colorTones.blue,
-  16: colorTones.orange,
-  35: colorTones.lightgreen,
-  80: colorTones.darkblue,
-  99: colorTones.green,
-  18: colorTones.purple,
-  10751: colorTones.yellow,
-  14: colorTones.darkorange,
-  36: colorTones.green,
-  27: colorTones.black,
-  10402: colorTones.blue,
-  9648: colorTones.purple,
-  10749: colorTones.pink,
-  878: colorTones.lightblue,
-  10770: colorTones.red,
-  53: colorTones.darkpurple,
-  10752: colorTones.darkred,
-  37: colorTones.orange,
-  10759: colorTones.blue, // Action & Adventure
+  28: colorTones.red, // Action
+  12: colorTones.darkpurple, // Adventure
+  16: colorTones.blue, // Animation
+  35: colorTones.orange, // Comedy
+  80: colorTones.darkblue, // Crime
+  99: colorTones.lightgreen, // Documentary
+  18: colorTones.pink, // Drama
+  10751: colorTones.yellow, // Family
+  14: colorTones.lightblue, // Fantasy
+  36: colorTones.orange, // History
+  27: colorTones.black, // Horror
+  10402: colorTones.blue, // Music
+  9648: colorTones.purple, // Mystery
+  10749: colorTones.pink, // Romance
+  878: colorTones.lightblue, // Science Fiction
+  10770: colorTones.red, // TV Movie
+  53: colorTones.black, // Thriller
+  10752: colorTones.darkred, // War
+  37: colorTones.orange, // Western
+  10759: colorTones.darkpurple, // Action & Adventure
   10762: colorTones.blue, // Kids
-  10764: colorTones.red, // Reality
+  10763: colorTones.black, // News
+  10764: colorTones.darkorange, // Reality
   10765: colorTones.lightblue, // Sci-Fi & Fantasy
-  10766: colorTones.darkpurple, // Soap
+  10766: colorTones.pink, // Soap
   10767: colorTones.lightgreen, // Talk
   10768: colorTones.darkred, // War & Politics
 };
