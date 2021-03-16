@@ -38,6 +38,29 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     []
   );
 
+  const sortedRegions = useMemo(
+    () =>
+      regions?.sort((region1, region2) => {
+        const region1Name =
+          intl.formatDisplayName(region1.iso_3166_1, {
+            type: 'region',
+            fallback: 'none',
+          }) ?? region1.english_name;
+        const region2Name =
+          intl.formatDisplayName(region2.iso_3166_1, {
+            type: 'region',
+            fallback: 'none',
+          }) ?? region2.english_name;
+
+        return region1Name === region2Name
+          ? 0
+          : region1Name > region2Name
+          ? 1
+          : -1;
+      }),
+    [intl, regions]
+  );
+
   const defaultRegionNameFallback =
     regions?.find((region) => region.iso_3166_1 === currentSettings.region)
       ?.english_name ?? currentSettings.region;
@@ -228,78 +251,59 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                       </div>
                     )}
                   </Listbox.Option>
-                  {regions
-                    ?.sort((region1, region2) => {
-                      const region1Name =
-                        intl.formatDisplayName(region1.iso_3166_1, {
-                          type: 'region',
-                          fallback: 'none',
-                        }) ?? region1.english_name;
-                      const region2Name =
-                        intl.formatDisplayName(region2.iso_3166_1, {
-                          type: 'region',
-                          fallback: 'none',
-                        }) ?? region2.english_name;
-
-                      return region1Name === region2Name
-                        ? 0
-                        : region1Name > region2Name
-                        ? 1
-                        : -1;
-                    })
-                    .map((region) => (
-                      <Listbox.Option key={region.iso_3166_1} value={region}>
-                        {({ selected, active }) => (
-                          <div
+                  {sortedRegions?.map((region) => (
+                    <Listbox.Option key={region.iso_3166_1} value={region}>
+                      {({ selected, active }) => (
+                        <div
+                          className={`${
+                            active
+                              ? 'text-white bg-indigo-600'
+                              : 'text-gray-300'
+                          } cursor-default select-none relative py-2 pl-8 pr-4 flex items-center`}
+                        >
+                          <span className="mr-2 text-base">
+                            <span
+                              className={
+                                hasFlag(region.iso_3166_1)
+                                  ? `flag:${region.iso_3166_1}`
+                                  : 'pr-6'
+                              }
+                            />
+                          </span>
+                          <span
                             className={`${
-                              active
-                                ? 'text-white bg-indigo-600'
-                                : 'text-gray-300'
-                            } cursor-default select-none relative py-2 pl-8 pr-4 flex items-center`}
+                              selected ? 'font-semibold' : 'font-normal'
+                            } block truncate`}
                           >
-                            <span className="mr-2 text-base">
-                              <span
-                                className={
-                                  hasFlag(region.iso_3166_1)
-                                    ? `flag:${region.iso_3166_1}`
-                                    : 'pr-6'
-                                }
-                              />
-                            </span>
+                            {intl.formatDisplayName(region.iso_3166_1, {
+                              type: 'region',
+                              fallback: 'none',
+                            }) ?? region.english_name}
+                          </span>
+                          {selected && (
                             <span
                               className={`${
-                                selected ? 'font-semibold' : 'font-normal'
-                              } block truncate`}
+                                active ? 'text-white' : 'text-indigo-600'
+                              } absolute inset-y-0 left-0 flex items-center pl-1.5`}
                             >
-                              {intl.formatDisplayName(region.iso_3166_1, {
-                                type: 'region',
-                                fallback: 'none',
-                              }) ?? region.english_name}
-                            </span>
-                            {selected && (
-                              <span
-                                className={`${
-                                  active ? 'text-white' : 'text-indigo-600'
-                                } absolute inset-y-0 left-0 flex items-center pl-1.5`}
+                              <svg
+                                className="w-5 h-5"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
                               >
-                                <svg
-                                  className="w-5 h-5"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </Listbox.Option>
-                    ))}
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </Listbox.Option>
+                  ))}
                 </Listbox.Options>
               </Transition>
             </div>
