@@ -60,7 +60,7 @@ const SettingsAbout: React.FC = () => {
           </List.Item>
           {data.tz && (
             <List.Item title={intl.formatMessage(messages.timezone)}>
-              {data.tz}
+              <code>{data.tz}</code>
             </List.Item>
           )}
         </List>
