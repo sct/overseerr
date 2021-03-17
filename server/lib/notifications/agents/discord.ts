@@ -107,7 +107,7 @@ class DiscordAgent
     if (payload.request) {
       fields.push({
         name: 'Requested By',
-        value: payload.notifyUser.displayName ?? '',
+        value: payload.request?.requestedBy.displayName ?? '',
         inline: true,
       });
     }
@@ -217,7 +217,7 @@ class DiscordAgent
       let content = undefined;
 
       if (
-        this.userNotificationTypes.includes(type) &&
+        payload.notifyUser &&
         payload.notifyUser.settings?.enableNotifications &&
         payload.notifyUser.settings?.discordId
       ) {
