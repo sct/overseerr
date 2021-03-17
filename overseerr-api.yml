@@ -2252,37 +2252,6 @@ paths:
       responses:
         '204':
           description: 'Flushed cache'
-  /settings/notifications:
-    get:
-      summary: Return notification settings
-      description: Returns current notification settings in a JSON object.
-      tags:
-        - settings
-      responses:
-        '200':
-          description: Returned settings
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotificationSettings'
-    post:
-      summary: Update notification settings
-      description: Updates notification settings with the provided values.
-      tags:
-        - settings
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NotificationSettings'
-      responses:
-        '200':
-          description: 'Values were sucessfully updated'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotificationSettings'
   /settings/logs:
     get:
       summary: Returns logs
@@ -2321,16 +2290,47 @@ paths:
                   properties:
                     label:
                       type: string
-                      example: SERVER
+                      example: server
                     level:
                       type: string
                       example: info
                     message:
                       type: string
-                      example: Server ready on port 3000
+                      example: Server ready on port 5055
                     timestamp:
                       type: string
                       example: 2020-12-15T16:20:00.069Z
+  /settings/notifications:
+    get:
+      summary: Return notification settings
+      description: Returns current notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSettings'
+    post:
+      summary: Update notification settings
+      description: Updates notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSettings'
   /settings/notifications/email:
     get:
       summary: Get email notification settings

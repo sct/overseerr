@@ -273,31 +273,32 @@ settingsRoutes.get(
           const label = line.match(new RegExp(/[^\s]\[\w+\s*\w*\]/)) || [];
           const message = line.match(new RegExp(/:\s.*/)) || [];
 
-          logs.push({
-            timestamp: timestamp[0],
-            level: level.length ? level[0].slice(2, -1) : '',
-            label: label.length ? label[0].slice(2, -1) : '',
-            message: message.length ? message[0].slice(2, -1) : '',
-          });
+          if (level.length && filter.includes(level[0].slice(2, -1))) {
+            logs.push({
+              timestamp: timestamp[0],
+              level: level.length ? level[0].slice(2, -1) : '',
+              label: label.length ? label[0].slice(2, -1) : '',
+              message: message.length ? message[0].slice(2) : '',
+            });
+          }
         });
 
-      const filteredLogs = logs
-        .filter((row) => filter.includes(row.level))
-        .reverse();
-
-      const displayedLogs = filteredLogs.slice(skip, skip + pageSize);
+      const displayedLogs = logs.reverse().slice(skip, skip + pageSize);
 
       return res.status(200).json({
         pageInfo: {
-          pages: Math.ceil(filteredLogs.length / pageSize),
+          pages: Math.ceil(logs.length / pageSize),
           pageSize,
-          results: filteredLogs.length,
+          results: logs.length,
           page: Math.ceil(skip / pageSize) + 1,
         },
         results: displayedLogs,
       } as LogsResultsResponse);
     } catch (error) {
-      logger.error(error.message, { label: 'Settings Router' });
+      logger.error('Something went wrong while fetching the logs', {
+        label: 'Logs',
+        errorMessage: error.message,
+      });
       return next({
         status: 500,
         message: 'Something went wrong while fetching the logs',

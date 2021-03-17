@@ -5,6 +5,7 @@ import {
   LogMessage,
   LogsResultsResponse,
 } from '../../../../server/interfaces/api/settingsInterfaces';
+import Error from '../../../pages/_error';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
@@ -84,7 +85,7 @@ const SettingsLogs: React.FC = () => {
   }
 
   if (!data) {
-    return <LoadingSpinner />;
+    return <Error statusCode={500} />;
   }
 
   const hasNextPage = data.pageInfo.pages > pageIndex + 1;
@@ -106,7 +107,7 @@ const SettingsLogs: React.FC = () => {
           <div className="flex flex-row justify-between flex-1 mb-2 sm:mb-0 sm:flex-none">
             <Button
               className="flex-grow w-full mr-2 sm:w-24"
-              buttonType={refreshInterval ? 'warning' : 'primary'}
+              buttonType={refreshInterval ? 'default' : 'primary'}
               onClick={() => toggleLogs()}
             >
               {intl.formatMessage(
@@ -179,26 +180,19 @@ const SettingsLogs: React.FC = () => {
                     })}
                   </Table.TD>
                   <Table.TD className="text-gray-300">
-                    {row.level === 'debug' && (
-                      <Badge badgeType="default">
-                        {row.level.toUpperCase()}
-                      </Badge>
-                    )}
-                    {row.level === 'info' && (
-                      <Badge badgeType="success">
-                        {row.level.toUpperCase()}
-                      </Badge>
-                    )}
-                    {row.level === 'warn' && (
-                      <Badge badgeType="warning">
-                        {row.level.toUpperCase()}
-                      </Badge>
-                    )}
-                    {row.level === 'error' && (
-                      <Badge badgeType="danger">
-                        {row.level.toUpperCase()}
-                      </Badge>
-                    )}
+                    <Badge
+                      badgeType={
+                        row.level === 'error'
+                          ? 'danger'
+                          : row.level === 'warn'
+                          ? 'warning'
+                          : row.level === 'info'
+                          ? 'success'
+                          : 'default'
+                      }
+                    >
+                      {row.level.toUpperCase()}
+                    </Badge>
                   </Table.TD>
                   <Table.TD className="text-gray-300">{row.label}</Table.TD>
                   <Table.TD className="text-gray-300">{row.message}</Table.TD>
@@ -265,7 +259,6 @@ const SettingsLogs: React.FC = () => {
                             value={currentPageSize}
                             className="inline short"
                           >
-                            <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
