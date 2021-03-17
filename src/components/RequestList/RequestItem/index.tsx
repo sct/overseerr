@@ -103,7 +103,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title && !error) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-xl lg:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-xl xl:h-32 animate-pulse"
         ref={ref}
       />
     );
@@ -112,7 +112,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title || !requestData) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-xl lg:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-xl xl:h-32 animate-pulse"
         ref={ref}
       />
     );
@@ -132,9 +132,9 @@ const RequestItem: React.FC<RequestItemProps> = ({
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl lg:h-32 lg:flex-row">
+      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl xl:h-32 xl:flex-row">
         <div
-          className="absolute inset-0 z-0 w-full bg-center bg-cover lg:w-2/3"
+          className="absolute inset-0 z-0 w-full bg-center bg-cover xl:w-2/3"
           style={{
             backgroundImage: title.backdropPath
               ? `linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`
@@ -142,7 +142,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
           }}
         />
         <div className="relative flex flex-col justify-between w-full overflow-hidden sm:flex-row">
-          <div className="relative z-10 flex items-center w-full pl-4 pr-4 overflow-hidden lg:w-1/2 xl:w-7/12 2xl:w-2/3 sm:pr-0">
+          <div className="relative z-10 flex items-center w-full pl-4 pr-4 overflow-hidden xl:w-7/12 2xl:w-2/3 sm:pr-0">
             <Link
               href={
                 requestData.type === 'movie'
@@ -150,7 +150,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   : `/tv/${requestData.media.tmdbId}`
               }
             >
-              <a className="flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md lg:w-14 transform-gpu hover:scale-105">
+              <a className="flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md sm:w-14 transform-gpu hover:scale-105">
                 <img
                   src={
                     title.posterPath
@@ -162,7 +162,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 />
               </a>
             </Link>
-            <div className="flex flex-col justify-center pl-2 overflow-hidden lg:pl-4">
+            <div className="flex flex-col justify-center pl-2 overflow-hidden xl:pl-4">
               <div className="card-field">
                 <Link
                   href={
@@ -171,7 +171,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                       : `/tv/${requestData.media.tmdbId}`
                   }
                 >
-                  <a className="min-w-0 mr-2 text-lg text-white truncate lg:text-xl hover:underline">
+                  <a className="min-w-0 mr-2 text-lg text-white truncate xl:text-xl hover:underline">
                     {isMovie(title) ? title.title : title.name}
                   </a>
                 </Link>
@@ -220,7 +220,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               )}
             </div>
           </div>
-          <div className="z-10 flex flex-col justify-between w-full pr-4 mt-4 ml-4 text-sm sm:ml-2 sm:mt-0 lg:flex-1 lg:pr-0">
+          <div className="z-10 flex flex-col justify-center w-full pr-4 mt-4 ml-4 text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">
             <div className="card-field">
               <span className="card-field-name">
                 {intl.formatMessage(messages.status)}
@@ -304,7 +304,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             </div>
           </div>
         </div>
-        <div className="z-10 flex flex-col justify-between w-full pl-4 pr-4 mt-4 space-y-2 lg:mt-0 lg:items-end lg:justify-around lg:w-96 lg:pl-0">
+        <div className="z-10 flex flex-col justify-center w-full pl-4 pr-4 mt-4 space-y-2 xl:mt-0 xl:items-end xl:w-96 xl:pl-0">
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&
