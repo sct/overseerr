@@ -167,7 +167,7 @@ const SettingsLogs: React.FC = () => {
           <Table.TBody>
             {data.results.map((row: LogMessage, index: number) => {
               return (
-                <tr className="" key={`log-list-${index}`}>
+                <tr key={`log-list-${index}`}>
                   <Table.TD className="text-gray-300">
                     {intl.formatDate(row.timestamp, {
                       year: 'numeric',
