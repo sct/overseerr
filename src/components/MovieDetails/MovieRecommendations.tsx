@@ -10,6 +10,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
 import useDiscover from '../../hooks/useDiscover';
 import Error from '../../pages/_error';
+import Link from 'next/link';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
@@ -44,7 +45,13 @@ const MovieRecommendations: React.FC = () => {
         title={[intl.formatMessage(messages.recommendations), movieData?.title]}
       />
       <div className="mt-1 mb-5">
-        <Header subtext={movieData?.title}>
+        <Header
+          subtext={
+            <Link href={`/movie/${movieData?.id}`}>
+              <a className="hover:underline">{movieData?.title}</a>
+            </Link>
+          }
+        >
           {intl.formatMessage(messages.recommendations)}
         </Header>
       </div>

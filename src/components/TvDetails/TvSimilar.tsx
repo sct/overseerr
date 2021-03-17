@@ -10,6 +10,7 @@ import Header from '../Common/Header';
 import PageTitle from '../Common/PageTitle';
 import useDiscover from '../../hooks/useDiscover';
 import Error from '../../pages/_error';
+import Link from 'next/link';
 
 const messages = defineMessages({
   similar: 'Similar Series',
@@ -40,7 +41,13 @@ const TvSimilar: React.FC = () => {
     <>
       <PageTitle title={[intl.formatMessage(messages.similar), tvData?.name]} />
       <div className="mt-1 mb-5">
-        <Header subtext={tvData?.name}>
+        <Header
+          subtext={
+            <Link href={`/tv/${tvData?.id}`}>
+              <a className="hover:underline">{tvData?.name}</a>
+            </Link>
+          }
+        >
           {intl.formatMessage(messages.similar)}
         </Header>
       </div>
