@@ -181,7 +181,7 @@ const SettingsMain: React.FC = () => {
                         <input
                           type="text"
                           id="apiKey"
-                          className="rounded-l-only"
+                          className="cursor-not-allowed rounded-l-only"
                           value={data?.apiKey}
                           readOnly
                         />

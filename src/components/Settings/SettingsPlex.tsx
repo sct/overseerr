@@ -360,6 +360,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       type="text"
                       id="name"
                       name="name"
+                      className="cursor-not-allowed"
                       placeholder={intl.formatMessage(
                         messages.servernamePlaceholder
                       )}
