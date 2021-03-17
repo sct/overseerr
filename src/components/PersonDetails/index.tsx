@@ -110,7 +110,7 @@ const PersonDetails: React.FC = () => {
                 canExpand
               />
               {media.character && (
-                <div className="mt-2 text-xs text-center text-gray-300 truncate w-36 sm:w-36 md:w-44">
+                <div className="w-full mt-2 text-xs text-center text-gray-300 truncate">
                   {intl.formatMessage(messages.ascharacter, {
                     character: media.character,
                   })}
@@ -150,7 +150,7 @@ const PersonDetails: React.FC = () => {
                 canExpand
               />
               {media.job && (
-                <div className="mt-2 text-xs text-center text-gray-300 truncate w-36 sm:w-36 md:w-44">
+                <div className="w-full mt-2 text-xs text-center text-gray-300 truncate">
                   {media.job}
                 </div>
               )}
