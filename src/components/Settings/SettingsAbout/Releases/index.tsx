@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import ReactMarkdownWithHtml from 'react-markdown/with-html';
+import ReactMarkdown from 'react-markdown';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import Alert from '../../../Common/Alert';
 import Badge from '../../../Common/Badge';
@@ -96,9 +96,7 @@ const Release: React.FC<ReleaseProps> = ({
           }}
         >
           <div className="prose">
-            <ReactMarkdownWithHtml allowDangerousHtml>
-              {release.body}
-            </ReactMarkdownWithHtml>
+            <ReactMarkdown>{release.body}</ReactMarkdown>
           </div>
         </Modal>
       </Transition>
