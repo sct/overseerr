@@ -1,3 +1,16 @@
+import type { PaginatedResponse } from './common';
+
+export type LogMessage = {
+  timestamp: string;
+  level: string;
+  label: string;
+  message: string;
+};
+
+export interface LogsResultsResponse extends PaginatedResponse {
+  results: LogMessage[];
+}
+
 export interface SettingsAboutResponse {
   version: string;
   totalRequests: number;
