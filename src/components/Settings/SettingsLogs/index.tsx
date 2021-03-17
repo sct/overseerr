@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
-import {
-  defineMessages,
-  FormattedDate,
-  FormattedTime,
-  useIntl,
-} from 'react-intl';
+import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { LogsResultsResponse } from '../../../../server/interfaces/api/settingsInterfaces';
+import {
+  LogMessage,
+  LogsResultsResponse,
+} from '../../../../server/interfaces/api/settingsInterfaces';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
@@ -15,7 +13,7 @@ import Table from '../../Common/Table';
 const messages = defineMessages({
   logs: 'Logs',
   logsDescription:
-    'You can also view these logs directly via <code>stdout</code>, or in <code>{configDir}/logs/overseerr.log</code>',
+    'You can also view these logs directly via <code>stdout</code>, or in <code>{configDir}/logs/overseerr.log</code>.',
   time: 'Timestamp',
   level: 'Severity',
   label: 'Label',
@@ -31,8 +29,8 @@ const messages = defineMessages({
   resultsperpage: 'Display {pageSize} results per page',
   next: 'Next',
   previous: 'Previous',
-  pauseLogs: 'Pause Logs',
-  resumeLogs: 'Resume Logs',
+  pauseLogs: 'Pause',
+  resumeLogs: 'Resume',
 });
 
 type Filter = 'debug' | 'info' | 'warn' | 'error';
@@ -60,6 +58,27 @@ const SettingsLogs: React.FC = () => {
 
   const { data: appData } = useSWR('/api/v1/status/appdata');
 
+  useEffect(() => {
+    const displayString = window.localStorage.getItem('logs-display-settings');
+
+    if (displayString) {
+      const displaySettings = JSON.parse(displayString);
+
+      setCurrentFilter(displaySettings.currentFilter);
+      setCurrentPageSize(displaySettings.currentPageSize);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      'logs-display-settings',
+      JSON.stringify({
+        currentFilter,
+        currentPageSize,
+      })
+    );
+  }, [currentFilter, currentPageSize]);
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -75,64 +94,64 @@ const SettingsLogs: React.FC = () => {
     <>
       <div className="mb-2">
         <h3 className="heading">{intl.formatMessage(messages.logs)}</h3>
-        <div className="flex flex-col justify-between lg:flex-row">
-          <p className="description">
-            {intl.formatMessage(messages.logsDescription, {
-              code: function code(msg) {
-                return <code className="bg-opacity-50">{msg}</code>;
-              },
-              configDir: appData.appDataPath,
-            })}
-          </p>
-          <div className="flex justify-end">
-            <div className="flex flex-grow mt-4 mb-2 lg:mt-0 sm:mb-0 lg:flex-grow-0">
-              <Button
-                className="mr-2"
-                buttonType="default"
-                onClick={() => toggleLogs()}
+        <p className="description">
+          {intl.formatMessage(messages.logsDescription, {
+            code: function code(msg) {
+              return <code className="bg-opacity-50">{msg}</code>;
+            },
+            configDir: appData ? appData.appDataPath : '/app/config',
+          })}
+        </p>
+        <div className="flex flex-row flex-grow mt-2 sm:flex-grow-0 sm:justify-end">
+          <div className="flex flex-row justify-between flex-1 mb-2 sm:mb-0 sm:flex-none">
+            <Button
+              className="flex-grow w-full mr-2 sm:w-24"
+              buttonType={refreshInterval ? 'warning' : 'primary'}
+              onClick={() => toggleLogs()}
+            >
+              {intl.formatMessage(
+                refreshInterval ? messages.pauseLogs : messages.resumeLogs
+              )}
+            </Button>
+          </div>
+          <div className="flex flex-1 mb-2 sm:mb-0 sm:flex-none">
+            <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
+              <svg
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                {intl.formatMessage(
-                  refreshInterval ? messages.pauseLogs : messages.resumeLogs
-                )}
-              </Button>
-              <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </span>
-              <select
-                id="filter"
-                name="filter"
-                onChange={(e) => {
-                  setPageIndex(0);
-                  setCurrentFilter(e.target.value as Filter);
-                }}
-                value={currentFilter}
-                className="rounded-r-only"
-              >
-                <option value="debug">
-                  {intl.formatMessage(messages.filterDebug)}
-                </option>
-                <option value="info">
-                  {intl.formatMessage(messages.filterInfo)}
-                </option>
-                <option value="warn">
-                  {intl.formatMessage(messages.filterWarn)}
-                </option>
-                <option value="error">
-                  {intl.formatMessage(messages.filterError)}
-                </option>
-              </select>
-            </div>
+                <path
+                  fillRule="evenodd"
+                  d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
+            <select
+              id="filter"
+              name="filter"
+              onChange={(e) => {
+                setPageIndex(0);
+                setCurrentFilter(e.target.value as Filter);
+              }}
+              value={currentFilter}
+              className="rounded-r-only"
+            >
+              <option value="debug">
+                {intl.formatMessage(messages.filterDebug)}
+              </option>
+              <option value="info">
+                {intl.formatMessage(messages.filterInfo)}
+              </option>
+              <option value="warn">
+                {intl.formatMessage(messages.filterWarn)}
+              </option>
+              <option value="error">
+                {intl.formatMessage(messages.filterError)}
+              </option>
+            </select>
           </div>
         </div>
         <Table>
@@ -145,74 +164,47 @@ const SettingsLogs: React.FC = () => {
             </tr>
           </thead>
           <Table.TBody>
-            {data?.results.map(
-              (
-                row: {
-                  timestamp: string;
-                  level: string;
-                  label: string;
-                  message: string;
-                },
-                index: number
-              ) => {
-                return (
-                  <tr className="" key={`log-list-${index}`}>
-                    <Table.TD>
-                      <div className="flex items-center py-0 text-gray-300">
-                        <FormattedDate
-                          value={row.timestamp}
-                          year="numeric"
-                          month="short"
-                          day="2-digit"
-                        />
-                        <> </>
-                        <FormattedTime
-                          value={row.timestamp}
-                          hour="numeric"
-                          minute="numeric"
-                          second="numeric"
-                          hour12={false}
-                        />
-                      </div>
-                    </Table.TD>
-                    <Table.TD>
-                      <div className="flex items-center py-0 text-gray-300">
-                        {row.level === 'debug' && (
-                          <Badge badgeType="default">
-                            {row.level.toUpperCase()}
-                          </Badge>
-                        )}
-                        {row.level === 'info' && (
-                          <Badge badgeType="success">
-                            {row.level.toUpperCase()}
-                          </Badge>
-                        )}
-                        {row.level === 'warn' && (
-                          <Badge badgeType="warning">
-                            {row.level.toUpperCase()}
-                          </Badge>
-                        )}
-                        {row.level === 'error' && (
-                          <Badge badgeType="danger">
-                            {row.level.toUpperCase()}
-                          </Badge>
-                        )}
-                      </div>
-                    </Table.TD>
-                    <Table.TD>
-                      <div className="flex items-center py-0 text-gray-300">
-                        {row.label}
-                      </div>
-                    </Table.TD>
-                    <Table.TD>
-                      <div className="flex items-center py-0 text-gray-300">
-                        {row.message}
-                      </div>
-                    </Table.TD>
-                  </tr>
-                );
-              }
-            )}
+            {data.results.map((row: LogMessage, index: number) => {
+              return (
+                <tr className="" key={`log-list-${index}`}>
+                  <Table.TD className="text-gray-300">
+                    {intl.formatDate(row.timestamp, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: '2-digit',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric',
+                      hour12: false,
+                    })}
+                  </Table.TD>
+                  <Table.TD className="text-gray-300">
+                    {row.level === 'debug' && (
+                      <Badge badgeType="default">
+                        {row.level.toUpperCase()}
+                      </Badge>
+                    )}
+                    {row.level === 'info' && (
+                      <Badge badgeType="success">
+                        {row.level.toUpperCase()}
+                      </Badge>
+                    )}
+                    {row.level === 'warn' && (
+                      <Badge badgeType="warning">
+                        {row.level.toUpperCase()}
+                      </Badge>
+                    )}
+                    {row.level === 'error' && (
+                      <Badge badgeType="danger">
+                        {row.level.toUpperCase()}
+                      </Badge>
+                    )}
+                  </Table.TD>
+                  <Table.TD className="text-gray-300">{row.label}</Table.TD>
+                  <Table.TD className="text-gray-300">{row.message}</Table.TD>
+                </tr>
+              );
+            })}
 
             {data.results.length === 0 && (
               <tr className="relative h-24 p-2 text-white">
