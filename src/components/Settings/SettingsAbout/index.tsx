@@ -18,7 +18,7 @@ const messages = defineMessages({
   totalrequests: 'Total Requests',
   gettingsupport: 'Getting Support',
   githubdiscussions: 'GitHub Discussions',
-  timezone: 'Timezone',
+  timezone: 'Time Zone',
   supportoverseerr: 'Support Overseerr',
   helppaycoffee: 'Help Pay for Coffee',
   documentation: 'Documentation',
