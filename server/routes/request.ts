@@ -103,6 +103,13 @@ requestRoutes.get('/', async (req, res, next) => {
         { type: 'or' }
       )
     ) {
+      if (requestedBy && requestedBy !== req.user?.id) {
+        return next({
+          status: 403,
+          message: "You do not have permission to view this user's requests.",
+        });
+      }
+
       query = query.andWhere('requestedBy.id = :id', {
         id: req.user?.id,
       });
