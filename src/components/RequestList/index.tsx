@@ -59,7 +59,7 @@ const RequestList: React.FC = () => {
     }
   }, []);
 
-  // Set fitler values to local storage any time they are changed
+  // Set filter values to local storage any time they are changed
   useEffect(() => {
     window.localStorage.setItem(
       'rl-filter-settings',
