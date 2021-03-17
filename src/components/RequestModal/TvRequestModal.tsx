@@ -45,7 +45,6 @@ const messages = defineMessages({
   requestcancelled: 'Request canceled.',
   autoapproval: 'Automatic Approval',
   requesterror: 'Something went wrong while submitting the request.',
-  next: 'Next',
   backbutton: 'Back',
 });
 

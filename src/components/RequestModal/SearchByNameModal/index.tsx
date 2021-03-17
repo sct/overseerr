@@ -10,7 +10,8 @@ const messages = defineMessages({
   next: 'Next',
   notvdbid: 'Manual Match Required',
   notvdbiddescription:
-    "We couldn't automatically match your request. Please select the correct match from the list below:",
+    "We couldn't automatically match your request.\
+    Please select the correct match from the list below.",
   nosummary: 'No summary for this title was found.',
 });
 
