@@ -63,6 +63,7 @@ const Login: React.FC = () => {
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
       <PageTitle title={intl.formatMessage(messages.signin)} />
       <ImageFader
+        useImage
         backgroundImages={[
           '/images/rotate1.jpg',
           '/images/rotate2.jpg',

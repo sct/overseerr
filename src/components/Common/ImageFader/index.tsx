@@ -4,11 +4,13 @@ import React, {
   HTMLAttributes,
   ForwardRefRenderFunction,
 } from 'react';
+import Image from 'next/image';
 
 interface ImageFaderProps extends HTMLAttributes<HTMLDivElement> {
   backgroundImages: string[];
   rotationSpeed?: number;
   isDarker?: boolean;
+  useImage?: boolean;
 }
 
 const DEFAULT_ROTATION_SPEED = 6000;
@@ -18,6 +20,7 @@ const ImageFader: ForwardRefRenderFunction<HTMLDivElement, ImageFaderProps> = (
     backgroundImages,
     rotationSpeed = DEFAULT_ROTATION_SPEED,
     isDarker,
+    useImage,
     ...props
   },
   ref
@@ -52,10 +55,29 @@ const ImageFader: ForwardRefRenderFunction<HTMLDivElement, ImageFaderProps> = (
             i === activeIndex ? 'opacity-100' : 'opacity-0'
           }`}
           style={{
-            backgroundImage: `${gradient}, url(${imageUrl})`,
+            backgroundImage: !useImage
+              ? `${gradient}, url(${imageUrl})`
+              : undefined,
           }}
           {...props}
-        />
+        >
+          {useImage && (
+            <>
+              <Image
+                className="absolute inset-0 w-full h-full"
+                alt=""
+                src={imageUrl}
+                layout="fill"
+                objectFit="cover"
+                quality={100}
+              />
+              <div
+                className="absolute inset-0"
+                style={{ backgroundImage: gradient }}
+              />
+            </>
+          )}
+        </div>
       ))}
     </div>
   );
