@@ -843,7 +843,7 @@
   "i18n.tvshows": "Series",
   "i18n.unavailable": "Unavailable",
   "i18n.usersettings": "User Settings",
-  "pages.errormessagewithcode": "404 - {error}",
+  "pages.errormessagewithcode": "{statusCode} - {error}",
   "pages.internalservererror": "Internal Server Error",
   "pages.oops": "Oops",
   "pages.pagenotfound": "Page Not Found",
