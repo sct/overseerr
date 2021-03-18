@@ -66,6 +66,7 @@ export interface MainSettings {
   applicationTitle: string;
   applicationUrl: string;
   csrfProtection: boolean;
+  cacheImages: boolean;
   defaultPermissions: number;
   hideAvailable: boolean;
   localLogin: boolean;
@@ -88,6 +89,7 @@ interface FullPublicSettings extends PublicSettings {
   region: string;
   originalLanguage: string;
   partialRequestsEnabled: boolean;
+  cacheImages: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -195,6 +197,7 @@ class Settings {
         applicationTitle: 'Overseerr',
         applicationUrl: '',
         csrfProtection: false,
+        cacheImages: false,
         defaultPermissions: Permission.REQUEST,
         hideAvailable: false,
         localLogin: true,
@@ -349,6 +352,7 @@ class Settings {
       region: this.data.main.region,
       originalLanguage: this.data.main.originalLanguage,
       partialRequestsEnabled: this.data.main.partialRequestsEnabled,
+      cacheImages: this.data.main.cacheImages,
     };
   }
 

@@ -149,6 +149,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     region: '',
     originalLanguage: '',
     partialRequestsEnabled: true,
+    cacheImages: false,
   };
 
   let locale = 'en';

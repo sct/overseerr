@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { withProperties } from '../../utils/typeHelpers';
+import CachedImage from '../Common/CachedImage';
 
 interface GenreCardProps {
   name: string;
@@ -27,9 +28,6 @@ const GenreCard: React.FC<GenreCardProps> = ({
             ? 'bg-gray-700 scale-105 ring-gray-500 bg-opacity-100'
             : 'bg-gray-800 scale-100 ring-gray-700 bg-opacity-80'
         } rounded-xl bg-cover bg-center overflow-hidden`}
-        style={{
-          backgroundImage: `url("${image}")`,
-        }}
         onMouseEnter={() => {
           setHovered(true);
         }}
@@ -42,6 +40,7 @@ const GenreCard: React.FC<GenreCardProps> = ({
         role="link"
         tabIndex={0}
       >
+        <CachedImage src={image} alt="" layout="fill" objectFit="cover" />
         <div
           className={`absolute z-10 inset-0 w-full h-full transition duration-300 bg-gray-800 ${
             isHovered ? 'bg-opacity-10' : 'bg-opacity-30'

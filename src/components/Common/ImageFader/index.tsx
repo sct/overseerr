@@ -4,13 +4,13 @@ import React, {
   HTMLAttributes,
   ForwardRefRenderFunction,
 } from 'react';
-import Image from 'next/image';
+import CachedImage from '../CachedImage';
 
 interface ImageFaderProps extends HTMLAttributes<HTMLDivElement> {
   backgroundImages: string[];
   rotationSpeed?: number;
   isDarker?: boolean;
-  useImage?: boolean;
+  forceOptimize?: boolean;
 }
 
 const DEFAULT_ROTATION_SPEED = 6000;
@@ -20,7 +20,7 @@ const ImageFader: ForwardRefRenderFunction<HTMLDivElement, ImageFaderProps> = (
     backgroundImages,
     rotationSpeed = DEFAULT_ROTATION_SPEED,
     isDarker,
-    useImage,
+    forceOptimize,
     ...props
   },
   ref
@@ -46,6 +46,14 @@ const ImageFader: ForwardRefRenderFunction<HTMLDivElement, ImageFaderProps> = (
       'linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%)';
   }
 
+  let overrides = {};
+
+  if (forceOptimize) {
+    overrides = {
+      unoptimized: false,
+    };
+  }
+
   return (
     <div ref={ref}>
       {backgroundImages.map((imageUrl, i) => (
@@ -54,29 +62,20 @@ const ImageFader: ForwardRefRenderFunction<HTMLDivElement, ImageFaderProps> = (
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-300 ease-in ${
             i === activeIndex ? 'opacity-100' : 'opacity-0'
           }`}
-          style={{
-            backgroundImage: !useImage
-              ? `${gradient}, url(${imageUrl})`
-              : undefined,
-          }}
           {...props}
         >
-          {useImage && (
-            <>
-              <Image
-                className="absolute inset-0 w-full h-full"
-                alt=""
-                src={imageUrl}
-                layout="fill"
-                objectFit="cover"
-                quality={100}
-              />
-              <div
-                className="absolute inset-0"
-                style={{ backgroundImage: gradient }}
-              />
-            </>
-          )}
+          <CachedImage
+            className="absolute inset-0 w-full h-full"
+            alt=""
+            src={imageUrl}
+            layout="fill"
+            objectFit="cover"
+            {...overrides}
+          />
+          <div
+            className="absolute inset-0"
+            style={{ backgroundImage: gradient }}
+          />
         </div>
       ))}
     </div>

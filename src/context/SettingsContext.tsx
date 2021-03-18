@@ -16,6 +16,7 @@ const defaultSettings = {
   region: '',
   originalLanguage: '',
   partialRequestsEnabled: true,
+  cacheImages: false,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

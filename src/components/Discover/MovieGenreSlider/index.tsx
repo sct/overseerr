@@ -54,7 +54,7 @@ const MovieGenreSlider: React.FC = () => {
           <GenreCard
             key={`genre-${genre.id}-${index}`}
             name={genre.name}
-            image={`https://www.themoviedb.org/t/p/w1280_filter(duotone,${
+            image={`https://image.tmdb.org/t/p/w1280_filter(duotone,${
               genreColorMap[genre.id] ?? genreColorMap[0]
             })${genre.backdrops[4]}`}
             url={`/discover/movies/genre/${genre.id}`}

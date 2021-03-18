@@ -69,7 +69,7 @@ const UserProfile: React.FC = () => {
               .filter((media) => media.backdropPath)
               .map(
                 (media) =>
-                  `//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`
+                  `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`
               )
               .slice(0, 6)}
           />

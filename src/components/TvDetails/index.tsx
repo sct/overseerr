@@ -34,6 +34,7 @@ import DownloadBlock from '../DownloadBlock';
 import PageTitle from '../Common/PageTitle';
 import useSettings from '../../hooks/useSettings';
 import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+import CachedImage from '../Common/CachedImage';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -228,9 +229,26 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       className="media-page"
       style={{
         height: 493,
-        backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
+      {data.backdropPath && (
+        <div className="media-page-bg-image">
+          <CachedImage
+            alt=""
+            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath}`}
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%)',
+            }}
+          />
+        </div>
+      )}
       <PageTitle title={data.name} />
       <RequestModal
         tmdbId={data.id}
@@ -418,15 +436,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         )}
       </SlideOver>
       <div className="media-header">
-        <img
-          src={
-            data.posterPath
-              ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
-              : '/images/overseerr_poster_not_found.png'
-          }
-          alt=""
-          className="media-poster"
-        />
+        <div className="media-poster">
+          <CachedImage
+            src={
+              data.posterPath
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
+                : '/images/overseerr_poster_not_found.png'
+            }
+            alt=""
+            layout="responsive"
+            width={600}
+            height={900}
+            priority
+          />
+        </div>
         <div className="media-title">
           <div className="media-status">
             <StatusBadge

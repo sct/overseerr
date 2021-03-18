@@ -536,6 +536,8 @@
   "components.Settings.apikey": "API Key",
   "components.Settings.applicationTitle": "Application Title",
   "components.Settings.applicationurl": "Application URL",
+  "components.Settings.cacheImages": "Cache & Optimize Images Locally",
+  "components.Settings.cacheImagesTip": "Enabling this option will cause all images to be optimized and stored locally. This uses a significant amount of disk space.",
   "components.Settings.cancelscan": "Cancel Scan",
   "components.Settings.copied": "Copied API key to clipboard.",
   "components.Settings.csrfProtection": "Enable CSRF Protection",

@@ -11,6 +11,7 @@ import { useIsTouch } from '../../hooks/useIsTouch';
 import globalMessages from '../../i18n/globalMessages';
 import Spinner from '../../assets/spinner.svg';
 import { useUser, Permission } from '../../hooks/useUser';
+import CachedImage from '../Common/CachedImage';
 
 const messages = defineMessages({
   movie: 'Movie',
@@ -81,16 +82,13 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default relative bg-gray-800 bg-cover rounded-xl ring-1 ${
+        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default relative bg-gray-800 bg-cover rounded-xl ring-1 overflow-hidden ${
           showDetail
             ? 'scale-105 shadow-lg ring-gray-500'
             : 'shadow ring-gray-700'
         }`}
         style={{
           paddingBottom: '150%',
-          backgroundImage: image
-            ? `url(//image.tmdb.org/t/p/w300_and_h450_face${image})`
-            : `url('/images/overseerr_poster_not_found_logo_top.png')`,
         }}
         onMouseEnter={() => {
           if (!isTouch) {
@@ -108,6 +106,17 @@ const TitleCard: React.FC<TitleCardProps> = ({
         tabIndex={0}
       >
         <div className="absolute inset-0 w-full h-full overflow-hidden">
+          <CachedImage
+            className="absolute inset-0 w-full h-full"
+            alt=""
+            src={
+              image
+                ? `https://image.tmdb.org/t/p/w300_and_h450_face${image}`
+                : `/images/overseerr_poster_not_found_logo_top.png`
+            }
+            layout="fill"
+            objectFit="cover"
+          />
           <div className="absolute left-0 right-0 flex items-center justify-between p-2">
             <div
               className={`rounded-full z-40 pointer-events-none shadow ${

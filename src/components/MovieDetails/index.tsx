@@ -31,6 +31,7 @@ import DownloadBlock from '../DownloadBlock';
 import PageTitle from '../Common/PageTitle';
 import useSettings from '../../hooks/useSettings';
 import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+import CachedImage from '../Common/CachedImage';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
@@ -203,9 +204,26 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       className="media-page"
       style={{
         height: 493,
-        backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
+      {data.backdropPath && (
+        <div className="media-page-bg-image">
+          <CachedImage
+            alt=""
+            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath}`}
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%)',
+            }}
+          />
+        </div>
+      )}
       <PageTitle title={data.title} />
       <SlideOver
         show={showManager}
@@ -380,15 +398,20 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         )}
       </SlideOver>
       <div className="media-header">
-        <img
-          src={
-            data.posterPath
-              ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
-              : '/images/overseerr_poster_not_found.png'
-          }
-          alt=""
-          className="media-poster"
-        />
+        <div className="media-poster">
+          <CachedImage
+            src={
+              data.posterPath
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
+                : '/images/overseerr_poster_not_found.png'
+            }
+            alt=""
+            layout="responsive"
+            width={600}
+            height={900}
+            priority
+          />
+        </div>
         <div className="media-title">
           <div className="media-status">
             <StatusBadge
@@ -519,13 +542,23 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <div className="mb-6">
               <Link href={`/collection/${data.collection.id}`}>
                 <a>
-                  <div
-                    className="relative z-0 transition duration-300 scale-100 bg-gray-800 bg-center bg-cover rounded-lg shadow-md cursor-pointer transform-gpu group hover:scale-105"
-                    style={{
-                      backgroundImage: `linear-gradient(180deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 0.80) 100%), url(//image.tmdb.org/t/p/w1440_and_h320_multi_faces/${data.collection.backdropPath})`,
-                    }}
-                  >
-                    <div className="flex items-center justify-between p-4 text-gray-200 transition duration-300 h-14 group-hover:text-white">
+                  <div className="relative z-0 overflow-hidden transition duration-300 scale-100 bg-gray-800 bg-center bg-cover rounded-lg shadow-md cursor-pointer transform-gpu group hover:scale-105 ring-1 ring-gray-700 hover:ring-gray-500">
+                    <div className="absolute inset-0 z-0">
+                      <CachedImage
+                        src={`https://image.tmdb.org/t/p/w1440_and_h320_multi_faces/${data.collection.backdropPath}`}
+                        alt=""
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          backgroundImage:
+                            'linear-gradient(180deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 0.80) 100%)',
+                        }}
+                      />
+                    </div>
+                    <div className="relative z-10 flex items-center justify-between p-4 text-gray-200 transition duration-300 h-14 group-hover:text-white">
                       <div>{data.collection.name}</div>
                       <Button buttonSize="sm">
                         {intl.formatMessage(messages.view)}

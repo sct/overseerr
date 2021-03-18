@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
+import CachedImage from '../Common/CachedImage';
 
 interface PersonCardProps {
   personId: number;
@@ -47,11 +48,14 @@ const PersonCard: React.FC<PersonCardProps> = ({
             <div className="absolute inset-0 flex flex-col items-center w-full h-full p-2">
               <div className="relative flex justify-center w-full mt-2 mb-4 h-1/2">
                 {profilePath ? (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${profilePath}`}
-                    className="object-cover w-3/4 h-full bg-center bg-cover rounded-full ring-1 ring-gray-700"
-                    alt=""
-                  />
+                  <div className="relative w-3/4 h-full overflow-hidden rounded-full ring-1 ring-gray-700">
+                    <CachedImage
+                      src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${profilePath}`}
+                      alt=""
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
                 ) : (
                   <svg
                     className="h-full"

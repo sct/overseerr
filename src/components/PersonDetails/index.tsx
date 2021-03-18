@@ -13,6 +13,7 @@ import ImageFader from '../Common/ImageFader';
 import Ellipsis from '../../assets/ellipsis.svg';
 import { groupBy } from 'lodash';
 import PageTitle from '../Common/PageTitle';
+import CachedImage from '../Common/CachedImage';
 
 const messages = defineMessages({
   appearsin: 'Appearances',
@@ -172,7 +173,7 @@ const PersonDetails: React.FC = () => {
               .filter((media) => media.backdropPath)
               .map(
                 (media) =>
-                  `//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`
+                  `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`
               )
               .slice(0, 6)}
           />
@@ -180,12 +181,14 @@ const PersonDetails: React.FC = () => {
       )}
       <div className="relative z-10 flex flex-col items-center mt-4 mb-8 md:flex-row md:items-start">
         {data.profilePath && (
-          <div
-            style={{
-              backgroundImage: `url(https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.profilePath})`,
-            }}
-            className="flex-shrink-0 mb-6 mr-0 bg-center bg-cover rounded-full w-36 h-36 md:w-44 md:h-44 md:mb-0 md:mr-6"
-          />
+          <div className="relative flex-shrink-0 mb-6 mr-0 overflow-hidden rounded-full w-36 h-36 md:w-44 md:h-44 md:mb-0 md:mr-6 ring-1 ring-gray-700">
+            <CachedImage
+              src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.profilePath}`}
+              alt=""
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
         )}
         <div className="text-center text-gray-300 md:text-left">
           <h1 className="mb-4 text-3xl text-white md:text-4xl">{data.name}</h1>
