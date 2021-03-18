@@ -358,7 +358,8 @@ const NotificationsEmail: React.FC = () => {
                       id="pgpPrivateKey"
                       name="pgpPrivateKey"
                       as="textarea"
-                      rows="3"
+                      rows="10"
+                      className="font-mono text-xs"
                     />
                   </div>
                 </div>

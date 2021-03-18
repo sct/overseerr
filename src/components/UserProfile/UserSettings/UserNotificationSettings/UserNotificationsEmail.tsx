@@ -86,7 +86,13 @@ const UserEmailSettings: React.FC = () => {
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field id="pgpKey" name="pgpKey" as="textarea" rows="3" />
+                  <Field
+                    id="pgpKey"
+                    name="pgpKey"
+                    as="textarea"
+                    rows="10"
+                    className="font-mono text-xs"
+                  />
                 </div>
                 {errors.pgpKey && touched.pgpKey && (
                   <div className="error">{errors.pgpKey}</div>
