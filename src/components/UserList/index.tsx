@@ -626,7 +626,7 @@ const UserList: React.FC = () => {
                             setCurrentPageSize(Number(e.target.value));
                           }}
                           value={currentPageSize}
-                          className="inline pr-9 short"
+                          className="inline short"
                         >
                           <option value="5">5</option>
                           <option value="10">10</option>
