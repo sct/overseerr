@@ -239,7 +239,7 @@ input.short {
 }
 
 select.short {
-  @apply min-width;
+  @apply w-min;
 }
 
 .protocol {
