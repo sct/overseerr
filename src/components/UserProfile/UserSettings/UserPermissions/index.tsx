@@ -12,9 +12,9 @@ import LoadingSpinner from '../../../Common/LoadingSpinner';
 import PermissionEdit from '../../../PermissionEdit';
 import Alert from '../../../Common/Alert';
 import PageTitle from '../../../Common/PageTitle';
+import globalMessages from '../../../../i18n/globalMessages';
 
 const messages = defineMessages({
-  settings: 'User Settings',
   displayName: 'Display Name',
   save: 'Save Changes',
   saving: 'Saving…',
@@ -65,7 +65,7 @@ const UserPermissions: React.FC = () => {
       <PageTitle
         title={[
           intl.formatMessage(messages.permissions),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.usersettings),
           user?.displayName,
         ]}
       />

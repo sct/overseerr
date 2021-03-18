@@ -16,9 +16,9 @@ import Badge from '../../Common/Badge';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
 import { formatBytes } from '../../../utils/numberHelpers';
 import PageTitle from '../../Common/PageTitle';
+import globalMessages from '../../../i18n/globalMessages';
 
 const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
-  settings: 'Settings',
   jobsandcache: 'Jobs & Cache',
   jobs: 'Jobs',
   jobsDescription:
@@ -124,7 +124,7 @@ const SettingsJobs: React.FC = () => {
       <PageTitle
         title={[
           intl.formatMessage(messages.jobsandcache),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.settings),
         ]}
       />
       <div className="mb-6">

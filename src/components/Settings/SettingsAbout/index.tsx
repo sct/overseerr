@@ -8,9 +8,9 @@ import { defineMessages, useIntl } from 'react-intl';
 import Releases from './Releases';
 import Badge from '../../Common/Badge';
 import PageTitle from '../../Common/PageTitle';
+import globalMessages from '../../../i18n/globalMessages';
 
 const messages = defineMessages({
-  settings: 'Settings',
   about: 'About',
   overseerrinformation: 'Overseerr Information',
   version: 'Version',
@@ -44,7 +44,7 @@ const SettingsAbout: React.FC = () => {
       <PageTitle
         title={[
           intl.formatMessage(messages.about),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.settings),
         ]}
       />
       <div className="section">

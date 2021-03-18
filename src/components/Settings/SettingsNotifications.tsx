@@ -16,9 +16,9 @@ import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
 import Button from '../Common/Button';
 import PageTitle from '../Common/PageTitle';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
-  settings: 'Settings',
   notifications: 'Notifications',
   save: 'Save Changes',
   saving: 'Saving…',
@@ -180,7 +180,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       <PageTitle
         title={[
           intl.formatMessage(messages.notifications),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.settings),
         ]}
       />
       <div className="mb-6">

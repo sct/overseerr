@@ -13,9 +13,10 @@ import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import RegionSelector from '../../../RegionSelector';
+import globalMessages from '../../../../i18n/globalMessages';
+import PageTitle from '../../../Common/PageTitle';
 
 const messages = defineMessages({
-  settings: 'User Settings',
   general: 'General',
   generalsettings: 'General Settings',
   displayName: 'Display Name',
@@ -94,6 +95,12 @@ const UserGeneralSettings: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.general),
+          intl.formatMessage(globalMessages.usersettings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.generalsettings)}

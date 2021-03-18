@@ -13,9 +13,9 @@ import LoadingSpinner from '../../../Common/LoadingSpinner';
 import * as Yup from 'yup';
 import useSettings from '../../../../hooks/useSettings';
 import PageTitle from '../../../Common/PageTitle';
+import globalMessages from '../../../../i18n/globalMessages';
 
 const messages = defineMessages({
-  settings: 'User Settings',
   password: 'Password',
   currentpassword: 'Current Password',
   newpassword: 'New Password',
@@ -104,7 +104,7 @@ const UserPasswordChange: React.FC = () => {
       <PageTitle
         title={[
           intl.formatMessage(messages.password),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.usersettings),
           user?.displayName,
         ]}
       />

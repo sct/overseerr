@@ -17,7 +17,6 @@ import { PgpLink } from '../../../Settings/Notifications/NotificationsEmail';
 import PageTitle from '../../../Common/PageTitle';
 
 const messages = defineMessages({
-  settings: 'User Settings',
   notifications: 'Notifications',
   notificationsettings: 'Notification Settings',
   enableNotifications: 'Enable Notifications',
@@ -76,7 +75,7 @@ const UserNotificationSettings: React.FC = () => {
       <PageTitle
         title={[
           intl.formatMessage(messages.notifications),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.usersettings),
           user?.displayName,
         ]}
       />

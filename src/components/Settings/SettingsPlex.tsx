@@ -14,9 +14,9 @@ import * as Yup from 'yup';
 import Alert from '../Common/Alert';
 import Spinner from '../../assets/spinner.svg';
 import PageTitle from '../Common/PageTitle';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
-  settings: 'Settings',
   plex: 'Plex',
   plexsettings: 'Plex Settings',
   plexsettingsDescription:
@@ -266,7 +266,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       <PageTitle
         title={[
           intl.formatMessage(messages.plex),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.settings),
         ]}
       />
       <div className="mb-6">

@@ -16,7 +16,6 @@ import RegionSelector from '../RegionSelector';
 import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
-  settings: 'Settings',
   general: 'General',
   generalsettings: 'General Settings',
   generalsettingsDescription:
@@ -123,7 +122,7 @@ const SettingsMain: React.FC = () => {
       <PageTitle
         title={[
           intl.formatMessage(messages.general),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.settings),
         ]}
       />
       <div className="mb-6">

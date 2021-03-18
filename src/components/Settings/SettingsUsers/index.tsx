@@ -9,9 +9,9 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import PermissionEdit from '../../PermissionEdit';
 import PageTitle from '../../Common/PageTitle';
+import globalMessages from '../../../i18n/globalMessages';
 
 const messages = defineMessages({
-  settings: 'Settings',
   users: 'Users',
   userSettings: 'User Settings',
   userSettingsDescription: 'Configure global and default user settings.',
@@ -39,7 +39,7 @@ const SettingsUsers: React.FC = () => {
       <PageTitle
         title={[
           intl.formatMessage(messages.users),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.settings),
         ]}
       />
       <div className="mb-6">

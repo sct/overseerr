@@ -15,9 +15,9 @@ import axios from 'axios';
 import SonarrModal from './SonarrModal';
 import Alert from '../Common/Alert';
 import PageTitle from '../Common/PageTitle';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
-  settings: 'Settings',
   services: 'Services',
   radarrsettings: 'Radarr Settings',
   radarrSettingsDescription:
@@ -220,7 +220,7 @@ const SettingsServices: React.FC = () => {
       <PageTitle
         title={[
           intl.formatMessage(messages.services),
-          intl.formatMessage(messages.settings),
+          intl.formatMessage(globalMessages.settings),
         ]}
       />
       <div className="mb-6">

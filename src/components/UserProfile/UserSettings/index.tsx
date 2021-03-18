@@ -10,9 +10,9 @@ import PageTitle from '../../Common/PageTitle';
 import ProfileHeader from '../ProfileHeader';
 import useSettings from '../../../hooks/useSettings';
 import Alert from '../../Common/Alert';
+import globalMessages from '../../../i18n/globalMessages';
 
 const messages = defineMessages({
-  settings: 'User Settings',
   menuGeneralSettings: 'General',
   menuChangePass: 'Password',
   menuNotifications: 'Notifications',
@@ -116,7 +116,10 @@ const UserSettings: React.FC = ({ children }) => {
     return (
       <>
         <PageTitle
-          title={[intl.formatMessage(messages.settings), user.displayName]}
+          title={[
+            intl.formatMessage(globalMessages.usersettings),
+            user.displayName,
+          ]}
         />
         <ProfileHeader user={user} isSettingsPage />
         <div className="mt-6">
@@ -139,7 +142,10 @@ const UserSettings: React.FC = ({ children }) => {
   return (
     <>
       <PageTitle
-        title={[intl.formatMessage(messages.settings), user.displayName]}
+        title={[
+          intl.formatMessage(globalMessages.usersettings),
+          user.displayName,
+        ]}
       />
       <ProfileHeader user={user} isSettingsPage />
       <div className="mt-6">

@@ -24,6 +24,8 @@ const globalMessages = defineMessages({
   experimental: 'Experimental',
   advanced: 'Advanced',
   loading: 'Loading…',
+  settings: 'Settings',
+  usersettings: 'User Settings',
 });
 
 export default globalMessages;
