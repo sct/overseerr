@@ -80,9 +80,11 @@ const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
   const { addToast } = useToasts();
-  const [pageIndex, setPageIndex] = useState(0);
   const [currentSort, setCurrentSort] = useState<Sort>('created');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
+
+  const page = router.query.page ? Number(router.query.page) : 1;
+  const pageIndex = page - 1;
 
   const { data, error, revalidate } = useSWR<UserResultsResponse>(
     `/api/v1/user?take=${currentPageSize}&skip=${
@@ -433,8 +435,8 @@ const UserList: React.FC = () => {
               id="sort"
               name="sort"
               onChange={(e) => {
-                setPageIndex(0);
                 setCurrentSort(e.target.value as Sort);
+                router.push(router.pathname);
               }}
               value={currentSort}
               className="rounded-r-only"
@@ -622,8 +624,10 @@ const UserList: React.FC = () => {
                           id="pageSize"
                           name="pageSize"
                           onChange={(e) => {
-                            setPageIndex(0);
                             setCurrentPageSize(Number(e.target.value));
+                            router
+                              .push(router.pathname)
+                              .then(() => window.scrollTo(0, 0));
                           }}
                           value={currentPageSize}
                           className="inline short"
@@ -641,13 +645,33 @@ const UserList: React.FC = () => {
                 <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
                   <Button
                     disabled={!hasPrevPage}
-                    onClick={() => setPageIndex((current) => current - 1)}
+                    onClick={() =>
+                      router
+                        .push(
+                          `${router.pathname}?page=${page - 1}`,
+                          undefined,
+                          {
+                            shallow: true,
+                          }
+                        )
+                        .then(() => window.scrollTo(0, 0))
+                    }
                   >
                     {intl.formatMessage(messages.previous)}
                   </Button>
                   <Button
                     disabled={!hasNextPage}
-                    onClick={() => setPageIndex((current) => current + 1)}
+                    onClick={() =>
+                      router
+                        .push(
+                          `${router.pathname}?page=${page + 1}`,
+                          undefined,
+                          {
+                            shallow: true,
+                          }
+                        )
+                        .then(() => window.scrollTo(0, 0))
+                    }
                   >
                     {intl.formatMessage(messages.next)}
                   </Button>
