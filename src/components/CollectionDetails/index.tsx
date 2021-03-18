@@ -21,6 +21,7 @@ import { useUser, Permission } from '../../hooks/useUser';
 import useSettings from '../../hooks/useSettings';
 import Link from 'next/link';
 import { uniq } from 'lodash';
+import CachedImage from '../Common/CachedImage';
 
 const messages = defineMessages({
   overviewunavailable: 'Overview unavailable.',
@@ -203,9 +204,26 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
       className="media-page"
       style={{
         height: 493,
-        backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
+      {data.backdropPath && (
+        <div className="media-page-bg-image">
+          <CachedImage
+            alt=""
+            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath}`}
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%)',
+            }}
+          />
+        </div>
+      )}
       <PageTitle title={data.name} />
       <Transition
         enter="opacity-0 transition duration-300"
@@ -268,11 +286,20 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
         </Modal>
       </Transition>
       <div className="media-header">
-        <img
-          src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
-          alt=""
-          className="media-poster"
-        />
+        <div className="media-poster">
+          <CachedImage
+            src={
+              data.posterPath
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
+                : '/images/overseerr_poster_not_found.png'
+            }
+            alt=""
+            layout="responsive"
+            width={600}
+            height={900}
+            priority
+          />
+        </div>
         <div className="media-title">
           <div className="media-status">
             <StatusBadge

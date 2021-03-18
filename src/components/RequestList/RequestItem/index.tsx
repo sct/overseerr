@@ -20,6 +20,7 @@ import Link from 'next/link';
 import { useToasts } from 'react-toast-notifications';
 import RequestModal from '../../RequestModal';
 import ConfirmButton from '../../Common/ConfirmButton';
+import CachedImage from '../../Common/CachedImage';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -133,14 +134,23 @@ const RequestItem: React.FC<RequestItemProps> = ({
         }}
       />
       <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl xl:h-32 xl:flex-row">
-        <div
-          className="absolute inset-0 z-0 w-full bg-center bg-cover xl:w-2/3"
-          style={{
-            backgroundImage: title.backdropPath
-              ? `linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`
-              : undefined,
-          }}
-        />
+        {title.backdropPath && (
+          <div className="absolute inset-0 z-0 w-full bg-center bg-cover xl:w-2/3">
+            <CachedImage
+              src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
+              alt=""
+              layout="fill"
+              objectFit="cover"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage:
+                  'linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%)',
+              }}
+            />
+          </div>
+        )}
         <div className="relative flex flex-col justify-between w-full overflow-hidden sm:flex-row">
           <div className="relative z-10 flex items-center w-full pl-4 pr-4 overflow-hidden xl:w-7/12 2xl:w-2/3 sm:pr-0">
             <Link
@@ -150,15 +160,18 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   : `/tv/${requestData.media.tmdbId}`
               }
             >
-              <a className="flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md sm:w-14 transform-gpu hover:scale-105">
-                <img
+              <a className="relative flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md sm:w-14 transform-gpu hover:scale-105">
+                <CachedImage
                   src={
                     title.posterPath
-                      ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                      ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
                       : '/images/overseerr_poster_not_found.png'
                   }
                   alt=""
-                  className="object-cover"
+                  layout="responsive"
+                  width={600}
+                  height={900}
+                  objectFit="cover"
                 />
               </a>
             </Link>

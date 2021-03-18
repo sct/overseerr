@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
 import globalMessages from '../../i18n/globalMessages';
 import StatusBadge from '../StatusBadge';
+import CachedImage from '../Common/CachedImage';
 
 const messages = defineMessages({
   status: 'Status',
@@ -97,13 +98,25 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
   }
 
   return (
-    <div
-      className="relative flex p-4 text-gray-400 bg-gray-700 bg-center bg-cover shadow rounded-xl w-72 sm:w-96 ring-1 ring-gray-700"
-      style={{
-        backgroundImage: `linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
-      }}
-    >
-      <div className="flex flex-col flex-1 min-w-0 pr-4">
+    <div className="relative flex p-4 overflow-hidden text-gray-400 bg-gray-800 bg-center bg-cover shadow rounded-xl w-72 sm:w-96 ring-1 ring-gray-700">
+      {title.backdropPath && (
+        <div className="absolute inset-0 z-0">
+          <CachedImage
+            alt=""
+            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
+            layout="fill"
+            objectFit="cover"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%)',
+            }}
+          />
+        </div>
+      )}
+      <div className="relative z-10 flex flex-col flex-1 min-w-0 pr-4">
         <Link
           href={
             request.type === 'movie'
@@ -243,15 +256,17 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             : `/tv/${requestData.media.tmdbId}`
         }
       >
-        <a className="flex-shrink-0 w-20 sm:w-28">
-          <img
+        <a className="flex-shrink-0 w-20 overflow-hidden transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md">
+          <CachedImage
             src={
               title.posterPath
-                ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
                 : '/images/overseerr_poster_not_found.png'
             }
             alt=""
-            className="w-20 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md"
+            layout="responsive"
+            width={600}
+            height={900}
           />
         </a>
       </Link>

@@ -42,7 +42,12 @@ a.slider-title {
 }
 
 .media-page {
-  @apply px-4 pt-16 -mx-4 -mt-16 bg-center bg-cover;
+  @apply relative px-4 pt-16 -mx-4 -mt-16 bg-center bg-cover;
+}
+
+.media-page-bg-image {
+  @apply absolute inset-0 w-full h-full;
+  z-index: -10;
 }
 
 .media-header {
@@ -50,7 +55,7 @@ a.slider-title {
 }
 
 .media-poster {
-  @apply w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-44 xl:w-52 xl:mr-4;
+  @apply w-32 overflow-hidden rounded shadow md:rounded-lg md:shadow-2xl md:w-44 xl:w-52 xl:mr-4;
 }
 
 .media-status {

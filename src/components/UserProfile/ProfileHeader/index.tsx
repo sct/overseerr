@@ -48,7 +48,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <div className="flex-shrink-0">
           <div className="relative">
             <img
-              className="w-24 h-24 bg-gray-600 rounded-full"
+              className="w-24 h-24 bg-gray-600 rounded-full ring-1 ring-gray-700"
               src={user.avatar}
               alt=""
             />

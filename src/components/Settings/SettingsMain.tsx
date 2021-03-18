@@ -39,6 +39,9 @@ const messages = defineMessages({
     'Sets external API access to read-only (requires HTTPS, and Overseerr must be reloaded for changes to take effect)',
   csrfProtectionHoverTip:
     'Do NOT enable this setting unless you understand what you are doing!',
+  cacheImages: 'Cache & Optimize Images Locally',
+  cacheImagesTip:
+    'Enabling this option will cause all images to be optimized and stored locally. This uses a significant amount of disk space.',
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
     'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
@@ -144,6 +147,7 @@ const SettingsMain: React.FC = () => {
             originalLanguage: data?.originalLanguage,
             partialRequestsEnabled: data?.partialRequestsEnabled,
             trustProxy: data?.trustProxy,
+            cacheImages: data?.cacheImages,
           }}
           enableReinitialize
           validationSchema={MainSettingsSchema}
@@ -158,6 +162,7 @@ const SettingsMain: React.FC = () => {
                 originalLanguage: values.originalLanguage,
                 partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
+                cacheImages: values.cacheImages,
               });
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -296,6 +301,26 @@ const SettingsMain: React.FC = () => {
                       onChange={() => {
                         setFieldValue('csrfProtection', !values.csrfProtection);
                       }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="csrfProtection" className="checkbox-label">
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.cacheImages)}
+                    </span>
+                    <Badge badgeType="warning">
+                      {intl.formatMessage(globalMessages.experimental)}
+                    </Badge>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.cacheImagesTip)}
+                    </span>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="cacheImages"
+                      name="cacheImages"
                     />
                   </div>
                 </div>

@@ -28,6 +28,7 @@ export interface PublicSettingsResponse {
   region: string;
   originalLanguage: string;
   partialRequestsEnabled: boolean;
+  cacheImages: boolean;
 }
 
 export interface CacheItem {
