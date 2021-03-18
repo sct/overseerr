@@ -13,8 +13,11 @@ import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import RegionSelector from '../../../RegionSelector';
+import globalMessages from '../../../../i18n/globalMessages';
+import PageTitle from '../../../Common/PageTitle';
 
 const messages = defineMessages({
+  general: 'General',
   generalsettings: 'General Settings',
   displayName: 'Display Name',
   save: 'Save Changes',
@@ -26,14 +29,12 @@ const messages = defineMessages({
   owner: 'Owner',
   admin: 'Admin',
   user: 'User',
-  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsSuccess: 'Settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   region: 'Discover Region',
-  regionTip:
-    'Filter content by region (only applies to the "Popular" and "Upcoming" categories)',
+  regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
-  originallanguageTip:
-    'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
+  originallanguageTip: 'Filter content by original language',
   originalLanguageDefault: 'All Languages',
   languageServerDefault: 'Default ({language})',
 });
@@ -94,6 +95,12 @@ const UserGeneralSettings: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.general),
+          intl.formatMessage(globalMessages.usersettings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.generalsettings)}

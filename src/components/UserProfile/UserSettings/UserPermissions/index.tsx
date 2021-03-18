@@ -11,6 +11,8 @@ import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import PermissionEdit from '../../../PermissionEdit';
 import Alert from '../../../Common/Alert';
+import PageTitle from '../../../Common/PageTitle';
+import globalMessages from '../../../../i18n/globalMessages';
 
 const messages = defineMessages({
   displayName: 'Display Name',
@@ -18,7 +20,7 @@ const messages = defineMessages({
   saving: 'Saving…',
   plexuser: 'Plex User',
   localuser: 'Local User',
-  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsSuccess: 'Permissions saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   permissions: 'Permissions',
   unauthorized: 'Unauthorized',
@@ -60,6 +62,13 @@ const UserPermissions: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.permissions),
+          intl.formatMessage(globalMessages.usersettings),
+          user?.displayName,
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">{intl.formatMessage(messages.permissions)}</h3>
       </div>

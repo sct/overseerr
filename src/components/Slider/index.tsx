@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useSpring } from 'react-spring';
 import TitleCard from '../TitleCard';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   noresults: 'No results.',
@@ -36,6 +36,7 @@ const Slider: React.FC<SliderProps> = ({
   emptyMessage,
   placeholder = <TitleCard.Placeholder />,
 }) => {
+  const intl = useIntl();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollPos, setScrollPos] = useState({ isStart: true, isEnd: false });
 
@@ -230,11 +231,9 @@ const Slider: React.FC<SliderProps> = ({
           ))}
         {isEmpty && (
           <div className="mt-16 mb-16 text-center text-white">
-            {emptyMessage ? (
-              emptyMessage
-            ) : (
-              <FormattedMessage {...messages.noresults} />
-            )}
+            {emptyMessage
+              ? emptyMessage
+              : intl.formatMessage(messages.noresults)}
           </div>
         )}
       </div>

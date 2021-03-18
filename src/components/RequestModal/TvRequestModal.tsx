@@ -25,7 +25,7 @@ const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',
   cancelrequest:
     'This will remove your request. Are you sure you want to continue?',
-  requestSuccess: '<strong>{title}</strong> successfully requested!',
+  requestSuccess: '<strong>{title}</strong> requested successfully!',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
   requesting: 'Requesting…',
@@ -45,7 +45,6 @@ const messages = defineMessages({
   requestcancelled: 'Request canceled.',
   autoapproval: 'Automatic Approval',
   requesterror: 'Something went wrong while submitting the request.',
-  next: 'Next',
   backbutton: 'Back',
 });
 

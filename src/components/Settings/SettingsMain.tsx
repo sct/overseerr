@@ -13,8 +13,10 @@ import Badge from '../Common/Badge';
 import globalMessages from '../../i18n/globalMessages';
 import * as Yup from 'yup';
 import RegionSelector from '../RegionSelector';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
+  general: 'General',
   generalsettings: 'General Settings',
   generalsettingsDescription:
     'Configure global and default settings for Overseerr.',
@@ -24,21 +26,19 @@ const messages = defineMessages({
   applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
   region: 'Discover Region',
-  regionTip:
-    'Filter content by region (only applies to the "Popular" and "Upcoming" categories)',
+  regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
-  originallanguageTip:
-    'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
-  toastApiKeySuccess: 'New API key generated!',
+  originallanguageTip: 'Filter content by original language',
+  toastApiKeySuccess: 'New API key generated successfully!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
-  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsSuccess: 'Settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   hideAvailable: 'Hide Available Media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
-    'Sets external API access to read-only (requires HTTPS and Overseerr must be reloaded for changes to take effect)',
+    'Sets external API access to read-only (requires HTTPS, and Overseerr must be reloaded for changes to take effect)',
   csrfProtectionHoverTip:
-    'Do NOT enable this unless you understand what you are doing!',
+    'Do NOT enable this setting unless you understand what you are doing!',
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
     'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
@@ -46,7 +46,7 @@ const messages = defineMessages({
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   originalLanguageDefault: 'All Languages',
-  partialRequestsEnabled: 'Enable Partial Series Requests',
+  partialRequestsEnabled: 'Allow Partial Series Requests',
 });
 
 const SettingsMain: React.FC = () => {
@@ -119,6 +119,12 @@ const SettingsMain: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.general),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.generalsettings)}

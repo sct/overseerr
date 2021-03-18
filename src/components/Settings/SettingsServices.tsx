@@ -14,8 +14,11 @@ import Transition from '../Transition';
 import axios from 'axios';
 import SonarrModal from './SonarrModal';
 import Alert from '../Common/Alert';
+import PageTitle from '../Common/PageTitle';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
+  services: 'Services',
   radarrsettings: 'Radarr Settings',
   radarrSettingsDescription:
     'Configure your Radarr connection below. You can have multiple Radarr configurations, but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server which is used for new requests.',
@@ -214,6 +217,12 @@ const SettingsServices: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.services),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.radarrsettings)}

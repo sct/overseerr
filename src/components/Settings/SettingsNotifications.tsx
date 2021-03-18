@@ -15,8 +15,11 @@ import LoadingSpinner from '../Common/LoadingSpinner';
 import axios from 'axios';
 import { useToasts } from 'react-toast-notifications';
 import Button from '../Common/Button';
+import PageTitle from '../Common/PageTitle';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
+  notifications: 'Notifications',
   save: 'Save Changes',
   saving: 'Saving…',
   notificationsettings: 'Notification Settings',
@@ -174,6 +177,12 @@ const SettingsNotifications: React.FC = ({ children }) => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.notifications),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.notificationsettings)}

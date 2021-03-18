@@ -14,8 +14,10 @@ import * as Yup from 'yup';
 import Badge from '../../../Common/Badge';
 import globalMessages from '../../../../i18n/globalMessages';
 import { PgpLink } from '../../../Settings/Notifications/NotificationsEmail';
+import PageTitle from '../../../Common/PageTitle';
 
 const messages = defineMessages({
+  notifications: 'Notifications',
   notificationsettings: 'Notification Settings',
   enableNotifications: 'Enable Notifications',
   discordId: 'Discord User ID',
@@ -33,7 +35,7 @@ const messages = defineMessages({
   saving: 'Saving…',
   plexuser: 'Plex User',
   localuser: 'Local User',
-  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsSuccess: 'Notification settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   pgpKey: '<PgpLink>PGP</PgpLink> Public Key',
   pgpKeyTip: 'Encrypt email messages',
@@ -70,6 +72,13 @@ const UserNotificationSettings: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.notifications),
+          intl.formatMessage(globalMessages.usersettings),
+          user?.displayName,
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.notificationsettings)}

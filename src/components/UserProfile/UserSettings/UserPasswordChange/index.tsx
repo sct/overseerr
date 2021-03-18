@@ -12,6 +12,8 @@ import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import * as Yup from 'yup';
 import useSettings from '../../../../hooks/useSettings';
+import PageTitle from '../../../Common/PageTitle';
+import globalMessages from '../../../../i18n/globalMessages';
 
 const messages = defineMessages({
   password: 'Password',
@@ -20,19 +22,23 @@ const messages = defineMessages({
   confirmpassword: 'Confirm Password',
   save: 'Save Changes',
   saving: 'Saving…',
-  toastSettingsSuccess: 'Password changed!',
-  toastSettingsFailure:
-    'Something went wrong while changing the password. Is your current password correct?',
+  toastSettingsSuccess: 'Password saved successfully!',
+  toastSettingsFailure: 'Something went wrong while saving the password.',
+  toastSettingsFailureVerifyCurrent:
+    'Something went wrong while saving the password. Was your current password entered correctly?',
   validationCurrentPassword: 'You must provide your current password',
   validationNewPassword: 'You must provide a new password',
   validationNewPasswordLength:
     'Password is too short; should be a minimum of 8 characters',
-  validationConfirmPassword: 'You must confirm your new password',
-  validationConfirmPasswordSame: 'Password must match',
+  validationConfirmPassword: 'You must confirm the new password',
+  validationConfirmPasswordSame: 'Passwords must match',
   nopasswordset: 'No Password Set',
   nopasswordsetDescription:
     'This user account currently does not have a password specifically for {applicationTitle}.\
     Configure a password below to enable this account to sign in as a "local user."',
+  nopasswordsetDescriptionOwnAccount:
+    'Your account currently does not have a password specifically for {applicationTitle}.\
+    Configure a password below to enable sign in as a "local user" using your email address.',
   nopermission: 'Unauthorized',
   nopermissionDescription:
     "You do not have permission to modify this user's password.",
@@ -95,6 +101,13 @@ const UserPasswordChange: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.password),
+          intl.formatMessage(globalMessages.usersettings),
+          user?.displayName,
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">{intl.formatMessage(messages.password)}</h3>
       </div>
@@ -119,10 +132,17 @@ const UserPasswordChange: React.FC = () => {
               appearance: 'success',
             });
           } catch (e) {
-            addToast(intl.formatMessage(messages.toastSettingsFailure), {
-              autoDismiss: true,
-              appearance: 'error',
-            });
+            addToast(
+              intl.formatMessage(
+                data.hasPassword && user?.id === currentUser?.id
+                  ? messages.toastSettingsFailureVerifyCurrent
+                  : messages.toastSettingsFailure
+              ),
+              {
+                autoDismiss: true,
+                appearance: 'error',
+              }
+            );
           } finally {
             revalidate();
             resetForm();
@@ -137,9 +157,15 @@ const UserPasswordChange: React.FC = () => {
                   type="warning"
                   title={intl.formatMessage(messages.nopasswordset)}
                 >
-                  {intl.formatMessage(messages.nopasswordsetDescription, {
-                    applicationTitle: settings.currentSettings.applicationTitle,
-                  })}
+                  {intl.formatMessage(
+                    user?.id === currentUser?.id
+                      ? messages.nopasswordsetDescriptionOwnAccount
+                      : messages.nopasswordsetDescription,
+                    {
+                      applicationTitle:
+                        settings.currentSettings.applicationTitle,
+                    }
+                  )}
                 </Alert>
               )}
               {data.hasPassword && user?.id === currentUser?.id && (

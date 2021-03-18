@@ -18,11 +18,10 @@ import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
-  requestadmin:
-    'Your request will be immediately approved. Do you wish to continue?',
+  requestadmin: 'Your request will be immediately approved.',
   cancelrequest:
     'This will remove your request. Are you sure you want to continue?',
-  requestSuccess: '<strong>{title}</strong> successfully requested!',
+  requestSuccess: '<strong>{title}</strong> requested successfully!',
   requestCancel: 'Request for <strong>{title}</strong> canceled',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',

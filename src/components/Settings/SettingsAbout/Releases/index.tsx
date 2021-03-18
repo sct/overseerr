@@ -18,9 +18,10 @@ const messages = defineMessages({
   latestversion: 'Latest',
   currentversion: 'Current Version',
   viewchangelog: 'View Changelog',
-  runningDevelop: 'You are running a develop version of Overseerr!',
+  runningDevelop: 'Development Version',
   runningDevelopMessage:
-    'The changes in your version will not be available below. Please see the <GithubLink>GitHub repository</GithubLink> for latest updates.',
+    'The latest changes to the <code>develop</code> branch of Overseerr are not shown below.\
+    Please see the commit history for this branch on <GithubLink>GitHub</GithubLink> for details.',
 });
 
 const REPO_RELEASE_API =
@@ -161,6 +162,9 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
         {currentVersion.startsWith('develop-') && (
           <Alert title={intl.formatMessage(messages.runningDevelop)}>
             {intl.formatMessage(messages.runningDevelopMessage, {
+              code: function code(msg) {
+                return <code className="bg-opacity-50">{msg}</code>;
+              },
               GithubLink: function GithubLink(msg) {
                 return (
                   <a

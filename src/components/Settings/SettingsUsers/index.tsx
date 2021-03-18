@@ -8,13 +8,16 @@ import Button from '../../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import PermissionEdit from '../../PermissionEdit';
+import PageTitle from '../../Common/PageTitle';
+import globalMessages from '../../../i18n/globalMessages';
 
 const messages = defineMessages({
-  userSettings: 'Users',
+  users: 'Users',
+  userSettings: 'User Settings',
   userSettingsDescription: 'Configure global and default user settings.',
   save: 'Save Changes',
   saving: 'Saving…',
-  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsSuccess: 'User settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   localLogin: 'Enable Local User Sign-In',
   defaultPermissions: 'Default User Permissions',
@@ -33,6 +36,12 @@ const SettingsUsers: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.users),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">{intl.formatMessage(messages.userSettings)}</h3>
         <p className="description">

@@ -4,7 +4,7 @@ import { useUser } from '../../hooks/useUser';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
 import ImageFader from '../Common/ImageFader';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import Transition from '../Transition';
 import LanguagePicker from '../Layout/LanguagePicker';
 import LocalLogin from './LocalLogin';
@@ -77,9 +77,9 @@ const Login: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
-        <img src="/logo.png" className="w-auto mx-auto max-h-32" alt="Logo" />
+        <img src="/logo.png" className="max-w-full" alt="Logo" />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
-          <FormattedMessage {...messages.signinheader} />
+          {intl.formatMessage(messages.signinheader)}
         </h2>
       </div>
       <div className="relative z-50 mt-8 sm:mx-auto sm:w-full sm:max-w-md">

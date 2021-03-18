@@ -9,7 +9,9 @@ import Error from '../../../pages/_error';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
+import PageTitle from '../../Common/PageTitle';
 import Table from '../../Common/Table';
+import globalMessages from '../../../i18n/globalMessages';
 
 const messages = defineMessages({
   logs: 'Logs',
@@ -93,6 +95,12 @@ const SettingsLogs: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.logs),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-2">
         <h3 className="heading">{intl.formatMessage(messages.logs)}</h3>
         <p className="description">

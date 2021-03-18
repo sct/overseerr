@@ -15,10 +15,10 @@ interface BulkEditProps {
 }
 
 const messages = defineMessages({
-  userssaved: 'Users saved',
+  userssaved: 'User permissions saved successfully!',
   save: 'Save Changes',
   saving: 'Saving…',
-  userfail: 'Something went wrong while saving the user.',
+  userfail: 'Something went wrong while saving user permissions.',
   edituser: 'Edit User Permissions',
 });
 
