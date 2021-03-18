@@ -36,15 +36,17 @@ const messages = defineMessages({
   hideAvailable: 'Hide Available Media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
-    'Sets external API access to read-only (requires HTTPS, and Overseerr must be reloaded for changes to take effect)',
+    'Set external API access to read-only\
+    (requires HTTPS, and Overseerr must be reloaded for changes to take effect)',
   csrfProtectionHoverTip:
     'Do NOT enable this setting unless you understand what you are doing!',
-  cacheImages: 'Cache & Optimize Images Locally',
+  cacheImages: 'Enable Image Caching',
   cacheImagesTip:
-    'Enabling this option will cause all images to be optimized and stored locally. This uses a significant amount of disk space.',
+    'Optimize and store all images locally (consumes a significant amount of disk space)',
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
-    'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
+    'Allow Overseerr to correctly register client IP addresses behind a proxy\
+    (Overseerr must be reloaded for changes to take effect)',
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
