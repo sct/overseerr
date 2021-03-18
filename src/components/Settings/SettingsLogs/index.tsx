@@ -265,7 +265,7 @@ const SettingsLogs: React.FC = () => {
                               setCurrentPageSize(Number(e.target.value));
                             }}
                             value={currentPageSize}
-                            className="inline short"
+                            className="inline pr-9 short"
                           >
                             <option value="10">10</option>
                             <option value="25">25</option>

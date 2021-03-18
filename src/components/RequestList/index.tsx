@@ -224,7 +224,7 @@ const RequestList: React.FC = () => {
                         .then(() => window.scrollTo(0, 0));
                     }}
                     value={currentPageSize}
-                    className="inline short"
+                    className="inline pr-9 short"
                   >
                     <option value="5">5</option>
                     <option value="10">10</option>
