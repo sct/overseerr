@@ -3,6 +3,9 @@ import { hasNotificationType, Notification } from '..';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentDiscord } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import { getRepository } from 'typeorm';
+import { User } from '../../../entity/User';
+import { Permission } from '../../permissions';
 
 enum EmbedColors {
   DEFAULT = 0,
@@ -216,13 +219,32 @@ class DiscordAgent
       const mentionedUsers: string[] = [];
       let content = undefined;
 
-      if (
-        payload.notifyUser &&
-        payload.notifyUser.settings?.enableDiscord &&
-        payload.notifyUser.settings?.discordId
-      ) {
-        mentionedUsers.push(payload.notifyUser.settings.discordId);
-        content = `<@${payload.notifyUser.settings.discordId}>`;
+      if (payload.notifyUser) {
+        if (
+          payload.notifyUser.settings?.enableDiscord &&
+          payload.notifyUser.settings?.discordId
+        ) {
+          mentionedUsers.push(payload.notifyUser.settings.discordId);
+          content = `<@${payload.notifyUser.settings.discordId}>`;
+        }
+      } else {
+        const userRepository = getRepository(User);
+        const users = await userRepository.find();
+
+        // Mention all users with the manage requests permission (or admins)
+        users
+          .filter(
+            (user) =>
+              user.hasPermission(Permission.MANAGE_REQUESTS) &&
+              user.settings?.enableDiscord &&
+              user.settings?.discordId
+          )
+          .forEach((user) => {
+            if (user.settings?.enableDiscord && user.settings?.discordId) {
+              mentionedUsers.push(user.settings.discordId);
+              content = `<@${user.settings.discordId}>`;
+            }
+          });
       }
 
       await axios.post(webhookUrl, {
