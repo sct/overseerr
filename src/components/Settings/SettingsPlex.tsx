@@ -126,7 +126,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
     port: Yup.number()
       .typeError(intl.formatMessage(messages.validationPortRequired))
       .required(intl.formatMessage(messages.validationPortRequired)),
-    ),
   });
 
   const activeLibraries =
