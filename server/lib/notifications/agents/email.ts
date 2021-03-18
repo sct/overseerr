@@ -171,7 +171,6 @@ class EmailAgent
               payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
             } has been approved:`,
             mediaName: payload.subject,
-            mediaPlot: payload.message,
             mediaExtra: payload.extra ?? [],
             imageUrl: payload.image,
             timestamp: new Date().toTimeString(),
@@ -228,7 +227,6 @@ class EmailAgent
                 payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
               } has been automatically approved:`,
               mediaName: payload.subject,
-              mediaPlot: payload.message,
               mediaExtra: payload.extra ?? [],
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
@@ -277,7 +275,6 @@ class EmailAgent
               payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
             } was declined:`,
             mediaName: payload.subject,
-            mediaPlot: payload.message,
             mediaExtra: payload.extra ?? [],
             imageUrl: payload.image,
             timestamp: new Date().toTimeString(),
@@ -327,7 +324,6 @@ class EmailAgent
               payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
             } you requested is now available!`,
             mediaName: payload.subject,
-            mediaPlot: payload.message,
             mediaExtra: payload.extra ?? [],
             imageUrl: payload.image,
             timestamp: new Date().toTimeString(),
