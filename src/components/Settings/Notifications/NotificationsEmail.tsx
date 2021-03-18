@@ -73,9 +73,13 @@ const NotificationsEmail: React.FC = () => {
     emailFrom: Yup.string()
       .required(intl.formatMessage(messages.validationEmail))
       .email(intl.formatMessage(messages.validationEmail)),
-    smtpHost: Yup.string().required(
-      intl.formatMessage(messages.validationSmtpHostRequired)
-    ),
+    smtpHost: Yup.string()
+      .required(intl.formatMessage(messages.validationSmtpHostRequired))
+      .matches(
+        // eslint-disable-next-line
+        /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+        intl.formatMessage(messages.validationSmtpHostRequired)
+      ),
     smtpPort: Yup.number().required(
       intl.formatMessage(messages.validationSmtpPortRequired)
     ),

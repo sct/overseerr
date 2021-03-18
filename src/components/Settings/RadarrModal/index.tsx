@@ -91,9 +91,13 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     name: Yup.string().required(
       intl.formatMessage(messages.validationNameRequired)
     ),
-    hostname: Yup.string().required(
-      intl.formatMessage(messages.validationHostnameRequired)
-    ),
+    hostname: Yup.string()
+      .required(intl.formatMessage(messages.validationHostnameRequired))
+      .matches(
+        // eslint-disable-next-line
+        /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+        intl.formatMessage(messages.validationHostnameRequired)
+      ),
     port: Yup.number().required(
       intl.formatMessage(messages.validationPortRequired)
     ),
@@ -312,7 +316,12 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 }
               }}
               secondaryDisabled={
-                !values.apiKey || !values.hostname || !values.port || isTesting
+                !values.apiKey ||
+                !values.hostname ||
+                !values.port ||
+                isTesting ||
+                isSubmitting ||
+                !isValid
               }
               okDisabled={!isValidated || isSubmitting || isTesting || !isValid}
               onOk={() => handleSubmit()}
