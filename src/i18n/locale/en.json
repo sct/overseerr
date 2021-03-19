@@ -453,7 +453,7 @@
   "components.Settings.SettingsJobsCache.unknownJob": "Unknown Job",
   "components.Settings.SettingsLogs.copiedLogMessage": "Copied log message to clipboard.",
   "components.Settings.SettingsLogs.copyToClipboard": "Copy to Clipboard",
-  "components.Settings.SettingsLogs.extraData": "Extra Data",
+  "components.Settings.SettingsLogs.extraData": "Additional Data",
   "components.Settings.SettingsLogs.filterDebug": "Debug",
   "components.Settings.SettingsLogs.filterError": "Error",
   "components.Settings.SettingsLogs.filterInfo": "Info",

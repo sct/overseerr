@@ -42,7 +42,7 @@ const messages = defineMessages({
   viewDetails: 'View Details',
   copyToClipboard: 'Copy to Clipboard',
   logDetails: 'Log Details',
-  extraData: 'Extra Data',
+  extraData: 'Additional Data',
   copiedLogMessage: 'Copied log message to clipboard.',
 });
 
