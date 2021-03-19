@@ -270,7 +270,7 @@ settingsRoutes.get(
 
           const timestamp = line.match(new RegExp(/^.{24}/)) || [];
           const level = line.match(new RegExp(/\s\[\w+\]/)) || [];
-          const label = line.match(new RegExp(/[^\s]\[\w+\s*\w*\]/)) || [];
+          const label = line.match(new RegExp(/\]\[.+\]/)) || [];
           const message = line.match(new RegExp(/:\s([^{}]+)({.*})?/)) || [];
 
           if (level.length && filter.includes(level[0].slice(2, -1))) {
