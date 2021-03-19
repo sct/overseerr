@@ -56,7 +56,9 @@ These settings filter content shown on the "Discover" home page based on regiona
 
 ### Hide Available Media
 
-When enabled, media which is already available will not appear on the "Discover" home page.
+When enabled, media which is already available will not appear on the "Discover" home page, or in the "Recommended" or "Similar" categories or other links on media detail pages.
+
+Available media will still appear in search results, however, so it is possible to locate and view hidden items by searching for them by title.
 
 ### Allow Partial Series Requests
 
