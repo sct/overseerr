@@ -47,7 +47,7 @@ class PushbulletAgent
 
     const title = payload.subject;
     const plot = payload.message;
-    const username = payload.notifyUser.displayName;
+    const username = payload.request?.requestedBy.displayName;
 
     switch (type) {
       case Notification.MEDIA_PENDING:
@@ -120,6 +120,10 @@ class PushbulletAgent
         messageTitle = 'Test Notification';
         message += `${plot}`;
         break;
+    }
+
+    for (const extra of payload.extra ?? []) {
+      message += `\n${extra.name}: ${extra.value}`;
     }
 
     return {

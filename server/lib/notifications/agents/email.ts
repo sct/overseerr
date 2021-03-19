@@ -22,13 +22,12 @@ class EmailAgent
     return settings.notifications.agents.email;
   }
 
-  public shouldSend(type: Notification, payload: NotificationPayload): boolean {
+  public shouldSend(type: Notification): boolean {
     const settings = this.getSettings();
 
     if (
       settings.enabled &&
-      hasNotificationType(type, this.getSettings().types) &&
-      (payload.notifyUser.settings?.enableNotifications ?? true)
+      hasNotificationType(type, this.getSettings().types)
     ) {
       return true;
     }
@@ -45,9 +44,13 @@ class EmailAgent
 
       // Send to all users with the manage requests permission (or admins)
       users
-        .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
+        .filter(
+          (user) =>
+            user.hasPermission(Permission.MANAGE_REQUESTS) &&
+            (user.settings?.enableNotifications ?? true)
+        )
         .forEach((user) => {
-          const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
+          const email = new PreparedEmail(user.settings?.pgpKey);
 
           email.send({
             template: path.join(
@@ -62,9 +65,11 @@ class EmailAgent
                 payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
               }!`,
               mediaName: payload.subject,
+              mediaPlot: payload.message,
+              mediaExtra: payload.extra ?? [],
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
-              requestedBy: payload.notifyUser.displayName,
+              requestedBy: payload.request?.requestedBy.displayName,
               actionUrl: applicationUrl
                 ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
                 : undefined,
@@ -95,9 +100,13 @@ class EmailAgent
 
       // Send to all users with the manage requests permission (or admins)
       users
-        .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
+        .filter(
+          (user) =>
+            user.hasPermission(Permission.MANAGE_REQUESTS) &&
+            (user.settings?.enableNotifications ?? true)
+        )
         .forEach((user) => {
-          const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
+          const email = new PreparedEmail(user.settings?.pgpKey);
 
           email.send({
             template: path.join(
@@ -112,11 +121,12 @@ class EmailAgent
                 payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
               } could not be added to ${
                 payload.media?.mediaType === MediaType.TV ? 'Sonarr' : 'Radarr'
-              }`,
+              }:`,
               mediaName: payload.subject,
+              mediaPlot: payload.message,
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
-              requestedBy: payload.notifyUser.displayName,
+              requestedBy: payload.request?.requestedBy.displayName,
               actionUrl: applicationUrl
                 ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
                 : undefined,
@@ -142,34 +152,41 @@ class EmailAgent
     // This is getting main settings for the whole app
     const { applicationUrl, applicationTitle } = getSettings().main;
     try {
-      const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
+      if (
+        payload.notifyUser &&
+        payload.notifyUser.settings?.enableNotifications
+      ) {
+        const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
-      await email.send({
-        template: path.join(
-          __dirname,
-          '../../../templates/email/media-request'
-        ),
-        message: {
-          to: payload.notifyUser.email,
-        },
-        locals: {
-          body: `Your request for the following ${
-            payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
-          } has been approved:`,
-          mediaName: payload.subject,
-          imageUrl: payload.image,
-          timestamp: new Date().toTimeString(),
-          requestedBy: payload.notifyUser.displayName,
-          actionUrl: applicationUrl
-            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
-            : undefined,
-          applicationUrl,
-          applicationTitle,
-          requestType: `${
-            payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-          } Request Approved`,
-        },
-      });
+        await email.send({
+          template: path.join(
+            __dirname,
+            '../../../templates/email/media-request'
+          ),
+          message: {
+            to: payload.notifyUser.email,
+          },
+          locals: {
+            body: `Your request for the following ${
+              payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+            } has been approved:`,
+            mediaName: payload.subject,
+            mediaExtra: payload.extra ?? [],
+            imageUrl: payload.image,
+            timestamp: new Date().toTimeString(),
+            requestedBy: payload.request?.requestedBy.displayName,
+            actionUrl: applicationUrl
+              ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+              : undefined,
+            applicationUrl,
+            applicationTitle,
+            requestType: `${
+              payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+            } Request Approved`,
+          },
+        });
+      }
+
       return true;
     } catch (e) {
       logger.error('Email notification failed to send', {
@@ -189,7 +206,11 @@ class EmailAgent
 
       // Send to all users with the manage requests permission (or admins)
       users
-        .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
+        .filter(
+          (user) =>
+            user.hasPermission(Permission.MANAGE_REQUESTS) &&
+            (user.settings?.enableNotifications ?? true)
+        )
         .forEach((user) => {
           const email = new PreparedEmail();
 
@@ -206,9 +227,10 @@ class EmailAgent
                 payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
               } has been automatically approved:`,
               mediaName: payload.subject,
+              mediaExtra: payload.extra ?? [],
               imageUrl: payload.image,
               timestamp: new Date().toTimeString(),
-              requestedBy: payload.notifyUser.displayName,
+              requestedBy: payload.request?.requestedBy.displayName,
               actionUrl: applicationUrl
                 ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
                 : undefined,
@@ -234,34 +256,41 @@ class EmailAgent
     // This is getting main settings for the whole app
     const { applicationUrl, applicationTitle } = getSettings().main;
     try {
-      const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
+      if (
+        payload.notifyUser &&
+        payload.notifyUser.settings?.enableNotifications
+      ) {
+        const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
-      await email.send({
-        template: path.join(
-          __dirname,
-          '../../../templates/email/media-request'
-        ),
-        message: {
-          to: payload.notifyUser.email,
-        },
-        locals: {
-          body: `Your request for the following ${
-            payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
-          } was declined:`,
-          mediaName: payload.subject,
-          imageUrl: payload.image,
-          timestamp: new Date().toTimeString(),
-          requestedBy: payload.notifyUser.displayName,
-          actionUrl: applicationUrl
-            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
-            : undefined,
-          applicationUrl,
-          applicationTitle,
-          requestType: `${
-            payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-          } Request Declined`,
-        },
-      });
+        await email.send({
+          template: path.join(
+            __dirname,
+            '../../../templates/email/media-request'
+          ),
+          message: {
+            to: payload.notifyUser.email,
+          },
+          locals: {
+            body: `Your request for the following ${
+              payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+            } was declined:`,
+            mediaName: payload.subject,
+            mediaExtra: payload.extra ?? [],
+            imageUrl: payload.image,
+            timestamp: new Date().toTimeString(),
+            requestedBy: payload.request?.requestedBy.displayName,
+            actionUrl: applicationUrl
+              ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+              : undefined,
+            applicationUrl,
+            applicationTitle,
+            requestType: `${
+              payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+            } Request Declined`,
+          },
+        });
+      }
+
       return true;
     } catch (e) {
       logger.error('Email notification failed to send', {
@@ -276,34 +305,41 @@ class EmailAgent
     // This is getting main settings for the whole app
     const { applicationUrl, applicationTitle } = getSettings().main;
     try {
-      const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
+      if (
+        payload.notifyUser &&
+        payload.notifyUser.settings?.enableNotifications
+      ) {
+        const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
-      await email.send({
-        template: path.join(
-          __dirname,
-          '../../../templates/email/media-request'
-        ),
-        message: {
-          to: payload.notifyUser.email,
-        },
-        locals: {
-          body: `The following ${
-            payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
-          } you requested is now available!`,
-          mediaName: payload.subject,
-          imageUrl: payload.image,
-          timestamp: new Date().toTimeString(),
-          requestedBy: payload.notifyUser.displayName,
-          actionUrl: applicationUrl
-            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
-            : undefined,
-          applicationUrl,
-          applicationTitle,
-          requestType: `${
-            payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-          } Now Available`,
-        },
-      });
+        await email.send({
+          template: path.join(
+            __dirname,
+            '../../../templates/email/media-request'
+          ),
+          message: {
+            to: payload.notifyUser.email,
+          },
+          locals: {
+            body: `The following ${
+              payload.media?.mediaType === MediaType.TV ? 'series' : 'movie'
+            } you requested is now available!`,
+            mediaName: payload.subject,
+            mediaExtra: payload.extra ?? [],
+            imageUrl: payload.image,
+            timestamp: new Date().toTimeString(),
+            requestedBy: payload.request?.requestedBy.displayName,
+            actionUrl: applicationUrl
+              ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
+              : undefined,
+            applicationUrl,
+            applicationTitle,
+            requestType: `${
+              payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+            } Now Available`,
+          },
+        });
+      }
+
       return true;
     } catch (e) {
       logger.error('Email notification failed to send', {
@@ -318,19 +354,22 @@ class EmailAgent
     // This is getting main settings for the whole app
     const { applicationUrl, applicationTitle } = getSettings().main;
     try {
-      const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
+      if (payload.notifyUser) {
+        const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
-      await email.send({
-        template: path.join(__dirname, '../../../templates/email/test-email'),
-        message: {
-          to: payload.notifyUser.email,
-        },
-        locals: {
-          body: payload.message,
-          applicationUrl,
-          applicationTitle,
-        },
-      });
+        await email.send({
+          template: path.join(__dirname, '../../../templates/email/test-email'),
+          message: {
+            to: payload.notifyUser.email,
+          },
+          locals: {
+            body: payload.message,
+            applicationUrl,
+            applicationTitle,
+          },
+        });
+      }
+
       return true;
     } catch (e) {
       logger.error('Email notification failed to send', {

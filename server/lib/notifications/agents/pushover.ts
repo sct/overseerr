@@ -61,7 +61,7 @@ class PushoverAgent
 
     const title = payload.subject;
     const plot = payload.message;
-    const username = payload.notifyUser.displayName;
+    const username = payload.request?.requestedBy.displayName;
 
     switch (type) {
       case Notification.MEDIA_PENDING:
@@ -70,10 +70,10 @@ class PushoverAgent
         } Request`;
         message += `<b>${title}</b>`;
         if (plot) {
-          message += `\n${plot}`;
+          message += `<small>\n${plot}</small>`;
         }
-        message += `\n\n<b>Requested By</b>\n${username}`;
-        message += `\n\n<b>Status</b>\nPending Approval`;
+        message += `<small>\n\n<b>Requested By</b>\n${username}</small>`;
+        message += `<small>\n\n<b>Status</b>\nPending Approval</small>`;
         break;
       case Notification.MEDIA_APPROVED:
         messageTitle = `${
@@ -81,10 +81,10 @@ class PushoverAgent
         } Request Approved`;
         message += `<b>${title}</b>`;
         if (plot) {
-          message += `\n${plot}`;
+          message += `<small>\n${plot}</small>`;
         }
-        message += `\n\n<b>Requested By</b>\n${username}`;
-        message += `\n\n<b>Status</b>\nProcessing`;
+        message += `<small>\n\n<b>Requested By</b>\n${username}</small>`;
+        message += `<small>\n\n<b>Status</b>\nProcessing</small>`;
         break;
       case Notification.MEDIA_AUTO_APPROVED:
         messageTitle = `${
@@ -92,10 +92,10 @@ class PushoverAgent
         } Request Automatically Approved`;
         message += `<b>${title}</b>`;
         if (plot) {
-          message += `\n${plot}`;
+          message += `<small>\n${plot}</small>`;
         }
-        message += `\n\n<b>Requested By</b>\n${username}`;
-        message += `\n\n<b>Status</b>\nProcessing`;
+        message += `<small>\n\n<b>Requested By</b>\n${username}</small>`;
+        message += `<small>\n\n<b>Status</b>\nProcessing</small>`;
         break;
       case Notification.MEDIA_AVAILABLE:
         messageTitle = `${
@@ -103,10 +103,10 @@ class PushoverAgent
         } Now Available`;
         message += `<b>${title}</b>`;
         if (plot) {
-          message += `\n${plot}`;
+          message += `<small>\n${plot}</small>`;
         }
-        message += `\n\n<b>Requested By</b>\n${username}`;
-        message += `\n\n<b>Status</b>\nAvailable`;
+        message += `<small>\n\n<b>Requested By</b>\n${username}</small>`;
+        message += `<small>\n\n<b>Status</b>\nAvailable</small>`;
         break;
       case Notification.MEDIA_DECLINED:
         messageTitle = `${
@@ -114,10 +114,10 @@ class PushoverAgent
         } Request Declined`;
         message += `<b>${title}</b>`;
         if (plot) {
-          message += `\n${plot}`;
+          message += `<small>\n${plot}</small>`;
         }
-        message += `\n\n<b>Requested By</b>\n${username}`;
-        message += `\n\n<b>Status</b>\nDeclined`;
+        message += `<small>\n\n<b>Requested By</b>\n${username}</small>`;
+        message += `<small>\n\n<b>Status</b>\nDeclined</small>`;
         priority = 1;
         break;
       case Notification.MEDIA_FAILED:
@@ -126,16 +126,20 @@ class PushoverAgent
         } Request`;
         message += `<b>${title}</b>`;
         if (plot) {
-          message += `\n${plot}`;
+          message += `<small>\n${plot}</small>`;
         }
-        message += `\n\n<b>Requested By</b>\n${username}`;
-        message += `\n\n<b>Status</b>\nFailed`;
+        message += `<small>\n\n<b>Requested By</b>\n${username}</small>`;
+        message += `<small>\n\n<b>Status</b>\nFailed</small>`;
         priority = 1;
         break;
       case Notification.TEST_NOTIFICATION:
         messageTitle = 'Test Notification';
-        message += `${plot}`;
+        message += `<small>${plot}</small>`;
         break;
+    }
+
+    for (const extra of payload.extra ?? []) {
+      message += `<small>\n\n<b>${extra.name}</b>\n${extra.value}</small>`;
     }
 
     if (settings.main.applicationUrl && payload.media) {

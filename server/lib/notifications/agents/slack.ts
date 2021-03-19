@@ -67,7 +67,9 @@ class SlackAgent
     if (payload.request) {
       fields.push({
         type: 'mrkdwn',
-        text: `*Requested By*\n${payload.notifyUser.displayName ?? ''}`,
+        text: `*Requested By*\n${
+          payload.request?.requestedBy.displayName ?? ''
+        }`,
       });
     }
 
@@ -129,6 +131,13 @@ class SlackAgent
       case Notification.TEST_NOTIFICATION:
         header = 'Test Notification';
         break;
+    }
+
+    for (const extra of payload.extra ?? []) {
+      fields.push({
+        type: 'mrkdwn',
+        text: `*${extra.name}*\n${extra.value}`,
+      });
     }
 
     if (settings.main.applicationUrl && payload.media) {
