@@ -28,6 +28,7 @@
     "bowser": "^2.11.0",
     "connect-typeorm": "^1.1.4",
     "cookie-parser": "^1.4.5",
+    "copy-to-clipboard": "^3.3.1",
     "country-flag-icons": "^1.2.9",
     "csurf": "^1.11.0",
     "email-templates": "^8.0.3",

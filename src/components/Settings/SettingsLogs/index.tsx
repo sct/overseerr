@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import copy from 'copy-to-clipboard';
 import useSWR from 'swr';
 import {
   LogMessage,
@@ -13,6 +14,9 @@ import PageTitle from '../../Common/PageTitle';
 import Table from '../../Common/Table';
 import globalMessages from '../../../i18n/globalMessages';
 import { useRouter } from 'next/router';
+import Modal from '../../Common/Modal';
+import Transition from '../../Transition';
+import { useToasts } from 'react-toast-notifications';
 
 const messages = defineMessages({
   logs: 'Logs',
@@ -35,6 +39,10 @@ const messages = defineMessages({
   previous: 'Previous',
   pauseLogs: 'Pause',
   resumeLogs: 'Resume',
+  viewDetails: 'View Details',
+  copyToClipboard: 'Copy to Clipboard',
+  logDetails: 'Log Details',
+  extraData: 'Extra Data',
 });
 
 type Filter = 'debug' | 'info' | 'warn' | 'error';
@@ -42,9 +50,11 @@ type Filter = 'debug' | 'info' | 'warn' | 'error';
 const SettingsLogs: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
+  const { addToast } = useToasts();
   const [currentFilter, setCurrentFilter] = useState<Filter>('debug');
   const [currentPageSize, setCurrentPageSize] = useState(25);
   const [refreshInterval, setRefreshInterval] = useState(5000);
+  const [activeLog, setActiveLog] = useState<LogMessage | null>(null);
 
   const page = router.query.page ? Number(router.query.page) : 1;
   const pageIndex = page - 1;
@@ -86,6 +96,18 @@ const SettingsLogs: React.FC = () => {
     );
   }, [currentFilter, currentPageSize]);
 
+  const copyLogString = (log: LogMessage): void => {
+    copy(
+      `${log.timestamp} [${log.level}]${log.label ? `[${log.label}]` : ''}: ${
+        log.message
+      }${log.data ? `${JSON.stringify(log.data)}` : ''}`
+    );
+    addToast('Copied log message to clipboard.', {
+      appearance: 'success',
+      autoDismiss: true,
+    });
+  };
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -105,6 +127,101 @@ const SettingsLogs: React.FC = () => {
           intl.formatMessage(globalMessages.settings),
         ]}
       />
+      <Transition
+        enter="opacity-0 transition duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="opacity-100 transition duration-300"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+        appear
+        show={!!activeLog}
+      >
+        <Modal
+          title={intl.formatMessage(messages.logDetails)}
+          onCancel={() => setActiveLog(null)}
+          cancelText={intl.formatMessage(globalMessages.close)}
+          onOk={() => (activeLog ? copyLogString(activeLog) : undefined)}
+          okText={intl.formatMessage(messages.copyToClipboard)}
+          okButtonType="primary"
+        >
+          {activeLog && (
+            <>
+              <div className="form-row">
+                <div className="text-label">
+                  {intl.formatMessage(messages.time)}
+                </div>
+                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                  <div className="flex items-center max-w-lg">
+                    {intl.formatDate(activeLog.timestamp, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: '2-digit',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric',
+                    })}
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="text-label">
+                  {intl.formatMessage(messages.level)}
+                </div>
+                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                  <div className="flex items-center max-w-lg">
+                    <Badge
+                      badgeType={
+                        activeLog.level === 'error'
+                          ? 'danger'
+                          : activeLog.level === 'warn'
+                          ? 'warning'
+                          : activeLog.level === 'info'
+                          ? 'success'
+                          : 'default'
+                      }
+                    >
+                      {activeLog.level.toUpperCase()}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="text-label">
+                  {intl.formatMessage(messages.label)}
+                </div>
+                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                  <div className="flex items-center max-w-lg">
+                    {activeLog.label}
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="text-label">
+                  {intl.formatMessage(messages.message)}
+                </div>
+                <div className="col-span-2 mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                  <div className="flex items-center max-w-lg">
+                    {activeLog.message}
+                  </div>
+                </div>
+              </div>
+              {activeLog.data && (
+                <div className="form-row">
+                  <div className="text-label">
+                    {intl.formatMessage(messages.extraData)}
+                  </div>
+                  <div className="col-span-2 mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                    <code className="block w-full px-6 py-4 overflow-auto whitespace-pre bg-gray-800 ring-1 ring-gray-700 max-h-64">
+                      {JSON.stringify(activeLog.data, null, ' ')}
+                    </code>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </Modal>
+      </Transition>
       <div className="mb-2">
         <h3 className="heading">{intl.formatMessage(messages.logs)}</h3>
         <p className="description">
@@ -118,13 +235,44 @@ const SettingsLogs: React.FC = () => {
         <div className="flex flex-row flex-grow mt-2 sm:flex-grow-0 sm:justify-end">
           <div className="flex flex-row justify-between flex-1 mb-2 sm:mb-0 sm:flex-none">
             <Button
-              className="flex-grow w-full mr-2 sm:w-24"
+              className="flex-grow w-full mr-2"
               buttonType={refreshInterval ? 'default' : 'primary'}
               onClick={() => toggleLogs()}
             >
-              {intl.formatMessage(
-                refreshInterval ? messages.pauseLogs : messages.resumeLogs
-              )}
+              <span>
+                {refreshInterval ? (
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
+              </span>
+              <span>
+                {intl.formatMessage(
+                  refreshInterval ? messages.pauseLogs : messages.resumeLogs
+                )}
+              </span>
             </Button>
           </div>
           <div className="flex flex-1 mb-2 sm:mb-0 sm:flex-none">
@@ -174,6 +322,7 @@ const SettingsLogs: React.FC = () => {
               <Table.TH>{intl.formatMessage(messages.level)}</Table.TH>
               <Table.TH>{intl.formatMessage(messages.label)}</Table.TH>
               <Table.TH>{intl.formatMessage(messages.message)}</Table.TH>
+              <Table.TH></Table.TH>
             </tr>
           </thead>
           <Table.TBody>
@@ -207,6 +356,31 @@ const SettingsLogs: React.FC = () => {
                   </Table.TD>
                   <Table.TD className="text-gray-300">{row.label}</Table.TD>
                   <Table.TD className="text-gray-300">{row.message}</Table.TD>
+                  <Table.TD className="flex items-center justify-end">
+                    <Button
+                      buttonType="primary"
+                      buttonSize="sm"
+                      onClick={() => setActiveLog(row)}
+                      className="mr-2"
+                    >
+                      {intl.formatMessage(messages.viewDetails)}
+                    </Button>
+                    <Button
+                      buttonType="primary"
+                      buttonSize="sm"
+                      onClick={() => copyLogString(row)}
+                    >
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z" />
+                        <path d="M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z" />
+                      </svg>
+                    </Button>
+                  </Table.TD>
                 </tr>
               );
             })}

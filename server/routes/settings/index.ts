@@ -271,14 +271,18 @@ settingsRoutes.get(
           const timestamp = line.match(new RegExp(/^.{24}/)) || [];
           const level = line.match(new RegExp(/\s\[\w+\]/)) || [];
           const label = line.match(new RegExp(/[^\s]\[\w+\s*\w*\]/)) || [];
-          const message = line.match(new RegExp(/:\s.*/)) || [];
+          const message = line.match(new RegExp(/:\s([^{}]+)({.*})?/)) || [];
 
           if (level.length && filter.includes(level[0].slice(2, -1))) {
             logs.push({
               timestamp: timestamp[0],
               level: level.length ? level[0].slice(2, -1) : '',
               label: label.length ? label[0].slice(2, -1) : '',
-              message: message.length ? message[0].slice(2) : '',
+              message: message.length && message[1] ? message[1] : '',
+              data:
+                message.length && message[2]
+                  ? JSON.parse(message[2])
+                  : undefined,
             });
           }
         });

@@ -5,6 +5,7 @@ export type LogMessage = {
   level: string;
   label: string;
   message: string;
+  data?: Record<string, unknown>;
 };
 
 export interface LogsResultsResponse extends PaginatedResponse {
