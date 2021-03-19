@@ -33,6 +33,12 @@ const networks: Network[] = [
     url: '/discover/tv/network/1024',
   },
   {
+    name: 'Apple TV+',
+    image:
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/4KAy34EHvRM25Ih8wb82AuGU7zJ.png',
+    url: '/discover/tv/network/2552',
+  },
+  {
     name: 'HBO',
     image:
       'http://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/tuomPhY2UtuPTqqFnKMVHvSb724.png',
