@@ -941,5 +941,10 @@
   "components.Settings.SettingsAbout.about": "Om",
   "components.ResetPassword.passwordreset": "Återställning av lösenord",
   "components.Settings.cacheImagesTip": "Optimera och lagra alla bilder lokalt (använder en betydande mängd diskutrymme)",
-  "components.Settings.cacheImages": "Aktivera bild-cachning"
+  "components.Settings.cacheImages": "Aktivera bild-cachning",
+  "components.Settings.SettingsLogs.viewDetails": "Visa detaljer",
+  "components.Settings.SettingsLogs.logDetails": "Logginformation",
+  "components.Settings.SettingsLogs.extraData": "Extra Data",
+  "components.Settings.SettingsLogs.copyToClipboard": "Kopiera till urklipp",
+  "components.Settings.SettingsLogs.copiedLogMessage": "Kopierat loggmeddelande till urklipp."
 }
