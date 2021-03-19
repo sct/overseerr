@@ -17,7 +17,13 @@ const messages = defineMessages({
   sortModified: 'Last Modified',
 });
 
-type Filter = 'all' | 'pending' | 'approved' | 'processing' | 'available';
+type Filter =
+  | 'all'
+  | 'pending'
+  | 'approved'
+  | 'processing'
+  | 'available'
+  | 'unavailable';
 type Sort = 'added' | 'modified';
 
 const RequestList: React.FC = () => {
@@ -46,6 +52,11 @@ const RequestList: React.FC = () => {
       setCurrentFilter(filterSettings.currentFilter);
       setCurrentSort(filterSettings.currentSort);
       setCurrentPageSize(filterSettings.currentPageSize);
+    }
+
+    // If filter value is provided in query, use that instead
+    if (router.query.filter) {
+      setCurrentFilter(router.query.filter as Filter);
     }
   }, []);
 
@@ -117,6 +128,9 @@ const RequestList: React.FC = () => {
               </option>
               <option value="available">
                 {intl.formatMessage(globalMessages.available)}
+              </option>
+              <option value="unavailable">
+                {intl.formatMessage(messages.filterUnavailable)}
               </option>
             </select>
           </div>

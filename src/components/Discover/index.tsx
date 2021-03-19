@@ -63,7 +63,7 @@ const Discover: React.FC = () => {
         ))}
       />
       <div className="slider-header">
-        <Link href="/requests">
+        <Link href="/requests?filter=unavailable">
           <a className="slider-title">
             <span>{intl.formatMessage(messages.recentrequests)}</span>
             <svg
