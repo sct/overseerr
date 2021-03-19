@@ -79,7 +79,7 @@ h1 > .media-year {
 }
 
 .media-actions {
-  @apply relative z-10 flex flex-wrap items-center justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap xl:mt-0;
+  @apply relative flex flex-wrap items-center justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap xl:mt-0;
 }
 
 .media-actions > * {
