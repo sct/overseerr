@@ -83,7 +83,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
     <span className="relative inline-flex h-full rounded-md shadow-sm">
       <button
         type="button"
-        className={`relative inline-flex h-full items-center px-4 py-2 text-sm leading-5 font-medium focus:outline-none transition ease-in-out duration-150 ${
+        className={`relative inline-flex h-full items-center px-4 py-2 text-sm leading-5 font-medium z-10 hover:z-20 focus:z-20 focus:outline-none transition ease-in-out duration-150 ${
           styleClasses.mainButtonClasses
         } ${children ? 'rounded-l-md' : 'rounded-md'} ${className}`}
         ref={buttonRef}
@@ -95,7 +95,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
         <span className="relative block -ml-px">
           <button
             type="button"
-            className={`relative inline-flex items-center h-full px-2 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out rounded-r-md ${styleClasses.dropdownSideButtonClasses}`}
+            className={`relative inline-flex items-center h-full px-2 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out rounded-r-md z-10 hover:z-20 focus:z-20 ${styleClasses.dropdownSideButtonClasses}`}
             aria-label="Expand"
             onClick={() => setIsOpen((state) => !state)}
           >
