@@ -416,7 +416,7 @@
   "components.Settings.SettingsAbout.Releases.runningDevelop": "開發版本",
   "components.Settings.SettingsAbout.Releases.releases": "軟體版本",
   "components.Slider.noresults": "沒有結果。",
-  "components.Settings.plexsettings": "Plex 設定",
+  "components.Settings.plexsettings": "Plex 設置",
   "components.RequestModal.selectseason": "季數選擇",
   "components.RequestModal.requesttitle": "為 {title} 提交請求",
   "components.RequestModal.requestseasons": "提交請求",
@@ -539,7 +539,7 @@
   "components.MovieDetails.markavailable": "標記為可觀看",
   "components.TvDetails.downloadstatus": "下載狀態",
   "components.TvDetails.areyousure": "確定嗎？",
-  "components.Settings.settingUpPlex": "設置 Plex",
+  "components.Settings.settingUpPlex": "配置您的 Plex 伺服器",
   "components.Settings.RadarrModal.syncEnabled": "啟用掃描",
   "i18n.experimental": "實驗性",
   "components.UserList.bulkedit": "批量編輯",
@@ -811,7 +811,7 @@
   "components.Settings.manualscanDescription": "在正常情況下，Overseerr 會每24小時掃描您的 Plex 媒體庫。最新添加的媒體將更頻繁掃描。設置新的 Plex 伺服器時，我們建議您執行一次手動掃描！",
   "components.UserProfile.UserSettings.UserGeneralSettings.languageServerDefault": "默認（{language}）",
   "components.RegionSelector.regionServerDefault": "默認（{region}）",
-  "components.Settings.settingUpPlexDescription": "關於 Plex 伺服器的設置。您可以手動輸入資料或從 <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink> 返回的設置做選擇以及自動配置。請點下拉式選單右邊的按鈕測試連線。",
+  "components.Settings.settingUpPlexDescription": "您可以手動輸入您的 Plex 伺服器資料，或從 <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink> 返回的設置做選擇以及自動配置。請點下拉式選單右邊的按鈕測試連線。",
   "components.Settings.sonarrSettingsDescription": "關於 Sonarr 伺服器的設置。伺服器數沒有最大值限制，但您只能指定兩個伺服器為默認（一個非 4K、一個 4K）。",
   "components.Settings.radarrSettingsDescription": "關於 Radarr 伺服器的設置。伺服器數沒有最大值限制，但您只能指定兩個伺服器為默認（一個非 4K、一個 4K）。",
   "components.Settings.plexlibrariesDescription": "Overseerr 將掃描的媒體庫。",
@@ -943,5 +943,10 @@
   "components.Settings.SettingsAbout.about": "關於 Overseerr",
   "components.Settings.cacheImages": "啟用圖像緩存",
   "components.Settings.SettingsLogs.logsDescription": "日誌檔案位置：<code>{configDir}/logs/overseerr.log</code>",
-  "components.Settings.cacheImagesTip": "把所有的圖像優化和保存到快取記憶體（需要大量的磁碟空間）"
+  "components.Settings.cacheImagesTip": "把所有的圖像優化和保存到快取記憶體（需要大量的磁碟空間）",
+  "components.Settings.SettingsLogs.logDetails": "日誌詳細信息",
+  "components.Settings.SettingsLogs.extraData": "附加數據",
+  "components.Settings.SettingsLogs.viewDetails": "查看",
+  "components.Settings.SettingsLogs.copyToClipboard": "複製到剪貼板",
+  "components.Settings.SettingsLogs.copiedLogMessage": "日誌訊息已複製到剪貼板。"
 }
