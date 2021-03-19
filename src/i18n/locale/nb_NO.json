@@ -302,5 +302,6 @@
   "pages.pageNotFound": "404 - Fant ikke siden",
   "pages.returnHome": "Helt tilbake",
   "pages.serviceUnavailable": "{statusCode} - Tjenesten er utilgjengelig",
-  "pages.somethingWentWrong": "{statusCode} - Noe gikk galt"
+  "pages.somethingWentWrong": "{statusCode} - Noe gikk galt",
+  "pages.errormessagewithcode": "{statusCode} - {error}"
 }

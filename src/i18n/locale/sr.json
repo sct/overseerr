@@ -348,5 +348,6 @@
   "components.Discover.popularmovies": "Popularni Filmovi",
   "components.Discover.nopending": "Nema zahteva na čekanju",
   "components.Discover.discovertv": "Popularne Serije",
-  "components.Discover.discovermovies": "Popunarni Filmov"
+  "components.Discover.discovermovies": "Popunarni Filmov",
+  "pages.errormessagewithcode": "{statusCode} - {error}"
 }

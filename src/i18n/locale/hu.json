@@ -339,5 +339,6 @@
   "components.NotificationTypeSelector.mediarequestedDescription": "Értesítést küld új kérések elküldésekor.",
   "components.PermissionEdit.viewrequests": "Kérések megtekintése",
   "components.Discover.discover": "Felfedezés",
-  "components.Login.forgotpassword": "Elfelejtett jelszó?"
+  "components.Login.forgotpassword": "Elfelejtett jelszó?",
+  "pages.errormessagewithcode": "{statusCode} - {error}"
 }
