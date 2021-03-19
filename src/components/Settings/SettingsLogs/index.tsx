@@ -43,6 +43,7 @@ const messages = defineMessages({
   copyToClipboard: 'Copy to Clipboard',
   logDetails: 'Log Details',
   extraData: 'Extra Data',
+  copiedLogMessage: 'Copied log message to clipboard.',
 });
 
 type Filter = 'debug' | 'info' | 'warn' | 'error';
@@ -102,7 +103,7 @@ const SettingsLogs: React.FC = () => {
         log.message
       }${log.data ? `${JSON.stringify(log.data)}` : ''}`
     );
-    addToast('Copied log message to clipboard.', {
+    addToast(intl.formatMessage(messages.copiedLogMessage), {
       appearance: 'success',
       autoDismiss: true,
     });
