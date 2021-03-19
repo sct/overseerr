@@ -503,5 +503,6 @@
   "components.MovieDetails.downloadstatus": "Статус загрузки",
   "components.TvDetails.downloadstatus": "Статус загрузки",
   "components.StatusChacker.reloadOverseerr": "Перезагрузить Overseerr",
-  "components.StatusBadge.status4k": "4K {status}"
+  "components.StatusBadge.status4k": "4K {status}",
+  "pages.errormessagewithcode": "{statusCode} - {error}"
 }
