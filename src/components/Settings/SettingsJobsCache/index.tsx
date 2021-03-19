@@ -175,6 +175,7 @@ const SettingsJobs: React.FC = () => {
                           1000
                       )}
                       updateIntervalInSeconds={1}
+                      numeric="auto"
                     />
                   </div>
                 </Table.TD>

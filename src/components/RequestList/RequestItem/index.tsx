@@ -292,6 +292,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                               1000
                           )}
                           updateIntervalInSeconds={1}
+                          numeric="auto"
                         />
                       ),
                       user: (
