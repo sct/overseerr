@@ -349,8 +349,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 !values.hostname ||
                 !values.port ||
                 isTesting ||
-                isSubmitting ||
-                !isValid
+                isSubmitting
               }
               okDisabled={!isValidated || isSubmitting || isTesting || !isValid}
               onOk={() => handleSubmit()}
