@@ -30,7 +30,7 @@ const messages = defineMessages({
   servernamePlaceholder: 'A Radarr Server',
   hostname: 'Hostname or IP Address',
   port: 'Port',
-  ssl: 'SSL',
+  ssl: 'Enable SSL',
   apiKey: 'API Key',
   apiKeyPlaceholder: 'Your Radarr API key',
   baseUrl: 'Base URL',

@@ -30,7 +30,7 @@ const messages = defineMessages({
   servernamePlaceholder: 'A Sonarr Server',
   hostname: 'Hostname or IP Address',
   port: 'Port',
-  ssl: 'SSL',
+  ssl: 'Enable SSL',
   apiKey: 'API Key',
   apiKeyPlaceholder: 'Your Sonarr API key',
   baseUrl: 'Base URL',

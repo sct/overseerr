@@ -209,6 +209,7 @@ const NotificationsEmail: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="emailFrom" className="text-label">
                   {intl.formatMessage(messages.emailsender)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -242,6 +243,7 @@ const NotificationsEmail: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="smtpHost" className="text-label">
                   {intl.formatMessage(messages.smtpHost)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -260,6 +262,7 @@ const NotificationsEmail: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="smtpPort" className="text-label">
                   {intl.formatMessage(messages.smtpPort)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <Field
@@ -380,6 +383,7 @@ const NotificationsEmail: React.FC = () => {
                 <div className="form-row">
                   <span id="group-label" className="group-label">
                     {intl.formatMessage(messages.notificationtypes)}
+                    <span className="label-required">*</span>
                   </span>
                   <div className="form-input">
                     <div className="max-w-lg">
