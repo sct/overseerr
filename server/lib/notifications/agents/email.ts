@@ -154,7 +154,7 @@ class EmailAgent
     try {
       if (
         payload.notifyUser &&
-        (payload.notifyUser.settings?.enableNotifications ?? true)
+        (payload.notifyUser.settings?.enableEmail ?? true)
       ) {
         const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
@@ -258,7 +258,7 @@ class EmailAgent
     try {
       if (
         payload.notifyUser &&
-        (payload.notifyUser.settings?.enableNotifications ?? true)
+        (payload.notifyUser.settings?.enableEmail ?? true)
       ) {
         const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
@@ -307,7 +307,7 @@ class EmailAgent
     try {
       if (
         payload.notifyUser &&
-        (payload.notifyUser.settings?.enableNotifications ?? true)
+        (payload.notifyUser.settings?.enableEmail ?? true)
       ) {
         const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 

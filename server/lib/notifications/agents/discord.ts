@@ -217,7 +217,7 @@ class DiscordAgent
       }
 
       const mentionedUsers: string[] = [];
-      let content = undefined;
+      let content = '';
 
       if (payload.notifyUser) {
         if (
@@ -233,16 +233,11 @@ class DiscordAgent
 
         // Mention all users with the manage requests permission (or admins)
         users
-          .filter(
-            (user) =>
-              user.hasPermission(Permission.MANAGE_REQUESTS) &&
-              user.settings?.enableDiscord &&
-              user.settings?.discordId
-          )
+          .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
           .forEach((user) => {
             if (user.settings?.enableDiscord && user.settings?.discordId) {
               mentionedUsers.push(user.settings.discordId);
-              content = `<@${user.settings.discordId}>`;
+              content += `<@${user.settings.discordId}> `;
             }
           });
       }
