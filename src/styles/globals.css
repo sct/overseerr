@@ -234,9 +234,12 @@ select.rounded-r-only {
   @apply rounded-l-none;
 }
 
-input.short,
-select.short {
+input.short {
   width: 4.875rem;
+}
+
+select.short {
+  @apply w-min;
 }
 
 .protocol {
