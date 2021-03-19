@@ -395,6 +395,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "notorius28",
+      "name": "Ricardo González",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1621513?v=4",
+      "profile": "https://github.com/notorius28",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
