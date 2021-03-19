@@ -12,6 +12,7 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import Table from '../../Common/Table';
 import globalMessages from '../../../i18n/globalMessages';
+import { useRouter } from 'next/router';
 
 const messages = defineMessages({
   logs: 'Logs',
@@ -39,11 +40,14 @@ const messages = defineMessages({
 type Filter = 'debug' | 'info' | 'warn' | 'error';
 
 const SettingsLogs: React.FC = () => {
+  const router = useRouter();
   const intl = useIntl();
-  const [pageIndex, setPageIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState<Filter>('debug');
   const [currentPageSize, setCurrentPageSize] = useState(25);
   const [refreshInterval, setRefreshInterval] = useState(5000);
+
+  const page = router.query.page ? Number(router.query.page) : 1;
+  const pageIndex = page - 1;
 
   const toggleLogs = () => {
     setRefreshInterval(refreshInterval === 5000 ? 0 : 5000);
@@ -142,8 +146,8 @@ const SettingsLogs: React.FC = () => {
               id="filter"
               name="filter"
               onChange={(e) => {
-                setPageIndex(0);
                 setCurrentFilter(e.target.value as Filter);
+                router.push(router.pathname);
               }}
               value={currentFilter}
               className="rounded-r-only"
@@ -184,7 +188,6 @@ const SettingsLogs: React.FC = () => {
                       hour: 'numeric',
                       minute: 'numeric',
                       second: 'numeric',
-                      hour12: false,
                     })}
                   </Table.TD>
                   <Table.TD className="text-gray-300">
@@ -261,8 +264,10 @@ const SettingsLogs: React.FC = () => {
                             id="pageSize"
                             name="pageSize"
                             onChange={(e) => {
-                              setPageIndex(0);
                               setCurrentPageSize(Number(e.target.value));
+                              router
+                                .push(router.pathname)
+                                .then(() => window.scrollTo(0, 0));
                             }}
                             value={currentPageSize}
                             className="inline short"
@@ -279,13 +284,33 @@ const SettingsLogs: React.FC = () => {
                   <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
                     <Button
                       disabled={!hasPrevPage}
-                      onClick={() => setPageIndex((current) => current - 1)}
+                      onClick={() =>
+                        router
+                          .push(
+                            `${router.pathname}?page=${page - 1}`,
+                            undefined,
+                            {
+                              shallow: true,
+                            }
+                          )
+                          .then(() => window.scrollTo(0, 0))
+                      }
                     >
                       {intl.formatMessage(messages.previous)}
                     </Button>
                     <Button
                       disabled={!hasNextPage}
-                      onClick={() => setPageIndex((current) => current + 1)}
+                      onClick={() =>
+                        router
+                          .push(
+                            `${router.pathname}?page=${page + 1}`,
+                            undefined,
+                            {
+                              shallow: true,
+                            }
+                          )
+                          .then(() => window.scrollTo(0, 0))
+                      }
                     >
                       {intl.formatMessage(messages.next)}
                     </Button>
