@@ -53,6 +53,7 @@ const messages = defineMessages({
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
     '* This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
+  originaltitle: 'Original Title',
   showtype: 'Series Type',
   anime: 'Anime',
   network: '{networkCount, plural, one {Network} other {Networks}}',
@@ -613,6 +614,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     {data.voteAverage}/10
                   </span>
                 )}
+              </div>
+            )}
+            {data.originalName && data.originalLanguage !== locale.slice(0, 2) && (
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.originaltitle)}</span>
+                <span className="media-fact-value">{data.originalName}</span>
               </div>
             )}
             {data.keywords.some(

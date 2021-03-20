@@ -35,6 +35,7 @@ import Slider from '../Slider';
 import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
+  originaltitle: 'Original Title',
   releasedate: 'Release Date',
   revenue: 'Revenue',
   budget: 'Budget',
@@ -601,6 +602,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 )}
               </div>
             )}
+            {data.originalTitle &&
+              data.originalLanguage !== locale.slice(0, 2) && (
+                <div className="media-fact">
+                  <span>{intl.formatMessage(messages.originaltitle)}</span>
+                  <span className="media-fact-value">{data.originalTitle}</span>
+                </div>
+              )}
             <div className="media-fact">
               <span>{intl.formatMessage(globalMessages.status)}</span>
               <span className="media-fact-value">{data.status}</span>
