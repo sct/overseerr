@@ -25,7 +25,7 @@ This setting is disabled by default.
 ### Enable CSRF Protection
 
 {% hint style="danger" %}
-DO NOT ENABLE THIS SETTING UNLESS YOU UNDERSTAND WHAT YOU ARE DOING!
+**DO _NOT_ ENABLE THIS SETTING UNLESS YOU UNDERSTAND WHAT YOU ARE DOING!**
 {% endhint %}
 
 CSRF stands for **Cross-Site Request Forgery**. When this setting is enabled, all external API access that alters Overseerr application data is blocked.
@@ -41,12 +41,12 @@ This setting is disabled by default.
 ### Enable Image Caching
 
 {% hint style="danger" %}
-This feature is experimental. Enable it at your own risk!
+**This feature is experimental.** Enable it at your own risk!
 {% endhint %}
 
 When enabled, all images (including media posters from TMDb) will be cached locally on your server. Images will also be optimized for client devices; i.e., if you access Overseerr using a mobile device, smaller versions will be served compared to when accessing Overseerr on desktop.
 
-Note that this feature requires and will use a significant amount of disk space!
+Note that this feature requires and will use a significant amount of disk space! The cached images are stored in `/app/.next/cache/images`.
 
 This setting is disabled by default.
 
@@ -82,11 +82,103 @@ Select the permissions you would like new users to have by default. It is import
 
 ## Plex
 
-This section of the documentation is not yet complete. Please check back later!
+### Plex Settings
+
+{% hint style="info" %}
+To set up Plex, you can either enter your details manually or select a server retrieved from [plex.tv](https://plex.tv/). Press the button to the right of the "Server" dropdown to retrieve available servers.
+
+Depending on your setup/configuration, you may need to enter your Plex server details manually in order to establish a connection from Overseerr.
+{% endhint %}
+
+#### Server Name
+
+This value is automatically retrieved from Plex, and cannot be edited manually in Overseerr.
+
+#### Hostname or IP Address
+
+If you have Overseerr installed on the same network as Plex, you can set this to the local IP address of your Plex server. Otherwise, this should be set to a valid hostname (e.g., `plex.myawesomeserver.com`).
+
+#### Port
+
+This value should be set to the port that your Plex server listens on. The default port that Plex uses is `32400`, but you may need to set this to `443` or some other value if your Plex server is hosted on a VPS or cloud provider.
+
+#### SSL
+
+Tick this box to connect to Plex via HTTPS rather than HTTP. Note that self-signed certificates are **not** supported.
+
+### Plex Libraries
+
+In this section, simply select the libraries you would like Overseerr to scan. Overseerr will periodically check the selected libraries for available content to update the media status that is displayed to users.
+
+If you do not see your Plex libraries listed, verify your Plex settings and then click the "Scan Plex Libraries" button.
+
+### Manual Library Scan
+
+Overseerr will perform a full scan of your Plex libraries once every 24 hours (recently added items are fetched more frequently). If this is your first time configuring Plex, a one-time full manual library scan is recommended!
 
 ## Services
 
-This section of the documentation is not yet complete. Please check back later!
+{% hint style="info" %}
+If you keep both non-4K and 4K content in your media libraries, you will need to set up multiple Radarr/Sonarr instances and link each of them to Overseerr.
+
+Overseerr checks these linked servers to determine whether or not media has already been requested or is available, so two servers of each type are required _if you keep separate non-4K and 4K copies of media_.
+
+If you only maintain one copy of media, you can instead simply set up one server and set the "Quality Profile" setting on a per-request basis.
+{% endhint %}
+
+### Radarr/Sonarr Settings
+
+#### Default Server
+
+At least one server needs to be marked as "Default" in order for requests to Radarr/Sonarr.
+
+#### 4K Server
+
+Only select this option if you have separate non-4K and 4K servers.
+
+#### Server Name
+
+Enter a friendly name for the Radarr/Sonarr server.
+
+#### Hostname or IP Address
+
+If you have Overseerr installed on the same network as Radarr/Sonarr, you can set this to the local IP address of your Radarr/Sonarr server. Otherwise, this should be set to a valid hostname (e.g., `radarr.myawesomeserver.com`).
+
+#### Port
+
+This value should be set to the port that your Radarr/Sonarr server listens on. By default, Radarr uses port `7878` and Sonarr uses port `8989`, but you may need to set this to `443` or some other value if your Radarr/Sonarr server is hosted on a VPS or cloud provider.
+
+#### SSL
+
+Tick this box to connect to Radarr/Sonarr via HTTPS rather than HTTP. Note that self-signed certificates are **not** supported.
+
+#### API Key
+
+Enter your Radarr/Sonarr API key here. Do **not** share these key publicly, as they can be used to gain administrator access to your Radarr/Sonarr servers!
+
+You can locate the required API keys in Radarr/Sonarr in **Settings &rarr; General &rarr; Security**.
+
+#### Base URL
+
+If you have configured a base URL for Radarr/Sonarr, you **must** enter it here in order for Overseerr to connect to those services!
+
+You can verify whether or not you have a base URL configured in Radarr/Sonarr in **Settings &rarr; General &rarr; Host**. (Note that a restart of your Radarr/Sonarr servers is required if you modify this setting!)
+
+#### Profiles, Root Folder, Minimum Availability
+
+Select the default settings you would like to use for all new requests. Note that all of these options are required, and that requests will fail if any of these are not configured!
+
+#### External URL
+
+If the hostname or IP address you configured above is not accessible outside your network, you can set a different URL here. This "external" URL is used to add clickable links to your Radarr/Sonarr servers on media detail pages.
+
+#### Enable Scan
+
+Tick this box if you would like to scan your Radarr/Sonarr server for existing media/request status. It is recommended that you enable this setting, so that users cannot submit requests for media which has already been requested or is already available.
+
+#### Disable Auto-Search
+
+If you do not want Radarr/Sonarr to automatically search for media upon submission of a request, you can disable this setting.
 
 ## Notifications
 
