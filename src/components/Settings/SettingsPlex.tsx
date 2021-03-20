@@ -45,7 +45,7 @@ const messages = defineMessages({
     Press the button to the right of the dropdown to check connectivity and retrieve available servers.',
   hostname: 'Hostname or IP Address',
   port: 'Port',
-  ssl: 'SSL',
+  enablessl: 'Enable SSL',
   timeout: 'Timeout',
   save: 'Save Changes',
   saving: 'Saving…',
@@ -466,6 +466,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               <div className="form-row">
                 <label htmlFor="hostname" className="text-label">
                   {intl.formatMessage(messages.hostname)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -488,6 +489,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               <div className="form-row">
                 <label htmlFor="port" className="text-label">
                   {intl.formatMessage(messages.port)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <Field
@@ -504,7 +506,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </div>
               <div className="form-row">
                 <label htmlFor="ssl" className="checkbox-label">
-                  {intl.formatMessage(messages.ssl)}
+                  {intl.formatMessage(messages.enablessl)}
                 </label>
                 <div className="form-input">
                   <Field

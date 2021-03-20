@@ -35,7 +35,7 @@ const messages = defineMessages({
   activeProfile: 'Active Profile',
   addradarr: 'Add Radarr Server',
   addsonarr: 'Add Sonarr Server',
-  nodefault: 'No default server selected!',
+  nodefault: 'No Default Server',
   nodefaultdescription:
     'At least one server must be marked as default before any requests will make it to your services.',
 });

@@ -173,6 +173,7 @@ const NotificationsWebhook: React.FC = () => {
             <div className="form-row">
               <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.webhookUrl)}
+                <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
@@ -196,6 +197,7 @@ const NotificationsWebhook: React.FC = () => {
             <div className="form-row">
               <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.customJson)}
+                <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
@@ -265,6 +267,7 @@ const NotificationsWebhook: React.FC = () => {
                   <div>
                     <div id="group-label" className="group-label">
                       {intl.formatMessage(messages.notificationtypes)}
+                      <span className="label-required">*</span>
                     </div>
                   </div>
                   <div className="form-input">
