@@ -27,7 +27,7 @@ const PersonDetails: React.FC = () => {
   const { locale } = useContext(LanguageContext);
   const router = useRouter();
   const { data, error } = useSWR<PersonDetail>(
-    `/api/v1/person/${router.query.personId}`
+    `/api/v1/person/${router.query.personId}?language=${locale}`
   );
   const [showBio, setShowBio] = useState(false);
 
