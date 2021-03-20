@@ -180,7 +180,7 @@ CoreApp.getInitialProps = async (initialProps) => {
         );
         user = response.data;
 
-        if (router.pathname.match(/login/)) {
+        if (router.pathname.match(/(setup|login)/)) {
           ctx.res.writeHead(307, {
             Location: '/',
           });
