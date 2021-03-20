@@ -39,7 +39,7 @@
   "components.Discover.upcomingmovies": "Upcoming Movies",
   "components.Discover.upcomingtv": "Upcoming Series",
   "components.Layout.LanguagePicker.changelanguage": "Change Language",
-  "components.Layout.SearchInput.searchPlaceholder": "Search Movies & TV",
+  "components.Layout.SearchInput.searchPlaceholder": "Search for Movies, Series, or People…",
   "components.Layout.Sidebar.dashboard": "Discover",
   "components.Layout.Sidebar.requests": "Requests",
   "components.Layout.Sidebar.settings": "Settings",

@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import ClearButton from '../../../assets/xcircle.svg';
 
 const messages = defineMessages({
-  searchPlaceholder: 'Search Movies & TV',
+  searchPlaceholder: 'Search for Movies, Series, or People…',
 });
 
 const SearchInput: React.FC = () => {
