@@ -490,7 +490,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       </div>
       <div className="media-overview">
         <div className="media-overview-left">
-          <div className="tagline">{data.tagline}</div>
+          {data.tagline && <div className="tagline">{data.tagline}</div>}
           <h2>{intl.formatMessage(messages.overview)}</h2>
           <p>
             {data.overview
