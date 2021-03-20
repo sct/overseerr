@@ -46,7 +46,6 @@ const messages = defineMessages({
   recommendations: 'Recommendations',
   similar: 'Similar Series',
   watchtrailer: 'Watch Trailer',
-  overviewunavailable: 'Overview unavailable.',
   manageModalTitle: 'Manage Series',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No Requests',
@@ -528,58 +527,60 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       <div className="media-overview">
         <div className="media-overview-left">
           {data.tagline && <div className="tagline">{data.tagline}</div>}
-          <h2>{intl.formatMessage(messages.overview)}</h2>
-          <p>
-            {data.overview
-              ? data.overview
-              : intl.formatMessage(messages.overviewunavailable)}
-          </p>
-          <ul className="media-crew">
-            {(data.createdBy.length > 0
-              ? [
-                  ...data.createdBy.map(
-                    (person): Partial<Crew> => ({
-                      id: person.id,
-                      job: 'Creator',
-                      name: person.name,
-                    })
-                  ),
-                  ...sortedCrew,
-                ]
-              : sortedCrew
-            )
-              .slice(0, 6)
-              .map((person) => (
-                <li key={`crew-${person.job}-${person.id}`}>
-                  <span>{person.job}</span>
-                  <Link href={`/person/${person.id}`}>
-                    <a className="crew-name">{person.name}</a>
-                  </Link>
-                </li>
-              ))}
-          </ul>
+          {data.overview && (
+            <>
+              <h2>{intl.formatMessage(messages.overview)}</h2>
+              <p>{data.overview}</p>
+            </>
+          )}
           {sortedCrew.length > 0 && (
-            <div className="flex justify-end mt-4">
-              <Link href={`/tv/${data.id}/crew`}>
-                <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
-                  <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                  <svg
-                    className="inline-block w-5 h-5 ml-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </div>
+            <>
+              <ul className="media-crew">
+                {(data.createdBy.length > 0
+                  ? [
+                      ...data.createdBy.map(
+                        (person): Partial<Crew> => ({
+                          id: person.id,
+                          job: 'Creator',
+                          name: person.name,
+                        })
+                      ),
+                      ...sortedCrew,
+                    ]
+                  : sortedCrew
+                )
+                  .slice(0, 6)
+                  .map((person) => (
+                    <li key={`crew-${person.job}-${person.id}`}>
+                      <span>{person.job}</span>
+                      <Link href={`/person/${person.id}`}>
+                        <a className="crew-name">{person.name}</a>
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+              <div className="flex justify-end mt-4">
+                <Link href={`/tv/${data.id}/crew`}>
+                  <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
+                    <span>{intl.formatMessage(messages.viewfullcrew)}</span>
+                    <svg
+                      className="inline-block w-5 h-5 ml-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </a>
+                </Link>
+              </div>
+            </>
           )}
         </div>
         <div className="media-overview-right">
