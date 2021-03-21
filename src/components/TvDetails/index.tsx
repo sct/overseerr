@@ -39,7 +39,6 @@ import StatusBadge from '../StatusBadge';
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
   nextAirDate: 'Next Air Date',
-  userrating: 'User Rating',
   status: 'Status',
   originallanguage: 'Original Language',
   overview: 'Overview',

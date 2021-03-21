@@ -35,7 +35,6 @@ import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
-  userrating: 'User Rating',
   status: 'Status',
   revenue: 'Revenue',
   budget: 'Budget',
