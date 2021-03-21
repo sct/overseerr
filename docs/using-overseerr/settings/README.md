@@ -130,11 +130,13 @@ If you only maintain one copy of media, you can instead simply set up one server
 
 #### Default Server
 
-At least one server needs to be marked as "Default" in order for requests to Radarr/Sonarr.
+At least one server needs to be marked as "Default" in order for requests to be sent successfully to Radarr/Sonarr.
+
+If you have separate 4K Radarr/Sonarr servers, you need to designate default 4K servers _in addition to_ default non-4K servers.
 
 #### 4K Server
 
-Only select this option if you have separate non-4K and 4K servers.
+Only select this option if you have separate non-4K and 4K servers. If you only have a single Radarr/Sonarr server, do **not** check this box!
 
 #### Server Name
 
