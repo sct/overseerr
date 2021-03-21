@@ -1,9 +1,18 @@
 # Email
 
 {% hint style="info" %}
-**Media Requested**, **Media Automatically Approved**, and **Media Failed** email notifications are sent to _all_ users with the **Manage Requests** permission, as these notification types are intended for application administrators rather than end users.
+The following email notification types are sent to _all_ users with the **Manage Requests** permission, as these notification types are intended for application administrators rather than end users:
 
-**Media Approved**, **Media Declined**, and **Media Available** email notifications are sent to the user who submitted the request.
+- Media Requested
+- Media Automatically Approved
+- Media Failed
+
+On the other hand, the email notification types below are only sent to the user who submitted the request:
+
+- Media Approved
+- Media Declined
+- Media Available
+
 {% endhint %}
 
 ## Configuration
@@ -11,6 +20,8 @@
 ## Sender Address (required)
 
 Set this to the email address you would like to appear in the "from" field of the email message.
+
+Depending on your email provider, this may need to be an address you own. For example, Gmail requires this to be your actual email address.
 
 ## Sender Name (optional)
 
@@ -26,11 +37,15 @@ Set this to a supported port number for your SMTP host. `465` and `587` are comm
 
 ## Enable SSL (optional)
 
-If using an SMTP serves which supports [STARTTLS](https://en.wikipedia.org/wiki/Opportunistic_TLS), this should **not** be enabled. If you configured the SMTP port as `587`, you should leave this unchecked in most cases.
+This setting should only be enabled for ports that use [implicit SSL/TLS](https://tools.ietf.org/html/rfc8314) (e.g., port `465` in most cases).
 
-This setting should only be enabled to establish secure connections for hosts which do not support STARTTLS.
+For servers that support [opportunistic TLS/STARTTLS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (typically via port `587`), this setting should **not** be enabled.
 
 ## SMTP Username & Password
+
+{% hint style="info" %}
+If your account has two-factor authentication enabled, you may need to create an application password instead of using your account password.
+{% endhint %}
 
 Configure these values as appropriate to authenticate with your SMTP host.
 

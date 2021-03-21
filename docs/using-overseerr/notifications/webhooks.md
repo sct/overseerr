@@ -10,7 +10,11 @@ The URL you would like to post notifications to. Your JSON will be sent as the b
 
 ### Authorization Header (optional)
 
-Custom authorization header. Anything entered for this will be sent as an `Authorization` header.
+{% hint style="info" %}
+This is typically not needed. Please refer to your webhook provider's documentation for details.
+{% endhint %}
+
+This value will be sent as an `Authorization` HTTP header.
 
 ### JSON Payload (required)
 
