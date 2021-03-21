@@ -96,13 +96,11 @@ const PersonDetails: React.FC = () => {
             month: 'long',
             day: 'numeric',
           }),
-          deathdate: data.deathday
-            ? intl.formatDate(data.deathday, {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })
-            : null,
+          deathdate: intl.formatDate(data.deathday, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
         })
       );
     } else {
