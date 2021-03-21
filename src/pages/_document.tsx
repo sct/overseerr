@@ -1,12 +1,12 @@
-import React from 'react';
 import Document, {
-  Html,
-  Head,
-  Main,
-  NextScript,
   DocumentContext,
   DocumentInitialProps,
+  Head,
+  Html,
+  Main,
+  NextScript,
 } from 'next/document';
+import React from 'react';
 
 class MyDocument extends Document {
   static async getInitialProps(
@@ -38,6 +38,11 @@ class MyDocument extends Document {
             type="image/png"
             sizes="16x16"
             href="/favicon-16x16.png"
+          />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
           />
           <link rel="manifest" href="/site.webmanifest"></link>
         </Head>

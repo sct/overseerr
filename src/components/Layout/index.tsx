@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import SearchInput from './SearchInput';
-import UserDropdown from './UserDropdown';
-import Sidebar from './Sidebar';
-import LanguagePicker from './LanguagePicker';
 import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Permission, useUser } from '../../hooks/useUser';
+import LanguagePicker from './LanguagePicker';
+import SearchInput from './SearchInput';
+import Sidebar from './Sidebar';
+import UserDropdown from './UserDropdown';
 
 const messages = defineMessages({
   alphawarning:
@@ -37,14 +37,14 @@ const Layout: React.FC = ({ children }) => {
 
   return (
     <div className="flex h-full min-w-0 min-h-full bg-gray-900">
-      <div className="absolute w-full h-64 from-gray-800 to-gray-900 bg-gradient-to-bl">
+      <div className="absolute top-0 w-full h-64 from-gray-800 to-gray-900 bg-gradient-to-bl">
         <div className="relative inset-0 w-full h-full from-gray-900 to-transparent bg-gradient-to-t" />
       </div>
       <Sidebar open={isSidebarOpen} setClosed={() => setSidebarOpen(false)} />
 
       <div className="relative flex flex-col flex-1 w-0 min-w-0 mb-16 md:ml-64">
         <div
-          className={`fixed left-0 right-0 z-10 flex flex-shrink-0 h-16 bg-opacity-80 transition duration-300 ${
+          className={`searchbar fixed left-0 right-0 top-0 z-10 flex flex-shrink-0 bg-opacity-80 transition duration-300 ${
             isScrolled ? 'bg-gray-700' : 'bg-transparent'
           } md:left-64`}
           style={{

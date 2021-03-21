@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import Transition from '../../Transition';
 import { useLockBodyScroll } from '../../../hooks/useLockBodyScroll';
+import Transition from '../../Transition';
 
 interface SlideOverProps {
   show?: boolean;
@@ -70,7 +70,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex flex-col h-full overflow-y-scroll bg-gray-700 shadow-xl">
-                  <header className="px-4 py-6 space-y-1 bg-indigo-600">
+                  <header className="px-4 space-y-1 bg-indigo-600 slideover">
                     <div className="flex items-center justify-between space-x-3">
                       <h2 className="text-lg font-medium leading-7 text-white">
                         {title}

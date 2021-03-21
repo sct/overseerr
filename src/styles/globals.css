@@ -3,8 +3,41 @@
 @tailwind utilities;
 @tailwind screens;
 
+html {
+  min-height: calc(100% + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
 body {
   @apply bg-gray-900;
+}
+
+.searchbar {
+  padding-top: env(safe-area-inset-top);
+  height: calc(4rem + env(safe-area-inset-top));
+}
+
+.sidebar {
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+}
+
+.slideover {
+  padding-top: calc(1.5rem + env(safe-area-inset-top));
+  padding-bottom: 1.5rem;
+}
+
+.sidebar-close-button {
+  top: env(safe-area-inset-top);
+}
+
+.absolute-top-shift {
+  top: calc(-4rem - env(safe-area-inset-top));
+}
+
+.min-h-screen-shift {
+  min-height: calc(100vh + env(safe-area-inset-top));
 }
 
 .plex-button {
@@ -42,7 +75,9 @@ a.slider-title {
 }
 
 .media-page {
-  @apply relative px-4 pt-16 -mx-4 -mt-16 bg-center bg-cover;
+  @apply relative px-4 -mx-4 bg-center bg-cover;
+  margin-top: calc(-4rem - env(safe-area-inset-top));
+  padding-top: calc(4rem + env(safe-area-inset-top));
 }
 
 .media-page-bg-image {

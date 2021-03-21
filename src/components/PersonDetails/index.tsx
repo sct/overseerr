@@ -1,19 +1,19 @@
+import { groupBy } from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useContext, useMemo, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import TruncateMarkup from 'react-truncate-markup';
 import useSWR from 'swr';
-import type { PersonDetail } from '../../../server/models/Person';
 import type { PersonCombinedCreditsResponse } from '../../../server/interfaces/api/personInterfaces';
-import Error from '../../pages/_error';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import TitleCard from '../TitleCard';
-import { defineMessages, useIntl } from 'react-intl';
-import { LanguageContext } from '../../context/LanguageContext';
-import ImageFader from '../Common/ImageFader';
+import type { PersonDetail } from '../../../server/models/Person';
 import Ellipsis from '../../assets/ellipsis.svg';
-import { groupBy } from 'lodash';
-import PageTitle from '../Common/PageTitle';
+import { LanguageContext } from '../../context/LanguageContext';
+import Error from '../../pages/_error';
 import CachedImage from '../Common/CachedImage';
+import ImageFader from '../Common/ImageFader';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import PageTitle from '../Common/PageTitle';
+import TitleCard from '../TitleCard';
 
 const messages = defineMessages({
   appearsin: 'Appearances',
@@ -166,7 +166,7 @@ const PersonDetails: React.FC = () => {
     <>
       <PageTitle title={data.name} />
       {(sortedCrew || sortedCast) && (
-        <div className="absolute left-0 right-0 z-0 -top-16 h-96">
+        <div className="absolute top-0 left-0 right-0 z-0 h-96">
           <ImageFader
             isDarker
             backgroundImages={[...(sortedCast ?? []), ...(sortedCrew ?? [])]

@@ -1,8 +1,8 @@
 import React, {
-  useState,
-  useEffect,
-  HTMLAttributes,
   ForwardRefRenderFunction,
+  HTMLAttributes,
+  useEffect,
+  useState,
 } from 'react';
 import CachedImage from '../CachedImage';
 
@@ -59,7 +59,7 @@ const ImageFader: ForwardRefRenderFunction<HTMLDivElement, ImageFaderProps> = (
       {backgroundImages.map((imageUrl, i) => (
         <div
           key={`banner-image-${i}`}
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-300 ease-in ${
+          className={`absolute absolute-top-shift inset-0 bg-cover bg-center transition-opacity duration-300 ease-in ${
             i === activeIndex ? 'opacity-100' : 'opacity-0'
           }`}
           {...props}
