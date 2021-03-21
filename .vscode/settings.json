@@ -14,5 +14,8 @@
       "name": "Local SQLite",
       "database": "./config/db/db.sqlite3"
     }
-  ]
+  ],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  }
 }
