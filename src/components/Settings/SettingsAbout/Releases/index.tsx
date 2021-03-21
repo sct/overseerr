@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import useSWR from 'swr';
+import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
+import useSWR from 'swr';
+import globalMessages from '../../../../i18n/globalMessages';
 import Alert from '../../../Common/Alert';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
+import LoadingSpinner from '../../../Common/LoadingSpinner';
 import Modal from '../../../Common/Modal';
 import Transition from '../../../Transition';
-import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
-import globalMessages from '../../../../i18n/globalMessages';
 
 const messages = defineMessages({
   releases: 'Releases',
@@ -20,8 +20,7 @@ const messages = defineMessages({
   viewchangelog: 'View Changelog',
   runningDevelop: 'Development Version',
   runningDevelopMessage:
-    'The latest changes to the <code>develop</code> branch of Overseerr are not shown below.\
-    Please see the commit history for this branch on <GithubLink>GitHub</GithubLink> for details.',
+    'The latest changes to the <code>develop</code> branch of Overseerr are not shown below. Please see the commit history for this branch on <GithubLink>GitHub</GithubLink> for details.',
 });
 
 const REPO_RELEASE_API =

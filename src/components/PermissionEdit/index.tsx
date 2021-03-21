@@ -1,7 +1,7 @@
 import React from 'react';
-import PermissionOption, { PermissionItem } from '../PermissionOption';
+import { defineMessages, useIntl } from 'react-intl';
 import { Permission, User } from '../../hooks/useUser';
-import { useIntl, defineMessages } from 'react-intl';
+import PermissionOption, { PermissionItem } from '../PermissionOption';
 
 export const messages = defineMessages({
   admin: 'Admin',
@@ -9,18 +9,15 @@ export const messages = defineMessages({
     'Full administrator access. Bypasses all other permission checks.',
   users: 'Manage Users',
   usersDescription:
-    'Grant permission to manage Overseerr users.\
-    Users with this permission cannot modify users with or grant the Admin privilege.',
+    'Grant permission to manage Overseerr users. Users with this permission cannot modify users with or grant the Admin privilege.',
   settings: 'Manage Settings',
   settingsDescription:
-    'Grant permission to modify all Overseerr settings.\
-    A user must have this permission to grant it to others.',
+    'Grant permission to modify all Overseerr settings. A user must have this permission to grant it to others.',
   managerequests: 'Manage Requests',
   managerequestsDescription:
-    'Grant permission to manage Overseerr requests (includes approving and denying requests).\
-    All requests made by a user with this permission will be automatically approved.',
+    'Grant permission to manage Overseerr requests (includes approving and denying requests). All requests made by a user with this permission will be automatically approved.',
   request: 'Request',
-  requestDescription: 'Grants permission to request movies and series.',
+  requestDescription: 'Grant permission to request movies and series.',
   vote: 'Vote',
   voteDescription:
     'Grant permission to vote on requests (voting not yet implemented).',

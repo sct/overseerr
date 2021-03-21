@@ -1,19 +1,19 @@
-import React, { useMemo } from 'react';
-import useSWR from 'swr';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import type { MainSettings, Language } from '../../../server/lib/settings';
-import CopyButton from './CopyButton';
-import { Form, Formik, Field } from 'formik';
 import axios from 'axios';
-import Button from '../Common/Button';
+import { Field, Form, Formik } from 'formik';
+import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useUser, Permission } from '../../hooks/useUser';
 import { useToasts } from 'react-toast-notifications';
-import Badge from '../Common/Badge';
-import globalMessages from '../../i18n/globalMessages';
+import useSWR from 'swr';
 import * as Yup from 'yup';
-import RegionSelector from '../RegionSelector';
+import type { Language, MainSettings } from '../../../server/lib/settings';
+import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
+import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
+import RegionSelector from '../RegionSelector';
+import CopyButton from './CopyButton';
 
 const messages = defineMessages({
   general: 'General',
@@ -36,8 +36,7 @@ const messages = defineMessages({
   hideAvailable: 'Hide Available Media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
-    'Set external API access to read-only\
-    (requires HTTPS, and Overseerr must be reloaded for changes to take effect)',
+    'Set external API access to read-only (requires HTTPS, and Overseerr must be reloaded for changes to take effect)',
   csrfProtectionHoverTip:
     'Do NOT enable this setting unless you understand what you are doing!',
   cacheImages: 'Enable Image Caching',
@@ -45,8 +44,7 @@ const messages = defineMessages({
     'Optimize and store all images locally (consumes a significant amount of disk space)',
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
-    'Allow Overseerr to correctly register client IP addresses behind a proxy\
-    (Overseerr must be reloaded for changes to take effect)',
+    'Allow Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',

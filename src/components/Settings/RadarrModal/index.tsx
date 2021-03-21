@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Transition from '../../Transition';
-import Modal from '../../Common/Modal';
-import { Formik, Field } from 'formik';
-import type { RadarrSettings } from '../../../../server/lib/settings';
-import * as Yup from 'yup';
 import axios from 'axios';
-import { useToasts } from 'react-toast-notifications';
+import { Field, Formik } from 'formik';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
+import * as Yup from 'yup';
+import type { RadarrSettings } from '../../../../server/lib/settings';
+import Modal from '../../Common/Modal';
+import Transition from '../../Transition';
 
 const messages = defineMessages({
   createradarr: 'Add New Radarr Server',
@@ -16,8 +16,9 @@ const messages = defineMessages({
   validationPortRequired: 'You must provide a valid port number',
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
-  validationProfileRequired: 'You must select a profile',
-  validationMinimumAvailabilityRequired: 'You must select minimum availability',
+  validationProfileRequired: 'You must select a quality profile',
+  validationMinimumAvailabilityRequired:
+    'You must select a minimum availability',
   toastRadarrTestSuccess: 'Radarr connection established successfully!',
   toastRadarrTestFailure: 'Failed to connect to Radarr.',
   saving: 'Saving…',

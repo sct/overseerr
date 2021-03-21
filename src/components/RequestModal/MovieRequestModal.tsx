@@ -1,40 +1,40 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import Modal from '../Common/Modal';
-import { useUser } from '../../hooks/useUser';
-import { Permission } from '../../../server/lib/permissions';
-import { defineMessages, useIntl } from 'react-intl';
-import { MediaRequest } from '../../../server/entity/MediaRequest';
-import useSWR from 'swr';
-import { MovieDetails } from '../../../server/models/Movie';
-import { useToasts } from 'react-toast-notifications';
 import axios from 'axios';
+import React, { useCallback, useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
 import {
-  MediaStatus,
   MediaRequestStatus,
+  MediaStatus,
 } from '../../../server/constants/media';
+import { MediaRequest } from '../../../server/entity/MediaRequest';
+import { Permission } from '../../../server/lib/permissions';
+import { MovieDetails } from '../../../server/models/Movie';
 import DownloadIcon from '../../assets/download.svg';
-import Alert from '../Common/Alert';
-import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
+import { useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
+import Alert from '../Common/Alert';
+import Modal from '../Common/Modal';
+import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 
 const messages = defineMessages({
   requestadmin: 'Your request will be immediately approved.',
   cancelrequest:
     'This will remove your request. Are you sure you want to continue?',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
-  requestCancel: 'Request for <strong>{title}</strong> canceled',
+  requestCancel: 'Request for <strong>{title}</strong> canceled.',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
   close: 'Close',
   cancel: 'Cancel Request',
   cancelling: 'Canceling…',
-  pendingrequest: 'Pending request for {title}',
-  pending4krequest: 'Pending request for {title} in 4K',
+  pendingrequest: 'Pending Request for {title}',
+  pending4krequest: 'Pending Request for {title} in 4K',
   requesting: 'Requesting…',
   request: 'Request',
   request4k: 'Request 4K',
-  requestfrom: 'There is a pending request from {username}.',
-  request4kfrom: 'There is a pending 4K request from {username}.',
+  requestfrom: 'There is currently a pending request from {username}.',
+  request4kfrom: 'There is currently a pending 4K request from {username}.',
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request edited.',
   autoapproval: 'Automatic Approval',

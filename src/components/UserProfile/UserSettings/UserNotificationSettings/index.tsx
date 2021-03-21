@@ -5,22 +5,22 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import * as Yup from 'yup';
+import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import { useUser } from '../../../../hooks/useUser';
+import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';
+import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import * as Yup from 'yup';
-import Badge from '../../../Common/Badge';
-import globalMessages from '../../../../i18n/globalMessages';
-import { PgpLink } from '../../../Settings/Notifications/NotificationsEmail';
 import PageTitle from '../../../Common/PageTitle';
+import { PgpLink } from '../../../Settings/Notifications/NotificationsEmail';
 
 const messages = defineMessages({
   notifications: 'Notifications',
   notificationsettings: 'Notification Settings',
   enableNotifications: 'Enable Notifications',
-  discordId: 'Discord User ID',
+  discordId: 'Discord ID',
   discordIdTip:
     'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your Discord user account',
   validationDiscordId: 'You must provide a valid Discord user ID',

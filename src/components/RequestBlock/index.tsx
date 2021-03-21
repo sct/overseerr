@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import { useIntl, defineMessages } from 'react-intl';
-import Badge from '../Common/Badge';
-import { MediaRequestStatus } from '../../../server/constants/media';
-import Button from '../Common/Button';
 import axios from 'axios';
-import globalMessages from '../../i18n/globalMessages';
-import RequestModal from '../RequestModal';
+import React, { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import { MediaRequestStatus } from '../../../server/constants/media';
+import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import useRequestOverride from '../../hooks/useRequestOverride';
+import globalMessages from '../../i18n/globalMessages';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
+import RequestModal from '../RequestModal';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   requestoverrides: 'Request Overrides',
-  server: 'Server',
-  profilechanged: 'Profile Changed',
+  server: 'Destination Server',
+  profilechanged: 'Quality Profile',
   rootfolder: 'Root Folder',
 });
 

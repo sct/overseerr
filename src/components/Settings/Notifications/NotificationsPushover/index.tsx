@@ -1,13 +1,13 @@
-import React from 'react';
-import { Field, Form, Formik } from 'formik';
-import useSWR from 'swr';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import Button from '../../../Common/Button';
-import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
-import * as Yup from 'yup';
+import { Field, Form, Formik } from 'formik';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import * as Yup from 'yup';
 import Alert from '../../../Common/Alert';
+import Button from '../../../Common/Button';
+import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
@@ -24,9 +24,7 @@ const messages = defineMessages({
   test: 'Test',
   settinguppushover: 'Setting Up Pushover Notifications',
   settinguppushoverDescription:
-    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below.\
-    (You can use one of our <IconLink>official icons on GitHub</IconLink>.)\
-    You will also need your user key.',
+    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below. (You can use one of our <IconLink>official icons on GitHub</IconLink>.) You will also need your user key.',
   notificationtypes: 'Notification Types',
 });
 

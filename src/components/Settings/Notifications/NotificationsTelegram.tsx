@@ -1,13 +1,13 @@
-import React from 'react';
-import { Field, Form, Formik } from 'formik';
-import useSWR from 'swr';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import Button from '../../Common/Button';
-import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
-import * as Yup from 'yup';
+import { Field, Form, Formik } from 'formik';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import * as Yup from 'yup';
 import Alert from '../../Common/Alert';
+import Button from '../../Common/Button';
+import LoadingSpinner from '../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
@@ -25,9 +25,7 @@ const messages = defineMessages({
   test: 'Test',
   settinguptelegram: 'Setting Up Telegram Notifications',
   settinguptelegramDescription:
-    'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key.\
-    Additionally, you will need the chat ID for the chat to which you would like to send notifications.\
-    You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
+    'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key. Additionally, you will need the chat ID for the chat to which you would like to send notifications. You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
   notificationtypes: 'Notification Types',
   sendSilently: 'Send Silently',
   sendSilentlyTip: 'Send notifications with no sound',

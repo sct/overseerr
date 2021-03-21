@@ -5,15 +5,15 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import * as Yup from 'yup';
+import useSettings from '../../../../hooks/useSettings';
 import { Permission, useUser } from '../../../../hooks/useUser';
+import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';
 import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import * as Yup from 'yup';
-import useSettings from '../../../../hooks/useSettings';
 import PageTitle from '../../../Common/PageTitle';
-import globalMessages from '../../../../i18n/globalMessages';
 
 const messages = defineMessages({
   password: 'Password',
@@ -34,11 +34,9 @@ const messages = defineMessages({
   validationConfirmPasswordSame: 'Passwords must match',
   nopasswordset: 'No Password Set',
   nopasswordsetDescription:
-    'This user account currently does not have a password specifically for {applicationTitle}.\
-    Configure a password below to enable this account to sign in as a "local user."',
+    'This user account currently does not have a password specifically for {applicationTitle}. Configure a password below to enable this account to sign in as a "local user."',
   nopasswordsetDescriptionOwnAccount:
-    'Your account currently does not have a password specifically for {applicationTitle}.\
-    Configure a password below to enable sign in as a "local user" using your email address.',
+    'Your account currently does not have a password specifically for {applicationTitle}. Configure a password below to enable sign in as a "local user" using your email address.',
   nopermission: 'Unauthorized',
   nopermissionDescription:
     "You do not have permission to modify this user's password.",
