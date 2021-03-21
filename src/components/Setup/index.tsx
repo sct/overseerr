@@ -63,7 +63,11 @@ const Setup: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
-        <img src="/logo.png" className="max-w-full sm:max-w-md" alt="Logo" />
+        <img
+          src="/logo.png"
+          className="max-w-full sm:max-w-md sm:mx-auto"
+          alt="Logo"
+        />
         <AppDataWarning />
         <nav className="relative z-50">
           <ul
