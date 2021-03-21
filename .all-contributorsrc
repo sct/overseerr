@@ -404,6 +404,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "Torkiliuz",
+      "name": "Torkil",
+      "avatar_url": "https://avatars.githubusercontent.com/u/460764?v=4",
+      "profile": "http://torkili.uz",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
