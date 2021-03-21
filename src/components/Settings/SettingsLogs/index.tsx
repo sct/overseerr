@@ -1,22 +1,22 @@
+import copy from 'copy-to-clipboard';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import copy from 'copy-to-clipboard';
+import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import {
   LogMessage,
   LogsResultsResponse,
 } from '../../../../server/interfaces/api/settingsInterfaces';
+import globalMessages from '../../../i18n/globalMessages';
 import Error from '../../../pages/_error';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
+import Modal from '../../Common/Modal';
 import PageTitle from '../../Common/PageTitle';
 import Table from '../../Common/Table';
-import globalMessages from '../../../i18n/globalMessages';
-import { useRouter } from 'next/router';
-import Modal from '../../Common/Modal';
 import Transition from '../../Transition';
-import { useToasts } from 'react-toast-notifications';
 
 const messages = defineMessages({
   logs: 'Logs',
@@ -358,14 +358,16 @@ const SettingsLogs: React.FC = () => {
                   <Table.TD className="text-gray-300">{row.label}</Table.TD>
                   <Table.TD className="text-gray-300">{row.message}</Table.TD>
                   <Table.TD className="flex items-center justify-end">
-                    <Button
-                      buttonType="primary"
-                      buttonSize="sm"
-                      onClick={() => setActiveLog(row)}
-                      className="mr-2"
-                    >
-                      {intl.formatMessage(messages.viewDetails)}
-                    </Button>
+                    {row.data && (
+                      <Button
+                        buttonType="primary"
+                        buttonSize="sm"
+                        onClick={() => setActiveLog(row)}
+                        className="mr-2"
+                      >
+                        {intl.formatMessage(messages.viewDetails)}
+                      </Button>
+                    )}
                     <Button
                       buttonType="primary"
                       buttonSize="sm"
