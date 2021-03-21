@@ -107,7 +107,7 @@ const Release: React.FC<ReleaseProps> = ({
               (new Date(release.created_at).getTime() - Date.now()) / 1000
             )}
             updateIntervalInSeconds={1}
-            numeric="always"
+            numeric="auto"
           />
         </span>
         <span className="text-lg">{release.name}</span>

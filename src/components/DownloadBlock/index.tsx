@@ -64,6 +64,7 @@ const DownloadBlock: React.FC<DownloadBlockProps> = ({
                   1000
               )}
               updateIntervalInSeconds={1}
+              numeric="auto"
             />
           ) : (
             'N/A'
