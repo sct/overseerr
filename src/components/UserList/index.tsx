@@ -29,7 +29,8 @@ const messages = defineMessages({
   importfromplex: 'Import Users from Plex',
   importfromplexerror: 'Something went wrong while importing users from Plex.',
   importedfromplex:
-    '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex successfully!',
+    '{userCount, plural, one {# new user} other {# new users}} imported from Plex successfully!',
+  nouserstoimport: 'No new users to import from Plex.',
   user: 'User',
   totalrequests: 'Total Requests',
   accounttype: 'Account Type',
@@ -171,9 +172,11 @@ const UserList: React.FC = () => {
         '/api/v1/user/import-from-plex'
       );
       addToast(
-        intl.formatMessage(messages.importedfromplex, {
-          userCount: createdUsers.length,
-        }),
+        createdUsers.length
+          ? intl.formatMessage(messages.importedfromplex, {
+              userCount: createdUsers.length,
+            })
+          : intl.formatMessage(messages.nouserstoimport),
         {
           autoDismiss: true,
           appearance: 'success',
