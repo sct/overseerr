@@ -1955,10 +1955,10 @@
     lodash.merge "^4.6.2"
     lodash.uniq "^4.5.0"
 
-"@tanem/react-nprogress@^3.0.58":
-  version "3.0.58"
-  resolved "https://registry.yarnpkg.com/@tanem/react-nprogress/-/react-nprogress-3.0.58.tgz#dcfdfdfd1ef8ec697bbc2764ca4bf1247b8225e4"
-  integrity sha512-zPX0N6bF2uiyaMgS1miRI6WQNmfbJ5j/gfsHVOBan6Xf8fPYouyl9lrazG4RzKpvsXSgQg0krIuEQpclNiydkw==
+"@tanem/react-nprogress@^3.0.59":
+  version "3.0.59"
+  resolved "https://registry.yarnpkg.com/@tanem/react-nprogress/-/react-nprogress-3.0.59.tgz#820b75aa1546eeeaa8c3bc4580e6ba47cca2dfc8"
+  integrity sha512-Y2uULtEftCF+HDXTZvRUW9xwb0lvQAJeVg9kucSsq9k/56CM3dwQGfENGNNSb7Urg21MV27io6ylet5hMcSarA==
   dependencies:
     "@babel/runtime" "^7.13.10"
     hoist-non-react-statics "^3.3.2"
@@ -5685,10 +5685,10 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express-openapi-validator@^4.12.5:
-  version "4.12.5"
-  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-4.12.5.tgz#9b89b90937296edd913459a76e6856cebc907334"
-  integrity sha512-d374zsM68x+SzGjFRjrH7dgPL+DvXfPLGlP9hP0nIvUkIATuXrILiX4PCkIOpabkKxxqDL5yRP567sp2nZ5SaA==
+express-openapi-validator@^4.12.6:
+  version "4.12.6"
+  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-4.12.6.tgz#0738a0f7b8fb643839dd8c4a5f95809cb2d51f08"
+  integrity sha512-F8m1Kp2zNhwGq2a/cu5PJgZkIQs5WyH68nSxH0uIOoHmDF8PPixp2xEtuQVtj/XQeAtBT7Em+7q7GT7ASGjXzg==
   dependencies:
     "@types/multer" "^1.4.5"
     ajv "^6.12.6"
@@ -11218,10 +11218,10 @@ react-intersection-observer@^8.31.0:
   resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.31.0.tgz#0ed21aaf93c4c0475b22b0ccaba6169076d01605"
   integrity sha512-XraIC/tkrD9JtrmVA7ypEN1QIpKc52mXBH1u/bz/aicRLo8QQEJQAMUTb8mz4B6dqpPwyzgjrr7Ljv/2ACDtqw==
 
-react-intl@^5.13.4:
-  version "5.13.4"
-  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-5.13.4.tgz#fa42c78669cffbea3a97607b36840d36160c21c1"
-  integrity sha512-D5sqhzLF3EERkMWjdZbi5jjchjRmpIM9lterjcGmJHvJ4sU4THmXkCkj9cIcamZPzuq/CygvSPOxhZ63ZduCdw==
+react-intl@^5.13.5:
+  version "5.13.5"
+  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-5.13.5.tgz#32bb74120b67950fe63329db58aa83cfac73f6c8"
+  integrity sha512-Ym6knnC04k070vwe3UDcRHQUDE2rGn1PNfmYNhDHVPL6vbusuFbefjnt8ZC1GEjnfo29WUHn/tkGd9SMudzD+g==
   dependencies:
     "@formatjs/ecma402-abstract" "1.6.3"
     "@formatjs/intl" "1.8.4"
@@ -12871,10 +12871,10 @@ swagger-ui-express@^4.1.6:
   dependencies:
     swagger-ui-dist "^3.18.1"
 
-swr@^0.5.3:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-0.5.3.tgz#7290a9a61329d930583ef365317e636b8dbaa8bb"
-  integrity sha512-RUE3RWn3jt9e4qLPat2A9vbHG/5N6konsc27xKjE65jFSiGv0P7HLD8IGvwAv6DRKktL7Od2UcayX0plKb2awg==
+swr@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-0.5.4.tgz#9516af6ffd84ba2c23a804ff771be2eb83ba8d46"
+  integrity sha512-TUSxxuC8uP/4JKV22ml91WQ0tbif+9HVhm683xm8KYfwZIW5ogwcnU634dg3x6N7azpIDIOLokoIi+z5vCz/yA==
 
 table@^6.0.4:
   version "6.0.4"
