@@ -210,7 +210,7 @@ img.avatar-sm {
 }
 
 .form-input {
-  @apply text-white sm:col-span-2;
+  @apply text-sm text-white sm:col-span-2;
 }
 
 .form-input-field {
