@@ -2,7 +2,7 @@
 
 Overseerr already supports a good number of notification agents, such as **Discord**, **Slack** and **Pushover**. New agents are always considered for development, if there is enough demand for it.
 
-## Currently Supported Notification Agents
+## Supported Notification Agents
 
 - [Email](./email.md)
 - [Discord](./discord.md)
