@@ -1,16 +1,16 @@
-import React from 'react';
-import { Field, Form, Formik } from 'formik';
-import useSWR from 'swr';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import Button from '../../Common/Button';
-import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
-import * as Yup from 'yup';
+import { Field, Form, Formik } from 'formik';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import NotificationTypeSelector from '../../NotificationTypeSelector';
+import useSWR from 'swr';
+import * as Yup from 'yup';
+import globalMessages from '../../../i18n/globalMessages';
 import Alert from '../../Common/Alert';
 import Badge from '../../Common/Badge';
-import globalMessages from '../../../i18n/globalMessages';
+import Button from '../../Common/Button';
+import LoadingSpinner from '../../Common/LoadingSpinner';
+import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
   save: 'Save Changes',
@@ -36,11 +36,9 @@ const messages = defineMessages({
   validationEmail: 'You must provide a valid email address',
   emailNotificationTypesAlert: 'Email Notification Recipients',
   emailNotificationTypesAlertDescription:
-    '<strong>Media Requested</strong>, <strong>Media Automatically Approved</strong>, and <strong>Media Failed</strong>\
-    email notifications are sent to all users with the <strong>Manage Requests</strong> permission.',
+    '<strong>Media Requested</strong>, <strong>Media Automatically Approved</strong>, and <strong>Media Failed</strong> email notifications are sent to all users with the <strong>Manage Requests</strong> permission.',
   emailNotificationTypesAlertDescriptionPt2:
-    '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong>\
-    email notifications are sent to the user who submitted the request.',
+    '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong> email notifications are sent to the user who submitted the request.',
   pgpPrivateKey: '<PgpLink>PGP</PgpLink> Private Key',
   pgpPrivateKeyTip:
     'Sign encrypted email messages (PGP password is also required)',

@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import ImageFader from '../Common/ImageFader';
-import { defineMessages, useIntl } from 'react-intl';
-import LanguagePicker from '../Layout/LanguagePicker';
-import Button from '../Common/Button';
-import { Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import axios from 'axios';
+import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
+import React, { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import * as Yup from 'yup';
+import Button from '../Common/Button';
+import ImageFader from '../Common/ImageFader';
 import PageTitle from '../Common/PageTitle';
+import LanguagePicker from '../Layout/LanguagePicker';
 
 const messages = defineMessages({
   passwordreset: 'Password Reset',
   resetpassword: 'Reset your password',
   emailresetlink: 'Email a Recovery Link',
-  email: 'Email',
+  email: 'Email Address',
   validationemailrequired: 'You must provide a valid email address',
   gobacklogin: 'Return to Sign-In Page',
   requestresetlinksuccessmessage:

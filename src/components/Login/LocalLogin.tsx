@@ -1,16 +1,16 @@
+import axios from 'axios';
+import { Field, Form, Formik } from 'formik';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import Button from '../Common/Button';
-import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
-import Link from 'next/link';
+import Button from '../Common/Button';
 
 const messages = defineMessages({
   email: 'Email Address',
   password: 'Password',
-  validationemailrequired: 'Not a valid email address',
-  validationpasswordrequired: 'Password required',
+  validationemailrequired: 'You must provide a valid email address',
+  validationpasswordrequired: 'You must provide a password',
   loginerror: 'Something went wrong while trying to sign in.',
   signingin: 'Signing in…',
   signin: 'Sign In',

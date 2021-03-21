@@ -1,20 +1,20 @@
-import React, { useMemo, useState } from 'react';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import type { PlexSettings } from '../../../server/lib/settings';
-import type { PlexDevice } from '../../../server/interfaces/api/plexInterfaces';
-import useSWR from 'swr';
-import { useToasts } from 'react-toast-notifications';
-import { Formik, Field } from 'formik';
-import Button from '../Common/Button';
 import axios from 'axios';
-import LibraryItem from './LibraryItem';
-import Badge from '../Common/Badge';
+import { Field, Formik } from 'formik';
+import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
 import * as Yup from 'yup';
-import Alert from '../Common/Alert';
+import type { PlexDevice } from '../../../server/interfaces/api/plexInterfaces';
+import type { PlexSettings } from '../../../server/lib/settings';
 import Spinner from '../../assets/spinner.svg';
-import PageTitle from '../Common/PageTitle';
 import globalMessages from '../../i18n/globalMessages';
+import Alert from '../Common/Alert';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import PageTitle from '../Common/PageTitle';
+import LibraryItem from './LibraryItem';
 
 const messages = defineMessages({
   plex: 'Plex',
@@ -32,7 +32,7 @@ const messages = defineMessages({
   serverpresetManualMessage: 'Manual configuration',
   serverpresetRefreshing: 'Retrieving servers…',
   serverpresetLoad: 'Press the button to load available servers',
-  toastPlexRefresh: 'Retrieving server list from Plex',
+  toastPlexRefresh: 'Retrieving server list from Plex…',
   toastPlexRefreshSuccess: 'Plex server list retrieved successfully!',
   toastPlexRefreshFailure: 'Failed to retrieve Plex server list.',
   toastPlexConnecting: 'Attempting to connect to Plex…',
@@ -40,9 +40,7 @@ const messages = defineMessages({
   toastPlexConnectingFailure: 'Failed to connect to Plex.',
   settingUpPlex: 'Setting Up Plex',
   settingUpPlexDescription:
-    'To set up Plex, you can either enter your details manually \
-    or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>.\
-    Press the button to the right of the dropdown to check connectivity and retrieve available servers.',
+    'To set up Plex, you can either enter your details manually or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>. Press the button to the right of the dropdown to check connectivity and retrieve available servers.',
   hostname: 'Hostname or IP Address',
   port: 'Port',
   enablessl: 'Enable SSL',

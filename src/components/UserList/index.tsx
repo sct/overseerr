@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
-import useSWR from 'swr';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import Badge from '../Common/Badge';
-import { defineMessages, useIntl } from 'react-intl';
-import Button from '../Common/Button';
-import { hasPermission } from '../../../server/lib/permissions';
-import { Permission, User, UserType, useUser } from '../../hooks/useUser';
+import axios from 'axios';
+import { Field, Form, Formik } from 'formik';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import * as Yup from 'yup';
+import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
+import { hasPermission } from '../../../server/lib/permissions';
+import AddUserIcon from '../../assets/useradd.svg';
+import { Permission, User, UserType, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
+import Alert from '../Common/Alert';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
 import Header from '../Common/Header';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import Modal from '../Common/Modal';
+import PageTitle from '../Common/PageTitle';
 import Table from '../Common/Table';
 import Transition from '../Transition';
-import Modal from '../Common/Modal';
-import axios from 'axios';
-import { useToasts } from 'react-toast-notifications';
-import globalMessages from '../../i18n/globalMessages';
-import { Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
-import AddUserIcon from '../../assets/useradd.svg';
-import Alert from '../Common/Alert';
 import BulkEditModal from './BulkEditModal';
-import PageTitle from '../Common/PageTitle';
-import Link from 'next/link';
-import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
 
 const messages = defineMessages({
   users: 'Users',
@@ -29,7 +29,7 @@ const messages = defineMessages({
   importfromplex: 'Import Users from Plex',
   importfromplexerror: 'Something went wrong while importing users from Plex.',
   importedfromplex:
-    '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex.',
+    '{userCount, plural, =0 {No new users} one {# new user} other {# new users}} imported from Plex successfully!',
   user: 'User',
   totalrequests: 'Total Requests',
   accounttype: 'Account Type',
@@ -43,7 +43,7 @@ const messages = defineMessages({
   admin: 'Admin',
   plexuser: 'Plex User',
   deleteuser: 'Delete User',
-  userdeleted: 'User deleted',
+  userdeleted: 'User deleted successfully!',
   userdeleteerror: 'Something went wrong while deleting the user.',
   deleteconfirm:
     'Are you sure you want to delete this user? All existing request data from this user will be removed.',

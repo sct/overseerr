@@ -1,40 +1,40 @@
-import React, { useState, useContext, useMemo } from 'react';
+import axios from 'axios';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useContext, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { useRouter } from 'next/router';
-import Button from '../Common/Button';
-import Link from 'next/link';
-import Slider from '../Slider';
-import PersonCard from '../PersonCard';
-import { LanguageContext } from '../../context/LanguageContext';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import { useUser, Permission } from '../../hooks/useUser';
-import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
-import { MediaStatus } from '../../../server/constants/media';
-import RequestModal from '../RequestModal';
-import axios from 'axios';
-import SlideOver from '../Common/SlideOver';
-import RequestBlock from '../RequestBlock';
-import Error from '../../pages/_error';
-import TmdbLogo from '../../assets/tmdb_logo.svg';
-import RTFresh from '../../assets/rt_fresh.svg';
-import RTRotten from '../../assets/rt_rotten.svg';
-import RTAudFresh from '../../assets/rt_aud_fresh.svg';
-import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
-import ExternalLinkBlock from '../ExternalLinkBlock';
-import { sortCrewPriority } from '../../utils/creditHelpers';
+import { MediaStatus } from '../../../server/constants/media';
 import { Crew } from '../../../server/models/common';
-import StatusBadge from '../StatusBadge';
-import RequestButton from '../RequestButton';
-import MediaSlider from '../MediaSlider';
-import ConfirmButton from '../Common/ConfirmButton';
-import DownloadBlock from '../DownloadBlock';
-import PageTitle from '../Common/PageTitle';
+import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
+import RTAudFresh from '../../assets/rt_aud_fresh.svg';
+import RTAudRotten from '../../assets/rt_aud_rotten.svg';
+import RTFresh from '../../assets/rt_fresh.svg';
+import RTRotten from '../../assets/rt_rotten.svg';
+import TmdbLogo from '../../assets/tmdb_logo.svg';
+import { LanguageContext } from '../../context/LanguageContext';
 import useSettings from '../../hooks/useSettings';
-import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+import { Permission, useUser } from '../../hooks/useUser';
+import Error from '../../pages/_error';
+import { sortCrewPriority } from '../../utils/creditHelpers';
+import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
+import ConfirmButton from '../Common/ConfirmButton';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import PageTitle from '../Common/PageTitle';
+import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+import SlideOver from '../Common/SlideOver';
+import DownloadBlock from '../DownloadBlock';
+import ExternalLinkBlock from '../ExternalLinkBlock';
+import MediaSlider from '../MediaSlider';
+import PersonCard from '../PersonCard';
+import RequestBlock from '../RequestBlock';
+import RequestButton from '../RequestButton';
+import RequestModal from '../RequestModal';
+import Slider from '../Slider';
+import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -57,8 +57,7 @@ const messages = defineMessages({
   manageModalNoRequests: 'No Requests',
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
-    'This will irreversibly remove all data for this TV series, including any requests.\
-    If this item exists in your Plex library, the media information will be recreated during the next scan.',
+    '* This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
   approve: 'Approve',
   decline: 'Decline',
   showtype: 'Series Type',

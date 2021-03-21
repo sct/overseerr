@@ -1,17 +1,16 @@
 import React from 'react';
-import Alert from '../../Common/Alert';
-import Modal from '../../Common/Modal';
-import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
-import useSWR from 'swr';
 import { defineMessages, useIntl } from 'react-intl';
+import useSWR from 'swr';
 import { SonarrSeries } from '../../../../server/api/sonarr';
+import Alert from '../../Common/Alert';
+import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
+import Modal from '../../Common/Modal';
 
 const messages = defineMessages({
   next: 'Next',
   notvdbid: 'Manual Match Required',
   notvdbiddescription:
-    "We couldn't automatically match your request.\
-    Please select the correct match from the list below.",
+    "We couldn't automatically match your request. Please select the correct match from the list below.",
   nosummary: 'No summary for this title was found.',
 });
 

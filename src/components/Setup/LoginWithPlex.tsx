@@ -1,12 +1,12 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useUser } from '../../hooks/useUser';
 import PlexLoginButton from '../PlexLoginButton';
-import axios from 'axios';
-import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   welcome: 'Welcome to Overseerr',
-  signinMessage: 'Get started by logging in with your Plex account',
+  signinMessage: 'Get started by signing in with your Plex account',
 });
 
 interface LoginWithPlexProps {

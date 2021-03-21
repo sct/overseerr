@@ -1,30 +1,29 @@
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import AppDataWarning from '../AppDataWarning';
+import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import ImageFader from '../Common/ImageFader';
+import PageTitle from '../Common/PageTitle';
+import LanguagePicker from '../Layout/LanguagePicker';
 import SettingsPlex from '../Settings/SettingsPlex';
 import SettingsServices from '../Settings/SettingsServices';
 import LoginWithPlex from './LoginWithPlex';
 import SetupSteps from './SetupSteps';
-import axios from 'axios';
-import { defineMessages, useIntl } from 'react-intl';
-import Badge from '../Common/Badge';
-import LanguagePicker from '../Layout/LanguagePicker';
-import PageTitle from '../Common/PageTitle';
-import AppDataWarning from '../AppDataWarning';
 
 const messages = defineMessages({
   setup: 'Setup',
   finish: 'Finish Setup',
   finishing: 'Finishing…',
   continue: 'Continue',
-  loginwithplex: 'Login with Plex',
+  loginwithplex: 'Sign in with Plex',
   configureplex: 'Configure Plex',
   configureservices: 'Configure Services',
   tip: 'Tip',
   scanbackground:
-    'Scanning will run in the background.\
-    You can continue the setup process in the meantime.',
+    'Scanning will run in the background. You can continue the setup process in the meantime.',
 });
 
 const Setup: React.FC = () => {
