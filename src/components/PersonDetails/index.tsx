@@ -16,10 +16,13 @@ import PageTitle from '../Common/PageTitle';
 import TitleCard from '../TitleCard';
 
 const messages = defineMessages({
+  birthdate: 'Born {birthdate}',
+  lifespan: '{birthdate} – {deathdate}',
+  alsoknownas: 'Also Known As: {names}',
+  namedelimiter: ', ',
   appearsin: 'Appearances',
   crewmember: 'Crew',
   ascharacter: 'as {character}',
-  nobiography: 'No biography available.',
 });
 
 const PersonDetails: React.FC = () => {
@@ -27,7 +30,7 @@ const PersonDetails: React.FC = () => {
   const { locale } = useContext(LanguageContext);
   const router = useRouter();
   const { data, error } = useSWR<PersonDetail>(
-    `/api/v1/person/${router.query.personId}`
+    `/api/v1/person/${router.query.personId}?language=${locale}`
   );
   const [showBio, setShowBio] = useState(false);
 
@@ -80,6 +83,41 @@ const PersonDetails: React.FC = () => {
 
   if (!data) {
     return <Error statusCode={404} />;
+  }
+
+  const personAttributes: string[] = [];
+
+  if (data.birthday) {
+    if (data.deathday) {
+      personAttributes.push(
+        intl.formatMessage(messages.lifespan, {
+          birthdate: intl.formatDate(data.birthday, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
+          deathdate: intl.formatDate(data.deathday, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
+        })
+      );
+    } else {
+      personAttributes.push(
+        intl.formatMessage(messages.birthdate, {
+          birthdate: intl.formatDate(data.birthday, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
+        })
+      );
+    }
+  }
+
+  if (data.placeOfBirth) {
+    personAttributes.push(data.placeOfBirth);
   }
 
   const isLoading = !combinedCredits && !errorCombinedCredits;
@@ -179,9 +217,13 @@ const PersonDetails: React.FC = () => {
           />
         </div>
       )}
-      <div className="relative z-10 flex flex-col items-center mt-4 mb-8 md:flex-row md:items-start">
+      <div
+        className={`relative z-10 flex flex-col items-center mt-4 mb-8 lg:flex-row ${
+          data.biography ? 'lg:items-start' : ''
+        }`}
+      >
         {data.profilePath && (
-          <div className="relative flex-shrink-0 mb-6 mr-0 overflow-hidden rounded-full w-36 h-36 md:w-44 md:h-44 md:mb-0 md:mr-6 ring-1 ring-gray-700">
+          <div className="relative flex-shrink-0 mb-6 mr-0 overflow-hidden rounded-full w-36 h-36 lg:w-44 lg:h-44 lg:mb-0 lg:mr-6 ring-1 ring-gray-700">
             <CachedImage
               src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.profilePath}`}
               alt=""
@@ -190,30 +232,40 @@ const PersonDetails: React.FC = () => {
             />
           </div>
         )}
-        <div className="text-center text-gray-300 md:text-left">
-          <h1 className="mb-4 text-3xl text-white md:text-4xl">{data.name}</h1>
-          <div className="relative">
-            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
-            <div
-              className="outline-none group ring-0"
-              onClick={() => setShowBio((show) => !show)}
-              role="button"
-              tabIndex={-1}
-            >
-              <TruncateMarkup
-                lines={showBio ? 200 : 6}
-                ellipsis={
-                  <Ellipsis className="relative inline-block ml-2 -top-0.5 opacity-70 group-hover:opacity-100 transition duration-300" />
-                }
-              >
-                <div>
-                  {data.biography
-                    ? data.biography
-                    : intl.formatMessage(messages.nobiography)}
-                </div>
-              </TruncateMarkup>
-            </div>
+        <div className="text-center text-gray-300 lg:text-left">
+          <h1 className="text-3xl text-white lg:text-4xl">{data.name}</h1>
+          <div className="mt-1 mb-2 space-y-1 text-xs text-white sm:text-sm lg:text-base">
+            <div>{personAttributes.join(' | ')}</div>
+            {(data.alsoKnownAs ?? []).length > 0 && (
+              <div>
+                {intl.formatMessage(messages.alsoknownas, {
+                  names: (data.alsoKnownAs ?? []).join(
+                    intl.formatMessage(messages.namedelimiter)
+                  ),
+                })}
+              </div>
+            )}
           </div>
+          {data.biography && (
+            <div className="relative text-left">
+              {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+              <div
+                className="outline-none group ring-0"
+                onClick={() => setShowBio((show) => !show)}
+                role="button"
+                tabIndex={-1}
+              >
+                <TruncateMarkup
+                  lines={showBio ? 200 : 6}
+                  ellipsis={
+                    <Ellipsis className="relative inline-block ml-2 -top-0.5 opacity-70 group-hover:opacity-100 transition duration-300" />
+                  }
+                >
+                  <p className="pt-2 text-sm lg:text-base">{data.biography}</p>
+                </TruncateMarkup>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {data.knownForDepartment === 'Acting' ? [cast, crew] : [crew, cast]}
