@@ -111,21 +111,19 @@ const UserList: React.FC = () => {
   const { user: currentUser } = useUser();
 
   useEffect(() => {
-    const displayString = window.localStorage.getItem(
-      'userlist-display-settings'
-    );
+    const filterString = window.localStorage.getItem('ul-filter-settings');
 
-    if (displayString) {
-      const displaySettings = JSON.parse(displayString);
+    if (filterString) {
+      const filterSettings = JSON.parse(filterString);
 
-      setCurrentSort(displaySettings.currentSort);
-      setCurrentPageSize(displaySettings.currentPageSize);
+      setCurrentSort(filterSettings.currentSort);
+      setCurrentPageSize(filterSettings.currentPageSize);
     }
   }, []);
 
   useEffect(() => {
     window.localStorage.setItem(
-      'userlist-display-settings',
+      'ul-filter-settings',
       JSON.stringify({
         currentSort,
         currentPageSize,

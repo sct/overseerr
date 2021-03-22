@@ -77,19 +77,19 @@ const SettingsLogs: React.FC = () => {
   const { data: appData } = useSWR('/api/v1/status/appdata');
 
   useEffect(() => {
-    const displayString = window.localStorage.getItem('logs-display-settings');
+    const filterString = window.localStorage.getItem('logs-filter-settings');
 
-    if (displayString) {
-      const displaySettings = JSON.parse(displayString);
+    if (filterString) {
+      const filterSettings = JSON.parse(filterString);
 
-      setCurrentFilter(displaySettings.currentFilter);
-      setCurrentPageSize(displaySettings.currentPageSize);
+      setCurrentFilter(filterSettings.currentFilter);
+      setCurrentPageSize(filterSettings.currentPageSize);
     }
   }, []);
 
   useEffect(() => {
     window.localStorage.setItem(
-      'logs-display-settings',
+      'logs-filter-settings',
       JSON.stringify({
         currentFilter,
         currentPageSize,
