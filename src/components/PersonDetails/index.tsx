@@ -236,10 +236,10 @@ const PersonDetails: React.FC = () => {
           <h1 className="text-3xl text-white lg:text-4xl">{data.name}</h1>
           <div className="mt-1 mb-2 space-y-1 text-xs text-white sm:text-sm lg:text-base">
             <div>{personAttributes.join(' | ')}</div>
-            {data.alsoKnownAs && (
+            {(data.alsoKnownAs ?? []).length > 0 && (
               <div>
                 {intl.formatMessage(messages.alsoknownas, {
-                  names: data.alsoKnownAs?.join(
+                  names: (data.alsoKnownAs ?? []).join(
                     intl.formatMessage(messages.namedelimiter)
                   ),
                 })}
