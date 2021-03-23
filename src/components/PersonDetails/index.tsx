@@ -8,6 +8,7 @@ import type { PersonCombinedCreditsResponse } from '../../../server/interfaces/a
 import type { PersonDetail } from '../../../server/models/Person';
 import Ellipsis from '../../assets/ellipsis.svg';
 import { LanguageContext } from '../../context/LanguageContext';
+import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
 import CachedImage from '../Common/CachedImage';
 import ImageFader from '../Common/ImageFader';
@@ -19,7 +20,6 @@ const messages = defineMessages({
   birthdate: 'Born {birthdate}',
   lifespan: '{birthdate} – {deathdate}',
   alsoknownas: 'Also Known As: {names}',
-  namedelimiter: ', ',
   appearsin: 'Appearances',
   crewmember: 'Crew',
   ascharacter: 'as {character}',
@@ -239,8 +239,11 @@ const PersonDetails: React.FC = () => {
             {(data.alsoKnownAs ?? []).length > 0 && (
               <div>
                 {intl.formatMessage(messages.alsoknownas, {
-                  names: (data.alsoKnownAs ?? []).join(
-                    intl.formatMessage(messages.namedelimiter)
+                  names: (data.alsoKnownAs ?? []).reduce((prev, curr) =>
+                    intl.formatMessage(globalMessages.delimitedlist, {
+                      a: prev,
+                      b: curr,
+                    })
                   ),
                 })}
               </div>

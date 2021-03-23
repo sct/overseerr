@@ -26,6 +26,7 @@ const globalMessages = defineMessages({
   loading: 'Loading…',
   settings: 'Settings',
   usersettings: 'User Settings',
+  delimitedlist: '{a}, {b}',
 });
 
 export default globalMessages;

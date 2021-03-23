@@ -15,6 +15,7 @@ import TmdbLogo from '../../assets/tmdb_logo.svg';
 import { LanguageContext } from '../../context/LanguageContext';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import Button from '../Common/Button';
@@ -45,10 +46,6 @@ const messages = defineMessages({
   cast: 'Cast',
   recommendations: 'Recommendations',
   similar: 'Similar Titles',
-  cancelrequest: 'Cancel Request',
-  available: 'Available',
-  unavailable: 'Unavailable',
-  pending: 'Pending',
   overviewunavailable: 'Overview unavailable.',
   manageModalTitle: 'Manage Movie',
   manageModalRequests: 'Requests',
@@ -56,8 +53,6 @@ const messages = defineMessages({
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
     '* This will irreversibly remove all data for this movie, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
-  approve: 'Approve',
-  decline: 'Decline',
   studio: '{studioCount, plural, one {Studio} other {Studios}}',
   viewfullcrew: 'View Full Crew',
   view: 'View',
@@ -191,7 +186,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         ))
         .reduce((prev, curr) => (
           <>
-            {prev}, {curr}
+            {intl.formatMessage(globalMessages.delimitedlist, {
+              a: prev,
+              b: curr,
+            })}
           </>
         ))
     );

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { uniq } from 'lodash';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -8,20 +10,19 @@ import { MediaStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { Collection } from '../../../server/models/Collection';
 import { LanguageContext } from '../../context/LanguageContext';
+import useSettings from '../../hooks/useSettings';
+import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
-import StatusBadge from '../StatusBadge';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import CachedImage from '../Common/CachedImage';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import Modal from '../Common/Modal';
+import PageTitle from '../Common/PageTitle';
 import Slider from '../Slider';
+import StatusBadge from '../StatusBadge';
 import TitleCard from '../TitleCard';
 import Transition from '../Transition';
-import PageTitle from '../Common/PageTitle';
-import { useUser, Permission } from '../../hooks/useUser';
-import useSettings from '../../hooks/useSettings';
-import Link from 'next/link';
-import { uniq } from 'lodash';
-import CachedImage from '../Common/CachedImage';
 
 const messages = defineMessages({
   overviewunavailable: 'Overview unavailable.',
@@ -193,7 +194,10 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
         ))
         .reduce((prev, curr) => (
           <>
-            {prev}, {curr}
+            {intl.formatMessage(globalMessages.delimitedlist, {
+              a: prev,
+              b: curr,
+            })}
           </>
         ))
     );
