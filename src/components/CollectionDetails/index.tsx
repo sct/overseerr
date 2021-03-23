@@ -12,6 +12,7 @@ import type { Collection } from '../../../server/models/Collection';
 import { LanguageContext } from '../../context/LanguageContext';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import CachedImage from '../Common/CachedImage';
@@ -38,7 +39,6 @@ const messages = defineMessages({
   requestswillbecreated4k:
     'The following titles will have 4K requests created for them:',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
-  genreslist: '{a}, {b}',
 });
 
 interface CollectionDetailsProps {
@@ -193,7 +193,12 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           </Link>
         ))
         .reduce((prev, curr) => (
-          <>{intl.formatMessage(messages.genreslist, { a: prev, b: curr })}</>
+          <>
+            {intl.formatMessage(globalMessages.delimitedlist, {
+              a: prev,
+              b: curr,
+            })}
+          </>
         ))
     );
   }
