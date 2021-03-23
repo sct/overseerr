@@ -75,6 +75,7 @@ const messages = defineMessages({
   seasons: '{seasonCount, plural, one {# Season} other {# Seasons}}',
   episodeRuntime: 'Episode Runtime',
   episodeRuntimeMinutes: '{runtime} minutes',
+  genreslist: '{a}, {b}',
 });
 
 interface TvDetailsProps {
@@ -199,9 +200,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </Link>
         ))
         .reduce((prev, curr) => (
-          <>
-            {prev}, {curr}
-          </>
+          <>{intl.formatMessage(messages.genreslist, { a: prev, b: curr })}</>
         ))
     );
   }

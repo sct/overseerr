@@ -69,6 +69,7 @@ const messages = defineMessages({
   play4konplex: 'Play 4K on Plex',
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark 4K as Available',
+  genreslist: '{a}, {b}',
 });
 
 interface MovieDetailsProps {
@@ -190,9 +191,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </Link>
         ))
         .reduce((prev, curr) => (
-          <>
-            {prev}, {curr}
-          </>
+          <>{intl.formatMessage(messages.genreslist, { a: prev, b: curr })}</>
         ))
     );
   }

@@ -19,7 +19,7 @@ const messages = defineMessages({
   birthdate: 'Born {birthdate}',
   lifespan: '{birthdate} – {deathdate}',
   alsoknownas: 'Also Known As: {names}',
-  namedelimiter: ', ',
+  nameslist: '{a}, {b}',
   appearsin: 'Appearances',
   crewmember: 'Crew',
   ascharacter: 'as {character}',
@@ -239,8 +239,8 @@ const PersonDetails: React.FC = () => {
             {(data.alsoKnownAs ?? []).length > 0 && (
               <div>
                 {intl.formatMessage(messages.alsoknownas, {
-                  names: (data.alsoKnownAs ?? []).join(
-                    intl.formatMessage(messages.namedelimiter)
+                  names: (data.alsoKnownAs ?? []).reduce((prev, curr) =>
+                    intl.formatMessage(messages.nameslist, { a: prev, b: curr })
                   ),
                 })}
               </div>
