@@ -31,7 +31,7 @@ At the end of the bot creation process, [@BotFather](https://telegram.me/botfath
 
 ### Chat ID
 
-To obtain your chat ID, simply create a new chat, add [@get_id_bot](https://telegram.me/get_id_bot), and issue the `/my_id` command.
+To obtain your chat ID, simply create a new group chat, add [@get_id_bot](https://telegram.me/get_id_bot), and issue the `/my_id` command.
 
 ### Send Silently (optional)
 
