@@ -2,15 +2,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { hasPermission, Permission } from '../../../../server/lib/permissions';
+import useSettings from '../../../hooks/useSettings';
 import { useUser } from '../../../hooks/useUser';
-import { Permission, hasPermission } from '../../../../server/lib/permissions';
+import globalMessages from '../../../i18n/globalMessages';
 import Error from '../../../pages/_error';
+import Alert from '../../Common/Alert';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import ProfileHeader from '../ProfileHeader';
-import useSettings from '../../../hooks/useSettings';
-import Alert from '../../Common/Alert';
-import globalMessages from '../../../i18n/globalMessages';
 
 const messages = defineMessages({
   menuGeneralSettings: 'General',

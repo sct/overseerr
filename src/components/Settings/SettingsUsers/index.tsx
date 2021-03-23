@@ -10,6 +10,7 @@ import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import PermissionEdit from '../../PermissionEdit';
+import QuotaSelector from '../../QuotaSelector';
 
 const messages = defineMessages({
   users: 'Users',
@@ -20,14 +21,11 @@ const messages = defineMessages({
   toastSettingsSuccess: 'User settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   localLogin: 'Enable Local Sign-In',
-  movieRequestLimitLabel: 'Default Movie Request Limit',
+  movieRequestLimitLabel: 'Global Movie Request Limit',
   movieRequestLimit: '{quotaLimit} movies per {quotaDays} days',
-  tvRequestLimitLabel: 'Default Series Request Limit',
+  tvRequestLimitLabel: 'Global Series Request Limit',
   tvRequestLimit: '{quotaLimit} seasons per {quotaDays} days',
   defaultPermissions: 'Default Permissions',
-  unlimited: 'Unlimited',
-  validationQuotaLimit: 'You must enter a valid request limit',
-  validationQuotaDays: 'You must enter a valid number of days',
 });
 
 const SettingsUsers: React.FC = () => {
@@ -120,42 +118,14 @@ const SettingsUsers: React.FC = () => {
                     {intl.formatMessage(messages.movieRequestLimitLabel)}
                   </label>
                   <div className="form-input">
-                    {intl.formatMessage(messages.movieRequestLimit, {
-                      quotaLimit: (
-                        <Field
-                          as="select"
-                          id="movieQuotaLimit"
-                          name="movieQuotaLimit"
-                          className="inline short"
-                        >
-                          <option value="0">
-                            {intl.formatMessage(messages.unlimited)}
-                          </option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="5">5</option>
-                          <option value="10">10</option>
-                          <option value="25">25</option>
-                          <option value="50">50</option>
-                          <option value="100">100</option>
-                        </Field>
-                      ),
-                      quotaDays: (
-                        <Field
-                          as="select"
-                          id="movieQuotaDays"
-                          name="movieQuotaDays"
-                          className="inline short"
-                        >
-                          <option value="1">1</option>
-                          <option value="7">7</option>
-                          <option value="14">14</option>
-                          <option value="30">30</option>
-                          <option value="60">60</option>
-                          <option value="90">90</option>
-                        </Field>
-                      ),
-                    })}
+                    <QuotaSelector
+                      onChange={setFieldValue}
+                      dayFieldName="movieQuotaDays"
+                      limitFieldName="movieQuotaLimit"
+                      mediaType="movie"
+                      defaultDays={values.movieQuotaDays}
+                      defaultLimit={values.movieQuotaLimit}
+                    />
                   </div>
                 </div>
                 <div className="form-row">
@@ -163,42 +133,14 @@ const SettingsUsers: React.FC = () => {
                     {intl.formatMessage(messages.tvRequestLimitLabel)}
                   </label>
                   <div className="form-input">
-                    {intl.formatMessage(messages.tvRequestLimit, {
-                      quotaLimit: (
-                        <Field
-                          as="select"
-                          id="tvQuotaLimit"
-                          name="tvQuotaLimit"
-                          className="inline short"
-                        >
-                          <option value="0">
-                            {intl.formatMessage(messages.unlimited)}
-                          </option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="5">5</option>
-                          <option value="10">10</option>
-                          <option value="25">25</option>
-                          <option value="50">50</option>
-                          <option value="100">100</option>
-                        </Field>
-                      ),
-                      quotaDays: (
-                        <Field
-                          as="select"
-                          id="tvQuotaDays"
-                          name="tvQuotaDays"
-                          className="inline short"
-                        >
-                          <option value="1">1</option>
-                          <option value="7">7</option>
-                          <option value="14">14</option>
-                          <option value="30">30</option>
-                          <option value="60">60</option>
-                          <option value="90">90</option>
-                        </Field>
-                      ),
-                    })}
+                    <QuotaSelector
+                      onChange={setFieldValue}
+                      dayFieldName="tvQuotaDays"
+                      limitFieldName="tvQuotaLimit"
+                      mediaType="tv"
+                      defaultDays={values.tvQuotaDays}
+                      defaultLimit={values.tvQuotaLimit}
+                    />
                   </div>
                 </div>
                 <div

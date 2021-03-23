@@ -1,6 +1,6 @@
 import fs from 'fs';
-import path from 'path';
 import { merge } from 'lodash';
+import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { Permission } from './permissions';
 
@@ -62,8 +62,8 @@ export interface SonarrSettings extends DVRSettings {
 }
 
 interface Quota {
-  quotaLimit: number | undefined;
-  quotaDays: number | undefined;
+  quotaLimit?: number;
+  quotaDays?: number;
 }
 
 export interface MainSettings {
@@ -209,14 +209,8 @@ class Settings {
         cacheImages: false,
         defaultPermissions: Permission.REQUEST,
         defaultQuotas: {
-          movie: {
-            quotaDays: undefined,
-            quotaLimit: undefined,
-          },
-          tv: {
-            quotaDays: undefined,
-            quotaLimit: undefined,
-          },
+          movie: {},
+          tv: {},
         },
         hideAvailable: false,
         localLogin: true,

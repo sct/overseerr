@@ -2,13 +2,13 @@ import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { canMakePermissionsChange } from '.';
 import { User } from '../../entity/User';
-import { getSettings } from '../../lib/settings';
 import { UserSettings } from '../../entity/UserSettings';
 import {
   UserSettingsGeneralResponse,
   UserSettingsNotificationsResponse,
 } from '../../interfaces/api/userSettingsInterfaces';
 import { Permission } from '../../lib/permissions';
+import { getSettings } from '../../lib/settings';
 import logger from '../../logger';
 import { isAuthenticated } from '../../middleware/auth';
 
@@ -35,6 +35,9 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
   '/main',
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
+    const {
+      main: { defaultQuotas },
+    } = getSettings();
     const userRepository = getRepository(User);
 
     try {
@@ -50,6 +53,14 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
         username: user.username,
         region: user.settings?.region,
         originalLanguage: user.settings?.originalLanguage,
+        movieQuotaLimit: user.movieQuotaLimit,
+        movieQuotaDays: user.movieQuotaDays,
+        tvQuotaLimit: user.tvQuotaLimit,
+        tvQuotaDays: user.tvQuotaDays,
+        globalMovieQuotaDays: defaultQuotas.movie.quotaDays,
+        globalMovieQuotaLimit: defaultQuotas.movie.quotaLimit,
+        globalTvQuotaDays: defaultQuotas.tv.quotaDays,
+        globalTvQuotaLimit: defaultQuotas.tv.quotaLimit,
       });
     } catch (e) {
       next({ status: 500, message: e.message });
@@ -82,6 +93,18 @@ userSettingsRoutes.post<
     }
 
     user.username = req.body.username;
+
+    // Update quota values only if the user has the correct permissions
+    if (
+      !user.hasPermission(Permission.MANAGE_USERS) &&
+      req.user?.id !== user.id
+    ) {
+      user.movieQuotaDays = req.body.movieQuotaDays;
+      user.movieQuotaLimit = req.body.movieQuotaLimit;
+      user.tvQuotaDays = req.body.tvQuotaDays;
+      user.tvQuotaLimit = req.body.tvQuotaLimit;
+    }
+
     if (!user.settings) {
       user.settings = new UserSettings({
         user: req.user,
