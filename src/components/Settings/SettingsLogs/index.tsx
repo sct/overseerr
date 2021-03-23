@@ -77,7 +77,7 @@ const SettingsLogs: React.FC = () => {
   const { data: appData } = useSWR('/api/v1/status/appdata');
 
   useEffect(() => {
-    const filterString = window.localStorage.getItem('logs-filter-settings');
+    const filterString = window.localStorage.getItem('logs-display-settings');
 
     if (filterString) {
       const filterSettings = JSON.parse(filterString);
@@ -89,7 +89,7 @@ const SettingsLogs: React.FC = () => {
 
   useEffect(() => {
     window.localStorage.setItem(
-      'logs-filter-settings',
+      'logs-display-settings',
       JSON.stringify({
         currentFilter,
         currentPageSize,
