@@ -20,8 +20,6 @@ const messages = defineMessages({
   currentpassword: 'Current Password',
   newpassword: 'New Password',
   confirmpassword: 'Confirm Password',
-  save: 'Save Changes',
-  saving: 'Saving…',
   toastSettingsSuccess: 'Password saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving the password.',
   toastSettingsFailureVerifyCurrent:
@@ -37,7 +35,6 @@ const messages = defineMessages({
     'This user account currently does not have a password specifically for {applicationTitle}. Configure a password below to enable this account to sign in as a "local user."',
   nopasswordsetDescriptionOwnAccount:
     'Your account currently does not have a password specifically for {applicationTitle}. Configure a password below to enable sign in as a "local user" using your email address.',
-  nopermission: 'Unauthorized',
   nopermissionDescription:
     "You do not have permission to modify this user's password.",
 });
@@ -90,7 +87,10 @@ const UserPasswordChange: React.FC = () => {
         <div className="mb-6">
           <h3 className="heading">{intl.formatMessage(messages.password)}</h3>
         </div>
-        <Alert title={intl.formatMessage(messages.nopermission)} type="error">
+        <Alert
+          title={intl.formatMessage(globalMessages.unauthorized)}
+          type="error"
+        >
           {intl.formatMessage(messages.nopermissionDescription)}
         </Alert>
       </>
@@ -224,8 +224,8 @@ const UserPasswordChange: React.FC = () => {
                       disabled={isSubmitting}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

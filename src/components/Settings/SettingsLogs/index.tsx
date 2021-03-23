@@ -30,13 +30,7 @@ const messages = defineMessages({
   filterInfo: 'Info',
   filterWarn: 'Warning',
   filterError: 'Error',
-  noresults: 'No results.',
   showall: 'Show All Logs',
-  showingresults:
-    'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
-  resultsperpage: 'Display {pageSize} results per page',
-  next: 'Next',
-  previous: 'Previous',
   pauseLogs: 'Pause',
   resumeLogs: 'Resume',
   viewDetails: 'View Details',
@@ -393,7 +387,7 @@ const SettingsLogs: React.FC = () => {
                 <Table.TD colSpan={4} noPadding>
                   <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
                     <span className="text-base">
-                      {intl.formatMessage(messages.noresults)}
+                      {intl.formatMessage(globalMessages.noresults)}
                     </span>
                     {currentFilter !== 'debug' && (
                       <div className="mt-4">
@@ -419,7 +413,7 @@ const SettingsLogs: React.FC = () => {
                   <div className="hidden lg:flex lg:flex-1">
                     <p className="text-sm">
                       {data.results.length > 0 &&
-                        intl.formatMessage(messages.showingresults, {
+                        intl.formatMessage(globalMessages.showingresults, {
                           from: pageIndex * currentPageSize + 1,
                           to:
                             data.results.length < currentPageSize
@@ -435,7 +429,7 @@ const SettingsLogs: React.FC = () => {
                   </div>
                   <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
                     <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
-                      {intl.formatMessage(messages.resultsperpage, {
+                      {intl.formatMessage(globalMessages.resultsperpage, {
                         pageSize: (
                           <select
                             id="pageSize"
@@ -473,7 +467,7 @@ const SettingsLogs: React.FC = () => {
                           .then(() => window.scrollTo(0, 0))
                       }
                     >
-                      {intl.formatMessage(messages.previous)}
+                      {intl.formatMessage(globalMessages.previous)}
                     </Button>
                     <Button
                       disabled={!hasNextPage}
@@ -489,7 +483,7 @@ const SettingsLogs: React.FC = () => {
                           .then(() => window.scrollTo(0, 0))
                       }
                     >
-                      {intl.formatMessage(messages.next)}
+                      {intl.formatMessage(globalMessages.next)}
                     </Button>
                   </div>
                 </nav>

@@ -1,34 +1,30 @@
+import axios from 'axios';
+import Link from 'next/link';
 import React, { useContext, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import type { MediaRequest } from '../../../../server/entity/MediaRequest';
-import { useIntl, FormattedRelativeTime, defineMessages } from 'react-intl';
-import { useUser, Permission } from '../../../hooks/useUser';
-import { LanguageContext } from '../../../context/LanguageContext';
-import type { MovieDetails } from '../../../../server/models/Movie';
-import type { TvDetails } from '../../../../server/models/Tv';
+import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import Badge from '../../Common/Badge';
-import StatusBadge from '../../StatusBadge';
 import {
   MediaRequestStatus,
   MediaStatus,
 } from '../../../../server/constants/media';
-import Button from '../../Common/Button';
-import axios from 'axios';
+import type { MediaRequest } from '../../../../server/entity/MediaRequest';
+import type { MovieDetails } from '../../../../server/models/Movie';
+import type { TvDetails } from '../../../../server/models/Tv';
+import { LanguageContext } from '../../../context/LanguageContext';
+import { Permission, useUser } from '../../../hooks/useUser';
 import globalMessages from '../../../i18n/globalMessages';
-import Link from 'next/link';
-import { useToasts } from 'react-toast-notifications';
-import RequestModal from '../../RequestModal';
-import ConfirmButton from '../../Common/ConfirmButton';
+import Badge from '../../Common/Badge';
+import Button from '../../Common/Button';
 import CachedImage from '../../Common/CachedImage';
+import ConfirmButton from '../../Common/ConfirmButton';
+import RequestModal from '../../RequestModal';
+import StatusBadge from '../../StatusBadge';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
-  all: 'All',
-  notavailable: 'N/A',
   failedretry: 'Something went wrong while retrying the request.',
-  areyousure: 'Are you sure?',
-  status: 'Status',
   requested: 'Requested',
   modified: 'Modified',
   modifieduserdate: '{date} by {user}',
@@ -218,7 +214,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   {title.seasons.filter((season) => season.seasonNumber !== 0)
                     .length === request.seasons.length ? (
                     <span className="mr-2 uppercase">
-                      <Badge>{intl.formatMessage(messages.all)}</Badge>
+                      <Badge>{intl.formatMessage(globalMessages.all)}</Badge>
                     </span>
                   ) : (
                     <div className="flex overflow-x-scroll hide-scrollbar flex-nowrap">
@@ -236,7 +232,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
           <div className="z-10 flex flex-col justify-center w-full pr-4 mt-4 ml-4 text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">
             <div className="card-field">
               <span className="card-field-name">
-                {intl.formatMessage(messages.status)}
+                {intl.formatMessage(globalMessages.status)}
               </span>
               {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
                 MediaStatus.UNKNOWN ||
@@ -349,7 +345,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             hasPermission(Permission.MANAGE_REQUESTS) && (
               <ConfirmButton
                 onClick={() => deleteRequest()}
-                confirmText={intl.formatMessage(messages.areyousure)}
+                confirmText={intl.formatMessage(globalMessages.areyousure)}
                 className="w-full"
               >
                 <svg

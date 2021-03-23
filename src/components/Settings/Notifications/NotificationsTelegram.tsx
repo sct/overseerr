@@ -5,14 +5,13 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
+import globalMessages from '../../../i18n/globalMessages';
 import Alert from '../../Common/Alert';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  save: 'Save Changes',
-  saving: 'Saving…',
   agentenabled: 'Enable Agent',
   botUsername: 'Bot Username',
   botAPI: 'Bot Authentication Token',
@@ -22,7 +21,6 @@ const messages = defineMessages({
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   testsent: 'Test notification sent!',
-  test: 'Test',
   settinguptelegram: 'Setting Up Telegram Notifications',
   settinguptelegramDescription:
     'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key. Additionally, you will need the chat ID for the chat to which you would like to send notifications. You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
@@ -260,7 +258,7 @@ const NotificationsTelegram: React.FC = () => {
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(messages.test)}
+                      {intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -270,8 +268,8 @@ const NotificationsTelegram: React.FC = () => {
                       disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

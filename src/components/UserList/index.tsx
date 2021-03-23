@@ -37,9 +37,7 @@ const messages = defineMessages({
   role: 'Role',
   created: 'Created',
   lastupdated: 'Last Updated',
-  edit: 'Edit',
   bulkedit: 'Bulk Edit',
-  delete: 'Delete',
   owner: 'Owner',
   admin: 'Admin',
   plexuser: 'Plex User',
@@ -68,11 +66,6 @@ const messages = defineMessages({
   sortUpdated: 'Last Updated',
   sortDisplayName: 'Display Name',
   sortRequests: 'Request Count',
-  next: 'Next',
-  previous: 'Previous',
-  showingresults:
-    'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
-  resultsperpage: 'Display {pageSize} results per page',
 });
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
@@ -602,7 +595,7 @@ const UserList: React.FC = () => {
                     )
                   }
                 >
-                  {intl.formatMessage(messages.edit)}
+                  {intl.formatMessage(globalMessages.edit)}
                 </Button>
                 <Button
                   buttonType="danger"
@@ -613,7 +606,7 @@ const UserList: React.FC = () => {
                   }
                   onClick={() => setDeleteModal({ isOpen: true, user })}
                 >
-                  {intl.formatMessage(messages.delete)}
+                  {intl.formatMessage(globalMessages.delete)}
                 </Button>
               </Table.TD>
             </tr>
@@ -627,7 +620,7 @@ const UserList: React.FC = () => {
                 <div className="hidden lg:flex lg:flex-1">
                   <p className="text-sm">
                     {data.results.length > 0 &&
-                      intl.formatMessage(messages.showingresults, {
+                      intl.formatMessage(globalMessages.showingresults, {
                         from: pageIndex * currentPageSize + 1,
                         to:
                           data.results.length < currentPageSize
@@ -642,7 +635,7 @@ const UserList: React.FC = () => {
                 </div>
                 <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
                   <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
-                    {intl.formatMessage(messages.resultsperpage, {
+                    {intl.formatMessage(globalMessages.resultsperpage, {
                       pageSize: (
                         <select
                           id="pageSize"
@@ -681,7 +674,7 @@ const UserList: React.FC = () => {
                         .then(() => window.scrollTo(0, 0))
                     }
                   >
-                    {intl.formatMessage(messages.previous)}
+                    {intl.formatMessage(globalMessages.previous)}
                   </Button>
                   <Button
                     disabled={!hasNextPage}
@@ -697,7 +690,7 @@ const UserList: React.FC = () => {
                         .then(() => window.scrollTo(0, 0))
                     }
                   >
-                    {intl.formatMessage(messages.next)}
+                    {intl.formatMessage(globalMessages.next)}
                   </Button>
                 </div>
               </nav>

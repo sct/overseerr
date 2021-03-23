@@ -31,8 +31,6 @@ const messages = defineMessages({
   sendSilently: 'Send Telegram Messages Silently',
   sendSilentlyDescription: 'Send notifications with no sound',
   validationTelegramChatId: 'You must provide a valid Telegram chat ID',
-  save: 'Save Changes',
-  saving: 'Saving…',
   plexuser: 'Plex User',
   localuser: 'Local User',
   toastSettingsSuccess: 'Notification settings saved successfully!',
@@ -283,8 +281,8 @@ const UserNotificationSettings: React.FC = () => {
                       disabled={isSubmitting}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

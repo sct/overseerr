@@ -1,27 +1,17 @@
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import RequestItem from './RequestItem';
-import Header from '../Common/Header';
+import globalMessages from '../../i18n/globalMessages';
 import Button from '../Common/Button';
-import { defineMessages, useIntl } from 'react-intl';
+import Header from '../Common/Header';
+import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
-import { useRouter } from 'next/router';
+import RequestItem from './RequestItem';
 
 const messages = defineMessages({
   requests: 'Requests',
-  showingresults:
-    'Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results',
-  resultsperpage: 'Display {pageSize} results per page',
-  next: 'Next',
-  previous: 'Previous',
-  filterAll: 'All',
-  filterPending: 'Pending',
-  filterApproved: 'Approved',
-  filterAvailable: 'Available',
-  filterProcessing: 'Processing',
-  noresults: 'No results.',
   showallrequests: 'Show All Requests',
   sortAdded: 'Request Date',
   sortModified: 'Last Modified',
@@ -114,19 +104,19 @@ const RequestList: React.FC = () => {
               className="rounded-r-only"
             >
               <option value="all">
-                {intl.formatMessage(messages.filterAll)}
+                {intl.formatMessage(globalMessages.all)}
               </option>
               <option value="pending">
-                {intl.formatMessage(messages.filterPending)}
+                {intl.formatMessage(globalMessages.pending)}
               </option>
               <option value="approved">
-                {intl.formatMessage(messages.filterApproved)}
+                {intl.formatMessage(globalMessages.approved)}
               </option>
               <option value="processing">
-                {intl.formatMessage(messages.filterProcessing)}
+                {intl.formatMessage(globalMessages.processing)}
               </option>
               <option value="available">
-                {intl.formatMessage(messages.filterAvailable)}
+                {intl.formatMessage(globalMessages.available)}
               </option>
             </select>
           </div>
@@ -175,7 +165,7 @@ const RequestList: React.FC = () => {
       {data.results.length === 0 && (
         <div className="flex flex-col items-center justify-center w-full py-24 text-white">
           <span className="text-2xl text-gray-400">
-            {intl.formatMessage(messages.noresults)}
+            {intl.formatMessage(globalMessages.noresults)}
           </span>
           {currentFilter !== 'all' && (
             <div className="mt-4">
@@ -197,7 +187,7 @@ const RequestList: React.FC = () => {
           <div className="hidden lg:flex lg:flex-1">
             <p className="text-sm">
               {data.results.length > 0 &&
-                intl.formatMessage(messages.showingresults, {
+                intl.formatMessage(globalMessages.showingresults, {
                   from: pageIndex * currentPageSize + 1,
                   to:
                     data.results.length < currentPageSize
@@ -212,7 +202,7 @@ const RequestList: React.FC = () => {
           </div>
           <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
             <span className="items-center -mt-3 text-sm truncate sm:mt-0">
-              {intl.formatMessage(messages.resultsperpage, {
+              {intl.formatMessage(globalMessages.resultsperpage, {
                 pageSize: (
                   <select
                     id="pageSize"
@@ -247,7 +237,7 @@ const RequestList: React.FC = () => {
                   .then(() => window.scrollTo(0, 0))
               }
             >
-              {intl.formatMessage(messages.previous)}
+              {intl.formatMessage(globalMessages.previous)}
             </Button>
             <Button
               disabled={!hasNextPage}
@@ -259,7 +249,7 @@ const RequestList: React.FC = () => {
                   .then(() => window.scrollTo(0, 0))
               }
             >
-              {intl.formatMessage(messages.next)}
+              {intl.formatMessage(globalMessages.next)}
             </Button>
           </div>
         </nav>

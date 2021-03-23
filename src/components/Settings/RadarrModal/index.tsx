@@ -5,6 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
 import type { RadarrSettings } from '../../../../server/lib/settings';
+import globalMessages from '../../../i18n/globalMessages';
 import Modal from '../../Common/Modal';
 import Transition from '../../Transition';
 
@@ -21,11 +22,7 @@ const messages = defineMessages({
     'You must select a minimum availability',
   toastRadarrTestSuccess: 'Radarr connection established successfully!',
   toastRadarrTestFailure: 'Failed to connect to Radarr.',
-  saving: 'Saving…',
-  save: 'Save Changes',
   add: 'Add Server',
-  test: 'Test',
-  testing: 'Testing…',
   defaultserver: 'Default Server',
   servername: 'Server Name',
   servernamePlaceholder: 'A Radarr Server',
@@ -294,16 +291,16 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               okButtonType="primary"
               okText={
                 isSubmitting
-                  ? intl.formatMessage(messages.saving)
+                  ? intl.formatMessage(globalMessages.saving)
                   : radarr
-                  ? intl.formatMessage(messages.save)
+                  ? intl.formatMessage(globalMessages.save)
                   : intl.formatMessage(messages.add)
               }
               secondaryButtonType="warning"
               secondaryText={
                 isTesting
-                  ? intl.formatMessage(messages.testing)
-                  : intl.formatMessage(messages.test)
+                  ? intl.formatMessage(globalMessages.testing)
+                  : intl.formatMessage(globalMessages.test)
               }
               onSecondary={() => {
                 if (values.apiKey && values.hostname && values.port) {

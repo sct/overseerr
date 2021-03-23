@@ -1,18 +1,15 @@
 import { debounce } from 'lodash';
 import React, {
+  ReactNode,
   useCallback,
   useEffect,
   useRef,
   useState,
-  ReactNode,
 } from 'react';
+import { useIntl } from 'react-intl';
 import { useSpring } from 'react-spring';
+import globalMessages from '../../i18n/globalMessages';
 import TitleCard from '../TitleCard';
-import { defineMessages, useIntl } from 'react-intl';
-
-const messages = defineMessages({
-  noresults: 'No results.',
-});
 
 interface SliderProps {
   sliderKey: string;
@@ -233,7 +230,7 @@ const Slider: React.FC<SliderProps> = ({
           <div className="mt-16 mb-16 text-center text-white">
             {emptyMessage
               ? emptyMessage
-              : intl.formatMessage(messages.noresults)}
+              : intl.formatMessage(globalMessages.noresults)}
           </div>
         )}
       </div>

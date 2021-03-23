@@ -1,21 +1,21 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
 import useSWR from 'swr';
 import type {
   RadarrSettings,
   SonarrSettings,
 } from '../../../server/lib/settings';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import RadarrModal from './RadarrModal';
-import Modal from '../Common/Modal';
-import Transition from '../Transition';
-import axios from 'axios';
-import SonarrModal from './SonarrModal';
-import Alert from '../Common/Alert';
-import PageTitle from '../Common/PageTitle';
 import globalMessages from '../../i18n/globalMessages';
+import Alert from '../Common/Alert';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import Modal from '../Common/Modal';
+import PageTitle from '../Common/PageTitle';
+import Transition from '../Transition';
+import RadarrModal from './RadarrModal';
+import SonarrModal from './SonarrModal';
 
 const messages = defineMessages({
   services: 'Services',
@@ -26,8 +26,6 @@ const messages = defineMessages({
   sonarrSettingsDescription:
     'Configure your Sonarr connection below. You can have multiple Sonarr configurations, but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server which is used for new requests.',
   deleteserverconfirm: 'Are you sure you want to delete this server?',
-  edit: 'Edit',
-  delete: 'Delete',
   ssl: 'SSL',
   default: 'Default',
   default4k: 'Default 4K',
@@ -139,7 +137,9 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               >
                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
               </svg>
-              <span className="ml-3">{intl.formatMessage(messages.edit)}</span>
+              <span className="ml-3">
+                {intl.formatMessage(globalMessages.edit)}
+              </span>
             </button>
           </div>
           <div className="flex flex-1 w-0 -ml-px">
@@ -160,7 +160,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
                 />
               </svg>
               <span className="ml-3">
-                {intl.formatMessage(messages.delete)}
+                {intl.formatMessage(globalMessages.delete)}
               </span>
             </button>
           </div>

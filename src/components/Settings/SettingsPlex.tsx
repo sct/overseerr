@@ -45,8 +45,6 @@ const messages = defineMessages({
   port: 'Port',
   enablessl: 'Enable SSL',
   timeout: 'Timeout',
-  save: 'Save Changes',
-  saving: 'Saving…',
   plexlibraries: 'Plex Libraries',
   plexlibrariesDescription:
     'The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.',
@@ -538,8 +536,8 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       disabled={isSubmitting}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

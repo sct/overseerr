@@ -9,14 +9,13 @@ import Media from '../../../server/entity/Media';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import RequestModal from '../RequestModal';
 
 const messages = defineMessages({
   viewrequest: 'View Request',
   viewrequest4k: 'View 4K Request',
-  request: 'Request',
-  request4k: 'Request 4K',
   requestmore: 'Request More',
   requestmore4k: 'Request More 4K',
   approverequest: 'Approve Request',
@@ -114,7 +113,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   ) {
     buttons.push({
       id: 'request',
-      text: intl.formatMessage(messages.request),
+      text: intl.formatMessage(globalMessages.request),
       action: () => {
         setShowRequestModal(true);
       },
@@ -180,7 +179,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   ) {
     buttons.push({
       id: 'request4k',
-      text: intl.formatMessage(messages.request4k),
+      text: intl.formatMessage(globalMessages.request4k),
       action: () => {
         setShowRequest4kModal(true);
       },

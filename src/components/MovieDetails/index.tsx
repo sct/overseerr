@@ -36,7 +36,6 @@ import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   releasedate: 'Release Date',
-  status: 'Status',
   revenue: 'Revenue',
   budget: 'Budget',
   watchtrailer: 'Watch Trailer',
@@ -55,8 +54,6 @@ const messages = defineMessages({
     '* This will irreversibly remove all data for this movie, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
   studio: '{studioCount, plural, one {Studio} other {Studios}}',
   viewfullcrew: 'View Full Crew',
-  view: 'View',
-  areyousure: 'Are you sure?',
   openradarr: 'Open Movie in Radarr',
   openradarr4k: 'Open Movie in 4K Radarr',
   downloadstatus: 'Download Status',
@@ -382,7 +379,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           <div className="mt-8">
             <ConfirmButton
               onClick={() => deleteMedia()}
-              confirmText={intl.formatMessage(messages.areyousure)}
+              confirmText={intl.formatMessage(globalMessages.areyousure)}
               className="w-full"
             >
               {intl.formatMessage(messages.manageModalClearMedia)}
@@ -557,7 +554,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     <div className="relative z-10 flex items-center justify-between p-4 text-gray-200 transition duration-300 h-14 group-hover:text-white">
                       <div>{data.collection.name}</div>
                       <Button buttonSize="sm">
-                        {intl.formatMessage(messages.view)}
+                        {intl.formatMessage(globalMessages.view)}
                       </Button>
                     </div>
                   </div>
@@ -605,7 +602,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               </div>
             )}
             <div className="media-fact">
-              <span>{intl.formatMessage(messages.status)}</span>
+              <span>{intl.formatMessage(globalMessages.status)}</span>
               <span className="media-fact-value">{data.status}</span>
             </div>
             {data.releaseDate && (

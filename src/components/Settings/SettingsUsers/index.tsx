@@ -16,8 +16,6 @@ const messages = defineMessages({
   users: 'Users',
   userSettings: 'User Settings',
   userSettingsDescription: 'Configure global and default user settings.',
-  save: 'Save Changes',
-  saving: 'Saving…',
   toastSettingsSuccess: 'User settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   localLogin: 'Enable Local Sign-In',
@@ -173,8 +171,8 @@ const SettingsUsers: React.FC = () => {
                         disabled={isSubmitting}
                       >
                         {isSubmitting
-                          ? intl.formatMessage(messages.saving)
-                          : intl.formatMessage(messages.save)}
+                          ? intl.formatMessage(globalMessages.saving)
+                          : intl.formatMessage(globalMessages.save)}
                       </Button>
                     </span>
                   </div>

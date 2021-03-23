@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Transition from '../../Transition';
-import Modal from '../../Common/Modal';
-import { Formik, Field } from 'formik';
-import type { SonarrSettings } from '../../../../server/lib/settings';
-import * as Yup from 'yup';
 import axios from 'axios';
+import { Field, Formik } from 'formik';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import { useIntl, defineMessages } from 'react-intl';
+import * as Yup from 'yup';
+import type { SonarrSettings } from '../../../../server/lib/settings';
+import globalMessages from '../../../i18n/globalMessages';
+import Modal from '../../Common/Modal';
+import Transition from '../../Transition';
 
 const messages = defineMessages({
   createsonarr: 'Add New Sonarr Server',
@@ -20,11 +21,7 @@ const messages = defineMessages({
   validationLanguageProfileRequired: 'You must select a language profile',
   toastSonarrTestSuccess: 'Sonarr connection established successfully!',
   toastSonarrTestFailure: 'Failed to connect to Sonarr.',
-  saving: 'Saving…',
-  save: 'Save Changes',
   add: 'Add Server',
-  test: 'Test',
-  testing: 'Testing…',
   defaultserver: 'Default Server',
   servername: 'Server Name',
   servernamePlaceholder: 'A Sonarr Server',
@@ -322,16 +319,16 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               okButtonType="primary"
               okText={
                 isSubmitting
-                  ? intl.formatMessage(messages.saving)
+                  ? intl.formatMessage(globalMessages.saving)
                   : sonarr
-                  ? intl.formatMessage(messages.save)
+                  ? intl.formatMessage(globalMessages.save)
                   : intl.formatMessage(messages.add)
               }
               secondaryButtonType="warning"
               secondaryText={
                 isTesting
-                  ? intl.formatMessage(messages.testing)
-                  : intl.formatMessage(messages.test)
+                  ? intl.formatMessage(globalMessages.testing)
+                  : intl.formatMessage(globalMessages.test)
               }
               onSecondary={() => {
                 if (values.apiKey && values.hostname && values.port) {

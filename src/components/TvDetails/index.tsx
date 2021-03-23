@@ -40,7 +40,6 @@ import StatusBadge from '../StatusBadge';
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
   nextAirDate: 'Next Air Date',
-  status: 'Status',
   originallanguage: 'Original Language',
   overview: 'Overview',
   cast: 'Cast',
@@ -58,7 +57,6 @@ const messages = defineMessages({
   anime: 'Anime',
   network: '{networkCount, plural, one {Network} other {Networks}}',
   viewfullcrew: 'View Full Crew',
-  areyousure: 'Are you sure?',
   opensonarr: 'Open Series in Sonarr',
   opensonarr4k: 'Open Series in 4K Sonarr',
   downloadstatus: 'Download Status',
@@ -420,7 +418,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           <div className="mt-8">
             <ConfirmButton
               onClick={() => deleteMedia()}
-              confirmText={intl.formatMessage(messages.areyousure)}
+              confirmText={intl.formatMessage(globalMessages.areyousure)}
               className="w-full"
             >
               {intl.formatMessage(messages.manageModalClearMedia)}
@@ -628,7 +626,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               </div>
             )}
             <div className="media-fact">
-              <span>{intl.formatMessage(messages.status)}</span>
+              <span>{intl.formatMessage(globalMessages.status)}</span>
               <span className="media-fact-value">{data.status}</span>
             </div>
             {data.firstAirDate && (
