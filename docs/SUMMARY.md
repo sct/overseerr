@@ -13,7 +13,10 @@
 - [Notifications](using-overseerr/notifications/README.md)
   - [Email](using-overseerr/notifications/email.md)
   - [Discord](using-overseerr/notifications/discord.md)
-  - [Webhooks](using-overseerr/notifications/webhooks.md)
+  - [Pushbullet](using-overseerr/notifications/pushbullet.md)
+  - [Pushover](using-overseerr/notifications/pushover.md)
+  - [Telegram](using-overseerr/notifications/telegram.md)
+  - [Webhook](using-overseerr/notifications/webhooks.md)
 
 ## Support
 

@@ -9,15 +9,16 @@ The following email notification types are sent to _all_ users with the **Manage
 
 On the other hand, the email notification types below are only sent to the user who submitted the request:
 
-- Media Approved
+- Media Approved (does not include automatic approvals)
 - Media Declined
 - Media Available
 
+In order for users to receive email notifications, they must have **Enable Notifications** checked in their email notification user settings.
 {% endhint %}
 
 ## Configuration
 
-### Sender Address (required)
+### Sender Address
 
 Set this to the email address you would like to appear in the "from" field of the email message.
 
