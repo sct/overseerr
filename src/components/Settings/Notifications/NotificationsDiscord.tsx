@@ -40,6 +40,7 @@ const NotificationsDiscord: React.FC = () => {
         then: Yup.string().required(intl.formatMessage(messages.validationUrl)),
         otherwise: Yup.string().nullable(),
       })
+      .typeError(intl.formatMessage(messages.validationUrl))
       .url(intl.formatMessage(messages.validationUrl)),
   });
 

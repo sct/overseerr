@@ -42,6 +42,7 @@ const NotificationsPushover: React.FC = () => {
         ),
         otherwise: Yup.string().nullable(),
       })
+      .typeError(intl.formatMessage(messages.validationAccessTokenRequired))
       .matches(
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationAccessTokenRequired)
@@ -54,6 +55,7 @@ const NotificationsPushover: React.FC = () => {
         ),
         otherwise: Yup.string().nullable(),
       })
+      .typeError(intl.formatMessage(messages.validationUserTokenRequired))
       .matches(
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationUserTokenRequired)

@@ -43,6 +43,7 @@ const UserTelegramSettings: React.FC = () => {
         ),
         otherwise: Yup.string().nullable(),
       })
+      .typeError(intl.formatMessage(messages.validationTelegramChatId))
       .matches(
         /^[-]?\d+$/,
         intl.formatMessage(messages.validationTelegramChatId)
@@ -56,13 +57,16 @@ const UserTelegramSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
+        enableTelegram: data?.enableTelegram,
         telegramChatId: data?.telegramChatId,
         telegramSendSilently: data?.telegramSendSilently,
       }}
       validationSchema={UserTelegramSettingsSchema}
+      enableReinitialize
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
+            enableTelegram: values.enableTelegram,
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
           });

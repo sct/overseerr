@@ -73,6 +73,7 @@ const NotificationsEmail: React.FC = () => {
         ),
         otherwise: Yup.string().nullable(),
       })
+      .typeError(intl.formatMessage(messages.validationEmail))
       .email(intl.formatMessage(messages.validationEmail)),
     smtpHost: Yup.string()
       .when('enabled', {
@@ -82,6 +83,7 @@ const NotificationsEmail: React.FC = () => {
         ),
         otherwise: Yup.string().nullable(),
       })
+      .typeError(intl.formatMessage(messages.validationSmtpHostRequired))
       .matches(
         // eslint-disable-next-line
         /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,

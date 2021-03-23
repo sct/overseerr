@@ -38,11 +38,14 @@ const UserEmailSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
+        enableEmail: data?.enableEmail ?? true,
         pgpKey: data?.pgpKey,
       }}
+      enableReinitialize
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
+            enableEmail: values.enableEmail,
             pgpKey: values.pgpKey,
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {
@@ -59,7 +62,7 @@ const UserEmailSettings: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting }) => {
+      {({ isSubmitting }) => {
         return (
           <Form className="section">
             <div className="form-row">
@@ -87,16 +90,13 @@ const UserEmailSettings: React.FC = () => {
               <div className="form-input">
                 <div className="form-input-field">
                   <Field
+                    as="textarea"
                     id="pgpKey"
                     name="pgpKey"
-                    as="textarea"
                     rows="10"
                     className="font-mono text-xs"
                   />
                 </div>
-                {errors.pgpKey && touched.pgpKey && (
-                  <div className="error">{errors.pgpKey}</div>
-                )}
               </div>
             </div>
             <div className="actions">

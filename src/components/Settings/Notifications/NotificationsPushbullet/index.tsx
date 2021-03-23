@@ -33,13 +33,15 @@ const NotificationsPushbullet: React.FC = () => {
   );
 
   const NotificationsPushbulletSchema = Yup.object().shape({
-    accessToken: Yup.string().when('enabled', {
-      is: true,
-      then: Yup.string().required(
-        intl.formatMessage(messages.validationAccessTokenRequired)
-      ),
-      otherwise: Yup.string().nullable(),
-    }),
+    accessToken: Yup.string()
+      .when('enabled', {
+        is: true,
+        then: Yup.string().required(
+          intl.formatMessage(messages.validationAccessTokenRequired)
+        ),
+        otherwise: Yup.string().nullable(),
+      })
+      .typeError(intl.formatMessage(messages.validationAccessTokenRequired)),
   });
 
   if (!data && !error) {

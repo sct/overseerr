@@ -40,6 +40,7 @@ const NotificationsSlack: React.FC = () => {
         ),
         otherwise: Yup.string().nullable(),
       })
+      .typeError(intl.formatMessage(messages.validationWebhookUrl))
       .url(intl.formatMessage(messages.validationWebhookUrl)),
   });
 

@@ -42,6 +42,7 @@ const UserNotificationsDiscord: React.FC = () => {
         ),
         otherwise: Yup.string().nullable(),
       })
+      .typeError(intl.formatMessage(messages.validationDiscordId))
       .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
@@ -56,6 +57,7 @@ const UserNotificationsDiscord: React.FC = () => {
         discordId: data?.discordId,
       }}
       validationSchema={UserNotificationsDiscordSchema}
+      enableReinitialize
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
