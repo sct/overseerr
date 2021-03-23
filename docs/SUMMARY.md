@@ -15,6 +15,7 @@
   - [Discord](using-overseerr/notifications/discord.md)
   - [Pushbullet](using-overseerr/notifications/pushbullet.md)
   - [Pushover](using-overseerr/notifications/pushover.md)
+  - [Slack](using-overseerr/notifications/slack.md)
   - [Telegram](using-overseerr/notifications/telegram.md)
   - [Webhook](using-overseerr/notifications/webhooks.md)
 
