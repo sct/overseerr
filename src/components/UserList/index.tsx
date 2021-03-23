@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -109,6 +109,27 @@ const UserList: React.FC = () => {
   const [showBulkEditModal, setShowBulkEditModal] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const { user: currentUser } = useUser();
+
+  useEffect(() => {
+    const filterString = window.localStorage.getItem('ul-filter-settings');
+
+    if (filterString) {
+      const filterSettings = JSON.parse(filterString);
+
+      setCurrentSort(filterSettings.currentSort);
+      setCurrentPageSize(filterSettings.currentPageSize);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      'ul-filter-settings',
+      JSON.stringify({
+        currentSort,
+        currentPageSize,
+      })
+    );
+  }, [currentSort, currentPageSize]);
 
   const isUserPermsEditable = (userId: number) =>
     userId !== 1 && userId !== currentUser?.id;
