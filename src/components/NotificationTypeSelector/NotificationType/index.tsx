@@ -1,5 +1,5 @@
 import React from 'react';
-import { NotificationItem, hasNotificationType } from '..';
+import { hasNotificationType, NotificationItem } from '..';
 
 interface NotificationTypeProps {
   option: NotificationItem;
@@ -46,7 +46,7 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
           />
         </div>
         <div className="ml-3 text-sm leading-6">
-          <label htmlFor={option.id} className="font-medium">
+          <label htmlFor={option.id} className="font-medium text-white">
             {option.name}
           </label>
           <p className="text-gray-500">{option.description}</p>

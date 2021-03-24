@@ -1,11 +1,11 @@
 import axios from 'axios';
+import { getRepository } from 'typeorm';
 import { hasNotificationType, Notification } from '..';
+import { User } from '../../../entity/User';
 import logger from '../../../logger';
+import { Permission } from '../../permissions';
 import { getSettings, NotificationAgentDiscord } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
-import { getRepository } from 'typeorm';
-import { User } from '../../../entity/User';
-import { Permission } from '../../permissions';
 
 enum EmbedColors {
   DEFAULT = 0,
@@ -231,7 +231,7 @@ class DiscordAgent
         const userRepository = getRepository(User);
         const users = await userRepository.find();
 
-        // Mention all users with the manage requests permission (or admins)
+        // Mention all users with the Manage Requests permission
         users
           .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
           .forEach((user) => {
