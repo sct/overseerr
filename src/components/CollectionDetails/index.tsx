@@ -25,7 +25,6 @@ import TitleCard from '../TitleCard';
 import Transition from '../Transition';
 
 const messages = defineMessages({
-  overviewunavailable: 'Overview unavailable.',
   overview: 'Overview',
   numberofmovies: '{count} Movies',
   requestcollection: 'Request Collection',
@@ -417,16 +416,14 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
             )}
         </div>
       </div>
-      <div className="media-overview">
-        <div className="flex-1">
-          <h2>{intl.formatMessage(messages.overview)}</h2>
-          <p>
-            {data.overview
-              ? data.overview
-              : intl.formatMessage(messages.overviewunavailable)}
-          </p>
+      {data.overview && (
+        <div className="media-overview">
+          <div className="flex-1">
+            <h2>{intl.formatMessage(messages.overview)}</h2>
+            <p>{data.overview}</p>
+          </div>
         </div>
-      </div>
+      )}
       <div className="slider-header">
         <div className="slider-title">
           <span>{intl.formatMessage(globalMessages.movies)}</span>

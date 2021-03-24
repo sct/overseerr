@@ -134,11 +134,11 @@ h1 > .media-year {
 }
 
 .media-overview h2 {
-  @apply text-xl sm:text-2xl;
+  @apply text-xl text-gray-300 sm:text-2xl;
 }
 
 .media-overview p {
-  @apply pt-2 text-sm text-gray-400 lg:text-base;
+  @apply pt-2 text-sm text-gray-400 sm:text-base;
 }
 
 ul.media-crew {
