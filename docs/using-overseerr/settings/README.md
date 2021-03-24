@@ -119,7 +119,7 @@ Overseerr will perform a full scan of your Plex libraries once every 24 hours (r
 ## Services
 
 {% hint style="info" %}
-If you keep both non-4K and 4K content in your media libraries, you will need to set up multiple Radarr/Sonarr instances and link each of them to Overseerr.
+If you keep separate copies of non-4K and 4K content in your media libraries, you will need to set up multiple Radarr/Sonarr instances and link each of them to Overseerr.
 
 Overseerr checks these linked servers to determine whether or not media has already been requested or is available, so two servers of each type are required _if you keep separate non-4K and 4K copies of media_.
 
