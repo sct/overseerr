@@ -66,7 +66,8 @@ const QuotaDisplay: React.FC<QuotaDisplayProps> = ({
         />
         <div
           className={`flex items-end ${
-            Math.max(0, remaining ?? 0) === 0 || quota?.restricted
+            Math.max(0, remaining ?? quota?.remaining ?? 0) === 0 ||
+            quota?.restricted
               ? 'text-red-500'
               : ''
           }`}
