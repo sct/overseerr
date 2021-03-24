@@ -3069,6 +3069,9 @@ paths:
                       remaining:
                         type: number
                         example: 4
+                      restricted:
+                        type: boolean
+                        example: false
                   tv:
                     type: object
                     properties:
@@ -3084,6 +3087,9 @@ paths:
                       remaining:
                         type: number
                         example: 4
+                      restricted:
+                        type: boolean
+                        example: false
   /user/{userId}/settings/main:
     get:
       summary: Get general settings for a user
