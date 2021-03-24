@@ -6,7 +6,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import useSettings from '../../../../hooks/useSettings';
 import { Permission, useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';
@@ -30,17 +29,15 @@ const messages = defineMessages({
     'Password is too short; should be a minimum of 8 characters',
   validationConfirmPassword: 'You must confirm the new password',
   validationConfirmPasswordSame: 'Passwords must match',
-  nopasswordset: 'No Password Set',
-  nopasswordsetDescription:
-    'This user account currently does not have a password specifically for {applicationTitle}. Configure a password below to enable this account to sign in as a "local user."',
-  nopasswordsetDescriptionOwnAccount:
-    'Your account currently does not have a password specifically for {applicationTitle}. Configure a password below to enable sign in as a "local user" using your email address.',
+  noPasswordSet:
+    'This user account currently does not have a password set. Configure a password below to enable this account to sign in as a "local user."',
+  noPasswordSetOwnAccount:
+    'Your account currently does not have a password set. Configure a password below to enable sign-in as a "local user" using your email address.',
   nopermissionDescription:
     "You do not have permission to modify this user's password.",
 });
 
 const UserPasswordChange: React.FC = () => {
-  const settings = useSettings();
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -88,11 +85,9 @@ const UserPasswordChange: React.FC = () => {
           <h3 className="heading">{intl.formatMessage(messages.password)}</h3>
         </div>
         <Alert
-          title={intl.formatMessage(globalMessages.unauthorized)}
+          title={intl.formatMessage(messages.nopermissionDescription)}
           type="error"
-        >
-          {intl.formatMessage(messages.nopermissionDescription)}
-        </Alert>
+        />
       </>
     );
   }
@@ -153,18 +148,12 @@ const UserPasswordChange: React.FC = () => {
               {!data.hasPassword && (
                 <Alert
                   type="warning"
-                  title={intl.formatMessage(messages.nopasswordset)}
-                >
-                  {intl.formatMessage(
+                  title={intl.formatMessage(
                     user?.id === currentUser?.id
-                      ? messages.nopasswordsetDescriptionOwnAccount
-                      : messages.nopasswordsetDescription,
-                    {
-                      applicationTitle:
-                        settings.currentSettings.applicationTitle,
-                    }
+                      ? messages.noPasswordSetOwnAccount
+                      : messages.noPasswordSet
                   )}
-                </Alert>
+                />
               )}
               {data.hasPassword && user?.id === currentUser?.id && (
                 <div className="pb-6 form-row">

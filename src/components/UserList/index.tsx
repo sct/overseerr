@@ -58,7 +58,6 @@ const messages = defineMessages({
   usercreatedsuccess: 'User created successfully!',
   email: 'Email Address',
   password: 'Password',
-  passwordinfo: 'Password Information',
   passwordinfodescription:
     'Email notifications need to be configured and enabled in order to automatically generate passwords.',
   autogeneratepassword: 'Automatically generate password',
@@ -338,9 +337,9 @@ const UserList: React.FC = () => {
                 okButtonType="primary"
                 onCancel={() => setCreateModal({ isOpen: false })}
               >
-                <Alert title={intl.formatMessage(messages.passwordinfo)}>
-                  {intl.formatMessage(messages.passwordinfodescription)}
-                </Alert>
+                <Alert
+                  title={intl.formatMessage(messages.passwordinfodescription)}
+                />
                 <Form className="section">
                   <div className="form-row">
                     <label htmlFor="email" className="text-label">

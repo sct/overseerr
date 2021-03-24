@@ -20,7 +20,6 @@ const messages = defineMessages({
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   testsent: 'Pushover test notification sent!',
-  settinguppushover: 'Setting Up Pushover Notifications',
   settinguppushoverDescription:
     'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below. (You can use one of the <IconLink>official Overseerr icons on GitHub</IconLink>.)',
 });
@@ -116,10 +115,7 @@ const NotificationsPushover: React.FC = () => {
         return (
           <>
             <Alert
-              title={intl.formatMessage(messages.settinguppushover)}
-              type="info"
-            >
-              {intl.formatMessage(messages.settinguppushoverDescription, {
+              title={intl.formatMessage(messages.settinguppushoverDescription, {
                 RegisterApplicationLink: function RegisterApplicationLink(msg) {
                   return (
                     <a
@@ -145,7 +141,8 @@ const NotificationsPushover: React.FC = () => {
                   );
                 },
               })}
-            </Alert>
+              type="info"
+            />
             <Form className="section">
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">
