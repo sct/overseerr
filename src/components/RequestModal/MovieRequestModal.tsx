@@ -292,7 +292,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       okButtonType={'primary'}
       iconSvg={<DownloadIcon className="w-6 h-6" />}
     >
-      {hasAutoApprove && (
+      {hasAutoApprove && !quota?.movie.restricted && (
         <div className="mt-6">
           <Alert
             title={intl.formatMessage(messages.requestadmin)}
