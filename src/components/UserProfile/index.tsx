@@ -13,6 +13,7 @@ import Error from '../../pages/_error';
 import ImageFader from '../Common/ImageFader';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
+import ProgressCircle from '../Common/ProgressCircle';
 import RequestCard from '../RequestCard';
 import Slider from '../Slider';
 import ProfileHeader from './ProfileHeader';
@@ -20,12 +21,13 @@ import ProfileHeader from './ProfileHeader';
 const messages = defineMessages({
   recentrequests: 'Recent Requests',
   norequests: 'No Requests',
-  limit: '{requests} of {limit}',
-  requestsperdays: '{limit} per {days} days',
+  limit: '{remaining} of {limit}',
+  requestsperdays: '{limit} remaining',
   unlimited: 'Unlimited',
   totalrequests: 'Total Requests',
-  movierequestlimit: 'Movie Request Limit',
-  seriesrequestlimit: 'Series Request Limit',
+  pastdays: '{type} (past {days} days)',
+  movierequests: 'Movie Requests',
+  seriesrequest: 'Series Requests',
 });
 
 type MediaTitle = MovieDetails | TvDetails;
@@ -115,26 +117,44 @@ const UserProfile: React.FC = () => {
                     quota.movie.restricted ? 'text-red-500' : 'text-gray-300'
                   }`}
                 >
-                  {intl.formatMessage(messages.movierequestlimit)}
+                  {quota.tv.limit
+                    ? intl.formatMessage(messages.pastdays, {
+                        type: intl.formatMessage(messages.movierequests),
+                        days: quota?.movie.days,
+                      })
+                    : intl.formatMessage(messages.movierequests)}
                 </dt>
                 <dd
-                  className={`mt-1 text-sm ${
+                  className={`flex mt-1 text-sm items-center ${
                     quota.movie.restricted ? 'text-red-500' : 'text-white'
                   }`}
                 >
                   {quota.movie.limit ? (
                     <>
-                      {intl.formatMessage(messages.requestsperdays, {
-                        limit: (
-                          <span className="text-3xl font-semibold">
-                            {intl.formatMessage(messages.limit, {
-                              requests: quota.movie.used,
-                              limit: quota.movie.limit,
-                            })}
-                          </span>
-                        ),
-                        days: quota.movie.days,
-                      })}
+                      <ProgressCircle
+                        progress={Math.max(
+                          0,
+                          Math.round(
+                            ((quota?.movie.remaining ?? 0) /
+                              (quota?.movie.limit ?? 1)) *
+                              100
+                          )
+                        )}
+                        useHeatLevel
+                        className="w-8 h-8 mr-2"
+                      />
+                      <div>
+                        {intl.formatMessage(messages.requestsperdays, {
+                          limit: (
+                            <span className="text-3xl font-semibold">
+                              {intl.formatMessage(messages.limit, {
+                                remaining: quota.movie.remaining,
+                                limit: quota.movie.limit,
+                              })}
+                            </span>
+                          ),
+                        })}
+                      </div>
                     </>
                   ) : (
                     <span className="text-3xl">
@@ -156,26 +176,44 @@ const UserProfile: React.FC = () => {
                     quota.tv.restricted ? 'text-red-500' : 'text-gray-300'
                   }`}
                 >
-                  {intl.formatMessage(messages.seriesrequestlimit)}
+                  {quota.tv.limit
+                    ? intl.formatMessage(messages.pastdays, {
+                        type: intl.formatMessage(messages.seriesrequest),
+                        days: quota?.tv.days,
+                      })
+                    : intl.formatMessage(messages.seriesrequest)}
                 </dt>
                 <dd
-                  className={`mt-1 text-sm ${
+                  className={`flex items-center mt-1 text-sm ${
                     quota.tv.restricted ? 'text-red-500' : 'text-white'
                   }`}
                 >
                   {quota.tv.limit ? (
                     <>
-                      {intl.formatMessage(messages.requestsperdays, {
-                        limit: (
-                          <span className="text-3xl font-semibold">
-                            {intl.formatMessage(messages.limit, {
-                              requests: quota.tv.used,
-                              limit: quota.tv.limit,
-                            })}
-                          </span>
-                        ),
-                        days: quota.tv.days,
-                      })}
+                      <ProgressCircle
+                        progress={Math.max(
+                          0,
+                          Math.round(
+                            ((quota?.tv.remaining ?? 0) /
+                              (quota?.tv.limit ?? 1)) *
+                              100
+                          )
+                        )}
+                        useHeatLevel
+                        className="w-8 h-8 mr-2"
+                      />
+                      <div>
+                        {intl.formatMessage(messages.requestsperdays, {
+                          limit: (
+                            <span className="text-3xl font-semibold">
+                              {intl.formatMessage(messages.limit, {
+                                remaining: quota.tv.remaining,
+                                limit: quota.tv.limit,
+                              })}
+                            </span>
+                          ),
+                        })}
+                      </div>
                     </>
                   ) : (
                     <span className="text-3xl">
