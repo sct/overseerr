@@ -184,7 +184,7 @@
   "components.RequestModal.QuotaDisplay.notenoughseasonrequests": "Not enough season requests remaining",
   "components.RequestModal.QuotaDisplay.quotaLink": "You can view a summary of your request limits on your <ProfileLink>profile page</ProfileLink>.",
   "components.RequestModal.QuotaDisplay.quotaLinkUser": "You can view a summary of this user's request limits on their <ProfileLink>profile page</ProfileLink>.",
-  "components.RequestModal.QuotaDisplay.requestsremaining": "{remaining, plural, =0 {No} other {<strong>#</strong>}} {type} {remaining, plural, one {requests} other {requests}} remaining",
+  "components.RequestModal.QuotaDisplay.requestsremaining": "{remaining, plural, =0 {No} other {<strong>#</strong>}} {type} {remaining, plural, one {request} other {requests}} remaining",
   "components.RequestModal.QuotaDisplay.requiredquota": "You need to have at least <strong>{seasons}</strong> {seasons, plural, one {season request} other {season requests}} remaining in order to submit a request for this series.",
   "components.RequestModal.QuotaDisplay.season": "season",
   "components.RequestModal.QuotaDisplay.seasonlimit": "{limit, plural, one {season} other {seasons}}",

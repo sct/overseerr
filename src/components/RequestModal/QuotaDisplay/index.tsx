@@ -6,7 +6,7 @@ import ProgressCircle from '../../Common/ProgressCircle';
 
 const messages = defineMessages({
   requestsremaining:
-    '{remaining, plural, =0 {No} other {<strong>#</strong>}} {type} {remaining, plural, one {requests} other {requests}} remaining',
+    '{remaining, plural, =0 {No} other {<strong>#</strong>}} {type} {remaining, plural, one {request} other {requests}} remaining',
   movielimit: '{limit, plural, one {movie} other {movies}}',
   seasonlimit: '{limit, plural, one {season} other {seasons}}',
   allowedRequests:
