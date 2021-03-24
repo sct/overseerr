@@ -10,7 +10,7 @@ export interface UserRequestsResponse extends PaginatedResponse {
   results: MediaRequest[];
 }
 
-interface QuotaStatus {
+export interface QuotaStatus {
   days?: number;
   limit?: number;
   used: number;
