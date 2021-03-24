@@ -46,6 +46,7 @@ const messages = defineMessages({
   recommendations: 'Recommendations',
   similar: 'Similar Series',
   watchtrailer: 'Watch Trailer',
+  overviewunavailable: 'Overview unavailable.',
   manageModalTitle: 'Manage Series',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No Requests',
@@ -527,12 +528,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       <div className="media-overview">
         <div className="media-overview-left">
           {data.tagline && <div className="tagline">{data.tagline}</div>}
-          {data.overview && (
-            <>
-              <h2>{intl.formatMessage(messages.overview)}</h2>
-              <p>{data.overview}</p>
-            </>
-          )}
+          <h2>{intl.formatMessage(messages.overview)}</h2>
+          <p>
+            {data.overview
+              ? data.overview
+              : intl.formatMessage(messages.overviewunavailable)}
+          </p>
           {sortedCrew.length > 0 && (
             <>
               <ul className="media-crew">

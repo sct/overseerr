@@ -46,6 +46,7 @@ const messages = defineMessages({
   cast: 'Cast',
   recommendations: 'Recommendations',
   similar: 'Similar Titles',
+  overviewunavailable: 'Overview unavailable.',
   manageModalTitle: 'Manage Movie',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No Requests',
@@ -490,12 +491,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       <div className="media-overview">
         <div className="media-overview-left">
           {data.tagline && <div className="tagline">{data.tagline}</div>}
-          {data.overview && (
-            <>
-              <h2>{intl.formatMessage(messages.overview)}</h2>
-              <p>{data.overview}</p>
-            </>
-          )}
+          <h2>{intl.formatMessage(messages.overview)}</h2>
+          <p>
+            {data.overview
+              ? data.overview
+              : intl.formatMessage(messages.overviewunavailable)}
+          </p>
           {sortedCrew.length > 0 && (
             <>
               <ul className="media-crew">
