@@ -8,6 +8,7 @@ import {
   MediaStatus,
 } from '../../../server/constants/media';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
+import { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
 import { Permission } from '../../../server/lib/permissions';
 import { MovieDetails } from '../../../server/models/Movie';
 import DownloadIcon from '../../assets/download.svg';
@@ -16,9 +17,10 @@ import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
 import Modal from '../Common/Modal';
 import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
+import QuotaDisplay from './QuotaDisplay';
 
 const messages = defineMessages({
-  requestadmin: 'Your request will be immediately approved.',
+  requestadmin: 'Your request will be approved automatically.',
   cancelrequest:
     'This will remove your request. Are you sure you want to continue?',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
@@ -37,7 +39,6 @@ const messages = defineMessages({
   request4kfrom: 'There is currently a pending 4K request from {username}.',
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request edited.',
-  autoapproval: 'Automatic Approval',
   requesterror: 'Something went wrong while submitting the request.',
 });
 
@@ -69,6 +70,9 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   });
   const intl = useIntl();
   const { user, hasPermission } = useUser();
+  const { data: quota } = useSWR<QuotaResponse>(
+    user ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota` : null
+  );
 
   useEffect(() => {
     if (onUpdating) {
@@ -260,13 +264,22 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
     );
   }
 
+  const hasAutoApprove = hasPermission(
+    [
+      Permission.MANAGE_REQUESTS,
+      is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE,
+      is4k ? Permission.AUTO_APPROVE_4K_MOVIE : Permission.AUTO_APPROVE_MOVIE,
+    ],
+    { type: 'or' }
+  );
+
   return (
     <Modal
-      loading={!data && !error}
+      loading={(!data && !error) || !quota}
       backgroundClickable
       onCancel={onCancel}
       onOk={sendRequest}
-      okDisabled={isUpdating}
+      okDisabled={isUpdating || quota?.movie.restricted}
       title={intl.formatMessage(
         is4k ? messages.request4ktitle : messages.requesttitle,
         { title: data?.title }
@@ -279,20 +292,24 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       okButtonType={'primary'}
       iconSvg={<DownloadIcon className="w-6 h-6" />}
     >
-      {(hasPermission(Permission.MANAGE_REQUESTS) ||
-        hasPermission(
-          is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE
-        ) ||
-        hasPermission(
-          is4k
-            ? Permission.AUTO_APPROVE_4K_MOVIE
-            : Permission.AUTO_APPROVE_MOVIE
-        )) && (
-        <p className="mt-6">
-          <Alert title={intl.formatMessage(messages.autoapproval)} type="info">
-            {intl.formatMessage(messages.requestadmin)}
-          </Alert>
-        </p>
+      {hasAutoApprove && !quota?.movie.restricted && (
+        <div className="mt-6">
+          <Alert
+            title={intl.formatMessage(messages.requestadmin)}
+            type="info"
+          />
+        </div>
+      )}
+      {(quota?.movie.limit ?? 0) > 0 && (
+        <QuotaDisplay
+          mediaType="movie"
+          quota={quota?.movie}
+          userOverride={
+            requestOverrides?.user && requestOverrides.user.id !== user?.id
+              ? requestOverrides?.user?.id
+              : undefined
+          }
+        />
       )}
       {(hasPermission(Permission.REQUEST_ADVANCED) ||
         hasPermission(Permission.MANAGE_REQUESTS)) && (

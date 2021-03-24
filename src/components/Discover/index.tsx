@@ -1,17 +1,17 @@
-import React from 'react';
-import useSWR from 'swr';
-import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
-import Slider from '../Slider';
 import Link from 'next/link';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import useSWR from 'swr';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
-import RequestCard from '../RequestCard';
-import MediaSlider from '../MediaSlider';
 import PageTitle from '../Common/PageTitle';
-import StudioSlider from './StudioSlider';
-import NetworkSlider from './NetworkSlider';
+import MediaSlider from '../MediaSlider';
+import RequestCard from '../RequestCard';
+import Slider from '../Slider';
+import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
 import MovieGenreSlider from './MovieGenreSlider';
+import NetworkSlider from './NetworkSlider';
+import StudioSlider from './StudioSlider';
 import TvGenreSlider from './TvGenreSlider';
 
 const messages = defineMessages({
@@ -30,14 +30,16 @@ const Discover: React.FC = () => {
   const intl = useIntl();
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
-    '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded'
+    '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded',
+    { revalidateOnMount: true }
   );
 
   const {
     data: requests,
     error: requestError,
   } = useSWR<RequestResultsResponse>(
-    '/api/v1/request?filter=unavailable&take=10&sort=modified&skip=0'
+    '/api/v1/request?filter=unavailable&take=10&sort=modified&skip=0',
+    { revalidateOnMount: true }
   );
 
   return (

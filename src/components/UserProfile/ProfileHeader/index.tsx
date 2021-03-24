@@ -8,8 +8,6 @@ const messages = defineMessages({
   settings: 'Edit Settings',
   profile: 'View Profile',
   joindate: 'Joined {joindate}',
-  requests:
-    '{requestCount} {requestCount, plural, one {Request} other {Requests}}',
   userid: 'User ID: {userid}',
 });
 
@@ -32,9 +30,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         month: 'long',
         day: 'numeric',
       }),
-    }),
-    intl.formatMessage(messages.requests, {
-      requestCount: user.requestCount,
     }),
   ];
 

@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import { isAuthenticated } from '../middleware/auth';
-import { Permission } from '../lib/permissions';
 import { getRepository } from 'typeorm';
-import { MediaRequest } from '../entity/MediaRequest';
 import TheMovieDb from '../api/themoviedb';
+import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
 import Media from '../entity/Media';
-import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
+import { MediaRequest } from '../entity/MediaRequest';
 import SeasonRequest from '../entity/SeasonRequest';
-import logger from '../logger';
-import { RequestResultsResponse } from '../interfaces/api/requestInterfaces';
 import { User } from '../entity/User';
+import { RequestResultsResponse } from '../interfaces/api/requestInterfaces';
+import { Permission } from '../lib/permissions';
+import logger from '../logger';
+import { isAuthenticated } from '../middleware/auth';
 
 const requestRoutes = Router();
 
@@ -154,8 +154,29 @@ requestRoutes.post(
         });
       }
 
+      if (!requestUser) {
+        return next({
+          status: 500,
+          message: 'User missing from request context.',
+        });
+      }
+
+      const quotas = await requestUser.getQuota();
+
+      if (req.body.mediaType === MediaType.MOVIE && quotas.movie.restricted) {
+        return next({
+          status: 403,
+          message: 'Movie Quota Exceeded',
+        });
+      } else if (req.body.mediaType === MediaType.TV && quotas.tv.restricted) {
+        return next({
+          status: 403,
+          message: 'Series Quota Exceeded',
+        });
+      }
+
       const tmdbMedia =
-        req.body.mediaType === 'movie'
+        req.body.mediaType === MediaType.MOVIE
           ? await tmdb.getMovie({ movieId: req.body.mediaId })
           : await tmdb.getTvShow({ tvId: req.body.mediaId });
 
@@ -182,7 +203,7 @@ requestRoutes.post(
         }
       }
 
-      if (req.body.mediaType === 'movie') {
+      if (req.body.mediaType === MediaType.MOVIE) {
         const existing = await requestRepository.findOne({
           where: {
             media: {
@@ -247,7 +268,7 @@ requestRoutes.post(
 
         await requestRepository.save(request);
         return res.status(201).json(request);
-      } else if (req.body.mediaType === 'tv') {
+      } else if (req.body.mediaType === MediaType.TV) {
         const requestedSeasons = req.body.seasons as number[];
         let existingSeasons: number[] = [];
 
@@ -458,14 +479,14 @@ requestRoutes.put<{ requestId: string }>(
         });
       }
 
-      if (req.body.mediaType === 'movie') {
+      if (req.body.mediaType === MediaType.MOVIE) {
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;
         request.rootFolder = req.body.rootFolder;
         request.requestedBy = requestUser as User;
 
         requestRepository.save(request);
-      } else if (req.body.mediaType === 'tv') {
+      } else if (req.body.mediaType === MediaType.TV) {
         const mediaRepository = getRepository(Media);
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;

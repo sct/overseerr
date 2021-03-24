@@ -1,28 +1,30 @@
-import React, { useState } from 'react';
-import Modal from '../Common/Modal';
-import { useUser } from '../../hooks/useUser';
-import { Permission } from '../../../server/lib/permissions';
-import { defineMessages, useIntl } from 'react-intl';
-import { MediaRequest } from '../../../server/entity/MediaRequest';
-import useSWR from 'swr';
-import { useToasts } from 'react-toast-notifications';
-import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
 import axios from 'axios';
+import React, { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
 import {
-  MediaStatus,
   MediaRequestStatus,
+  MediaStatus,
 } from '../../../server/constants/media';
-import { TvDetails } from '../../../server/models/Tv';
-import Badge from '../Common/Badge';
-import globalMessages from '../../i18n/globalMessages';
+import { MediaRequest } from '../../../server/entity/MediaRequest';
 import SeasonRequest from '../../../server/entity/SeasonRequest';
-import Alert from '../Common/Alert';
-import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
-import SearchByNameModal from './SearchByNameModal';
+import { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
+import { Permission } from '../../../server/lib/permissions';
+import { TvDetails } from '../../../server/models/Tv';
 import useSettings from '../../hooks/useSettings';
+import { useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
+import Alert from '../Common/Alert';
+import Badge from '../Common/Badge';
+import Modal from '../Common/Modal';
+import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
+import QuotaDisplay from './QuotaDisplay';
+import SearchByNameModal from './SearchByNameModal';
 
 const messages = defineMessages({
-  requestadmin: 'Your request will be immediately approved.',
+  requestadmin: 'Your request will be approved automatically.',
   cancelrequest:
     'This will remove your request. Are you sure you want to continue?',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
@@ -79,13 +81,19 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     editRequest ? editingSeasons : []
   );
   const intl = useIntl();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const [searchModal, setSearchModal] = useState<{
     show: boolean;
   }>({
     show: true,
   });
   const [tvdbId, setTvdbId] = useState<number | undefined>(undefined);
+  const { data: quota } = useSWR<QuotaResponse>(
+    user ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota` : null
+  );
+
+  const currentlyRemaining =
+    (quota?.tv.remaining ?? 0) - selectedSeasons.length;
 
   const updateRequest = async () => {
     if (!editRequest) {
@@ -246,6 +254,15 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       return;
     }
 
+    // If there are no more remaining requests available, block toggle
+    if (
+      quota?.tv.limit &&
+      currentlyRemaining <= 0 &&
+      !isSelectedSeason(seasonNumber)
+    ) {
+      return;
+    }
+
     if (selectedSeasons.includes(seasonNumber)) {
       setSelectedSeasons((seasons) =>
         seasons.filter((sn) => sn !== seasonNumber)
@@ -255,20 +272,25 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     }
   };
 
+  const unrequestedSeasons = getAllSeasons().filter(
+    (season) => !getAllRequestedSeasons().includes(season)
+  );
+
   const toggleAllSeasons = (): void => {
+    // If the user has a quota and not enough requests for all seasons, block toggleAllSeasons
+    if (
+      quota?.tv.limit &&
+      (quota?.tv.remaining ?? 0) < unrequestedSeasons.length
+    ) {
+      return;
+    }
+
     if (
       data &&
       selectedSeasons.length >= 0 &&
-      selectedSeasons.length <
-        getAllSeasons().filter(
-          (season) => !getAllRequestedSeasons().includes(season)
-        ).length
+      selectedSeasons.length < unrequestedSeasons.length
     ) {
-      setSelectedSeasons(
-        getAllSeasons().filter(
-          (season) => !getAllRequestedSeasons().includes(season)
-        )
-      );
+      setSelectedSeasons(unrequestedSeasons);
     } else {
       setSelectedSeasons([]);
     }
@@ -352,6 +374,9 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       okDisabled={
         editRequest
           ? false
+          : !settings.currentSettings.partialRequestsEnabled &&
+            unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+          ? true
           : getAllRequestedSeasons().length >= getAllSeasons().length ||
             (settings.currentSettings.partialRequestsEnabled &&
               selectedSeasons.length === 0)
@@ -393,17 +418,43 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         ],
         { type: 'or' }
       ) &&
+        !(
+          quota?.tv.limit &&
+          !settings.currentSettings.partialRequestsEnabled &&
+          unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+        ) &&
         getAllRequestedSeasons().length < getAllSeasons().length &&
         !editRequest && (
           <p className="mt-6">
             <Alert
-              title={intl.formatMessage(messages.autoapproval)}
+              title={intl.formatMessage(messages.requestadmin)}
               type="info"
-            >
-              {intl.formatMessage(messages.requestadmin)}
-            </Alert>
+            />
           </p>
         )}
+      {(quota?.movie.limit ?? 0) > 0 && (
+        <QuotaDisplay
+          mediaType="tv"
+          quota={quota?.tv}
+          remaining={
+            !settings.currentSettings.partialRequestsEnabled &&
+            unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+              ? 0
+              : currentlyRemaining
+          }
+          userOverride={
+            requestOverrides?.user && requestOverrides.user.id !== user?.id
+              ? requestOverrides?.user?.id
+              : undefined
+          }
+          overLimit={
+            !settings.currentSettings.partialRequestsEnabled &&
+            unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+              ? unrequestedSeasons.length
+              : undefined
+          }
+        />
+      )}
       <div className="flex flex-col">
         <div className="-mx-4 sm:mx-0">
           <div className="inline-block min-w-full py-2 align-middle">
@@ -427,7 +478,13 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                             toggleAllSeasons();
                           }
                         }}
-                        className="relative inline-flex items-center justify-center flex-shrink-0 w-10 h-5 pt-2 cursor-pointer focus:outline-none"
+                        className={`relative inline-flex items-center justify-center flex-shrink-0 w-10 h-5 pt-2 cursor-pointer focus:outline-none ${
+                          quota?.tv.remaining &&
+                          quota.tv.limit &&
+                          quota.tv.remaining < unrequestedSeasons.length
+                            ? 'opacity-50'
+                            : ''
+                        }`}
                       >
                         <span
                           aria-hidden="true"
@@ -494,6 +551,9 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                               }}
                               className={`pt-2 relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none ${
                                 mediaSeason ||
+                                (quota?.tv.limit &&
+                                  currentlyRemaining <= 0 &&
+                                  !isSelectedSeason(season.seasonNumber)) ||
                                 (!!seasonRequest &&
                                   !editingSeasons.includes(season.seasonNumber))
                                   ? 'opacity-50'

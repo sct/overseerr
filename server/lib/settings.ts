@@ -1,6 +1,6 @@
 import fs from 'fs';
-import path from 'path';
 import { merge } from 'lodash';
+import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { Permission } from './permissions';
 
@@ -61,6 +61,11 @@ export interface SonarrSettings extends DVRSettings {
   enableSeasonFolders: boolean;
 }
 
+interface Quota {
+  quotaLimit?: number;
+  quotaDays?: number;
+}
+
 export interface MainSettings {
   apiKey: string;
   applicationTitle: string;
@@ -68,6 +73,10 @@ export interface MainSettings {
   csrfProtection: boolean;
   cacheImages: boolean;
   defaultPermissions: number;
+  defaultQuotas: {
+    movie: Quota;
+    tv: Quota;
+  };
   hideAvailable: boolean;
   localLogin: boolean;
   region: string;
@@ -199,6 +208,10 @@ class Settings {
         csrfProtection: false,
         cacheImages: false,
         defaultPermissions: Permission.REQUEST,
+        defaultQuotas: {
+          movie: {},
+          tv: {},
+        },
         hideAvailable: false,
         localLogin: true,
         region: '',

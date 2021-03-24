@@ -1,15 +1,16 @@
-import React from 'react';
-import useSWR from 'swr';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import type { MainSettings } from '../../../../server/lib/settings';
-import { Form, Formik, Field } from 'formik';
 import axios from 'axios';
-import Button from '../../Common/Button';
+import { Field, Form, Formik } from 'formik';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import PermissionEdit from '../../PermissionEdit';
-import PageTitle from '../../Common/PageTitle';
+import useSWR from 'swr';
+import type { MainSettings } from '../../../../server/lib/settings';
 import globalMessages from '../../../i18n/globalMessages';
+import Button from '../../Common/Button';
+import LoadingSpinner from '../../Common/LoadingSpinner';
+import PageTitle from '../../Common/PageTitle';
+import PermissionEdit from '../../PermissionEdit';
+import QuotaSelector from '../../QuotaSelector';
 
 const messages = defineMessages({
   users: 'Users',
@@ -19,8 +20,12 @@ const messages = defineMessages({
   saving: 'Saving…',
   toastSettingsSuccess: 'User settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
-  localLogin: 'Enable Local User Sign-In',
-  defaultPermissions: 'Default User Permissions',
+  localLogin: 'Enable Local Sign-In',
+  movieRequestLimitLabel: 'Global Movie Request Limit',
+  movieRequestLimit: '{quotaLimit} movies per {quotaDays} days',
+  tvRequestLimitLabel: 'Global Series Request Limit',
+  tvRequestLimit: '{quotaLimit} seasons per {quotaDays} days',
+  defaultPermissions: 'Default Permissions',
 });
 
 const SettingsUsers: React.FC = () => {
@@ -52,6 +57,10 @@ const SettingsUsers: React.FC = () => {
         <Formik
           initialValues={{
             localLogin: data?.localLogin,
+            movieQuotaLimit: data?.defaultQuotas.movie.quotaLimit ?? 0,
+            movieQuotaDays: data?.defaultQuotas.movie.quotaDays ?? 7,
+            tvQuotaLimit: data?.defaultQuotas.tv.quotaLimit ?? 0,
+            tvQuotaDays: data?.defaultQuotas.tv.quotaDays ?? 7,
             defaultPermissions: data?.defaultPermissions ?? 0,
           }}
           enableReinitialize
@@ -59,6 +68,16 @@ const SettingsUsers: React.FC = () => {
             try {
               await axios.post('/api/v1/settings/main', {
                 localLogin: values.localLogin,
+                defaultQuotas: {
+                  movie: {
+                    quotaLimit: values.movieQuotaLimit,
+                    quotaDays: values.movieQuotaDays,
+                  },
+                  tv: {
+                    quotaLimit: values.tvQuotaLimit,
+                    quotaDays: values.tvQuotaDays,
+                  },
+                },
                 defaultPermissions: values.defaultPermissions,
               });
 
@@ -91,6 +110,36 @@ const SettingsUsers: React.FC = () => {
                       onChange={() => {
                         setFieldValue('localLogin', !values.localLogin);
                       }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="applicationTitle" className="text-label">
+                    {intl.formatMessage(messages.movieRequestLimitLabel)}
+                  </label>
+                  <div className="form-input">
+                    <QuotaSelector
+                      onChange={setFieldValue}
+                      dayFieldName="movieQuotaDays"
+                      limitFieldName="movieQuotaLimit"
+                      mediaType="movie"
+                      defaultDays={values.movieQuotaDays}
+                      defaultLimit={values.movieQuotaLimit}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="applicationTitle" className="text-label">
+                    {intl.formatMessage(messages.tvRequestLimitLabel)}
+                  </label>
+                  <div className="form-input">
+                    <QuotaSelector
+                      onChange={setFieldValue}
+                      dayFieldName="tvQuotaDays"
+                      limitFieldName="tvQuotaLimit"
+                      mediaType="tv"
+                      defaultDays={values.tvQuotaDays}
+                      defaultLimit={values.tvQuotaLimit}
                     />
                   </div>
                 </div>
