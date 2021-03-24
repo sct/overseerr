@@ -436,7 +436,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
             />
           </p>
         )}
-      {(quota?.movie.limit ?? 0) > 0 && (
+      {(quota?.tv.limit ?? 0) > 0 && (
         <QuotaDisplay
           mediaType="tv"
           quota={quota?.tv}
