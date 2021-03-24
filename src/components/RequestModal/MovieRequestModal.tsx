@@ -20,7 +20,7 @@ import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 import QuotaDisplay from './QuotaDisplay';
 
 const messages = defineMessages({
-  requestadmin: 'Your request will be approved automatically.',
+  requestadmin: 'This request will be approved automatically.',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
   requestCancel: 'Request for <strong>{title}</strong> canceled.',
   requesttitle: 'Request {title}',
