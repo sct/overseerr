@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  movieRequestLimit: '{quotaLimit} movies per {quotaDays} days',
-  tvRequestLimit: '{quotaLimit} seasons per {quotaDays} days',
+  movieRequestLimit: '{quotaLimit} movie(s) per {quotaDays} day(s)',
+  tvRequestLimit: '{quotaLimit} season(s) per {quotaDays} day(s)',
   unlimited: 'Unlimited',
 });
 

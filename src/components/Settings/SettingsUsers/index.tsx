@@ -20,9 +20,7 @@ const messages = defineMessages({
   toastSettingsFailure: 'Something went wrong while saving settings.',
   localLogin: 'Enable Local Sign-In',
   movieRequestLimitLabel: 'Global Movie Request Limit',
-  movieRequestLimit: '{quotaLimit} movies per {quotaDays} days',
   tvRequestLimitLabel: 'Global Series Request Limit',
-  tvRequestLimit: '{quotaLimit} seasons per {quotaDays} days',
   defaultPermissions: 'Default Permissions',
 });
 
