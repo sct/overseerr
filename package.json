@@ -55,7 +55,7 @@
     "react-intersection-observer": "^8.31.0",
     "react-intl": "^5.13.5",
     "react-markdown": "^5.0.3",
-    "react-spring": "^8.0.27",
+    "react-spring": "^9.0.0",
     "react-toast-notifications": "^2.4.3",
     "react-transition-group": "^4.4.1",
     "react-truncate-markup": "^5.1.0",
