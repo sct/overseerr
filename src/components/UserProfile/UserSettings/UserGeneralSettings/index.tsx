@@ -156,9 +156,9 @@ const UserGeneralSettings: React.FC = () => {
           return (
             <Form className="section">
               <div className="form-row">
-                <div className="text-label">
+                <label className="text-label">
                   {intl.formatMessage(messages.accounttype)}
-                </div>
+                </label>
                 <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex items-center max-w-lg">
                     {user?.userType === UserType.PLEX ? (
@@ -174,9 +174,9 @@ const UserGeneralSettings: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
-                <div className="text-label">
+                <label className="text-label">
                   {intl.formatMessage(messages.role)}
-                </div>
+                </label>
                 <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex items-center max-w-lg">
                     {user?.id === 1
