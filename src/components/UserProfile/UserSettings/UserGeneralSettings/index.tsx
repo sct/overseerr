@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -56,6 +56,11 @@ const UserGeneralSettings: React.FC = () => {
   const { data, error, revalidate } = useSWR<UserSettingsGeneralResponse>(
     user ? `/api/v1/user/${user?.id}/settings/main` : null
   );
+
+  useEffect(() => {
+    setMovieQuotaEnabled(!!data?.movieQuotaLimit && !!data?.movieQuotaDays);
+    setTvQuotaEnabled(!!data?.tvQuotaLimit && !!data?.tvQuotaDays);
+  }, [data]);
 
   const { data: languages, error: languagesError } = useSWR<Language[]>(
     '/api/v1/languages'
