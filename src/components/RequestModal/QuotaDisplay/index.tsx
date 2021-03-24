@@ -156,9 +156,7 @@ const QuotaDisplay: React.FC<QuotaDisplayProps> = ({
                     <Link
                       href={userOverride ? `/user/${userOverride}` : '/profile'}
                     >
-                      <a className="font-semibold text-white hover:underline">
-                        {msg}
-                      </a>
+                      <a className="text-white hover:underline">{msg}</a>
                     </Link>
                   );
                 },

@@ -8,7 +8,7 @@ import {
 } from '../../../server/interfaces/api/userInterfaces';
 import { MovieDetails } from '../../../server/models/Movie';
 import { TvDetails } from '../../../server/models/Tv';
-import { useUser } from '../../hooks/useUser';
+import { Permission, useUser } from '../../hooks/useUser';
 import Error from '../../pages/_error';
 import ImageFader from '../Common/ImageFader';
 import LoadingSpinner from '../Common/LoadingSpinner';
@@ -36,6 +36,7 @@ const UserProfile: React.FC = () => {
   const { user, error } = useUser({
     id: Number(router.query.userId),
   });
+  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const [availableTitles, setAvailableTitles] = useState<
     Record<number, MediaTitle>
   >({});
@@ -88,102 +89,104 @@ const UserProfile: React.FC = () => {
         </div>
       )}
       <ProfileHeader user={user} />
-      {quota && (
-        <div className="relative z-40">
-          <dl className="grid grid-cols-1 gap-5 mt-5 lg:grid-cols-3">
-            <div className="px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ring-gray-700 sm:p-6">
-              <dt className="text-sm font-medium text-gray-300 truncate">
-                {intl.formatMessage(messages.totalrequests)}
-              </dt>
-              <dd className="mt-1 text-3xl font-semibold text-white">
-                {intl.formatNumber(user.requestCount)}
-              </dd>
-            </div>
+      {quota &&
+        (user.id === currentUser?.id ||
+          currentHasPermission(Permission.MANAGE_USERS)) && (
+          <div className="relative z-40">
+            <dl className="grid grid-cols-1 gap-5 mt-5 lg:grid-cols-3">
+              <div className="px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ring-gray-700 sm:p-6">
+                <dt className="text-sm font-medium text-gray-300 truncate">
+                  {intl.formatMessage(messages.totalrequests)}
+                </dt>
+                <dd className="mt-1 text-3xl font-semibold text-white">
+                  {intl.formatNumber(user.requestCount)}
+                </dd>
+              </div>
 
-            <div
-              className={`px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ${
-                quota.movie.restricted
-                  ? 'ring-red-500 from-red-900 to-transparent bg-gradient-to-t'
-                  : 'ring-gray-700'
-              } sm:p-6`}
-            >
-              <dt
-                className={`text-sm font-medium truncate ${
-                  quota.movie.restricted ? 'text-red-500' : 'text-gray-300'
-                }`}
+              <div
+                className={`px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ${
+                  quota.movie.restricted
+                    ? 'ring-red-500 from-red-900 to-transparent bg-gradient-to-t'
+                    : 'ring-gray-700'
+                } sm:p-6`}
               >
-                {intl.formatMessage(messages.movierequestlimit)}
-              </dt>
-              <dd
-                className={`mt-1 text-sm ${
-                  quota.movie.restricted ? 'text-red-500' : 'text-white'
-                }`}
-              >
-                {quota.movie.limit ? (
-                  <>
-                    {intl.formatMessage(messages.requestsperdays, {
-                      limit: (
-                        <span className="text-3xl font-semibold">
-                          {intl.formatMessage(messages.limit, {
-                            requests: quota.movie.used,
-                            limit: quota.movie.limit,
-                          })}
-                        </span>
-                      ),
-                      days: quota.movie.days,
-                    })}
-                  </>
-                ) : (
-                  <span className="text-3xl">
-                    {intl.formatMessage(messages.unlimited)}
-                  </span>
-                )}
-              </dd>
-            </div>
+                <dt
+                  className={`text-sm font-medium truncate ${
+                    quota.movie.restricted ? 'text-red-500' : 'text-gray-300'
+                  }`}
+                >
+                  {intl.formatMessage(messages.movierequestlimit)}
+                </dt>
+                <dd
+                  className={`mt-1 text-sm ${
+                    quota.movie.restricted ? 'text-red-500' : 'text-white'
+                  }`}
+                >
+                  {quota.movie.limit ? (
+                    <>
+                      {intl.formatMessage(messages.requestsperdays, {
+                        limit: (
+                          <span className="text-3xl font-semibold">
+                            {intl.formatMessage(messages.limit, {
+                              requests: quota.movie.used,
+                              limit: quota.movie.limit,
+                            })}
+                          </span>
+                        ),
+                        days: quota.movie.days,
+                      })}
+                    </>
+                  ) : (
+                    <span className="text-3xl">
+                      {intl.formatMessage(messages.unlimited)}
+                    </span>
+                  )}
+                </dd>
+              </div>
 
-            <div
-              className={`px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ${
-                quota.tv.restricted
-                  ? 'ring-red-500 from-red-900 to-transparent bg-gradient-to-t'
-                  : 'ring-gray-700'
-              } sm:p-6`}
-            >
-              <dt
-                className={`text-sm font-medium truncate ${
-                  quota.tv.restricted ? 'text-red-500' : 'text-gray-300'
-                }`}
+              <div
+                className={`px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ${
+                  quota.tv.restricted
+                    ? 'ring-red-500 from-red-900 to-transparent bg-gradient-to-t'
+                    : 'ring-gray-700'
+                } sm:p-6`}
               >
-                {intl.formatMessage(messages.seriesrequestlimit)}
-              </dt>
-              <dd
-                className={`mt-1 text-sm ${
-                  quota.tv.restricted ? 'text-red-500' : 'text-white'
-                }`}
-              >
-                {quota.tv.limit ? (
-                  <>
-                    {intl.formatMessage(messages.requestsperdays, {
-                      limit: (
-                        <span className="text-3xl font-semibold">
-                          {intl.formatMessage(messages.limit, {
-                            requests: quota.tv.used,
-                            limit: quota.tv.limit,
-                          })}
-                        </span>
-                      ),
-                      days: quota.tv.days,
-                    })}
-                  </>
-                ) : (
-                  <span className="text-3xl">
-                    {intl.formatMessage(messages.unlimited)}
-                  </span>
-                )}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      )}
+                <dt
+                  className={`text-sm font-medium truncate ${
+                    quota.tv.restricted ? 'text-red-500' : 'text-gray-300'
+                  }`}
+                >
+                  {intl.formatMessage(messages.seriesrequestlimit)}
+                </dt>
+                <dd
+                  className={`mt-1 text-sm ${
+                    quota.tv.restricted ? 'text-red-500' : 'text-white'
+                  }`}
+                >
+                  {quota.tv.limit ? (
+                    <>
+                      {intl.formatMessage(messages.requestsperdays, {
+                        limit: (
+                          <span className="text-3xl font-semibold">
+                            {intl.formatMessage(messages.limit, {
+                              requests: quota.tv.used,
+                              limit: quota.tv.limit,
+                            })}
+                          </span>
+                        ),
+                        days: quota.tv.days,
+                      })}
+                    </>
+                  ) : (
+                    <span className="text-3xl">
+                      {intl.formatMessage(messages.unlimited)}
+                    </span>
+                  )}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        )}
       <div className="relative z-40 mt-6 mb-4 md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
           <div className="inline-flex items-center text-xl leading-7 text-gray-300 cursor-default sm:text-2xl sm:leading-9 sm:truncate">
