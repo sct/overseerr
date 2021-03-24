@@ -24,7 +24,7 @@ import QuotaDisplay from './QuotaDisplay';
 import SearchByNameModal from './SearchByNameModal';
 
 const messages = defineMessages({
-  requestadmin: 'Your request will be approved automatically.',
+  requestadmin: 'This request will be approved automatically.',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
