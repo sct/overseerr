@@ -18,11 +18,10 @@ const messages = defineMessages({
   pushbulletSettingsSaved:
     'Pushbullet notification settings saved successfully!',
   pushbulletSettingsFailed: 'Pushbullet notification settings failed to save.',
-  testSent: 'Test notification sent!',
+  testSent: 'Pushbullet test notification sent!',
   settingUpPushbullet: 'Setting Up Pushbullet Notifications',
   settingUpPushbulletDescription:
-    'To configure Pushbullet notifications, you will need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink> and enter it below.',
-  notificationTypes: 'Notification Types',
+    'To configure Pushbullet notifications, you will need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink>.',
 });
 
 const NotificationsPushbullet: React.FC = () => {
@@ -144,28 +143,10 @@ const NotificationsPushbullet: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.notificationTypes)}
-                    <span className="label-required">*</span>
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <NotificationTypeSelector
+                currentTypes={values.types}
+                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              />
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">

@@ -14,16 +14,15 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
   accessToken: 'Application/API Token',
-  userToken: 'User Key',
+  userToken: 'User or Group Key',
   validationAccessTokenRequired: 'You must provide a valid application token',
   validationUserTokenRequired: 'You must provide a valid user key',
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
-  testsent: 'Test notification sent!',
+  testsent: 'Pushover test notification sent!',
   settinguppushover: 'Setting Up Pushover Notifications',
   settinguppushoverDescription:
-    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below. (You can use one of our <IconLink>official icons on GitHub</IconLink>.) You will also need your user key.',
-  notificationtypes: 'Notification Types',
+    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below. (You can use one of the <IconLink>official Overseerr icons on GitHub</IconLink>.)',
 });
 
 const NotificationsPushover: React.FC = () => {
@@ -196,28 +195,10 @@ const NotificationsPushover: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.notificationtypes)}
-                    <span className="label-required">*</span>
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <NotificationTypeSelector
+                currentTypes={values.types}
+                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              />
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">

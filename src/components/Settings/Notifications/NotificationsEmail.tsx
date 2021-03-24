@@ -24,12 +24,11 @@ const messages = defineMessages({
   authPass: 'SMTP Password',
   emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
-  testsent: 'Test notification sent!',
+  testsent: 'Email test notification sent!',
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:
     'SSL should be disabled on standard TLS connections (port 587)',
   senderName: 'Sender Name',
-  notificationtypes: 'Notification Types',
   validationEmail: 'You must provide a valid email address',
   emailNotificationTypesAlert: 'Email Notification Recipients',
   emailNotificationTypesAlertDescription:
@@ -391,28 +390,10 @@ const NotificationsEmail: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.notificationtypes)}
-                    <span className="label-required">*</span>
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <NotificationTypeSelector
+                currentTypes={values.types}
+                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              />
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">

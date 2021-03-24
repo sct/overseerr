@@ -45,8 +45,7 @@ const messages = defineMessages({
   validationJsonPayloadRequired: 'You must provide a valid JSON payload',
   webhooksettingssaved: 'Webhook notification settings saved successfully!',
   webhooksettingsfailed: 'Webhook notification settings failed to save.',
-  testsent: 'Test notification sent!',
-  notificationtypes: 'Notification Types',
+  testsent: 'Webhook test notification sent!',
   resetPayload: 'Reset to Default',
   resetPayloadSuccess: 'JSON payload reset successfully!',
   customJson: 'JSON Payload',
@@ -272,32 +271,10 @@ const NotificationsWebhook: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-8">
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="sm:grid sm:grid-cols-4 sm:gap-4">
-                  <div>
-                    <div id="group-label" className="group-label">
-                      {intl.formatMessage(messages.notificationtypes)}
-                      <span className="label-required">*</span>
-                    </div>
-                  </div>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <NotificationTypeSelector
+              currentTypes={values.types}
+              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

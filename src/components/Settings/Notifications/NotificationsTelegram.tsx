@@ -20,11 +20,10 @@ const messages = defineMessages({
   validationChatIdRequired: 'You must provide a valid chat ID',
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
-  testsent: 'Test notification sent!',
+  testsent: 'Telegram test notification sent!',
   settinguptelegram: 'Setting Up Telegram Notifications',
   settinguptelegramDescription:
     'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key. Additionally, you will need the chat ID for the chat to which you would like to send notifications. You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
-  notificationtypes: 'Notification Types',
   sendSilently: 'Send Silently',
   sendSilentlyTip: 'Send notifications with no sound',
 });
@@ -237,28 +236,10 @@ const NotificationsTelegram: React.FC = () => {
                   />
                 </div>
               </div>
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.notificationtypes)}
-                    <span className="label-required">*</span>
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <NotificationTypeSelector
+                currentTypes={values.types}
+                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              />
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">

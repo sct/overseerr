@@ -16,11 +16,10 @@ const messages = defineMessages({
   webhookUrl: 'Webhook URL',
   slacksettingssaved: 'Slack notification settings saved successfully!',
   slacksettingsfailed: 'Slack notification settings failed to save.',
-  testsent: 'Test notification sent!',
+  testsent: 'Slack test notification sent!',
   settingupslack: 'Setting Up Slack Notifications',
   settingupslackDescription:
     'To configure Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and enter the webhook URL below.',
-  notificationtypes: 'Notification Types',
   validationWebhookUrl: 'You must provide a valid URL',
 });
 
@@ -143,28 +142,10 @@ const NotificationsSlack: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.notificationtypes)}
-                    <span className="label-required">*</span>
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <NotificationTypeSelector
+                currentTypes={values.types}
+                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              />
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">

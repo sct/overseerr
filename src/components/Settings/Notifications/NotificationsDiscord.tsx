@@ -18,8 +18,7 @@ const messages = defineMessages({
   webhookUrlPlaceholder: 'Server Settings → Integrations → Webhooks',
   discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
-  testsent: 'Test notification sent!',
-  notificationtypes: 'Notification Types',
+  testsent: 'Discord test notification sent!',
   validationUrl: 'You must provide a valid URL',
 });
 
@@ -168,26 +167,10 @@ const NotificationsDiscord: React.FC = () => {
                 )}
               </div>
             </div>
-            <div
-              role="group"
-              aria-labelledby="group-label"
-              className="form-group"
-            >
-              <div className="form-row">
-                <span id="group-label" className="group-label">
-                  {intl.formatMessage(messages.notificationtypes)}
-                  <span className="label-required">*</span>
-                </span>
-                <div className="form-input">
-                  <div className="max-w-lg">
-                    <NotificationTypeSelector
-                      currentTypes={values.types}
-                      onUpdate={(newTypes) => setFieldValue('types', newTypes)}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <NotificationTypeSelector
+              currentTypes={values.types}
+              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
