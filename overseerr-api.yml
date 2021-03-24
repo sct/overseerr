@@ -3033,6 +3033,63 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MediaRequest'
+  /user/{userId}/quota:
+    get:
+      summary: Get quotas for a specific user
+      description: |
+        Returns quota details for a user in a JSON object. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User quota details in JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movie:
+                    type: object
+                    properties:
+                      days:
+                        type: number
+                        example: 7
+                      limit:
+                        type: number
+                        example: 10
+                      used:
+                        type: number
+                        example: 6
+                      remaining:
+                        type: number
+                        example: 4
+                      restricted:
+                        type: boolean
+                        example: false
+                  tv:
+                    type: object
+                    properties:
+                      days:
+                        type: number
+                        example: 7
+                      limit:
+                        type: number
+                        example: 10
+                      used:
+                        type: number
+                        example: 6
+                      remaining:
+                        type: number
+                        example: 4
+                      restricted:
+                        type: boolean
+                        example: false
   /user/{userId}/settings/main:
     get:
       summary: Get general settings for a user
