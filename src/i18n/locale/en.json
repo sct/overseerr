@@ -758,7 +758,7 @@
   "components.UserProfile.UserSettings.UserGeneralSettings.accounttype": "Account Type",
   "components.UserProfile.UserSettings.UserGeneralSettings.admin": "Admin",
   "components.UserProfile.UserSettings.UserGeneralSettings.displayName": "Display Name",
-  "components.UserProfile.UserSettings.UserGeneralSettings.enabled": "Enabled",
+  "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "Enable Override",
   "components.UserProfile.UserSettings.UserGeneralSettings.general": "General",
   "components.UserProfile.UserSettings.UserGeneralSettings.generalsettings": "General Settings",
   "components.UserProfile.UserSettings.UserGeneralSettings.languageServerDefault": "Default ({language})",

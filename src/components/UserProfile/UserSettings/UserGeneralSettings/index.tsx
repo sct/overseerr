@@ -41,7 +41,7 @@ const messages = defineMessages({
   languageServerDefault: 'Default ({language})',
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
-  enabled: 'Enabled',
+  enableOverride: 'Enable Override',
 });
 
 const UserGeneralSettings: React.FC = () => {
@@ -286,7 +286,7 @@ const UserGeneralSettings: React.FC = () => {
                               onChange={() => setMovieQuotaEnabled((s) => !s)}
                             />
                             <span className="ml-2 text-gray-300">
-                              {intl.formatMessage(messages.enabled)}
+                              {intl.formatMessage(messages.enableOverride)}
                             </span>
                           </div>
                           <QuotaSelector
@@ -326,7 +326,7 @@ const UserGeneralSettings: React.FC = () => {
                               onChange={() => setTvQuotaEnabled((s) => !s)}
                             />
                             <span className="ml-2 text-gray-300">
-                              {intl.formatMessage(messages.enabled)}
+                              {intl.formatMessage(messages.enableOverride)}
                             </span>
                           </div>
                           <QuotaSelector
