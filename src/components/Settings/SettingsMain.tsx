@@ -20,8 +20,6 @@ const messages = defineMessages({
   generalsettings: 'General Settings',
   generalsettingsDescription:
     'Configure global and default settings for Overseerr.',
-  save: 'Save Changes',
-  saving: 'Saving…',
   apikey: 'API Key',
   applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
@@ -423,8 +421,8 @@ const SettingsMain: React.FC = () => {
                         disabled={isSubmitting}
                       >
                         {isSubmitting
-                          ? intl.formatMessage(messages.saving)
-                          : intl.formatMessage(messages.save)}
+                          ? intl.formatMessage(globalMessages.saving)
+                          : intl.formatMessage(globalMessages.save)}
                       </Button>
                     </span>
                   </div>

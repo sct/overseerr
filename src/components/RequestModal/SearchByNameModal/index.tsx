@@ -2,12 +2,12 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { SonarrSeries } from '../../../../server/api/sonarr';
+import globalMessages from '../../../i18n/globalMessages';
 import Alert from '../../Common/Alert';
 import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
 import Modal from '../../Common/Modal';
 
 const messages = defineMessages({
-  next: 'Next',
   notvdbid: 'Manual Match Required',
   notvdbiddescription:
     "We couldn't automatically match your request. Please select the correct match from the list below.",
@@ -49,7 +49,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
       onCancel={onCancel}
       onOk={closeModal}
       title={modalTitle}
-      okText={intl.formatMessage(messages.next)}
+      okText={intl.formatMessage(globalMessages.next)}
       okDisabled={!tvdbId}
       okButtonType="primary"
       iconSvg={

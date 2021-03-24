@@ -13,8 +13,6 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  save: 'Save Changes',
-  saving: 'Saving…',
   validationSmtpHostRequired: 'You must provide a hostname or IP address',
   validationSmtpPortRequired: 'You must provide a valid port number',
   agentenabled: 'Enable Agent',
@@ -26,7 +24,6 @@ const messages = defineMessages({
   authPass: 'SMTP Password',
   emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
-  test: 'Test',
   testsent: 'Test notification sent!',
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:
@@ -407,7 +404,7 @@ const NotificationsEmail: React.FC = () => {
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(messages.test)}
+                      {intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -417,8 +414,8 @@ const NotificationsEmail: React.FC = () => {
                       disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

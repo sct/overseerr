@@ -22,8 +22,6 @@ const messages = defineMessages({
   general: 'General',
   generalsettings: 'General Settings',
   displayName: 'Display Name',
-  save: 'Save Changes',
-  saving: 'Saving…',
   accounttype: 'Account Type',
   plexuser: 'Plex User',
   localuser: 'Local User',
@@ -362,8 +360,8 @@ const UserGeneralSettings: React.FC = () => {
                       disabled={isSubmitting}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

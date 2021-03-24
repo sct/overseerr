@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import PermissionEdit from '../PermissionEdit';
-import Modal from '../Common/Modal';
-import { User, useUser } from '../../hooks/useUser';
-import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
+import { User, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
+import Modal from '../Common/Modal';
+import PermissionEdit from '../PermissionEdit';
 
 interface BulkEditProps {
   selectedUserIds: number[];
@@ -16,8 +17,6 @@ interface BulkEditProps {
 
 const messages = defineMessages({
   userssaved: 'User permissions saved successfully!',
-  save: 'Save Changes',
-  saving: 'Saving…',
   userfail: 'Something went wrong while saving user permissions.',
   edituser: 'Edit User Permissions',
 });
@@ -89,7 +88,7 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
         updateUsers();
       }}
       okDisabled={isSaving}
-      okText={intl.formatMessage(messages.save)}
+      okText={intl.formatMessage(globalMessages.save)}
       onCancel={onCancel}
     >
       <div className="mb-6">

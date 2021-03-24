@@ -6,24 +6,21 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { useUser } from '../../../../hooks/useUser';
+import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';
+import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import PermissionEdit from '../../../PermissionEdit';
-import Alert from '../../../Common/Alert';
 import PageTitle from '../../../Common/PageTitle';
-import globalMessages from '../../../../i18n/globalMessages';
+import PermissionEdit from '../../../PermissionEdit';
 
 const messages = defineMessages({
   displayName: 'Display Name',
-  save: 'Save Changes',
-  saving: 'Saving…',
   plexuser: 'Plex User',
   localuser: 'Local User',
   toastSettingsSuccess: 'Permissions saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   permissions: 'Permissions',
-  unauthorized: 'Unauthorized',
   unauthorizedDescription: 'You cannot modify your own permissions.',
 });
 
@@ -53,7 +50,10 @@ const UserPermissions: React.FC = () => {
             {intl.formatMessage(messages.permissions)}
           </h3>
         </div>
-        <Alert title={intl.formatMessage(messages.unauthorized)} type="error">
+        <Alert
+          title={intl.formatMessage(globalMessages.unauthorized)}
+          type="error"
+        >
           {intl.formatMessage(messages.unauthorizedDescription)}
         </Alert>
       </>
@@ -120,8 +120,8 @@ const UserPermissions: React.FC = () => {
                       disabled={isSubmitting}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

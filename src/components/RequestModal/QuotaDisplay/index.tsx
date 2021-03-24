@@ -6,7 +6,7 @@ import ProgressCircle from '../../Common/ProgressCircle';
 
 const messages = defineMessages({
   requestsremaining:
-    '{remaining, plural, =0 {No} other {<strong>#</strong>}} {type} {remaining, plural, one {requests} other {requests}} remaining',
+    '{remaining, plural, =0 {No} other {<strong>#</strong>}} {type} {remaining, plural, one {request} other {requests}} remaining',
   movielimit: '{limit, plural, one {movie} other {movies}}',
   seasonlimit: '{limit, plural, one {season} other {seasons}}',
   allowedRequests:
@@ -22,6 +22,8 @@ const messages = defineMessages({
   notenoughseasonrequests: 'Not enough season requests remaining',
   requiredquota:
     'You need to have at least <strong>{seasons}</strong> {seasons, plural, one {season request} other {season requests}} remaining in order to submit a request for this series.',
+  requiredquotaUser:
+    'This user needs to have at least <strong>{seasons}</strong> {seasons, plural, one {season request} other {season requests}} remaining in order to submit a request for this series.',
 });
 
 interface QuotaDisplayProps {
@@ -120,12 +122,17 @@ const QuotaDisplay: React.FC<QuotaDisplayProps> = ({
         <div className="mt-4">
           {overLimit !== undefined && (
             <div className="mb-2">
-              {intl.formatMessage(messages.requiredquota, {
-                seasons: overLimit,
-                strong: function strong(msg) {
-                  return <span className="font-bold">{msg}</span>;
-                },
-              })}
+              {intl.formatMessage(
+                userOverride
+                  ? messages.requiredquota
+                  : messages.requiredquotaUser,
+                {
+                  seasons: overLimit,
+                  strong: function strong(msg) {
+                    return <span className="font-bold">{msg}</span>;
+                  },
+                }
+              )}
             </div>
           )}
           <div>

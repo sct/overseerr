@@ -27,14 +27,10 @@ import Transition from '../Transition';
 const messages = defineMessages({
   overviewunavailable: 'Overview unavailable.',
   overview: 'Overview',
-  movies: 'Movies',
   numberofmovies: '{count} Movies',
-  requesting: 'Requesting…',
-  request: 'Request',
   requestcollection: 'Request Collection',
   requestswillbecreated:
     'The following titles will have requests created for them:',
-  request4k: 'Request 4K',
   requestcollection4k: 'Request Collection in 4K',
   requestswillbecreated4k:
     'The following titles will have 4K requests created for them:',
@@ -242,8 +238,10 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           onOk={() => requestBundle()}
           okText={
             isRequesting
-              ? intl.formatMessage(messages.requesting)
-              : intl.formatMessage(is4k ? messages.request4k : messages.request)
+              ? intl.formatMessage(globalMessages.requesting)
+              : intl.formatMessage(
+                  is4k ? globalMessages.request4k : globalMessages.request
+                )
           }
           okDisabled={isRequesting}
           okButtonType="primary"
@@ -431,7 +429,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
       </div>
       <div className="slider-header">
         <div className="slider-title">
-          <span>{intl.formatMessage(messages.movies)}</span>
+          <span>{intl.formatMessage(globalMessages.movies)}</span>
         </div>
       </div>
       <Slider

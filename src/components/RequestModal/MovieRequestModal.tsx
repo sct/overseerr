@@ -20,25 +20,18 @@ import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 import QuotaDisplay from './QuotaDisplay';
 
 const messages = defineMessages({
-  requestadmin: 'Your request will be approved automatically.',
-  cancelrequest:
-    'This will remove your request. Are you sure you want to continue?',
+  requestadmin: 'This request will be approved automatically.',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
   requestCancel: 'Request for <strong>{title}</strong> canceled.',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
-  close: 'Close',
   cancel: 'Cancel Request',
-  cancelling: 'Canceling…',
   pendingrequest: 'Pending Request for {title}',
   pending4krequest: 'Pending Request for {title} in 4K',
-  requesting: 'Requesting…',
-  request: 'Request',
-  request4k: 'Request 4K',
   requestfrom: 'There is currently a pending request from {username}.',
   request4kfrom: 'There is currently a pending 4K request from {username}.',
   errorediting: 'Something went wrong while editing the request.',
-  requestedited: 'Request edited.',
+  requestedited: 'Request for <strong>{title}</strong> edited successfully!',
   requesterror: 'Something went wrong while submitting the request.',
 });
 
@@ -182,10 +175,20 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         userId: requestOverrides?.user?.id,
       });
 
-      addToast(<span>{intl.formatMessage(messages.requestedited)}</span>, {
-        appearance: 'success',
-        autoDismiss: true,
-      });
+      addToast(
+        <span>
+          {intl.formatMessage(messages.requestedited, {
+            title: data?.title,
+            strong: function strong(msg) {
+              return <strong>{msg}</strong>;
+            },
+          })}
+        </span>,
+        {
+          appearance: 'success',
+          autoDismiss: true,
+        }
+      );
 
       if (onComplete) {
         onComplete(MediaStatus.PENDING);
@@ -225,11 +228,11 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         secondaryDisabled={isUpdating}
         secondaryText={
           isUpdating
-            ? intl.formatMessage(messages.cancelling)
+            ? intl.formatMessage(globalMessages.canceling)
             : intl.formatMessage(messages.cancel)
         }
         secondaryButtonType="danger"
-        cancelText={intl.formatMessage(messages.close)}
+        cancelText={intl.formatMessage(globalMessages.close)}
         iconSvg={<DownloadIcon className="w-6 h-6" />}
       >
         {intl.formatMessage(
@@ -286,8 +289,10 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       )}
       okText={
         isUpdating
-          ? intl.formatMessage(messages.requesting)
-          : intl.formatMessage(is4k ? messages.request4k : messages.request)
+          ? intl.formatMessage(globalMessages.requesting)
+          : intl.formatMessage(
+              is4k ? globalMessages.request4k : globalMessages.request
+            )
       }
       okButtonType={'primary'}
       iconSvg={<DownloadIcon className="w-6 h-6" />}

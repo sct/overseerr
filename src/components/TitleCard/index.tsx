@@ -1,22 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import Link from 'next/link';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { MediaStatus } from '../../../server/constants/media';
 import type { MediaType } from '../../../server/models/Search';
+import Spinner from '../../assets/spinner.svg';
+import { useIsTouch } from '../../hooks/useIsTouch';
+import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
 import { withProperties } from '../../utils/typeHelpers';
+import CachedImage from '../Common/CachedImage';
+import RequestModal from '../RequestModal';
 import Transition from '../Transition';
 import Placeholder from './Placeholder';
-import Link from 'next/link';
-import { MediaStatus } from '../../../server/constants/media';
-import RequestModal from '../RequestModal';
-import { defineMessages, useIntl } from 'react-intl';
-import { useIsTouch } from '../../hooks/useIsTouch';
-import globalMessages from '../../i18n/globalMessages';
-import Spinner from '../../assets/spinner.svg';
-import { useUser, Permission } from '../../hooks/useUser';
-import CachedImage from '../Common/CachedImage';
-
-const messages = defineMessages({
-  movie: 'Movie',
-  tvshow: 'Series',
-});
 
 interface TitleCardProps {
   id: number;
@@ -125,8 +120,8 @@ const TitleCard: React.FC<TitleCardProps> = ({
             >
               <div className="flex items-center h-4 px-2 py-2 text-xs font-normal tracking-wider text-center text-white uppercase sm:h-5">
                 {mediaType === 'movie'
-                  ? intl.formatMessage(messages.movie)
-                  : intl.formatMessage(messages.tvshow)}
+                  ? intl.formatMessage(globalMessages.movie)
+                  : intl.formatMessage(globalMessages.tvshow)}
               </div>
             </div>
             <div className="z-40 pointer-events-none">

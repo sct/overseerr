@@ -5,14 +5,13 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
+import globalMessages from '../../../../i18n/globalMessages';
 import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  save: 'Save Changes',
-  saving: 'Saving…',
   agentenabled: 'Enable Agent',
   accessToken: 'Application/API Token',
   userToken: 'User Key',
@@ -21,7 +20,6 @@ const messages = defineMessages({
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   testsent: 'Test notification sent!',
-  test: 'Test',
   settinguppushover: 'Setting Up Pushover Notifications',
   settinguppushoverDescription:
     'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below. (You can use one of our <IconLink>official icons on GitHub</IconLink>.) You will also need your user key.',
@@ -218,7 +216,7 @@ const NotificationsPushover: React.FC = () => {
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(messages.test)}
+                      {intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -228,8 +226,8 @@ const NotificationsPushover: React.FC = () => {
                       disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

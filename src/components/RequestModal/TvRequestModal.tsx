@@ -24,13 +24,10 @@ import QuotaDisplay from './QuotaDisplay';
 import SearchByNameModal from './SearchByNameModal';
 
 const messages = defineMessages({
-  requestadmin: 'Your request will be approved automatically.',
-  cancelrequest:
-    'This will remove your request. Are you sure you want to continue?',
+  requestadmin: 'This request will be approved automatically.',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
-  requesting: 'Requesting…',
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
   requestall: 'Request All Seasons',
@@ -38,16 +35,13 @@ const messages = defineMessages({
   selectseason: 'Select Season(s)',
   season: 'Season',
   numberofepisodes: '# of Episodes',
-  status: 'Status',
   seasonnumber: 'Season {number}',
   extras: 'Extras',
-  notrequested: 'Not Requested',
   errorediting: 'Something went wrong while editing the request.',
-  requestedited: 'Request edited.',
-  requestcancelled: 'Request canceled.',
+  requestedited: 'Request for <strong>{title}</strong> edited successfully!',
+  requestcancelled: 'Request for <strong>{title}</strong> canceled.',
   autoapproval: 'Automatic Approval',
   requesterror: 'Something went wrong while submitting the request.',
-  backbutton: 'Back',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -122,8 +116,18 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       addToast(
         <span>
           {selectedSeasons.length > 0
-            ? intl.formatMessage(messages.requestedited)
-            : intl.formatMessage(messages.requestcancelled)}
+            ? intl.formatMessage(messages.requestedited, {
+                title: data?.name,
+                strong: function strong(msg) {
+                  return <strong>{msg}</strong>;
+                },
+              })
+            : intl.formatMessage(messages.requestcancelled, {
+                title: data?.name,
+                strong: function strong(msg) {
+                  return <strong>{msg}</strong>;
+                },
+              })}
         </span>,
         {
           appearance: 'success',
@@ -390,7 +394,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       }
       cancelText={
         tvdbId
-          ? intl.formatMessage(messages.backbutton)
+          ? intl.formatMessage(globalMessages.back)
           : intl.formatMessage(globalMessages.cancel)
       }
       iconSvg={
@@ -507,7 +511,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                       {intl.formatMessage(messages.numberofepisodes)}
                     </th>
                     <th className="px-2 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-200 uppercase bg-gray-500 md:px-6">
-                      {intl.formatMessage(messages.status)}
+                      {intl.formatMessage(globalMessages.status)}
                     </th>
                   </tr>
                 </thead>
@@ -601,7 +605,9 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                           <td className="py-4 pr-2 text-sm leading-5 text-gray-200 md:px-6 whitespace-nowrap">
                             {!seasonRequest && !mediaSeason && (
                               <Badge>
-                                {intl.formatMessage(messages.notrequested)}
+                                {intl.formatMessage(
+                                  globalMessages.notrequested
+                                )}
                               </Badge>
                             )}
                             {!mediaSeason &&

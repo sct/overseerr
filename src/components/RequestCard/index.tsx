@@ -1,29 +1,27 @@
+import axios from 'axios';
+import Link from 'next/link';
 import React, { useContext, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import type { TvDetails } from '../../../server/models/Tv';
-import type { MovieDetails } from '../../../server/models/Movie';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { LanguageContext } from '../../context/LanguageContext';
 import {
   MediaRequestStatus,
   MediaStatus,
 } from '../../../server/constants/media';
-import Badge from '../Common/Badge';
-import { useUser, Permission } from '../../hooks/useUser';
-import axios from 'axios';
-import Button from '../Common/Button';
-import { withProperties } from '../../utils/typeHelpers';
-import Link from 'next/link';
-import { defineMessages, useIntl } from 'react-intl';
+import type { MediaRequest } from '../../../server/entity/MediaRequest';
+import type { MovieDetails } from '../../../server/models/Movie';
+import type { TvDetails } from '../../../server/models/Tv';
+import { LanguageContext } from '../../context/LanguageContext';
+import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
-import StatusBadge from '../StatusBadge';
+import { withProperties } from '../../utils/typeHelpers';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
+import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
-  status: 'Status',
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
-  all: 'All',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -156,7 +154,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             {title.seasons.filter((season) => season.seasonNumber !== 0)
               .length === request.seasons.length ? (
               <span className="mr-2 uppercase">
-                <Badge>{intl.formatMessage(messages.all)}</Badge>
+                <Badge>{intl.formatMessage(globalMessages.all)}</Badge>
               </span>
             ) : (
               <div className="overflow-x-scroll hide-scrollbar">
@@ -171,7 +169,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
         )}
         <div className="flex items-center mt-2 text-sm sm:mt-1">
           <span className="hidden mr-2 font-medium sm:block">
-            {intl.formatMessage(messages.status)}
+            {intl.formatMessage(globalMessages.status)}
           </span>
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN ||
