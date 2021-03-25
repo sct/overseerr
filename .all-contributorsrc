@@ -413,6 +413,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "JagandeepBrar",
+      "name": "Jagandeep Brar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3048295?v=4",
+      "profile": "https://www.jagandeepbrar.io",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
