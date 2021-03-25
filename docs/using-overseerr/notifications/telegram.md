@@ -21,9 +21,9 @@ Bots **cannot** initiate conversations with users, users must have your bot adde
 
 ### Bot Username (optional)
 
-If this value is configured, a link will be displayed in notification user settings to allow users to easily start a conversation with your bot.
+If this value is configured, users will be able to start a chat with your bot and configure their own personal notifications.
 
-This username should end with `_bot`, and the `@` prefix should be omitted.
+The bot username should end with `_bot`, and the `@` prefix should be omitted.
 
 ### Bot Authentication Token
 
