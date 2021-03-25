@@ -10,6 +10,7 @@ import {
   hasNotificationAgentEnabled,
   NotificationAgentType,
 } from '../../../../../server/lib/notifications/agenttypes';
+import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Badge from '../../../Common/Badge';
@@ -28,6 +29,7 @@ const messages = defineMessages({
 
 const UserEmailSettings: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const router = useRouter();
   const [notificationAgents, setNotificationAgents] = useState(0);
@@ -42,13 +44,17 @@ const UserEmailSettings: React.FC = () => {
     );
   }, [data]);
 
-  if (!data && !error) {
+  if ((!data && !error) || !settings.currentSettings.emailEnabled) {
     return <LoadingSpinner />;
   }
 
   return (
     <Formik
       initialValues={{
+        enableEmail: hasNotificationAgentEnabled(
+          NotificationAgentType.EMAIL,
+          data?.notificationAgents ?? NotificationAgentType.EMAIL
+        ),
         pgpKey: data?.pgpKey,
       }}
       enableReinitialize
@@ -72,7 +78,7 @@ const UserEmailSettings: React.FC = () => {
         }
       }}
     >
-      {({ isSubmitting }) => {
+      {({ isSubmitting, isValid, values, setFieldValue }) => {
         return (
           <Form className="section">
             <div className="form-row">
@@ -97,6 +103,7 @@ const UserEmailSettings: React.FC = () => {
                         ? notificationAgents - NotificationAgentType.EMAIL
                         : notificationAgents + NotificationAgentType.EMAIL
                     );
+                    setFieldValue('enableEmail', !values.enableEmail);
                   }}
                 />
               </div>
@@ -133,7 +140,7 @@ const UserEmailSettings: React.FC = () => {
                   <Button
                     buttonType="primary"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !isValid}
                   >
                     {isSubmitting
                       ? intl.formatMessage(globalMessages.saving)

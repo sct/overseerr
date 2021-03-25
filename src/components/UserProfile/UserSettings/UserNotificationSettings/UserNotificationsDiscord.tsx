@@ -48,12 +48,11 @@ const UserNotificationsDiscord: React.FC = () => {
     discordId: Yup.string()
       .when('enableDiscord', {
         is: true,
-        then: Yup.string().required(
-          intl.formatMessage(messages.validationDiscordId)
-        ),
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationDiscordId)),
         otherwise: Yup.string().nullable(),
       })
-      .typeError(intl.formatMessage(messages.validationDiscordId))
       .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
@@ -64,6 +63,13 @@ const UserNotificationsDiscord: React.FC = () => {
   return (
     <Formik
       initialValues={{
+        enableDiscord:
+          settings.currentSettings.notificationsEnabled &&
+          settings.currentSettings.discordEnabled &&
+          hasNotificationAgentEnabled(
+            NotificationAgentType.DISCORD,
+            data?.notificationAgents ?? NotificationAgentType.EMAIL
+          ),
         discordId: data?.discordId,
       }}
       validationSchema={UserNotificationsDiscordSchema}
@@ -88,7 +94,7 @@ const UserNotificationsDiscord: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting }) => {
+      {({ errors, touched, isSubmitting, isValid, values, setFieldValue }) => {
         return (
           <Form className="section">
             {settings.currentSettings.notificationsEnabled &&
@@ -115,6 +121,7 @@ const UserNotificationsDiscord: React.FC = () => {
                             ? notificationAgents - NotificationAgentType.DISCORD
                             : notificationAgents + NotificationAgentType.DISCORD
                         );
+                        setFieldValue('enableDiscord', !values.enableDiscord);
                       }}
                     />
                   </div>
@@ -154,7 +161,7 @@ const UserNotificationsDiscord: React.FC = () => {
                   <Button
                     buttonType="primary"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !isValid}
                   >
                     {isSubmitting
                       ? intl.formatMessage(globalMessages.saving)

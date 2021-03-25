@@ -34,12 +34,11 @@ const NotificationsSlack: React.FC = () => {
     webhookUrl: Yup.string()
       .when('enabled', {
         is: true,
-        then: Yup.string().required(
-          intl.formatMessage(messages.validationWebhookUrl)
-        ),
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationWebhookUrl)),
         otherwise: Yup.string().nullable(),
       })
-      .typeError(intl.formatMessage(messages.validationWebhookUrl))
       .url(intl.formatMessage(messages.validationWebhookUrl)),
   });
 

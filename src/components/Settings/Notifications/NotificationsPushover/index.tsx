@@ -36,12 +36,11 @@ const NotificationsPushover: React.FC = () => {
     accessToken: Yup.string()
       .when('enabled', {
         is: true,
-        then: Yup.string().required(
-          intl.formatMessage(messages.validationAccessTokenRequired)
-        ),
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationAccessTokenRequired)),
         otherwise: Yup.string().nullable(),
       })
-      .typeError(intl.formatMessage(messages.validationAccessTokenRequired))
       .matches(
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationAccessTokenRequired)
@@ -49,12 +48,11 @@ const NotificationsPushover: React.FC = () => {
     userToken: Yup.string()
       .when('enabled', {
         is: true,
-        then: Yup.string().required(
-          intl.formatMessage(messages.validationUserTokenRequired)
-        ),
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationUserTokenRequired)),
         otherwise: Yup.string().nullable(),
       })
-      .typeError(intl.formatMessage(messages.validationUserTokenRequired))
       .matches(
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationUserTokenRequired)

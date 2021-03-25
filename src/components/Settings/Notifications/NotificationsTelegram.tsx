@@ -14,6 +14,8 @@ import NotificationTypeSelector from '../../NotificationTypeSelector';
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
   botUsername: 'Bot Username',
+  botUsernameTip:
+    'Allow users to start a chat with the bot and configure personal notifications',
   botAPI: 'Bot Authentication Token',
   chatId: 'Chat ID',
   validationBotAPIRequired: 'You must provide a bot authentication token',
@@ -36,24 +38,21 @@ const NotificationsTelegram: React.FC = () => {
   );
 
   const NotificationsTelegramSchema = Yup.object().shape({
-    botAPI: Yup.string()
-      .when('enabled', {
-        is: true,
-        then: Yup.string().required(
-          intl.formatMessage(messages.validationBotAPIRequired)
-        ),
-        otherwise: Yup.string().nullable(),
-      })
-      .typeError(intl.formatMessage(messages.validationBotAPIRequired)),
+    botAPI: Yup.string().when('enabled', {
+      is: true,
+      then: Yup.string()
+        .nullable()
+        .required(intl.formatMessage(messages.validationBotAPIRequired)),
+      otherwise: Yup.string().nullable(),
+    }),
     chatId: Yup.string()
       .when('enabled', {
         is: true,
-        then: Yup.string().required(
-          intl.formatMessage(messages.validationChatIdRequired)
-        ),
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationChatIdRequired)),
         otherwise: Yup.string().nullable(),
       })
-      .typeError(intl.formatMessage(messages.validationChatIdRequired))
       .matches(
         /^[-]?\d+$/,
         intl.formatMessage(messages.validationChatIdRequired)
@@ -168,6 +167,9 @@ const NotificationsTelegram: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="botUsername" className="text-label">
                   {intl.formatMessage(messages.botUsername)}
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.botUsernameTip)}
+                  </span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">

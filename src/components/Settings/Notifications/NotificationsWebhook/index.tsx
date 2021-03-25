@@ -64,12 +64,11 @@ const NotificationsWebhook: React.FC = () => {
     webhookUrl: Yup.string()
       .when('enabled', {
         is: true,
-        then: Yup.string().required(
-          intl.formatMessage(messages.validationWebhookUrl)
-        ),
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationWebhookUrl)),
         otherwise: Yup.string().nullable(),
       })
-      .typeError(intl.formatMessage(messages.validationWebhookUrl))
       .matches(
         // eslint-disable-next-line
         /^(https?:)?\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
@@ -78,12 +77,11 @@ const NotificationsWebhook: React.FC = () => {
     jsonPayload: Yup.string()
       .when('enabled', {
         is: true,
-        then: Yup.string().required(
-          intl.formatMessage(messages.validationJsonPayloadRequired)
-        ),
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationJsonPayloadRequired)),
         otherwise: Yup.string().nullable(),
       })
-      .typeError(intl.formatMessage(messages.validationJsonPayloadRequired))
       .test(
         'validate-json',
         intl.formatMessage(messages.validationJsonPayloadRequired),

@@ -36,10 +36,11 @@ const NotificationsDiscord: React.FC = () => {
     webhookUrl: Yup.string()
       .when('enabled', {
         is: true,
-        then: Yup.string().required(intl.formatMessage(messages.validationUrl)),
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationUrl)),
         otherwise: Yup.string().nullable(),
       })
-      .typeError(intl.formatMessage(messages.validationUrl))
       .url(intl.formatMessage(messages.validationUrl)),
   });
 

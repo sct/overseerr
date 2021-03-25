@@ -22,7 +22,6 @@ const messages = defineMessages({
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   enableTelegram: 'Enable Notifications',
   telegramChatId: 'Chat ID',
-  telegramChatIdTip: 'Add <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat',
   telegramChatIdTipLong:
     '<TelegramBotLink>Start a chat</TelegramBotLink>, add <GetIdBotLink>@get_id_bot</GetIdBotLink>, and issue the <code>/my_id</code> command',
   sendSilently: 'Send Silently',
@@ -47,33 +46,40 @@ const UserTelegramSettings: React.FC = () => {
     );
   }, [data]);
 
-  const UserTelegramSettingsSchema = Yup.object().shape({
+  const UserNotificationsTelegramSchema = Yup.object().shape({
     telegramChatId: Yup.string()
       .when('enableTelegram', {
         is: true,
-        then: Yup.string().required(
-          intl.formatMessage(messages.validationTelegramChatId)
-        ),
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationTelegramChatId)),
         otherwise: Yup.string().nullable(),
       })
-      .typeError(intl.formatMessage(messages.validationTelegramChatId))
       .matches(
-        /^[-]?\d+$/,
+        /^-?\d+$/,
         intl.formatMessage(messages.validationTelegramChatId)
       ),
   });
 
-  if (!data && !error) {
+  if (
+    (!data && !error) ||
+    !settings.currentSettings.telegramEnabled ||
+    !settings.currentSettings.telegramBotUsername
+  ) {
     return <LoadingSpinner />;
   }
 
   return (
     <Formik
       initialValues={{
+        enableTelegram: hasNotificationAgentEnabled(
+          NotificationAgentType.TELEGRAM,
+          data?.notificationAgents ?? NotificationAgentType.EMAIL
+        ),
         telegramChatId: data?.telegramChatId,
         telegramSendSilently: data?.telegramSendSilently,
       }}
-      validationSchema={UserTelegramSettingsSchema}
+      validationSchema={UserNotificationsTelegramSchema}
       enableReinitialize
       onSubmit={async (values) => {
         try {
@@ -96,7 +102,7 @@ const UserTelegramSettings: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting }) => {
+      {({ errors, touched, isSubmitting, isValid, values, setFieldValue }) => {
         return (
           <Form className="section">
             <div className="form-row">
@@ -121,6 +127,7 @@ const UserTelegramSettings: React.FC = () => {
                         ? notificationAgents - NotificationAgentType.TELEGRAM
                         : notificationAgents + NotificationAgentType.TELEGRAM
                     );
+                    setFieldValue('enableTelegram', !values.enableTelegram);
                   }}
                 />
               </div>
@@ -128,49 +135,37 @@ const UserTelegramSettings: React.FC = () => {
             <div className="form-row">
               <label htmlFor="telegramChatId" className="text-label">
                 <span>{intl.formatMessage(messages.telegramChatId)}</span>
-                <span className="label-tip">
-                  {settings.currentSettings.telegramBotUsername
-                    ? intl.formatMessage(messages.telegramChatIdTipLong, {
-                        TelegramBotLink: function TelegramBotLink(msg) {
-                          return (
-                            <a
-                              href={`https://telegram.me/${settings.currentSettings.telegramBotUsername}`}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {msg}
-                            </a>
-                          );
-                        },
-                        GetIdBotLink: function GetIdBotLink(msg) {
-                          return (
-                            <a
-                              href="https://telegram.me/get_id_bot"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {msg}
-                            </a>
-                          );
-                        },
-                        code: function code(msg) {
-                          return <code>{msg}</code>;
-                        },
-                      })
-                    : intl.formatMessage(messages.telegramChatIdTip, {
-                        GetIdBotLink: function GetIdBotLink(msg) {
-                          return (
-                            <a
-                              href="https://telegram.me/get_id_bot"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {msg}
-                            </a>
-                          );
-                        },
-                      })}
-                </span>
+                {settings.currentSettings.telegramBotUsername && (
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.telegramChatIdTipLong, {
+                      TelegramBotLink: function TelegramBotLink(msg) {
+                        return (
+                          <a
+                            href={`https://telegram.me/${settings.currentSettings.telegramBotUsername}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {msg}
+                          </a>
+                        );
+                      },
+                      GetIdBotLink: function GetIdBotLink(msg) {
+                        return (
+                          <a
+                            href="https://telegram.me/get_id_bot"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {msg}
+                          </a>
+                        );
+                      },
+                      code: function code(msg) {
+                        return <code>{msg}</code>;
+                      },
+                    })}
+                  </span>
+                )}
               </label>
               <div className="form-input">
                 <div className="form-input-field">
@@ -208,7 +203,7 @@ const UserTelegramSettings: React.FC = () => {
                   <Button
                     buttonType="primary"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !isValid}
                   >
                     {isSubmitting
                       ? intl.formatMessage(globalMessages.saving)

@@ -81,7 +81,8 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       regex: /\/settings\/notifications\/telegram/,
       hidden:
         !settings.currentSettings.notificationsEnabled ||
-        !settings.currentSettings.telegramEnabled,
+        !settings.currentSettings.telegramEnabled ||
+        !settings.currentSettings.telegramBotUsername,
     },
   ];
 
