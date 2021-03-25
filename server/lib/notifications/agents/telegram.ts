@@ -156,14 +156,18 @@ class TelegramAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending Telegram notification', { label: 'Notifications' });
-
     const endpoint = `${this.baseUrl}bot${this.getSettings().options.botAPI}/${
       payload.image ? 'sendPhoto' : 'sendMessage'
     }`;
 
     // Send system notification
     try {
+      logger.debug('Sending Telegram notification', {
+        label: 'Notifications',
+        type: type,
+        subject: payload.subject,
+      });
+
       await (payload.image
         ? axios.post(endpoint, {
             photo: payload.image,
@@ -181,7 +185,10 @@ class TelegramAgent
     } catch (e) {
       logger.error('Error sending Telegram notification', {
         label: 'Notifications',
-        message: e.message,
+        type: type,
+        subject: payload.subject,
+        errorMessage: e.message,
+        response: e.response.data,
       });
       return false;
     }
@@ -197,6 +204,13 @@ class TelegramAgent
         this.getSettings().options.chatId
     ) {
       try {
+        logger.debug('Sending Telegram notification', {
+          label: 'Notifications',
+          recipient: payload.notifyUser.displayName,
+          type: type,
+          subject: payload.subject,
+        });
+
         await (payload.image
           ? axios.post(endpoint, {
               photo: payload.image,
@@ -216,8 +230,13 @@ class TelegramAgent
       } catch (e) {
         logger.error('Error sending Telegram notification', {
           label: 'Notifications',
-          message: e.message,
+          recipient: payload.notifyUser.displayName,
+          type: type,
+          subject: payload.subject,
+          errorMessage: e.message,
+          response: e.response.data,
         });
+
         return false;
       }
     }

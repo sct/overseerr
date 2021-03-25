@@ -205,7 +205,12 @@ class DiscordAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending Discord notification', { label: 'Notifications' });
+    logger.debug('Sending Discord notification', {
+      label: 'Notifications',
+      type: type,
+      subject: payload.subject,
+    });
+
     try {
       const {
         botUsername,
@@ -264,9 +269,12 @@ class DiscordAgent
     } catch (e) {
       logger.error('Error sending Discord notification', {
         label: 'Notifications',
-        message: e.message,
+        type: type,
+        subject: payload.subject,
+        errorMessage: e.message,
         response: e.response.data,
       });
+
       return false;
     }
   }

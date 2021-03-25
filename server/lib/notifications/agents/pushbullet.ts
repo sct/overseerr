@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
+import { MediaType } from '../../../constants/media';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentPushbullet } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
-import { MediaType } from '../../../constants/media';
 
 interface PushbulletPayload {
   title: string;
@@ -136,7 +136,12 @@ class PushbulletAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending Pushbullet notification', { label: 'Notifications' });
+    logger.debug('Sending Pushbullet notification', {
+      label: 'Notifications',
+      type: type,
+      subject: payload.subject,
+    });
+
     try {
       const endpoint = 'https://api.pushbullet.com/v2/pushes';
 
@@ -162,8 +167,12 @@ class PushbulletAgent
     } catch (e) {
       logger.error('Error sending Pushbullet notification', {
         label: 'Notifications',
-        message: e.message,
+        type: type,
+        subject: payload.subject,
+        errorMessage: e.message,
+        response: e.response.data,
       });
+
       return false;
     }
   }

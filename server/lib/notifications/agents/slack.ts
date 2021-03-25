@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
+import { MediaType } from '../../../constants/media';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentSlack } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
-import { MediaType } from '../../../constants/media';
 
 interface EmbedField {
   type: 'plain_text' | 'mrkdwn';
@@ -235,7 +235,11 @@ class SlackAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending Slack notification', { label: 'Notifications' });
+    logger.debug('Sending Slack notification', {
+      label: 'Notifications',
+      type: type,
+      subject: payload.subject,
+    });
     try {
       const webhookUrl = this.getSettings().options.webhookUrl;
 
@@ -249,8 +253,12 @@ class SlackAgent
     } catch (e) {
       logger.error('Error sending Slack notification', {
         label: 'Notifications',
-        message: e.message,
+        type: type,
+        subject: payload.subject,
+        errorMessage: e.message,
+        response: e.response.data,
       });
+
       return false;
     }
   }

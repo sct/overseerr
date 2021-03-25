@@ -148,47 +148,75 @@ class EmailAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending email notification', { label: 'Notifications' });
+    if (payload.notifyUser) {
+      if (
+        payload.notifyUser.settings?.hasNotificationAgentEnabled(
+          NotificationAgentType.EMAIL
+        )
+      ) {
+        logger.debug('Sending email notification', {
+          label: 'Notifications',
+          recipient: payload.notifyUser.displayName,
+          type: type,
+          subject: payload.subject,
+        });
 
-    try {
-      if (payload.notifyUser) {
-        if (
-          payload.notifyUser.settings?.hasNotificationAgentEnabled(
-            NotificationAgentType.EMAIL
-          )
-        ) {
+        try {
           const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
           await email.send(
             this.buildMessage(type, payload, payload.notifyUser.email)
           );
-        }
-      } else {
-        const userRepository = getRepository(User);
-        const users = await userRepository.find();
+        } catch (e) {
+          logger.error('Email notification failed to send', {
+            label: 'Notifications',
+            recipient: payload.notifyUser.displayName,
+            type: type,
+            subject: payload.subject,
+            errorMessage: e.message,
+          });
 
-        // Mention all users with the Manage Requests permission
-        users
-          .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
-          .forEach((user) => {
-            if (
-              user.settings?.hasNotificationAgentEnabled(
-                NotificationAgentType.EMAIL
-              )
-            ) {
+          return false;
+        }
+      }
+    } else {
+      const userRepository = getRepository(User);
+      const users = await userRepository.find();
+
+      // Mention all users with the Manage Requests permission
+      users
+        .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
+        .forEach((user) => {
+          if (
+            user.settings?.hasNotificationAgentEnabled(
+              NotificationAgentType.EMAIL
+            )
+          ) {
+            logger.debug('Sending email notification', {
+              label: 'Notifications',
+              recipient: user.displayName,
+              type: type,
+              subject: payload.subject,
+            });
+
+            try {
               const email = new PreparedEmail(user.settings?.pgpKey);
               email.send(this.buildMessage(type, payload, user.email));
-            }
-          });
-      }
+            } catch (e) {
+              logger.error('Email notification failed to send', {
+                label: 'Notifications',
+                recipient: user.displayName,
+                type: type,
+                subject: payload.subject,
+                errorMessage: e.message,
+              });
 
-      return true;
-    } catch (e) {
-      logger.error('Email notification failed to send', {
-        label: 'Notifications',
-        message: e.message,
-      });
-      return false;
+              return false;
+            }
+          }
+        });
     }
+
+    return true;
   }
 }
 
