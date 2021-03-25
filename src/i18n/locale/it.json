@@ -268,7 +268,6 @@
   "components.CollectionDetails.requestswillbecreated": "Per i titoli seguenti verranno create richieste:",
   "components.CollectionDetails.requestcollection": "Richiedi raccolta",
   "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> richiesto con successo!",
-  "components.CollectionDetails.overviewunavailable": "Trama non disponibile.",
   "components.CollectionDetails.overview": "Trama",
   "components.CollectionDetails.numberofmovies": "{count} Film",
   "components.TvDetails.watchtrailer": "Guarda il trailer",
@@ -750,5 +749,6 @@
   "components.PersonDetails.lifespan": "{birthdate} – {deathdate}",
   "components.PersonDetails.birthdate": "Data di nascita {birthdate}",
   "components.PersonDetails.alsoknownas": "Altri nomi: {names}",
-  "i18n.delimitedlist": "{a}, {b}"
+  "i18n.delimitedlist": "{a}, {b}",
+  "components.MovieDetails.originaltitle": "Titolo Originale"
 }
