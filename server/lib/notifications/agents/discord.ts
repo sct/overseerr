@@ -5,6 +5,7 @@ import { User } from '../../../entity/User';
 import logger from '../../../logger';
 import { Permission } from '../../permissions';
 import { getSettings, NotificationAgentDiscord } from '../../settings';
+import { NotificationAgentType } from '../agenttypes';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 enum EmbedColors {
@@ -221,7 +222,9 @@ class DiscordAgent
 
       if (payload.notifyUser) {
         if (
-          payload.notifyUser.settings?.enableDiscord &&
+          payload.notifyUser.settings?.hasNotificationAgentEnabled(
+            NotificationAgentType.DISCORD
+          ) &&
           payload.notifyUser.settings?.discordId
         ) {
           mentionedUsers.push(payload.notifyUser.settings.discordId);
@@ -235,7 +238,12 @@ class DiscordAgent
         users
           .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
           .forEach((user) => {
-            if (user.settings?.enableDiscord && user.settings?.discordId) {
+            if (
+              user.settings?.hasNotificationAgentEnabled(
+                NotificationAgentType.DISCORD
+              ) &&
+              user.settings?.discordId
+            ) {
               mentionedUsers.push(user.settings.discordId);
               content += `<@${user.settings.discordId}> `;
             }

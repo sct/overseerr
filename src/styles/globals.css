@@ -217,14 +217,6 @@ img.avatar-sm {
   @apply flex max-w-lg rounded-md shadow-sm;
 }
 
-.label-required {
-  @apply text-red-500;
-}
-
-.label-tip {
-  @apply block text-gray-500;
-}
-
 .actions {
   @apply pt-5 mt-8 text-white border-t border-gray-700;
 }
@@ -239,6 +231,18 @@ label.checkbox-label {
 
 label.text-label {
   @apply sm:mt-2;
+}
+
+label a {
+  @apply text-gray-100 transition duration-300 hover:text-white hover:underline;
+}
+
+.label-required {
+  @apply text-red-500;
+}
+
+.label-tip {
+  @apply block text-gray-500;
 }
 
 button,

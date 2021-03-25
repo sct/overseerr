@@ -34,6 +34,7 @@ export interface PublicSettingsResponse {
   emailEnabled: boolean;
   discordEnabled: boolean;
   telegramEnabled: boolean;
+  telegramBotUsername?: string;
 }
 
 export interface CacheItem {

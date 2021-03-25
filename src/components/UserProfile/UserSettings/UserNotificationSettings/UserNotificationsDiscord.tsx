@@ -1,12 +1,16 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import {
+  hasNotificationAgentEnabled,
+  NotificationAgentType,
+} from '../../../../../server/lib/notifications/agenttypes';
 import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
@@ -28,10 +32,17 @@ const UserNotificationsDiscord: React.FC = () => {
   const settings = useSettings();
   const { addToast } = useToasts();
   const router = useRouter();
+  const [notificationAgents, setNotificationAgents] = useState(0);
   const { user } = useUser({ id: Number(router.query.discordId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
+
+  useEffect(() => {
+    setNotificationAgents(
+      data?.notificationAgents ?? NotificationAgentType.EMAIL
+    );
+  }, [data]);
 
   const UserNotificationsDiscordSchema = Yup.object().shape({
     discordId: Yup.string()
@@ -53,7 +64,6 @@ const UserNotificationsDiscord: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableDiscord: data?.enableDiscord,
         discordId: data?.discordId,
       }}
       validationSchema={UserNotificationsDiscordSchema}
@@ -61,7 +71,7 @@ const UserNotificationsDiscord: React.FC = () => {
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
-            enableDiscord: values.enableDiscord,
+            notificationAgents,
             discordId: values.discordId,
           });
           addToast(intl.formatMessage(messages.discordsettingssaved), {
@@ -92,6 +102,20 @@ const UserNotificationsDiscord: React.FC = () => {
                       type="checkbox"
                       id="enableDiscord"
                       name="enableDiscord"
+                      checked={hasNotificationAgentEnabled(
+                        NotificationAgentType.DISCORD,
+                        notificationAgents
+                      )}
+                      onChange={() => {
+                        setNotificationAgents(
+                          hasNotificationAgentEnabled(
+                            NotificationAgentType.DISCORD,
+                            notificationAgents
+                          )
+                            ? notificationAgents - NotificationAgentType.DISCORD
+                            : notificationAgents + NotificationAgentType.DISCORD
+                        );
+                      }}
                     />
                   </div>
                 </div>
@@ -107,7 +131,6 @@ const UserNotificationsDiscord: React.FC = () => {
                           href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
                           target="_blank"
                           rel="noreferrer"
-                          className="text-gray-100 underline transition duration-300 hover:text-white"
                         >
                           {msg}
                         </a>

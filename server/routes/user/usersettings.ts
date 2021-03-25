@@ -7,6 +7,7 @@ import {
   UserSettingsGeneralResponse,
   UserSettingsNotificationsResponse,
 } from '../../interfaces/api/userSettingsInterfaces';
+import { NotificationAgentType } from '../../lib/notifications/agenttypes';
 import { Permission } from '../../lib/permissions';
 import { getSettings } from '../../lib/settings';
 import logger from '../../logger';
@@ -242,16 +243,10 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
       }
 
       return res.status(200).json({
-        // Email settings
-        enableEmail: user.settings?.enableEmail ?? true,
+        notificationAgents:
+          user.settings?.notificationAgents ?? NotificationAgentType.EMAIL,
         pgpKey: user.settings?.pgpKey,
-
-        // Discord settings
-        enableDiscord: user.settings?.enableDiscord ?? false,
         discordId: user.settings?.discordId,
-
-        // Telegram settings
-        enableTelegram: user.settings?.enableTelegram ?? false,
         telegramBotUsername:
           settings?.notifications.agents.telegram.options.botUsername,
         telegramChatId: user.settings?.telegramChatId,
@@ -289,33 +284,20 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
       if (!user.settings) {
         user.settings = new UserSettings({
           user: req.user,
-          // Email notification settings
-          enableEmail: req.body.enableEmail ?? true,
+          notificationAgents:
+            req.body.notificationAgents ?? NotificationAgentType.EMAIL,
           pgpKey: req.body.pgpKey,
-
-          // Discord notification settings
-          enableDiscord: req.body.enableDiscord ?? false,
           discordId: req.body.discordId,
-
-          // Telegram notification settings
-          enableTelegram: req.body.enableTelegram ?? false,
           telegramChatId: req.body.telegramChatId,
           telegramSendSilently: req.body.telegramSendSilently ?? false,
         });
       } else {
-        // Email notification settings
-        user.settings.enableEmail =
-          req.body.enableEmail ?? user.settings.enableEmail;
+        user.settings.notificationAgents =
+          req.body.notificationAgents ??
+          user.settings.notificationAgents ??
+          NotificationAgentType.EMAIL;
         user.settings.pgpKey = req.body.pgpKey ?? user.settings.pgpKey;
-
-        // Discord notification settings
-        user.settings.enableDiscord =
-          req.body.enableDiscord ?? user.settings.enableDiscord;
         user.settings.discordId = req.body.discordId ?? user.settings.discordId;
-
-        // Telegram notification settings
-        user.settings.enableTelegram =
-          req.body.enableTelegram ?? user.settings.enableTelegram;
         user.settings.telegramChatId =
           req.body.telegramChatId ?? user.settings.telegramChatId;
         user.settings.telegramSendSilently =
@@ -325,18 +307,11 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
       userRepository.save(user);
 
       return res.status(200).json({
-        // Email notification settings
-        enableEmail: user.settings.enableEmail,
-        pgpKey: user.settings.pgpKey,
-
-        // Discord notification settings
-        enableDiscord: user.settings.enableDiscord,
-        discordId: user.settings.discordId,
-
-        // Telegram notification settings
-        enableTelegram: user.settings.enableTelegram,
-        telegramChatId: user.settings.telegramChatId,
-        telegramSendSilently: user.settings.telegramSendSilently,
+        notificationAgents: user.settings?.notificationAgents,
+        pgpKey: user.settings?.pgpKey,
+        discordId: user.settings?.discordId,
+        telegramChatId: user.settings?.telegramChatId,
+        telegramSendSilently: user?.settings?.telegramSendSilently,
       });
     } catch (e) {
       next({ status: 500, message: e.message });

@@ -1554,21 +1554,15 @@ components:
     UserSettingsNotifications:
       type: object
       properties:
-        enableEmail:
-          type: boolean
-          default: true
+        notificationAgents:
+          type: number
+          example: 0
         pgpKey:
           type: string
           nullable: true
-        enableDiscord:
-          type: boolean
-          default: false
         discordId:
           type: string
           nullable: true
-        enableTelegram:
-          type: boolean
-          default: false
         telegramChatId:
           type: string
           nullable: true

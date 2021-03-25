@@ -13,16 +13,9 @@ export interface UserSettingsGeneralResponse {
 }
 
 export interface UserSettingsNotificationsResponse {
-  // Email notification settings
-  enableEmail: boolean;
+  notificationAgents: number;
   pgpKey?: string;
-
-  // Discord notification settings
-  enableDiscord: boolean;
   discordId?: string;
-
-  // Telegram notification settings
-  enableTelegram: boolean;
   telegramBotUsername?: string;
   telegramChatId?: string;
   telegramSendSilently?: boolean;

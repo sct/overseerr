@@ -1,12 +1,17 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import {
+  hasNotificationAgentEnabled,
+  NotificationAgentType,
+} from '../../../../../server/lib/notifications/agenttypes';
+import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
@@ -27,12 +32,20 @@ const messages = defineMessages({
 
 const UserTelegramSettings: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const router = useRouter();
+  const [notificationAgents, setNotificationAgents] = useState(0);
   const { user } = useUser({ id: Number(router.query.discordId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
+
+  useEffect(() => {
+    setNotificationAgents(
+      data?.notificationAgents ?? NotificationAgentType.EMAIL
+    );
+  }, [data]);
 
   const UserTelegramSettingsSchema = Yup.object().shape({
     telegramChatId: Yup.string()
@@ -57,7 +70,6 @@ const UserTelegramSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableTelegram: data?.enableTelegram,
         telegramChatId: data?.telegramChatId,
         telegramSendSilently: data?.telegramSendSilently,
       }}
@@ -66,7 +78,7 @@ const UserTelegramSettings: React.FC = () => {
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
-            enableTelegram: values.enableTelegram,
+            notificationAgents,
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
           });
@@ -96,6 +108,20 @@ const UserTelegramSettings: React.FC = () => {
                   type="checkbox"
                   id="enableTelegram"
                   name="enableTelegram"
+                  checked={hasNotificationAgentEnabled(
+                    NotificationAgentType.TELEGRAM,
+                    notificationAgents
+                  )}
+                  onChange={() => {
+                    setNotificationAgents(
+                      hasNotificationAgentEnabled(
+                        NotificationAgentType.TELEGRAM,
+                        notificationAgents
+                      )
+                        ? notificationAgents - NotificationAgentType.TELEGRAM
+                        : notificationAgents + NotificationAgentType.TELEGRAM
+                    );
+                  }}
                 />
               </div>
             </div>
@@ -103,15 +129,14 @@ const UserTelegramSettings: React.FC = () => {
               <label htmlFor="telegramChatId" className="text-label">
                 <span>{intl.formatMessage(messages.telegramChatId)}</span>
                 <span className="label-tip">
-                  {data?.telegramBotUsername
+                  {settings.currentSettings.telegramBotUsername
                     ? intl.formatMessage(messages.telegramChatIdTipLong, {
                         TelegramBotLink: function TelegramBotLink(msg) {
                           return (
                             <a
-                              href={`https://telegram.me/${data.telegramBotUsername}`}
+                              href={`https://telegram.me/${settings.currentSettings.telegramBotUsername}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-gray-100 underline transition duration-300 hover:text-white"
                             >
                               {msg}
                             </a>
@@ -121,7 +146,6 @@ const UserTelegramSettings: React.FC = () => {
                           return (
                             <a
                               href="https://telegram.me/get_id_bot"
-                              className="text-gray-100 underline transition duration-300 hover:text-white"
                               target="_blank"
                               rel="noreferrer"
                             >
@@ -138,7 +162,6 @@ const UserTelegramSettings: React.FC = () => {
                           return (
                             <a
                               href="https://telegram.me/get_id_bot"
-                              className="text-gray-100 underline transition duration-300 hover:text-white"
                               target="_blank"
                               rel="noreferrer"
                             >

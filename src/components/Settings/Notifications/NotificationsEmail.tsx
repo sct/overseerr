@@ -45,12 +45,7 @@ const messages = defineMessages({
 
 export function OpenPgpLink(msg: string): JSX.Element {
   return (
-    <a
-      href="https://www.openpgp.org/"
-      target="_blank"
-      rel="noreferrer"
-      className="text-gray-100 underline transition duration-300 hover:text-white"
-    >
+    <a href="https://www.openpgp.org/" target="_blank" rel="noreferrer">
       {msg}
     </a>
   );

@@ -1,17 +1,21 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import {
+  hasNotificationAgentEnabled,
+  NotificationAgentType,
+} from '../../../../../server/lib/notifications/agenttypes';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import OpenPgpLink from '../../../Settings/Notifications/NotificationsEmail';
+import { OpenPgpLink } from '../../../Settings/Notifications/NotificationsEmail';
 
 const messages = defineMessages({
   emailsettingssaved: 'Email notification settings saved successfully!',
@@ -26,10 +30,17 @@ const UserEmailSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
+  const [notificationAgents, setNotificationAgents] = useState(0);
   const { user } = useUser({ id: Number(router.query.discordId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
+
+  useEffect(() => {
+    setNotificationAgents(
+      data?.notificationAgents ?? NotificationAgentType.EMAIL
+    );
+  }, [data]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -38,14 +49,13 @@ const UserEmailSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableEmail: data?.enableEmail ?? true,
         pgpKey: data?.pgpKey,
       }}
       enableReinitialize
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
-            enableEmail: values.enableEmail,
+            notificationAgents,
             pgpKey: values.pgpKey,
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {
@@ -70,7 +80,25 @@ const UserEmailSettings: React.FC = () => {
                 {intl.formatMessage(messages.enableEmail)}
               </label>
               <div className="form-input">
-                <Field type="checkbox" id="enableEmail" name="enableEmail" />
+                <Field
+                  type="checkbox"
+                  id="enableEmail"
+                  name="enableEmail"
+                  checked={hasNotificationAgentEnabled(
+                    NotificationAgentType.EMAIL,
+                    notificationAgents
+                  )}
+                  onChange={() => {
+                    setNotificationAgents(
+                      hasNotificationAgentEnabled(
+                        NotificationAgentType.EMAIL,
+                        notificationAgents
+                      )
+                        ? notificationAgents - NotificationAgentType.EMAIL
+                        : notificationAgents + NotificationAgentType.EMAIL
+                    );
+                  }}
+                />
               </div>
             </div>
             <div className="form-row">

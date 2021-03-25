@@ -8,6 +8,7 @@ import logger from '../../../logger';
 import PreparedEmail from '../../email';
 import { Permission } from '../../permissions';
 import { getSettings, NotificationAgentEmail } from '../../settings';
+import { NotificationAgentType } from '../agenttypes';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 class EmailAgent
@@ -151,7 +152,11 @@ class EmailAgent
 
     try {
       if (payload.notifyUser) {
-        if (payload.notifyUser.settings?.enableEmail ?? true) {
+        if (
+          payload.notifyUser.settings?.hasNotificationAgentEnabled(
+            NotificationAgentType.EMAIL
+          )
+        ) {
           const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
           await email.send(
             this.buildMessage(type, payload, payload.notifyUser.email)
@@ -165,7 +170,11 @@ class EmailAgent
         users
           .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
           .forEach((user) => {
-            if (user.settings?.enableEmail ?? true) {
+            if (
+              user.settings?.hasNotificationAgentEnabled(
+                NotificationAgentType.EMAIL
+              )
+            ) {
               const email = new PreparedEmail(user.settings?.pgpKey);
               email.send(this.buildMessage(type, payload, user.email));
             }
