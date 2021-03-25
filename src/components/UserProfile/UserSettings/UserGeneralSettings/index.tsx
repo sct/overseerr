@@ -58,8 +58,12 @@ const UserGeneralSettings: React.FC = () => {
   );
 
   useEffect(() => {
-    setMovieQuotaEnabled(!!data?.movieQuotaLimit && !!data?.movieQuotaDays);
-    setTvQuotaEnabled(!!data?.tvQuotaLimit && !!data?.tvQuotaDays);
+    setMovieQuotaEnabled(
+      data?.movieQuotaLimit != undefined && data?.movieQuotaDays != undefined
+    );
+    setTvQuotaEnabled(
+      data?.tvQuotaLimit != undefined && data?.tvQuotaDays != undefined
+    );
   }, [data]);
 
   const { data: languages, error: languagesError } = useSWR<Language[]>(
