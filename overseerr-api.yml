@@ -2502,8 +2502,8 @@ paths:
                 $ref: '#/components/schemas/PushbulletSettings'
   /settings/notifications/pushbullet/test:
     post:
-      summary: Test Pushover settings
-      description: Sends a test notification to the Pushover agent.
+      summary: Test Pushbullet settings
+      description: Sends a test notification to the Pushbullet agent.
       tags:
         - settings
       requestBody:
@@ -2511,7 +2511,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PushoverSettings'
+              $ref: '#/components/schemas/PushbulletSettings'
       responses:
         '204':
           description: Test notification attempted
@@ -2649,7 +2649,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SlackSettings'
+              $ref: '#/components/schemas/WebhookSettings'
       responses:
         '204':
           description: Test notification attempted
