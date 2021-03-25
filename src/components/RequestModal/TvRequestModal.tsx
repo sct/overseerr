@@ -379,7 +379,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         editRequest
           ? false
           : !settings.currentSettings.partialRequestsEnabled &&
-            unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+            quota?.tv.limit &&
+            unrequestedSeasons.length > quota.tv.limit
           ? true
           : getAllRequestedSeasons().length >= getAllSeasons().length ||
             (settings.currentSettings.partialRequestsEnabled &&
