@@ -259,7 +259,6 @@
   "components.CollectionDetails.requestswillbecreated": "以下のタイトルをリクエストします：",
   "components.CollectionDetails.requestcollection": "リクエストコレクション",
   "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> をリクエストしました！",
-  "components.CollectionDetails.overviewunavailable": "ストーリー情報がありません。",
   "components.CollectionDetails.overview": "ストーリー",
   "components.CollectionDetails.numberofmovies": "作品数：{count}",
   "i18n.requested": "リクエスト済み",
