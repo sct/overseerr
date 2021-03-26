@@ -34,7 +34,7 @@ const messages = defineMessages({
   noDefaultServer:
     'At least one {serverType} server must be marked as default in order for {mediaType} requests to be processed.',
   noDefaultNon4kServer:
-    'If you do not have separate {serverType} servers for non-4K content and 4K content, your {serverType} server should not be designated as a 4K server.',
+    'If you only have a single {serverType} server for both non-4K and 4K content (or if you only download 4K content), your {serverType} server should <strong>NOT</strong> be designated as a 4K server.',
   mediaTypeMovie: 'movie',
   mediaTypeSeries: 'series',
 });
@@ -301,6 +301,13 @@ const SettingsServices: React.FC = () => {
                   <Alert
                     title={intl.formatMessage(messages.noDefaultNon4kServer, {
                       serverType: 'Radarr',
+                      strong: function strong(msg) {
+                        return (
+                          <strong className="font-semibold text-yellow-100">
+                            {msg}
+                          </strong>
+                        );
+                      },
                     })}
                   />
                 )
@@ -385,6 +392,13 @@ const SettingsServices: React.FC = () => {
                   <Alert
                     title={intl.formatMessage(messages.noDefaultNon4kServer, {
                       serverType: 'Sonarr',
+                      strong: function strong(msg) {
+                        return (
+                          <strong className="font-semibold text-yellow-100">
+                            {msg}
+                          </strong>
+                        );
+                      },
                     })}
                   />
                 )

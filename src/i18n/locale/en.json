@@ -540,7 +540,7 @@
   "components.Settings.menuPlexSettings": "Plex",
   "components.Settings.menuServices": "Services",
   "components.Settings.menuUsers": "Users",
-  "components.Settings.noDefaultNon4kServer": "If you do not have separate {serverType} servers for non-4K content and 4K content, your {serverType} server should not be designated as a 4K server.",
+  "components.Settings.noDefaultNon4kServer": "If you only have a single {serverType} server for both non-4K and 4K content (or if you only download 4K content), your {serverType} server should <strong>NOT</strong> be designated as a 4K server.",
   "components.Settings.noDefaultServer": "At least one {serverType} server must be marked as default in order for {mediaType} requests to be processed.",
   "components.Settings.notificationAgentSettingsDescription": "Configure and enable notification agents.",
   "components.Settings.notifications": "Notifications",
