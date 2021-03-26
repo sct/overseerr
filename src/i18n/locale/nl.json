@@ -230,7 +230,6 @@
   "components.Settings.SettingsAbout.Releases.currentversion": "Huidige versie",
   "components.Settings.Notifications.testsent": "Testmelding verzonden!",
   "components.MovieDetails.studio": "{studioCount, plural, one {Studio} other {Studio's}}",
-  "components.CollectionDetails.overviewunavailable": "Overzicht niet beschikbaar.",
   "components.CollectionDetails.overview": "Overzicht",
   "components.CollectionDetails.numberofmovies": "{count} films",
   "components.NotificationTypeSelector.mediafailed": "Media mislukt",
@@ -798,5 +797,7 @@
   "i18n.back": "Terug",
   "i18n.areyousure": "Weet je het zeker?",
   "i18n.all": "Alle",
-  "components.RequestModal.QuotaDisplay.requiredquotaUser": "Deze gebruiker heeft nog minstens <strong>{seasons}</strong> {seasons, plural, one {seizoensverzoek} other {seizoensverzoeken}} nodig om deze serie aan te vragen."
+  "components.RequestModal.QuotaDisplay.requiredquotaUser": "Deze gebruiker heeft nog minstens <strong>{seasons}</strong> {seasons, plural, one {seizoensverzoek} other {seizoensverzoeken}} nodig om deze serie aan te vragen.",
+  "components.TvDetails.originaltitle": "Originele titel",
+  "components.MovieDetails.originaltitle": "Originele titel"
 }

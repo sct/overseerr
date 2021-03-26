@@ -102,7 +102,6 @@
   "components.Discover.discovermovies": "Népszerű filmek",
   "components.CollectionDetails.requestcollection": "Gyűjtemény kérése",
   "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> kérése elküldve!",
-  "components.CollectionDetails.overviewunavailable": "Áttekintés nem elérhető.",
   "components.CollectionDetails.overview": "Áttekintés",
   "components.CollectionDetails.numberofmovies": "Filmek száma: {count}",
   "components.Search.searchresults": "Keresési találatok",

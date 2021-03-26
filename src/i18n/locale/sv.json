@@ -266,7 +266,6 @@
   "components.Settings.Notifications.NotificationsSlack.agentenabled": "Aktiverad",
   "components.MovieDetails.watchtrailer": "Kolla Trailer",
   "components.CollectionDetails.requestcollection": "Begär Kollektion",
-  "components.CollectionDetails.overviewunavailable": "Översikt ej tillgänglig.",
   "components.CollectionDetails.overview": "Översikt",
   "components.CollectionDetails.numberofmovies": "Antal Filmer: {count}",
   "i18n.retry": "Försök igen",
@@ -798,5 +797,7 @@
   "components.RequestModal.QuotaDisplay.requiredquotaUser": "Den här användaren behöver ha minst <strong>{seasons}</strong> {seasons, plural, one {säsongsförfrågan} other {säsongsförfrågningar}} kvar för att skicka in en begäran om denna serie.",
   "components.RequestModal.QuotaDisplay.seasonlimit": "{limit, plural, one {säsong} other {säsonger}}",
   "components.RequestModal.QuotaDisplay.season": "säsong",
-  "components.RequestModal.QuotaDisplay.requiredquota": "Du behöver minst<strong>{seasons}</strong> {seasons, plural, one {säsongförfrågan request} other {säsongsförfrågningar}} kvar för att lämna in en begäran om denna serie."
+  "components.RequestModal.QuotaDisplay.requiredquota": "Du behöver minst<strong>{seasons}</strong> {seasons, plural, one {säsongförfrågan request} other {säsongsförfrågningar}} kvar för att lämna in en begäran om denna serie.",
+  "components.TvDetails.originaltitle": "Originaltitel",
+  "components.MovieDetails.originaltitle": "Originaltitle"
 }

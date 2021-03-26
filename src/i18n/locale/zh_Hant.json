@@ -298,7 +298,6 @@
   "components.RequestModal.request4ktitle": "為 {title} 提交 4K 請求",
   "components.PersonDetails.appearsin": "演出",
   "components.PersonDetails.ascharacter": "飾演 {character}",
-  "components.CollectionDetails.overviewunavailable": "沒有概要。",
   "components.TvDetails.overviewunavailable": "沒有概要。",
   "components.MovieDetails.overviewunavailable": "沒有概要。",
   "components.TvDetails.watchtrailer": "觀看預告片",
@@ -527,7 +526,7 @@
   "components.PermissionEdit.adminDescription": "授予最高權限；旁路所有權限檢查。",
   "components.PermissionEdit.managerequestsDescription": "授予管理請求（例如批准、刪除等等）的權限，以及所有自動批准的權限。",
   "components.Settings.SettingsJobsCache.cacheDescription": "外部應用程式介面（external API）請求將存到快取記憶體，以減少 API 呼叫次數。",
-  "components.Settings.librariesRemaining": "剩餘媒體庫數： {count}",
+  "components.Settings.librariesRemaining": "媒體庫剩餘數： {count}",
   "components.Settings.Notifications.sendSilentlyTip": "發送沒有聲音警報的通知",
   "components.Settings.Notifications.sendSilently": "無聲通知",
   "components.UserList.sortCreated": "建立日期",
@@ -794,5 +793,9 @@
   "i18n.canceling": "取消中…",
   "i18n.back": "返回",
   "i18n.all": "所有",
-  "i18n.areyousure": "確定嗎？"
+  "i18n.areyousure": "確定嗎？",
+  "components.RequestModal.QuotaDisplay.requiredquotaUser": "此用戶的電視節目請求數量必須至少剩餘 <strong>{seasons}</strong> 個季數才能為此節目提交請求。",
+  "components.RequestModal.QuotaDisplay.requiredquota": "您的電視節目請求數量必須至少剩餘 <strong>{seasons}</strong> 個季數才能為此節目提交請求。",
+  "components.TvDetails.originaltitle": "原始標題",
+  "components.MovieDetails.originaltitle": "原始標題"
 }

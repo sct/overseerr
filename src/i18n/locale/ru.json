@@ -197,7 +197,6 @@
   "i18n.unavailable": "Недоступен",
   "pages.oops": "Упс",
   "pages.returnHome": "Вернуться домой",
-  "components.CollectionDetails.overviewunavailable": "Обзор недоступен.",
   "components.CollectionDetails.overview": "Обзор",
   "components.CollectionDetails.numberofmovies": "Количество фильмов: {count}",
   "components.CollectionDetails.requestcollection": "Запросить Коллекцию",

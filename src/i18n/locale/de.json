@@ -270,7 +270,6 @@
   "components.CollectionDetails.requestswillbecreated": "Für die folgenden Titel werden Anfragen erstellt:",
   "components.CollectionDetails.requestcollection": "Sammlung anfragen",
   "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> erfolgreich angefragt!",
-  "components.CollectionDetails.overviewunavailable": "Übersicht nicht verfügbar.",
   "components.CollectionDetails.overview": "Übersicht",
   "components.CollectionDetails.numberofmovies": "{count} Filme",
   "i18n.requested": "Angefragt",
