@@ -37,10 +37,14 @@ const messages = defineMessages({
     '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong> email notifications are sent to the user who submitted the request.',
   pgpPrivateKey: 'PGP Private Key',
   pgpPrivateKeyTip:
-    'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink> (PGP password is also required)',
+    'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
+  validationPgpPrivateKey:
+    'You must provide a valid PGP private key if a PGP password is entered',
   pgpPassword: 'PGP Password',
   pgpPasswordTip:
-    'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink> (PGP private key is also required)',
+    'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
+  validationPgpPassword:
+    'You must provide a PGP password if a PGP private key is entered',
 });
 
 export function OpenPgpLink(msg: string): JSX.Element {
@@ -58,39 +62,63 @@ const NotificationsEmail: React.FC = () => {
     '/api/v1/settings/notifications/email'
   );
 
-  const NotificationsEmailSchema = Yup.object().shape({
-    emailFrom: Yup.string()
-      .when('enabled', {
-        is: true,
-        then: Yup.string()
-          .nullable()
-          .required(intl.formatMessage(messages.validationEmail)),
-        otherwise: Yup.string().nullable(),
-      })
-      .email(intl.formatMessage(messages.validationEmail)),
-    smtpHost: Yup.string()
-      .when('enabled', {
-        is: true,
-        then: Yup.string()
-          .nullable()
-          .required(intl.formatMessage(messages.validationSmtpHostRequired)),
-        otherwise: Yup.string().nullable(),
-      })
-      .matches(
-        // eslint-disable-next-line
-        /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
-        intl.formatMessage(messages.validationSmtpHostRequired)
-      ),
-    smtpPort: Yup.number()
-      .typeError(intl.formatMessage(messages.validationSmtpPortRequired))
-      .when('enabled', {
-        is: true,
-        then: Yup.number().required(
-          intl.formatMessage(messages.validationSmtpPortRequired)
+  const NotificationsEmailSchema = Yup.object().shape(
+    {
+      emailFrom: Yup.string()
+        .when('enabled', {
+          is: true,
+          then: Yup.string()
+            .nullable()
+            .required(intl.formatMessage(messages.validationEmail)),
+          otherwise: Yup.string().nullable(),
+        })
+        .email(intl.formatMessage(messages.validationEmail)),
+      smtpHost: Yup.string()
+        .when('enabled', {
+          is: true,
+          then: Yup.string()
+            .nullable()
+            .required(intl.formatMessage(messages.validationSmtpHostRequired)),
+          otherwise: Yup.string().nullable(),
+        })
+        .matches(
+          // eslint-disable-next-line
+          /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+          intl.formatMessage(messages.validationSmtpHostRequired)
         ),
-        otherwise: Yup.number().nullable(),
+      smtpPort: Yup.number()
+        .typeError(intl.formatMessage(messages.validationSmtpPortRequired))
+        .when('enabled', {
+          is: true,
+          then: Yup.number().required(
+            intl.formatMessage(messages.validationSmtpPortRequired)
+          ),
+          otherwise: Yup.number().nullable(),
+        }),
+      pgpPrivateKey: Yup.string()
+        .when('pgpPassword', {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          is: (value: any) => !!value,
+          then: Yup.string()
+            .nullable()
+            .required(intl.formatMessage(messages.validationPgpPrivateKey)),
+          otherwise: Yup.string().nullable(),
+        })
+        .matches(
+          /^-----BEGIN PGP PRIVATE KEY BLOCK-----[\s\w]+-----END PGP PRIVATE KEY BLOCK-----$/,
+          intl.formatMessage(messages.validationPgpPrivateKey)
+        ),
+      pgpPassword: Yup.string().when('pgpPrivateKey', {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        is: (value: any) => !!value,
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationPgpPassword)),
+        otherwise: Yup.string().nullable(),
       }),
-  });
+    },
+    [['pgpPrivateKey', 'pgpPassword']]
+  );
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -356,6 +384,9 @@ const NotificationsEmail: React.FC = () => {
                       className="font-mono text-xs"
                     />
                   </div>
+                  {errors.pgpPrivateKey && touched.pgpPrivateKey && (
+                    <div className="error">{errors.pgpPrivateKey}</div>
+                  )}
                 </div>
               </div>
               <div className="form-row">
@@ -381,6 +412,9 @@ const NotificationsEmail: React.FC = () => {
                       autoComplete="off"
                     />
                   </div>
+                  {errors.pgpPassword && touched.pgpPassword && (
+                    <div className="error">{errors.pgpPassword}</div>
+                  )}
                 </div>
               </div>
               <NotificationTypeSelector

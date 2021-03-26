@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import * as Yup from 'yup';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import {
   hasNotificationAgentEnabled,
@@ -25,6 +26,7 @@ const messages = defineMessages({
   pgpPublicKey: 'PGP Public Key',
   pgpPublicKeyTip:
     'Encrypt email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
+  validationPgpPublicKey: 'You must provide a valid PGP public key',
 });
 
 const UserEmailSettings: React.FC = () => {
@@ -44,6 +46,15 @@ const UserEmailSettings: React.FC = () => {
     );
   }, [data]);
 
+  const UserNotificationsEmailSchema = Yup.object().shape({
+    pgpKey: Yup.string()
+      .nullable()
+      .matches(
+        /^-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\w]+-----END PGP PUBLIC KEY BLOCK-----$/,
+        intl.formatMessage(messages.validationPgpPublicKey)
+      ),
+  });
+
   if ((!data && !error) || !settings.currentSettings.emailEnabled) {
     return <LoadingSpinner />;
   }
@@ -57,6 +68,7 @@ const UserEmailSettings: React.FC = () => {
         ),
         pgpKey: data?.pgpKey,
       }}
+      validationSchema={UserNotificationsEmailSchema}
       enableReinitialize
       onSubmit={async (values) => {
         try {
@@ -78,7 +90,7 @@ const UserEmailSettings: React.FC = () => {
         }
       }}
     >
-      {({ isSubmitting, isValid, values, setFieldValue }) => {
+      {({ errors, touched, isSubmitting, isValid, values, setFieldValue }) => {
         return (
           <Form className="section">
             <div className="form-row">
@@ -132,6 +144,9 @@ const UserEmailSettings: React.FC = () => {
                     className="font-mono text-xs"
                   />
                 </div>
+                {errors.pgpKey && touched.pgpKey && (
+                  <div className="error">{errors.pgpKey}</div>
+                )}
               </div>
             </div>
             <div className="actions">
