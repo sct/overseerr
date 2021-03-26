@@ -130,7 +130,7 @@ class WebhookAgent
   ): Promise<boolean> {
     logger.debug('Sending webhook notification', {
       label: 'Notifications',
-      type: type,
+      type: Notification[type],
       subject: payload.subject,
     });
 
@@ -151,7 +151,7 @@ class WebhookAgent
     } catch (e) {
       logger.error('Error sending webhook notification', {
         label: 'Notifications',
-        type: type,
+        type: Notification[type],
         subject: payload.subject,
         errorMessage: e.message,
         response: e.response.data,

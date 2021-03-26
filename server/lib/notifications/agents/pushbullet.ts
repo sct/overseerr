@@ -138,7 +138,7 @@ class PushbulletAgent
   ): Promise<boolean> {
     logger.debug('Sending Pushbullet notification', {
       label: 'Notifications',
-      type: type,
+      type: Notification[type],
       subject: payload.subject,
     });
 
@@ -167,7 +167,7 @@ class PushbulletAgent
     } catch (e) {
       logger.error('Error sending Pushbullet notification', {
         label: 'Notifications',
-        type: type,
+        type: Notification[type],
         subject: payload.subject,
         errorMessage: e.message,
         response: e.response.data,

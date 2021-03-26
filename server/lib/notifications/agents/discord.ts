@@ -207,7 +207,7 @@ class DiscordAgent
   ): Promise<boolean> {
     logger.debug('Sending Discord notification', {
       label: 'Notifications',
-      type: type,
+      type: Notification[type],
       subject: payload.subject,
     });
 
@@ -272,7 +272,7 @@ class DiscordAgent
       logger.error('Error sending Discord notification', {
         label: 'Notifications',
         mentions: content,
-        type: type,
+        type: Notification[type],
         subject: payload.subject,
         errorMessage: e.message,
         response: e.response.data,

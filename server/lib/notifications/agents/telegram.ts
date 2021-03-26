@@ -164,7 +164,7 @@ class TelegramAgent
     try {
       logger.debug('Sending Telegram notification', {
         label: 'Notifications',
-        type: type,
+        type: Notification[type],
         subject: payload.subject,
       });
 
@@ -188,7 +188,7 @@ class TelegramAgent
     } catch (e) {
       logger.error('Error sending Telegram notification', {
         label: 'Notifications',
-        type: type,
+        type: Notification[type],
         subject: payload.subject,
         errorMessage: e.message,
         response: e.response.data,
@@ -209,7 +209,7 @@ class TelegramAgent
       logger.debug('Sending Telegram notification', {
         label: 'Notifications',
         recipient: payload.notifyUser.displayName,
-        type: type,
+        type: Notification[type],
         subject: payload.subject,
       });
 
@@ -237,7 +237,7 @@ class TelegramAgent
         logger.error('Error sending Telegram notification', {
           label: 'Notifications',
           recipient: payload.notifyUser.displayName,
-          type: type,
+          type: Notification[type],
           subject: payload.subject,
           errorMessage: e.message,
           response: e.response.data,

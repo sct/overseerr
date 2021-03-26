@@ -237,7 +237,7 @@ class SlackAgent
   ): Promise<boolean> {
     logger.debug('Sending Slack notification', {
       label: 'Notifications',
-      type: type,
+      type: Notification[type],
       subject: payload.subject,
     });
     try {
@@ -253,7 +253,7 @@ class SlackAgent
     } catch (e) {
       logger.error('Error sending Slack notification', {
         label: 'Notifications',
-        type: type,
+        type: Notification[type],
         subject: payload.subject,
         errorMessage: e.message,
         response: e.response.data,

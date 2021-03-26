@@ -158,7 +158,7 @@ class EmailAgent
         logger.debug('Sending email notification', {
           label: 'Notifications',
           recipient: payload.notifyUser.displayName,
-          type: type,
+          type: Notification[type],
           subject: payload.subject,
         });
 
@@ -171,7 +171,7 @@ class EmailAgent
           logger.error('Error sending email notification', {
             label: 'Notifications',
             recipient: payload.notifyUser.displayName,
-            type: type,
+            type: Notification[type],
             subject: payload.subject,
             errorMessage: e.message,
           });
@@ -197,7 +197,7 @@ class EmailAgent
             logger.debug('Sending email notification', {
               label: 'Notifications',
               recipient: user.displayName,
-              type: type,
+              type: Notification[type],
               subject: payload.subject,
             });
 
@@ -208,7 +208,7 @@ class EmailAgent
               logger.error('Error sending email notification', {
                 label: 'Notifications',
                 recipient: user.displayName,
-                type: type,
+                type: Notification[type],
                 subject: payload.subject,
                 errorMessage: e.message,
               });
