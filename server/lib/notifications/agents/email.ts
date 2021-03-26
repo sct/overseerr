@@ -168,7 +168,7 @@ class EmailAgent
             this.buildMessage(type, payload, payload.notifyUser.email)
           );
         } catch (e) {
-          logger.error('Email notification failed to send', {
+          logger.error('Error sending email notification', {
             label: 'Notifications',
             recipient: payload.notifyUser.displayName,
             type: type,
@@ -184,37 +184,39 @@ class EmailAgent
       const userRepository = getRepository(User);
       const users = await userRepository.find();
 
-      users
-        .filter(
-          (user) =>
-            user.hasPermission(Permission.MANAGE_REQUESTS) &&
-            user.settings?.hasNotificationAgentEnabled(
-              NotificationAgentType.EMAIL
-            )
-        )
-        .forEach((user) => {
-          logger.debug('Sending email notification', {
-            label: 'Notifications',
-            recipient: user.displayName,
-            type: type,
-            subject: payload.subject,
-          });
-
-          try {
-            const email = new PreparedEmail(user.settings?.pgpKey);
-            email.send(this.buildMessage(type, payload, user.email));
-          } catch (e) {
-            logger.error('Email notification failed to send', {
+      await Promise.all(
+        users
+          .filter(
+            (user) =>
+              user.hasPermission(Permission.MANAGE_REQUESTS) &&
+              user.settings?.hasNotificationAgentEnabled(
+                NotificationAgentType.EMAIL
+              )
+          )
+          .map(async (user) => {
+            logger.debug('Sending email notification', {
               label: 'Notifications',
               recipient: user.displayName,
               type: type,
               subject: payload.subject,
-              errorMessage: e.message,
             });
 
-            return false;
-          }
-        });
+            try {
+              const email = new PreparedEmail(user.settings?.pgpKey);
+              await email.send(this.buildMessage(type, payload, user.email));
+            } catch (e) {
+              logger.error('Error sending email notification', {
+                label: 'Notifications',
+                recipient: user.displayName,
+                type: type,
+                subject: payload.subject,
+                errorMessage: e.message,
+              });
+
+              return false;
+            }
+          })
+      );
     }
 
     return true;

@@ -15,7 +15,7 @@ const messages = defineMessages({
   agentenabled: 'Enable Agent',
   botUsername: 'Bot Username',
   botUsernameTip:
-    'Allow users to start a chat with the bot and configure personal notifications',
+    'Allow users to start a chat with the bot and configure their own personal notifications',
   botAPI: 'Bot Authentication Token',
   chatId: 'Chat ID',
   validationBotAPIRequired: 'You must provide a bot authentication token',
@@ -54,7 +54,7 @@ const NotificationsTelegram: React.FC = () => {
         otherwise: Yup.string().nullable(),
       })
       .matches(
-        /^[-]?\d+$/,
+        /^-?\d+$/,
         intl.formatMessage(messages.validationChatIdRequired)
       ),
   });
