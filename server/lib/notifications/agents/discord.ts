@@ -211,6 +211,9 @@ class DiscordAgent
       subject: payload.subject,
     });
 
+    const mentionedUsers: string[] = [];
+    let content = '';
+
     try {
       const {
         botUsername,
@@ -222,10 +225,8 @@ class DiscordAgent
         return false;
       }
 
-      const mentionedUsers: string[] = [];
-      let content = '';
-
       if (payload.notifyUser) {
+        // Mention user who submitted the request
         if (
           payload.notifyUser.settings?.hasNotificationAgentEnabled(
             NotificationAgentType.DISCORD
@@ -236,19 +237,20 @@ class DiscordAgent
           content = `<@${payload.notifyUser.settings.discordId}>`;
         }
       } else {
+        // Mention all users with the Manage Requests permission
         const userRepository = getRepository(User);
         const users = await userRepository.find();
 
-        // Mention all users with the Manage Requests permission
         users
-          .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
-          .forEach((user) => {
-            if (
+          .filter(
+            (user) =>
+              user.hasPermission(Permission.MANAGE_REQUESTS) &&
               user.settings?.hasNotificationAgentEnabled(
                 NotificationAgentType.DISCORD
-              ) &&
-              user.settings?.discordId
-            ) {
+              )
+          )
+          .forEach((user) => {
+            if (user.settings?.discordId) {
               mentionedUsers.push(user.settings.discordId);
               content += `<@${user.settings.discordId}> `;
             }
@@ -269,6 +271,7 @@ class DiscordAgent
     } catch (e) {
       logger.error('Error sending Discord notification', {
         label: 'Notifications',
+        mentions: content,
         type: type,
         subject: payload.subject,
         errorMessage: e.message,

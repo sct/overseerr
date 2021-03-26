@@ -231,7 +231,6 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
     const userRepository = getRepository(User);
-    const settings = getSettings();
 
     try {
       const user = await userRepository.findOne({
@@ -247,8 +246,6 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
           user.settings?.notificationAgents ?? NotificationAgentType.EMAIL,
         pgpKey: user.settings?.pgpKey,
         discordId: user.settings?.discordId,
-        telegramBotUsername:
-          settings?.notifications.agents.telegram.options.botUsername,
         telegramChatId: user.settings?.telegramChatId,
         telegramSendSilently: user?.settings?.telegramSendSilently,
       });

@@ -149,6 +149,7 @@ class EmailAgent
     payload: NotificationPayload
   ): Promise<boolean> {
     if (payload.notifyUser) {
+      // Send notification to the user who submitted the request
       if (
         payload.notifyUser.settings?.hasNotificationAgentEnabled(
           NotificationAgentType.EMAIL
@@ -179,39 +180,39 @@ class EmailAgent
         }
       }
     } else {
+      // Send notifications to all users with the Manage Requests permission
       const userRepository = getRepository(User);
       const users = await userRepository.find();
 
-      // Mention all users with the Manage Requests permission
       users
-        .filter((user) => user.hasPermission(Permission.MANAGE_REQUESTS))
-        .forEach((user) => {
-          if (
+        .filter(
+          (user) =>
+            user.hasPermission(Permission.MANAGE_REQUESTS) &&
             user.settings?.hasNotificationAgentEnabled(
               NotificationAgentType.EMAIL
             )
-          ) {
-            logger.debug('Sending email notification', {
+        )
+        .forEach((user) => {
+          logger.debug('Sending email notification', {
+            label: 'Notifications',
+            recipient: user.displayName,
+            type: type,
+            subject: payload.subject,
+          });
+
+          try {
+            const email = new PreparedEmail(user.settings?.pgpKey);
+            email.send(this.buildMessage(type, payload, user.email));
+          } catch (e) {
+            logger.error('Email notification failed to send', {
               label: 'Notifications',
               recipient: user.displayName,
               type: type,
               subject: payload.subject,
+              errorMessage: e.message,
             });
 
-            try {
-              const email = new PreparedEmail(user.settings?.pgpKey);
-              email.send(this.buildMessage(type, payload, user.email));
-            } catch (e) {
-              logger.error('Email notification failed to send', {
-                label: 'Notifications',
-                recipient: user.displayName,
-                type: type,
-                subject: payload.subject,
-                errorMessage: e.message,
-              });
-
-              return false;
-            }
+            return false;
           }
         });
     }

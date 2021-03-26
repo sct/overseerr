@@ -16,7 +16,6 @@ export interface UserSettingsNotificationsResponse {
   notificationAgents: number;
   pgpKey?: string;
   discordId?: string;
-  telegramBotUsername?: string;
   telegramChatId?: string;
   telegramSendSilently?: boolean;
 }
