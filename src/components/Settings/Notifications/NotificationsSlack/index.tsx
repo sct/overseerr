@@ -53,7 +53,7 @@ const NotificationsSlack: React.FC = () => {
             return (
               <a
                 href="https://my.slack.com/services/new/incoming-webhook/"
-                className="text-indigo-100 hover:text-white hover:underline"
+                className="text-white transition duration-300 hover:underline"
                 target="_blank"
                 rel="noreferrer"
               >

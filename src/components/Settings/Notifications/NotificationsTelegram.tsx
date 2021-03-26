@@ -127,7 +127,7 @@ const NotificationsTelegram: React.FC = () => {
                   return (
                     <a
                       href="https://core.telegram.org/bots#6-botfather"
-                      className="text-indigo-100 hover:text-white hover:underline"
+                      className="text-white transition duration-300 hover:underline"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -139,7 +139,7 @@ const NotificationsTelegram: React.FC = () => {
                   return (
                     <a
                       href="https://telegram.me/get_id_bot"
-                      className="text-indigo-100 hover:text-white hover:underline"
+                      className="text-white transition duration-300 hover:underline"
                       target="_blank"
                       rel="noreferrer"
                     >
