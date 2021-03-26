@@ -39,17 +39,16 @@ const SettingsLink: React.FC<{
   }
 
   let linkClasses =
-    'whitespace-nowrap ml-8 first:ml-0 py-4 px-1 border-b-2 border-transparent font-medium text-sm leading-5';
-  let activeLinkColor =
-    'border-indigo-600 text-indigo-500 focus:outline-none focus:text-indigo-500 focus:border-indigo-500';
+    'px-1 py-4 ml-8 text-sm font-medium leading-5 transition duration-300 border-b-2 border-transparent whitespace-nowrap first:ml-0';
+  let activeLinkColor = 'text-indigo-500 border-indigo-600';
   let inactiveLinkColor =
-    'border-transparent text-gray-500 hover:text-gray-400 hover:border-gray-300 focus:outline-none focus:text-gray-4700 focus:border-gray-300';
+    'text-gray-500 border-transparent hover:text-gray-300 hover:border-gray-400 focus:text-gray-300 focus:border-gray-400';
 
   if (tabType === 'button') {
     linkClasses =
-      'whitespace-nowrap ml-8 first:ml-0 px-3 py-2 font-medium text-sm rounded-md';
+      'px-3 py-2 ml-8 text-sm font-medium transition duration-300 rounded-md whitespace-nowrap first:ml-0';
     activeLinkColor = 'bg-indigo-700';
-    inactiveLinkColor = 'bg-gray-800';
+    inactiveLinkColor = 'bg-gray-800 hover:bg-gray-700 focus:bg-gray-700';
   }
 
   return (
@@ -117,7 +116,6 @@ const SettingsTabs: React.FC<{
                 key={`mobile-settings-link-${index}`}
               >
                 {route.text}
-                {router.pathname}
               </SettingsLink>
             ))}
         </select>
@@ -132,7 +130,7 @@ const SettingsTabs: React.FC<{
                 route={route.route}
                 regex={route.regex}
                 hidden={route.hidden ?? false}
-                key={`standard-settings-link-${index}`}
+                key={`button-settings-link-${index}`}
               >
                 {route.content ?? route.text}
               </SettingsLink>
