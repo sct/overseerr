@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
 import globalMessages from '../../../i18n/globalMessages';
 import Button from '../../Common/Button';
@@ -69,6 +69,8 @@ const NotificationsDiscord: React.FC = () => {
               webhookUrl: values.webhookUrl,
             },
           });
+          mutate('/api/v1/settings/public');
+
           addToast(intl.formatMessage(messages.discordsettingssaved), {
             appearance: 'success',
             autoDismiss: true,

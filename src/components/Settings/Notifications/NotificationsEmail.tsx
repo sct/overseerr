@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
 import globalMessages from '../../../i18n/globalMessages';
 import Alert from '../../Common/Alert';
@@ -82,7 +82,6 @@ const NotificationsEmail: React.FC = () => {
           otherwise: Yup.string().nullable(),
         })
         .matches(
-          // eslint-disable-next-line
           /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
           intl.formatMessage(messages.validationSmtpHostRequired)
         ),
@@ -159,6 +158,8 @@ const NotificationsEmail: React.FC = () => {
               pgpPassword: values.pgpPassword,
             },
           });
+          mutate('/api/v1/settings/public');
+
           addToast(intl.formatMessage(messages.emailsettingssaved), {
             appearance: 'success',
             autoDismiss: true,
