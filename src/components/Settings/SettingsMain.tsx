@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
 import type { Language, MainSettings } from '../../../server/lib/settings';
 import { Permission, useUser } from '../../hooks/useUser';
@@ -162,6 +162,7 @@ const SettingsMain: React.FC = () => {
                 trustProxy: values.trustProxy,
                 cacheImages: values.cacheImages,
               });
+              mutate('/api/v1/settings/public');
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
                 autoDismiss: true,
