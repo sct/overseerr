@@ -281,24 +281,18 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
       if (!user.settings) {
         user.settings = new UserSettings({
           user: req.user,
-          notificationAgents:
-            req.body.notificationAgents ?? NotificationAgentType.EMAIL,
+          notificationAgents: req.body.notificationAgents,
           pgpKey: req.body.pgpKey,
           discordId: req.body.discordId,
           telegramChatId: req.body.telegramChatId,
-          telegramSendSilently: req.body.telegramSendSilently ?? false,
+          telegramSendSilently: req.body.telegramSendSilently,
         });
       } else {
-        user.settings.notificationAgents =
-          req.body.notificationAgents ??
-          user.settings.notificationAgents ??
-          NotificationAgentType.EMAIL;
-        user.settings.pgpKey = req.body.pgpKey ?? user.settings.pgpKey;
-        user.settings.discordId = req.body.discordId ?? user.settings.discordId;
-        user.settings.telegramChatId =
-          req.body.telegramChatId ?? user.settings.telegramChatId;
-        user.settings.telegramSendSilently =
-          req.body.telegramSendSilently ?? user.settings.telegramSendSilently;
+        user.settings.notificationAgents = req.body.notificationAgents;
+        user.settings.pgpKey = req.body.pgpKey;
+        user.settings.discordId = req.body.discordId;
+        user.settings.telegramChatId = req.body.telegramChatId;
+        user.settings.telegramSendSilently = req.body.telegramSendSilently;
       }
 
       userRepository.save(user);

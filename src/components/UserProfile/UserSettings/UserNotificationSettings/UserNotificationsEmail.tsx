@@ -75,6 +75,9 @@ const UserEmailSettings: React.FC = () => {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
             notificationAgents,
             pgpKey: values.pgpKey,
+            discordId: data?.discordId,
+            telegramChatId: data?.telegramChatId,
+            telegramSendSilently: data?.telegramSendSilently,
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {
             appearance: 'success',

@@ -85,6 +85,8 @@ const UserTelegramSettings: React.FC = () => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
             notificationAgents,
+            pgpKey: data?.pgpKey,
+            discordId: data?.discordId,
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
           });
@@ -134,7 +136,8 @@ const UserTelegramSettings: React.FC = () => {
             </div>
             <div className="form-row">
               <label htmlFor="telegramChatId" className="text-label">
-                <span>{intl.formatMessage(messages.telegramChatId)}</span>
+                {intl.formatMessage(messages.telegramChatId)}
+                <span className="label-required">*</span>
                 {settings.currentSettings.telegramBotUsername && (
                   <span className="label-tip">
                     {intl.formatMessage(messages.telegramChatIdTipLong, {
@@ -182,9 +185,7 @@ const UserTelegramSettings: React.FC = () => {
             </div>
             <div className="form-row">
               <label htmlFor="telegramSendSilently" className="checkbox-label">
-                <span className="mr-2">
-                  {intl.formatMessage(messages.sendSilently)}
-                </span>
+                {intl.formatMessage(messages.sendSilently)}
                 <span className="label-tip">
                   {intl.formatMessage(messages.sendSilentlyDescription)}
                 </span>

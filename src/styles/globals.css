@@ -238,7 +238,7 @@ label a {
 }
 
 .label-required {
-  @apply text-red-500;
+  @apply ml-1 text-red-500;
 }
 
 .label-tip {

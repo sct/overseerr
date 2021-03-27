@@ -78,7 +78,10 @@ const UserNotificationsDiscord: React.FC = () => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
             notificationAgents,
+            pgpKey: data?.pgpKey,
             discordId: values.discordId,
+            telegramChatId: data?.telegramChatId,
+            telegramSendSilently: data?.telegramSendSilently,
           });
           addToast(intl.formatMessage(messages.discordsettingssaved), {
             appearance: 'success',
@@ -130,6 +133,7 @@ const UserNotificationsDiscord: React.FC = () => {
             <div className="form-row">
               <label htmlFor="discordId" className="text-label">
                 <span>{intl.formatMessage(messages.discordId)}</span>
+                <span className="label-required">*</span>
                 <span className="label-tip">
                   {intl.formatMessage(messages.discordIdTip, {
                     FindDiscordIdLink: function FindDiscordIdLink(msg) {
