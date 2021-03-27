@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import type {
   RadarrSettings,
   SonarrSettings,
@@ -213,6 +213,7 @@ const SettingsServices: React.FC = () => {
     setDeleteServerModal({ open: false, serverId: null, type: 'radarr' });
     revalidateRadarr();
     revalidateSonarr();
+    mutate('/api/v1/settings/public');
   };
 
   return (
@@ -237,6 +238,7 @@ const SettingsServices: React.FC = () => {
           onClose={() => setEditRadarrModal({ open: false, radarr: null })}
           onSave={() => {
             revalidateRadarr();
+            mutate('/api/v1/settings/public');
             setEditRadarrModal({ open: false, radarr: null });
           }}
         />
@@ -247,6 +249,7 @@ const SettingsServices: React.FC = () => {
           onClose={() => setEditSonarrModal({ open: false, sonarr: null })}
           onSave={() => {
             revalidateSonarr();
+            mutate('/api/v1/settings/public');
             setEditSonarrModal({ open: false, sonarr: null });
           }}
         />
