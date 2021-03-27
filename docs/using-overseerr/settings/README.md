@@ -25,7 +25,7 @@ This setting is disabled by default.
 ### Enable CSRF Protection
 
 {% hint style="danger" %}
-**DO _NOT_ ENABLE THIS SETTING UNLESS YOU UNDERSTAND WHAT YOU ARE DOING!**
+**This is an advanced setting.** We do not recommend enabling it unless you understand the implications of doing so.
 {% endhint %}
 
 CSRF stands for **Cross-Site Request Forgery**. When this setting is enabled, all external API access that alters Overseerr application data is blocked.
@@ -46,7 +46,7 @@ This setting is disabled by default.
 
 When enabled, all images (including media posters from TMDb) will be cached locally on your server. Images will also be optimized for client devices; i.e., if you access Overseerr using a mobile device, smaller versions will be served compared to when accessing Overseerr on desktop.
 
-Note that this feature requires and will use a significant amount of disk space! The cached images are stored in `/app/.next/cache/images`.
+Note that this feature requires and will use a significant amount of disk space! The cached images are stored in `/app/.next/cache/images` inside the container or VM.
 
 This setting is disabled by default.
 
