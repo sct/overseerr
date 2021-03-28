@@ -21,6 +21,8 @@ import '../styles/globals.css';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocales): Promise<any> => {
   switch (locale) {
+    case 'ca':
+      return import('../i18n/locale/ca.json');
     case 'de':
       return import('../i18n/locale/de.json');
     case 'es':
