@@ -10,6 +10,7 @@
 
 - [Settings](using-overseerr/settings/README.md)
 - [Users](using-overseerr/users/README.md)
+- [Requests](using-overseerr/requests/README.md)
 - [Notifications](using-overseerr/notifications/README.md)
   - [Email](using-overseerr/notifications/email.md)
   - [Discord](using-overseerr/notifications/discord.md)
