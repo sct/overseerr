@@ -725,7 +725,6 @@
   "components.Settings.cacheImagesTip": "Alle Bilder Optimieren und lokal speichern (verbraucht viel Speicherplatz)",
   "components.Settings.cacheImages": "Bildzwischenspeicherung aktivieren",
   "components.Settings.SettingsUsers.users": "Benutzer",
-  "components.Settings.SettingsLogs.viewDetails": "Details anzeigen",
   "components.Settings.SettingsLogs.time": "Zeitstempel",
   "components.Settings.SettingsLogs.showall": "Alle Protokolle anzeigen",
   "components.Settings.SettingsLogs.resumeLogs": "Fortsetzen",
