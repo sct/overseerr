@@ -135,7 +135,10 @@ const RequestList: React.FC = () => {
               name="filter"
               onChange={(e) => {
                 setCurrentFilter(e.target.value as Filter);
-                router.push(router.pathname);
+                router.push({
+                  pathname: router.pathname,
+                  query: { userId: router.query.userId },
+                });
               }}
               value={currentFilter}
               className="rounded-r-only"
@@ -176,7 +179,10 @@ const RequestList: React.FC = () => {
               name="sort"
               onChange={(e) => {
                 setCurrentSort(e.target.value as Sort);
-                router.push(router.pathname);
+                router.push({
+                  pathname: router.pathname,
+                  query: { userId: router.query.userId },
+                });
               }}
               value={currentSort}
               className="rounded-r-only"
@@ -250,7 +256,10 @@ const RequestList: React.FC = () => {
                     onChange={(e) => {
                       setCurrentPageSize(Number(e.target.value));
                       router
-                        .push(router.pathname)
+                        .push({
+                          pathname: router.pathname,
+                          query: { userId: router.query.userId },
+                        })
                         .then(() => window.scrollTo(0, 0));
                     }}
                     value={currentPageSize}
@@ -271,9 +280,16 @@ const RequestList: React.FC = () => {
               disabled={!hasPrevPage}
               onClick={() =>
                 router
-                  .push(`${router.pathname}?page=${page - 1}`, undefined, {
-                    shallow: true,
-                  })
+                  .push(
+                    {
+                      pathname: `${router.pathname}?page=${page - 1}`,
+                      query: { userId: router.query.userId },
+                    },
+                    undefined,
+                    {
+                      shallow: true,
+                    }
+                  )
                   .then(() => window.scrollTo(0, 0))
               }
             >
@@ -283,9 +299,16 @@ const RequestList: React.FC = () => {
               disabled={!hasNextPage}
               onClick={() =>
                 router
-                  .push(`${router.pathname}?page=${page + 1}`, undefined, {
-                    shallow: true,
-                  })
+                  .push(
+                    {
+                      pathname: `${router.pathname}?page=${page + 1}`,
+                      query: { userId: router.query.userId },
+                    },
+                    undefined,
+                    {
+                      shallow: true,
+                    }
+                  )
                   .then(() => window.scrollTo(0, 0))
               }
             >
