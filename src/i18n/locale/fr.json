@@ -719,7 +719,6 @@
   "i18n.usersettings": "Paramètres utilisateur",
   "i18n.settings": "Paramètres",
   "components.UserProfile.UserSettings.UserNotificationSettings.notifications": "Notifications",
-  "components.Settings.SettingsLogs.viewDetails": "Voir les détails",
   "components.Settings.SettingsLogs.copiedLogMessage": "Le texte des journaux a été ajouté au presse-papiers.",
   "components.UserProfile.UserSettings.UserGeneralSettings.general": "Général",
   "components.Settings.services": "Applications",

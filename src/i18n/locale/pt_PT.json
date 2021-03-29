@@ -739,7 +739,6 @@
   "components.Settings.SettingsJobsCache.jobsandcache": "Tarefas & Cache",
   "components.Settings.SettingsAbout.about": "Sobre",
   "components.ResetPassword.passwordreset": "Redefinição de Palavra-passe",
-  "components.Settings.SettingsLogs.viewDetails": "Ver Detalhes",
   "components.Settings.SettingsLogs.logDetails": "Detalhes do Log",
   "components.Settings.SettingsLogs.extraData": "Dados Adicionais",
   "components.Settings.SettingsLogs.copyToClipboard": "Copiar Para o Clipboard",

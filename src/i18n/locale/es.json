@@ -740,7 +740,6 @@
   "components.Settings.enablessl": "Habilitar SSL",
   "components.Settings.cacheImagesTip": "Optimizar y guardar todas las imágenes localmente (consume mucho espacio en disco)",
   "components.Settings.cacheImages": "Habilitar Cacheado de Imagen",
-  "components.Settings.SettingsLogs.viewDetails": "Ver Detalles",
   "components.Settings.SettingsLogs.logDetails": "Detalles del Log",
   "components.Settings.SettingsLogs.extraData": "Datos Adicionales",
   "components.Settings.SettingsLogs.copyToClipboard": "Copiar al Portapapeles",

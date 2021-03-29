@@ -739,7 +739,6 @@
   "components.ResetPassword.passwordreset": "Wachtwoord opnieuw instellen",
   "components.Settings.cacheImagesTip": "Alle afbeeldingen optimaliseren en lokaal opslaan (gebruikt een aanzienlijke hoeveelheid schijfruimte)",
   "components.Settings.cacheImages": "Afbeeldingscaching inschakelen",
-  "components.Settings.SettingsLogs.viewDetails": "Details tonen",
   "components.Settings.SettingsLogs.logDetails": "Loggegevens",
   "components.Settings.SettingsLogs.extraData": "Aanvullende gegevens",
   "components.Settings.SettingsLogs.copyToClipboard": "Naar klembord kopiëren",

@@ -741,7 +741,6 @@
   "components.Settings.cacheImagesTip": "把所有的圖像優化和保存到快取記憶體（需要大量的磁碟空間）",
   "components.Settings.SettingsLogs.logDetails": "日誌詳細信息",
   "components.Settings.SettingsLogs.extraData": "附加數據",
-  "components.Settings.SettingsLogs.viewDetails": "查看",
   "components.Settings.SettingsLogs.copyToClipboard": "複製到剪貼板",
   "components.Settings.SettingsLogs.copiedLogMessage": "日誌訊息已複製到剪貼板。",
   "components.Settings.enablessl": "啟用安全通訊協定（SSL）",
@@ -797,5 +796,7 @@
   "components.RequestModal.QuotaDisplay.requiredquotaUser": "此用戶的電視節目請求數量必須至少剩餘 <strong>{seasons}</strong> 個季數才能為此節目提交請求。",
   "components.RequestModal.QuotaDisplay.requiredquota": "您的電視節目請求數量必須至少剩餘 <strong>{seasons}</strong> 個季數才能為此節目提交請求。",
   "components.TvDetails.originaltitle": "原始標題",
-  "components.MovieDetails.originaltitle": "原始標題"
+  "components.MovieDetails.originaltitle": "原始標題",
+  "components.RequestModal.QuotaDisplay.quotaLinkUser": "訪問此用戶的<ProfileLink>個人資料頁面</ProfileLink>以查看用戶的請求限制 。",
+  "components.RequestModal.QuotaDisplay.quotaLink": "訪問您的<ProfileLink>個人資料頁面</ProfileLink>以查看您的請求限制 。"
 }
