@@ -17,6 +17,9 @@ requestRoutes.get('/', async (req, res, next) => {
   try {
     const pageSize = req.query.take ? Number(req.query.take) : 10;
     const skip = req.query.skip ? Number(req.query.skip) : 0;
+    const requestedBy = req.query.requestedBy
+      ? Number(req.query.requestedBy)
+      : null;
 
     let statusFilter: MediaRequestStatus[];
 
@@ -100,8 +103,19 @@ requestRoutes.get('/', async (req, res, next) => {
         { type: 'or' }
       )
     ) {
+      if (requestedBy && requestedBy !== req.user?.id) {
+        return next({
+          status: 403,
+          message: "You do not have permission to view this user's requests.",
+        });
+      }
+
       query = query.andWhere('requestedBy.id = :id', {
         id: req.user?.id,
+      });
+    } else if (requestedBy) {
+      query = query.andWhere('requestedBy.id = :id', {
+        id: requestedBy,
       });
     }
 

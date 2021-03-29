@@ -1,8 +1,10 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
+import { useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Button from '../Common/Button';
 import Header from '../Common/Header';
@@ -31,6 +33,9 @@ type Sort = 'added' | 'modified';
 const RequestList: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
+  const { user } = useUser({
+    id: Number(router.query.userId),
+  });
   const [currentFilter, setCurrentFilter] = useState<Filter>(Filter.PENDING);
   const [currentSort, setCurrentSort] = useState<Sort>('added');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
@@ -41,7 +46,9 @@ const RequestList: React.FC = () => {
   const { data, error, revalidate } = useSWR<RequestResultsResponse>(
     `/api/v1/request?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
-    }&filter=${currentFilter}&sort=${currentSort}`
+    }&filter=${currentFilter}&sort=${currentSort}${
+      router.query.userId ? `&requestedBy=${router.query.userId}` : ''
+    }`
   );
 
   // Restore last set filter values on component mount
@@ -87,9 +94,26 @@ const RequestList: React.FC = () => {
 
   return (
     <>
-      <PageTitle title={intl.formatMessage(messages.requests)} />
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.requests),
+          router.query.userId ? user?.displayName : '',
+        ]}
+      />
       <div className="flex flex-col justify-between mb-4 lg:items-end lg:flex-row">
-        <Header>{intl.formatMessage(messages.requests)}</Header>
+        <Header
+          subtext={
+            router.query.userId ? (
+              <Link href={`/users/${user?.id}`}>
+                <a className="hover:underline">{user?.displayName}</a>
+              </Link>
+            ) : (
+              ''
+            )
+          }
+        >
+          {intl.formatMessage(messages.requests)}
+        </Header>
         <div className="flex flex-col flex-grow mt-2 sm:flex-row lg:flex-grow-0">
           <div className="flex flex-grow mb-2 sm:mb-0 sm:mr-2 lg:flex-grow-0">
             <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
@@ -111,7 +135,12 @@ const RequestList: React.FC = () => {
               name="filter"
               onChange={(e) => {
                 setCurrentFilter(e.target.value as Filter);
-                router.push(router.pathname);
+                router.push({
+                  pathname: router.pathname,
+                  query: router.query.userId
+                    ? { userId: router.query.userId }
+                    : {},
+                });
               }}
               value={currentFilter}
               className="rounded-r-only"
@@ -152,7 +181,12 @@ const RequestList: React.FC = () => {
               name="sort"
               onChange={(e) => {
                 setCurrentSort(e.target.value as Sort);
-                router.push(router.pathname);
+                router.push({
+                  pathname: router.pathname,
+                  query: router.query.userId
+                    ? { userId: router.query.userId }
+                    : {},
+                });
               }}
               value={currentSort}
               className="rounded-r-only"
@@ -226,7 +260,12 @@ const RequestList: React.FC = () => {
                     onChange={(e) => {
                       setCurrentPageSize(Number(e.target.value));
                       router
-                        .push(router.pathname)
+                        .push({
+                          pathname: router.pathname,
+                          query: router.query.userId
+                            ? { userId: router.query.userId }
+                            : {},
+                        })
                         .then(() => window.scrollTo(0, 0));
                     }}
                     value={currentPageSize}
@@ -247,9 +286,18 @@ const RequestList: React.FC = () => {
               disabled={!hasPrevPage}
               onClick={() =>
                 router
-                  .push(`${router.pathname}?page=${page - 1}`, undefined, {
-                    shallow: true,
-                  })
+                  .push(
+                    {
+                      pathname: `${router.pathname}?page=${page - 1}`,
+                      query: router.query.userId
+                        ? { userId: router.query.userId }
+                        : {},
+                    },
+                    undefined,
+                    {
+                      shallow: true,
+                    }
+                  )
                   .then(() => window.scrollTo(0, 0))
               }
             >
@@ -259,9 +307,18 @@ const RequestList: React.FC = () => {
               disabled={!hasNextPage}
               onClick={() =>
                 router
-                  .push(`${router.pathname}?page=${page + 1}`, undefined, {
-                    shallow: true,
-                  })
+                  .push(
+                    {
+                      pathname: `${router.pathname}?page=${page + 1}`,
+                      query: router.query.userId
+                        ? { userId: router.query.userId }
+                        : {},
+                    },
+                    undefined,
+                    {
+                      shallow: true,
+                    }
+                  )
                   .then(() => window.scrollTo(0, 0))
               }
             >
