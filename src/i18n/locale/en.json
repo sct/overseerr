@@ -421,7 +421,6 @@
   "components.Settings.SettingsLogs.resumeLogs": "Resume",
   "components.Settings.SettingsLogs.showall": "Show All Logs",
   "components.Settings.SettingsLogs.time": "Timestamp",
-  "components.Settings.SettingsLogs.viewDetails": "View Details",
   "components.Settings.SettingsUsers.defaultPermissions": "Default Permissions",
   "components.Settings.SettingsUsers.localLogin": "Enable Local Sign-In",
   "components.Settings.SettingsUsers.movieRequestLimitLabel": "Global Movie Request Limit",
