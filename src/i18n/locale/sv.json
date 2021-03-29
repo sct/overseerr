@@ -739,7 +739,6 @@
   "components.ResetPassword.passwordreset": "Återställning av lösenord",
   "components.Settings.cacheImagesTip": "Optimera och lagra alla bilder lokalt (använder en betydande mängd diskutrymme)",
   "components.Settings.cacheImages": "Aktivera bild-cachning",
-  "components.Settings.SettingsLogs.viewDetails": "Visa detaljer",
   "components.Settings.SettingsLogs.logDetails": "Logginformation",
   "components.Settings.SettingsLogs.extraData": "Ytterligare data",
   "components.Settings.SettingsLogs.copyToClipboard": "Kopiera till urklipp",
