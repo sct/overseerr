@@ -26,7 +26,7 @@ Enter a valid email address at which the user can receive messages pertaining to
 
 If [email notifications](../notifications/email.md) have been configured and enabled, Overseerr can automatically generate a password for the new user.
 
-### Password
+#### Password
 
 If you would prefer to manually configure a password, enter a password here that is a minimum of 8 characters.
 
