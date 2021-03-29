@@ -38,7 +38,7 @@ const Discover: React.FC = () => {
     data: requests,
     error: requestError,
   } = useSWR<RequestResultsResponse>(
-    '/api/v1/request?filter=unavailable&take=10&sort=modified&skip=0',
+    '/api/v1/request?filter=all&take=10&sort=modified&skip=0',
     { revalidateOnMount: true }
   );
 
@@ -63,7 +63,7 @@ const Discover: React.FC = () => {
         ))}
       />
       <div className="slider-header">
-        <Link href="/requests">
+        <Link href="/requests?filter=all">
           <a className="slider-title">
             <span>{intl.formatMessage(messages.recentrequests)}</span>
             <svg

@@ -17,13 +17,21 @@ const messages = defineMessages({
   sortModified: 'Last Modified',
 });
 
-type Filter = 'all' | 'pending' | 'approved' | 'processing' | 'available';
+enum Filter {
+  ALL = 'all',
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  PROCESSING = 'processing',
+  AVAILABLE = 'available',
+  UNAVAILABLE = 'unavailable',
+}
+
 type Sort = 'added' | 'modified';
 
 const RequestList: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
-  const [currentFilter, setCurrentFilter] = useState<Filter>('pending');
+  const [currentFilter, setCurrentFilter] = useState<Filter>(Filter.PENDING);
   const [currentSort, setCurrentSort] = useState<Sort>('added');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
 
@@ -47,7 +55,12 @@ const RequestList: React.FC = () => {
       setCurrentSort(filterSettings.currentSort);
       setCurrentPageSize(filterSettings.currentPageSize);
     }
-  }, []);
+
+    // If filter value is provided in query, use that instead
+    if (Object.values(Filter).includes(router.query.filter as Filter)) {
+      setCurrentFilter(router.query.filter as Filter);
+    }
+  }, [router.query.filter]);
 
   // Set filter values to local storage any time they are changed
   useEffect(() => {
@@ -118,6 +131,9 @@ const RequestList: React.FC = () => {
               <option value="available">
                 {intl.formatMessage(globalMessages.available)}
               </option>
+              <option value="unavailable">
+                {intl.formatMessage(globalMessages.unavailable)}
+              </option>
             </select>
           </div>
           <div className="flex flex-grow mb-2 sm:mb-0 lg:flex-grow-0">
@@ -167,11 +183,11 @@ const RequestList: React.FC = () => {
           <span className="text-2xl text-gray-400">
             {intl.formatMessage(globalMessages.noresults)}
           </span>
-          {currentFilter !== 'all' && (
+          {currentFilter !== Filter.ALL && (
             <div className="mt-4">
               <Button
                 buttonType="primary"
-                onClick={() => setCurrentFilter('all')}
+                onClick={() => setCurrentFilter(Filter.ALL)}
               >
                 {intl.formatMessage(messages.showallrequests)}
               </Button>
