@@ -101,7 +101,7 @@ const UserList: React.FC = () => {
   });
   const [showBulkEditModal, setShowBulkEditModal] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-  const { user: currentUser } = useUser();
+  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
 
   useEffect(() => {
     const filterString = window.localStorage.getItem('ul-filter-settings');
@@ -549,11 +549,19 @@ const UserList: React.FC = () => {
                 </div>
               </Table.TD>
               <Table.TD>
-                <Link href={`/users/${user.id}/requests`}>
-                  <a className="text-sm leading-5 transition duration-300 hover:underline">
-                    {user.requestCount}
-                  </a>
-                </Link>
+                {user.id === currentUser?.id ||
+                currentHasPermission(
+                  [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+                  { type: 'or' }
+                ) ? (
+                  <Link href={`/users/${user.id}/requests`}>
+                    <a className="text-sm leading-5 transition duration-300 hover:underline">
+                      {user.requestCount}
+                    </a>
+                  </Link>
+                ) : (
+                  user.requestCount
+                )}
               </Table.TD>
               <Table.TD>
                 {user.userType === UserType.PLEX ? (
