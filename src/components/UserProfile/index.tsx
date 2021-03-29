@@ -233,7 +233,7 @@ const UserProfile: React.FC = () => {
         )) && (
         <>
           <div className="slider-header">
-            <Link href={`/users/${user?.id}/requests`}>
+            <Link href={`/users/${user?.id}/requests?filter=all`}>
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.recentrequests)}</span>
                 <svg
