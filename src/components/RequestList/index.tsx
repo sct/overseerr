@@ -137,7 +137,9 @@ const RequestList: React.FC = () => {
                 setCurrentFilter(e.target.value as Filter);
                 router.push({
                   pathname: router.pathname,
-                  query: { userId: router.query.userId },
+                  query: router.query.userId
+                    ? { userId: router.query.userId }
+                    : {},
                 });
               }}
               value={currentFilter}
@@ -181,7 +183,9 @@ const RequestList: React.FC = () => {
                 setCurrentSort(e.target.value as Sort);
                 router.push({
                   pathname: router.pathname,
-                  query: { userId: router.query.userId },
+                  query: router.query.userId
+                    ? { userId: router.query.userId }
+                    : {},
                 });
               }}
               value={currentSort}
@@ -258,7 +262,9 @@ const RequestList: React.FC = () => {
                       router
                         .push({
                           pathname: router.pathname,
-                          query: { userId: router.query.userId },
+                          query: router.query.userId
+                            ? { userId: router.query.userId }
+                            : {},
                         })
                         .then(() => window.scrollTo(0, 0));
                     }}
@@ -283,7 +289,9 @@ const RequestList: React.FC = () => {
                   .push(
                     {
                       pathname: `${router.pathname}?page=${page - 1}`,
-                      query: { userId: router.query.userId },
+                      query: router.query.userId
+                        ? { userId: router.query.userId }
+                        : {},
                     },
                     undefined,
                     {
@@ -302,7 +310,9 @@ const RequestList: React.FC = () => {
                   .push(
                     {
                       pathname: `${router.pathname}?page=${page + 1}`,
-                      query: { userId: router.query.userId },
+                      query: router.query.userId
+                        ? { userId: router.query.userId }
+                        : {},
                     },
                     undefined,
                     {

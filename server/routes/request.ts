@@ -19,7 +19,7 @@ requestRoutes.get('/', async (req, res, next) => {
     const skip = req.query.skip ? Number(req.query.skip) : 0;
     const requestedBy = req.query.requestedBy
       ? Number(req.query.requestedBy)
-      : 0;
+      : null;
 
     let statusFilter: MediaRequestStatus[];
 
