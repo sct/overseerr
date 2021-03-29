@@ -8,6 +8,7 @@ import {
   LogMessage,
   LogsResultsResponse,
 } from '../../../../server/interfaces/api/settingsInterfaces';
+import { useUpdateQueryParams } from '../../../hooks/useUpdateQueryParams';
 import globalMessages from '../../../i18n/globalMessages';
 import Error from '../../../pages/_error';
 import Badge from '../../Common/Badge';
@@ -53,6 +54,7 @@ const SettingsLogs: React.FC = () => {
 
   const page = router.query.page ? Number(router.query.page) : 1;
   const pageIndex = page - 1;
+  const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
   const toggleLogs = () => {
     setRefreshInterval(refreshInterval === 5000 ? 0 : 5000);
@@ -456,15 +458,7 @@ const SettingsLogs: React.FC = () => {
                     <Button
                       disabled={!hasPrevPage}
                       onClick={() =>
-                        router
-                          .push(
-                            `${router.pathname}?page=${page - 1}`,
-                            undefined,
-                            {
-                              shallow: true,
-                            }
-                          )
-                          .then(() => window.scrollTo(0, 0))
+                        updateQueryParams('page', (page - 1).toString())
                       }
                     >
                       {intl.formatMessage(globalMessages.previous)}
@@ -472,15 +466,7 @@ const SettingsLogs: React.FC = () => {
                     <Button
                       disabled={!hasNextPage}
                       onClick={() =>
-                        router
-                          .push(
-                            `${router.pathname}?page=${page + 1}`,
-                            undefined,
-                            {
-                              shallow: true,
-                            }
-                          )
-                          .then(() => window.scrollTo(0, 0))
+                        updateQueryParams('page', (page + 1).toString())
                       }
                     >
                       {intl.formatMessage(globalMessages.next)}

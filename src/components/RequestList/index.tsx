@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
+import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
 import { useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Button from '../Common/Button';
@@ -42,6 +43,7 @@ const RequestList: React.FC = () => {
 
   const page = router.query.page ? Number(router.query.page) : 1;
   const pageIndex = page - 1;
+  const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
   const { data, error, revalidate } = useSWR<RequestResultsResponse>(
     `/api/v1/request?take=${currentPageSize}&skip=${
@@ -284,43 +286,13 @@ const RequestList: React.FC = () => {
           <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
             <Button
               disabled={!hasPrevPage}
-              onClick={() =>
-                router
-                  .push(
-                    {
-                      pathname: `${router.pathname}?page=${page - 1}`,
-                      query: router.query.userId
-                        ? { userId: router.query.userId }
-                        : {},
-                    },
-                    undefined,
-                    {
-                      shallow: true,
-                    }
-                  )
-                  .then(() => window.scrollTo(0, 0))
-              }
+              onClick={() => updateQueryParams('page', (page - 1).toString())}
             >
               {intl.formatMessage(globalMessages.previous)}
             </Button>
             <Button
               disabled={!hasNextPage}
-              onClick={() =>
-                router
-                  .push(
-                    {
-                      pathname: `${router.pathname}?page=${page + 1}`,
-                      query: router.query.userId
-                        ? { userId: router.query.userId }
-                        : {},
-                    },
-                    undefined,
-                    {
-                      shallow: true,
-                    }
-                  )
-                  .then(() => window.scrollTo(0, 0))
-              }
+              onClick={() => updateQueryParams('page', (page + 1).toString())}
             >
               {intl.formatMessage(globalMessages.next)}
             </Button>

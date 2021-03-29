@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
 import { hasPermission } from '../../../server/lib/permissions';
 import AddUserIcon from '../../assets/useradd.svg';
+import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
 import { Permission, User, UserType, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
@@ -79,6 +80,7 @@ const UserList: React.FC = () => {
 
   const page = router.query.page ? Number(router.query.page) : 1;
   const pageIndex = page - 1;
+  const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
   const { data, error, revalidate } = useSWR<UserResultsResponse>(
     `/api/v1/user?take=${currentPageSize}&skip=${
@@ -675,15 +677,7 @@ const UserList: React.FC = () => {
                   <Button
                     disabled={!hasPrevPage}
                     onClick={() =>
-                      router
-                        .push(
-                          `${router.pathname}?page=${page - 1}`,
-                          undefined,
-                          {
-                            shallow: true,
-                          }
-                        )
-                        .then(() => window.scrollTo(0, 0))
+                      updateQueryParams('page', (page - 1).toString())
                     }
                   >
                     {intl.formatMessage(globalMessages.previous)}
@@ -691,15 +685,7 @@ const UserList: React.FC = () => {
                   <Button
                     disabled={!hasNextPage}
                     onClick={() =>
-                      router
-                        .push(
-                          `${router.pathname}?page=${page + 1}`,
-                          undefined,
-                          {
-                            shallow: true,
-                          }
-                        )
-                        .then(() => window.scrollTo(0, 0))
+                      updateQueryParams('page', (page + 1).toString())
                     }
                   >
                     {intl.formatMessage(globalMessages.next)}
