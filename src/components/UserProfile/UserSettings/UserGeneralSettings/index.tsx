@@ -15,6 +15,7 @@ import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import PageTitle from '../../../Common/PageTitle';
+import LanguageSelector from '../../../LanguageSelector';
 import QuotaSelector from '../../../QuotaSelector';
 import RegionSelector from '../../../RegionSelector';
 
@@ -100,11 +101,6 @@ const UserGeneralSettings: React.FC = () => {
   if (!data || !languages) {
     return <Error statusCode={500} />;
   }
-
-  const defaultLanguageNameFallback =
-    languages.find(
-      (language) => language.iso_639_1 === currentSettings.originalLanguage
-    )?.english_name ?? currentSettings.originalLanguage;
 
   return (
     <>
@@ -237,41 +233,13 @@ const UserGeneralSettings: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
-                      as="select"
-                      id="originalLanguage"
-                      name="originalLanguage"
-                    >
-                      <option value="">
-                        {intl.formatMessage(messages.languageServerDefault, {
-                          language: currentSettings.originalLanguage
-                            ? intl.formatDisplayName(
-                                currentSettings.originalLanguage,
-                                {
-                                  type: 'language',
-                                  fallback: 'none',
-                                }
-                              ) ?? defaultLanguageNameFallback
-                            : intl.formatMessage(
-                                messages.originalLanguageDefault
-                              ),
-                        })}
-                      </option>
-                      <option value="all">
-                        {intl.formatMessage(messages.originalLanguageDefault)}
-                      </option>
-                      {sortedLanguages?.map((language) => (
-                        <option
-                          key={`language-key-${language.iso_639_1}`}
-                          value={language.iso_639_1}
-                        >
-                          {intl.formatDisplayName(language.iso_639_1, {
-                            type: 'language',
-                            fallback: 'none',
-                          }) ?? language.english_name}
-                        </option>
-                      ))}
-                    </Field>
+                    <LanguageSelector
+                      languages={sortedLanguages ?? []}
+                      setFieldValue={setFieldValue}
+                      serverValue={currentSettings.originalLanguage}
+                      value={values.originalLanguage}
+                      isUserSettings
+                    />
                   </div>
                 </div>
               </div>

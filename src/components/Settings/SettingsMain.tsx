@@ -12,6 +12,7 @@ import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
+import LanguageSelector from '../LanguageSelector';
 import RegionSelector from '../RegionSelector';
 import CopyButton from './CopyButton';
 
@@ -46,7 +47,6 @@ const messages = defineMessages({
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
-  originalLanguageDefault: 'All Languages',
   partialRequestsEnabled: 'Allow Partial Series Requests',
 });
 
@@ -347,26 +347,11 @@ const SettingsMain: React.FC = () => {
                   </label>
                   <div className="form-input">
                     <div className="form-input-field">
-                      <Field
-                        as="select"
-                        id="originalLanguage"
-                        name="originalLanguage"
-                      >
-                        <option value="">
-                          {intl.formatMessage(messages.originalLanguageDefault)}
-                        </option>
-                        {sortedLanguages?.map((language) => (
-                          <option
-                            key={`language-key-${language.iso_639_1}`}
-                            value={language.iso_639_1}
-                          >
-                            {intl.formatDisplayName(language.iso_639_1, {
-                              type: 'language',
-                              fallback: 'none',
-                            }) ?? language.english_name}
-                          </option>
-                        ))}
-                      </Field>
+                      <LanguageSelector
+                        languages={sortedLanguages ?? []}
+                        setFieldValue={setFieldValue}
+                        value={values.originalLanguage}
+                      />
                     </div>
                   </div>
                 </div>

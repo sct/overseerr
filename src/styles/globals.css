@@ -329,3 +329,56 @@ code {
 input[type='search']::-webkit-search-cancel-button {
   -webkit-appearance: none;
 }
+
+.react-select-container {
+  @apply w-full;
+}
+
+.react-select-container .react-select__control {
+  @apply text-white bg-gray-700 border border-gray-500 rounded-md hover:border-gray-500;
+}
+
+.react-select-container .react-select__control--is-focused {
+  @apply text-white bg-gray-700 border border-gray-500 rounded-md shadow;
+}
+
+.react-select-container .react-select__menu {
+  @apply text-gray-300 bg-gray-700;
+}
+
+.react-select-container .react-select__option--is-focused {
+  @apply text-white bg-gray-600;
+}
+
+.react-select-container .react-select__indicator-separator {
+  @apply bg-gray-500;
+}
+
+.react-select-container .react-select__indicator {
+  @apply text-gray-500;
+}
+
+.react-select-container .react-select__placeholder {
+  @apply text-gray-400;
+}
+
+.react-select-container .react-select__multi-value {
+  @apply bg-gray-800 border border-gray-500 rounded-md;
+}
+
+.react-select-container .react-select__multi-value__label {
+  @apply text-white;
+}
+
+.react-select-container .react-select__multi-value__remove {
+  @apply cursor-pointer rounded-r-md hover:bg-red-700 hover:text-red-100;
+}
+
+.react-select-container .react-select__input {
+  @apply text-base text-white border-none shadow-sm;
+}
+
+.react-select-container .react-select__input input:focus {
+  @apply text-white border-none;
+  box-shadow: none;
+}
