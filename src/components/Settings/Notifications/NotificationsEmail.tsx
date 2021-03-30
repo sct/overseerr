@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import * as Yup from 'yup';
 import globalMessages from '../../../i18n/globalMessages';
 import Alert from '../../Common/Alert';
@@ -158,7 +158,6 @@ const NotificationsEmail: React.FC = () => {
               pgpPassword: values.pgpPassword,
             },
           });
-          mutate('/api/v1/settings/public');
 
           addToast(intl.formatMessage(messages.emailsettingssaved), {
             appearance: 'success',

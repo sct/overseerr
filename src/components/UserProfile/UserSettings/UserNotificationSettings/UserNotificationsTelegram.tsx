@@ -11,7 +11,6 @@ import {
   hasNotificationAgentEnabled,
   NotificationAgentType,
 } from '../../../../../server/lib/notifications/agenttypes';
-import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
@@ -31,13 +30,18 @@ const messages = defineMessages({
 
 const UserTelegramSettings: React.FC = () => {
   const intl = useIntl();
-  const settings = useSettings();
   const { addToast } = useToasts();
   const router = useRouter();
   const [notificationAgents, setNotificationAgents] = useState(0);
   const { user } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+  );
+  const { data: notificationSettings } = useSWR(
+    '/api/v1/settings/notifications'
+  );
+  const { data: telegramSettings } = useSWR(
+    '/api/v1/settings/notifications/telegram'
   );
 
   useEffect(() => {
@@ -61,11 +65,7 @@ const UserTelegramSettings: React.FC = () => {
       ),
   });
 
-  if (
-    (!data && !error) ||
-    !settings.currentSettings.telegramEnabled ||
-    !settings.currentSettings.telegramBotUsername
-  ) {
+  if ((!data || !notificationSettings || !telegramSettings) && !error) {
     return <LoadingSpinner />;
   }
 
@@ -138,13 +138,13 @@ const UserTelegramSettings: React.FC = () => {
               <label htmlFor="telegramChatId" className="text-label">
                 {intl.formatMessage(messages.telegramChatId)}
                 <span className="label-required">*</span>
-                {settings.currentSettings.telegramBotUsername && (
+                {telegramSettings.options.botUsername && (
                   <span className="label-tip">
                     {intl.formatMessage(messages.telegramChatIdTipLong, {
                       TelegramBotLink: function TelegramBotLink(msg) {
                         return (
                           <a
-                            href={`https://telegram.me/${settings.currentSettings.telegramBotUsername}`}
+                            href={`https://telegram.me/${telegramSettings.options.botUsername}`}
                             target="_blank"
                             rel="noreferrer"
                           >

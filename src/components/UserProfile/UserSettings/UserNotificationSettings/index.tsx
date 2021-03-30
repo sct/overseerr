@@ -5,7 +5,6 @@ import useSWR from 'swr';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import DiscordLogo from '../../../../assets/extlogos/discord.svg';
 import TelegramLogo from '../../../../assets/extlogos/telegram.svg';
-import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';
@@ -24,10 +23,18 @@ const messages = defineMessages({
 const UserNotificationSettings: React.FC = ({ children }) => {
   const intl = useIntl();
   const router = useRouter();
-  const settings = useSettings();
   const { user } = useUser({ id: Number(router.query.userId) });
   const { data, error } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+  );
+  const { data: notificationSettings } = useSWR(
+    '/api/v1/settings/notifications'
+  );
+  const { data: emailSettings } = useSWR(
+    '/api/v1/settings/notifications/email'
+  );
+  const { data: telegramSettings } = useSWR(
+    '/api/v1/settings/notifications/telegram'
   );
 
   const settingsRoutes: SettingsRoute[] = [
@@ -54,9 +61,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       ),
       route: `/users/${user?.id}/settings/notifications/email`,
       regex: /\/settings\/notifications\/email/,
-      hidden:
-        !settings.currentSettings.notificationsEnabled ||
-        !settings.currentSettings.emailEnabled,
+      hidden: !notificationSettings?.enabled || !emailSettings?.enabled,
     },
     {
       text: 'Discord',
@@ -80,9 +85,9 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       route: `/users/${user?.id}/settings/notifications/telegram`,
       regex: /\/settings\/notifications\/telegram/,
       hidden:
-        !settings.currentSettings.notificationsEnabled ||
-        !settings.currentSettings.telegramEnabled ||
-        !settings.currentSettings.telegramBotUsername,
+        !notificationSettings?.enabled ||
+        !telegramSettings?.enabled ||
+        !telegramSettings?.options.botUsername,
     },
   ];
 

@@ -11,7 +11,6 @@ import {
   hasNotificationAgentEnabled,
   NotificationAgentType,
 } from '../../../../../server/lib/notifications/agenttypes';
-import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
@@ -29,13 +28,18 @@ const messages = defineMessages({
 
 const UserNotificationsDiscord: React.FC = () => {
   const intl = useIntl();
-  const settings = useSettings();
   const { addToast } = useToasts();
   const router = useRouter();
   const [notificationAgents, setNotificationAgents] = useState(0);
   const { user } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+  );
+  const { data: notificationSettings } = useSWR(
+    '/api/v1/settings/notifications'
+  );
+  const { data: discordSettings } = useSWR(
+    '/api/v1/settings/notifications/discord'
   );
 
   useEffect(() => {
@@ -56,20 +60,17 @@ const UserNotificationsDiscord: React.FC = () => {
       .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
-  if (!data && !error) {
+  if ((!data || !notificationSettings || !discordSettings) && !error) {
     return <LoadingSpinner />;
   }
 
   return (
     <Formik
       initialValues={{
-        enableDiscord:
-          settings.currentSettings.notificationsEnabled &&
-          settings.currentSettings.discordEnabled &&
-          hasNotificationAgentEnabled(
-            NotificationAgentType.DISCORD,
-            data?.notificationAgents ?? NotificationAgentType.EMAIL
-          ),
+        enableDiscord: hasNotificationAgentEnabled(
+          NotificationAgentType.DISCORD,
+          data?.notificationAgents ?? NotificationAgentType.EMAIL
+        ),
         discordId: data?.discordId,
       }}
       validationSchema={UserNotificationsDiscordSchema}
@@ -100,36 +101,35 @@ const UserNotificationsDiscord: React.FC = () => {
       {({ errors, touched, isSubmitting, isValid, values, setFieldValue }) => {
         return (
           <Form className="section">
-            {settings.currentSettings.notificationsEnabled &&
-              settings.currentSettings.discordEnabled && (
-                <div className="form-row">
-                  <label htmlFor="enableDiscord" className="checkbox-label">
-                    {intl.formatMessage(messages.enableDiscord)}
-                  </label>
-                  <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="enableDiscord"
-                      name="enableDiscord"
-                      checked={hasNotificationAgentEnabled(
-                        NotificationAgentType.DISCORD,
-                        notificationAgents
-                      )}
-                      onChange={() => {
-                        setNotificationAgents(
-                          hasNotificationAgentEnabled(
-                            NotificationAgentType.DISCORD,
-                            notificationAgents
-                          )
-                            ? notificationAgents - NotificationAgentType.DISCORD
-                            : notificationAgents + NotificationAgentType.DISCORD
-                        );
-                        setFieldValue('enableDiscord', !values.enableDiscord);
-                      }}
-                    />
-                  </div>
+            {notificationSettings.enabled && discordSettings.enabled && (
+              <div className="form-row">
+                <label htmlFor="enableDiscord" className="checkbox-label">
+                  {intl.formatMessage(messages.enableDiscord)}
+                </label>
+                <div className="form-input">
+                  <Field
+                    type="checkbox"
+                    id="enableDiscord"
+                    name="enableDiscord"
+                    checked={hasNotificationAgentEnabled(
+                      NotificationAgentType.DISCORD,
+                      notificationAgents
+                    )}
+                    onChange={() => {
+                      setNotificationAgents(
+                        hasNotificationAgentEnabled(
+                          NotificationAgentType.DISCORD,
+                          notificationAgents
+                        )
+                          ? notificationAgents - NotificationAgentType.DISCORD
+                          : notificationAgents + NotificationAgentType.DISCORD
+                      );
+                      setFieldValue('enableDiscord', !values.enableDiscord);
+                    }}
+                  />
                 </div>
-              )}
+              </div>
+            )}
             <div className="form-row">
               <label htmlFor="discordId" className="text-label">
                 <span>{intl.formatMessage(messages.discordId)}</span>

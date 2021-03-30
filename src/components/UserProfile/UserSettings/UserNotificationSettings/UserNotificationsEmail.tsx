@@ -11,7 +11,6 @@ import {
   hasNotificationAgentEnabled,
   NotificationAgentType,
 } from '../../../../../server/lib/notifications/agenttypes';
-import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Badge from '../../../Common/Badge';
@@ -31,13 +30,18 @@ const messages = defineMessages({
 
 const UserEmailSettings: React.FC = () => {
   const intl = useIntl();
-  const settings = useSettings();
   const { addToast } = useToasts();
   const router = useRouter();
   const [notificationAgents, setNotificationAgents] = useState(0);
   const { user } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+  );
+  const { data: notificationSettings } = useSWR(
+    '/api/v1/settings/notifications'
+  );
+  const { data: emailSettings } = useSWR(
+    '/api/v1/settings/notifications/email'
   );
 
   useEffect(() => {
@@ -55,7 +59,7 @@ const UserEmailSettings: React.FC = () => {
       ),
   });
 
-  if ((!data && !error) || !settings.currentSettings.emailEnabled) {
+  if ((!data || !notificationSettings || !emailSettings) && !error) {
     return <LoadingSpinner />;
   }
 
