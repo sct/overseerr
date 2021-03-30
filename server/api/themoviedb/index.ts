@@ -613,15 +613,13 @@ class TheMovieDb extends ExternalAPI {
 
         return tvshow;
       }
+
+      throw new Error(`No show returned from API for ID ${tvdbId}`);
     } catch (e) {
       throw new Error(
         `[TMDb] Failed to get TV show using the external TVDB ID: ${e.message}`
       );
     }
-
-    throw new Error(
-      `[TMDb] Failed to find a TV show with the provided TVDB ID: ${tvdbId}`
-    );
   }
 
   public async getCollection({
