@@ -36,8 +36,6 @@ const messages = defineMessages({
   regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
   originallanguageTip: 'Filter content by original language',
-  originalLanguageDefault: 'All Languages',
-  languageServerDefault: 'Default ({language})',
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
   enableOverride: 'Enable Override',
