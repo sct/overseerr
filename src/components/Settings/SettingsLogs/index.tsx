@@ -397,7 +397,7 @@ const SettingsLogs: React.FC = () => {
 
             {data.results.length === 0 && (
               <tr className="relative h-24 p-2 text-white">
-                <Table.TD colSpan={4} noPadding>
+                <Table.TD colSpan={5} noPadding>
                   <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
                     <span className="text-base">
                       {intl.formatMessage(globalMessages.noresults)}
@@ -418,7 +418,7 @@ const SettingsLogs: React.FC = () => {
               </tr>
             )}
             <tr className="bg-gray-700">
-              <Table.TD colSpan={6} noPadding>
+              <Table.TD colSpan={5} noPadding>
                 <nav
                   className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
                   aria-label="Pagination"
