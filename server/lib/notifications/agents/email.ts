@@ -1,13 +1,13 @@
-import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
-import { hasNotificationType, Notification } from '..';
 import path from 'path';
-import { getSettings, NotificationAgentEmail } from '../../settings';
-import logger from '../../../logger';
 import { getRepository } from 'typeorm';
-import { User } from '../../../entity/User';
-import { Permission } from '../../permissions';
-import PreparedEmail from '../../email';
+import { hasNotificationType, Notification } from '..';
 import { MediaType } from '../../../constants/media';
+import { User } from '../../../entity/User';
+import logger from '../../../logger';
+import PreparedEmail from '../../email';
+import { Permission } from '../../permissions';
+import { getSettings, NotificationAgentEmail } from '../../settings';
+import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 class EmailAgent
   extends BaseAgent<NotificationAgentEmail>
@@ -154,7 +154,7 @@ class EmailAgent
     try {
       if (
         payload.notifyUser &&
-        payload.notifyUser.settings?.enableNotifications
+        (payload.notifyUser.settings?.enableNotifications ?? true)
       ) {
         const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
@@ -258,7 +258,7 @@ class EmailAgent
     try {
       if (
         payload.notifyUser &&
-        payload.notifyUser.settings?.enableNotifications
+        (payload.notifyUser.settings?.enableNotifications ?? true)
       ) {
         const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 
@@ -307,7 +307,7 @@ class EmailAgent
     try {
       if (
         payload.notifyUser &&
-        payload.notifyUser.settings?.enableNotifications
+        (payload.notifyUser.settings?.enableNotifications ?? true)
       ) {
         const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
 

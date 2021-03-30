@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
+import { MediaType } from '../../../constants/media';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentTelegram } from '../../settings';
-import { MediaType } from '../../../constants/media';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface TelegramMessagePayload {
@@ -180,7 +180,7 @@ class TelegramAgent
       // Send user notification
       if (
         payload.notifyUser &&
-        payload.notifyUser.settings?.enableNotifications &&
+        (payload.notifyUser.settings?.enableNotifications ?? true) &&
         payload.notifyUser.settings?.telegramChatId &&
         payload.notifyUser.settings?.telegramChatId !==
           this.getSettings().options.chatId
