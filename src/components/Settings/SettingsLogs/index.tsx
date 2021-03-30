@@ -397,7 +397,7 @@ const SettingsLogs: React.FC = () => {
 
             {data.results.length === 0 && (
               <tr className="relative h-24 p-2 text-white">
-                <Table.TD colSpan={4} noPadding>
+                <Table.TD colSpan={5} noPadding>
                   <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
                     <span className="text-base">
                       {intl.formatMessage(globalMessages.noresults)}
