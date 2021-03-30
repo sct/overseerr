@@ -20,12 +20,12 @@ Set this to the externally-accessible URL of your Overseerr instance. If configu
 
 If you have Overseerr behind a [reverse proxy](../../extending-overseerr/reverse-proxy-examples.md), enable this setting to allow Overseerr to correctly register client IP addresses. For details, please see the [Express documentation](http://expressjs.com/en/guide/behind-proxies.html).
 
-This setting is disabled by default.
+This setting is **disabled** by default.
 
 ### Enable CSRF Protection
 
 {% hint style="danger" %}
-**DO _NOT_ ENABLE THIS SETTING UNLESS YOU UNDERSTAND WHAT YOU ARE DOING!**
+**This is an advanced setting.** We do not recommend enabling it unless you understand the implications of doing so.
 {% endhint %}
 
 CSRF stands for **Cross-Site Request Forgery**. When this setting is enabled, all external API access that alters Overseerr application data is blocked.
@@ -36,7 +36,7 @@ One caveat, however, is that **HTTPS is required**, meaning that once this setti
 
 If you enable this setting and find yourself unable to access Overseerr, you can disable the setting by modifying `settings.json` in `/app/config`.
 
-This setting is disabled by default.
+This setting is **disabled** by default.
 
 ### Enable Image Caching
 
@@ -46,9 +46,9 @@ This setting is disabled by default.
 
 When enabled, all images (including media posters from TMDb) will be cached locally on your server. Images will also be optimized for client devices; i.e., if you access Overseerr using a mobile device, smaller versions will be served compared to when accessing Overseerr on desktop.
 
-Note that this feature requires and will use a significant amount of disk space! The cached images are stored in `/app/.next/cache/images`.
+Note that this feature requires and will use a significant amount of disk space, and there is currently no automated deletion of old or expired images. If running Overseerr using Docker, it is possible to manually clear the image cache by simply removing and recreating the container.
 
-This setting is disabled by default.
+This setting is **disabled** by default.
 
 ### Discover Region & Discover Language
 
@@ -60,11 +60,13 @@ When enabled, media which is already available will not appear on the "Discover"
 
 Available media will still appear in search results, however, so it is possible to locate and view hidden items by searching for them by title.
 
+This setting is **disabled** by default.
+
 ### Allow Partial Series Requests
 
 When enabled, users will be able to submit requests for specific seasons of TV series. If disabled, users will only be able to submit requests for all unavailable seasons.
 
-This setting is enabled by default.
+This setting is **enabled** by default.
 
 ## Users
 
@@ -74,7 +76,7 @@ When enabled, users who have configured passwords will be allowed to sign in usi
 
 When disabled, Plex OAuth becomes the only sign-in option, and any "local users" you have created will not be able to sign in to Overseerr.
 
-This setting is enabled by default.
+This setting is **enabled** by default.
 
 ### Default User Permissions
 
