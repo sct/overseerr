@@ -165,7 +165,7 @@ class BaseScanner<T> {
         if (changedExisting) {
           await mediaRepository.save(existing);
           this.log(
-            `Media for ${title} exists. Changed were detected and the title will be updated.`,
+            `Media for ${title} exists. Changes were detected and the title will be updated.`,
             'info'
           );
         } else {
