@@ -151,7 +151,8 @@ class EmailAgent
     if (payload.notifyUser) {
       // Send notification to the user who submitted the request
       if (
-        payload.notifyUser.settings?.hasNotificationAgentEnabled(
+        !payload.notifyUser.settings ||
+        payload.notifyUser.settings.hasNotificationAgentEnabled(
           NotificationAgentType.EMAIL
         )
       ) {
@@ -189,9 +190,10 @@ class EmailAgent
           .filter(
             (user) =>
               user.hasPermission(Permission.MANAGE_REQUESTS) &&
-              user.settings?.hasNotificationAgentEnabled(
-                NotificationAgentType.EMAIL
-              )
+              (!user.settings ||
+                user.settings.hasNotificationAgentEnabled(
+                  NotificationAgentType.EMAIL
+                ))
           )
           .map(async (user) => {
             logger.debug('Sending email notification', {
