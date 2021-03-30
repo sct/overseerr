@@ -1,11 +1,11 @@
-import React, { useState, useRef, useContext } from 'react';
-import Transition from '../../Transition';
-import useClickOutside from '../../../hooks/useClickOutside';
+import React, { useContext, useRef, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import {
-  LanguageContext,
   AvailableLocales,
+  LanguageContext,
 } from '../../../context/LanguageContext';
-import { useIntl, defineMessages } from 'react-intl';
+import useClickOutside from '../../../hooks/useClickOutside';
+import Transition from '../../Transition';
 
 const messages = defineMessages({
   changelanguage: 'Change Language',
@@ -17,6 +17,10 @@ type AvailableLanguageObject = Record<
 >;
 
 const availableLanguages: AvailableLanguageObject = {
+  ca: {
+    code: 'ca',
+    display: 'Català',
+  },
   de: {
     code: 'de',
     display: 'Deutsch',
