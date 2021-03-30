@@ -78,9 +78,21 @@ When disabled, Plex OAuth becomes the only sign-in option, and any "local users"
 
 This setting is **enabled** by default.
 
+### Global Movie Request Limit & Global Series Request Limit
+
+Select the request limits you would like granted to users.
+
+Unless an [override](../users/README.md#movie-request-limit-and-series-request-limit) is configured, users are granted these global request limits.
+
+Note that users with the **Manage Users** permission are exempt from request limits, since that permission also grants the ability to submit requests on behalf of other users.
+
 ### Default User Permissions
 
-Select the permissions you would like new users to have by default. It is important to set these, as any user with access to your Plex server will be able to log in to Overseerr, and they will be granted the permissions you select here.
+Select the permissions you would like assigned to new users to have by default upon account creation.
+
+It is important to configure this, as any user with access to your Plex server will be able to sign in to Overseerr, and they will be granted the permissions you select here upon first sign-in.
+
+This setting only affects new users, and has no impact on existing users. In order to modify permissions for existing users, you will need to [edit the users](../users/README.md#editing-users).
 
 ## Plex
 
