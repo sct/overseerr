@@ -23,7 +23,7 @@ const studios: Studio[] = [
   {
     name: '20th Century Fox',
     image:
-      'http://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/qZCc1lty5FzX30aOCVRBLzaVmcp.png',
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/qZCc1lty5FzX30aOCVRBLzaVmcp.png',
     url: '/discover/movies/studio/25',
   },
   {
@@ -41,7 +41,7 @@ const studios: Studio[] = [
   {
     name: 'Universal',
     image:
-      'http://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/8lvHyhjr8oUKOOy2dKXoALWKdp0.png',
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/8lvHyhjr8oUKOOy2dKXoALWKdp0.png',
     url: '/discover/movies/studio/33',
   },
   {
@@ -53,19 +53,19 @@ const studios: Studio[] = [
   {
     name: 'Pixar',
     image:
-      'http://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png',
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png',
     url: '/discover/movies/studio/3',
   },
   {
     name: 'Dreamworks',
     image:
-      'http://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/kP7t6RwGz2AvvTkvnI1uteEwHet.png',
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/kP7t6RwGz2AvvTkvnI1uteEwHet.png',
     url: '/discover/movies/studio/521',
   },
   {
     name: 'Marvel Studios',
     image:
-      'http://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/hUzeosd33nzE5MCNsZxCGEKTXaQ.png',
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/hUzeosd33nzE5MCNsZxCGEKTXaQ.png',
     url: '/discover/movies/studio/420',
   },
   {
