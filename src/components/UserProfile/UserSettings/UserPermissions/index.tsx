@@ -15,9 +15,6 @@ import PageTitle from '../../../Common/PageTitle';
 import PermissionEdit from '../../../PermissionEdit';
 
 const messages = defineMessages({
-  displayName: 'Display Name',
-  plexuser: 'Plex User',
-  localuser: 'Local User',
   toastSettingsSuccess: 'Permissions saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   permissions: 'Permissions',

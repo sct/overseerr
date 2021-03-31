@@ -31,8 +31,6 @@ const messages = defineMessages({
   sendSilently: 'Send Telegram Messages Silently',
   sendSilentlyDescription: 'Send notifications with no sound',
   validationTelegramChatId: 'You must provide a valid Telegram chat ID',
-  plexuser: 'Plex User',
-  localuser: 'Local User',
   toastSettingsSuccess: 'Notification settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   pgpKey: '<PgpLink>PGP</PgpLink> Public Key',
