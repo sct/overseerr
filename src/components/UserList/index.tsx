@@ -363,21 +363,20 @@ const UserList: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  {emailSettings.enabled && (
-                    <div className="form-row">
-                      <label htmlFor="genpassword" className="checkbox-label">
-                        {intl.formatMessage(messages.autogeneratepassword)}
-                      </label>
-                      <div className="form-input">
-                        <Field
-                          type="checkbox"
-                          id="genpassword"
-                          name="genpassword"
-                          onClick={() => setFieldValue('password', '')}
-                        />
-                      </div>
+                  <div className="form-row">
+                    <label htmlFor="genpassword" className="checkbox-label">
+                      {intl.formatMessage(messages.autogeneratepassword)}
+                    </label>
+                    <div className="form-input">
+                      <Field
+                        type="checkbox"
+                        id="genpassword"
+                        name="genpassword"
+                        disabled={!emailSettings.enabled}
+                        onClick={() => setFieldValue('password', '')}
+                      />
                     </div>
-                  )}
+                  </div>
                   <div className="form-row">
                     <label htmlFor="password" className="text-label">
                       {intl.formatMessage(messages.password)}
