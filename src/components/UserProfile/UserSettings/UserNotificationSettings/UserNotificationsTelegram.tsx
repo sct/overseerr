@@ -37,12 +37,6 @@ const UserTelegramSettings: React.FC = () => {
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
-  const { data: notificationSettings } = useSWR(
-    '/api/v1/settings/notifications'
-  );
-  const { data: telegramSettings } = useSWR(
-    '/api/v1/settings/notifications/telegram'
-  );
 
   useEffect(() => {
     setNotificationAgents(
@@ -65,7 +59,7 @@ const UserTelegramSettings: React.FC = () => {
       ),
   });
 
-  if ((!data || !notificationSettings || !telegramSettings) && !error) {
+  if (!data && !error) {
     return <LoadingSpinner />;
   }
 
@@ -138,13 +132,13 @@ const UserTelegramSettings: React.FC = () => {
               <label htmlFor="telegramChatId" className="text-label">
                 {intl.formatMessage(messages.telegramChatId)}
                 <span className="label-required">*</span>
-                {telegramSettings.options.botUsername && (
+                {data?.telegramBotUsername && (
                   <span className="label-tip">
                     {intl.formatMessage(messages.telegramChatIdTipLong, {
                       TelegramBotLink: function TelegramBotLink(msg) {
                         return (
                           <a
-                            href={`https://telegram.me/${telegramSettings.options.botUsername}`}
+                            href={`https://telegram.me/${data.telegramBotUsername}`}
                             target="_blank"
                             rel="noreferrer"
                           >

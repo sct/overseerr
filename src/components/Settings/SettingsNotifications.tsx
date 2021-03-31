@@ -1,9 +1,5 @@
-import axios from 'axios';
-import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
 import Bolt from '../../assets/bolt.svg';
 import DiscordLogo from '../../assets/extlogos/discord.svg';
 import PushbulletLogo from '../../assets/extlogos/pushbullet.svg';
@@ -11,31 +7,22 @@ import PushoverLogo from '../../assets/extlogos/pushover.svg';
 import SlackLogo from '../../assets/extlogos/slack.svg';
 import TelegramLogo from '../../assets/extlogos/telegram.svg';
 import globalMessages from '../../i18n/globalMessages';
-import Error from '../../pages/_error';
-import Button from '../Common/Button';
-import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
 import SettingsTabs, { SettingsRoute } from '../Common/SettingsTabs';
 
 const messages = defineMessages({
   notifications: 'Notifications',
   notificationsettings: 'Notification Settings',
-  notificationsettingsDescription:
-    'Configure global notification settings. The options below will apply to all notification agents.',
-  notificationAgentsSettings: 'Notification Agents',
   notificationAgentSettingsDescription:
-    'Choose the types of notifications to send, and which notification agents to use.',
+    'Configure and enable notification agents.',
   notificationsettingssaved: 'Notification settings saved successfully!',
   notificationsettingsfailed: 'Notification settings failed to save.',
-  enablenotifications: 'Enable Notifications',
   email: 'Email',
   webhook: 'Webhook',
 });
 
 const SettingsNotifications: React.FC = ({ children }) => {
   const intl = useIntl();
-  const { addToast } = useToasts();
-  const { data, error, revalidate } = useSWR('/api/v1/settings/notifications');
 
   const settingsRoutes: SettingsRoute[] = [
     {
@@ -130,14 +117,6 @@ const SettingsNotifications: React.FC = ({ children }) => {
     },
   ];
 
-  if (!data && !error) {
-    return <LoadingSpinner />;
-  }
-
-  if (!data) {
-    return <Error statusCode={500} />;
-  }
-
   return (
     <>
       <PageTitle
@@ -149,82 +128,6 @@ const SettingsNotifications: React.FC = ({ children }) => {
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.notificationsettings)}
-        </h3>
-        <p className="description">
-          {intl.formatMessage(messages.notificationsettingsDescription)}
-        </p>
-      </div>
-      <div className="section">
-        <Formik
-          initialValues={{
-            enabled: data.enabled,
-          }}
-          enableReinitialize
-          onSubmit={async (values) => {
-            try {
-              await axios.post('/api/v1/settings/notifications', {
-                enabled: values.enabled,
-              });
-              addToast(intl.formatMessage(messages.notificationsettingssaved), {
-                appearance: 'success',
-                autoDismiss: true,
-              });
-            } catch (e) {
-              addToast(
-                intl.formatMessage(messages.notificationsettingsfailed),
-                {
-                  appearance: 'error',
-                  autoDismiss: true,
-                }
-              );
-            } finally {
-              revalidate();
-            }
-          }}
-        >
-          {({ isSubmitting, values, setFieldValue }) => {
-            return (
-              <Form className="section">
-                <div className="form-row">
-                  <label htmlFor="name" className="checkbox-label">
-                    <span>
-                      {intl.formatMessage(messages.enablenotifications)}
-                    </span>
-                  </label>
-                  <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="enabled"
-                      name="enabled"
-                      onChange={() => {
-                        setFieldValue('enabled', !values.enabled);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="actions">
-                  <div className="flex justify-end">
-                    <span className="inline-flex ml-3 rounded-md shadow-sm">
-                      <Button
-                        buttonType="primary"
-                        type="submit"
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting
-                          ? intl.formatMessage(globalMessages.saving)
-                          : intl.formatMessage(globalMessages.save)}
-                      </Button>
-                    </span>
-                  </div>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-      </div>
-      <div className="mt-10 mb-6">
-        <h3 className="heading">
-          {intl.formatMessage(messages.notificationAgentsSettings)}
         </h3>
         <p className="description">
           {intl.formatMessage(messages.notificationAgentSettingsDescription)}

@@ -231,6 +231,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
     const userRepository = getRepository(User);
+    const settings = getSettings();
 
     try {
       const user = await userRepository.findOne({
@@ -244,8 +245,13 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
       return res.status(200).json({
         notificationAgents:
           user.settings?.notificationAgents ?? NotificationAgentType.EMAIL,
+        emailEnabled: settings?.notifications.agents.email.enabled,
         pgpKey: user.settings?.pgpKey,
+        discordEnabled: settings?.notifications.agents.discord.enabled,
         discordId: user.settings?.discordId,
+        telegramEnabled: settings?.notifications.agents.telegram.enabled,
+        telegramBotUsername:
+          settings?.notifications.agents.telegram.options.botUsername,
         telegramChatId: user.settings?.telegramChatId,
         telegramSendSilently: user?.settings?.telegramSendSilently,
       });
@@ -281,14 +287,16 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
       if (!user.settings) {
         user.settings = new UserSettings({
           user: req.user,
-          notificationAgents: req.body.notificationAgents,
+          notificationAgents:
+            req.body.notificationAgents ?? NotificationAgentType.EMAIL,
           pgpKey: req.body.pgpKey,
           discordId: req.body.discordId,
           telegramChatId: req.body.telegramChatId,
           telegramSendSilently: req.body.telegramSendSilently,
         });
       } else {
-        user.settings.notificationAgents = req.body.notificationAgents;
+        user.settings.notificationAgents =
+          req.body.notificationAgents ?? NotificationAgentType.EMAIL;
         user.settings.pgpKey = req.body.pgpKey;
         user.settings.discordId = req.body.discordId;
         user.settings.telegramChatId = req.body.telegramChatId;

@@ -14,8 +14,12 @@ export interface UserSettingsGeneralResponse {
 
 export interface UserSettingsNotificationsResponse {
   notificationAgents: number;
+  emailEnabled?: boolean;
   pgpKey?: string;
+  discordEnabled?: boolean;
   discordId?: string;
+  telegramEnabled?: boolean;
+  telegramBotUsername?: string;
   telegramChatId?: string;
   telegramSendSilently?: boolean;
 }

@@ -27,15 +27,6 @@ const UserNotificationSettings: React.FC = ({ children }) => {
   const { data, error } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
-  const { data: notificationSettings } = useSWR(
-    '/api/v1/settings/notifications'
-  );
-  const { data: emailSettings } = useSWR(
-    '/api/v1/settings/notifications/email'
-  );
-  const { data: telegramSettings } = useSWR(
-    '/api/v1/settings/notifications/telegram'
-  );
 
   const settingsRoutes: SettingsRoute[] = [
     {
@@ -61,7 +52,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       ),
       route: `/users/${user?.id}/settings/notifications/email`,
       regex: /\/settings\/notifications\/email/,
-      hidden: !notificationSettings?.enabled || !emailSettings?.enabled,
+      hidden: !data?.emailEnabled,
     },
     {
       text: 'Discord',
@@ -84,10 +75,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       ),
       route: `/users/${user?.id}/settings/notifications/telegram`,
       regex: /\/settings\/notifications\/telegram/,
-      hidden:
-        !notificationSettings?.enabled ||
-        !telegramSettings?.enabled ||
-        !telegramSettings?.options.botUsername,
+      hidden: !data?.telegramEnabled || !data?.telegramBotUsername,
     },
   ];
 

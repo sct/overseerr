@@ -37,12 +37,6 @@ const UserEmailSettings: React.FC = () => {
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
-  const { data: notificationSettings } = useSWR(
-    '/api/v1/settings/notifications'
-  );
-  const { data: emailSettings } = useSWR(
-    '/api/v1/settings/notifications/email'
-  );
 
   useEffect(() => {
     setNotificationAgents(
@@ -59,7 +53,7 @@ const UserEmailSettings: React.FC = () => {
       ),
   });
 
-  if ((!data || !notificationSettings || !emailSettings) && !error) {
+  if (!data && !error) {
     return <LoadingSpinner />;
   }
 

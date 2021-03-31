@@ -35,12 +35,6 @@ const UserNotificationsDiscord: React.FC = () => {
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
-  const { data: notificationSettings } = useSWR(
-    '/api/v1/settings/notifications'
-  );
-  const { data: discordSettings } = useSWR(
-    '/api/v1/settings/notifications/discord'
-  );
 
   useEffect(() => {
     setNotificationAgents(
@@ -60,7 +54,7 @@ const UserNotificationsDiscord: React.FC = () => {
       .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
-  if ((!data || !notificationSettings || !discordSettings) && !error) {
+  if (!data && !error) {
     return <LoadingSpinner />;
   }
 
@@ -101,7 +95,7 @@ const UserNotificationsDiscord: React.FC = () => {
       {({ errors, touched, isSubmitting, isValid, values, setFieldValue }) => {
         return (
           <Form className="section">
-            {notificationSettings.enabled && discordSettings.enabled && (
+            {data?.discordEnabled && (
               <div className="form-row">
                 <label htmlFor="enableDiscord" className="checkbox-label">
                   {intl.formatMessage(messages.enableDiscord)}

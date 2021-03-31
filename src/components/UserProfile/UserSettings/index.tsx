@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
+import { UserSettingsNotificationsResponse } from '../../../../server/interfaces/api/userSettingsInterfaces';
 import { hasPermission, Permission } from '../../../../server/lib/permissions';
 import useSettings from '../../../hooks/useSettings';
 import { useUser } from '../../../hooks/useUser';
@@ -28,11 +29,8 @@ const UserSettings: React.FC = ({ children }) => {
   const { user: currentUser } = useUser();
   const { user, error } = useUser({ id: Number(router.query.userId) });
   const intl = useIntl();
-  const { data: notificationSettings } = useSWR(
-    '/api/v1/settings/notifications'
-  );
-  const { data: emailSettings } = useSWR(
-    '/api/v1/settings/notifications/email'
+  const { data } = useSWR<UserSettingsNotificationsResponse>(
+    user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
 
   if (!user && !error) {
@@ -65,10 +63,9 @@ const UserSettings: React.FC = ({ children }) => {
     },
     {
       text: intl.formatMessage(messages.menuNotifications),
-      route:
-        notificationSettings.enabled && emailSettings.enabled
-          ? `/users/${user?.id}/settings/notifications/email`
-          : `/users/${user?.id}/settings/notifications/discord`,
+      route: data?.emailEnabled
+        ? `/users/${user?.id}/settings/notifications/email`
+        : `/users/${user?.id}/settings/notifications/discord`,
       regex: /\/settings\/notifications/,
     },
     {
