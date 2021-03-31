@@ -145,7 +145,6 @@ export class MediaRequest {
           subject: movie.title,
           message: movie.overview,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-          notifyUser: this.requestedBy,
           media,
           request: this,
         });
@@ -157,7 +156,6 @@ export class MediaRequest {
           subject: tv.name,
           message: tv.overview,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
-          notifyUser: this.requestedBy,
           media,
           extra: [
             {
