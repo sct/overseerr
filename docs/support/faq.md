@@ -40,6 +40,7 @@ Overseerr currently supports the following agents:
 - Legacy Plex TV
 - TheTVDB
 - TMDb
+- HAMA
 
 Please verify that your library is using one of the agents previously listed.
 
@@ -47,7 +48,7 @@ When changing agents, a full metadata refresh of your Plex library is required. 
 
 #### Troubleshooting Steps
 
-First, check the Overseerr logs for media items that are missing. The logs will contain an error as to why that item could not be matched. One example might be `errorMessage":"SQLITE_CONSTRAINT: NOT NULL`. This means that the TMDb ID is missing from the Plex XML for that item.
+First, check the Overseerr logs for media items that are missing. The logs will contain an error as to why that item could not be matched.
 
 1. Verify that you are using one of the agents mentioned above.
 2. Refresh the metadata for just that item.
