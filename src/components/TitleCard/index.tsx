@@ -221,7 +221,16 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     >
                       {year && <div className="text-sm">{year}</div>}
 
-                      <h1 className="text-xl leading-tight whitespace-normal">
+                      <h1
+                        className="text-xl leading-tight whitespace-normal"
+                        style={{
+                          WebkitLineClamp: 3,
+                          display: '-webkit-box',
+                          overflow: 'hidden',
+                          WebkitBoxOrient: 'vertical',
+                          wordBreak: 'break-word',
+                        }}
+                      >
                         {title}
                       </h1>
                       <div
@@ -236,6 +245,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                           display: '-webkit-box',
                           overflow: 'hidden',
                           WebkitBoxOrient: 'vertical',
+                          wordBreak: 'break-word',
                         }}
                       >
                         {summary}
