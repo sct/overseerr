@@ -38,18 +38,6 @@ If you enable this setting and find yourself unable to access Overseerr, you can
 
 This setting is **disabled** by default.
 
-### Enable Image Caching
-
-{% hint style="danger" %}
-**This feature is experimental.** Enable it at your own risk!
-{% endhint %}
-
-When enabled, all images (including media posters from TMDb) will be cached locally on your server. Images will also be optimized for client devices; i.e., if you access Overseerr using a mobile device, smaller versions will be served compared to when accessing Overseerr on desktop.
-
-Note that this feature requires and will use a significant amount of disk space, and there is currently no automated deletion of old or expired images. If running Overseerr using Docker, it is possible to manually clear the image cache by simply removing and recreating the container.
-
-This setting is **disabled** by default.
-
 ### Discover Region & Discover Language
 
 These settings filter content shown on the "Discover" home page based on regional availability and original language, respectively. Users can override these global settings by configuring these same options in their user settings.
