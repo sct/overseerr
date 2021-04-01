@@ -40,7 +40,7 @@ Overseerr currently supports the following agents:
 - Legacy Plex TV
 - TheTVDB
 - TMDb
-- HAMA
+- [HAMA](https://github.com/ZeroQI/Hama.bundle)
 
 Please verify that your library is using one of the agents previously listed.
 
@@ -66,9 +66,9 @@ You can also perform the following to verify the media item has a GUID Overseerr
    3. TheTVDB agent `guid="com.plexapp.agents.thetvdb://78874/1/1"`
    4. Legacy Plex Movie agent `guid="com.plexapp.agents.imdb://tt0765446"`
 
-### Where can I find the logs?
+### Where can I find the log files?
 
-Log files are located in `<Overseeerr config directory>/logs/`.
+Please see [these instructions on how to locate and share your logs](./asking-for-support#how-can-i-share-my-logs).
 
 ## Users
 
