@@ -1,28 +1,28 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
+  AfterInsert,
+  AfterRemove,
+  AfterUpdate,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
-  AfterUpdate,
-  AfterInsert,
+  Entity,
   getRepository,
+  ManyToOne,
   OneToMany,
-  AfterRemove,
+  PrimaryGeneratedColumn,
   RelationCount,
+  UpdateDateColumn,
 } from 'typeorm';
-import { User } from './User';
-import Media from './Media';
-import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
-import { getSettings } from '../lib/settings';
+import RadarrAPI from '../api/servarr/radarr';
+import SonarrAPI, { SonarrSeries } from '../api/servarr/sonarr';
 import TheMovieDb from '../api/themoviedb';
 import { ANIME_KEYWORD_ID } from '../api/themoviedb/constants';
-import RadarrAPI from '../api/radarr';
-import logger from '../logger';
-import SeasonRequest from './SeasonRequest';
-import SonarrAPI, { SonarrSeries } from '../api/sonarr';
+import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
 import notificationManager, { Notification } from '../lib/notifications';
+import { getSettings } from '../lib/settings';
+import logger from '../logger';
+import Media from './Media';
+import SeasonRequest from './SeasonRequest';
+import { User } from './User';
 
 @Entity()
 export class MediaRequest {
@@ -390,7 +390,7 @@ export class MediaRequest {
         const tmdb = new TheMovieDb();
         const radarr = new RadarrAPI({
           apiKey: radarrSettings.apiKey,
-          url: RadarrAPI.buildRadarrUrl(radarrSettings, '/api/v3'),
+          url: RadarrAPI.buildUrl(radarrSettings, '/api/v3'),
         });
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
 
@@ -531,7 +531,7 @@ export class MediaRequest {
         const tmdb = new TheMovieDb();
         const sonarr = new SonarrAPI({
           apiKey: sonarrSettings.apiKey,
-          url: SonarrAPI.buildSonarrUrl(sonarrSettings, '/api/v3'),
+          url: SonarrAPI.buildUrl(sonarrSettings, '/api/v3'),
         });
         const series = await tmdb.getTvShow({ tvId: media.tmdbId });
         const tvdbId = series.external_ids.tvdb_id ?? media.tvdbId;

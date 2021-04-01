@@ -1,5 +1,5 @@
-import { RadarrProfile, RadarrRootFolder } from '../../api/radarr';
-import { LanguageProfile } from '../../api/sonarr';
+import { QualityProfile, RootFolder } from '../../api/servarr/base';
+import { LanguageProfile } from '../../api/servarr/sonarr';
 
 export interface ServiceCommonServer {
   id: number;
@@ -16,7 +16,7 @@ export interface ServiceCommonServer {
 
 export interface ServiceCommonServerWithDetails {
   server: ServiceCommonServer;
-  profiles: RadarrProfile[];
-  rootFolders: Partial<RadarrRootFolder>[];
+  profiles: QualityProfile[];
+  rootFolders: Partial<RootFolder>[];
   languageProfiles?: LanguageProfile[];
 }

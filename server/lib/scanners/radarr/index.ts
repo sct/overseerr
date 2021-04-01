@@ -1,5 +1,5 @@
 import { uniqWith } from 'lodash';
-import RadarrAPI, { RadarrMovie } from '../../../api/radarr';
+import RadarrAPI, { RadarrMovie } from '../../../api/servarr/radarr';
 import { getSettings, RadarrSettings } from '../../settings';
 import BaseScanner, { RunnableScanner, StatusBase } from '../baseScanner';
 
@@ -52,7 +52,7 @@ class RadarrScanner
 
           this.radarrApi = new RadarrAPI({
             apiKey: server.apiKey,
-            url: RadarrAPI.buildRadarrUrl(server, '/api/v3'),
+            url: RadarrAPI.buildUrl(server, '/api/v3'),
           });
 
           this.items = await this.radarrApi.getMovies();

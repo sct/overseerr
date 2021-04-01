@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import RadarrAPI from '../../api/radarr';
+import RadarrAPI from '../../api/servarr/radarr';
 import { getSettings, RadarrSettings } from '../../lib/settings';
 import logger from '../../logger';
 
@@ -39,7 +39,7 @@ radarrRoutes.post('/test', async (req, res, next) => {
   try {
     const radarr = new RadarrAPI({
       apiKey: req.body.apiKey,
-      url: RadarrAPI.buildRadarrUrl(req.body, '/api/v3'),
+      url: RadarrAPI.buildUrl(req.body, '/api/v3'),
     });
 
     const profiles = await radarr.getProfiles();
@@ -110,7 +110,7 @@ radarrRoutes.get<{ id: string }>('/:id/profiles', async (req, res) => {
 
   const radarr = new RadarrAPI({
     apiKey: radarrSettings.apiKey,
-    url: RadarrAPI.buildRadarrUrl(radarrSettings, '/api/v3'),
+    url: RadarrAPI.buildUrl(radarrSettings, '/api/v3'),
   });
 
   const profiles = await radarr.getProfiles();

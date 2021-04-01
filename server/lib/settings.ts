@@ -30,7 +30,7 @@ export interface PlexSettings {
   libraries: Library[];
 }
 
-interface DVRSettings {
+export interface DVRSettings {
   id: number;
   name: string;
   hostname: string;

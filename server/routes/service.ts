@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import RadarrAPI from '../api/radarr';
-import SonarrAPI from '../api/sonarr';
+import RadarrAPI from '../api/servarr/radarr';
+import SonarrAPI from '../api/servarr/sonarr';
+import TheMovieDb from '../api/themoviedb';
 import {
   ServiceCommonServer,
   ServiceCommonServerWithDetails,
 } from '../interfaces/api/serviceInterfaces';
 import { getSettings } from '../lib/settings';
-import TheMovieDb from '../api/themoviedb';
 import logger from '../logger';
 
 const serviceRoutes = Router();
@@ -46,7 +46,7 @@ serviceRoutes.get<{ radarrId: string }>(
 
     const radarr = new RadarrAPI({
       apiKey: radarrSettings.apiKey,
-      url: RadarrAPI.buildRadarrUrl(radarrSettings, '/api/v3'),
+      url: RadarrAPI.buildUrl(radarrSettings, '/api/v3'),
     });
 
     const profiles = await radarr.getProfiles();
@@ -114,7 +114,7 @@ serviceRoutes.get<{ sonarrId: string }>(
 
     const sonarr = new SonarrAPI({
       apiKey: sonarrSettings.apiKey,
-      url: SonarrAPI.buildSonarrUrl(sonarrSettings, '/api/v3'),
+      url: SonarrAPI.buildUrl(sonarrSettings, '/api/v3'),
     });
 
     try {
