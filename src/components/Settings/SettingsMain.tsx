@@ -145,7 +145,6 @@ const SettingsMain: React.FC = () => {
             originalLanguage: data?.originalLanguage,
             partialRequestsEnabled: data?.partialRequestsEnabled,
             trustProxy: data?.trustProxy,
-            cacheImages: data?.cacheImages,
           }}
           enableReinitialize
           validationSchema={MainSettingsSchema}
@@ -160,7 +159,6 @@ const SettingsMain: React.FC = () => {
                 originalLanguage: values.originalLanguage,
                 partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
-                cacheImages: values.cacheImages,
               });
               mutate('/api/v1/settings/public');
 
@@ -300,26 +298,6 @@ const SettingsMain: React.FC = () => {
                       onChange={() => {
                         setFieldValue('csrfProtection', !values.csrfProtection);
                       }}
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <label htmlFor="csrfProtection" className="checkbox-label">
-                    <span className="mr-2">
-                      {intl.formatMessage(messages.cacheImages)}
-                    </span>
-                    <Badge badgeType="warning">
-                      {intl.formatMessage(globalMessages.experimental)}
-                    </Badge>
-                    <span className="label-tip">
-                      {intl.formatMessage(messages.cacheImagesTip)}
-                    </span>
-                  </label>
-                  <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="cacheImages"
-                      name="cacheImages"
                     />
                   </div>
                 </div>
