@@ -61,13 +61,11 @@ const QuotaSelector: React.FC<QuotaSelectorProps> = ({
               <option value="0">
                 {intl.formatMessage(messages.unlimited)}
               </option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
+              {[...Array(100)].map((_item, i) => (
+                <option value={i + 1} key={`${mediaType}-limit-${i + 1}`}>
+                  {i + 1}
+                </option>
+              ))}
             </select>
           ),
           quotaDays: (
@@ -77,12 +75,11 @@ const QuotaSelector: React.FC<QuotaSelectorProps> = ({
               onChange={(e) => setQuotaDays(Number(e.target.value))}
               disabled={isDisabled}
             >
-              <option value="1">1</option>
-              <option value="7">7</option>
-              <option value="14">14</option>
-              <option value="30">30</option>
-              <option value="60">60</option>
-              <option value="90">90</option>
+              {[...Array(100)].map((_item, i) => (
+                <option value={i + 1} key={`${mediaType}-days-${i + 1}`}>
+                  {i + 1}
+                </option>
+              ))}
             </select>
           ),
         }
