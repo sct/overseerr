@@ -1,24 +1,25 @@
+import axios from 'axios';
+import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import Bolt from '../../assets/bolt.svg';
 import DiscordLogo from '../../assets/extlogos/discord.svg';
-import SlackLogo from '../../assets/extlogos/slack.svg';
-import TelegramLogo from '../../assets/extlogos/telegram.svg';
 import PushbulletLogo from '../../assets/extlogos/pushbullet.svg';
 import PushoverLogo from '../../assets/extlogos/pushover.svg';
-import Bolt from '../../assets/bolt.svg';
-import { Field, Form, Formik } from 'formik';
-import useSWR from 'swr';
+import SlackLogo from '../../assets/extlogos/slack.svg';
+import TelegramLogo from '../../assets/extlogos/telegram.svg';
+import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import axios from 'axios';
-import { useToasts } from 'react-toast-notifications';
 import Button from '../Common/Button';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
-  save: 'Save Changes',
-  saving: 'Saving…',
+  notifications: 'Notifications',
   notificationsettings: 'Notification Settings',
   notificationsettingsDescription:
     'Configure global notification settings. The options below will apply to all notification agents.',
@@ -174,6 +175,12 @@ const SettingsNotifications: React.FC = ({ children }) => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.notifications),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.notificationsettings)}
@@ -239,8 +246,8 @@ const SettingsNotifications: React.FC = ({ children }) => {
                         disabled={isSubmitting}
                       >
                         {isSubmitting
-                          ? intl.formatMessage(messages.saving)
-                          : intl.formatMessage(messages.save)}
+                          ? intl.formatMessage(globalMessages.saving)
+                          : intl.formatMessage(globalMessages.save)}
                       </Button>
                     </span>
                   </div>

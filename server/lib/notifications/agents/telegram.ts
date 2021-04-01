@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
+import { MediaType } from '../../../constants/media';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentTelegram } from '../../settings';
-import { MediaType } from '../../../constants/media';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface TelegramMessagePayload {
@@ -61,7 +61,7 @@ class TelegramAgent
 
     const title = this.escapeText(payload.subject);
     const plot = this.escapeText(payload.message);
-    const user = this.escapeText(payload.notifyUser.displayName);
+    const user = this.escapeText(payload.request?.requestedBy.displayName);
     const applicationTitle = this.escapeText(settings.main.applicationTitle);
 
     /* eslint-disable no-useless-escape */
@@ -138,6 +138,10 @@ class TelegramAgent
         break;
     }
 
+    for (const extra of payload.extra ?? []) {
+      message += `\n\n\*${extra.name}\*\n${extra.value}`;
+    }
+
     if (settings.main.applicationUrl && payload.media) {
       const actionUrl = `${settings.main.applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`;
       message += `\n\n\[Open in ${applicationTitle}\]\(${actionUrl}\)`;
@@ -175,8 +179,8 @@ class TelegramAgent
 
       // Send user notification
       if (
-        this.userNotificationTypes.includes(type) &&
-        payload.notifyUser.settings?.enableNotifications &&
+        payload.notifyUser &&
+        (payload.notifyUser.settings?.enableNotifications ?? true) &&
         payload.notifyUser.settings?.telegramChatId &&
         payload.notifyUser.settings?.telegramChatId !==
           this.getSettings().options.chatId

@@ -1,18 +1,17 @@
-import React from 'react';
-import { Field, Form, Formik } from 'formik';
-import useSWR from 'swr';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import Button from '../../../Common/Button';
-import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
-import * as Yup from 'yup';
+import { Field, Form, Formik } from 'formik';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import * as Yup from 'yup';
+import globalMessages from '../../../../i18n/globalMessages';
 import Alert from '../../../Common/Alert';
+import Button from '../../../Common/Button';
+import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  save: 'Save Changes',
-  saving: 'Saving…',
   agentEnabled: 'Enable Agent',
   accessToken: 'Access Token',
   validationAccessTokenRequired: 'You must provide an access token',
@@ -20,7 +19,6 @@ const messages = defineMessages({
     'Pushbullet notification settings saved successfully!',
   pushbulletSettingsFailed: 'Pushbullet notification settings failed to save.',
   testSent: 'Test notification sent!',
-  test: 'Test',
   settingUpPushbullet: 'Setting Up Pushbullet Notifications',
   settingUpPushbulletDescription:
     'To configure Pushbullet notifications, you will need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink> and enter it below.',
@@ -124,6 +122,7 @@ const NotificationsPushbullet: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="accessToken" className="text-label">
                   {intl.formatMessage(messages.accessToken)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -147,6 +146,7 @@ const NotificationsPushbullet: React.FC = () => {
                 <div className="form-row">
                   <span id="group-label" className="group-label">
                     {intl.formatMessage(messages.notificationTypes)}
+                    <span className="label-required">*</span>
                   </span>
                   <div className="form-input">
                     <div className="max-w-lg">
@@ -172,7 +172,7 @@ const NotificationsPushbullet: React.FC = () => {
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(messages.test)}
+                      {intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -182,8 +182,8 @@ const NotificationsPushbullet: React.FC = () => {
                       disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

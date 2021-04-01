@@ -1,41 +1,42 @@
-import React, { useState, useContext, useMemo } from 'react';
-import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
-import type { MovieDetails as MovieDetailsType } from '../../../server/models/Movie';
-import useSWR from 'swr';
-import { useRouter } from 'next/router';
-import Button from '../Common/Button';
-import Link from 'next/link';
-import Slider from '../Slider';
-import PersonCard from '../PersonCard';
-import { LanguageContext } from '../../context/LanguageContext';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import { useUser, Permission } from '../../hooks/useUser';
-import { MediaStatus } from '../../../server/constants/media';
 import axios from 'axios';
-import SlideOver from '../Common/SlideOver';
-import RequestBlock from '../RequestBlock';
-import TmdbLogo from '../../assets/tmdb_logo.svg';
-import RTFresh from '../../assets/rt_fresh.svg';
-import RTRotten from '../../assets/rt_rotten.svg';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useContext, useMemo, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import useSWR from 'swr';
+import type { RTRating } from '../../../server/api/rottentomatoes';
+import { MediaStatus } from '../../../server/constants/media';
+import type { MovieDetails as MovieDetailsType } from '../../../server/models/Movie';
 import RTAudFresh from '../../assets/rt_aud_fresh.svg';
 import RTAudRotten from '../../assets/rt_aud_rotten.svg';
-import type { RTRating } from '../../../server/api/rottentomatoes';
-import Error from '../../pages/_error';
-import ExternalLinkBlock from '../ExternalLinkBlock';
-import { sortCrewPriority } from '../../utils/creditHelpers';
-import StatusBadge from '../StatusBadge';
-import RequestButton from '../RequestButton';
-import MediaSlider from '../MediaSlider';
-import ConfirmButton from '../Common/ConfirmButton';
-import DownloadBlock from '../DownloadBlock';
-import PageTitle from '../Common/PageTitle';
+import RTFresh from '../../assets/rt_fresh.svg';
+import RTRotten from '../../assets/rt_rotten.svg';
+import TmdbLogo from '../../assets/tmdb_logo.svg';
+import { LanguageContext } from '../../context/LanguageContext';
 import useSettings from '../../hooks/useSettings';
+import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
+import Error from '../../pages/_error';
+import { sortCrewPriority } from '../../utils/creditHelpers';
+import Button from '../Common/Button';
+import CachedImage from '../Common/CachedImage';
+import ConfirmButton from '../Common/ConfirmButton';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import PageTitle from '../Common/PageTitle';
 import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+import SlideOver from '../Common/SlideOver';
+import DownloadBlock from '../DownloadBlock';
+import ExternalLinkBlock from '../ExternalLinkBlock';
+import MediaSlider from '../MediaSlider';
+import PersonCard from '../PersonCard';
+import RequestBlock from '../RequestBlock';
+import RequestButton from '../RequestButton';
+import Slider from '../Slider';
+import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
+  originaltitle: 'Original Title',
   releasedate: 'Release Date',
-  userrating: 'User Rating',
-  status: 'Status',
   revenue: 'Revenue',
   budget: 'Budget',
   watchtrailer: 'Watch Trailer',
@@ -45,24 +46,15 @@ const messages = defineMessages({
   cast: 'Cast',
   recommendations: 'Recommendations',
   similar: 'Similar Titles',
-  cancelrequest: 'Cancel Request',
-  available: 'Available',
-  unavailable: 'Unavailable',
-  pending: 'Pending',
   overviewunavailable: 'Overview unavailable.',
   manageModalTitle: 'Manage Movie',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No Requests',
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
-    'This will irreversibly remove all data for this movie, including any requests.\
-    If this item exists in your Plex library, the media information will be recreated during the next scan.',
-  approve: 'Approve',
-  decline: 'Decline',
+    '* This will irreversibly remove all data for this movie, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
   studio: '{studioCount, plural, one {Studio} other {Studios}}',
   viewfullcrew: 'View Full Crew',
-  view: 'View',
-  areyousure: 'Are you sure?',
   openradarr: 'Open Movie in Radarr',
   openradarr4k: 'Open Movie in 4K Radarr',
   downloadstatus: 'Download Status',
@@ -192,7 +184,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         ))
         .reduce((prev, curr) => (
           <>
-            {prev}, {curr}
+            {intl.formatMessage(globalMessages.delimitedlist, {
+              a: prev,
+              b: curr,
+            })}
           </>
         ))
     );
@@ -203,9 +198,26 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       className="media-page"
       style={{
         height: 493,
-        backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
+      {data.backdropPath && (
+        <div className="media-page-bg-image">
+          <CachedImage
+            alt=""
+            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath}`}
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%)',
+            }}
+          />
+        </div>
+      )}
       <PageTitle title={data.title} />
       <SlideOver
         show={showManager}
@@ -368,7 +380,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           <div className="mt-8">
             <ConfirmButton
               onClick={() => deleteMedia()}
-              confirmText={intl.formatMessage(messages.areyousure)}
+              confirmText={intl.formatMessage(globalMessages.areyousure)}
               className="w-full"
             >
               {intl.formatMessage(messages.manageModalClearMedia)}
@@ -380,15 +392,20 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         )}
       </SlideOver>
       <div className="media-header">
-        <img
-          src={
-            data.posterPath
-              ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
-              : '/images/overseerr_poster_not_found.png'
-          }
-          alt=""
-          className="media-poster"
-        />
+        <div className="media-poster">
+          <CachedImage
+            src={
+              data.posterPath
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
+                : '/images/overseerr_poster_not_found.png'
+            }
+            alt=""
+            layout="responsive"
+            width={600}
+            height={900}
+            priority
+          />
+        </div>
         <div className="media-title">
           <div className="media-status">
             <StatusBadge
@@ -473,45 +490,47 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       </div>
       <div className="media-overview">
         <div className="media-overview-left">
-          <div className="tagline">{data.tagline}</div>
+          {data.tagline && <div className="tagline">{data.tagline}</div>}
           <h2>{intl.formatMessage(messages.overview)}</h2>
           <p>
             {data.overview
               ? data.overview
               : intl.formatMessage(messages.overviewunavailable)}
           </p>
-          <ul className="media-crew">
-            {sortedCrew.slice(0, 6).map((person) => (
-              <li key={`crew-${person.job}-${person.id}`}>
-                <span>{person.job}</span>
-                <Link href={`/person/${person.id}`}>
-                  <a className="crew-name">{person.name}</a>
-                </Link>
-              </li>
-            ))}
-          </ul>
           {sortedCrew.length > 0 && (
-            <div className="flex justify-end mt-4">
-              <Link href={`/movie/${data.id}/crew`}>
-                <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
-                  <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                  <svg
-                    className="inline-block w-5 h-5 ml-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </div>
+            <>
+              <ul className="media-crew">
+                {sortedCrew.slice(0, 6).map((person) => (
+                  <li key={`crew-${person.job}-${person.id}`}>
+                    <span>{person.job}</span>
+                    <Link href={`/person/${person.id}`}>
+                      <a className="crew-name">{person.name}</a>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex justify-end mt-4">
+                <Link href={`/movie/${data.id}/crew`}>
+                  <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
+                    <span>{intl.formatMessage(messages.viewfullcrew)}</span>
+                    <svg
+                      className="inline-block w-5 h-5 ml-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </a>
+                </Link>
+              </div>
+            </>
           )}
         </div>
         <div className="media-overview-right">
@@ -519,16 +538,26 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <div className="mb-6">
               <Link href={`/collection/${data.collection.id}`}>
                 <a>
-                  <div
-                    className="relative z-0 transition duration-300 scale-100 bg-gray-800 bg-center bg-cover rounded-lg shadow-md cursor-pointer transform-gpu group hover:scale-105"
-                    style={{
-                      backgroundImage: `linear-gradient(180deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 0.80) 100%), url(//image.tmdb.org/t/p/w1440_and_h320_multi_faces/${data.collection.backdropPath})`,
-                    }}
-                  >
-                    <div className="flex items-center justify-between p-4 text-gray-200 transition duration-300 h-14 group-hover:text-white">
+                  <div className="relative z-0 overflow-hidden transition duration-300 scale-100 bg-gray-800 bg-center bg-cover rounded-lg shadow-md cursor-pointer transform-gpu group hover:scale-105 ring-1 ring-gray-700 hover:ring-gray-500">
+                    <div className="absolute inset-0 z-0">
+                      <CachedImage
+                        src={`https://image.tmdb.org/t/p/w1440_and_h320_multi_faces/${data.collection.backdropPath}`}
+                        alt=""
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          backgroundImage:
+                            'linear-gradient(180deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 0.80) 100%)',
+                        }}
+                      />
+                    </div>
+                    <div className="relative z-10 flex items-center justify-between p-4 text-gray-200 transition duration-300 h-14 group-hover:text-white">
                       <div>{data.collection.name}</div>
                       <Button buttonSize="sm">
-                        {intl.formatMessage(messages.view)}
+                        {intl.formatMessage(globalMessages.view)}
                       </Button>
                     </div>
                   </div>
@@ -575,8 +604,15 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 )}
               </div>
             )}
+            {data.originalTitle &&
+              data.originalLanguage !== locale.slice(0, 2) && (
+                <div className="media-fact">
+                  <span>{intl.formatMessage(messages.originaltitle)}</span>
+                  <span className="media-fact-value">{data.originalTitle}</span>
+                </div>
+              )}
             <div className="media-fact">
-              <span>{intl.formatMessage(messages.status)}</span>
+              <span>{intl.formatMessage(globalMessages.status)}</span>
               <span className="media-fact-value">{data.status}</span>
             </div>
             {data.releaseDate && (
@@ -595,11 +631,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.revenue)}</span>
                 <span className="media-fact-value">
-                  <FormattedNumber
-                    currency="USD"
-                    style="currency"
-                    value={data.revenue}
-                  />
+                  {intl.formatNumber(data.revenue, {
+                    currency: 'USD',
+                    style: 'currency',
+                  })}
                 </span>
               </div>
             )}
@@ -607,11 +642,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.budget)}</span>
                 <span className="media-fact-value">
-                  <FormattedNumber
-                    currency="USD"
-                    style="currency"
-                    value={data.budget}
-                  />
+                  {intl.formatNumber(data.budget, {
+                    currency: 'USD',
+                    style: 'currency',
+                  })}
                 </span>
               </div>
             )}

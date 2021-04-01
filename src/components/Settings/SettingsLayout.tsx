@@ -3,10 +3,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
+import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({
-  settings: 'Settings',
-  menuGeneralSettings: 'General Settings',
+  menuGeneralSettings: 'General',
   menuUsers: 'Users',
   menuPlexSettings: 'Plex',
   menuServices: 'Services',
@@ -99,7 +99,7 @@ const SettingsLayout: React.FC = ({ children }) => {
   };
   return (
     <>
-      <PageTitle title={intl.formatMessage(messages.settings)} />
+      <PageTitle title={intl.formatMessage(globalMessages.settings)} />
       <div className="mt-6">
         <div className="sm:hidden">
           <select

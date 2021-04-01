@@ -65,7 +65,7 @@ function Button<P extends ElementTypes = 'button'>(
       break;
     case 'success':
       buttonStyle.push(
-        'text-white bg-green-400 border-green-400 hover:bg-green-300 hover:border-green-300 focus:border-green-700 focus:ring-green active:bg-green-700 active:border-green-700'
+        'text-white bg-green-500 border-green-500 hover:bg-green-400 hover:border-green-400 focus:border-green-700 focus:ring-green active:bg-green-700 active:border-green-700'
       );
       break;
     case 'ghost':
@@ -75,7 +75,7 @@ function Button<P extends ElementTypes = 'button'>(
       break;
     default:
       buttonStyle.push(
-        'text-gray-200 bg-gray-500 border-gray-500 hover:text-white hover:bg-gray-400 hover:border-gray-400 group-hover:text-white group-hover:bg-gray-400 group-hover:border-gray-400 focus:border-blue-300 focus:ring-blue active:text-gray-200 active:bg-gray-400 active:border-gray-400'
+        'text-gray-200 bg-gray-600 border-gray-600 hover:text-white hover:bg-gray-500 hover:border-gray-500 group-hover:text-white group-hover:bg-gray-500 group-hover:border-gray-500 focus:border-blue-300 focus:ring-blue active:text-gray-200 active:bg-gray-500 active:border-gray-500'
       );
   }
 

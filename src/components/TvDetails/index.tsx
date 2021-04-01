@@ -1,70 +1,63 @@
-import React, { useState, useContext, useMemo } from 'react';
+import axios from 'axios';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useContext, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { useRouter } from 'next/router';
-import Button from '../Common/Button';
-import Link from 'next/link';
-import Slider from '../Slider';
-import PersonCard from '../PersonCard';
-import { LanguageContext } from '../../context/LanguageContext';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import { useUser, Permission } from '../../hooks/useUser';
-import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
-import { MediaStatus } from '../../../server/constants/media';
-import RequestModal from '../RequestModal';
-import axios from 'axios';
-import SlideOver from '../Common/SlideOver';
-import RequestBlock from '../RequestBlock';
-import Error from '../../pages/_error';
-import TmdbLogo from '../../assets/tmdb_logo.svg';
-import RTFresh from '../../assets/rt_fresh.svg';
-import RTRotten from '../../assets/rt_rotten.svg';
-import RTAudFresh from '../../assets/rt_aud_fresh.svg';
-import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
-import ExternalLinkBlock from '../ExternalLinkBlock';
-import { sortCrewPriority } from '../../utils/creditHelpers';
+import { MediaStatus } from '../../../server/constants/media';
 import { Crew } from '../../../server/models/common';
-import StatusBadge from '../StatusBadge';
-import RequestButton from '../RequestButton';
-import MediaSlider from '../MediaSlider';
-import ConfirmButton from '../Common/ConfirmButton';
-import DownloadBlock from '../DownloadBlock';
-import PageTitle from '../Common/PageTitle';
+import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
+import RTAudFresh from '../../assets/rt_aud_fresh.svg';
+import RTAudRotten from '../../assets/rt_aud_rotten.svg';
+import RTFresh from '../../assets/rt_fresh.svg';
+import RTRotten from '../../assets/rt_rotten.svg';
+import TmdbLogo from '../../assets/tmdb_logo.svg';
+import { LanguageContext } from '../../context/LanguageContext';
 import useSettings from '../../hooks/useSettings';
+import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
+import Error from '../../pages/_error';
+import { sortCrewPriority } from '../../utils/creditHelpers';
+import Button from '../Common/Button';
+import CachedImage from '../Common/CachedImage';
+import ConfirmButton from '../Common/ConfirmButton';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import PageTitle from '../Common/PageTitle';
 import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+import SlideOver from '../Common/SlideOver';
+import DownloadBlock from '../DownloadBlock';
+import ExternalLinkBlock from '../ExternalLinkBlock';
+import MediaSlider from '../MediaSlider';
+import PersonCard from '../PersonCard';
+import RequestBlock from '../RequestBlock';
+import RequestButton from '../RequestButton';
+import RequestModal from '../RequestModal';
+import Slider from '../Slider';
+import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
   nextAirDate: 'Next Air Date',
-  userrating: 'User Rating',
-  status: 'Status',
   originallanguage: 'Original Language',
   overview: 'Overview',
   cast: 'Cast',
   recommendations: 'Recommendations',
   similar: 'Similar Series',
-  cancelrequest: 'Cancel Request',
   watchtrailer: 'Watch Trailer',
-  available: 'Available',
-  unavailable: 'Unavailable',
-  pending: 'Pending',
   overviewunavailable: 'Overview unavailable.',
   manageModalTitle: 'Manage Series',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No Requests',
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
-    'This will irreversibly remove all data for this TV series, including any requests.\
-    If this item exists in your Plex library, the media information will be recreated during the next scan.',
-  approve: 'Approve',
-  decline: 'Decline',
+    '* This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
+  originaltitle: 'Original Title',
   showtype: 'Series Type',
   anime: 'Anime',
   network: '{networkCount, plural, one {Network} other {Networks}}',
   viewfullcrew: 'View Full Crew',
-  areyousure: 'Are you sure?',
   opensonarr: 'Open Series in Sonarr',
   opensonarr4k: 'Open Series in 4K Sonarr',
   downloadstatus: 'Download Status',
@@ -201,7 +194,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         ))
         .reduce((prev, curr) => (
           <>
-            {prev}, {curr}
+            {intl.formatMessage(globalMessages.delimitedlist, {
+              a: prev,
+              b: curr,
+            })}
           </>
         ))
     );
@@ -228,9 +224,26 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       className="media-page"
       style={{
         height: 493,
-        backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
+      {data.backdropPath && (
+        <div className="media-page-bg-image">
+          <CachedImage
+            alt=""
+            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath}`}
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%)',
+            }}
+          />
+        </div>
+      )}
       <PageTitle title={data.name} />
       <RequestModal
         tmdbId={data.id}
@@ -406,7 +419,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           <div className="mt-8">
             <ConfirmButton
               onClick={() => deleteMedia()}
-              confirmText={intl.formatMessage(messages.areyousure)}
+              confirmText={intl.formatMessage(globalMessages.areyousure)}
               className="w-full"
             >
               {intl.formatMessage(messages.manageModalClearMedia)}
@@ -418,15 +431,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         )}
       </SlideOver>
       <div className="media-header">
-        <img
-          src={
-            data.posterPath
-              ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
-              : '/images/overseerr_poster_not_found.png'
-          }
-          alt=""
-          className="media-poster"
-        />
+        <div className="media-poster">
+          <CachedImage
+            src={
+              data.posterPath
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
+                : '/images/overseerr_poster_not_found.png'
+            }
+            alt=""
+            layout="responsive"
+            width={600}
+            height={900}
+            priority
+          />
+        </div>
         <div className="media-title">
           <div className="media-status">
             <StatusBadge
@@ -509,59 +527,61 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       </div>
       <div className="media-overview">
         <div className="media-overview-left">
-          <div className="tagline">{data.tagline}</div>
+          {data.tagline && <div className="tagline">{data.tagline}</div>}
           <h2>{intl.formatMessage(messages.overview)}</h2>
           <p>
             {data.overview
               ? data.overview
               : intl.formatMessage(messages.overviewunavailable)}
           </p>
-          <ul className="media-crew">
-            {(data.createdBy.length > 0
-              ? [
-                  ...data.createdBy.map(
-                    (person): Partial<Crew> => ({
-                      id: person.id,
-                      job: 'Creator',
-                      name: person.name,
-                    })
-                  ),
-                  ...sortedCrew,
-                ]
-              : sortedCrew
-            )
-              .slice(0, 6)
-              .map((person) => (
-                <li key={`crew-${person.job}-${person.id}`}>
-                  <span>{person.job}</span>
-                  <Link href={`/person/${person.id}`}>
-                    <a className="crew-name">{person.name}</a>
-                  </Link>
-                </li>
-              ))}
-          </ul>
           {sortedCrew.length > 0 && (
-            <div className="flex justify-end mt-4">
-              <Link href={`/tv/${data.id}/crew`}>
-                <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
-                  <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                  <svg
-                    className="inline-block w-5 h-5 ml-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </div>
+            <>
+              <ul className="media-crew">
+                {(data.createdBy.length > 0
+                  ? [
+                      ...data.createdBy.map(
+                        (person): Partial<Crew> => ({
+                          id: person.id,
+                          job: 'Creator',
+                          name: person.name,
+                        })
+                      ),
+                      ...sortedCrew,
+                    ]
+                  : sortedCrew
+                )
+                  .slice(0, 6)
+                  .map((person) => (
+                    <li key={`crew-${person.job}-${person.id}`}>
+                      <span>{person.job}</span>
+                      <Link href={`/person/${person.id}`}>
+                        <a className="crew-name">{person.name}</a>
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+              <div className="flex justify-end mt-4">
+                <Link href={`/tv/${data.id}/crew`}>
+                  <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
+                    <span>{intl.formatMessage(messages.viewfullcrew)}</span>
+                    <svg
+                      className="inline-block w-5 h-5 ml-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </a>
+                </Link>
+              </div>
+            </>
           )}
         </div>
         <div className="media-overview-right">
@@ -598,6 +618,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 )}
               </div>
             )}
+            {data.originalName && data.originalLanguage !== locale.slice(0, 2) && (
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.originaltitle)}</span>
+                <span className="media-fact-value">{data.originalName}</span>
+              </div>
+            )}
             {data.keywords.some(
               (keyword) => keyword.id === ANIME_KEYWORD_ID
             ) && (
@@ -609,7 +635,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               </div>
             )}
             <div className="media-fact">
-              <span>{intl.formatMessage(messages.status)}</span>
+              <span>{intl.formatMessage(globalMessages.status)}</span>
               <span className="media-fact-value">{data.status}</span>
             </div>
             {data.firstAirDate && (

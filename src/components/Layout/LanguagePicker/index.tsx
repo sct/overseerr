@@ -1,11 +1,11 @@
-import React, { useState, useRef, useContext } from 'react';
-import Transition from '../../Transition';
-import useClickOutside from '../../../hooks/useClickOutside';
+import React, { useContext, useRef, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import {
-  LanguageContext,
   AvailableLocales,
+  LanguageContext,
 } from '../../../context/LanguageContext';
-import { FormattedMessage, defineMessages } from 'react-intl';
+import useClickOutside from '../../../hooks/useClickOutside';
+import Transition from '../../Transition';
 
 const messages = defineMessages({
   changelanguage: 'Change Language',
@@ -17,6 +17,10 @@ type AvailableLanguageObject = Record<
 >;
 
 const availableLanguages: AvailableLanguageObject = {
+  ca: {
+    code: 'ca',
+    display: 'Català',
+  },
   de: {
     code: 'de',
     display: 'Deutsch',
@@ -80,6 +84,7 @@ const availableLanguages: AvailableLanguageObject = {
 };
 
 const LanguagePicker: React.FC = () => {
+  const intl = useIntl();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { locale, setLocale } = useContext(LanguageContext);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -128,7 +133,7 @@ const LanguagePicker: React.FC = () => {
                 htmlFor="language"
                 className="block pb-2 text-sm font-medium leading-5 text-gray-300"
               >
-                <FormattedMessage {...messages.changelanguage} />
+                {intl.formatMessage(messages.changelanguage)}
               </label>
               <select
                 id="language"

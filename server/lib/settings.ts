@@ -1,6 +1,6 @@
 import fs from 'fs';
-import path from 'path';
 import { merge } from 'lodash';
+import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { Permission } from './permissions';
 
@@ -61,17 +61,28 @@ export interface SonarrSettings extends DVRSettings {
   enableSeasonFolders: boolean;
 }
 
+interface Quota {
+  quotaLimit?: number;
+  quotaDays?: number;
+}
+
 export interface MainSettings {
   apiKey: string;
   applicationTitle: string;
   applicationUrl: string;
   csrfProtection: boolean;
+  cacheImages: boolean;
   defaultPermissions: number;
+  defaultQuotas: {
+    movie: Quota;
+    tv: Quota;
+  };
   hideAvailable: boolean;
   localLogin: boolean;
   region: string;
   originalLanguage: string;
   trustProxy: boolean;
+  partialRequestsEnabled: boolean;
 }
 
 interface PublicSettings {
@@ -86,6 +97,8 @@ interface FullPublicSettings extends PublicSettings {
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
+  partialRequestsEnabled: boolean;
+  cacheImages: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -193,12 +206,18 @@ class Settings {
         applicationTitle: 'Overseerr',
         applicationUrl: '',
         csrfProtection: false,
+        cacheImages: false,
         defaultPermissions: Permission.REQUEST,
+        defaultQuotas: {
+          movie: {},
+          tv: {},
+        },
         hideAvailable: false,
         localLogin: true,
         region: '',
         originalLanguage: '',
         trustProxy: false,
+        partialRequestsEnabled: true,
       },
       plex: {
         name: '',
@@ -345,6 +364,8 @@ class Settings {
       ),
       region: this.data.main.region,
       originalLanguage: this.data.main.originalLanguage,
+      partialRequestsEnabled: this.data.main.partialRequestsEnabled,
+      cacheImages: this.data.main.cacheImages,
     };
   }
 

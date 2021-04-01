@@ -1,18 +1,17 @@
-import React from 'react';
-import { Field, Form, Formik } from 'formik';
-import useSWR from 'swr';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import Button from '../../../Common/Button';
-import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
-import * as Yup from 'yup';
+import { Field, Form, Formik } from 'formik';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import * as Yup from 'yup';
+import globalMessages from '../../../../i18n/globalMessages';
 import Alert from '../../../Common/Alert';
+import Button from '../../../Common/Button';
+import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  save: 'Save Changes',
-  saving: 'Saving…',
   agentenabled: 'Enable Agent',
   accessToken: 'Application/API Token',
   userToken: 'User Key',
@@ -21,12 +20,9 @@ const messages = defineMessages({
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   testsent: 'Test notification sent!',
-  test: 'Test',
   settinguppushover: 'Setting Up Pushover Notifications',
   settinguppushoverDescription:
-    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below.\
-    (You can use one of our <IconLink>official icons on GitHub</IconLink>.)\
-    You will also need your user key.',
+    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below. (You can use one of our <IconLink>official icons on GitHub</IconLink>.) You will also need your user key.',
   notificationtypes: 'Notification Types',
 });
 
@@ -151,6 +147,7 @@ const NotificationsPushover: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="accessToken" className="text-label">
                   {intl.formatMessage(messages.accessToken)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -169,6 +166,7 @@ const NotificationsPushover: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="userToken" className="text-label">
                   {intl.formatMessage(messages.userToken)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -192,6 +190,7 @@ const NotificationsPushover: React.FC = () => {
                 <div className="form-row">
                   <span id="group-label" className="group-label">
                     {intl.formatMessage(messages.notificationtypes)}
+                    <span className="label-required">*</span>
                   </span>
                   <div className="form-input">
                     <div className="max-w-lg">
@@ -217,7 +216,7 @@ const NotificationsPushover: React.FC = () => {
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(messages.test)}
+                      {intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -227,8 +226,8 @@ const NotificationsPushover: React.FC = () => {
                       disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

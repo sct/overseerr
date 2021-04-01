@@ -1,23 +1,27 @@
-import React from 'react';
-import useSWR from 'swr';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import type { MainSettings } from '../../../../server/lib/settings';
-import { Form, Formik, Field } from 'formik';
 import axios from 'axios';
-import Button from '../../Common/Button';
+import { Field, Form, Formik } from 'formik';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import type { MainSettings } from '../../../../server/lib/settings';
+import globalMessages from '../../../i18n/globalMessages';
+import Button from '../../Common/Button';
+import LoadingSpinner from '../../Common/LoadingSpinner';
+import PageTitle from '../../Common/PageTitle';
 import PermissionEdit from '../../PermissionEdit';
+import QuotaSelector from '../../QuotaSelector';
 
 const messages = defineMessages({
-  userSettings: 'Users',
+  users: 'Users',
+  userSettings: 'User Settings',
   userSettingsDescription: 'Configure global and default user settings.',
-  save: 'Save Changes',
-  saving: 'Saving…',
-  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsSuccess: 'User settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
-  localLogin: 'Enable Local User Sign-In',
-  defaultPermissions: 'Default User Permissions',
+  localLogin: 'Enable Local Sign-In',
+  movieRequestLimitLabel: 'Global Movie Request Limit',
+  tvRequestLimitLabel: 'Global Series Request Limit',
+  defaultPermissions: 'Default Permissions',
 });
 
 const SettingsUsers: React.FC = () => {
@@ -33,6 +37,12 @@ const SettingsUsers: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.users),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">{intl.formatMessage(messages.userSettings)}</h3>
         <p className="description">
@@ -43,6 +53,10 @@ const SettingsUsers: React.FC = () => {
         <Formik
           initialValues={{
             localLogin: data?.localLogin,
+            movieQuotaLimit: data?.defaultQuotas.movie.quotaLimit ?? 0,
+            movieQuotaDays: data?.defaultQuotas.movie.quotaDays ?? 7,
+            tvQuotaLimit: data?.defaultQuotas.tv.quotaLimit ?? 0,
+            tvQuotaDays: data?.defaultQuotas.tv.quotaDays ?? 7,
             defaultPermissions: data?.defaultPermissions ?? 0,
           }}
           enableReinitialize
@@ -50,6 +64,16 @@ const SettingsUsers: React.FC = () => {
             try {
               await axios.post('/api/v1/settings/main', {
                 localLogin: values.localLogin,
+                defaultQuotas: {
+                  movie: {
+                    quotaLimit: values.movieQuotaLimit,
+                    quotaDays: values.movieQuotaDays,
+                  },
+                  tv: {
+                    quotaLimit: values.tvQuotaLimit,
+                    quotaDays: values.tvQuotaDays,
+                  },
+                },
                 defaultPermissions: values.defaultPermissions,
               });
 
@@ -85,6 +109,36 @@ const SettingsUsers: React.FC = () => {
                     />
                   </div>
                 </div>
+                <div className="form-row">
+                  <label htmlFor="applicationTitle" className="text-label">
+                    {intl.formatMessage(messages.movieRequestLimitLabel)}
+                  </label>
+                  <div className="form-input">
+                    <QuotaSelector
+                      onChange={setFieldValue}
+                      dayFieldName="movieQuotaDays"
+                      limitFieldName="movieQuotaLimit"
+                      mediaType="movie"
+                      defaultDays={values.movieQuotaDays}
+                      defaultLimit={values.movieQuotaLimit}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="applicationTitle" className="text-label">
+                    {intl.formatMessage(messages.tvRequestLimitLabel)}
+                  </label>
+                  <div className="form-input">
+                    <QuotaSelector
+                      onChange={setFieldValue}
+                      dayFieldName="tvQuotaDays"
+                      limitFieldName="tvQuotaLimit"
+                      mediaType="tv"
+                      defaultDays={values.tvQuotaDays}
+                      defaultLimit={values.tvQuotaLimit}
+                    />
+                  </div>
+                </div>
                 <div
                   role="group"
                   aria-labelledby="group-label"
@@ -115,8 +169,8 @@ const SettingsUsers: React.FC = () => {
                         disabled={isSubmitting}
                       >
                         {isSubmitting
-                          ? intl.formatMessage(messages.saving)
-                          : intl.formatMessage(messages.save)}
+                          ? intl.formatMessage(globalMessages.saving)
+                          : intl.formatMessage(globalMessages.save)}
                       </Button>
                     </span>
                   </div>

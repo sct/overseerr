@@ -1,26 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import '../styles/globals.css';
-import App, { AppInitialProps, AppProps } from 'next/app';
-import { SWRConfig } from 'swr';
-import { ToastProvider } from 'react-toast-notifications';
-import { parseCookies, setCookie } from 'nookies';
-import Layout from '../components/Layout';
-import { UserContext } from '../context/UserContext';
 import axios from 'axios';
-import { User } from '../hooks/useUser';
-import { IntlProvider } from 'react-intl';
-import { LanguageContext, AvailableLocales } from '../context/LanguageContext';
+import App, { AppInitialProps, AppProps } from 'next/app';
 import Head from 'next/head';
+import { parseCookies, setCookie } from 'nookies';
+import React, { useEffect, useState } from 'react';
+import { IntlProvider } from 'react-intl';
+import { ToastProvider } from 'react-toast-notifications';
+import { SWRConfig } from 'swr';
+import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
+import Layout from '../components/Layout';
+import LoadingBar from '../components/LoadingBar';
+import StatusChecker from '../components/StatusChacker';
 import Toast from '../components/Toast';
 import { InteractionProvider } from '../context/InteractionContext';
-import StatusChecker from '../components/StatusChacker';
-import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
+import { AvailableLocales, LanguageContext } from '../context/LanguageContext';
 import { SettingsProvider } from '../context/SettingsContext';
-import LoadingBar from '../components/LoadingBar';
+import { UserContext } from '../context/UserContext';
+import { User } from '../hooks/useUser';
+import '../styles/globals.css';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocales): Promise<any> => {
   switch (locale) {
+    case 'ca':
+      return import('../i18n/locale/ca.json');
     case 'de':
       return import('../i18n/locale/de.json');
     case 'es':
@@ -122,8 +124,8 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
                   <title>Overseerr</title>
                   <meta
                     name="viewport"
-                    content="width=device-width, initial-scale=1"
-                  />
+                    content="initial-scale=1, viewport-fit=cover, width=device-width"
+                  ></meta>
                 </Head>
                 <StatusChecker />
                 <UserContext initialUser={user}>{component}</UserContext>
@@ -148,6 +150,8 @@ CoreApp.getInitialProps = async (initialProps) => {
     localLogin: true,
     region: '',
     originalLanguage: '',
+    partialRequestsEnabled: true,
+    cacheImages: false,
   };
 
   let locale = 'en';
@@ -178,7 +182,7 @@ CoreApp.getInitialProps = async (initialProps) => {
         );
         user = response.data;
 
-        if (router.pathname.match(/login/)) {
+        if (router.pathname.match(/(setup|login)/)) {
           ctx.res.writeHead(307, {
             Location: '/',
           });

@@ -306,6 +306,7 @@ export interface TmdbKeyword {
 export interface TmdbPersonDetail {
   id: number;
   name: string;
+  birthday: string;
   deathday: string;
   known_for_department: string;
   also_known_as?: string[];

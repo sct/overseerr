@@ -1,7 +1,7 @@
 import React from 'react';
-import PermissionOption, { PermissionItem } from '../PermissionOption';
+import { defineMessages, useIntl } from 'react-intl';
 import { Permission, User } from '../../hooks/useUser';
-import { useIntl, defineMessages } from 'react-intl';
+import PermissionOption, { PermissionItem } from '../PermissionOption';
 
 export const messages = defineMessages({
   admin: 'Admin',
@@ -9,47 +9,47 @@ export const messages = defineMessages({
     'Full administrator access. Bypasses all other permission checks.',
   users: 'Manage Users',
   usersDescription:
-    'Grants permission to manage Overseerr users. Users with this permission cannot modify users with or grant the Admin privilege.',
+    'Grant permission to manage Overseerr users. Users with this permission cannot modify users with or grant the Admin privilege.',
   settings: 'Manage Settings',
   settingsDescription:
-    'Grants permission to modify all Overseerr settings. A user must have this permission to grant it to others.',
+    'Grant permission to modify all Overseerr settings. A user must have this permission to grant it to others.',
   managerequests: 'Manage Requests',
   managerequestsDescription:
-    'Grants permission to manage Overseerr requests. This includes approving and denying requests. All requests made by a user with this permission will be automatically approved regardless of whether or not they have Auto-Approve permissions.',
+    'Grant permission to manage Overseerr requests (includes approving and denying requests). All requests made by a user with this permission will be automatically approved.',
   request: 'Request',
-  requestDescription: 'Grants permission to request movies and series.',
+  requestDescription: 'Grant permission to request movies and series.',
   vote: 'Vote',
   voteDescription:
-    'Grants permission to vote on requests (voting not yet implemented).',
+    'Grant permission to vote on requests (voting not yet implemented).',
   autoapprove: 'Auto-Approve',
   autoapproveDescription:
-    'Grants automatic approval for all non-4K requests made by this user.',
+    'Grant automatic approval for all non-4K requests made by this user.',
   autoapproveMovies: 'Auto-Approve Movies',
   autoapproveMoviesDescription:
-    'Grants automatic approval for non-4K movie requests made by this user.',
+    'Grant automatic approval for non-4K movie requests made by this user.',
   autoapproveSeries: 'Auto-Approve Series',
   autoapproveSeriesDescription:
-    'Grants automatic approval for non-4K series requests made by this user.',
+    'Grant automatic approval for non-4K series requests made by this user.',
   autoapprove4k: 'Auto-Approve 4K',
   autoapprove4kDescription:
-    'Grants automatic approval for all 4K requests made by this user.',
+    'Grant automatic approval for all 4K requests made by this user.',
   autoapprove4kMovies: 'Auto-Approve 4K Movies',
   autoapprove4kMoviesDescription:
-    'Grants automatic approval for 4K movie requests made by this user.',
+    'Grant automatic approval for 4K movie requests made by this user.',
   autoapprove4kSeries: 'Auto-Approve 4K Series',
   autoapprove4kSeriesDescription:
-    'Grants automatic approval for 4K series requests made by this user.',
+    'Grant automatic approval for 4K series requests made by this user.',
   request4k: 'Request 4K',
-  request4kDescription: 'Grants permission to request 4K movies and series.',
+  request4kDescription: 'Grant permission to request 4K movies and series.',
   request4kMovies: 'Request 4K Movies',
-  request4kMoviesDescription: 'Grants permission to request 4K movies.',
+  request4kMoviesDescription: 'Grant permission to request 4K movies.',
   request4kTv: 'Request 4K Series',
-  request4kTvDescription: 'Grants permission to request 4K Series.',
+  request4kTvDescription: 'Grant permission to request 4K Series.',
   advancedrequest: 'Advanced Requests',
   advancedrequestDescription:
-    'Grants permission to use advanced request options (e.g., changing servers, profiles, or paths).',
+    'Grant permission to use advanced request options (e.g., changing servers, profiles, or paths).',
   viewrequests: 'View Requests',
-  viewrequestsDescription: "Grants permission to view other users' requests.",
+  viewrequestsDescription: "Grant permission to view other users' requests.",
 });
 
 interface PermissionEditProps {

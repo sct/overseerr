@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { uniq } from 'lodash';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -8,35 +10,30 @@ import { MediaStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { Collection } from '../../../server/models/Collection';
 import { LanguageContext } from '../../context/LanguageContext';
+import useSettings from '../../hooks/useSettings';
+import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
-import StatusBadge from '../StatusBadge';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
+import CachedImage from '../Common/CachedImage';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import Modal from '../Common/Modal';
+import PageTitle from '../Common/PageTitle';
 import Slider from '../Slider';
+import StatusBadge from '../StatusBadge';
 import TitleCard from '../TitleCard';
 import Transition from '../Transition';
-import PageTitle from '../Common/PageTitle';
-import { useUser, Permission } from '../../hooks/useUser';
-import useSettings from '../../hooks/useSettings';
-import Link from 'next/link';
-import { uniq } from 'lodash';
 
 const messages = defineMessages({
-  overviewunavailable: 'Overview unavailable.',
   overview: 'Overview',
-  movies: 'Movies',
   numberofmovies: '{count} Movies',
-  requesting: 'Requesting…',
-  request: 'Request',
   requestcollection: 'Request Collection',
   requestswillbecreated:
     'The following titles will have requests created for them:',
-  request4k: 'Request 4K',
   requestcollection4k: 'Request Collection in 4K',
   requestswillbecreated4k:
     'The following titles will have 4K requests created for them:',
-  requestSuccess: '<strong>{title}</strong> successfully requested!',
+  requestSuccess: '<strong>{title}</strong> requested successfully!',
 });
 
 interface CollectionDetailsProps {
@@ -192,7 +189,10 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
         ))
         .reduce((prev, curr) => (
           <>
-            {prev}, {curr}
+            {intl.formatMessage(globalMessages.delimitedlist, {
+              a: prev,
+              b: curr,
+            })}
           </>
         ))
     );
@@ -203,9 +203,26 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
       className="media-page"
       style={{
         height: 493,
-        backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath})`,
       }}
     >
+      {data.backdropPath && (
+        <div className="media-page-bg-image">
+          <CachedImage
+            alt=""
+            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data.backdropPath}`}
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(180deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 100%)',
+            }}
+          />
+        </div>
+      )}
       <PageTitle title={data.name} />
       <Transition
         enter="opacity-0 transition duration-300"
@@ -220,8 +237,10 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           onOk={() => requestBundle()}
           okText={
             isRequesting
-              ? intl.formatMessage(messages.requesting)
-              : intl.formatMessage(is4k ? messages.request4k : messages.request)
+              ? intl.formatMessage(globalMessages.requesting)
+              : intl.formatMessage(
+                  is4k ? globalMessages.request4k : globalMessages.request
+                )
           }
           okDisabled={isRequesting}
           okButtonType="primary"
@@ -268,11 +287,20 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
         </Modal>
       </Transition>
       <div className="media-header">
-        <img
-          src={`//image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`}
-          alt=""
-          className="media-poster"
-        />
+        <div className="media-poster">
+          <CachedImage
+            src={
+              data.posterPath
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
+                : '/images/overseerr_poster_not_found.png'
+            }
+            alt=""
+            layout="responsive"
+            width={600}
+            height={900}
+            priority
+          />
+        </div>
         <div className="media-title">
           <div className="media-status">
             <StatusBadge
@@ -388,19 +416,17 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
             )}
         </div>
       </div>
-      <div className="media-overview">
-        <div className="flex-1">
-          <h2>{intl.formatMessage(messages.overview)}</h2>
-          <p>
-            {data.overview
-              ? data.overview
-              : intl.formatMessage(messages.overviewunavailable)}
-          </p>
+      {data.overview && (
+        <div className="media-overview">
+          <div className="flex-1">
+            <h2>{intl.formatMessage(messages.overview)}</h2>
+            <p>{data.overview}</p>
+          </div>
         </div>
-      </div>
+      )}
       <div className="slider-header">
         <div className="slider-title">
-          <span>{intl.formatMessage(messages.movies)}</span>
+          <span>{intl.formatMessage(globalMessages.movies)}</span>
         </div>
       </div>
       <Slider

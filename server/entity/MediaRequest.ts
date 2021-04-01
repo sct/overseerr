@@ -10,6 +10,7 @@ import {
   getRepository,
   OneToMany,
   AfterRemove,
+  RelationCount,
 } from 'typeorm';
 import { User } from './User';
 import Media from './Media';
@@ -59,6 +60,9 @@ export class MediaRequest {
 
   @Column({ type: 'varchar' })
   public type: MediaType;
+
+  @RelationCount((request: MediaRequest) => request.seasons)
+  public seasonCount: number;
 
   @OneToMany(() => SeasonRequest, (season) => season.request, {
     eager: true,
@@ -179,7 +183,7 @@ export class MediaRequest {
             subject: movie.title,
             message: movie.overview,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-            notifyUser: this.requestedBy,
+            notifyUser: autoApproved ? undefined : this.requestedBy,
             media,
             request: this,
           }
@@ -444,15 +448,10 @@ export class MediaRequest {
                 label: 'Media Request',
               }
             );
-            const userRepository = getRepository(User);
-            const admin = await userRepository.findOneOrFail({
-              select: ['id', 'plexToken'],
-              order: { id: 'ASC' },
-            });
+
             notificationManager.sendNotification(Notification.MEDIA_FAILED, {
               subject: movie.title,
-              message: 'Movie failed to add to Radarr',
-              notifyUser: admin,
+              message: movie.overview,
               media,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
               request: this,
@@ -641,14 +640,10 @@ export class MediaRequest {
                 label: 'Media Request',
               }
             );
-            const userRepository = getRepository(User);
-            const admin = await userRepository.findOneOrFail({
-              order: { id: 'ASC' },
-            });
+
             notificationManager.sendNotification(Notification.MEDIA_FAILED, {
               subject: series.name,
-              message: 'Series failed to add to Sonarr',
-              notifyUser: admin,
+              message: series.overview,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${series.poster_path}`,
               media,
               extra: [

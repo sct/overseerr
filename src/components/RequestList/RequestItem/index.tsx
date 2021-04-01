@@ -1,33 +1,30 @@
+import axios from 'axios';
+import Link from 'next/link';
 import React, { useContext, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import type { MediaRequest } from '../../../../server/entity/MediaRequest';
-import { useIntl, FormattedRelativeTime, defineMessages } from 'react-intl';
-import { useUser, Permission } from '../../../hooks/useUser';
-import { LanguageContext } from '../../../context/LanguageContext';
-import type { MovieDetails } from '../../../../server/models/Movie';
-import type { TvDetails } from '../../../../server/models/Tv';
+import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import Badge from '../../Common/Badge';
-import StatusBadge from '../../StatusBadge';
 import {
   MediaRequestStatus,
   MediaStatus,
 } from '../../../../server/constants/media';
-import Button from '../../Common/Button';
-import axios from 'axios';
+import type { MediaRequest } from '../../../../server/entity/MediaRequest';
+import type { MovieDetails } from '../../../../server/models/Movie';
+import type { TvDetails } from '../../../../server/models/Tv';
+import { LanguageContext } from '../../../context/LanguageContext';
+import { Permission, useUser } from '../../../hooks/useUser';
 import globalMessages from '../../../i18n/globalMessages';
-import Link from 'next/link';
-import { useToasts } from 'react-toast-notifications';
-import RequestModal from '../../RequestModal';
+import Badge from '../../Common/Badge';
+import Button from '../../Common/Button';
+import CachedImage from '../../Common/CachedImage';
 import ConfirmButton from '../../Common/ConfirmButton';
+import RequestModal from '../../RequestModal';
+import StatusBadge from '../../StatusBadge';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
-  all: 'All',
-  notavailable: 'N/A',
   failedretry: 'Something went wrong while retrying the request.',
-  areyousure: 'Are you sure?',
-  status: 'Status',
   requested: 'Requested',
   modified: 'Modified',
   modifieduserdate: '{date} by {user}',
@@ -103,7 +100,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title && !error) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-xl lg:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-xl xl:h-32 animate-pulse"
         ref={ref}
       />
     );
@@ -112,7 +109,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title || !requestData) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-xl lg:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-xl xl:h-32 animate-pulse"
         ref={ref}
       />
     );
@@ -132,17 +129,26 @@ const RequestItem: React.FC<RequestItemProps> = ({
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl lg:h-32 lg:flex-row">
-        <div
-          className="absolute inset-0 z-0 w-full bg-center bg-cover lg:w-2/3"
-          style={{
-            backgroundImage: title.backdropPath
-              ? `linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`
-              : undefined,
-          }}
-        />
+      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl xl:h-32 xl:flex-row">
+        {title.backdropPath && (
+          <div className="absolute inset-0 z-0 w-full bg-center bg-cover xl:w-2/3">
+            <CachedImage
+              src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
+              alt=""
+              layout="fill"
+              objectFit="cover"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage:
+                  'linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%)',
+              }}
+            />
+          </div>
+        )}
         <div className="relative flex flex-col justify-between w-full overflow-hidden sm:flex-row">
-          <div className="relative z-10 flex items-center w-full pl-4 pr-4 overflow-hidden lg:w-1/2 xl:w-7/12 2xl:w-2/3 sm:pr-0">
+          <div className="relative z-10 flex items-center w-full pl-4 pr-4 overflow-hidden xl:w-7/12 2xl:w-2/3 sm:pr-0">
             <Link
               href={
                 requestData.type === 'movie'
@@ -150,19 +156,22 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   : `/tv/${requestData.media.tmdbId}`
               }
             >
-              <a className="flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md lg:w-14 transform-gpu hover:scale-105">
-                <img
+              <a className="relative flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md sm:w-14 transform-gpu hover:scale-105">
+                <CachedImage
                   src={
                     title.posterPath
-                      ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                      ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
                       : '/images/overseerr_poster_not_found.png'
                   }
                   alt=""
-                  className="object-cover"
+                  layout="responsive"
+                  width={600}
+                  height={900}
+                  objectFit="cover"
                 />
               </a>
             </Link>
-            <div className="flex flex-col justify-center pl-2 overflow-hidden lg:pl-4">
+            <div className="flex flex-col justify-center pl-2 overflow-hidden xl:pl-4">
               <div className="card-field">
                 <Link
                   href={
@@ -171,7 +180,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                       : `/tv/${requestData.media.tmdbId}`
                   }
                 >
-                  <a className="min-w-0 mr-2 text-lg text-white truncate lg:text-xl hover:underline">
+                  <a className="min-w-0 mr-2 text-lg text-white truncate xl:text-xl hover:underline">
                     {isMovie(title) ? title.title : title.name}
                   </a>
                 </Link>
@@ -205,7 +214,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   {title.seasons.filter((season) => season.seasonNumber !== 0)
                     .length === request.seasons.length ? (
                     <span className="mr-2 uppercase">
-                      <Badge>{intl.formatMessage(messages.all)}</Badge>
+                      <Badge>{intl.formatMessage(globalMessages.all)}</Badge>
                     </span>
                   ) : (
                     <div className="flex overflow-x-scroll hide-scrollbar flex-nowrap">
@@ -220,10 +229,10 @@ const RequestItem: React.FC<RequestItemProps> = ({
               )}
             </div>
           </div>
-          <div className="z-10 flex flex-col justify-between w-full pr-4 mt-4 ml-4 text-sm sm:ml-2 sm:mt-0 lg:flex-1 lg:pr-0">
+          <div className="z-10 flex flex-col justify-center w-full pr-4 mt-4 ml-4 text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">
             <div className="card-field">
               <span className="card-field-name">
-                {intl.formatMessage(messages.status)}
+                {intl.formatMessage(globalMessages.status)}
               </span>
               {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
                 MediaStatus.UNKNOWN ||
@@ -279,6 +288,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                               1000
                           )}
                           updateIntervalInSeconds={1}
+                          numeric="auto"
                         />
                       ),
                       user: (
@@ -304,7 +314,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             </div>
           </div>
         </div>
-        <div className="z-10 flex flex-col justify-between w-full pl-4 pr-4 mt-4 space-y-2 lg:mt-0 lg:items-end lg:justify-around lg:w-96 lg:pl-0">
+        <div className="z-10 flex flex-col justify-center w-full pl-4 pr-4 mt-4 space-y-2 xl:mt-0 xl:items-end xl:w-96 xl:pl-0">
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&
@@ -335,7 +345,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             hasPermission(Permission.MANAGE_REQUESTS) && (
               <ConfirmButton
                 onClick={() => deleteRequest()}
-                confirmText={intl.formatMessage(messages.areyousure)}
+                confirmText={intl.formatMessage(globalMessages.areyousure)}
                 className="w-full"
               >
                 <svg

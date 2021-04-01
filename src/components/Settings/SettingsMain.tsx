@@ -1,51 +1,53 @@
-import React from 'react';
-import useSWR from 'swr';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import type { MainSettings, Language } from '../../../server/lib/settings';
-import CopyButton from './CopyButton';
-import { Form, Formik, Field } from 'formik';
 import axios from 'axios';
-import Button from '../Common/Button';
+import { Field, Form, Formik } from 'formik';
+import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useUser, Permission } from '../../hooks/useUser';
 import { useToasts } from 'react-toast-notifications';
-import Badge from '../Common/Badge';
-import globalMessages from '../../i18n/globalMessages';
+import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
+import type { Language, MainSettings } from '../../../server/lib/settings';
+import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import PageTitle from '../Common/PageTitle';
+import LanguageSelector from '../LanguageSelector';
 import RegionSelector from '../RegionSelector';
+import CopyButton from './CopyButton';
 
 const messages = defineMessages({
+  general: 'General',
   generalsettings: 'General Settings',
   generalsettingsDescription:
     'Configure global and default settings for Overseerr.',
-  save: 'Save Changes',
-  saving: 'Saving…',
   apikey: 'API Key',
   applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
   region: 'Discover Region',
-  regionTip:
-    'Filter content by region (only applies to the "Popular" and "Upcoming" categories)',
+  regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
-  originallanguageTip:
-    'Filter content by original language (only applies to the "Popular" and "Upcoming" categories)',
-  toastApiKeySuccess: 'New API key generated!',
+  originallanguageTip: 'Filter content by original language',
+  toastApiKeySuccess: 'New API key generated successfully!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
-  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsSuccess: 'Settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   hideAvailable: 'Hide Available Media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
-    'Sets external API access to read-only (requires HTTPS and Overseerr must be reloaded for changes to take effect)',
+    'Set external API access to read-only (requires HTTPS, and Overseerr must be reloaded for changes to take effect)',
   csrfProtectionHoverTip:
-    'Do NOT enable this unless you understand what you are doing!',
+    'Do NOT enable this setting unless you understand what you are doing!',
+  cacheImages: 'Enable Image Caching',
+  cacheImagesTip:
+    'Optimize and store all images locally (consumes a significant amount of disk space)',
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
-    'Allows Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
+    'Allow Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
-  originalLanguageDefault: 'All Languages',
+  partialRequestsEnabled: 'Allow Partial Series Requests',
 });
 
 const SettingsMain: React.FC = () => {
@@ -93,12 +95,37 @@ const SettingsMain: React.FC = () => {
     }
   };
 
+  const sortedLanguages = useMemo(
+    () =>
+      languages?.sort((lang1, lang2) => {
+        const lang1Name =
+          intl.formatDisplayName(lang1.iso_639_1, {
+            type: 'language',
+            fallback: 'none',
+          }) ?? lang1.english_name;
+        const lang2Name =
+          intl.formatDisplayName(lang2.iso_639_1, {
+            type: 'language',
+            fallback: 'none',
+          }) ?? lang2.english_name;
+
+        return lang1Name === lang2Name ? 0 : lang1Name > lang2Name ? 1 : -1;
+      }),
+    [intl, languages]
+  );
+
   if (!data && !error && !languages && !languagesError) {
     return <LoadingSpinner />;
   }
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.general),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.generalsettings)}
@@ -116,6 +143,7 @@ const SettingsMain: React.FC = () => {
             hideAvailable: data?.hideAvailable,
             region: data?.region,
             originalLanguage: data?.originalLanguage,
+            partialRequestsEnabled: data?.partialRequestsEnabled,
             trustProxy: data?.trustProxy,
           }}
           enableReinitialize
@@ -129,8 +157,10 @@ const SettingsMain: React.FC = () => {
                 hideAvailable: values.hideAvailable,
                 region: values.region,
                 originalLanguage: values.originalLanguage,
+                partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
               });
+              mutate('/api/v1/settings/public');
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
                 autoDismiss: true,
@@ -295,26 +325,11 @@ const SettingsMain: React.FC = () => {
                   </label>
                   <div className="form-input">
                     <div className="form-input-field">
-                      <Field
-                        as="select"
-                        id="originalLanguage"
-                        name="originalLanguage"
-                      >
-                        <option value="">
-                          {intl.formatMessage(messages.originalLanguageDefault)}
-                        </option>
-                        {languages?.map((language) => (
-                          <option
-                            key={`language-key-${language.iso_639_1}`}
-                            value={language.iso_639_1}
-                          >
-                            {intl.formatDisplayName(language.iso_639_1, {
-                              type: 'language',
-                              fallback: 'none',
-                            }) ?? language.english_name}
-                          </option>
-                        ))}
-                      </Field>
+                      <LanguageSelector
+                        languages={sortedLanguages ?? []}
+                        setFieldValue={setFieldValue}
+                        value={values.originalLanguage}
+                      />
                     </div>
                   </div>
                 </div>
@@ -338,6 +353,29 @@ const SettingsMain: React.FC = () => {
                     />
                   </div>
                 </div>
+                <div className="form-row">
+                  <label
+                    htmlFor="partialRequestsEnabled"
+                    className="checkbox-label"
+                  >
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.partialRequestsEnabled)}
+                    </span>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="partialRequestsEnabled"
+                      name="partialRequestsEnabled"
+                      onChange={() => {
+                        setFieldValue(
+                          'partialRequestsEnabled',
+                          !values.partialRequestsEnabled
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
                 <div className="actions">
                   <div className="flex justify-end">
                     <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -347,8 +385,8 @@ const SettingsMain: React.FC = () => {
                         disabled={isSubmitting}
                       >
                         {isSubmitting
-                          ? intl.formatMessage(messages.saving)
-                          : intl.formatMessage(messages.save)}
+                          ? intl.formatMessage(globalMessages.saving)
+                          : intl.formatMessage(globalMessages.save)}
                       </Button>
                     </span>
                   </div>

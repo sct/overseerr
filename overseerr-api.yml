@@ -125,6 +125,9 @@ components:
         hideAvailable:
           type: boolean
           example: false
+        partialRequestsEnabled:
+          type: boolean
+          example: false
         localLogin:
           type: boolean
           example: true
@@ -2249,6 +2252,54 @@ paths:
       responses:
         '204':
           description: 'Flushed cache'
+  /settings/logs:
+    get:
+      summary: Returns logs
+      description: Returns list of all log items and details
+      tags:
+        - settings
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 25
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+        - in: query
+          name: filter
+          schema:
+            type: string
+            nullable: true
+            enum: [debug, info, warn, error]
+            default: debug
+      responses:
+        '200':
+          description: Server log returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                      example: server
+                    level:
+                      type: string
+                      example: info
+                    message:
+                      type: string
+                      example: Server ready on port 5055
+                    timestamp:
+                      type: string
+                      example: 2020-12-15T16:20:00.069Z
   /settings/notifications:
     get:
       summary: Return notification settings
@@ -2451,8 +2502,8 @@ paths:
                 $ref: '#/components/schemas/PushbulletSettings'
   /settings/notifications/pushbullet/test:
     post:
-      summary: Test Pushover settings
-      description: Sends a test notification to the Pushover agent.
+      summary: Test Pushbullet settings
+      description: Sends a test notification to the Pushbullet agent.
       tags:
         - settings
       requestBody:
@@ -2460,7 +2511,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PushoverSettings'
+              $ref: '#/components/schemas/PushbulletSettings'
       responses:
         '204':
           description: Test notification attempted
@@ -2598,7 +2649,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SlackSettings'
+              $ref: '#/components/schemas/WebhookSettings'
       responses:
         '204':
           description: Test notification attempted
@@ -2982,6 +3033,63 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MediaRequest'
+  /user/{userId}/quota:
+    get:
+      summary: Get quotas for a specific user
+      description: |
+        Returns quota details for a user in a JSON object. Requires `MANAGE_USERS` permission if viewing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User quota details in JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movie:
+                    type: object
+                    properties:
+                      days:
+                        type: number
+                        example: 7
+                      limit:
+                        type: number
+                        example: 10
+                      used:
+                        type: number
+                        example: 6
+                      remaining:
+                        type: number
+                        example: 4
+                      restricted:
+                        type: boolean
+                        example: false
+                  tv:
+                    type: object
+                    properties:
+                      days:
+                        type: number
+                        example: 7
+                      limit:
+                        type: number
+                        example: 10
+                      used:
+                        type: number
+                        example: 6
+                      remaining:
+                        type: number
+                        example: 4
+                      restricted:
+                        type: boolean
+                        example: false
   /user/{userId}/settings/main:
     get:
       summary: Get general settings for a user
@@ -3780,11 +3888,77 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MovieResult'
+  /discover/genreslider/movie:
+    get:
+      summary: Get genre slider data for movies
+      description: Returns a list of genres with backdrops attached
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Genre slider data returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    backdrops:
+                      type: array
+                      items:
+                        type: string
+                    name:
+                      type: string
+                      example: Genre Name
+  /discover/genreslider/tv:
+    get:
+      summary: Get genre slider data for TV series
+      description: Returns a list of genres with backdrops attached
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Genre slider data returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    backdrops:
+                      type: array
+                      items:
+                        type: string
+                    name:
+                      type: string
+                      example: Genre Name
   /request:
     get:
       summary: Get all requests
       description: |
         Returns all requests if the user has the `ADMIN` or `MANAGE_REQUESTS` permissions. Otherwise, only the logged-in user's requests are returned.
+
+        If the `requestedBy` parameter is specified, only requests from that particular user ID will be returned.
       tags:
         - request
       parameters:
@@ -3812,6 +3986,12 @@ paths:
             type: string
             enum: [added, modified]
             default: added
+        - in: query
+          name: requestedBy
+          schema:
+            type: number
+            nullable: true
+            example: 1
       responses:
         '200':
           description: Requests returned
@@ -4421,7 +4601,7 @@ paths:
                     type: number
   /media:
     get:
-      summary: Return media
+      summary: Get media
       description: Returns all media (can be filtered and limited) in a JSON object.
       tags:
         - media

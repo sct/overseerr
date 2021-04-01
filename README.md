@@ -12,7 +12,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-40-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-46-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -148,8 +148,16 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/JonnyWong16"><img src="https://avatars.githubusercontent.com/u/9099342?v=4?s=100" width="100px;" alt=""/><br /><sub><b>JonnyWong16</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=JonnyWong16" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Roxedus"><img src="https://avatars.githubusercontent.com/u/7110194?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Roxedus</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Roxedus" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/WoisWoi"><img src="https://avatars.githubusercontent.com/u/75491231?v=4?s=100" width="100px;" alt=""/><br /><sub><b>WoisWoi</b></sub></a><br /><a href="#translation-WoisWoi" title="Translation">🌍</a></td>
-    <td align="center"><a href="https://github.com/HubDuck"><img src="https://avatars.githubusercontent.com/u/77843475?v=4?s=100" width="100px;" alt=""/><br /><sub><b>HubDuck</b></sub></a><br /><a href="#translation-HubDuck" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/HubDuck"><img src="https://avatars.githubusercontent.com/u/77843475?v=4?s=100" width="100px;" alt=""/><br /><sub><b>HubDuck</b></sub></a><br /><a href="#translation-HubDuck" title="Translation">🌍</a> <a href="https://github.com/sct/overseerr/commits?author=HubDuck" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/costaht"><img src="https://avatars.githubusercontent.com/u/50637431?v=4?s=100" width="100px;" alt=""/><br /><sub><b>costaht</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=costaht" title="Documentation">📖</a> <a href="#translation-costaht" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/Shjosan"><img src="https://avatars.githubusercontent.com/u/20847626?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Shjosan</b></sub></a><br /><a href="#translation-Shjosan" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/kobaubarr"><img src="https://avatars.githubusercontent.com/u/28481522?v=4?s=100" width="100px;" alt=""/><br /><sub><b>kobaubarr</b></sub></a><br /><a href="#translation-kobaubarr" title="Translation">🌍</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/notorius28"><img src="https://avatars.githubusercontent.com/u/1621513?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ricardo González</b></sub></a><br /><a href="#translation-notorius28" title="Translation">🌍</a></td>
+    <td align="center"><a href="http://torkili.uz"><img src="https://avatars.githubusercontent.com/u/460764?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Torkil</b></sub></a><br /><a href="#translation-Torkiliuz" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://www.jagandeepbrar.io"><img src="https://avatars.githubusercontent.com/u/3048295?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jagandeep Brar</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=JagandeepBrar" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://dtalens.com"><img src="https://avatars.githubusercontent.com/u/6631832?v=4?s=100" width="100px;" alt=""/><br /><sub><b>dtalens</b></sub></a><br /><a href="#translation-dtalens" title="Translation">🌍</a></td>
   </tr>
 </table>
 

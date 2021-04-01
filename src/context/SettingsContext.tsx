@@ -10,11 +10,13 @@ const defaultSettings = {
   initialized: false,
   applicationTitle: 'Overseerr',
   hideAvailable: false,
-  localLogin: false,
+  localLogin: true,
   movie4kEnabled: false,
   series4kEnabled: false,
   region: '',
   originalLanguage: '',
+  partialRequestsEnabled: true,
+  cacheImages: false,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

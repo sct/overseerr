@@ -1,16 +1,18 @@
-import React from 'react';
-import useSWR from 'swr';
-import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
-import Slider from '../Slider';
 import Link from 'next/link';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import useSWR from 'swr';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
-import RequestCard from '../RequestCard';
-import MediaSlider from '../MediaSlider';
 import PageTitle from '../Common/PageTitle';
-import StudioSlider from './StudioSlider';
+import MediaSlider from '../MediaSlider';
+import RequestCard from '../RequestCard';
+import Slider from '../Slider';
+import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
+import MovieGenreSlider from './MovieGenreSlider';
 import NetworkSlider from './NetworkSlider';
+import StudioSlider from './StudioSlider';
+import TvGenreSlider from './TvGenreSlider';
 
 const messages = defineMessages({
   discover: 'Discover',
@@ -28,14 +30,16 @@ const Discover: React.FC = () => {
   const intl = useIntl();
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
-    '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded'
+    '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded',
+    { revalidateOnMount: true }
   );
 
   const {
     data: requests,
     error: requestError,
   } = useSWR<RequestResultsResponse>(
-    '/api/v1/request?filter=unavailable&take=10&sort=modified&skip=0'
+    '/api/v1/request?filter=all&take=10&sort=modified&skip=0',
+    { revalidateOnMount: true }
   );
 
   return (
@@ -59,7 +63,7 @@ const Discover: React.FC = () => {
         ))}
       />
       <div className="slider-header">
-        <Link href="/requests">
+        <Link href="/requests?filter=all">
           <a className="slider-title">
             <span>{intl.formatMessage(messages.recentrequests)}</span>
             <svg
@@ -104,6 +108,7 @@ const Discover: React.FC = () => {
         url="/api/v1/discover/movies"
         linkUrl="/discover/movies"
       />
+      <MovieGenreSlider />
       <MediaSlider
         sliderKey="upcoming"
         title={intl.formatMessage(messages.upcoming)}
@@ -117,6 +122,7 @@ const Discover: React.FC = () => {
         url="/api/v1/discover/tv"
         linkUrl="/discover/tv"
       />
+      <TvGenreSlider />
       <MediaSlider
         sliderKey="upcoming-tv"
         title={intl.formatMessage(messages.upcomingtv)}

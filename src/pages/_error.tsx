@@ -2,16 +2,18 @@ import React from 'react';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import type { Undefinable } from '../utils/typeHelpers';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
+import PageTitle from '../components/Common/PageTitle';
 
 interface ErrorProps {
   statusCode?: number;
 }
 
 const messages = defineMessages({
-  internalServerError: '{statusCode} - Internal server error',
-  serviceUnavailable: '{statusCode} - Service unavailable',
-  somethingWentWrong: '{statusCode} - Something went wrong',
+  errormessagewithcode: '{statusCode} - {error}',
+  internalservererror: 'Internal Server Error',
+  serviceunavailable: 'Service Unavailable',
+  somethingwentwrong: 'Something Went Wrong',
   oops: 'Oops',
   returnHome: 'Return Home',
 });
@@ -22,25 +24,29 @@ const Error: NextPage<ErrorProps> = ({ statusCode }) => {
   const getErrorMessage = (statusCode?: number) => {
     switch (statusCode) {
       case 500:
-        return intl.formatMessage(messages.internalServerError, {
-          statusCode: 500,
-        });
+        return intl.formatMessage(messages.internalservererror);
       case 503:
-        return intl.formatMessage(messages.serviceUnavailable, {
-          statusCode: 503,
-        });
+        return intl.formatMessage(messages.serviceunavailable);
       default:
-        return intl.formatMessage(messages.somethingWentWrong, {
-          statusCode: statusCode ?? intl.formatMessage(messages.oops),
-        });
+        return statusCode
+          ? intl.formatMessage(messages.somethingwentwrong)
+          : intl.formatMessage(messages.oops);
     }
   };
   return (
     <div className="error-message">
-      <div className="text-4xl">{getErrorMessage(statusCode)}</div>
+      <PageTitle title={getErrorMessage(statusCode)} />
+      <div className="text-4xl">
+        {statusCode
+          ? intl.formatMessage(messages.errormessagewithcode, {
+              statusCode: statusCode,
+              message: getErrorMessage(statusCode),
+            })
+          : getErrorMessage(statusCode)}
+      </div>
       <Link href="/">
         <a className="flex">
-          <FormattedMessage {...messages.returnHome} />
+          {intl.formatMessage(messages.returnHome)}
           <svg
             className="w-6 h-6 ml-2"
             fill="none"

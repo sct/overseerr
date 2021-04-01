@@ -1,18 +1,15 @@
 import { debounce } from 'lodash';
 import React, {
+  ReactNode,
   useCallback,
   useEffect,
   useRef,
   useState,
-  ReactNode,
 } from 'react';
+import { useIntl } from 'react-intl';
 import { useSpring } from 'react-spring';
+import globalMessages from '../../i18n/globalMessages';
 import TitleCard from '../TitleCard';
-import { defineMessages, FormattedMessage } from 'react-intl';
-
-const messages = defineMessages({
-  noresults: 'No results.',
-});
 
 interface SliderProps {
   sliderKey: string;
@@ -36,6 +33,7 @@ const Slider: React.FC<SliderProps> = ({
   emptyMessage,
   placeholder = <TitleCard.Placeholder />,
 }) => {
+  const intl = useIntl();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollPos, setScrollPos] = useState({ isStart: true, isEnd: false });
 
@@ -163,9 +161,7 @@ const Slider: React.FC<SliderProps> = ({
       <div className="absolute right-0 flex -mt-10 text-gray-400">
         <button
           className={`${
-            scrollPos.isStart
-              ? 'cursor-not-allowed text-gray-800'
-              : 'hover:text-white'
+            scrollPos.isStart ? 'text-gray-800' : 'hover:text-white'
           }`}
           onClick={() => slide(Direction.LEFT)}
           disabled={scrollPos.isStart}
@@ -187,9 +183,7 @@ const Slider: React.FC<SliderProps> = ({
         </button>
         <button
           className={`${
-            scrollPos.isEnd
-              ? 'cursor-not-allowed text-gray-800'
-              : 'hover:text-white'
+            scrollPos.isEnd ? 'text-gray-800' : 'hover:text-white'
           }`}
           onClick={() => slide(Direction.RIGHT)}
           disabled={scrollPos.isEnd}
@@ -234,11 +228,9 @@ const Slider: React.FC<SliderProps> = ({
           ))}
         {isEmpty && (
           <div className="mt-16 mb-16 text-center text-white">
-            {emptyMessage ? (
-              emptyMessage
-            ) : (
-              <FormattedMessage {...messages.noresults} />
-            )}
+            {emptyMessage
+              ? emptyMessage
+              : intl.formatMessage(globalMessages.noresults)}
           </div>
         )}
       </div>

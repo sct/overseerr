@@ -1,17 +1,16 @@
-import React from 'react';
-import { Field, Form, Formik } from 'formik';
-import useSWR from 'swr';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import Button from '../../Common/Button';
-import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
-import * as Yup from 'yup';
+import { Field, Form, Formik } from 'formik';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import * as Yup from 'yup';
+import globalMessages from '../../../i18n/globalMessages';
+import Button from '../../Common/Button';
+import LoadingSpinner from '../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  save: 'Save Changes',
-  saving: 'Saving…',
   agentenabled: 'Enable Agent',
   botUsername: 'Bot Username',
   botAvatarUrl: 'Bot Avatar URL',
@@ -20,7 +19,6 @@ const messages = defineMessages({
   discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
   testsent: 'Test notification sent!',
-  test: 'Test',
   notificationtypes: 'Notification Types',
   validationUrl: 'You must provide a valid URL',
 });
@@ -147,6 +145,7 @@ const NotificationsDiscord: React.FC = () => {
             <div className="form-row">
               <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.webhookUrl)}
+                <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
@@ -172,6 +171,7 @@ const NotificationsDiscord: React.FC = () => {
               <div className="form-row">
                 <span id="group-label" className="group-label">
                   {intl.formatMessage(messages.notificationtypes)}
+                  <span className="label-required">*</span>
                 </span>
                 <div className="form-input">
                   <div className="max-w-lg">
@@ -195,7 +195,7 @@ const NotificationsDiscord: React.FC = () => {
                       testSettings();
                     }}
                   >
-                    {intl.formatMessage(messages.test)}
+                    {intl.formatMessage(globalMessages.test)}
                   </Button>
                 </span>
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -205,8 +205,8 @@ const NotificationsDiscord: React.FC = () => {
                     disabled={isSubmitting || !isValid}
                   >
                     {isSubmitting
-                      ? intl.formatMessage(messages.saving)
-                      : intl.formatMessage(messages.save)}
+                      ? intl.formatMessage(globalMessages.saving)
+                      : intl.formatMessage(globalMessages.save)}
                   </Button>
                 </span>
               </div>

@@ -8,8 +8,6 @@ const messages = defineMessages({
   settings: 'Edit Settings',
   profile: 'View Profile',
   joindate: 'Joined {joindate}',
-  requests:
-    '{requestCount} {requestCount, plural, one {Request} other {Requests}}',
   userid: 'User ID: {userid}',
 });
 
@@ -33,9 +31,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         day: 'numeric',
       }),
     }),
-    intl.formatMessage(messages.requests, {
-      requestCount: user.requestCount,
-    }),
   ];
 
   if (hasPermission(Permission.MANAGE_REQUESTS)) {
@@ -48,7 +43,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <div className="flex-shrink-0">
           <div className="relative">
             <img
-              className="w-24 h-24 bg-gray-600 rounded-full"
+              className="w-24 h-24 bg-gray-600 rounded-full ring-1 ring-gray-700"
               src={user.avatar}
               alt=""
             />

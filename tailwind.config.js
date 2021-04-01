@@ -59,6 +59,7 @@ module.exports = {
     },
   },
   variants: {
+    cursor: ['disabled'],
     padding: ['first', 'last', 'responsive'],
     borderWidth: ['first', 'last'],
     margin: ['first', 'last', 'responsive'],

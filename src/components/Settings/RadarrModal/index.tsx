@@ -1,36 +1,34 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Transition from '../../Transition';
-import Modal from '../../Common/Modal';
-import { Formik, Field } from 'formik';
-import type { RadarrSettings } from '../../../../server/lib/settings';
-import * as Yup from 'yup';
 import axios from 'axios';
-import { useToasts } from 'react-toast-notifications';
+import { Field, Formik } from 'formik';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
+import * as Yup from 'yup';
+import type { RadarrSettings } from '../../../../server/lib/settings';
+import globalMessages from '../../../i18n/globalMessages';
+import Modal from '../../Common/Modal';
+import Transition from '../../Transition';
 
 const messages = defineMessages({
   createradarr: 'Add New Radarr Server',
   editradarr: 'Edit Radarr Server',
   validationNameRequired: 'You must provide a server name',
-  validationHostnameRequired: 'You must provide a hostname/IP',
-  validationPortRequired: 'You must provide a port',
+  validationHostnameRequired: 'You must provide a hostname or IP address',
+  validationPortRequired: 'You must provide a valid port number',
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
-  validationProfileRequired: 'You must select a profile',
-  validationMinimumAvailabilityRequired: 'You must select minimum availability',
-  toastRadarrTestSuccess: 'Radarr connection established!',
+  validationProfileRequired: 'You must select a quality profile',
+  validationMinimumAvailabilityRequired:
+    'You must select a minimum availability',
+  toastRadarrTestSuccess: 'Radarr connection established successfully!',
   toastRadarrTestFailure: 'Failed to connect to Radarr.',
-  saving: 'Saving…',
-  save: 'Save Changes',
   add: 'Add Server',
-  test: 'Test',
-  testing: 'Testing…',
   defaultserver: 'Default Server',
   servername: 'Server Name',
   servernamePlaceholder: 'A Radarr Server',
-  hostname: 'Hostname',
+  hostname: 'Hostname or IP Address',
   port: 'Port',
-  ssl: 'SSL',
+  ssl: 'Enable SSL',
   apiKey: 'API Key',
   apiKeyPlaceholder: 'Your Radarr API key',
   baseUrl: 'Base URL',
@@ -91,12 +89,16 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     name: Yup.string().required(
       intl.formatMessage(messages.validationNameRequired)
     ),
-    hostname: Yup.string().required(
-      intl.formatMessage(messages.validationHostnameRequired)
-    ),
-    port: Yup.number().required(
-      intl.formatMessage(messages.validationPortRequired)
-    ),
+    hostname: Yup.string()
+      .required(intl.formatMessage(messages.validationHostnameRequired))
+      .matches(
+        // eslint-disable-next-line
+        /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+        intl.formatMessage(messages.validationHostnameRequired)
+      ),
+    port: Yup.number()
+      .typeError(intl.formatMessage(messages.validationPortRequired))
+      .required(intl.formatMessage(messages.validationPortRequired)),
     apiKey: Yup.string().required(
       intl.formatMessage(messages.validationApiKeyRequired)
     ),
@@ -289,16 +291,16 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               okButtonType="primary"
               okText={
                 isSubmitting
-                  ? intl.formatMessage(messages.saving)
+                  ? intl.formatMessage(globalMessages.saving)
                   : radarr
-                  ? intl.formatMessage(messages.save)
+                  ? intl.formatMessage(globalMessages.save)
                   : intl.formatMessage(messages.add)
               }
               secondaryButtonType="warning"
               secondaryText={
                 isTesting
-                  ? intl.formatMessage(messages.testing)
-                  : intl.formatMessage(messages.test)
+                  ? intl.formatMessage(globalMessages.testing)
+                  : intl.formatMessage(globalMessages.test)
               }
               onSecondary={() => {
                 if (values.apiKey && values.hostname && values.port) {
@@ -312,7 +314,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                 }
               }}
               secondaryDisabled={
-                !values.apiKey || !values.hostname || !values.port || isTesting
+                !values.apiKey ||
+                !values.hostname ||
+                !values.port ||
+                isTesting ||
+                isSubmitting
               }
               okDisabled={!isValidated || isSubmitting || isTesting || !isValid}
               onOk={() => handleSubmit()}

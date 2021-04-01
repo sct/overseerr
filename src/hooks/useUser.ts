@@ -1,13 +1,14 @@
 import useSwr from 'swr';
+import { MutatorCallback } from 'swr/dist/types';
+import { UserType } from '../../server/constants/user';
 import {
   hasPermission,
   Permission,
   PermissionCheckOptions,
 } from '../../server/lib/permissions';
-import { UserType } from '../../server/constants/user';
-import { MutatorCallback } from 'swr/dist/types';
 
 export { Permission, UserType };
+export type { PermissionCheckOptions };
 
 export interface User {
   id: number;

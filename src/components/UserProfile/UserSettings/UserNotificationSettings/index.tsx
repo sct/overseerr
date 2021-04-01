@@ -5,20 +5,22 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import * as Yup from 'yup';
+import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import { useUser } from '../../../../hooks/useUser';
+import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';
+import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import * as Yup from 'yup';
-import Badge from '../../../Common/Badge';
-import globalMessages from '../../../../i18n/globalMessages';
+import PageTitle from '../../../Common/PageTitle';
 import { PgpLink } from '../../../Settings/Notifications/NotificationsEmail';
 
 const messages = defineMessages({
+  notifications: 'Notifications',
   notificationsettings: 'Notification Settings',
   enableNotifications: 'Enable Notifications',
-  discordId: 'Discord User ID',
+  discordId: 'Discord ID',
   discordIdTip:
     'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your Discord user account',
   validationDiscordId: 'You must provide a valid Discord user ID',
@@ -29,11 +31,7 @@ const messages = defineMessages({
   sendSilently: 'Send Telegram Messages Silently',
   sendSilentlyDescription: 'Send notifications with no sound',
   validationTelegramChatId: 'You must provide a valid Telegram chat ID',
-  save: 'Save Changes',
-  saving: 'Saving…',
-  plexuser: 'Plex User',
-  localuser: 'Local User',
-  toastSettingsSuccess: 'Settings successfully saved!',
+  toastSettingsSuccess: 'Notification settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   pgpKey: '<PgpLink>PGP</PgpLink> Public Key',
   pgpKeyTip: 'Encrypt email messages',
@@ -70,6 +68,13 @@ const UserNotificationSettings: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.notifications),
+          intl.formatMessage(globalMessages.usersettings),
+          user?.displayName,
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.notificationsettings)}
@@ -274,8 +279,8 @@ const UserNotificationSettings: React.FC = () => {
                       disabled={isSubmitting}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

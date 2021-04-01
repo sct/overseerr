@@ -8,8 +8,11 @@
 
 ## Using Overseerr
 
+- [Settings](using-overseerr/settings/README.md)
 - [Notifications](using-overseerr/notifications/README.md)
-  - [Custom Webhooks](using-overseerr/notifications/webhooks.md)
+  - [Email](using-overseerr/notifications/email.md)
+  - [Discord](using-overseerr/notifications/discord.md)
+  - [Webhooks](using-overseerr/notifications/webhooks.md)
 
 ## Support
 

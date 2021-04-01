@@ -1,20 +1,23 @@
-import React, { useMemo, useState } from 'react';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import type { PlexSettings } from '../../../server/lib/settings';
-import type { PlexDevice } from '../../../server/interfaces/api/plexInterfaces';
-import useSWR from 'swr';
-import { useToasts } from 'react-toast-notifications';
-import { Formik, Field } from 'formik';
-import Button from '../Common/Button';
 import axios from 'axios';
-import LibraryItem from './LibraryItem';
-import Badge from '../Common/Badge';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { Field, Formik } from 'formik';
+import React, { useMemo, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
 import * as Yup from 'yup';
-import Alert from '../Common/Alert';
+import type { PlexDevice } from '../../../server/interfaces/api/plexInterfaces';
+import type { PlexSettings } from '../../../server/lib/settings';
 import Spinner from '../../assets/spinner.svg';
+import globalMessages from '../../i18n/globalMessages';
+import Alert from '../Common/Alert';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import PageTitle from '../Common/PageTitle';
+import LibraryItem from './LibraryItem';
 
 const messages = defineMessages({
+  plex: 'Plex',
   plexsettings: 'Plex Settings',
   plexsettingsDescription:
     'Configure the settings for your Plex server. Overseerr scans your Plex libraries to see what content is available.',
@@ -29,28 +32,24 @@ const messages = defineMessages({
   serverpresetManualMessage: 'Manual configuration',
   serverpresetRefreshing: 'Retrieving servers…',
   serverpresetLoad: 'Press the button to load available servers',
-  toastPlexRefresh: 'Retrieving server list from Plex',
-  toastPlexRefreshSuccess: 'Retrieved server list from Plex',
-  toastPlexRefreshFailure: 'Unable to retrieve server list from Plex',
-  toastPlexConnecting: 'Attempting to connect to Plex server',
-  toastPlexConnectingSuccess: 'Connected to Plex server',
-  toastPlexConnectingFailure: 'Unable to connect to Plex server',
+  toastPlexRefresh: 'Retrieving server list from Plex…',
+  toastPlexRefreshSuccess: 'Plex server list retrieved successfully!',
+  toastPlexRefreshFailure: 'Failed to retrieve Plex server list.',
+  toastPlexConnecting: 'Attempting to connect to Plex…',
+  toastPlexConnectingSuccess: 'Plex connection established successfully!',
+  toastPlexConnectingFailure: 'Failed to connect to Plex.',
   settingUpPlex: 'Setting Up Plex',
   settingUpPlexDescription:
-    'To set up Plex, you can either enter your details manually \
-    or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>.\
-    Press the button to the right of the dropdown to check connectivity and retrieve available servers.',
-  hostname: 'Hostname/IP',
+    'To set up Plex, you can either enter your details manually or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>. Press the button to the right of the dropdown to check connectivity and retrieve available servers.',
+  hostname: 'Hostname or IP Address',
   port: 'Port',
-  ssl: 'SSL',
+  enablessl: 'Enable SSL',
   timeout: 'Timeout',
-  save: 'Save Changes',
-  saving: 'Saving…',
   plexlibraries: 'Plex Libraries',
   plexlibrariesDescription:
     'The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.',
-  scanning: 'Scanning…',
-  scan: 'Scan Plex Libraries',
+  scanning: 'Syncing…',
+  scan: 'Sync Libraries',
   manualscan: 'Manual Library Scan',
   manualscanDescription:
     "Normally, this will only be run once every 24 hours. Overseerr will check your Plex server's recently added more aggressively. If this is your first time configuring Plex, a one-time full manual library scan is recommended!",
@@ -59,8 +58,8 @@ const messages = defineMessages({
   librariesRemaining: 'Libraries Remaining: {count}',
   startscan: 'Start Scan',
   cancelscan: 'Cancel Scan',
-  validationHostnameRequired: 'You must provide a hostname/IP',
-  validationPortRequired: 'You must provide a port',
+  validationHostnameRequired: 'You must provide a hostname or IP address',
+  validationPortRequired: 'You must provide a valid port number',
 });
 
 interface Library {
@@ -113,12 +112,16 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const PlexSettingsSchema = Yup.object().shape({
-    hostname: Yup.string().required(
-      intl.formatMessage(messages.validationHostnameRequired)
-    ),
-    port: Yup.number().required(
-      intl.formatMessage(messages.validationPortRequired)
-    ),
+    hostname: Yup.string()
+      .required(intl.formatMessage(messages.validationHostnameRequired))
+      .matches(
+        // eslint-disable-next-line
+        /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+        intl.formatMessage(messages.validationHostnameRequired)
+      ),
+    port: Yup.number()
+      .typeError(intl.formatMessage(messages.validationPortRequired))
+      .required(intl.formatMessage(messages.validationPortRequired)),
   });
 
   const activeLibraries =
@@ -255,12 +258,16 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   }
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.plex),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
-        <h3 className="heading">
-          <FormattedMessage {...messages.plexsettings} />
-        </h3>
+        <h3 className="heading">{intl.formatMessage(messages.plexsettings)}</h3>
         <p className="description">
-          <FormattedMessage {...messages.plexsettingsDescription} />
+          {intl.formatMessage(messages.plexsettingsDescription)}
         </p>
         <div className="section">
           <Alert title={intl.formatMessage(messages.settingUpPlex)} type="info">
@@ -346,11 +353,9 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               <div className="form-row">
                 <label htmlFor="name" className="text-label">
                   <div className="flex flex-col">
-                    <span>
-                      <FormattedMessage {...messages.servername} />
-                    </span>
+                    <span>{intl.formatMessage(messages.servername)}</span>
                     <span className="text-gray-500">
-                      <FormattedMessage {...messages.servernameTip} />
+                      {intl.formatMessage(messages.servernameTip)}
                     </span>
                   </div>
                 </label>
@@ -360,6 +365,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       type="text"
                       id="name"
                       name="name"
+                      className="cursor-not-allowed"
                       placeholder={intl.formatMessage(
                         messages.servernamePlaceholder
                       )}
@@ -371,7 +377,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </div>
               <div className="form-row">
                 <label htmlFor="preset" className="text-label">
-                  <FormattedMessage {...messages.serverpreset} />
+                  {intl.formatMessage(messages.serverpreset)}
                 </label>
                 <div className="form-input">
                   <div className="form-input-field input-group">
@@ -455,7 +461,8 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </div>
               <div className="form-row">
                 <label htmlFor="hostname" className="text-label">
-                  <FormattedMessage {...messages.hostname} />
+                  {intl.formatMessage(messages.hostname)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -477,7 +484,8 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </div>
               <div className="form-row">
                 <label htmlFor="port" className="text-label">
-                  <FormattedMessage {...messages.port} />
+                  {intl.formatMessage(messages.port)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <Field
@@ -494,7 +502,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </div>
               <div className="form-row">
                 <label htmlFor="ssl" className="checkbox-label">
-                  {intl.formatMessage(messages.ssl)}
+                  {intl.formatMessage(messages.enablessl)}
                 </label>
                 <div className="form-input">
                   <Field
@@ -528,8 +536,8 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       disabled={isSubmitting}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>
@@ -540,10 +548,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       </Formik>
       <div className="mt-10 mb-6">
         <h3 className="heading">
-          <FormattedMessage {...messages.plexlibraries} />
+          {intl.formatMessage(messages.plexlibraries)}
         </h3>
         <p className="description">
-          <FormattedMessage {...messages.plexlibrariesDescription} />
+          {intl.formatMessage(messages.plexlibrariesDescription)}
         </p>
       </div>
       <div className="section">
@@ -576,11 +584,9 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         </ul>
       </div>
       <div className="mt-10 mb-6">
-        <h3 className="heading">
-          <FormattedMessage {...messages.manualscan} />
-        </h3>
+        <h3 className="heading">{intl.formatMessage(messages.manualscan)}</h3>
         <p className="description">
-          <FormattedMessage {...messages.manualscanDescription} />
+          {intl.formatMessage(messages.manualscanDescription)}
         </p>
       </div>
       <div className="section">
@@ -610,28 +616,24 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 {dataSync.currentLibrary && (
                   <div className="flex items-center mb-2 mr-0 sm:mb-0 sm:mr-2">
                     <Badge>
-                      <FormattedMessage
-                        {...messages.currentlibrary}
-                        values={{ name: dataSync.currentLibrary.name }}
-                      />
+                      {intl.formatMessage(messages.currentlibrary, {
+                        name: dataSync.currentLibrary.name,
+                      })}
                     </Badge>
                   </div>
                 )}
                 <div className="flex items-center">
                   <Badge badgeType="warning">
-                    <FormattedMessage
-                      {...messages.librariesRemaining}
-                      values={{
-                        count: dataSync.currentLibrary
-                          ? dataSync.libraries.slice(
-                              dataSync.libraries.findIndex(
-                                (library) =>
-                                  library.id === dataSync.currentLibrary?.id
-                              ) + 1
-                            ).length
-                          : 0,
-                      }}
-                    />
+                    {intl.formatMessage(messages.librariesRemaining, {
+                      count: dataSync.currentLibrary
+                        ? dataSync.libraries.slice(
+                            dataSync.libraries.findIndex(
+                              (library) =>
+                                library.id === dataSync.currentLibrary?.id
+                            ) + 1
+                          ).length
+                        : 0,
+                    })}
                   </Badge>
                 </div>
               </>
@@ -653,7 +655,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
                   </svg>
-                  <FormattedMessage {...messages.startscan} />
+                  {intl.formatMessage(messages.startscan)}
                 </Button>
               )}
 
@@ -673,7 +675,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                  <FormattedMessage {...messages.cancelscan} />
+                  {intl.formatMessage(messages.cancelscan)}
                 </Button>
               )}
             </div>

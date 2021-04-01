@@ -47,7 +47,7 @@ const TvCast: React.FC = () => {
           {intl.formatMessage(messages.fullseriescast)}
         </Header>
       </div>
-      <ul className="cardList">
+      <ul className="cards-vertical">
         {data?.credits.cast.map((person) => {
           return (
             <li key={person.id}>

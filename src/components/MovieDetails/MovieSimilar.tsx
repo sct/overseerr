@@ -6,21 +6,21 @@ import { useRouter } from 'next/router';
 import Header from '../Common/Header';
 import { LanguageContext } from '../../context/LanguageContext';
 import type { MovieDetails } from '../../../server/models/Movie';
-import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
 import useDiscover from '../../hooks/useDiscover';
 import Error from '../../pages/_error';
+import Link from 'next/link';
 
 const messages = defineMessages({
   similar: 'Similar Titles',
-  similarsubtext: 'Other movies similar to {title}',
 });
 
 const MovieSimilar: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useContext(LanguageContext);
-  const { data: movieData, error: movieError } = useSWR<MovieDetails>(
+  const { data: movieData } = useSWR<MovieDetails>(
     `/api/v1/movie/${router.query.movieId}?language=${locale}`
   );
   const {
@@ -45,14 +45,12 @@ const MovieSimilar: React.FC = () => {
       <div className="mt-1 mb-5">
         <Header
           subtext={
-            movieData && !movieError
-              ? intl.formatMessage(messages.similarsubtext, {
-                  title: movieData.title,
-                })
-              : undefined
+            <Link href={`/movie/${movieData?.id}`}>
+              <a className="hover:underline">{movieData?.title}</a>
+            </Link>
           }
         >
-          <FormattedMessage {...messages.similar} />
+          {intl.formatMessage(messages.similar)}
         </Header>
       </div>
       <ListView

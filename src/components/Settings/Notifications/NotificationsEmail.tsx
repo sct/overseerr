@@ -1,22 +1,20 @@
-import React from 'react';
-import { Field, Form, Formik } from 'formik';
-import useSWR from 'swr';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import Button from '../../Common/Button';
-import { defineMessages, useIntl } from 'react-intl';
 import axios from 'axios';
-import * as Yup from 'yup';
+import { Field, Form, Formik } from 'formik';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import NotificationTypeSelector from '../../NotificationTypeSelector';
+import useSWR from 'swr';
+import * as Yup from 'yup';
+import globalMessages from '../../../i18n/globalMessages';
 import Alert from '../../Common/Alert';
 import Badge from '../../Common/Badge';
-import globalMessages from '../../../i18n/globalMessages';
+import Button from '../../Common/Button';
+import LoadingSpinner from '../../Common/LoadingSpinner';
+import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  save: 'Save Changes',
-  saving: 'Saving…',
-  validationSmtpHostRequired: 'You must provide an SMTP host',
-  validationSmtpPortRequired: 'You must provide an SMTP port',
+  validationSmtpHostRequired: 'You must provide a hostname or IP address',
+  validationSmtpPortRequired: 'You must provide a valid port number',
   agentenabled: 'Enable Agent',
   emailsender: 'Sender Address',
   smtpHost: 'SMTP Host',
@@ -26,7 +24,6 @@ const messages = defineMessages({
   authPass: 'SMTP Password',
   emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
-  test: 'Test',
   testsent: 'Test notification sent!',
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:
@@ -36,11 +33,9 @@ const messages = defineMessages({
   validationEmail: 'You must provide a valid email address',
   emailNotificationTypesAlert: 'Email Notification Recipients',
   emailNotificationTypesAlertDescription:
-    '<strong>Media Requested</strong>, <strong>Media Automatically Approved</strong>, and <strong>Media Failed</strong>\
-    email notifications are sent to all users with the <strong>Manage Requests</strong> permission.',
+    '<strong>Media Requested</strong>, <strong>Media Automatically Approved</strong>, and <strong>Media Failed</strong> email notifications are sent to all users with the <strong>Manage Requests</strong> permission.',
   emailNotificationTypesAlertDescriptionPt2:
-    '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong>\
-    email notifications are sent to the user who submitted the request.',
+    '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong> email notifications are sent to the user who submitted the request.',
   pgpPrivateKey: '<PgpLink>PGP</PgpLink> Private Key',
   pgpPrivateKeyTip:
     'Sign encrypted email messages (PGP password is also required)',
@@ -73,12 +68,16 @@ const NotificationsEmail: React.FC = () => {
     emailFrom: Yup.string()
       .required(intl.formatMessage(messages.validationEmail))
       .email(intl.formatMessage(messages.validationEmail)),
-    smtpHost: Yup.string().required(
-      intl.formatMessage(messages.validationSmtpHostRequired)
-    ),
-    smtpPort: Yup.number().required(
-      intl.formatMessage(messages.validationSmtpPortRequired)
-    ),
+    smtpHost: Yup.string()
+      .required(intl.formatMessage(messages.validationSmtpHostRequired))
+      .matches(
+        // eslint-disable-next-line
+        /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+        intl.formatMessage(messages.validationSmtpHostRequired)
+      ),
+    smtpPort: Yup.number()
+      .typeError(intl.formatMessage(messages.validationSmtpPortRequired))
+      .required(intl.formatMessage(messages.validationSmtpPortRequired)),
   });
 
   if (!data && !error) {
@@ -205,6 +204,7 @@ const NotificationsEmail: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="emailFrom" className="text-label">
                   {intl.formatMessage(messages.emailsender)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -238,6 +238,7 @@ const NotificationsEmail: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="smtpHost" className="text-label">
                   {intl.formatMessage(messages.smtpHost)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -256,6 +257,7 @@ const NotificationsEmail: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="smtpPort" className="text-label">
                   {intl.formatMessage(messages.smtpPort)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <Field
@@ -376,6 +378,7 @@ const NotificationsEmail: React.FC = () => {
                 <div className="form-row">
                   <span id="group-label" className="group-label">
                     {intl.formatMessage(messages.notificationtypes)}
+                    <span className="label-required">*</span>
                   </span>
                   <div className="form-input">
                     <div className="max-w-lg">
@@ -401,7 +404,7 @@ const NotificationsEmail: React.FC = () => {
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(messages.test)}
+                      {intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -411,8 +414,8 @@ const NotificationsEmail: React.FC = () => {
                       disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
-                        ? intl.formatMessage(messages.saving)
-                        : intl.formatMessage(messages.save)}
+                        ? intl.formatMessage(globalMessages.saving)
+                        : intl.formatMessage(globalMessages.save)}
                     </Button>
                   </span>
                 </div>

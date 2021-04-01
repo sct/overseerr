@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 
 export type AvailableLocales =
+  | 'ca'
   | 'de'
   | 'en'
   | 'es'

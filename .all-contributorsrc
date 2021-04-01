@@ -364,7 +364,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/77843475?v=4",
       "profile": "https://github.com/HubDuck",
       "contributions": [
-        "translation"
+        "translation",
+        "doc"
       ]
     },
     {
@@ -374,6 +375,60 @@
       "profile": "https://github.com/costaht",
       "contributions": [
         "doc",
+        "translation"
+      ]
+    },
+    {
+      "login": "Shjosan",
+      "name": "Shjosan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20847626?v=4",
+      "profile": "https://github.com/Shjosan",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "kobaubarr",
+      "name": "kobaubarr",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28481522?v=4",
+      "profile": "https://github.com/kobaubarr",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "notorius28",
+      "name": "Ricardo González",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1621513?v=4",
+      "profile": "https://github.com/notorius28",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "Torkiliuz",
+      "name": "Torkil",
+      "avatar_url": "https://avatars.githubusercontent.com/u/460764?v=4",
+      "profile": "http://torkili.uz",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "JagandeepBrar",
+      "name": "Jagandeep Brar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3048295?v=4",
+      "profile": "https://www.jagandeepbrar.io",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "dtalens",
+      "name": "dtalens",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6631832?v=4",
+      "profile": "http://dtalens.com",
+      "contributions": [
         "translation"
       ]
     }

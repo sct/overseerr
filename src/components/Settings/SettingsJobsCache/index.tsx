@@ -1,27 +1,28 @@
-import React from 'react';
-import useSWR from 'swr';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import {
-  FormattedRelativeTime,
-  defineMessages,
-  useIntl,
-  MessageDescriptor,
-} from 'react-intl';
-import Button from '../../Common/Button';
-import Table from '../../Common/Table';
-import Spinner from '../../../assets/spinner.svg';
 import axios from 'axios';
+import React from 'react';
+import {
+  defineMessages,
+  FormattedRelativeTime,
+  MessageDescriptor,
+  useIntl,
+} from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import Badge from '../../Common/Badge';
+import useSWR from 'swr';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
+import Spinner from '../../../assets/spinner.svg';
+import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';
+import Badge from '../../Common/Badge';
+import Button from '../../Common/Button';
+import LoadingSpinner from '../../Common/LoadingSpinner';
+import PageTitle from '../../Common/PageTitle';
+import Table from '../../Common/Table';
 
 const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
+  jobsandcache: 'Jobs & Cache',
   jobs: 'Jobs',
   jobsDescription:
-    'Overseerr performs certain maintenance tasks as regularly-scheduled jobs,\
-    but they can also be manually triggered below.\
-    Manually running a job will not alter its schedule.',
+    'Overseerr performs certain maintenance tasks as regularly-scheduled jobs, but they can also be manually triggered below. Manually running a job will not alter its schedule.',
   jobname: 'Job Name',
   jobtype: 'Type',
   nextexecution: 'Next Execution',
@@ -118,6 +119,12 @@ const SettingsJobs: React.FC = () => {
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.jobsandcache),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">{intl.formatMessage(messages.jobs)}</h3>
         <p className="description">
@@ -166,6 +173,7 @@ const SettingsJobs: React.FC = () => {
                           1000
                       )}
                       updateIntervalInSeconds={1}
+                      numeric="auto"
                     />
                   </div>
                 </Table.TD>

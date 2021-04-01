@@ -1,13 +1,14 @@
-import React from 'react';
+import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import dynamic from 'next/dynamic';
-import useSWR from 'swr';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import Button from '../../../Common/Button';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import axios from 'axios';
-import * as Yup from 'yup';
 import { useToasts } from 'react-toast-notifications';
+import useSWR from 'swr';
+import * as Yup from 'yup';
+import globalMessages from '../../../../i18n/globalMessages';
+import Button from '../../../Common/Button';
+import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const JSONEditor = dynamic(() => import('../../../JSONEditor'), { ssr: false });
@@ -35,8 +36,6 @@ const defaultPayload = {
 };
 
 const messages = defineMessages({
-  save: 'Save Changes',
-  saving: 'Saving…',
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
   authheader: 'Authorization Header',
@@ -44,7 +43,6 @@ const messages = defineMessages({
   webhooksettingssaved: 'Webhook notification settings saved successfully!',
   webhooksettingsfailed: 'Webhook notification settings failed to save.',
   testsent: 'Test notification sent!',
-  test: 'Test',
   notificationtypes: 'Notification Types',
   resetPayload: 'Reset to Default',
   resetPayloadSuccess: 'JSON payload reset successfully!',
@@ -173,6 +171,7 @@ const NotificationsWebhook: React.FC = () => {
             <div className="form-row">
               <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.webhookUrl)}
+                <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
@@ -196,6 +195,7 @@ const NotificationsWebhook: React.FC = () => {
             <div className="form-row">
               <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.customJson)}
+                <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
@@ -265,6 +265,7 @@ const NotificationsWebhook: React.FC = () => {
                   <div>
                     <div id="group-label" className="group-label">
                       {intl.formatMessage(messages.notificationtypes)}
+                      <span className="label-required">*</span>
                     </div>
                   </div>
                   <div className="form-input">
@@ -292,7 +293,7 @@ const NotificationsWebhook: React.FC = () => {
                       testSettings();
                     }}
                   >
-                    {intl.formatMessage(messages.test)}
+                    {intl.formatMessage(globalMessages.test)}
                   </Button>
                 </span>
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -302,8 +303,8 @@ const NotificationsWebhook: React.FC = () => {
                     disabled={isSubmitting || !isValid}
                   >
                     {isSubmitting
-                      ? intl.formatMessage(messages.saving)
-                      : intl.formatMessage(messages.save)}
+                      ? intl.formatMessage(globalMessages.saving)
+                      : intl.formatMessage(globalMessages.save)}
                   </Button>
                 </span>
               </div>

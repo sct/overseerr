@@ -1,16 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Listbox, Transition } from '@headlessui/react';
 import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
 import type {
   ServiceCommonServer,
   ServiceCommonServerWithDetails,
 } from '../../../../server/interfaces/api/serviceInterfaces';
-import { defineMessages, useIntl } from 'react-intl';
-import { formatBytes } from '../../../utils/numberHelpers';
-import { Listbox, Transition } from '@headlessui/react';
-import { Permission, User, useUser } from '../../../hooks/useUser';
 import type { UserResultsResponse } from '../../../../server/interfaces/api/userInterfaces';
+import { Permission, User, useUser } from '../../../hooks/useUser';
+import globalMessages from '../../../i18n/globalMessages';
+import { formatBytes } from '../../../utils/numberHelpers';
+import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
 
 const messages = defineMessages({
   advancedoptions: 'Advanced Options',
@@ -22,7 +23,6 @@ const messages = defineMessages({
   folder: '{path} ({space})',
   requestas: 'Request As',
   languageprofile: 'Language Profile',
-  loading: 'Loading…',
 });
 
 export type RequestOverrides = {
@@ -276,15 +276,20 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   onBlur={(e) => setSelectedServer(Number(e.target.value))}
                   className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
                 >
-                  {data.map((server) => (
-                    <option key={`server-list-${server.id}`} value={server.id}>
-                      {server.isDefault && server.is4k === is4k
-                        ? intl.formatMessage(messages.default, {
-                            name: server.name,
-                          })
-                        : server.name}
-                    </option>
-                  ))}
+                  {data
+                    .filter((server) => server.is4k === is4k)
+                    .map((server) => (
+                      <option
+                        key={`server-list-${server.id}`}
+                        value={server.id}
+                      >
+                        {server.isDefault
+                          ? intl.formatMessage(messages.default, {
+                              name: server.name,
+                            })
+                          : server.name}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
@@ -302,7 +307,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 >
                   {(isValidating || !serverData) && (
                     <option value="">
-                      {intl.formatMessage(messages.loading)}
+                      {intl.formatMessage(globalMessages.loading)}
                     </option>
                   )}
                   {!isValidating &&
@@ -346,7 +351,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 >
                   {(isValidating || !serverData) && (
                     <option value="">
-                      {intl.formatMessage(messages.loading)}
+                      {intl.formatMessage(globalMessages.loading)}
                     </option>
                   )}
                   {!isValidating &&
@@ -400,7 +405,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   >
                     {(isValidating || !serverData) && (
                       <option value="">
-                        {intl.formatMessage(messages.loading)}
+                        {intl.formatMessage(globalMessages.loading)}
                       </option>
                     )}
                     {!isValidating &&

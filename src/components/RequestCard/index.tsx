@@ -1,28 +1,27 @@
+import axios from 'axios';
+import Link from 'next/link';
 import React, { useContext, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import type { TvDetails } from '../../../server/models/Tv';
-import type { MovieDetails } from '../../../server/models/Movie';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { LanguageContext } from '../../context/LanguageContext';
 import {
   MediaRequestStatus,
   MediaStatus,
 } from '../../../server/constants/media';
-import Badge from '../Common/Badge';
-import { useUser, Permission } from '../../hooks/useUser';
-import axios from 'axios';
-import Button from '../Common/Button';
-import { withProperties } from '../../utils/typeHelpers';
-import Link from 'next/link';
-import { defineMessages, useIntl } from 'react-intl';
+import type { MediaRequest } from '../../../server/entity/MediaRequest';
+import type { MovieDetails } from '../../../server/models/Movie';
+import type { TvDetails } from '../../../server/models/Tv';
+import { LanguageContext } from '../../context/LanguageContext';
+import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
+import { withProperties } from '../../utils/typeHelpers';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
+import CachedImage from '../Common/CachedImage';
 import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
-  status: 'Status',
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
-  all: 'All',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -97,13 +96,25 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
   }
 
   return (
-    <div
-      className="relative flex p-4 text-gray-400 bg-gray-700 bg-center bg-cover shadow rounded-xl w-72 sm:w-96 ring-1 ring-gray-700"
-      style={{
-        backgroundImage: `linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%), url(//image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath})`,
-      }}
-    >
-      <div className="flex flex-col flex-1 min-w-0 pr-4">
+    <div className="relative flex p-4 overflow-hidden text-gray-400 bg-gray-800 bg-center bg-cover shadow rounded-xl w-72 sm:w-96 ring-1 ring-gray-700">
+      {title.backdropPath && (
+        <div className="absolute inset-0 z-0">
+          <CachedImage
+            alt=""
+            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
+            layout="fill"
+            objectFit="cover"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%)',
+            }}
+          />
+        </div>
+      )}
+      <div className="relative z-10 flex flex-col flex-1 min-w-0 pr-4">
         <Link
           href={
             request.type === 'movie'
@@ -143,7 +154,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             {title.seasons.filter((season) => season.seasonNumber !== 0)
               .length === request.seasons.length ? (
               <span className="mr-2 uppercase">
-                <Badge>{intl.formatMessage(messages.all)}</Badge>
+                <Badge>{intl.formatMessage(globalMessages.all)}</Badge>
               </span>
             ) : (
               <div className="overflow-x-scroll hide-scrollbar">
@@ -158,7 +169,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
         )}
         <div className="flex items-center mt-2 text-sm sm:mt-1">
           <span className="hidden mr-2 font-medium sm:block">
-            {intl.formatMessage(messages.status)}
+            {intl.formatMessage(globalMessages.status)}
           </span>
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN ||
@@ -243,15 +254,17 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             : `/tv/${requestData.media.tmdbId}`
         }
       >
-        <a className="flex-shrink-0 w-20 sm:w-28">
-          <img
+        <a className="flex-shrink-0 w-20 overflow-hidden transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md">
+          <CachedImage
             src={
               title.posterPath
-                ? `//image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
                 : '/images/overseerr_poster_not_found.png'
             }
             alt=""
-            className="w-20 transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md"
+            layout="responsive"
+            width={600}
+            height={900}
           />
         </a>
       </Link>

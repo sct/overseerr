@@ -1,16 +1,19 @@
 import { Router } from 'express';
+import gravatarUrl from 'gravatar-url';
 import { getRepository, Not } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
+import { UserType } from '../../constants/user';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
+import {
+  QuotaResponse,
+  UserRequestsResponse,
+  UserResultsResponse,
+} from '../../interfaces/api/userInterfaces';
 import { hasPermission, Permission } from '../../lib/permissions';
 import { getSettings } from '../../lib/settings';
 import logger from '../../logger';
-import gravatarUrl from 'gravatar-url';
-import { UserType } from '../../constants/user';
 import { isAuthenticated } from '../../middleware/auth';
-import { UserResultsResponse } from '../../interfaces/api/userInterfaces';
-import { UserRequestsResponse } from '../../interfaces/api/userInterfaces';
 import userSettingsRoutes from './usersettings';
 
 const router = Router();
@@ -376,6 +379,38 @@ router.post(
       return res.status(201).json(User.filterMany(createdUsers));
     } catch (e) {
       next({ status: 500, message: e.message });
+    }
+  }
+);
+
+router.get<{ id: string }, QuotaResponse>(
+  '/:id/quota',
+  async (req, res, next) => {
+    try {
+      const userRepository = getRepository(User);
+
+      if (
+        Number(req.params.id) !== req.user?.id &&
+        !req.user?.hasPermission(
+          [Permission.MANAGE_USERS, Permission.MANAGE_REQUESTS],
+          { type: 'and' }
+        )
+      ) {
+        return next({
+          status: 403,
+          message: 'You do not have permission to access this endpoint.',
+        });
+      }
+
+      const user = await userRepository.findOneOrFail({
+        where: { id: Number(req.params.id) },
+      });
+
+      const quotas = await user.getQuota();
+
+      return res.status(200).json(quotas);
+    } catch (e) {
+      next({ status: 404, message: e.message });
     }
   }
 );

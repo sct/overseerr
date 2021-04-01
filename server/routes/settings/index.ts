@@ -1,22 +1,30 @@
 import { Router } from 'express';
-import { getSettings, Library, MainSettings } from '../../lib/settings';
+import rateLimit from 'express-rate-limit';
+import fs from 'fs';
+import { merge, omit } from 'lodash';
+import path from 'path';
 import { getRepository } from 'typeorm';
-import { User } from '../../entity/User';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
-import { scheduledJobs } from '../../job/schedule';
-import { Permission } from '../../lib/permissions';
-import { isAuthenticated } from '../../middleware/auth';
-import { merge, omit } from 'lodash';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
-import { getAppVersion } from '../../utils/appVersion';
-import { SettingsAboutResponse } from '../../interfaces/api/settingsInterfaces';
-import notificationRoutes from './notifications';
-import sonarrRoutes from './sonarr';
-import radarrRoutes from './radarr';
+import { User } from '../../entity/User';
+import {
+  LogMessage,
+  LogsResultsResponse,
+  SettingsAboutResponse,
+} from '../../interfaces/api/settingsInterfaces';
+import { scheduledJobs } from '../../job/schedule';
 import cacheManager, { AvailableCacheIds } from '../../lib/cache';
+import { Permission } from '../../lib/permissions';
 import { plexFullScanner } from '../../lib/scanners/plex';
+import { getSettings, Library, MainSettings } from '../../lib/settings';
+import logger from '../../logger';
+import { isAuthenticated } from '../../middleware/auth';
+import { getAppVersion } from '../../utils/appVersion';
+import notificationRoutes from './notifications';
+import radarrRoutes from './radarr';
+import sonarrRoutes from './sonarr';
 
 const settingsRoutes = Router();
 
@@ -222,6 +230,86 @@ settingsRoutes.post('/plex/sync', (req, res) => {
   }
   return res.status(200).json(plexFullScanner.status());
 });
+
+settingsRoutes.get(
+  '/logs',
+  rateLimit({ windowMs: 60 * 1000, max: 50 }),
+  (req, res, next) => {
+    const pageSize = req.query.take ? Number(req.query.take) : 25;
+    const skip = req.query.skip ? Number(req.query.skip) : 0;
+
+    let filter: string[] = [];
+    switch (req.query.filter) {
+      case 'debug':
+        filter.push('debug');
+      // falls through
+      case 'info':
+        filter.push('info');
+      // falls through
+      case 'warn':
+        filter.push('warn');
+      // falls through
+      case 'error':
+        filter.push('error');
+        break;
+      default:
+        filter = ['debug', 'info', 'warn', 'error'];
+    }
+
+    const logFile = process.env.CONFIG_DIRECTORY
+      ? `${process.env.CONFIG_DIRECTORY}/logs/overseerr.log`
+      : path.join(__dirname, '../../../config/logs/overseerr.log');
+    const logs: LogMessage[] = [];
+
+    try {
+      fs.readFileSync(logFile)
+        .toString()
+        .split('\n')
+        .forEach((line) => {
+          if (!line.length) return;
+
+          const timestamp = line.match(new RegExp(/^.{24}/)) || [];
+          const level = line.match(new RegExp(/\s\[\w+\]/)) || [];
+          const label = line.match(new RegExp(/\]\[.+?\]/)) || [];
+          const message = line.match(new RegExp(/:\s([^{}]+)({.*})?/)) || [];
+
+          if (level.length && filter.includes(level[0].slice(2, -1))) {
+            logs.push({
+              timestamp: timestamp[0],
+              level: level.length ? level[0].slice(2, -1) : '',
+              label: label.length ? label[0].slice(2, -1) : '',
+              message: message.length && message[1] ? message[1] : '',
+              data:
+                message.length && message[2]
+                  ? JSON.parse(message[2])
+                  : undefined,
+            });
+          }
+        });
+
+      const displayedLogs = logs.reverse().slice(skip, skip + pageSize);
+
+      return res.status(200).json({
+        pageInfo: {
+          pages: Math.ceil(logs.length / pageSize),
+          pageSize,
+          results: logs.length,
+          page: Math.ceil(skip / pageSize) + 1,
+        },
+        results: displayedLogs,
+      } as LogsResultsResponse);
+    } catch (error) {
+      logger.error('Something went wrong while fetching the logs', {
+        label: 'Logs',
+        errorMessage: error.message,
+      });
+      return next({
+        status: 500,
+        message: 'Something went wrong while fetching the logs',
+      });
+    }
+  }
+);
 
 settingsRoutes.get('/jobs', (_req, res) => {
   return res.status(200).json(

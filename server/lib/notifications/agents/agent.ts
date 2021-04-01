@@ -6,7 +6,7 @@ import { NotificationAgentConfig } from '../../settings';
 
 export interface NotificationPayload {
   subject: string;
-  notifyUser: User;
+  notifyUser?: User;
   media?: Media;
   image?: string;
   message?: string;
@@ -21,15 +21,9 @@ export abstract class BaseAgent<T extends NotificationAgentConfig> {
   }
 
   protected abstract getSettings(): T;
-
-  protected userNotificationTypes: Notification[] = [
-    Notification.MEDIA_APPROVED,
-    Notification.MEDIA_DECLINED,
-    Notification.MEDIA_AVAILABLE,
-  ];
 }
 
 export interface NotificationAgent {
-  shouldSend(type: Notification, payload: NotificationPayload): boolean;
+  shouldSend(type: Notification): boolean;
   send(type: Notification, payload: NotificationPayload): Promise<boolean>;
 }

@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import PlexLoginButton from '../PlexLoginButton';
-import { useUser } from '../../hooks/useUser';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
-import ImageFader from '../Common/ImageFader';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import Transition from '../Transition';
-import LanguagePicker from '../Layout/LanguagePicker';
-import LocalLogin from './LocalLogin';
-import Accordion from '../Common/Accordion';
+import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import useSettings from '../../hooks/useSettings';
+import { useUser } from '../../hooks/useUser';
+import Accordion from '../Common/Accordion';
+import ImageFader from '../Common/ImageFader';
 import PageTitle from '../Common/PageTitle';
+import LanguagePicker from '../Layout/LanguagePicker';
+import PlexLoginButton from '../PlexLoginButton';
+import Transition from '../Transition';
+import LocalLogin from './LocalLogin';
 
 const messages = defineMessages({
   signin: 'Sign In',
@@ -63,6 +63,7 @@ const Login: React.FC = () => {
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
       <PageTitle title={intl.formatMessage(messages.signin)} />
       <ImageFader
+        forceOptimize
         backgroundImages={[
           '/images/rotate1.jpg',
           '/images/rotate2.jpg',
@@ -76,9 +77,9 @@ const Login: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
-        <img src="/logo.png" className="w-auto mx-auto max-h-32" alt="Logo" />
+        <img src="/logo.png" className="max-w-full" alt="Logo" />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
-          <FormattedMessage {...messages.signinheader} />
+          {intl.formatMessage(messages.signinheader)}
         </h2>
       </div>
       <div className="relative z-50 mt-8 sm:mx-auto sm:w-full sm:max-w-md">

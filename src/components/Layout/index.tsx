@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import SearchInput from './SearchInput';
-import UserDropdown from './UserDropdown';
-import Sidebar from './Sidebar';
-import LanguagePicker from './LanguagePicker';
 import { useRouter } from 'next/router';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { Permission, useUser } from '../../hooks/useUser';
+import LanguagePicker from './LanguagePicker';
+import SearchInput from './SearchInput';
+import Sidebar from './Sidebar';
+import UserDropdown from './UserDropdown';
 
 const messages = defineMessages({
   alphawarning:
-    'This is ALPHA software. Features may be broken and/or unstable. Please report issues on GitHub!',
+    'This is ALPHA software. Features may be broken and/or unstable. Please report any issues on GitHub!',
 });
 
 const Layout: React.FC = ({ children }) => {
@@ -17,6 +17,7 @@ const Layout: React.FC = ({ children }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { hasPermission } = useUser();
   const router = useRouter();
+  const intl = useIntl();
 
   useEffect(() => {
     const updateScrolled = () => {
@@ -36,14 +37,14 @@ const Layout: React.FC = ({ children }) => {
 
   return (
     <div className="flex h-full min-w-0 min-h-full bg-gray-900">
-      <div className="absolute w-full h-64 from-gray-800 to-gray-900 bg-gradient-to-bl">
+      <div className="absolute top-0 w-full h-64 from-gray-800 to-gray-900 bg-gradient-to-bl">
         <div className="relative inset-0 w-full h-full from-gray-900 to-transparent bg-gradient-to-t" />
       </div>
       <Sidebar open={isSidebarOpen} setClosed={() => setSidebarOpen(false)} />
 
       <div className="relative flex flex-col flex-1 w-0 min-w-0 mb-16 md:ml-64">
         <div
-          className={`fixed left-0 right-0 z-10 flex flex-shrink-0 h-16 bg-opacity-80 transition duration-300 ${
+          className={`searchbar fixed left-0 right-0 top-0 z-10 flex flex-shrink-0 bg-opacity-80 transition duration-300 ${
             isScrolled ? 'bg-gray-700' : 'bg-transparent'
           } md:left-64`}
           style={{
@@ -101,7 +102,7 @@ const Layout: React.FC = ({ children }) => {
                     </div>
                     <div className="flex-1 ml-3 md:flex md:justify-between">
                       <p className="text-sm leading-5 text-white">
-                        <FormattedMessage {...messages.alphawarning} />
+                        {intl.formatMessage(messages.alphawarning)}
                       </p>
                       <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
                         <a

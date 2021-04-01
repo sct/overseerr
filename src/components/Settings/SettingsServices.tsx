@@ -1,21 +1,24 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import type {
   RadarrSettings,
   SonarrSettings,
 } from '../../../server/lib/settings';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import RadarrModal from './RadarrModal';
-import Modal from '../Common/Modal';
-import Transition from '../Transition';
-import axios from 'axios';
-import SonarrModal from './SonarrModal';
+import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
+import Badge from '../Common/Badge';
+import Button from '../Common/Button';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import Modal from '../Common/Modal';
+import PageTitle from '../Common/PageTitle';
+import Transition from '../Transition';
+import RadarrModal from './RadarrModal';
+import SonarrModal from './SonarrModal';
 
 const messages = defineMessages({
+  services: 'Services',
   radarrsettings: 'Radarr Settings',
   radarrSettingsDescription:
     'Configure your Radarr connection below. You can have multiple Radarr configurations, but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server which is used for new requests.',
@@ -23,8 +26,6 @@ const messages = defineMessages({
   sonarrSettingsDescription:
     'Configure your Sonarr connection below. You can have multiple Sonarr configurations, but only two can be active as defaults at any time (one for standard HD and one for 4K). Administrators can override the server which is used for new requests.',
   deleteserverconfirm: 'Are you sure you want to delete this server?',
-  edit: 'Edit',
-  delete: 'Delete',
   ssl: 'SSL',
   default: 'Default',
   default4k: 'Default 4K',
@@ -32,7 +33,7 @@ const messages = defineMessages({
   activeProfile: 'Active Profile',
   addradarr: 'Add Radarr Server',
   addsonarr: 'Add Sonarr Server',
-  nodefault: 'No default server selected!',
+  nodefault: 'No Default Server',
   nodefaultdescription:
     'At least one server must be marked as default before any requests will make it to your services.',
 });
@@ -136,7 +137,9 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               >
                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
               </svg>
-              <span className="ml-3">{intl.formatMessage(messages.edit)}</span>
+              <span className="ml-3">
+                {intl.formatMessage(globalMessages.edit)}
+              </span>
             </button>
           </div>
           <div className="flex flex-1 w-0 -ml-px">
@@ -157,7 +160,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
                 />
               </svg>
               <span className="ml-3">
-                {intl.formatMessage(messages.delete)}
+                {intl.formatMessage(globalMessages.delete)}
               </span>
             </button>
           </div>
@@ -210,10 +213,17 @@ const SettingsServices: React.FC = () => {
     setDeleteServerModal({ open: false, serverId: null, type: 'radarr' });
     revalidateRadarr();
     revalidateSonarr();
+    mutate('/api/v1/settings/public');
   };
 
   return (
     <>
+      <PageTitle
+        title={[
+          intl.formatMessage(messages.services),
+          intl.formatMessage(globalMessages.settings),
+        ]}
+      />
       <div className="mb-6">
         <h3 className="heading">
           {intl.formatMessage(messages.radarrsettings)}
@@ -228,6 +238,7 @@ const SettingsServices: React.FC = () => {
           onClose={() => setEditRadarrModal({ open: false, radarr: null })}
           onSave={() => {
             revalidateRadarr();
+            mutate('/api/v1/settings/public');
             setEditRadarrModal({ open: false, radarr: null });
           }}
         />
@@ -238,6 +249,7 @@ const SettingsServices: React.FC = () => {
           onClose={() => setEditSonarrModal({ open: false, sonarr: null })}
           onSave={() => {
             revalidateSonarr();
+            mutate('/api/v1/settings/public');
             setEditSonarrModal({ open: false, sonarr: null });
           }}
         />

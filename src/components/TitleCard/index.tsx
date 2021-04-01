@@ -1,21 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import Link from 'next/link';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { MediaStatus } from '../../../server/constants/media';
 import type { MediaType } from '../../../server/models/Search';
+import Spinner from '../../assets/spinner.svg';
+import { useIsTouch } from '../../hooks/useIsTouch';
+import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
 import { withProperties } from '../../utils/typeHelpers';
+import CachedImage from '../Common/CachedImage';
+import RequestModal from '../RequestModal';
 import Transition from '../Transition';
 import Placeholder from './Placeholder';
-import Link from 'next/link';
-import { MediaStatus } from '../../../server/constants/media';
-import RequestModal from '../RequestModal';
-import { defineMessages, useIntl } from 'react-intl';
-import { useIsTouch } from '../../hooks/useIsTouch';
-import globalMessages from '../../i18n/globalMessages';
-import Spinner from '../../assets/spinner.svg';
-import { useUser, Permission } from '../../hooks/useUser';
-
-const messages = defineMessages({
-  movie: 'Movie',
-  tvshow: 'Series',
-});
 
 interface TitleCardProps {
   id: number;
@@ -81,15 +77,13 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default titleCard rounded-xl ring-1 ${
+        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default relative bg-gray-800 bg-cover rounded-xl ring-1 overflow-hidden ${
           showDetail
             ? 'scale-105 shadow-lg ring-gray-500'
             : 'shadow ring-gray-700'
         }`}
         style={{
-          backgroundImage: image
-            ? `url(//image.tmdb.org/t/p/w300_and_h450_face${image})`
-            : `url('/images/overseerr_poster_not_found_logo_top.png')`,
+          paddingBottom: '150%',
         }}
         onMouseEnter={() => {
           if (!isTouch) {
@@ -107,6 +101,17 @@ const TitleCard: React.FC<TitleCardProps> = ({
         tabIndex={0}
       >
         <div className="absolute inset-0 w-full h-full overflow-hidden">
+          <CachedImage
+            className="absolute inset-0 w-full h-full"
+            alt=""
+            src={
+              image
+                ? `https://image.tmdb.org/t/p/w300_and_h450_face${image}`
+                : `/images/overseerr_poster_not_found_logo_top.png`
+            }
+            layout="fill"
+            objectFit="cover"
+          />
           <div className="absolute left-0 right-0 flex items-center justify-between p-2">
             <div
               className={`rounded-full z-40 pointer-events-none shadow ${
@@ -115,8 +120,8 @@ const TitleCard: React.FC<TitleCardProps> = ({
             >
               <div className="flex items-center h-4 px-2 py-2 text-xs font-normal tracking-wider text-center text-white uppercase sm:h-5">
                 {mediaType === 'movie'
-                  ? intl.formatMessage(messages.movie)
-                  : intl.formatMessage(messages.tvshow)}
+                  ? intl.formatMessage(globalMessages.movie)
+                  : intl.formatMessage(globalMessages.tvshow)}
               </div>
             </div>
             <div className="z-40 pointer-events-none">
@@ -216,7 +221,16 @@ const TitleCard: React.FC<TitleCardProps> = ({
                     >
                       {year && <div className="text-sm">{year}</div>}
 
-                      <h1 className="text-xl leading-tight whitespace-normal">
+                      <h1
+                        className="text-xl leading-tight whitespace-normal"
+                        style={{
+                          WebkitLineClamp: 3,
+                          display: '-webkit-box',
+                          overflow: 'hidden',
+                          WebkitBoxOrient: 'vertical',
+                          wordBreak: 'break-word',
+                        }}
+                      >
                         {title}
                       </h1>
                       <div
@@ -231,6 +245,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                           display: '-webkit-box',
                           overflow: 'hidden',
                           WebkitBoxOrient: 'vertical',
+                          wordBreak: 'break-word',
                         }}
                       >
                         {summary}

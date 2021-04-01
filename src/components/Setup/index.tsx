@@ -1,30 +1,29 @@
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import AppDataWarning from '../AppDataWarning';
+import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import ImageFader from '../Common/ImageFader';
+import PageTitle from '../Common/PageTitle';
+import LanguagePicker from '../Layout/LanguagePicker';
 import SettingsPlex from '../Settings/SettingsPlex';
 import SettingsServices from '../Settings/SettingsServices';
 import LoginWithPlex from './LoginWithPlex';
 import SetupSteps from './SetupSteps';
-import axios from 'axios';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import Badge from '../Common/Badge';
-import LanguagePicker from '../Layout/LanguagePicker';
-import PageTitle from '../Common/PageTitle';
-import AppDataWarning from '../AppDataWarning';
 
 const messages = defineMessages({
   setup: 'Setup',
   finish: 'Finish Setup',
   finishing: 'Finishing…',
   continue: 'Continue',
-  loginwithplex: 'Login with Plex',
+  loginwithplex: 'Sign in with Plex',
   configureplex: 'Configure Plex',
   configureservices: 'Configure Services',
   tip: 'Tip',
   scanbackground:
-    'Scanning will run in the background.\
-    You can continue the setup process in the meantime.',
+    'Scanning will run in the background. You can continue the setup process in the meantime.',
 });
 
 const Setup: React.FC = () => {
@@ -65,7 +64,7 @@ const Setup: React.FC = () => {
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
         <img
           src="/logo.png"
-          className="w-auto mx-auto mb-10 max-h-32"
+          className="max-w-full sm:max-w-md sm:mx-auto"
           alt="Logo"
         />
         <AppDataWarning />
@@ -115,7 +114,7 @@ const Setup: React.FC = () => {
                       disabled={!plexSettingsComplete}
                       onClick={() => setCurrentStep(3)}
                     >
-                      <FormattedMessage {...messages.continue} />
+                      {intl.formatMessage(messages.continue)}
                     </Button>
                   </span>
                 </div>
@@ -133,11 +132,9 @@ const Setup: React.FC = () => {
                       onClick={() => finishSetup()}
                       disabled={isUpdating}
                     >
-                      {isUpdating ? (
-                        <FormattedMessage {...messages.finishing} />
-                      ) : (
-                        <FormattedMessage {...messages.finish} />
-                      )}
+                      {isUpdating
+                        ? intl.formatMessage(messages.finishing)
+                        : intl.formatMessage(messages.finish)}
                     </Button>
                   </span>
                 </div>

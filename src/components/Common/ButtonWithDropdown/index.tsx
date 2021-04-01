@@ -80,7 +80,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
   }
 
   return (
-    <span className="relative z-0 inline-flex h-full rounded-md shadow-sm">
+    <span className="relative inline-flex h-full rounded-md shadow-sm">
       <button
         type="button"
         className={`relative inline-flex h-full items-center px-4 py-2 text-sm leading-5 font-medium z-10 hover:z-20 focus:z-20 focus:outline-none transition ease-in-out duration-150 ${
@@ -92,10 +92,10 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
         {text}
       </button>
       {children && (
-        <span className="relative z-10 block -ml-px">
+        <span className="relative block -ml-px">
           <button
             type="button"
-            className={`relative inline-flex items-center h-full px-2 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out rounded-r-md focus:z-10 ${styleClasses.dropdownSideButtonClasses}`}
+            className={`relative inline-flex items-center h-full px-2 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out rounded-r-md z-10 hover:z-20 focus:z-20 ${styleClasses.dropdownSideButtonClasses}`}
             aria-label="Expand"
             onClick={() => setIsOpen((state) => !state)}
           >
@@ -125,7 +125,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <div className="absolute right-0 w-56 mt-2 -mr-1 origin-top-right rounded-md shadow-lg">
+            <div className="absolute right-0 z-40 w-56 mt-2 -mr-1 origin-top-right rounded-md shadow-lg">
               <div
                 className={`rounded-md ring-1 ring-black ring-opacity-5 ${styleClasses.dropdownClasses}`}
               >

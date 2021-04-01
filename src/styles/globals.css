@@ -3,8 +3,41 @@
 @tailwind utilities;
 @tailwind screens;
 
+html {
+  min-height: calc(100% + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
 body {
   @apply bg-gray-900;
+}
+
+.searchbar {
+  padding-top: env(safe-area-inset-top);
+  height: calc(4rem + env(safe-area-inset-top));
+}
+
+.sidebar {
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+}
+
+.slideover {
+  padding-top: calc(1.5rem + env(safe-area-inset-top));
+  padding-bottom: 1.5rem;
+}
+
+.sidebar-close-button {
+  top: env(safe-area-inset-top);
+}
+
+.absolute-top-shift {
+  top: calc(-4rem - env(safe-area-inset-top));
+}
+
+.min-h-screen-shift {
+  min-height: calc(100vh + env(safe-area-inset-top));
 }
 
 .plex-button {
@@ -16,18 +49,17 @@ body {
   background: #f19a30;
 }
 
-ul.cardList {
+ul.cards-vertical,
+ul.cards-horizontal {
   @apply grid gap-4;
+}
+
+ul.cards-vertical {
   grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
 }
 
-ul.cardList > li {
-  @apply flex flex-col items-center col-span-1 text-center;
-}
-
-.titleCard {
-  @apply relative bg-gray-800 bg-cover;
-  padding-bottom: 150%;
+ul.cards-horizontal {
+  grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr));
 }
 
 .slider-header {
@@ -43,7 +75,14 @@ a.slider-title {
 }
 
 .media-page {
-  @apply px-4 pt-16 -mx-4 -mt-16 bg-center bg-cover;
+  @apply relative px-4 -mx-4 bg-center bg-cover;
+  margin-top: calc(-4rem - env(safe-area-inset-top));
+  padding-top: calc(4rem + env(safe-area-inset-top));
+}
+
+.media-page-bg-image {
+  @apply absolute inset-0 w-full h-full;
+  z-index: -10;
 }
 
 .media-header {
@@ -51,7 +90,7 @@ a.slider-title {
 }
 
 .media-poster {
-  @apply w-32 rounded shadow md:rounded-lg md:shadow-2xl md:w-44 xl:w-52 xl:mr-4;
+  @apply w-32 overflow-hidden rounded shadow md:rounded-lg md:shadow-2xl md:w-44 xl:w-52 xl:mr-4;
 }
 
 .media-status {
@@ -75,7 +114,7 @@ h1 > .media-year {
 }
 
 .media-actions {
-  @apply relative z-10 flex flex-wrap items-center justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap xl:mt-0;
+  @apply relative flex flex-wrap items-center justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap xl:mt-0;
 }
 
 .media-actions > * {
@@ -95,11 +134,11 @@ h1 > .media-year {
 }
 
 .media-overview h2 {
-  @apply text-xl sm:text-2xl;
+  @apply text-xl text-gray-300 sm:text-2xl;
 }
 
 .media-overview p {
-  @apply pt-2 text-sm text-gray-400 lg:text-base;
+  @apply pt-2 text-sm text-gray-400 sm:text-base;
 }
 
 ul.media-crew {
@@ -171,15 +210,11 @@ img.avatar-sm {
 }
 
 .form-input {
-  @apply text-white sm:col-span-2;
+  @apply text-sm text-white sm:col-span-2;
 }
 
 .form-input-field {
   @apply flex max-w-lg rounded-md shadow-sm;
-}
-
-textarea {
-  @apply flex-1 block w-full min-w-0 text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5;
 }
 
 .label-required {
@@ -206,14 +241,22 @@ label.text-label {
   @apply sm:mt-2;
 }
 
+button,
+input,
+select,
+textarea {
+  @apply disabled:cursor-not-allowed;
+}
+
 input[type='checkbox'] {
   @apply w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md;
 }
 
 input[type='text'],
 input[type='password'],
-select {
-  @apply flex-1 block w-full min-w-0 text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5;
+select,
+textarea {
+  @apply flex-1 block w-full min-w-0 text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md sm:text-sm sm:leading-5;
 }
 
 input.rounded-l-only,
@@ -226,14 +269,18 @@ select.rounded-r-only {
   @apply rounded-l-none;
 }
 
-input.short,
-select.short {
+input.short {
   width: 4.875rem;
+}
+
+select.short {
+  @apply w-min;
 }
 
 .protocol {
   @apply inline-flex items-center px-3 text-gray-100 bg-gray-600 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm;
 }
+
 .error {
   @apply mt-2 text-sm text-red-500;
 }
@@ -281,4 +328,57 @@ code {
 
 input[type='search']::-webkit-search-cancel-button {
   -webkit-appearance: none;
+}
+
+.react-select-container {
+  @apply w-full;
+}
+
+.react-select-container .react-select__control {
+  @apply text-white bg-gray-700 border border-gray-500 rounded-md hover:border-gray-500;
+}
+
+.react-select-container .react-select__control--is-focused {
+  @apply text-white bg-gray-700 border border-gray-500 rounded-md shadow;
+}
+
+.react-select-container .react-select__menu {
+  @apply text-gray-300 bg-gray-700;
+}
+
+.react-select-container .react-select__option--is-focused {
+  @apply text-white bg-gray-600;
+}
+
+.react-select-container .react-select__indicator-separator {
+  @apply bg-gray-500;
+}
+
+.react-select-container .react-select__indicator {
+  @apply text-gray-500;
+}
+
+.react-select-container .react-select__placeholder {
+  @apply text-gray-400;
+}
+
+.react-select-container .react-select__multi-value {
+  @apply bg-gray-800 border border-gray-500 rounded-md;
+}
+
+.react-select-container .react-select__multi-value__label {
+  @apply text-white;
+}
+
+.react-select-container .react-select__multi-value__remove {
+  @apply cursor-pointer rounded-r-md hover:bg-red-700 hover:text-red-100;
+}
+
+.react-select-container .react-select__input {
+  @apply text-base text-white border-none shadow-sm;
+}
+
+.react-select-container .react-select__input input:focus {
+  @apply text-white border-none;
+  box-shadow: none;
 }

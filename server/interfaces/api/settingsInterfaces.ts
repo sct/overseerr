@@ -1,3 +1,17 @@
+import type { PaginatedResponse } from './common';
+
+export type LogMessage = {
+  timestamp: string;
+  level: string;
+  label: string;
+  message: string;
+  data?: Record<string, unknown>;
+};
+
+export interface LogsResultsResponse extends PaginatedResponse {
+  results: LogMessage[];
+}
+
 export interface SettingsAboutResponse {
   version: string;
   totalRequests: number;
@@ -14,6 +28,8 @@ export interface PublicSettingsResponse {
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
+  partialRequestsEnabled: boolean;
+  cacheImages: boolean;
 }
 
 export interface CacheItem {
