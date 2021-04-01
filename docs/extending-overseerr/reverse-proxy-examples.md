@@ -1,14 +1,20 @@
 # Reverse Proxy Examples
 
 {% hint style="warning" %}
-Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported. However, a Nginx subfolder workaround configuration is provided below to use at your own risk.
+Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported.
+
+A Nginx subfolder workaround configuration is provided below, but it is not officially supported.
 {% endhint %}
 
 ## SWAG
 
-A sample proxy configuration is included in [SWAG (Secure Web Application Gateway)](https://github.com/linuxserver/docker-swag). However, this page is still the only source of truth, so the SWAG sample configuration is not guaranteed to be up-to-date. If you find an inconsistency, please [report it to the LinuxServer team](https://github.com/linuxserver/reverse-proxy-confs/issues/new) or [submit a pull request to update it](https://github.com/linuxserver/reverse-proxy-confs/pulls).
+A sample proxy configuration is included in [SWAG (Secure Web Application Gateway)](https://github.com/linuxserver/docker-swag).
 
-To use the bundled configuration file, simply rename `overseerr.subdomain.conf.sample` in the `proxy-confs` folder to `overseerr.subdomain.conf`. Alternatively, create a new file `overseerr.subdomain.conf` in `proxy-confs` with the following configuration:
+However, this page is still the only source of truth, so the SWAG sample configuration is not guaranteed to be up-to-date. If you find an inconsistency, please [report it to the LinuxServer team](https://github.com/linuxserver/reverse-proxy-confs/issues/new) or [submit a pull request to update it](https://github.com/linuxserver/reverse-proxy-confs/pulls).
+
+To use the bundled configuration file, simply rename `overseerr.subdomain.conf.sample` in the `proxy-confs` folder to `overseerr.subdomain.conf`.
+
+Alternatively, you can create a new file `overseerr.subdomain.conf` in `proxy-confs` with the following configuration:
 
 ```nginx
 server {
@@ -22,20 +28,18 @@ server {
     client_max_body_size 0;
 
     location / {
-
         include /config/nginx/proxy.conf;
         resolver 127.0.0.11 valid=30s;
         set $upstream_app overseerr;
         set $upstream_port 5055;
         set $upstream_proto http;
         proxy_pass $upstream_proto://$upstream_app:$upstream_port;
-
     }
 
 }
 ```
 
-## Traefik \(v2\)
+## Traefik (v2)
 
 Add the following labels to the Overseerr service in your `docker-compose.yml` file:
 
@@ -51,7 +55,7 @@ labels:
   - "traefik.http.services.overseerr-svc.loadbalancer.server.port=5055"
 ```
 
-For more information, see the Traefik documentation for a [basic example](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/).
+For more information, please refer to the [Traefik documentation](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/).
 
 ## Nginx
 
@@ -84,24 +88,6 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header X-Forwarded-Ssl on;
-    real_ip_header CF-Connecting-IP;
-    # Control the behavior of the Referer header (Referrer-Policy)
-    add_header Referrer-Policy "no-referrer";
-    # HTTP Strict Transport Security
-    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
-    # Reduce XSS risks (Content-Security-Policy) - uncomment to use and add URLs whenever necessary
-    # add_header Content-Security-Policy "default-src 'self'; connect-src 'self' https://plex.tv; style-src 'self' 'unsafe-inline' https://rsms.me/inter/inter.css; script-src 'self' 'unsafe-inline'; img-src 'self' data: https://plex.tv https://assets.plex.tv https://gravatar.com https://secure.gravatar.com https://i2.wp.com https://image.tmdb.org; font-src 'self' https://rsms.me/inter/font-files/" always;
-    # Prevent some categories of XSS attacks (X-XSS-Protection)
-    add_header X-XSS-Protection "1; mode=block" always;
-    # Provide clickjacking protection (X-Frame-Options)
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    # Prevent Sniff Mimetype (X-Content-Type-Options)
-    add_header X-Content-Type-Options "nosniff" always;
-    # Tell crawling bots to not index the site
-    add_header X-Robots-Tag "noindex, nofollow" always;
-
-    access_log /var/log/nginx/overseerr.example.com-access.log;
-    error_log /var/log/nginx/overseerr.example.com-error.log;
 
     location / {
         proxy_pass http://127.0.0.1:5055;
@@ -114,12 +100,15 @@ Then, create a symlink to `/etc/nginx/sites-enabled`:
 ```bash
 sudo ln -s /etc/nginx/sites-available/overseerr.example.com.conf /etc/nginx/sites-enabled/overseerr.example.com.conf
 ```
+
 {% endtab %}
 
 {% tab title="Subfolder" %}
 
 {% hint style="warning" %}
-Nginx subfolder reverse proxy is unsupported. The sub filters may stop working when Overseerr is updated. Use at your own risk!
+This Nginx subfolder reverse proxy is an unsupported workaround, and only provided as an example. The filters may stop working when Overseerr is updated.
+
+If you encounter any issues with Overseerr while using this workaround, we may ask you to try to reproduce the problem without the Nginx proxy.
 {% endhint %}
 
 Add the following location block to your existing `nginx.conf` file.
@@ -127,13 +116,16 @@ Add the following location block to your existing `nginx.conf` file.
 ```nginx
 location ^~ /overseerr {
     set $app 'overseerr';
+
     # Remove /overseerr path to pass to the app
     rewrite ^/overseerr/?(.*)$ /$1 break;
-    proxy_pass http://127.0.0.1:5055;  # NO TRAILING SLASH
+    proxy_pass http://127.0.0.1:5055; # NO TRAILING SLASH
+
     # Redirect location headers
     proxy_redirect ^ /$app;
     proxy_redirect /setup /$app/setup;
     proxy_redirect /login /$app/login;
+
     # Sub filters to replace hardcoded paths
     proxy_set_header Accept-Encoding "";
     sub_filter_once off;
@@ -152,6 +144,7 @@ location ^~ /overseerr {
     sub_filter '/site.webmanifest' '/$app/site.webmanifest';
 }
 ```
+
 {% endtab %}
 {% endtabs %}
 
