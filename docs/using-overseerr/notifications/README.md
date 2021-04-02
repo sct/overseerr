@@ -1,8 +1,8 @@
 # Notifications
 
-Overseerr already supports a good number of notification agents, such as **Discord**, **Slack** and **Pushover**. New agents are always considered for development, if there is enough demand for it.
-
 ## Supported Notification Agents
+
+Overseerr currently supports the following notification agents:
 
 - [Email](./email.md)
 - [Discord](./discord.md)
@@ -22,4 +22,4 @@ Note that some notifications are intended for the user who submitted the relevan
 
 ## Requesting New Notification Agents
 
-If we do not currently support a notification agent you would like, feel free to request it on [GitHub](https://github.com/sct/overseerr/issues). However, please be sure to search first and confirm that there is not already an existing request for the agent!
+If we do not currently support your preferred notification agent, feel free to [submit a feature request on GitHub](https://github.com/sct/overseerr/issues). However, please be sure to search first and confirm that there is not already an existing request for the agent!

@@ -74,17 +74,15 @@ Please see [these instructions on how to locate and share your logs](./asking-fo
 
 ### Why can't I see all of my Plex users?
 
-Navigate to your **User List** in Overseerr and click **Import Users from Plex** button.
-
-Don't forget to set the [default user permissions](../settings/README.md#default-user-permissions) before importing users.
+Please see the [documentation for importing users from Plex](../using-overseerr/users#importing-users-from-plex).
 
 ### Can I create local users in Overseerr?
 
-Head to the **Users** page and hit **Create Local User**. Keep in mind that local user accounts need a valid email address.
+Yes! Please see the [documentation for creating local users](../using-overseerr/users#creating-local-users).
 
 ### Is is possible to set user roles in Overseerr?
 
-User roles can be set for each user on the **Users** page. The list of assignable permissions is still growing, so if you have any suggestions, [submit a feature request](https://github.com/sct/overseerr/issues/new/choose)!
+Permissions can be configured for each user via the **User List** or their **User Settings** page. The list of assignable permissions is still growing, so if you have any suggestions, [submit a feature request](https://github.com/sct/overseerr/issues/new/choose)!
 
 ## Requests
 
@@ -96,7 +94,7 @@ Verify you are running v3 of both Radarr and Sonarr. Overseerr is not backwards-
 
 Yes! If you keep both non-4K and 4K content in your media libraries, you can link separate 4K Radarr/Sonarr servers to allow users to submit 4K requests. (You must configure default non-4K **and** default 4K Radarr/Sonarr servers.)
 
-Please see the [Services documentation](../settings/README.md#services) for details on how to configure your Radarr and/or Sonarr servers.
+Please see the [Services documentation](../using-overseerr/settings/README.md#services) for details on how to configure your Radarr and/or Sonarr servers.
 
 Note that users must also have the **Request 4K**, **Request 4K Movies**, and/or **Request 4K Series** permissions in order to submit requests for 4K content.
 
