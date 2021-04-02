@@ -17,7 +17,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@headlessui/react": "^0.3.1",
+    "@headlessui/react": "^0.3.2",
     "@supercharge/request-ip": "^1.1.2",
     "@svgr/webpack": "^5.5.0",
     "@tanem/react-nprogress": "^3.0.60",
