@@ -211,8 +211,7 @@ class DiscordAgent
       subject: payload.subject,
     });
 
-    const mentionedUsers: string[] = [];
-    let content = '';
+    let content = undefined;
 
     try {
       const {
@@ -233,7 +232,6 @@ class DiscordAgent
           ) &&
           payload.notifyUser.settings?.discordId
         ) {
-          mentionedUsers.push(payload.notifyUser.settings.discordId);
           content = `<@${payload.notifyUser.settings.discordId}>`;
         }
       } else {
@@ -241,20 +239,17 @@ class DiscordAgent
         const userRepository = getRepository(User);
         const users = await userRepository.find();
 
-        users
+        content = users
           .filter(
             (user) =>
               user.hasPermission(Permission.MANAGE_REQUESTS) &&
               user.settings?.hasNotificationAgentEnabled(
                 NotificationAgentType.DISCORD
-              )
+              ) &&
+              user.settings?.discordId
           )
-          .forEach((user) => {
-            if (user.settings?.discordId) {
-              mentionedUsers.push(user.settings.discordId);
-              content += `<@${user.settings.discordId}> `;
-            }
-          });
+          .map((user) => `<@${user.settings?.discordId}>`)
+          .join(' ');
       }
 
       await axios.post(webhookUrl, {
@@ -262,9 +257,6 @@ class DiscordAgent
         avatar_url: botAvatarUrl,
         embeds: [this.buildEmbed(type, payload)],
         content,
-        allowed_mentions: {
-          users: mentionedUsers,
-        },
       } as DiscordWebhookPayload);
 
       return true;
