@@ -192,6 +192,8 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                 ).length > 0
               }
               is4k={requestData.is4k}
+              plexUrl={requestData.media.plexUrl}
+              plexUrl4k={requestData.media.plexUrl4k}
             />
           )}
         </div>
