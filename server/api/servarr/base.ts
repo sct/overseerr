@@ -34,7 +34,7 @@ interface QueueItem {
   id: number;
 }
 
-interface Tag {
+export interface Tag {
   id: number;
   label: string;
 }

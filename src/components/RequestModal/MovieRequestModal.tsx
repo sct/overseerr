@@ -84,6 +84,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           profileId: requestOverrides.profile,
           rootFolder: requestOverrides.folder,
           userId: requestOverrides.user?.id,
+          tags: requestOverrides.tags,
         };
       }
       const response = await axios.post<MediaRequest>('/api/v1/request', {
@@ -173,6 +174,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         profileId: requestOverrides?.profile,
         rootFolder: requestOverrides?.folder,
         userId: requestOverrides?.user?.id,
+        tags: requestOverrides?.tags,
       });
 
       addToast(
@@ -254,6 +256,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
                       folder: editRequest.rootFolder,
                       profile: editRequest.profileId,
                       server: editRequest.serverId,
+                      tags: editRequest.tags,
                     }
                   : undefined
               }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { SonarrSeries } from '../../../../server/api/sonarr';
+import { SonarrSeries } from '../../../../server/api/servarr/sonarr';
 import globalMessages from '../../../i18n/globalMessages';
 import Alert from '../../Common/Alert';
 import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';

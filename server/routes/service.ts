@@ -22,6 +22,7 @@ serviceRoutes.get('/radarr', async (req, res) => {
       isDefault: radarr.isDefault,
       activeDirectory: radarr.activeDirectory,
       activeProfileId: radarr.activeProfileId,
+      activeTags: radarr.tags ?? [],
     })
   );
 
@@ -51,6 +52,7 @@ serviceRoutes.get<{ radarrId: string }>(
 
     const profiles = await radarr.getProfiles();
     const rootFolders = await radarr.getRootFolders();
+    const tags = await radarr.getTags();
 
     return res.status(200).json({
       server: {
@@ -60,6 +62,7 @@ serviceRoutes.get<{ radarrId: string }>(
         isDefault: radarrSettings.isDefault,
         activeDirectory: radarrSettings.activeDirectory,
         activeProfileId: radarrSettings.activeProfileId,
+        activeTags: radarrSettings.tags,
       },
       profiles: profiles.map((profile) => ({
         id: profile.id,
@@ -71,6 +74,7 @@ serviceRoutes.get<{ radarrId: string }>(
         path: folder.path,
         totalSpace: folder.totalSpace,
       })),
+      tags,
     } as ServiceCommonServerWithDetails);
   }
 );
@@ -90,6 +94,7 @@ serviceRoutes.get('/sonarr', async (req, res) => {
       activeAnimeDirectory: sonarr.activeAnimeDirectory,
       activeLanguageProfileId: sonarr.activeLanguageProfileId,
       activeAnimeLanguageProfileId: sonarr.activeAnimeLanguageProfileId,
+      activeTags: [],
     })
   );
 

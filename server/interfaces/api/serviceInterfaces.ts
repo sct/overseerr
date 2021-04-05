@@ -1,4 +1,4 @@
-import { QualityProfile, RootFolder } from '../../api/servarr/base';
+import { QualityProfile, RootFolder, Tag } from '../../api/servarr/base';
 import { LanguageProfile } from '../../api/servarr/sonarr';
 
 export interface ServiceCommonServer {
@@ -12,6 +12,8 @@ export interface ServiceCommonServer {
   activeAnimeProfileId?: number;
   activeAnimeDirectory?: string;
   activeAnimeLanguageProfileId?: number;
+  activeTags: number[];
+  activeAnimeTags?: number[];
 }
 
 export interface ServiceCommonServerWithDetails {
@@ -19,4 +21,5 @@ export interface ServiceCommonServerWithDetails {
   profiles: QualityProfile[];
   rootFolders: Partial<RootFolder>[];
   languageProfiles?: LanguageProfile[];
+  tags: Tag[];
 }

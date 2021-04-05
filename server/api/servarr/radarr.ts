@@ -5,6 +5,7 @@ interface RadarrMovieOptions {
   title: string;
   qualityProfileId: number;
   minimumAvailability: string;
+  tags: number[];
   profileId: number;
   year: number;
   rootFolderPath: string;
@@ -104,6 +105,7 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
           minimumAvailability: options.minimumAvailability,
           tmdbId: options.tmdbId,
           year: options.year,
+          tags: options.tags,
           rootFolderPath: options.rootFolderPath,
           monitored: options.monitored,
           addOptions: {
@@ -148,6 +150,7 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
         year: options.year,
         rootFolderPath: options.rootFolderPath,
         monitored: options.monitored,
+        tags: options.tags,
         addOptions: {
           searchForMovie: options.searchNow,
         },

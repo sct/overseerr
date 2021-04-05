@@ -441,6 +441,15 @@ components:
         - is4k
         - enableSeasonFolders
         - isDefault
+    ServarrTag:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        label:
+          type: string
+          example: A Label
     PublicSettings:
       type: object
       properties:

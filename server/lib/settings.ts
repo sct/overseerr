@@ -41,6 +41,7 @@ export interface DVRSettings {
   activeProfileId: number;
   activeProfileName: string;
   activeDirectory: string;
+  tags: number[];
   is4k: boolean;
   isDefault: boolean;
   externalUrl?: string;

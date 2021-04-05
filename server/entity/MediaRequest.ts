@@ -85,6 +85,37 @@ export class MediaRequest {
   @Column({ nullable: true })
   public languageProfileId: number;
 
+  @Column({
+    type: 'text',
+    nullable: true,
+    transformer: {
+      from: (value: string | null): number[] | null => {
+        if (value) {
+          if (value === 'none') {
+            return [];
+          }
+          return value.split(',').map((v) => Number(v));
+        }
+        return null;
+      },
+      to: (value: number[] | null): string | null => {
+        if (value) {
+          const finalValue = value.join(',');
+
+          // We want to keep the actual state of an "empty array" so we use
+          // the keyword "none" to track this.
+          if (!finalValue) {
+            return 'none';
+          }
+
+          return finalValue;
+        }
+        return null;
+      },
+    },
+  })
+  public tags?: number[];
+
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
   }
@@ -365,6 +396,7 @@ export class MediaRequest {
 
         let rootFolder = radarrSettings.activeDirectory;
         let qualityProfile = radarrSettings.activeProfileId;
+        let tags = radarrSettings.tags;
 
         if (
           this.rootFolder &&
@@ -384,6 +416,18 @@ export class MediaRequest {
           qualityProfile = this.profileId;
           logger.info(`Request has an override profile id: ${qualityProfile}`, {
             label: 'Media Request',
+          });
+        }
+
+        if (
+          this.tags &&
+          (radarrSettings.tags.length !== (this.tags?.length ?? 0) ||
+            radarrSettings.tags.every((num) => (this.tags ?? []).includes(num)))
+        ) {
+          tags = this.tags;
+          logger.info(`Request has override tags`, {
+            label: 'Media Request',
+            tagIds: tags,
           });
         }
 
@@ -420,6 +464,7 @@ export class MediaRequest {
             tmdbId: movie.id,
             year: Number(movie.release_date.slice(0, 4)),
             monitored: true,
+            tags,
             searchNow: !radarrSettings.preventSearch,
           })
           .then(async (radarrMovie) => {
