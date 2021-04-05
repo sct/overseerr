@@ -361,7 +361,7 @@ export class MediaRequest {
         const settings = getSettings();
         if (settings.radarr.length === 0 && !settings.radarr[0]) {
           logger.info(
-            'Skipped radarr request as there is no radarr configured',
+            'Skipped Radarr request as there is no Radarr server configured',
             { label: 'Media Request' }
           );
           return;
@@ -389,7 +389,9 @@ export class MediaRequest {
           logger.info(
             `There is no default ${
               this.is4k ? '4K ' : ''
-            }radarr configured. Did you set any of your Radarr servers as default?`,
+            }Radarr server configured. Did you set any of your ${
+              this.is4k ? '4K ' : ''
+            }Radarr servers as default?`,
             { label: 'Media Request' }
           );
           return;
@@ -501,7 +503,7 @@ export class MediaRequest {
           });
         logger.info('Sent request to Radarr', { label: 'Media Request' });
       } catch (e) {
-        const errorMessage = `Request failed to send to radarr: ${e.message}`;
+        const errorMessage = `Request failed to send to Radarr: ${e.message}`;
         logger.error('Request failed to send to Radarr', {
           label: 'Media Request',
           errorMessage,
@@ -521,7 +523,7 @@ export class MediaRequest {
         const settings = getSettings();
         if (settings.sonarr.length === 0 && !settings.sonarr[0]) {
           logger.info(
-            'Skipped sonarr request as there is no sonarr configured',
+            'Skipped Sonarr request as there is no Sonarr server configured',
             { label: 'Media Request' }
           );
           return;
@@ -549,7 +551,9 @@ export class MediaRequest {
           logger.info(
             `There is no default ${
               this.is4k ? '4K ' : ''
-            }sonarr configured. Did you set any of your Sonarr servers as default?`,
+            }Sonarr server configured. Did you set any of your ${
+              this.is4k ? '4K ' : ''
+            }Sonarr servers as default?`,
             { label: 'Media Request' }
           );
           return;
@@ -715,7 +719,7 @@ export class MediaRequest {
           });
         logger.info('Sent request to Sonarr', { label: 'Media Request' });
       } catch (e) {
-        const errorMessage = `Request failed to send to sonarr: ${e.message}`;
+        const errorMessage = `Request failed to send to Sonarr: ${e.message}`;
         logger.error('Request failed to send to Sonarr', {
           label: 'Media Request',
           errorMessage,
