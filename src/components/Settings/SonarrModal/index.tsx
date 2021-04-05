@@ -685,7 +685,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                           : []
                       }
                       isMulti
-                      isDisabled={!isValidated}
+                      isDisabled={!isValidated || isTesting}
                       placeholder={
                         !isValidated
                           ? intl.formatMessage(messages.testFirstTags)

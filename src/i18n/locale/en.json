@@ -332,6 +332,7 @@
   "components.Settings.RadarrModal.externalUrl": "External URL",
   "components.Settings.RadarrModal.externalUrlPlaceholder": "External URL pointing to your Radarr server",
   "components.Settings.RadarrModal.hostname": "Hostname or IP Address",
+  "components.Settings.RadarrModal.loadingTags": "Loading tags…",
   "components.Settings.RadarrModal.loadingprofiles": "Loading quality profiles…",
   "components.Settings.RadarrModal.loadingrootfolders": "Loading root folders…",
   "components.Settings.RadarrModal.minimumAvailability": "Minimum Availability",
