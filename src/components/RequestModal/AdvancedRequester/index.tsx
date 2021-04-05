@@ -35,7 +35,7 @@ const messages = defineMessages({
   languageprofile: 'Language Profile',
   tags: 'Tags',
   selecttags: 'Select tags',
-  notagoptions: 'No Tags',
+  notagoptions: 'No tags.',
 });
 
 export type RequestOverrides = {

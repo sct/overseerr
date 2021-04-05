@@ -72,8 +72,8 @@ const messages = defineMessages({
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
   validationBaseUrlTrailingSlash: 'Base URL must not end in a trailing slash',
   tags: 'Tags',
-  animeTags: 'Tags',
-  notagoptions: 'No Tags',
+  animeTags: 'Anime Tags',
+  notagoptions: 'No tags.',
   selecttags: 'Select tags',
 });
 

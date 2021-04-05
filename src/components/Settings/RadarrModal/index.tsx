@@ -66,7 +66,7 @@ const messages = defineMessages({
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
   validationBaseUrlTrailingSlash: 'Base URL must not end in a trailing slash',
-  notagoptions: 'No Tags',
+  notagoptions: 'No tags.',
   selecttags: 'Select tags',
 });
 
