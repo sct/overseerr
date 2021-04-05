@@ -35,7 +35,7 @@ const messages = defineMessages({
   languageprofile: 'Language Profile',
   tags: 'Tags',
   selecttags: 'Select tags',
-  notagoptions: 'No Tags',
+  notagoptions: 'No tags.',
 });
 
 export type RequestOverrides = {
@@ -466,7 +466,12 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 value: tag.id,
               }))}
               isMulti
-              placeholder={intl.formatMessage(messages.selecttags)}
+              isDisabled={isValidating || !serverData}
+              placeholder={
+                isValidating || !serverData
+                  ? intl.formatMessage(globalMessages.loading)
+                  : intl.formatMessage(messages.selecttags)
+              }
               className="react-select-container react-select-container-dark"
               classNamePrefix="react-select"
               value={selectedTags.map((tagId) => {

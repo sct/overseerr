@@ -59,6 +59,7 @@ const messages = defineMessages({
   testFirstQualityProfiles: 'Test connection to load quality profiles',
   loadingrootfolders: 'Loading root folders…',
   testFirstRootFolders: 'Test connection to load root folders',
+  loadingTags: 'Loading tags…',
   testFirstTags: 'Test connection to load tags',
   tags: 'Tags',
   preventSearch: 'Disable Auto-Search',
@@ -66,7 +67,7 @@ const messages = defineMessages({
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
   validationBaseUrlTrailingSlash: 'Base URL must not end in a trailing slash',
-  notagoptions: 'No Tags',
+  notagoptions: 'No tags.',
   selecttags: 'Select tags',
 });
 
@@ -631,10 +632,12 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           : []
                       }
                       isMulti
-                      isDisabled={!isValidated}
+                      isDisabled={!isValidated || isTesting}
                       placeholder={
                         !isValidated
                           ? intl.formatMessage(messages.testFirstTags)
+                          : isTesting
+                          ? intl.formatMessage(messages.loadingTags)
                           : intl.formatMessage(messages.selecttags)
                       }
                       className="react-select-container"
