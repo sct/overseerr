@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { Field, Formik } from 'formik';
+import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import type { OptionsType, OptionTypeBase } from 'react-select';
 import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
 import type { RadarrSettings } from '../../../../server/lib/settings';
@@ -9,9 +11,18 @@ import globalMessages from '../../../i18n/globalMessages';
 import Modal from '../../Common/Modal';
 import Transition from '../../Transition';
 
+type OptionType = {
+  value: string;
+  label: string;
+};
+
+const Select = dynamic(() => import('react-select'), { ssr: false });
+
 const messages = defineMessages({
   createradarr: 'Add New Radarr Server',
+  create4kradarr: 'Add New 4K Radarr Server',
   editradarr: 'Edit Radarr Server',
+  edit4kradarr: 'Edit 4K Radarr Server',
   validationNameRequired: 'You must provide a server name',
   validationHostnameRequired: 'You must provide a hostname or IP address',
   validationPortRequired: 'You must provide a valid port number',
@@ -24,6 +35,7 @@ const messages = defineMessages({
   toastRadarrTestFailure: 'Failed to connect to Radarr.',
   add: 'Add Server',
   defaultserver: 'Default Server',
+  default4kserver: 'Default 4K Server',
   servername: 'Server Name',
   servernamePlaceholder: 'A Radarr Server',
   hostname: 'Hostname or IP Address',
@@ -47,11 +59,15 @@ const messages = defineMessages({
   testFirstQualityProfiles: 'Test connection to load quality profiles',
   loadingrootfolders: 'Loading root folders…',
   testFirstRootFolders: 'Test connection to load root folders',
+  testFirstTags: 'Test connection to load tags',
+  tags: 'Tags',
   preventSearch: 'Disable Auto-Search',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
   validationBaseUrlTrailingSlash: 'Base URL must not end in a trailing slash',
+  notagoptions: 'No Tags',
+  selecttags: 'Select tags',
 });
 
 interface TestResponse {
@@ -62,6 +78,10 @@ interface TestResponse {
   rootFolders: {
     id: number;
     path: string;
+  }[];
+  tags: {
+    id: number;
+    label: string;
   }[];
 }
 
@@ -84,6 +104,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
   const [testResponse, setTestResponse] = useState<TestResponse>({
     profiles: [],
     rootFolders: [],
+    tags: [],
   });
   const RadarrSettingsSchema = Yup.object().shape({
     name: Yup.string().required(
@@ -92,7 +113,6 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     hostname: Yup.string()
       .required(intl.formatMessage(messages.validationHostnameRequired))
       .matches(
-        // eslint-disable-next-line
         /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
         intl.formatMessage(messages.validationHostnameRequired)
       ),
@@ -194,7 +214,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
         initialLoad.current = true;
       }
     },
-    [addToast]
+    [addToast, intl]
   );
 
   useEffect(() => {
@@ -231,6 +251,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
           activeProfileId: radarr?.activeProfileId,
           rootFolder: radarr?.activeDirectory,
           minimumAvailability: radarr?.minimumAvailability ?? 'released',
+          tags: radarr?.tags ?? [],
           isDefault: radarr?.isDefault ?? false,
           is4k: radarr?.is4k ?? false,
           externalUrl: radarr?.externalUrl,
@@ -256,6 +277,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               activeDirectory: values.rootFolder,
               is4k: values.is4k,
               minimumAvailability: values.minimumAvailability,
+              tags: values.tags,
               isDefault: values.isDefault,
               externalUrl: values.externalUrl,
               syncEnabled: values.syncEnabled,
@@ -324,14 +346,24 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               onOk={() => handleSubmit()}
               title={
                 !radarr
-                  ? intl.formatMessage(messages.createradarr)
-                  : intl.formatMessage(messages.editradarr)
+                  ? intl.formatMessage(
+                      values.is4k
+                        ? messages.create4kradarr
+                        : messages.createradarr
+                    )
+                  : intl.formatMessage(
+                      values.is4k ? messages.edit4kradarr : messages.editradarr
+                    )
               }
             >
               <div className="mb-6">
                 <div className="form-row">
                   <label htmlFor="isDefault" className="checkbox-label">
-                    {intl.formatMessage(messages.defaultserver)}
+                    {intl.formatMessage(
+                      values.is4k
+                        ? messages.default4kserver
+                        : messages.defaultserver
+                    )}
                   </label>
                   <div className="form-input">
                     <Field type="checkbox" id="isDefault" name="isDefault" />
@@ -582,6 +614,55 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           {errors.minimumAvailability}
                         </div>
                       )}
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="tags" className="text-label">
+                    {intl.formatMessage(messages.tags)}
+                  </label>
+                  <div className="form-input">
+                    <Select
+                      options={
+                        isValidated
+                          ? testResponse.tags.map((tag) => ({
+                              label: tag.label,
+                              value: tag.id,
+                            }))
+                          : []
+                      }
+                      isMulti
+                      isDisabled={!isValidated}
+                      placeholder={
+                        !isValidated
+                          ? intl.formatMessage(messages.testFirstTags)
+                          : intl.formatMessage(messages.selecttags)
+                      }
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                      value={values.tags.map((tagId) => {
+                        const foundTag = testResponse.tags.find(
+                          (tag) => tag.id === tagId
+                        );
+                        return {
+                          value: foundTag?.id,
+                          label: foundTag?.label,
+                        };
+                      })}
+                      onChange={(
+                        value: OptionTypeBase | OptionsType<OptionType> | null
+                      ) => {
+                        if (!Array.isArray(value)) {
+                          return;
+                        }
+                        setFieldValue(
+                          'tags',
+                          value?.map((option) => option.value)
+                        );
+                      }}
+                      noOptionsMessage={() =>
+                        intl.formatMessage(messages.notagoptions)
+                      }
+                    />
                   </div>
                 </div>
                 <div className="form-row">

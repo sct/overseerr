@@ -338,16 +338,32 @@ input[type='search']::-webkit-search-cancel-button {
   @apply text-white bg-gray-700 border border-gray-500 rounded-md hover:border-gray-500;
 }
 
+.react-select-container-dark .react-select__control {
+  @apply bg-gray-800 border border-gray-700;
+}
+
 .react-select-container .react-select__control--is-focused {
   @apply text-white bg-gray-700 border border-gray-500 rounded-md shadow;
+}
+
+.react-select-container-dark .react-select__control--is-focused {
+  @apply bg-gray-800 border-gray-600;
 }
 
 .react-select-container .react-select__menu {
   @apply text-gray-300 bg-gray-700;
 }
 
+.react-select-container-dark .react-select__menu {
+  @apply bg-gray-800;
+}
+
 .react-select-container .react-select__option--is-focused {
   @apply text-white bg-gray-600;
+}
+
+.react-select-container-dark .react-select__option--is-focused {
+  @apply bg-gray-700;
 }
 
 .react-select-container .react-select__indicator-separator {

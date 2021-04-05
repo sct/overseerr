@@ -30,7 +30,7 @@ export interface PlexSettings {
   libraries: Library[];
 }
 
-interface DVRSettings {
+export interface DVRSettings {
   id: number;
   name: string;
   hostname: string;
@@ -41,6 +41,7 @@ interface DVRSettings {
   activeProfileId: number;
   activeProfileName: string;
   activeDirectory: string;
+  tags: number[];
   is4k: boolean;
   isDefault: boolean;
   externalUrl?: string;
@@ -58,6 +59,7 @@ export interface SonarrSettings extends DVRSettings {
   activeAnimeDirectory?: string;
   activeAnimeLanguageProfileId?: number;
   activeLanguageProfileId?: number;
+  animeTags?: number[];
   enableSeasonFolders: boolean;
 }
 

@@ -1,28 +1,29 @@
+import { isEqual } from 'lodash';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
+  AfterInsert,
+  AfterRemove,
+  AfterUpdate,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
-  AfterUpdate,
-  AfterInsert,
+  Entity,
   getRepository,
+  ManyToOne,
   OneToMany,
-  AfterRemove,
+  PrimaryGeneratedColumn,
   RelationCount,
+  UpdateDateColumn,
 } from 'typeorm';
-import { User } from './User';
-import Media from './Media';
-import { MediaStatus, MediaRequestStatus, MediaType } from '../constants/media';
-import { getSettings } from '../lib/settings';
+import RadarrAPI from '../api/servarr/radarr';
+import SonarrAPI, { SonarrSeries } from '../api/servarr/sonarr';
 import TheMovieDb from '../api/themoviedb';
 import { ANIME_KEYWORD_ID } from '../api/themoviedb/constants';
-import RadarrAPI from '../api/radarr';
-import logger from '../logger';
-import SeasonRequest from './SeasonRequest';
-import SonarrAPI, { SonarrSeries } from '../api/sonarr';
+import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
 import notificationManager, { Notification } from '../lib/notifications';
+import { getSettings } from '../lib/settings';
+import logger from '../logger';
+import Media from './Media';
+import SeasonRequest from './SeasonRequest';
+import { User } from './User';
 
 @Entity()
 export class MediaRequest {
@@ -84,6 +85,37 @@ export class MediaRequest {
 
   @Column({ nullable: true })
   public languageProfileId: number;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    transformer: {
+      from: (value: string | null): number[] | null => {
+        if (value) {
+          if (value === 'none') {
+            return [];
+          }
+          return value.split(',').map((v) => Number(v));
+        }
+        return null;
+      },
+      to: (value: number[] | null): string | null => {
+        if (value) {
+          const finalValue = value.join(',');
+
+          // We want to keep the actual state of an "empty array" so we use
+          // the keyword "none" to track this.
+          if (!finalValue) {
+            return 'none';
+          }
+
+          return finalValue;
+        }
+        return null;
+      },
+    },
+  })
+  public tags?: number[];
 
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
@@ -365,6 +397,7 @@ export class MediaRequest {
 
         let rootFolder = radarrSettings.activeDirectory;
         let qualityProfile = radarrSettings.activeProfileId;
+        let tags = radarrSettings.tags;
 
         if (
           this.rootFolder &&
@@ -387,10 +420,22 @@ export class MediaRequest {
           });
         }
 
+        if (
+          this.tags &&
+          (radarrSettings.tags.length !== (this.tags?.length ?? 0) ||
+            radarrSettings.tags.every((num) => (this.tags ?? []).includes(num)))
+        ) {
+          tags = this.tags;
+          logger.info(`Request has override tags`, {
+            label: 'Media Request',
+            tagIds: tags,
+          });
+        }
+
         const tmdb = new TheMovieDb();
         const radarr = new RadarrAPI({
           apiKey: radarrSettings.apiKey,
-          url: RadarrAPI.buildRadarrUrl(radarrSettings, '/api/v3'),
+          url: RadarrAPI.buildUrl(radarrSettings, '/api/v3'),
         });
         const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
 
@@ -420,6 +465,7 @@ export class MediaRequest {
             tmdbId: movie.id,
             year: Number(movie.release_date.slice(0, 4)),
             monitored: true,
+            tags,
             searchNow: !radarrSettings.preventSearch,
           })
           .then(async (radarrMovie) => {
@@ -531,7 +577,7 @@ export class MediaRequest {
         const tmdb = new TheMovieDb();
         const sonarr = new SonarrAPI({
           apiKey: sonarrSettings.apiKey,
-          url: SonarrAPI.buildSonarrUrl(sonarrSettings, '/api/v3'),
+          url: SonarrAPI.buildUrl(sonarrSettings, '/api/v3'),
         });
         const series = await tmdb.getTvShow({ tvId: media.tmdbId });
         const tvdbId = series.external_ids.tvdb_id ?? media.tvdbId;
@@ -568,6 +614,11 @@ export class MediaRequest {
             ? sonarrSettings.activeAnimeLanguageProfileId
             : sonarrSettings.activeLanguageProfileId;
 
+        let tags =
+          seriesType === 'anime'
+            ? sonarrSettings.animeTags
+            : sonarrSettings.tags;
+
         if (
           this.rootFolder &&
           this.rootFolder !== '' &&
@@ -599,6 +650,14 @@ export class MediaRequest {
           );
         }
 
+        if (this.tags && !isEqual(this.tags, tags)) {
+          tags = this.tags;
+          logger.info(`Request has override tags`, {
+            label: 'Media Request',
+            tags,
+          });
+        }
+
         // Run this asynchronously so we don't wait for it on the UI side
         sonarr
           .addSeries({
@@ -610,6 +669,7 @@ export class MediaRequest {
             seasons: this.seasons.map((season) => season.seasonNumber),
             seasonFolder: sonarrSettings.enableSeasonFolders,
             seriesType,
+            tags,
             monitored: true,
             searchNow: !sonarrSettings.preventSearch,
           })
