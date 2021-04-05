@@ -47,7 +47,7 @@ export interface SonarrSeries {
   titleSlug: string;
   certification: string;
   genres: string[];
-  tags: string[];
+  tags: number[];
   added: string;
   ratings: {
     votes: number;
@@ -71,6 +71,7 @@ interface AddSeriesOptions {
   seasons: number[];
   seasonFolder: boolean;
   rootFolderPath: string;
+  tags?: number[];
   seriesType: SonarrSeries['seriesType'];
   monitored?: boolean;
   searchNow?: boolean;
@@ -146,6 +147,7 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
 
       // If the series already exists, we will simply just update it
       if (series.id) {
+        series.tags = options.tags ?? series.tags;
         series.seasons = this.buildSeasonList(options.seasons, series.seasons);
 
         const newSeriesResponse = await this.axios.put<SonarrSeries>(
@@ -190,6 +192,7 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
               monitored: false,
             }))
           ),
+          tags: options.tags,
           seasonFolder: options.seasonFolder,
           monitored: options.monitored,
           rootFolderPath: options.rootFolderPath,

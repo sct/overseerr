@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import {
   AfterInsert,
   AfterRemove,
@@ -613,6 +614,11 @@ export class MediaRequest {
             ? sonarrSettings.activeAnimeLanguageProfileId
             : sonarrSettings.activeLanguageProfileId;
 
+        let tags =
+          seriesType === 'anime'
+            ? sonarrSettings.animeTags
+            : sonarrSettings.tags;
+
         if (
           this.rootFolder &&
           this.rootFolder !== '' &&
@@ -644,6 +650,14 @@ export class MediaRequest {
           );
         }
 
+        if (this.tags && !isEqual(this.tags, tags)) {
+          tags = this.tags;
+          logger.info(`Request has override tags`, {
+            label: 'Media Request',
+            tags,
+          });
+        }
+
         // Run this asynchronously so we don't wait for it on the UI side
         sonarr
           .addSeries({
@@ -655,6 +669,7 @@ export class MediaRequest {
             seasons: this.seasons.map((season) => season.seasonNumber),
             seasonFolder: sonarrSettings.enableSeasonFolders,
             seriesType,
+            tags,
             monitored: true,
             searchNow: !sonarrSettings.preventSearch,
           })

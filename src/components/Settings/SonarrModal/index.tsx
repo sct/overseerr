@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { Field, Formik } from 'formik';
+import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import type { OptionsType, OptionTypeBase } from 'react-select';
 import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
 import type { SonarrSettings } from '../../../../server/lib/settings';
@@ -9,9 +11,18 @@ import globalMessages from '../../../i18n/globalMessages';
 import Modal from '../../Common/Modal';
 import Transition from '../../Transition';
 
+type OptionType = {
+  value: string;
+  label: string;
+};
+
+const Select = dynamic(() => import('react-select'), { ssr: false });
+
 const messages = defineMessages({
   createsonarr: 'Add New Sonarr Server',
+  create4ksonarr: 'Add New 4K Sonarr Server',
   editsonarr: 'Edit Sonarr Server',
+  edit4ksonarr: 'Edit 4K Sonarr Server',
   validationNameRequired: 'You must provide a server name',
   validationHostnameRequired: 'You must provide a hostname or IP address',
   validationPortRequired: 'You must provide a valid port number',
@@ -23,6 +34,7 @@ const messages = defineMessages({
   toastSonarrTestFailure: 'Failed to connect to Sonarr.',
   add: 'Add Server',
   defaultserver: 'Default Server',
+  default4kserver: 'Default 4K Server',
   servername: 'Server Name',
   servernamePlaceholder: 'A Sonarr Server',
   hostname: 'Hostname or IP Address',
@@ -49,6 +61,8 @@ const messages = defineMessages({
   testFirstRootFolders: 'Test connection to load root folders',
   loadinglanguageprofiles: 'Loading language profiles…',
   testFirstLanguageProfiles: 'Test connection to load language profiles',
+  loadingTags: 'Loading tags…',
+  testFirstTags: 'Test connection to load tags',
   syncEnabled: 'Enable Scan',
   externalUrl: 'External URL',
   externalUrlPlaceholder: 'External URL pointing to your Sonarr server',
@@ -57,6 +71,10 @@ const messages = defineMessages({
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
   validationBaseUrlTrailingSlash: 'Base URL must not end in a trailing slash',
+  tags: 'Tags',
+  animeTags: 'Tags',
+  notagoptions: 'No Tags',
+  selecttags: 'Select tags',
 });
 
 interface TestResponse {
@@ -71,6 +89,10 @@ interface TestResponse {
   languageProfiles: {
     id: number;
     name: string;
+  }[];
+  tags: {
+    id: number;
+    label: string;
   }[];
 }
 
@@ -94,6 +116,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
     profiles: [],
     rootFolders: [],
     languageProfiles: [],
+    tags: [],
   });
   const SonarrSettingsSchema = Yup.object().shape({
     name: Yup.string().required(
@@ -102,7 +125,6 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
     hostname: Yup.string()
       .required(intl.formatMessage(messages.validationHostnameRequired))
       .matches(
-        // eslint-disable-next-line
         /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
         intl.formatMessage(messages.validationHostnameRequired)
       ),
@@ -204,7 +226,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
         initialLoad.current = true;
       }
     },
-    [addToast]
+    [addToast, intl]
   );
 
   useEffect(() => {
@@ -244,6 +266,8 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
           activeAnimeProfileId: sonarr?.activeAnimeProfileId,
           activeAnimeLanguageProfileId: sonarr?.activeAnimeLanguageProfileId,
           activeAnimeRootFolder: sonarr?.activeAnimeDirectory,
+          tags: sonarr?.tags ?? [],
+          animeTags: sonarr?.animeTags ?? [],
           isDefault: sonarr?.isDefault ?? false,
           is4k: sonarr?.is4k ?? false,
           enableSeasonFolders: sonarr?.enableSeasonFolders ?? false,
@@ -282,6 +306,8 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                 : undefined,
               activeAnimeProfileName: animeProfileName ?? undefined,
               activeAnimeDirectory: values.activeAnimeRootFolder,
+              tags: values.tags,
+              animeTags: values.animeTags,
               is4k: values.is4k,
               isDefault: values.isDefault,
               enableSeasonFolders: values.enableSeasonFolders,
@@ -352,14 +378,24 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               onOk={() => handleSubmit()}
               title={
                 !sonarr
-                  ? intl.formatMessage(messages.createsonarr)
-                  : intl.formatMessage(messages.editsonarr)
+                  ? intl.formatMessage(
+                      values.is4k
+                        ? messages.create4ksonarr
+                        : messages.createsonarr
+                    )
+                  : intl.formatMessage(
+                      values.is4k ? messages.edit4ksonarr : messages.editsonarr
+                    )
               }
             >
               <div className="mb-6">
                 <div className="form-row">
                   <label htmlFor="isDefault" className="checkbox-label">
-                    {intl.formatMessage(messages.defaultserver)}
+                    {intl.formatMessage(
+                      values.is4k
+                        ? messages.default4kserver
+                        : messages.defaultserver
+                    )}
                   </label>
                   <div className="form-input">
                     <Field type="checkbox" id="isDefault" name="isDefault" />
@@ -635,6 +671,62 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
+                  <label htmlFor="tags" className="text-label">
+                    {intl.formatMessage(messages.tags)}
+                  </label>
+                  <div className="form-input">
+                    <Select
+                      options={
+                        isValidated
+                          ? testResponse.tags.map((tag) => ({
+                              label: tag.label,
+                              value: tag.id,
+                            }))
+                          : []
+                      }
+                      isMulti
+                      isDisabled={!isValidated}
+                      placeholder={
+                        !isValidated
+                          ? intl.formatMessage(messages.testFirstTags)
+                          : isTesting
+                          ? intl.formatMessage(messages.loadingTags)
+                          : intl.formatMessage(messages.selecttags)
+                      }
+                      isLoading={isTesting}
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                      value={
+                        isTesting
+                          ? []
+                          : values.tags.map((tagId) => {
+                              const foundTag = testResponse.tags.find(
+                                (tag) => tag.id === tagId
+                              );
+                              return {
+                                value: foundTag?.id,
+                                label: foundTag?.label,
+                              };
+                            })
+                      }
+                      onChange={(
+                        value: OptionTypeBase | OptionsType<OptionType> | null
+                      ) => {
+                        if (!Array.isArray(value)) {
+                          return;
+                        }
+                        setFieldValue(
+                          'tags',
+                          value?.map((option) => option.value)
+                        );
+                      }}
+                      noOptionsMessage={() =>
+                        intl.formatMessage(messages.notagoptions)
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
                   <label htmlFor="activeAnimeProfileId" className="text-label">
                     {intl.formatMessage(messages.animequalityprofile)}
                   </label>
@@ -755,6 +847,62 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                           {errors.activeAnimeLanguageProfileId}
                         </div>
                       )}
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="tags" className="text-label">
+                    {intl.formatMessage(messages.animeTags)}
+                  </label>
+                  <div className="form-input">
+                    <Select
+                      options={
+                        isValidated
+                          ? testResponse.tags.map((tag) => ({
+                              label: tag.label,
+                              value: tag.id,
+                            }))
+                          : []
+                      }
+                      isMulti
+                      isDisabled={!isValidated}
+                      placeholder={
+                        !isValidated
+                          ? intl.formatMessage(messages.testFirstTags)
+                          : isTesting
+                          ? intl.formatMessage(messages.loadingTags)
+                          : intl.formatMessage(messages.selecttags)
+                      }
+                      isLoading={isTesting}
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                      value={
+                        isTesting
+                          ? []
+                          : values.animeTags.map((tagId) => {
+                              const foundTag = testResponse.tags.find(
+                                (tag) => tag.id === tagId
+                              );
+                              return {
+                                value: foundTag?.id,
+                                label: foundTag?.label,
+                              };
+                            })
+                      }
+                      onChange={(
+                        value: OptionTypeBase | OptionsType<OptionType> | null
+                      ) => {
+                        if (!Array.isArray(value)) {
+                          return;
+                        }
+                        setFieldValue(
+                          'animeTags',
+                          value?.map((option) => option.value)
+                        );
+                      }}
+                      noOptionsMessage={() =>
+                        intl.formatMessage(messages.notagoptions)
+                      }
+                    />
                   </div>
                 </div>
                 <div className="form-row">

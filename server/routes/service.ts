@@ -126,6 +126,7 @@ serviceRoutes.get<{ sonarrId: string }>(
       const profiles = await sonarr.getProfiles();
       const rootFolders = await sonarr.getRootFolders();
       const languageProfiles = await sonarr.getLanguageProfiles();
+      const tags = await sonarr.getTags();
 
       return res.status(200).json({
         server: {
@@ -140,6 +141,8 @@ serviceRoutes.get<{ sonarrId: string }>(
           activeLanguageProfileId: sonarrSettings.activeLanguageProfileId,
           activeAnimeLanguageProfileId:
             sonarrSettings.activeAnimeLanguageProfileId,
+          activeTags: sonarrSettings.tags,
+          activeAnimeTags: sonarrSettings.animeTags,
         },
         profiles: profiles.map((profile) => ({
           id: profile.id,
@@ -152,6 +155,7 @@ serviceRoutes.get<{ sonarrId: string }>(
           totalSpace: folder.totalSpace,
         })),
         languageProfiles: languageProfiles,
+        tags,
       } as ServiceCommonServerWithDetails);
     } catch (e) {
       next({ status: 500, message: e.message });

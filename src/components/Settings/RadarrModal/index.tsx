@@ -83,10 +83,6 @@ interface TestResponse {
     id: number;
     label: string;
   }[];
-  createdTag?: {
-    id: number;
-    label: string;
-  };
 }
 
 interface RadarrModalProps {
