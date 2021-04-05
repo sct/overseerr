@@ -420,11 +420,7 @@ export class MediaRequest {
           });
         }
 
-        if (
-          this.tags &&
-          (radarrSettings.tags.length !== (this.tags?.length ?? 0) ||
-            radarrSettings.tags.every((num) => (this.tags ?? []).includes(num)))
-        ) {
+        if (this.tags && !isEqual(this.tags, radarrSettings.tags)) {
           tags = this.tags;
           logger.info(`Request has override tags`, {
             label: 'Media Request',
@@ -654,7 +650,7 @@ export class MediaRequest {
           tags = this.tags;
           logger.info(`Request has override tags`, {
             label: 'Media Request',
-            tags,
+            tagIds: tags,
           });
         }
 
