@@ -111,7 +111,7 @@ class DiscordAgent
     if (payload.request) {
       fields.push({
         name: 'Requested By',
-        value: payload.request?.requestedBy.displayName ?? '',
+        value: payload.request.requestedBy.displayName,
         inline: true,
       });
     }
@@ -181,6 +181,7 @@ class DiscordAgent
         ...(payload.extra ?? []).map((extra) => ({
           name: extra.name,
           value: extra.value,
+          inline: true,
         })),
       ],
       thumbnail: {

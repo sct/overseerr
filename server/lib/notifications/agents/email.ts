@@ -164,7 +164,10 @@ class EmailAgent
         });
 
         try {
-          const email = new PreparedEmail(payload.notifyUser.settings?.pgpKey);
+          const email = new PreparedEmail(
+            this.getSettings(),
+            payload.notifyUser.settings?.pgpKey
+          );
           await email.send(
             this.buildMessage(type, payload, payload.notifyUser.email)
           );
@@ -204,7 +207,10 @@ class EmailAgent
             });
 
             try {
-              const email = new PreparedEmail(user.settings?.pgpKey);
+              const email = new PreparedEmail(
+                this.getSettings(),
+                user.settings?.pgpKey
+              );
               await email.send(this.buildMessage(type, payload, user.email));
             } catch (e) {
               logger.error('Error sending email notification', {

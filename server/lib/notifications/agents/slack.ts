@@ -67,9 +67,7 @@ class SlackAgent
     if (payload.request) {
       fields.push({
         type: 'mrkdwn',
-        text: `*Requested By*\n${
-          payload.request?.requestedBy.displayName ?? ''
-        }`,
+        text: `*Requested By*\n${payload.request.requestedBy.displayName}`,
       });
     }
 
