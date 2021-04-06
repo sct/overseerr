@@ -96,8 +96,7 @@ const NotificationsEmail: React.FC = () => {
         }),
       pgpPrivateKey: Yup.string()
         .when('pgpPassword', {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          is: (value: any) => !!value,
+          is: (value: unknown) => !!value,
           then: Yup.string()
             .nullable()
             .required(intl.formatMessage(messages.validationPgpPrivateKey)),
@@ -108,8 +107,7 @@ const NotificationsEmail: React.FC = () => {
           intl.formatMessage(messages.validationPgpPrivateKey)
         ),
       pgpPassword: Yup.string().when('pgpPrivateKey', {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        is: (value: any) => !!value,
+        is: (value: unknown) => !!value,
         then: Yup.string()
           .nullable()
           .required(intl.formatMessage(messages.validationPgpPassword)),

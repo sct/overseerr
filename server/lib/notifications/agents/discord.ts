@@ -181,7 +181,6 @@ class DiscordAgent
         ...(payload.extra ?? []).map((extra) => ({
           name: extra.name,
           value: extra.value,
-          inline: true,
         })),
       ],
       thumbnail: {
