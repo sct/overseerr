@@ -790,5 +790,7 @@
   "i18n.areyousure": "Tem certeza?",
   "components.TvDetails.originaltitle": "Título Original",
   "components.RequestModal.QuotaDisplay.requiredquotaUser": "Este utilizador precisa ter pelo menos <strong>{seasons}</strong> {seasons, plural, one {solicitação de temporada} other {solicitações de temporadas}} restantes para enviar uma solicitação para esta série.",
-  "components.MovieDetails.originaltitle": "Título Original"
+  "components.MovieDetails.originaltitle": "Título Original",
+  "components.LanguageSelector.originalLanguageDefault": "Todos Idiomas",
+  "components.LanguageSelector.languageServerDefault": "Padrão ({language})"
 }
