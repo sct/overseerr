@@ -48,7 +48,7 @@ const UserEmailSettings: React.FC = () => {
     pgpKey: Yup.string()
       .nullable()
       .matches(
-        /^-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\w]+-----END PGP PUBLIC KEY BLOCK-----$/,
+        /^-----BEGIN PGP PUBLIC KEY BLOCK-----.+-----END PGP PUBLIC KEY BLOCK-----$/,
         intl.formatMessage(messages.validationPgpPublicKey)
       ),
   });

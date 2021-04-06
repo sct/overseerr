@@ -103,7 +103,7 @@ const NotificationsEmail: React.FC = () => {
           otherwise: Yup.string().nullable(),
         })
         .matches(
-          /^-----BEGIN PGP PRIVATE KEY BLOCK-----[\s\w]+-----END PGP PRIVATE KEY BLOCK-----$/,
+          /^-----BEGIN PGP PRIVATE KEY BLOCK-----.+-----END PGP PRIVATE KEY BLOCK-----$/,
           intl.formatMessage(messages.validationPgpPrivateKey)
         ),
       pgpPassword: Yup.string().when('pgpPrivateKey', {
