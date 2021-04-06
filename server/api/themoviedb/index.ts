@@ -715,7 +715,10 @@ class TheMovieDb extends ExternalAPI {
         86400 // 24 hours
       );
 
-      if (language !== 'en' && data.genres.some((genre) => !genre.name)) {
+      if (
+        !language.startsWith('en') &&
+        data.genres.some((genre) => !genre.name)
+      ) {
         const englishData = await this.get<TmdbGenresResult>(
           '/genre/movie/list',
           {
@@ -763,7 +766,10 @@ class TheMovieDb extends ExternalAPI {
         86400 // 24 hours
       );
 
-      if (language !== 'en' && data.genres.some((genre) => !genre.name)) {
+      if (
+        !language.startsWith('en') &&
+        data.genres.some((genre) => !genre.name)
+      ) {
         const englishData = await this.get<TmdbGenresResult>(
           '/genre/tv/list',
           {
