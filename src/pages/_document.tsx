@@ -174,7 +174,11 @@ class MyDocument extends Document {
             name="apple-mobile-web-app-status-bar-style"
             content="black-translucent"
           />
-          <link rel="manifest" href="/site.webmanifest"></link>
+          <link
+            rel="manifest"
+            href="/site.webmanifest"
+            crossOrigin="use-credentials"
+          />
         </Head>
         <body>
           <Main />
