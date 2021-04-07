@@ -50,7 +50,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
           {intl.formatMessage(messages.email)}
         </span>
       ),
-      route: `/users/${user?.id}/settings/notifications/email`,
+      route: '/settings/notifications/email',
       regex: /\/settings\/notifications\/email/,
       hidden: !data?.emailEnabled,
     },
@@ -62,7 +62,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
           Discord
         </span>
       ),
-      route: `/users/${user?.id}/settings/notifications/discord`,
+      route: '/settings/notifications/discord',
       regex: /\/settings\/notifications\/discord/,
     },
     {
@@ -73,11 +73,17 @@ const UserNotificationSettings: React.FC = ({ children }) => {
           Telegram
         </span>
       ),
-      route: `/users/${user?.id}/settings/notifications/telegram`,
+      route: '/settings/notifications/telegram',
       regex: /\/settings\/notifications\/telegram/,
       hidden: !data?.telegramEnabled || !data?.telegramBotUsername,
     },
   ];
+
+  settingsRoutes.forEach((settingsRoute) => {
+    settingsRoute.route = router.asPath.includes('/profile')
+      ? `/profile${settingsRoute.route}`
+      : `/users/${user?.id}${settingsRoute.route}`;
+  });
 
   if (!data && !error) {
     return <LoadingSpinner />;

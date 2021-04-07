@@ -44,12 +44,12 @@ const UserSettings: React.FC = ({ children }) => {
   const settingsRoutes: SettingsRoute[] = [
     {
       text: intl.formatMessage(messages.menuGeneralSettings),
-      route: `/users/${user?.id}/settings/main`,
+      route: '/settings/main',
       regex: /\/settings(\/main)?$/,
     },
     {
       text: intl.formatMessage(messages.menuChangePass),
-      route: `/users/${user?.id}/settings/password`,
+      route: '/settings/password',
       regex: /\/settings\/password/,
       hidden:
         (!settings.currentSettings.localLogin &&
@@ -64,13 +64,13 @@ const UserSettings: React.FC = ({ children }) => {
     {
       text: intl.formatMessage(messages.menuNotifications),
       route: data?.emailEnabled
-        ? `/users/${user?.id}/settings/notifications/email`
-        : `/users/${user?.id}/settings/notifications/discord`,
+        ? '/settings/notifications/email'
+        : '/settings/notifications/discord',
       regex: /\/settings\/notifications/,
     },
     {
       text: intl.formatMessage(messages.menuPermissions),
-      route: `/users/${user?.id}/settings/permissions`,
+      route: '/settings/permissions',
       regex: /\/settings\/permissions/,
       requiredPermission: Permission.MANAGE_USERS,
       hidden: currentUser?.id !== 1 && currentUser?.id === user.id,
@@ -99,13 +99,11 @@ const UserSettings: React.FC = ({ children }) => {
     );
   }
 
-  const currentRoute = settingsRoutes.find(
-    (route) => !!router.pathname.match(route.regex)
-  )?.route;
-
-  const finalRoute = router.asPath.includes('/profile')
-    ? `/profile${currentRoute}`
-    : `/users/${user.id}${currentRoute}`;
+  settingsRoutes.forEach((settingsRoute) => {
+    settingsRoute.route = router.asPath.includes('/profile')
+      ? `/profile${settingsRoute.route}`
+      : `/users/${user.id}${settingsRoute.route}`;
+  });
 
   return (
     <>
@@ -117,10 +115,7 @@ const UserSettings: React.FC = ({ children }) => {
       />
       <ProfileHeader user={user} isSettingsPage />
       <div className="mt-6">
-        <SettingsTabs
-          settingsRoutes={settingsRoutes}
-          defaultValue={finalRoute}
-        />
+        <SettingsTabs settingsRoutes={settingsRoutes} />
       </div>
       <div className="mt-10 text-white">{children}</div>
     </>

@@ -68,8 +68,7 @@ const SettingsLink: React.FC<{
 const SettingsTabs: React.FC<{
   tabType?: 'default' | 'button';
   settingsRoutes: SettingsRoute[];
-  defaultValue?: string;
-}> = ({ tabType = 'default', settingsRoutes, defaultValue }) => {
+}> = ({ tabType = 'default', settingsRoutes }) => {
   const router = useRouter();
   const { user: currentUser } = useUser();
 
@@ -87,7 +86,6 @@ const SettingsTabs: React.FC<{
             router.push(e.target.value);
           }}
           defaultValue={
-            defaultValue ??
             settingsRoutes.find((route) => !!router.pathname.match(route.regex))
               ?.route
           }
