@@ -113,7 +113,6 @@ settingsRoutes.post('/plex', async (req, res, next) => {
 
 settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
   const userRepository = getRepository(User);
-  const regexp = /(http(s?):\/\/)(.*)(:[0-9]*)/;
   try {
     const admin = await userRepository.findOneOrFail({
       select: ['id', 'plexToken'],
@@ -126,18 +125,15 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
       return device.provides.includes('server') && device.owned;
     });
     const settings = getSettings();
+
     if (devices) {
       await Promise.all(
         devices.map(async (device) => {
           await Promise.all(
             device.connection.map(async (connection) => {
-              connection.host = connection.uri.replace(regexp, '$3');
-              let msg:
-                | { status: number; message: string }
-                | undefined = undefined;
               const plexDeviceSettings = {
                 ...settings.plex,
-                ip: connection.host,
+                ip: connection.address,
                 port: connection.port,
                 useSsl: connection.protocol === 'https' ? true : false,
               };
@@ -146,20 +142,15 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
                 plexSettings: plexDeviceSettings,
                 timeout: 5000,
               });
+
               try {
                 await plexClient.getStatus();
-                msg = {
-                  status: 200,
-                  message: 'OK',
-                };
+                connection.status = 200;
+                connection.message = 'OK';
               } catch (e) {
-                msg = {
-                  status: 500,
-                  message: e.message,
-                };
+                connection.status = 500;
+                connection.message = e.message;
               }
-              connection.status = msg?.status;
-              connection.message = msg?.message;
             })
           );
         })
