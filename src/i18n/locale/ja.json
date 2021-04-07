@@ -357,5 +357,7 @@
   "i18n.loading": "ロード中…",
   "i18n.testing": "テスト中…",
   "i18n.test": "テストする",
-  "i18n.status": "状態"
+  "i18n.status": "状態",
+  "components.TvDetails.originaltitle": "原題",
+  "components.MovieDetails.originaltitle": "原題"
 }
