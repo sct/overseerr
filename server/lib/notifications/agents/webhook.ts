@@ -30,6 +30,12 @@ const KeyMap: Record<string, string | KeyMapFunction> = {
   media_status4k: (payload) =>
     payload.media?.status ? MediaStatus[payload.media?.status4k] : '',
   request_id: 'request.id',
+  requestedBy_username: 'request.requestedBy.displayName',
+  requestedBy_email: 'request.requestedBy.email',
+  requestedBy_avatar: 'request.requestedBy.avatar',
+  requestedBy_settings_discordId: 'request.requestedBy.settings.discordId',
+  requestedBy_settings_telegramChatId:
+    'request.requestedBy.settings.telegramChatId',
 };
 
 class WebhookAgent
