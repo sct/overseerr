@@ -115,7 +115,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
     hostname: Yup.string()
       .required(intl.formatMessage(messages.validationHostnameRequired))
       .matches(
-        // eslint-disable-next-line
         /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
         intl.formatMessage(messages.validationHostnameRequired)
       ),
@@ -394,7 +393,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                         const targPreset =
                           availablePresets[Number(e.target.value)];
                         if (targPreset) {
-                          setFieldValue('hostname', targPreset.host);
+                          setFieldValue('hostname', targPreset.address);
                           setFieldValue('port', targPreset.port);
                           setFieldValue('useSsl', targPreset.ssl);
                         }
