@@ -200,9 +200,6 @@ components:
         message:
           type: string
           example: 'OK'
-        host:
-          type: string
-          example: '127-0-0-1.2ab6ce1a093d465e910def96cf4e4799.plex.direct'
       required:
         - protocol
         - address
