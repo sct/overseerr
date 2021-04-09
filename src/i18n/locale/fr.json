@@ -756,5 +756,7 @@
   "components.QuotaSelector.movieRequestLimit": "{quotaLimit} film(s) par {quotaDays} jour(s)",
   "components.TvDetails.originaltitle": "Titre original",
   "components.MovieDetails.originaltitle": "Titre original",
-  "components.RequestModal.QuotaDisplay.seasonlimit": "{limit, plural, one {saison} other {saisons}}"
+  "components.RequestModal.QuotaDisplay.seasonlimit": "{limit, plural, one {saison} other {saisons}}",
+  "components.LanguageSelector.originalLanguageDefault": "Toutes les langues",
+  "components.LanguageSelector.languageServerDefault": "({language}) par défaut"
 }
