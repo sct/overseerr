@@ -32,6 +32,9 @@ const defaultPayload = {
   '{{extra}}': [],
   '{{request}}': {
     request_id: '{{request_id}}',
+    requestedBy_email: '{{requestedBy_email}}',
+    requestedBy_username: '{{requestedBy_username}}',
+    requestedBy_avatar: '{{requestedBy_avatar}}',
   },
 };
 
