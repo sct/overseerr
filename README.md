@@ -12,7 +12,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-47-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-48-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -159,6 +159,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.jagandeepbrar.io"><img src="https://avatars.githubusercontent.com/u/3048295?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jagandeep Brar</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=JagandeepBrar" title="Documentation">📖</a></td>
     <td align="center"><a href="http://dtalens.com"><img src="https://avatars.githubusercontent.com/u/6631832?v=4?s=100" width="100px;" alt=""/><br /><sub><b>dtalens</b></sub></a><br /><a href="#translation-dtalens" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/acortelyou"><img src="https://avatars.githubusercontent.com/u/1689668?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alex Cortelyou</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=acortelyou" title="Code">💻</a></td>
+    <td align="center"><a href="https://nz.linkedin.com/in/jonocairns"><img src="https://avatars.githubusercontent.com/u/182836?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jono Cairns</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=jonocairns" title="Code">💻</a></td>
   </tr>
 </table>
 
