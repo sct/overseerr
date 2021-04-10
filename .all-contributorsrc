@@ -440,6 +440,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jonocairns",
+      "name": "Jono Cairns",
+      "avatar_url": "https://avatars.githubusercontent.com/u/182836?v=4",
+      "profile": "https://nz.linkedin.com/in/jonocairns",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
