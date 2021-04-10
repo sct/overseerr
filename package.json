@@ -56,7 +56,7 @@
     "react-intl": "5.15.7",
     "react-markdown": "^5.0.3",
     "react-select": "^4.3.0",
-    "react-spring": "^8.0.27",
+    "react-spring": "^9.1.0",
     "react-toast-notifications": "^2.4.3",
     "react-transition-group": "^4.4.1",
     "react-truncate-markup": "^5.1.0",
