@@ -53,7 +53,7 @@
     "react-animate-height": "^2.0.23",
     "react-dom": "17.0.2",
     "react-intersection-observer": "^8.31.0",
-    "react-intl": "5.13.5",
+    "react-intl": "5.15.7",
     "react-markdown": "^5.0.3",
     "react-select": "^4.3.0",
     "react-spring": "^8.0.27",
