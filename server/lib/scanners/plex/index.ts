@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm';
 import animeList from '../../../api/animelist';
 import PlexAPI, { PlexLibraryItem, PlexMetadata } from '../../../api/plexapi';
 import { TmdbTvDetails } from '../../../api/themoviedb/interfaces';
+import Media from '../../../entity/Media';
 import { User } from '../../../entity/User';
 import { getSettings, Library } from '../../settings';
 import BaseScanner, {
@@ -35,10 +36,12 @@ class PlexScanner
   private libraries: Library[];
   private currentLibrary: Library;
   private isRecentOnly = false;
+  private processedMediaIds: number[];
 
   public constructor(isRecentOnly = false) {
     super('Plex Scan');
     this.isRecentOnly = isRecentOnly;
+    this.processedMediaIds = [];
   }
 
   public status(): SyncStatus {
@@ -54,6 +57,7 @@ class PlexScanner
   public async run(): Promise<void> {
     const settings = getSettings();
     const sessionId = this.startRun();
+    this.processedMediaIds = [];
     try {
       const userRepository = getRepository(User);
       const admin = await userRepository.findOne({
@@ -105,11 +109,32 @@ class PlexScanner
           await this.loop(this.processItem.bind(this), { sessionId });
         }
       } else {
+        const mediaRepository = getRepository(Media);
+        const existingMedia = await mediaRepository.find();
+        this.log(`Found ${existingMedia.length} existing media items`, 'info');
+
         for (const library of this.libraries) {
           this.currentLibrary = library;
           this.log(`Beginning to process library: ${library.name}`, 'info');
           this.items = await this.plexClient.getLibraryContents(library.id);
           await this.loop(this.processItem.bind(this), { sessionId });
+        }
+
+        const existingMediaIds = existingMedia.map((em) => em.tmdbId);
+
+        const deletedItems = existingMediaIds.filter(
+          (eid) => !this.processedMediaIds.includes(eid)
+        );
+
+        this.log(`Found ${deletedItems.length} items to delete`, 'info');
+
+        for (const itemToDelete of deletedItems) {
+          const item = existingMedia.find((em) => em.tmdbId === itemToDelete);
+          if (item) {
+            this.log(`Deleting ${item.tmdbId}`, 'info');
+            // is there anything else we should be deleting here? requests?
+            await mediaRepository.remove(item);
+          }
         }
       }
       this.log(
@@ -147,6 +172,7 @@ class PlexScanner
   private async processPlexMovie(plexitem: PlexLibraryItem) {
     const mediaIds = await this.getMediaIds(plexitem);
     const metadata = await this.plexClient.getMetadata(plexitem.ratingKey);
+    this.processedMediaIds.push(mediaIds.tmdbId);
 
     const has4k = metadata.Media.some(
       (media) => media.videoResolution === '4k'
@@ -186,6 +212,7 @@ class PlexScanner
     });
 
     const mediaIds = await this.getMediaIds(metadata);
+    this.processedMediaIds.push(mediaIds.tmdbId);
 
     // If the media is from HAMA, and doesn't have a TVDb ID, we will treat it
     // as a special HAMA movie

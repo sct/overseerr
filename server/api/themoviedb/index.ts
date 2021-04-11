@@ -583,7 +583,7 @@ class TheMovieDb extends ExternalAPI {
       }
 
       throw new Error(
-        '[TMDb] Failed to find a title with the provided IMDB id'
+        `[TMDb] Failed to find a title with the provided IMDB id ${imdbId}`
       );
     } catch (e) {
       throw new Error(
