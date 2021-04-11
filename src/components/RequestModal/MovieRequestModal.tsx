@@ -33,6 +33,7 @@ const messages = defineMessages({
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request for <strong>{title}</strong> edited successfully!',
   requesterror: 'Something went wrong while submitting the request.',
+  pendingapproval: 'Your request is pending approval.',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -206,8 +207,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   };
 
   const isOwner = activeRequest
-    ? activeRequest.requestedBy.id === user?.id ||
-      hasPermission(Permission.MANAGE_REQUESTS)
+    ? activeRequest.requestedBy.id === user?.id
     : false;
 
   if (activeRequest?.status === MediaRequestStatus.PENDING) {
@@ -222,27 +222,27 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
             title: data?.title,
           }
         )}
-        onOk={() => updateRequest()}
+        onOk={() => (isOwner ? cancelRequest() : updateRequest())}
         okDisabled={isUpdating}
-        okText={intl.formatMessage(globalMessages.edit)}
-        okButtonType="primary"
-        onSecondary={isOwner ? () => cancelRequest() : undefined}
-        secondaryDisabled={isUpdating}
-        secondaryText={
-          isUpdating
-            ? intl.formatMessage(globalMessages.canceling)
-            : intl.formatMessage(messages.cancel)
+        okText={
+          isOwner
+            ? isUpdating
+              ? intl.formatMessage(globalMessages.canceling)
+              : intl.formatMessage(messages.cancel)
+            : intl.formatMessage(globalMessages.edit)
         }
-        secondaryButtonType="danger"
+        okButtonType={isOwner ? 'danger' : 'primary'}
         cancelText={intl.formatMessage(globalMessages.close)}
         iconSvg={<DownloadIcon className="w-6 h-6" />}
       >
-        {intl.formatMessage(
-          is4k ? messages.request4kfrom : messages.requestfrom,
-          {
-            username: activeRequest.requestedBy.displayName,
-          }
-        )}
+        {isOwner
+          ? intl.formatMessage(messages.pendingapproval)
+          : intl.formatMessage(
+              is4k ? messages.request4kfrom : messages.requestfrom,
+              {
+                username: activeRequest.requestedBy.displayName,
+              }
+            )}
         {(hasPermission(Permission.REQUEST_ADVANCED) ||
           hasPermission(Permission.MANAGE_REQUESTS)) && (
           <div className="mt-4">
