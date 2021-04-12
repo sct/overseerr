@@ -370,6 +370,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
         </div>
         <div className="z-10 flex flex-col justify-center w-full pl-4 pr-4 mt-4 space-y-2 xl:mt-0 xl:items-end xl:w-96 xl:pl-0">
           {requestData.status === MediaRequestStatus.PENDING &&
+            !hasPermission(Permission.MANAGE_REQUESTS) &&
             requestData.requestedBy.id === user?.id && (
               <ConfirmButton
                 onClick={() => deleteRequest()}
