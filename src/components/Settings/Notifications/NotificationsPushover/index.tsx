@@ -9,6 +9,7 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import SensitiveInput from '../../../Common/SensitiveInput';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
@@ -189,7 +190,8 @@ const NotificationsPushover: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
+                    <SensitiveInput
+                      as="field"
                       id="accessToken"
                       name="accessToken"
                       type="text"
@@ -208,7 +210,8 @@ const NotificationsPushover: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
+                    <SensitiveInput
+                      as="field"
                       id="userToken"
                       name="userToken"
                       type="text"

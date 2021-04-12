@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import type { RadarrSettings } from '../../../../server/lib/settings';
 import globalMessages from '../../../i18n/globalMessages';
 import Modal from '../../Common/Modal';
+import SensitiveInput from '../../Common/SensitiveInput';
 import Transition from '../../Transition';
 
 type OptionType = {
@@ -477,7 +478,8 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </label>
                   <div className="form-input">
                     <div className="form-input-field">
-                      <Field
+                      <SensitiveInput
+                        as="field"
                         id="apiKey"
                         name="apiKey"
                         type="text"
