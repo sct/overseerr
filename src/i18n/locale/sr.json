@@ -72,7 +72,6 @@
   "components.Settings.plexsettings": "Plex Podešavanja",
   "components.Settings.plexlibrariesDescription": "Overseerr skenira sadržaj za imena. Dodajte informacije o Plex konekciji i kliknite dole dugme ako nijedan nije na listi.",
   "components.Settings.plexlibraries": "Plex Sadržaj",
-  "components.Settings.notificationsettingsDescription": "Ovde možete odabrati tipove notifikacija koji se šalju i ka kojim servisima.",
   "components.Settings.notificationsettings": "Podešavanje Notifikacija",
   "components.Settings.nodefaultdescription": "Barem jedan server mora biti označen kao defaultni da bi se zahtevi poslali ka servisima.",
   "components.Settings.nodefault": "Nijedan defaultni server nije odabran!",
@@ -237,7 +236,6 @@
   "components.Discover.recentlyAdded": "Nedavno Dodati",
   "components.Discover.populartv": "Popularne Serije",
   "components.Discover.popularmovies": "Popularni Filmovi",
-  "components.Discover.nopending": "Nema zahteva na čekanju",
   "components.Discover.discovertv": "Popularne Serije",
   "components.Discover.discovermovies": "Popunarni Filmov",
   "pages.errormessagewithcode": "{statusCode} - {error}"
