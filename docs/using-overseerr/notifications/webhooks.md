@@ -1,10 +1,10 @@
-# Webhooks
+# Webhook
 
-Webhooks allow you to send a custom JSON payload to any endpoint. You can also set an authorization header for security purposes.
+The webhook notification agent allows you to send a custom JSON payload to any endpoint.
 
 ## Configuration
 
-### Webhook URL (required)
+### Webhook URL
 
 The URL you would like to post notifications to. Your JSON will be sent as the body of the request.
 
@@ -16,7 +16,7 @@ This is typically not needed. Please refer to your webhook provider's documentat
 
 This value will be sent as an `Authorization` HTTP header.
 
-### JSON Payload (required)
+### JSON Payload
 
 Customize the JSON payload to suit your needs. Overseerr provides several [template variables](./webhooks.md#template-variables) for use in the payload, which will be replaced with the relevant data when the notifications are triggered.
 

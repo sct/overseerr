@@ -6,10 +6,10 @@ Overseerr currently supports the following notification agents:
 
 - [Email](./email.md)
 - [Discord](./discord.md)
-- Pushbullet
-- Pushover
-- Slack
-- Telegram
+- [Pushbullet](./pushbullet.md)
+- [Pushover](./pushover.md)
+- [Slack](./slack.md)
+- [Telegram](./telegram.md)
 - [Webhooks](./webhooks.md)
 
 ## Setting Up Notifications
