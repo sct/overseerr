@@ -49,7 +49,7 @@ const messages = defineMessages({
   overviewunavailable: 'Overview unavailable.',
   manageModalTitle: 'Manage Series',
   manageModalRequests: 'Requests',
-  manageModalNoRequests: 'No Requests',
+  manageModalNoRequests: 'No requests.',
   manageModalClearMedia: 'Clear All Media Data',
   manageModalClearMediaWarning:
     '* This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
