@@ -5,6 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import useClickOutside from '../../../hooks/useClickOutside';
 import { Permission, useUser } from '../../../hooks/useUser';
 import Transition from '../../Transition';
+import VersionStatus from '../VersionStatus';
 
 const messages = defineMessages({
   dashboard: 'Discover',
@@ -122,6 +123,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
   useClickOutside(navRef, () => setClosed());
+
   return (
     <>
       <div className="md:hidden">
@@ -172,7 +174,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                   </div>
                   <div
                     ref={navRef}
-                    className="flex-1 h-0 pt-5 pb-4 overflow-y-auto"
+                    className="flex flex-col flex-1 h-0 pt-5 pb-4 overflow-y-auto"
                   >
                     <div className="flex items-center flex-shrink-0 px-4">
                       <span className="text-xl text-gray-50">
@@ -181,7 +183,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                         </a>
                       </span>
                     </div>
-                    <nav className="px-2 mt-5 space-y-1">
+                    <nav className="flex-1 px-2 mt-5 space-y-1">
                       {SidebarLinks.filter((link) =>
                         link.requiredPermission
                           ? hasPermission(link.requiredPermission)
@@ -221,6 +223,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                         );
                       })}
                     </nav>
+                    {hasPermission(Permission.ADMIN) && <VersionStatus />}
                   </div>
                 </div>
                 <div className="flex-shrink-0 w-14">
@@ -273,6 +276,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                   );
                 })}
               </nav>
+              {hasPermission(Permission.ADMIN) && <VersionStatus />}
             </div>
           </div>
         </div>
