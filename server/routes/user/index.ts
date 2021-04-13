@@ -281,7 +281,7 @@ router.delete<{ id: string }>(
         });
       }
 
-      if (user.hasPermission(Permission.ADMIN)) {
+      if (user.hasPermission(Permission.ADMIN) && req.user?.id !== 1) {
         return next({
           status: 405,
           message: 'You cannot delete users with administrative privileges.',
