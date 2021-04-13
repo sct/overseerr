@@ -1,7 +1,6 @@
 {
   "components.Discover.discovermovies": "人気の映画",
   "components.Discover.discovertv": "人気のテレビ番組",
-  "components.Discover.nopending": "保留中のリクエストがありません",
   "components.Discover.popularmovies": "人気の映画",
   "components.Discover.populartv": "人気のテレビ番組",
   "components.Discover.recentlyAdded": "最近追加された動画",
@@ -140,7 +139,6 @@
   "components.Settings.menuPlexSettings": "Plex",
   "components.Settings.menuServices": "連携サービス",
   "components.Settings.notificationsettings": "通知設定",
-  "components.Settings.notificationsettingsDescription": "ここでは、どのような通知を送信する又はどのサービスを使って送信するかを設定できます。",
   "components.Settings.notrunning": "実行されていない",
   "components.Settings.plexlibraries": "Plex ライブラリー",
   "components.Settings.plexlibrariesDescription": "Overseerr がスキャンしてタイトルを探すライブラリ。リストにない場合、Plex の接続設定を保存し、下のボタンをクリックしてください。",
