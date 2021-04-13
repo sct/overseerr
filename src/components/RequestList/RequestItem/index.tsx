@@ -30,6 +30,7 @@ const messages = defineMessages({
   modifieduserdate: '{date} by {user}',
   mediaerror: 'The associated title for this request is no longer available.',
   deleterequest: 'Delete Request',
+  cancelRequest: 'Cancel Request',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -101,7 +102,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   });
   const { addToast } = useToasts();
   const intl = useIntl();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
   const { locale } = useContext(LanguageContext);
   const url =
@@ -368,6 +369,31 @@ const RequestItem: React.FC<RequestItemProps> = ({
           </div>
         </div>
         <div className="z-10 flex flex-col justify-center w-full pl-4 pr-4 mt-4 space-y-2 xl:mt-0 xl:items-end xl:w-96 xl:pl-0">
+          {requestData.status === MediaRequestStatus.PENDING &&
+            !hasPermission(Permission.MANAGE_REQUESTS) &&
+            requestData.requestedBy.id === user?.id && (
+              <ConfirmButton
+                onClick={() => deleteRequest()}
+                confirmText={intl.formatMessage(globalMessages.areyousure)}
+                className="w-full"
+              >
+                <svg
+                  className="w-5 h-5 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="block">
+                  {intl.formatMessage(messages.cancelRequest)}
+                </span>
+              </ConfirmButton>
+            )}
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&
