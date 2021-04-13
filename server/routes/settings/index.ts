@@ -135,7 +135,7 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
                 ...settings.plex,
                 ip: connection.address,
                 port: connection.port,
-                useSsl: connection.protocol === 'https' ? true : false,
+                useSsl: !connection.local && connection.protocol === 'https',
               };
               const plexClient = new PlexAPI({
                 plexToken: admin.plexToken,
