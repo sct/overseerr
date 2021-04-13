@@ -8,6 +8,7 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
+import { UserSettingsNotificationsResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
 import { hasPermission } from '../../../server/lib/permissions';
 import AddUserIcon from '../../assets/useradd.svg';
 import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
@@ -74,6 +75,7 @@ const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
   const { addToast } = useToasts();
+  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const [currentSort, setCurrentSort] = useState<Sort>('created');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
 
@@ -86,8 +88,12 @@ const UserList: React.FC = () => {
       pageIndex * currentPageSize
     }&sort=${currentSort}`
   );
-  const { data: emailSettings } = useSWR(
-    '/api/v1/settings/notifications/email'
+  const {
+    data: notificationSettings,
+  } = useSWR<UserSettingsNotificationsResponse>(
+    currentUser
+      ? `/api/v1/user/${currentUser?.id}/settings/notifications`
+      : null
   );
 
   const [isDeleting, setDeleting] = useState(false);
@@ -105,7 +111,6 @@ const UserList: React.FC = () => {
   });
   const [showBulkEditModal, setShowBulkEditModal] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
 
   useEffect(() => {
     const filterString = window.localStorage.getItem('ul-filter-settings');
@@ -293,7 +298,7 @@ const UserList: React.FC = () => {
           initialValues={{
             email: '',
             password: '',
-            genpassword: true,
+            genpassword: false,
           }}
           validationSchema={CreateUserSchema}
           onSubmit={async (values) => {
@@ -340,10 +345,12 @@ const UserList: React.FC = () => {
                 okButtonType="primary"
                 onCancel={() => setCreateModal({ isOpen: false })}
               >
-                <Alert
-                  title={intl.formatMessage(messages.passwordinfodescription)}
-                  type="info"
-                />
+                {!notificationSettings?.emailEnabled && (
+                  <Alert
+                    title={intl.formatMessage(messages.passwordinfodescription)}
+                    type="info"
+                  />
+                )}
                 <Form className="section">
                   <div className="form-row">
                     <label htmlFor="email" className="text-label">
@@ -363,7 +370,11 @@ const UserList: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className="form-row">
+                  <div
+                    className={`form-row ${
+                      !notificationSettings?.emailEnabled && 'opacity-50'
+                    }`}
+                  >
                     <label htmlFor="genpassword" className="checkbox-label">
                       {intl.formatMessage(messages.autogeneratepassword)}
                     </label>
@@ -372,7 +383,7 @@ const UserList: React.FC = () => {
                         type="checkbox"
                         id="genpassword"
                         name="genpassword"
-                        disabled={!emailSettings.enabled}
+                        disabled={!notificationSettings?.emailEnabled}
                         onClick={() => setFieldValue('password', '')}
                       />
                     </div>
