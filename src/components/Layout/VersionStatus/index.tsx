@@ -7,7 +7,7 @@ import { StatusResponse } from '../../../../server/interfaces/api/settingsInterf
 const messages = defineMessages({
   streamdevelop: 'Overseerr Develop',
   streamstable: 'Overseerr Stable',
-  outofdate: 'Out of Date',
+  updateavailable: 'Update Available',
   commitsbehind:
     '{commitsBehind} {commitsBehind, plural, one {commit} other {commits}} behind',
 });
@@ -34,7 +34,9 @@ const VersionStatus: React.FC = () => {
       <a
         className={`flex items-center p-2 mx-2 text-xs transition duration-300 rounded-lg ring-1 ring-gray-700 ${
           data.updateAvailable
-            ? 'bg-green-500 text-white hover:bg-green-400'
+            ? data.commitsBehind > 0
+              ? 'bg-yellow-500 text-white hover:bg-yellow-400'
+              : 'bg-green-500 text-white hover:bg-green-400'
             : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
         }`}
       >
@@ -94,7 +96,7 @@ const VersionStatus: React.FC = () => {
                 commitsBehind: data.commitsBehind,
               })
             ) : data.commitsBehind === -1 ? (
-              intl.formatMessage(messages.outofdate)
+              intl.formatMessage(messages.updateavailable)
             ) : (
               <code className="p-0 bg-transparent">
                 {data.version.replace('develop-', '')}
