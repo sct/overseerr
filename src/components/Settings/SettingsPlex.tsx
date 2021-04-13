@@ -134,13 +134,12 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       dev.connection.forEach((conn) =>
         finalPresets.push({
           name: dev.name,
-          ssl: conn.protocol === 'https' ? true : false,
+          ssl: !conn.local && conn.protocol === 'https',
           uri: conn.uri,
           address: conn.address,
           port: conn.port,
           local: conn.local,
-          host: conn.host,
-          status: conn.status === 200 ? true : false,
+          status: conn.status === 200,
           message: conn.message,
         })
       );
