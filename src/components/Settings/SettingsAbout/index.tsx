@@ -56,7 +56,10 @@ const SettingsAbout: React.FC = () => {
       />
       <div className="section">
         <List title={intl.formatMessage(messages.overseerrinformation)}>
-          <List.Item title={intl.formatMessage(messages.version)}>
+          <List.Item
+            title={intl.formatMessage(messages.version)}
+            className="truncate"
+          >
             <code>{data.version}</code>
             {status?.updateAvailable ? (
               <Badge badgeType="warning" className="ml-2">
