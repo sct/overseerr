@@ -15,8 +15,6 @@ const messages = defineMessages({
   notificationsettings: 'Notification Settings',
   notificationAgentSettingsDescription:
     'Configure and enable notification agents.',
-  notificationsettingssaved: 'Notification settings saved successfully!',
-  notificationsettingsfailed: 'Notification settings failed to save.',
   email: 'Email',
   webhook: 'Webhook',
 });
