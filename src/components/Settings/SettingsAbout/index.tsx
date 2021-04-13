@@ -60,7 +60,7 @@ const SettingsAbout: React.FC = () => {
             title={intl.formatMessage(messages.version)}
             className="truncate"
           >
-            <code>{data.version}</code>
+            <code>{data.version.replace('develop-', '')}</code>
             {status?.updateAvailable ? (
               <Badge badgeType="warning" className="ml-2">
                 {intl.formatMessage(messages.outofdate)}
