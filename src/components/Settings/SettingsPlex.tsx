@@ -80,7 +80,6 @@ interface PresetServerDisplay {
   ssl: boolean;
   uri: string;
   address: string;
-  host?: string;
   port: number;
   local: boolean;
   status?: boolean;

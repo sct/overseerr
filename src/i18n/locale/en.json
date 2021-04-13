@@ -757,7 +757,7 @@
   "components.UserProfile.UserSettings.unauthorizedDescription": "You do not have permission to modify this user's settings.",
   "components.UserProfile.limit": "{remaining} of {limit}",
   "components.UserProfile.movierequests": "Movie Requests",
-  "components.UserProfile.norequests": "No Requests",
+  "components.UserProfile.norequests": "No requests.",
   "components.UserProfile.pastdays": "{type} (past {days} days)",
   "components.UserProfile.recentrequests": "Recent Requests",
   "components.UserProfile.requestsperdays": "{limit} remaining",
