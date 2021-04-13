@@ -3,6 +3,7 @@ import { hasNotificationType, Notification } from '..';
 import { MediaType } from '../../../constants/media';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentTelegram } from '../../settings';
+import { NotificationAgentType } from '../agenttypes';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface TelegramMessagePayload {
@@ -155,62 +156,98 @@ class TelegramAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending Telegram notification', { label: 'Notifications' });
+    const endpoint = `${this.baseUrl}bot${this.getSettings().options.botAPI}/${
+      payload.image ? 'sendPhoto' : 'sendMessage'
+    }`;
+
+    // Send system notification
     try {
-      const endpoint = `${this.baseUrl}bot${
-        this.getSettings().options.botAPI
-      }/${payload.image ? 'sendPhoto' : 'sendMessage'}`;
+      logger.debug('Sending Telegram notification', {
+        label: 'Notifications',
+        type: Notification[type],
+        subject: payload.subject,
+      });
 
-      // Send system notification
-      await (payload.image
-        ? axios.post(endpoint, {
-            photo: payload.image,
-            caption: this.buildMessage(type, payload),
-            parse_mode: 'MarkdownV2',
-            chat_id: `${this.getSettings().options.chatId}`,
-            disable_notification: this.getSettings().options.sendSilently,
-          } as TelegramPhotoPayload)
-        : axios.post(endpoint, {
-            text: this.buildMessage(type, payload),
-            parse_mode: 'MarkdownV2',
-            chat_id: `${this.getSettings().options.chatId}`,
-            disable_notification: this.getSettings().options.sendSilently,
-          } as TelegramMessagePayload));
-
-      // Send user notification
-      if (
-        payload.notifyUser &&
-        (payload.notifyUser.settings?.enableNotifications ?? true) &&
-        payload.notifyUser.settings?.telegramChatId &&
-        payload.notifyUser.settings?.telegramChatId !==
-          this.getSettings().options.chatId
-      ) {
-        await (payload.image
-          ? axios.post(endpoint, {
+      await axios.post(
+        endpoint,
+        payload.image
+          ? ({
               photo: payload.image,
               caption: this.buildMessage(type, payload),
               parse_mode: 'MarkdownV2',
-              chat_id: `${payload.notifyUser.settings.telegramChatId}`,
-              disable_notification:
-                payload.notifyUser.settings.telegramSendSilently,
+              chat_id: this.getSettings().options.chatId,
+              disable_notification: this.getSettings().options.sendSilently,
             } as TelegramPhotoPayload)
-          : axios.post(endpoint, {
+          : ({
               text: this.buildMessage(type, payload),
               parse_mode: 'MarkdownV2',
-              chat_id: `${payload.notifyUser.settings.telegramChatId}`,
-              disable_notification:
-                payload.notifyUser.settings.telegramSendSilently,
-            } as TelegramMessagePayload));
-      }
-
-      return true;
+              chat_id: `${this.getSettings().options.chatId}`,
+              disable_notification: this.getSettings().options.sendSilently,
+            } as TelegramMessagePayload)
+      );
     } catch (e) {
       logger.error('Error sending Telegram notification', {
         label: 'Notifications',
-        message: e.message,
+        type: Notification[type],
+        subject: payload.subject,
+        errorMessage: e.message,
+        response: e.response.data,
       });
       return false;
     }
+
+    if (
+      payload.notifyUser &&
+      payload.notifyUser.settings?.hasNotificationAgentEnabled(
+        NotificationAgentType.TELEGRAM
+      ) &&
+      payload.notifyUser.settings?.telegramChatId &&
+      payload.notifyUser.settings?.telegramChatId !==
+        this.getSettings().options.chatId
+    ) {
+      // Send notification to the user who submitted the request
+      logger.debug('Sending Telegram notification', {
+        label: 'Notifications',
+        recipient: payload.notifyUser.displayName,
+        type: Notification[type],
+        subject: payload.subject,
+      });
+
+      try {
+        await axios.post(
+          endpoint,
+          payload.image
+            ? ({
+                photo: payload.image,
+                caption: this.buildMessage(type, payload),
+                parse_mode: 'MarkdownV2',
+                chat_id: payload.notifyUser.settings.telegramChatId,
+                disable_notification:
+                  payload.notifyUser.settings.telegramSendSilently,
+              } as TelegramPhotoPayload)
+            : ({
+                text: this.buildMessage(type, payload),
+                parse_mode: 'MarkdownV2',
+                chat_id: payload.notifyUser.settings.telegramChatId,
+                disable_notification:
+                  payload.notifyUser.settings.telegramSendSilently,
+              } as TelegramMessagePayload)
+        );
+      } catch (e) {
+        logger.error('Error sending Telegram notification', {
+          label: 'Notifications',
+          recipient: payload.notifyUser.displayName,
+          type: Notification[type],
+          subject: payload.subject,
+          errorMessage: e.message,
+          response: e.response.data,
+        });
+
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 

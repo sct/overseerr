@@ -13,7 +13,7 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  validationSmtpHostRequired: 'You must provide a hostname or IP address',
+  validationSmtpHostRequired: 'You must provide a valid hostname or IP address',
   validationSmtpPortRequired: 'You must provide a valid port number',
   agentenabled: 'Enable Agent',
   emailsender: 'Sender Address',
@@ -24,34 +24,32 @@ const messages = defineMessages({
   authPass: 'SMTP Password',
   emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
-  testsent: 'Test notification sent!',
+  testsent: 'Email test notification sent!',
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:
     'SSL should be disabled on standard TLS connections (port 587)',
   senderName: 'Sender Name',
-  notificationtypes: 'Notification Types',
   validationEmail: 'You must provide a valid email address',
   emailNotificationTypesAlert: 'Email Notification Recipients',
   emailNotificationTypesAlertDescription:
     '<strong>Media Requested</strong>, <strong>Media Automatically Approved</strong>, and <strong>Media Failed</strong> email notifications are sent to all users with the <strong>Manage Requests</strong> permission.',
   emailNotificationTypesAlertDescriptionPt2:
     '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong> email notifications are sent to the user who submitted the request.',
-  pgpPrivateKey: '<PgpLink>PGP</PgpLink> Private Key',
+  pgpPrivateKey: 'PGP Private Key',
   pgpPrivateKeyTip:
-    'Sign encrypted email messages (PGP password is also required)',
-  pgpPassword: '<PgpLink>PGP</PgpLink> Password',
+    'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
+  validationPgpPrivateKey:
+    'You must provide a valid PGP private key if a PGP password is entered',
+  pgpPassword: 'PGP Password',
   pgpPasswordTip:
-    'Sign encrypted email messages (PGP private key is also required)',
+    'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
+  validationPgpPassword:
+    'You must provide a PGP password if a PGP private key is entered',
 });
 
-export function PgpLink(msg: string): JSX.Element {
+export function OpenPgpLink(msg: string): JSX.Element {
   return (
-    <a
-      href="https://www.openpgp.org/"
-      target="_blank"
-      rel="noreferrer"
-      className="text-gray-100 underline transition duration-300 hover:text-white"
-    >
+    <a href="https://www.openpgp.org/" target="_blank" rel="noreferrer">
       {msg}
     </a>
   );
@@ -64,21 +62,60 @@ const NotificationsEmail: React.FC = () => {
     '/api/v1/settings/notifications/email'
   );
 
-  const NotificationsEmailSchema = Yup.object().shape({
-    emailFrom: Yup.string()
-      .required(intl.formatMessage(messages.validationEmail))
-      .email(intl.formatMessage(messages.validationEmail)),
-    smtpHost: Yup.string()
-      .required(intl.formatMessage(messages.validationSmtpHostRequired))
-      .matches(
-        // eslint-disable-next-line
-        /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
-        intl.formatMessage(messages.validationSmtpHostRequired)
-      ),
-    smtpPort: Yup.number()
-      .typeError(intl.formatMessage(messages.validationSmtpPortRequired))
-      .required(intl.formatMessage(messages.validationSmtpPortRequired)),
-  });
+  const NotificationsEmailSchema = Yup.object().shape(
+    {
+      emailFrom: Yup.string()
+        .when('enabled', {
+          is: true,
+          then: Yup.string()
+            .nullable()
+            .required(intl.formatMessage(messages.validationEmail)),
+          otherwise: Yup.string().nullable(),
+        })
+        .email(intl.formatMessage(messages.validationEmail)),
+      smtpHost: Yup.string()
+        .when('enabled', {
+          is: true,
+          then: Yup.string()
+            .nullable()
+            .required(intl.formatMessage(messages.validationSmtpHostRequired)),
+          otherwise: Yup.string().nullable(),
+        })
+        .matches(
+          /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+          intl.formatMessage(messages.validationSmtpHostRequired)
+        ),
+      smtpPort: Yup.number()
+        .typeError(intl.formatMessage(messages.validationSmtpPortRequired))
+        .when('enabled', {
+          is: true,
+          then: Yup.number().required(
+            intl.formatMessage(messages.validationSmtpPortRequired)
+          ),
+          otherwise: Yup.number().nullable(),
+        }),
+      pgpPrivateKey: Yup.string()
+        .when('pgpPassword', {
+          is: (value: unknown) => !!value,
+          then: Yup.string()
+            .nullable()
+            .required(intl.formatMessage(messages.validationPgpPrivateKey)),
+          otherwise: Yup.string().nullable(),
+        })
+        .matches(
+          /^-----BEGIN PGP PRIVATE KEY BLOCK-----.+-----END PGP PRIVATE KEY BLOCK-----$/,
+          intl.formatMessage(messages.validationPgpPrivateKey)
+        ),
+      pgpPassword: Yup.string().when('pgpPrivateKey', {
+        is: (value: unknown) => !!value,
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationPgpPassword)),
+        otherwise: Yup.string().nullable(),
+      }),
+    },
+    [['pgpPrivateKey', 'pgpPassword']]
+  );
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -119,6 +156,7 @@ const NotificationsEmail: React.FC = () => {
               pgpPassword: values.pgpPassword,
             },
           });
+
           addToast(intl.formatMessage(messages.emailsettingssaved), {
             appearance: 'success',
             autoDismiss: true,
@@ -323,15 +361,15 @@ const NotificationsEmail: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="pgpPrivateKey" className="text-label">
                   <span className="mr-2">
-                    {intl.formatMessage(messages.pgpPrivateKey, {
-                      PgpLink: PgpLink,
-                    })}
+                    {intl.formatMessage(messages.pgpPrivateKey)}
                   </span>
                   <Badge badgeType="danger">
                     {intl.formatMessage(globalMessages.advanced)}
                   </Badge>
                   <span className="label-tip">
-                    {intl.formatMessage(messages.pgpPrivateKeyTip)}
+                    {intl.formatMessage(messages.pgpPrivateKeyTip, {
+                      OpenPgpLink: OpenPgpLink,
+                    })}
                   </span>
                 </label>
                 <div className="form-input">
@@ -340,23 +378,27 @@ const NotificationsEmail: React.FC = () => {
                       id="pgpPrivateKey"
                       name="pgpPrivateKey"
                       as="textarea"
-                      rows="3"
+                      rows="10"
+                      className="font-mono text-xs"
                     />
                   </div>
+                  {errors.pgpPrivateKey && touched.pgpPrivateKey && (
+                    <div className="error">{errors.pgpPrivateKey}</div>
+                  )}
                 </div>
               </div>
               <div className="form-row">
                 <label htmlFor="pgpPassword" className="text-label">
                   <span className="mr-2">
-                    {intl.formatMessage(messages.pgpPassword, {
-                      PgpLink: PgpLink,
-                    })}
+                    {intl.formatMessage(messages.pgpPassword)}
                   </span>
                   <Badge badgeType="danger">
                     {intl.formatMessage(globalMessages.advanced)}
                   </Badge>
                   <span className="label-tip">
-                    {intl.formatMessage(messages.pgpPasswordTip)}
+                    {intl.formatMessage(messages.pgpPasswordTip, {
+                      OpenPgpLink: OpenPgpLink,
+                    })}
                   </span>
                 </label>
                 <div className="form-input">
@@ -368,30 +410,15 @@ const NotificationsEmail: React.FC = () => {
                       autoComplete="off"
                     />
                   </div>
+                  {errors.pgpPassword && touched.pgpPassword && (
+                    <div className="error">{errors.pgpPassword}</div>
+                  )}
                 </div>
               </div>
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.notificationtypes)}
-                    <span className="label-required">*</span>
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <NotificationTypeSelector
+                currentTypes={values.types}
+                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              />
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">

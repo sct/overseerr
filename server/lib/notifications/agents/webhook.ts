@@ -128,7 +128,12 @@ class WebhookAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending webhook notification', { label: 'Notifications' });
+    logger.debug('Sending webhook notification', {
+      label: 'Notifications',
+      type: Notification[type],
+      subject: payload.subject,
+    });
+
     try {
       const { webhookUrl, authHeader } = this.getSettings().options;
 
@@ -146,8 +151,12 @@ class WebhookAgent
     } catch (e) {
       logger.error('Error sending webhook notification', {
         label: 'Notifications',
+        type: Notification[type],
+        subject: payload.subject,
         errorMessage: e.message,
+        response: e.response.data,
       });
+
       return false;
     }
   }

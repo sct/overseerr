@@ -14,17 +14,18 @@ import NotificationTypeSelector from '../../NotificationTypeSelector';
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
   botUsername: 'Bot Username',
+  botUsernameTip:
+    'Allow users to start a chat with the bot and configure their own personal notifications',
   botAPI: 'Bot Authentication Token',
   chatId: 'Chat ID',
   validationBotAPIRequired: 'You must provide a bot authentication token',
   validationChatIdRequired: 'You must provide a valid chat ID',
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
-  testsent: 'Test notification sent!',
+  testsent: 'Telegram test notification sent!',
   settinguptelegram: 'Setting Up Telegram Notifications',
   settinguptelegramDescription:
     'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key. Additionally, you will need the chat ID for the chat to which you would like to send notifications. You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
-  notificationtypes: 'Notification Types',
   sendSilently: 'Send Silently',
   sendSilentlyTip: 'Send notifications with no sound',
 });
@@ -37,13 +38,23 @@ const NotificationsTelegram: React.FC = () => {
   );
 
   const NotificationsTelegramSchema = Yup.object().shape({
-    botAPI: Yup.string().required(
-      intl.formatMessage(messages.validationBotAPIRequired)
-    ),
+    botAPI: Yup.string().when('enabled', {
+      is: true,
+      then: Yup.string()
+        .nullable()
+        .required(intl.formatMessage(messages.validationBotAPIRequired)),
+      otherwise: Yup.string().nullable(),
+    }),
     chatId: Yup.string()
-      .required(intl.formatMessage(messages.validationChatIdRequired))
+      .when('enabled', {
+        is: true,
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationChatIdRequired)),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(
-        /^[-]?\d+$/,
+        /^-?\d+$/,
         intl.formatMessage(messages.validationChatIdRequired)
       ),
   });
@@ -75,6 +86,7 @@ const NotificationsTelegram: React.FC = () => {
               botUsername: values.botUsername,
             },
           });
+
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
             appearance: 'success',
             autoDismiss: true,
@@ -156,6 +168,9 @@ const NotificationsTelegram: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="botUsername" className="text-label">
                   {intl.formatMessage(messages.botUsername)}
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.botUsernameTip)}
+                  </span>
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
@@ -224,28 +239,10 @@ const NotificationsTelegram: React.FC = () => {
                   />
                 </div>
               </div>
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.notificationtypes)}
-                    <span className="label-required">*</span>
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <NotificationTypeSelector
+                currentTypes={values.types}
+                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              />
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
