@@ -19,7 +19,6 @@ const messages = defineMessages({
   recentrequests: 'Recent Requests',
   popularmovies: 'Popular Movies',
   populartv: 'Popular Series',
-  upcomingtv: 'Upcoming Series',
   recentlyAdded: 'Recently Added',
   noRequests: 'No requests.',
   upcoming: 'Upcoming Movies',
@@ -123,12 +122,6 @@ const Discover: React.FC = () => {
         linkUrl="/discover/tv"
       />
       <TvGenreSlider />
-      <MediaSlider
-        sliderKey="upcoming-tv"
-        title={intl.formatMessage(messages.upcomingtv)}
-        url="/api/v1/discover/tv/upcoming"
-        linkUrl="/discover/tv/upcoming"
-      />
       <NetworkSlider />
     </>
   );
