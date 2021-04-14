@@ -27,6 +27,7 @@ import Header from '../Common/Header';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import Modal from '../Common/Modal';
 import PageTitle from '../Common/PageTitle';
+import SensitiveInput from '../Common/SensitiveInput';
 import Table from '../Common/Table';
 import Transition from '../Transition';
 import BulkEditModal from './BulkEditModal';
@@ -402,7 +403,7 @@ const UserList: React.FC = () => {
                     </label>
                     <div className="form-input">
                       <div className="form-input-field">
-                        <Field
+                        <SensitiveInput
                           id="password"
                           name="password"
                           type="password"
