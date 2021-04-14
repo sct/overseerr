@@ -2288,15 +2288,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@>= 8":
-  version "14.14.34"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.34.tgz#07935194fc049069a1c56c0c274265abeddf88da"
-  integrity sha512-dBPaxocOK6UVyvhbnpFIj2W+S+1cBTkHQbFQfeeJhoKFbzYcVUGHvddeWPSucKATb3F0+pgDq0i6ghEaZjsugA==
-
-"@types/node@^14.14.37":
-  version "14.14.37"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.37.tgz#a3dd8da4eb84a996c36e331df98d82abd76b516e"
-  integrity sha512-XYmBiy+ohOR4Lh5jE379fV2IU+6Jn4g5qASinhitfyO71b/sCo6MKsMLF5tc7Zf2CE8hViVQyYSobJNke8OvUw==
+"@types/node@*", "@types/node@>= 8", "@types/node@^14.14.38":
+  version "14.14.38"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.38.tgz#f8338bc36d81c31abf410ba64af9a6e3e8c14bf0"
+  integrity sha512-cTiIM5yNu+CxZO+QzKZ8W+FeiDbgIWKhU3HniQjyzb0R7SvmyEMFYtEu8l9A3wU7emobj6mxZV/4dmkY6jsftw==
 
 "@types/nodemailer@*", "@types/nodemailer@^6.4.1":
   version "6.4.1"
