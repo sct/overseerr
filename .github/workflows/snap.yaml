@@ -45,7 +45,7 @@ jobs:
           - arm64
           - armhf
     steps:
-      - name: Check Out Code
+      - name: Checkout Code
         uses: actions/checkout@v2
       - name: Prepare
         id: prepare
