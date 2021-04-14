@@ -1,14 +1,17 @@
 import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
+import {
+  SettingsAboutResponse,
+  StatusResponse,
+} from '../../../../server/interfaces/api/settingsInterfaces';
+import globalMessages from '../../../i18n/globalMessages';
 import Error from '../../../pages/_error';
+import Badge from '../../Common/Badge';
 import List from '../../Common/List';
 import LoadingSpinner from '../../Common/LoadingSpinner';
-import { SettingsAboutResponse } from '../../../../server/interfaces/api/settingsInterfaces';
-import { defineMessages, useIntl } from 'react-intl';
-import Releases from './Releases';
-import Badge from '../../Common/Badge';
 import PageTitle from '../../Common/PageTitle';
-import globalMessages from '../../../i18n/globalMessages';
+import Releases from './Releases';
 
 const messages = defineMessages({
   about: 'About',
@@ -23,6 +26,8 @@ const messages = defineMessages({
   helppaycoffee: 'Help Pay for Coffee',
   documentation: 'Documentation',
   preferredmethod: 'Preferred',
+  outofdate: 'Out of Date',
+  uptodate: 'Up to Date',
 });
 
 const SettingsAbout: React.FC = () => {
@@ -30,6 +35,8 @@ const SettingsAbout: React.FC = () => {
   const { data, error } = useSWR<SettingsAboutResponse>(
     '/api/v1/settings/about'
   );
+
+  const { data: status } = useSWR<StatusResponse>('/api/v1/status');
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -49,8 +56,22 @@ const SettingsAbout: React.FC = () => {
       />
       <div className="section">
         <List title={intl.formatMessage(messages.overseerrinformation)}>
-          <List.Item title={intl.formatMessage(messages.version)}>
-            <code>{data.version}</code>
+          <List.Item
+            title={intl.formatMessage(messages.version)}
+            className="truncate"
+          >
+            <code>{data.version.replace('develop-', '')}</code>
+            {status?.updateAvailable ? (
+              <Badge badgeType="warning" className="ml-2">
+                {intl.formatMessage(messages.outofdate)}
+              </Badge>
+            ) : (
+              status?.commitTag !== 'local' && (
+                <Badge badgeType="success" className="ml-2">
+                  {intl.formatMessage(messages.uptodate)}
+                </Badge>
+              )
+            )}
           </List.Item>
           <List.Item title={intl.formatMessage(messages.totalmedia)}>
             {intl.formatNumber(data.totalMediaItems)}

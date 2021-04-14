@@ -7,7 +7,7 @@ import { StatusResponse } from '../../../../server/interfaces/api/settingsInterf
 const messages = defineMessages({
   streamdevelop: 'Overseerr Develop',
   streamstable: 'Overseerr Stable',
-  outofdate: 'Out of date',
+  outofdate: 'Out of Date',
   commitsbehind:
     '{commitsBehind} {commitsBehind, plural, one {commit} other {commits}} behind',
 });
@@ -24,7 +24,7 @@ const VersionStatus: React.FC = () => {
 
   const versionStream =
     data.commitTag === 'local'
-      ? 'Keep it up!'
+      ? 'Keep it up! 👍'
       : data.version.startsWith('develop-')
       ? intl.formatMessage(messages.streamdevelop)
       : intl.formatMessage(messages.streamstable);
@@ -34,7 +34,7 @@ const VersionStatus: React.FC = () => {
       <a
         className={`flex items-center p-2 mx-2 text-xs transition duration-300 rounded-lg ring-1 ring-gray-700 ${
           data.updateAvailable
-            ? 'bg-green-500 text-white hover:bg-green-400'
+            ? 'bg-yellow-500 text-white hover:bg-yellow-400'
             : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
         }`}
       >
@@ -87,15 +87,19 @@ const VersionStatus: React.FC = () => {
         <div className="flex flex-col flex-1 min-w-0 px-2 truncate last:pr-0">
           <span className="font-bold">{versionStream}</span>
           <span className="truncate">
-            {data.commitTag === 'local'
-              ? '(⌐■_■)'
-              : data.commitsBehind > 0
-              ? intl.formatMessage(messages.commitsbehind, {
-                  commitsBehind: data.commitsBehind,
-                })
-              : data.commitsBehind === -1
-              ? intl.formatMessage(messages.outofdate)
-              : data.version.replace('develop-', '')}
+            {data.commitTag === 'local' ? (
+              '(⌐■_■)'
+            ) : data.commitsBehind > 0 ? (
+              intl.formatMessage(messages.commitsbehind, {
+                commitsBehind: data.commitsBehind,
+              })
+            ) : data.commitsBehind === -1 ? (
+              intl.formatMessage(messages.outofdate)
+            ) : (
+              <code className="p-0 bg-transparent">
+                {data.version.replace('develop-', '')}
+              </code>
+            )}
           </span>
         </div>
         {data.updateAvailable && (
