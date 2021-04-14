@@ -23,7 +23,6 @@ const messages = defineMessages({
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   testsent: 'Telegram test notification sent!',
-  settinguptelegram: 'Setting Up Telegram Notifications',
   settinguptelegramDescription:
     'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key. Additionally, you will need the chat ID for the chat to which you would like to send notifications. You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
   sendSilently: 'Send Silently',
@@ -123,15 +122,12 @@ const NotificationsTelegram: React.FC = () => {
         return (
           <>
             <Alert
-              title={intl.formatMessage(messages.settinguptelegram)}
-              type="info"
-            >
-              {intl.formatMessage(messages.settinguptelegramDescription, {
+              title={intl.formatMessage(messages.settinguptelegramDescription, {
                 CreateBotLink: function CreateBotLink(msg) {
                   return (
                     <a
                       href="https://core.telegram.org/bots#6-botfather"
-                      className="text-indigo-100 hover:text-white hover:underline"
+                      className="text-white transition duration-300 hover:underline"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -143,7 +139,7 @@ const NotificationsTelegram: React.FC = () => {
                   return (
                     <a
                       href="https://telegram.me/get_id_bot"
-                      className="text-indigo-100 hover:text-white hover:underline"
+                      className="text-white transition duration-300 hover:underline"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -155,7 +151,8 @@ const NotificationsTelegram: React.FC = () => {
                   return <code className="bg-opacity-50">{msg}</code>;
                 },
               })}
-            </Alert>
+              type="info"
+            />
             <Form className="section">
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">

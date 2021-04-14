@@ -17,7 +17,6 @@ const messages = defineMessages({
   slacksettingssaved: 'Slack notification settings saved successfully!',
   slacksettingsfailed: 'Slack notification settings failed to save.',
   testsent: 'Slack test notification sent!',
-  settingupslack: 'Setting Up Slack Notifications',
   settingupslackDescription:
     'To configure Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and enter the webhook URL below.',
   validationWebhookUrl: 'You must provide a valid URL',
@@ -48,13 +47,13 @@ const NotificationsSlack: React.FC = () => {
 
   return (
     <>
-      <Alert title={intl.formatMessage(messages.settingupslack)} type="info">
-        {intl.formatMessage(messages.settingupslackDescription, {
+      <Alert
+        title={intl.formatMessage(messages.settingupslackDescription, {
           WebhookLink: function WebhookLink(msg) {
             return (
               <a
                 href="https://my.slack.com/services/new/incoming-webhook/"
-                className="text-indigo-100 hover:text-white hover:underline"
+                className="text-white transition duration-300 hover:underline"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -63,7 +62,8 @@ const NotificationsSlack: React.FC = () => {
             );
           },
         })}
-      </Alert>
+        type="info"
+      />
       <Formik
         initialValues={{
           enabled: data.enabled,

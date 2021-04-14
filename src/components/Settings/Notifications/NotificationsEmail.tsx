@@ -30,7 +30,6 @@ const messages = defineMessages({
     'SSL should be disabled on standard TLS connections (port 587)',
   senderName: 'Sender Name',
   validationEmail: 'You must provide a valid email address',
-  emailNotificationTypesAlert: 'Email Notification Recipients',
   emailNotificationTypesAlertDescription:
     '<strong>Media Requested</strong>, <strong>Media Automatically Approved</strong>, and <strong>Media Failed</strong> email notifications are sent to all users with the <strong>Manage Requests</strong> permission.',
   emailNotificationTypesAlertDescriptionPt2:
@@ -198,38 +197,40 @@ const NotificationsEmail: React.FC = () => {
         return (
           <>
             <Alert
-              title={intl.formatMessage(messages.emailNotificationTypesAlert)}
+              title={
+                <>
+                  <p className="mb-2">
+                    {intl.formatMessage(
+                      messages.emailNotificationTypesAlertDescription,
+                      {
+                        strong: function strong(msg) {
+                          return (
+                            <strong className="font-semibold text-indigo-100">
+                              {msg}
+                            </strong>
+                          );
+                        },
+                      }
+                    )}
+                  </p>
+                  <p>
+                    {intl.formatMessage(
+                      messages.emailNotificationTypesAlertDescriptionPt2,
+                      {
+                        strong: function strong(msg) {
+                          return (
+                            <strong className="font-semibold text-indigo-100">
+                              {msg}
+                            </strong>
+                          );
+                        },
+                      }
+                    )}
+                  </p>
+                </>
+              }
               type="info"
-            >
-              <p className="mb-2">
-                {intl.formatMessage(
-                  messages.emailNotificationTypesAlertDescription,
-                  {
-                    strong: function strong(msg) {
-                      return (
-                        <strong className="font-normal text-indigo-100">
-                          {msg}
-                        </strong>
-                      );
-                    },
-                  }
-                )}
-              </p>
-              <p>
-                {intl.formatMessage(
-                  messages.emailNotificationTypesAlertDescriptionPt2,
-                  {
-                    strong: function strong(msg) {
-                      return (
-                        <strong className="font-normal text-indigo-100">
-                          {msg}
-                        </strong>
-                      );
-                    },
-                  }
-                )}
-              </p>
-            </Alert>
+            />
             <Form className="section">
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">

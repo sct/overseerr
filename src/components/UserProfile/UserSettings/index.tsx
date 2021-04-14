@@ -89,11 +89,9 @@ const UserSettings: React.FC = ({ children }) => {
         <ProfileHeader user={user} isSettingsPage />
         <div className="mt-6">
           <Alert
-            title={intl.formatMessage(globalMessages.unauthorized)}
+            title={intl.formatMessage(messages.unauthorizedDescription)}
             type="error"
-          >
-            {intl.formatMessage(messages.unauthorizedDescription)}
-          </Alert>
+          />
         </div>
       </>
     );

@@ -19,7 +19,6 @@ const messages = defineMessages({
     'Pushbullet notification settings saved successfully!',
   pushbulletSettingsFailed: 'Pushbullet notification settings failed to save.',
   testSent: 'Pushbullet test notification sent!',
-  settingUpPushbullet: 'Setting Up Pushbullet Notifications',
   settingUpPushbulletDescription:
     'To configure Pushbullet notifications, you will need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink>.',
 });
@@ -95,24 +94,25 @@ const NotificationsPushbullet: React.FC = () => {
         return (
           <>
             <Alert
-              title={intl.formatMessage(messages.settingUpPushbullet)}
+              title={intl.formatMessage(
+                messages.settingUpPushbulletDescription,
+                {
+                  CreateAccessTokenLink: function CreateAccessTokenLink(msg) {
+                    return (
+                      <a
+                        href="https://www.pushbullet.com/#settings"
+                        className="text-white transition duration-300 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    );
+                  },
+                }
+              )}
               type="info"
-            >
-              {intl.formatMessage(messages.settingUpPushbulletDescription, {
-                CreateAccessTokenLink: function CreateAccessTokenLink(msg) {
-                  return (
-                    <a
-                      href="https://www.pushbullet.com/#settings"
-                      className="text-indigo-100 hover:text-white hover:underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {msg}
-                    </a>
-                  );
-                },
-              })}
-            </Alert>
+            />
             <Form className="section">
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">

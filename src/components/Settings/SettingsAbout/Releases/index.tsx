@@ -18,7 +18,6 @@ const messages = defineMessages({
   latestversion: 'Latest',
   currentversion: 'Current Version',
   viewchangelog: 'View Changelog',
-  runningDevelop: 'Development Version',
   runningDevelopMessage:
     'The latest changes to the <code>develop</code> branch of Overseerr are not shown below. Please see the commit history for this branch on <GithubLink>GitHub</GithubLink> for details.',
 });
@@ -159,8 +158,8 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
       <h3 className="heading">{intl.formatMessage(messages.releases)}</h3>
       <div className="section">
         {currentVersion.startsWith('develop-') && (
-          <Alert title={intl.formatMessage(messages.runningDevelop)}>
-            {intl.formatMessage(messages.runningDevelopMessage, {
+          <Alert
+            title={intl.formatMessage(messages.runningDevelopMessage, {
               code: function code(msg) {
                 return <code className="bg-opacity-50">{msg}</code>;
               },
@@ -177,7 +176,7 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
                 );
               },
             })}
-          </Alert>
+          />
         )}
         {data?.map((release, index) => {
           return (
