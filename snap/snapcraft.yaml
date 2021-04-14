@@ -11,9 +11,9 @@ confinement: strict
 parts:
   overseerr:
     plugin: nodejs
-    nodejs-version: "14.16.0"
+    nodejs-version: "14.16.1"
     nodejs-package-manager: "yarn"
-    nodejs-yarn-version: v1.22.5
+    nodejs-yarn-version: v1.22.10
     build-packages:
       - git
       - on arm64:
