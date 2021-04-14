@@ -12,7 +12,11 @@ const messages = defineMessages({
     '{commitsBehind} {commitsBehind, plural, one {commit} other {commits}} behind',
 });
 
-const VersionStatus: React.FC = () => {
+interface VersionStatusProps {
+  onClick?: () => void;
+}
+
+const VersionStatus: React.FC<VersionStatusProps> = ({ onClick }) => {
   const intl = useIntl();
   const { data } = useSWR<StatusResponse>('/api/v1/status', {
     refreshInterval: 60 * 1000,
@@ -32,6 +36,14 @@ const VersionStatus: React.FC = () => {
   return (
     <Link href="/settings/about">
       <a
+        onClick={onClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && onClick) {
+            onClick();
+          }
+        }}
+        role="button"
+        tabIndex={0}
         className={`flex items-center p-2 mx-2 text-xs transition duration-300 rounded-lg ring-1 ring-gray-700 ${
           data.updateAvailable
             ? 'bg-yellow-500 text-white hover:bg-yellow-400'

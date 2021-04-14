@@ -174,7 +174,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                   </div>
                   <div
                     ref={navRef}
-                    className="flex flex-col flex-1 h-0 pt-5 pb-4 overflow-y-auto"
+                    className="flex flex-col flex-1 h-0 pt-5 pb-8 overflow-y-auto sm:pb-4"
                   >
                     <div className="flex items-center flex-shrink-0 px-4">
                       <span className="text-xl text-gray-50">
@@ -223,7 +223,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                         );
                       })}
                     </nav>
-                    {hasPermission(Permission.ADMIN) && <VersionStatus />}
+                    {hasPermission(Permission.ADMIN) && (
+                      <VersionStatus onClick={() => setClosed()} />
+                    )}
                   </div>
                 </div>
                 <div className="flex-shrink-0 w-14">
