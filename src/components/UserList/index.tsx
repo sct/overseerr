@@ -372,7 +372,7 @@ const UserList: React.FC = () => {
                   </div>
                   <div
                     className={`form-row ${
-                      !notificationSettings?.emailEnabled && 'opacity-50'
+                      notificationSettings?.emailEnabled ? '' : 'opacity-50'
                     }`}
                   >
                     <label htmlFor="genpassword" className="checkbox-label">
@@ -389,7 +389,9 @@ const UserList: React.FC = () => {
                     </div>
                   </div>
                   <div
-                    className={`form-row ${values.genpassword && 'opacity-50'}`}
+                    className={`form-row ${
+                      values.genpassword ? 'opacity-50' : ''
+                    }`}
                   >
                     <label htmlFor="password" className="text-label">
                       {intl.formatMessage(messages.password)}
