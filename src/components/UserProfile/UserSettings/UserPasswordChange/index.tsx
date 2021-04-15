@@ -165,7 +165,8 @@ const UserPasswordChange: React.FC = () => {
                       <Field
                         id="currentPassword"
                         name="currentPassword"
-                        type="text"
+                        type="password"
+                        autoComplete="current-password"
                       />
                     </div>
                     {errors.currentPassword && touched.currentPassword && (
@@ -180,7 +181,12 @@ const UserPasswordChange: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field id="newPassword" name="newPassword" type="text" />
+                    <Field
+                      id="newPassword"
+                      name="newPassword"
+                      type="password"
+                      autoComplete="new-password"
+                    />
                   </div>
                   {errors.newPassword && touched.newPassword && (
                     <div className="error">{errors.newPassword}</div>
@@ -196,7 +202,8 @@ const UserPasswordChange: React.FC = () => {
                     <Field
                       id="confirmPassword"
                       name="confirmPassword"
-                      type="text"
+                      type="password"
+                      autoComplete="new-password"
                     />
                   </div>
                   {errors.confirmPassword && touched.confirmPassword && (
