@@ -1,3 +1,10 @@
+## [1.23.1](https://github.com/sct/overseerr/compare/v1.23.0...v1.23.1) (2021-04-16)
+
+
+### Bug Fixes
+
+* **api:** correctly check if update is available for release versions ([190cbd6](https://github.com/sct/overseerr/commit/190cbd6559c51a02ec09b267891f3033add6afc8))
+
 # [1.23.0](https://github.com/sct/overseerr/compare/v1.22.0...v1.23.0) (2021-04-16)
 
 
