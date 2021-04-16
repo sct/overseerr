@@ -62,6 +62,7 @@ const messages = defineMessages({
   passwordinfodescription:
     'Enable email notifications to allow automatic password generation.',
   autogeneratepassword: 'Automatically Generate Password',
+  autogeneratepasswordTip: 'Email a server-generated password to the user',
   validationEmail: 'You must provide a valid email address',
   sortCreated: 'Creation Date',
   sortUpdated: 'Last Updated',
@@ -377,6 +378,9 @@ const UserList: React.FC = () => {
                   >
                     <label htmlFor="genpassword" className="checkbox-label">
                       {intl.formatMessage(messages.autogeneratepassword)}
+                      <span className="label-tip">
+                        {intl.formatMessage(messages.autogeneratepasswordTip)}
+                      </span>
                     </label>
                     <div className="form-input">
                       <Field
@@ -402,8 +406,8 @@ const UserList: React.FC = () => {
                           id="password"
                           name="password"
                           type="password"
+                          autoComplete="new-password"
                           disabled={values.genpassword}
-                          placeholder={intl.formatMessage(messages.password)}
                         />
                       </div>
                       {errors.password && touched.password && (

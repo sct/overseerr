@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import ImageFader from '../Common/ImageFader';
-import { defineMessages, useIntl } from 'react-intl';
-import LanguagePicker from '../Layout/LanguagePicker';
-import Button from '../Common/Button';
-import { Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import * as Yup from 'yup';
+import Button from '../Common/Button';
+import ImageFader from '../Common/ImageFader';
+import LanguagePicker from '../Layout/LanguagePicker';
 
 const messages = defineMessages({
   passwordreset: 'Password Reset',
@@ -120,9 +120,7 @@ const ResetPassword: React.FC = () => {
                               id="password"
                               name="password"
                               type="password"
-                              placeholder={intl.formatMessage(
-                                messages.password
-                              )}
+                              autoComplete="new-password"
                               className="flex-1 block w-full min-w-0 text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                             />
                           </div>
@@ -141,8 +139,8 @@ const ResetPassword: React.FC = () => {
                             <Field
                               id="confirmPassword"
                               name="confirmPassword"
-                              placeholder="Confirm Password"
                               type="password"
+                              autoComplete="new-password"
                               className="flex-1 block w-full min-w-0 text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                             />
                           </div>
