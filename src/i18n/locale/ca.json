@@ -189,7 +189,6 @@
   "components.Login.password": "Contrasenya",
   "components.Login.loginerror": "S'ha produït un error en intentar iniciar la sessió.",
   "components.Login.forgotpassword": "Has oblidat la contrasenya?",
-  "components.Layout.alphawarning": "Aquest programari està en fase ALPHA. Moltes coses poden deixar de funcionar i/o ser inestables. Informeu de qualsevol problema al GitHub de Overseerr!",
   "components.Layout.UserDropdown.signout": "Tanqueu la sessió",
   "components.Layout.UserDropdown.settings": "Configuració",
   "components.Layout.UserDropdown.myprofile": "Perfil",
