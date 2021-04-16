@@ -49,7 +49,7 @@ settingsRoutes.get('/main', (req, res, next) => {
   const settings = getSettings();
 
   if (!req.user) {
-    return next({ status: 500, message: 'User missing from request' });
+    return next({ status: 400, message: 'User missing from request' });
   }
 
   res.status(200).json(filteredMainSettings(req.user, settings.main));
@@ -356,6 +356,36 @@ settingsRoutes.post<{ jobId: string }>(
       nextExecutionTime: scheduledJob.job.nextInvocation(),
       running: scheduledJob.running ? scheduledJob.running() : false,
     });
+  }
+);
+
+settingsRoutes.post<{ jobId: string }>(
+  '/jobs/:jobId/schedule',
+  (req, res, next) => {
+    const scheduledJob = scheduledJobs.find(
+      (job) => job.id === req.params.jobId
+    );
+
+    if (!scheduledJob) {
+      return next({ status: 404, message: 'Job not found' });
+    }
+
+    const result = scheduledJob.job.reschedule(req.body.schedule);
+    const job = getSettings().jobs.find((job) => job.id === req.params.jobId);
+
+    if (result && job) {
+      job.schedule = req.body.schedule;
+
+      return res.status(200).json({
+        id: scheduledJob.id,
+        name: scheduledJob.name,
+        type: scheduledJob.type,
+        nextExecutionTime: scheduledJob.job.nextInvocation(),
+        running: scheduledJob.running ? scheduledJob.running() : false,
+      });
+    } else {
+      return next({ status: 400, message: 'Invalid job schedule' });
+    }
   }
 );
 

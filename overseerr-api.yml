@@ -2301,6 +2301,51 @@ paths:
                   running:
                     type: boolean
                     example: false
+  /settings/jobs/{jobId}/schedule:
+    post:
+      summary: Modify job schedule
+      description: Re-registers the job with the schedule specified. Will return the job in JSON format.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                schedule:
+                  type: string
+                  example: '0 */5 * * * *'
+      responses:
+        '200':
+          description: Rescheduled job returne
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: job-name
+                  type:
+                    type: string
+                    enum: [process, command]
+                  name:
+                    type: string
+                    example: A Job Name
+                  nextExecutionTime:
+                    type: string
+                    example: '2020-09-02T05:02:23.000Z'
+                  running:
+                    type: boolean
+                    example: false
   /settings/cache:
     get:
       summary: Get a list of active caches
