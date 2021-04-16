@@ -29,6 +29,7 @@ const messages = defineMessages({
   serverpresetPlaceholder: 'Plex Server',
   serverLocal: 'local',
   serverRemote: 'remote',
+  serverSecure: 'secure',
   serverpresetManualMessage: 'Manual configuration',
   serverpresetRefreshing: 'Retrieving servers…',
   serverpresetLoad: 'Press the button to load available servers',
@@ -414,7 +415,13 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                               server.local
                                 ? intl.formatMessage(messages.serverLocal)
                                 : intl.formatMessage(messages.serverRemote)
-                            }]
+                            }]${
+                            server.ssl
+                              ? ` [${intl.formatMessage(
+                                  messages.serverSecure
+                                )}]`
+                              : ''
+                          }
                             ${server.status ? '' : '(' + server.message + ')'}
                           `}
                         </option>

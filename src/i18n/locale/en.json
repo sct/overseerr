@@ -562,6 +562,7 @@
   "components.Settings.scanning": "Syncing…",
   "components.Settings.serverLocal": "local",
   "components.Settings.serverRemote": "remote",
+  "components.Settings.serverSecure": "secure",
   "components.Settings.servername": "Server Name",
   "components.Settings.servernamePlaceholder": "Plex Server Name",
   "components.Settings.servernameTip": "Automatically retrieved from Plex after saving",
