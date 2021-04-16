@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Field, Formik } from 'formik';
+import { orderBy } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -28,7 +29,6 @@ const messages = defineMessages({
   serverpresetPlaceholder: 'Plex Server',
   serverLocal: 'local',
   serverRemote: 'remote',
-  serverConnected: 'connected',
   serverpresetManualMessage: 'Manual configuration',
   serverpresetRefreshing: 'Retrieving servers…',
   serverpresetLoad: 'Press the button to load available servers',
@@ -131,7 +131,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       dev.connection.forEach((conn) =>
         finalPresets.push({
           name: dev.name,
-          ssl: !conn.local && conn.protocol === 'https',
+          ssl: conn.protocol === 'https',
           uri: conn.uri,
           address: conn.address,
           port: conn.port,
@@ -141,14 +141,8 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         })
       );
     });
-    finalPresets.sort((a, b) => {
-      if (a.status && !b.status) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-    return finalPresets;
+
+    return orderBy(finalPresets, ['status', 'ssl'], ['desc', 'desc']);
   }, [availableServers]);
 
   const syncLibraries = async () => {
