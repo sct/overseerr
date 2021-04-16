@@ -7,6 +7,7 @@ import {
   UserSettingsGeneralResponse,
   UserSettingsNotificationsResponse,
 } from '../../interfaces/api/userSettingsInterfaces';
+import { NotificationAgentType } from '../../lib/notifications/agenttypes';
 import { Permission } from '../../lib/permissions';
 import { getSettings } from '../../lib/settings';
 import logger from '../../logger';
@@ -242,13 +243,17 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
       }
 
       return res.status(200).json({
-        enableNotifications: user.settings?.enableNotifications ?? true,
+        notificationAgents:
+          user.settings?.notificationAgents ?? NotificationAgentType.EMAIL,
+        emailEnabled: settings?.notifications.agents.email.enabled,
+        pgpKey: user.settings?.pgpKey,
+        discordEnabled: settings?.notifications.agents.discord.enabled,
+        discordId: user.settings?.discordId,
+        telegramEnabled: settings?.notifications.agents.telegram.enabled,
         telegramBotUsername:
           settings?.notifications.agents.telegram.options.botUsername,
-        discordId: user.settings?.discordId,
         telegramChatId: user.settings?.telegramChatId,
         telegramSendSilently: user?.settings?.telegramSendSilently,
-        pgpKey: user?.settings?.pgpKey,
       });
     } catch (e) {
       next({ status: 500, message: e.message });
@@ -256,60 +261,62 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
   }
 );
 
-userSettingsRoutes.post<
-  { id: string },
-  UserSettingsNotificationsResponse,
-  UserSettingsNotificationsResponse
->('/notifications', isOwnProfileOrAdmin(), async (req, res, next) => {
-  const userRepository = getRepository(User);
+userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
+  '/notifications',
+  isOwnProfileOrAdmin(),
+  async (req, res, next) => {
+    const userRepository = getRepository(User);
 
-  try {
-    const user = await userRepository.findOne({
-      where: { id: Number(req.params.id) },
-    });
-
-    if (!user) {
-      return next({ status: 404, message: 'User not found.' });
-    }
-
-    // "Owner" user settings cannot be modified by other users
-    if (user.id === 1 && req.user?.id !== 1) {
-      return next({
-        status: 403,
-        message: "You do not have permission to modify this user's settings.",
+    try {
+      const user = await userRepository.findOne({
+        where: { id: Number(req.params.id) },
       });
-    }
 
-    if (!user.settings) {
-      user.settings = new UserSettings({
-        user: req.user,
-        enableNotifications: req.body.enableNotifications,
-        discordId: req.body.discordId,
-        telegramChatId: req.body.telegramChatId,
-        telegramSendSilently: req.body.telegramSendSilently,
-        pgpKey: req.body.pgpKey,
+      if (!user) {
+        return next({ status: 404, message: 'User not found.' });
+      }
+
+      // "Owner" user settings cannot be modified by other users
+      if (user.id === 1 && req.user?.id !== 1) {
+        return next({
+          status: 403,
+          message: "You do not have permission to modify this user's settings.",
+        });
+      }
+
+      if (!user.settings) {
+        user.settings = new UserSettings({
+          user: req.user,
+          notificationAgents:
+            req.body.notificationAgents ?? NotificationAgentType.EMAIL,
+          pgpKey: req.body.pgpKey,
+          discordId: req.body.discordId,
+          telegramChatId: req.body.telegramChatId,
+          telegramSendSilently: req.body.telegramSendSilently,
+        });
+      } else {
+        user.settings.notificationAgents =
+          req.body.notificationAgents ?? NotificationAgentType.EMAIL;
+        user.settings.pgpKey = req.body.pgpKey;
+        user.settings.discordId = req.body.discordId;
+        user.settings.telegramChatId = req.body.telegramChatId;
+        user.settings.telegramSendSilently = req.body.telegramSendSilently;
+      }
+
+      userRepository.save(user);
+
+      return res.status(200).json({
+        notificationAgents: user.settings?.notificationAgents,
+        pgpKey: user.settings?.pgpKey,
+        discordId: user.settings?.discordId,
+        telegramChatId: user.settings?.telegramChatId,
+        telegramSendSilently: user?.settings?.telegramSendSilently,
       });
-    } else {
-      user.settings.enableNotifications = req.body.enableNotifications;
-      user.settings.discordId = req.body.discordId;
-      user.settings.telegramChatId = req.body.telegramChatId;
-      user.settings.telegramSendSilently = req.body.telegramSendSilently;
-      user.settings.pgpKey = req.body.pgpKey;
+    } catch (e) {
+      next({ status: 500, message: e.message });
     }
-
-    userRepository.save(user);
-
-    return res.status(200).json({
-      enableNotifications: user.settings.enableNotifications,
-      discordId: user.settings.discordId,
-      telegramChatId: user.settings.telegramChatId,
-      telegramSendSilently: user.settings.telegramSendSilently,
-      pgpKey: user.settings.pgpKey,
-    });
-  } catch (e) {
-    next({ status: 500, message: e.message });
   }
-});
+);
 
 userSettingsRoutes.get<{ id: string }, { permissions?: number }>(
   '/permissions',

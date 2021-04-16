@@ -1,6 +1,6 @@
 import NodeCache from 'node-cache';
 
-export type AvailableCacheIds = 'tmdb' | 'radarr' | 'sonarr' | 'rt';
+export type AvailableCacheIds = 'tmdb' | 'radarr' | 'sonarr' | 'rt' | 'github';
 
 const DEFAULT_TTL = 300;
 const DEFAULT_CHECK_PERIOD = 120;
@@ -42,6 +42,10 @@ class CacheManager {
     sonarr: new Cache('sonarr', 'Sonarr API'),
     rt: new Cache('rt', 'Rotten Tomatoes API', {
       stdTtl: 43200,
+      checkPeriod: 60 * 30,
+    }),
+    github: new Cache('github', 'GitHub API', {
+      stdTtl: 21600,
       checkPeriod: 60 * 30,
     }),
   };

@@ -14,16 +14,14 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
   accessToken: 'Application/API Token',
-  userToken: 'User Key',
+  userToken: 'User or Group Key',
   validationAccessTokenRequired: 'You must provide a valid application token',
   validationUserTokenRequired: 'You must provide a valid user key',
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
-  testsent: 'Test notification sent!',
-  settinguppushover: 'Setting Up Pushover Notifications',
+  testsent: 'Pushover test notification sent!',
   settinguppushoverDescription:
-    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below. (You can use one of our <IconLink>official icons on GitHub</IconLink>.) You will also need your user key.',
-  notificationtypes: 'Notification Types',
+    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below. (You can use one of the <IconLink>official Overseerr icons on GitHub</IconLink>.)',
 });
 
 const NotificationsPushover: React.FC = () => {
@@ -35,13 +33,25 @@ const NotificationsPushover: React.FC = () => {
 
   const NotificationsPushoverSchema = Yup.object().shape({
     accessToken: Yup.string()
-      .required(intl.formatMessage(messages.validationAccessTokenRequired))
+      .when('enabled', {
+        is: true,
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationAccessTokenRequired)),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationAccessTokenRequired)
       ),
     userToken: Yup.string()
-      .required(intl.formatMessage(messages.validationUserTokenRequired))
+      .when('enabled', {
+        is: true,
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationUserTokenRequired)),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationUserTokenRequired)
@@ -105,15 +115,12 @@ const NotificationsPushover: React.FC = () => {
         return (
           <>
             <Alert
-              title={intl.formatMessage(messages.settinguppushover)}
-              type="info"
-            >
-              {intl.formatMessage(messages.settinguppushoverDescription, {
+              title={intl.formatMessage(messages.settinguppushoverDescription, {
                 RegisterApplicationLink: function RegisterApplicationLink(msg) {
                   return (
                     <a
                       href="https://pushover.net/apps/build"
-                      className="text-indigo-100 hover:text-white hover:underline"
+                      className="text-white transition duration-300 hover:underline"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -125,7 +132,7 @@ const NotificationsPushover: React.FC = () => {
                   return (
                     <a
                       href="https://github.com/sct/overseerr/tree/develop/public"
-                      className="text-indigo-100 hover:text-white hover:underline"
+                      className="text-white transition duration-300 hover:underline"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -134,7 +141,8 @@ const NotificationsPushover: React.FC = () => {
                   );
                 },
               })}
-            </Alert>
+              type="info"
+            />
             <Form className="section">
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">
@@ -182,28 +190,10 @@ const NotificationsPushover: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="form-row">
-                  <span id="group-label" className="group-label">
-                    {intl.formatMessage(messages.notificationtypes)}
-                    <span className="label-required">*</span>
-                  </span>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <NotificationTypeSelector
+                currentTypes={values.types}
+                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              />
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">

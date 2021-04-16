@@ -38,18 +38,6 @@ If you enable this setting and find yourself unable to access Overseerr, you can
 
 This setting is **disabled** by default.
 
-### Enable Image Caching
-
-{% hint style="danger" %}
-**This feature is experimental.** Enable it at your own risk!
-{% endhint %}
-
-When enabled, all images (including media posters from TMDb) will be cached locally on your server. Images will also be optimized for client devices; i.e., if you access Overseerr using a mobile device, smaller versions will be served compared to when accessing Overseerr on desktop.
-
-Note that this feature requires and will use a significant amount of disk space, and there is currently no automated deletion of old or expired images. If running Overseerr using Docker, it is possible to manually clear the image cache by simply removing and recreating the container.
-
-This setting is **disabled** by default.
-
 ### Discover Region & Discover Language
 
 These settings filter content shown on the "Discover" home page based on regional availability and original language, respectively. Users can override these global settings by configuring these same options in their user settings.
@@ -78,9 +66,21 @@ When disabled, Plex OAuth becomes the only sign-in option, and any "local users"
 
 This setting is **enabled** by default.
 
+### Global Movie Request Limit & Global Series Request Limit
+
+Select the request limits you would like granted to users.
+
+Unless an [override](../users/README.md#movie-request-limit-and-series-request-limit) is configured, users are granted these global request limits.
+
+Note that users with the **Manage Users** permission are exempt from request limits, since that permission also grants the ability to submit requests on behalf of other users.
+
 ### Default User Permissions
 
-Select the permissions you would like new users to have by default. It is important to set these, as any user with access to your Plex server will be able to log in to Overseerr, and they will be granted the permissions you select here.
+Select the permissions you would like assigned to new users to have by default upon account creation.
+
+It is important to configure this, as any user with access to your Plex server will be able to sign in to Overseerr, and they will be granted the permissions you select here upon first sign-in.
+
+This setting only affects new users, and has no impact on existing users. In order to modify permissions for existing users, you will need to [edit the users](../users/README.md#editing-users).
 
 ## Plex
 

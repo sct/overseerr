@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React, { useContext, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import {
   MediaRequestStatus,
   MediaStatus,
@@ -22,6 +22,8 @@ import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
+  mediaerror: 'The associated title for this request is no longer available.',
+  deleterequest: 'Delete Request',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -33,6 +35,59 @@ const RequestCardPlaceholder: React.FC = () => {
     <div className="relative p-4 bg-gray-700 rounded-xl w-72 sm:w-96 animate-pulse">
       <div className="w-20 sm:w-28">
         <div className="w-full" style={{ paddingBottom: '150%' }} />
+      </div>
+    </div>
+  );
+};
+
+interface RequestCardErrorProps {
+  mediaId?: number;
+}
+
+const RequestCardError: React.FC<RequestCardErrorProps> = ({ mediaId }) => {
+  const { hasPermission } = useUser();
+  const intl = useIntl();
+
+  const deleteRequest = async () => {
+    await axios.delete(`/api/v1/media/${mediaId}`);
+    mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+  };
+
+  return (
+    <div className="relative p-4 bg-gray-800 ring-1 ring-red-500 rounded-xl w-72 sm:w-96">
+      <div className="w-20 sm:w-28">
+        <div className="w-full" style={{ paddingBottom: '150%' }}>
+          <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full px-10">
+            <div className="w-full text-xs text-center text-gray-300 whitespace-normal sm:text-sm">
+              {intl.formatMessage(messages.mediaerror)}
+            </div>
+            {hasPermission(Permission.MANAGE_REQUESTS) && mediaId && (
+              <div className="mt-4">
+                <Button
+                  buttonType="danger"
+                  buttonSize="sm"
+                  onClick={() => deleteRequest()}
+                >
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                  <span>{intl.formatMessage(messages.deleterequest)}</span>
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -88,11 +143,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
   }
 
   if (!requestData && !requestError) {
-    return <RequestCardPlaceholder />;
+    return <RequestCardError />;
   }
 
   if (!title || !requestData) {
-    return <RequestCardPlaceholder />;
+    return <RequestCardError mediaId={requestData?.media.id} />;
   }
 
   return (
@@ -192,6 +247,8 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                 ).length > 0
               }
               is4k={requestData.is4k}
+              plexUrl={requestData.media.plexUrl}
+              plexUrl4k={requestData.media.plexUrl4k}
             />
           )}
         </div>

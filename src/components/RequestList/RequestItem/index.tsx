@@ -28,10 +28,64 @@ const messages = defineMessages({
   requested: 'Requested',
   modified: 'Modified',
   modifieduserdate: '{date} by {user}',
+  mediaerror: 'The associated title for this request is no longer available.',
+  deleterequest: 'Delete Request',
+  cancelRequest: 'Cancel Request',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
+};
+
+interface RequestItemErroProps {
+  mediaId?: number;
+  revalidateList: () => void;
+}
+
+const RequestItemError: React.FC<RequestItemErroProps> = ({
+  mediaId,
+  revalidateList,
+}) => {
+  const intl = useIntl();
+  const { hasPermission } = useUser();
+
+  const deleteRequest = async () => {
+    await axios.delete(`/api/v1/media/${mediaId}`);
+    revalidateList();
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center w-full h-64 px-10 bg-gray-800 lg:flex-row ring-1 ring-red-500 rounded-xl xl:h-32">
+      <span className="text-sm text-center text-gray-300 lg:text-left">
+        {intl.formatMessage(messages.mediaerror)}
+      </span>
+      {hasPermission(Permission.MANAGE_REQUESTS) && mediaId && (
+        <div className="mt-4 lg:ml-4 lg:mt-0">
+          <Button
+            buttonType="danger"
+            buttonSize="sm"
+            onClick={() => deleteRequest()}
+          >
+            <svg
+              className="w-5 h-5 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+            <span>{intl.formatMessage(messages.deleterequest)}</span>
+          </Button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 interface RequestItemProps {
@@ -48,7 +102,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   });
   const { addToast } = useToasts();
   const intl = useIntl();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
   const { locale } = useContext(LanguageContext);
   const url =
@@ -108,9 +162,9 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
   if (!title || !requestData) {
     return (
-      <div
-        className="w-full h-64 bg-gray-800 rounded-xl xl:h-32 animate-pulse"
-        ref={ref}
+      <RequestItemError
+        mediaId={requestData?.media.id}
+        revalidateList={revalidateList}
       />
     );
   }
@@ -315,6 +369,31 @@ const RequestItem: React.FC<RequestItemProps> = ({
           </div>
         </div>
         <div className="z-10 flex flex-col justify-center w-full pl-4 pr-4 mt-4 space-y-2 xl:mt-0 xl:items-end xl:w-96 xl:pl-0">
+          {requestData.status === MediaRequestStatus.PENDING &&
+            !hasPermission(Permission.MANAGE_REQUESTS) &&
+            requestData.requestedBy.id === user?.id && (
+              <ConfirmButton
+                onClick={() => deleteRequest()}
+                confirmText={intl.formatMessage(globalMessages.areyousure)}
+                className="w-full"
+              >
+                <svg
+                  className="w-5 h-5 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="block">
+                  {intl.formatMessage(messages.cancelRequest)}
+                </span>
+              </ConfirmButton>
+            )}
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&

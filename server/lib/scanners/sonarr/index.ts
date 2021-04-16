@@ -1,6 +1,6 @@
 import { uniqWith } from 'lodash';
 import { getRepository } from 'typeorm';
-import SonarrAPI, { SonarrSeries } from '../../../api/sonarr';
+import SonarrAPI, { SonarrSeries } from '../../../api/servarr/sonarr';
 import Media from '../../../entity/Media';
 import { getSettings, SonarrSettings } from '../../settings';
 import BaseScanner, {
@@ -58,7 +58,7 @@ class SonarrScanner
 
           this.sonarrApi = new SonarrAPI({
             apiKey: server.apiKey,
-            url: SonarrAPI.buildSonarrUrl(server, '/api/v3'),
+            url: SonarrAPI.buildUrl(server, '/api/v3'),
           });
 
           this.items = await this.sonarrApi.getSeries();

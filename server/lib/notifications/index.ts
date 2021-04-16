@@ -38,7 +38,7 @@ class NotificationManager {
 
   public registerAgents = (agents: NotificationAgent[]): void => {
     this.activeAgents = [...this.activeAgents, ...agents];
-    logger.info('Registered Notification Agents', { label: 'Notifications' });
+    logger.info('Registered notification agents', { label: 'Notifications' });
   };
 
   public sendNotification(
@@ -46,8 +46,9 @@ class NotificationManager {
     payload: NotificationPayload
   ): void {
     const settings = getSettings().notifications;
-    logger.info(`Sending notification for ${Notification[type]}`, {
+    logger.info(`Sending notification(s) for ${Notification[type]}`, {
       label: 'Notifications',
+      subject: payload.subject,
     });
     this.activeAgents.forEach((agent) => {
       if (settings.enabled && agent.shouldSend(type)) {

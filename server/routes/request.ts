@@ -278,6 +278,7 @@ requestRoutes.post(
           serverId: req.body.serverId,
           profileId: req.body.profileId,
           rootFolder: req.body.rootFolder,
+          tags: req.body.tags,
         });
 
         await requestRepository.save(request);
@@ -356,6 +357,7 @@ requestRoutes.post(
           profileId: req.body.profileId,
           rootFolder: req.body.rootFolder,
           languageProfileId: req.body.languageProfileId,
+          tags: req.body.tags,
           seasons: finalSeasons.map(
             (sn) =>
               new SeasonRequest({
@@ -497,6 +499,7 @@ requestRoutes.put<{ requestId: string }>(
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;
         request.rootFolder = req.body.rootFolder;
+        request.tags = req.body.tags;
         request.requestedBy = requestUser as User;
 
         requestRepository.save(request);
@@ -505,6 +508,8 @@ requestRoutes.put<{ requestId: string }>(
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;
         request.rootFolder = req.body.rootFolder;
+        request.languageProfileId = req.body.languageProfileId;
+        request.tags = req.body.tags;
         request.requestedBy = requestUser as User;
 
         const requestedSeasons = req.body.seasons as number[] | undefined;

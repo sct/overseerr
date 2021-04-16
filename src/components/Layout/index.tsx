@@ -8,8 +8,8 @@ import Sidebar from './Sidebar';
 import UserDropdown from './UserDropdown';
 
 const messages = defineMessages({
-  alphawarning:
-    'This is ALPHA software. Features may be broken and/or unstable. Please report any issues on GitHub!',
+  betawarning:
+    'This is BETA software. Features may be broken and/or unstable. Please report any issues on GitHub!',
 });
 
 const Layout: React.FC = ({ children }) => {
@@ -102,7 +102,7 @@ const Layout: React.FC = ({ children }) => {
                     </div>
                     <div className="flex-1 ml-3 md:flex md:justify-between">
                       <p className="text-sm leading-5 text-white">
-                        {intl.formatMessage(messages.alphawarning)}
+                        {intl.formatMessage(messages.betawarning)}
                       </p>
                       <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
                         <a

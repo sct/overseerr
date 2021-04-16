@@ -32,6 +32,9 @@ const defaultPayload = {
   '{{extra}}': [],
   '{{request}}': {
     request_id: '{{request_id}}',
+    requestedBy_email: '{{requestedBy_email}}',
+    requestedBy_username: '{{requestedBy_username}}',
+    requestedBy_avatar: '{{requestedBy_avatar}}',
   },
 };
 
@@ -42,8 +45,7 @@ const messages = defineMessages({
   validationJsonPayloadRequired: 'You must provide a valid JSON payload',
   webhooksettingssaved: 'Webhook notification settings saved successfully!',
   webhooksettingsfailed: 'Webhook notification settings failed to save.',
-  testsent: 'Test notification sent!',
-  notificationtypes: 'Notification Types',
+  testsent: 'Webhook test notification sent!',
   resetPayload: 'Reset to Default',
   resetPayloadSuccess: 'JSON payload reset successfully!',
   customJson: 'JSON Payload',
@@ -60,14 +62,26 @@ const NotificationsWebhook: React.FC = () => {
 
   const NotificationsWebhookSchema = Yup.object().shape({
     webhookUrl: Yup.string()
-      .required(intl.formatMessage(messages.validationWebhookUrl))
+      .when('enabled', {
+        is: true,
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationWebhookUrl)),
+        otherwise: Yup.string().nullable(),
+      })
       .matches(
-        // eslint-disable-next-line
+        // eslint-disable-next-line no-useless-escape
         /^(https?:)?\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
         intl.formatMessage(messages.validationWebhookUrl)
       ),
     jsonPayload: Yup.string()
-      .required(intl.formatMessage(messages.validationJsonPayloadRequired))
+      .when('enabled', {
+        is: true,
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationJsonPayloadRequired)),
+        otherwise: Yup.string().nullable(),
+      })
       .test(
         'validate-json',
         intl.formatMessage(messages.validationJsonPayloadRequired),
@@ -255,32 +269,10 @@ const NotificationsWebhook: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-8">
-              <div
-                role="group"
-                aria-labelledby="group-label"
-                className="form-group"
-              >
-                <div className="sm:grid sm:grid-cols-4 sm:gap-4">
-                  <div>
-                    <div id="group-label" className="group-label">
-                      {intl.formatMessage(messages.notificationtypes)}
-                      <span className="label-required">*</span>
-                    </div>
-                  </div>
-                  <div className="form-input">
-                    <div className="max-w-lg">
-                      <NotificationTypeSelector
-                        currentTypes={values.types}
-                        onUpdate={(newTypes) =>
-                          setFieldValue('types', newTypes)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <NotificationTypeSelector
+              currentTypes={values.types}
+              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

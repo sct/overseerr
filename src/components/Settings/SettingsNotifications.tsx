@@ -1,11 +1,5 @@
-import axios from 'axios';
-import { Field, Form, Formik } from 'formik';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
 import Bolt from '../../assets/bolt.svg';
 import DiscordLogo from '../../assets/extlogos/discord.svg';
 import PushbulletLogo from '../../assets/extlogos/pushbullet.svg';
@@ -13,38 +7,20 @@ import PushoverLogo from '../../assets/extlogos/pushover.svg';
 import SlackLogo from '../../assets/extlogos/slack.svg';
 import TelegramLogo from '../../assets/extlogos/telegram.svg';
 import globalMessages from '../../i18n/globalMessages';
-import Error from '../../pages/_error';
-import Button from '../Common/Button';
-import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
+import SettingsTabs, { SettingsRoute } from '../Common/SettingsTabs';
 
 const messages = defineMessages({
   notifications: 'Notifications',
   notificationsettings: 'Notification Settings',
-  notificationsettingsDescription:
-    'Configure global notification settings. The options below will apply to all notification agents.',
-  notificationAgentsSettings: 'Notification Agents',
   notificationAgentSettingsDescription:
-    'Choose the types of notifications to send, and which notification agents to use.',
-  notificationsettingssaved: 'Notification settings saved successfully!',
-  notificationsettingsfailed: 'Notification settings failed to save.',
-  enablenotifications: 'Enable Notifications',
+    'Configure and enable notification agents.',
   email: 'Email',
   webhook: 'Webhook',
 });
 
-interface SettingsRoute {
-  text: string;
-  content: React.ReactNode;
-  route: string;
-  regex: RegExp;
-}
-
 const SettingsNotifications: React.FC = ({ children }) => {
-  const router = useRouter();
   const intl = useIntl();
-  const { addToast } = useToasts();
-  const { data, error, revalidate } = useSWR('/api/v1/settings/notifications');
 
   const settingsRoutes: SettingsRoute[] = [
     {
@@ -139,40 +115,6 @@ const SettingsNotifications: React.FC = ({ children }) => {
     },
   ];
 
-  const activeLinkColor = 'bg-indigo-700';
-  const inactiveLinkColor = 'bg-gray-800';
-
-  const SettingsLink: React.FC<{
-    route: string;
-    regex: RegExp;
-    isMobile?: boolean;
-  }> = ({ children, route, regex, isMobile = false }) => {
-    if (isMobile) {
-      return <option value={route}>{children}</option>;
-    }
-
-    return (
-      <Link href={route}>
-        <a
-          className={`whitespace-nowrap ml-8 first:ml-0 px-3 py-2 font-medium text-sm rounded-md ${
-            router.pathname.match(regex) ? activeLinkColor : inactiveLinkColor
-          }`}
-          aria-current="page"
-        >
-          {children}
-        </a>
-      </Link>
-    );
-  };
-
-  if (!data && !error) {
-    return <LoadingSpinner />;
-  }
-
-  if (!data) {
-    return <Error statusCode={500} />;
-  }
-
   return (
     <>
       <PageTitle
@@ -186,130 +128,10 @@ const SettingsNotifications: React.FC = ({ children }) => {
           {intl.formatMessage(messages.notificationsettings)}
         </h3>
         <p className="description">
-          {intl.formatMessage(messages.notificationsettingsDescription)}
-        </p>
-      </div>
-      <div className="section">
-        <Formik
-          initialValues={{
-            enabled: data.enabled,
-          }}
-          enableReinitialize
-          onSubmit={async (values) => {
-            try {
-              await axios.post('/api/v1/settings/notifications', {
-                enabled: values.enabled,
-              });
-              addToast(intl.formatMessage(messages.notificationsettingssaved), {
-                appearance: 'success',
-                autoDismiss: true,
-              });
-            } catch (e) {
-              addToast(
-                intl.formatMessage(messages.notificationsettingsfailed),
-                {
-                  appearance: 'error',
-                  autoDismiss: true,
-                }
-              );
-            } finally {
-              revalidate();
-            }
-          }}
-        >
-          {({ isSubmitting, values, setFieldValue }) => {
-            return (
-              <Form className="section">
-                <div className="form-row">
-                  <label htmlFor="name" className="checkbox-label">
-                    <span>
-                      {intl.formatMessage(messages.enablenotifications)}
-                    </span>
-                  </label>
-                  <div className="form-input">
-                    <Field
-                      type="checkbox"
-                      id="enabled"
-                      name="enabled"
-                      onChange={() => {
-                        setFieldValue('enabled', !values.enabled);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="actions">
-                  <div className="flex justify-end">
-                    <span className="inline-flex ml-3 rounded-md shadow-sm">
-                      <Button
-                        buttonType="primary"
-                        type="submit"
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting
-                          ? intl.formatMessage(globalMessages.saving)
-                          : intl.formatMessage(globalMessages.save)}
-                      </Button>
-                    </span>
-                  </div>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-      </div>
-      <div className="mt-10 mb-6">
-        <h3 className="heading">
-          {intl.formatMessage(messages.notificationAgentsSettings)}
-        </h3>
-        <p className="description">
           {intl.formatMessage(messages.notificationAgentSettingsDescription)}
         </p>
       </div>
-      <div>
-        <div className="sm:hidden">
-          <label htmlFor="tabs" className="sr-only">
-            Select a tab
-          </label>
-          <select
-            onChange={(e) => {
-              router.push(e.target.value);
-            }}
-            onBlur={(e) => {
-              router.push(e.target.value);
-            }}
-            defaultValue={
-              settingsRoutes.find(
-                (route) => !!router.pathname.match(route.regex)
-              )?.route
-            }
-            aria-label="Selected tab"
-          >
-            {settingsRoutes.map((route, index) => (
-              <SettingsLink
-                route={route.route}
-                regex={route.regex}
-                isMobile
-                key={`mobile-settings-link-${index}`}
-              >
-                {route.text}
-              </SettingsLink>
-            ))}
-          </select>
-        </div>
-        <div className="hidden overflow-x-scroll overflow-y-hidden sm:block hide-scrollbar">
-          <nav className="flex space-x-4" aria-label="Tabs">
-            {settingsRoutes.map((route, index) => (
-              <SettingsLink
-                route={route.route}
-                regex={route.regex}
-                key={`standard-settings-link-${index}`}
-              >
-                {route.content}
-              </SettingsLink>
-            ))}
-          </nav>
-        </div>
-      </div>
+      <SettingsTabs tabType="button" settingsRoutes={settingsRoutes} />
       <div className="section">{children}</div>
     </>
   );

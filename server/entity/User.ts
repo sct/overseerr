@@ -157,7 +157,8 @@ export class User {
       logger.info(`Sending generated password email for ${this.email}`, {
         label: 'User Management',
       });
-      const email = new PreparedEmail();
+
+      const email = new PreparedEmail(getSettings().notifications.agents.email);
       await email.send({
         template: path.join(__dirname, '../templates/email/generatedpassword'),
         message: {
@@ -193,7 +194,7 @@ export class User {
       logger.info(`Sending reset password email for ${this.email}`, {
         label: 'User Management',
       });
-      const email = new PreparedEmail();
+      const email = new PreparedEmail(getSettings().notifications.agents.email);
       await email.send({
         template: path.join(__dirname, '../templates/email/resetpassword'),
         message: {
@@ -236,11 +237,9 @@ export class User {
     const movieDate = new Date();
     if (movieQuotaDays) {
       movieDate.setDate(movieDate.getDate() - movieQuotaDays);
-    } else {
-      movieDate.setDate(0);
     }
-    // YYYY-MM-DD format
-    const movieQuotaStartDate = movieDate.toJSON().split('T')[0];
+    const movieQuotaStartDate = movieDate.toJSON();
+
     const movieQuotaUsed = movieQuotaLimit
       ? await requestRepository.count({
           where: {
@@ -261,11 +260,8 @@ export class User {
     const tvDate = new Date();
     if (tvQuotaDays) {
       tvDate.setDate(tvDate.getDate() - tvQuotaDays);
-    } else {
-      tvDate.setDate(0);
     }
-    // YYYY-MM-DD format
-    const tvQuotaStartDate = tvDate.toJSON().split('T')[0];
+    const tvQuotaStartDate = tvDate.toJSON();
     const tvQuotaUsed = tvQuotaLimit
       ? (
           await requestRepository

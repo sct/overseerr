@@ -1,7 +1,5 @@
-import cacheManager from '../lib/cache';
-import { SonarrSettings } from '../lib/settings';
-import logger from '../logger';
-import ExternalAPI from './externalapi';
+import logger from '../../logger';
+import ServarrBase from './base';
 
 interface SonarrSeason {
   seasonNumber: number;
@@ -49,7 +47,7 @@ export interface SonarrSeries {
   titleSlug: string;
   certification: string;
   genres: string[];
-  tags: string[];
+  tags: number[];
   added: string;
   ratings: {
     votes: number;
@@ -65,49 +63,6 @@ export interface SonarrSeries {
   };
 }
 
-interface QueueItem {
-  seriesId: number;
-  episodeId: number;
-  size: number;
-  title: string;
-  sizeleft: number;
-  timeleft: string;
-  estimatedCompletionTime: string;
-  status: string;
-  trackedDownloadStatus: string;
-  trackedDownloadState: string;
-  downloadId: string;
-  protocol: string;
-  downloadClient: string;
-  indexer: string;
-  id: number;
-}
-
-interface QueueResponse {
-  page: number;
-  pageSize: number;
-  sortKey: string;
-  sortDirection: string;
-  totalRecords: number;
-  records: QueueItem[];
-}
-
-interface SonarrProfile {
-  id: number;
-  name: string;
-}
-
-interface SonarrRootFolder {
-  id: number;
-  path: string;
-  freeSpace: number;
-  totalSpace: number;
-  unmappedFolders: {
-    name: string;
-    path: string;
-  }[];
-}
-
 interface AddSeriesOptions {
   tvdbid: number;
   title: string;
@@ -116,6 +71,7 @@ interface AddSeriesOptions {
   seasons: number[];
   seasonFolder: boolean;
   rootFolderPath: string;
+  tags?: number[];
   seriesType: SonarrSeries['seriesType'];
   monitored?: boolean;
   searchNow?: boolean;
@@ -126,23 +82,9 @@ export interface LanguageProfile {
   name: string;
 }
 
-class SonarrAPI extends ExternalAPI {
-  static buildSonarrUrl(sonarrSettings: SonarrSettings, path?: string): string {
-    return `${sonarrSettings.useSsl ? 'https' : 'http'}://${
-      sonarrSettings.hostname
-    }:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}${path}`;
-  }
-
+class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
-    super(
-      url,
-      {
-        apikey: apiKey,
-      },
-      {
-        nodeCache: cacheManager.getCache('sonarr').data,
-      }
-    );
+    super({ url, apiKey, apiName: 'Sonarr', cacheName: 'sonarr' });
   }
 
   public async getSeries(): Promise<SonarrSeries[]> {
@@ -151,7 +93,7 @@ class SonarrAPI extends ExternalAPI {
 
       return response.data;
     } catch (e) {
-      throw new Error(`[Radarr] Failed to retrieve series: ${e.message}`);
+      throw new Error(`[Sonarr] Failed to retrieve series: ${e.message}`);
     }
   }
 
@@ -205,6 +147,7 @@ class SonarrAPI extends ExternalAPI {
 
       // If the series already exists, we will simply just update it
       if (series.id) {
+        series.tags = options.tags ?? series.tags;
         series.seasons = this.buildSeasonList(options.seasons, series.seasons);
 
         const newSeriesResponse = await this.axios.put<SonarrSeries>(
@@ -249,6 +192,7 @@ class SonarrAPI extends ExternalAPI {
               monitored: false,
             }))
           ),
+          tags: options.tags,
           seasonFolder: options.seasonFolder,
           monitored: options.monitored,
           rootFolderPath: options.rootFolderPath,
@@ -286,46 +230,6 @@ class SonarrAPI extends ExternalAPI {
     }
   }
 
-  public async getProfiles(): Promise<SonarrProfile[]> {
-    try {
-      const data = await this.getRolling<SonarrProfile[]>(
-        '/qualityProfile',
-        undefined,
-        3600
-      );
-
-      return data;
-    } catch (e) {
-      logger.error('Something went wrong while retrieving Sonarr profiles.', {
-        label: 'Sonarr API',
-        message: e.message,
-      });
-      throw new Error('Failed to get profiles');
-    }
-  }
-
-  public async getRootFolders(): Promise<SonarrRootFolder[]> {
-    try {
-      const data = await this.getRolling<SonarrRootFolder[]>(
-        '/rootfolder',
-        undefined,
-        3600
-      );
-
-      return data;
-    } catch (e) {
-      logger.error(
-        'Something went wrong while retrieving Sonarr root folders.',
-        {
-          label: 'Sonarr API',
-          message: e.message,
-        }
-      );
-
-      throw new Error('Failed to get root folders');
-    }
-  }
-
   public async getLanguageProfiles(): Promise<LanguageProfile[]> {
     try {
       const data = await this.getRolling<LanguageProfile[]>(
@@ -356,25 +260,6 @@ class SonarrAPI extends ExternalAPI {
     await this.runCommand('SeriesSearch', { seriesId });
   }
 
-  private async runCommand(
-    commandName: string,
-    options: Record<string, unknown>
-  ): Promise<void> {
-    try {
-      await this.axios.post(`/command`, {
-        name: commandName,
-        ...options,
-      });
-    } catch (e) {
-      logger.error('Something went wrong attempting to run a Sonarr command.', {
-        label: 'Sonarr API',
-        message: e.message,
-      });
-
-      throw new Error('Failed to run Sonarr command.');
-    }
-  }
-
   private buildSeasonList(
     seasons: number[],
     existingSeasons?: SonarrSeason[]
@@ -399,16 +284,6 @@ class SonarrAPI extends ExternalAPI {
 
     return newSeasons;
   }
-
-  public getQueue = async (): Promise<QueueItem[]> => {
-    try {
-      const response = await this.axios.get<QueueResponse>(`/queue`);
-
-      return response.data.records;
-    } catch (e) {
-      throw new Error(`[Radarr] Failed to retrieve queue: ${e.message}`);
-    }
-  };
 }
 
 export default SonarrAPI;

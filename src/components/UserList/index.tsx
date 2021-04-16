@@ -8,6 +8,7 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
+import { UserSettingsNotificationsResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
 import { hasPermission } from '../../../server/lib/permissions';
 import AddUserIcon from '../../assets/useradd.svg';
 import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
@@ -46,7 +47,7 @@ const messages = defineMessages({
   userdeleted: 'User deleted successfully!',
   userdeleteerror: 'Something went wrong while deleting the user.',
   deleteconfirm:
-    'Are you sure you want to delete this user? All existing request data from this user will be removed.',
+    'Are you sure you want to delete this user? All of their request data will be permanently removed.',
   localuser: 'Local User',
   createlocaluser: 'Create Local User',
   createuser: 'Create User',
@@ -58,10 +59,10 @@ const messages = defineMessages({
   usercreatedsuccess: 'User created successfully!',
   email: 'Email Address',
   password: 'Password',
-  passwordinfo: 'Password Information',
   passwordinfodescription:
-    'Email notifications need to be configured and enabled in order to automatically generate passwords.',
-  autogeneratepassword: 'Automatically generate password',
+    'Enable email notifications to allow automatic password generation.',
+  autogeneratepassword: 'Automatically Generate Password',
+  autogeneratepasswordTip: 'Email a server-generated password to the user',
   validationEmail: 'You must provide a valid email address',
   sortCreated: 'Creation Date',
   sortUpdated: 'Last Updated',
@@ -75,6 +76,7 @@ const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
   const { addToast } = useToasts();
+  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const [currentSort, setCurrentSort] = useState<Sort>('created');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
 
@@ -86,6 +88,13 @@ const UserList: React.FC = () => {
     `/api/v1/user?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&sort=${currentSort}`
+  );
+  const {
+    data: notificationSettings,
+  } = useSWR<UserSettingsNotificationsResponse>(
+    currentUser
+      ? `/api/v1/user/${currentUser?.id}/settings/notifications`
+      : null
   );
 
   const [isDeleting, setDeleting] = useState(false);
@@ -103,7 +112,6 @@ const UserList: React.FC = () => {
   });
   const [showBulkEditModal, setShowBulkEditModal] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
 
   useEffect(() => {
     const filterString = window.localStorage.getItem('ul-filter-settings');
@@ -291,7 +299,7 @@ const UserList: React.FC = () => {
           initialValues={{
             email: '',
             password: '',
-            genpassword: true,
+            genpassword: false,
           }}
           validationSchema={CreateUserSchema}
           onSubmit={async (values) => {
@@ -338,9 +346,12 @@ const UserList: React.FC = () => {
                 okButtonType="primary"
                 onCancel={() => setCreateModal({ isOpen: false })}
               >
-                <Alert title={intl.formatMessage(messages.passwordinfo)}>
-                  {intl.formatMessage(messages.passwordinfodescription)}
-                </Alert>
+                {!notificationSettings?.emailEnabled && (
+                  <Alert
+                    title={intl.formatMessage(messages.passwordinfodescription)}
+                    type="info"
+                  />
+                )}
                 <Form className="section">
                   <div className="form-row">
                     <label htmlFor="email" className="text-label">
@@ -360,20 +371,32 @@ const UserList: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className="form-row">
+                  <div
+                    className={`form-row ${
+                      notificationSettings?.emailEnabled ? '' : 'opacity-50'
+                    }`}
+                  >
                     <label htmlFor="genpassword" className="checkbox-label">
                       {intl.formatMessage(messages.autogeneratepassword)}
+                      <span className="label-tip">
+                        {intl.formatMessage(messages.autogeneratepasswordTip)}
+                      </span>
                     </label>
                     <div className="form-input">
                       <Field
                         type="checkbox"
                         id="genpassword"
                         name="genpassword"
+                        disabled={!notificationSettings?.emailEnabled}
                         onClick={() => setFieldValue('password', '')}
                       />
                     </div>
                   </div>
-                  <div className="form-row">
+                  <div
+                    className={`form-row ${
+                      values.genpassword ? 'opacity-50' : ''
+                    }`}
+                  >
                     <label htmlFor="password" className="text-label">
                       {intl.formatMessage(messages.password)}
                     </label>
@@ -383,8 +406,8 @@ const UserList: React.FC = () => {
                           id="password"
                           name="password"
                           type="password"
+                          autoComplete="new-password"
                           disabled={values.genpassword}
-                          placeholder={intl.formatMessage(messages.password)}
                         />
                       </div>
                       {errors.password && touched.password && (

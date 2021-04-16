@@ -3,6 +3,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import NotificationType from './NotificationType';
 
 const messages = defineMessages({
+  notificationTypes: 'Notification Types',
   mediarequested: 'Media Requested',
   mediarequestedDescription:
     'Sends a notification when media is requested and requires approval.',
@@ -111,16 +112,26 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
   ];
 
   return (
-    <>
-      {types.map((type) => (
-        <NotificationType
-          key={`notification-type-${type.id}`}
-          option={type}
-          currentTypes={currentTypes}
-          onUpdate={onUpdate}
-        />
-      ))}
-    </>
+    <div role="group" aria-labelledby="group-label" className="form-group">
+      <div className="form-row">
+        <span id="group-label" className="group-label">
+          {intl.formatMessage(messages.notificationTypes)}
+          <span className="label-required">*</span>
+        </span>
+        <div className="form-input">
+          <div className="max-w-lg">
+            {types.map((type) => (
+              <NotificationType
+                key={`notification-type-${type.id}`}
+                option={type}
+                currentTypes={currentTypes}
+                onUpdate={onUpdate}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

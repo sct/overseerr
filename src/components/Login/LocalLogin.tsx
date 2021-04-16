@@ -84,6 +84,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       id="password"
                       name="password"
                       type="password"
+                      autoComplete="current-password"
                       placeholder={intl.formatMessage(messages.password)}
                     />
                   </div>
