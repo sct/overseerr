@@ -26,7 +26,6 @@
   "i18n.partiallyavailable": "部分可觀看",
   "i18n.unavailable": "不可觀看",
   "components.StatusChacker.newversionavailable": "軟體更新",
-  "components.Layout.alphawarning": "這是預覽版軟體，所以可能會不穩定或被破壞。請向 GitHub 報告問題！",
   "components.StatusBadge.status4k": "4K 版 {status}",
   "components.Setup.tip": "提示",
   "components.Setup.welcome": "歡迎來到 Overseerr",
@@ -816,5 +815,7 @@
   "components.Settings.mediaTypeSeries": "電視節目",
   "components.Settings.mediaTypeMovie": "電影",
   "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSet": "此用戶目前沒有密碼。設置密碼以允許此用戶使用電子郵件地址登錄。",
-  "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSetOwnAccount": "您的帳戶目前沒有密碼。設置密碼以允許使用電子郵件地址登錄。"
+  "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSetOwnAccount": "您的帳戶目前沒有密碼。設置密碼以允許使用電子郵件地址登錄。",
+  "components.Layout.betawarning": "這是測試版軟體，所以可能會不穩定或被破壞。請向 GitHub 報告問題！",
+  "components.UserList.autogeneratepasswordTip": "通過電子郵件發送伺服器生成的密碼給用戶"
 }
