@@ -15,7 +15,6 @@
   "components.Layout.Sidebar.settings": "設定",
   "components.Layout.Sidebar.users": "ユーザー",
   "components.Layout.UserDropdown.signout": "ログアウト",
-  "components.Layout.alphawarning": "このソフトはアルファ版です。ほとんどの機能は不安定又は故障している可能性があります。バグを発見した場合、Overseerr の Github までご連絡ください！",
   "components.MovieDetails.budget": "予算",
   "components.MovieDetails.cast": "出演者",
   "components.MovieDetails.manageModalClearMedia": "メディア情報を消去",
