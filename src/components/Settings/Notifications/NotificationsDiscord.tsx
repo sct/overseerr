@@ -18,7 +18,7 @@ const messages = defineMessages({
   webhookUrlPlaceholder: 'Server Settings → Integrations → Webhooks',
   discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
-  testsent: 'Discord test notification sent!',
+  discordtestsent: 'Discord test notification sent!',
   validationUrl: 'You must provide a valid URL',
 });
 
@@ -96,7 +96,7 @@ const NotificationsDiscord: React.FC = () => {
             },
           });
 
-          addToast(intl.formatMessage(messages.testsent), {
+          addToast(intl.formatMessage(messages.discordtestsent), {
             appearance: 'info',
             autoDismiss: true,
           });

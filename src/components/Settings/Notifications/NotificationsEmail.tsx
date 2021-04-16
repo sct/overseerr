@@ -24,7 +24,7 @@ const messages = defineMessages({
   authPass: 'SMTP Password',
   emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
-  testsent: 'Email test notification sent!',
+  emailtestsent: 'Email test notification sent!',
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:
     'SSL should be disabled on standard TLS connections (port 587)',
@@ -188,7 +188,7 @@ const NotificationsEmail: React.FC = () => {
             },
           });
 
-          addToast(intl.formatMessage(messages.testsent), {
+          addToast(intl.formatMessage(messages.emailtestsent), {
             appearance: 'info',
             autoDismiss: true,
           });
