@@ -59,7 +59,7 @@ router.get<unknown, StatusResponse>('/status', async (req, res) => {
     if (releases.length) {
       const latestVersion = releases[0];
 
-      if (latestVersion.name !== currentVersion) {
+      if (!latestVersion.name.includes(currentVersion)) {
         updateAvailable = true;
       }
     }
