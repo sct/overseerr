@@ -83,7 +83,6 @@
   "components.Login.password": "Jelszó",
   "components.Login.loginerror": "Valami nem sikerült a bejelentkezés során.",
   "components.Login.email": "Email cím",
-  "components.Layout.alphawarning": "Ez egy ALPHA szoftver. Előfordulhat, hogy egy-egy funkció hibásan működik vagy instabil. Kérlek jelentsd a problémákat GitHub-on!",
   "components.Layout.UserDropdown.signout": "Kijelentkezés",
   "components.Layout.Sidebar.users": "Felhasználók",
   "components.Layout.Sidebar.settings": "Beállítások",
