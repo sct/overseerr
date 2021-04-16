@@ -50,6 +50,22 @@ services:
 
 {% endtab %}
 
+{% tab title="UID/GID" %}
+
+```text
+docker run -d \
+  --name overseerr \
+  --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ] \
+  -e LOG_LEVEL=info \
+  -e TZ=Asia/Tokyo \
+  -p 5055:5055 \
+  -v /path/to/appdata/config:/app/config \
+  --restart unless-stopped \
+   sctx/overseerr
+```
+
+{% endtab %}
+
 {% tab title="Manual Update" %}
 
 ```bash
