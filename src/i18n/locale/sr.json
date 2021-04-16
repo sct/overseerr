@@ -218,7 +218,6 @@
   "components.MovieDetails.cast": "Postava",
   "components.MovieDetails.budget": "Budžet",
   "components.MovieDetails.MovieCast.fullcast": "Kompletna Glumačka Postava",
-  "components.Layout.alphawarning": "Ovo je softver u ALPHA stanju. Skoro sve je nestabilno. Molimo Vas prijavite sve probleme na Overseerr GitHub stranici!",
   "components.Layout.UserDropdown.signout": "Odjava",
   "components.Layout.Sidebar.users": "Korisnici",
   "components.Layout.Sidebar.settings": "Podešavanja",
