@@ -4,10 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import {
-  MediaRequestStatus,
-  MediaStatus,
-} from '../../../server/constants/media';
+import { MediaStatus } from '../../../server/constants/media';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
 import { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
 import { Permission } from '../../../server/lib/permissions';
@@ -130,18 +127,14 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
     } finally {
       setIsUpdating(false);
     }
-  }, [data, onComplete, addToast, requestOverrides]);
-
-  const activeRequest = data?.mediaInfo?.requests?.find(
-    (request) => request.is4k === !!is4k
-  );
+  }, [data, onComplete, addToast, requestOverrides, hasPermission, intl, is4k]);
 
   const cancelRequest = async () => {
     setIsUpdating(true);
 
     try {
       const response = await axios.delete<MediaRequest>(
-        `/api/v1/request/${activeRequest?.id}`
+        `/api/v1/request/${editRequest?.id}`
       );
 
       if (response.status === 204) {
@@ -206,11 +199,9 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
     }
   };
 
-  const isOwner = activeRequest
-    ? activeRequest.requestedBy.id === user?.id
-    : false;
+  if (editRequest) {
+    const isOwner = editRequest.requestedBy.id === user?.id;
 
-  if (activeRequest?.status === MediaRequestStatus.PENDING) {
     return (
       <Modal
         loading={!data && !error}
@@ -240,7 +231,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           : intl.formatMessage(
               is4k ? messages.request4kfrom : messages.requestfrom,
               {
-                username: activeRequest.requestedBy.displayName,
+                username: editRequest.requestedBy.displayName,
               }
             )}
         {(hasPermission(Permission.REQUEST_ADVANCED) ||

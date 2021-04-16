@@ -79,7 +79,6 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   const activeRequests = media?.requests.filter(
     (request) => request.status === MediaRequestStatus.PENDING && !request.is4k
   );
-
   const active4kRequests = media?.requests.filter(
     (request) => request.status === MediaRequestStatus.PENDING && request.is4k
   );
@@ -332,6 +331,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         tmdbId={tmdbId}
         show={showRequestModal}
         type={mediaType}
+        editRequest={activeRequest}
         onComplete={() => {
           onUpdate();
           setShowRequestModal(false);
@@ -342,6 +342,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         tmdbId={tmdbId}
         show={showRequest4kModal}
         type={mediaType}
+        editRequest={active4kRequest}
         is4k
         onComplete={() => {
           onUpdate();
