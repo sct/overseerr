@@ -22,45 +22,20 @@
 
 - Full Plex integration. Authenticate and manage user access with Plex!
 - Easy integration with your existing services. Currently, Overseerr supports Sonarr and Radarr. More to come!
-- Plex library sync, to keep track of the titles which are already available.
+- Plex library scan, to keep track of the titles which are already available.
 - Customizable request system, which allows users to request individual seasons or movies in a friendly, easy-to-use interface.
 - Incredibly simple request management UI. Don't dig through the app to simply approve recent requests!
 - Granular permission system.
 - Support for various notification agents.
 - Mobile-friendly design, for when you need to approve requests on the go!
 
-## Planned Features
-
-- Additional notification types.
-- Issues system. This will allow users to report issues with content on your media server.
-- And a ton more! Check out our [issue tracker](https://github.com/sct/overseerr/issues) to see the features which have already been requested.
+With more features on the way! Check out our [issue tracker](https://github.com/sct/overseerr/issues) to see the features which have already been requested.
 
 ## Getting Started
 
 Check out our documentation for instructions on how to install and run Overseerr:
 
 https://docs.overseerr.dev/getting-started/installation
-
-## Running Overseerr
-
-Currently, Overseerr is primarily distributed as Docker images. If you have Docker installed, you can simply run Overseerr with:
-
-```
-docker run -d \
-  --name overseerr \
-  -e LOG_LEVEL=info \
-  -e TZ=Asia/Tokyo \
-  -p 5055:5055 \
-  -v /path/to/appdata/config:/app/config \
-  --restart unless-stopped \
-  sctx/overseerr
-```
-
-After running Overseerr for the first time, configure it by visiting the web UI at http://[address]:5055 and completing the setup steps
-
-For more information and alternative installation methods, please see the [Overseerr documentation](https://docs.overseerr.dev/getting-started/installation).
-
-⚠️ Overseerr is currently under very heavy, rapid development and things are likely to break often. We need all the help we can get to find bugs and get them fixed to hit a more stable release. If you would like to help test the bleeding edge, please use the `sctx/overseerr:develop` image instead! ⚠️
 
 ## Preview
 

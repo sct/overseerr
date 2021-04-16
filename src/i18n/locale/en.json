@@ -46,7 +46,7 @@
   "components.Layout.VersionStatus.outofdate": "Out of Date",
   "components.Layout.VersionStatus.streamdevelop": "Overseerr Develop",
   "components.Layout.VersionStatus.streamstable": "Overseerr Stable",
-  "components.Layout.alphawarning": "This is ALPHA software. Features may be broken and/or unstable. Please report any issues on GitHub!",
+  "components.Layout.betawarning": "This is BETA software. Features may be broken and/or unstable. Please report any issues on GitHub!",
   "components.Login.email": "Email Address",
   "components.Login.forgotpassword": "Forgot Password?",
   "components.Login.loginerror": "Something went wrong while trying to sign in.",
