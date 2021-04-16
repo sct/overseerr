@@ -15,7 +15,6 @@
   "components.Layout.Sidebar.settings": "Настройки",
   "components.Layout.Sidebar.users": "Пользователи",
   "components.Layout.UserDropdown.signout": "Выход",
-  "components.Layout.alphawarning": "Это АЛЬФА-версия этой программы. Почти все может быть сломано и/или нестабильно. Пожалуйста, сообщайте о проблемах на GitHub Overseerr!",
   "components.MovieDetails.budget": "Бюджет",
   "components.MovieDetails.cast": "В ролях",
   "components.MovieDetails.manageModalClearMedia": "Очистить все медиаданные",
