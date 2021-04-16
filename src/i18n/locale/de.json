@@ -15,7 +15,6 @@
   "components.Layout.Sidebar.settings": "Einstellungen",
   "components.Layout.Sidebar.users": "Benutzer",
   "components.Layout.UserDropdown.signout": "Abmelden",
-  "components.Layout.alphawarning": "Dies ist eine ALPHA-Software. Funktionen können kaputt und/oder instabil sein. Bitte melde Probleme auf GitHub!",
   "components.MovieDetails.budget": "Budget",
   "components.MovieDetails.cast": "Besetzung",
   "components.MovieDetails.manageModalClearMedia": "Alle Mediendaten löschen",
