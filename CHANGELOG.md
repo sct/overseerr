@@ -1,3 +1,42 @@
+# [1.23.0](https://github.com/sct/overseerr/compare/v1.22.0...v1.23.0) (2021-04-16)
+
+
+### Bug Fixes
+
+* **api:** allow server owner to delete other admin accounts ([2ac6fe7](https://github.com/sct/overseerr/commit/2ac6fe7f6d666d64228d11cde24865acc54c7ce7))
+* **backend:** do not log error when user has no server access ([#1419](https://github.com/sct/overseerr/issues/1419)) ([fc14037](https://github.com/sct/overseerr/commit/fc14037ec1c0b7450d892fa9be8176f5b9ff9d73))
+* **frontend:** add crossorigin attribute to webmanifest link ([#1376](https://github.com/sct/overseerr/issues/1376)) ([82ca2f5](https://github.com/sct/overseerr/commit/82ca2f59349407e3b1b5cd4f321e196f37044df0))
+* **frontend:** autofill with Plex server address ([#1381](https://github.com/sct/overseerr/issues/1381)) ([d9e314b](https://github.com/sct/overseerr/commit/d9e314bad295463d26d8ffe92728f3b5eee4ad05))
+* **frontend:** handle media items/requests no longer having a valid tmdb id ([b5ac2f5](https://github.com/sct/overseerr/commit/b5ac2f5a2c5dda808eca177359f125d6e03d1b0f)), closes [#517](https://github.com/sct/overseerr/issues/517)
+* **lang:** remove unused strings & correct manageModalNoRequests strings ([#1413](https://github.com/sct/overseerr/issues/1413)) ([190a5c0](https://github.com/sct/overseerr/commit/190a5c0723d4aeafc4ad6103d52c2042a4eaed0e))
+* **plex:** do not use SSL for local servers ([#1418](https://github.com/sct/overseerr/issues/1418)) ([9233fc0](https://github.com/sct/overseerr/commit/9233fc078579df8a193344ba45bafb0d5c2cb9af))
+* **plex:** use server 'address' returned by Plex API ([#1379](https://github.com/sct/overseerr/issues/1379)) ([33542c9](https://github.com/sct/overseerr/commit/33542c9b2dc53b1e036a7d9571cf467c3d3dc8af))
+* **quotas:** Time value of a quota was being ignored ([d3c6bc1](https://github.com/sct/overseerr/commit/d3c6bc1619c39b1e6225d405efaad5df99a27406))
+* **ui:** allow canceling from request list & hide edit button for own requests ([#1401](https://github.com/sct/overseerr/issues/1401)) ([bed850d](https://github.com/sct/overseerr/commit/bed850dce9ad0d0b52c3c628225aea938164c38b))
+* **ui:** close sidebar on mobile when clicking version status ([ad67381](https://github.com/sct/overseerr/commit/ad673813976669797202c2cefc50274aca84989d))
+* **ui:** correctly set autocomplete attribute for password fields ([#1430](https://github.com/sct/overseerr/issues/1430)) ([4b5e355](https://github.com/sct/overseerr/commit/4b5e355df9e291a5cb550483c7dad6c43f03d3a7))
+* **ui:** dim password field when password generation option is selected ([#1427](https://github.com/sct/overseerr/issues/1427)) ([e8bbd44](https://github.com/sct/overseerr/commit/e8bbd4497a5eab6357fa7b37c9906285b3d1f64f))
+* **ui:** hide alert when email notifs are already configured ([#1335](https://github.com/sct/overseerr/issues/1335)) ([5117987](https://github.com/sct/overseerr/commit/5117987feaed21ccc19e64b04a15f2b77c22b880))
+* fall back to English genre names ([#1352](https://github.com/sct/overseerr/issues/1352)) ([e43106a](https://github.com/sct/overseerr/commit/e43106a434548840acecaf1276a5cebdc30e1345))
+* fix outofdate string & display version status badge in Settings > About ([#1417](https://github.com/sct/overseerr/issues/1417)) ([4eb9209](https://github.com/sct/overseerr/commit/4eb92098ba1f141bf74875ce76816a615763de5f))
+* various fixes for new tags feature ([#1369](https://github.com/sct/overseerr/issues/1369)) ([b4450a3](https://github.com/sct/overseerr/commit/b4450a308c56f767fbaa769d574a1b3f8e221d59))
+* **ui:** link request card status badge to Plex media URL ([#1361](https://github.com/sct/overseerr/issues/1361)) ([7a5c4a3](https://github.com/sct/overseerr/commit/7a5c4a30b5735fe6fbe821a8fcfdb4bcbeca68b3))
+
+
+### Features
+
+* **lang:** Translations update from Weblate ([#1429](https://github.com/sct/overseerr/issues/1429)) ([a54241c](https://github.com/sct/overseerr/commit/a54241c775705fadc7c044f5312307f28f9a854b))
+* change alpha warning to beta warning ([03fd21b](https://github.com/sct/overseerr/commit/03fd21bebc3ffa34ce983b524d09e74b8ab2d057))
+* **lang:** translated using Weblate (Catalan) ([#1351](https://github.com/sct/overseerr/issues/1351)) ([35c13a8](https://github.com/sct/overseerr/commit/35c13a87467b4deabab3cb2cd1cab1b24ab51875))
+* **lang:** translations update from Weblate ([#1360](https://github.com/sct/overseerr/issues/1360)) ([8ee7693](https://github.com/sct/overseerr/commit/8ee7693a1f00a2f735b2555c7f8180c8a2c6144f))
+* **lang:** translations update from Weblate ([#1416](https://github.com/sct/overseerr/issues/1416)) ([dceca4d](https://github.com/sct/overseerr/commit/dceca4dd97f78f2e3aef678edcd5755c781f5249))
+* add overseerr version and update availability status to sidebar ([ecf1312](https://github.com/sct/overseerr/commit/ecf13123d21d765d67bfa7f9b6509b0f2af62cee))
+* **lang:** translations update from Weblate ([#1388](https://github.com/sct/overseerr/issues/1388)) ([9b199b2](https://github.com/sct/overseerr/commit/9b199b27d806e290cf0551e2d2ede6add61770aa))
+* **lang:** translations update from Weblate ([#1396](https://github.com/sct/overseerr/issues/1396)) ([3daf57e](https://github.com/sct/overseerr/commit/3daf57e9a12e4973dbc56656379ab2dbcb3c2619))
+* **notif:** allow users to enable/disable specific agents ([#1172](https://github.com/sct/overseerr/issues/1172)) ([46c4ee1](https://github.com/sct/overseerr/commit/46c4ee1625cf3e74bd885ecfc254b1e46cf44f29))
+* **webhook:** include requestedBy user in payload ([#1385](https://github.com/sct/overseerr/issues/1385)) ([e605687](https://github.com/sct/overseerr/commit/e60568758097d07f9d4b201ffdf34f0c32ba9cf3))
+* radarr/sonarr tag support ([#1366](https://github.com/sct/overseerr/issues/1366)) ([a306ebc](https://github.com/sct/overseerr/commit/a306ebc2d18317d8dbe4ccd3f24c22f55ffcd6a6))
+
 # [1.22.0](https://github.com/sct/overseerr/compare/v1.21.1...v1.22.0) (2021-04-01)
 
 
