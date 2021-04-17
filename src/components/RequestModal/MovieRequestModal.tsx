@@ -240,17 +240,13 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
             <AdvancedRequester
               type="movie"
               is4k={is4k}
-              requestUser={editRequest?.requestedBy}
-              defaultOverrides={
-                editRequest
-                  ? {
-                      folder: editRequest.rootFolder,
-                      profile: editRequest.profileId,
-                      server: editRequest.serverId,
-                      tags: editRequest.tags,
-                    }
-                  : undefined
-              }
+              requestUser={editRequest.requestedBy}
+              defaultOverrides={{
+                folder: editRequest.rootFolder,
+                profile: editRequest.profileId,
+                server: editRequest.serverId,
+                tags: editRequest.tags,
+              }}
               onChange={(overrides) => {
                 setRequestOverrides(overrides);
               }}
