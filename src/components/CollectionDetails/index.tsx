@@ -294,6 +294,9 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
               )}
             />
             {settings.currentSettings.movie4kEnabled &&
+              hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
+                type: 'or',
+              }) &&
               hasPermission(
                 [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
                 {
@@ -323,7 +326,9 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           </span>
         </div>
         <div className="media-actions">
-          {hasPermission(Permission.REQUEST) &&
+          {hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
+            type: 'or',
+          }) &&
             (hasRequestable ||
               (settings.currentSettings.movie4kEnabled &&
                 hasPermission(

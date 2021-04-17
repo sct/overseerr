@@ -122,6 +122,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
 
   if (
     data.mediaInfo?.plexUrl4k &&
+    hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
+      type: 'or',
+    }) &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
       type: 'or',
     })
@@ -391,6 +394,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               plexUrl={data.mediaInfo?.plexUrl}
             />
             {settings.currentSettings.movie4kEnabled &&
+              hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
+                type: 'or',
+              }) &&
               hasPermission(
                 [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
                 {

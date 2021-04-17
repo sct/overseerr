@@ -141,7 +141,10 @@ requestRoutes.get('/', async (req, res, next) => {
 
 requestRoutes.post(
   '/',
-  isAuthenticated(Permission.REQUEST),
+  isAuthenticated(
+    [Permission.REQUEST, Permission.REQUEST_MOVIE, Permission.REQUEST_TV],
+    { type: 'or' }
+  ),
   async (req, res, next) => {
     const tmdb = new TheMovieDb();
     const mediaRepository = getRepository(Media);
@@ -172,6 +175,31 @@ requestRoutes.post(
         return next({
           status: 500,
           message: 'User missing from request context.',
+        });
+      }
+
+      if (
+        req.body.mediaType === MediaType.MOVIE &&
+        !req.user?.hasPermission(
+          [Permission.REQUEST, Permission.REQUEST_MOVIE],
+          {
+            type: 'or',
+          }
+        )
+      ) {
+        return next({
+          status: 403,
+          message: 'You do not have permission to make movie requests.',
+        });
+      } else if (
+        req.body.mediaType === MediaType.TV &&
+        !req.user?.hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+          type: 'or',
+        })
+      ) {
+        return next({
+          status: 403,
+          message: 'You do not have permission to make series requests.',
         });
       }
 

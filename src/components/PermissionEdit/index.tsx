@@ -18,6 +18,10 @@ export const messages = defineMessages({
     'Grant permission to manage Overseerr requests (includes approving and denying requests). All requests made by a user with this permission will be automatically approved.',
   request: 'Request',
   requestDescription: 'Grant permission to request movies and series.',
+  requestMovies: 'Request Movies',
+  requestMoviesDescription: 'Grant permission to request movies.',
+  requestTv: 'Request Series',
+  requestTvDescription: 'Grant permission to request series.',
   vote: 'Vote',
   voteDescription:
     'Grant permission to vote on requests (voting not yet implemented).',
@@ -44,7 +48,7 @@ export const messages = defineMessages({
   request4kMovies: 'Request 4K Movies',
   request4kMoviesDescription: 'Grant permission to request 4K movies.',
   request4kTv: 'Request 4K Series',
-  request4kTvDescription: 'Grant permission to request 4K Series.',
+  request4kTvDescription: 'Grant permission to request 4K series.',
   advancedrequest: 'Advanced Requests',
   advancedrequestDescription:
     'Grant permission to use advanced request options (e.g., changing servers, profiles, or paths).',
@@ -111,6 +115,20 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
       name: intl.formatMessage(messages.request),
       description: intl.formatMessage(messages.requestDescription),
       permission: Permission.REQUEST,
+      children: [
+        {
+          id: 'request-movies',
+          name: intl.formatMessage(messages.requestMovies),
+          description: intl.formatMessage(messages.requestMoviesDescription),
+          permission: Permission.REQUEST_MOVIE,
+        },
+        {
+          id: 'request-tv',
+          name: intl.formatMessage(messages.requestTv),
+          description: intl.formatMessage(messages.requestTvDescription),
+          permission: Permission.REQUEST_TV,
+        },
+      ],
     },
     {
       id: 'request4k',
@@ -124,14 +142,24 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
           name: intl.formatMessage(messages.request4kMovies),
           description: intl.formatMessage(messages.request4kMoviesDescription),
           permission: Permission.REQUEST_4K_MOVIE,
-          requires: [{ permissions: [Permission.REQUEST] }],
+          requires: [
+            {
+              permissions: [Permission.REQUEST, Permission.REQUEST_MOVIE],
+              type: 'or',
+            },
+          ],
         },
         {
           id: 'request4k-tv',
           name: intl.formatMessage(messages.request4kTv),
           description: intl.formatMessage(messages.request4kTvDescription),
           permission: Permission.REQUEST_4K_TV,
-          requires: [{ permissions: [Permission.REQUEST] }],
+          requires: [
+            {
+              permissions: [Permission.REQUEST, Permission.REQUEST_TV],
+              type: 'or',
+            },
+          ],
         },
       ],
     },
@@ -149,7 +177,12 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
             messages.autoapproveMoviesDescription
           ),
           permission: Permission.AUTO_APPROVE_MOVIE,
-          requires: [{ permissions: [Permission.REQUEST] }],
+          requires: [
+            {
+              permissions: [Permission.REQUEST, Permission.REQUEST_MOVIE],
+              type: 'or',
+            },
+          ],
         },
         {
           id: 'autoapprovetv',
@@ -158,7 +191,12 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
             messages.autoapproveSeriesDescription
           ),
           permission: Permission.AUTO_APPROVE_TV,
-          requires: [{ permissions: [Permission.REQUEST] }],
+          requires: [
+            {
+              permissions: [Permission.REQUEST, Permission.REQUEST_TV],
+              type: 'or',
+            },
+          ],
         },
       ],
     },
@@ -183,7 +221,8 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
           permission: Permission.AUTO_APPROVE_4K_MOVIE,
           requires: [
             {
-              permissions: [Permission.REQUEST],
+              permissions: [Permission.REQUEST, Permission.REQUEST_MOVIE],
+              type: 'or',
             },
             {
               permissions: [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
@@ -200,7 +239,8 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
           permission: Permission.AUTO_APPROVE_4K_TV,
           requires: [
             {
-              permissions: [Permission.REQUEST],
+              permissions: [Permission.REQUEST, Permission.REQUEST_TV],
+              type: 'or',
             },
             {
               permissions: [Permission.REQUEST_4K, Permission.REQUEST_4K_TV],

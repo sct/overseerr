@@ -130,6 +130,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   if (
     data.mediaInfo?.plexUrl4k &&
+    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+      type: 'or',
+    }) &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
       type: 'or',
     })
@@ -430,6 +433,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               plexUrl={data.mediaInfo?.plexUrl}
             />
             {settings.currentSettings.series4kEnabled &&
+              hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+                type: 'or',
+              }) &&
               hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
                 type: 'or',
               }) && (
