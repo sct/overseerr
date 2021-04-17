@@ -64,7 +64,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
 }) => {
   const intl = useIntl();
   const settings = useSettings();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showRequest4kModal, setShowRequest4kModal] = useState(false);
 
@@ -185,7 +185,9 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   if (
     activeRequest &&
     mediaType === 'movie' &&
-    hasPermission(Permission.REQUEST)
+    hasPermission(Permission.REQUEST) &&
+    (activeRequest.requestedBy.id === user?.id ||
+      hasPermission(Permission.MANAGE_REQUESTS))
   ) {
     buttons.push({
       id: 'active-request',
@@ -198,8 +200,11 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   if (
     active4kRequest &&
     mediaType === 'movie' &&
-    (hasPermission(Permission.REQUEST_4K) ||
-      hasPermission(Permission.REQUEST_4K_MOVIE))
+    hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
+      type: 'or',
+    }) &&
+    (active4kRequest.requestedBy.id === user?.id ||
+      hasPermission(Permission.MANAGE_REQUESTS))
   ) {
     buttons.push({
       id: 'active-4k-request',
