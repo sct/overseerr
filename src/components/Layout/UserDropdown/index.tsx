@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
-import Transition from '../../Transition';
-import { useUser } from '../../../hooks/useUser';
+import { LogoutIcon } from '@heroicons/react/outline';
+import { CogIcon, UserIcon } from '@heroicons/react/solid';
 import axios from 'axios';
-import useClickOutside from '../../../hooks/useClickOutside';
-import { defineMessages, useIntl } from 'react-intl';
 import Link from 'next/link';
+import React, { useRef, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import useClickOutside from '../../../hooks/useClickOutside';
+import { useUser } from '../../../hooks/useUser';
+import Transition from '../../Transition';
 
 const messages = defineMessages({
   myprofile: 'Profile',
@@ -65,7 +67,7 @@ const UserDropdown: React.FC = () => {
           >
             <Link href={`/profile`}>
               <a
-                className="block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+                className="items-center block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
                 role="menuitem"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -75,12 +77,13 @@ const UserDropdown: React.FC = () => {
                 }}
                 onClick={() => setDropdownOpen(false)}
               >
+                <UserIcon className="inline w-5 h-5 mr-2" />
                 {intl.formatMessage(messages.myprofile)}
               </a>
             </Link>
             <Link href={`/profile/settings`}>
               <a
-                className="block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+                className="items-center block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
                 role="menuitem"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -90,6 +93,7 @@ const UserDropdown: React.FC = () => {
                 }}
                 onClick={() => setDropdownOpen(false)}
               >
+                <CogIcon className="inline w-5 h-5 mr-2" />
                 {intl.formatMessage(messages.settings)}
               </a>
             </Link>
@@ -99,6 +103,7 @@ const UserDropdown: React.FC = () => {
               role="menuitem"
               onClick={() => logout()}
             >
+              <LogoutIcon className="inline w-5 h-5 mr-2" />
               {intl.formatMessage(messages.signout)}
             </a>
           </div>

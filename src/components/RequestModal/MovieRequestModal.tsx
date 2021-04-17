@@ -1,3 +1,4 @@
+import { DownloadIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -11,7 +12,6 @@ import { MediaRequest } from '../../../server/entity/MediaRequest';
 import { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
 import { Permission } from '../../../server/lib/permissions';
 import { MovieDetails } from '../../../server/models/Movie';
-import DownloadIcon from '../../assets/download.svg';
 import { useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';

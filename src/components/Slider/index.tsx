@@ -1,3 +1,4 @@
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 import { debounce } from 'lodash';
 import React, {
   ReactNode,
@@ -166,20 +167,7 @@ const Slider: React.FC<SliderProps> = ({
           onClick={() => slide(Direction.LEFT)}
           disabled={scrollPos.isStart}
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
+          <ChevronLeftIcon className="w-6 h-6" />
         </button>
         <button
           className={`${
@@ -188,20 +176,7 @@ const Slider: React.FC<SliderProps> = ({
           onClick={() => slide(Direction.RIGHT)}
           disabled={scrollPos.isEnd}
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          <ChevronRightIcon className="w-6 h-6" />
         </button>
       </div>
       <div
