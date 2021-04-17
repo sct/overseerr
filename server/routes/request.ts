@@ -493,7 +493,7 @@ requestRoutes.get('/:requestId', async (req, res, next) => {
 
 requestRoutes.put<{ requestId: string }>(
   '/:requestId',
-  isAuthenticated(Permission.MANAGE_REQUESTS),
+  isAuthenticated(),
   async (req, res, next) => {
     const requestRepository = getRepository(MediaRequest);
     const userRepository = getRepository(User);
@@ -503,7 +503,18 @@ requestRoutes.put<{ requestId: string }>(
       );
 
       if (!request) {
-        return next({ status: 404, message: 'Request not found' });
+        return next({ status: 404, message: 'Request not found.' });
+      }
+
+      if (
+        (request.requestedBy.id !== req.user?.id ||
+          !req.user?.hasPermission(Permission.REQUEST_ADVANCED)) &&
+        !req.user?.hasPermission(Permission.MANAGE_REQUESTS)
+      ) {
+        return next({
+          status: 403,
+          message: 'You do not have permission to modify this request.',
+        });
       }
 
       let requestUser = req.user;
@@ -546,7 +557,7 @@ requestRoutes.put<{ requestId: string }>(
 
         if (!requestedSeasons || requestedSeasons.length === 0) {
           throw new Error(
-            'Missing seasons. If you want to cancel a tv request, use the DELETE method.'
+            'Missing seasons. If you want to cancel a series request, use the DELETE method.'
           );
         }
 
@@ -617,34 +628,38 @@ requestRoutes.put<{ requestId: string }>(
   }
 );
 
-requestRoutes.delete('/:requestId', async (req, res, next) => {
-  const requestRepository = getRepository(MediaRequest);
+requestRoutes.delete(
+  '/:requestId',
+  isAuthenticated(),
+  async (req, res, next) => {
+    const requestRepository = getRepository(MediaRequest);
 
-  try {
-    const request = await requestRepository.findOneOrFail({
-      where: { id: Number(req.params.requestId) },
-      relations: ['requestedBy', 'modifiedBy'],
-    });
-
-    if (
-      !req.user?.hasPermission(Permission.MANAGE_REQUESTS) &&
-      request.requestedBy.id !== req.user?.id &&
-      request.status !== 1
-    ) {
-      return next({
-        status: 401,
-        message: 'You do not have permission to remove this request',
+    try {
+      const request = await requestRepository.findOneOrFail({
+        where: { id: Number(req.params.requestId) },
+        relations: ['requestedBy', 'modifiedBy'],
       });
+
+      if (
+        !req.user?.hasPermission(Permission.MANAGE_REQUESTS) &&
+        request.requestedBy.id !== req.user?.id &&
+        request.status !== 1
+      ) {
+        return next({
+          status: 401,
+          message: 'You do not have permission to delete this request.',
+        });
+      }
+
+      await requestRepository.remove(request);
+
+      return res.status(204).send();
+    } catch (e) {
+      logger.error(e.message);
+      next({ status: 404, message: 'Request not found.' });
     }
-
-    await requestRepository.remove(request);
-
-    return res.status(204).send();
-  } catch (e) {
-    logger.error(e.message);
-    next({ status: 404, message: 'Request not found' });
   }
-});
+);
 
 requestRoutes.post<{
   requestId: string;
@@ -668,7 +683,7 @@ requestRoutes.post<{
         label: 'Media Request',
         message: e.message,
       });
-      next({ status: 404, message: 'Request not found' });
+      next({ status: 404, message: 'Request not found.' });
     }
   }
 );
@@ -712,7 +727,7 @@ requestRoutes.post<{
         label: 'Media Request',
         message: e.message,
       });
-      next({ status: 404, message: 'Request not found' });
+      next({ status: 404, message: 'Request not found.' });
     }
   }
 );

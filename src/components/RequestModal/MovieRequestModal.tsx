@@ -22,11 +22,11 @@ const messages = defineMessages({
   requestCancel: 'Request for <strong>{title}</strong> canceled.',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
+  edit: 'Edit Request',
   cancel: 'Cancel Request',
   pendingrequest: 'Pending Request for {title}',
-  pending4krequest: 'Pending Request for {title} in 4K',
-  requestfrom: 'There is currently a pending request from {username}.',
-  request4kfrom: 'There is currently a pending 4K request from {username}.',
+  pending4krequest: 'Pending 4K Request for {title}',
+  requestfrom: "{username}'s request is pending approval.",
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request for <strong>{title}</strong> edited successfully!',
   requesterror: 'Something went wrong while submitting the request.',
@@ -201,6 +201,12 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
 
   if (editRequest) {
     const isOwner = editRequest.requestedBy.id === user?.id;
+    const showEditButton = hasPermission(
+      [Permission.MANAGE_REQUESTS, Permission.REQUEST_ADVANCED],
+      {
+        type: 'or',
+      }
+    );
 
     return (
       <Modal
@@ -213,27 +219,31 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
             title: data?.title,
           }
         )}
-        onOk={() => (isOwner ? cancelRequest() : updateRequest())}
+        onOk={() => (showEditButton ? cancelRequest() : updateRequest())}
         okDisabled={isUpdating}
         okText={
-          isOwner
-            ? isUpdating
-              ? intl.formatMessage(globalMessages.canceling)
-              : intl.formatMessage(messages.cancel)
-            : intl.formatMessage(globalMessages.edit)
+          showEditButton
+            ? intl.formatMessage(messages.edit)
+            : intl.formatMessage(messages.cancel)
         }
-        okButtonType={isOwner ? 'danger' : 'primary'}
+        okButtonType={showEditButton ? 'primary' : 'danger'}
+        onSecondary={
+          isOwner && showEditButton ? () => cancelRequest() : undefined
+        }
+        secondaryDisabled={isUpdating}
+        secondaryText={
+          isOwner && showEditButton
+            ? intl.formatMessage(messages.cancel)
+            : undefined
+        }
         cancelText={intl.formatMessage(globalMessages.close)}
         iconSvg={<DownloadIcon className="w-6 h-6" />}
       >
         {isOwner
           ? intl.formatMessage(messages.pendingapproval)
-          : intl.formatMessage(
-              is4k ? messages.request4kfrom : messages.requestfrom,
-              {
-                username: editRequest.requestedBy.displayName,
-              }
-            )}
+          : intl.formatMessage(messages.requestfrom, {
+              username: editRequest.requestedBy.displayName,
+            })}
         {(hasPermission(Permission.REQUEST_ADVANCED) ||
           hasPermission(Permission.MANAGE_REQUESTS)) && (
           <div className="mt-4">
