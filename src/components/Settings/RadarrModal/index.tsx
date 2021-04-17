@@ -1,3 +1,4 @@
+import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import dynamic from 'next/dynamic';
@@ -355,6 +356,13 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   : intl.formatMessage(
                       values.is4k ? messages.edit4kradarr : messages.editradarr
                     )
+              }
+              iconSvg={
+                !radarr ? (
+                  <PlusIcon className="w-6 h-6" />
+                ) : (
+                  <PencilIcon className="w-6 h-6" />
+                )
               }
             >
               <div className="mb-6">

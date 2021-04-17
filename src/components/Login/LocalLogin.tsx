@@ -1,3 +1,4 @@
+import { LoginIcon, SupportIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -103,6 +104,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                   <span className="inline-flex rounded-md shadow-sm">
                     <Link href="/resetpassword" passHref>
                       <Button as="a" buttonType="ghost">
+                        <SupportIcon className="w-5 h-5 mr-1" />
                         {intl.formatMessage(messages.forgotpassword)}
                       </Button>
                     </Link>
@@ -113,6 +115,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       type="submit"
                       disabled={isSubmitting || !isValid}
                     >
+                      <LoginIcon className="w-5 h-5 mr-1" />
                       {isSubmitting
                         ? intl.formatMessage(messages.signingin)
                         : intl.formatMessage(messages.signin)}

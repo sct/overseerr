@@ -1,3 +1,4 @@
+import { DocumentTextIcon } from '@heroicons/react/outline';
 import React, { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
@@ -70,22 +71,7 @@ const Release: React.FC<ReleaseProps> = ({
       >
         <Modal
           onCancel={() => setModalOpen(false)}
-          iconSvg={
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          }
+          iconSvg={<DocumentTextIcon className="w-6 h-6" />}
           title={intl.formatMessage(messages.versionChangelog)}
           cancelText={intl.formatMessage(globalMessages.close)}
           okText={intl.formatMessage(messages.viewongithub)}
@@ -126,6 +112,7 @@ const Release: React.FC<ReleaseProps> = ({
       </div>
       <div className="flex-1 text-center sm:text-right">
         <Button buttonType="primary" onClick={() => setModalOpen(true)}>
+          <DocumentTextIcon className="w-5 h-5 mr-1" />
           {intl.formatMessage(messages.viewchangelog)}
         </Button>
       </div>

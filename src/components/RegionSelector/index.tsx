@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
-import useSWR from 'swr';
-import type { Region } from '../../../server/lib/settings';
-import { defineMessages, useIntl } from 'react-intl';
-import useSettings from '../../hooks/useSettings';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { hasFlag } from 'country-flag-icons';
 import 'country-flag-icons/3x2/flags.css';
+import React, { useEffect, useMemo, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import useSWR from 'swr';
+import type { Region } from '../../../server/lib/settings';
+import useSettings from '../../hooks/useSettings';
 
 const messages = defineMessages({
   regionDefault: 'All Regions',
@@ -125,20 +126,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                       : intl.formatMessage(messages.regionDefault)}
                   </span>
                   <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                      className="w-5 h-5 text-gray-500"
-                    >
-                      <path
-                        stroke="#6b7280"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.5"
-                        d="M6 8l4 4 4-4"
-                      />
-                    </svg>
+                    <ChevronDownIcon className="w-5 h-5 text-gray-500" />
                   </span>
                 </Listbox.Button>
               </span>
@@ -196,18 +184,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                                 active ? 'text-white' : 'text-indigo-600'
                               } absolute inset-y-0 left-0 flex items-center pl-1.5`}
                             >
-                              <svg
-                                className="w-5 h-5"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
+                              <CheckIcon className="w-5 h-5" />
                             </span>
                           )}
                         </div>
@@ -234,18 +211,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                               active ? 'text-white' : 'text-indigo-600'
                             } absolute inset-y-0 left-0 flex items-center pl-1.5`}
                           >
-                            <svg
-                              className="w-5 h-5"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
+                            <CheckIcon className="w-5 h-5" />
                           </span>
                         )}
                       </div>
@@ -286,18 +252,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                                 active ? 'text-white' : 'text-indigo-600'
                               } absolute inset-y-0 left-0 flex items-center pl-1.5`}
                             >
-                              <svg
-                                className="w-5 h-5"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
+                              <CheckIcon className="w-5 h-5" />
                             </span>
                           )}
                         </div>
