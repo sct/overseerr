@@ -1,3 +1,10 @@
+import {
+  ClockIcon,
+  CogIcon,
+  SparklesIcon,
+  XIcon,
+} from '@heroicons/react/outline';
+import { UsersIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useRef } from 'react';
@@ -33,20 +40,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     href: '/',
     messagesKey: 'dashboard',
     svgIcon: (
-      <svg
-        className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-        />
-      </svg>
+      <SparklesIcon className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300" />
     ),
     activeRegExp: /^\/(discover\/?(movies|tv)?)?$/,
   },
@@ -54,20 +48,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     href: '/requests',
     messagesKey: 'requests',
     svgIcon: (
-      <svg
-        className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
+      <ClockIcon className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300" />
     ),
     activeRegExp: /^\/requests/,
   },
@@ -75,14 +56,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     href: '/users',
     messagesKey: 'users',
     svgIcon: (
-      <svg
-        className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-      </svg>
+      <UsersIcon className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300" />
     ),
     activeRegExp: /^\/users/,
     requiredPermission: Permission.MANAGE_USERS,
@@ -91,26 +65,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     href: '/settings',
     messagesKey: 'settings',
     svgIcon: (
-      <svg
-        className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
+      <CogIcon className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300" />
     ),
     activeRegExp: /^\/settings/,
     requiredPermission: Permission.MANAGE_SETTINGS,
@@ -157,19 +112,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                       aria-label="Close sidebar"
                       onClick={() => setClosed()}
                     >
-                      <svg
-                        className="w-6 h-6 text-white"
-                        stroke="currentColor"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
+                      <XIcon className="w-6 h-6 text-white" />
                     </button>
                   </div>
                   <div

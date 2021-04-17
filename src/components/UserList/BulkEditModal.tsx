@@ -1,3 +1,4 @@
+import { PencilIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -84,6 +85,7 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
   return (
     <Modal
       title={intl.formatMessage(messages.edituser)}
+      iconSvg={<PencilIcon className="w-6 h-6" />}
       onOk={() => {
         updateUsers();
       }}

@@ -1,3 +1,10 @@
+import { TrashIcon } from '@heroicons/react/outline';
+import {
+  InboxInIcon,
+  PencilIcon,
+  SortDescendingIcon,
+  UserAddIcon,
+} from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -10,7 +17,6 @@ import * as Yup from 'yup';
 import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
 import { UserSettingsNotificationsResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
 import { hasPermission } from '../../../server/lib/permissions';
-import AddUserIcon from '../../assets/useradd.svg';
 import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
 import { Permission, User, UserType, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
@@ -265,22 +271,7 @@ const UserList: React.FC = () => {
           okButtonType="danger"
           onCancel={() => setDeleteModal({ isOpen: false })}
           title={intl.formatMessage(messages.deleteuser)}
-          iconSvg={
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-          }
+          iconSvg={<TrashIcon className="w-6 h-6" />}
         >
           {intl.formatMessage(messages.deleteconfirm)}
         </Modal>
@@ -335,7 +326,7 @@ const UserList: React.FC = () => {
             return (
               <Modal
                 title={intl.formatMessage(messages.createuser)}
-                iconSvg={<AddUserIcon className="h-6" />}
+                iconSvg={<UserAddIcon className="w-6 h-6" />}
                 onOk={() => handleSubmit()}
                 okText={
                   isSubmitting
@@ -451,6 +442,7 @@ const UserList: React.FC = () => {
               buttonType="primary"
               onClick={() => setCreateModal({ isOpen: true })}
             >
+              <UserAddIcon className="w-5 h-5 mr-1" />
               {intl.formatMessage(messages.createlocaluser)}
             </Button>
             <Button
@@ -459,19 +451,13 @@ const UserList: React.FC = () => {
               disabled={isImporting}
               onClick={() => importFromPlex()}
             >
+              <InboxInIcon className="w-5 h-5 mr-1" />
               {intl.formatMessage(messages.importfromplex)}
             </Button>
           </div>
           <div className="flex flex-grow mb-2 lg:mb-0 lg:flex-grow-0">
             <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
-              <svg
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z" />
-              </svg>
+              <SortDescendingIcon className="w-6 h-6" />
             </span>
             <select
               id="sort"
@@ -528,6 +514,7 @@ const UserList: React.FC = () => {
                   onClick={() => setShowBulkEditModal(true)}
                   disabled={selectedUsers.length === 0}
                 >
+                  <PencilIcon className="w-5 h-5 mr-1" />
                   {intl.formatMessage(messages.bulkedit)}
                 </Button>
               )}

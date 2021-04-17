@@ -24,6 +24,7 @@ const globalMessages = defineMessages({
   decline: 'Decline',
   delete: 'Delete',
   retry: 'Retry',
+  retrying: 'Retrying…',
   view: 'View',
   deleting: 'Deleting…',
   test: 'Test',

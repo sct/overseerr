@@ -1,3 +1,4 @@
+import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -66,20 +67,7 @@ const Discover: React.FC = () => {
         <Link href="/requests?filter=all">
           <a className="slider-title">
             <span>{intl.formatMessage(messages.recentrequests)}</span>
-            <svg
-              className="w-6 h-6 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <ArrowCircleRightIcon className="w-6 h-6 ml-2" />
           </a>
         </Link>
       </div>
