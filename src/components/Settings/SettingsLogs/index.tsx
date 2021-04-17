@@ -1,3 +1,10 @@
+import {
+  ClipboardCopyIcon,
+  DocumentSearchIcon,
+  FilterIcon,
+  PauseIcon,
+  PlayIcon,
+} from '@heroicons/react/solid';
 import copy from 'copy-to-clipboard';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -135,6 +142,7 @@ const SettingsLogs: React.FC = () => {
       >
         <Modal
           title={intl.formatMessage(messages.logDetails)}
+          iconSvg={<DocumentSearchIcon className="w-6 h-6" />}
           onCancel={() => setActiveLog(null)}
           cancelText={intl.formatMessage(globalMessages.close)}
           onOk={() => (activeLog ? copyLogString(activeLog) : undefined)}
@@ -237,31 +245,9 @@ const SettingsLogs: React.FC = () => {
             >
               <span>
                 {refreshInterval ? (
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <PauseIcon className="w-5 h-5 mr-1" />
                 ) : (
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <PlayIcon className="w-5 h-5 mr-1" />
                 )}
               </span>
               <span>
@@ -273,18 +259,7 @@ const SettingsLogs: React.FC = () => {
           </div>
           <div className="flex flex-1 mb-2 sm:mb-0 sm:flex-none">
             <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
-              <svg
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <FilterIcon className="w-6 h-6" />
             </span>
             <select
               id="filter"
@@ -360,19 +335,7 @@ const SettingsLogs: React.FC = () => {
                         onClick={() => setActiveLog(row)}
                         className="mr-2"
                       >
-                        <svg
-                          className="w-5 h-5 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2h-1.528A6 6 0 004 9.528V4z" />
-                          <path
-                            fillRule="evenodd"
-                            d="M8 10a4 4 0 00-3.446 6.032l-1.261 1.26a1 1 0 101.414 1.415l1.261-1.261A4 4 0 108 10zm-2 4a2 2 0 114 0 2 2 0 01-4 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
+                        <DocumentSearchIcon className="w-5 h-5 text-white" />
                       </Button>
                     )}
                     <Button
@@ -380,15 +343,7 @@ const SettingsLogs: React.FC = () => {
                       buttonSize="sm"
                       onClick={() => copyLogString(row)}
                     >
-                      <svg
-                        className="w-5 h-5 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z" />
-                        <path d="M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z" />
-                      </svg>
+                      <ClipboardCopyIcon className="w-5 h-5 text-white" />
                     </Button>
                   </Table.TD>
                 </tr>

@@ -1,7 +1,8 @@
+import { XCircleIcon } from '@heroicons/react/outline';
+import { SearchIcon } from '@heroicons/react/solid';
 import React from 'react';
-import useSearchInput from '../../../hooks/useSearchInput';
 import { defineMessages, useIntl } from 'react-intl';
-import ClearButton from '../../../assets/xcircle.svg';
+import useSearchInput from '../../../hooks/useSearchInput';
 
 const messages = defineMessages({
   searchPlaceholder: 'Search Movies & TV',
@@ -18,13 +19,7 @@ const SearchInput: React.FC = () => {
         </label>
         <div className="relative flex items-center w-full text-white focus-within:text-gray-200">
           <div className="absolute inset-y-0 flex items-center pointer-events-none left-4">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-              />
-            </svg>
+            <SearchIcon className="w-5 h-5" />
           </div>
           <input
             id="search_field"
@@ -46,7 +41,7 @@ const SearchInput: React.FC = () => {
               className="absolute inset-y-0 p-1 m-auto text-gray-400 transition border-none outline-none right-2 h-7 w-7 focus:outline-none focus:border-none hover:text-white"
               onClick={() => clear()}
             >
-              <ClearButton />
+              <XCircleIcon className="w-5 h-5" />
             </button>
           )}
         </div>

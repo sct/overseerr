@@ -1,6 +1,7 @@
+import { AtSymbolIcon } from '@heroicons/react/outline';
+import { LightningBoltIcon } from '@heroicons/react/solid';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import Bolt from '../../assets/bolt.svg';
 import DiscordLogo from '../../assets/extlogos/discord.svg';
 import PushbulletLogo from '../../assets/extlogos/pushbullet.svg';
 import PushoverLogo from '../../assets/extlogos/pushover.svg';
@@ -27,20 +28,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.email),
       content: (
         <span className="flex items-center">
-          <svg
-            className="h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-            />
-          </svg>
+          <AtSymbolIcon className="h-4 mr-2" />
           {intl.formatMessage(messages.email)}
         </span>
       ),
@@ -106,7 +94,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.webhook),
       content: (
         <span className="flex items-center">
-          <Bolt className="h-4 mr-2" />
+          <LightningBoltIcon className="h-4 mr-2" />
           {intl.formatMessage(messages.webhook)}
         </span>
       ),

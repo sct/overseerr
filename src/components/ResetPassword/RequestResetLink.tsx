@@ -1,3 +1,4 @@
+import { AtSymbolIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -123,6 +124,7 @@ const ResetPassword: React.FC = () => {
                               type="submit"
                               disabled={isSubmitting || !isValid}
                             >
+                              <AtSymbolIcon className="w-5 h-5 mr-1" />
                               {intl.formatMessage(messages.emailresetlink)}
                             </Button>
                           </span>

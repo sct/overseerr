@@ -1,13 +1,14 @@
+import { ChevronDownIcon } from '@heroicons/react/solid';
 import React, {
-  useState,
-  useRef,
   AnchorHTMLAttributes,
-  ReactNode,
   ButtonHTMLAttributes,
+  ReactNode,
+  useRef,
+  useState,
 } from 'react';
 import useClickOutside from '../../../hooks/useClickOutside';
-import Transition from '../../Transition';
 import { withProperties } from '../../../utils/typeHelpers';
+import Transition from '../../Transition';
 
 interface DropdownItemProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   buttonType?: 'primary' | 'ghost';
@@ -102,18 +103,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
             {dropdownIcon ? (
               dropdownIcon
             ) : (
-              <svg
-                className="w-5 h-5"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <ChevronDownIcon className="w-5 h-5" />
             )}
           </button>
           <Transition
