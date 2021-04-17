@@ -175,6 +175,36 @@ requestRoutes.post(
         });
       }
 
+      if (req.body.is4k) {
+        if (
+          req.body.mediaType === MediaType.MOVIE &&
+          !req.user?.hasPermission(
+            [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+            {
+              type: 'or',
+            }
+          )
+        ) {
+          return next({
+            status: 403,
+            message: 'You do not have permission to make 4K movie requests.',
+          });
+        } else if (
+          req.body.mediaType === MediaType.TV &&
+          !req.user?.hasPermission(
+            [Permission.REQUEST_4K, Permission.REQUEST_4K_TV],
+            {
+              type: 'or',
+            }
+          )
+        ) {
+          return next({
+            status: 403,
+            message: 'You do not have permission to make 4K series requests.',
+          });
+        }
+      }
+
       const quotas = await requestUser.getQuota();
 
       if (req.body.mediaType === MediaType.MOVIE && quotas.movie.restricted) {
