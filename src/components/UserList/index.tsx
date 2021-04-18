@@ -436,9 +436,9 @@ const UserList: React.FC = () => {
       <div className="flex flex-col justify-between lg:items-end lg:flex-row">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
         <div className="flex flex-col flex-grow mt-2 lg:flex-row lg:flex-grow-0">
-          <div className="flex flex-row justify-between flex-grow mb-2 lg:mb-0 lg:flex-grow-0">
+          <div className="flex flex-col justify-between flex-grow mb-2 sm:flex-row lg:mb-0 lg:flex-grow-0">
             <Button
-              className="flex-grow mr-2 outline"
+              className="flex-grow mb-2 sm:mb-0 sm:mr-2 outline"
               buttonType="primary"
               onClick={() => setCreateModal({ isOpen: true })}
             >
