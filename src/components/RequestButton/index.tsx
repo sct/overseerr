@@ -132,7 +132,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(false);
         setShowRequestModal(true);
       },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+      svg: <DownloadIcon className="button-with-text-icon" />,
     });
   }
 
@@ -151,7 +151,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(false);
         setShowRequest4kModal(true);
       },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+      svg: <DownloadIcon className="button-with-text-icon" />,
     });
   }
 
@@ -168,7 +168,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(true);
         setShowRequestModal(true);
       },
-      svg: <InformationCircleIcon className="w-5 h-5 mr-1" />,
+      svg: <InformationCircleIcon className="button-with-text-icon" />,
     });
   }
 
@@ -185,7 +185,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(true);
         setShowRequest4kModal(true);
       },
-      svg: <InformationCircleIcon className="w-5 h-5 mr-1" />,
+      svg: <InformationCircleIcon className="button-with-text-icon" />,
     });
   }
 
@@ -201,7 +201,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequest(activeRequest, 'approve');
         },
-        svg: <CheckIcon className="w-5 h-5 mr-1" />,
+        svg: <CheckIcon className="button-with-text-icon" />,
       },
       {
         id: 'decline-request',
@@ -209,7 +209,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequest(activeRequest, 'decline');
         },
-        svg: <XIcon className="w-5 h-5 mr-1" />,
+        svg: <XIcon className="button-with-text-icon" />,
       }
     );
   }
@@ -229,7 +229,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequests(activeRequests, 'approve');
         },
-        svg: <CheckIcon className="w-5 h-5 mr-1" />,
+        svg: <CheckIcon className="button-with-text-icon" />,
       },
       {
         id: 'decline-request-batch',
@@ -239,7 +239,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequests(activeRequests, 'decline');
         },
-        svg: <XIcon className="w-5 h-5 mr-1" />,
+        svg: <XIcon className="button-with-text-icon" />,
       }
     );
   }
@@ -256,7 +256,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequest(active4kRequest, 'approve');
         },
-        svg: <CheckIcon className="w-5 h-5 mr-1" />,
+        svg: <CheckIcon className="button-with-text-icon" />,
       },
       {
         id: 'decline-4k-request',
@@ -264,7 +264,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequest(active4kRequest, 'decline');
         },
-        svg: <XIcon className="w-5 h-5 mr-1" />,
+        svg: <XIcon className="button-with-text-icon" />,
       }
     );
   }
@@ -284,7 +284,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequests(active4kRequests, 'approve');
         },
-        svg: <CheckIcon className="w-5 h-5 mr-1" />,
+        svg: <CheckIcon className="button-with-text-icon" />,
       },
       {
         id: 'decline-4k-request-batch',
@@ -294,7 +294,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequests(active4kRequests, 'decline');
         },
-        svg: <XIcon className="w-5 h-5 mr-1" />,
+        svg: <XIcon className="button-with-text-icon" />,
       }
     );
   }
@@ -315,7 +315,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(false);
         setShowRequestModal(true);
       },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+      svg: <DownloadIcon className="button-with-text-icon" />,
     });
   }
 
@@ -338,7 +338,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(false);
         setShowRequest4kModal(true);
       },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+      svg: <DownloadIcon className="button-with-text-icon" />,
     });
   }
 

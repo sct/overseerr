@@ -68,7 +68,7 @@ const RequestCardError: React.FC<RequestCardErrorProps> = ({ mediaId }) => {
                   buttonSize="sm"
                   onClick={() => deleteRequest()}
                 >
-                  <TrashIcon className="w-5 h-5 mr-1" />
+                  <TrashIcon className="button-with-text-icon" />
                   <span>{intl.formatMessage(messages.deleterequest)}</span>
                 </Button>
               </div>
@@ -247,7 +247,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   buttonSize="sm"
                   onClick={() => modifyRequest('approve')}
                 >
-                  <CheckIcon className="w-4 h-4 mr-0 sm:mr-1" />
+                  <CheckIcon className="mr-0 sm-button-icon sm:mr-1" />
                   <span className="hidden sm:block">
                     {intl.formatMessage(globalMessages.approve)}
                   </span>
@@ -259,7 +259,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   buttonSize="sm"
                   onClick={() => modifyRequest('decline')}
                 >
-                  <XIcon className="w-4 h-4 mr-0 sm:mr-1" />
+                  <XIcon className="mr-0 sm-button-icon sm:mr-1" />
                   <span className="hidden sm:block">
                     {intl.formatMessage(globalMessages.decline)}
                   </span>

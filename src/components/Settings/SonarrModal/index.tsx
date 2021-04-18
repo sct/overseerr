@@ -390,9 +390,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               }
               iconSvg={
                 !sonarr ? (
-                  <PlusIcon className="w-6 h-6" />
+                  <PlusIcon className="modal-icon" />
                 ) : (
-                  <PencilIcon className="w-6 h-6" />
+                  <PencilIcon className="modal-icon" />
                 )
               }
             >

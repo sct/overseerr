@@ -73,7 +73,7 @@ const RequestItemError: React.FC<RequestItemErroProps> = ({
             buttonSize="sm"
             onClick={() => deleteRequest()}
           >
-            <TrashIcon className="w-5 h-5 mr-1" />
+            <TrashIcon className="button-with-text-icon" />
             <span>{intl.formatMessage(messages.deleterequest)}</span>
           </Button>
         </div>
@@ -373,7 +373,9 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 onClick={() => retryRequest()}
               >
                 <RefreshIcon
-                  className={`w-5 h-5 mr-1 ${isRetrying ? 'animate-spin' : ''}`}
+                  className={`button-with-text-icon ${
+                    isRetrying ? 'animate-spin' : ''
+                  }`}
                   style={{ animationDirection: 'reverse' }}
                 />
                 <span className="block">
@@ -390,7 +392,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 confirmText={intl.formatMessage(globalMessages.areyousure)}
                 className="w-full"
               >
-                <TrashIcon className="w-5 h-5 mr-1" />
+                <TrashIcon className="button-with-text-icon" />
                 <span className="block">
                   {intl.formatMessage(messages.deleterequest)}
                 </span>
@@ -405,7 +407,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                     buttonType="success"
                     onClick={() => modifyRequest('approve')}
                   >
-                    <CheckIcon className="w-5 h-5 mr-1" />
+                    <CheckIcon className="button-with-text-icon" />
                     <span className="block">
                       {intl.formatMessage(globalMessages.approve)}
                     </span>
@@ -417,7 +419,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                     buttonType="danger"
                     onClick={() => modifyRequest('decline')}
                   >
-                    <XIcon className="w-5 h-5 mr-1" />
+                    <XIcon className="button-with-text-icon" />
                     <span className="block">
                       {intl.formatMessage(globalMessages.decline)}
                     </span>
@@ -436,7 +438,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   buttonType="primary"
                   onClick={() => setShowEditModal(true)}
                 >
-                  <PencilIcon className="w-5 h-5 mr-1" />
+                  <PencilIcon className="button-with-text-icon" />
                   <span className="block">
                     {intl.formatMessage(messages.editrequest)}
                   </span>
@@ -451,7 +453,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 confirmText={intl.formatMessage(globalMessages.areyousure)}
                 className="w-full"
               >
-                <XIcon className="w-5 h-5 mr-1" />
+                <XIcon className="button-with-text-icon" />
                 <span className="block">
                   {intl.formatMessage(messages.cancelRequest)}
                 </span>

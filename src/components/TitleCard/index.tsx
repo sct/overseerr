@@ -236,7 +236,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                       }}
                       className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-600 rounded-md h-7 hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
                     >
-                      <DownloadIcon className="w-4 h-4 mr-1" />
+                      <DownloadIcon className="mr-1 sm-button-icon" />
                       <span className="text-xs">
                         {intl.formatMessage(globalMessages.request)}
                       </span>

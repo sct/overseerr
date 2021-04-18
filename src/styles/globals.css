@@ -74,6 +74,10 @@ a.slider-title {
   @apply hover:text-white;
 }
 
+a.slider-title svg.slider-link-icon {
+  @apply w-6 h-6 ml-2;
+}
+
 .media-page {
   @apply relative px-4 -mx-4 bg-center bg-cover;
   margin-top: calc(-4rem - env(safe-area-inset-top));
@@ -279,6 +283,22 @@ input.short {
 
 select.short {
   @apply w-min;
+}
+
+svg.sm-button-icon {
+  @apply w-4 h-4;
+}
+
+svg.button-icon {
+  @apply w-5 h-5;
+}
+
+svg.button-with-text-icon {
+  @apply w-5 h-5 mr-2;
+}
+
+svg.modal-icon {
+  @apply w-6 h-6;
 }
 
 .protocol {

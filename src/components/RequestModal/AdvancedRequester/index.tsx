@@ -274,7 +274,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   return (
     <>
       <div className="flex items-center mb-2 font-bold tracking-wider">
-        <AdjustmentsIcon className="w-5 h-5 mr-1" />
+        <AdjustmentsIcon className="button-with-text-icon" />
         {intl.formatMessage(messages.advancedoptions)}
       </div>
       <div className="p-4 bg-gray-600 rounded-md shadow">
@@ -523,7 +523,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                             </span>
                           </span>
                           <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                            <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                            <ChevronDownIcon className="text-gray-500 button-icon" />
                           </span>
                         </Listbox.Button>
                       </span>
@@ -577,7 +577,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                                           : 'text-indigo-600'
                                       } absolute inset-y-0 left-0 flex items-center pl-1.5`}
                                     >
-                                      <CheckIcon className="w-5 h-5" />
+                                      <CheckIcon className="button-icon" />
                                     </span>
                                   )}
                                 </div>

@@ -103,7 +103,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
             {dropdownIcon ? (
               dropdownIcon
             ) : (
-              <ChevronDownIcon className="w-5 h-5" />
+              <ChevronDownIcon className="button-icon" />
             )}
           </button>
           <Transition

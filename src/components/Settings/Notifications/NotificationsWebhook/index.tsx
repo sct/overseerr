@@ -263,7 +263,7 @@ const NotificationsWebhook: React.FC = () => {
                     }}
                     className="mr-2"
                   >
-                    <RefreshIcon className="w-5 h-5 mr-1" />
+                    <RefreshIcon className="button-with-text-icon" />
                     {intl.formatMessage(messages.resetPayload)}
                   </Button>
                   <a
@@ -272,7 +272,7 @@ const NotificationsWebhook: React.FC = () => {
                     rel="noreferrer"
                     className="inline-flex items-center justify-center font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md focus:outline-none hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 disabled:opacity-50 px-2.5 py-1.5 text-xs"
                   >
-                    <QuestionMarkCircleIcon className="w-5 h-5 mr-1" />
+                    <QuestionMarkCircleIcon className="button-with-text-icon" />
                     {intl.formatMessage(messages.templatevariablehelp)}
                   </a>
                 </div>

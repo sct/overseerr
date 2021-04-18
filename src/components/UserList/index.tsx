@@ -273,7 +273,7 @@ const UserList: React.FC = () => {
           okButtonType="danger"
           onCancel={() => setDeleteModal({ isOpen: false })}
           title={intl.formatMessage(messages.deleteuser)}
-          iconSvg={<TrashIcon className="w-6 h-6" />}
+          iconSvg={<TrashIcon className="modal-icon" />}
         >
           {intl.formatMessage(messages.deleteconfirm)}
         </Modal>
@@ -335,7 +335,7 @@ const UserList: React.FC = () => {
             return (
               <Modal
                 title={intl.formatMessage(messages.createuser)}
-                iconSvg={<UserAddIcon className="w-6 h-6" />}
+                iconSvg={<UserAddIcon className="modal-icon" />}
                 onOk={() => handleSubmit()}
                 okText={
                   isSubmitting
@@ -451,7 +451,7 @@ const UserList: React.FC = () => {
               buttonType="primary"
               onClick={() => setCreateModal({ isOpen: true })}
             >
-              <UserAddIcon className="w-5 h-5 mr-1" />
+              <UserAddIcon className="button-with-text-icon" />
               {intl.formatMessage(messages.createlocaluser)}
             </Button>
             <Button
@@ -460,7 +460,7 @@ const UserList: React.FC = () => {
               disabled={isImporting}
               onClick={() => importFromPlex()}
             >
-              <InboxInIcon className="w-5 h-5 mr-1" />
+              <InboxInIcon className="button-with-text-icon" />
               {intl.formatMessage(messages.importfromplex)}
             </Button>
           </div>
@@ -523,7 +523,7 @@ const UserList: React.FC = () => {
                   onClick={() => setShowBulkEditModal(true)}
                   disabled={selectedUsers.length === 0}
                 >
-                  <PencilIcon className="w-5 h-5 mr-1" />
+                  <PencilIcon className="button-with-text-icon" />
                   {intl.formatMessage(messages.bulkedit)}
                 </Button>
               )}

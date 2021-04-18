@@ -152,7 +152,7 @@ const SettingsJobs: React.FC = () => {
                         messages[job.id] ?? messages.unknownJob
                       )}
                     </span>
-                    {job.running && <Spinner className="w-5 h-5 ml-2" />}
+                    {job.running && <Spinner className="button-icon ml-2" />}
                   </div>
                 </Table.TD>
                 <Table.TD>
@@ -181,12 +181,12 @@ const SettingsJobs: React.FC = () => {
                 <Table.TD alignText="right">
                   {job.running ? (
                     <Button buttonType="danger" onClick={() => cancelJob(job)}>
-                      <StopIcon className="w-5 h-5 mr-1" />
+                      <StopIcon className="button-with-text-icon" />
                       {intl.formatMessage(messages.canceljob)}
                     </Button>
                   ) : (
                     <Button buttonType="primary" onClick={() => runJob(job)}>
-                      <PlayIcon className="w-5 h-5 mr-1" />
+                      <PlayIcon className="button-with-text-icon" />
                       {intl.formatMessage(messages.runnow)}
                     </Button>
                   )}
@@ -226,7 +226,7 @@ const SettingsJobs: React.FC = () => {
                 <Table.TD>{formatBytes(cache.stats.vsize)}</Table.TD>
                 <Table.TD alignText="right">
                   <Button buttonType="danger" onClick={() => flushCache(cache)}>
-                    <TrashIcon className="w-5 h-5 mr-1" />
+                    <TrashIcon className="button-with-text-icon" />
                     {intl.formatMessage(messages.flushcache)}
                   </Button>
                 </Table.TD>

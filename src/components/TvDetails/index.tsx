@@ -124,7 +124,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: data.mediaInfo?.plexUrl,
-      svg: <PlayIcon className="w-5 h-5 mr-1" />,
+      svg: <PlayIcon className="button-with-text-icon" />,
     });
   }
 
@@ -137,7 +137,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
       url: data.mediaInfo?.plexUrl4k,
-      svg: <PlayIcon className="w-5 h-5 mr-1" />,
+      svg: <PlayIcon className="button-with-text-icon" />,
     });
   }
 
@@ -150,7 +150,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
-      svg: <FilmIcon className="w-5 h-5 mr-1" />,
+      svg: <FilmIcon className="button-with-text-icon" />,
     });
   }
 
@@ -316,7 +316,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <CheckCircleIcon className="w-5 h-5 mr-1" />
+                      <CheckCircleIcon className="button-with-text-icon" />
                       <span>{intl.formatMessage(messages.markavailable)}</span>
                     </Button>
                   </div>
@@ -330,7 +330,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <CheckCircleIcon className="w-5 h-5 mr-1" />
+                      <CheckCircleIcon className="button-with-text-icon" />
                       <span>
                         {intl.formatMessage(messages.mark4kavailable)}
                       </span>
@@ -372,7 +372,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 className="block mb-2 last:mb-0"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon className="w-5 h-5 mr-1" />
+                  <ExternalLinkIcon className="button-with-text-icon" />
                   <span>{intl.formatMessage(messages.opensonarr)}</span>
                 </Button>
               </a>
@@ -384,7 +384,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 rel="noreferrer"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon className="w-5 h-5 mr-1" />
+                  <ExternalLinkIcon className="button-with-text-icon" />
                   <span>{intl.formatMessage(messages.opensonarr4k)}</span>
                 </Button>
               </a>
@@ -398,7 +398,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               confirmText={intl.formatMessage(globalMessages.areyousure)}
               className="w-full"
             >
-              <DocumentRemoveIcon className="w-5 h-5 mr-1" />
+              <DocumentRemoveIcon className="button-with-text-icon" />
               {intl.formatMessage(messages.manageModalClearMedia)}
             </ConfirmButton>
             <div className="mt-2 text-sm text-gray-400">
@@ -522,7 +522,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <Link href={`/tv/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                    <ArrowCircleRightIcon className="inline-block w-5 h-5 ml-1" />
+                    <ArrowCircleRightIcon className="inline-block w-5 h-5 ml-1.5" />
                   </a>
                 </Link>
               </div>
@@ -679,7 +679,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.cast)}</span>
-                <ArrowCircleRightIcon className="w-6 h-6 ml-2" />
+                <ArrowCircleRightIcon className="slider-link-icon" />
               </a>
             </Link>
           </div>

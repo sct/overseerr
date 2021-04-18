@@ -359,9 +359,9 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               }
               iconSvg={
                 !radarr ? (
-                  <PlusIcon className="w-6 h-6" />
+                  <PlusIcon className="modal-icon" />
                 ) : (
-                  <PencilIcon className="w-6 h-6" />
+                  <PencilIcon className="modal-icon" />
                 )
               }
             >

@@ -139,7 +139,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               onClick={() => onEdit()}
               className="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium leading-5 text-gray-200 transition duration-150 ease-in-out border border-transparent rounded-bl-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10"
             >
-              <PencilIcon className="w-5 h-5 mr-2" />
+              <PencilIcon className="button-with-text-icon" />
               {intl.formatMessage(globalMessages.edit)}
             </button>
           </div>
@@ -148,7 +148,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               onClick={() => onDelete()}
               className="relative inline-flex items-center justify-center flex-1 w-0 py-4 text-sm font-medium leading-5 text-gray-200 transition duration-150 ease-in-out border border-transparent rounded-br-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10"
             >
-              <TrashIcon className="w-5 h-5 mr-2" />
+              <TrashIcon className="button-with-text-icon" />
               {intl.formatMessage(globalMessages.delete)}
             </button>
           </div>
@@ -265,7 +265,7 @@ const SettingsServices: React.FC = () => {
             })
           }
           title="Delete Server"
-          iconSvg={<TrashIcon className="w-6 h-6" />}
+          iconSvg={<TrashIcon className="modal-icon" />}
         >
           {intl.formatMessage(messages.deleteserverconfirm)}
         </Modal>
@@ -341,7 +341,7 @@ const SettingsServices: React.FC = () => {
                       setEditRadarrModal({ open: true, radarr: null })
                     }
                   >
-                    <PlusIcon className="w-5 h-5 mr-1" />
+                    <PlusIcon className="button-with-text-icon" />
                     {intl.formatMessage(messages.addradarr)}
                   </Button>
                 </div>
@@ -431,7 +431,7 @@ const SettingsServices: React.FC = () => {
                       setEditSonarrModal({ open: true, sonarr: null })
                     }
                   >
-                    <PlusIcon className="w-5 h-5 mr-1" />
+                    <PlusIcon className="button-with-text-icon" />
                     {intl.formatMessage(messages.addsonarr)}
                   </Button>
                 </div>
