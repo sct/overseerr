@@ -72,7 +72,8 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
     } catch (e) {
       logger.error('Error retrieving movie by TMDb ID', {
         label: 'Radarr API',
-        message: e.message,
+        errorMessage: e.message,
+        tmdbId: id,
       });
       throw new Error('Movie not found');
     }
@@ -89,12 +90,13 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
           'Title already exists and is available. Skipping add and returning success',
           {
             label: 'Radarr',
+            movie,
           }
         );
         return movie;
       }
 
-      // movie exists in radarr but is neither downloaded nor monitored
+      // movie exists in Radarr but is neither downloaded nor monitored
       if (movie.id && !movie.monitored) {
         const response = await this.axios.put<RadarrMovie>(`/movie`, {
           ...movie,
@@ -115,16 +117,25 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
 
         if (response.data.monitored) {
           logger.info(
-            'Found existing title in Radarr and set it to monitored. Returning success',
-            { label: 'Radarr' }
+            'Found existing title in Radarr and set it to monitored.',
+            {
+              label: 'Radarr',
+              movieId: response.data.id,
+              movieTitle: response.data.title,
+            }
           );
           logger.debug('Radarr update details', {
             label: 'Radarr',
             movie: response.data,
           });
+
+          if (options.searchNow) {
+            this.searchMovie(response.data.id);
+          }
+
           return response.data;
         } else {
-          logger.error('Failed to update existing movie in Radarr', {
+          logger.error('Failed to update existing movie in Radarr.', {
             label: 'Radarr',
             options,
           });
@@ -183,6 +194,26 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
       throw new Error('Failed to add movie to Radarr');
     }
   };
+
+  public async searchMovie(movieId: number): Promise<void> {
+    logger.info('Executing movie search command', {
+      label: 'Radarr API',
+      movieId,
+    });
+
+    try {
+      await this.runCommand('MoviesSearch', { movieIds: [movieId] });
+    } catch (e) {
+      logger.error(
+        'Something went wrong while executing Radarr movie search.',
+        {
+          label: 'Radarr API',
+          errorMessage: e.message,
+          movieId,
+        }
+      );
+    }
+  }
 }
 
 export default RadarrAPI;

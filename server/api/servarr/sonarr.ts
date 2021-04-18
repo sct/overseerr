@@ -113,7 +113,8 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
     } catch (e) {
       logger.error('Error retrieving series by series title', {
         label: 'Sonarr API',
-        message: e.message,
+        errorMessage: e.message,
+        title,
       });
       throw new Error('No series found');
     }
@@ -135,7 +136,8 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
     } catch (e) {
       logger.error('Error retrieving series by tvdb ID', {
         label: 'Sonarr API',
-        message: e.message,
+        errorMessage: e.message,
+        tvdbId: id,
       });
       throw new Error('Series not found');
     }
@@ -156,16 +158,21 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
         );
 
         if (newSeriesResponse.data.id) {
-          logger.info('Sonarr accepted request. Updated existing series', {
+          logger.info('Updated existing series in Sonarr.', {
             label: 'Sonarr',
+            seriesId: newSeriesResponse.data.id,
+            seriesTitle: newSeriesResponse.data.title,
           });
           logger.debug('Sonarr update details', {
             label: 'Sonarr',
             movie: newSeriesResponse.data,
           });
+
           if (options.searchNow) {
             this.searchSeries(newSeriesResponse.data.id);
           }
+
+          return newSeriesResponse.data;
         } else {
           logger.error('Failed to update series in Sonarr', {
             label: 'Sonarr',
@@ -173,8 +180,6 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
           });
           throw new Error('Failed to update series in Sonarr');
         }
-
-        return newSeriesResponse.data;
       }
 
       const createdSeriesResponse = await this.axios.post<SonarrSeries>(
@@ -223,7 +228,7 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
       logger.error('Something went wrong while adding a series to Sonarr.', {
         label: 'Sonarr API',
         errorMessage: e.message,
-        error: e,
+        options,
         response: e?.response?.data,
       });
       throw new Error('Failed to add series');
@@ -244,7 +249,7 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
         'Something went wrong while retrieving Sonarr language profiles.',
         {
           label: 'Sonarr API',
-          message: e.message,
+          errorMessage: e.message,
         }
       );
 
@@ -253,11 +258,23 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
   }
 
   public async searchSeries(seriesId: number): Promise<void> {
-    logger.info('Executing series search command', {
+    logger.info('Executing series search command.', {
       label: 'Sonarr API',
       seriesId,
     });
-    await this.runCommand('SeriesSearch', { seriesId });
+
+    try {
+      await this.runCommand('SeriesSearch', { seriesId });
+    } catch (e) {
+      logger.error(
+        'Something went wrong while executing Sonarr series search.',
+        {
+          label: 'Sonarr API',
+          errorMessage: e.message,
+          seriesId,
+        }
+      );
+    }
   }
 
   private buildSeasonList(
