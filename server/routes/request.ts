@@ -521,10 +521,11 @@ requestRoutes.put<{ requestId: string }>(
 
       if (
         req.body.userId &&
-        !(
-          req.user?.hasPermission(Permission.MANAGE_USERS) &&
-          req.user?.hasPermission(Permission.MANAGE_REQUESTS)
-        )
+        req.body.userId !== req.user?.id &&
+        !req.user?.hasPermission([
+          Permission.MANAGE_USERS,
+          Permission.MANAGE_REQUESTS,
+        ])
       ) {
         return next({
           status: 403,

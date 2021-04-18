@@ -23,7 +23,7 @@ const messages = defineMessages({
   viewrequest: 'View Request',
   viewrequest4k: 'View 4K Request',
   requestmore: 'Request More',
-  requestmore4k: 'Request More 4K',
+  requestmore4k: 'Request More in 4K',
   approverequest: 'Approve Request',
   approverequest4k: 'Approve 4K Request',
   declinerequest: 'Decline Request',
@@ -310,8 +310,9 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   }
 
   if (
-    hasPermission(Permission.REQUEST) &&
     mediaType === 'tv' &&
+    (!activeRequest || activeRequest.requestedBy.id !== user?.id) &&
+    hasPermission(Permission.REQUEST) &&
     media &&
     media.status !== MediaStatus.AVAILABLE &&
     media.status !== MediaStatus.UNKNOWN &&
@@ -330,8 +331,10 @@ const RequestButton: React.FC<RequestButtonProps> = ({
 
   if (
     mediaType === 'tv' &&
-    (hasPermission(Permission.REQUEST_4K) ||
-      (mediaType === 'tv' && hasPermission(Permission.REQUEST_4K_TV))) &&
+    (!active4kRequest || active4kRequest.requestedBy.id !== user?.id) &&
+    hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+      type: 'or',
+    }) &&
     media &&
     media.status4k !== MediaStatus.AVAILABLE &&
     media.status4k !== MediaStatus.UNKNOWN &&

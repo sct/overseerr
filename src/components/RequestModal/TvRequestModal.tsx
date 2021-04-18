@@ -369,21 +369,16 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       backgroundClickable
       onCancel={tvdbId ? () => setSearchModal({ show: true }) : onCancel}
       onOk={() => (editRequest ? updateRequest() : sendRequest())}
-      title={
+      title={intl.formatMessage(
         editRequest
-          ? intl.formatMessage(
-              is4k ? messages.pending4krequest : messages.pendingrequest,
-              {
-                title: data?.name,
-              }
-            )
-          : intl.formatMessage(
-              is4k ? messages.request4ktitle : messages.requesttitle,
-              {
-                title: data?.name,
-              }
-            )
-      }
+          ? is4k
+            ? messages.pending4krequest
+            : messages.pendingrequest
+          : is4k
+          ? messages.request4ktitle
+          : messages.requesttitle,
+        { title: data?.name }
+      )}
       okText={
         editRequest
           ? selectedSeasons.length === 0

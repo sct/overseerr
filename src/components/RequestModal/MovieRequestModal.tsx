@@ -215,11 +215,9 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         onCancel={onCancel}
         title={intl.formatMessage(
           is4k ? messages.pending4krequest : messages.pendingrequest,
-          {
-            title: data?.title,
-          }
+          { title: data?.title }
         )}
-        onOk={() => (showEditButton ? cancelRequest() : updateRequest())}
+        onOk={() => (showEditButton ? updateRequest() : cancelRequest())}
         okDisabled={isUpdating}
         okText={
           showEditButton

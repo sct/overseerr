@@ -431,10 +431,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             (hasPermission(Permission.MANAGE_REQUESTS) ||
               (requestData.requestedBy.id === user?.id &&
                 (requestData.type === 'tv' ||
-                  hasPermission(
-                    [Permission.MANAGE_REQUESTS, Permission.REQUEST_ADVANCED],
-                    { type: 'or' }
-                  )))) && (
+                  hasPermission(Permission.REQUEST_ADVANCED)))) && (
               <span className="w-full">
                 <Button
                   className="w-full"
