@@ -62,6 +62,8 @@ const messages = defineMessages({
   validationpasswordminchars:
     'Password is too short; should be a minimum of 8 characters',
   usercreatedfailed: 'Something went wrong while creating the user.',
+  usercreatedfailedexisting:
+    'Provided email is already in use by another user.',
   usercreatedsuccess: 'User created successfully!',
   email: 'Email Address',
   password: 'Password',
@@ -305,10 +307,17 @@ const UserList: React.FC = () => {
               });
               setCreateModal({ isOpen: false });
             } catch (e) {
-              addToast(intl.formatMessage(messages.usercreatedfailed), {
-                appearance: 'error',
-                autoDismiss: true,
-              });
+              addToast(
+                intl.formatMessage(
+                  e.response.data.errors?.includes('USER_EXISTS')
+                    ? messages.usercreatedfailedexisting
+                    : messages.usercreatedfailed
+                ),
+                {
+                  appearance: 'error',
+                  autoDismiss: true,
+                }
+              );
             } finally {
               revalidate();
             }

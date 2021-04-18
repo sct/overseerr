@@ -81,6 +81,18 @@ router.post(
       const body = req.body;
       const userRepository = getRepository(User);
 
+      const existingUser = await userRepository.findOne({
+        where: { email: body.email },
+      });
+
+      if (existingUser) {
+        return next({
+          status: 409,
+          message: 'User already exists with submitted email.',
+          errors: ['USER_EXISTS'],
+        });
+      }
+
       const passedExplicitPassword = body.password && body.password.length > 0;
       const avatar = gravatarUrl(body.email, { default: 'mm', size: 200 });
 
