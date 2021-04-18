@@ -14,15 +14,20 @@ jobs:
     runs-on: ubuntu-20.04
     container: node:14.16-alpine
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: install dependencies
+      - name: Use Next.js cache
+        uses: actions/cache@v2.1.5
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package.json') }}
+      - name: Install dependencies
         env:
           HUSKY_SKIP_INSTALL: 1
         run: yarn
-      - name: lint
+      - name: Lint
         run: yarn lint
-      - name: build
+      - name: Build
         run: yarn build
 
   build_and_push:
