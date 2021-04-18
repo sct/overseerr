@@ -678,6 +678,7 @@
   "components.UserList.totalrequests": "Total Requests",
   "components.UserList.user": "User",
   "components.UserList.usercreatedfailed": "Something went wrong while creating the user.",
+  "components.UserList.usercreatedfailedexisting": "The provided email address is already in use by another user.",
   "components.UserList.usercreatedsuccess": "User created successfully!",
   "components.UserList.userdeleted": "User deleted successfully!",
   "components.UserList.userdeleteerror": "Something went wrong while deleting the user.",

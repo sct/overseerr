@@ -63,7 +63,7 @@ const messages = defineMessages({
     'Password is too short; should be a minimum of 8 characters',
   usercreatedfailed: 'Something went wrong while creating the user.',
   usercreatedfailedexisting:
-    'Provided email is already in use by another user.',
+    'The provided email address is already in use by another user.',
   usercreatedsuccess: 'User created successfully!',
   email: 'Email Address',
   password: 'Password',
