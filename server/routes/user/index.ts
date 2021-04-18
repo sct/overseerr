@@ -84,7 +84,10 @@ router.post(
       const passedExplicitPassword = body.password && body.password.length > 0;
       const avatar = gravatarUrl(body.email, { default: 'mm', size: 200 });
 
-      if (!passedExplicitPassword && !settings.notifications.agents.email) {
+      if (
+        !passedExplicitPassword &&
+        !settings.notifications.agents.email.enabled
+      ) {
         throw new Error('Email notifications must be enabled');
       }
 

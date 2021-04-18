@@ -22,7 +22,7 @@ const messages = defineMessages({
   validationChatIdRequired: 'You must provide a valid chat ID',
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
-  testsent: 'Telegram test notification sent!',
+  telegramtestsent: 'Telegram test notification sent!',
   settinguptelegramDescription:
     'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key. Additionally, you will need the chat ID for the chat to which you would like to send notifications. You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
   sendSilently: 'Send Silently',
@@ -113,7 +113,7 @@ const NotificationsTelegram: React.FC = () => {
             },
           });
 
-          addToast(intl.formatMessage(messages.testsent), {
+          addToast(intl.formatMessage(messages.telegramtestsent), {
             appearance: 'info',
             autoDismiss: true,
           });
