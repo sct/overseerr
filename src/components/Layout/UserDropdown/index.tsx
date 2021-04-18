@@ -67,7 +67,7 @@ const UserDropdown: React.FC = () => {
           >
             <Link href={`/profile`}>
               <a
-                className="items-center block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+                className="flex items-center px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
                 role="menuitem"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -78,12 +78,12 @@ const UserDropdown: React.FC = () => {
                 onClick={() => setDropdownOpen(false)}
               >
                 <UserIcon className="inline w-5 h-5 mr-2" />
-                {intl.formatMessage(messages.myprofile)}
+                <span>{intl.formatMessage(messages.myprofile)}</span>
               </a>
             </Link>
             <Link href={`/profile/settings`}>
               <a
-                className="items-center block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+                className="flex items-center px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
                 role="menuitem"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -94,17 +94,17 @@ const UserDropdown: React.FC = () => {
                 onClick={() => setDropdownOpen(false)}
               >
                 <CogIcon className="inline w-5 h-5 mr-2" />
-                {intl.formatMessage(messages.settings)}
+                <span>{intl.formatMessage(messages.settings)}</span>
               </a>
             </Link>
             <a
               href="#"
-              className="block px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+              className="flex items-center px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
               role="menuitem"
               onClick={() => logout()}
             >
               <LogoutIcon className="inline w-5 h-5 mr-2" />
-              {intl.formatMessage(messages.signout)}
+              <span>{intl.formatMessage(messages.signout)}</span>
             </a>
           </div>
         </div>

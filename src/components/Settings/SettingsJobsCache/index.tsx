@@ -1,4 +1,4 @@
-import { PlayIcon, StopIcon, XCircleIcon } from '@heroicons/react/solid';
+import { PlayIcon, StopIcon, TrashIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import React from 'react';
 import {
@@ -226,7 +226,7 @@ const SettingsJobs: React.FC = () => {
                 <Table.TD>{formatBytes(cache.stats.vsize)}</Table.TD>
                 <Table.TD alignText="right">
                   <Button buttonType="danger" onClick={() => flushCache(cache)}>
-                    <XCircleIcon className="w-5 h-5 mr-1" />
+                    <TrashIcon className="w-5 h-5 mr-1" />
                     {intl.formatMessage(messages.flushcache)}
                   </Button>
                 </Table.TD>
