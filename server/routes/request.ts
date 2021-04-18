@@ -493,7 +493,6 @@ requestRoutes.get('/:requestId', async (req, res, next) => {
 
 requestRoutes.put<{ requestId: string }>(
   '/:requestId',
-  isAuthenticated(),
   async (req, res, next) => {
     const requestRepository = getRepository(MediaRequest);
     const userRepository = getRepository(User);
@@ -629,38 +628,34 @@ requestRoutes.put<{ requestId: string }>(
   }
 );
 
-requestRoutes.delete(
-  '/:requestId',
-  isAuthenticated(),
-  async (req, res, next) => {
-    const requestRepository = getRepository(MediaRequest);
+requestRoutes.delete('/:requestId', async (req, res, next) => {
+  const requestRepository = getRepository(MediaRequest);
 
-    try {
-      const request = await requestRepository.findOneOrFail({
-        where: { id: Number(req.params.requestId) },
-        relations: ['requestedBy', 'modifiedBy'],
+  try {
+    const request = await requestRepository.findOneOrFail({
+      where: { id: Number(req.params.requestId) },
+      relations: ['requestedBy', 'modifiedBy'],
+    });
+
+    if (
+      !req.user?.hasPermission(Permission.MANAGE_REQUESTS) &&
+      request.requestedBy.id !== req.user?.id &&
+      request.status !== 1
+    ) {
+      return next({
+        status: 401,
+        message: 'You do not have permission to delete this request.',
       });
-
-      if (
-        !req.user?.hasPermission(Permission.MANAGE_REQUESTS) &&
-        request.requestedBy.id !== req.user?.id &&
-        request.status !== 1
-      ) {
-        return next({
-          status: 401,
-          message: 'You do not have permission to delete this request.',
-        });
-      }
-
-      await requestRepository.remove(request);
-
-      return res.status(204).send();
-    } catch (e) {
-      logger.error(e.message);
-      next({ status: 404, message: 'Request not found.' });
     }
+
+    await requestRepository.remove(request);
+
+    return res.status(204).send();
+  } catch (e) {
+    logger.error(e.message);
+    next({ status: 404, message: 'Request not found.' });
   }
-);
+});
 
 requestRoutes.post<{
   requestId: string;

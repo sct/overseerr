@@ -234,6 +234,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
             ? intl.formatMessage(messages.cancel)
             : undefined
         }
+        secondaryButtonType="danger"
         cancelText={intl.formatMessage(globalMessages.close)}
         iconSvg={<DownloadIcon className="w-6 h-6" />}
       >

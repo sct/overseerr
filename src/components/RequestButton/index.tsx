@@ -5,7 +5,7 @@ import {
   XIcon,
 } from '@heroicons/react/solid';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import {
   MediaRequestStatus,
@@ -33,9 +33,9 @@ const messages = defineMessages({
   declinerequests:
     'Decline {requestCount, plural, one {Request} other {{requestCount} Requests}}',
   approve4krequests:
-    'Approve 4K {requestCount, plural, one {Request} other {{requestCount} Requests}}',
+    'Approve {requestCount, plural, one {Request} other {{requestCount} 4K Requests}}',
   decline4krequests:
-    'Decline 4K {requestCount, plural, one {Request} other {{requestCount} Requests}}',
+    'Decline {requestCount, plural, one {Request} other {{requestCount} 4K Requests}}',
 });
 
 interface ButtonOption {
@@ -69,7 +69,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   const [showRequest4kModal, setShowRequest4kModal] = useState(false);
   const [editRequest, setEditRequest] = useState(false);
 
-  // All pending
+  // All pending requests
   const activeRequests = media?.requests.filter(
     (request) => request.status === MediaRequestStatus.PENDING && !request.is4k
   );
@@ -77,20 +77,23 @@ const RequestButton: React.FC<RequestButtonProps> = ({
     (request) => request.status === MediaRequestStatus.PENDING && request.is4k
   );
 
-  const activeRequest =
-    activeRequests && activeRequests.length > 0
+  const activeRequest = useMemo(() => {
+    return activeRequests && activeRequests.length > 0
       ? activeRequests.some((request) => request.requestedBy.id === user?.id)
         ? activeRequests.find((request) => request.requestedBy.id === user?.id)
         : activeRequests[0]
       : undefined;
-  const active4kRequest =
-    active4kRequests && active4kRequests.length > 0
+  }, [activeRequests, user]);
+
+  const active4kRequest = useMemo(() => {
+    return active4kRequests && active4kRequests.length > 0
       ? active4kRequests.some((request) => request.requestedBy.id === user?.id)
         ? active4kRequests.find(
             (request) => request.requestedBy.id === user?.id
           )
         : active4kRequests[0]
       : undefined;
+  }, [active4kRequests, user]);
 
   const modifyRequest = async (
     request: MediaRequest,
