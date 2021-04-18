@@ -1,5 +1,4 @@
-import { PlayIcon } from '@heroicons/react/outline';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import ButtonWithDropdown from '../ButtonWithDropdown';
 
 interface PlayButtonProps {
@@ -9,6 +8,7 @@ interface PlayButtonProps {
 export interface PlayButtonLink {
   text: string;
   url: string;
+  svg: ReactNode;
 }
 
 const PlayButton: React.FC<PlayButtonProps> = ({ links }) => {
@@ -21,8 +21,8 @@ const PlayButton: React.FC<PlayButtonProps> = ({ links }) => {
       buttonType="ghost"
       text={
         <>
-          <PlayIcon className="w-5 h-5 mr-1" />
-          <span>{links[0].text}</span>
+          {links[0].svg}
+          {links[0].text}
         </>
       }
       onClick={() => {
@@ -39,6 +39,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({ links }) => {
               }}
               buttonType="ghost"
             >
+              {link.svg}
               {link.text}
             </ButtonWithDropdown.Item>
           );
