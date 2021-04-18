@@ -1,4 +1,9 @@
-import { ArrowCircleRightIcon, CogIcon } from '@heroicons/react/outline';
+import {
+  ArrowCircleRightIcon,
+  CogIcon,
+  FilmIcon,
+  PlayIcon,
+} from '@heroicons/react/outline';
 import {
   CheckCircleIcon,
   DocumentRemoveIcon,
@@ -119,6 +124,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: data.mediaInfo?.plexUrl,
+      svg: <PlayIcon className="w-5 h-5 mr-1" />,
     });
   }
 
@@ -131,6 +137,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
       url: data.mediaInfo?.plexUrl4k,
+      svg: <PlayIcon className="w-5 h-5 mr-1" />,
     });
   }
 
@@ -143,6 +150,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
+      svg: <FilmIcon className="w-5 h-5 mr-1" />,
     });
   }
 
