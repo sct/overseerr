@@ -507,7 +507,8 @@ requestRoutes.put<{ requestId: string }>(
 
       if (
         (request.requestedBy.id !== req.user?.id ||
-          !req.user?.hasPermission(Permission.REQUEST_ADVANCED)) &&
+          (req.body.mediaType !== 'tv' &&
+            !req.user?.hasPermission(Permission.REQUEST_ADVANCED))) &&
         !req.user?.hasPermission(Permission.MANAGE_REQUESTS)
       ) {
         return next({

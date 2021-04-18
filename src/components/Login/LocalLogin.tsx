@@ -13,7 +13,7 @@ const messages = defineMessages({
   validationemailrequired: 'You must provide a valid email address',
   validationpasswordrequired: 'You must provide a password',
   loginerror: 'Something went wrong while trying to sign in.',
-  signingin: 'Signing in…',
+  signingin: 'Signing In…',
   signin: 'Sign In',
   forgotpassword: 'Forgot Password?',
 });
