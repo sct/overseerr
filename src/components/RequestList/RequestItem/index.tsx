@@ -36,6 +36,7 @@ const messages = defineMessages({
   modified: 'Modified',
   modifieduserdate: '{date} by {user}',
   mediaerror: 'The associated title for this request is no longer available.',
+  editrequest: 'Edit Request',
   deleterequest: 'Delete Request',
   cancelRequest: 'Cancel Request',
 });
@@ -363,20 +364,6 @@ const RequestItem: React.FC<RequestItemProps> = ({
           </div>
         </div>
         <div className="z-10 flex flex-col justify-center w-full pl-4 pr-4 mt-4 space-y-2 xl:mt-0 xl:items-end xl:w-96 xl:pl-0">
-          {requestData.status === MediaRequestStatus.PENDING &&
-            !hasPermission(Permission.MANAGE_REQUESTS) &&
-            requestData.requestedBy.id === user?.id && (
-              <ConfirmButton
-                onClick={() => deleteRequest()}
-                confirmText={intl.formatMessage(globalMessages.areyousure)}
-                className="w-full"
-              >
-                <XIcon className="w-5 h-5 mr-1" />
-                <span className="block">
-                  {intl.formatMessage(messages.cancelRequest)}
-                </span>
-              </ConfirmButton>
-            )}
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&
@@ -407,52 +394,70 @@ const RequestItem: React.FC<RequestItemProps> = ({
               >
                 <TrashIcon className="w-5 h-5 mr-1" />
                 <span className="block">
-                  {intl.formatMessage(globalMessages.delete)}
+                  {intl.formatMessage(messages.deleterequest)}
                 </span>
               </ConfirmButton>
             )}
           {requestData.status === MediaRequestStatus.PENDING &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
-              <>
-                <div className="flex flex-row w-full space-x-2">
-                  <span className="w-full">
-                    <Button
-                      className="w-full"
-                      buttonType="success"
-                      onClick={() => modifyRequest('approve')}
-                    >
-                      <CheckIcon className="w-5 h-5 mr-1" />
-                      <span className="block">
-                        {intl.formatMessage(globalMessages.approve)}
-                      </span>
-                    </Button>
-                  </span>
-                  <span className="w-full">
-                    <Button
-                      className="w-full"
-                      buttonType="danger"
-                      onClick={() => modifyRequest('decline')}
-                    >
-                      <XIcon className="w-5 h-5 mr-1" />
-                      <span className="block">
-                        {intl.formatMessage(globalMessages.decline)}
-                      </span>
-                    </Button>
-                  </span>
-                </div>
+              <div className="flex flex-row w-full space-x-2">
                 <span className="w-full">
                   <Button
                     className="w-full"
-                    buttonType="primary"
-                    onClick={() => setShowEditModal(true)}
+                    buttonType="success"
+                    onClick={() => modifyRequest('approve')}
                   >
-                    <PencilIcon className="w-5 h-5 mr-1" />
+                    <CheckIcon className="w-5 h-5 mr-1" />
                     <span className="block">
-                      {intl.formatMessage(globalMessages.edit)}
+                      {intl.formatMessage(globalMessages.approve)}
                     </span>
                   </Button>
                 </span>
-              </>
+                <span className="w-full">
+                  <Button
+                    className="w-full"
+                    buttonType="danger"
+                    onClick={() => modifyRequest('decline')}
+                  >
+                    <XIcon className="w-5 h-5 mr-1" />
+                    <span className="block">
+                      {intl.formatMessage(globalMessages.decline)}
+                    </span>
+                  </Button>
+                </span>
+              </div>
+            )}
+          {requestData.status === MediaRequestStatus.PENDING &&
+            (hasPermission(Permission.MANAGE_REQUESTS) ||
+              (requestData.requestedBy.id === user?.id &&
+                (requestData.type === 'tv' ||
+                  hasPermission(Permission.REQUEST_ADVANCED)))) && (
+              <span className="w-full">
+                <Button
+                  className="w-full"
+                  buttonType="primary"
+                  onClick={() => setShowEditModal(true)}
+                >
+                  <PencilIcon className="w-5 h-5 mr-1" />
+                  <span className="block">
+                    {intl.formatMessage(messages.editrequest)}
+                  </span>
+                </Button>
+              </span>
+            )}
+          {requestData.status === MediaRequestStatus.PENDING &&
+            !hasPermission(Permission.MANAGE_REQUESTS) &&
+            requestData.requestedBy.id === user?.id && (
+              <ConfirmButton
+                onClick={() => deleteRequest()}
+                confirmText={intl.formatMessage(globalMessages.areyousure)}
+                className="w-full"
+              >
+                <XIcon className="w-5 h-5 mr-1" />
+                <span className="block">
+                  {intl.formatMessage(messages.cancelRequest)}
+                </span>
+              </ConfirmButton>
             )}
         </div>
       </div>

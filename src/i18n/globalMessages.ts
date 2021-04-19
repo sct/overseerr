@@ -9,7 +9,7 @@ const globalMessages = defineMessages({
   requested: 'Requested',
   requesting: 'Requesting…',
   request: 'Request',
-  request4k: 'Request 4K',
+  request4k: 'Request in 4K',
   failed: 'Failed',
   pending: 'Pending',
   declined: 'Declined',

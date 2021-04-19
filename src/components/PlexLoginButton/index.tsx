@@ -6,7 +6,7 @@ import PlexOAuth from '../../utils/plex';
 
 const messages = defineMessages({
   signinwithplex: 'Sign In',
-  signingin: 'Signing in…',
+  signingin: 'Signing In…',
 });
 
 const plexOAuth = new PlexOAuth();

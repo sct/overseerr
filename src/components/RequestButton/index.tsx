@@ -5,7 +5,7 @@ import {
   XIcon,
 } from '@heroicons/react/solid';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import {
   MediaRequestStatus,
@@ -23,19 +23,19 @@ const messages = defineMessages({
   viewrequest: 'View Request',
   viewrequest4k: 'View 4K Request',
   requestmore: 'Request More',
-  requestmore4k: 'Request More 4K',
+  requestmore4k: 'Request More in 4K',
   approverequest: 'Approve Request',
   approverequest4k: 'Approve 4K Request',
   declinerequest: 'Decline Request',
   declinerequest4k: 'Decline 4K Request',
   approverequests:
-    'Approve {requestCount} {requestCount, plural, one {Request} other {Requests}}',
+    'Approve {requestCount, plural, one {Request} other {{requestCount} Requests}}',
   declinerequests:
-    'Decline {requestCount} {requestCount, plural, one {Request} other {Requests}}',
+    'Decline {requestCount, plural, one {Request} other {{requestCount} Requests}}',
   approve4krequests:
-    'Approve {requestCount} 4K {requestCount, plural, one {Request} other {Requests}}',
+    'Approve {requestCount, plural, one {Request} other {{requestCount} 4K Requests}}',
   decline4krequests:
-    'Decline {requestCount} 4K {requestCount, plural, one {Request} other {Requests}}',
+    'Decline {requestCount, plural, one {Request} other {{requestCount} 4K Requests}}',
 });
 
 interface ButtonOption {
@@ -64,25 +64,33 @@ const RequestButton: React.FC<RequestButtonProps> = ({
 }) => {
   const intl = useIntl();
   const settings = useSettings();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showRequest4kModal, setShowRequest4kModal] = useState(false);
+  const [editRequest, setEditRequest] = useState(false);
 
-  const activeRequest = media?.requests.find(
-    (request) => request.status === MediaRequestStatus.PENDING && !request.is4k
-  );
-  const active4kRequest = media?.requests.find(
-    (request) => request.status === MediaRequestStatus.PENDING && request.is4k
-  );
-
-  // All pending
+  // All pending requests
   const activeRequests = media?.requests.filter(
     (request) => request.status === MediaRequestStatus.PENDING && !request.is4k
   );
-
   const active4kRequests = media?.requests.filter(
     (request) => request.status === MediaRequestStatus.PENDING && request.is4k
   );
+
+  const activeRequest = useMemo(() => {
+    return activeRequests && activeRequests.length > 0
+      ? activeRequests.find((request) => request.requestedBy.id === user?.id) ??
+          activeRequests[0]
+      : undefined;
+  }, [activeRequests, user]);
+
+  const active4kRequest = useMemo(() => {
+    return active4kRequests && active4kRequests.length > 0
+      ? active4kRequests.find(
+          (request) => request.requestedBy.id === user?.id
+        ) ?? active4kRequests[0]
+      : undefined;
+  }, [active4kRequests, user]);
 
   const modifyRequest = async (
     request: MediaRequest,
@@ -121,24 +129,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
       id: 'request',
       text: intl.formatMessage(globalMessages.request),
       action: () => {
-        setShowRequestModal(true);
-      },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
-    });
-  }
-
-  if (
-    hasPermission(Permission.REQUEST) &&
-    mediaType === 'tv' &&
-    media &&
-    media.status !== MediaStatus.AVAILABLE &&
-    media.status !== MediaStatus.UNKNOWN &&
-    !isShowComplete
-  ) {
-    buttons.push({
-      id: 'request-more',
-      text: intl.formatMessage(messages.requestmore),
-      action: () => {
+        setEditRequest(false);
         setShowRequestModal(true);
       },
       svg: <DownloadIcon className="w-5 h-5 mr-1" />,
@@ -157,26 +148,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
       id: 'request4k',
       text: intl.formatMessage(globalMessages.request4k),
       action: () => {
-        setShowRequest4kModal(true);
-      },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
-    });
-  }
-
-  if (
-    mediaType === 'tv' &&
-    (hasPermission(Permission.REQUEST_4K) ||
-      (mediaType === 'tv' && hasPermission(Permission.REQUEST_4K_TV))) &&
-    media &&
-    media.status4k !== MediaStatus.AVAILABLE &&
-    media.status4k !== MediaStatus.UNKNOWN &&
-    !is4kShowComplete &&
-    settings.currentSettings.series4kEnabled
-  ) {
-    buttons.push({
-      id: 'request-more-4k',
-      text: intl.formatMessage(messages.requestmore4k),
-      action: () => {
+        setEditRequest(false);
         setShowRequest4kModal(true);
       },
       svg: <DownloadIcon className="w-5 h-5 mr-1" />,
@@ -185,27 +157,34 @@ const RequestButton: React.FC<RequestButtonProps> = ({
 
   if (
     activeRequest &&
-    mediaType === 'movie' &&
-    hasPermission(Permission.REQUEST)
+    (activeRequest.requestedBy.id === user?.id ||
+      (activeRequests?.length === 1 &&
+        hasPermission(Permission.MANAGE_REQUESTS)))
   ) {
     buttons.push({
       id: 'active-request',
       text: intl.formatMessage(messages.viewrequest),
-      action: () => setShowRequestModal(true),
+      action: () => {
+        setEditRequest(true);
+        setShowRequestModal(true);
+      },
       svg: <InformationCircleIcon className="w-5 h-5 mr-1" />,
     });
   }
 
   if (
     active4kRequest &&
-    mediaType === 'movie' &&
-    (hasPermission(Permission.REQUEST_4K) ||
-      hasPermission(Permission.REQUEST_4K_MOVIE))
+    (active4kRequest.requestedBy.id === user?.id ||
+      (active4kRequests?.length === 1 &&
+        hasPermission(Permission.MANAGE_REQUESTS)))
   ) {
     buttons.push({
       id: 'active-4k-request',
       text: intl.formatMessage(messages.viewrequest4k),
-      action: () => setShowRequest4kModal(true),
+      action: () => {
+        setEditRequest(true);
+        setShowRequest4kModal(true);
+      },
       svg: <InformationCircleIcon className="w-5 h-5 mr-1" />,
     });
   }
@@ -320,6 +299,49 @@ const RequestButton: React.FC<RequestButtonProps> = ({
     );
   }
 
+  if (
+    mediaType === 'tv' &&
+    (!activeRequest || activeRequest.requestedBy.id !== user?.id) &&
+    hasPermission(Permission.REQUEST) &&
+    media &&
+    media.status !== MediaStatus.AVAILABLE &&
+    media.status !== MediaStatus.UNKNOWN &&
+    !isShowComplete
+  ) {
+    buttons.push({
+      id: 'request-more',
+      text: intl.formatMessage(messages.requestmore),
+      action: () => {
+        setEditRequest(false);
+        setShowRequestModal(true);
+      },
+      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+    });
+  }
+
+  if (
+    mediaType === 'tv' &&
+    (!active4kRequest || active4kRequest.requestedBy.id !== user?.id) &&
+    hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+      type: 'or',
+    }) &&
+    media &&
+    media.status4k !== MediaStatus.AVAILABLE &&
+    media.status4k !== MediaStatus.UNKNOWN &&
+    !is4kShowComplete &&
+    settings.currentSettings.series4kEnabled
+  ) {
+    buttons.push({
+      id: 'request-more-4k',
+      text: intl.formatMessage(messages.requestmore4k),
+      action: () => {
+        setEditRequest(false);
+        setShowRequest4kModal(true);
+      },
+      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+    });
+  }
+
   const [buttonOne, ...others] = buttons;
 
   if (!buttonOne) {
@@ -332,6 +354,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         tmdbId={tmdbId}
         show={showRequestModal}
         type={mediaType}
+        editRequest={editRequest ? activeRequest : undefined}
         onComplete={() => {
           onUpdate();
           setShowRequestModal(false);
@@ -342,6 +365,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         tmdbId={tmdbId}
         show={showRequest4kModal}
         type={mediaType}
+        editRequest={editRequest ? active4kRequest : undefined}
         is4k
         onComplete={() => {
           onUpdate();
