@@ -97,36 +97,40 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               <>
                 <Button
                   buttonType="success"
+                  buttonSize="sm"
                   className="mr-1"
                   onClick={() => updateRequest('approve')}
                   disabled={isUpdating}
                 >
-                  <CheckIcon className="sm-button-icon" />
+                  <CheckIcon />
                 </Button>
                 <Button
                   buttonType="danger"
+                  buttonSize="sm"
                   className="mr-1"
                   onClick={() => updateRequest('decline')}
                   disabled={isUpdating}
                 >
-                  <XIcon className="sm-button-icon" />
+                  <XIcon />
                 </Button>
                 <Button
                   buttonType="primary"
+                  buttonSize="sm"
                   onClick={() => setShowEditModal(true)}
                   disabled={isUpdating}
                 >
-                  <PencilIcon className="sm-button-icon" />
+                  <PencilIcon />
                 </Button>
               </>
             )}
             {request.status !== MediaRequestStatus.PENDING && (
               <Button
                 buttonType="danger"
+                buttonSize="sm"
                 onClick={() => deleteRequest()}
                 disabled={isUpdating}
               >
-                <TrashIcon className="sm-button-icon" />
+                <TrashIcon />
               </Button>
             )}
           </div>

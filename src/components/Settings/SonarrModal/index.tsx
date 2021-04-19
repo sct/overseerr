@@ -388,13 +388,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       values.is4k ? messages.edit4ksonarr : messages.editsonarr
                     )
               }
-              iconSvg={
-                !sonarr ? (
-                  <PlusIcon className="modal-icon" />
-                ) : (
-                  <PencilIcon className="modal-icon" />
-                )
-              }
+              iconSvg={!sonarr ? <PlusIcon /> : <PencilIcon />}
             >
               <div className="mb-6">
                 <div className="form-row">

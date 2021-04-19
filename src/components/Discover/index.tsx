@@ -67,7 +67,7 @@ const Discover: React.FC = () => {
         <Link href="/requests?filter=all">
           <a className="slider-title">
             <span>{intl.formatMessage(messages.recentrequests)}</span>
-            <ArrowCircleRightIcon className="slider-link-icon" />
+            <ArrowCircleRightIcon />
           </a>
         </Link>
       </div>

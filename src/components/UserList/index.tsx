@@ -273,7 +273,7 @@ const UserList: React.FC = () => {
           okButtonType="danger"
           onCancel={() => setDeleteModal({ isOpen: false })}
           title={intl.formatMessage(messages.deleteuser)}
-          iconSvg={<TrashIcon className="modal-icon" />}
+          iconSvg={<TrashIcon />}
         >
           {intl.formatMessage(messages.deleteconfirm)}
         </Modal>
@@ -335,7 +335,7 @@ const UserList: React.FC = () => {
             return (
               <Modal
                 title={intl.formatMessage(messages.createuser)}
-                iconSvg={<UserAddIcon className="modal-icon" />}
+                iconSvg={<UserAddIcon />}
                 onOk={() => handleSubmit()}
                 okText={
                   isSubmitting
@@ -451,8 +451,8 @@ const UserList: React.FC = () => {
               buttonType="primary"
               onClick={() => setCreateModal({ isOpen: true })}
             >
-              <UserAddIcon className="button-with-text-icon" />
-              {intl.formatMessage(messages.createlocaluser)}
+              <UserAddIcon />
+              <span>{intl.formatMessage(messages.createlocaluser)}</span>
             </Button>
             <Button
               className="flex-grow outline lg:mr-2"
@@ -460,8 +460,8 @@ const UserList: React.FC = () => {
               disabled={isImporting}
               onClick={() => importFromPlex()}
             >
-              <InboxInIcon className="button-with-text-icon" />
-              {intl.formatMessage(messages.importfromplex)}
+              <InboxInIcon />
+              <span>{intl.formatMessage(messages.importfromplex)}</span>
             </Button>
           </div>
           <div className="flex flex-grow mb-2 lg:mb-0 lg:flex-grow-0">
@@ -523,8 +523,8 @@ const UserList: React.FC = () => {
                   onClick={() => setShowBulkEditModal(true)}
                   disabled={selectedUsers.length === 0}
                 >
-                  <PencilIcon className="button-with-text-icon" />
-                  {intl.formatMessage(messages.bulkedit)}
+                  <PencilIcon />
+                  <span>{intl.formatMessage(messages.bulkedit)}</span>
                 </Button>
               )}
             </Table.TH>

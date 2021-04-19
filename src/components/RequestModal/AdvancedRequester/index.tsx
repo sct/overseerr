@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Listbox, Transition } from '@headlessui/react';
-import {
-  AdjustmentsIcon,
-  CheckIcon,
-  ChevronDownIcon,
-} from '@heroicons/react/solid';
+import { AdjustmentsIcon } from '@heroicons/react/outline';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { isEqual } from 'lodash';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
@@ -274,7 +271,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   return (
     <>
       <div className="flex items-center mb-2 font-bold tracking-wider">
-        <AdjustmentsIcon className="button-with-text-icon" />
+        <AdjustmentsIcon className="w-5 h-5 mr-1.5" />
         {intl.formatMessage(messages.advancedoptions)}
       </div>
       <div className="p-4 bg-gray-600 rounded-md shadow">
@@ -522,8 +519,8 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                               ({selectedUser.email})
                             </span>
                           </span>
-                          <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                            <ChevronDownIcon className="text-gray-500 button-icon" />
+                          <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 pointer-events-none">
+                            <ChevronDownIcon />
                           </span>
                         </Listbox.Button>
                       </span>
@@ -577,7 +574,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                                           : 'text-indigo-600'
                                       } absolute inset-y-0 left-0 flex items-center pl-1.5`}
                                     >
-                                      <CheckIcon className="button-icon" />
+                                      <CheckIcon className="w-5 h-5" />
                                     </span>
                                   )}
                                 </div>

@@ -419,7 +419,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           ? intl.formatMessage(globalMessages.back)
           : intl.formatMessage(globalMessages.cancel)
       }
-      iconSvg={<DownloadIcon className="modal-icon" />}
+      iconSvg={<DownloadIcon />}
     >
       {editRequest
         ? isOwner

@@ -108,11 +108,7 @@ const Modal: React.FC<ModalProps> = ({
           }}
         >
           <div className="sm:flex sm:items-center">
-            {iconSvg && (
-              <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto text-white bg-gray-600 rounded-full sm:mx-0 sm:h-10 sm:w-10">
-                {iconSvg}
-              </div>
-            )}
+            {iconSvg && <div className="modal-icon">{iconSvg}</div>}
             <div
               className={`mt-3 text-center sm:mt-0 sm:text-left ${
                 iconSvg ? 'sm:ml-4' : 'sm:mb-4'

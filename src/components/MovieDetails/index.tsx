@@ -116,7 +116,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: data.mediaInfo?.plexUrl,
-      svg: <PlayIcon className="button-with-text-icon" />,
+      svg: <PlayIcon />,
     });
   }
 
@@ -129,7 +129,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
       url: data.mediaInfo?.plexUrl4k,
-      svg: <PlayIcon className="button-with-text-icon" />,
+      svg: <PlayIcon />,
     });
   }
 
@@ -142,7 +142,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
-      svg: <FilmIcon className="button-with-text-icon" />,
+      svg: <FilmIcon />,
     });
   }
 
@@ -280,7 +280,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <CheckCircleIcon className="button-with-text-icon" />
+                      <CheckCircleIcon />
                       <span>{intl.formatMessage(messages.markavailable)}</span>
                     </Button>
                   </div>
@@ -294,7 +294,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <CheckCircleIcon className="button-with-text-icon" />
+                      <CheckCircleIcon />
                       <span>
                         {intl.formatMessage(messages.mark4kavailable)}
                       </span>
@@ -333,7 +333,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 className="block mb-2 last:mb-0"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon className="button-with-text-icon" />
+                  <ExternalLinkIcon />
                   <span>{intl.formatMessage(messages.openradarr)}</span>
                 </Button>
               </a>
@@ -345,7 +345,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 rel="noreferrer"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon className="button-with-text-icon" />
+                  <ExternalLinkIcon />
                   <span>{intl.formatMessage(messages.openradarr4k)}</span>
                 </Button>
               </a>
@@ -359,10 +359,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               confirmText={intl.formatMessage(globalMessages.areyousure)}
               className="w-full"
             >
-              <DocumentRemoveIcon className="button-with-text-icon" />
-              {intl.formatMessage(messages.manageModalClearMedia)}
+              <DocumentRemoveIcon />
+              <span>{intl.formatMessage(messages.manageModalClearMedia)}</span>
             </ConfirmButton>
-            <div className="mt-2 text-sm text-gray-400">
+            <div className="mt-3 text-xs text-gray-400">
               {intl.formatMessage(messages.manageModalClearMediaWarning)}
             </div>
           </div>
@@ -653,7 +653,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <Link href="/movie/[movieId]/cast" as={`/movie/${data.id}/cast`}>
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.cast)}</span>
-                <ArrowCircleRightIcon className="slider-link-icon" />
+                <ArrowCircleRightIcon />
               </a>
             </Link>
           </div>

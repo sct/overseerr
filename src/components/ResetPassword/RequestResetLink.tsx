@@ -124,8 +124,10 @@ const ResetPassword: React.FC = () => {
                               type="submit"
                               disabled={isSubmitting || !isValid}
                             >
-                              <AtSymbolIcon className="button-with-text-icon" />
-                              {intl.formatMessage(messages.emailresetlink)}
+                              <AtSymbolIcon />
+                              <span>
+                                {intl.formatMessage(messages.emailresetlink)}
+                              </span>
                             </Button>
                           </span>
                         </div>

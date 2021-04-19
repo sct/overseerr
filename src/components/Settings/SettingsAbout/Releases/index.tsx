@@ -71,7 +71,7 @@ const Release: React.FC<ReleaseProps> = ({
       >
         <Modal
           onCancel={() => setModalOpen(false)}
-          iconSvg={<DocumentTextIcon className="modal-icon" />}
+          iconSvg={<DocumentTextIcon />}
           title={intl.formatMessage(messages.versionChangelog)}
           cancelText={intl.formatMessage(globalMessages.close)}
           okText={intl.formatMessage(messages.viewongithub)}
@@ -112,8 +112,8 @@ const Release: React.FC<ReleaseProps> = ({
       </div>
       <div className="flex-1 text-center sm:text-right">
         <Button buttonType="primary" onClick={() => setModalOpen(true)}>
-          <DocumentTextIcon className="button-with-text-icon" />
-          {intl.formatMessage(messages.viewchangelog)}
+          <DocumentTextIcon />
+          <span>{intl.formatMessage(messages.viewchangelog)}</span>
         </Button>
       </div>
     </div>

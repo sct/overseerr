@@ -28,7 +28,7 @@ const TvGenreSlider: React.FC = () => {
         <Link href="/discover/tv/genres">
           <a className="slider-title">
             <span>{intl.formatMessage(messages.tvgenres)}</span>
-            <ArrowCircleRightIcon className="slider-link-icon" />
+            <ArrowCircleRightIcon />
           </a>
         </Link>
       </div>

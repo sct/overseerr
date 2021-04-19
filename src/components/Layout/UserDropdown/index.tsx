@@ -77,7 +77,7 @@ const UserDropdown: React.FC = () => {
                 }}
                 onClick={() => setDropdownOpen(false)}
               >
-                <UserIcon className="inline button-with-text-icon" />
+                <UserIcon className="inline w-5 h-5 mr-2" />
                 <span>{intl.formatMessage(messages.myprofile)}</span>
               </a>
             </Link>
@@ -93,7 +93,7 @@ const UserDropdown: React.FC = () => {
                 }}
                 onClick={() => setDropdownOpen(false)}
               >
-                <CogIcon className="inline button-with-text-icon" />
+                <CogIcon className="inline w-5 h-5 mr-2" />
                 <span>{intl.formatMessage(messages.settings)}</span>
               </a>
             </Link>
@@ -103,7 +103,7 @@ const UserDropdown: React.FC = () => {
               role="menuitem"
               onClick={() => logout()}
             >
-              <LogoutIcon className="inline button-with-text-icon" />
+              <LogoutIcon className="inline w-5 h-5 mr-2" />
               <span>{intl.formatMessage(messages.signout)}</span>
             </a>
           </div>

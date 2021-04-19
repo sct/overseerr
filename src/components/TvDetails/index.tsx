@@ -124,7 +124,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: data.mediaInfo?.plexUrl,
-      svg: <PlayIcon className="button-with-text-icon" />,
+      svg: <PlayIcon />,
     });
   }
 
@@ -137,7 +137,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
       url: data.mediaInfo?.plexUrl4k,
-      svg: <PlayIcon className="button-with-text-icon" />,
+      svg: <PlayIcon />,
     });
   }
 
@@ -150,7 +150,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
-      svg: <FilmIcon className="button-with-text-icon" />,
+      svg: <FilmIcon />,
     });
   }
 
@@ -316,7 +316,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <CheckCircleIcon className="button-with-text-icon" />
+                      <CheckCircleIcon />
                       <span>{intl.formatMessage(messages.markavailable)}</span>
                     </Button>
                   </div>
@@ -330,14 +330,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <CheckCircleIcon className="button-with-text-icon" />
+                      <CheckCircleIcon />
                       <span>
                         {intl.formatMessage(messages.mark4kavailable)}
                       </span>
                     </Button>
                   </div>
                 )}
-              <div className="mt-3 text-xs text-gray-300">
+              <div className="mt-3 text-xs text-gray-400">
                 {intl.formatMessage(messages.allseasonsmarkedavailable)}
               </div>
             </div>
@@ -372,7 +372,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 className="block mb-2 last:mb-0"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon className="button-with-text-icon" />
+                  <ExternalLinkIcon />
                   <span>{intl.formatMessage(messages.opensonarr)}</span>
                 </Button>
               </a>
@@ -384,7 +384,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 rel="noreferrer"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon className="button-with-text-icon" />
+                  <ExternalLinkIcon />
                   <span>{intl.formatMessage(messages.opensonarr4k)}</span>
                 </Button>
               </a>
@@ -398,10 +398,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               confirmText={intl.formatMessage(globalMessages.areyousure)}
               className="w-full"
             >
-              <DocumentRemoveIcon className="button-with-text-icon" />
-              {intl.formatMessage(messages.manageModalClearMedia)}
+              <DocumentRemoveIcon />
+              <span>{intl.formatMessage(messages.manageModalClearMedia)}</span>
             </ConfirmButton>
-            <div className="mt-2 text-sm text-gray-400">
+            <div className="mt-3 text-xs text-gray-400">
               {intl.formatMessage(messages.manageModalClearMediaWarning)}
             </div>
           </div>
@@ -679,7 +679,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.cast)}</span>
-                <ArrowCircleRightIcon className="slider-link-icon" />
+                <ArrowCircleRightIcon />
               </a>
             </Link>
           </div>
