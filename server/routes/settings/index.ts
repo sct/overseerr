@@ -372,19 +372,10 @@ settingsRoutes.post<{ jobId: string }>(
     }
 
     const result = rescheduleJob(scheduledJob.job, req.body.schedule);
-
     const settings = getSettings();
-    const job = settings.jobs.find((job) => job.id === scheduledJob.id);
 
     if (result) {
-      if (!job) {
-        settings.jobs.push({
-          id: scheduledJob.id,
-          schedule: req.body.schedule,
-        });
-      } else {
-        job.schedule = req.body.schedule;
-      }
+      settings.jobs[scheduledJob.name] = { schedule: req.body.schedule };
       settings.save();
 
       return res.status(200).json({

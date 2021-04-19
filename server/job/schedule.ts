@@ -26,8 +26,7 @@ export const startJobs = (): void => {
     name: 'Plex Recently Added Scan',
     type: 'process',
     job: schedule.scheduleJob(
-      jobs.find((job) => job.id === 'plex-recently-added-scan')?.schedule ??
-        '0 */5 * * * *',
+      jobs['Plex Recently Added Scan']?.schedule ?? '0 */5 * * * *',
       () => {
         logger.info('Starting scheduled job: Plex Recently Added Scan', {
           label: 'Jobs',
@@ -45,8 +44,7 @@ export const startJobs = (): void => {
     name: 'Plex Full Library Scan',
     type: 'process',
     job: schedule.scheduleJob(
-      jobs.find((job) => job.id === 'plex-full-scan')?.schedule ??
-        '0 0 3 * * *',
+      jobs['Plex Full Library Scan']?.schedule ?? '0 0 3 * * *',
       () => {
         logger.info('Starting scheduled job: Plex Full Library Scan', {
           label: 'Jobs',
@@ -64,7 +62,7 @@ export const startJobs = (): void => {
     name: 'Radarr Scan',
     type: 'process',
     job: schedule.scheduleJob(
-      jobs.find((job) => job.id === 'radarr-scan')?.schedule ?? '0 0 4 * * *',
+      jobs['Radarr Scan']?.schedule ?? '0 0 4 * * *',
       () => {
         logger.info('Starting scheduled job: Radarr Scan', { label: 'Jobs' });
         radarrScanner.run();
@@ -80,7 +78,7 @@ export const startJobs = (): void => {
     name: 'Sonarr Scan',
     type: 'process',
     job: schedule.scheduleJob(
-      jobs.find((job) => job.id === 'sonarr-scan')?.schedule ?? '0 30 4 * * *',
+      jobs['Sonarr Scan']?.schedule ?? '0 30 4 * * *',
       () => {
         logger.info('Starting scheduled job: Sonarr Scan', { label: 'Jobs' });
         sonarrScanner.run();
@@ -90,13 +88,13 @@ export const startJobs = (): void => {
     cancelFn: () => sonarrScanner.cancel(),
   });
 
-  // Run download sync
+  // Run download sync every minute
   scheduledJobs.push({
     id: 'download-sync',
     name: 'Download Sync',
     type: 'command',
     job: schedule.scheduleJob(
-      jobs.find((job) => job.id === 'download-sync')?.schedule ?? '0 * * * * *',
+      jobs['Download Sync']?.schedule ?? '0 * * * * *',
       () => {
         logger.debug('Starting scheduled job: Download Sync', {
           label: 'Jobs',
@@ -106,14 +104,13 @@ export const startJobs = (): void => {
     ),
   });
 
-  // Reset download sync
+  // Reset download sync everyday at 01:00 am
   scheduledJobs.push({
     id: 'download-sync-reset',
     name: 'Download Sync Reset',
     type: 'command',
     job: schedule.scheduleJob(
-      jobs.find((job) => job.id === 'download-sync-reset')?.schedule ??
-        '0 0 1 * * *',
+      jobs['Download Sync Reset']?.schedule ?? '0 0 1 * * *',
       () => {
         logger.info('Starting scheduled job: Download Sync Reset', {
           label: 'Jobs',
