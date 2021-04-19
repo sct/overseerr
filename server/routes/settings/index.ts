@@ -2,6 +2,7 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
 import { merge, omit } from 'lodash';
+import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import { getRepository } from 'typeorm';
 import { URL } from 'url';
@@ -370,11 +371,21 @@ settingsRoutes.post<{ jobId: string }>(
       return next({ status: 404, message: 'Job not found' });
     }
 
-    const result = scheduledJob.job.reschedule(req.body.schedule);
-    const job = getSettings().jobs.find((job) => job.id === req.params.jobId);
+    const result = rescheduleJob(scheduledJob.job, req.body.schedule);
 
-    if (result && job) {
-      job.schedule = req.body.schedule;
+    const settings = getSettings();
+    const job = settings.jobs.find((job) => job.id === scheduledJob.id);
+
+    if (result) {
+      if (!job) {
+        settings.jobs.push({
+          id: scheduledJob.id,
+          schedule: req.body.schedule,
+        });
+      } else {
+        job.schedule = req.body.schedule;
+      }
+      settings.save();
 
       return res.status(200).json({
         id: scheduledJob.id,
