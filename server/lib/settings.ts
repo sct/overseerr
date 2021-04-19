@@ -214,9 +214,10 @@ interface NotificationSettings {
 }
 
 interface JobSettings {
-  id: string;
   schedule: string;
 }
+
+type JobName = string;
 
 interface AllSettings {
   clientId: string;
@@ -228,7 +229,7 @@ interface AllSettings {
   sonarr: SonarrSettings[];
   public: PublicSettings;
   notifications: NotificationSettings;
-  jobs: JobSettings[];
+  jobs: Record<JobName, JobSettings>;
 }
 
 const SETTINGS_PATH = process.env.CONFIG_DIRECTORY
@@ -350,7 +351,7 @@ class Settings {
           },
         },
       },
-      jobs: [],
+      jobs: {},
     };
     if (initialSettings) {
       this.data = merge(this.data, initialSettings);
@@ -433,11 +434,11 @@ class Settings {
     this.data.notifications = data;
   }
 
-  get jobs(): JobSettings[] {
+  get jobs(): Record<JobName, JobSettings> {
     return this.data.jobs;
   }
 
-  set jobs(data: JobSettings[]) {
+  set jobs(data: Record<JobName, JobSettings>) {
     this.data.jobs = data;
   }
 
