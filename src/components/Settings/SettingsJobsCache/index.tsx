@@ -1,6 +1,7 @@
 import { PlayIcon, StopIcon, TrashIcon } from '@heroicons/react/outline';
 import axios from 'axios';
-import React from 'react';
+import { Field, Form, Formik } from 'formik';
+import React, { useState } from 'react';
 import {
   defineMessages,
   FormattedRelativeTime,
@@ -9,15 +10,19 @@ import {
 } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import * as Yup from 'yup';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
 import Spinner from '../../../assets/spinner.svg';
 import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';
+import Alert from '../../Common/Alert';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
+import Modal from '../../Common/Modal';
 import PageTitle from '../../Common/PageTitle';
 import Table from '../../Common/Table';
+import Transition from '../../Transition';
 
 const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   jobsandcache: 'Jobs & Cache',
@@ -51,6 +56,13 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   'sonarr-scan': 'Sonarr Scan',
   'download-sync': 'Download Sync',
   'download-sync-reset': 'Download Sync Reset',
+  editJobSchedule: 'Modify Job Schedule',
+  editJobScheduleDescription:
+    'A job schedule can be represented by a CRON expression. Use a tool like <cronhub>crontab.cronhub.io</cronhub> to generate valid CRON expressions.',
+  jobScheduleEditSaved: 'Job schedule modified successfully!',
+  jobScheduleEditFailed: 'Something went wrong while saving the job schedule',
+  editJobSchedulePrompt: 'Enter CRON expression',
+  validationJobSchedule: 'You must provide a CRON expression',
 });
 
 interface Job {
@@ -73,6 +85,14 @@ const SettingsJobs: React.FC = () => {
       refreshInterval: 10000,
     }
   );
+
+  const [jobEditModal, setJobEditModal] = useState<{
+    isOpen: boolean;
+    job?: Job;
+  }>({
+    isOpen: false,
+  });
+  const [isSaving, setIsSaving] = useState(false);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -126,6 +146,120 @@ const SettingsJobs: React.FC = () => {
           intl.formatMessage(globalMessages.settings),
         ]}
       />
+      <Transition
+        enter="opacity-0 transition duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="opacity-100 transition duration-300"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+        show={jobEditModal.isOpen}
+      >
+        <Formik
+          initialValues={{
+            jobSchedule: '',
+          }}
+          validationSchema={Yup.object().shape({
+            jobSchedule: Yup.string().required(),
+          })}
+          onSubmit={async (values) => {
+            try {
+              setIsSaving(true);
+              await axios.post(
+                `/api/v1/settings/jobs/${jobEditModal.job?.id}/schedule`,
+                {
+                  ids: jobEditModal.job?.id,
+                  schedule: values.jobSchedule,
+                }
+              );
+              addToast(intl.formatMessage(messages.jobScheduleEditSaved), {
+                appearance: 'success',
+                autoDismiss: true,
+              });
+              setJobEditModal({ isOpen: false });
+            } catch (e) {
+              addToast(intl.formatMessage(messages.jobScheduleEditFailed), {
+                appearance: 'error',
+                autoDismiss: true,
+              });
+            } finally {
+              setIsSaving(false);
+            }
+          }}
+        >
+          {({ handleSubmit, isSubmitting, errors, touched }) => {
+            return (
+              <Modal
+                title={intl.formatMessage(messages.editJobSchedule)}
+                okText={
+                  isSubmitting
+                    ? intl.formatMessage(globalMessages.saving)
+                    : intl.formatMessage(globalMessages.save)
+                }
+                iconSvg={
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                }
+                onCancel={() => setJobEditModal({ isOpen: false })}
+                okDisabled={isSaving}
+                onOk={() => handleSubmit()}
+              >
+                <div className="section">
+                  <Alert
+                    type="info"
+                    title={intl.formatMessage(
+                      messages.editJobScheduleDescription,
+                      {
+                        cronhub: function cronhub(str) {
+                          return (
+                            <a
+                              href="https://crontab.cronhub.io/"
+                              className="text-white transition duration-300 hover:underline"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {str}
+                            </a>
+                          );
+                        },
+                      }
+                    )}
+                  ></Alert>
+                  <Form>
+                    <div className="pb-6 form-row">
+                      <label htmlFor="jobSchedule" className="text-label">
+                        {intl.formatMessage(messages.editJobSchedulePrompt)}
+                      </label>
+                      <div className="form-input">
+                        <div className="form-input-field">
+                          <Field
+                            id="jobSchedule"
+                            name="jobSchedule"
+                            type="text"
+                            placeholder="0 */5 * * * *"
+                          />
+                        </div>
+                        {errors.jobSchedule && touched.jobSchedule && (
+                          <div className="error">
+                            {intl.formatMessage(messages.validationJobSchedule)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Form>
+                </div>
+              </Modal>
+            );
+          }}
+        </Formik>
+      </Transition>
+
       <div className="mb-6">
         <h3 className="heading">{intl.formatMessage(messages.jobs)}</h3>
         <p className="description">
@@ -179,6 +313,13 @@ const SettingsJobs: React.FC = () => {
                   </div>
                 </Table.TD>
                 <Table.TD alignText="right">
+                  <Button
+                    className="mr-2"
+                    buttonType="warning"
+                    onClick={() => setJobEditModal({ isOpen: true, job: job })}
+                  >
+                    {intl.formatMessage(globalMessages.edit)}
+                  </Button>
                   {job.running ? (
                     <Button buttonType="danger" onClick={() => cancelJob(job)}>
                       <StopIcon />
