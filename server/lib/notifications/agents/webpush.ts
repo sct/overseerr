@@ -36,9 +36,6 @@ class WebPushAgent
     type: Notification,
     payload: NotificationPayload
   ): PushNotificationPayload {
-    const {
-      main: { applicationUrl },
-    } = getSettings();
     switch (type) {
       case Notification.TEST_NOTIFICATION:
         return {
@@ -55,9 +52,7 @@ class WebPushAgent
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
           requestId: payload.request?.id,
-          actionUrl: applicationUrl
-            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
-            : undefined,
+          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
         };
       case Notification.MEDIA_AUTO_APPROVED:
         return {
@@ -68,9 +63,7 @@ class WebPushAgent
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
           requestId: payload.request?.id,
-          actionUrl: applicationUrl
-            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
-            : undefined,
+          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
         };
       case Notification.MEDIA_AVAILABLE:
         return {
@@ -81,9 +74,7 @@ class WebPushAgent
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
           requestId: payload.request?.id,
-          actionUrl: applicationUrl
-            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
-            : undefined,
+          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
         };
       case Notification.MEDIA_DECLINED:
         return {
@@ -94,9 +85,7 @@ class WebPushAgent
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
           requestId: payload.request?.id,
-          actionUrl: applicationUrl
-            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
-            : undefined,
+          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
         };
       case Notification.MEDIA_FAILED:
         return {
@@ -178,21 +167,26 @@ class WebPushAgent
       );
 
       Promise.all(
-        pushSubs.map(async (sub) =>
-          webpush.sendNotification(
-            {
-              endpoint: sub.endpoint,
-              keys: {
-                auth: sub.auth,
-                p256dh: sub.p256dh,
+        pushSubs.map(async (sub) => {
+          try {
+            await webpush.sendNotification(
+              {
+                endpoint: sub.endpoint,
+                keys: {
+                  auth: sub.auth,
+                  p256dh: sub.p256dh,
+                },
               },
-            },
-            Buffer.from(
-              JSON.stringify(this.getNotificationPayload(type, payload)),
-              'utf-8'
-            )
-          )
-        )
+              Buffer.from(
+                JSON.stringify(this.getNotificationPayload(type, payload)),
+                'utf-8'
+              )
+            );
+          } catch (e) {
+            // Failed to send notification so we need to remove the subscription
+            userPushSubRepository.remove(sub);
+          }
+        })
       );
     }
     return true;

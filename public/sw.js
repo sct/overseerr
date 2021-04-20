@@ -89,7 +89,7 @@ self.addEventListener('push', (event) => {
     options.actions.push(
       {
         action: 'approve',
-        title: '✅ Approve',
+        title: 'Approve',
       }
     );
   }
@@ -119,5 +119,7 @@ self.addEventListener('notificationclick', (event) => {
     fetch(`/api/v1/request/${notificationData.requestId}/approve`, {
       method: 'POST',
     });
+
+    self.clients.openWindow(notificationData.actionUrl);
   }
 }, false);
