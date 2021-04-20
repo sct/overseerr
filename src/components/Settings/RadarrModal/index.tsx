@@ -712,7 +712,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   <label htmlFor="enableSearch" className="checkbox-label">
                     {intl.formatMessage(messages.enableSearch)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
                       id="enableSearch"
