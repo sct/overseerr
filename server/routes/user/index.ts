@@ -5,6 +5,7 @@ import PlexTvAPI from '../../api/plextv';
 import { UserType } from '../../constants/user';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
+import { UserPushSubscription } from '../../entity/UserPushSubscription';
 import {
   QuotaResponse,
   UserRequestsResponse,
@@ -126,6 +127,48 @@ router.post(
     }
   }
 );
+
+router.post<
+  never,
+  unknown,
+  {
+    endpoint: string;
+    p256dh: string;
+    auth: string;
+  }
+>('/registerPushSubscription', async (req, res, next) => {
+  try {
+    const userPushSubRepository = getRepository(UserPushSubscription);
+
+    const existingSubs = await userPushSubRepository.find({
+      where: { auth: req.body.auth },
+    });
+
+    if (existingSubs.length > 0) {
+      logger.debug(
+        'User push subscription already exists. Skipping registration.',
+        { label: 'API' }
+      );
+      return res.status(204).send();
+    }
+
+    const userPushSubscription = new UserPushSubscription({
+      auth: req.body.auth,
+      endpoint: req.body.endpoint,
+      p256dh: req.body.p256dh,
+      user: req.user,
+    });
+
+    userPushSubRepository.save(userPushSubscription);
+
+    return res.status(204).send();
+  } catch (e) {
+    logger.error('Failed to register user push subscription', {
+      label: 'API',
+    });
+    next({ status: 500, message: 'Failed to register subscription.' });
+  }
+});
 
 router.get<{ id: string }>('/:id', async (req, res, next) => {
   try {

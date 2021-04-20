@@ -17,6 +17,7 @@ const defaultSettings = {
   originalLanguage: '',
   partialRequestsEnabled: true,
   cacheImages: false,
+  vapidPublic: '',
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

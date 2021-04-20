@@ -67,3 +67,57 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+self.addEventListener('push', (event) => {
+  const payload = event.data ? event.data.json() : {};
+
+  const options = {
+    body: payload.message,
+    icon: 'android-chrome-192x192.png',
+    image: payload.image,
+    vibrate: [100, 50, 100],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: '2',
+      actionUrl: payload.actionUrl,
+      requestId: payload.requestId,
+    },
+    actions: [],
+  }
+
+  if (payload.notificationType === 'MEDIA_PENDING') {
+    options.actions.push(
+      {
+        action: 'approve',
+        title: '✅ Approve',
+      }
+    );
+  }
+
+  if (payload.actionUrl){
+    options.actions.push(
+      {
+        action: 'viewmedia',
+        title: 'View Media',
+      }
+    );
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(payload.subject, options)
+  );
+})
+
+self.addEventListener('notificationclick', (event) => {
+  const notificationData = event.notification.data;
+
+  event.notification.close();
+
+  if (event.action === 'viewmedia') {
+    self.clients.openWindow(notificationData.actionUrl);
+  } else if (event.action === 'approve') {
+    fetch(`/api/v1/request/${notificationData.requestId}/approve`, {
+      method: 'POST',
+    });
+  }
+}, false);

@@ -1128,6 +1128,15 @@ components:
           properties:
             webhookUrl:
               type: string
+    WebPushSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
     WebhookSettings:
       type: object
       properties:
@@ -2581,6 +2590,52 @@ paths:
       responses:
         '204':
           description: Test notification attempted
+  /settings/notifications/webpush:
+    get:
+      summary: Get Web Push notification settings
+      description: Returns current Web Push notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned web push settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebPushSettings'
+    post:
+      summary: Update Web Push notification settings
+      description: Updates Web Push notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebPushSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebPushSettings'
+  /settings/notifications/webpush/test:
+    post:
+      summary: Test Web Push settings
+      description: Sends a test notification to the Web Push agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebPushSettings'
+      responses:
+        '204':
+          description: Test notification attempted
   /settings/notifications/webhook:
     get:
       summary: Get webhook notification settings
@@ -2903,6 +2958,32 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+  /user/registerPushSubscription:
+    post:
+      summary: Register a web push /user/registerPushSubscription
+      description: Registers a web push subscription for the logged-in user
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endpoint:
+                  type: string
+                auth:
+                  type: string
+                p256dh:
+                  type: string
+              required:
+                - endpoint
+                - auth
+                - p256dh
+      responses:
+        '204':
+          description: Successfully registered push subscription
   /user/{userId}:
     get:
       summary: Get user by ID

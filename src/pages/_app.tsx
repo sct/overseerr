@@ -9,6 +9,7 @@ import { SWRConfig } from 'swr';
 import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
 import Layout from '../components/Layout';
 import LoadingBar from '../components/LoadingBar';
+import ServiceWorkerSetup from '../components/ServiceWorkerSetup';
 import StatusChecker from '../components/StatusChacker';
 import Toast from '../components/Toast';
 import { InteractionProvider } from '../context/InteractionContext';
@@ -87,19 +88,6 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
   const [currentLocale, setLocale] = useState<AvailableLocales>(locale);
 
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('/sw.js')
-        .then(function (registration) {
-          console.log('Registration successful, scope is:', registration.scope);
-        })
-        .catch(function (error) {
-          console.log('Service worker registration failed, error:', error);
-        });
-    }
-  }, []);
-
-  useEffect(() => {
     loadLocaleData(currentLocale).then(setMessages);
     setCookie(null, 'locale', currentLocale, {
       path: '/',
@@ -141,6 +129,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
                   ></meta>
                 </Head>
                 <StatusChecker />
+                <ServiceWorkerSetup />
                 <UserContext initialUser={user}>{component}</UserContext>
               </ToastProvider>
             </InteractionProvider>
@@ -165,6 +154,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     originalLanguage: '',
     partialRequestsEnabled: true,
     cacheImages: false,
+    vapidPublic: '',
   };
 
   let locale = 'en';
