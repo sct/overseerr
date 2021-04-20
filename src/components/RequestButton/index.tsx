@@ -33,9 +33,9 @@ const messages = defineMessages({
   declinerequests:
     'Decline {requestCount, plural, one {Request} other {{requestCount} Requests}}',
   approve4krequests:
-    'Approve {requestCount, plural, one {Request} other {{requestCount} 4K Requests}}',
+    'Approve {requestCount, plural, one {4K Request} other {{requestCount} 4K Requests}}',
   decline4krequests:
-    'Decline {requestCount, plural, one {Request} other {{requestCount} 4K Requests}}',
+    'Decline {requestCount, plural, one {4K Request} other {{requestCount} 4K Requests}}',
 });
 
 interface ButtonOption {
