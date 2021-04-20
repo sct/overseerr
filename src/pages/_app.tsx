@@ -9,6 +9,7 @@ import { SWRConfig } from 'swr';
 import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
 import Layout from '../components/Layout';
 import LoadingBar from '../components/LoadingBar';
+import PWAHeader from '../components/PWAHeader';
 import ServiceWorkerSetup from '../components/ServiceWorkerSetup';
 import StatusChecker from '../components/StatusChacker';
 import Toast from '../components/Toast';
@@ -127,6 +128,9 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
                     name="viewport"
                     content="initial-scale=1, viewport-fit=cover, width=device-width"
                   ></meta>
+                  <PWAHeader
+                    applicationTitle={currentSettings.applicationTitle}
+                  />
                 </Head>
                 <StatusChecker />
                 <ServiceWorkerSetup />
