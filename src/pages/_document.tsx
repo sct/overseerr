@@ -179,6 +179,16 @@ class MyDocument extends Document {
             href="/site.webmanifest"
             crossOrigin="use-credentials"
           />
+          {/* TODO: Replace with app name */}
+          <meta name="application-name" content="Overseerr" />
+          <meta name="apple-mobile-web-app-title" content="Overseerr" />
+          <meta
+            name="description"
+            content="Request and Media Discovery Application"
+          />
+          <meta name="format-detection" content="telephone=no" />
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta name="theme-color" content="#1f2937" />
         </Head>
         <body>
           <Main />
