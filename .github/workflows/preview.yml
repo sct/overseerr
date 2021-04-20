@@ -47,8 +47,8 @@ jobs:
           build-args: |
             COMMIT_TAG=${{ github.sha }}
           tags: |
-            sctx/overseerr:preview-${{ steps.get_version.outputs.VERSION }}
-            ghcr.io/sct/overseerr:preview-${{ steps.get_version.outputs.VERSION }}
+            sctx/overseerr:${{ steps.get_version.outputs.VERSION }}
+            ghcr.io/sct/overseerr:${{ steps.get_version.outputs.VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
       - # Temporary fix
