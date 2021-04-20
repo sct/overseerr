@@ -4,9 +4,6 @@ on:
   push:
     tags:
       - 'preview-*'
-    branches-ignore:
-      - develop
-      - master
 
 jobs:
   build_and_push:
