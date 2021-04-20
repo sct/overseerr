@@ -11,7 +11,6 @@ on:
 jobs:
   build_and_push:
     name: Build & Publish Docker Preview Images
-    if: github.ref == 'refs/heads/develop' && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
