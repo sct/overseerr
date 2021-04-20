@@ -138,7 +138,7 @@ class WebPushAgent
 
     if (payload.notifyUser) {
       const notifySubs = await userPushSubRepository.find({
-        where: { user: payload.notifyUser },
+        where: { user: payload.notifyUser.id },
       });
 
       pushSubs = notifySubs;
