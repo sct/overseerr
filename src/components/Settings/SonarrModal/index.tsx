@@ -67,7 +67,7 @@ const messages = defineMessages({
   syncEnabled: 'Enable Scan',
   externalUrl: 'External URL',
   externalUrlPlaceholder: 'External URL pointing to your Sonarr server',
-  preventSearch: 'Disable Auto-Search',
+  enableSearch: 'Enable Automatic Search',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
@@ -274,7 +274,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
           enableSeasonFolders: sonarr?.enableSeasonFolders ?? false,
           externalUrl: sonarr?.externalUrl,
           syncEnabled: sonarr?.syncEnabled ?? false,
-          preventSearch: sonarr?.preventSearch ?? false,
+          enableSearch: !sonarr?.preventSearch,
         }}
         validationSchema={SonarrSettingsSchema}
         onSubmit={async (values) => {
@@ -314,7 +314,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               enableSeasonFolders: values.enableSeasonFolders,
               externalUrl: values.externalUrl,
               syncEnabled: values.syncEnabled,
-              preventSearch: values.preventSearch,
+              preventSearch: !values.enableSearch,
             };
             if (!sonarr) {
               await axios.post('/api/v1/settings/sonarr', submission);
@@ -961,14 +961,14 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label htmlFor="preventSearch" className="checkbox-label">
-                    {intl.formatMessage(messages.preventSearch)}
+                  <label htmlFor="enableSearch" className="checkbox-label">
+                    {intl.formatMessage(messages.enableSearch)}
                   </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                  <div className="form-input">
                     <Field
                       type="checkbox"
-                      id="preventSearch"
-                      name="preventSearch"
+                      id="enableSearch"
+                      name="enableSearch"
                     />
                   </div>
                 </div>
