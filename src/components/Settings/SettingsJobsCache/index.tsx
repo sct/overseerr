@@ -1,3 +1,4 @@
+import { PlayIcon, StopIcon, TrashIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import React from 'react';
 import {
@@ -146,12 +147,12 @@ const SettingsJobs: React.FC = () => {
               <tr key={`job-list-${job.id}`}>
                 <Table.TD>
                   <div className="flex items-center text-sm leading-5 text-white">
-                    {job.running && <Spinner className="w-5 h-5 mr-2" />}
                     <span>
                       {intl.formatMessage(
                         messages[job.id] ?? messages.unknownJob
                       )}
                     </span>
+                    {job.running && <Spinner className="w-5 h-5 ml-2" />}
                   </div>
                 </Table.TD>
                 <Table.TD>
@@ -180,10 +181,12 @@ const SettingsJobs: React.FC = () => {
                 <Table.TD alignText="right">
                   {job.running ? (
                     <Button buttonType="danger" onClick={() => cancelJob(job)}>
+                      <StopIcon className="w-5 h-5 mr-1" />
                       {intl.formatMessage(messages.canceljob)}
                     </Button>
                   ) : (
                     <Button buttonType="primary" onClick={() => runJob(job)}>
+                      <PlayIcon className="w-5 h-5 mr-1" />
                       {intl.formatMessage(messages.runnow)}
                     </Button>
                   )}
@@ -223,6 +226,7 @@ const SettingsJobs: React.FC = () => {
                 <Table.TD>{formatBytes(cache.stats.vsize)}</Table.TD>
                 <Table.TD alignText="right">
                   <Button buttonType="danger" onClick={() => flushCache(cache)}>
+                    <TrashIcon className="w-5 h-5 mr-1" />
                     {intl.formatMessage(messages.flushcache)}
                   </Button>
                 </Table.TD>

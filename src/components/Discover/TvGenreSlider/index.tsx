@@ -1,12 +1,13 @@
+import { ArrowCircleRightIcon } from '@heroicons/react/outline';
+import Link from 'next/link';
 import React, { useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import GenreCard from '../../GenreCard';
-import Slider from '../../Slider';
 import { GenreSliderItem } from '../../../../server/interfaces/api/discoverInterfaces';
 import { LanguageContext } from '../../../context/LanguageContext';
+import GenreCard from '../../GenreCard';
+import Slider from '../../Slider';
 import { genreColorMap } from '../constants';
-import Link from 'next/link';
 
 const messages = defineMessages({
   tvgenres: 'Series Genres',
@@ -29,20 +30,7 @@ const TvGenreSlider: React.FC = () => {
         <Link href="/discover/tv/genres">
           <a className="slider-title">
             <span>{intl.formatMessage(messages.tvgenres)}</span>
-            <svg
-              className="w-6 h-6 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <ArrowCircleRightIcon className="w-6 h-6 ml-2" />
           </a>
         </Link>
       </div>

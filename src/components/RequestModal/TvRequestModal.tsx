@@ -1,3 +1,4 @@
+import { DownloadIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -28,6 +29,11 @@ const messages = defineMessages({
   requestSuccess: '<strong>{title}</strong> requested successfully!',
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
+  edit: 'Edit Request',
+  cancel: 'Cancel Request',
+  pendingrequest: 'Pending Request for {title}',
+  pending4krequest: 'Pending 4K Request for {title}',
+  requestfrom: "{username}'s request is pending approval.",
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
   requestall: 'Request All Seasons',
@@ -42,6 +48,7 @@ const messages = defineMessages({
   requestcancelled: 'Request for <strong>{title}</strong> canceled.',
   autoapproval: 'Automatic Approval',
   requesterror: 'Something went wrong while submitting the request.',
+  pendingapproval: 'Your request is pending approval.',
 });
 
 interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -341,6 +348,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     return seasonRequest;
   };
 
+  const isOwner = editRequest && editRequest.requestedBy.id === user?.id;
+
   return !data?.externalIds.tvdbId && searchModal.show ? (
     <SearchByNameModal
       tvdbId={tvdbId}
@@ -361,12 +370,20 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       onCancel={tvdbId ? () => setSearchModal({ show: true }) : onCancel}
       onOk={() => (editRequest ? updateRequest() : sendRequest())}
       title={intl.formatMessage(
-        is4k ? messages.request4ktitle : messages.requesttitle,
+        editRequest
+          ? is4k
+            ? messages.pending4krequest
+            : messages.pendingrequest
+          : is4k
+          ? messages.request4ktitle
+          : messages.requesttitle,
         { title: data?.name }
       )}
       okText={
-        editRequest && selectedSeasons.length === 0
-          ? 'Cancel Request'
+        editRequest
+          ? selectedSeasons.length === 0
+            ? intl.formatMessage(messages.cancel)
+            : intl.formatMessage(messages.edit)
           : getAllRequestedSeasons().length >= getAllSeasons().length
           ? intl.formatMessage(messages.alreadyrequested)
           : !settings.currentSettings.partialRequestsEnabled
@@ -396,27 +413,21 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           : `primary`
       }
       cancelText={
-        tvdbId
+        editRequest
+          ? intl.formatMessage(globalMessages.close)
+          : tvdbId
           ? intl.formatMessage(globalMessages.back)
           : intl.formatMessage(globalMessages.cancel)
       }
-      iconSvg={
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-          />
-        </svg>
-      }
+      iconSvg={<DownloadIcon className="w-6 h-6" />}
     >
+      {editRequest
+        ? isOwner
+          ? intl.formatMessage(messages.pendingapproval)
+          : intl.formatMessage(messages.requestfrom, {
+              username: editRequest?.requestedBy.displayName,
+            })
+        : null}
       {hasPermission(
         [
           Permission.MANAGE_REQUESTS,

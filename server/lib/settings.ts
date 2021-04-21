@@ -179,7 +179,6 @@ interface NotificationAgents {
 }
 
 interface NotificationSettings {
-  enabled: boolean;
   agents: NotificationAgents;
 }
 
@@ -234,7 +233,6 @@ class Settings {
         initialized: false,
       },
       notifications: {
-        enabled: true,
         agents: {
           email: {
             enabled: false,

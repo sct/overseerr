@@ -1,3 +1,10 @@
+import {
+  CheckIcon,
+  PencilIcon,
+  RefreshIcon,
+  TrashIcon,
+  XIcon,
+} from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useContext, useState } from 'react';
@@ -29,6 +36,7 @@ const messages = defineMessages({
   modified: 'Modified',
   modifieduserdate: '{date} by {user}',
   mediaerror: 'The associated title for this request is no longer available.',
+  editrequest: 'Edit Request',
   deleterequest: 'Delete Request',
   cancelRequest: 'Cancel Request',
 });
@@ -66,20 +74,7 @@ const RequestItemError: React.FC<RequestItemErroProps> = ({
             buttonSize="sm"
             onClick={() => deleteRequest()}
           >
-            <svg
-              className="w-5 h-5 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
+            <TrashIcon className="w-5 h-5 mr-1" />
             <span>{intl.formatMessage(messages.deleterequest)}</span>
           </Button>
         </div>
@@ -369,31 +364,6 @@ const RequestItem: React.FC<RequestItemProps> = ({
           </div>
         </div>
         <div className="z-10 flex flex-col justify-center w-full pl-4 pr-4 mt-4 space-y-2 xl:mt-0 xl:items-end xl:w-96 xl:pl-0">
-          {requestData.status === MediaRequestStatus.PENDING &&
-            !hasPermission(Permission.MANAGE_REQUESTS) &&
-            requestData.requestedBy.id === user?.id && (
-              <ConfirmButton
-                onClick={() => deleteRequest()}
-                confirmText={intl.formatMessage(globalMessages.areyousure)}
-                className="w-full"
-              >
-                <svg
-                  className="w-5 h-5 mr-1"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="block">
-                  {intl.formatMessage(messages.cancelRequest)}
-                </span>
-              </ConfirmButton>
-            )}
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&
@@ -404,19 +374,14 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 disabled={isRetrying}
                 onClick={() => retryRequest()}
               >
-                <svg
-                  className="w-5 h-5 mr-1"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="18px"
-                  height="18px"
-                >
-                  <path d="M0 0h24v24H0z" fill="none" />
-                  <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
-                </svg>
+                <RefreshIcon
+                  className={`w-5 h-5 mr-1 ${isRetrying ? 'animate-spin' : ''}`}
+                  style={{ animationDirection: 'reverse' }}
+                />
                 <span className="block">
-                  {intl.formatMessage(globalMessages.retry)}
+                  {intl.formatMessage(
+                    isRetrying ? globalMessages.retrying : globalMessages.retry
+                  )}
                 </span>
               </Button>
             )}
@@ -427,94 +392,72 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 confirmText={intl.formatMessage(globalMessages.areyousure)}
                 className="w-full"
               >
-                <svg
-                  className="w-5 h-5 mr-1"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <TrashIcon className="w-5 h-5 mr-1" />
                 <span className="block">
-                  {intl.formatMessage(globalMessages.delete)}
+                  {intl.formatMessage(messages.deleterequest)}
                 </span>
               </ConfirmButton>
             )}
           {requestData.status === MediaRequestStatus.PENDING &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
-              <>
-                <div className="flex flex-row w-full space-x-2">
-                  <span className="w-full">
-                    <Button
-                      className="w-full"
-                      buttonType="success"
-                      onClick={() => modifyRequest('approve')}
-                    >
-                      <svg
-                        className="w-5 h-5 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span className="block">
-                        {intl.formatMessage(globalMessages.approve)}
-                      </span>
-                    </Button>
-                  </span>
-                  <span className="w-full">
-                    <Button
-                      className="w-full"
-                      buttonType="danger"
-                      onClick={() => modifyRequest('decline')}
-                    >
-                      <svg
-                        className="w-5 h-5 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span className="block">
-                        {intl.formatMessage(globalMessages.decline)}
-                      </span>
-                    </Button>
-                  </span>
-                </div>
+              <div className="flex flex-row w-full space-x-2">
                 <span className="w-full">
                   <Button
                     className="w-full"
-                    buttonType="primary"
-                    onClick={() => setShowEditModal(true)}
+                    buttonType="success"
+                    onClick={() => modifyRequest('approve')}
                   >
-                    <svg
-                      className="w-5 h-5 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                    </svg>
+                    <CheckIcon className="w-5 h-5 mr-1" />
                     <span className="block">
-                      {intl.formatMessage(globalMessages.edit)}
+                      {intl.formatMessage(globalMessages.approve)}
                     </span>
                   </Button>
                 </span>
-              </>
+                <span className="w-full">
+                  <Button
+                    className="w-full"
+                    buttonType="danger"
+                    onClick={() => modifyRequest('decline')}
+                  >
+                    <XIcon className="w-5 h-5 mr-1" />
+                    <span className="block">
+                      {intl.formatMessage(globalMessages.decline)}
+                    </span>
+                  </Button>
+                </span>
+              </div>
+            )}
+          {requestData.status === MediaRequestStatus.PENDING &&
+            (hasPermission(Permission.MANAGE_REQUESTS) ||
+              (requestData.requestedBy.id === user?.id &&
+                (requestData.type === 'tv' ||
+                  hasPermission(Permission.REQUEST_ADVANCED)))) && (
+              <span className="w-full">
+                <Button
+                  className="w-full"
+                  buttonType="primary"
+                  onClick={() => setShowEditModal(true)}
+                >
+                  <PencilIcon className="w-5 h-5 mr-1" />
+                  <span className="block">
+                    {intl.formatMessage(messages.editrequest)}
+                  </span>
+                </Button>
+              </span>
+            )}
+          {requestData.status === MediaRequestStatus.PENDING &&
+            !hasPermission(Permission.MANAGE_REQUESTS) &&
+            requestData.requestedBy.id === user?.id && (
+              <ConfirmButton
+                onClick={() => deleteRequest()}
+                confirmText={intl.formatMessage(globalMessages.areyousure)}
+                className="w-full"
+              >
+                <XIcon className="w-5 h-5 mr-1" />
+                <span className="block">
+                  {intl.formatMessage(messages.cancelRequest)}
+                </span>
+              </ConfirmButton>
             )}
         </div>
       </div>

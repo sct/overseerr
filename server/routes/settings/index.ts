@@ -4,11 +4,13 @@ import fs from 'fs';
 import { merge, omit } from 'lodash';
 import path from 'path';
 import { getRepository } from 'typeorm';
+import { URL } from 'url';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
+import { PlexConnection } from '../../interfaces/api/plexInterfaces';
 import {
   LogMessage,
   LogsResultsResponse,
@@ -129,13 +131,32 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
     if (devices) {
       await Promise.all(
         devices.map(async (device) => {
+          const plexDirectConnections: PlexConnection[] = [];
+
+          device.connection.forEach((connection) => {
+            const url = new URL(connection.uri);
+
+            if (url.hostname !== connection.address) {
+              const plexDirectConnection = { ...connection };
+              plexDirectConnection.address = url.hostname;
+              plexDirectConnections.push(plexDirectConnection);
+
+              // Connect to IP addresses over HTTP
+              connection.protocol = 'http';
+            }
+          });
+
+          plexDirectConnections.forEach((plexDirectConnection) => {
+            device.connection.push(plexDirectConnection);
+          });
+
           await Promise.all(
             device.connection.map(async (connection) => {
               const plexDeviceSettings = {
                 ...settings.plex,
                 ip: connection.address,
                 port: connection.port,
-                useSsl: !connection.local && connection.protocol === 'https',
+                useSsl: connection.protocol === 'https',
               };
               const plexClient = new PlexAPI({
                 plexToken: admin.plexToken,
@@ -149,7 +170,7 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
                 connection.message = 'OK';
               } catch (e) {
                 connection.status = 500;
-                connection.message = e.message;
+                connection.message = e.message.split(':')[0];
               }
             })
           );

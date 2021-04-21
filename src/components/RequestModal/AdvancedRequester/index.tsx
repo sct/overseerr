@@ -1,5 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Listbox, Transition } from '@headlessui/react';
+import {
+  AdjustmentsIcon,
+  CheckIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/solid';
 import { isEqual } from 'lodash';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
@@ -269,15 +274,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   return (
     <>
       <div className="flex items-center mb-2 font-bold tracking-wider">
-        <svg
-          className="w-4 h-4 mr-1"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M9.707 7.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L13 8.586V5h3a2 2 0 012 2v5a2 2 0 01-2 2H8a2 2 0 01-2-2V7a2 2 0 012-2h3v3.586L9.707 7.293zM11 3a1 1 0 112 0v2h-2V3z" />
-          <path d="M4 9a2 2 0 00-2 2v5a2 2 0 002 2h8a2 2 0 002-2H4V9z" />
-        </svg>
+        <AdjustmentsIcon className="w-5 h-5 mr-1" />
         {intl.formatMessage(messages.advancedoptions)}
       </div>
       <div className="p-4 bg-gray-600 rounded-md shadow">
@@ -526,19 +523,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                             </span>
                           </span>
                           <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                            <svg
-                              className="w-5 h-5 text-gray-500"
-                              viewBox="0 0 20 20"
-                              fill="none"
-                              stroke="currentColor"
-                            >
-                              <path
-                                d="M7 7l3-3 3 3m0 6l-3 3-3-3"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
+                            <ChevronDownIcon className="w-5 h-5 text-gray-500" />
                           </span>
                         </Listbox.Button>
                       </span>
@@ -592,18 +577,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                                           : 'text-indigo-600'
                                       } absolute inset-y-0 left-0 flex items-center pl-1.5`}
                                     >
-                                      <svg
-                                        className="w-5 h-5"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                      >
-                                        <path
-                                          fillRule="evenodd"
-                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                          clipRule="evenodd"
-                                        />
-                                      </svg>
+                                      <CheckIcon className="w-5 h-5" />
                                     </span>
                                   )}
                                 </div>

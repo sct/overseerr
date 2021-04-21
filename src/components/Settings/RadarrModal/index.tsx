@@ -1,3 +1,4 @@
+import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import dynamic from 'next/dynamic';
@@ -62,7 +63,7 @@ const messages = defineMessages({
   loadingTags: 'Loading tags…',
   testFirstTags: 'Test connection to load tags',
   tags: 'Tags',
-  preventSearch: 'Disable Auto-Search',
+  enableSearch: 'Enable Automatic Search',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
@@ -256,8 +257,8 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
           isDefault: radarr?.isDefault ?? false,
           is4k: radarr?.is4k ?? false,
           externalUrl: radarr?.externalUrl,
-          syncEnabled: radarr?.syncEnabled,
-          preventSearch: radarr?.preventSearch,
+          syncEnabled: radarr?.syncEnabled ?? false,
+          enableSearch: !radarr?.preventSearch,
         }}
         validationSchema={RadarrSettingsSchema}
         onSubmit={async (values) => {
@@ -282,7 +283,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               isDefault: values.isDefault,
               externalUrl: values.externalUrl,
               syncEnabled: values.syncEnabled,
-              preventSearch: values.preventSearch,
+              preventSearch: !values.enableSearch,
             };
             if (!radarr) {
               await axios.post('/api/v1/settings/radarr', submission);
@@ -355,6 +356,13 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   : intl.formatMessage(
                       values.is4k ? messages.edit4kradarr : messages.editradarr
                     )
+              }
+              iconSvg={
+                !radarr ? (
+                  <PlusIcon className="w-6 h-6" />
+                ) : (
+                  <PencilIcon className="w-6 h-6" />
+                )
               }
             >
               <div className="mb-6">
@@ -701,14 +709,14 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </div>
                 </div>
                 <div className="form-row">
-                  <label htmlFor="preventSearch" className="checkbox-label">
-                    {intl.formatMessage(messages.preventSearch)}
+                  <label htmlFor="enableSearch" className="checkbox-label">
+                    {intl.formatMessage(messages.enableSearch)}
                   </label>
                   <div className="form-input">
                     <Field
                       type="checkbox"
-                      id="preventSearch"
-                      name="preventSearch"
+                      id="enableSearch"
+                      name="enableSearch"
                     />
                   </div>
                 </div>

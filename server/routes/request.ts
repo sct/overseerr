@@ -175,6 +175,36 @@ requestRoutes.post(
         });
       }
 
+      if (req.body.is4k) {
+        if (
+          req.body.mediaType === MediaType.MOVIE &&
+          !req.user?.hasPermission(
+            [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+            {
+              type: 'or',
+            }
+          )
+        ) {
+          return next({
+            status: 403,
+            message: 'You do not have permission to make 4K movie requests.',
+          });
+        } else if (
+          req.body.mediaType === MediaType.TV &&
+          !req.user?.hasPermission(
+            [Permission.REQUEST_4K, Permission.REQUEST_4K_TV],
+            {
+              type: 'or',
+            }
+          )
+        ) {
+          return next({
+            status: 403,
+            message: 'You do not have permission to make 4K series requests.',
+          });
+        }
+      }
+
       const quotas = await requestUser.getQuota();
 
       if (req.body.mediaType === MediaType.MOVIE && quotas.movie.restricted) {
@@ -463,7 +493,6 @@ requestRoutes.get('/:requestId', async (req, res, next) => {
 
 requestRoutes.put<{ requestId: string }>(
   '/:requestId',
-  isAuthenticated(Permission.MANAGE_REQUESTS),
   async (req, res, next) => {
     const requestRepository = getRepository(MediaRequest);
     const userRepository = getRepository(User);
@@ -473,17 +502,30 @@ requestRoutes.put<{ requestId: string }>(
       );
 
       if (!request) {
-        return next({ status: 404, message: 'Request not found' });
+        return next({ status: 404, message: 'Request not found.' });
+      }
+
+      if (
+        (request.requestedBy.id !== req.user?.id ||
+          (req.body.mediaType !== 'tv' &&
+            !req.user?.hasPermission(Permission.REQUEST_ADVANCED))) &&
+        !req.user?.hasPermission(Permission.MANAGE_REQUESTS)
+      ) {
+        return next({
+          status: 403,
+          message: 'You do not have permission to modify this request.',
+        });
       }
 
       let requestUser = req.user;
 
       if (
         req.body.userId &&
-        !(
-          req.user?.hasPermission(Permission.MANAGE_USERS) &&
-          req.user?.hasPermission(Permission.MANAGE_REQUESTS)
-        )
+        req.body.userId !== req.user?.id &&
+        !req.user?.hasPermission([
+          Permission.MANAGE_USERS,
+          Permission.MANAGE_REQUESTS,
+        ])
       ) {
         return next({
           status: 403,
@@ -516,7 +558,7 @@ requestRoutes.put<{ requestId: string }>(
 
         if (!requestedSeasons || requestedSeasons.length === 0) {
           throw new Error(
-            'Missing seasons. If you want to cancel a tv request, use the DELETE method.'
+            'Missing seasons. If you want to cancel a series request, use the DELETE method.'
           );
         }
 
@@ -603,7 +645,7 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
     ) {
       return next({
         status: 401,
-        message: 'You do not have permission to remove this request',
+        message: 'You do not have permission to delete this request.',
       });
     }
 
@@ -612,7 +654,7 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
     return res.status(204).send();
   } catch (e) {
     logger.error(e.message);
-    next({ status: 404, message: 'Request not found' });
+    next({ status: 404, message: 'Request not found.' });
   }
 });
 
@@ -638,7 +680,7 @@ requestRoutes.post<{
         label: 'Media Request',
         message: e.message,
       });
-      next({ status: 404, message: 'Request not found' });
+      next({ status: 404, message: 'Request not found.' });
     }
   }
 );
@@ -682,7 +724,7 @@ requestRoutes.post<{
         label: 'Media Request',
         message: e.message,
       });
-      next({ status: 404, message: 'Request not found' });
+      next({ status: 404, message: 'Request not found.' });
     }
   }
 );

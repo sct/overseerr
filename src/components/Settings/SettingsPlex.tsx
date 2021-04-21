@@ -1,5 +1,7 @@
+import { RefreshIcon, SearchIcon, XIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
+import { orderBy } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -7,7 +9,6 @@ import useSWR from 'swr';
 import * as Yup from 'yup';
 import type { PlexDevice } from '../../../server/interfaces/api/plexInterfaces';
 import type { PlexSettings } from '../../../server/lib/settings';
-import Spinner from '../../assets/spinner.svg';
 import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
 import Badge from '../Common/Badge';
@@ -28,7 +29,7 @@ const messages = defineMessages({
   serverpresetPlaceholder: 'Plex Server',
   serverLocal: 'local',
   serverRemote: 'remote',
-  serverConnected: 'connected',
+  serverSecure: 'secure',
   serverpresetManualMessage: 'Manual configuration',
   serverpresetRefreshing: 'Retrieving servers…',
   serverpresetLoad: 'Press the button to load available servers',
@@ -131,7 +132,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       dev.connection.forEach((conn) =>
         finalPresets.push({
           name: dev.name,
-          ssl: !conn.local && conn.protocol === 'https',
+          ssl: conn.protocol === 'https',
           uri: conn.uri,
           address: conn.address,
           port: conn.port,
@@ -141,14 +142,8 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         })
       );
     });
-    finalPresets.sort((a, b) => {
-      if (a.status && !b.status) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-    return finalPresets;
+
+    return orderBy(finalPresets, ['status', 'ssl'], ['desc', 'desc']);
   }, [availableServers]);
 
   const syncLibraries = async () => {
@@ -420,7 +415,13 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                               server.local
                                 ? intl.formatMessage(messages.serverLocal)
                                 : intl.formatMessage(messages.serverRemote)
-                            }]
+                            }]${
+                            server.ssl
+                              ? ` [${intl.formatMessage(
+                                  messages.serverSecure
+                                )}]`
+                              : ''
+                          }
                             ${server.status ? '' : '(' + server.message + ')'}
                           `}
                         </option>
@@ -433,22 +434,12 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       }}
                       className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 rounded-r-md hover:bg-indigo-500 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
                     >
-                      {isRefreshingPresets ? (
-                        <Spinner className="w-5 h-5" />
-                      ) : (
-                        <svg
-                          className="w-5 h-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
+                      <RefreshIcon
+                        className={`w-5 h-5 ${
+                          isRefreshingPresets ? 'animate-spin' : ''
+                        }`}
+                        style={{ animationDirection: 'reverse' }}
+                      />
                     </button>
                   </div>
                 </div>
@@ -538,18 +529,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       </div>
       <div className="section">
         <Button onClick={() => syncLibraries()} disabled={isSyncing}>
-          <svg
-            className={`${isSyncing ? 'animate-spin' : ''} w-5 h-5 mr-1`}
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <RefreshIcon
+            className={`w-5 h-5 mr-1 ${isSyncing ? 'animate-spin' : ''}`}
+            style={{ animationDirection: 'reverse' }}
+          />
           {isSyncing
             ? intl.formatMessage(messages.scanning)
             : intl.formatMessage(messages.scan)}
@@ -623,40 +606,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
             <div className="flex-1 text-right">
               {!dataSync?.running && (
                 <Button buttonType="warning" onClick={() => startScan()}>
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
+                  <SearchIcon className="w-5 h-5 mr-1" />
                   {intl.formatMessage(messages.startscan)}
                 </Button>
               )}
 
               {dataSync?.running && (
                 <Button buttonType="danger" onClick={() => cancelScan()}>
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  <XIcon className="w-5 h-5 mr-1" />
                   {intl.formatMessage(messages.cancelscan)}
                 </Button>
               )}

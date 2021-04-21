@@ -1,3 +1,14 @@
+import {
+  ArrowCircleRightIcon,
+  CogIcon,
+  FilmIcon,
+  PlayIcon,
+} from '@heroicons/react/outline';
+import {
+  CheckCircleIcon,
+  DocumentRemoveIcon,
+  ExternalLinkIcon,
+} from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -50,7 +61,7 @@ const messages = defineMessages({
   manageModalTitle: 'Manage Series',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No requests.',
-  manageModalClearMedia: 'Clear All Media Data',
+  manageModalClearMedia: 'Clear Media Data',
   manageModalClearMediaWarning:
     '* This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
   originaltitle: 'Original Title',
@@ -113,6 +124,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: data.mediaInfo?.plexUrl,
+      svg: <PlayIcon className="w-5 h-5 mr-1" />,
     });
   }
 
@@ -125,6 +137,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
       url: data.mediaInfo?.plexUrl4k,
+      svg: <PlayIcon className="w-5 h-5 mr-1" />,
     });
   }
 
@@ -137,6 +150,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
+      svg: <FilmIcon className="w-5 h-5 mr-1" />,
     });
   }
 
@@ -302,18 +316,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <svg
-                        className="w-5 h-5 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <CheckCircleIcon className="w-5 h-5 mr-1" />
                       <span>{intl.formatMessage(messages.markavailable)}</span>
                     </Button>
                   </div>
@@ -327,18 +330,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <svg
-                        className="w-5 h-5 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <CheckCircleIcon className="w-5 h-5 mr-1" />
                       <span>
                         {intl.formatMessage(messages.mark4kavailable)}
                       </span>
@@ -380,15 +372,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 className="block mb-2 last:mb-0"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-                  </svg>
+                  <ExternalLinkIcon className="w-5 h-5 mr-1" />
                   <span>{intl.formatMessage(messages.opensonarr)}</span>
                 </Button>
               </a>
@@ -400,15 +384,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 rel="noreferrer"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-                  </svg>
+                  <ExternalLinkIcon className="w-5 h-5 mr-1" />
                   <span>{intl.formatMessage(messages.opensonarr4k)}</span>
                 </Button>
               </a>
@@ -422,6 +398,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               confirmText={intl.formatMessage(globalMessages.areyousure)}
               className="w-full"
             >
+              <DocumentRemoveIcon className="w-5 h-5 mr-1" />
               {intl.formatMessage(messages.manageModalClearMedia)}
             </ConfirmButton>
             <div className="mt-2 text-sm text-gray-400">
@@ -501,26 +478,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               className="ml-2 first:ml-0"
               onClick={() => setShowManager(true)}
             >
-              <svg
-                className="w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+              <CogIcon className="w-5" />
             </Button>
           )}
         </div>
@@ -564,20 +522,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <Link href={`/tv/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                    <svg
-                      className="inline-block w-5 h-5 ml-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
+                    <ArrowCircleRightIcon className="inline-block w-5 h-5 ml-1" />
                   </a>
                 </Link>
               </div>
@@ -734,20 +679,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.cast)}</span>
-                <svg
-                  className="w-6 h-6 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <ArrowCircleRightIcon className="w-6 h-6 ml-2" />
               </a>
             </Link>
           </div>

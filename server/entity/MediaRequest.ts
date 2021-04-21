@@ -142,7 +142,9 @@ export class MediaRequest {
       if (this.type === MediaType.MOVIE) {
         const movie = await tmdb.getMovie({ movieId: media.tmdbId });
         notificationManager.sendNotification(Notification.MEDIA_PENDING, {
-          subject: movie.title,
+          subject: `${movie.title}${
+            movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
+          }`,
           message: movie.overview,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
           media,
@@ -153,7 +155,9 @@ export class MediaRequest {
       if (this.type === MediaType.TV) {
         const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
         notificationManager.sendNotification(Notification.MEDIA_PENDING, {
-          subject: tv.name,
+          subject: `${tv.name}${
+            tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
+          }`,
           message: tv.overview,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
           media,
@@ -210,7 +214,9 @@ export class MediaRequest {
               : Notification.MEDIA_APPROVED
             : Notification.MEDIA_DECLINED,
           {
-            subject: movie.title,
+            subject: `${movie.title}${
+              movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
+            }`,
             message: movie.overview,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
             notifyUser: autoApproved ? undefined : this.requestedBy,
@@ -227,7 +233,9 @@ export class MediaRequest {
               : Notification.MEDIA_APPROVED
             : Notification.MEDIA_DECLINED,
           {
-            subject: tv.name,
+            subject: `${tv.name}${
+              tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
+            }`,
             message: tv.overview,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
             notifyUser: autoApproved ? undefined : this.requestedBy,
@@ -492,7 +500,9 @@ export class MediaRequest {
             );
 
             notificationManager.sendNotification(Notification.MEDIA_FAILED, {
-              subject: movie.title,
+              subject: `${movie.title}${
+                movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
+              }`,
               message: movie.overview,
               media,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
@@ -700,7 +710,11 @@ export class MediaRequest {
             );
 
             notificationManager.sendNotification(Notification.MEDIA_FAILED, {
-              subject: series.name,
+              subject: `${series.name}${
+                series.first_air_date
+                  ? ` (${series.first_air_date.slice(0, 4)})`
+                  : ''
+              }`,
               message: series.overview,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${series.poster_path}`,
               media,

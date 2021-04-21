@@ -1,3 +1,4 @@
+import { CheckIcon, TrashIcon, XIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useContext, useEffect } from 'react';
@@ -68,20 +69,7 @@ const RequestCardError: React.FC<RequestCardErrorProps> = ({ mediaId }) => {
                   buttonSize="sm"
                   onClick={() => deleteRequest()}
                 >
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
+                  <TrashIcon className="w-5 h-5 mr-1" />
                   <span>{intl.formatMessage(messages.deleterequest)}</span>
                 </Button>
               </div>
@@ -261,18 +249,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   buttonSize="sm"
                   onClick={() => modifyRequest('approve')}
                 >
-                  <svg
-                    className="w-4 h-4 mr-0 sm:mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <CheckIcon className="w-4 h-4 mr-0 sm:mr-1" />
                   <span className="hidden sm:block">
                     {intl.formatMessage(globalMessages.approve)}
                   </span>
@@ -284,18 +261,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   buttonSize="sm"
                   onClick={() => modifyRequest('decline')}
                 >
-                  <svg
-                    className="w-4 h-4 mr-0 sm:mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <XIcon className="w-4 h-4 mr-0 sm:mr-1" />
                   <span className="hidden sm:block">
                     {intl.formatMessage(globalMessages.decline)}
                   </span>
