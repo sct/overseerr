@@ -85,20 +85,24 @@ self.addEventListener('push', (event) => {
     actions: [],
   }
 
-  if (payload.notificationType === 'MEDIA_PENDING') {
-    options.actions.push(
-      {
-        action: 'approve',
-        title: 'Approve',
-      }
-    );
-  }
-
   if (payload.actionUrl){
     options.actions.push(
       {
         action: 'viewmedia',
         title: 'View Media',
+      }
+    );
+  }
+
+  if (payload.notificationType === 'MEDIA_PENDING') {
+    options.actions.push(
+      {
+        action: 'approve',
+        title: 'Approve',
+      },
+      {
+        action: 'decline',
+        title: 'Decline',
       }
     );
   }
@@ -120,6 +124,14 @@ self.addEventListener('notificationclick', (event) => {
       method: 'POST',
     });
 
+    self.clients.openWindow(notificationData.actionUrl);
+  } else if (event.action === 'decline') {
+    fetch(`/api/v1/request/${notificationData.requestId}/decline`, {
+      method: 'POST',
+    });
+
+    self.clients.openWindow(notificationData.actionUrl);
+  } else if (notificationData.actionUrl) {
     self.clients.openWindow(notificationData.actionUrl);
   }
 }, false);
