@@ -1,3 +1,19 @@
+## [1.23.2](https://github.com/sct/overseerr/compare/v1.23.1...v1.23.2) (2021-04-21)
+
+
+### Bug Fixes
+
+* **lang:** add missing '4K' from singular case of approve/deny 4K request strings ([#1481](https://github.com/sct/overseerr/issues/1481)) ([a822b01](https://github.com/sct/overseerr/commit/a822b019220e86e362a2570e7024289450b4ed46))
+* **ui:** change 'Disable Auto-Search' checkbox to 'Enable Automatic Search' ([#1476](https://github.com/sct/overseerr/issues/1476)) ([1a311d2](https://github.com/sct/overseerr/commit/1a311d211d78731c9089e66ed5387c1b5afe33c0))
+* better error message when creating a user with an existing email ([f13f1c9](https://github.com/sct/overseerr/commit/f13f1c94515b5bd51382fa18ad96a2ccfd06e50d)), closes [#1441](https://github.com/sct/overseerr/issues/1441)
+* set editRequest attribute as necessary, allow users to edit their own pending requests, and show 'View Request' button on series pages ([#1446](https://github.com/sct/overseerr/issues/1446)) ([89455ad](https://github.com/sct/overseerr/commit/89455ad9b783d04d993a0009c351b1096f2b222e))
+* **api:** add check for 4K request perms to request creation endpoint ([#1450](https://github.com/sct/overseerr/issues/1450)) ([4449241](https://github.com/sct/overseerr/commit/4449241a8f63fdaeaa4995aa7ec34127c322b9dd))
+* **notif:** include year in notifications ([#1439](https://github.com/sct/overseerr/issues/1439)) ([4e98f56](https://github.com/sct/overseerr/commit/4e98f567534a650e26b0244990b7ca549cecbe89))
+* **plex:** add support for plex.direct URLs ([#1437](https://github.com/sct/overseerr/issues/1437)) ([db07770](https://github.com/sct/overseerr/commit/db077700e42ab1d2c870213fd55bbdee74002775))
+* **radarr:** search in addition to monitoring existing movies ([#1449](https://github.com/sct/overseerr/issues/1449)) ([3ae7d00](https://github.com/sct/overseerr/commit/3ae7d0098b225562499d7c8a74b8b6c3e8893ad9))
+* **ui:** adjust user list buttons on mobile ([#1452](https://github.com/sct/overseerr/issues/1452)) ([5d1b741](https://github.com/sct/overseerr/commit/5d1b741f55665c528e299a09464dff6d66f72666))
+* **ui:** align icons in user dropdown ([eb5d152](https://github.com/sct/overseerr/commit/eb5d1528869959cdf642e6fefc1a8f4dcf51b84e))
+
 ## [1.23.1](https://github.com/sct/overseerr/compare/v1.23.0...v1.23.1) (2021-04-16)
 
 
