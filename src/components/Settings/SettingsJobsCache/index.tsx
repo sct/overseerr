@@ -60,8 +60,9 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   'download-sync': 'Download Sync',
   'download-sync-reset': 'Download Sync Reset',
   editJobSchedule: 'Modify Job Schedule',
-  jobScheduleEditSaved: 'Job schedule modified successfully!',
-  jobScheduleEditFailed: 'Something went wrong while saving the job schedule',
+  jobScheduleEditSaved: 'Job schedule modified',
+  jobScheduleEditFailed:
+    'Something went wrong while modifying the job schedule',
   editJobSchedulePrompt: 'Select job schedule',
   editJobScheduleSelector:
     'Every {jobScheduleMinutes} minute(s) or {jobScheduleHours} hour(s)',
@@ -145,22 +146,19 @@ const SettingsJobs: React.FC = () => {
   const scheduleJob = async () => {
     const jobScheduleCron = ['0', '*', '*', '*', '*', '*'];
 
-    if (!jobScheduleMinutes && !jobScheduleHours) {
-      return addToast(intl.formatMessage(messages.jobScheduleEditFailed), {
-        appearance: 'error',
-        autoDismiss: true,
-      });
-    }
-
-    if (jobScheduleMinutes && !jobScheduleHours) {
-      jobScheduleCron[1] = `*/${jobScheduleMinutes}`;
-    }
-
-    if (jobScheduleHours && !jobScheduleMinutes) {
-      jobScheduleCron[2] = `*/${jobScheduleHours}`;
-    }
-
     try {
+      if (!jobScheduleMinutes && !jobScheduleHours) {
+        throw Error;
+      }
+
+      if (jobScheduleMinutes) {
+        jobScheduleCron[1] = `*/${jobScheduleMinutes}`;
+      }
+
+      if (jobScheduleHours) {
+        jobScheduleCron[2] = `*/${jobScheduleHours}`;
+      }
+
       setIsSaving(true);
       await axios.post(
         `/api/v1/settings/jobs/${jobEditModal.job?.id}/schedule`,
