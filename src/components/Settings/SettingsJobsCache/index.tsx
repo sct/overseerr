@@ -6,7 +6,6 @@ import {
 } from '@heroicons/react/outline';
 import { PencilIcon as SolidPencilIcon } from '@heroicons/react/solid';
 import axios from 'axios';
-import { Field, Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import {
   defineMessages,
@@ -16,12 +15,10 @@ import {
 } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import * as Yup from 'yup';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
 import Spinner from '../../../assets/spinner.svg';
 import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';
-import Alert from '../../Common/Alert';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
@@ -63,12 +60,11 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   'download-sync': 'Download Sync',
   'download-sync-reset': 'Download Sync Reset',
   editJobSchedule: 'Modify Job Schedule',
-  editJobScheduleDescription:
-    'A job schedule can be represented by a CRON expression. Use a tool like <cronhub>crontab.cronhub.io</cronhub> to generate valid CRON expressions.',
   jobScheduleEditSaved: 'Job schedule modified successfully!',
   jobScheduleEditFailed: 'Something went wrong while saving the job schedule',
-  editJobSchedulePrompt: 'Enter CRON expression',
-  validationJobSchedule: 'You must provide a CRON expression',
+  editJobSchedulePrompt: 'Select job schedule',
+  editJobScheduleSelector:
+    'Every {jobScheduleMinutes} minute(s) or {jobScheduleHours} hour(s)',
 });
 
 interface Job {
@@ -99,6 +95,8 @@ const SettingsJobs: React.FC = () => {
     isOpen: false,
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [jobScheduleMinutes, setJobScheduleMinutes] = useState(5);
+  const [jobScheduleHours, setJobScheduleHours] = useState(0);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -144,6 +142,49 @@ const SettingsJobs: React.FC = () => {
     cacheRevalidate();
   };
 
+  const scheduleJob = async () => {
+    const jobScheduleCron = ['0', '*', '*', '*', '*', '*'];
+
+    if (!jobScheduleMinutes && !jobScheduleHours) {
+      return addToast(intl.formatMessage(messages.jobScheduleEditFailed), {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    }
+
+    if (jobScheduleMinutes && !jobScheduleHours) {
+      jobScheduleCron[1] = `*/${jobScheduleMinutes}`;
+    }
+
+    if (jobScheduleHours && !jobScheduleMinutes) {
+      jobScheduleCron[2] = `*/${jobScheduleHours}`;
+    }
+
+    try {
+      setIsSaving(true);
+      await axios.post(
+        `/api/v1/settings/jobs/${jobEditModal.job?.id}/schedule`,
+        {
+          ids: jobEditModal.job?.id,
+          schedule: jobScheduleCron.join(' '),
+        }
+      );
+      addToast(intl.formatMessage(messages.jobScheduleEditSaved), {
+        appearance: 'success',
+        autoDismiss: true,
+      });
+      setJobEditModal({ isOpen: false });
+      revalidate();
+    } catch (e) {
+      addToast(intl.formatMessage(messages.jobScheduleEditFailed), {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <>
       <PageTitle
@@ -161,100 +202,66 @@ const SettingsJobs: React.FC = () => {
         leaveTo="opacity-0"
         show={jobEditModal.isOpen}
       >
-        <Formik
-          initialValues={{
-            jobSchedule: '',
-          }}
-          validationSchema={Yup.object().shape({
-            jobSchedule: Yup.string().required(),
-          })}
-          onSubmit={async (values) => {
-            try {
-              setIsSaving(true);
-              await axios.post(
-                `/api/v1/settings/jobs/${jobEditModal.job?.id}/schedule`,
-                {
-                  ids: jobEditModal.job?.id,
-                  schedule: values.jobSchedule,
-                }
-              );
-              addToast(intl.formatMessage(messages.jobScheduleEditSaved), {
-                appearance: 'success',
-                autoDismiss: true,
-              });
-              setJobEditModal({ isOpen: false });
-            } catch (e) {
-              addToast(intl.formatMessage(messages.jobScheduleEditFailed), {
-                appearance: 'error',
-                autoDismiss: true,
-              });
-            } finally {
-              setIsSaving(false);
-            }
-          }}
+        <Modal
+          title={intl.formatMessage(messages.editJobSchedule)}
+          okText={
+            isSaving
+              ? intl.formatMessage(globalMessages.saving)
+              : intl.formatMessage(globalMessages.save)
+          }
+          iconSvg={<SolidPencilIcon className="w-6 h-6" />}
+          onCancel={() => setJobEditModal({ isOpen: false })}
+          okDisabled={isSaving}
+          onOk={() => scheduleJob()}
         >
-          {({ handleSubmit, isSubmitting, errors, touched }) => {
-            return (
-              <Modal
-                title={intl.formatMessage(messages.editJobSchedule)}
-                okText={
-                  isSubmitting
-                    ? intl.formatMessage(globalMessages.saving)
-                    : intl.formatMessage(globalMessages.save)
-                }
-                iconSvg={<SolidPencilIcon className="w-5 h-5" />}
-                onCancel={() => setJobEditModal({ isOpen: false })}
-                okDisabled={isSaving}
-                onOk={() => handleSubmit()}
-              >
-                <div className="section">
-                  <Alert
-                    type="info"
-                    title={intl.formatMessage(
-                      messages.editJobScheduleDescription,
-                      {
-                        cronhub: function cronhub(str) {
-                          return (
-                            <a
-                              href="https://crontab.cronhub.io/"
-                              className="text-white transition duration-300 hover:underline"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {str}
-                            </a>
-                          );
-                        },
-                      }
-                    )}
-                  ></Alert>
-                  <Form>
-                    <div className="pb-6 form-row">
-                      <label htmlFor="jobSchedule" className="text-label">
-                        {intl.formatMessage(messages.editJobSchedulePrompt)}
-                      </label>
-                      <div className="form-input">
-                        <div className="form-input-field">
-                          <Field
-                            id="jobSchedule"
-                            name="jobSchedule"
-                            type="text"
-                            placeholder="0 */5 * * * *"
-                          />
-                        </div>
-                        {errors.jobSchedule && touched.jobSchedule && (
-                          <div className="error">
-                            {intl.formatMessage(messages.validationJobSchedule)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </Form>
+          <div className="section">
+            <form>
+              <div className="pb-6 form-row">
+                <label htmlFor="jobSchedule" className="text-label">
+                  {intl.formatMessage(messages.editJobSchedulePrompt)}
+                </label>
+                <div className="form-input">
+                  {intl.formatMessage(messages.editJobScheduleSelector, {
+                    jobScheduleMinutes: (
+                      <select
+                        name="jobScheduleMinutes"
+                        className="inline short"
+                        value={jobScheduleMinutes}
+                        onChange={(e) =>
+                          setJobScheduleMinutes(Number(e.target.value))
+                        }
+                        disabled={!!jobScheduleHours}
+                      >
+                        {[...Array(60)].map((_v, i) => (
+                          <option value={i} key={`jobScheduleMinutes-${i}`}>
+                            {i}
+                          </option>
+                        ))}
+                      </select>
+                    ),
+                    jobScheduleHours: (
+                      <select
+                        name="jobScheduleHours"
+                        className="inline short"
+                        value={jobScheduleHours}
+                        onChange={(e) =>
+                          setJobScheduleHours(Number(e.target.value))
+                        }
+                        disabled={!!jobScheduleMinutes}
+                      >
+                        {[...Array(100)].map((_v, i) => (
+                          <option value={i} key={`jobScheduleHours-${i}`}>
+                            {i}
+                          </option>
+                        ))}
+                      </select>
+                    ),
+                  })}
                 </div>
-              </Modal>
-            );
-          }}
-        </Formik>
+              </div>
+            </form>
+          </div>
+        </Modal>
       </Transition>
 
       <div className="mb-6">
