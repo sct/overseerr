@@ -1,5 +1,5 @@
 import { MenuAlt2Icon } from '@heroicons/react/outline';
-import { InformationCircleIcon } from '@heroicons/react/solid';
+import { ArrowLeftIcon, InformationCircleIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -61,7 +61,13 @@ const Layout: React.FC = ({ children }) => {
           >
             <MenuAlt2Icon className="w-6 h-6" />
           </button>
-          <div className="flex justify-between flex-1 pr-4 md:pr-4 md:pl-4">
+          <div className="flex items-center justify-between flex-1 pr-4 md:pr-4 md:pl-4">
+            <button
+              className="mr-2 text-gray-400 transition hover:text-white pwa-only"
+              onClick={() => router.back()}
+            >
+              <ArrowLeftIcon className="w-7" />
+            </button>
             <SearchInput />
             <div className="flex items-center ml-2">
               <LanguagePicker />

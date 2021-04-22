@@ -31,6 +31,7 @@ export interface PublicSettingsResponse {
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
   vapidPublic: string;
+  enablePushRegistration: boolean;
 }
 
 export interface CacheItem {

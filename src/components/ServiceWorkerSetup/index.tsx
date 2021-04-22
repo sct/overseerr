@@ -17,26 +17,32 @@ const ServiceWorkerSetup: React.FC = () => {
             registration.scope
           );
 
-          const sub = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: currentSettings.vapidPublic,
-          });
-
-          const parsedSub = JSON.parse(JSON.stringify(sub));
-
-          if (parsedSub.keys.p256dh && parsedSub.keys.auth) {
-            await axios.post('/api/v1/user/registerPushSubscription', {
-              endpoint: parsedSub.endpoint,
-              p256dh: parsedSub.keys.p256dh,
-              auth: parsedSub.keys.auth,
+          if (currentSettings.enablePushRegistration) {
+            const sub = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: currentSettings.vapidPublic,
             });
+
+            const parsedSub = JSON.parse(JSON.stringify(sub));
+
+            if (parsedSub.keys.p256dh && parsedSub.keys.auth) {
+              await axios.post('/api/v1/user/registerPushSubscription', {
+                endpoint: parsedSub.endpoint,
+                p256dh: parsedSub.keys.p256dh,
+                auth: parsedSub.keys.auth,
+              });
+            }
           }
         })
         .catch(function (error) {
           console.log('[SW] Service worker registration failed, error:', error);
         });
     }
-  }, [user, currentSettings.vapidPublic]);
+  }, [
+    user,
+    currentSettings.vapidPublic,
+    currentSettings.enablePushRegistration,
+  ]);
   return null;
 };
 

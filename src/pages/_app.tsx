@@ -159,6 +159,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     partialRequestsEnabled: true,
     cacheImages: false,
     vapidPublic: '',
+    enablePushRegistration: false,
   };
 
   let locale = 'en';

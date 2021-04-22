@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import webpush from 'web-push';
 import { hasNotificationType, Notification } from '..';
+import { MediaType } from '../../../constants/media';
 import { User } from '../../../entity/User';
 import { UserPushSubscription } from '../../../entity/UserPushSubscription';
 import logger from '../../../logger';
@@ -58,7 +59,11 @@ class WebPushAgent
         return {
           notificationType: Notification[type],
           subject: payload.subject,
-          message: 'Request was auto-approved.',
+          message: `${
+            payload.media?.mediaType === MediaType.MOVIE ? 'Movie' : 'Series'
+          } request was auto-approved.\nRequested by: ${
+            payload.request?.requestedBy.displayName
+          }`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
@@ -102,7 +107,11 @@ class WebPushAgent
         return {
           notificationType: Notification[type],
           subject: payload.subject,
-          message: 'New request pending approval.',
+          message: `New ${
+            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
+          } request pending approval.\nRequested by: ${
+            payload.request?.requestedBy.displayName
+          }`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,

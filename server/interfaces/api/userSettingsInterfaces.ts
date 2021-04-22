@@ -15,6 +15,7 @@ export interface UserSettingsGeneralResponse {
 export interface UserSettingsNotificationsResponse {
   notificationAgents: number;
   emailEnabled?: boolean;
+  webPushEnabled?: boolean;
   pgpKey?: string;
   discordEnabled?: boolean;
   discordId?: string;

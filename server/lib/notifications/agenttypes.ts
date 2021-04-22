@@ -6,6 +6,7 @@ export enum NotificationAgentType {
   PUSHOVER = 16,
   PUSHBULLET = 32,
   SLACK = 64,
+  WEBPUSH = 128,
 }
 
 export const hasNotificationAgentEnabled = (

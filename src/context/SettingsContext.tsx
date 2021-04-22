@@ -18,6 +18,7 @@ const defaultSettings = {
   partialRequestsEnabled: true,
   cacheImages: false,
   vapidPublic: '',
+  enablePushRegistration: false,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

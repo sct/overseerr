@@ -246,6 +246,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
         notificationAgents:
           user.settings?.notificationAgents ?? NotificationAgentType.EMAIL,
         emailEnabled: settings?.notifications.agents.email.enabled,
+        webPushEnabled: settings?.notifications.agents.webpush.enabled,
         pgpKey: user.settings?.pgpKey,
         discordEnabled: settings?.notifications.agents.discord.enabled,
         discordId: user.settings?.discordId,

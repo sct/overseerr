@@ -103,6 +103,7 @@ interface FullPublicSettings extends PublicSettings {
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
   vapidPublic: string;
+  enablePushRegistration: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -379,6 +380,7 @@ class Settings {
       partialRequestsEnabled: this.data.main.partialRequestsEnabled,
       cacheImages: this.data.main.cacheImages,
       vapidPublic: this.vapidPublic,
+      enablePushRegistration: this.data.notifications.agents.webpush.enabled,
     };
   }
 
