@@ -80,7 +80,7 @@
   "components.MovieDetails.play4konplex": "Play in 4K on Plex",
   "components.MovieDetails.playonplex": "Play on Plex",
   "components.MovieDetails.recommendations": "Recommendations",
-  "components.MovieDetails.releasedate": "Release Date",
+  "components.MovieDetails.releasedate": "{releaseCount, plural, one {Release Date} other {Release Dates}}",
   "components.MovieDetails.revenue": "Revenue",
   "components.MovieDetails.runtime": "{minutes} minutes",
   "components.MovieDetails.showless": "Show Less",
