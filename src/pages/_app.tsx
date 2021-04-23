@@ -13,6 +13,7 @@ import PWAHeader from '../components/PWAHeader';
 import ServiceWorkerSetup from '../components/ServiceWorkerSetup';
 import StatusChecker from '../components/StatusChacker';
 import Toast from '../components/Toast';
+import ToastContainer from '../components/ToastContainer';
 import { InteractionProvider } from '../context/InteractionContext';
 import { AvailableLocales, LanguageContext } from '../context/LanguageContext';
 import { SettingsProvider } from '../context/SettingsContext';
@@ -121,7 +122,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
           <LoadingBar />
           <SettingsProvider currentSettings={currentSettings}>
             <InteractionProvider>
-              <ToastProvider components={{ Toast }}>
+              <ToastProvider components={{ Toast, ToastContainer }}>
                 <Head>
                   <title>Overseerr</title>
                   <meta
