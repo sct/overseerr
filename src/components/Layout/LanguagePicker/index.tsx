@@ -2,6 +2,7 @@ import { TranslateIcon } from '@heroicons/react/solid';
 import React, { useContext, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import {
+  availableLanguages,
   AvailableLocales,
   LanguageContext,
 } from '../../../context/LanguageContext';
@@ -11,78 +12,6 @@ import Transition from '../../Transition';
 const messages = defineMessages({
   changelanguage: 'Change Language',
 });
-
-type AvailableLanguageObject = Record<
-  string,
-  { code: AvailableLocales; display: string }
->;
-
-const availableLanguages: AvailableLanguageObject = {
-  ca: {
-    code: 'ca',
-    display: 'Català',
-  },
-  de: {
-    code: 'de',
-    display: 'Deutsch',
-  },
-  en: {
-    code: 'en',
-    display: 'English',
-  },
-  es: {
-    code: 'es',
-    display: 'Español',
-  },
-  fr: {
-    code: 'fr',
-    display: 'Français',
-  },
-  it: {
-    code: 'it',
-    display: 'Italiano',
-  },
-  hu: {
-    code: 'hu',
-    display: 'Magyar',
-  },
-  nl: {
-    code: 'nl',
-    display: 'Nederlands',
-  },
-  'nb-NO': {
-    code: 'nb-NO',
-    display: 'Norsk Bokmål',
-  },
-  'pt-BR': {
-    code: 'pt-BR',
-    display: 'Português (Brasil)',
-  },
-  'pt-PT': {
-    code: 'pt-PT',
-    display: 'Português (Portugal)',
-  },
-  sv: {
-    code: 'sv',
-    display: 'Svenska',
-  },
-  ru: {
-    code: 'ru',
-    display: 'pусский',
-  },
-  sr: {
-    code: 'sr',
-    display: 'српски језик‬',
-  },
-  ja: {
-    code: 'ja',
-    display: '日本語',
-  },
-  'zh-TW': {
-    code: 'zh-TW',
-    display: '中文（臺灣）',
-  },
-};
 
 const LanguagePicker: React.FC = () => {
   const intl = useIntl();

@@ -1,12 +1,16 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import { Language } from '../../../../../server/lib/settings';
+import {
+  availableLanguages,
+  LanguageContext,
+} from '../../../../context/LanguageContext';
 import useSettings from '../../../../hooks/useSettings';
 import { Permission, UserType, useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
@@ -39,11 +43,13 @@ const messages = defineMessages({
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
   enableOverride: 'Enable Override',
+  applanguage: '{applicationTitle} Language',
 });
 
 const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
+  const { locale, setLocale } = useContext(LanguageContext);
   const [movieQuotaEnabled, setMovieQuotaEnabled] = useState(false);
   const [tvQuotaEnabled, setTvQuotaEnabled] = useState(false);
   const router = useRouter();
@@ -115,6 +121,7 @@ const UserGeneralSettings: React.FC = () => {
       </div>
       <Formik
         initialValues={{
+          locale,
           displayName: data?.username,
           region: data?.region,
           originalLanguage: data?.originalLanguage,
@@ -137,6 +144,10 @@ const UserGeneralSettings: React.FC = () => {
               tvQuotaLimit: tvQuotaEnabled ? values.tvQuotaLimit : null,
               tvQuotaDays: tvQuotaEnabled ? values.tvQuotaDays : null,
             });
+
+            if (setLocale) {
+              setLocale(values.locale);
+            }
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
               autoDismiss: true,
@@ -204,6 +215,26 @@ const UserGeneralSettings: React.FC = () => {
                   {errors.displayName && touched.displayName && (
                     <div className="error">{errors.displayName}</div>
                   )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="minimumAvailability" className="text-label">
+                  {intl.formatMessage(messages.applanguage, {
+                    applicationTitle: currentSettings.applicationTitle,
+                  })}
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field as="select" id="locale" name="locale">
+                      {(Object.keys(
+                        availableLanguages
+                      ) as (keyof typeof availableLanguages)[]).map((key) => (
+                        <option key={key} value={availableLanguages[key].code}>
+                          {availableLanguages[key].display}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
                 </div>
               </div>
               <div className="form-row">
