@@ -14,10 +14,11 @@ const messages = defineMessages({
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
   validationWebhookUrl: 'You must provide a valid URL',
-  authheader: 'Authorization Header',
-  settingssaved: 'LunaSea notification settings saved successfully!',
-  settingsfailed: 'LunaSea notification settings failed to save.',
-  testsent: 'LunaSea test notification sent!',
+  profileName: 'Profile Name',
+  profileNameTip: 'Only required if not using the <code>default</code> profile',
+  settingsSaved: 'LunaSea notification settings saved successfully!',
+  settingsFailed: 'LunaSea notification settings failed to save.',
+  testSent: 'LunaSea test notification sent!',
 });
 
 const NotificationsLunaSea: React.FC = () => {
@@ -49,7 +50,7 @@ const NotificationsLunaSea: React.FC = () => {
         enabled: data.enabled,
         types: data.types,
         webhookUrl: data.options.webhookUrl,
-        authHeader: data.options.authHeader,
+        profileName: data.options.profileName,
       }}
       validationSchema={NotificationsLunaSeaSchema}
       onSubmit={async (values) => {
@@ -59,14 +60,15 @@ const NotificationsLunaSea: React.FC = () => {
             types: values.types,
             options: {
               webhookUrl: values.webhookUrl,
+              profileName: values.profileName,
             },
           });
-          addToast(intl.formatMessage(messages.settingssaved), {
+          addToast(intl.formatMessage(messages.settingsSaved), {
             appearance: 'success',
             autoDismiss: true,
           });
         } catch (e) {
-          addToast(intl.formatMessage(messages.settingsfailed), {
+          addToast(intl.formatMessage(messages.settingsFailed), {
             appearance: 'error',
             autoDismiss: true,
           });
@@ -82,11 +84,11 @@ const NotificationsLunaSea: React.FC = () => {
             types: values.types,
             options: {
               webhookUrl: values.webhookUrl,
-              authHeader: values.authHeader,
+              profileName: values.profileName,
             },
           });
 
-          addToast(intl.formatMessage(messages.testsent), {
+          addToast(intl.formatMessage(messages.testSent), {
             appearance: 'info',
             autoDismiss: true,
           });
@@ -117,12 +119,19 @@ const NotificationsLunaSea: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label htmlFor="name" className="text-label">
-                {intl.formatMessage(messages.authheader)}
+              <label htmlFor="profileName" className="text-label">
+                {intl.formatMessage(messages.profileName)}
+                <span className="label-tip">
+                  {intl.formatMessage(messages.profileNameTip, {
+                    code: function code(msg) {
+                      return <code className="bg-opacity-50">{msg}</code>;
+                    },
+                  })}
+                </span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field id="authHeader" name="authHeader" type="text" />
+                  <Field id="profileName" name="profileName" type="text" />
                 </div>
               </div>
             </div>

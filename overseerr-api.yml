@@ -1221,7 +1221,7 @@ components:
           properties:
             webhookUrl:
               type: string
-            authHeader:
+            profileName:
               type: string
     NotificationEmailSettings:
       type: object

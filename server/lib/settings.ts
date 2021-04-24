@@ -143,7 +143,7 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
 export interface NotificationAgentLunaSea extends NotificationAgentConfig {
   options: {
     webhookUrl: string;
-    authHeader: string;
+    profileName: string;
   };
 }
 
@@ -287,7 +287,7 @@ class Settings {
             types: 0,
             options: {
               webhookUrl: '',
-              authHeader: '',
+              profileName: '',
             },
           },
           slack: {

@@ -72,7 +72,7 @@ class LunaSeaAgent
     });
 
     try {
-      const { webhookUrl, authHeader } = this.getSettings().options;
+      const { webhookUrl, profileName } = this.getSettings().options;
 
       if (!webhookUrl) {
         return false;
@@ -80,7 +80,9 @@ class LunaSeaAgent
 
       await axios.post(webhookUrl, this.buildPayload(type, payload), {
         headers: {
-          Authorization: authHeader,
+          Authorization: `Basic ${Buffer.from(`${profileName}:`).toString(
+            'base64'
+          )}`,
         },
       });
 
