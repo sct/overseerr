@@ -11,10 +11,9 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
-  webhookUrl: 'Webhook URL',
-  webpushsettingssaved: 'Web Push notification settings saved successfully!',
-  webpushsettingsfailed: 'Web Push notification settings failed to save.',
-  testsent: 'Web Push test notification sent!',
+  webpushsettingssaved: 'Web push notification settings saved successfully!',
+  webpushsettingsfailed: 'Web push notification settings failed to save.',
+  testsent: 'Web push test notification sent!',
 });
 
 const NotificationsWebPush: React.FC = () => {

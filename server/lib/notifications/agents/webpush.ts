@@ -7,6 +7,7 @@ import { UserPushSubscription } from '../../../entity/UserPushSubscription';
 import logger from '../../../logger';
 import { Permission } from '../../permissions';
 import { getSettings, NotificationAgentConfig } from '../../settings';
+import { NotificationAgentType } from '../agenttypes';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface PushNotificationPayload {
@@ -59,11 +60,9 @@ class WebPushAgent
         return {
           notificationType: Notification[type],
           subject: payload.subject,
-          message: `${
-            payload.media?.mediaType === MediaType.MOVIE ? 'Movie' : 'Series'
-          } request was auto-approved.\nRequested by: ${
-            payload.request?.requestedBy.displayName
-          }`,
+          message: `Automatically approved a new ${
+            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
+          } request from ${payload.request?.requestedBy.displayName}`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
@@ -107,11 +106,9 @@ class WebPushAgent
         return {
           notificationType: Notification[type],
           subject: payload.subject,
-          message: `New ${
+          message: `Approval required for new ${
             payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request pending approval.\nRequested by: ${
-            payload.request?.requestedBy.displayName
-          }`,
+          } request from ${payload.request?.requestedBy.displayName}`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
@@ -136,7 +133,11 @@ class WebPushAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending web push notification', { label: 'Notifications' });
+    logger.debug('Sending web push notification', {
+      label: 'Notifications',
+      type: Notification[type],
+      subject: payload.subject,
+    });
     const userRepository = getRepository(User);
     const userPushSubRepository = getRepository(UserPushSubscription);
     const settings = getSettings();
@@ -145,13 +146,18 @@ class WebPushAgent
 
     const mainUser = await userRepository.findOne({ where: { id: 1 } });
 
-    if (payload.notifyUser) {
+    if (
+      payload.notifyUser &&
+      payload.notifyUser.settings?.hasNotificationAgentEnabled(
+        NotificationAgentType.WEBPUSH
+      )
+    ) {
       const notifySubs = await userPushSubRepository.find({
         where: { user: payload.notifyUser.id },
       });
 
       pushSubs = notifySubs;
-    } else {
+    } else if (!payload.notifyUser) {
       const users = await userRepository.find();
 
       const manageUsers = users.filter((user) =>

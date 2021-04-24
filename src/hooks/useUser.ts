@@ -29,6 +29,7 @@ export interface UserSettings {
   discordId?: string;
   region?: string;
   originalLanguage?: string;
+  locale?: string;
 }
 
 interface UserHookResponse {

@@ -1,12 +1,12 @@
 import { TranslateIcon } from '@heroicons/react/solid';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import {
   availableLanguages,
   AvailableLocales,
-  LanguageContext,
 } from '../../../context/LanguageContext';
 import useClickOutside from '../../../hooks/useClickOutside';
+import useLocale from '../../../hooks/useLocale';
 import Transition from '../../Transition';
 
 const messages = defineMessages({
@@ -16,7 +16,7 @@ const messages = defineMessages({
 const LanguagePicker: React.FC = () => {
   const intl = useIntl();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { locale, setLocale } = useContext(LanguageContext);
+  const { locale, setLocale } = useLocale();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   useClickOutside(dropdownRef, () => setDropdownOpen(false));
 

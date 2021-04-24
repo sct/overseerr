@@ -1,7 +1,6 @@
 import axios from 'axios';
 import App, { AppInitialProps, AppProps } from 'next/app';
 import Head from 'next/head';
-import { parseCookies, setCookie } from 'nookies';
 import React, { useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 import { ToastProvider } from 'react-toast-notifications';
@@ -91,10 +90,6 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 
   useEffect(() => {
     loadLocaleData(currentLocale).then(setMessages);
-    setCookie(null, 'locale', currentLocale, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365 * 10,
-    });
   }, [currentLocale]);
 
   if (router.pathname.match(/(login|setup|resetpassword)/)) {
@@ -147,7 +142,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 
 CoreApp.getInitialProps = async (initialProps) => {
   const { ctx, router } = initialProps;
-  let user = undefined;
+  let user: User | undefined = undefined;
   let currentSettings: PublicSettingsResponse = {
     initialized: false,
     applicationTitle: '',
@@ -162,8 +157,6 @@ CoreApp.getInitialProps = async (initialProps) => {
     vapidPublic: '',
     enablePushRegistration: false,
   };
-
-  let locale = 'en';
 
   if (ctx.res) {
     // Check if app is initialized and redirect if necessary
@@ -209,18 +202,14 @@ CoreApp.getInitialProps = async (initialProps) => {
         }
       }
     }
-
-    const cookies = parseCookies(ctx);
-
-    if (cookies.locale) {
-      locale = cookies.locale;
-    }
   }
 
   // Run the default getInitialProps for the main nextjs initialProps
   const appInitialProps: AppInitialProps = await App.getInitialProps(
     initialProps
   );
+
+  const locale = user?.settings?.locale ?? 'en';
 
   const messages = await loadLocaleData(locale as AvailableLocales);
 

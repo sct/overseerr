@@ -90,7 +90,7 @@ export const availableLanguages: AvailableLanguageObject = {
   },
 };
 
-interface LanguageContextProps {
+export interface LanguageContextProps {
   locale: AvailableLocales;
   children: (locale: string) => ReactNode;
   setLocale?: React.Dispatch<React.SetStateAction<AvailableLocales>>;

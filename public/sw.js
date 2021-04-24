@@ -73,8 +73,7 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: payload.message,
-    icon: 'android-chrome-192x192.png',
-    image: payload.image,
+    icon: payload.image ? payload.image : 'android-chrome-192x192.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),

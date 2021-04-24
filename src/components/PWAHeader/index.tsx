@@ -164,7 +164,6 @@ const PWAHeader: React.FC<PWAHeaderProps> = ({ applicationTitle }) => {
         href="/site.webmanifest"
         crossOrigin="use-credentials"
       />
-      {/* TODO: Replace with app name */}
       <meta name="application-name" content={applicationTitle ?? 'Overseerr'} />
       <meta
         name="apple-mobile-web-app-title"

@@ -52,6 +52,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
 
       return res.status(200).json({
         username: user.username,
+        locale: user.settings?.locale,
         region: user.settings?.region,
         originalLanguage: user.settings?.originalLanguage,
         movieQuotaLimit: user.movieQuotaLimit,
@@ -109,17 +110,24 @@ userSettingsRoutes.post<
     if (!user.settings) {
       user.settings = new UserSettings({
         user: req.user,
+        locale: req.body.locale,
         region: req.body.region,
         originalLanguage: req.body.originalLanguage,
       });
     } else {
-      user.settings.region = req.body.region;
+      (user.settings.locale = req.body.locale),
+        (user.settings.region = req.body.region);
       user.settings.originalLanguage = req.body.originalLanguage;
     }
 
     await userRepository.save(user);
 
-    return res.status(200).json({ username: user.username });
+    return res.status(200).json({
+      username: user.username,
+      region: user.settings.region,
+      locale: user.settings.locale,
+      originalLanguage: user.settings.originalLanguage,
+    });
   } catch (e) {
     next({ status: 500, message: e.message });
   }

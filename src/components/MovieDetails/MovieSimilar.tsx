@@ -1,16 +1,15 @@
-import React, { useContext } from 'react';
-import useSWR from 'swr';
-import type { MovieResult } from '../../../server/models/Search';
-import ListView from '../Common/ListView';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Header from '../Common/Header';
-import { LanguageContext } from '../../context/LanguageContext';
-import type { MovieDetails } from '../../../server/models/Movie';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import PageTitle from '../Common/PageTitle';
+import useSWR from 'swr';
+import type { MovieDetails } from '../../../server/models/Movie';
+import type { MovieResult } from '../../../server/models/Search';
 import useDiscover from '../../hooks/useDiscover';
 import Error from '../../pages/_error';
-import Link from 'next/link';
+import Header from '../Common/Header';
+import ListView from '../Common/ListView';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   similar: 'Similar Titles',
@@ -19,9 +18,8 @@ const messages = defineMessages({
 const MovieSimilar: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
-  const { locale } = useContext(LanguageContext);
   const { data: movieData } = useSWR<MovieDetails>(
-    `/api/v1/movie/${router.query.movieId}?language=${locale}`
+    `/api/v1/movie/${router.query.movieId}`
   );
   const {
     isLoadingInitialData,

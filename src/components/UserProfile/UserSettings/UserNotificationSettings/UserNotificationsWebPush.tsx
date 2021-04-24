@@ -16,9 +16,9 @@ import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 
 const messages = defineMessages({
-  emailsettingssaved: 'Web Push notification settings saved successfully!',
-  emailsettingsfailed: 'Web Push notification settings failed to save.',
-  enableWebPush: 'Enable Web Push',
+  emailsettingssaved: 'Web push notification settings saved successfully!',
+  emailsettingsfailed: 'Web push notification settings failed to save.',
+  enableWebPush: 'Enable Notifications',
 });
 
 const UserWebPushSettings: React.FC = () => {

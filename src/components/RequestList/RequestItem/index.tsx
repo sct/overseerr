@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -19,7 +19,6 @@ import {
 import type { MediaRequest } from '../../../../server/entity/MediaRequest';
 import type { MovieDetails } from '../../../../server/models/Movie';
 import type { TvDetails } from '../../../../server/models/Tv';
-import { LanguageContext } from '../../../context/LanguageContext';
 import { Permission, useUser } from '../../../hooks/useUser';
 import globalMessages from '../../../i18n/globalMessages';
 import Badge from '../../Common/Badge';
@@ -99,13 +98,12 @@ const RequestItem: React.FC<RequestItemProps> = ({
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
-  const { locale } = useContext(LanguageContext);
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    inView ? `${url}?language=${locale}` : null
+    inView ? `${url}` : null
   );
   const { data: requestData, revalidate, mutate } = useSWR<MediaRequest>(
     `/api/v1/request/${request.id}`,

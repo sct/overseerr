@@ -1,16 +1,14 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import { Language } from '../../../../../server/lib/settings';
-import {
-  availableLanguages,
-  LanguageContext,
-} from '../../../../context/LanguageContext';
+import { availableLanguages } from '../../../../context/LanguageContext';
+import useLocale from '../../../../hooks/useLocale';
 import useSettings from '../../../../hooks/useSettings';
 import { Permission, UserType, useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
@@ -43,13 +41,13 @@ const messages = defineMessages({
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
   enableOverride: 'Enable Override',
-  applanguage: '{applicationTitle} Language',
+  applanguage: 'Display Language',
 });
 
 const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
-  const { locale, setLocale } = useContext(LanguageContext);
+  const { locale, setLocale } = useLocale();
   const [movieQuotaEnabled, setMovieQuotaEnabled] = useState(false);
   const [tvQuotaEnabled, setTvQuotaEnabled] = useState(false);
   const router = useRouter();
@@ -143,6 +141,7 @@ const UserGeneralSettings: React.FC = () => {
               movieQuotaDays: movieQuotaEnabled ? values.movieQuotaDays : null,
               tvQuotaLimit: tvQuotaEnabled ? values.tvQuotaLimit : null,
               tvQuotaDays: tvQuotaEnabled ? values.tvQuotaDays : null,
+              locale: values.locale,
             });
 
             if (setLocale) {
@@ -218,10 +217,8 @@ const UserGeneralSettings: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
-                <label htmlFor="minimumAvailability" className="text-label">
-                  {intl.formatMessage(messages.applanguage, {
-                    applicationTitle: currentSettings.applicationTitle,
-                  })}
+                <label htmlFor="locale" className="text-label">
+                  {intl.formatMessage(messages.applanguage)}
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">

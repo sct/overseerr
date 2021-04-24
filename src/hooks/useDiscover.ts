@@ -1,7 +1,5 @@
-import { useContext } from 'react';
 import { useSWRInfinite } from 'swr';
 import { MediaStatus } from '../../server/constants/media';
-import { LanguageContext } from '../context/LanguageContext';
 import useSettings from './useSettings';
 
 export interface BaseSearchResult<T> {
@@ -35,7 +33,6 @@ const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
   { hideAvailable = true } = {}
 ): DiscoverResult<T, S> => {
   const settings = useSettings();
-  const { locale } = useContext(LanguageContext);
   const { data, error, size, setSize, isValidating } = useSWRInfinite<
     BaseSearchResult<T> & S
   >(
@@ -46,7 +43,6 @@ const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
 
       const params: Record<string, unknown> = {
         page: pageIndex + 1,
-        language: locale,
         ...options,
       };
 
