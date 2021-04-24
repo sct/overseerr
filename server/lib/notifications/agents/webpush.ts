@@ -49,7 +49,9 @@ class WebPushAgent
         return {
           notificationType: Notification[type],
           subject: payload.subject,
-          message: 'Your request has been approved.',
+          message: `Your ${
+            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
+          } request has been approved.`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
@@ -73,7 +75,9 @@ class WebPushAgent
         return {
           notificationType: Notification[type],
           subject: payload.subject,
-          message: 'Your request is now available.',
+          message: `Your ${
+            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
+          } request is now available.`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
@@ -84,7 +88,9 @@ class WebPushAgent
         return {
           notificationType: Notification[type],
           subject: payload.subject,
-          message: 'Your request was declined.',
+          message: `Your ${
+            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
+          } request was declined.`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
@@ -95,7 +101,9 @@ class WebPushAgent
         return {
           notificationType: Notification[type],
           subject: payload.subject,
-          message: 'The request failed.',
+          message: `Failed to process ${
+            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
+          } request.`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
