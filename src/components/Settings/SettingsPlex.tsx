@@ -21,7 +21,7 @@ const messages = defineMessages({
   plex: 'Plex',
   plexsettings: 'Plex Settings',
   plexsettingsDescription:
-    'Configure the settings for your Plex server. Overseerr scans your Plex libraries to see what content is available.',
+    'Configure the settings for your Plex server. Overseerr scans your Plex libraries to determine content availability.',
   servername: 'Server Name',
   servernameTip: 'Automatically retrieved from Plex after saving',
   servernamePlaceholder: 'Plex Server Name',
@@ -40,11 +40,10 @@ const messages = defineMessages({
   toastPlexConnectingSuccess: 'Plex connection established successfully!',
   toastPlexConnectingFailure: 'Failed to connect to Plex.',
   settingUpPlexDescription:
-    'To set up Plex, you can either enter your details manually or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>. Press the button to the right of the dropdown to fetch the list of available servers.',
+    'To set up Plex, you can either enter the details manually or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>. Press the button to the right of the dropdown to fetch the list of available servers.',
   hostname: 'Hostname or IP Address',
   port: 'Port',
   enablessl: 'Enable SSL',
-  timeout: 'Timeout',
   plexlibraries: 'Plex Libraries',
   plexlibrariesDescription:
     'The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.',
@@ -58,7 +57,7 @@ const messages = defineMessages({
   librariesRemaining: 'Libraries Remaining: {count}',
   startscan: 'Start Scan',
   cancelscan: 'Cancel Scan',
-  validationHostnameRequired: 'You must provide a hostname or IP address',
+  validationHostnameRequired: 'You must provide a valid hostname or IP address',
   validationPortRequired: 'You must provide a valid port number',
 });
 

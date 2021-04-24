@@ -150,6 +150,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     movie4kEnabled: false,
     series4kEnabled: false,
     localLogin: true,
+    newPlexLogin: true,
     region: '',
     originalLanguage: '',
     partialRequestsEnabled: true,

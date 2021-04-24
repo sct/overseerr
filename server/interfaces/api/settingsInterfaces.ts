@@ -24,6 +24,7 @@ export interface PublicSettingsResponse {
   applicationTitle: string;
   hideAvailable: boolean;
   localLogin: boolean;
+  newPlexLogin: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
   region: string;

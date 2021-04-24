@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
-import { User } from '../entity/User';
 import PlexTvAPI from '../api/plextv';
-import { isAuthenticated } from '../middleware/auth';
-import { Permission } from '../lib/permissions';
-import logger from '../logger';
-import { getSettings } from '../lib/settings';
 import { UserType } from '../constants/user';
+import { User } from '../entity/User';
+import { Permission } from '../lib/permissions';
+import { getSettings } from '../lib/settings';
+import logger from '../logger';
+import { isAuthenticated } from '../middleware/auth';
 
 const authRoutes = Router();
 
@@ -79,6 +79,24 @@ authRoutes.post('/plex', async (req, res, next) => {
 
       // Double check that we didn't create the first admin user before running this
       if (!user) {
+        if (!settings.main.newPlexLogin) {
+          logger.info(
+            'Failed sign-in attempt from user who has not been imported to Overseerr.',
+            {
+              label: 'Auth',
+              account: {
+                ...account,
+                authentication_token: '__REDACTED__',
+                authToken: '__REDACTED__',
+              },
+            }
+          );
+          return next({
+            status: 403,
+            message: 'Access denied.',
+          });
+        }
+
         // If we get to this point, the user does not already exist so we need to create the
         // user _assuming_ they have access to the Plex server
         const mainUser = await userRepository.findOneOrFail({
@@ -112,7 +130,7 @@ authRoutes.post('/plex', async (req, res, next) => {
           );
           return next({
             status: 403,
-            message: 'You do not have access to this Plex server.',
+            message: 'Access denied.',
           });
         }
       }
@@ -128,7 +146,7 @@ authRoutes.post('/plex', async (req, res, next) => {
     logger.error(e.message, { label: 'Auth' });
     return next({
       status: 500,
-      message: 'Something went wrong. Is your auth token valid?',
+      message: 'Something went wrong.',
     });
   }
 });
