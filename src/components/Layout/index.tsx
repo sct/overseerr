@@ -22,7 +22,7 @@ const Layout: React.FC = ({ children }) => {
 
   useEffect(() => {
     const updateScrolled = () => {
-      if (window.pageYOffset > 30) {
+      if (window.pageYOffset > 20) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
