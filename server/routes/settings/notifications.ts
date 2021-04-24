@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Notification } from '../../lib/notifications';
 import DiscordAgent from '../../lib/notifications/agents/discord';
 import EmailAgent from '../../lib/notifications/agents/email';
+import LunaSeaAgent from '../../lib/notifications/agents/lunasea';
 import PushbulletAgent from '../../lib/notifications/agents/pushbullet';
 import PushoverAgent from '../../lib/notifications/agents/pushover';
 import SlackAgent from '../../lib/notifications/agents/slack';
@@ -330,6 +331,40 @@ notificationRoutes.post('/webhook/test', (req, res, next) => {
   } catch (e) {
     next({ status: 500, message: e.message });
   }
+});
+
+notificationRoutes.get('/lunasea', (_req, res) => {
+  const settings = getSettings();
+
+  res.status(200).json(settings.notifications.agents.lunasea);
+});
+
+notificationRoutes.post('/lunasea', (req, res) => {
+  const settings = getSettings();
+
+  settings.notifications.agents.lunasea = req.body;
+  settings.save();
+
+  res.status(200).json(settings.notifications.agents.lunasea);
+});
+
+notificationRoutes.post('/lunasea/test', (req, res, next) => {
+  if (!req.user) {
+    return next({
+      status: 500,
+      message: 'User information missing from request',
+    });
+  }
+
+  const lunaseaAgent = new LunaSeaAgent(req.body);
+  lunaseaAgent.send(Notification.TEST_NOTIFICATION, {
+    notifyUser: req.user,
+    subject: 'Test Notification',
+    message:
+      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+  });
+
+  return res.status(204).send();
 });
 
 export default notificationRoutes;

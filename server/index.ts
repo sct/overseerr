@@ -16,6 +16,7 @@ import { startJobs } from './job/schedule';
 import notificationManager from './lib/notifications';
 import DiscordAgent from './lib/notifications/agents/discord';
 import EmailAgent from './lib/notifications/agents/email';
+import LunaSeaAgent from './lib/notifications/agents/lunasea';
 import PushbulletAgent from './lib/notifications/agents/pushbullet';
 import PushoverAgent from './lib/notifications/agents/pushover';
 import SlackAgent from './lib/notifications/agents/slack';
@@ -53,6 +54,7 @@ app
     notificationManager.registerAgents([
       new DiscordAgent(),
       new EmailAgent(),
+      new LunaSeaAgent(),
       new PushbulletAgent(),
       new PushoverAgent(),
       new SlackAgent(),
