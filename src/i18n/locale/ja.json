@@ -245,7 +245,6 @@
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "リリースデータがありません。GitHub はダウンしていますか？",
   "components.Settings.SettingsAbout.Releases.latestversion": "最新",
   "components.Settings.SettingsAbout.Releases.currentversion": "現在のバージョン",
-  "components.Settings.Notifications.testsent": "テスト通知が送信されました！",
   "components.MovieDetails.MovieCrew.fullcrew": "フルクルー",
   "components.MovieDetails.viewfullcrew": "フルクルーを表示",
   "components.CollectionDetails.requestswillbecreated": "以下のタイトルをリクエストします：",

@@ -239,7 +239,6 @@
   "components.RequestModal.request4ktitle": "{title} kérése - 4K",
   "components.RequestModal.pendingrequest": "Függőben lévő kérés {title} címhez",
   "components.RequestModal.pending4krequest": "Függőben lévő kérés {title} címhez - 4K",
-  "components.RequestModal.request4kfrom": "Jelenleg van egy függőben lévő kérés {username} felhasználótól.",
   "components.RequestModal.autoapproval": "Automatikus jóváhagyás",
   "components.RequestModal.SearchByNameModal.notvdbiddescription": "Nem sikerült azonosítani a kérésed. Kérlek, válaszd ki a megfelelő találatot az alábbi listából:",
   "components.RequestBlock.profilechanged": "Profil megváltoztatva",

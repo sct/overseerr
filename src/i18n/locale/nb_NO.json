@@ -282,7 +282,6 @@
   "components.RequestModal.requestcancelled": "Forespørsel for <strong>{title}</strong> kansellert.",
   "components.RequestModal.requestall": "Forespør alle sesonger",
   "components.RequestModal.request4ktitle": "Forespør {title} i 4K",
-  "components.RequestModal.request4kfrom": "Det er en ventende 4K-forespørsel fra {username}.",
   "components.RequestModal.pending4krequest": "Ventende forespørsel for {title} i 4K",
   "components.RequestModal.errorediting": "Noe gikk galt under endring av forespørselen.",
   "components.RequestModal.autoapproval": "Automatisk Godkjenning",
@@ -475,7 +474,6 @@
   "components.Settings.RadarrModal.testFirstRootFolders": "Test tilkoblingen for å laste inn grunnmapper",
   "components.Settings.RadarrModal.testFirstQualityProfiles": "Test tilkoblingen for å laste inn kvalitetsprofiler",
   "components.Settings.RadarrModal.syncEnabled": "Aktiver skanning",
-  "components.Settings.RadarrModal.preventSearch": "Deaktiver Autosøk",
   "components.Settings.RadarrModal.loadingrootfolders": "Laster grunnmapper…",
   "components.Settings.RadarrModal.loadingprofiles": "Laster kvalitetsprofiler…",
   "components.Settings.RadarrModal.externalUrlPlaceholder": "Ekstern URL som peker mot din Radarr-tjener",
@@ -483,7 +481,6 @@
   "components.Settings.Notifications.validationUrl": "Du må oppgi en gyldig URL",
   "components.Settings.Notifications.validationEmail": "Du må oppgi en gyldig e-postadresse",
   "components.Settings.Notifications.validationChatIdRequired": "Du må oppgi en gyldig chat ID",
-  "components.Settings.Notifications.testsent": "Testvarsel sendt!",
   "components.Settings.Notifications.senderName": "Avsendernavn",
   "components.Settings.Notifications.sendSilentlyTip": "Send varsler uten lyd",
   "components.Settings.Notifications.sendSilently": "Send lydløst",
@@ -560,7 +557,6 @@
   "components.Settings.SonarrModal.syncEnabled": "Aktiver skanning",
   "components.Settings.SonarrModal.selecttags": "Velg merker",
   "components.Settings.SonarrModal.selectLanguageProfile": "Velg språkprofil",
-  "components.Settings.SonarrModal.preventSearch": "Deaktiver auto-søk",
   "components.Settings.SonarrModal.notagoptions": "Ingen merker.",
   "components.Settings.SonarrModal.loadingrootfolders": "Laster grunnmapper…",
   "components.Settings.SonarrModal.loadingprofiles": "Laster kvalitetsprofiler…",
@@ -634,5 +630,6 @@
   "components.RequestList.RequestItem.deleterequest": "Slett forespørsel",
   "components.RequestList.RequestItem.cancelRequest": "Avbryt forespørsel",
   "components.RequestCard.mediaerror": "Media koblet til denne forespørselen er ikke lenger tilgjengelig.",
-  "components.Discover.noRequests": "Ingen forespørsler."
+  "components.Discover.noRequests": "Ingen forespørsler.",
+  "components.Layout.betawarning": "Dette er BETA-programvare. Funksjoner kan være ødelagte og/eller ustabile. Vennligst rapporter problemer på GitHub!"
 }
