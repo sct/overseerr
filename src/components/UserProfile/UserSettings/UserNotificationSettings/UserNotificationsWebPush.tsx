@@ -6,18 +6,15 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import {
-  hasNotificationAgentEnabled,
-  NotificationAgentType,
-} from '../../../../../server/lib/notifications/agenttypes';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import { ALL_NOTIFICATIONS } from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  emailsettingssaved: 'Web push notification settings saved successfully!',
-  emailsettingsfailed: 'Web push notification settings failed to save.',
+  webpushsettingssaved: 'Web push notification settings saved successfully!',
+  webpushsettingsfailed: 'Web push notification settings failed to save.',
   enableWebPush: 'Enable Notifications',
 });
 
@@ -37,29 +34,26 @@ const UserWebPushSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        notificationAgents:
-          data?.notificationAgents ?? NotificationAgentType.WEBPUSH,
-        enableEmail: hasNotificationAgentEnabled(
-          NotificationAgentType.WEBPUSH,
-          data?.notificationAgents ?? NotificationAgentType.WEBPUSH
-        ),
+        enableWebPush: !!data?.notificationTypes.webpush,
         pgpKey: data?.pgpKey,
       }}
       enableReinitialize
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
-            notificationAgents: values.notificationAgents,
             discordId: data?.discordId,
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
+            notificationTypes: {
+              webpush: values.enableWebPush ? ALL_NOTIFICATIONS : 0,
+            },
           });
-          addToast(intl.formatMessage(messages.emailsettingssaved), {
+          addToast(intl.formatMessage(messages.webpushsettingssaved), {
             appearance: 'success',
             autoDismiss: true,
           });
         } catch (e) {
-          addToast(intl.formatMessage(messages.emailsettingsfailed), {
+          addToast(intl.formatMessage(messages.webpushsettingsfailed), {
             appearance: 'error',
             autoDismiss: true,
           });
@@ -68,7 +62,7 @@ const UserWebPushSettings: React.FC = () => {
         }
       }}
     >
-      {({ isSubmitting, isValid, values, setFieldValue }) => {
+      {({ isSubmitting, isValid }) => {
         return (
           <Form className="section">
             <div className="form-row">
@@ -80,23 +74,6 @@ const UserWebPushSettings: React.FC = () => {
                   type="checkbox"
                   id="enableWebPush"
                   name="enableWebPush"
-                  checked={hasNotificationAgentEnabled(
-                    NotificationAgentType.EMAIL,
-                    values.notificationAgents
-                  )}
-                  onChange={() => {
-                    setFieldValue(
-                      'notificationAgents',
-                      hasNotificationAgentEnabled(
-                        NotificationAgentType.EMAIL,
-                        values.notificationAgents
-                      )
-                        ? values.notificationAgents -
-                            NotificationAgentType.EMAIL
-                        : values.notificationAgents +
-                            NotificationAgentType.EMAIL
-                    );
-                  }}
                 />
               </div>
             </div>

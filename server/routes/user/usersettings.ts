@@ -7,7 +7,6 @@ import {
   UserSettingsGeneralResponse,
   UserSettingsNotificationsResponse,
 } from '../../interfaces/api/userSettingsInterfaces';
-import { NotificationAgentType } from '../../lib/notifications/agenttypes';
 import { Permission } from '../../lib/permissions';
 import { getSettings } from '../../lib/settings';
 import logger from '../../logger';
@@ -251,8 +250,6 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
       }
 
       return res.status(200).json({
-        notificationAgents:
-          user.settings?.notificationAgents ?? NotificationAgentType.EMAIL,
         emailEnabled: settings?.notifications.agents.email.enabled,
         webPushEnabled: settings?.notifications.agents.webpush.enabled,
         pgpKey: user.settings?.pgpKey,
@@ -263,6 +260,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
           settings?.notifications.agents.telegram.options.botUsername,
         telegramChatId: user.settings?.telegramChatId,
         telegramSendSilently: user?.settings?.telegramSendSilently,
+        notificationTypes: user.settings?.notificationTypes ?? {},
       });
     } catch (e) {
       next({ status: 500, message: e.message });
@@ -296,30 +294,32 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
       if (!user.settings) {
         user.settings = new UserSettings({
           user: req.user,
-          notificationAgents:
-            req.body.notificationAgents ?? NotificationAgentType.EMAIL,
           pgpKey: req.body.pgpKey,
           discordId: req.body.discordId,
           telegramChatId: req.body.telegramChatId,
           telegramSendSilently: req.body.telegramSendSilently,
+          notificationTypes: req.body.notificationTypes,
         });
       } else {
-        user.settings.notificationAgents =
-          req.body.notificationAgents ?? NotificationAgentType.EMAIL;
         user.settings.pgpKey = req.body.pgpKey;
         user.settings.discordId = req.body.discordId;
         user.settings.telegramChatId = req.body.telegramChatId;
         user.settings.telegramSendSilently = req.body.telegramSendSilently;
+        user.settings.notificationTypes = Object.assign(
+          {},
+          user.settings.notificationTypes,
+          req.body.notificationTypes
+        );
       }
 
       userRepository.save(user);
 
       return res.status(200).json({
-        notificationAgents: user.settings?.notificationAgents,
         pgpKey: user.settings?.pgpKey,
         discordId: user.settings?.discordId,
         telegramChatId: user.settings?.telegramChatId,
         telegramSendSilently: user?.settings?.telegramSendSilently,
+        notificationTypes: user.settings.notificationTypes,
       });
     } catch (e) {
       next({ status: 500, message: e.message });

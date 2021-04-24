@@ -171,6 +171,17 @@ export interface NotificationAgentWebhook extends NotificationAgentConfig {
   };
 }
 
+export enum NotificationAgentKey {
+  DISCORD = 'discord',
+  EMAIL = 'email',
+  PUSHBULLET = 'pushbullet',
+  PUSHOVER = 'pushover',
+  SLACK = 'slack',
+  TELEGRAM = 'telegram',
+  WEBHOOK = 'webhook',
+  WEBPUSH = 'webpush',
+}
+
 interface NotificationAgents {
   discord: NotificationAgentDiscord;
   email: NotificationAgentEmail;

@@ -4,8 +4,11 @@ import { hasNotificationType, Notification } from '..';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
 import { Permission } from '../../permissions';
-import { getSettings, NotificationAgentDiscord } from '../../settings';
-import { NotificationAgentType } from '../agenttypes';
+import {
+  getSettings,
+  NotificationAgentDiscord,
+  NotificationAgentKey,
+} from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 enum EmbedColors {
@@ -227,8 +230,9 @@ class DiscordAgent
       if (payload.notifyUser) {
         // Mention user who submitted the request
         if (
-          payload.notifyUser.settings?.hasNotificationAgentEnabled(
-            NotificationAgentType.DISCORD
+          payload.notifyUser.settings?.hasNotificationType(
+            NotificationAgentKey.DISCORD,
+            type
           ) &&
           payload.notifyUser.settings?.discordId
         ) {
@@ -243,8 +247,9 @@ class DiscordAgent
           .filter(
             (user) =>
               user.hasPermission(Permission.MANAGE_REQUESTS) &&
-              user.settings?.hasNotificationAgentEnabled(
-                NotificationAgentType.DISCORD
+              user.settings?.hasNotificationType(
+                NotificationAgentKey.DISCORD,
+                type
               ) &&
               user.settings?.discordId
           )

@@ -53,6 +53,10 @@ export enum Notification {
   MEDIA_AUTO_APPROVED = 128,
 }
 
+export const ALL_NOTIFICATIONS = Object.values(Notification)
+  .filter((v) => !isNaN(Number(v)))
+  .reduce((a, v) => a + Number(v), 0);
+
 export interface NotificationItem {
   id: string;
   name: string;

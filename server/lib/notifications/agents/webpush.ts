@@ -6,8 +6,11 @@ import { User } from '../../../entity/User';
 import { UserPushSubscription } from '../../../entity/UserPushSubscription';
 import logger from '../../../logger';
 import { Permission } from '../../permissions';
-import { getSettings, NotificationAgentConfig } from '../../settings';
-import { NotificationAgentType } from '../agenttypes';
+import {
+  getSettings,
+  NotificationAgentConfig,
+  NotificationAgentKey,
+} from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface PushNotificationPayload {
@@ -156,8 +159,9 @@ class WebPushAgent
 
     if (
       payload.notifyUser &&
-      payload.notifyUser.settings?.hasNotificationAgentEnabled(
-        NotificationAgentType.WEBPUSH
+      payload.notifyUser.settings?.hasNotificationType(
+        NotificationAgentKey.WEBPUSH,
+        type
       )
     ) {
       const notifySubs = await userPushSubRepository.find({
@@ -168,8 +172,10 @@ class WebPushAgent
     } else if (!payload.notifyUser) {
       const users = await userRepository.find();
 
-      const manageUsers = users.filter((user) =>
-        user.hasPermission(Permission.MANAGE_REQUESTS)
+      const manageUsers = users.filter(
+        (user) =>
+          user.hasPermission(Permission.MANAGE_REQUESTS) &&
+          user.settings?.hasNotificationType(NotificationAgentKey.DISCORD, type)
       );
 
       const allSubs = await userPushSubRepository

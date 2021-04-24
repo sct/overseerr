@@ -1,3 +1,5 @@
+import { NotificationAgentKey } from '../../lib/settings';
+
 export interface UserSettingsGeneralResponse {
   username?: string;
   locale?: string;
@@ -13,8 +15,8 @@ export interface UserSettingsGeneralResponse {
   globalTvQuotaDays?: number;
 }
 
+export type NotificationAgentTypes = Record<NotificationAgentKey, number>;
 export interface UserSettingsNotificationsResponse {
-  notificationAgents: number;
   emailEnabled?: boolean;
   webPushEnabled?: boolean;
   pgpKey?: string;
@@ -24,4 +26,5 @@ export interface UserSettingsNotificationsResponse {
   telegramBotUsername?: string;
   telegramChatId?: string;
   telegramSendSilently?: boolean;
+  notificationTypes: Partial<NotificationAgentTypes>;
 }
