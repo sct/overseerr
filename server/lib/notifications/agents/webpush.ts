@@ -159,10 +159,13 @@ class WebPushAgent
 
     if (
       payload.notifyUser &&
-      payload.notifyUser.settings?.hasNotificationType(
+      // Check if user has webpush notifications enabled and fallback to true if undefined
+      // since web push should default to true
+      (payload.notifyUser.settings?.hasNotificationType(
         NotificationAgentKey.WEBPUSH,
         type
-      )
+      ) ??
+        true)
     ) {
       const notifySubs = await userPushSubRepository.find({
         where: { user: payload.notifyUser.id },
@@ -175,7 +178,13 @@ class WebPushAgent
       const manageUsers = users.filter(
         (user) =>
           user.hasPermission(Permission.MANAGE_REQUESTS) &&
-          user.settings?.hasNotificationType(NotificationAgentKey.DISCORD, type)
+          // Check if user has webpush notifications enabled and fallback to true if undefined
+          // since web push should default to true
+          (user.settings?.hasNotificationType(
+            NotificationAgentKey.WEBPUSH,
+            type
+          ) ??
+            true)
       );
 
       const allSubs = await userPushSubRepository

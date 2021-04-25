@@ -50,7 +50,7 @@ const UserEmailSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableEmail: !!data?.notificationTypes.email,
+        enableEmail: !!(data?.notificationTypes.email ?? true),
         pgpKey: data?.pgpKey,
       }}
       validationSchema={UserNotificationsEmailSchema}

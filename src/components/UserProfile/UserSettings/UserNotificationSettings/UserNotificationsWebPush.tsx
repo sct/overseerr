@@ -34,7 +34,7 @@ const UserWebPushSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableWebPush: !!data?.notificationTypes.webpush,
+        enableWebPush: !!(data?.notificationTypes.webpush ?? true),
         pgpKey: data?.pgpKey,
       }}
       enableReinitialize
