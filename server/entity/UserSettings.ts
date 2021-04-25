@@ -53,20 +53,28 @@ export class UserSettings {
     nullable: true,
     transformer: {
       from: (value: string | null): Partial<NotificationAgentTypes> => {
+        const defaultTypes = {
+          email: ALL_NOTIFICATIONS,
+          discord: 0,
+          pushbullet: 0,
+          pushover: 0,
+          slack: 0,
+          telegram: 0,
+          webhook: 0,
+          webpush: ALL_NOTIFICATIONS,
+        };
         if (!value) {
-          return {
-            email: ALL_NOTIFICATIONS,
-            discord: 0,
-            pushbullet: 0,
-            pushover: 0,
-            slack: 0,
-            telegram: 0,
-            webhook: 0,
-            webpush: ALL_NOTIFICATIONS,
-          };
+          return defaultTypes;
         }
 
         const values = JSON.parse(value) as Partial<NotificationAgentTypes>;
+
+        // Something with the migration to this field has caused some issue where
+        // the value pre-populates with just a raw "2"? Here we check if that's the case
+        // and return the default notification types if so
+        if (typeof values !== 'object') {
+          return defaultTypes;
+        }
 
         if (values.email == null) {
           values.email = ALL_NOTIFICATIONS;
