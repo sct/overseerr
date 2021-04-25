@@ -7,8 +7,11 @@ import { User } from '../../../entity/User';
 import logger from '../../../logger';
 import PreparedEmail from '../../email';
 import { Permission } from '../../permissions';
-import { getSettings, NotificationAgentEmail } from '../../settings';
-import { NotificationAgentType } from '../agenttypes';
+import {
+  getSettings,
+  NotificationAgentEmail,
+  NotificationAgentKey,
+} from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 class EmailAgent
@@ -152,9 +155,13 @@ class EmailAgent
       // Send notification to the user who submitted the request
       if (
         !payload.notifyUser.settings ||
-        payload.notifyUser.settings.hasNotificationAgentEnabled(
-          NotificationAgentType.EMAIL
-        )
+        // Check if user has email notifications enabled and fallback to true if undefined
+        // since email should default to true
+        (payload.notifyUser.settings.hasNotificationType(
+          NotificationAgentKey.EMAIL,
+          type
+        ) ??
+          true)
       ) {
         logger.debug('Sending email notification', {
           label: 'Notifications',
@@ -194,9 +201,13 @@ class EmailAgent
             (user) =>
               user.hasPermission(Permission.MANAGE_REQUESTS) &&
               (!user.settings ||
-                user.settings.hasNotificationAgentEnabled(
-                  NotificationAgentType.EMAIL
-                ))
+                // Check if user has email notifications enabled and fallback to true if undefined
+                // since email should default to true
+                (user.settings.hasNotificationType(
+                  NotificationAgentKey.EMAIL,
+                  type
+                ) ??
+                  true))
           )
           .map(async (user) => {
             logger.debug('Sending email notification', {

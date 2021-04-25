@@ -7,6 +7,8 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import { Language } from '../../../../../server/lib/settings';
+import { availableLanguages } from '../../../../context/LanguageContext';
+import useLocale from '../../../../hooks/useLocale';
 import useSettings from '../../../../hooks/useSettings';
 import { Permission, UserType, useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
@@ -39,11 +41,13 @@ const messages = defineMessages({
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
   enableOverride: 'Enable Override',
+  applanguage: 'Display Language',
 });
 
 const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
+  const { locale, setLocale } = useLocale();
   const [movieQuotaEnabled, setMovieQuotaEnabled] = useState(false);
   const [tvQuotaEnabled, setTvQuotaEnabled] = useState(false);
   const router = useRouter();
@@ -115,6 +119,7 @@ const UserGeneralSettings: React.FC = () => {
       </div>
       <Formik
         initialValues={{
+          locale,
           displayName: data?.username,
           region: data?.region,
           originalLanguage: data?.originalLanguage,
@@ -136,7 +141,12 @@ const UserGeneralSettings: React.FC = () => {
               movieQuotaDays: movieQuotaEnabled ? values.movieQuotaDays : null,
               tvQuotaLimit: tvQuotaEnabled ? values.tvQuotaLimit : null,
               tvQuotaDays: tvQuotaEnabled ? values.tvQuotaDays : null,
+              locale: values.locale,
             });
+
+            if (setLocale) {
+              setLocale(values.locale);
+            }
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
               autoDismiss: true,
@@ -204,6 +214,24 @@ const UserGeneralSettings: React.FC = () => {
                   {errors.displayName && touched.displayName && (
                     <div className="error">{errors.displayName}</div>
                   )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="locale" className="text-label">
+                  {intl.formatMessage(messages.applanguage)}
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field as="select" id="locale" name="locale">
+                      {(Object.keys(
+                        availableLanguages
+                      ) as (keyof typeof availableLanguages)[]).map((key) => (
+                        <option key={key} value={availableLanguages[key].code}>
+                          {availableLanguages[key].display}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
                 </div>
               </div>
               <div className="form-row">

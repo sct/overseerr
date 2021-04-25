@@ -2,6 +2,7 @@ import fs from 'fs';
 import { merge } from 'lodash';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import webpush from 'web-push';
 import { Permission } from './permissions';
 
 export interface Library {
@@ -101,6 +102,8 @@ interface FullPublicSettings extends PublicSettings {
   originalLanguage: string;
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
+  vapidPublic: string;
+  enablePushRegistration: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -168,6 +171,17 @@ export interface NotificationAgentWebhook extends NotificationAgentConfig {
   };
 }
 
+export enum NotificationAgentKey {
+  DISCORD = 'discord',
+  EMAIL = 'email',
+  PUSHBULLET = 'pushbullet',
+  PUSHOVER = 'pushover',
+  SLACK = 'slack',
+  TELEGRAM = 'telegram',
+  WEBHOOK = 'webhook',
+  WEBPUSH = 'webpush',
+}
+
 interface NotificationAgents {
   discord: NotificationAgentDiscord;
   email: NotificationAgentEmail;
@@ -176,6 +190,7 @@ interface NotificationAgents {
   slack: NotificationAgentSlack;
   telegram: NotificationAgentTelegram;
   webhook: NotificationAgentWebhook;
+  webpush: NotificationAgentConfig;
 }
 
 interface NotificationSettings {
@@ -184,6 +199,8 @@ interface NotificationSettings {
 
 interface AllSettings {
   clientId: string;
+  vapidPublic: string;
+  vapidPrivate: string;
   main: MainSettings;
   plex: PlexSettings;
   radarr: RadarrSettings[];
@@ -202,6 +219,8 @@ class Settings {
   constructor(initialSettings?: AllSettings) {
     this.data = {
       clientId: uuidv4(),
+      vapidPrivate: '',
+      vapidPublic: '',
       main: {
         apiKey: '',
         applicationTitle: 'Overseerr',
@@ -298,6 +317,11 @@ class Settings {
                 'IntcbiAgICBcIm5vdGlmaWNhdGlvbl90eXBlXCI6IFwie3tub3RpZmljYXRpb25fdHlwZX19XCIsXG4gICAgXCJzdWJqZWN0XCI6IFwie3tzdWJqZWN0fX1cIixcbiAgICBcIm1lc3NhZ2VcIjogXCJ7e21lc3NhZ2V9fVwiLFxuICAgIFwiaW1hZ2VcIjogXCJ7e2ltYWdlfX1cIixcbiAgICBcImVtYWlsXCI6IFwie3tub3RpZnl1c2VyX2VtYWlsfX1cIixcbiAgICBcInVzZXJuYW1lXCI6IFwie3tub3RpZnl1c2VyX3VzZXJuYW1lfX1cIixcbiAgICBcImF2YXRhclwiOiBcInt7bm90aWZ5dXNlcl9hdmF0YXJ9fVwiLFxuICAgIFwie3ttZWRpYX19XCI6IHtcbiAgICAgICAgXCJtZWRpYV90eXBlXCI6IFwie3ttZWRpYV90eXBlfX1cIixcbiAgICAgICAgXCJ0bWRiSWRcIjogXCJ7e21lZGlhX3RtZGJpZH19XCIsXG4gICAgICAgIFwiaW1kYklkXCI6IFwie3ttZWRpYV9pbWRiaWR9fVwiLFxuICAgICAgICBcInR2ZGJJZFwiOiBcInt7bWVkaWFfdHZkYmlkfX1cIixcbiAgICAgICAgXCJzdGF0dXNcIjogXCJ7e21lZGlhX3N0YXR1c319XCIsXG4gICAgICAgIFwic3RhdHVzNGtcIjogXCJ7e21lZGlhX3N0YXR1czRrfX1cIlxuICAgIH0sXG4gICAgXCJ7e2V4dHJhfX1cIjogW10sXG4gICAgXCJ7e3JlcXVlc3R9fVwiOiB7XG4gICAgICAgIFwicmVxdWVzdF9pZFwiOiBcInt7cmVxdWVzdF9pZH19XCIsXG4gICAgICAgIFwicmVxdWVzdGVkQnlfZW1haWxcIjogXCJ7e3JlcXVlc3RlZEJ5X2VtYWlsfX1cIixcbiAgICAgICAgXCJyZXF1ZXN0ZWRCeV91c2VybmFtZVwiOiBcInt7cmVxdWVzdGVkQnlfdXNlcm5hbWV9fVwiLFxuICAgICAgICBcInJlcXVlc3RlZEJ5X2F2YXRhclwiOiBcInt7cmVxdWVzdGVkQnlfYXZhdGFyfX1cIlxuICAgIH1cbn0i',
             },
           },
+          webpush: {
+            enabled: false,
+            types: 0,
+            options: {},
+          },
         },
       },
     };
@@ -366,6 +390,8 @@ class Settings {
       originalLanguage: this.data.main.originalLanguage,
       partialRequestsEnabled: this.data.main.partialRequestsEnabled,
       cacheImages: this.data.main.cacheImages,
+      vapidPublic: this.vapidPublic,
+      enablePushRegistration: this.data.notifications.agents.webpush.enabled,
     };
   }
 
@@ -386,6 +412,18 @@ class Settings {
     return this.data.clientId;
   }
 
+  get vapidPublic(): string {
+    this.generateVapidKeys();
+
+    return this.data.vapidPublic;
+  }
+
+  get vapidPrivate(): string {
+    this.generateVapidKeys();
+
+    return this.data.vapidPrivate;
+  }
+
   public regenerateApiKey(): MainSettings {
     this.main.apiKey = this.generateApiKey();
     this.save();
@@ -394,6 +432,15 @@ class Settings {
 
   private generateApiKey(): string {
     return Buffer.from(`${Date.now()}${uuidv4()})`).toString('base64');
+  }
+
+  private generateVapidKeys(force = false): void {
+    if (!this.data.vapidPublic || !this.data.vapidPrivate || force) {
+      const vapidKeys = webpush.generateVAPIDKeys();
+      this.data.vapidPrivate = vapidKeys.privateKey;
+      this.data.vapidPublic = vapidKeys.publicKey;
+      this.save();
+    }
   }
 
   /**
