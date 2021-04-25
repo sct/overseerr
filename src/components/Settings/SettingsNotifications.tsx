@@ -1,5 +1,5 @@
 import { AtSymbolIcon } from '@heroicons/react/outline';
-import { CloudUploadIcon, LightningBoltIcon } from '@heroicons/react/solid';
+import { CloudIcon, LightningBoltIcon } from '@heroicons/react/solid';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import DiscordLogo from '../../assets/extlogos/discord.svg';
@@ -95,7 +95,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.webpush),
       content: (
         <span className="flex items-center">
-          <CloudUploadIcon className="h-4 mr-2" />
+          <CloudIcon className="h-4 mr-2" />
           {intl.formatMessage(messages.webpush)}
         </span>
       ),
