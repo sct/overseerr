@@ -16,7 +16,7 @@ const Toast: React.FC<ToastProps> = ({
   transitionState,
 }) => {
   return (
-    <div className="flex items-end justify-center px-2 py-2 pointer-events-none toast sm:items-start sm:justify-end">
+    <div className="flex items-end justify-center max-w-full px-2 py-2 pointer-events-none toast sm:items-start sm:justify-end">
       <Transition
         show={transitionState === 'entered'}
         enter="transition duration-300 transform-gpu"

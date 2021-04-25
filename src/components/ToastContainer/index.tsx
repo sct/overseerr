@@ -8,7 +8,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
   return (
     <div
       id="toast-container"
-      className="fixed max-w-full max-h-full overflow-hidden top-4 right-4"
+      className="box-border fixed right-0 max-w-full max-h-full px-4 overflow-hidden top-4"
       style={{
         pointerEvents: hasToasts ? 'all' : 'none',
         zIndex: 10000,
