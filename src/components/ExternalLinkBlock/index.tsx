@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { MediaType } from '../../../server/constants/media';
 import ImdbLogo from '../../assets/services/imdb.svg';
 import PlexLogo from '../../assets/services/plex.svg';
 import RTLogo from '../../assets/services/rt.svg';
 import TmdbLogo from '../../assets/services/tmdb.svg';
 import TvdbLogo from '../../assets/services/tvdb.svg';
-import { LanguageContext } from '../../context/LanguageContext';
+import useLocale from '../../hooks/useLocale';
 
 interface ExternalLinkBlockProps {
   mediaType: 'movie' | 'tv';
@@ -24,7 +24,7 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
   rtUrl,
   plexUrl,
 }) => {
-  const { locale } = useContext(LanguageContext);
+  const { locale } = useLocale();
 
   return (
     <div className="flex items-center justify-center w-full space-x-5">

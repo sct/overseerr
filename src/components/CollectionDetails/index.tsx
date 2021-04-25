@@ -3,14 +3,13 @@ import axios from 'axios';
 import { uniq } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { MediaStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { Collection } from '../../../server/models/Collection';
-import { LanguageContext } from '../../context/LanguageContext';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
@@ -48,14 +47,13 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
   const router = useRouter();
   const settings = useSettings();
   const { addToast } = useToasts();
-  const { locale } = useContext(LanguageContext);
   const { hasPermission } = useUser();
   const [requestModal, setRequestModal] = useState(false);
   const [isRequesting, setRequesting] = useState(false);
   const [is4k, setIs4k] = useState(false);
 
   const { data, error, revalidate } = useSWR<Collection>(
-    `/api/v1/collection/${router.query.collectionId}?language=${locale}`,
+    `/api/v1/collection/${router.query.collectionId}`,
     {
       initialData: collection,
       revalidateOnMount: true,
@@ -63,7 +61,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
   );
 
   const { data: genres } = useSWR<{ id: number; name: string }[]>(
-    `/api/v1/genres/movie?language=${locale}`
+    `/api/v1/genres/movie`
   );
 
   if (!data && !error) {

@@ -1,10 +1,9 @@
 import { MenuAlt2Icon } from '@heroicons/react/outline';
-import { InformationCircleIcon } from '@heroicons/react/solid';
+import { ArrowLeftIcon, InformationCircleIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Permission, useUser } from '../../hooks/useUser';
-import LanguagePicker from './LanguagePicker';
 import SearchInput from './SearchInput';
 import Sidebar from './Sidebar';
 import UserDropdown from './UserDropdown';
@@ -23,7 +22,7 @@ const Layout: React.FC = ({ children }) => {
 
   useEffect(() => {
     const updateScrolled = () => {
-      if (window.pageYOffset > 60) {
+      if (window.pageYOffset > 20) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
@@ -55,16 +54,25 @@ const Layout: React.FC = ({ children }) => {
           }}
         >
           <button
-            className="px-4 text-gray-200 focus:outline-none focus:bg-gray-300 focus:text-gray-600 md:hidden"
+            className={`px-4 ${
+              isScrolled ? 'text-gray-200' : 'text-gray-400'
+            } focus:outline-none md:hidden transition duration-300`}
             aria-label="Open sidebar"
             onClick={() => setSidebarOpen(true)}
           >
             <MenuAlt2Icon className="w-6 h-6" />
           </button>
-          <div className="flex justify-between flex-1 pr-4 md:pr-4 md:pl-4">
+          <div className="flex items-center justify-between flex-1 pr-4 md:pr-4 md:pl-4">
+            <button
+              className={`mr-2 ${
+                isScrolled ? 'text-gray-200' : 'text-gray-400'
+              } transition duration-300 hover:text-white pwa-only focus:outline-none focus:text-white`}
+              onClick={() => router.back()}
+            >
+              <ArrowLeftIcon className="w-7" />
+            </button>
             <SearchInput />
             <div className="flex items-center ml-2">
-              <LanguagePicker />
               <UserDropdown />
             </div>
           </div>

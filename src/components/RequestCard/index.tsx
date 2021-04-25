@@ -1,7 +1,7 @@
 import { CheckIcon, TrashIcon, XIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR, { mutate } from 'swr';
@@ -12,7 +12,6 @@ import {
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { MovieDetails } from '../../../server/models/Movie';
 import type { TvDetails } from '../../../server/models/Tv';
-import { LanguageContext } from '../../context/LanguageContext';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import { withProperties } from '../../utils/typeHelpers';
@@ -92,13 +91,12 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
   });
   const intl = useIntl();
   const { hasPermission } = useUser();
-  const { locale } = useContext(LanguageContext);
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    inView ? `${url}?language=${locale}` : null
+    inView ? `${url}` : null
   );
   const {
     data: requestData,

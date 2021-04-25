@@ -1,6 +1,6 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSWRInfinite } from 'swr';
 import { MediaStatus } from '../../../server/constants/media';
 import type {
@@ -8,7 +8,6 @@ import type {
   PersonResult,
   TvResult,
 } from '../../../server/models/Search';
-import { LanguageContext } from '../../context/LanguageContext';
 import useSettings from '../../hooks/useSettings';
 import PersonCard from '../PersonCard';
 import Slider from '../Slider';
@@ -38,14 +37,13 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
   hideWhenEmpty = false,
 }) => {
   const settings = useSettings();
-  const { locale } = useContext(LanguageContext);
   const { data, error, setSize, size } = useSWRInfinite<MixedResult>(
     (pageIndex: number, previousPageData: MixedResult | null) => {
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
         return null;
       }
 
-      return `${url}?page=${pageIndex + 1}&language=${locale}`;
+      return `${url}?page=${pageIndex + 1}`;
     },
     {
       initialSize: 2,

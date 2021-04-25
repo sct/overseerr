@@ -12,7 +12,7 @@ import {
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RTRating } from '../../../server/api/rottentomatoes';
@@ -25,7 +25,7 @@ import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import RTFresh from '../../assets/rt_fresh.svg';
 import RTRotten from '../../assets/rt_rotten.svg';
 import TmdbLogo from '../../assets/tmdb_logo.svg';
-import { LanguageContext } from '../../context/LanguageContext';
+import useLocale from '../../hooks/useLocale';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
@@ -91,12 +91,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const { user, hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
-  const { locale } = useContext(LanguageContext);
+  const { locale } = useLocale();
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showManager, setShowManager] = useState(false);
 
   const { data, error, revalidate } = useSWR<TvDetailsType>(
-    `/api/v1/tv/${router.query.tvId}?language=${locale}`,
+    `/api/v1/tv/${router.query.tvId}`,
     {
       initialData: tv,
     }

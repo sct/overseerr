@@ -1,20 +1,17 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import {
-  hasNotificationAgentEnabled,
-  NotificationAgentType,
-} from '../../../../../server/lib/notifications/agenttypes';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import { ALL_NOTIFICATIONS } from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
@@ -32,17 +29,10 @@ const UserTelegramSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
-  const [notificationAgents, setNotificationAgents] = useState(0);
   const { user } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
-
-  useEffect(() => {
-    setNotificationAgents(
-      data?.notificationAgents ?? NotificationAgentType.EMAIL
-    );
-  }, [data]);
 
   const UserNotificationsTelegramSchema = Yup.object().shape({
     telegramChatId: Yup.string()
@@ -66,10 +56,7 @@ const UserTelegramSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableTelegram: hasNotificationAgentEnabled(
-          NotificationAgentType.TELEGRAM,
-          data?.notificationAgents ?? NotificationAgentType.EMAIL
-        ),
+        enableTelegram: !!data?.notificationTypes.telegram,
         telegramChatId: data?.telegramChatId,
         telegramSendSilently: data?.telegramSendSilently,
       }}
@@ -78,11 +65,13 @@ const UserTelegramSettings: React.FC = () => {
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
-            notificationAgents,
             pgpKey: data?.pgpKey,
             discordId: data?.discordId,
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
+            notificationTypes: {
+              telegram: values.enableTelegram ? ALL_NOTIFICATIONS : 0,
+            },
           });
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
             appearance: 'success',
@@ -98,7 +87,7 @@ const UserTelegramSettings: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, isValid, values, setFieldValue }) => {
+      {({ errors, touched, isSubmitting, isValid }) => {
         return (
           <Form className="section">
             <div className="form-row">
@@ -110,21 +99,6 @@ const UserTelegramSettings: React.FC = () => {
                   type="checkbox"
                   id="enableTelegram"
                   name="enableTelegram"
-                  checked={hasNotificationAgentEnabled(
-                    NotificationAgentType.TELEGRAM,
-                    notificationAgents
-                  )}
-                  onChange={() => {
-                    setNotificationAgents(
-                      hasNotificationAgentEnabled(
-                        NotificationAgentType.TELEGRAM,
-                        notificationAgents
-                      )
-                        ? notificationAgents - NotificationAgentType.TELEGRAM
-                        : notificationAgents + NotificationAgentType.TELEGRAM
-                    );
-                    setFieldValue('enableTelegram', !values.enableTelegram);
-                  }}
                 />
               </div>
             </div>

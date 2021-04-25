@@ -28,6 +28,7 @@ export const checkUser: Middleware = async (req, _res, next) => {
 
     if (user) {
       req.user = user;
+      req.locale = user.settings?.locale;
     }
   }
   next();
