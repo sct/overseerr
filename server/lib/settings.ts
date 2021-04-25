@@ -140,6 +140,13 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentLunaSea extends NotificationAgentConfig {
+  options: {
+    webhookUrl: string;
+    profileName: string;
+  };
+}
+
 export interface NotificationAgentTelegram extends NotificationAgentConfig {
   options: {
     botUsername?: string;
@@ -185,6 +192,7 @@ export enum NotificationAgentKey {
 interface NotificationAgents {
   discord: NotificationAgentDiscord;
   email: NotificationAgentEmail;
+  lunasea: NotificationAgentLunaSea;
   pushbullet: NotificationAgentPushbullet;
   pushover: NotificationAgentPushover;
   slack: NotificationAgentSlack;
@@ -272,6 +280,14 @@ class Settings {
               botUsername: '',
               botAvatarUrl: '',
               webhookUrl: '',
+            },
+          },
+          lunasea: {
+            enabled: false,
+            types: 0,
+            options: {
+              webhookUrl: '',
+              profileName: '',
             },
           },
           slack: {

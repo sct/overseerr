@@ -1151,6 +1151,8 @@ components:
           properties:
             webhookUrl:
               type: string
+            authHeader:
+              type: string
             jsonPayload:
               type: string
     TelegramSettings:
@@ -1205,6 +1207,22 @@ components:
               type: string
             priority:
               type: number
+    LunaSeaSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            webhookUrl:
+              type: string
+            profileName:
+              type: string
     NotificationEmailSettings:
       type: object
       properties:
@@ -2406,22 +2424,22 @@ paths:
       responses:
         '204':
           description: Test notification attempted
-  /settings/notifications/telegram:
+  /settings/notifications/lunasea:
     get:
-      summary: Get Telegram notification settings
-      description: Returns current Telegram notification settings in a JSON object.
+      summary: Get LunaSea notification settings
+      description: Returns current LunaSea notification settings in a JSON object.
       tags:
         - settings
       responses:
         '200':
-          description: Returned Telegram settings
+          description: Returned LunaSea settings
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TelegramSettings'
+                $ref: '#/components/schemas/LunaSeaSettings'
     post:
-      summary: Update Telegram notification settings
-      description: Update Telegram notification settings with the provided values.
+      summary: Update LunaSea notification settings
+      description: Updates LunaSea notification settings with the provided values.
       tags:
         - settings
       requestBody:
@@ -2429,18 +2447,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TelegramSettings'
+              $ref: '#/components/schemas/LunaSeaSettings'
       responses:
         '200':
           description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TelegramSettings'
-  /settings/notifications/telegram/test:
+                $ref: '#/components/schemas/LunaSeaSettings'
+  /settings/notifications/lunasea/test:
     post:
-      summary: Test Telegram settings
-      description: Sends a test notification to the Telegram agent.
+      summary: Test LunaSea settings
+      description: Sends a test notification to the LunaSea agent.
       tags:
         - settings
       requestBody:
@@ -2448,7 +2466,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TelegramSettings'
+              $ref: '#/components/schemas/LunaSeaSettings'
       responses:
         '204':
           description: Test notification attempted
@@ -2587,6 +2605,52 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SlackSettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/telegram:
+    get:
+      summary: Get Telegram notification settings
+      description: Returns current Telegram notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned Telegram settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelegramSettings'
+    post:
+      summary: Update Telegram notification settings
+      description: Update Telegram notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelegramSettings'
+  /settings/notifications/telegram/test:
+    post:
+      summary: Test Telegram settings
+      description: Sends a test notification to the Telegram agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramSettings'
       responses:
         '204':
           description: Test notification attempted
