@@ -11321,10 +11321,10 @@ react-spring@^8.0.27:
     "@babel/runtime" "^7.3.1"
     prop-types "^15.5.8"
 
-react-toast-notifications@^2.4.3:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.4.3.tgz#ebf2ee776615a97906cef214352cfd9fe800c583"
-  integrity sha512-Ya/i2dCjN95Ytb/pwbAVmDMSKQwGeeGOhUThtjFQx2XAFKE+fQnodLlIylhgZfsInxdUXPFGFnzTdGS8JafuLA==
+react-toast-notifications@^2.4.4:
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.4.4.tgz#a4b46195b437f312d72f552073957e3a1916f1ab"
+  integrity sha512-FNekr4IIeZZ+9B7LO4Wdqfp16jX6yH6A3HMajbPHpfPwhmcqIX///wPhdbcef9bQaa+NZwdyCHKeCSC6eFnduw==
   dependencies:
     "@emotion/core" "^10.0.14"
     react-transition-group "^4.4.1"
