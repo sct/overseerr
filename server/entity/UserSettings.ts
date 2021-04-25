@@ -86,7 +86,11 @@ export class UserSettings {
 
         return values;
       },
-      to: (value: Partial<NotificationAgentTypes>): string => {
+      to: (value: Partial<NotificationAgentTypes>): string | null => {
+        if (!value || typeof value !== 'object') {
+          return null;
+        }
+
         const allowedKeys = Object.values(NotificationAgentKey);
 
         // Remove any unknown notification agent keys before saving to db
