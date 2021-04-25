@@ -34,7 +34,7 @@
     "csurf": "^1.11.0",
     "email-templates": "^8.0.4",
     "express": "^4.17.1",
-    "express-openapi-validator": "^4.12.7",
+    "express-openapi-validator": "^4.12.8",
     "express-rate-limit": "^5.2.6",
     "express-session": "^1.17.1",
     "formik": "^2.2.6",
