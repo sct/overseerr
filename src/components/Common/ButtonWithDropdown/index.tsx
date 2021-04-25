@@ -62,7 +62,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
   const styleClasses = {
     mainButtonClasses: 'button-md text-white border',
     dropdownSideButtonClasses: 'button-md border',
-    dropdownClasses: 'button-md ',
+    dropdownClasses: 'button-md',
   };
 
   switch (buttonType) {
@@ -70,14 +70,14 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
       styleClasses.mainButtonClasses +=
         ' bg-transparent border-gray-600 hover:border-gray-200 focus:border-gray-100 active:border-gray-100';
       styleClasses.dropdownSideButtonClasses = styleClasses.mainButtonClasses;
-      styleClasses.dropdownClasses += 'bg-gray-700';
+      styleClasses.dropdownClasses += ' bg-gray-700';
       break;
     default:
       styleClasses.mainButtonClasses +=
         ' bg-indigo-600 border-indigo-600 hover:bg-indigo-500 hover:border-indigo-500 active:bg-indigo-700 active:border-indigo-700 focus:ring-blue';
       styleClasses.dropdownSideButtonClasses +=
         ' bg-indigo-700 border-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 focus:ring-blue';
-      styleClasses.dropdownClasses += 'bg-indigo-600';
+      styleClasses.dropdownClasses += ' bg-indigo-600';
   }
 
   return (
