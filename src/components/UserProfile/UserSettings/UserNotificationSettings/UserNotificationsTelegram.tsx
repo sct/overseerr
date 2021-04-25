@@ -70,7 +70,7 @@ const UserTelegramSettings: React.FC = () => {
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
             notificationTypes: {
-              webpush: values.enableTelegram ? ALL_NOTIFICATIONS : 0,
+              telegram: values.enableTelegram ? ALL_NOTIFICATIONS : 0,
             },
           });
           addToast(intl.formatMessage(messages.telegramsettingssaved), {

@@ -79,6 +79,17 @@ export class UserSettings {
         return values;
       },
       to: (value: Partial<NotificationAgentTypes>): string => {
+        const allowedKeys = Object.values(NotificationAgentKey);
+
+        // Remove any unknown notification agent keys before saving to db
+        (Object.keys(value) as (keyof NotificationAgentTypes)[]).forEach(
+          (key) => {
+            if (!allowedKeys.includes(key)) {
+              delete value[key];
+            }
+          }
+        );
+
         return JSON.stringify(value);
       },
     },

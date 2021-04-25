@@ -64,7 +64,7 @@ const UserNotificationsDiscord: React.FC = () => {
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {
-              webpush: values.enableDiscord ? ALL_NOTIFICATIONS : 0,
+              discord: values.enableDiscord ? ALL_NOTIFICATIONS : 0,
             },
           });
           addToast(intl.formatMessage(messages.discordsettingssaved), {

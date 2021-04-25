@@ -18,7 +18,6 @@ export interface UserSettingsGeneralResponse {
 export type NotificationAgentTypes = Record<NotificationAgentKey, number>;
 export interface UserSettingsNotificationsResponse {
   emailEnabled?: boolean;
-  webPushEnabled?: boolean;
   pgpKey?: string;
   discordEnabled?: boolean;
   discordId?: string;
@@ -26,5 +25,6 @@ export interface UserSettingsNotificationsResponse {
   telegramBotUsername?: string;
   telegramChatId?: string;
   telegramSendSilently?: boolean;
+  webPushEnabled?: boolean;
   notificationTypes: Partial<NotificationAgentTypes>;
 }

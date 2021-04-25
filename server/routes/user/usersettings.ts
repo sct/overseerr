@@ -251,7 +251,6 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
 
       return res.status(200).json({
         emailEnabled: settings?.notifications.agents.email.enabled,
-        webPushEnabled: settings?.notifications.agents.webpush.enabled,
         pgpKey: user.settings?.pgpKey,
         discordEnabled: settings?.notifications.agents.discord.enabled,
         discordId: user.settings?.discordId,
@@ -260,6 +259,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
           settings?.notifications.agents.telegram.options.botUsername,
         telegramChatId: user.settings?.telegramChatId,
         telegramSendSilently: user?.settings?.telegramSendSilently,
+        webPushEnabled: settings?.notifications.agents.webpush.enabled,
         notificationTypes: user.settings?.notificationTypes ?? {},
       });
     } catch (e) {

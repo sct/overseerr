@@ -63,7 +63,7 @@ const UserEmailSettings: React.FC = () => {
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {
-              webpush: values.enableEmail ? ALL_NOTIFICATIONS : 0,
+              email: values.enableEmail ? ALL_NOTIFICATIONS : 0,
             },
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {

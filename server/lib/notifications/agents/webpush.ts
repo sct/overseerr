@@ -67,7 +67,7 @@ class WebPushAgent
           subject: payload.subject,
           message: `Automatically approved a new ${
             payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request from ${payload.request?.requestedBy.displayName}`,
+          } request from ${payload.request?.requestedBy.displayName}.`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
@@ -80,7 +80,7 @@ class WebPushAgent
           subject: payload.subject,
           message: `Your ${
             payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request is now available.`,
+          } request is now available!`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
@@ -119,7 +119,7 @@ class WebPushAgent
           subject: payload.subject,
           message: `Approval required for new ${
             payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request from ${payload.request?.requestedBy.displayName}`,
+          } request from ${payload.request?.requestedBy.displayName}.`,
           image: payload.image,
           mediaType: payload.media?.mediaType,
           tmdbId: payload.media?.tmdbId,
