@@ -11,7 +11,6 @@ const defaultSettings = {
   applicationTitle: 'Overseerr',
   hideAvailable: false,
   localLogin: true,
-  newPlexLogin: true,
   movie4kEnabled: false,
   series4kEnabled: false,
   region: '',

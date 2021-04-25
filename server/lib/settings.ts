@@ -97,7 +97,6 @@ interface FullPublicSettings extends PublicSettings {
   applicationTitle: string;
   hideAvailable: boolean;
   localLogin: boolean;
-  newPlexLogin: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
   region: string;
@@ -399,7 +398,6 @@ class Settings {
       applicationTitle: this.data.main.applicationTitle,
       hideAvailable: this.data.main.hideAvailable,
       localLogin: this.data.main.localLogin,
-      newPlexLogin: this.data.main.newPlexLogin,
       movie4kEnabled: this.data.radarr.some(
         (radarr) => radarr.is4k && radarr.isDefault
       ),
