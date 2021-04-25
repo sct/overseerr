@@ -114,8 +114,8 @@ userSettingsRoutes.post<
         originalLanguage: req.body.originalLanguage,
       });
     } else {
-      (user.settings.locale = req.body.locale),
-        (user.settings.region = req.body.region);
+      user.settings.locale = req.body.locale;
+      user.settings.region = req.body.region;
       user.settings.originalLanguage = req.body.originalLanguage;
     }
 

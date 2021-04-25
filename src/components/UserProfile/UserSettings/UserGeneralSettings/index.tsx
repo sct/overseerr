@@ -7,7 +7,10 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import { Language } from '../../../../../server/lib/settings';
-import { availableLanguages } from '../../../../context/LanguageContext';
+import {
+  availableLanguages,
+  AvailableLocales,
+} from '../../../../context/LanguageContext';
 import useLocale from '../../../../hooks/useLocale';
 import useSettings from '../../../../hooks/useSettings';
 import { Permission, UserType, useUser } from '../../../../hooks/useUser';
@@ -47,14 +50,14 @@ const messages = defineMessages({
 const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
-  const { locale, setLocale } = useLocale();
+  const { setLocale } = useLocale();
   const [movieQuotaEnabled, setMovieQuotaEnabled] = useState(false);
   const [tvQuotaEnabled, setTvQuotaEnabled] = useState(false);
   const router = useRouter();
   const { user, hasPermission, mutate } = useUser({
     id: Number(router.query.userId),
   });
-  const { hasPermission: currentHasPermission } = useUser();
+  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const { currentSettings } = useSettings();
   const { data, error, revalidate } = useSWR<UserSettingsGeneralResponse>(
     user ? `/api/v1/user/${user?.id}/settings/main` : null
@@ -119,7 +122,7 @@ const UserGeneralSettings: React.FC = () => {
       </div>
       <Formik
         initialValues={{
-          locale,
+          locale: data?.locale ?? 'en',
           displayName: data?.username,
           region: data?.region,
           originalLanguage: data?.originalLanguage,
@@ -144,8 +147,8 @@ const UserGeneralSettings: React.FC = () => {
               locale: values.locale,
             });
 
-            if (setLocale) {
-              setLocale(values.locale);
+            if (currentUser?.id === user?.id && setLocale) {
+              setLocale(values.locale as AvailableLocales);
             }
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
