@@ -19,6 +19,8 @@ const messages = defineMessages({
   toastSettingsSuccess: 'User settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   localLogin: 'Enable Local Sign-In',
+  newPlexLogin: 'Enable New Plex User Sign-In',
+  newPlexLoginTip: 'Allow Plex users to sign in without first being imported',
   movieRequestLimitLabel: 'Global Movie Request Limit',
   tvRequestLimitLabel: 'Global Series Request Limit',
   defaultPermissions: 'Default Permissions',
@@ -53,6 +55,7 @@ const SettingsUsers: React.FC = () => {
         <Formik
           initialValues={{
             localLogin: data?.localLogin,
+            newPlexLogin: data?.newPlexLogin,
             movieQuotaLimit: data?.defaultQuotas.movie.quotaLimit ?? 0,
             movieQuotaDays: data?.defaultQuotas.movie.quotaDays ?? 7,
             tvQuotaLimit: data?.defaultQuotas.tv.quotaLimit ?? 0,
@@ -64,6 +67,7 @@ const SettingsUsers: React.FC = () => {
             try {
               await axios.post('/api/v1/settings/main', {
                 localLogin: values.localLogin,
+                newPlexLogin: values.newPlexLogin,
                 defaultQuotas: {
                   movie: {
                     quotaLimit: values.movieQuotaLimit,
@@ -96,7 +100,7 @@ const SettingsUsers: React.FC = () => {
               <Form className="section">
                 <div className="form-row">
                   <label htmlFor="localLogin" className="checkbox-label">
-                    <span>{intl.formatMessage(messages.localLogin)}</span>
+                    {intl.formatMessage(messages.localLogin)}
                   </label>
                   <div className="form-input">
                     <Field
@@ -105,6 +109,24 @@ const SettingsUsers: React.FC = () => {
                       name="localLogin"
                       onChange={() => {
                         setFieldValue('localLogin', !values.localLogin);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="newPlexLogin" className="checkbox-label">
+                    {intl.formatMessage(messages.newPlexLogin)}
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.newPlexLoginTip)}
+                    </span>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="newPlexLogin"
+                      name="newPlexLogin"
+                      onChange={() => {
+                        setFieldValue('newPlexLogin', !values.newPlexLogin);
                       }}
                     />
                   </div>
