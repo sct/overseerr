@@ -357,13 +357,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       values.is4k ? messages.edit4kradarr : messages.editradarr
                     )
               }
-              iconSvg={
-                !radarr ? (
-                  <PlusIcon className="w-6 h-6" />
-                ) : (
-                  <PencilIcon className="w-6 h-6" />
-                )
-              }
+              iconSvg={!radarr ? <PlusIcon /> : <PencilIcon />}
             >
               <div className="mb-6">
                 <div className="form-row">

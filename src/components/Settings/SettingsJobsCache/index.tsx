@@ -181,13 +181,13 @@ const SettingsJobs: React.FC = () => {
                 <Table.TD alignText="right">
                   {job.running ? (
                     <Button buttonType="danger" onClick={() => cancelJob(job)}>
-                      <StopIcon className="w-5 h-5 mr-1" />
-                      {intl.formatMessage(messages.canceljob)}
+                      <StopIcon />
+                      <span>{intl.formatMessage(messages.canceljob)}</span>
                     </Button>
                   ) : (
                     <Button buttonType="primary" onClick={() => runJob(job)}>
                       <PlayIcon className="w-5 h-5 mr-1" />
-                      {intl.formatMessage(messages.runnow)}
+                      <span>{intl.formatMessage(messages.runnow)}</span>
                     </Button>
                   )}
                 </Table.TD>
@@ -226,8 +226,8 @@ const SettingsJobs: React.FC = () => {
                 <Table.TD>{formatBytes(cache.stats.vsize)}</Table.TD>
                 <Table.TD alignText="right">
                   <Button buttonType="danger" onClick={() => flushCache(cache)}>
-                    <TrashIcon className="w-5 h-5 mr-1" />
-                    {intl.formatMessage(messages.flushcache)}
+                    <TrashIcon />
+                    <span>{intl.formatMessage(messages.flushcache)}</span>
                   </Button>
                 </Table.TD>
               </tr>

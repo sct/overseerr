@@ -85,7 +85,7 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
   return (
     <Modal
       title={intl.formatMessage(messages.edituser)}
-      iconSvg={<PencilIcon className="w-6 h-6" />}
+      iconSvg={<PencilIcon />}
       onOk={() => {
         updateUsers();
       }}

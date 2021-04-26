@@ -435,9 +435,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 rounded-r-md hover:bg-indigo-500 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
                     >
                       <RefreshIcon
-                        className={`w-5 h-5 ${
-                          isRefreshingPresets ? 'animate-spin' : ''
-                        }`}
+                        className={isRefreshingPresets ? 'animate-spin' : ''}
                         style={{ animationDirection: 'reverse' }}
                       />
                     </button>
@@ -530,7 +528,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       <div className="section">
         <Button onClick={() => syncLibraries()} disabled={isSyncing}>
           <RefreshIcon
-            className={`w-5 h-5 mr-1 ${isSyncing ? 'animate-spin' : ''}`}
+            className={isSyncing ? 'animate-spin' : ''}
             style={{ animationDirection: 'reverse' }}
           />
           {isSyncing
@@ -606,14 +604,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
             <div className="flex-1 text-right">
               {!dataSync?.running && (
                 <Button buttonType="warning" onClick={() => startScan()}>
-                  <SearchIcon className="w-5 h-5 mr-1" />
+                  <SearchIcon />
                   {intl.formatMessage(messages.startscan)}
                 </Button>
               )}
 
               {dataSync?.running && (
                 <Button buttonType="danger" onClick={() => cancelScan()}>
-                  <XIcon className="w-5 h-5 mr-1" />
+                  <XIcon />
                   {intl.formatMessage(messages.cancelscan)}
                 </Button>
               )}

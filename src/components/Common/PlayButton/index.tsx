@@ -22,7 +22,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({ links }) => {
       text={
         <>
           {links[0].svg}
-          {links[0].text}
+          <span>{links[0].text}</span>
         </>
       }
       onClick={() => {
@@ -40,7 +40,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({ links }) => {
               buttonType="ghost"
             >
               {link.svg}
-              {link.text}
+              <span>{link.text}</span>
             </ButtonWithDropdown.Item>
           );
         })}

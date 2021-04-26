@@ -10,6 +10,7 @@ import { useIsTouch } from '../../hooks/useIsTouch';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import { withProperties } from '../../utils/typeHelpers';
+import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
 import RequestModal from '../RequestModal';
 import Transition from '../Transition';
@@ -229,18 +230,18 @@ const TitleCard: React.FC<TitleCardProps> = ({
               <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-2">
                 {hasPermission(Permission.REQUEST) &&
                   (!currentStatus || currentStatus === MediaStatus.UNKNOWN) && (
-                    <button
+                    <Button
+                      buttonType="primary"
+                      buttonSize="sm"
                       onClick={(e) => {
                         e.preventDefault();
                         setShowRequestModal(true);
                       }}
-                      className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-600 rounded-md h-7 hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
+                      className="w-full h-7"
                     >
-                      <DownloadIcon className="w-4 h-4 mr-1" />
-                      <span className="text-xs">
-                        {intl.formatMessage(globalMessages.request)}
-                      </span>
-                    </button>
+                      <DownloadIcon />
+                      <span>{intl.formatMessage(globalMessages.request)}</span>
+                    </Button>
                   )}
               </div>
             </div>

@@ -139,7 +139,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
           <Link href={linkUrl}>
             <a className="slider-title">
               <span>{title}</span>
-              <ArrowCircleRightIcon className="w-6 h-6 ml-2" />
+              <ArrowCircleRightIcon />
             </a>
           </Link>
         ) : (

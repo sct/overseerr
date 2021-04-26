@@ -60,6 +60,8 @@ module.exports = {
   },
   variants: {
     cursor: ['disabled'],
+    width: ['first', 'last', 'responsive'],
+    height: ['first', 'last', 'responsive'],
     padding: ['first', 'last', 'responsive'],
     borderWidth: ['first', 'last'],
     margin: ['first', 'last', 'responsive'],

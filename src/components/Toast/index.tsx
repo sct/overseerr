@@ -50,7 +50,7 @@ const Toast: React.FC<ToastProps> = ({
                     onClick={() => onDismiss()}
                     className="inline-flex text-gray-400 transition duration-150 ease-in-out focus:outline-none focus:text-gray-500"
                   >
-                    <XIcon className="w-5 h-5" />
+                    <XIcon />
                   </button>
                 </div>
               </div>

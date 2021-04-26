@@ -32,7 +32,7 @@ const CopyButton: React.FC<{ textToCopy: string }> = ({ textToCopy }) => {
       }}
       className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 hover:bg-indigo-500 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
     >
-      <ClipboardCopyIcon className="w-5 h-5 text-white" />
+      <ClipboardCopyIcon />
     </button>
   );
 };

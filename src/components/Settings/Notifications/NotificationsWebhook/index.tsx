@@ -2,6 +2,7 @@ import { QuestionMarkCircleIcon, RefreshIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -263,18 +264,25 @@ const NotificationsWebhook: React.FC = () => {
                     }}
                     className="mr-2"
                   >
-                    <RefreshIcon className="w-5 h-5 mr-1" />
-                    {intl.formatMessage(messages.resetPayload)}
+                    <RefreshIcon />
+                    <span>{intl.formatMessage(messages.resetPayload)}</span>
                   </Button>
-                  <a
+                  <Link
                     href="https://docs.overseerr.dev/using-overseerr/notifications/webhooks#template-variables"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center justify-center font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md focus:outline-none hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 disabled:opacity-50 px-2.5 py-1.5 text-xs"
+                    passHref
                   >
-                    <QuestionMarkCircleIcon className="w-5 h-5 mr-1" />
-                    {intl.formatMessage(messages.templatevariablehelp)}
-                  </a>
+                    <Button
+                      as="a"
+                      buttonSize="sm"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <QuestionMarkCircleIcon />
+                      <span>
+                        {intl.formatMessage(messages.templatevariablehelp)}
+                      </span>
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

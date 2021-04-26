@@ -247,7 +247,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           title={intl.formatMessage(
             is4k ? messages.requestcollection4k : messages.requestcollection
           )}
-          iconSvg={<DuplicateIcon className="w-6 h-6" />}
+          iconSvg={<DuplicateIcon />}
         >
           <p>
             {intl.formatMessage(
@@ -339,7 +339,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                 }}
                 text={
                   <>
-                    <DownloadIcon className="w-5 h-5 mr-1" />
+                    <DownloadIcon />
                     <span>
                       {intl.formatMessage(
                         hasRequestable
@@ -364,7 +364,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                         setIs4k(true);
                       }}
                     >
-                      <DownloadIcon className="w-5 h-5 mr-1" />
+                      <DownloadIcon />
                       <span>
                         {intl.formatMessage(messages.requestcollection4k)}
                       </span>

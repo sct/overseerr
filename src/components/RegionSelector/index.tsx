@@ -125,8 +125,8 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                         })
                       : intl.formatMessage(messages.regionDefault)}
                   </span>
-                  <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                    <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                  <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 pointer-events-none">
+                    <ChevronDownIcon />
                   </span>
                 </Listbox.Button>
               </span>

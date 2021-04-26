@@ -95,42 +95,42 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
           <div className="flex flex-wrap flex-shrink-0 ml-2">
             {request.status === MediaRequestStatus.PENDING && (
               <>
-                <span className="mr-1">
-                  <Button
-                    buttonType="success"
-                    onClick={() => updateRequest('approve')}
-                    disabled={isUpdating}
-                  >
-                    <CheckIcon className="w-4 h-4" />
-                  </Button>
-                </span>
-                <span className="mr-1">
-                  <Button
-                    buttonType="danger"
-                    onClick={() => updateRequest('decline')}
-                    disabled={isUpdating}
-                  >
-                    <XIcon className="w-4 h-4" />
-                  </Button>
-                </span>
-                <span>
-                  <Button
-                    buttonType="primary"
-                    onClick={() => setShowEditModal(true)}
-                    disabled={isUpdating}
-                  >
-                    <PencilIcon className="w-4 h-4" />
-                  </Button>
-                </span>
+                <Button
+                  buttonType="success"
+                  buttonSize="sm"
+                  className="mr-1"
+                  onClick={() => updateRequest('approve')}
+                  disabled={isUpdating}
+                >
+                  <CheckIcon />
+                </Button>
+                <Button
+                  buttonType="danger"
+                  buttonSize="sm"
+                  className="mr-1"
+                  onClick={() => updateRequest('decline')}
+                  disabled={isUpdating}
+                >
+                  <XIcon />
+                </Button>
+                <Button
+                  buttonType="primary"
+                  buttonSize="sm"
+                  onClick={() => setShowEditModal(true)}
+                  disabled={isUpdating}
+                >
+                  <PencilIcon />
+                </Button>
               </>
             )}
             {request.status !== MediaRequestStatus.PENDING && (
               <Button
                 buttonType="danger"
+                buttonSize="sm"
                 onClick={() => deleteRequest()}
                 disabled={isUpdating}
               >
-                <TrashIcon className="w-4 h-4" />
+                <TrashIcon />
               </Button>
             )}
           </div>

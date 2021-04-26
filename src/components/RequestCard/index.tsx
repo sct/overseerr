@@ -62,16 +62,15 @@ const RequestCardError: React.FC<RequestCardErrorProps> = ({ mediaId }) => {
               {intl.formatMessage(messages.mediaerror)}
             </div>
             {hasPermission(Permission.MANAGE_REQUESTS) && mediaId && (
-              <div className="mt-4">
-                <Button
-                  buttonType="danger"
-                  buttonSize="sm"
-                  onClick={() => deleteRequest()}
-                >
-                  <TrashIcon className="w-5 h-5 mr-1" />
-                  <span>{intl.formatMessage(messages.deleterequest)}</span>
-                </Button>
-              </div>
+              <Button
+                buttonType="danger"
+                buttonSize="sm"
+                className="mt-4"
+                onClick={() => deleteRequest()}
+              >
+                <TrashIcon />
+                <span>{intl.formatMessage(messages.deleterequest)}</span>
+              </Button>
             )}
           </div>
         </div>
@@ -240,31 +239,27 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
         </div>
         {requestData.status === MediaRequestStatus.PENDING &&
           hasPermission(Permission.MANAGE_REQUESTS) && (
-            <div className="flex items-end flex-1">
-              <span className="mr-2">
-                <Button
-                  buttonType="success"
-                  buttonSize="sm"
-                  onClick={() => modifyRequest('approve')}
-                >
-                  <CheckIcon className="w-4 h-4 mr-0 sm:mr-1" />
-                  <span className="hidden sm:block">
-                    {intl.formatMessage(globalMessages.approve)}
-                  </span>
-                </Button>
-              </span>
-              <span>
-                <Button
-                  buttonType="danger"
-                  buttonSize="sm"
-                  onClick={() => modifyRequest('decline')}
-                >
-                  <XIcon className="w-4 h-4 mr-0 sm:mr-1" />
-                  <span className="hidden sm:block">
-                    {intl.formatMessage(globalMessages.decline)}
-                  </span>
-                </Button>
-              </span>
+            <div className="flex items-end flex-1 space-x-2">
+              <Button
+                buttonType="success"
+                buttonSize="sm"
+                onClick={() => modifyRequest('approve')}
+              >
+                <CheckIcon style={{ marginRight: '0' }} />
+                <span className="hidden ml-1.5 sm:block">
+                  {intl.formatMessage(globalMessages.approve)}
+                </span>
+              </Button>
+              <Button
+                buttonType="danger"
+                buttonSize="sm"
+                onClick={() => modifyRequest('decline')}
+              >
+                <XIcon style={{ marginRight: '0' }} />
+                <span className="hidden ml-1.5 sm:block">
+                  {intl.formatMessage(globalMessages.decline)}
+                </span>
+              </Button>
             </div>
           )}
       </div>
