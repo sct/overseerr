@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -24,7 +24,9 @@ const messages = defineMessages({
   authPass: 'SMTP Password',
   emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
-  emailtestsent: 'Email test notification sent!',
+  toastEmailTestSending: 'Sending email test notification…',
+  toastEmailTestSuccess: 'Email test notification sent!',
+  toastEmailTestFailed: 'Email test notification failed to send.',
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:
     'SSL should be disabled on standard TLS connections (port 587)',
@@ -56,7 +58,8 @@ export function OpenPgpLink(msg: string): JSX.Element {
 
 const NotificationsEmail: React.FC = () => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  const { addToast, removeToast } = useToasts();
+  const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/email'
   );
@@ -172,26 +175,53 @@ const NotificationsEmail: React.FC = () => {
     >
       {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
-          await axios.post('/api/v1/settings/notifications/email/test', {
-            enabled: true,
-            types: values.types,
-            options: {
-              emailFrom: values.emailFrom,
-              smtpHost: values.smtpHost,
-              smtpPort: Number(values.smtpPort),
-              secure: values.secure,
-              authUser: values.authUser,
-              authPass: values.authPass,
-              senderName: values.senderName,
-              pgpPrivateKey: values.pgpPrivateKey,
-              pgpPassword: values.pgpPassword,
-            },
-          });
+          setIsTesting(true);
+          let toastId: string | undefined;
+          try {
+            addToast(
+              intl.formatMessage(messages.toastEmailTestSending),
+              {
+                autoDismiss: false,
+                appearance: 'info',
+              },
+              (id) => {
+                toastId = id;
+              }
+            );
+            await axios.post('/api/v1/settings/notifications/email/test', {
+              enabled: true,
+              types: values.types,
+              options: {
+                emailFrom: values.emailFrom,
+                smtpHost: values.smtpHost,
+                smtpPort: Number(values.smtpPort),
+                secure: values.secure,
+                authUser: values.authUser,
+                authPass: values.authPass,
+                senderName: values.senderName,
+                pgpPrivateKey: values.pgpPrivateKey,
+                pgpPassword: values.pgpPassword,
+              },
+            });
 
-          addToast(intl.formatMessage(messages.emailtestsent), {
-            appearance: 'info',
-            autoDismiss: true,
-          });
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastEmailTestSuccess), {
+              autoDismiss: true,
+              appearance: 'success',
+            });
+          } catch (e) {
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastEmailTestFailed), {
+              autoDismiss: true,
+              appearance: 'error',
+            });
+          } finally {
+            setIsTesting(false);
+          }
         };
 
         return (
@@ -425,21 +455,22 @@ const NotificationsEmail: React.FC = () => {
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="warning"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                       onClick={(e) => {
                         e.preventDefault();
-
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(globalMessages.test)}
+                      {isTesting
+                        ? intl.formatMessage(globalMessages.testing)
+                        : intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                     >
                       {isSubmitting
                         ? intl.formatMessage(globalMessages.saving)

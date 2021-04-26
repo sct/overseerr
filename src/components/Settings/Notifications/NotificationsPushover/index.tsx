@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -19,14 +19,17 @@ const messages = defineMessages({
   validationUserTokenRequired: 'You must provide a valid user key',
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
-  testsent: 'Pushover test notification sent!',
+  toastPushoverTestSending: 'Sending Pushover test notification…',
+  toastPushoverTestSuccess: 'Pushover test notification sent!',
+  toastPushoverTestFailed: 'Pushover test notification failed to send.',
   settinguppushoverDescription:
-    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink> and enter the API token below. (You can use one of the <IconLink>official Overseerr icons on GitHub</IconLink>.)',
+    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink>. (You can use one of the <IconLink>official Overseerr icons on GitHub</IconLink>.)',
 });
 
 const NotificationsPushover: React.FC = () => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  const { addToast, removeToast } = useToasts();
+  const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/pushover'
   );
@@ -97,19 +100,46 @@ const NotificationsPushover: React.FC = () => {
     >
       {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
-          await axios.post('/api/v1/settings/notifications/pushover/test', {
-            enabled: true,
-            types: values.types,
-            options: {
-              accessToken: values.accessToken,
-              userToken: values.userToken,
-            },
-          });
+          setIsTesting(true);
+          let toastId: string | undefined;
+          try {
+            addToast(
+              intl.formatMessage(messages.toastPushoverTestSending),
+              {
+                autoDismiss: false,
+                appearance: 'info',
+              },
+              (id) => {
+                toastId = id;
+              }
+            );
+            await axios.post('/api/v1/settings/notifications/pushover/test', {
+              enabled: true,
+              types: values.types,
+              options: {
+                accessToken: values.accessToken,
+                userToken: values.userToken,
+              },
+            });
 
-          addToast(intl.formatMessage(messages.testsent), {
-            appearance: 'info',
-            autoDismiss: true,
-          });
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastPushoverTestSuccess), {
+              autoDismiss: true,
+              appearance: 'success',
+            });
+          } catch (e) {
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastPushoverTestFailed), {
+              autoDismiss: true,
+              appearance: 'error',
+            });
+          } finally {
+            setIsTesting(false);
+          }
         };
 
         return (
@@ -199,21 +229,22 @@ const NotificationsPushover: React.FC = () => {
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="warning"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                       onClick={(e) => {
                         e.preventDefault();
-
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(globalMessages.test)}
+                      {isTesting
+                        ? intl.formatMessage(globalMessages.testing)
+                        : intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                     >
                       {isSubmitting
                         ? intl.formatMessage(globalMessages.saving)

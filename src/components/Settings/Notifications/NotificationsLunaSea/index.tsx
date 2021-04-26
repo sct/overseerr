@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -18,12 +18,15 @@ const messages = defineMessages({
   profileNameTip: 'Only required if not using the <code>default</code> profile',
   settingsSaved: 'LunaSea notification settings saved successfully!',
   settingsFailed: 'LunaSea notification settings failed to save.',
-  testSent: 'LunaSea test notification sent!',
+  toastLunaSeaTestSending: 'Sending LunaSea test notification…',
+  toastLunaSeaTestSuccess: 'LunaSea test notification sent!',
+  toastLunaSeaTestFailed: 'LunaSea test notification failed to send.',
 });
 
 const NotificationsLunaSea: React.FC = () => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  const { addToast, removeToast } = useToasts();
+  const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/lunasea'
   );
@@ -79,19 +82,46 @@ const NotificationsLunaSea: React.FC = () => {
     >
       {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
-          await axios.post('/api/v1/settings/notifications/lunasea/test', {
-            enabled: true,
-            types: values.types,
-            options: {
-              webhookUrl: values.webhookUrl,
-              profileName: values.profileName,
-            },
-          });
+          setIsTesting(true);
+          let toastId: string | undefined;
+          try {
+            addToast(
+              intl.formatMessage(messages.toastLunaSeaTestSending),
+              {
+                autoDismiss: false,
+                appearance: 'info',
+              },
+              (id) => {
+                toastId = id;
+              }
+            );
+            await axios.post('/api/v1/settings/notifications/lunasea/test', {
+              enabled: true,
+              types: values.types,
+              options: {
+                webhookUrl: values.webhookUrl,
+                profileName: values.profileName,
+              },
+            });
 
-          addToast(intl.formatMessage(messages.testSent), {
-            appearance: 'info',
-            autoDismiss: true,
-          });
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastLunaSeaTestSuccess), {
+              autoDismiss: true,
+              appearance: 'success',
+            });
+          } catch (e) {
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastLunaSeaTestFailed), {
+              autoDismiss: true,
+              appearance: 'error',
+            });
+          } finally {
+            setIsTesting(false);
+          }
         };
 
         return (
@@ -144,21 +174,22 @@ const NotificationsLunaSea: React.FC = () => {
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="warning"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || !isValid || isTesting}
                     onClick={(e) => {
                       e.preventDefault();
-
                       testSettings();
                     }}
                   >
-                    {intl.formatMessage(globalMessages.test)}
+                    {isTesting
+                      ? intl.formatMessage(globalMessages.testing)
+                      : intl.formatMessage(globalMessages.test)}
                   </Button>
                 </span>
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || !isValid || isTesting}
                   >
                     {isSubmitting
                       ? intl.formatMessage(globalMessages.saving)

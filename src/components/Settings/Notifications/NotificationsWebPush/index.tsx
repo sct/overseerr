@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -13,12 +13,15 @@ const messages = defineMessages({
   agentenabled: 'Enable Agent',
   webpushsettingssaved: 'Web push notification settings saved successfully!',
   webpushsettingsfailed: 'Web push notification settings failed to save.',
-  testsent: 'Web push test notification sent!',
+  toastWebPushTestSending: 'Sending web push test notification…',
+  toastWebPushTestSuccess: 'Web push test notification sent!',
+  toastWebPushTestFailed: 'Web push test notification failed to send.',
 });
 
 const NotificationsWebPush: React.FC = () => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  const { addToast, removeToast } = useToasts();
+  const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/webpush'
   );
@@ -57,16 +60,43 @@ const NotificationsWebPush: React.FC = () => {
       >
         {({ isSubmitting, values, isValid, setFieldValue }) => {
           const testSettings = async () => {
-            await axios.post('/api/v1/settings/notifications/webpush/test', {
-              enabled: true,
-              types: values.types,
-              options: {},
-            });
+            setIsTesting(true);
+            let toastId: string | undefined;
+            try {
+              addToast(
+                intl.formatMessage(messages.toastWebPushTestSending),
+                {
+                  autoDismiss: false,
+                  appearance: 'info',
+                },
+                (id) => {
+                  toastId = id;
+                }
+              );
+              await axios.post('/api/v1/settings/notifications/webpush/test', {
+                enabled: true,
+                types: values.types,
+                options: {},
+              });
 
-            addToast(intl.formatMessage(messages.testsent), {
-              appearance: 'info',
-              autoDismiss: true,
-            });
+              if (toastId) {
+                removeToast(toastId);
+              }
+              addToast(intl.formatMessage(messages.toastWebPushTestSuccess), {
+                autoDismiss: true,
+                appearance: 'success',
+              });
+            } catch (e) {
+              if (toastId) {
+                removeToast(toastId);
+              }
+              addToast(intl.formatMessage(messages.toastWebPushTestFailed), {
+                autoDismiss: true,
+                appearance: 'error',
+              });
+            } finally {
+              setIsTesting(false);
+            }
           };
 
           return (
@@ -88,21 +118,22 @@ const NotificationsWebPush: React.FC = () => {
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="warning"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                       onClick={(e) => {
                         e.preventDefault();
-
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(globalMessages.test)}
+                      {isTesting
+                        ? intl.formatMessage(globalMessages.testing)
+                        : intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                     >
                       {isSubmitting
                         ? intl.formatMessage(globalMessages.saving)

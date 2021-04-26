@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -18,13 +18,16 @@ const messages = defineMessages({
   webhookUrlPlaceholder: 'Server Settings → Integrations → Webhooks',
   discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
-  discordtestsent: 'Discord test notification sent!',
+  toastDiscordTestSending: 'Sending Discord test notification…',
+  toastDiscordTestSuccess: 'Discord test notification sent!',
+  toastDiscordTestFailed: 'Discord test notification failed to send.',
   validationUrl: 'You must provide a valid URL',
 });
 
 const NotificationsDiscord: React.FC = () => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  const { addToast, removeToast } = useToasts();
+  const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/discord'
   );
@@ -86,20 +89,47 @@ const NotificationsDiscord: React.FC = () => {
     >
       {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
-          await axios.post('/api/v1/settings/notifications/discord/test', {
-            enabled: true,
-            types: values.types,
-            options: {
-              botUsername: values.botUsername,
-              botAvatarUrl: values.botAvatarUrl,
-              webhookUrl: values.webhookUrl,
-            },
-          });
+          setIsTesting(true);
+          let toastId: string | undefined;
+          try {
+            addToast(
+              intl.formatMessage(messages.toastDiscordTestSending),
+              {
+                autoDismiss: false,
+                appearance: 'info',
+              },
+              (id) => {
+                toastId = id;
+              }
+            );
+            await axios.post('/api/v1/settings/notifications/discord/test', {
+              enabled: true,
+              types: values.types,
+              options: {
+                botUsername: values.botUsername,
+                botAvatarUrl: values.botAvatarUrl,
+                webhookUrl: values.webhookUrl,
+              },
+            });
 
-          addToast(intl.formatMessage(messages.discordtestsent), {
-            appearance: 'info',
-            autoDismiss: true,
-          });
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastDiscordTestSuccess), {
+              autoDismiss: true,
+              appearance: 'success',
+            });
+          } catch (e) {
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastDiscordTestFailed), {
+              autoDismiss: true,
+              appearance: 'error',
+            });
+          } finally {
+            setIsTesting(false);
+          }
         };
 
         return (
@@ -178,21 +208,22 @@ const NotificationsDiscord: React.FC = () => {
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="warning"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || !isValid || isTesting}
                     onClick={(e) => {
                       e.preventDefault();
-
                       testSettings();
                     }}
                   >
-                    {intl.formatMessage(globalMessages.test)}
+                    {isTesting
+                      ? intl.formatMessage(globalMessages.testing)
+                      : intl.formatMessage(globalMessages.test)}
                   </Button>
                 </span>
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || !isValid || isTesting}
                   >
                     {isSubmitting
                       ? intl.formatMessage(globalMessages.saving)

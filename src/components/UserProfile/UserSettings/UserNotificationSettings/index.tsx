@@ -19,8 +19,6 @@ const messages = defineMessages({
   notificationsettings: 'Notification Settings',
   email: 'Email',
   webpush: 'Web Push',
-  toastSettingsSuccess: 'Notification settings saved successfully!',
-  toastSettingsFailure: 'Something went wrong while saving settings.',
 });
 
 const UserNotificationSettings: React.FC = ({ children }) => {

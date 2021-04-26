@@ -28,23 +28,30 @@ notificationRoutes.post('/discord', (req, res) => {
   res.status(200).json(settings.notifications.agents.discord);
 });
 
-notificationRoutes.post('/discord/test', (req, res, next) => {
+notificationRoutes.post('/discord/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
   const discordAgent = new DiscordAgent(req.body);
-  discordAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
+  if (
+    await discordAgent.send(Notification.TEST_NOTIFICATION, {
+      notifyUser: req.user,
+      subject: 'Test Notification',
+      message:
+        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+    })
+  ) {
+    return res.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send Discord notification.',
+    });
+  }
 });
 
 notificationRoutes.get('/slack', (_req, res) => {
@@ -62,23 +69,30 @@ notificationRoutes.post('/slack', (req, res) => {
   res.status(200).json(settings.notifications.agents.slack);
 });
 
-notificationRoutes.post('/slack/test', (req, res, next) => {
+notificationRoutes.post('/slack/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
   const slackAgent = new SlackAgent(req.body);
-  slackAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
+  if (
+    await slackAgent.send(Notification.TEST_NOTIFICATION, {
+      notifyUser: req.user,
+      subject: 'Test Notification',
+      message:
+        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+    })
+  ) {
+    return res.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send Slack notification.',
+    });
+  }
 });
 
 notificationRoutes.get('/telegram', (_req, res) => {
@@ -96,23 +110,30 @@ notificationRoutes.post('/telegram', (req, res) => {
   res.status(200).json(settings.notifications.agents.telegram);
 });
 
-notificationRoutes.post('/telegram/test', (req, res, next) => {
+notificationRoutes.post('/telegram/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
   const telegramAgent = new TelegramAgent(req.body);
-  telegramAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
+  if (
+    await telegramAgent.send(Notification.TEST_NOTIFICATION, {
+      notifyUser: req.user,
+      subject: 'Test Notification',
+      message:
+        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+    })
+  ) {
+    return res.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send Telegram notification.',
+    });
+  }
 });
 
 notificationRoutes.get('/pushbullet', (_req, res) => {
@@ -130,23 +151,30 @@ notificationRoutes.post('/pushbullet', (req, res) => {
   res.status(200).json(settings.notifications.agents.pushbullet);
 });
 
-notificationRoutes.post('/pushbullet/test', (req, res, next) => {
+notificationRoutes.post('/pushbullet/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
   const pushbulletAgent = new PushbulletAgent(req.body);
-  pushbulletAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
+  if (
+    await pushbulletAgent.send(Notification.TEST_NOTIFICATION, {
+      notifyUser: req.user,
+      subject: 'Test Notification',
+      message:
+        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+    })
+  ) {
+    return res.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send Pushbullet notification.',
+    });
+  }
 });
 
 notificationRoutes.get('/pushover', (_req, res) => {
@@ -164,23 +192,30 @@ notificationRoutes.post('/pushover', (req, res) => {
   res.status(200).json(settings.notifications.agents.pushover);
 });
 
-notificationRoutes.post('/pushover/test', (req, res, next) => {
+notificationRoutes.post('/pushover/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
   const pushoverAgent = new PushoverAgent(req.body);
-  pushoverAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
+  if (
+    await pushoverAgent.send(Notification.TEST_NOTIFICATION, {
+      notifyUser: req.user,
+      subject: 'Test Notification',
+      message:
+        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+    })
+  ) {
+    return res.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send Pushover notification.',
+    });
+  }
 });
 
 notificationRoutes.get('/email', (_req, res) => {
@@ -198,23 +233,30 @@ notificationRoutes.post('/email', (req, res) => {
   res.status(200).json(settings.notifications.agents.email);
 });
 
-notificationRoutes.post('/email/test', (req, res, next) => {
+notificationRoutes.post('/email/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
   const emailAgent = new EmailAgent(req.body);
-  emailAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
+  if (
+    await emailAgent.send(Notification.TEST_NOTIFICATION, {
+      notifyUser: req.user,
+      subject: 'Test Notification',
+      message:
+        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+    })
+  ) {
+    return res.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send email notification.',
+    });
+  }
 });
 
 notificationRoutes.get('/webpush', (_req, res) => {
@@ -232,7 +274,7 @@ notificationRoutes.post('/webpush', (req, res) => {
   res.status(200).json(settings.notifications.agents.webpush);
 });
 
-notificationRoutes.post('/webpush/test', (req, res, next) => {
+notificationRoutes.post('/webpush/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
@@ -241,14 +283,21 @@ notificationRoutes.post('/webpush/test', (req, res, next) => {
   }
 
   const webpushAgent = new WebPushAgent(req.body);
-  webpushAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
+  if (
+    await webpushAgent.send(Notification.TEST_NOTIFICATION, {
+      notifyUser: req.user,
+      subject: 'Test Notification',
+      message:
+        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+    })
+  ) {
+    return res.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send web push notification.',
+    });
+  }
 });
 
 notificationRoutes.get('/webhook', (_req, res) => {
@@ -296,11 +345,11 @@ notificationRoutes.post('/webhook', (req, res, next) => {
   }
 });
 
-notificationRoutes.post('/webhook/test', (req, res, next) => {
+notificationRoutes.post('/webhook/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
@@ -320,14 +369,21 @@ notificationRoutes.post('/webhook/test', (req, res, next) => {
     };
 
     const webhookAgent = new WebhookAgent(testBody);
-    webhookAgent.send(Notification.TEST_NOTIFICATION, {
-      notifyUser: req.user,
-      subject: 'Test Notification',
-      message:
-        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-    });
-
-    return res.status(204).send();
+    if (
+      await webhookAgent.send(Notification.TEST_NOTIFICATION, {
+        notifyUser: req.user,
+        subject: 'Test Notification',
+        message:
+          'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+      })
+    ) {
+      return res.status(204).send();
+    } else {
+      return next({
+        status: 500,
+        message: 'Failed to send webhook notification.',
+      });
+    }
   } catch (e) {
     next({ status: 500, message: e.message });
   }
@@ -348,7 +404,7 @@ notificationRoutes.post('/lunasea', (req, res) => {
   res.status(200).json(settings.notifications.agents.lunasea);
 });
 
-notificationRoutes.post('/lunasea/test', (req, res, next) => {
+notificationRoutes.post('/lunasea/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
@@ -357,14 +413,21 @@ notificationRoutes.post('/lunasea/test', (req, res, next) => {
   }
 
   const lunaseaAgent = new LunaSeaAgent(req.body);
-  lunaseaAgent.send(Notification.TEST_NOTIFICATION, {
-    notifyUser: req.user,
-    subject: 'Test Notification',
-    message:
-      'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-  });
-
-  return res.status(204).send();
+  if (
+    await lunaseaAgent.send(Notification.TEST_NOTIFICATION, {
+      notifyUser: req.user,
+      subject: 'Test Notification',
+      message:
+        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+    })
+  ) {
+    return res.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send web push notification.',
+    });
+  }
 });
 
 export default notificationRoutes;

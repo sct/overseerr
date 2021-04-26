@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -16,7 +16,9 @@ const messages = defineMessages({
   webhookUrl: 'Webhook URL',
   slacksettingssaved: 'Slack notification settings saved successfully!',
   slacksettingsfailed: 'Slack notification settings failed to save.',
-  testsent: 'Slack test notification sent!',
+  toastSlackTestSending: 'Sending Slack test notification…',
+  toastSlackTestSuccess: 'Slack test notification sent!',
+  toastSlackTestFailed: 'Slack test notification failed to send.',
   settingupslackDescription:
     'To configure Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and enter the webhook URL below.',
   validationWebhookUrl: 'You must provide a valid URL',
@@ -24,7 +26,8 @@ const messages = defineMessages({
 
 const NotificationsSlack: React.FC = () => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  const { addToast, removeToast } = useToasts();
+  const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/slack'
   );
@@ -103,18 +106,45 @@ const NotificationsSlack: React.FC = () => {
           setFieldValue,
         }) => {
           const testSettings = async () => {
-            await axios.post('/api/v1/settings/notifications/slack/test', {
-              enabled: true,
-              types: values.types,
-              options: {
-                webhookUrl: values.webhookUrl,
-              },
-            });
+            setIsTesting(true);
+            let toastId: string | undefined;
+            try {
+              addToast(
+                intl.formatMessage(messages.toastSlackTestSending),
+                {
+                  autoDismiss: false,
+                  appearance: 'info',
+                },
+                (id) => {
+                  toastId = id;
+                }
+              );
+              await axios.post('/api/v1/settings/notifications/slack/test', {
+                enabled: true,
+                types: values.types,
+                options: {
+                  webhookUrl: values.webhookUrl,
+                },
+              });
 
-            addToast(intl.formatMessage(messages.testsent), {
-              appearance: 'info',
-              autoDismiss: true,
-            });
+              if (toastId) {
+                removeToast(toastId);
+              }
+              addToast(intl.formatMessage(messages.toastSlackTestSuccess), {
+                autoDismiss: true,
+                appearance: 'success',
+              });
+            } catch (e) {
+              if (toastId) {
+                removeToast(toastId);
+              }
+              addToast(intl.formatMessage(messages.toastSlackTestFailed), {
+                autoDismiss: true,
+                appearance: 'error',
+              });
+            } finally {
+              setIsTesting(false);
+            }
           };
 
           return (
@@ -150,21 +180,22 @@ const NotificationsSlack: React.FC = () => {
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="warning"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                       onClick={(e) => {
                         e.preventDefault();
-
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(globalMessages.test)}
+                      {isTesting
+                        ? intl.formatMessage(globalMessages.testing)
+                        : intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                     >
                       {isSubmitting
                         ? intl.formatMessage(globalMessages.saving)

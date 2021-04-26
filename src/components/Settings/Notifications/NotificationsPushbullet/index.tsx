@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -18,14 +18,17 @@ const messages = defineMessages({
   pushbulletSettingsSaved:
     'Pushbullet notification settings saved successfully!',
   pushbulletSettingsFailed: 'Pushbullet notification settings failed to save.',
-  testSent: 'Pushbullet test notification sent!',
+  toastPushbulletTestSending: 'Sending Pushbullet test notification…',
+  toastPushbulletTestSuccess: 'Pushbullet test notification sent!',
+  toastPushbulletTestFailed: 'Pushbullet test notification failed to send.',
   settingUpPushbulletDescription:
     'To configure Pushbullet notifications, you will need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink>.',
 });
 
 const NotificationsPushbullet: React.FC = () => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  const { addToast, removeToast } = useToasts();
+  const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/pushbullet'
   );
@@ -77,18 +80,45 @@ const NotificationsPushbullet: React.FC = () => {
     >
       {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
-          await axios.post('/api/v1/settings/notifications/pushbullet/test', {
-            enabled: true,
-            types: values.types,
-            options: {
-              accessToken: values.accessToken,
-            },
-          });
+          setIsTesting(true);
+          let toastId: string | undefined;
+          try {
+            addToast(
+              intl.formatMessage(messages.toastPushbulletTestSending),
+              {
+                autoDismiss: false,
+                appearance: 'info',
+              },
+              (id) => {
+                toastId = id;
+              }
+            );
+            await axios.post('/api/v1/settings/notifications/pushbullet/test', {
+              enabled: true,
+              types: values.types,
+              options: {
+                accessToken: values.accessToken,
+              },
+            });
 
-          addToast(intl.formatMessage(messages.testSent), {
-            appearance: 'info',
-            autoDismiss: true,
-          });
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastPushbulletTestSuccess), {
+              autoDismiss: true,
+              appearance: 'success',
+            });
+          } catch (e) {
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastPushbulletTestFailed), {
+              autoDismiss: true,
+              appearance: 'error',
+            });
+          } finally {
+            setIsTesting(false);
+          }
         };
 
         return (
@@ -150,21 +180,22 @@ const NotificationsPushbullet: React.FC = () => {
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="warning"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                       onClick={(e) => {
                         e.preventDefault();
-
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(globalMessages.test)}
+                      {isTesting
+                        ? intl.formatMessage(globalMessages.testing)
+                        : intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                     >
                       {isSubmitting
                         ? intl.formatMessage(globalMessages.saving)
