@@ -126,6 +126,9 @@ components:
         localLogin:
           type: boolean
           example: true
+        newPlexLogin:
+          type: boolean
+          example: true
         defaultPermissions:
           type: number
           example: 32
