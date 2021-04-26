@@ -28,6 +28,7 @@ const messages = defineMessages({
   ssl: 'SSL',
   default: 'Default',
   default4k: 'Default 4K',
+  is4k: '4K',
   address: 'Address',
   activeProfile: 'Active Profile',
   addradarr: 'Add Radarr Server',
@@ -36,6 +37,8 @@ const messages = defineMessages({
     'At least one {serverType} server must be marked as default in order for {mediaType} requests to be processed.',
   noDefaultNon4kServer:
     'If you only have a single {serverType} server for both non-4K and 4K content (or if you only download 4K content), your {serverType} server should <strong>NOT</strong> be designated as a 4K server.',
+  noDefault4kServer:
+    'A 4K {serverType} server must be marked as default in order to enable users to submit 4K {mediaType} requests.',
   mediaTypeMovie: 'movie',
   mediaTypeSeries: 'series',
 });
@@ -43,7 +46,7 @@ const messages = defineMessages({
 interface ServerInstanceProps {
   name: string;
   isDefault?: boolean;
-  isDefault4K?: boolean;
+  is4k?: boolean;
   hostname: string;
   port: number;
   isSSL?: boolean;
@@ -59,7 +62,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
   hostname,
   port,
   profileName,
-  isDefault4K = false,
+  is4k = false,
   isDefault = false,
   isSSL = false,
   isSonarr = false,
@@ -77,7 +80,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
     <li className="col-span-1 bg-gray-700 rounded-lg shadow">
       <div className="flex items-center justify-between w-full p-6 space-x-6">
         <div className="flex-1 truncate">
-          <div className="flex items-center mb-2 space-x-3">
+          <div className="flex items-center mb-2 space-x-2">
             <h3 className="font-medium leading-5 text-white truncate">
               <a
                 href={serviceUrl}
@@ -86,10 +89,15 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
                 {name}
               </a>
             </h3>
-            {isDefault && <Badge>{intl.formatMessage(messages.default)}</Badge>}
-            {isDefault4K && (
+            {isDefault && !is4k && (
+              <Badge>{intl.formatMessage(messages.default)}</Badge>
+            )}
+            {isDefault && is4k && (
+              <Badge>{intl.formatMessage(messages.default4k)}</Badge>
+            )}
+            {!isDefault && is4k && (
               <Badge badgeType="warning">
-                {intl.formatMessage(messages.default4k)}
+                {intl.formatMessage(messages.is4k)}
               </Badge>
             )}
             {isSSL && (
@@ -274,20 +282,30 @@ const SettingsServices: React.FC = () => {
                     mediaType: intl.formatMessage(messages.mediaTypeMovie),
                   })}
                 />
-              ) : (
-                !radarrData.some(
+              ) : !radarrData.some(
                   (radarr) => radarr.isDefault && !radarr.is4k
+                ) ? (
+                <Alert
+                  title={intl.formatMessage(messages.noDefaultNon4kServer, {
+                    serverType: 'Radarr',
+                    strong: function strong(msg) {
+                      return (
+                        <strong className="font-semibold text-yellow-100">
+                          {msg}
+                        </strong>
+                      );
+                    },
+                  })}
+                />
+              ) : (
+                radarrData.some((radarr) => radarr.is4k) &&
+                !radarrData.some(
+                  (radarr) => radarr.isDefault && radarr.is4k
                 ) && (
                   <Alert
-                    title={intl.formatMessage(messages.noDefaultNon4kServer, {
+                    title={intl.formatMessage(messages.noDefault4kServer, {
                       serverType: 'Radarr',
-                      strong: function strong(msg) {
-                        return (
-                          <strong className="font-semibold text-yellow-100">
-                            {msg}
-                          </strong>
-                        );
-                      },
+                      mediaType: intl.formatMessage(messages.mediaTypeMovie),
                     })}
                   />
                 )
@@ -301,8 +319,8 @@ const SettingsServices: React.FC = () => {
                   port={radarr.port}
                   profileName={radarr.activeProfileName}
                   isSSL={radarr.useSsl}
-                  isDefault={radarr.isDefault && !radarr.is4k}
-                  isDefault4K={radarr.is4k && radarr.isDefault}
+                  isDefault={radarr.isDefault}
+                  is4k={radarr.is4k}
                   externalUrl={radarr.externalUrl}
                   onEdit={() => setEditRadarrModal({ open: true, radarr })}
                   onDelete={() =>
@@ -354,20 +372,30 @@ const SettingsServices: React.FC = () => {
                     mediaType: intl.formatMessage(messages.mediaTypeSeries),
                   })}
                 />
-              ) : (
-                !sonarrData.some(
+              ) : !sonarrData.some(
                   (sonarr) => sonarr.isDefault && !sonarr.is4k
+                ) ? (
+                <Alert
+                  title={intl.formatMessage(messages.noDefaultNon4kServer, {
+                    serverType: 'Sonarr',
+                    strong: function strong(msg) {
+                      return (
+                        <strong className="font-semibold text-yellow-100">
+                          {msg}
+                        </strong>
+                      );
+                    },
+                  })}
+                />
+              ) : (
+                sonarrData.some((sonarr) => sonarr.is4k) &&
+                !sonarrData.some(
+                  (sonarr) => sonarr.isDefault && sonarr.is4k
                 ) && (
                   <Alert
-                    title={intl.formatMessage(messages.noDefaultNon4kServer, {
+                    title={intl.formatMessage(messages.noDefault4kServer, {
                       serverType: 'Sonarr',
-                      strong: function strong(msg) {
-                        return (
-                          <strong className="font-semibold text-yellow-100">
-                            {msg}
-                          </strong>
-                        );
-                      },
+                      mediaType: intl.formatMessage(messages.mediaTypeSeries),
                     })}
                   />
                 )
@@ -382,8 +410,8 @@ const SettingsServices: React.FC = () => {
                   profileName={sonarr.activeProfileName}
                   isSSL={sonarr.useSsl}
                   isSonarr
-                  isDefault4K={sonarr.isDefault && sonarr.is4k}
-                  isDefault={sonarr.isDefault && !sonarr.is4k}
+                  isDefault={sonarr.isDefault}
+                  is4k={sonarr.is4k}
                   externalUrl={sonarr.externalUrl}
                   onEdit={() => setEditSonarrModal({ open: true, sonarr })}
                   onDelete={() =>
