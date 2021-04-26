@@ -19,7 +19,7 @@ const messages = defineMessages({
   discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
   toastDiscordTestSending: 'Sending Discord test notification…',
-  toastDiscordTestSuccess: 'Discord test notification sent successfully!',
+  toastDiscordTestSuccess: 'Discord test notification sent!',
   toastDiscordTestFailed: 'Discord test notification failed to send.',
   validationUrl: 'You must provide a valid URL',
 });

@@ -14,7 +14,7 @@ const messages = defineMessages({
   webpushsettingssaved: 'Web push notification settings saved successfully!',
   webpushsettingsfailed: 'Web push notification settings failed to save.',
   toastWebPushTestSending: 'Sending web push test notification…',
-  toastWebPushTestSuccess: 'Web push test notification sent successfully!',
+  toastWebPushTestSuccess: 'Web push test notification sent!',
   toastWebPushTestFailed: 'Web push test notification failed to send.',
 });
 

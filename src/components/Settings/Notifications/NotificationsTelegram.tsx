@@ -23,7 +23,7 @@ const messages = defineMessages({
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   toastTelegramTestSending: 'Sending Telegram test notification…',
-  toastTelegramTestSuccess: 'Telegram test notification sent successfully!',
+  toastTelegramTestSuccess: 'Telegram test notification sent!',
   toastTelegramTestFailed: 'Telegram test notification failed to send.',
   settinguptelegramDescription:
     'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key. Additionally, you will need the chat ID for the chat to which you would like to send notifications. You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',

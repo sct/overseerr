@@ -19,7 +19,7 @@ const messages = defineMessages({
   settingsSaved: 'LunaSea notification settings saved successfully!',
   settingsFailed: 'LunaSea notification settings failed to save.',
   toastLunaSeaTestSending: 'Sending LunaSea test notification…',
-  toastLunaSeaTestSuccess: 'LunaSea test notification sent successfully!',
+  toastLunaSeaTestSuccess: 'LunaSea test notification sent!',
   toastLunaSeaTestFailed: 'LunaSea test notification failed to send.',
 });
 

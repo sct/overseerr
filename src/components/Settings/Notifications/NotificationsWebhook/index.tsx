@@ -47,7 +47,7 @@ const messages = defineMessages({
   webhooksettingssaved: 'Webhook notification settings saved successfully!',
   webhooksettingsfailed: 'Webhook notification settings failed to save.',
   toastWebhookTestSending: 'Sending webhook test notification…',
-  toastWebhookTestSuccess: 'Webhook test notification sent successfully!',
+  toastWebhookTestSuccess: 'Webhook test notification sent!',
   toastWebhookTestFailed: 'Webhook test notification failed to send.',
   resetPayload: 'Reset to Default',
   resetPayloadSuccess: 'JSON payload reset successfully!',

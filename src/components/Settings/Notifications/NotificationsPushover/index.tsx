@@ -20,7 +20,7 @@ const messages = defineMessages({
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   toastPushoverTestSending: 'Sending Pushover test notification…',
-  toastPushoverTestSuccess: 'Pushover test notification sent successfully!',
+  toastPushoverTestSuccess: 'Pushover test notification sent!',
   toastPushoverTestFailed: 'Pushover test notification failed to send.',
   settinguppushoverDescription:
     'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink>. (You can use one of the <IconLink>official Overseerr icons on GitHub</IconLink>.)',

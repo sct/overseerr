@@ -19,7 +19,7 @@ const messages = defineMessages({
     'Pushbullet notification settings saved successfully!',
   pushbulletSettingsFailed: 'Pushbullet notification settings failed to save.',
   toastPushbulletTestSending: 'Sending Pushbullet test notification…',
-  toastPushbulletTestSuccess: 'Pushbullet test notification sent successfully!',
+  toastPushbulletTestSuccess: 'Pushbullet test notification sent!',
   toastPushbulletTestFailed: 'Pushbullet test notification failed to send.',
   settingUpPushbulletDescription:
     'To configure Pushbullet notifications, you will need to <CreateAccessTokenLink>create an access token</CreateAccessTokenLink>.',

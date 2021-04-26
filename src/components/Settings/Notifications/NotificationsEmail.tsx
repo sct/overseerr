@@ -25,7 +25,7 @@ const messages = defineMessages({
   emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
   toastEmailTestSending: 'Sending email test notification…',
-  toastEmailTestSuccess: 'Email test notification sent successfully!',
+  toastEmailTestSuccess: 'Email test notification sent!',
   toastEmailTestFailed: 'Email test notification failed to send.',
   allowselfsigned: 'Allow Self-Signed Certificates',
   ssldisabletip:

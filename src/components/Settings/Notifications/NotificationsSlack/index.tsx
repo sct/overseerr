@@ -17,7 +17,7 @@ const messages = defineMessages({
   slacksettingssaved: 'Slack notification settings saved successfully!',
   slacksettingsfailed: 'Slack notification settings failed to save.',
   toastSlackTestSending: 'Sending Slack test notification…',
-  toastSlackTestSuccess: 'Slack test notification sent successfully!',
+  toastSlackTestSuccess: 'Slack test notification sent!',
   toastSlackTestFailed: 'Slack test notification failed to send.',
   settingupslackDescription:
     'To configure Slack notifications, you will need to create an <WebhookLink>Incoming Webhook</WebhookLink> integration and enter the webhook URL below.',
