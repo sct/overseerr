@@ -11,7 +11,7 @@ import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import { ALL_NOTIFICATIONS } from '../../../NotificationTypeSelector';
+import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   discordsettingssaved: 'Discord notification settings saved successfully!',
@@ -21,6 +21,7 @@ const messages = defineMessages({
   discordIdTip:
     'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your user account',
   validationDiscordId: 'You must provide a valid user ID',
+  validationTypes: 'You must select at least one notification type',
 });
 
 const UserNotificationsDiscord: React.FC = () => {
@@ -42,6 +43,13 @@ const UserNotificationsDiscord: React.FC = () => {
         otherwise: Yup.string().nullable(),
       })
       .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
+    types: Yup.number().when('enableDiscord', {
+      is: true,
+      then: Yup.number()
+        .nullable()
+        .moreThan(0, intl.formatMessage(messages.validationTypes)),
+      otherwise: Yup.number().nullable(),
+    }),
   });
 
   if (!data && !error) {
@@ -53,6 +61,7 @@ const UserNotificationsDiscord: React.FC = () => {
       initialValues={{
         enableDiscord: !!data?.notificationTypes.discord,
         discordId: data?.discordId,
+        types: data?.notificationTypes.discord ?? 0,
       }}
       validationSchema={UserNotificationsDiscordSchema}
       enableReinitialize
@@ -64,7 +73,7 @@ const UserNotificationsDiscord: React.FC = () => {
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {
-              discord: values.enableDiscord ? ALL_NOTIFICATIONS : 0,
+              discord: values.enableDiscord ? values.types : 0,
             },
           });
           addToast(intl.formatMessage(messages.discordsettingssaved), {
@@ -81,10 +90,18 @@ const UserNotificationsDiscord: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, isValid }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        isValid,
+        values,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         return (
           <Form className="section">
-            {data?.discordEnabled && (
+            {!!data?.discordEnabledTypes && (
               <div className="form-row">
                 <label htmlFor="enableDiscord" className="checkbox-label">
                   {intl.formatMessage(messages.enableDiscord)}
@@ -127,6 +144,23 @@ const UserNotificationsDiscord: React.FC = () => {
                 )}
               </div>
             </div>
+            {!!data?.discordEnabledTypes && (
+              <NotificationTypeSelector
+                disabled={!values.enableDiscord}
+                user={user}
+                enabledTypes={data?.discordEnabledTypes ?? 0}
+                currentTypes={values.types}
+                onUpdate={(newTypes) => {
+                  setFieldValue('types', newTypes);
+                  setFieldTouched('types');
+                }}
+                error={
+                  errors.types && touched.types
+                    ? (errors.types as string)
+                    : undefined
+                }
+              />
+            )}
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

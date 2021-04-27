@@ -1213,8 +1213,6 @@ components:
               type: string
             userToken:
               type: string
-            priority:
-              type: number
     LunaSeaSettings:
       type: object
       properties:
@@ -1597,8 +1595,9 @@ components:
         pgpKey:
           type: string
           nullable: true
-        discordEnabled:
-          type: boolean
+        discordEnabledTypes:
+          type: number
+          nullable: true
         discordId:
           type: string
           nullable: true

@@ -43,6 +43,18 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       hidden: !data?.emailEnabled,
     },
     {
+      text: intl.formatMessage(messages.webpush),
+      content: (
+        <span className="flex items-center">
+          <CloudIcon className="h-4 mr-2" />
+          {intl.formatMessage(messages.webpush)}
+        </span>
+      ),
+      route: '/settings/notifications/webpush',
+      regex: /\/settings\/notifications\/webpush/,
+      hidden: !data?.webPushEnabled,
+    },
+    {
       text: 'Discord',
       content: (
         <span className="flex items-center">
@@ -64,18 +76,6 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       route: '/settings/notifications/telegram',
       regex: /\/settings\/notifications\/telegram/,
       hidden: !data?.telegramEnabled || !data?.telegramBotUsername,
-    },
-    {
-      text: intl.formatMessage(messages.webpush),
-      content: (
-        <span className="flex items-center">
-          <CloudIcon className="h-4 mr-2" />
-          {intl.formatMessage(messages.webpush)}
-        </span>
-      ),
-      route: '/settings/notifications/webpush',
-      regex: /\/settings\/notifications\/webpush/,
-      hidden: !data?.webPushEnabled,
     },
   ];
 

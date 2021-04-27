@@ -8,7 +8,6 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
@@ -49,13 +48,11 @@ const NotificationsWebPush: React.FC = () => {
       <Formik
         initialValues={{
           enabled: data.enabled,
-          types: data.types,
         }}
         onSubmit={async (values) => {
           try {
             await axios.post('/api/v1/settings/notifications/webpush', {
               enabled: values.enabled,
-              types: values.types,
               options: {},
             });
             mutate('/api/v1/settings/public');
@@ -73,7 +70,7 @@ const NotificationsWebPush: React.FC = () => {
           }
         }}
       >
-        {({ isSubmitting, values, isValid, setFieldValue }) => {
+        {({ isSubmitting, isValid }) => {
           const testSettings = async () => {
             setIsTesting(true);
             let toastId: string | undefined;
@@ -90,7 +87,6 @@ const NotificationsWebPush: React.FC = () => {
               );
               await axios.post('/api/v1/settings/notifications/webpush/test', {
                 enabled: true,
-                types: values.types,
                 options: {},
               });
 
@@ -125,10 +121,6 @@ const NotificationsWebPush: React.FC = () => {
                   <Field type="checkbox" id="enabled" name="enabled" />
                 </div>
               </div>
-              <NotificationTypeSelector
-                currentTypes={values.types}
-                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
-              />
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="inline-flex ml-3 rounded-md shadow-sm">

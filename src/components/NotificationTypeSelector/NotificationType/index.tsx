@@ -6,6 +6,7 @@ interface NotificationTypeProps {
   currentTypes: number;
   parent?: NotificationItem;
   onUpdate: (newTypes: number) => void;
+  disabled?: boolean;
 }
 
 const NotificationType: React.FC<NotificationTypeProps> = ({
@@ -13,6 +14,7 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
   currentTypes,
   onUpdate,
   parent,
+  disabled = false,
 }) => {
   return (
     <>
@@ -29,7 +31,9 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
             name="permissions"
             type="checkbox"
             disabled={
-              !!parent?.value && hasNotificationType(parent.value, currentTypes)
+              disabled ||
+              (!!parent?.value &&
+                hasNotificationType(parent.value, currentTypes))
             }
             onClick={() => {
               onUpdate(
@@ -38,18 +42,21 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
                   : currentTypes + option.value
               );
             }}
-            defaultChecked={
-              hasNotificationType(option.value, currentTypes) ||
-              (!!parent?.value &&
-                hasNotificationType(parent.value, currentTypes))
+            checked={
+              !disabled &&
+              (hasNotificationType(option.value, currentTypes) ||
+                (!!parent?.value &&
+                  hasNotificationType(parent.value, currentTypes)))
             }
           />
         </div>
         <div className="ml-3 text-sm leading-6">
-          <label htmlFor={option.id} className="font-medium text-white">
-            {option.name}
+          <label htmlFor={option.id} className="block font-medium text-white">
+            <div className="flex flex-col">
+              <span>{option.name}</span>
+              <span className="text-gray-500">{option.description}</span>
+            </div>
           </label>
-          <p className="text-gray-500">{option.description}</p>
         </div>
       </div>
       {(option.children ?? []).map((child) => (
@@ -59,6 +66,7 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
             currentTypes={currentTypes}
             onUpdate={(newTypes) => onUpdate(newTypes)}
             parent={option}
+            disabled={disabled}
           />
         </div>
       ))}

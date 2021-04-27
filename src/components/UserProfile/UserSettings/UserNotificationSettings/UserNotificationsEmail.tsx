@@ -12,7 +12,9 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import { ALL_NOTIFICATIONS } from '../../../NotificationTypeSelector';
+import NotificationTypeSelector, {
+  ALL_NOTIFICATIONS,
+} from '../../../NotificationTypeSelector';
 import { OpenPgpLink } from '../../../Settings/Notifications/NotificationsEmail';
 
 const messages = defineMessages({
@@ -23,6 +25,7 @@ const messages = defineMessages({
   pgpPublicKeyTip:
     'Encrypt email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
   validationPgpPublicKey: 'You must provide a valid PGP public key',
+  validationTypes: 'You must select at least one notification type',
 });
 
 const UserEmailSettings: React.FC = () => {
@@ -41,6 +44,13 @@ const UserEmailSettings: React.FC = () => {
         /-----BEGIN PGP PUBLIC KEY BLOCK-----.+-----END PGP PUBLIC KEY BLOCK-----/s,
         intl.formatMessage(messages.validationPgpPublicKey)
       ),
+    types: Yup.number().when('enableEmail', {
+      is: true,
+      then: Yup.number()
+        .nullable()
+        .moreThan(0, intl.formatMessage(messages.validationTypes)),
+      otherwise: Yup.number().nullable(),
+    }),
   });
 
   if (!data && !error) {
@@ -52,6 +62,7 @@ const UserEmailSettings: React.FC = () => {
       initialValues={{
         enableEmail: !!(data?.notificationTypes.email ?? true),
         pgpKey: data?.pgpKey,
+        types: data?.notificationTypes.email ?? ALL_NOTIFICATIONS,
       }}
       validationSchema={UserNotificationsEmailSchema}
       enableReinitialize
@@ -63,7 +74,7 @@ const UserEmailSettings: React.FC = () => {
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {
-              email: values.enableEmail ? ALL_NOTIFICATIONS : 0,
+              email: values.enableEmail ? values.types : 0,
             },
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {
@@ -80,7 +91,15 @@ const UserEmailSettings: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, isValid }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        isValid,
+        values,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         return (
           <Form className="section">
             <div className="form-row">
@@ -120,6 +139,20 @@ const UserEmailSettings: React.FC = () => {
                 )}
               </div>
             </div>
+            <NotificationTypeSelector
+              disabled={!values.enableEmail}
+              user={user}
+              currentTypes={values.types}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

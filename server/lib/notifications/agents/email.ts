@@ -1,7 +1,7 @@
 import { EmailOptions } from 'email-templates';
 import path from 'path';
 import { getRepository } from 'typeorm';
-import { hasNotificationType, Notification } from '..';
+import { Notification } from '..';
 import { MediaType } from '../../../constants/media';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
@@ -28,12 +28,14 @@ class EmailAgent
     return settings.notifications.agents.email;
   }
 
-  public shouldSend(type: Notification): boolean {
+  public shouldSend(): boolean {
     const settings = this.getSettings();
 
     if (
       settings.enabled &&
-      hasNotificationType(type, this.getSettings().types)
+      settings.options.emailFrom &&
+      settings.options.smtpHost &&
+      settings.options.smtpPort
     ) {
       return true;
     }

@@ -11,7 +11,7 @@ import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import { ALL_NOTIFICATIONS } from '../../../NotificationTypeSelector';
+import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
@@ -23,6 +23,7 @@ const messages = defineMessages({
   sendSilently: 'Send Silently',
   sendSilentlyDescription: 'Send notifications with no sound',
   validationTelegramChatId: 'You must provide a valid chat ID',
+  validationTypes: 'You must select at least one notification type',
 });
 
 const UserTelegramSettings: React.FC = () => {
@@ -47,6 +48,13 @@ const UserTelegramSettings: React.FC = () => {
         /^-?\d+$/,
         intl.formatMessage(messages.validationTelegramChatId)
       ),
+    types: Yup.number().when('enableTelegram', {
+      is: true,
+      then: Yup.number()
+        .nullable()
+        .moreThan(0, intl.formatMessage(messages.validationTypes)),
+      otherwise: Yup.number().nullable(),
+    }),
   });
 
   if (!data && !error) {
@@ -59,6 +67,7 @@ const UserTelegramSettings: React.FC = () => {
         enableTelegram: !!data?.notificationTypes.telegram,
         telegramChatId: data?.telegramChatId,
         telegramSendSilently: data?.telegramSendSilently,
+        types: data?.notificationTypes.telegram ?? 0,
       }}
       validationSchema={UserNotificationsTelegramSchema}
       enableReinitialize
@@ -70,7 +79,7 @@ const UserTelegramSettings: React.FC = () => {
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
             notificationTypes: {
-              telegram: values.enableTelegram ? ALL_NOTIFICATIONS : 0,
+              telegram: values.enableTelegram ? values.types : 0,
             },
           });
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
@@ -87,7 +96,15 @@ const UserTelegramSettings: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, isValid }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        isValid,
+        values,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         return (
           <Form className="section">
             <div className="form-row">
@@ -166,6 +183,20 @@ const UserTelegramSettings: React.FC = () => {
                 />
               </div>
             </div>
+            <NotificationTypeSelector
+              disabled={!values.enableTelegram}
+              user={user}
+              currentTypes={values.types}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

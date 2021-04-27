@@ -25,6 +25,7 @@ const messages = defineMessages({
   toastPushoverTestSending: 'Sending Pushover test notification…',
   toastPushoverTestSuccess: 'Pushover test notification sent!',
   toastPushoverTestFailed: 'Pushover test notification failed to send.',
+  validationTypes: 'You must select at least one notification type',
 });
 
 const NotificationsPushover: React.FC = () => {
@@ -60,6 +61,13 @@ const NotificationsPushover: React.FC = () => {
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationUserTokenRequired)
       ),
+    types: Yup.number().when('enabled', {
+      is: true,
+      then: Yup.number()
+        .nullable()
+        .moreThan(0, intl.formatMessage(messages.validationTypes)),
+      otherwise: Yup.number().nullable(),
+    }),
   });
 
   if (!data && !error) {
@@ -99,7 +107,15 @@ const NotificationsPushover: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        values,
+        isValid,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         const testSettings = async () => {
           setIsTesting(true);
           let toastId: string | undefined;
@@ -216,8 +232,17 @@ const NotificationsPushover: React.FC = () => {
               </div>
             </div>
             <NotificationTypeSelector
+              disabled={!values.enabled}
               currentTypes={values.types}
-              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
             />
             <div className="actions">
               <div className="flex justify-end">
