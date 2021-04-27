@@ -148,15 +148,6 @@ const RequestButton: React.FC<RequestButtonProps> = ({
     (!media || media.status4k === MediaStatus.UNKNOWN) &&
     hasPermission(
       [
-        Permission.REQUEST,
-        mediaType === 'movie'
-          ? Permission.REQUEST_MOVIE
-          : Permission.REQUEST_TV,
-      ],
-      { type: 'or' }
-    ) &&
-    hasPermission(
-      [
         Permission.REQUEST_4K,
         mediaType === 'movie'
           ? Permission.REQUEST_4K_MOVIE
@@ -347,9 +338,6 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   if (
     mediaType === 'tv' &&
     (!active4kRequest || active4kRequest.requestedBy.id !== user?.id) &&
-    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
-      type: 'or',
-    }) &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
       type: 'or',
     }) &&

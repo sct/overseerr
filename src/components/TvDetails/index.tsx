@@ -63,7 +63,7 @@ const messages = defineMessages({
   manageModalNoRequests: 'No requests.',
   manageModalClearMedia: 'Clear Media Data',
   manageModalClearMediaWarning:
-    '* This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
+    '* This will irreversibly remove all data for this series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
   originaltitle: 'Original Title',
   showtype: 'Series Type',
   anime: 'Anime',
@@ -73,9 +73,9 @@ const messages = defineMessages({
   opensonarr4k: 'Open Series in 4K Sonarr',
   downloadstatus: 'Download Status',
   playonplex: 'Play on Plex',
-  play4konplex: 'Play 4K on Plex',
+  play4konplex: 'Play in 4K on Plex',
   markavailable: 'Mark as Available',
-  mark4kavailable: 'Mark 4K as Available',
+  mark4kavailable: 'Mark as Available in 4K',
   allseasonsmarkedavailable: '* All seasons will be marked as available.',
   seasons: '{seasonCount, plural, one {# Season} other {# Seasons}}',
   episodeRuntime: 'Episode Runtime',
@@ -130,9 +130,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   if (
     data.mediaInfo?.plexUrl4k &&
-    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
-      type: 'or',
-    }) &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
       type: 'or',
     })
@@ -433,9 +430,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               plexUrl={data.mediaInfo?.plexUrl}
             />
             {settings.currentSettings.series4kEnabled &&
-              hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
-                type: 'or',
-              }) &&
               hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
                 type: 'or',
               }) && (
