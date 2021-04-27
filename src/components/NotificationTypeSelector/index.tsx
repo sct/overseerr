@@ -1,4 +1,5 @@
-import React from 'react';
+import { sortBy } from 'lodash';
+import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSettings from '../../hooks/useSettings';
 import { Permission, User, useUser } from '../../hooks/useUser';
@@ -84,6 +85,7 @@ export interface NotificationItem {
   name: string;
   description: string;
   value: Notification;
+  hasNotifyUser?: boolean;
   children?: NotificationItem[];
   hidden?: boolean;
 }
@@ -109,104 +111,124 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
   const settings = useSettings();
   const { hasPermission } = useUser({ id: user?.id });
 
-  const allRequestsAutoApproved =
-    user &&
-    // Has Manage Requests perm, which grants all Auto-Approve perms
-    (hasPermission(Permission.MANAGE_REQUESTS) ||
-      // Cannot submit requests
-      !hasPermission(Permission.REQUEST) ||
-      // Has Auto-Approve perms for non-4K movies & series
-      ((hasPermission(Permission.AUTO_APPROVE) ||
-        hasPermission([
-          Permission.AUTO_APPROVE_MOVIE,
-          Permission.AUTO_APPROVE_TV,
-        ])) &&
-        // Cannot submit 4K movie requests OR has Auto-Approve perms for 4K movies
-        (!settings.currentSettings.movie4kEnabled ||
-          !hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
-            type: 'or',
-          }) ||
-          hasPermission(
-            [Permission.AUTO_APPROVE_4K, Permission.AUTO_APPROVE_4K_MOVIE],
-            { type: 'or' }
-          )) &&
-        // Cannot submit 4K series requests OR has Auto-Approve perms for 4K series
-        (!settings.currentSettings.series4kEnabled ||
-          !hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
-            type: 'or',
-          }) ||
-          hasPermission(
-            [Permission.AUTO_APPROVE_4K, Permission.AUTO_APPROVE_4K_TV],
-            { type: 'or' }
-          ))));
+  const availableTypes = useMemo(() => {
+    const allRequestsAutoApproved =
+      user &&
+      // Has Manage Requests perm, which grants all Auto-Approve perms
+      (hasPermission(Permission.MANAGE_REQUESTS) ||
+        // Cannot submit requests
+        !hasPermission(Permission.REQUEST) ||
+        // Has Auto-Approve perms for non-4K movies & series
+        ((hasPermission(Permission.AUTO_APPROVE) ||
+          hasPermission([
+            Permission.AUTO_APPROVE_MOVIE,
+            Permission.AUTO_APPROVE_TV,
+          ])) &&
+          // Cannot submit 4K movie requests OR has Auto-Approve perms for 4K movies
+          (!settings.currentSettings.movie4kEnabled ||
+            !hasPermission(
+              [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+              { type: 'or' }
+            ) ||
+            hasPermission(
+              [Permission.AUTO_APPROVE_4K, Permission.AUTO_APPROVE_4K_MOVIE],
+              { type: 'or' }
+            )) &&
+          // Cannot submit 4K series requests OR has Auto-Approve perms for 4K series
+          (!settings.currentSettings.series4kEnabled ||
+            !hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+              type: 'or',
+            }) ||
+            hasPermission(
+              [Permission.AUTO_APPROVE_4K, Permission.AUTO_APPROVE_4K_TV],
+              { type: 'or' }
+            ))));
 
-  const types: NotificationItem[] = [
-    {
-      id: 'media-requested',
-      name: intl.formatMessage(messages.mediarequested),
-      description: intl.formatMessage(
-        user
-          ? messages.usermediarequestedDescription
-          : messages.mediarequestedDescription
-      ),
-      value: Notification.MEDIA_PENDING,
-      hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
-    },
-    {
-      id: 'media-auto-approved',
-      name: intl.formatMessage(messages.mediaAutoApproved),
-      description: intl.formatMessage(
-        user
-          ? messages.usermediaAutoApprovedDescription
-          : messages.mediaAutoApprovedDescription
-      ),
-      value: Notification.MEDIA_AUTO_APPROVED,
-      hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
-    },
-    {
-      id: 'media-approved',
-      name: intl.formatMessage(messages.mediaapproved),
-      description: intl.formatMessage(
-        user
-          ? messages.usermediaapprovedDescription
-          : messages.mediaapprovedDescription
-      ),
-      value: Notification.MEDIA_APPROVED,
-      hidden: allRequestsAutoApproved,
-    },
-    {
-      id: 'media-declined',
-      name: intl.formatMessage(messages.mediadeclined),
-      description: intl.formatMessage(
-        user
-          ? messages.usermediadeclinedDescription
-          : messages.mediadeclinedDescription
-      ),
-      value: Notification.MEDIA_DECLINED,
-      hidden: allRequestsAutoApproved,
-    },
-    {
-      id: 'media-available',
-      name: intl.formatMessage(messages.mediaavailable),
-      description: intl.formatMessage(
-        user
-          ? messages.usermediaavailableDescription
-          : messages.mediaavailableDescription
-      ),
-      value: Notification.MEDIA_AVAILABLE,
-    },
-    {
-      id: 'media-failed',
-      name: intl.formatMessage(messages.mediafailed),
-      description: intl.formatMessage(
-        user
-          ? messages.usermediafailedDescription
-          : messages.mediafailedDescription
-      ),
-      value: Notification.MEDIA_FAILED,
-      hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
-    },
-  ];
+    const types: NotificationItem[] = [
+      {
+        id: 'media-requested',
+        name: intl.formatMessage(messages.mediarequested),
+        description: intl.formatMessage(
+          user
+            ? messages.usermediarequestedDescription
+            : messages.mediarequestedDescription
+        ),
+        value: Notification.MEDIA_PENDING,
+        hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
+      },
+      {
+        id: 'media-auto-approved',
+        name: intl.formatMessage(messages.mediaAutoApproved),
+        description: intl.formatMessage(
+          user
+            ? messages.usermediaAutoApprovedDescription
+            : messages.mediaAutoApprovedDescription
+        ),
+        value: Notification.MEDIA_AUTO_APPROVED,
+        hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
+      },
+      {
+        id: 'media-approved',
+        name: intl.formatMessage(messages.mediaapproved),
+        description: intl.formatMessage(
+          user
+            ? messages.usermediaapprovedDescription
+            : messages.mediaapprovedDescription
+        ),
+        value: Notification.MEDIA_APPROVED,
+        hasNotifyUser: true,
+        hidden: allRequestsAutoApproved,
+      },
+      {
+        id: 'media-declined',
+        name: intl.formatMessage(messages.mediadeclined),
+        description: intl.formatMessage(
+          user
+            ? messages.usermediadeclinedDescription
+            : messages.mediadeclinedDescription
+        ),
+        value: Notification.MEDIA_DECLINED,
+        hasNotifyUser: true,
+        hidden: allRequestsAutoApproved,
+      },
+      {
+        id: 'media-available',
+        name: intl.formatMessage(messages.mediaavailable),
+        description: intl.formatMessage(
+          user
+            ? messages.usermediaavailableDescription
+            : messages.mediaavailableDescription
+        ),
+        value: Notification.MEDIA_AVAILABLE,
+        hasNotifyUser: true,
+      },
+      {
+        id: 'media-failed',
+        name: intl.formatMessage(messages.mediafailed),
+        description: intl.formatMessage(
+          user
+            ? messages.usermediafailedDescription
+            : messages.mediafailedDescription
+        ),
+        value: Notification.MEDIA_FAILED,
+        hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
+      },
+    ];
+
+    return user
+      ? sortBy(
+          types.filter(
+            (type) =>
+              !type.hidden && hasNotificationType(type.value, enabledTypes)
+          ),
+          'hasNotifyUser',
+          'DESC'
+        )
+      : types.filter(
+          (type) =>
+            !type.hidden && hasNotificationType(type.value, enabledTypes)
+        );
+  }, [intl, user, hasPermission, enabledTypes, settings]);
 
   return (
     <div
@@ -221,19 +243,15 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
         </span>
         <div className="form-input">
           <div className="max-w-lg">
-            {types.map(
-              (type) =>
-                !type.hidden &&
-                hasNotificationType(type.value, enabledTypes) && (
-                  <NotificationType
-                    key={`notification-type-${type.id}`}
-                    option={type}
-                    currentTypes={currentTypes}
-                    onUpdate={onUpdate}
-                    disabled={disabled}
-                  />
-                )
-            )}
+            {availableTypes.map((type) => (
+              <NotificationType
+                key={`notification-type-${type.id}`}
+                option={type}
+                currentTypes={currentTypes}
+                onUpdate={onUpdate}
+                disabled={disabled}
+              />
+            ))}
           </div>
           {error && <div className="error">{error}</div>}
         </div>
