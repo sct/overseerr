@@ -88,10 +88,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default relative bg-gray-800 bg-cover rounded-xl ring-1 overflow-hidden ${
+        className={`transition duration-300 transform-gpu outline-none cursor-default relative bg-gray-800 bg-cover rounded-xl ring-1 overflow-hidden ${
           showDetail
             ? 'scale-105 shadow-lg ring-gray-500'
-            : 'shadow ring-gray-700'
+            : 'scale-100 shadow ring-gray-700'
         }`}
         style={{
           paddingBottom: '150%',
