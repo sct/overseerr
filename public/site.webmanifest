@@ -37,30 +37,30 @@
       "url": "/requests",
       "icons": [
         {
-          "src": "/clock-icon-96x96.png",
-          "sizes": "96x96",
+          "src": "/clock-icon-192x192.png",
+          "sizes": "192x192",
           "type": "image/png"
         }
       ]
     },
     {
-      "name": "Users",
-      "url": "/users",
+      "name": "Profile",
+      "url": "/profile",
       "icons": [
         {
-          "src": "/users-icon-96x96.png",
-          "sizes": "96x96",
+          "src": "/users-icon-192x192.png",
+          "sizes": "192x192",
           "type": "image/png"
         }
       ]
     },
     {
       "name": "Settings",
-      "url": "/settings",
+      "url": "/profile/settings",
       "icons": [
         {
-          "src": "/cog-icon-96x96.png",
-          "sizes": "96x96",
+          "src": "/cog-icon-192x192.png",
+          "sizes": "192x192",
           "type": "image/png"
         }
       ]
