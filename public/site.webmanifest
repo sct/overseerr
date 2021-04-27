@@ -30,5 +30,40 @@
   ],
   "theme_color": "#1f2937",
   "background_color": "#1f2937",
-  "display": "standalone"
+  "display": "standalone",
+  "shortcuts": [
+    {
+      "name": "Requests",
+      "url": "/requests",
+      "icons": [
+        {
+          "src": "/clock-icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "url": "/profile",
+      "icons": [
+        {
+          "src": "/users-icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "url": "/profile/settings",
+      "icons": [
+        {
+          "src": "/cog-icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
 }
