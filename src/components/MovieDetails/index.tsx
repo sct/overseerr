@@ -70,9 +70,9 @@ const messages = defineMessages({
   openradarr4k: 'Open Movie in 4K Radarr',
   downloadstatus: 'Download Status',
   playonplex: 'Play on Plex',
-  play4konplex: 'Play 4K on Plex',
+  play4konplex: 'Play in 4K on Plex',
   markavailable: 'Mark as Available',
-  mark4kavailable: 'Mark 4K as Available',
+  mark4kavailable: 'Mark as Available in 4K',
 });
 
 interface MovieDetailsProps {
@@ -112,7 +112,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
 
   const mediaLinks: PlayButtonLink[] = [];
 
-  if (data.mediaInfo?.plexUrl) {
+  if (
+    data.mediaInfo?.plexUrl &&
+    hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
+      type: 'or',
+    })
+  ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: data.mediaInfo?.plexUrl,

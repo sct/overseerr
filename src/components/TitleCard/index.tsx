@@ -69,6 +69,14 @@ const TitleCard: React.FC<TitleCardProps> = ({
 
   const closeModal = useCallback(() => setShowRequestModal(false), []);
 
+  const showRequestButton = hasPermission(
+    [
+      Permission.REQUEST,
+      mediaType === 'movie' ? Permission.REQUEST_MOVIE : Permission.REQUEST_TV,
+    ],
+    { type: 'or' }
+  );
+
   return (
     <div className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}>
       <RequestModal
@@ -185,7 +193,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   <div className="flex items-end w-full h-full">
                     <div
                       className={`px-2 text-white ${
-                        !hasPermission(Permission.REQUEST) ||
+                        !showRequestButton ||
                         (currentStatus && currentStatus !== MediaStatus.UNKNOWN)
                           ? 'pb-2'
                           : 'pb-11'
@@ -209,7 +217,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                         className="text-xs whitespace-normal"
                         style={{
                           WebkitLineClamp:
-                            !hasPermission(Permission.REQUEST) ||
+                            !showRequestButton ||
                             (currentStatus &&
                               currentStatus !== MediaStatus.UNKNOWN)
                               ? 5
@@ -228,7 +236,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
               </Link>
 
               <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-2">
-                {hasPermission(Permission.REQUEST) &&
+                {showRequestButton &&
                   (!currentStatus || currentStatus === MediaStatus.UNKNOWN) && (
                     <Button
                       buttonType="primary"

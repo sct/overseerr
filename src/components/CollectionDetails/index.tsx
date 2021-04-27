@@ -108,11 +108,18 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
   }
 
   const hasRequestable =
+    hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
+      type: 'or',
+    }) &&
     data.parts.filter(
       (part) => !part.mediaInfo || part.mediaInfo.status === MediaStatus.UNKNOWN
     ).length > 0;
 
   const hasRequestable4k =
+    settings.currentSettings.movie4kEnabled &&
+    hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
+      type: 'or',
+    }) &&
     data.parts.filter(
       (part) =>
         !part.mediaInfo || part.mediaInfo.status4k === MediaStatus.UNKNOWN
@@ -323,55 +330,42 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
           </span>
         </div>
         <div className="media-actions">
-          {hasPermission(Permission.REQUEST) &&
-            (hasRequestable ||
-              (settings.currentSettings.movie4kEnabled &&
-                hasPermission(
-                  [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
-                  { type: 'or' }
-                ) &&
-                hasRequestable4k)) && (
-              <ButtonWithDropdown
-                buttonType="primary"
-                onClick={() => {
-                  setRequestModal(true);
-                  setIs4k(!hasRequestable);
-                }}
-                text={
-                  <>
-                    <DownloadIcon />
-                    <span>
-                      {intl.formatMessage(
-                        hasRequestable
-                          ? messages.requestcollection
-                          : messages.requestcollection4k
-                      )}
-                    </span>
-                  </>
-                }
-              >
-                {settings.currentSettings.movie4kEnabled &&
-                  hasPermission(
-                    [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
-                    { type: 'or' }
-                  ) &&
-                  hasRequestable &&
-                  hasRequestable4k && (
-                    <ButtonWithDropdown.Item
-                      buttonType="primary"
-                      onClick={() => {
-                        setRequestModal(true);
-                        setIs4k(true);
-                      }}
-                    >
-                      <DownloadIcon />
-                      <span>
-                        {intl.formatMessage(messages.requestcollection4k)}
-                      </span>
-                    </ButtonWithDropdown.Item>
-                  )}
-              </ButtonWithDropdown>
-            )}
+          {(hasRequestable || hasRequestable4k) && (
+            <ButtonWithDropdown
+              buttonType="primary"
+              onClick={() => {
+                setRequestModal(true);
+                setIs4k(!hasRequestable);
+              }}
+              text={
+                <>
+                  <DownloadIcon />
+                  <span>
+                    {intl.formatMessage(
+                      hasRequestable
+                        ? messages.requestcollection
+                        : messages.requestcollection4k
+                    )}
+                  </span>
+                </>
+              }
+            >
+              {hasRequestable && hasRequestable4k && (
+                <ButtonWithDropdown.Item
+                  buttonType="primary"
+                  onClick={() => {
+                    setRequestModal(true);
+                    setIs4k(true);
+                  }}
+                >
+                  <DownloadIcon />
+                  <span>
+                    {intl.formatMessage(messages.requestcollection4k)}
+                  </span>
+                </ButtonWithDropdown.Item>
+              )}
+            </ButtonWithDropdown>
+          )}
         </div>
       </div>
       {data.overview && (

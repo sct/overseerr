@@ -123,7 +123,15 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   const buttons: ButtonOption[] = [];
   if (
     (!media || media.status === MediaStatus.UNKNOWN) &&
-    hasPermission(Permission.REQUEST)
+    hasPermission(
+      [
+        Permission.REQUEST,
+        mediaType === 'movie'
+          ? Permission.REQUEST_MOVIE
+          : Permission.REQUEST_TV,
+      ],
+      { type: 'or' }
+    )
   ) {
     buttons.push({
       id: 'request',
@@ -138,9 +146,15 @@ const RequestButton: React.FC<RequestButtonProps> = ({
 
   if (
     (!media || media.status4k === MediaStatus.UNKNOWN) &&
-    (hasPermission(Permission.REQUEST_4K) ||
-      (mediaType === 'movie' && hasPermission(Permission.REQUEST_4K_MOVIE)) ||
-      (mediaType === 'tv' && hasPermission(Permission.REQUEST_4K_TV))) &&
+    hasPermission(
+      [
+        Permission.REQUEST_4K,
+        mediaType === 'movie'
+          ? Permission.REQUEST_4K_MOVIE
+          : Permission.REQUEST_4K_TV,
+      ],
+      { type: 'or' }
+    ) &&
     ((settings.currentSettings.movie4kEnabled && mediaType === 'movie') ||
       (settings.currentSettings.series4kEnabled && mediaType === 'tv'))
   ) {
@@ -302,7 +316,9 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   if (
     mediaType === 'tv' &&
     (!activeRequest || activeRequest.requestedBy.id !== user?.id) &&
-    hasPermission(Permission.REQUEST) &&
+    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+      type: 'or',
+    }) &&
     media &&
     media.status !== MediaStatus.AVAILABLE &&
     media.status !== MediaStatus.UNKNOWN &&
