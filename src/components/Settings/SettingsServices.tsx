@@ -139,7 +139,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               onClick={() => onEdit()}
               className="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium leading-5 text-gray-200 transition duration-150 ease-in-out border border-transparent rounded-bl-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10"
             >
-              <PencilIcon />
+              <PencilIcon className="w-5 h-5 mr-2" />
               <span>{intl.formatMessage(globalMessages.edit)}</span>
             </button>
           </div>
@@ -148,7 +148,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
               onClick={() => onDelete()}
               className="relative inline-flex items-center justify-center flex-1 w-0 py-4 text-sm font-medium leading-5 text-gray-200 transition duration-150 ease-in-out border border-transparent rounded-br-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10"
             >
-              <TrashIcon />
+              <TrashIcon className="w-5 h-5 mr-2" />
               <span>{intl.formatMessage(globalMessages.delete)}</span>
             </button>
           </div>

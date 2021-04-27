@@ -278,16 +278,25 @@ select.rounded-r-only {
 }
 
 input.short {
-  width: 4.875rem;
+  @apply w-20;
 }
 
 select.short {
   @apply w-min;
 }
 
-button svg,
-.button-md svg {
+button.input-action {
+  @apply relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 hover:bg-indigo-500 active:bg-gray-100 active:text-gray-700 last:rounded-r-md;
+}
+
+.button-md svg,
+button.input-action svg,
+.plex-button svg {
   @apply w-5 h-5 mr-2 last:mr-0;
+}
+
+.button-md svg {
+  @apply last:w-4 last:h-4;
 }
 
 .button-sm svg {

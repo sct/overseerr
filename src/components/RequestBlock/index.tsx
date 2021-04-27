@@ -97,7 +97,6 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               <>
                 <Button
                   buttonType="success"
-                  buttonSize="sm"
                   className="mr-1"
                   onClick={() => updateRequest('approve')}
                   disabled={isUpdating}
@@ -106,7 +105,6 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                 </Button>
                 <Button
                   buttonType="danger"
-                  buttonSize="sm"
                   className="mr-1"
                   onClick={() => updateRequest('decline')}
                   disabled={isUpdating}
@@ -115,7 +113,6 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                 </Button>
                 <Button
                   buttonType="primary"
-                  buttonSize="sm"
                   onClick={() => setShowEditModal(true)}
                   disabled={isUpdating}
                 >
@@ -126,7 +123,6 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
             {request.status !== MediaRequestStatus.PENDING && (
               <Button
                 buttonType="danger"
-                buttonSize="sm"
                 onClick={() => deleteRequest()}
                 disabled={isUpdating}
               >

@@ -41,7 +41,7 @@ const SearchInput: React.FC = () => {
               className="absolute inset-y-0 p-1 m-auto text-gray-400 transition border-none outline-none right-2 h-7 w-7 focus:outline-none focus:border-none hover:text-white"
               onClick={() => clear()}
             >
-              <XCircleIcon />
+              <XCircleIcon className="w-5 h-5" />
             </button>
           )}
         </div>
