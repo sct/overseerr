@@ -55,7 +55,9 @@ class RadarrScanner
             url: RadarrAPI.buildUrl(server, '/api/v3'),
           });
 
-          this.items = await this.radarrApi.getMovies();
+          this.items = (await this.radarrApi.getMovies()).filter(
+            (m) => m.monitored || m.downloaded
+          );
 
           await this.loop(this.processRadarrMovie.bind(this), { sessionId });
         } else {
