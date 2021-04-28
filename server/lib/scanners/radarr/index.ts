@@ -55,9 +55,7 @@ class RadarrScanner
             url: RadarrAPI.buildUrl(server, '/api/v3'),
           });
 
-          this.items = (await this.radarrApi.getMovies()).filter(
-            (m) => m.monitored || m.downloaded
-          );
+          this.items = await this.radarrApi.getMovies();
 
           await this.loop(this.processRadarrMovie.bind(this), { sessionId });
         } else {
@@ -74,6 +72,17 @@ class RadarrScanner
   }
 
   private async processRadarrMovie(radarrMovie: RadarrMovie): Promise<void> {
+    if (!radarrMovie.monitored && !radarrMovie.downloaded) {
+      this.log(
+        'Title is unmonitored and has not been downloaded. Skipping item.',
+        'debug',
+        {
+          title: radarrMovie.title,
+        }
+      );
+      return;
+    }
+
     try {
       const server4k = this.enable4kMovie && this.currentServer.is4k;
       await this.processMovie(radarrMovie.tmdbId, {
