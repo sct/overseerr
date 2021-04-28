@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -32,6 +32,11 @@ const UserNotificationsDiscord: React.FC = () => {
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
+  const [enabledTypes, setEnabledTypes] = useState(0);
+
+  useEffect(() => {
+    setEnabledTypes(data?.discordEnabledTypes ?? 0);
+  }, [data?.discordEnabledTypes]);
 
   const UserNotificationsDiscordSchema = Yup.object().shape({
     discordId: Yup.string()
@@ -101,7 +106,7 @@ const UserNotificationsDiscord: React.FC = () => {
       }) => {
         return (
           <Form className="section">
-            {!!data?.discordEnabledTypes && (
+            {!!enabledTypes && (
               <div className="form-row">
                 <label htmlFor="enableDiscord" className="checkbox-label">
                   {intl.formatMessage(messages.enableDiscord)}
@@ -117,8 +122,8 @@ const UserNotificationsDiscord: React.FC = () => {
             )}
             <div className="form-row">
               <label htmlFor="discordId" className="text-label">
-                <span>{intl.formatMessage(messages.discordId)}</span>
-                <span className="label-required">*</span>
+                {intl.formatMessage(messages.discordId)}
+                {!!enabledTypes && <span className="label-required">*</span>}
                 <span className="label-tip">
                   {intl.formatMessage(messages.discordIdTip, {
                     FindDiscordIdLink: function FindDiscordIdLink(msg) {
@@ -144,23 +149,24 @@ const UserNotificationsDiscord: React.FC = () => {
                 )}
               </div>
             </div>
-            {!!data?.discordEnabledTypes && (
-              <NotificationTypeSelector
-                disabled={!values.enableDiscord}
-                user={user}
-                enabledTypes={data?.discordEnabledTypes ?? 0}
-                currentTypes={values.types}
-                onUpdate={(newTypes) => {
-                  setFieldValue('types', newTypes);
-                  setFieldTouched('types');
-                }}
-                error={
-                  errors.types && touched.types
-                    ? (errors.types as string)
-                    : undefined
-                }
-              />
-            )}
+            <NotificationTypeSelector
+              disabled={!values.enableDiscord}
+              user={user}
+              currentTypes={values.types}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
+              enabledTypes={enabledTypes}
+              onEnabledTypesUpdate={(newEnabledTypes) =>
+                setEnabledTypes(newEnabledTypes)
+              }
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

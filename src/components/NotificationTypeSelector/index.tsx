@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSettings from '../../hooks/useSettings';
 import { Permission, User, useUser } from '../../hooks/useUser';
@@ -92,24 +92,27 @@ export interface NotificationItem {
 
 interface NotificationTypeSelectorProps {
   user?: User;
-  enabledTypes?: number;
   currentTypes: number;
   onUpdate: (newTypes: number) => void;
   disabled?: boolean;
   error?: string;
+  enabledTypes?: number;
+  onEnabledTypesUpdate?: (newEnabledTypes: number) => void;
 }
 
 const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
   user,
-  enabledTypes = ALL_NOTIFICATIONS,
   currentTypes,
   onUpdate,
   disabled = false,
   error,
+  enabledTypes = ALL_NOTIFICATIONS,
+  onEnabledTypesUpdate,
 }) => {
   const intl = useIntl();
   const settings = useSettings();
   const { hasPermission } = useUser({ id: user?.id });
+  const [allowedTypes, setAllowedTypes] = useState(enabledTypes);
 
   const availableTypes = useMemo(() => {
     const allRequestsAutoApproved =
@@ -239,10 +242,25 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
       (type) => !type.hidden && hasNotificationType(type.value, enabledTypes)
     );
 
+    const newAllowedTypes = filteredTypes.reduce((a, v) => a + v.value, 0);
+    if (newAllowedTypes !== allowedTypes) {
+      setAllowedTypes(newAllowedTypes);
+    }
+
     return user
       ? sortBy(filteredTypes, 'hasNotifyUser', 'DESC')
       : filteredTypes;
-  }, [intl, user, hasPermission, enabledTypes, settings]);
+  }, [user, hasPermission, settings, intl, allowedTypes, enabledTypes]);
+
+  useEffect(() => {
+    if (onEnabledTypesUpdate) {
+      onEnabledTypesUpdate(allowedTypes);
+    }
+  }, [allowedTypes, onEnabledTypesUpdate]);
+
+  if (!availableTypes.length) {
+    return null;
+  }
 
   return (
     <div
