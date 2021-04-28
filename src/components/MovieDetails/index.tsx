@@ -445,7 +445,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               className="ml-2 first:ml-0"
               onClick={() => setShowManager(true)}
             >
-              <CogIcon className="w-5" />
+              <CogIcon />
             </Button>
           )}
         </div>
