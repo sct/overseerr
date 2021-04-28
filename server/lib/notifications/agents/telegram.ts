@@ -187,13 +187,13 @@ class TelegramAgent
 
     // Send system notification
     if (hasNotificationType(type, settings.types ?? 0)) {
-      try {
-        logger.debug('Sending Telegram notification', {
-          label: 'Notifications',
-          type: Notification[type],
-          subject: payload.subject,
-        });
+      logger.debug('Sending Telegram notification', {
+        label: 'Notifications',
+        type: Notification[type],
+        subject: payload.subject,
+      });
 
+      try {
         await axios.post(
           endpoint,
           this.buildMessage(
@@ -209,7 +209,7 @@ class TelegramAgent
           type: Notification[type],
           subject: payload.subject,
           errorMessage: e.message,
-          response: e.response.data,
+          response: e.response?.data,
         });
         return false;
       }

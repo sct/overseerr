@@ -116,14 +116,34 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
       user &&
       // Has Manage Requests perm, which grants all Auto-Approve perms
       (hasPermission(Permission.MANAGE_REQUESTS) ||
-        // Cannot submit requests
-        !hasPermission(Permission.REQUEST) ||
-        // Has Auto-Approve perms for non-4K movies & series
-        ((hasPermission(Permission.AUTO_APPROVE) ||
-          hasPermission([
-            Permission.AUTO_APPROVE_MOVIE,
-            Permission.AUTO_APPROVE_TV,
-          ])) &&
+        // Cannot submit requests of any type
+        !hasPermission(
+          [
+            Permission.REQUEST,
+            Permission.REQUEST_MOVIE,
+            Permission.REQUEST_TV,
+            Permission.REQUEST_4K,
+            Permission.REQUEST_4K_MOVIE,
+            Permission.REQUEST_4K_TV,
+          ],
+          { type: 'or' }
+        ) ||
+        // Cannot submit non-4K movie requests OR has Auto-Approve perms for non-4K movies
+        ((!hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
+          type: 'or',
+        }) ||
+          hasPermission(
+            [Permission.AUTO_APPROVE, Permission.AUTO_APPROVE_MOVIE],
+            { type: 'or' }
+          )) &&
+          // Cannot submit non-4K series requests OR has Auto-Approve perms for non-4K series
+          (!hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+            type: 'or',
+          }) ||
+            hasPermission(
+              [Permission.AUTO_APPROVE, Permission.AUTO_APPROVE_TV],
+              { type: 'or' }
+            )) &&
           // Cannot submit 4K movie requests OR has Auto-Approve perms for 4K movies
           (!settings.currentSettings.movie4kEnabled ||
             !hasPermission(
@@ -215,19 +235,13 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
       },
     ];
 
+    const filteredTypes = types.filter(
+      (type) => !type.hidden && hasNotificationType(type.value, enabledTypes)
+    );
+
     return user
-      ? sortBy(
-          types.filter(
-            (type) =>
-              !type.hidden && hasNotificationType(type.value, enabledTypes)
-          ),
-          'hasNotifyUser',
-          'DESC'
-        )
-      : types.filter(
-          (type) =>
-            !type.hidden && hasNotificationType(type.value, enabledTypes)
-        );
+      ? sortBy(filteredTypes, 'hasNotifyUser', 'DESC')
+      : filteredTypes;
   }, [intl, user, hasPermission, enabledTypes, settings]);
 
   return (
