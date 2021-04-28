@@ -329,7 +329,7 @@ const SettingsLogs: React.FC = () => {
                         onClick={() => setActiveLog(row)}
                         className="mr-2"
                       >
-                        <DocumentSearchIcon />
+                        <DocumentSearchIcon className="icon-md" />
                       </Button>
                     )}
                     <Button
@@ -337,7 +337,7 @@ const SettingsLogs: React.FC = () => {
                       buttonSize="sm"
                       onClick={() => copyLogString(row)}
                     >
-                      <ClipboardCopyIcon />
+                      <ClipboardCopyIcon className="icon-md" />
                     </Button>
                   </Table.TD>
                 </tr>

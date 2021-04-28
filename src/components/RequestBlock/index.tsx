@@ -101,7 +101,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                   onClick={() => updateRequest('approve')}
                   disabled={isUpdating}
                 >
-                  <CheckIcon />
+                  <CheckIcon className="icon-sm" />
                 </Button>
                 <Button
                   buttonType="danger"
@@ -116,7 +116,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                   onClick={() => setShowEditModal(true)}
                   disabled={isUpdating}
                 >
-                  <PencilIcon />
+                  <PencilIcon className="icon-sm" />
                 </Button>
               </>
             )}
@@ -126,7 +126,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                 onClick={() => deleteRequest()}
                 disabled={isUpdating}
               >
-                <TrashIcon />
+                <TrashIcon className="icon-sm" />
               </Button>
             )}
           </div>

@@ -295,12 +295,8 @@ button.input-action svg,
   @apply w-5 h-5 mr-2 last:mr-0;
 }
 
-.button-md svg {
-  @apply last:w-4 last:h-4;
-}
-
 .button-sm svg {
-  @apply w-4 h-4 mr-1.5 last:w-5 last:h-5 last:mr-0;
+  @apply w-4 h-4 mr-1.5 last:mr-0;
 }
 
 .modal-icon {
@@ -309,6 +305,14 @@ button.input-action svg,
 
 .modal-icon svg {
   @apply w-6 h-6;
+}
+
+svg.icon-md {
+  @apply w-5 h-5;
+}
+
+svg.icon-sm {
+  @apply w-4 h-4;
 }
 
 .protocol {
