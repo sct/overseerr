@@ -173,7 +173,6 @@ const SettingsMain: React.FC = () => {
                           className="rounded-l-only"
                           value={data?.apiKey}
                           readOnly
-                          isLastButton={false}
                         />
                         <CopyButton
                           textToCopy={data?.apiKey ?? ''}
