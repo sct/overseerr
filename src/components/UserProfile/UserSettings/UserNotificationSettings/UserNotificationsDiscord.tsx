@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -16,12 +16,10 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 const messages = defineMessages({
   discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
-  enableDiscord: 'Enable Mentions',
   discordId: 'User ID',
   discordIdTip:
     'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your user account',
   validationDiscordId: 'You must provide a valid user ID',
-  validationTypes: 'You must select at least one notification type',
 });
 
 const UserNotificationsDiscord: React.FC = () => {
@@ -32,29 +30,17 @@ const UserNotificationsDiscord: React.FC = () => {
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
-  const [enabledTypes, setEnabledTypes] = useState(0);
-
-  useEffect(() => {
-    setEnabledTypes(data?.discordEnabledTypes ?? 0);
-  }, [data?.discordEnabledTypes]);
 
   const UserNotificationsDiscordSchema = Yup.object().shape({
     discordId: Yup.string()
-      .when('enableDiscord', {
-        is: true,
+      .when('types', {
+        is: (value: unknown) => !!value,
         then: Yup.string()
           .nullable()
           .required(intl.formatMessage(messages.validationDiscordId)),
         otherwise: Yup.string().nullable(),
       })
       .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
-    types: Yup.number().when('enableDiscord', {
-      is: true,
-      then: Yup.number()
-        .nullable()
-        .moreThan(0, intl.formatMessage(messages.validationTypes)),
-      otherwise: Yup.number().nullable(),
-    }),
   });
 
   if (!data && !error) {
@@ -64,9 +50,10 @@ const UserNotificationsDiscord: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableDiscord: !!data?.notificationTypes.discord,
         discordId: data?.discordId,
-        types: data?.notificationTypes.discord ?? 0,
+        types:
+          (data?.discordEnabledTypes ?? 0) &
+          (data?.notificationTypes.discord ?? 0),
       }}
       validationSchema={UserNotificationsDiscordSchema}
       enableReinitialize
@@ -78,7 +65,7 @@ const UserNotificationsDiscord: React.FC = () => {
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {
-              discord: values.enableDiscord ? values.types : 0,
+              discord: values.types,
             },
           });
           addToast(intl.formatMessage(messages.discordsettingssaved), {
@@ -106,24 +93,12 @@ const UserNotificationsDiscord: React.FC = () => {
       }) => {
         return (
           <Form className="section">
-            {!!enabledTypes && (
-              <div className="form-row">
-                <label htmlFor="enableDiscord" className="checkbox-label">
-                  {intl.formatMessage(messages.enableDiscord)}
-                </label>
-                <div className="form-input">
-                  <Field
-                    type="checkbox"
-                    id="enableDiscord"
-                    name="enableDiscord"
-                  />
-                </div>
-              </div>
-            )}
             <div className="form-row">
               <label htmlFor="discordId" className="text-label">
                 {intl.formatMessage(messages.discordId)}
-                {!!enabledTypes && <span className="label-required">*</span>}
+                {!!data?.discordEnabledTypes && (
+                  <span className="label-required">*</span>
+                )}
                 <span className="label-tip">
                   {intl.formatMessage(messages.discordIdTip, {
                     FindDiscordIdLink: function FindDiscordIdLink(msg) {
@@ -150,8 +125,8 @@ const UserNotificationsDiscord: React.FC = () => {
               </div>
             </div>
             <NotificationTypeSelector
-              disabled={!values.enableDiscord}
               user={user}
+              enabledTypes={data?.discordEnabledTypes ?? 0}
               currentTypes={values.types}
               onUpdate={(newTypes) => {
                 setFieldValue('types', newTypes);
@@ -161,10 +136,6 @@ const UserNotificationsDiscord: React.FC = () => {
                 errors.types && touched.types
                   ? (errors.types as string)
                   : undefined
-              }
-              enabledTypes={enabledTypes}
-              onEnabledTypesUpdate={(newEnabledTypes) =>
-                setEnabledTypes(newEnabledTypes)
               }
             />
             <div className="actions">

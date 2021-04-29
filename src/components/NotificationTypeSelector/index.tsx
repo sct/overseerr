@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSettings from '../../hooks/useSettings';
 import { Permission, User, useUser } from '../../hooks/useUser';
@@ -92,22 +92,18 @@ export interface NotificationItem {
 
 interface NotificationTypeSelectorProps {
   user?: User;
+  enabledTypes?: number;
   currentTypes: number;
   onUpdate: (newTypes: number) => void;
-  disabled?: boolean;
   error?: string;
-  enabledTypes?: number;
-  onEnabledTypesUpdate?: (newEnabledTypes: number) => void;
 }
 
 const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
   user,
+  enabledTypes = ALL_NOTIFICATIONS,
   currentTypes,
   onUpdate,
-  disabled = false,
   error,
-  enabledTypes = ALL_NOTIFICATIONS,
-  onEnabledTypesUpdate,
 }) => {
   const intl = useIntl();
   const settings = useSettings();
@@ -252,22 +248,12 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
       : filteredTypes;
   }, [user, hasPermission, settings, intl, allowedTypes, enabledTypes]);
 
-  useEffect(() => {
-    if (onEnabledTypesUpdate) {
-      onEnabledTypesUpdate(allowedTypes);
-    }
-  }, [allowedTypes, onEnabledTypesUpdate]);
-
   if (!availableTypes.length) {
     return null;
   }
 
   return (
-    <div
-      role="group"
-      aria-labelledby="group-label"
-      className={`form-group ${disabled ? 'opacity-50' : ''}`}
-    >
+    <div role="group" aria-labelledby="group-label" className="form-group">
       <div className="form-row">
         <span id="group-label" className="group-label">
           {intl.formatMessage(messages.notificationTypes)}
@@ -281,7 +267,6 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
                 option={type}
                 currentTypes={currentTypes}
                 onUpdate={onUpdate}
-                disabled={disabled}
               />
             ))}
           </div>

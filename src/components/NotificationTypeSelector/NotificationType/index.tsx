@@ -6,7 +6,6 @@ interface NotificationTypeProps {
   currentTypes: number;
   parent?: NotificationItem;
   onUpdate: (newTypes: number) => void;
-  disabled?: boolean;
 }
 
 const NotificationType: React.FC<NotificationTypeProps> = ({
@@ -14,7 +13,6 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
   currentTypes,
   onUpdate,
   parent,
-  disabled = false,
 }) => {
   return (
     <>
@@ -31,9 +29,7 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
             name="permissions"
             type="checkbox"
             disabled={
-              disabled ||
-              (!!parent?.value &&
-                hasNotificationType(parent.value, currentTypes))
+              !!parent?.value && hasNotificationType(parent.value, currentTypes)
             }
             onClick={() => {
               onUpdate(
@@ -43,10 +39,9 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
               );
             }}
             checked={
-              !disabled &&
-              (hasNotificationType(option.value, currentTypes) ||
-                (!!parent?.value &&
-                  hasNotificationType(parent.value, currentTypes)))
+              hasNotificationType(option.value, currentTypes) ||
+              (!!parent?.value &&
+                hasNotificationType(parent.value, currentTypes))
             }
           />
         </div>
@@ -66,7 +61,6 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
             currentTypes={currentTypes}
             onUpdate={(newTypes) => onUpdate(newTypes)}
             parent={option}
-            disabled={disabled}
           />
         </div>
       ))}

@@ -16,14 +16,12 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 const messages = defineMessages({
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
-  enableTelegram: 'Enable Notifications',
   telegramChatId: 'Chat ID',
   telegramChatIdTipLong:
     '<TelegramBotLink>Start a chat</TelegramBotLink>, add <GetIdBotLink>@get_id_bot</GetIdBotLink>, and issue the <code>/my_id</code> command',
   sendSilently: 'Send Silently',
   sendSilentlyDescription: 'Send notifications with no sound',
   validationTelegramChatId: 'You must provide a valid chat ID',
-  validationTypes: 'You must select at least one notification type',
 });
 
 const UserTelegramSettings: React.FC = () => {
@@ -37,8 +35,8 @@ const UserTelegramSettings: React.FC = () => {
 
   const UserNotificationsTelegramSchema = Yup.object().shape({
     telegramChatId: Yup.string()
-      .when('enableTelegram', {
-        is: true,
+      .when('types', {
+        is: (value: unknown) => !!value,
         then: Yup.string()
           .nullable()
           .required(intl.formatMessage(messages.validationTelegramChatId)),
@@ -48,13 +46,6 @@ const UserTelegramSettings: React.FC = () => {
         /^-?\d+$/,
         intl.formatMessage(messages.validationTelegramChatId)
       ),
-    types: Yup.number().when('enableTelegram', {
-      is: true,
-      then: Yup.number()
-        .nullable()
-        .moreThan(0, intl.formatMessage(messages.validationTypes)),
-      otherwise: Yup.number().nullable(),
-    }),
   });
 
   if (!data && !error) {
@@ -64,7 +55,6 @@ const UserTelegramSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableTelegram: !!data?.notificationTypes.telegram,
         telegramChatId: data?.telegramChatId,
         telegramSendSilently: data?.telegramSendSilently,
         types: data?.notificationTypes.telegram ?? 0,
@@ -79,7 +69,7 @@ const UserTelegramSettings: React.FC = () => {
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
             notificationTypes: {
-              telegram: values.enableTelegram ? values.types : 0,
+              telegram: values.types,
             },
           });
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
@@ -107,18 +97,6 @@ const UserTelegramSettings: React.FC = () => {
       }) => {
         return (
           <Form className="section">
-            <div className="form-row">
-              <label htmlFor="enableTelegram" className="checkbox-label">
-                {intl.formatMessage(messages.enableTelegram)}
-              </label>
-              <div className="form-input">
-                <Field
-                  type="checkbox"
-                  id="enableTelegram"
-                  name="enableTelegram"
-                />
-              </div>
-            </div>
             <div className="form-row">
               <label htmlFor="telegramChatId" className="text-label">
                 {intl.formatMessage(messages.telegramChatId)}
@@ -184,7 +162,6 @@ const UserTelegramSettings: React.FC = () => {
               </div>
             </div>
             <NotificationTypeSelector
-              disabled={!values.enableTelegram}
               user={user}
               currentTypes={values.types}
               onUpdate={(newTypes) => {
