@@ -21,10 +21,17 @@ const SensitiveInput: React.FC<SensitiveInputProps> = ({
 }) => {
   const [isHidden, setHidden] = useState(true);
   const Component = as === 'input' ? 'input' : Field;
+  const componentProps =
+    as === 'input'
+      ? props
+      : {
+          ...props,
+          as: props.type === 'textarea' && !isHidden ? 'textarea' : undefined,
+        };
   return (
     <>
       <Component
-        {...props}
+        {...componentProps}
         type={
           isHidden
             ? 'password'

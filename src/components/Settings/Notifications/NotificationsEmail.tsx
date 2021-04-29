@@ -10,6 +10,7 @@ import Alert from '../../Common/Alert';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
+import SensitiveInput from '../../Common/SensitiveInput';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
@@ -380,7 +381,8 @@ const NotificationsEmail: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
+                    <SensitiveInput
+                      as="field"
                       id="authPass"
                       name="authPass"
                       type="password"
@@ -405,10 +407,11 @@ const NotificationsEmail: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
+                    <SensitiveInput
+                      as="field"
                       id="pgpPrivateKey"
                       name="pgpPrivateKey"
-                      as="textarea"
+                      type="textarea"
                       rows="10"
                       className="font-mono text-xs"
                     />
@@ -434,7 +437,8 @@ const NotificationsEmail: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
+                    <SensitiveInput
+                      as="field"
                       id="pgpPassword"
                       name="pgpPassword"
                       type="password"

@@ -210,8 +210,7 @@ const NotificationsPushover: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <SensitiveInput
-                      as="field"
+                    <Field
                       id="userToken"
                       name="userToken"
                       type="text"
