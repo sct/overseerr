@@ -282,11 +282,7 @@ export class MediaRequest {
       media[this.is4k ? 'status4k' : 'status'] !==
         MediaStatus.PARTIALLY_AVAILABLE
     ) {
-      if (this.is4k) {
-        media.status4k = MediaStatus.PROCESSING;
-      } else {
-        media.status = MediaStatus.PROCESSING;
-      }
+      media[this.is4k ? 'status4k' : 'status'] = MediaStatus.PROCESSING;
       mediaRepository.save(media);
     }
 
@@ -294,11 +290,7 @@ export class MediaRequest {
       media.mediaType === MediaType.MOVIE &&
       this.status === MediaRequestStatus.DECLINED
     ) {
-      if (this.is4k) {
-        media.status4k = MediaStatus.UNKNOWN;
-      } else {
-        media.status = MediaStatus.UNKNOWN;
-      }
+      media[this.is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
       mediaRepository.save(media);
     }
 
@@ -314,9 +306,9 @@ export class MediaRequest {
       media.requests.filter(
         (request) => request.status === MediaRequestStatus.PENDING
       ).length === 0 &&
-      media.status === MediaStatus.PENDING
+      media[this.is4k ? 'status4k' : 'status'] === MediaStatus.PENDING
     ) {
-      media.status = MediaStatus.UNKNOWN;
+      media[this.is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
       mediaRepository.save(media);
     }
 
@@ -490,7 +482,7 @@ export class MediaRequest {
             await mediaRepository.save(media);
           })
           .catch(async () => {
-            media.status = MediaStatus.UNKNOWN;
+            media[this.is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
             await mediaRepository.save(media);
             logger.warn(
               'Newly added movie request failed to add to Radarr, marking as unknown',
@@ -700,7 +692,7 @@ export class MediaRequest {
             await mediaRepository.save(media);
           })
           .catch(async () => {
-            media.status = MediaStatus.UNKNOWN;
+            media[this.is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
             await mediaRepository.save(media);
             logger.warn(
               'Newly added series request failed to add to Sonarr, marking as unknown',
