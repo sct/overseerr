@@ -32,6 +32,7 @@ export interface PublicSettingsResponse {
   cacheImages: boolean;
   vapidPublic: string;
   enablePushRegistration: boolean;
+  locale: string;
 }
 
 export interface CacheItem {

@@ -6,7 +6,13 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
+import { UserSettingsGeneralResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
 import type { MainSettings } from '../../../server/lib/settings';
+import {
+  availableLanguages,
+  AvailableLocales,
+} from '../../context/LanguageContext';
+import useLocale from '../../hooks/useLocale';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Badge from '../Common/Badge';
@@ -50,14 +56,19 @@ const messages = defineMessages({
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   partialRequestsEnabled: 'Allow Partial Series Requests',
+  locale: 'Display Language',
 });
 
 const SettingsMain: React.FC = () => {
   const { addToast } = useToasts();
-  const { hasPermission: userHasPermission } = useUser();
+  const { user: currentUser, hasPermission: userHasPermission } = useUser();
   const intl = useIntl();
+  const { setLocale } = useLocale();
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
+  );
+  const { data: userData } = useSWR<UserSettingsGeneralResponse>(
+    currentUser ? `/api/v1/user/${currentUser.id}/settings/main` : null
   );
 
   const MainSettingsSchema = Yup.object().shape({
@@ -122,6 +133,7 @@ const SettingsMain: React.FC = () => {
             applicationUrl: data?.applicationUrl,
             csrfProtection: data?.csrfProtection,
             hideAvailable: data?.hideAvailable,
+            locale: data?.locale ?? 'en',
             region: data?.region,
             originalLanguage: data?.originalLanguage,
             partialRequestsEnabled: data?.partialRequestsEnabled,
@@ -136,12 +148,21 @@ const SettingsMain: React.FC = () => {
                 applicationUrl: values.applicationUrl,
                 csrfProtection: values.csrfProtection,
                 hideAvailable: values.hideAvailable,
+                locale: values.locale,
                 region: values.region,
                 originalLanguage: values.originalLanguage,
                 partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
               });
               mutate('/api/v1/settings/public');
+
+              if (setLocale) {
+                setLocale(
+                  (userData?.locale
+                    ? userData.locale
+                    : values.locale) as AvailableLocales
+                );
+              }
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
                 autoDismiss: true,
@@ -269,6 +290,28 @@ const SettingsMain: React.FC = () => {
                         setFieldValue('csrfProtection', !values.csrfProtection);
                       }}
                     />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="locale" className="text-label">
+                    {intl.formatMessage(messages.locale)}
+                  </label>
+                  <div className="form-input">
+                    <div className="form-input-field">
+                      <Field as="select" id="locale" name="locale">
+                        {(Object.keys(
+                          availableLanguages
+                        ) as (keyof typeof availableLanguages)[]).map((key) => (
+                          <option
+                            key={key}
+                            value={availableLanguages[key].code}
+                            lang={availableLanguages[key].code}
+                          >
+                            {availableLanguages[key].display}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
                   </div>
                 </div>
                 <div className="form-row">
