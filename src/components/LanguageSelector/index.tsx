@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { sortBy } from 'lodash';
 import dynamic from 'next/dynamic';
 import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -45,39 +46,28 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const intl = useIntl();
   const { data: languages } = useSWR<Language[]>('/api/v1/languages');
 
-  const sortedLanguages = useMemo(
-    () =>
-      languages?.sort((lang1, lang2) => {
-        const lang1Name =
-          intl.formatDisplayName(lang1.iso_639_1, {
-            type: 'language',
-            fallback: 'none',
-          }) ?? lang1.english_name;
-        const lang2Name =
-          intl.formatDisplayName(lang2.iso_639_1, {
-            type: 'language',
-            fallback: 'none',
-          }) ?? lang2.english_name;
+  const sortedLanguages = useMemo(() => {
+    languages?.forEach((language) => {
+      language.name =
+        intl.formatDisplayName(language.iso_639_1, {
+          type: 'language',
+          fallback: 'none',
+        }) ?? language.english_name;
+    });
 
-        return lang1Name === lang2Name ? 0 : lang1Name > lang2Name ? 1 : -1;
-      }),
-    [intl, languages]
-  );
+    return sortBy(languages, 'name');
+  }, [intl, languages]);
 
-  function languageNameFallback(langCode: string): string {
+  function languageName(langCode: string): string {
     return (
       sortedLanguages?.find((language) => language.iso_639_1 === langCode)
-        ?.english_name ?? langCode
+        ?.name ?? langCode
     );
   }
 
   const options: OptionType[] =
     sortedLanguages?.map((language) => ({
-      label:
-        intl.formatDisplayName(language.iso_639_1, {
-          type: 'language',
-          fallback: 'none',
-        }) ?? language.english_name,
+      label: language.name,
       value: language.iso_639_1,
     })) ?? [];
 
@@ -88,13 +78,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         language: serverValue
           ? serverValue
               .split('|')
-              .map(
-                (value) =>
-                  intl.formatDisplayName(value, {
-                    type: 'language',
-                    fallback: 'none',
-                  }) ?? languageNameFallback(value)
-              )
+              .map((value) => languageName(value))
               .reduce((prev, curr) =>
                 intl.formatMessage(globalMessages.delimitedlist, {
                   a: prev,
@@ -133,13 +117,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 language: serverValue
                   ? serverValue
                       .split('|')
-                      .map(
-                        (value) =>
-                          intl.formatDisplayName(value, {
-                            type: 'language',
-                            fallback: 'none',
-                          }) ?? languageNameFallback(value)
-                      )
+                      .map((value) => languageName(value))
                       .reduce((prev, curr) =>
                         intl.formatMessage(globalMessages.delimitedlist, {
                           a: prev,
@@ -160,11 +138,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               }
 
               return {
-                label:
-                  intl.formatDisplayName(matchedLanguage.iso_639_1, {
-                    type: 'language',
-                    fallback: 'none',
-                  }) ?? matchedLanguage.english_name,
+                label: matchedLanguage.name,
                 value: matchedLanguage.iso_639_1,
               };
             }) ?? undefined
