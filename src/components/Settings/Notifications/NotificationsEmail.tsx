@@ -20,7 +20,11 @@ const messages = defineMessages({
   emailsender: 'Sender Address',
   smtpHost: 'SMTP Host',
   smtpPort: 'SMTP Port',
-  enableSsl: 'Enable SSL',
+  encryption: 'Encryption Method',
+  encryptionNone: 'None',
+  encryptionImplicitTls: 'Implicit SSL or TLS (typically using port 465)',
+  encryptionOpportunisticTls:
+    'Opportunistic TLS or STARTTLS (typically using port 587)',
   authUser: 'SMTP Username',
   authPass: 'SMTP Password',
   emailsettingssaved: 'Email notification settings saved successfully!',
@@ -29,8 +33,6 @@ const messages = defineMessages({
   toastEmailTestSuccess: 'Email test notification sent!',
   toastEmailTestFailed: 'Email test notification failed to send.',
   allowselfsigned: 'Allow Self-Signed Certificates',
-  ssldisabletip:
-    'SSL should be disabled on standard TLS connections (port 587)',
   senderName: 'Sender Name',
   validationEmail: 'You must provide a valid email address',
   emailNotificationTypesAlertDescription:
@@ -132,7 +134,11 @@ const NotificationsEmail: React.FC = () => {
         emailFrom: data.options.emailFrom,
         smtpHost: data.options.smtpHost,
         smtpPort: data.options.smtpPort ?? 587,
-        secure: data.options.secure,
+        encryption: data.options.secure
+          ? 'implicit'
+          : data.options.requireTls
+          ? 'opportunistic'
+          : 'none',
         authUser: data.options.authUser,
         authPass: data.options.authPass,
         allowSelfSigned: data.options.allowSelfSigned,
@@ -150,7 +156,8 @@ const NotificationsEmail: React.FC = () => {
               emailFrom: values.emailFrom,
               smtpHost: values.smtpHost,
               smtpPort: Number(values.smtpPort),
-              secure: values.secure,
+              secure: values.encryption === 'implicit',
+              requireTls: values.encryption === 'opportunistic',
               authUser: values.authUser,
               authPass: values.authPass,
               allowSelfSigned: values.allowSelfSigned,
@@ -196,7 +203,8 @@ const NotificationsEmail: React.FC = () => {
                 emailFrom: values.emailFrom,
                 smtpHost: values.smtpHost,
                 smtpPort: Number(values.smtpPort),
-                secure: values.secure,
+                secure: values.encryption === 'implicit',
+                requireTls: values.encryption === 'opportunistic',
                 authUser: values.authUser,
                 authPass: values.authPass,
                 senderName: values.senderName,
@@ -339,14 +347,26 @@ const NotificationsEmail: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
-                <label htmlFor="secure" className="checkbox-label">
-                  <span>{intl.formatMessage(messages.enableSsl)}</span>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.ssldisabletip)}
-                  </span>
+                <label htmlFor="encryption" className="checkbox-label">
+                  {intl.formatMessage(messages.encryption)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
-                  <Field type="checkbox" id="secure" name="secure" />
+                  <div className="form-input-field">
+                    <Field as="select" id="encryption" name="encryption">
+                      <option value="none">
+                        {intl.formatMessage(messages.encryptionNone)}
+                      </option>
+                      <option value="implicit">
+                        {intl.formatMessage(messages.encryptionImplicitTls)}
+                      </option>
+                      <option value="opportunistic">
+                        {intl.formatMessage(
+                          messages.encryptionOpportunisticTls
+                        )}
+                      </option>
+                    </Field>
+                  </div>
                 </div>
               </div>
               <div className="form-row">

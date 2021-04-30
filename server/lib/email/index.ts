@@ -13,6 +13,7 @@ class PreparedEmail extends Email {
       host: settings.options.smtpHost,
       port: settings.options.smtpPort,
       secure: settings.options.secure,
+      requireTLS: settings.options.requireTls,
       tls: settings.options.allowSelfSigned
         ? {
             rejectUnauthorized: false,
@@ -26,6 +27,7 @@ class PreparedEmail extends Email {
             }
           : undefined,
     });
+
     if (pgpKey) {
       transport.use(
         'stream',
@@ -36,6 +38,7 @@ class PreparedEmail extends Email {
         })
       );
     }
+
     super({
       message: {
         from: {
