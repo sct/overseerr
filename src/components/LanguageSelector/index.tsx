@@ -58,12 +58,9 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     return sortBy(languages, 'name');
   }, [intl, languages]);
 
-  function languageName(langCode: string): string {
-    return (
-      sortedLanguages?.find((language) => language.iso_639_1 === langCode)
-        ?.name ?? langCode
-    );
-  }
+  const languageName = (languageCode: string) =>
+    sortedLanguages?.find((language) => language.iso_639_1 === languageCode)
+      ?.name ?? languageCode;
 
   const options: OptionType[] =
     sortedLanguages?.map((language) => ({

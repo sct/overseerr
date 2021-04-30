@@ -52,12 +52,9 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     return sortBy(regions, 'name');
   }, [intl, regions]);
 
-  function regionName(regionCode: string): string {
-    return (
-      sortedRegions?.find((region) => region.iso_3166_1 === regionCode)?.name ??
-      regionCode
-    );
-  }
+  const regionName = (regionCode: string) =>
+    sortedRegions?.find((region) => region.iso_3166_1 === regionCode)?.name ??
+    regionCode;
 
   useEffect(() => {
     if (regions && value) {
