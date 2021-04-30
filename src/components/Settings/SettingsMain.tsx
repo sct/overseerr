@@ -1,12 +1,12 @@
 import { RefreshIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
-import type { Language, MainSettings } from '../../../server/lib/settings';
+import type { MainSettings } from '../../../server/lib/settings';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Badge from '../Common/Badge';
@@ -58,9 +58,7 @@ const SettingsMain: React.FC = () => {
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
   );
-  const { data: languages, error: languagesError } = useSWR<Language[]>(
-    '/api/v1/languages'
-  );
+
   const MainSettingsSchema = Yup.object().shape({
     applicationTitle: Yup.string().required(
       intl.formatMessage(messages.validationApplicationTitle)
@@ -96,26 +94,7 @@ const SettingsMain: React.FC = () => {
     }
   };
 
-  const sortedLanguages = useMemo(
-    () =>
-      languages?.sort((lang1, lang2) => {
-        const lang1Name =
-          intl.formatDisplayName(lang1.iso_639_1, {
-            type: 'language',
-            fallback: 'none',
-          }) ?? lang1.english_name;
-        const lang2Name =
-          intl.formatDisplayName(lang2.iso_639_1, {
-            type: 'language',
-            fallback: 'none',
-          }) ?? lang2.english_name;
-
-        return lang1Name === lang2Name ? 0 : lang1Name > lang2Name ? 1 : -1;
-      }),
-    [intl, languages]
-  );
-
-  if (!data && !error && !languages && !languagesError) {
+  if (!data && !error) {
     return <LoadingSpinner />;
   }
 
@@ -316,7 +295,6 @@ const SettingsMain: React.FC = () => {
                   <div className="form-input">
                     <div className="form-input-field">
                       <LanguageSelector
-                        languages={sortedLanguages ?? []}
                         setFieldValue={setFieldValue}
                         value={values.originalLanguage}
                       />

@@ -2,6 +2,7 @@ import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { hasFlag } from 'country-flag-icons';
 import 'country-flag-icons/3x2/flags.css';
+import { sortBy } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
@@ -39,32 +40,21 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     []
   );
 
-  const sortedRegions = useMemo(
-    () =>
-      regions?.sort((region1, region2) => {
-        const region1Name =
-          intl.formatDisplayName(region1.iso_3166_1, {
-            type: 'region',
-            fallback: 'none',
-          }) ?? region1.english_name;
-        const region2Name =
-          intl.formatDisplayName(region2.iso_3166_1, {
-            type: 'region',
-            fallback: 'none',
-          }) ?? region2.english_name;
+  const sortedRegions = useMemo(() => {
+    regions?.forEach((region) => {
+      region.name =
+        intl.formatDisplayName(region.iso_3166_1, {
+          type: 'region',
+          fallback: 'none',
+        }) ?? region.english_name;
+    });
 
-        return region1Name === region2Name
-          ? 0
-          : region1Name > region2Name
-          ? 1
-          : -1;
-      }),
-    [intl, regions]
-  );
+    return sortBy(regions, 'name');
+  }, [intl, regions]);
 
-  const defaultRegionNameFallback =
-    regions?.find((region) => region.iso_3166_1 === currentSettings.region)
-      ?.english_name ?? currentSettings.region;
+  const regionName = (regionCode: string) =>
+    sortedRegions?.find((region) => region.iso_3166_1 === regionCode)?.name ??
+    regionCode;
 
   useEffect(() => {
     if (regions && value) {
@@ -110,17 +100,11 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                   )}
                   <span className="block truncate">
                     {selectedRegion && selectedRegion.iso_3166_1 !== 'all'
-                      ? intl.formatDisplayName(selectedRegion.iso_3166_1, {
-                          type: 'region',
-                          fallback: 'none',
-                        }) ?? selectedRegion.english_name
+                      ? regionName(selectedRegion.iso_3166_1)
                       : isUserSetting && selectedRegion?.iso_3166_1 !== 'all'
                       ? intl.formatMessage(messages.regionServerDefault, {
                           region: currentSettings.region
-                            ? intl.formatDisplayName(currentSettings.region, {
-                                type: 'region',
-                                fallback: 'none',
-                              }) ?? defaultRegionNameFallback
+                            ? regionName(currentSettings.region)
                             : intl.formatMessage(messages.regionDefault),
                         })
                       : intl.formatMessage(messages.regionDefault)}
@@ -168,13 +152,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                           >
                             {intl.formatMessage(messages.regionServerDefault, {
                               region: currentSettings.region
-                                ? intl.formatDisplayName(
-                                    currentSettings.region,
-                                    {
-                                      type: 'region',
-                                      fallback: 'none',
-                                    }
-                                  ) ?? defaultRegionNameFallback
+                                ? regionName(currentSettings.region)
                                 : intl.formatMessage(messages.regionDefault),
                             })}
                           </span>
@@ -241,10 +219,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                               selected ? 'font-semibold' : 'font-normal'
                             } block truncate`}
                           >
-                            {intl.formatDisplayName(region.iso_3166_1, {
-                              type: 'region',
-                              fallback: 'none',
-                            }) ?? region.english_name}
+                            {regionName(region.iso_3166_1)}
                           </span>
                           {selected && (
                             <span
