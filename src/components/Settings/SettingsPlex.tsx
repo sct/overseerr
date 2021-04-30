@@ -530,9 +530,11 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
             className={isSyncing ? 'animate-spin' : ''}
             style={{ animationDirection: 'reverse' }}
           />
-          {isSyncing
-            ? intl.formatMessage(messages.scanning)
-            : intl.formatMessage(messages.scan)}
+          <span>
+            {isSyncing
+              ? intl.formatMessage(messages.scanning)
+              : intl.formatMessage(messages.scan)}
+          </span>
         </Button>
         <ul className="grid grid-cols-1 gap-5 mt-6 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {data?.libraries.map((library) => (
@@ -601,17 +603,15 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </>
             )}
             <div className="flex-1 text-right">
-              {!dataSync?.running && (
+              {!dataSync?.running ? (
                 <Button buttonType="warning" onClick={() => startScan()}>
                   <SearchIcon />
-                  {intl.formatMessage(messages.startscan)}
+                  <span>{intl.formatMessage(messages.startscan)}</span>
                 </Button>
-              )}
-
-              {dataSync?.running && (
+              ) : (
                 <Button buttonType="danger" onClick={() => cancelScan()}>
                   <XIcon />
-                  {intl.formatMessage(messages.cancelscan)}
+                  <span>{intl.formatMessage(messages.cancelscan)}</span>
                 </Button>
               )}
             </div>
