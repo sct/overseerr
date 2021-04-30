@@ -21,10 +21,12 @@ const messages = defineMessages({
   smtpHost: 'SMTP Host',
   smtpPort: 'SMTP Port',
   encryption: 'Encryption Method',
+  encryptionTip:
+    'In most cases, Implicit TLS uses port 465 and STARTTLS uses port 587',
   encryptionNone: 'None',
-  encryptionImplicitTls: 'Implicit SSL or TLS (typically using port 465)',
-  encryptionOpportunisticTls:
-    'Opportunistic TLS or STARTTLS (typically using port 587)',
+  encryptionDefault: 'Use STARTTLS if available',
+  encryptionOpportunisticTls: 'Always use STARTTLS',
+  encryptionImplicitTls: 'Use Implicit TLS',
   authUser: 'SMTP Username',
   authPass: 'SMTP Password',
   emailsettingssaved: 'Email notification settings saved successfully!',
@@ -138,7 +140,9 @@ const NotificationsEmail: React.FC = () => {
           ? 'implicit'
           : data.options.requireTls
           ? 'opportunistic'
-          : 'none',
+          : data.options.ignoreTls
+          ? 'none'
+          : 'default',
         authUser: data.options.authUser,
         authPass: data.options.authPass,
         allowSelfSigned: data.options.allowSelfSigned,
@@ -157,6 +161,7 @@ const NotificationsEmail: React.FC = () => {
               smtpHost: values.smtpHost,
               smtpPort: Number(values.smtpPort),
               secure: values.encryption === 'implicit',
+              ignoreTls: values.encryption === 'none',
               requireTls: values.encryption === 'opportunistic',
               authUser: values.authUser,
               authPass: values.authPass,
@@ -204,6 +209,7 @@ const NotificationsEmail: React.FC = () => {
                 smtpHost: values.smtpHost,
                 smtpPort: Number(values.smtpPort),
                 secure: values.encryption === 'implicit',
+                ignoreTls: values.encryption === 'none',
                 requireTls: values.encryption === 'opportunistic',
                 authUser: values.authUser,
                 authPass: values.authPass,
@@ -347,7 +353,7 @@ const NotificationsEmail: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
-                <label htmlFor="encryption" className="checkbox-label">
+                <label htmlFor="encryption" className="text-label">
                   {intl.formatMessage(messages.encryption)}
                   <span className="label-required">*</span>
                 </label>
@@ -357,13 +363,16 @@ const NotificationsEmail: React.FC = () => {
                       <option value="none">
                         {intl.formatMessage(messages.encryptionNone)}
                       </option>
-                      <option value="implicit">
-                        {intl.formatMessage(messages.encryptionImplicitTls)}
+                      <option value="default">
+                        {intl.formatMessage(messages.encryptionDefault)}
                       </option>
                       <option value="opportunistic">
                         {intl.formatMessage(
                           messages.encryptionOpportunisticTls
                         )}
+                      </option>
+                      <option value="implicit">
+                        {intl.formatMessage(messages.encryptionImplicitTls)}
                       </option>
                     </Field>
                   </div>

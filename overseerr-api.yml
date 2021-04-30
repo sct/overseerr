@@ -1255,6 +1255,9 @@ components:
             secure:
               type: boolean
               example: false
+            ignoreTls:
+              type: boolean
+              example: false
             requireTls:
               type: boolean
               example: false

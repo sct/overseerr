@@ -13,6 +13,7 @@ class PreparedEmail extends Email {
       host: settings.options.smtpHost,
       port: settings.options.smtpPort,
       secure: settings.options.secure,
+      ignoreTLS: settings.options.ignoreTls,
       requireTLS: settings.options.requireTls,
       tls: settings.options.allowSelfSigned
         ? {
