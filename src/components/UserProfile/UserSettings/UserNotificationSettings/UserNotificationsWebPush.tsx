@@ -41,6 +41,7 @@ const UserWebPushSettings: React.FC = () => {
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
+            pgpKey: data?.pgpKey,
             discordId: data?.discordId,
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
