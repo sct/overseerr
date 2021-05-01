@@ -179,6 +179,7 @@
   "components.RequestList.RequestItem.modified": "Modified",
   "components.RequestList.RequestItem.modifieduserdate": "{date} by {user}",
   "components.RequestList.RequestItem.requested": "Requested",
+  "components.RequestList.RequestItem.requesteddate": "Requested",
   "components.RequestList.RequestItem.seasons": "{seasonCount, plural, one {Season} other {Seasons}}",
   "components.RequestList.requests": "Requests",
   "components.RequestList.showallrequests": "Show All Requests",

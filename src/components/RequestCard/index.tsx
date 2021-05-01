@@ -204,6 +204,12 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
           </div>
         )}
         <div className="relative z-10 flex flex-col flex-1 min-w-0 pr-4">
+          <div className="hidden text-xs text-white sm:flex">
+            {(isMovie(title) ? title.releaseDate : title.firstAirDate)?.slice(
+              0,
+              4
+            )}
+          </div>
           <Link
             href={
               request.type === 'movie'
@@ -211,26 +217,40 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                 : `/tv/${requestData.media.tmdbId}`
             }
           >
-            <a className="pb-0.5 sm:pb-1 overflow-hidden text-base text-white cursor-pointer sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
+            <a className="overflow-hidden text-base text-white sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
               {isMovie(title) ? title.title : title.name}
             </a>
           </Link>
-          <div className="card-field">
-            <Link href={`/users/${requestData.requestedBy.id}`}>
-              <a className="flex items-center group">
-                <img
-                  src={requestData.requestedBy.avatar}
-                  alt=""
-                  className="avatar-sm"
-                />
-                <span className="truncate group-hover:underline">
-                  {requestData.requestedBy.displayName}
-                </span>
-              </a>
-            </Link>
-          </div>
+          {hasPermission(
+            [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+            { type: 'or' }
+          ) && (
+            <div className="card-field">
+              <Link href={`/users/${requestData.requestedBy.id}`}>
+                <a className="flex items-center group">
+                  <img
+                    src={requestData.requestedBy.avatar}
+                    alt=""
+                    className="avatar-sm"
+                  />
+                  <span className="truncate group-hover:underline">
+                    {requestData.requestedBy.displayName}
+                  </span>
+                </a>
+              </Link>
+            </div>
+          )}
           {!isMovie(title) && request.seasons.length > 0 && (
-            <div className="sm:flex items-center my-0.5 sm:my-1 text-sm hidden">
+            <div
+              className={`items-center my-0.5 sm:my-1 text-sm ${
+                hasPermission(
+                  [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+                  { type: 'or' }
+                )
+                  ? 'hidden sm:flex'
+                  : ''
+              }`}
+            >
               <span className="mr-2 font-medium">
                 {intl.formatMessage(messages.seasons, {
                   seasonCount:
