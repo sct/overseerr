@@ -31,6 +31,7 @@
   "components.Discover.upcoming": "Upcoming Movies",
   "components.Discover.upcomingmovies": "Upcoming Movies",
   "components.Discover.upcomingtv": "Upcoming Series",
+  "components.DownloadBlock.estimatedtime": "Estimated {time}",
   "components.LanguageSelector.languageServerDefault": "Default ({language})",
   "components.LanguageSelector.originalLanguageDefault": "All Languages",
   "components.Layout.LanguagePicker.changelanguage": "Change Language",
