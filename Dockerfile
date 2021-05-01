@@ -2,11 +2,6 @@ FROM node:14.16-alpine AS BUILD_IMAGE
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --network-timeout 1000000
-
-COPY . ./
-
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
@@ -15,6 +10,11 @@ RUN \
     'linux/arm64') apk add --no-cache python make g++ ;; \
     'linux/arm/v7') apk add --no-cache python make g++ ;; \
   esac
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --network-timeout 1000000
+
+COPY . ./
 
 ARG COMMIT_TAG
 ENV COMMIT_TAG=${COMMIT_TAG}
