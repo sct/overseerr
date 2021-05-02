@@ -29,6 +29,7 @@ const SensitiveInput: React.FC<SensitiveInputProps> = ({
     <>
       <Component
         {...componentProps}
+        className={`rounded-l-only ${componentProps.className ?? ''}`}
         type={
           isHidden
             ? 'password'
@@ -36,7 +37,6 @@ const SensitiveInput: React.FC<SensitiveInputProps> = ({
             ? props.type
             : 'text'
         }
-        style={{ borderTopRightRadius: '0px', borderBottomRightRadius: '0px' }}
       />
       <button
         onClick={(e) => {
