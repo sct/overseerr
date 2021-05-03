@@ -13,6 +13,7 @@ import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
+import SensitiveInput from '../Common/SensitiveInput';
 import LanguageSelector from '../LanguageSelector';
 import RegionSelector from '../RegionSelector';
 import CopyButton from './CopyButton';
@@ -166,7 +167,7 @@ const SettingsMain: React.FC = () => {
                     </label>
                     <div className="form-input">
                       <div className="form-input-field">
-                        <input
+                        <SensitiveInput
                           type="text"
                           id="apiKey"
                           className="rounded-l-only"
