@@ -1,13 +1,9 @@
 FROM node:14.16-alpine AS BUILD_IMAGE
 
+WORKDIR /app
+
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
-
-ARG COMMIT_TAG
-ENV COMMIT_TAG=${COMMIT_TAG}
-
-COPY . /app
-WORKDIR /app
 
 RUN \
   case "${TARGETPLATFORM}" in \
@@ -15,14 +11,20 @@ RUN \
     'linux/arm/v7') apk add --no-cache python make g++ ;; \
   esac
 
-RUN yarn --frozen-lockfile --network-timeout 1000000 && \
-  yarn build
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --network-timeout 1000000
+
+COPY . ./
+
+ARG COMMIT_TAG
+ENV COMMIT_TAG=${COMMIT_TAG}
+
+RUN yarn build
 
 # remove development dependencies
 RUN yarn install --production --ignore-scripts --prefer-offline
 
-RUN rm -rf src && \
-  rm -rf server
+RUN rm -rf src server
 
 RUN touch config/DOCKER
 
@@ -31,11 +33,12 @@ RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
 
 FROM node:14.16-alpine
 
+WORKDIR /app
+
 RUN apk add --no-cache tzdata tini
 
 # copy from build image
-COPY --from=BUILD_IMAGE /app /app
-WORKDIR /app
+COPY --from=BUILD_IMAGE /app ./
 
 ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "yarn", "start" ]

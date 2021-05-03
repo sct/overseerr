@@ -16,11 +16,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Use Next.js cache
-        uses: actions/cache@v2.1.0
-        with:
-          path: ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package.json') }}
       - name: Install dependencies
         env:
           HUSKY_SKIP_INSTALL: 1
@@ -75,7 +70,7 @@ jobs:
             ghcr.io/sct/overseerr:develop
             ghcr.io/sct/overseerr:${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
       - # Temporary fix
         # https://github.com/docker/build-push-action/issues/252
         # https://github.com/moby/buildkit/issues/1896
