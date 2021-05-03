@@ -8,6 +8,7 @@ import {
   XIcon,
 } from '@heroicons/react/solid';
 import axios from 'axios';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { MediaRequestStatus } from '../../../server/constants/media';
@@ -80,14 +81,22 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
             <div className="flex mb-1 flex-nowrap white">
               <UserIcon className="min-w-0 flex-shrink-0 mr-1.5 h-5 w-5" />
               <span className="w-40 truncate md:w-auto">
-                {request.requestedBy.displayName}
+                <Link href={`/users/${request.requestedBy.id}`}>
+                  <a className="text-gray-100 transition duration-300 hover:text-white hover:underline">
+                    {request.requestedBy.displayName}
+                  </a>
+                </Link>
               </span>
             </div>
             {request.modifiedBy && (
               <div className="flex flex-nowrap">
                 <EyeIcon className="flex-shrink-0 mr-1.5 h-5 w-5" />
                 <span className="w-40 truncate md:w-auto">
-                  {request.modifiedBy?.displayName}
+                  <Link href={`/users/${request.modifiedBy.id}`}>
+                    <a className="text-gray-100 transition duration-300 hover:text-white hover:underline">
+                      {request.modifiedBy.displayName}
+                    </a>
+                  </Link>
                 </span>
               </div>
             )}
@@ -186,7 +195,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
             </div>
           </div>
         )}
-        {(server || profile || rootFolder) && (
+        {(server || profile !== null || rootFolder) && (
           <>
             <div className="mt-4 mb-1 text-sm">
               {intl.formatMessage(messages.requestoverrides)}
