@@ -111,7 +111,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
       <LanguageContext.Provider value={{ locale: currentLocale, setLocale }}>
         <IntlProvider
           locale={currentLocale}
-          defaultLocale={currentSettings.locale}
+          defaultLocale="en"
           messages={loadedMessages}
         >
           <LoadingBar />
