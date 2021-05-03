@@ -218,7 +218,7 @@ img.avatar-sm {
 }
 
 .form-input-field {
-  @apply flex max-w-lg rounded-md shadow-sm;
+  @apply flex max-w-xl rounded-md shadow-sm;
 }
 
 .actions {
