@@ -268,12 +268,14 @@ textarea {
 }
 
 input.rounded-l-only,
-select.rounded-l-only {
+select.rounded-l-only,
+textarea.rounded-l-only {
   @apply rounded-r-none;
 }
 
 input.rounded-r-only,
-select.rounded-r-only {
+select.rounded-r-only,
+textarea.rounded-r-only {
   @apply rounded-l-none;
 }
 
