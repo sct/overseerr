@@ -103,8 +103,10 @@ components:
       properties:
         apiKey:
           type: string
-          example: 'anapikey'
           readOnly: true
+        appLanguage:
+          type: string
+          example: en
         applicationTitle:
           type: string
           example: Overseerr
