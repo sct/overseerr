@@ -119,7 +119,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
             <InteractionProvider>
               <ToastProvider components={{ Toast, ToastContainer }}>
                 <Head>
-                  <title>Overseerr</title>
+                  <title>{currentSettings.applicationTitle}</title>
                   <meta
                     name="viewport"
                     content="initial-scale=1, viewport-fit=cover, width=device-width"
@@ -156,6 +156,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     cacheImages: false,
     vapidPublic: '',
     enablePushRegistration: false,
+    locale: 'en',
   };
 
   if (ctx.res) {
@@ -209,7 +210,9 @@ CoreApp.getInitialProps = async (initialProps) => {
     initialProps
   );
 
-  const locale = user?.settings?.locale ?? 'en';
+  const locale = user?.settings?.locale
+    ? user.settings.locale
+    : currentSettings.locale;
 
   const messages = await loadLocaleData(locale as AvailableLocales);
 

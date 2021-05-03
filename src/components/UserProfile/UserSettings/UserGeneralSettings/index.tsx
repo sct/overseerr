@@ -44,12 +44,13 @@ const messages = defineMessages({
   seriesrequestlimit: 'Series Request Limit',
   enableOverride: 'Enable Override',
   applanguage: 'Display Language',
+  languageDefault: 'Default ({language})',
 });
 
 const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
-  const { setLocale } = useLocale();
+  const { locale, setLocale } = useLocale();
   const [movieQuotaEnabled, setMovieQuotaEnabled] = useState(false);
   const [tvQuotaEnabled, setTvQuotaEnabled] = useState(false);
   const router = useRouter();
@@ -120,7 +121,11 @@ const UserGeneralSettings: React.FC = () => {
             });
 
             if (currentUser?.id === user?.id && setLocale) {
-              setLocale(values.locale as AvailableLocales);
+              setLocale(
+                (values.locale
+                  ? values.locale
+                  : currentSettings.locale) as AvailableLocales
+              );
             }
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
@@ -198,10 +203,20 @@ const UserGeneralSettings: React.FC = () => {
                 <div className="form-input">
                   <div className="form-input-field">
                     <Field as="select" id="locale" name="locale">
+                      <option value="" lang={locale}>
+                        {intl.formatMessage(messages.languageDefault, {
+                          language:
+                            availableLanguages[currentSettings.locale].display,
+                        })}
+                      </option>
                       {(Object.keys(
                         availableLanguages
                       ) as (keyof typeof availableLanguages)[]).map((key) => (
-                        <option key={key} value={availableLanguages[key].code}>
+                        <option
+                          key={key}
+                          value={availableLanguages[key].code}
+                          lang={availableLanguages[key].code}
+                        >
                           {availableLanguages[key].display}
                         </option>
                       ))}
