@@ -131,7 +131,7 @@ const NotificationsEmail: React.FC = () => {
         types: data.types,
         emailFrom: data.options.emailFrom,
         smtpHost: data.options.smtpHost,
-        smtpPort: data.options.smtpPort,
+        smtpPort: data.options.smtpPort ?? 587,
         secure: data.options.secure,
         authUser: data.options.authUser,
         authPass: data.options.authPass,
@@ -266,9 +266,20 @@ const NotificationsEmail: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">
                   {intl.formatMessage(messages.agentenabled)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <Field type="checkbox" id="enabled" name="enabled" />
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="senderName" className="text-label">
+                  {intl.formatMessage(messages.senderName)}
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field id="senderName" name="senderName" type="text" />
+                  </div>
                 </div>
               </div>
               <div className="form-row">
@@ -282,27 +293,12 @@ const NotificationsEmail: React.FC = () => {
                       id="emailFrom"
                       name="emailFrom"
                       type="text"
-                      placeholder="no-reply@example.com"
+                      inputMode="email"
                     />
                   </div>
                   {errors.emailFrom && touched.emailFrom && (
                     <div className="error">{errors.emailFrom}</div>
                   )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="senderName" className="text-label">
-                  {intl.formatMessage(messages.senderName)}
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field
-                      id="senderName"
-                      name="senderName"
-                      placeholder="Overseerr"
-                      type="text"
-                    />
-                  </div>
                 </div>
               </div>
               <div className="form-row">
@@ -316,7 +312,7 @@ const NotificationsEmail: React.FC = () => {
                       id="smtpHost"
                       name="smtpHost"
                       type="text"
-                      placeholder="localhost"
+                      inputMode="url"
                     />
                   </div>
                   {errors.smtpHost && touched.smtpHost && (
@@ -334,7 +330,7 @@ const NotificationsEmail: React.FC = () => {
                     id="smtpPort"
                     name="smtpPort"
                     type="text"
-                    placeholder="465"
+                    inputMode="numeric"
                     className="short"
                   />
                   {errors.smtpPort && touched.smtpPort && (
@@ -385,8 +381,7 @@ const NotificationsEmail: React.FC = () => {
                       as="field"
                       id="authPass"
                       name="authPass"
-                      type="password"
-                      autoComplete="off"
+                      autoComplete="one-time-code"
                     />
                   </div>
                 </div>
@@ -441,8 +436,7 @@ const NotificationsEmail: React.FC = () => {
                       as="field"
                       id="pgpPassword"
                       name="pgpPassword"
-                      type="password"
-                      autoComplete="off"
+                      autoComplete="one-time-code"
                     />
                   </div>
                   {errors.pgpPassword && touched.pgpPassword && (

@@ -255,7 +255,7 @@ class Settings {
       },
       plex: {
         name: '',
-        ip: '127.0.0.1',
+        ip: '',
         port: 32400,
         useSsl: false,
         libraries: [],
@@ -272,7 +272,7 @@ class Settings {
             types: 0,
             options: {
               emailFrom: '',
-              smtpHost: '127.0.0.1',
+              smtpHost: '',
               smtpPort: 587,
               secure: false,
               allowSelfSigned: false,

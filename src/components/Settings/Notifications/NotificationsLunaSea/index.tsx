@@ -13,6 +13,8 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
   webhookUrl: 'Webhook URL',
+  webhookUrlTip:
+    'Your user- or device-based <LunaSeaLink>notification webhook URL</LunaSeaLink>',
   validationWebhookUrl: 'You must provide a valid URL',
   profileName: 'Profile Name',
   profileNameTip: 'Only required if not using the <code>default</code> profile',
@@ -129,6 +131,7 @@ const NotificationsLunaSea: React.FC = () => {
             <div className="form-row">
               <label htmlFor="enabled" className="checkbox-label">
                 {intl.formatMessage(messages.agentenabled)}
+                <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <Field type="checkbox" id="enabled" name="enabled" />
@@ -138,10 +141,31 @@ const NotificationsLunaSea: React.FC = () => {
               <label htmlFor="name" className="text-label">
                 {intl.formatMessage(messages.webhookUrl)}
                 <span className="label-required">*</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.webhookUrlTip, {
+                    LunaSeaLink: function LunaSeaLink(msg) {
+                      return (
+                        <a
+                          href="https://docs.lunasea.app/lunasea/notifications/overseerr"
+                          className="text-white transition duration-300 hover:underline"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      );
+                    },
+                  })}
+                </span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field id="webhookUrl" name="webhookUrl" type="text" />
+                  <Field
+                    id="webhookUrl"
+                    name="webhookUrl"
+                    type="text"
+                    inputMode="url"
+                  />
                 </div>
                 {errors.webhookUrl && touched.webhookUrl && (
                   <div className="error">{errors.webhookUrl}</div>

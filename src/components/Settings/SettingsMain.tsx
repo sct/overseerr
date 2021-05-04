@@ -222,7 +222,6 @@ const SettingsMain: React.FC = () => {
                         id="applicationTitle"
                         name="applicationTitle"
                         type="text"
-                        placeholder="Overseerr"
                       />
                     </div>
                     {errors.applicationTitle && touched.applicationTitle && (
@@ -240,7 +239,7 @@ const SettingsMain: React.FC = () => {
                         id="applicationUrl"
                         name="applicationUrl"
                         type="text"
-                        placeholder="https://os.example.com"
+                        inputMode="url"
                       />
                     </div>
                     {errors.applicationUrl && touched.applicationUrl && (

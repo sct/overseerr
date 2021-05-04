@@ -6,7 +6,6 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import globalMessages from '../../../i18n/globalMessages';
-import Alert from '../../Common/Alert';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import SensitiveInput from '../../Common/SensitiveInput';
@@ -16,18 +15,20 @@ const messages = defineMessages({
   agentenabled: 'Enable Agent',
   botUsername: 'Bot Username',
   botUsernameTip:
-    'Allow users to start a chat with the bot and configure their own personal notifications',
-  botAPI: 'Bot Authentication Token',
+    'Allow users to also start a chat with your bot and configure their own notifications',
+  botAPI: 'Bot Authorization Token',
+  botApiTip:
+    '<CreateBotLink>Create a bot</CreateBotLink> for use with Overseerr',
   chatId: 'Chat ID',
-  validationBotAPIRequired: 'You must provide a bot authentication token',
+  chatIdTip:
+    'Start a chat with your bot, add <GetIdBotLink>@get_id_bot</GetIdBotLink>, and issue the <code>/my_id</code> command',
+  validationBotAPIRequired: 'You must provide a bot authorization token',
   validationChatIdRequired: 'You must provide a valid chat ID',
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
   toastTelegramTestSending: 'Sending Telegram test notification…',
   toastTelegramTestSuccess: 'Telegram test notification sent!',
   toastTelegramTestFailed: 'Telegram test notification failed to send.',
-  settinguptelegramDescription:
-    'To configure Telegram notifications, you will need to <CreateBotLink>create a bot</CreateBotLink> and get the bot API key. Additionally, you will need the chat ID for the chat to which you would like to send notifications. You can find this by adding <GetIdBotLink>@get_id_bot</GetIdBotLink> to the chat and issuing the <code>/my_id</code> command.',
   sendSilently: 'Send Silently',
   sendSilentlyTip: 'Send notifications with no sound',
 });
@@ -152,45 +153,64 @@ const NotificationsTelegram: React.FC = () => {
 
         return (
           <>
-            <Alert
-              title={intl.formatMessage(messages.settinguptelegramDescription, {
-                CreateBotLink: function CreateBotLink(msg) {
-                  return (
-                    <a
-                      href="https://core.telegram.org/bots#6-botfather"
-                      className="text-white transition duration-300 hover:underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {msg}
-                    </a>
-                  );
-                },
-                GetIdBotLink: function GetIdBotLink(msg) {
-                  return (
-                    <a
-                      href="https://telegram.me/get_id_bot"
-                      className="text-white transition duration-300 hover:underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {msg}
-                    </a>
-                  );
-                },
-                code: function code(msg) {
-                  return <code className="bg-opacity-50">{msg}</code>;
-                },
-              })}
-              type="info"
-            />
             <Form className="section">
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">
                   {intl.formatMessage(messages.agentenabled)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <Field type="checkbox" id="enabled" name="enabled" />
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="botAPI" className="text-label">
+                  {intl.formatMessage(messages.botAPI)}
+                  <span className="label-required">*</span>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.botApiTip, {
+                      CreateBotLink: function CreateBotLink(msg) {
+                        return (
+                          <a
+                            href="https://core.telegram.org/bots#6-botfather"
+                            className="text-white transition duration-300 hover:underline"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {msg}
+                          </a>
+                        );
+                      },
+                      GetIdBotLink: function GetIdBotLink(msg) {
+                        return (
+                          <a
+                            href="https://telegram.me/get_id_bot"
+                            className="text-white transition duration-300 hover:underline"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {msg}
+                          </a>
+                        );
+                      },
+                      code: function code(msg) {
+                        return <code className="bg-opacity-50">{msg}</code>;
+                      },
+                    })}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <SensitiveInput
+                      as="field"
+                      id="botAPI"
+                      name="botAPI"
+                      autoComplete="one-time-code"
+                    />
+                  </div>
+                  {errors.botAPI && touched.botAPI && (
+                    <div className="error">{errors.botAPI}</div>
+                  )}
                 </div>
               </div>
               <div className="form-row">
@@ -202,35 +222,10 @@ const NotificationsTelegram: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
-                      id="botUsername"
-                      name="botUsername"
-                      type="text"
-                      placeholder={intl.formatMessage(messages.botUsername)}
-                    />
+                    <Field id="botUsername" name="botUsername" type="text" />
                   </div>
                   {errors.botUsername && touched.botUsername && (
                     <div className="error">{errors.botUsername}</div>
-                  )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="botAPI" className="text-label">
-                  {intl.formatMessage(messages.botAPI)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <SensitiveInput
-                      as="field"
-                      id="botAPI"
-                      name="botAPI"
-                      type="text"
-                      placeholder={intl.formatMessage(messages.botAPI)}
-                    />
-                  </div>
-                  {errors.botAPI && touched.botAPI && (
-                    <div className="error">{errors.botAPI}</div>
                   )}
                 </div>
               </div>
@@ -241,12 +236,7 @@ const NotificationsTelegram: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
-                      id="chatId"
-                      name="chatId"
-                      type="text"
-                      placeholder={intl.formatMessage(messages.chatId)}
-                    />
+                    <Field id="chatId" name="chatId" type="text" />
                   </div>
                   {errors.chatId && touched.chatId && (
                     <div className="error">{errors.chatId}</div>

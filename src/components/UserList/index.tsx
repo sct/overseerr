@@ -364,7 +364,7 @@ const UserList: React.FC = () => {
                           id="email"
                           name="email"
                           type="text"
-                          placeholder="name@example.com"
+                          inputMode="email"
                         />
                       </div>
                       {errors.email && touched.email && (
@@ -404,6 +404,7 @@ const UserList: React.FC = () => {
                     <div className="form-input">
                       <div className="form-input-field">
                         <SensitiveInput
+                          as="field"
                           id="password"
                           name="password"
                           type="password"

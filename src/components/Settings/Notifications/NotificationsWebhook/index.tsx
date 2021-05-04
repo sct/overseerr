@@ -209,6 +209,7 @@ const NotificationsWebhook: React.FC = () => {
             <div className="form-row">
               <label htmlFor="enabled" className="checkbox-label">
                 {intl.formatMessage(messages.agentenabled)}
+                <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <Field type="checkbox" id="enabled" name="enabled" />
@@ -221,7 +222,12 @@ const NotificationsWebhook: React.FC = () => {
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field id="webhookUrl" name="webhookUrl" type="text" />
+                  <Field
+                    id="webhookUrl"
+                    name="webhookUrl"
+                    type="text"
+                    inputMode="url"
+                  />
                 </div>
                 {errors.webhookUrl && touched.webhookUrl && (
                   <div className="error">{errors.webhookUrl}</div>
