@@ -256,7 +256,6 @@ requestRoutes.post('/', async (req, res, next) => {
           media: {
             tmdbId: tmdbMedia.id,
           },
-          requestedBy: req.user,
           is4k: req.body.is4k,
         },
       });
@@ -265,6 +264,7 @@ requestRoutes.post('/', async (req, res, next) => {
         logger.warn('Duplicate request for media blocked', {
           tmdbId: tmdbMedia.id,
           mediaType: req.body.mediaType,
+          is4k: req.body.is4k,
         });
         return next({
           status: 409,
