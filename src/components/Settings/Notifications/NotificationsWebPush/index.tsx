@@ -105,6 +105,7 @@ const NotificationsWebPush: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">
                   {intl.formatMessage(messages.agentenabled)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <Field type="checkbox" id="enabled" name="enabled" />

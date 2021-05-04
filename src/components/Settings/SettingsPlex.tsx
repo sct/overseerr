@@ -24,9 +24,7 @@ const messages = defineMessages({
     'Configure the settings for your Plex server. Overseerr scans your Plex libraries to determine content availability.',
   servername: 'Server Name',
   servernameTip: 'Automatically retrieved from Plex after saving',
-  servernamePlaceholder: 'Plex Server Name',
   serverpreset: 'Server',
-  serverpresetPlaceholder: 'Plex Server',
   serverLocal: 'local',
   serverRemote: 'remote',
   serverSecure: 'secure',
@@ -281,7 +279,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       <Formik
         initialValues={{
           hostname: data?.ip,
-          port: data?.port,
+          port: data?.port ?? 32400,
           useSsl: data?.useSsl,
           selectedPreset: undefined,
         }}
@@ -354,9 +352,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       id="name"
                       name="name"
                       className="cursor-not-allowed"
-                      placeholder={intl.formatMessage(
-                        messages.servernamePlaceholder
-                      )}
                       value={data?.name}
                       readOnly
                     />
@@ -372,9 +367,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     <select
                       id="preset"
                       name="preset"
-                      placeholder={intl.formatMessage(
-                        messages.serverpresetPlaceholder
-                      )}
                       value={values.selectedPreset}
                       disabled={!availableServers || isRefreshingPresets}
                       className="rounded-l-only"
@@ -453,9 +445,9 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     </span>
                     <Field
                       type="text"
+                      inputMode="url"
                       id="hostname"
                       name="hostname"
-                      placeholder="127.0.0.1"
                       className="rounded-r-only"
                     />
                   </div>
@@ -472,9 +464,9 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 <div className="form-input">
                   <Field
                     type="text"
+                    inputMode="numeric"
                     id="port"
                     name="port"
-                    placeholder="32400"
                     className="short"
                   />
                   {errors.port && touched.port && (

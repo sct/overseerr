@@ -15,7 +15,8 @@ const messages = defineMessages({
   botUsername: 'Bot Username',
   botAvatarUrl: 'Bot Avatar URL',
   webhookUrl: 'Webhook URL',
-  webhookUrlPlaceholder: 'Server Settings → Integrations → Webhooks',
+  webhookUrlTip:
+    'Create a <DiscordWebhookLink>webhook integration</DiscordWebhookLink> in your server',
   discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
   toastDiscordTestSending: 'Sending Discord test notification…',
@@ -137,9 +138,45 @@ const NotificationsDiscord: React.FC = () => {
             <div className="form-row">
               <label htmlFor="enabled" className="checkbox-label">
                 {intl.formatMessage(messages.agentenabled)}
+                <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <Field type="checkbox" id="enabled" name="enabled" />
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="name" className="text-label">
+                {intl.formatMessage(messages.webhookUrl)}
+                <span className="label-required">*</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.webhookUrlTip, {
+                    DiscordWebhookLink: function DiscordWebhookLink(msg) {
+                      return (
+                        <a
+                          href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks"
+                          className="text-white transition duration-300 hover:underline"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      );
+                    },
+                  })}
+                </span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field
+                    id="webhookUrl"
+                    name="webhookUrl"
+                    type="text"
+                    inputMode="url"
+                  />
+                </div>
+                {errors.webhookUrl && touched.webhookUrl && (
+                  <div className="error">{errors.webhookUrl}</div>
+                )}
               </div>
             </div>
             <div className="form-row">
@@ -148,12 +185,7 @@ const NotificationsDiscord: React.FC = () => {
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field
-                    id="botUsername"
-                    name="botUsername"
-                    type="text"
-                    placeholder={intl.formatMessage(messages.botUsername)}
-                  />
+                  <Field id="botUsername" name="botUsername" type="text" />
                 </div>
                 {errors.botUsername && touched.botUsername && (
                   <div className="error">{errors.botUsername}</div>
@@ -170,32 +202,11 @@ const NotificationsDiscord: React.FC = () => {
                     id="botAvatarUrl"
                     name="botAvatarUrl"
                     type="text"
-                    placeholder={intl.formatMessage(messages.botAvatarUrl)}
+                    inputMode="url"
                   />
                 </div>
                 {errors.botAvatarUrl && touched.botAvatarUrl && (
                   <div className="error">{errors.botAvatarUrl}</div>
-                )}
-              </div>
-            </div>
-            <div className="form-row">
-              <label htmlFor="name" className="text-label">
-                {intl.formatMessage(messages.webhookUrl)}
-                <span className="label-required">*</span>
-              </label>
-              <div className="form-input">
-                <div className="form-input-field">
-                  <Field
-                    id="webhookUrl"
-                    name="webhookUrl"
-                    type="text"
-                    placeholder={intl.formatMessage(
-                      messages.webhookUrlPlaceholder
-                    )}
-                  />
-                </div>
-                {errors.webhookUrl && touched.webhookUrl && (
-                  <div className="error">{errors.webhookUrl}</div>
                 )}
               </div>
             </div>

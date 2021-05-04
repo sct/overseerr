@@ -6,15 +6,18 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import globalMessages from '../../../../i18n/globalMessages';
-import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
-  accessToken: 'Application/API Token',
+  accessToken: 'Application API Token',
+  accessTokenTip:
+    '<ApplicationRegistrationLink>Register an application</ApplicationRegistrationLink> for use with Overseerr',
   userToken: 'User or Group Key',
+  userTokenTip:
+    'Your 30-character <UsersGroupsLink>user or group identifier</UsersGroupsLink>',
   validationAccessTokenRequired: 'You must provide a valid application token',
   validationUserTokenRequired: 'You must provide a valid user key',
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
@@ -22,8 +25,6 @@ const messages = defineMessages({
   toastPushoverTestSending: 'Sending Pushover test notification…',
   toastPushoverTestSuccess: 'Pushover test notification sent!',
   toastPushoverTestFailed: 'Pushover test notification failed to send.',
-  settinguppushoverDescription:
-    'To configure Pushover notifications, you will need to <RegisterApplicationLink>register an application</RegisterApplicationLink>. (You can use one of the <IconLink>official Overseerr icons on GitHub</IconLink>.)',
 });
 
 const NotificationsPushover: React.FC = () => {
@@ -143,118 +144,112 @@ const NotificationsPushover: React.FC = () => {
         };
 
         return (
-          <>
-            <Alert
-              title={intl.formatMessage(messages.settinguppushoverDescription, {
-                RegisterApplicationLink: function RegisterApplicationLink(msg) {
-                  return (
-                    <a
-                      href="https://pushover.net/apps/build"
-                      className="text-white transition duration-300 hover:underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {msg}
-                    </a>
-                  );
-                },
-                IconLink: function IconLink(msg) {
-                  return (
-                    <a
-                      href="https://github.com/sct/overseerr/tree/develop/public"
-                      className="text-white transition duration-300 hover:underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {msg}
-                    </a>
-                  );
-                },
-              })}
-              type="info"
+          <Form className="section">
+            <div className="form-row">
+              <label htmlFor="enabled" className="checkbox-label">
+                {intl.formatMessage(messages.agentenabled)}
+                <span className="label-required">*</span>
+              </label>
+              <div className="form-input">
+                <Field type="checkbox" id="enabled" name="enabled" />
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="accessToken" className="text-label">
+                {intl.formatMessage(messages.accessToken)}
+                <span className="label-required">*</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.accessTokenTip, {
+                    ApplicationRegistrationLink: function ApplicationRegistrationLink(
+                      msg
+                    ) {
+                      return (
+                        <a
+                          href="https://pushover.net/api#registration"
+                          className="text-white transition duration-300 hover:underline"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      );
+                    },
+                  })}
+                </span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field id="accessToken" name="accessToken" type="text" />
+                </div>
+                {errors.accessToken && touched.accessToken && (
+                  <div className="error">{errors.accessToken}</div>
+                )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="userToken" className="text-label">
+                {intl.formatMessage(messages.userToken)}
+                <span className="label-required">*</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.userTokenTip, {
+                    UsersGroupsLink: function UsersGroupsLink(msg) {
+                      return (
+                        <a
+                          href="https://pushover.net/api#identifiers"
+                          className="text-white transition duration-300 hover:underline"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      );
+                    },
+                  })}
+                </span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field id="userToken" name="userToken" type="text" />
+                </div>
+                {errors.userToken && touched.userToken && (
+                  <div className="error">{errors.userToken}</div>
+                )}
+              </div>
+            </div>
+            <NotificationTypeSelector
+              currentTypes={values.types}
+              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
             />
-            <Form className="section">
-              <div className="form-row">
-                <label htmlFor="enabled" className="checkbox-label">
-                  {intl.formatMessage(messages.agentenabled)}
-                </label>
-                <div className="form-input">
-                  <Field type="checkbox" id="enabled" name="enabled" />
-                </div>
+            <div className="actions">
+              <div className="flex justify-end">
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <Button
+                    buttonType="warning"
+                    disabled={isSubmitting || !isValid || isTesting}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      testSettings();
+                    }}
+                  >
+                    {isTesting
+                      ? intl.formatMessage(globalMessages.testing)
+                      : intl.formatMessage(globalMessages.test)}
+                  </Button>
+                </span>
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <Button
+                    buttonType="primary"
+                    type="submit"
+                    disabled={isSubmitting || !isValid || isTesting}
+                  >
+                    {isSubmitting
+                      ? intl.formatMessage(globalMessages.saving)
+                      : intl.formatMessage(globalMessages.save)}
+                  </Button>
+                </span>
               </div>
-              <div className="form-row">
-                <label htmlFor="accessToken" className="text-label">
-                  {intl.formatMessage(messages.accessToken)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field
-                      id="accessToken"
-                      name="accessToken"
-                      type="text"
-                      placeholder={intl.formatMessage(messages.accessToken)}
-                    />
-                  </div>
-                  {errors.accessToken && touched.accessToken && (
-                    <div className="error">{errors.accessToken}</div>
-                  )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="userToken" className="text-label">
-                  {intl.formatMessage(messages.userToken)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field
-                      id="userToken"
-                      name="userToken"
-                      type="text"
-                      placeholder={intl.formatMessage(messages.userToken)}
-                    />
-                  </div>
-                  {errors.userToken && touched.userToken && (
-                    <div className="error">{errors.userToken}</div>
-                  )}
-                </div>
-              </div>
-              <NotificationTypeSelector
-                currentTypes={values.types}
-                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
-              />
-              <div className="actions">
-                <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="warning"
-                      disabled={isSubmitting || !isValid || isTesting}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        testSettings();
-                      }}
-                    >
-                      {isTesting
-                        ? intl.formatMessage(globalMessages.testing)
-                        : intl.formatMessage(globalMessages.test)}
-                    </Button>
-                  </span>
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      type="submit"
-                      disabled={isSubmitting || !isValid || isTesting}
-                    >
-                      {isSubmitting
-                        ? intl.formatMessage(globalMessages.saving)
-                        : intl.formatMessage(globalMessages.save)}
-                    </Button>
-                  </span>
-                </div>
-              </div>
-            </Form>
-          </>
+            </div>
+          </Form>
         );
       }}
     </Formik>

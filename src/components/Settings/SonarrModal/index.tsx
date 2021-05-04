@@ -38,14 +38,11 @@ const messages = defineMessages({
   defaultserver: 'Default Server',
   default4kserver: 'Default 4K Server',
   servername: 'Server Name',
-  servernamePlaceholder: 'A Sonarr Server',
   hostname: 'Hostname or IP Address',
   port: 'Port',
   ssl: 'Enable SSL',
   apiKey: 'API Key',
-  apiKeyPlaceholder: 'Your Sonarr API key',
-  baseUrl: 'Base URL',
-  baseUrlPlaceholder: 'Example: /sonarr',
+  baseUrl: 'URL Base',
   qualityprofile: 'Quality Profile',
   languageprofile: 'Language Profile',
   rootfolder: 'Root Folder',
@@ -67,7 +64,6 @@ const messages = defineMessages({
   testFirstTags: 'Test connection to load tags',
   syncEnabled: 'Enable Scan',
   externalUrl: 'External URL',
-  externalUrlPlaceholder: 'External URL pointing to your Sonarr server',
   enableSearch: 'Enable Automatic Search',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
@@ -258,7 +254,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
         initialValues={{
           name: sonarr?.name,
           hostname: sonarr?.hostname,
-          port: sonarr?.port,
+          port: sonarr?.port ?? 8989,
           ssl: sonarr?.useSsl ?? false,
           apiKey: sonarr?.apiKey,
           baseUrl: sonarr?.baseUrl,
@@ -423,9 +419,6 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         id="name"
                         name="name"
                         type="text"
-                        placeholder={intl.formatMessage(
-                          messages.servernamePlaceholder
-                        )}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('name', e.target.value);
@@ -451,7 +444,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         id="hostname"
                         name="hostname"
                         type="text"
-                        placeholder="127.0.0.1"
+                        inputMode="url"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('hostname', e.target.value);
@@ -474,7 +467,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                       id="port"
                       name="port"
                       type="text"
-                      placeholder="8989"
+                      inputMode="numeric"
                       className="short"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setIsValidated(false);
@@ -513,10 +506,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         as="field"
                         id="apiKey"
                         name="apiKey"
-                        type="text"
-                        placeholder={intl.formatMessage(
-                          messages.apiKeyPlaceholder
-                        )}
+                        autoComplete="one-time-code"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('apiKey', e.target.value);
@@ -538,9 +528,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         id="baseUrl"
                         name="baseUrl"
                         type="text"
-                        placeholder={intl.formatMessage(
-                          messages.baseUrlPlaceholder
-                        )}
+                        inputMode="url"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
@@ -934,9 +922,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         id="externalUrl"
                         name="externalUrl"
                         type="text"
-                        placeholder={intl.formatMessage(
-                          messages.externalUrlPlaceholder
-                        )}
+                        inputMode="url"
                       />
                     </div>
                     {errors.externalUrl && touched.externalUrl && (

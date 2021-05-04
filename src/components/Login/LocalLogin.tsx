@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 import Button from '../Common/Button';
+import SensitiveInput from '../Common/SensitiveInput';
 
 const messages = defineMessages({
   email: 'Email Address',
@@ -69,7 +70,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       id="email"
                       name="email"
                       type="text"
-                      placeholder="name@example.com"
+                      inputMode="email"
                     />
                   </div>
                   {errors.email && touched.email && (
@@ -81,12 +82,12 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                 </label>
                 <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
                   <div className="form-input-field">
-                    <Field
+                    <SensitiveInput
+                      as="field"
                       id="password"
                       name="password"
                       type="password"
                       autoComplete="current-password"
-                      placeholder={intl.formatMessage(messages.password)}
                     />
                   </div>
                   {errors.password && touched.password && (
