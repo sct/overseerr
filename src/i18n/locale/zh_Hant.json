@@ -861,5 +861,8 @@
   "components.PermissionEdit.requestTv": "提交電視節目請求",
   "components.PermissionEdit.requestMovies": "提交電影請求",
   "components.PermissionEdit.requestMoviesDescription": "授予提交非 4K 電影請求的權限。",
-  "components.PermissionEdit.requestTvDescription": "授予提交非 4K 電視節目請求的權限。"
+  "components.PermissionEdit.requestTvDescription": "授予提交非 4K 電視節目請求的權限。",
+  "components.UserProfile.UserSettings.UserGeneralSettings.languageDefault": "默認設置（{language}）",
+  "components.Settings.locale": "顯示語言",
+  "components.DownloadBlock.estimatedtime": "預計：{time}"
 }
