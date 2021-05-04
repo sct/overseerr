@@ -218,7 +218,7 @@ img.avatar-sm {
 }
 
 .form-input-field {
-  @apply flex max-w-lg rounded-md shadow-sm;
+  @apply flex max-w-xl rounded-md shadow-sm;
 }
 
 .actions {
@@ -268,12 +268,14 @@ textarea {
 }
 
 input.rounded-l-only,
-select.rounded-l-only {
+select.rounded-l-only,
+textarea.rounded-l-only {
   @apply rounded-r-none;
 }
 
 input.rounded-r-only,
-select.rounded-r-only {
+select.rounded-r-only,
+textarea.rounded-r-only {
   @apply rounded-l-none;
 }
 
@@ -286,7 +288,7 @@ select.short {
 }
 
 button.input-action {
-  @apply relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 hover:bg-indigo-500 active:bg-gray-100 active:text-gray-700 last:rounded-r-md;
+  @apply relative inline-flex items-center px-3 sm:px-3.5 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 hover:bg-indigo-500 active:bg-gray-100 active:text-gray-700 last:rounded-r-md;
 }
 
 .button-md svg,

@@ -232,12 +232,14 @@ const UserGeneralSettings: React.FC = () => {
                   </span>
                 </label>
                 <div className="form-input">
-                  <RegionSelector
-                    name="region"
-                    value={values.region ?? ''}
-                    isUserSetting
-                    onChange={setFieldValue}
-                  />
+                  <div className="form-input-field">
+                    <RegionSelector
+                      name="region"
+                      value={values.region ?? ''}
+                      isUserSetting
+                      onChange={setFieldValue}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="form-row">

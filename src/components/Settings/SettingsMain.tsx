@@ -322,11 +322,13 @@ const SettingsMain: React.FC = () => {
                     </span>
                   </label>
                   <div className="form-input">
-                    <RegionSelector
-                      value={values.region ?? ''}
-                      name="region"
-                      onChange={setFieldValue}
-                    />
+                    <div className="form-input-field">
+                      <RegionSelector
+                        value={values.region ?? ''}
+                        name="region"
+                        onChange={setFieldValue}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="form-row">
