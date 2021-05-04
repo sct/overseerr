@@ -76,7 +76,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
   }, [onChange, selectedRegion, name, regions]);
 
   return (
-    <div className="w-full">
+    <div className="z-40 w-full">
       <Listbox as="div" value={selectedRegion} onChange={setSelectedRegion}>
         {({ open }) => (
           <div className="relative">
