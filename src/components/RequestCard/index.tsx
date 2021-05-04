@@ -241,16 +241,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             </div>
           )}
           {!isMovie(title) && request.seasons.length > 0 && (
-            <div
-              className={`items-center my-0.5 sm:my-1 text-sm ${
-                hasPermission(
-                  [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
-                  { type: 'or' }
-                )
-                  ? 'hidden sm:flex'
-                  : ''
-              }`}
-            >
+            <div className="items-center my-0.5 sm:my-1 text-sm hidden sm:flex">
               <span className="mr-2 font-medium">
                 {intl.formatMessage(messages.seasons, {
                   seasonCount:
