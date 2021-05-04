@@ -365,10 +365,10 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                 </>
               )}
             {requestData.status === MediaRequestStatus.PENDING &&
-              (hasPermission(Permission.MANAGE_REQUESTS) ||
-                (requestData.requestedBy.id === user?.id &&
-                  (requestData.type === 'tv' ||
-                    hasPermission(Permission.REQUEST_ADVANCED)))) && (
+              !hasPermission(Permission.MANAGE_REQUESTS) &&
+              requestData.requestedBy.id === user?.id &&
+              (requestData.type === 'tv' ||
+                hasPermission(Permission.REQUEST_ADVANCED)) && (
                 <Button
                   buttonType="primary"
                   buttonSize="sm"

@@ -356,44 +356,40 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 </>
               )}
             </div>
-            {hasPermission(Permission.MANAGE_REQUESTS) && (
+            {requestData.modifiedBy && (
               <div className="card-field">
                 <span className="card-field-name">
                   {intl.formatMessage(messages.modified)}
                 </span>
-                {requestData.modifiedBy ? (
-                  <span className="flex text-sm text-gray-300 truncate">
-                    {intl.formatMessage(messages.modifieduserdate, {
-                      date: (
-                        <FormattedRelativeTime
-                          value={Math.floor(
-                            (new Date(requestData.updatedAt).getTime() -
-                              Date.now()) /
-                              1000
-                          )}
-                          updateIntervalInSeconds={1}
-                          numeric="auto"
-                        />
-                      ),
-                      user: (
-                        <Link href={`/users/${requestData.modifiedBy.id}`}>
-                          <a className="flex items-center truncate group">
-                            <img
-                              src={requestData.modifiedBy.avatar}
-                              alt=""
-                              className="ml-1.5 avatar-sm"
-                            />
-                            <span className="text-sm truncate group-hover:underline">
-                              {requestData.modifiedBy.displayName}
-                            </span>
-                          </a>
-                        </Link>
-                      ),
-                    })}
-                  </span>
-                ) : (
-                  <span className="text-sm text-gray-300">N/A</span>
-                )}
+                <span className="flex text-sm text-gray-300 truncate">
+                  {intl.formatMessage(messages.modifieduserdate, {
+                    date: (
+                      <FormattedRelativeTime
+                        value={Math.floor(
+                          (new Date(requestData.updatedAt).getTime() -
+                            Date.now()) /
+                            1000
+                        )}
+                        updateIntervalInSeconds={1}
+                        numeric="auto"
+                      />
+                    ),
+                    user: (
+                      <Link href={`/users/${requestData.modifiedBy.id}`}>
+                        <a className="flex items-center truncate group">
+                          <img
+                            src={requestData.modifiedBy.avatar}
+                            alt=""
+                            className="ml-1.5 avatar-sm"
+                          />
+                          <span className="text-sm truncate group-hover:underline">
+                            {requestData.modifiedBy.displayName}
+                          </span>
+                        </a>
+                      </Link>
+                    ),
+                  })}
+                </span>
               </div>
             )}
           </div>
