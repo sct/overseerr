@@ -861,5 +861,8 @@
   "components.PermissionEdit.requestMoviesDescription": "Toestemming geven om niet-4K-films aan te vragen.",
   "components.PermissionEdit.requestTvDescription": "Toestemming geven om niet-4K-series aan te vragen.",
   "components.PermissionEdit.requestTv": "Series aanvragen",
-  "components.PermissionEdit.requestMovies": "Films aanvragen"
+  "components.PermissionEdit.requestMovies": "Films aanvragen",
+  "components.UserProfile.UserSettings.UserGeneralSettings.languageDefault": "Standaard ({language})",
+  "components.Settings.locale": "Weergavetaal",
+  "components.DownloadBlock.estimatedtime": "Geschat {time}"
 }
