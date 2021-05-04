@@ -70,7 +70,7 @@ const NotificationsWebPush: React.FC = () => {
           }
         }}
       >
-        {({ isSubmitting, isValid }) => {
+        {({ isSubmitting }) => {
           const testSettings = async () => {
             setIsTesting(true);
             let toastId: string | undefined;
@@ -126,7 +126,7 @@ const NotificationsWebPush: React.FC = () => {
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="warning"
-                      disabled={isSubmitting || !isValid || isTesting}
+                      disabled={isSubmitting || isTesting}
                       onClick={(e) => {
                         e.preventDefault();
                         testSettings();
@@ -141,7 +141,7 @@ const NotificationsWebPush: React.FC = () => {
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting || !isValid || isTesting}
+                      disabled={isSubmitting || isTesting}
                     >
                       {isSubmitting
                         ? intl.formatMessage(globalMessages.saving)
