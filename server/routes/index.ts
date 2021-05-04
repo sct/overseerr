@@ -81,10 +81,16 @@ router.get('/status/appdata', (_req, res) => {
 });
 
 router.use('/user', isAuthenticated(), user);
-router.get('/settings/public', async (_req, res) => {
+router.get('/settings/public', async (req, res) => {
   const settings = getSettings();
 
-  return res.status(200).json(settings.fullPublicSettings);
+  if (!req.user?.settings?.notificationTypes.webpush) {
+    return res
+      .status(200)
+      .json({ ...settings.fullPublicSettings, enablePushRegistration: false });
+  } else {
+    return res.status(200).json(settings.fullPublicSettings);
+  }
 });
 router.use(
   '/settings',

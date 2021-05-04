@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
@@ -48,6 +48,7 @@ const UserWebPushSettings: React.FC = () => {
               webpush: values.enableWebPush ? ALL_NOTIFICATIONS : 0,
             },
           });
+          mutate('/api/v1/settings/public');
           addToast(intl.formatMessage(messages.webpushsettingssaved), {
             appearance: 'success',
             autoDismiss: true,
