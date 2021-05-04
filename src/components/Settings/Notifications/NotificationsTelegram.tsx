@@ -152,147 +152,141 @@ const NotificationsTelegram: React.FC = () => {
         };
 
         return (
-          <>
-            <Form className="section">
-              <div className="form-row">
-                <label htmlFor="enabled" className="checkbox-label">
-                  {intl.formatMessage(messages.agentenabled)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
-                  <Field type="checkbox" id="enabled" name="enabled" />
-                </div>
+          <Form className="section">
+            <div className="form-row">
+              <label htmlFor="enabled" className="checkbox-label">
+                {intl.formatMessage(messages.agentenabled)}
+                <span className="label-required">*</span>
+              </label>
+              <div className="form-input">
+                <Field type="checkbox" id="enabled" name="enabled" />
               </div>
-              <div className="form-row">
-                <label htmlFor="botAPI" className="text-label">
-                  {intl.formatMessage(messages.botAPI)}
-                  <span className="label-required">*</span>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.botApiTip, {
-                      CreateBotLink: function CreateBotLink(msg) {
-                        return (
-                          <a
-                            href="https://core.telegram.org/bots#6-botfather"
-                            className="text-white transition duration-300 hover:underline"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {msg}
-                          </a>
-                        );
-                      },
-                      GetIdBotLink: function GetIdBotLink(msg) {
-                        return (
-                          <a
-                            href="https://telegram.me/get_id_bot"
-                            className="text-white transition duration-300 hover:underline"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {msg}
-                          </a>
-                        );
-                      },
-                      code: function code(msg) {
-                        return <code className="bg-opacity-50">{msg}</code>;
-                      },
-                    })}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <SensitiveInput
-                      as="field"
-                      id="botAPI"
-                      name="botAPI"
-                      autoComplete="one-time-code"
-                    />
-                  </div>
-                  {errors.botAPI && touched.botAPI && (
-                    <div className="error">{errors.botAPI}</div>
-                  )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="botUsername" className="text-label">
-                  {intl.formatMessage(messages.botUsername)}
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.botUsernameTip)}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field id="botUsername" name="botUsername" type="text" />
-                  </div>
-                  {errors.botUsername && touched.botUsername && (
-                    <div className="error">{errors.botUsername}</div>
-                  )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="chatId" className="text-label">
-                  {intl.formatMessage(messages.chatId)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field id="chatId" name="chatId" type="text" />
-                  </div>
-                  {errors.chatId && touched.chatId && (
-                    <div className="error">{errors.chatId}</div>
-                  )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="sendSilently" className="checkbox-label">
-                  <span>{intl.formatMessage(messages.sendSilently)}</span>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.sendSilentlyTip)}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <Field
-                    type="checkbox"
-                    id="sendSilently"
-                    name="sendSilently"
+            </div>
+            <div className="form-row">
+              <label htmlFor="botAPI" className="text-label">
+                {intl.formatMessage(messages.botAPI)}
+                <span className="label-required">*</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.botApiTip, {
+                    CreateBotLink: function CreateBotLink(msg) {
+                      return (
+                        <a
+                          href="https://core.telegram.org/bots#6-botfather"
+                          className="text-white transition duration-300 hover:underline"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      );
+                    },
+                    GetIdBotLink: function GetIdBotLink(msg) {
+                      return (
+                        <a
+                          href="https://telegram.me/get_id_bot"
+                          className="text-white transition duration-300 hover:underline"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      );
+                    },
+                    code: function code(msg) {
+                      return <code className="bg-opacity-50">{msg}</code>;
+                    },
+                  })}
+                </span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <SensitiveInput
+                    as="field"
+                    id="botAPI"
+                    name="botAPI"
+                    autoComplete="one-time-code"
                   />
                 </div>
+                {errors.botAPI && touched.botAPI && (
+                  <div className="error">{errors.botAPI}</div>
+                )}
               </div>
-              <NotificationTypeSelector
-                currentTypes={values.types}
-                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
-              />
-              <div className="actions">
-                <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="warning"
-                      disabled={isSubmitting || !isValid || isTesting}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        testSettings();
-                      }}
-                    >
-                      {isTesting
-                        ? intl.formatMessage(globalMessages.testing)
-                        : intl.formatMessage(globalMessages.test)}
-                    </Button>
-                  </span>
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      type="submit"
-                      disabled={isSubmitting || !isValid || isTesting}
-                    >
-                      {isSubmitting
-                        ? intl.formatMessage(globalMessages.saving)
-                        : intl.formatMessage(globalMessages.save)}
-                    </Button>
-                  </span>
+            </div>
+            <div className="form-row">
+              <label htmlFor="botUsername" className="text-label">
+                {intl.formatMessage(messages.botUsername)}
+                <span className="label-tip">
+                  {intl.formatMessage(messages.botUsernameTip)}
+                </span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field id="botUsername" name="botUsername" type="text" />
                 </div>
+                {errors.botUsername && touched.botUsername && (
+                  <div className="error">{errors.botUsername}</div>
+                )}
               </div>
-            </Form>
-          </>
+            </div>
+            <div className="form-row">
+              <label htmlFor="chatId" className="text-label">
+                {intl.formatMessage(messages.chatId)}
+                <span className="label-required">*</span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field id="chatId" name="chatId" type="text" />
+                </div>
+                {errors.chatId && touched.chatId && (
+                  <div className="error">{errors.chatId}</div>
+                )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="sendSilently" className="checkbox-label">
+                <span>{intl.formatMessage(messages.sendSilently)}</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.sendSilentlyTip)}
+                </span>
+              </label>
+              <div className="form-input">
+                <Field type="checkbox" id="sendSilently" name="sendSilently" />
+              </div>
+            </div>
+            <NotificationTypeSelector
+              currentTypes={values.types}
+              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+            />
+            <div className="actions">
+              <div className="flex justify-end">
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <Button
+                    buttonType="warning"
+                    disabled={isSubmitting || !isValid || isTesting}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      testSettings();
+                    }}
+                  >
+                    {isTesting
+                      ? intl.formatMessage(globalMessages.testing)
+                      : intl.formatMessage(globalMessages.test)}
+                  </Button>
+                </span>
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <Button
+                    buttonType="primary"
+                    type="submit"
+                    disabled={isSubmitting || !isValid || isTesting}
+                  >
+                    {isSubmitting
+                      ? intl.formatMessage(globalMessages.saving)
+                      : intl.formatMessage(globalMessages.save)}
+                  </Button>
+                </span>
+              </div>
+            </div>
+          </Form>
         );
       }}
     </Formik>
