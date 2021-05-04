@@ -7,6 +7,8 @@ import type {
   RadarrSettings,
   SonarrSettings,
 } from '../../../server/lib/settings';
+import RadarrLogo from '../../assets/services/radarr.svg';
+import SonarrLogo from '../../assets/services/sonarr.svg';
 import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
 import Badge from '../Common/Badge';
@@ -125,11 +127,11 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
           </p>
         </div>
         <a href={serviceUrl} className="opacity-50 hover:opacity-100">
-          <img
-            className="flex-shrink-0 w-10 h-10"
-            src={`/images/${isSonarr ? 'sonarr' : 'radarr'}_logo.svg`}
-            alt={isSonarr ? 'Sonarr' : 'Radarr'}
-          />
+          {isSonarr ? (
+            <SonarrLogo className="flex-shrink-0 w-10 h-10" />
+          ) : (
+            <RadarrLogo className="flex-shrink-0 w-10 h-10" />
+          )}
         </a>
       </div>
       <div className="border-t border-gray-800">
