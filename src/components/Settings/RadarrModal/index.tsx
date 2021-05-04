@@ -497,6 +497,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="baseUrl"
                         name="baseUrl"
                         type="text"
+                        inputMode="url"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);

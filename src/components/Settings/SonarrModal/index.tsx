@@ -528,6 +528,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         id="baseUrl"
                         name="baseUrl"
                         type="text"
+                        inputMode="url"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
