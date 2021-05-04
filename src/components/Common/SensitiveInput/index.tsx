@@ -34,7 +34,7 @@ const SensitiveInput: React.FC<SensitiveInputProps> = ({
           isHidden
             ? 'password'
             : props.type !== 'password'
-            ? props.type
+            ? props.type ?? 'text'
             : 'text'
         }
       />
