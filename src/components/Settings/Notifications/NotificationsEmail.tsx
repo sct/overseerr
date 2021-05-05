@@ -92,15 +92,13 @@ const NotificationsEmail: React.FC = () => {
           /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
           intl.formatMessage(messages.validationSmtpHostRequired)
         ),
-      smtpPort: Yup.number()
-        .typeError(intl.formatMessage(messages.validationSmtpPortRequired))
-        .when('enabled', {
-          is: true,
-          then: Yup.number().required(
-            intl.formatMessage(messages.validationSmtpPortRequired)
-          ),
-          otherwise: Yup.number().nullable(),
-        }),
+      smtpPort: Yup.number().when('enabled', {
+        is: true,
+        then: Yup.number()
+          .nullable()
+          .required(intl.formatMessage(messages.validationSmtpPortRequired)),
+        otherwise: Yup.number().nullable(),
+      }),
       pgpPrivateKey: Yup.string()
         .when('pgpPassword', {
           is: (value: unknown) => !!value,
