@@ -69,68 +69,68 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
   }
 );
 
-userSettingsRoutes.post<{ id: string }, UserSettingsGeneralResponse>(
-  '/main',
-  isOwnProfileOrAdmin(),
-  async (req, res, next) => {
-    const userRepository = getRepository(User);
+userSettingsRoutes.post<
+  { id: string },
+  UserSettingsGeneralResponse,
+  UserSettingsGeneralResponse
+>('/main', isOwnProfileOrAdmin(), async (req, res, next) => {
+  const userRepository = getRepository(User);
 
-    try {
-      const user = await userRepository.findOne({
-        where: { id: Number(req.params.id) },
-      });
+  try {
+    const user = await userRepository.findOne({
+      where: { id: Number(req.params.id) },
+    });
 
-      if (!user) {
-        return next({ status: 404, message: 'User not found.' });
-      }
-
-      // "Owner" user settings cannot be modified by other users
-      if (user.id === 1 && req.user?.id !== 1) {
-        return next({
-          status: 403,
-          message: "You do not have permission to modify this user's settings.",
-        });
-      }
-
-      user.username = req.body.username;
-
-      // Update quota values only if the user has the correct permissions
-      if (
-        !user.hasPermission(Permission.MANAGE_USERS) &&
-        req.user?.id !== user.id
-      ) {
-        user.movieQuotaDays = req.body.movieQuotaDays;
-        user.movieQuotaLimit = req.body.movieQuotaLimit;
-        user.tvQuotaDays = req.body.tvQuotaDays;
-        user.tvQuotaLimit = req.body.tvQuotaLimit;
-      }
-
-      if (!user.settings) {
-        user.settings = new UserSettings({
-          user: req.user,
-          locale: req.body.locale,
-          region: req.body.region,
-          originalLanguage: req.body.originalLanguage,
-        });
-      } else {
-        user.settings.locale = req.body.locale;
-        user.settings.region = req.body.region;
-        user.settings.originalLanguage = req.body.originalLanguage;
-      }
-
-      await userRepository.save(user);
-
-      return res.status(200).json({
-        username: user.username,
-        region: user.settings.region,
-        locale: user.settings.locale,
-        originalLanguage: user.settings.originalLanguage,
-      });
-    } catch (e) {
-      next({ status: 500, message: e.message });
+    if (!user) {
+      return next({ status: 404, message: 'User not found.' });
     }
+
+    // "Owner" user settings cannot be modified by other users
+    if (user.id === 1 && req.user?.id !== 1) {
+      return next({
+        status: 403,
+        message: "You do not have permission to modify this user's settings.",
+      });
+    }
+
+    user.username = req.body.username;
+
+    // Update quota values only if the user has the correct permissions
+    if (
+      !user.hasPermission(Permission.MANAGE_USERS) &&
+      req.user?.id !== user.id
+    ) {
+      user.movieQuotaDays = req.body.movieQuotaDays;
+      user.movieQuotaLimit = req.body.movieQuotaLimit;
+      user.tvQuotaDays = req.body.tvQuotaDays;
+      user.tvQuotaLimit = req.body.tvQuotaLimit;
+    }
+
+    if (!user.settings) {
+      user.settings = new UserSettings({
+        user: req.user,
+        locale: req.body.locale,
+        region: req.body.region,
+        originalLanguage: req.body.originalLanguage,
+      });
+    } else {
+      user.settings.locale = req.body.locale;
+      user.settings.region = req.body.region;
+      user.settings.originalLanguage = req.body.originalLanguage;
+    }
+
+    await userRepository.save(user);
+
+    return res.status(200).json({
+      username: user.username,
+      region: user.settings.region,
+      locale: user.settings.locale,
+      originalLanguage: user.settings.originalLanguage,
+    });
+  } catch (e) {
+    next({ status: 500, message: e.message });
   }
-);
+});
 
 userSettingsRoutes.get<{ id: string }, { hasPassword: boolean }>(
   '/password',
