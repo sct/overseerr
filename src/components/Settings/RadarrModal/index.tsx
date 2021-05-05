@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import type { RadarrSettings } from '../../../../server/lib/settings';
 import globalMessages from '../../../i18n/globalMessages';
 import Modal from '../../Common/Modal';
+import SensitiveInput from '../../Common/SensitiveInput';
 import Transition from '../../Transition';
 
 type OptionType = {
@@ -38,17 +39,13 @@ const messages = defineMessages({
   defaultserver: 'Default Server',
   default4kserver: 'Default 4K Server',
   servername: 'Server Name',
-  servernamePlaceholder: 'A Radarr Server',
   hostname: 'Hostname or IP Address',
   port: 'Port',
   ssl: 'Enable SSL',
   apiKey: 'API Key',
-  apiKeyPlaceholder: 'Your Radarr API key',
-  baseUrl: 'Base URL',
-  baseUrlPlaceholder: 'Example: /radarr',
+  baseUrl: 'URL Base',
   syncEnabled: 'Enable Scan',
   externalUrl: 'External URL',
-  externalUrlPlaceholder: 'External URL pointing to your Radarr server',
   qualityprofile: 'Quality Profile',
   rootfolder: 'Root Folder',
   minimumAvailability: 'Minimum Availability',
@@ -246,7 +243,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
         initialValues={{
           name: radarr?.name,
           hostname: radarr?.hostname,
-          port: radarr?.port,
+          port: radarr?.port ?? 7878,
           ssl: radarr?.useSsl ?? false,
           apiKey: radarr?.apiKey,
           baseUrl: radarr?.baseUrl,
@@ -357,13 +354,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       values.is4k ? messages.edit4kradarr : messages.editradarr
                     )
               }
-              iconSvg={
-                !radarr ? (
-                  <PlusIcon className="w-6 h-6" />
-                ) : (
-                  <PencilIcon className="w-6 h-6" />
-                )
-              }
+              iconSvg={!radarr ? <PlusIcon /> : <PencilIcon />}
             >
               <div className="mb-6">
                 <div className="form-row">
@@ -397,9 +388,6 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="name"
                         name="name"
                         type="text"
-                        placeholder={intl.formatMessage(
-                          messages.servernamePlaceholder
-                        )}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('name', e.target.value);
@@ -425,7 +413,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="hostname"
                         name="hostname"
                         type="text"
-                        placeholder="127.0.0.1"
+                        inputMode="url"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('hostname', e.target.value);
@@ -448,7 +436,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       id="port"
                       name="port"
                       type="text"
-                      placeholder="7878"
+                      inputMode="numeric"
                       className="short"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setIsValidated(false);
@@ -483,13 +471,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   </label>
                   <div className="form-input">
                     <div className="form-input-field">
-                      <Field
+                      <SensitiveInput
+                        as="field"
                         id="apiKey"
                         name="apiKey"
-                        type="text"
-                        placeholder={intl.formatMessage(
-                          messages.apiKeyPlaceholder
-                        )}
+                        autoComplete="one-time-code"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('apiKey', e.target.value);
@@ -511,9 +497,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="baseUrl"
                         name="baseUrl"
                         type="text"
-                        placeholder={intl.formatMessage(
-                          messages.baseUrlPlaceholder
-                        )}
+                        inputMode="url"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setIsValidated(false);
                           setFieldValue('baseUrl', e.target.value);
@@ -686,9 +670,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="externalUrl"
                         name="externalUrl"
                         type="text"
-                        placeholder={intl.formatMessage(
-                          messages.externalUrlPlaceholder
-                        )}
+                        inputMode="url"
                       />
                     </div>
                     {errors.externalUrl && touched.externalUrl && (

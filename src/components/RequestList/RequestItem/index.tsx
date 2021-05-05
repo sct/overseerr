@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -19,7 +19,6 @@ import {
 import type { MediaRequest } from '../../../../server/entity/MediaRequest';
 import type { MovieDetails } from '../../../../server/models/Movie';
 import type { TvDetails } from '../../../../server/models/Tv';
-import { LanguageContext } from '../../../context/LanguageContext';
 import { Permission, useUser } from '../../../hooks/useUser';
 import globalMessages from '../../../i18n/globalMessages';
 import Badge from '../../Common/Badge';
@@ -74,7 +73,7 @@ const RequestItemError: React.FC<RequestItemErroProps> = ({
             buttonSize="sm"
             onClick={() => deleteRequest()}
           >
-            <TrashIcon className="w-5 h-5 mr-1" />
+            <TrashIcon />
             <span>{intl.formatMessage(messages.deleterequest)}</span>
           </Button>
         </div>
@@ -99,13 +98,12 @@ const RequestItem: React.FC<RequestItemProps> = ({
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
-  const { locale } = useContext(LanguageContext);
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    inView ? `${url}?language=${locale}` : null
+    inView ? `${url}` : null
   );
   const { data: requestData, revalidate, mutate } = useSWR<MediaRequest>(
     `/api/v1/request/${request.id}`,
@@ -375,10 +373,10 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 onClick={() => retryRequest()}
               >
                 <RefreshIcon
-                  className={`w-5 h-5 mr-1 ${isRetrying ? 'animate-spin' : ''}`}
+                  className={isRetrying ? 'animate-spin' : ''}
                   style={{ animationDirection: 'reverse' }}
                 />
-                <span className="block">
+                <span>
                   {intl.formatMessage(
                     isRetrying ? globalMessages.retrying : globalMessages.retry
                   )}
@@ -392,10 +390,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 confirmText={intl.formatMessage(globalMessages.areyousure)}
                 className="w-full"
               >
-                <TrashIcon className="w-5 h-5 mr-1" />
-                <span className="block">
-                  {intl.formatMessage(messages.deleterequest)}
-                </span>
+                <TrashIcon />
+                <span>{intl.formatMessage(messages.deleterequest)}</span>
               </ConfirmButton>
             )}
           {requestData.status === MediaRequestStatus.PENDING &&
@@ -407,10 +403,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
                     buttonType="success"
                     onClick={() => modifyRequest('approve')}
                   >
-                    <CheckIcon className="w-5 h-5 mr-1" />
-                    <span className="block">
-                      {intl.formatMessage(globalMessages.approve)}
-                    </span>
+                    <CheckIcon />
+                    <span>{intl.formatMessage(globalMessages.approve)}</span>
                   </Button>
                 </span>
                 <span className="w-full">
@@ -419,10 +413,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
                     buttonType="danger"
                     onClick={() => modifyRequest('decline')}
                   >
-                    <XIcon className="w-5 h-5 mr-1" />
-                    <span className="block">
-                      {intl.formatMessage(globalMessages.decline)}
-                    </span>
+                    <XIcon />
+                    <span>{intl.formatMessage(globalMessages.decline)}</span>
                   </Button>
                 </span>
               </div>
@@ -438,10 +430,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   buttonType="primary"
                   onClick={() => setShowEditModal(true)}
                 >
-                  <PencilIcon className="w-5 h-5 mr-1" />
-                  <span className="block">
-                    {intl.formatMessage(messages.editrequest)}
-                  </span>
+                  <PencilIcon />
+                  <span>{intl.formatMessage(messages.editrequest)}</span>
                 </Button>
               </span>
             )}
@@ -453,10 +443,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 confirmText={intl.formatMessage(globalMessages.areyousure)}
                 className="w-full"
               >
-                <XIcon className="w-5 h-5 mr-1" />
-                <span className="block">
-                  {intl.formatMessage(messages.cancelRequest)}
-                </span>
+                <XIcon />
+                <span>{intl.formatMessage(messages.cancelRequest)}</span>
               </ConfirmButton>
             )}
         </div>

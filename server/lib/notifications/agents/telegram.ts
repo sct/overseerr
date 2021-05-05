@@ -2,8 +2,11 @@ import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
 import { MediaType } from '../../../constants/media';
 import logger from '../../../logger';
-import { getSettings, NotificationAgentTelegram } from '../../settings';
-import { NotificationAgentType } from '../agenttypes';
+import {
+  getSettings,
+  NotificationAgentKey,
+  NotificationAgentTelegram,
+} from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface TelegramMessagePayload {
@@ -198,8 +201,9 @@ class TelegramAgent
 
     if (
       payload.notifyUser &&
-      payload.notifyUser.settings?.hasNotificationAgentEnabled(
-        NotificationAgentType.TELEGRAM
+      payload.notifyUser.settings?.hasNotificationType(
+        NotificationAgentKey.TELEGRAM,
+        type
       ) &&
       payload.notifyUser.settings?.telegramChatId &&
       payload.notifyUser.settings?.telegramChatId !==
@@ -240,7 +244,7 @@ class TelegramAgent
           type: Notification[type],
           subject: payload.subject,
           errorMessage: e.message,
-          response: e.response.data,
+          response: e.response?.data,
         });
 
         return false;

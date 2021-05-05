@@ -5,6 +5,7 @@ import { getSettings } from '../lib/settings';
 
 export const checkUser: Middleware = async (req, _res, next) => {
   const settings = getSettings();
+
   if (req.header('X-API-Key') === settings.main.apiKey) {
     const userRepository = getRepository(User);
 
@@ -28,8 +29,12 @@ export const checkUser: Middleware = async (req, _res, next) => {
 
     if (user) {
       req.user = user;
+      req.locale = user.settings?.locale
+        ? user.settings?.locale
+        : settings.main.locale;
     }
   }
+
   next();
 };
 

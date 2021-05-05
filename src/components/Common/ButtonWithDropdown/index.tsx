@@ -19,16 +19,16 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
   buttonType = 'primary',
   ...props
 }) => {
-  let styleClass = '';
+  let styleClass = 'button-md text-white';
 
   switch (buttonType) {
     case 'ghost':
-      styleClass =
-        'text-white bg-gray-700 hover:bg-gray-600 hover:text-white focus:border-gray-500 focus:text-white';
+      styleClass +=
+        ' bg-gray-700 hover:bg-gray-600 focus:border-gray-500 focus:text-white';
       break;
     default:
-      styleClass =
-        'text-white bg-indigo-600 hover:bg-indigo-500 hover:text-white focus:border-indigo-700 focus:text-white';
+      styleClass +=
+        ' bg-indigo-600 hover:bg-indigo-500 focus:border-indigo-700 focus:text-white';
   }
   return (
     <a
@@ -60,9 +60,9 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
   useClickOutside(buttonRef, () => setIsOpen(false));
 
   const styleClasses = {
-    mainButtonClasses: 'text-white border',
-    dropdownSideButtonClasses: 'border',
-    dropdownClasses: '',
+    mainButtonClasses: 'button-md text-white border',
+    dropdownSideButtonClasses: 'button-md border',
+    dropdownClasses: 'button-md',
   };
 
   switch (buttonType) {
@@ -70,14 +70,14 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
       styleClasses.mainButtonClasses +=
         ' bg-transparent border-gray-600 hover:border-gray-200 focus:border-gray-100 active:border-gray-100';
       styleClasses.dropdownSideButtonClasses = styleClasses.mainButtonClasses;
-      styleClasses.dropdownClasses = 'bg-gray-700';
+      styleClasses.dropdownClasses += ' bg-gray-700';
       break;
     default:
       styleClasses.mainButtonClasses +=
         ' bg-indigo-600 border-indigo-600 hover:bg-indigo-500 hover:border-indigo-500 active:bg-indigo-700 active:border-indigo-700 focus:ring-blue';
       styleClasses.dropdownSideButtonClasses +=
         ' bg-indigo-700 border-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 focus:ring-blue';
-      styleClasses.dropdownClasses = 'bg-indigo-600';
+      styleClasses.dropdownClasses += ' bg-indigo-600';
   }
 
   return (
@@ -100,11 +100,7 @@ const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
             aria-label="Expand"
             onClick={() => setIsOpen((state) => !state)}
           >
-            {dropdownIcon ? (
-              dropdownIcon
-            ) : (
-              <ChevronDownIcon className="w-5 h-5" />
-            )}
+            {dropdownIcon ? dropdownIcon : <ChevronDownIcon />}
           </button>
           <Transition
             show={isOpen}

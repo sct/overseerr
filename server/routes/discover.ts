@@ -1,16 +1,16 @@
 import { Router } from 'express';
-import TheMovieDb from '../api/themoviedb';
-import { mapMovieResult, mapTvResult, mapPersonResult } from '../models/Search';
-import Media from '../entity/Media';
-import { isMovie, isPerson } from '../utils/typeHelpers';
-import { MediaType } from '../constants/media';
-import { getSettings } from '../lib/settings';
-import { User } from '../entity/User';
-import { mapProductionCompany } from '../models/Movie';
-import { mapNetwork } from '../models/Tv';
-import logger from '../logger';
 import { sortBy } from 'lodash';
+import TheMovieDb from '../api/themoviedb';
+import { MediaType } from '../constants/media';
+import Media from '../entity/Media';
+import { User } from '../entity/User';
 import { GenreSliderItem } from '../interfaces/api/discoverInterfaces';
+import { getSettings } from '../lib/settings';
+import logger from '../logger';
+import { mapProductionCompany } from '../models/Movie';
+import { mapMovieResult, mapPersonResult, mapTvResult } from '../models/Search';
+import { mapNetwork } from '../models/Tv';
+import { isMovie, isPerson } from '../utils/typeHelpers';
 
 const createTmdbWithRegionLanaguage = (user?: User): TheMovieDb => {
   const settings = getSettings();
@@ -42,7 +42,7 @@ discoverRoutes.get('/movies', async (req, res) => {
 
   const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
-    language: req.query.language as string,
+    language: req.locale ?? (req.query.language as string),
     genre: req.query.genre ? Number(req.query.genre) : undefined,
     studio: req.query.studio ? Number(req.query.studio) : undefined,
   });
@@ -83,7 +83,7 @@ discoverRoutes.get<{ language: string }>(
 
     const data = await tmdb.getDiscoverMovies({
       page: Number(req.query.page),
-      language: req.query.language as string,
+      language: req.locale ?? (req.query.language as string),
       originalLanguage: req.params.language,
     });
 
@@ -115,7 +115,7 @@ discoverRoutes.get<{ genreId: string }>(
     const tmdb = createTmdbWithRegionLanaguage(req.user);
 
     const genres = await tmdb.getMovieGenres({
-      language: req.query.language as string,
+      language: req.locale ?? (req.query.language as string),
     });
 
     const genre = genres.find(
@@ -128,7 +128,7 @@ discoverRoutes.get<{ genreId: string }>(
 
     const data = await tmdb.getDiscoverMovies({
       page: Number(req.query.page),
-      language: req.query.language as string,
+      language: req.locale ?? (req.query.language as string),
       genre: Number(req.params.genreId),
     });
 
@@ -164,7 +164,7 @@ discoverRoutes.get<{ studioId: string }>(
 
       const data = await tmdb.getDiscoverMovies({
         page: Number(req.query.page),
-        language: req.query.language as string,
+        language: req.locale ?? (req.query.language as string),
         studio: Number(req.params.studioId),
       });
 
@@ -204,7 +204,7 @@ discoverRoutes.get('/movies/upcoming', async (req, res) => {
 
   const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
-    language: req.query.language as string,
+    language: req.locale ?? (req.query.language as string),
     primaryReleaseDateGte: date,
   });
 
@@ -232,7 +232,7 @@ discoverRoutes.get('/tv', async (req, res) => {
 
   const data = await tmdb.getDiscoverTv({
     page: Number(req.query.page),
-    language: req.query.language as string,
+    language: req.locale ?? (req.query.language as string),
     genre: req.query.genre ? Number(req.query.genre) : undefined,
     network: req.query.network ? Number(req.query.network) : undefined,
   });
@@ -273,7 +273,7 @@ discoverRoutes.get<{ language: string }>(
 
     const data = await tmdb.getDiscoverTv({
       page: Number(req.query.page),
-      language: req.query.language as string,
+      language: req.locale ?? (req.query.language as string),
       originalLanguage: req.params.language,
     });
 
@@ -304,7 +304,7 @@ discoverRoutes.get<{ genreId: string }>(
     const tmdb = createTmdbWithRegionLanaguage(req.user);
 
     const genres = await tmdb.getTvGenres({
-      language: req.query.language as string,
+      language: req.locale ?? (req.query.language as string),
     });
 
     const genre = genres.find(
@@ -317,7 +317,7 @@ discoverRoutes.get<{ genreId: string }>(
 
     const data = await tmdb.getDiscoverTv({
       page: Number(req.query.page),
-      language: req.query.language as string,
+      language: req.locale ?? (req.query.language as string),
       genre: Number(req.params.genreId),
     });
 
@@ -352,7 +352,7 @@ discoverRoutes.get<{ networkId: string }>(
 
       const data = await tmdb.getDiscoverTv({
         page: Number(req.query.page),
-        language: req.query.language as string,
+        language: req.locale ?? (req.query.language as string),
         network: Number(req.params.networkId),
       });
 
@@ -392,7 +392,7 @@ discoverRoutes.get('/tv/upcoming', async (req, res) => {
 
   const data = await tmdb.getDiscoverTv({
     page: Number(req.query.page),
-    language: req.query.language as string,
+    language: req.locale ?? (req.query.language as string),
     firstAirDateGte: date,
   });
 
@@ -420,7 +420,7 @@ discoverRoutes.get('/trending', async (req, res) => {
 
   const data = await tmdb.getAllTrending({
     page: Number(req.query.page),
-    language: req.query.language as string,
+    language: req.locale ?? (req.query.language as string),
   });
 
   const media = await Media.getRelatedMedia(
@@ -461,7 +461,7 @@ discoverRoutes.get<{ keywordId: string }>(
     const data = await tmdb.getMoviesByKeyword({
       keywordId: Number(req.params.keywordId),
       page: Number(req.query.page),
-      language: req.query.language as string,
+      language: req.locale ?? (req.query.language as string),
     });
 
     const media = await Media.getRelatedMedia(
@@ -494,7 +494,7 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
       const mappedGenres: GenreSliderItem[] = [];
 
       const genres = await tmdb.getMovieGenres({
-        language: req.query.language as string,
+        language: req.locale ?? (req.query.language as string),
       });
 
       await Promise.all(
@@ -535,7 +535,7 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
       const mappedGenres: GenreSliderItem[] = [];
 
       const genres = await tmdb.getTvGenres({
-        language: req.query.language as string,
+        language: req.locale ?? (req.query.language as string),
       });
 
       await Promise.all(

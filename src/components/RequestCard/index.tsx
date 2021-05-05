@@ -1,7 +1,7 @@
 import { CheckIcon, TrashIcon, XIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR, { mutate } from 'swr';
@@ -12,7 +12,6 @@ import {
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { MovieDetails } from '../../../server/models/Movie';
 import type { TvDetails } from '../../../server/models/Tv';
-import { LanguageContext } from '../../context/LanguageContext';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import { withProperties } from '../../utils/typeHelpers';
@@ -63,16 +62,15 @@ const RequestCardError: React.FC<RequestCardErrorProps> = ({ mediaId }) => {
               {intl.formatMessage(messages.mediaerror)}
             </div>
             {hasPermission(Permission.MANAGE_REQUESTS) && mediaId && (
-              <div className="mt-4">
-                <Button
-                  buttonType="danger"
-                  buttonSize="sm"
-                  onClick={() => deleteRequest()}
-                >
-                  <TrashIcon className="w-5 h-5 mr-1" />
-                  <span>{intl.formatMessage(messages.deleterequest)}</span>
-                </Button>
-              </div>
+              <Button
+                buttonType="danger"
+                buttonSize="sm"
+                className="mt-4"
+                onClick={() => deleteRequest()}
+              >
+                <TrashIcon />
+                <span>{intl.formatMessage(messages.deleterequest)}</span>
+              </Button>
             )}
           </div>
         </div>
@@ -92,13 +90,12 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
   });
   const intl = useIntl();
   const { hasPermission } = useUser();
-  const { locale } = useContext(LanguageContext);
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    inView ? `${url}?language=${locale}` : null
+    inView ? `${url}` : null
   );
   const {
     data: requestData,
@@ -242,31 +239,27 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
         </div>
         {requestData.status === MediaRequestStatus.PENDING &&
           hasPermission(Permission.MANAGE_REQUESTS) && (
-            <div className="flex items-end flex-1">
-              <span className="mr-2">
-                <Button
-                  buttonType="success"
-                  buttonSize="sm"
-                  onClick={() => modifyRequest('approve')}
-                >
-                  <CheckIcon className="w-4 h-4 mr-0 sm:mr-1" />
-                  <span className="hidden sm:block">
-                    {intl.formatMessage(globalMessages.approve)}
-                  </span>
-                </Button>
-              </span>
-              <span>
-                <Button
-                  buttonType="danger"
-                  buttonSize="sm"
-                  onClick={() => modifyRequest('decline')}
-                >
-                  <XIcon className="w-4 h-4 mr-0 sm:mr-1" />
-                  <span className="hidden sm:block">
-                    {intl.formatMessage(globalMessages.decline)}
-                  </span>
-                </Button>
-              </span>
+            <div className="flex items-end flex-1 space-x-2">
+              <Button
+                buttonType="success"
+                buttonSize="sm"
+                onClick={() => modifyRequest('approve')}
+              >
+                <CheckIcon style={{ marginRight: '0' }} />
+                <span className="hidden ml-1.5 sm:block">
+                  {intl.formatMessage(globalMessages.approve)}
+                </span>
+              </Button>
+              <Button
+                buttonType="danger"
+                buttonSize="sm"
+                onClick={() => modifyRequest('decline')}
+              >
+                <XIcon style={{ marginRight: '0' }} />
+                <span className="hidden ml-1.5 sm:block">
+                  {intl.formatMessage(globalMessages.decline)}
+                </span>
+              </Button>
             </div>
           )}
       </div>

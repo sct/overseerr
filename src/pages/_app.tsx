@@ -1,7 +1,6 @@
 import axios from 'axios';
 import App, { AppInitialProps, AppProps } from 'next/app';
 import Head from 'next/head';
-import { parseCookies, setCookie } from 'nookies';
 import React, { useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 import { ToastProvider } from 'react-toast-notifications';
@@ -9,8 +8,11 @@ import { SWRConfig } from 'swr';
 import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
 import Layout from '../components/Layout';
 import LoadingBar from '../components/LoadingBar';
+import PWAHeader from '../components/PWAHeader';
+import ServiceWorkerSetup from '../components/ServiceWorkerSetup';
 import StatusChecker from '../components/StatusChacker';
 import Toast from '../components/Toast';
+import ToastContainer from '../components/ToastContainer';
 import { InteractionProvider } from '../context/InteractionContext';
 import { AvailableLocales, LanguageContext } from '../context/LanguageContext';
 import { SettingsProvider } from '../context/SettingsContext';
@@ -88,10 +90,6 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 
   useEffect(() => {
     loadLocaleData(currentLocale).then(setMessages);
-    setCookie(null, 'locale', currentLocale, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365 * 10,
-    });
   }, [currentLocale]);
 
   if (router.pathname.match(/(login|setup|resetpassword)/)) {
@@ -119,15 +117,19 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
           <LoadingBar />
           <SettingsProvider currentSettings={currentSettings}>
             <InteractionProvider>
-              <ToastProvider components={{ Toast }}>
+              <ToastProvider components={{ Toast, ToastContainer }}>
                 <Head>
-                  <title>Overseerr</title>
+                  <title>{currentSettings.applicationTitle}</title>
                   <meta
                     name="viewport"
                     content="initial-scale=1, viewport-fit=cover, width=device-width"
                   ></meta>
+                  <PWAHeader
+                    applicationTitle={currentSettings.applicationTitle}
+                  />
                 </Head>
                 <StatusChecker />
+                <ServiceWorkerSetup />
                 <UserContext initialUser={user}>{component}</UserContext>
               </ToastProvider>
             </InteractionProvider>
@@ -140,7 +142,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 
 CoreApp.getInitialProps = async (initialProps) => {
   const { ctx, router } = initialProps;
-  let user = undefined;
+  let user: User | undefined = undefined;
   let currentSettings: PublicSettingsResponse = {
     initialized: false,
     applicationTitle: '',
@@ -152,9 +154,10 @@ CoreApp.getInitialProps = async (initialProps) => {
     originalLanguage: '',
     partialRequestsEnabled: true,
     cacheImages: false,
+    vapidPublic: '',
+    enablePushRegistration: false,
+    locale: 'en',
   };
-
-  let locale = 'en';
 
   if (ctx.res) {
     // Check if app is initialized and redirect if necessary
@@ -200,18 +203,16 @@ CoreApp.getInitialProps = async (initialProps) => {
         }
       }
     }
-
-    const cookies = parseCookies(ctx);
-
-    if (cookies.locale) {
-      locale = cookies.locale;
-    }
   }
 
   // Run the default getInitialProps for the main nextjs initialProps
   const appInitialProps: AppInitialProps = await App.getInitialProps(
     initialProps
   );
+
+  const locale = user?.settings?.locale
+    ? user.settings.locale
+    : currentSettings.locale;
 
   const messages = await loadLocaleData(locale as AvailableLocales);
 

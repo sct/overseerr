@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -10,6 +10,7 @@ import Alert from '../../Common/Alert';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
+import SensitiveInput from '../../Common/SensitiveInput';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
@@ -19,15 +20,21 @@ const messages = defineMessages({
   emailsender: 'Sender Address',
   smtpHost: 'SMTP Host',
   smtpPort: 'SMTP Port',
-  enableSsl: 'Enable SSL',
+  encryption: 'Encryption Method',
+  encryptionTip:
+    'In most cases, Implicit TLS uses port 465 and STARTTLS uses port 587',
+  encryptionNone: 'None',
+  encryptionDefault: 'Use STARTTLS if available',
+  encryptionOpportunisticTls: 'Always use STARTTLS',
+  encryptionImplicitTls: 'Use Implicit TLS',
   authUser: 'SMTP Username',
   authPass: 'SMTP Password',
   emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
-  emailtestsent: 'Email test notification sent!',
+  toastEmailTestSending: 'Sending email test notification…',
+  toastEmailTestSuccess: 'Email test notification sent!',
+  toastEmailTestFailed: 'Email test notification failed to send.',
   allowselfsigned: 'Allow Self-Signed Certificates',
-  ssldisabletip:
-    'SSL should be disabled on standard TLS connections (port 587)',
   senderName: 'Sender Name',
   validationEmail: 'You must provide a valid email address',
   emailNotificationTypesAlertDescription:
@@ -56,7 +63,8 @@ export function OpenPgpLink(msg: string): JSX.Element {
 
 const NotificationsEmail: React.FC = () => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  const { addToast, removeToast } = useToasts();
+  const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/email'
   );
@@ -127,8 +135,14 @@ const NotificationsEmail: React.FC = () => {
         types: data.types,
         emailFrom: data.options.emailFrom,
         smtpHost: data.options.smtpHost,
-        smtpPort: data.options.smtpPort,
-        secure: data.options.secure,
+        smtpPort: data.options.smtpPort ?? 587,
+        encryption: data.options.secure
+          ? 'implicit'
+          : data.options.requireTls
+          ? 'opportunistic'
+          : data.options.ignoreTls
+          ? 'none'
+          : 'default',
         authUser: data.options.authUser,
         authPass: data.options.authPass,
         allowSelfSigned: data.options.allowSelfSigned,
@@ -146,7 +160,9 @@ const NotificationsEmail: React.FC = () => {
               emailFrom: values.emailFrom,
               smtpHost: values.smtpHost,
               smtpPort: Number(values.smtpPort),
-              secure: values.secure,
+              secure: values.encryption === 'implicit',
+              ignoreTls: values.encryption === 'none',
+              requireTls: values.encryption === 'opportunistic',
               authUser: values.authUser,
               authPass: values.authPass,
               allowSelfSigned: values.allowSelfSigned,
@@ -172,26 +188,55 @@ const NotificationsEmail: React.FC = () => {
     >
       {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
         const testSettings = async () => {
-          await axios.post('/api/v1/settings/notifications/email/test', {
-            enabled: true,
-            types: values.types,
-            options: {
-              emailFrom: values.emailFrom,
-              smtpHost: values.smtpHost,
-              smtpPort: Number(values.smtpPort),
-              secure: values.secure,
-              authUser: values.authUser,
-              authPass: values.authPass,
-              senderName: values.senderName,
-              pgpPrivateKey: values.pgpPrivateKey,
-              pgpPassword: values.pgpPassword,
-            },
-          });
+          setIsTesting(true);
+          let toastId: string | undefined;
+          try {
+            addToast(
+              intl.formatMessage(messages.toastEmailTestSending),
+              {
+                autoDismiss: false,
+                appearance: 'info',
+              },
+              (id) => {
+                toastId = id;
+              }
+            );
+            await axios.post('/api/v1/settings/notifications/email/test', {
+              enabled: true,
+              types: values.types,
+              options: {
+                emailFrom: values.emailFrom,
+                smtpHost: values.smtpHost,
+                smtpPort: Number(values.smtpPort),
+                secure: values.encryption === 'implicit',
+                ignoreTls: values.encryption === 'none',
+                requireTls: values.encryption === 'opportunistic',
+                authUser: values.authUser,
+                authPass: values.authPass,
+                senderName: values.senderName,
+                pgpPrivateKey: values.pgpPrivateKey,
+                pgpPassword: values.pgpPassword,
+              },
+            });
 
-          addToast(intl.formatMessage(messages.emailtestsent), {
-            appearance: 'info',
-            autoDismiss: true,
-          });
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastEmailTestSuccess), {
+              autoDismiss: true,
+              appearance: 'success',
+            });
+          } catch (e) {
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastEmailTestFailed), {
+              autoDismiss: true,
+              appearance: 'error',
+            });
+          } finally {
+            setIsTesting(false);
+          }
         };
 
         return (
@@ -235,9 +280,20 @@ const NotificationsEmail: React.FC = () => {
               <div className="form-row">
                 <label htmlFor="enabled" className="checkbox-label">
                   {intl.formatMessage(messages.agentenabled)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
                   <Field type="checkbox" id="enabled" name="enabled" />
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="senderName" className="text-label">
+                  {intl.formatMessage(messages.senderName)}
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field id="senderName" name="senderName" type="text" />
+                  </div>
                 </div>
               </div>
               <div className="form-row">
@@ -251,27 +307,12 @@ const NotificationsEmail: React.FC = () => {
                       id="emailFrom"
                       name="emailFrom"
                       type="text"
-                      placeholder="no-reply@example.com"
+                      inputMode="email"
                     />
                   </div>
                   {errors.emailFrom && touched.emailFrom && (
                     <div className="error">{errors.emailFrom}</div>
                   )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="senderName" className="text-label">
-                  {intl.formatMessage(messages.senderName)}
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field
-                      id="senderName"
-                      name="senderName"
-                      placeholder="Overseerr"
-                      type="text"
-                    />
-                  </div>
                 </div>
               </div>
               <div className="form-row">
@@ -285,7 +326,7 @@ const NotificationsEmail: React.FC = () => {
                       id="smtpHost"
                       name="smtpHost"
                       type="text"
-                      placeholder="localhost"
+                      inputMode="url"
                     />
                   </div>
                   {errors.smtpHost && touched.smtpHost && (
@@ -303,7 +344,7 @@ const NotificationsEmail: React.FC = () => {
                     id="smtpPort"
                     name="smtpPort"
                     type="text"
-                    placeholder="465"
+                    inputMode="numeric"
                     className="short"
                   />
                   {errors.smtpPort && touched.smtpPort && (
@@ -312,14 +353,29 @@ const NotificationsEmail: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
-                <label htmlFor="secure" className="checkbox-label">
-                  <span>{intl.formatMessage(messages.enableSsl)}</span>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.ssldisabletip)}
-                  </span>
+                <label htmlFor="encryption" className="text-label">
+                  {intl.formatMessage(messages.encryption)}
+                  <span className="label-required">*</span>
                 </label>
                 <div className="form-input">
-                  <Field type="checkbox" id="secure" name="secure" />
+                  <div className="form-input-field">
+                    <Field as="select" id="encryption" name="encryption">
+                      <option value="none">
+                        {intl.formatMessage(messages.encryptionNone)}
+                      </option>
+                      <option value="default">
+                        {intl.formatMessage(messages.encryptionDefault)}
+                      </option>
+                      <option value="opportunistic">
+                        {intl.formatMessage(
+                          messages.encryptionOpportunisticTls
+                        )}
+                      </option>
+                      <option value="implicit">
+                        {intl.formatMessage(messages.encryptionImplicitTls)}
+                      </option>
+                    </Field>
+                  </div>
                 </div>
               </div>
               <div className="form-row">
@@ -350,11 +406,11 @@ const NotificationsEmail: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
+                    <SensitiveInput
+                      as="field"
                       id="authPass"
                       name="authPass"
-                      type="password"
-                      autoComplete="off"
+                      autoComplete="one-time-code"
                     />
                   </div>
                 </div>
@@ -375,10 +431,11 @@ const NotificationsEmail: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
+                    <SensitiveInput
+                      as="field"
                       id="pgpPrivateKey"
                       name="pgpPrivateKey"
-                      as="textarea"
+                      type="textarea"
                       rows="10"
                       className="font-mono text-xs"
                     />
@@ -404,11 +461,11 @@ const NotificationsEmail: React.FC = () => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <Field
+                    <SensitiveInput
+                      as="field"
                       id="pgpPassword"
                       name="pgpPassword"
-                      type="password"
-                      autoComplete="off"
+                      autoComplete="one-time-code"
                     />
                   </div>
                   {errors.pgpPassword && touched.pgpPassword && (
@@ -425,21 +482,22 @@ const NotificationsEmail: React.FC = () => {
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="warning"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                       onClick={(e) => {
                         e.preventDefault();
-
                         testSettings();
                       }}
                     >
-                      {intl.formatMessage(globalMessages.test)}
+                      {isTesting
+                        ? intl.formatMessage(globalMessages.testing)
+                        : intl.formatMessage(globalMessages.test)}
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || isTesting}
                     >
                       {isSubmitting
                         ? intl.formatMessage(globalMessages.saving)

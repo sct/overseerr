@@ -123,7 +123,15 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   const buttons: ButtonOption[] = [];
   if (
     (!media || media.status === MediaStatus.UNKNOWN) &&
-    hasPermission(Permission.REQUEST)
+    hasPermission(
+      [
+        Permission.REQUEST,
+        mediaType === 'movie'
+          ? Permission.REQUEST_MOVIE
+          : Permission.REQUEST_TV,
+      ],
+      { type: 'or' }
+    )
   ) {
     buttons.push({
       id: 'request',
@@ -132,15 +140,21 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(false);
         setShowRequestModal(true);
       },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+      svg: <DownloadIcon />,
     });
   }
 
   if (
     (!media || media.status4k === MediaStatus.UNKNOWN) &&
-    (hasPermission(Permission.REQUEST_4K) ||
-      (mediaType === 'movie' && hasPermission(Permission.REQUEST_4K_MOVIE)) ||
-      (mediaType === 'tv' && hasPermission(Permission.REQUEST_4K_TV))) &&
+    hasPermission(
+      [
+        Permission.REQUEST_4K,
+        mediaType === 'movie'
+          ? Permission.REQUEST_4K_MOVIE
+          : Permission.REQUEST_4K_TV,
+      ],
+      { type: 'or' }
+    ) &&
     ((settings.currentSettings.movie4kEnabled && mediaType === 'movie') ||
       (settings.currentSettings.series4kEnabled && mediaType === 'tv'))
   ) {
@@ -151,7 +165,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(false);
         setShowRequest4kModal(true);
       },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+      svg: <DownloadIcon />,
     });
   }
 
@@ -168,7 +182,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(true);
         setShowRequestModal(true);
       },
-      svg: <InformationCircleIcon className="w-5 h-5 mr-1" />,
+      svg: <InformationCircleIcon />,
     });
   }
 
@@ -185,7 +199,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(true);
         setShowRequest4kModal(true);
       },
-      svg: <InformationCircleIcon className="w-5 h-5 mr-1" />,
+      svg: <InformationCircleIcon />,
     });
   }
 
@@ -201,7 +215,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequest(activeRequest, 'approve');
         },
-        svg: <CheckIcon className="w-5 h-5 mr-1" />,
+        svg: <CheckIcon />,
       },
       {
         id: 'decline-request',
@@ -209,7 +223,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequest(activeRequest, 'decline');
         },
-        svg: <XIcon className="w-5 h-5 mr-1" />,
+        svg: <XIcon />,
       }
     );
   }
@@ -229,7 +243,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequests(activeRequests, 'approve');
         },
-        svg: <CheckIcon className="w-5 h-5 mr-1" />,
+        svg: <CheckIcon />,
       },
       {
         id: 'decline-request-batch',
@@ -239,7 +253,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequests(activeRequests, 'decline');
         },
-        svg: <XIcon className="w-5 h-5 mr-1" />,
+        svg: <XIcon />,
       }
     );
   }
@@ -256,7 +270,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequest(active4kRequest, 'approve');
         },
-        svg: <CheckIcon className="w-5 h-5 mr-1" />,
+        svg: <CheckIcon />,
       },
       {
         id: 'decline-4k-request',
@@ -264,7 +278,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequest(active4kRequest, 'decline');
         },
-        svg: <XIcon className="w-5 h-5 mr-1" />,
+        svg: <XIcon />,
       }
     );
   }
@@ -284,7 +298,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequests(active4kRequests, 'approve');
         },
-        svg: <CheckIcon className="w-5 h-5 mr-1" />,
+        svg: <CheckIcon />,
       },
       {
         id: 'decline-4k-request-batch',
@@ -294,7 +308,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         action: () => {
           modifyRequests(active4kRequests, 'decline');
         },
-        svg: <XIcon className="w-5 h-5 mr-1" />,
+        svg: <XIcon />,
       }
     );
   }
@@ -302,7 +316,9 @@ const RequestButton: React.FC<RequestButtonProps> = ({
   if (
     mediaType === 'tv' &&
     (!activeRequest || activeRequest.requestedBy.id !== user?.id) &&
-    hasPermission(Permission.REQUEST) &&
+    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+      type: 'or',
+    }) &&
     media &&
     media.status !== MediaStatus.AVAILABLE &&
     media.status !== MediaStatus.UNKNOWN &&
@@ -315,7 +331,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(false);
         setShowRequestModal(true);
       },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+      svg: <DownloadIcon />,
     });
   }
 
@@ -338,7 +354,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
         setEditRequest(false);
         setShowRequest4kModal(true);
       },
-      svg: <DownloadIcon className="w-5 h-5 mr-1" />,
+      svg: <DownloadIcon />,
     });
   }
 
@@ -376,8 +392,8 @@ const RequestButton: React.FC<RequestButtonProps> = ({
       <ButtonWithDropdown
         text={
           <>
-            {buttonOne.svg ?? null}
-            {buttonOne.text}
+            {buttonOne.svg}
+            <span>{buttonOne.text}</span>
           </>
         }
         onClick={buttonOne.action}
@@ -390,7 +406,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
                 key={`request-option-${button.id}`}
               >
                 {button.svg}
-                {button.text}
+                <span>{button.text}</span>
               </ButtonWithDropdown.Item>
             ))
           : null}

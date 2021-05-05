@@ -10,6 +10,7 @@ import { useIsTouch } from '../../hooks/useIsTouch';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import { withProperties } from '../../utils/typeHelpers';
+import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
 import RequestModal from '../RequestModal';
 import Transition from '../Transition';
@@ -68,6 +69,14 @@ const TitleCard: React.FC<TitleCardProps> = ({
 
   const closeModal = useCallback(() => setShowRequestModal(false), []);
 
+  const showRequestButton = hasPermission(
+    [
+      Permission.REQUEST,
+      mediaType === 'movie' ? Permission.REQUEST_MOVIE : Permission.REQUEST_TV,
+    ],
+    { type: 'or' }
+  );
+
   return (
     <div className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}>
       <RequestModal
@@ -79,10 +88,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
         onCancel={closeModal}
       />
       <div
-        className={`transition duration-300 transform-gpu scale-100 outline-none cursor-default relative bg-gray-800 bg-cover rounded-xl ring-1 overflow-hidden ${
+        className={`transition duration-300 transform-gpu outline-none cursor-default relative bg-gray-800 bg-cover rounded-xl ring-1 overflow-hidden ${
           showDetail
             ? 'scale-105 shadow-lg ring-gray-500'
-            : 'shadow ring-gray-700'
+            : 'scale-100 shadow ring-gray-700'
         }`}
         style={{
           paddingBottom: '150%',
@@ -184,7 +193,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                   <div className="flex items-end w-full h-full">
                     <div
                       className={`px-2 text-white ${
-                        !hasPermission(Permission.REQUEST) ||
+                        !showRequestButton ||
                         (currentStatus && currentStatus !== MediaStatus.UNKNOWN)
                           ? 'pb-2'
                           : 'pb-11'
@@ -208,7 +217,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                         className="text-xs whitespace-normal"
                         style={{
                           WebkitLineClamp:
-                            !hasPermission(Permission.REQUEST) ||
+                            !showRequestButton ||
                             (currentStatus &&
                               currentStatus !== MediaStatus.UNKNOWN)
                               ? 5
@@ -227,20 +236,20 @@ const TitleCard: React.FC<TitleCardProps> = ({
               </Link>
 
               <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-2">
-                {hasPermission(Permission.REQUEST) &&
+                {showRequestButton &&
                   (!currentStatus || currentStatus === MediaStatus.UNKNOWN) && (
-                    <button
+                    <Button
+                      buttonType="primary"
+                      buttonSize="sm"
                       onClick={(e) => {
                         e.preventDefault();
                         setShowRequestModal(true);
                       }}
-                      className="flex items-center justify-center w-full text-white transition duration-150 ease-in-out bg-indigo-600 rounded-md h-7 hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700"
+                      className="w-full h-7"
                     >
-                      <DownloadIcon className="w-4 h-4 mr-1" />
-                      <span className="text-xs">
-                        {intl.formatMessage(globalMessages.request)}
-                      </span>
-                    </button>
+                      <DownloadIcon />
+                      <span>{intl.formatMessage(globalMessages.request)}</span>
+                    </Button>
                   )}
               </div>
             </div>

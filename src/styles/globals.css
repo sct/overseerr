@@ -74,6 +74,10 @@ a.slider-title {
   @apply hover:text-white;
 }
 
+a.slider-title svg {
+  @apply w-6 h-6 ml-2;
+}
+
 .media-page {
   @apply relative px-4 -mx-4 bg-center bg-cover;
   margin-top: calc(-4rem - env(safe-area-inset-top));
@@ -214,7 +218,7 @@ img.avatar-sm {
 }
 
 .form-input-field {
-  @apply flex max-w-lg rounded-md shadow-sm;
+  @apply flex max-w-xl rounded-md shadow-sm;
 }
 
 .actions {
@@ -264,21 +268,53 @@ textarea {
 }
 
 input.rounded-l-only,
-select.rounded-l-only {
+select.rounded-l-only,
+textarea.rounded-l-only {
   @apply rounded-r-none;
 }
 
 input.rounded-r-only,
-select.rounded-r-only {
+select.rounded-r-only,
+textarea.rounded-r-only {
   @apply rounded-l-none;
 }
 
 input.short {
-  width: 4.875rem;
+  @apply w-20;
 }
 
 select.short {
   @apply w-min;
+}
+
+button.input-action {
+  @apply relative inline-flex items-center px-3 sm:px-3.5 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 hover:bg-indigo-500 active:bg-gray-100 active:text-gray-700 last:rounded-r-md;
+}
+
+.button-md svg,
+button.input-action svg,
+.plex-button svg {
+  @apply w-5 h-5 mr-2 last:mr-0;
+}
+
+.button-sm svg {
+  @apply w-4 h-4 mr-1.5 last:mr-0;
+}
+
+.modal-icon {
+  @apply flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto text-white bg-gray-600 rounded-full sm:mx-0 sm:h-10 sm:w-10;
+}
+
+.modal-icon svg {
+  @apply w-6 h-6;
+}
+
+svg.icon-md {
+  @apply w-5 h-5;
+}
+
+svg.icon-sm {
+  @apply w-4 h-4;
 }
 
 .protocol {
@@ -401,4 +437,10 @@ input[type='search']::-webkit-search-cancel-button {
 .react-select-container .react-select__input input:focus {
   @apply text-white border-none;
   box-shadow: none;
+}
+
+@media all and (display-mode: browser) {
+  .pwa-only {
+    @apply hidden;
+  }
 }

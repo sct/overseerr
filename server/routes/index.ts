@@ -81,10 +81,16 @@ router.get('/status/appdata', (_req, res) => {
 });
 
 router.use('/user', isAuthenticated(), user);
-router.get('/settings/public', async (_req, res) => {
+router.get('/settings/public', async (req, res) => {
   const settings = getSettings();
 
-  return res.status(200).json(settings.fullPublicSettings);
+  if (!req.user?.settings?.notificationTypes.webpush) {
+    return res
+      .status(200)
+      .json({ ...settings.fullPublicSettings, enablePushRegistration: false });
+  } else {
+    return res.status(200).json(settings.fullPublicSettings);
+  }
 });
 router.use(
   '/settings',
@@ -138,7 +144,7 @@ router.get('/genres/movie', isAuthenticated(), async (req, res) => {
   const tmdb = new TheMovieDb();
 
   const genres = await tmdb.getMovieGenres({
-    language: req.query.language as string,
+    language: req.locale ?? (req.query.language as string),
   });
 
   return res.status(200).json(genres);
@@ -148,7 +154,7 @@ router.get('/genres/tv', isAuthenticated(), async (req, res) => {
   const tmdb = new TheMovieDb();
 
   const genres = await tmdb.getTvGenres({
-    language: req.query.language as string,
+    language: req.locale ?? (req.query.language as string),
   });
 
   return res.status(200).json(genres);

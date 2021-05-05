@@ -1,4 +1,5 @@
 import { AtSymbolIcon } from '@heroicons/react/outline';
+import { CloudIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -17,8 +18,7 @@ const messages = defineMessages({
   notifications: 'Notifications',
   notificationsettings: 'Notification Settings',
   email: 'Email',
-  toastSettingsSuccess: 'Notification settings saved successfully!',
-  toastSettingsFailure: 'Something went wrong while saving settings.',
+  webpush: 'Web Push',
 });
 
 const UserNotificationSettings: React.FC = ({ children }) => {
@@ -64,6 +64,18 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       route: '/settings/notifications/telegram',
       regex: /\/settings\/notifications\/telegram/,
       hidden: !data?.telegramEnabled || !data?.telegramBotUsername,
+    },
+    {
+      text: intl.formatMessage(messages.webpush),
+      content: (
+        <span className="flex items-center">
+          <CloudIcon className="h-4 mr-2" />
+          {intl.formatMessage(messages.webpush)}
+        </span>
+      ),
+      route: '/settings/notifications/webpush',
+      regex: /\/settings\/notifications\/webpush/,
+      hidden: !data?.webPushEnabled,
     },
   ];
 

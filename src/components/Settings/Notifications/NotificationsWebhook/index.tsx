@@ -2,7 +2,8 @@ import { QuestionMarkCircleIcon, RefreshIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import dynamic from 'next/dynamic';
-import React from 'react';
+import Link from 'next/link';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -46,7 +47,9 @@ const messages = defineMessages({
   validationJsonPayloadRequired: 'You must provide a valid JSON payload',
   webhooksettingssaved: 'Webhook notification settings saved successfully!',
   webhooksettingsfailed: 'Webhook notification settings failed to save.',
-  testsent: 'Webhook test notification sent!',
+  toastWebhookTestSending: 'Sending webhook test notification…',
+  toastWebhookTestSuccess: 'Webhook test notification sent!',
+  toastWebhookTestFailed: 'Webhook test notification failed to send.',
   resetPayload: 'Reset to Default',
   resetPayloadSuccess: 'JSON payload reset successfully!',
   customJson: 'JSON Payload',
@@ -56,7 +59,8 @@ const messages = defineMessages({
 
 const NotificationsWebhook: React.FC = () => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  const { addToast, removeToast } = useToasts();
+  const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/webhook'
   );
@@ -157,20 +161,47 @@ const NotificationsWebhook: React.FC = () => {
         };
 
         const testSettings = async () => {
-          await axios.post('/api/v1/settings/notifications/webhook/test', {
-            enabled: true,
-            types: values.types,
-            options: {
-              webhookUrl: values.webhookUrl,
-              jsonPayload: JSON.stringify(values.jsonPayload),
-              authHeader: values.authHeader,
-            },
-          });
+          setIsTesting(true);
+          let toastId: string | undefined;
+          try {
+            addToast(
+              intl.formatMessage(messages.toastWebhookTestSending),
+              {
+                autoDismiss: false,
+                appearance: 'info',
+              },
+              (id) => {
+                toastId = id;
+              }
+            );
+            await axios.post('/api/v1/settings/notifications/webhook/test', {
+              enabled: true,
+              types: values.types,
+              options: {
+                webhookUrl: values.webhookUrl,
+                jsonPayload: JSON.stringify(values.jsonPayload),
+                authHeader: values.authHeader,
+              },
+            });
 
-          addToast(intl.formatMessage(messages.testsent), {
-            appearance: 'info',
-            autoDismiss: true,
-          });
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastWebhookTestSuccess), {
+              autoDismiss: true,
+              appearance: 'success',
+            });
+          } catch (e) {
+            if (toastId) {
+              removeToast(toastId);
+            }
+            addToast(intl.formatMessage(messages.toastWebhookTestFailed), {
+              autoDismiss: true,
+              appearance: 'error',
+            });
+          } finally {
+            setIsTesting(false);
+          }
         };
 
         return (
@@ -178,19 +209,25 @@ const NotificationsWebhook: React.FC = () => {
             <div className="form-row">
               <label htmlFor="enabled" className="checkbox-label">
                 {intl.formatMessage(messages.agentenabled)}
+                <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
             <div className="form-row">
-              <label htmlFor="name" className="text-label">
+              <label htmlFor="webhookUrl" className="text-label">
                 {intl.formatMessage(messages.webhookUrl)}
                 <span className="label-required">*</span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field id="webhookUrl" name="webhookUrl" type="text" />
+                  <Field
+                    id="webhookUrl"
+                    name="webhookUrl"
+                    type="text"
+                    inputMode="url"
+                  />
                 </div>
                 {errors.webhookUrl && touched.webhookUrl && (
                   <div className="error">{errors.webhookUrl}</div>
@@ -198,7 +235,7 @@ const NotificationsWebhook: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label htmlFor="name" className="text-label">
+              <label htmlFor="authHeader" className="text-label">
                 {intl.formatMessage(messages.authheader)}
               </label>
               <div className="form-input">
@@ -208,7 +245,7 @@ const NotificationsWebhook: React.FC = () => {
               </div>
             </div>
             <div className="form-row">
-              <label htmlFor="name" className="text-label">
+              <label htmlFor="webhook-json-payload" className="text-label">
                 {intl.formatMessage(messages.customJson)}
                 <span className="label-required">*</span>
               </label>
@@ -233,18 +270,25 @@ const NotificationsWebhook: React.FC = () => {
                     }}
                     className="mr-2"
                   >
-                    <RefreshIcon className="w-5 h-5 mr-1" />
-                    {intl.formatMessage(messages.resetPayload)}
+                    <RefreshIcon />
+                    <span>{intl.formatMessage(messages.resetPayload)}</span>
                   </Button>
-                  <a
+                  <Link
                     href="https://docs.overseerr.dev/using-overseerr/notifications/webhooks#template-variables"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center justify-center font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md focus:outline-none hover:bg-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 disabled:opacity-50 px-2.5 py-1.5 text-xs"
+                    passHref
                   >
-                    <QuestionMarkCircleIcon className="w-5 h-5 mr-1" />
-                    {intl.formatMessage(messages.templatevariablehelp)}
-                  </a>
+                    <Button
+                      as="a"
+                      buttonSize="sm"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <QuestionMarkCircleIcon />
+                      <span>
+                        {intl.formatMessage(messages.templatevariablehelp)}
+                      </span>
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -257,21 +301,22 @@ const NotificationsWebhook: React.FC = () => {
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="warning"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || !isValid || isTesting}
                     onClick={(e) => {
                       e.preventDefault();
-
                       testSettings();
                     }}
                   >
-                    {intl.formatMessage(globalMessages.test)}
+                    {isTesting
+                      ? intl.formatMessage(globalMessages.testing)
+                      : intl.formatMessage(globalMessages.test)}
                   </Button>
                 </span>
                 <span className="inline-flex ml-3 rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || !isValid || isTesting}
                   >
                     {isSubmitting
                       ? intl.formatMessage(globalMessages.saving)

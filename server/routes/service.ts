@@ -191,7 +191,7 @@ serviceRoutes.get<{ tmdbId: string }>(
     try {
       const tv = await tmdb.getTvShow({
         tvId: Number(req.params.tmdbId),
-        language: req.query.language as string,
+        language: req.locale ?? (req.query.language as string),
       });
 
       const response = await sonarr.getSeriesByTitle(tv.name);

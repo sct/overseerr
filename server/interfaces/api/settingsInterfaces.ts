@@ -30,6 +30,9 @@ export interface PublicSettingsResponse {
   originalLanguage: string;
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
+  vapidPublic: string;
+  enablePushRegistration: boolean;
+  locale: string;
 }
 
 export interface CacheItem {

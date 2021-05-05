@@ -103,8 +103,10 @@ components:
       properties:
         apiKey:
           type: string
-          example: 'anapikey'
           readOnly: true
+        appLanguage:
+          type: string
+          example: en
         applicationTitle:
           type: string
           example: Overseerr
@@ -124,6 +126,9 @@ components:
           type: boolean
           example: false
         localLogin:
+          type: boolean
+          example: true
+        newPlexLogin:
           type: boolean
           example: true
         defaultPermissions:
@@ -1128,6 +1133,15 @@ components:
           properties:
             webhookUrl:
               type: string
+    WebPushSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
     WebhookSettings:
       type: object
       properties:
@@ -1141,6 +1155,8 @@ components:
           type: object
           properties:
             webhookUrl:
+              type: string
+            authHeader:
               type: string
             jsonPayload:
               type: string
@@ -1196,6 +1212,22 @@ components:
               type: string
             priority:
               type: number
+    LunaSeaSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            webhookUrl:
+              type: string
+            profileName:
+              type: string
     NotificationEmailSettings:
       type: object
       properties:
@@ -1221,6 +1253,12 @@ components:
               type: number
               example: 465
             secure:
+              type: boolean
+              example: false
+            ignoreTls:
+              type: boolean
+              example: false
+            requireTls:
               type: boolean
               example: false
             authUser:
@@ -2397,22 +2435,22 @@ paths:
       responses:
         '204':
           description: Test notification attempted
-  /settings/notifications/telegram:
+  /settings/notifications/lunasea:
     get:
-      summary: Get Telegram notification settings
-      description: Returns current Telegram notification settings in a JSON object.
+      summary: Get LunaSea notification settings
+      description: Returns current LunaSea notification settings in a JSON object.
       tags:
         - settings
       responses:
         '200':
-          description: Returned Telegram settings
+          description: Returned LunaSea settings
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TelegramSettings'
+                $ref: '#/components/schemas/LunaSeaSettings'
     post:
-      summary: Update Telegram notification settings
-      description: Update Telegram notification settings with the provided values.
+      summary: Update LunaSea notification settings
+      description: Updates LunaSea notification settings with the provided values.
       tags:
         - settings
       requestBody:
@@ -2420,18 +2458,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TelegramSettings'
+              $ref: '#/components/schemas/LunaSeaSettings'
       responses:
         '200':
           description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TelegramSettings'
-  /settings/notifications/telegram/test:
+                $ref: '#/components/schemas/LunaSeaSettings'
+  /settings/notifications/lunasea/test:
     post:
-      summary: Test Telegram settings
-      description: Sends a test notification to the Telegram agent.
+      summary: Test LunaSea settings
+      description: Sends a test notification to the LunaSea agent.
       tags:
         - settings
       requestBody:
@@ -2439,7 +2477,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TelegramSettings'
+              $ref: '#/components/schemas/LunaSeaSettings'
       responses:
         '204':
           description: Test notification attempted
@@ -2578,6 +2616,98 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SlackSettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/telegram:
+    get:
+      summary: Get Telegram notification settings
+      description: Returns current Telegram notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned Telegram settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelegramSettings'
+    post:
+      summary: Update Telegram notification settings
+      description: Update Telegram notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelegramSettings'
+  /settings/notifications/telegram/test:
+    post:
+      summary: Test Telegram settings
+      description: Sends a test notification to the Telegram agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramSettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/webpush:
+    get:
+      summary: Get Web Push notification settings
+      description: Returns current Web Push notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned web push settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebPushSettings'
+    post:
+      summary: Update Web Push notification settings
+      description: Updates Web Push notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebPushSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebPushSettings'
+  /settings/notifications/webpush/test:
+    post:
+      summary: Test Web Push settings
+      description: Sends a test notification to the Web Push agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebPushSettings'
       responses:
         '204':
           description: Test notification attempted
@@ -2903,6 +3033,32 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+  /user/registerPushSubscription:
+    post:
+      summary: Register a web push /user/registerPushSubscription
+      description: Registers a web push subscription for the logged-in user
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endpoint:
+                  type: string
+                auth:
+                  type: string
+                p256dh:
+                  type: string
+              required:
+                - endpoint
+                - auth
+                - p256dh
+      responses:
+        '204':
+          description: Successfully registered push subscription
   /user/{userId}:
     get:
       summary: Get user by ID

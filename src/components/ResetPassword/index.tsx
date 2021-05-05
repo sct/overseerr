@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -7,6 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 import Button from '../Common/Button';
 import ImageFader from '../Common/ImageFader';
+import SensitiveInput from '../Common/SensitiveInput';
 import LanguagePicker from '../Layout/LanguagePicker';
 
 const messages = defineMessages({
@@ -116,7 +117,8 @@ const ResetPassword: React.FC = () => {
                         </label>
                         <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
                           <div className="form-input-field">
-                            <Field
+                            <SensitiveInput
+                              as="field"
                               id="password"
                               name="password"
                               type="password"
@@ -136,7 +138,8 @@ const ResetPassword: React.FC = () => {
                         </label>
                         <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
                           <div className="form-input-field">
-                            <Field
+                            <SensitiveInput
+                              as="field"
                               id="confirmPassword"
                               name="confirmPassword"
                               type="password"

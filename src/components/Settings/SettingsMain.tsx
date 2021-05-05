@@ -1,18 +1,25 @@
 import { RefreshIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
-import type { Language, MainSettings } from '../../../server/lib/settings';
+import { UserSettingsGeneralResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
+import type { MainSettings } from '../../../server/lib/settings';
+import {
+  availableLanguages,
+  AvailableLocales,
+} from '../../context/LanguageContext';
+import useLocale from '../../hooks/useLocale';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
+import SensitiveInput from '../Common/SensitiveInput';
 import LanguageSelector from '../LanguageSelector';
 import RegionSelector from '../RegionSelector';
 import CopyButton from './CopyButton';
@@ -49,18 +56,21 @@ const messages = defineMessages({
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   partialRequestsEnabled: 'Allow Partial Series Requests',
+  locale: 'Display Language',
 });
 
 const SettingsMain: React.FC = () => {
   const { addToast } = useToasts();
-  const { hasPermission: userHasPermission } = useUser();
+  const { user: currentUser, hasPermission: userHasPermission } = useUser();
   const intl = useIntl();
+  const { setLocale } = useLocale();
   const { data, error, revalidate } = useSWR<MainSettings>(
     '/api/v1/settings/main'
   );
-  const { data: languages, error: languagesError } = useSWR<Language[]>(
-    '/api/v1/languages'
+  const { data: userData } = useSWR<UserSettingsGeneralResponse>(
+    currentUser ? `/api/v1/user/${currentUser.id}/settings/main` : null
   );
+
   const MainSettingsSchema = Yup.object().shape({
     applicationTitle: Yup.string().required(
       intl.formatMessage(messages.validationApplicationTitle)
@@ -96,26 +106,7 @@ const SettingsMain: React.FC = () => {
     }
   };
 
-  const sortedLanguages = useMemo(
-    () =>
-      languages?.sort((lang1, lang2) => {
-        const lang1Name =
-          intl.formatDisplayName(lang1.iso_639_1, {
-            type: 'language',
-            fallback: 'none',
-          }) ?? lang1.english_name;
-        const lang2Name =
-          intl.formatDisplayName(lang2.iso_639_1, {
-            type: 'language',
-            fallback: 'none',
-          }) ?? lang2.english_name;
-
-        return lang1Name === lang2Name ? 0 : lang1Name > lang2Name ? 1 : -1;
-      }),
-    [intl, languages]
-  );
-
-  if (!data && !error && !languages && !languagesError) {
+  if (!data && !error) {
     return <LoadingSpinner />;
   }
 
@@ -142,6 +133,7 @@ const SettingsMain: React.FC = () => {
             applicationUrl: data?.applicationUrl,
             csrfProtection: data?.csrfProtection,
             hideAvailable: data?.hideAvailable,
+            locale: data?.locale ?? 'en',
             region: data?.region,
             originalLanguage: data?.originalLanguage,
             partialRequestsEnabled: data?.partialRequestsEnabled,
@@ -156,12 +148,21 @@ const SettingsMain: React.FC = () => {
                 applicationUrl: values.applicationUrl,
                 csrfProtection: values.csrfProtection,
                 hideAvailable: values.hideAvailable,
+                locale: values.locale,
                 region: values.region,
                 originalLanguage: values.originalLanguage,
                 partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
               });
               mutate('/api/v1/settings/public');
+
+              if (setLocale) {
+                setLocale(
+                  (userData?.locale
+                    ? userData.locale
+                    : values.locale) as AvailableLocales
+                );
+              }
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
                 autoDismiss: true,
@@ -187,7 +188,7 @@ const SettingsMain: React.FC = () => {
                     </label>
                     <div className="form-input">
                       <div className="form-input-field">
-                        <input
+                        <SensitiveInput
                           type="text"
                           id="apiKey"
                           className="rounded-l-only"
@@ -203,9 +204,9 @@ const SettingsMain: React.FC = () => {
                             e.preventDefault();
                             regenerate();
                           }}
-                          className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 rounded-r-md hover:bg-indigo-500 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
+                          className="input-action"
                         >
-                          <RefreshIcon className="w-5 h-5" />
+                          <RefreshIcon />
                         </button>
                       </div>
                     </div>
@@ -221,7 +222,6 @@ const SettingsMain: React.FC = () => {
                         id="applicationTitle"
                         name="applicationTitle"
                         type="text"
-                        placeholder="Overseerr"
                       />
                     </div>
                     {errors.applicationTitle && touched.applicationTitle && (
@@ -239,7 +239,7 @@ const SettingsMain: React.FC = () => {
                         id="applicationUrl"
                         name="applicationUrl"
                         type="text"
-                        placeholder="https://os.example.com"
+                        inputMode="url"
                       />
                     </div>
                     {errors.applicationUrl && touched.applicationUrl && (
@@ -292,6 +292,28 @@ const SettingsMain: React.FC = () => {
                   </div>
                 </div>
                 <div className="form-row">
+                  <label htmlFor="locale" className="text-label">
+                    {intl.formatMessage(messages.locale)}
+                  </label>
+                  <div className="form-input">
+                    <div className="form-input-field">
+                      <Field as="select" id="locale" name="locale">
+                        {(Object.keys(
+                          availableLanguages
+                        ) as (keyof typeof availableLanguages)[]).map((key) => (
+                          <option
+                            key={key}
+                            value={availableLanguages[key].code}
+                            lang={availableLanguages[key].code}
+                          >
+                            {availableLanguages[key].display}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-row">
                   <label htmlFor="region" className="text-label">
                     <span>{intl.formatMessage(messages.region)}</span>
                     <span className="label-tip">
@@ -299,11 +321,13 @@ const SettingsMain: React.FC = () => {
                     </span>
                   </label>
                   <div className="form-input">
-                    <RegionSelector
-                      value={values.region ?? ''}
-                      name="region"
-                      onChange={setFieldValue}
-                    />
+                    <div className="form-input-field">
+                      <RegionSelector
+                        value={values.region ?? ''}
+                        name="region"
+                        onChange={setFieldValue}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="form-row">
@@ -316,7 +340,6 @@ const SettingsMain: React.FC = () => {
                   <div className="form-input">
                     <div className="form-input-field">
                       <LanguageSelector
-                        languages={sortedLanguages ?? []}
                         setFieldValue={setFieldValue}
                         value={values.originalLanguage}
                       />

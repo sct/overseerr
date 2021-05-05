@@ -12,7 +12,7 @@ import {
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RTRating } from '../../../server/api/rottentomatoes';
@@ -25,7 +25,7 @@ import RTAudRotten from '../../assets/rt_aud_rotten.svg';
 import RTFresh from '../../assets/rt_fresh.svg';
 import RTRotten from '../../assets/rt_rotten.svg';
 import TmdbLogo from '../../assets/tmdb_logo.svg';
-import { LanguageContext } from '../../context/LanguageContext';
+import useLocale from '../../hooks/useLocale';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
@@ -63,7 +63,7 @@ const messages = defineMessages({
   manageModalNoRequests: 'No requests.',
   manageModalClearMedia: 'Clear Media Data',
   manageModalClearMediaWarning:
-    '* This will irreversibly remove all data for this TV series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
+    '* This will irreversibly remove all data for this series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
   originaltitle: 'Original Title',
   showtype: 'Series Type',
   anime: 'Anime',
@@ -73,9 +73,9 @@ const messages = defineMessages({
   opensonarr4k: 'Open Series in 4K Sonarr',
   downloadstatus: 'Download Status',
   playonplex: 'Play on Plex',
-  play4konplex: 'Play 4K on Plex',
+  play4konplex: 'Play in 4K on Plex',
   markavailable: 'Mark as Available',
-  mark4kavailable: 'Mark 4K as Available',
+  mark4kavailable: 'Mark as Available in 4K',
   allseasonsmarkedavailable: '* All seasons will be marked as available.',
   seasons: '{seasonCount, plural, one {# Season} other {# Seasons}}',
   episodeRuntime: 'Episode Runtime',
@@ -91,12 +91,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const { user, hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
-  const { locale } = useContext(LanguageContext);
+  const { locale } = useLocale();
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showManager, setShowManager] = useState(false);
 
   const { data, error, revalidate } = useSWR<TvDetailsType>(
-    `/api/v1/tv/${router.query.tvId}?language=${locale}`,
+    `/api/v1/tv/${router.query.tvId}`,
     {
       initialData: tv,
     }
@@ -124,7 +124,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: data.mediaInfo?.plexUrl,
-      svg: <PlayIcon className="w-5 h-5 mr-1" />,
+      svg: <PlayIcon />,
     });
   }
 
@@ -137,7 +137,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
       url: data.mediaInfo?.plexUrl4k,
-      svg: <PlayIcon className="w-5 h-5 mr-1" />,
+      svg: <PlayIcon />,
     });
   }
 
@@ -150,7 +150,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     mediaLinks.push({
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
-      svg: <FilmIcon className="w-5 h-5 mr-1" />,
+      svg: <FilmIcon />,
     });
   }
 
@@ -316,7 +316,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <CheckCircleIcon className="w-5 h-5 mr-1" />
+                      <CheckCircleIcon />
                       <span>{intl.formatMessage(messages.markavailable)}</span>
                     </Button>
                   </div>
@@ -330,14 +330,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                       className="w-full sm:mb-0"
                       buttonType="success"
                     >
-                      <CheckCircleIcon className="w-5 h-5 mr-1" />
+                      <CheckCircleIcon />
                       <span>
                         {intl.formatMessage(messages.mark4kavailable)}
                       </span>
                     </Button>
                   </div>
                 )}
-              <div className="mt-3 text-xs text-gray-300">
+              <div className="mt-3 text-xs text-gray-400">
                 {intl.formatMessage(messages.allseasonsmarkedavailable)}
               </div>
             </div>
@@ -372,7 +372,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 className="block mb-2 last:mb-0"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon className="w-5 h-5 mr-1" />
+                  <ExternalLinkIcon />
                   <span>{intl.formatMessage(messages.opensonarr)}</span>
                 </Button>
               </a>
@@ -384,7 +384,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 rel="noreferrer"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon className="w-5 h-5 mr-1" />
+                  <ExternalLinkIcon />
                   <span>{intl.formatMessage(messages.opensonarr4k)}</span>
                 </Button>
               </a>
@@ -398,10 +398,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               confirmText={intl.formatMessage(globalMessages.areyousure)}
               className="w-full"
             >
-              <DocumentRemoveIcon className="w-5 h-5 mr-1" />
-              {intl.formatMessage(messages.manageModalClearMedia)}
+              <DocumentRemoveIcon />
+              <span>{intl.formatMessage(messages.manageModalClearMedia)}</span>
             </ConfirmButton>
-            <div className="mt-2 text-sm text-gray-400">
+            <div className="mt-3 text-xs text-gray-400">
               {intl.formatMessage(messages.manageModalClearMediaWarning)}
             </div>
           </div>
@@ -478,7 +478,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               className="ml-2 first:ml-0"
               onClick={() => setShowManager(true)}
             >
-              <CogIcon className="w-5" />
+              <CogIcon />
             </Button>
           )}
         </div>
@@ -522,7 +522,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <Link href={`/tv/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                    <ArrowCircleRightIcon className="inline-block w-5 h-5 ml-1" />
+                    <ArrowCircleRightIcon className="inline-block w-5 h-5 ml-1.5" />
                   </a>
                 </Link>
               </div>
@@ -679,7 +679,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.cast)}</span>
-                <ArrowCircleRightIcon className="w-6 h-6 ml-2" />
+                <ArrowCircleRightIcon />
               </a>
             </Link>
           </div>

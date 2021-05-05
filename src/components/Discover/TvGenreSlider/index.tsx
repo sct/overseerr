@@ -1,10 +1,9 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { GenreSliderItem } from '../../../../server/interfaces/api/discoverInterfaces';
-import { LanguageContext } from '../../../context/LanguageContext';
 import GenreCard from '../../GenreCard';
 import Slider from '../../Slider';
 import { genreColorMap } from '../constants';
@@ -14,10 +13,9 @@ const messages = defineMessages({
 });
 
 const TvGenreSlider: React.FC = () => {
-  const { locale } = useContext(LanguageContext);
   const intl = useIntl();
   const { data, error } = useSWR<GenreSliderItem[]>(
-    `/api/v1/discover/genreslider/tv?language=${locale}`,
+    `/api/v1/discover/genreslider/tv`,
     {
       refreshInterval: 0,
       revalidateOnFocus: false,
@@ -30,7 +28,7 @@ const TvGenreSlider: React.FC = () => {
         <Link href="/discover/tv/genres">
           <a className="slider-title">
             <span>{intl.formatMessage(messages.tvgenres)}</span>
-            <ArrowCircleRightIcon className="w-6 h-6 ml-2" />
+            <ArrowCircleRightIcon />
           </a>
         </Link>
       </div>

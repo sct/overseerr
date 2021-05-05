@@ -21,12 +21,10 @@ const messages = defineMessages({
   plex: 'Plex',
   plexsettings: 'Plex Settings',
   plexsettingsDescription:
-    'Configure the settings for your Plex server. Overseerr scans your Plex libraries to see what content is available.',
+    'Configure the settings for your Plex server. Overseerr scans your Plex libraries to determine content availability.',
   servername: 'Server Name',
   servernameTip: 'Automatically retrieved from Plex after saving',
-  servernamePlaceholder: 'Plex Server Name',
   serverpreset: 'Server',
-  serverpresetPlaceholder: 'Plex Server',
   serverLocal: 'local',
   serverRemote: 'remote',
   serverSecure: 'secure',
@@ -40,11 +38,10 @@ const messages = defineMessages({
   toastPlexConnectingSuccess: 'Plex connection established successfully!',
   toastPlexConnectingFailure: 'Failed to connect to Plex.',
   settingUpPlexDescription:
-    'To set up Plex, you can either enter your details manually or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>. Press the button to the right of the dropdown to fetch the list of available servers.',
+    'To set up Plex, you can either enter the details manually or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>. Press the button to the right of the dropdown to fetch the list of available servers.',
   hostname: 'Hostname or IP Address',
   port: 'Port',
   enablessl: 'Enable SSL',
-  timeout: 'Timeout',
   plexlibraries: 'Plex Libraries',
   plexlibrariesDescription:
     'The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.',
@@ -58,7 +55,7 @@ const messages = defineMessages({
   librariesRemaining: 'Libraries Remaining: {count}',
   startscan: 'Start Scan',
   cancelscan: 'Cancel Scan',
-  validationHostnameRequired: 'You must provide a hostname or IP address',
+  validationHostnameRequired: 'You must provide a valid hostname or IP address',
   validationPortRequired: 'You must provide a valid port number',
 });
 
@@ -282,7 +279,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       <Formik
         initialValues={{
           hostname: data?.ip,
-          port: data?.port,
+          port: data?.port ?? 32400,
           useSsl: data?.useSsl,
           selectedPreset: undefined,
         }}
@@ -355,9 +352,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       id="name"
                       name="name"
                       className="cursor-not-allowed"
-                      placeholder={intl.formatMessage(
-                        messages.servernamePlaceholder
-                      )}
                       value={data?.name}
                       readOnly
                     />
@@ -373,9 +367,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     <select
                       id="preset"
                       name="preset"
-                      placeholder={intl.formatMessage(
-                        messages.serverpresetPlaceholder
-                      )}
                       value={values.selectedPreset}
                       disabled={!availableServers || isRefreshingPresets}
                       className="rounded-l-only"
@@ -432,12 +423,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                         e.preventDefault();
                         refreshPresetServers();
                       }}
-                      className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 rounded-r-md hover:bg-indigo-500 focus:outline-none focus:ring-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700"
+                      className="input-action"
                     >
                       <RefreshIcon
-                        className={`w-5 h-5 ${
-                          isRefreshingPresets ? 'animate-spin' : ''
-                        }`}
+                        className={isRefreshingPresets ? 'animate-spin' : ''}
                         style={{ animationDirection: 'reverse' }}
                       />
                     </button>
@@ -456,9 +445,9 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     </span>
                     <Field
                       type="text"
+                      inputMode="url"
                       id="hostname"
                       name="hostname"
-                      placeholder="127.0.0.1"
                       className="rounded-r-only"
                     />
                   </div>
@@ -475,9 +464,9 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 <div className="form-input">
                   <Field
                     type="text"
+                    inputMode="numeric"
                     id="port"
                     name="port"
-                    placeholder="32400"
                     className="short"
                   />
                   {errors.port && touched.port && (
@@ -530,12 +519,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       <div className="section">
         <Button onClick={() => syncLibraries()} disabled={isSyncing}>
           <RefreshIcon
-            className={`w-5 h-5 mr-1 ${isSyncing ? 'animate-spin' : ''}`}
+            className={isSyncing ? 'animate-spin' : ''}
             style={{ animationDirection: 'reverse' }}
           />
-          {isSyncing
-            ? intl.formatMessage(messages.scanning)
-            : intl.formatMessage(messages.scan)}
+          <span>
+            {isSyncing
+              ? intl.formatMessage(messages.scanning)
+              : intl.formatMessage(messages.scan)}
+          </span>
         </Button>
         <ul className="grid grid-cols-1 gap-5 mt-6 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {data?.libraries.map((library) => (
@@ -604,17 +595,15 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </>
             )}
             <div className="flex-1 text-right">
-              {!dataSync?.running && (
+              {!dataSync?.running ? (
                 <Button buttonType="warning" onClick={() => startScan()}>
-                  <SearchIcon className="w-5 h-5 mr-1" />
-                  {intl.formatMessage(messages.startscan)}
+                  <SearchIcon />
+                  <span>{intl.formatMessage(messages.startscan)}</span>
                 </Button>
-              )}
-
-              {dataSync?.running && (
+              ) : (
                 <Button buttonType="danger" onClick={() => cancelScan()}>
-                  <XIcon className="w-5 h-5 mr-1" />
-                  {intl.formatMessage(messages.cancelscan)}
+                  <XIcon />
+                  <span>{intl.formatMessage(messages.cancelscan)}</span>
                 </Button>
               )}
             </div>

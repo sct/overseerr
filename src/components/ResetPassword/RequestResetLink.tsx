@@ -107,7 +107,7 @@ const ResetPassword: React.FC = () => {
                               id="email"
                               name="email"
                               type="text"
-                              placeholder="name@example.com"
+                              inputMode="email"
                               className="flex-1 block w-full min-w-0 text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md form-input sm:text-sm sm:leading-5"
                             />
                           </div>
@@ -124,8 +124,10 @@ const ResetPassword: React.FC = () => {
                               type="submit"
                               disabled={isSubmitting || !isValid}
                             >
-                              <AtSymbolIcon className="w-5 h-5 mr-1" />
-                              {intl.formatMessage(messages.emailresetlink)}
+                              <AtSymbolIcon />
+                              <span>
+                                {intl.formatMessage(messages.emailresetlink)}
+                              </span>
                             </Button>
                           </span>
                         </div>

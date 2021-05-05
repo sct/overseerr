@@ -1,8 +1,9 @@
 import { AtSymbolIcon } from '@heroicons/react/outline';
-import { LightningBoltIcon } from '@heroicons/react/solid';
+import { CloudIcon, LightningBoltIcon } from '@heroicons/react/solid';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import DiscordLogo from '../../assets/extlogos/discord.svg';
+import LunaSeaLogo from '../../assets/extlogos/lunasea.svg';
 import PushbulletLogo from '../../assets/extlogos/pushbullet.svg';
 import PushoverLogo from '../../assets/extlogos/pushover.svg';
 import SlackLogo from '../../assets/extlogos/slack.svg';
@@ -18,6 +19,7 @@ const messages = defineMessages({
     'Configure and enable notification agents.',
   email: 'Email',
   webhook: 'Webhook',
+  webpush: 'Web Push',
 });
 
 const SettingsNotifications: React.FC = ({ children }) => {
@@ -45,6 +47,17 @@ const SettingsNotifications: React.FC = ({ children }) => {
       ),
       route: '/settings/notifications/discord',
       regex: /^\/settings\/notifications\/discord/,
+    },
+    {
+      text: 'LunaSea',
+      content: (
+        <span className="flex items-center">
+          <LunaSeaLogo className="h-4 mr-2" />
+          LunaSea
+        </span>
+      ),
+      route: '/settings/notifications/lunasea',
+      regex: /^\/settings\/notifications\/lunasea/,
     },
     {
       text: 'Pushbullet',
@@ -89,6 +102,17 @@ const SettingsNotifications: React.FC = ({ children }) => {
       ),
       route: '/settings/notifications/telegram',
       regex: /^\/settings\/notifications\/telegram/,
+    },
+    {
+      text: intl.formatMessage(messages.webpush),
+      content: (
+        <span className="flex items-center">
+          <CloudIcon className="h-4 mr-2" />
+          {intl.formatMessage(messages.webpush)}
+        </span>
+      ),
+      route: '/settings/notifications/webpush',
+      regex: /^\/settings\/notifications\/webpush/,
     },
     {
       text: intl.formatMessage(messages.webhook),

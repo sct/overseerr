@@ -1,12 +1,16 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import { Language } from '../../../../../server/lib/settings';
+import {
+  availableLanguages,
+  AvailableLocales,
+} from '../../../../context/LanguageContext';
+import useLocale from '../../../../hooks/useLocale';
 import useSettings from '../../../../hooks/useSettings';
 import { Permission, UserType, useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
@@ -39,18 +43,21 @@ const messages = defineMessages({
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
   enableOverride: 'Enable Override',
+  applanguage: 'Display Language',
+  languageDefault: 'Default ({language})',
 });
 
 const UserGeneralSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
+  const { locale, setLocale } = useLocale();
   const [movieQuotaEnabled, setMovieQuotaEnabled] = useState(false);
   const [tvQuotaEnabled, setTvQuotaEnabled] = useState(false);
   const router = useRouter();
   const { user, hasPermission, mutate } = useUser({
     id: Number(router.query.userId),
   });
-  const { hasPermission: currentHasPermission } = useUser();
+  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const { currentSettings } = useSettings();
   const { data, error, revalidate } = useSWR<UserSettingsGeneralResponse>(
     user ? `/api/v1/user/${user?.id}/settings/main` : null
@@ -65,38 +72,11 @@ const UserGeneralSettings: React.FC = () => {
     );
   }, [data]);
 
-  const { data: languages, error: languagesError } = useSWR<Language[]>(
-    '/api/v1/languages'
-  );
-
-  const sortedLanguages = useMemo(
-    () =>
-      languages?.sort((lang1, lang2) => {
-        const lang1Name =
-          intl.formatDisplayName(lang1.iso_639_1, {
-            type: 'language',
-            fallback: 'none',
-          }) ?? lang1.english_name;
-        const lang2Name =
-          intl.formatDisplayName(lang2.iso_639_1, {
-            type: 'language',
-            fallback: 'none',
-          }) ?? lang2.english_name;
-
-        return lang1Name === lang2Name ? 0 : lang1Name > lang2Name ? 1 : -1;
-      }),
-    [intl, languages]
-  );
-
   if (!data && !error) {
     return <LoadingSpinner />;
   }
 
-  if (!languages && !languagesError) {
-    return <LoadingSpinner />;
-  }
-
-  if (!data || !languages) {
+  if (!data) {
     return <Error statusCode={500} />;
   }
 
@@ -115,6 +95,7 @@ const UserGeneralSettings: React.FC = () => {
       </div>
       <Formik
         initialValues={{
+          locale: data?.locale,
           displayName: data?.username,
           region: data?.region,
           originalLanguage: data?.originalLanguage,
@@ -136,7 +117,16 @@ const UserGeneralSettings: React.FC = () => {
               movieQuotaDays: movieQuotaEnabled ? values.movieQuotaDays : null,
               tvQuotaLimit: tvQuotaEnabled ? values.tvQuotaLimit : null,
               tvQuotaDays: tvQuotaEnabled ? values.tvQuotaDays : null,
+              locale: values.locale,
             });
+
+            if (currentUser?.id === user?.id && setLocale) {
+              setLocale(
+                (values.locale
+                  ? values.locale
+                  : currentSettings.locale) as AvailableLocales
+              );
+            }
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
               autoDismiss: true,
@@ -207,6 +197,34 @@ const UserGeneralSettings: React.FC = () => {
                 </div>
               </div>
               <div className="form-row">
+                <label htmlFor="locale" className="text-label">
+                  {intl.formatMessage(messages.applanguage)}
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field as="select" id="locale" name="locale">
+                      <option value="" lang={locale}>
+                        {intl.formatMessage(messages.languageDefault, {
+                          language:
+                            availableLanguages[currentSettings.locale].display,
+                        })}
+                      </option>
+                      {(Object.keys(
+                        availableLanguages
+                      ) as (keyof typeof availableLanguages)[]).map((key) => (
+                        <option
+                          key={key}
+                          value={availableLanguages[key].code}
+                          lang={availableLanguages[key].code}
+                        >
+                          {availableLanguages[key].display}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
                 <label htmlFor="displayName" className="text-label">
                   <span>{intl.formatMessage(messages.region)}</span>
                   <span className="label-tip">
@@ -214,12 +232,14 @@ const UserGeneralSettings: React.FC = () => {
                   </span>
                 </label>
                 <div className="form-input">
-                  <RegionSelector
-                    name="region"
-                    value={values.region ?? ''}
-                    isUserSetting
-                    onChange={setFieldValue}
-                  />
+                  <div className="form-input-field">
+                    <RegionSelector
+                      name="region"
+                      value={values.region ?? ''}
+                      isUserSetting
+                      onChange={setFieldValue}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="form-row">
@@ -232,7 +252,6 @@ const UserGeneralSettings: React.FC = () => {
                 <div className="form-input">
                   <div className="form-input-field">
                     <LanguageSelector
-                      languages={sortedLanguages ?? []}
                       setFieldValue={setFieldValue}
                       serverValue={currentSettings.originalLanguage}
                       value={values.originalLanguage}

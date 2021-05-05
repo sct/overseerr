@@ -1,7 +1,8 @@
-/* eslint-disable */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
+  mode: 'jit',
   purge: ['./src/pages/**/*.{ts,tsx}', './src/components/**/*.{ts,tsx}'],
   theme: {
     extend: {
@@ -57,17 +58,6 @@ module.exports = {
         },
       }),
     },
-  },
-  variants: {
-    cursor: ['disabled'],
-    padding: ['first', 'last', 'responsive'],
-    borderWidth: ['first', 'last'],
-    margin: ['first', 'last', 'responsive'],
-    boxShadow: ['group-focus', 'responsive'],
-    opacity: ['disabled', 'hover', 'group-hover'],
-    ringColor: ['focus', 'focus-within', 'hover', 'active'],
-    scale: ['hover', 'focus', 'group-hover'],
-    zIndex: ['hover', 'responsive'],
   },
   plugins: [
     require('@tailwindcss/forms'),
