@@ -30,6 +30,7 @@ export interface PlexSettings {
   port: number;
   useSsl?: boolean;
   libraries: Library[];
+  webAppUrl?: string;
 }
 
 export interface DVRSettings {

@@ -171,6 +171,9 @@ components:
           readOnly: true
           items:
             $ref: '#/components/schemas/PlexLibrary'
+        webAppUrl:
+          type: string
+          example: 'https://app.plex.tv/desktop'
       required:
         - name
         - machineId

@@ -41,7 +41,7 @@ const messages = defineMessages({
   servername: 'Server Name',
   hostname: 'Hostname or IP Address',
   port: 'Port',
-  ssl: 'Enable SSL',
+  ssl: 'Use SSL',
   apiKey: 'API Key',
   baseUrl: 'URL Base',
   syncEnabled: 'Enable Scan',
