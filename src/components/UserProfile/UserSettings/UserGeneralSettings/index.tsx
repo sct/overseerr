@@ -95,7 +95,7 @@ const UserGeneralSettings: React.FC = () => {
       </div>
       <Formik
         initialValues={{
-          locale: data?.locale ?? 'en',
+          locale: data?.locale,
           displayName: data?.username,
           region: data?.region,
           originalLanguage: data?.originalLanguage,
