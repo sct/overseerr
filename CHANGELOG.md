@@ -1,3 +1,48 @@
+# [1.24.0](https://github.com/sct/overseerr/compare/v1.23.2...v1.24.0) (2021-05-05)
+
+
+### Bug Fixes
+
+* **api:** do not try to transform empty values passed to user notificationTypes ([ef3f977](https://github.com/sct/overseerr/commit/ef3f9778aa81f8ed39dcd835d63d94f2248e0204)), closes [#1501](https://github.com/sct/overseerr/issues/1501)
+* **backend:** properly set request media status ([#1541](https://github.com/sct/overseerr/issues/1541)) ([b7b55e2](https://github.com/sct/overseerr/commit/b7b55e275cb2f1f61c3057cb8ab4cb1027f6356d))
+* **css:** don't target button globally ([#1510](https://github.com/sct/overseerr/issues/1510)) ([f78b9c1](https://github.com/sct/overseerr/commit/f78b9c1ca9648eb10b010e526d9b9db09648b154))
+* **css:** fix cog icon size on media detail pages ([#1520](https://github.com/sct/overseerr/issues/1520)) ([26ddc03](https://github.com/sct/overseerr/commit/26ddc03b2c01b343c24f1c359b78c587310cc747))
+* **email:** parse sender hostname from application URL ([#1518](https://github.com/sct/overseerr/issues/1518)) ([3baa55c](https://github.com/sct/overseerr/commit/3baa55c690dd9ba39768b8b271595cb6b09fe6da))
+* **lang:** correct overwritten email toast strings ([11a5e8d](https://github.com/sct/overseerr/commit/11a5e8d95bc2a2f16adf1e48d2ef38b508a6ace5))
+* **locale:** default user locale should be the server setting ([#1574](https://github.com/sct/overseerr/issues/1574)) ([549103f](https://github.com/sct/overseerr/commit/549103f6f6d5624201e425df7d7814f0f67863b9))
+* **pwa:** add Discover shortcut and fix/optimize icons ([#1525](https://github.com/sct/overseerr/issues/1525)) ([e1dc62b](https://github.com/sct/overseerr/commit/e1dc62b0a5b64202701aff821837ed11dd3f12db))
+* **radarr:** only process Radarr movies which are either monitored or downloaded ([#1511](https://github.com/sct/overseerr/issues/1511)) ([85899ab](https://github.com/sct/overseerr/commit/85899ab49a27542390e91443531905737224338d))
+* **ui:** add missing margins on button SVGs on Plex Settings page ([#1546](https://github.com/sct/overseerr/issues/1546)) ([5e588be](https://github.com/sct/overseerr/commit/5e588be8127b50dd83477f7f3a65f18de774e8af))
+* **ui:** add user profile links to RequestBlock and change 'ETA' string in DownloadBlock ([#1551](https://github.com/sct/overseerr/issues/1551)) ([e4d0029](https://github.com/sct/overseerr/commit/e4d0029f7b4245b8606e2447c54629def40c7761))
+* **ui:** apply rounded-l-only to SensitiveInput textareas and increase visible text input area ([#1561](https://github.com/sct/overseerr/issues/1561)) ([1123fce](https://github.com/sct/overseerr/commit/1123fce089b86251dcafebf77743d60a6e396bee))
+* **ui:** correct RegionSelector z-index ([#1567](https://github.com/sct/overseerr/issues/1567)) ([e912a00](https://github.com/sct/overseerr/commit/e912a00880f856fa9621e8587ef1cc6513a3d49c))
+* **ui:** correct toasts being in the wrong position on smaller screens ([2ecd9d7](https://github.com/sct/overseerr/commit/2ecd9d7b1391b8fc83e9c12a18bab105e7148f0f))
+* **ui:** default to text input type for SensitiveInputs ([#1568](https://github.com/sct/overseerr/issues/1568)) ([e2acf88](https://github.com/sct/overseerr/commit/e2acf8887cb0456c80308bd1b7f3bbe1930e8cff))
+* **ui:** explicitly specify width/height of Listbox dropdown icon ([#1514](https://github.com/sct/overseerr/issues/1514)) ([802e40a](https://github.com/sct/overseerr/commit/802e40a5dfa00f897f9d5a741718a319f74ff030))
+* **ui:** improve form usability ([#1563](https://github.com/sct/overseerr/issues/1563)) ([26580ea](https://github.com/sct/overseerr/commit/26580eaa218702bc5841718310e340d049c50332))
+* **ui:** show warning if user has both a default non-4K server and a non-default 4K server ([#1478](https://github.com/sct/overseerr/issues/1478)) ([4faddf3](https://github.com/sct/overseerr/commit/4faddf3810e20851c7ae1251ff0187fa13d7b0f6))
+* **webpush:** only prompt user to allow notifications if enabled in user settings ([#1552](https://github.com/sct/overseerr/issues/1552)) ([b05b177](https://github.com/sct/overseerr/commit/b05b177776a5d22bf3b5e93bad4358f4007b879a))
+* correctly fall back to English name in LanguageSelector ([#1537](https://github.com/sct/overseerr/issues/1537)) ([189313e](https://github.com/sct/overseerr/commit/189313e94a16e694d192d157642d77f664fd709b))
+* do not set locale when modifying other users ([#1499](https://github.com/sct/overseerr/issues/1499)) ([4858771](https://github.com/sct/overseerr/commit/48587719e9474139c7bbc2970b1c7d1d17b78a81))
+
+
+### Features
+
+* **email:** replace 'Enable SSL' setting with more descriptive/clear 'Encryption Method' setting ([#1549](https://github.com/sct/overseerr/issues/1549)) ([69ab7cc](https://github.com/sct/overseerr/commit/69ab7cc660bea43b70bdb646eabd3866c1b5a90f))
+* **inputs:** add support for toggling security on input fields ([#1404](https://github.com/sct/overseerr/issues/1404)) ([4fd452d](https://github.com/sct/overseerr/commit/4fd452dd1880f597a0acda812d567e7cb6c16d83))
+* **lang:** translated using Weblate (Spanish) ([#1553](https://github.com/sct/overseerr/issues/1553)) ([e3d5e33](https://github.com/sct/overseerr/commit/e3d5e33ec3e43d36ec832d6ca47f330fc7675088))
+* **lang:** translations update from Weblate ([#1497](https://github.com/sct/overseerr/issues/1497)) ([9a95a07](https://github.com/sct/overseerr/commit/9a95a073916c9968b8ef348d0805d77400ea203a))
+* **lang:** translations update from Weblate ([#1527](https://github.com/sct/overseerr/issues/1527)) ([1a6d4bd](https://github.com/sct/overseerr/commit/1a6d4bddc016f4aaad83b945e103b19be4d0da31))
+* **lang:** translations update from Weblate ([#1558](https://github.com/sct/overseerr/issues/1558)) ([6c9991d](https://github.com/sct/overseerr/commit/6c9991d474a5cd95d9a0a10104bd79d8a9f3ada9))
+* **lang:** translations update from Weblate ([#1566](https://github.com/sct/overseerr/issues/1566)) ([93c441e](https://github.com/sct/overseerr/commit/93c441ef6665291ca3698368e4b093c843726036))
+* add server default locale setting ([#1536](https://github.com/sct/overseerr/issues/1536)) ([f256a44](https://github.com/sct/overseerr/commit/f256a444c57f2d92c1c4918d4ff6e223ef85ecd2))
+* **notif:** add LunaSea agent ([#1495](https://github.com/sct/overseerr/issues/1495)) ([4e6fb00](https://github.com/sct/overseerr/commit/4e6fb00a4a59545817add1544c0b1555078809a4))
+* **notif:** show success/failure toast for test notifications ([#1442](https://github.com/sct/overseerr/issues/1442)) ([079645c](https://github.com/sct/overseerr/commit/079645c2c74edfb7e4f583de2ac72bb9824f6524))
+* **perms:** add separate REQUEST_MOVIE and REQUEST_TV permissions ([#1474](https://github.com/sct/overseerr/issues/1474)) ([91b9e0f](https://github.com/sct/overseerr/commit/91b9e0f67996a442b5c0117fe09e2d69c163fafb))
+* **pwa:** add shortcuts to PWA ([#1509](https://github.com/sct/overseerr/issues/1509)) ([ed99e49](https://github.com/sct/overseerr/commit/ed99e4976dc2700fe84c70af4887c1a431bba92c))
+* add option to only allow Plex sign-in from existing users ([#1496](https://github.com/sct/overseerr/issues/1496)) ([db49b20](https://github.com/sct/overseerr/commit/db49b2024d399d90f2d1500b262374efc42f333c))
+* PWA Support ([#1488](https://github.com/sct/overseerr/issues/1488)) ([28830d4](https://github.com/sct/overseerr/commit/28830d4ef809efa92a5879a81cac11ff52ea3d1f))
+
 ## [1.23.2](https://github.com/sct/overseerr/compare/v1.23.1...v1.23.2) (2021-04-21)
 
 
