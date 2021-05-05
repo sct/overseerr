@@ -27,7 +27,7 @@ export class UserSettings {
   @JoinColumn()
   public user: User;
 
-  @Column({ default: '' })
+  @Column({ nullable: true })
   public locale?: string;
 
   @Column({ nullable: true })
