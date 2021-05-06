@@ -276,182 +276,172 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       </div>
       <div className="p-4 bg-gray-600 rounded-md shadow">
         {!!data && selectedServer !== null && (
-          <>
-            <div className="flex flex-col items-center justify-between md:flex-row">
-              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
-                <label htmlFor="server">
-                  {intl.formatMessage(messages.destinationserver)}
-                </label>
-                <select
-                  id="server"
-                  name="server"
-                  value={selectedServer}
-                  onChange={(e) => setSelectedServer(Number(e.target.value))}
-                  onBlur={(e) => setSelectedServer(Number(e.target.value))}
-                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-                >
-                  {data
-                    .filter((server) => server.is4k === is4k)
-                    .map((server) => (
-                      <option
-                        key={`server-list-${server.id}`}
-                        value={server.id}
-                      >
-                        {server.isDefault
-                          ? intl.formatMessage(messages.default, {
-                              name: server.name,
-                            })
-                          : server.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
-                <label htmlFor="profile">
-                  {intl.formatMessage(messages.qualityprofile)}
-                </label>
-                <select
-                  id="profile"
-                  name="profile"
-                  value={selectedProfile}
-                  onChange={(e) => setSelectedProfile(Number(e.target.value))}
-                  onBlur={(e) => setSelectedProfile(Number(e.target.value))}
-                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-                  disabled={isValidating || !serverData}
-                >
-                  {(isValidating || !serverData) && (
-                    <option value="">
-                      {intl.formatMessage(globalMessages.loading)}
-                    </option>
-                  )}
-                  {!isValidating &&
-                    serverData &&
-                    serverData.profiles.map((profile) => (
-                      <option
-                        key={`profile-list${profile.id}`}
-                        value={profile.id}
-                      >
-                        {isAnime &&
-                        serverData.server.activeAnimeProfileId === profile.id
-                          ? intl.formatMessage(messages.default, {
-                              name: profile.name,
-                            })
-                          : !isAnime &&
-                            serverData.server.activeProfileId === profile.id
-                          ? intl.formatMessage(messages.default, {
-                              name: profile.name,
-                            })
-                          : profile.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <div
-                className={`flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0 ${
-                  type === 'tv' ? 'md:pr-4' : ''
-                }`}
+          <div className="flex flex-col items-center justify-between mb-2 md:flex-row">
+            <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
+              <label htmlFor="server">
+                {intl.formatMessage(messages.destinationserver)}
+              </label>
+              <select
+                id="server"
+                name="server"
+                value={selectedServer}
+                onChange={(e) => setSelectedServer(Number(e.target.value))}
+                onBlur={(e) => setSelectedServer(Number(e.target.value))}
+                className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
               >
-                <label htmlFor="folder">
-                  {intl.formatMessage(messages.rootfolder)}
-                </label>
-                <select
-                  id="folder"
-                  name="folder"
-                  value={selectedFolder}
-                  onChange={(e) => setSelectedFolder(e.target.value)}
-                  onBlur={(e) => setSelectedFolder(e.target.value)}
-                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-                  disabled={isValidating || !serverData}
-                >
-                  {(isValidating || !serverData) && (
-                    <option value="">
-                      {intl.formatMessage(globalMessages.loading)}
+                {data
+                  .filter((server) => server.is4k === is4k)
+                  .map((server) => (
+                    <option key={`server-list-${server.id}`} value={server.id}>
+                      {server.isDefault
+                        ? intl.formatMessage(messages.default, {
+                            name: server.name,
+                          })
+                        : server.name}
                     </option>
-                  )}
-                  {!isValidating &&
-                    serverData &&
-                    serverData.rootFolders.map((folder) => (
-                      <option
-                        key={`folder-list${folder.id}`}
-                        value={folder.path}
-                      >
-                        {isAnime &&
-                        serverData.server.activeAnimeDirectory === folder.path
-                          ? intl.formatMessage(messages.default, {
-                              name: intl.formatMessage(messages.folder, {
-                                path: folder.path,
-                                space: formatBytes(folder.freeSpace ?? 0),
-                              }),
-                            })
-                          : !isAnime &&
-                            serverData.server.activeDirectory === folder.path
-                          ? intl.formatMessage(messages.default, {
-                              name: intl.formatMessage(messages.folder, {
-                                path: folder.path,
-                                space: formatBytes(folder.freeSpace ?? 0),
-                              }),
-                            })
-                          : intl.formatMessage(messages.folder, {
+                  ))}
+              </select>
+            </div>
+            <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
+              <label htmlFor="profile">
+                {intl.formatMessage(messages.qualityprofile)}
+              </label>
+              <select
+                id="profile"
+                name="profile"
+                value={selectedProfile}
+                onChange={(e) => setSelectedProfile(Number(e.target.value))}
+                onBlur={(e) => setSelectedProfile(Number(e.target.value))}
+                className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                disabled={isValidating || !serverData}
+              >
+                {(isValidating || !serverData) && (
+                  <option value="">
+                    {intl.formatMessage(globalMessages.loading)}
+                  </option>
+                )}
+                {!isValidating &&
+                  serverData &&
+                  serverData.profiles.map((profile) => (
+                    <option
+                      key={`profile-list${profile.id}`}
+                      value={profile.id}
+                    >
+                      {isAnime &&
+                      serverData.server.activeAnimeProfileId === profile.id
+                        ? intl.formatMessage(messages.default, {
+                            name: profile.name,
+                          })
+                        : !isAnime &&
+                          serverData.server.activeProfileId === profile.id
+                        ? intl.formatMessage(messages.default, {
+                            name: profile.name,
+                          })
+                        : profile.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div
+              className={`flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0 ${
+                type === 'tv' ? 'md:pr-4' : ''
+              }`}
+            >
+              <label htmlFor="folder">
+                {intl.formatMessage(messages.rootfolder)}
+              </label>
+              <select
+                id="folder"
+                name="folder"
+                value={selectedFolder}
+                onChange={(e) => setSelectedFolder(e.target.value)}
+                onBlur={(e) => setSelectedFolder(e.target.value)}
+                className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                disabled={isValidating || !serverData}
+              >
+                {(isValidating || !serverData) && (
+                  <option value="">
+                    {intl.formatMessage(globalMessages.loading)}
+                  </option>
+                )}
+                {!isValidating &&
+                  serverData &&
+                  serverData.rootFolders.map((folder) => (
+                    <option key={`folder-list${folder.id}`} value={folder.path}>
+                      {isAnime &&
+                      serverData.server.activeAnimeDirectory === folder.path
+                        ? intl.formatMessage(messages.default, {
+                            name: intl.formatMessage(messages.folder, {
                               path: folder.path,
                               space: formatBytes(folder.freeSpace ?? 0),
-                            })}
+                            }),
+                          })
+                        : !isAnime &&
+                          serverData.server.activeDirectory === folder.path
+                        ? intl.formatMessage(messages.default, {
+                            name: intl.formatMessage(messages.folder, {
+                              path: folder.path,
+                              space: formatBytes(folder.freeSpace ?? 0),
+                            }),
+                          })
+                        : intl.formatMessage(messages.folder, {
+                            path: folder.path,
+                            space: formatBytes(folder.freeSpace ?? 0),
+                          })}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            {type === 'tv' && (
+              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0">
+                <label htmlFor="language">
+                  {intl.formatMessage(messages.languageprofile)}
+                </label>
+                <select
+                  id="language"
+                  name="language"
+                  value={selectedLanguage}
+                  onChange={(e) =>
+                    setSelectedLanguage(parseInt(e.target.value))
+                  }
+                  onBlur={(e) => setSelectedLanguage(parseInt(e.target.value))}
+                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                  disabled={isValidating || !serverData}
+                >
+                  {(isValidating || !serverData) && (
+                    <option value="">
+                      {intl.formatMessage(globalMessages.loading)}
+                    </option>
+                  )}
+                  {!isValidating &&
+                    serverData &&
+                    serverData.languageProfiles?.map((language) => (
+                      <option
+                        key={`folder-list${language.id}`}
+                        value={language.id}
+                      >
+                        {isAnime &&
+                        serverData.server.activeAnimeLanguageProfileId ===
+                          language.id
+                          ? intl.formatMessage(messages.default, {
+                              name: language.name,
+                            })
+                          : !isAnime &&
+                            serverData.server.activeLanguageProfileId ===
+                              language.id
+                          ? intl.formatMessage(messages.default, {
+                              name: language.name,
+                            })
+                          : language.name}
                       </option>
                     ))}
                 </select>
               </div>
-              {type === 'tv' && (
-                <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0">
-                  <label htmlFor="language">
-                    {intl.formatMessage(messages.languageprofile)}
-                  </label>
-                  <select
-                    id="language"
-                    name="language"
-                    value={selectedLanguage}
-                    onChange={(e) =>
-                      setSelectedLanguage(parseInt(e.target.value))
-                    }
-                    onBlur={(e) =>
-                      setSelectedLanguage(parseInt(e.target.value))
-                    }
-                    className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-                    disabled={isValidating || !serverData}
-                  >
-                    {(isValidating || !serverData) && (
-                      <option value="">
-                        {intl.formatMessage(globalMessages.loading)}
-                      </option>
-                    )}
-                    {!isValidating &&
-                      serverData &&
-                      serverData.languageProfiles?.map((language) => (
-                        <option
-                          key={`folder-list${language.id}`}
-                          value={language.id}
-                        >
-                          {isAnime &&
-                          serverData.server.activeAnimeLanguageProfileId ===
-                            language.id
-                            ? intl.formatMessage(messages.default, {
-                                name: language.name,
-                              })
-                            : !isAnime &&
-                              serverData.server.activeLanguageProfileId ===
-                                language.id
-                            ? intl.formatMessage(messages.default, {
-                                name: language.name,
-                              })
-                            : language.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              )}
-            </div>
-          </>
+            )}
+          </div>
         )}
         {!!data && selectedServer !== null && (
-          <div className="mt-0 sm:mt-2">
+          <div className="mb-2">
             <label htmlFor="tags">{intl.formatMessage(messages.tags)}</label>
             <Select
               name="tags"
@@ -491,103 +481,99 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         )}
         {hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS]) &&
           selectedUser && (
-            <div className="mt-2 first:mt-0">
-              <Listbox
-                as="div"
-                value={selectedUser}
-                onChange={(value) => setSelectedUser(value)}
-                className="space-y-1"
-              >
-                {({ open }) => (
-                  <>
-                    <Listbox.Label>
-                      {intl.formatMessage(messages.requestas)}
-                    </Listbox.Label>
-                    <div className="relative">
-                      <span className="inline-block w-full rounded-md shadow-sm">
-                        <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out bg-gray-800 border border-gray-700 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5">
-                          <span className="flex items-center">
-                            <img
-                              src={selectedUser.avatar}
-                              alt=""
-                              className="flex-shrink-0 w-6 h-6 rounded-full"
-                            />
-                            <span className="block ml-3">
-                              {selectedUser.displayName}
-                            </span>
-                            <span className="ml-1 text-gray-400 truncate">
-                              ({selectedUser.email})
-                            </span>
+            <Listbox
+              as="div"
+              value={selectedUser}
+              onChange={(value) => setSelectedUser(value)}
+              className="space-y-1"
+            >
+              {({ open }) => (
+                <>
+                  <Listbox.Label>
+                    {intl.formatMessage(messages.requestas)}
+                  </Listbox.Label>
+                  <div className="relative">
+                    <span className="inline-block w-full rounded-md shadow-sm">
+                      <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out bg-gray-800 border border-gray-700 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5">
+                        <span className="flex items-center">
+                          <img
+                            src={selectedUser.avatar}
+                            alt=""
+                            className="flex-shrink-0 w-6 h-6 rounded-full"
+                          />
+                          <span className="block ml-3">
+                            {selectedUser.displayName}
                           </span>
-                          <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 pointer-events-none">
-                            <ChevronDownIcon className="w-5 h-5" />
+                          <span className="ml-1 text-gray-400 truncate">
+                            ({selectedUser.email})
                           </span>
-                        </Listbox.Button>
-                      </span>
+                        </span>
+                        <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 pointer-events-none">
+                          <ChevronDownIcon className="w-5 h-5" />
+                        </span>
+                      </Listbox.Button>
+                    </span>
 
-                      <Transition
-                        show={open}
-                        enter="transition ease-in duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                        className="w-full mt-1 bg-gray-800 rounded-md shadow-lg"
+                    <Transition
+                      show={open}
+                      enter="transition ease-in duration-300"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leave="transition ease-in duration-100"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                      className="w-full mt-1 bg-gray-800 rounded-md shadow-lg"
+                    >
+                      <Listbox.Options
+                        static
+                        className="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
                       >
-                        <Listbox.Options
-                          static
-                          className="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
-                        >
-                          {userData?.results.map((user) => (
-                            <Listbox.Option key={user.id} value={user}>
-                              {({ selected, active }) => (
-                                <div
+                        {userData?.results.map((user) => (
+                          <Listbox.Option key={user.id} value={user}>
+                            {({ selected, active }) => (
+                              <div
+                                className={`${
+                                  active
+                                    ? 'text-white bg-indigo-600'
+                                    : 'text-gray-300'
+                                } cursor-default select-none relative py-2 pl-8 pr-4`}
+                              >
+                                <span
                                   className={`${
-                                    active
-                                      ? 'text-white bg-indigo-600'
-                                      : 'text-gray-300'
-                                  } cursor-default select-none relative py-2 pl-8 pr-4`}
+                                    selected ? 'font-semibold' : 'font-normal'
+                                  } flex items-center`}
                                 >
+                                  <img
+                                    src={user.avatar}
+                                    alt=""
+                                    className="flex-shrink-0 w-6 h-6 rounded-full"
+                                  />
+                                  <span className="flex-shrink-0 block ml-3">
+                                    {user.displayName}
+                                  </span>
+                                  <span className="ml-1 text-gray-400 truncate">
+                                    ({user.email})
+                                  </span>
+                                </span>
+                                {selected && (
                                   <span
                                     className={`${
-                                      selected ? 'font-semibold' : 'font-normal'
-                                    } flex items-center`}
+                                      active ? 'text-white' : 'text-indigo-600'
+                                    } absolute inset-y-0 left-0 flex items-center pl-1.5`}
                                   >
-                                    <img
-                                      src={user.avatar}
-                                      alt=""
-                                      className="flex-shrink-0 w-6 h-6 rounded-full"
-                                    />
-                                    <span className="flex-shrink-0 block ml-3">
-                                      {user.displayName}
-                                    </span>
-                                    <span className="ml-1 text-gray-400 truncate">
-                                      ({user.email})
-                                    </span>
+                                    <CheckIcon className="w-5 h-5" />
                                   </span>
-                                  {selected && (
-                                    <span
-                                      className={`${
-                                        active
-                                          ? 'text-white'
-                                          : 'text-indigo-600'
-                                      } absolute inset-y-0 left-0 flex items-center pl-1.5`}
-                                    >
-                                      <CheckIcon className="w-5 h-5" />
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </Transition>
-                    </div>
-                  </>
-                )}
-              </Listbox>
-            </div>
+                                )}
+                              </div>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
+                    </Transition>
+                  </div>
+                </>
+              )}
+            </Listbox>
           )}
         {isAnime && (
           <div className="mt-4 italic">
