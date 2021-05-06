@@ -311,7 +311,8 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               webAppUrl: values.webAppUrl,
             } as PlexSettings);
 
-            revalidate();
+            syncLibraries();
+
             if (toastId) {
               removeToast(toastId);
             }
@@ -319,6 +320,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               autoDismiss: true,
               appearance: 'success',
             });
+
             if (onComplete) {
               onComplete();
             }
@@ -339,7 +341,6 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           values,
           handleSubmit,
           setFieldValue,
-          setFieldTouched,
           isSubmitting,
         }) => {
           return (
@@ -359,14 +360,12 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       onChange={async (e) => {
                         const targPreset =
                           availablePresets[Number(e.target.value)];
+
                         if (targPreset) {
                           setFieldValue('hostname', targPreset.address);
                           setFieldValue('port', targPreset.port);
                           setFieldValue('useSsl', targPreset.ssl);
                         }
-                        setFieldTouched('hostname');
-                        setFieldTouched('port');
-                        setFieldTouched('useSsl');
                       }}
                     >
                       <option value="manual">
