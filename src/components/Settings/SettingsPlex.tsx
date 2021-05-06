@@ -55,9 +55,9 @@ const messages = defineMessages({
   cancelscan: 'Cancel Scan',
   validationHostnameRequired: 'You must provide a valid hostname or IP address',
   validationPortRequired: 'You must provide a valid port number',
-  webAppUrl: 'Web App URL',
+  webAppUrl: '<WebAppLink>Web App</WebAppLink> URL',
   webAppUrlTip:
-    'Only required if not using the "hosted" <WebAppLink>web app</WebAppLink>',
+    'Optionally direct users to the web app on your server instead of the "hosted" web app',
   validationWebAppUrl: 'You must provide a valid Plex Web App URL',
 });
 
@@ -485,21 +485,21 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </div>
               <div className="form-row">
                 <label htmlFor="webAppUrl" className="text-label">
-                  {intl.formatMessage(messages.webAppUrl)}
+                  {intl.formatMessage(messages.webAppUrl, {
+                    WebAppLink: function WebAppLink(msg) {
+                      return (
+                        <a
+                          href="https://support.plex.tv/articles/200288666-opening-plex-web-app/"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      );
+                    },
+                  })}
                   <span className="label-tip">
-                    {intl.formatMessage(messages.webAppUrlTip, {
-                      WebAppLink: function WebAppLink(msg) {
-                        return (
-                          <a
-                            href="https://support.plex.tv/articles/200288666-opening-plex-web-app/"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {msg}
-                          </a>
-                        );
-                      },
-                    })}
+                    {intl.formatMessage(messages.webAppUrlTip)}
                   </span>
                 </label>
                 <div className="form-input">
