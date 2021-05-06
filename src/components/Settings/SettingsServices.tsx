@@ -79,7 +79,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
   const serviceUrl = externalUrl ?? internalUrl;
 
   return (
-    <li className="col-span-1 bg-gray-700 rounded-lg shadow">
+    <li className="col-span-1 bg-gray-800 rounded-lg shadow ring-1 ring-gray-500">
       <div className="flex items-center justify-between w-full p-6 space-x-6">
         <div className="flex-1 truncate">
           <div className="flex items-center mb-2 space-x-2">
@@ -134,9 +134,9 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
           )}
         </a>
       </div>
-      <div className="border-t border-gray-800">
+      <div className="border-t border-gray-500">
         <div className="flex -mt-px">
-          <div className="flex flex-1 w-0 border-r border-gray-800">
+          <div className="flex flex-1 w-0 border-r border-gray-500">
             <button
               onClick={() => onEdit()}
               className="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium leading-5 text-gray-200 transition duration-150 ease-in-out border border-transparent rounded-bl-lg hover:text-white focus:outline-none focus:ring-blue focus:border-gray-500 focus:z-10"

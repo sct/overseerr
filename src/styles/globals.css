@@ -302,7 +302,7 @@ button.input-action svg,
 }
 
 .modal-icon {
-  @apply flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto text-white bg-gray-600 rounded-full sm:mx-0 sm:h-10 sm:w-10;
+  @apply flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto text-white bg-gray-800 rounded-full ring-1 ring-gray-500 sm:mx-0 sm:h-10 sm:w-10;
 }
 
 .modal-icon svg {

@@ -44,7 +44,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
     >
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div
-        className={`z-50 fixed inset-0 overflow-hidden bg-opacity-50 bg-gray-800`}
+        className={`z-50 fixed inset-0 overflow-hidden bg-opacity-70 bg-gray-800`}
         onClick={() => onClose()}
         onKeyDown={(e) => {
           if (e.key === 'Escape') {

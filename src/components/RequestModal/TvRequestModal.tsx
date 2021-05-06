@@ -420,6 +420,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           : intl.formatMessage(globalMessages.cancel)
       }
       iconSvg={<DownloadIcon />}
+      backdrop={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data?.backdropPath}`}
     >
       {editRequest
         ? isOwner
