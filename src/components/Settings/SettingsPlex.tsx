@@ -121,15 +121,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       .required(intl.formatMessage(messages.validationPortRequired)),
     webAppUrl: Yup.string()
       .nullable()
-      .url(intl.formatMessage(messages.validationWebAppUrl))
-      .test(
-        'valid-web-app-url',
-        intl.formatMessage(messages.validationWebAppUrl),
-        (value) =>
-          !value ||
-          value === 'https://app.plex.tv/desktop' ||
-          value.endsWith('/web')
-      ),
+      .url(intl.formatMessage(messages.validationWebAppUrl)),
   });
 
   const activeLibraries =
@@ -498,6 +490,9 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       );
                     },
                   })}
+                  <Badge badgeType="danger" className="ml-2">
+                    {intl.formatMessage(globalMessages.advanced)}
+                  </Badge>
                   <span className="label-tip">
                     {intl.formatMessage(messages.webAppUrlTip)}
                   </span>
