@@ -147,12 +147,22 @@ class Media {
 
   @AfterLoad()
   public setPlexUrls(): void {
-    const machineId = getSettings().plex.machineId;
+    const { machineId, webAppUrl } = getSettings().plex;
+
     if (this.ratingKey) {
-      this.plexUrl = `https://app.plex.tv/desktop#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey}`;
+      this.plexUrl = `${
+        webAppUrl ? webAppUrl : 'https://app.plex.tv/desktop'
+      }#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${
+        this.ratingKey
+      }`;
     }
+
     if (this.ratingKey4k) {
-      this.plexUrl4k = `https://app.plex.tv/desktop#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey4k}`;
+      this.plexUrl4k = `${
+        webAppUrl ? webAppUrl : 'https://app.plex.tv/desktop'
+      }#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${
+        this.ratingKey4k
+      }`;
     }
   }
 

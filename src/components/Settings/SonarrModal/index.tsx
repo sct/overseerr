@@ -40,7 +40,7 @@ const messages = defineMessages({
   servername: 'Server Name',
   hostname: 'Hostname or IP Address',
   port: 'Port',
-  ssl: 'Enable SSL',
+  ssl: 'Use SSL',
   apiKey: 'API Key',
   baseUrl: 'URL Base',
   qualityprofile: 'Quality Profile',
@@ -127,7 +127,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
         intl.formatMessage(messages.validationHostnameRequired)
       ),
     port: Yup.number()
-      .typeError(intl.formatMessage(messages.validationPortRequired))
+      .nullable()
       .required(intl.formatMessage(messages.validationPortRequired)),
     apiKey: Yup.string().required(
       intl.formatMessage(messages.validationApiKeyRequired)
@@ -146,33 +146,18 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
       .test(
         'no-trailing-slash',
         intl.formatMessage(messages.validationApplicationUrlTrailingSlash),
-        (value) => {
-          if (value?.substr(value.length - 1) === '/') {
-            return false;
-          }
-          return true;
-        }
+        (value) => !value || !value.endsWith('/')
       ),
     baseUrl: Yup.string()
       .test(
         'leading-slash',
         intl.formatMessage(messages.validationBaseUrlLeadingSlash),
-        (value) => {
-          if (value && value?.substr(0, 1) !== '/') {
-            return false;
-          }
-          return true;
-        }
+        (value) => !value || value.startsWith('/')
       )
       .test(
         'no-trailing-slash',
         intl.formatMessage(messages.validationBaseUrlTrailingSlash),
-        (value) => {
-          if (value?.substr(value.length - 1) === '/') {
-            return false;
-          }
-          return true;
-        }
+        (value) => !value || !value.endsWith('/')
       ),
   });
 

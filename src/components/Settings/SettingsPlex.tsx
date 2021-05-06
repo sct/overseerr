@@ -22,8 +22,6 @@ const messages = defineMessages({
   plexsettings: 'Plex Settings',
   plexsettingsDescription:
     'Configure the settings for your Plex server. Overseerr scans your Plex libraries to determine content availability.',
-  servername: 'Server Name',
-  servernameTip: 'Automatically retrieved from Plex after saving',
   serverpreset: 'Server',
   serverLocal: 'local',
   serverRemote: 'remote',
@@ -41,7 +39,7 @@ const messages = defineMessages({
     'To set up Plex, you can either enter the details manually or select a server retrieved from <RegisterPlexTVLink>plex.tv</RegisterPlexTVLink>. Press the button to the right of the dropdown to fetch the list of available servers.',
   hostname: 'Hostname or IP Address',
   port: 'Port',
-  enablessl: 'Enable SSL',
+  enablessl: 'Use SSL',
   plexlibraries: 'Plex Libraries',
   plexlibrariesDescription:
     'The libraries Overseerr scans for titles. Set up and save your Plex connection settings, then click the button below if no libraries are listed.',
@@ -57,6 +55,10 @@ const messages = defineMessages({
   cancelscan: 'Cancel Scan',
   validationHostnameRequired: 'You must provide a valid hostname or IP address',
   validationPortRequired: 'You must provide a valid port number',
+  webAppUrl: '<WebAppLink>Web App</WebAppLink> URL',
+  webAppUrlTip:
+    'Optionally direct users to the web app on your server instead of the "hosted" web app',
+  validationWebAppUrl: 'You must provide a valid Plex Web App URL',
 });
 
 interface Library {
@@ -108,14 +110,18 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   const { addToast, removeToast } = useToasts();
   const PlexSettingsSchema = Yup.object().shape({
     hostname: Yup.string()
+      .nullable()
       .required(intl.formatMessage(messages.validationHostnameRequired))
       .matches(
         /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
         intl.formatMessage(messages.validationHostnameRequired)
       ),
     port: Yup.number()
-      .typeError(intl.formatMessage(messages.validationPortRequired))
+      .nullable()
       .required(intl.formatMessage(messages.validationPortRequired)),
+    webAppUrl: Yup.string()
+      .nullable()
+      .url(intl.formatMessage(messages.validationWebAppUrl)),
   });
 
   const activeLibraries =
@@ -282,6 +288,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           port: data?.port ?? 32400,
           useSsl: data?.useSsl,
           selectedPreset: undefined,
+          webAppUrl: data?.webAppUrl,
         }}
         validationSchema={PlexSettingsSchema}
         onSubmit={async (values) => {
@@ -301,6 +308,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               ip: values.hostname,
               port: Number(values.port),
               useSsl: values.useSsl,
+              webAppUrl: values.webAppUrl,
             } as PlexSettings);
 
             revalidate();
@@ -337,33 +345,11 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           return (
             <form className="section" onSubmit={handleSubmit}>
               <div className="form-row">
-                <label htmlFor="name" className="text-label">
-                  <div className="flex flex-col">
-                    <span>{intl.formatMessage(messages.servername)}</span>
-                    <span className="text-gray-500">
-                      {intl.formatMessage(messages.servernameTip)}
-                    </span>
-                  </div>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      className="cursor-not-allowed"
-                      value={data?.name}
-                      readOnly
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="form-row">
                 <label htmlFor="preset" className="text-label">
                   {intl.formatMessage(messages.serverpreset)}
                 </label>
                 <div className="form-input">
-                  <div className="form-input-field input-group">
+                  <div className="form-input-field">
                     <select
                       id="preset"
                       name="preset"
@@ -487,6 +473,43 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       setFieldValue('useSsl', !values.useSsl);
                     }}
                   />
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="webAppUrl" className="text-label">
+                  {intl.formatMessage(messages.webAppUrl, {
+                    WebAppLink: function WebAppLink(msg) {
+                      return (
+                        <a
+                          href="https://support.plex.tv/articles/200288666-opening-plex-web-app/"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      );
+                    },
+                  })}
+                  <Badge badgeType="danger" className="ml-2">
+                    {intl.formatMessage(globalMessages.advanced)}
+                  </Badge>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.webAppUrlTip)}
+                  </span>
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field
+                      type="text"
+                      inputMode="url"
+                      id="webAppUrl"
+                      name="webAppUrl"
+                      placeholder="https://app.plex.tv/desktop"
+                    />
+                  </div>
+                  {errors.webAppUrl && touched.webAppUrl && (
+                    <div className="error">{errors.webAppUrl}</div>
+                  )}
                 </div>
               </div>
               <div className="actions">
