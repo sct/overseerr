@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { mutate } from 'swr';
+import useLocale from '../../hooks/useLocale';
 import AppDataWarning from '../AppDataWarning';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
@@ -32,15 +34,19 @@ const Setup: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [plexSettingsComplete, setPlexSettingsComplete] = useState(false);
   const router = useRouter();
+  const { locale } = useLocale();
 
   const finishSetup = async () => {
-    setIsUpdating(false);
+    setIsUpdating(true);
     const response = await axios.post<{ initialized: boolean }>(
       '/api/v1/settings/initialize'
     );
 
     setIsUpdating(false);
     if (response.data.initialized) {
+      await axios.post('/api/v1/settings/main', { locale });
+      mutate('/api/v1/settings/public');
+
       router.push('/');
     }
   };
