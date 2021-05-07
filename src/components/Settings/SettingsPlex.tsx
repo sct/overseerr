@@ -262,25 +262,27 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         <p className="description">
           {intl.formatMessage(messages.plexsettingsDescription)}
         </p>
-        <div className="section">
-          <Alert
-            title={intl.formatMessage(messages.settingUpPlexDescription, {
-              RegisterPlexTVLink: function RegisterPlexTVLink(msg) {
-                return (
-                  <a
-                    href="https://plex.tv"
-                    className="text-white transition duration-300 hover:underline"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {msg}
-                  </a>
-                );
-              },
-            })}
-            type="info"
-          />
-        </div>
+        {!!onComplete && (
+          <div className="section">
+            <Alert
+              title={intl.formatMessage(messages.settingUpPlexDescription, {
+                RegisterPlexTVLink: function RegisterPlexTVLink(msg) {
+                  return (
+                    <a
+                      href="https://plex.tv"
+                      className="text-white transition duration-300 hover:underline"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {msg}
+                    </a>
+                  );
+                },
+              })}
+              type="info"
+            />
+          </div>
+        )}
       </div>
       <Formik
         initialValues={{

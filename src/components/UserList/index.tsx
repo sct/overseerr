@@ -17,6 +17,7 @@ import * as Yup from 'yup';
 import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
 import { UserSettingsNotificationsResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
 import { hasPermission } from '../../../server/lib/permissions';
+import useSettings from '../../hooks/useSettings';
 import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
 import { Permission, User, UserType, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
@@ -77,6 +78,8 @@ const messages = defineMessages({
   sortUpdated: 'Last Updated',
   sortDisplayName: 'Display Name',
   sortRequests: 'Request Count',
+  localLoginDisabled:
+    'The <strong>Enable Local Sign-In</strong> setting is currently disabled.',
 });
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
@@ -84,6 +87,7 @@ type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const [currentSort, setCurrentSort] = useState<Sort>('created');
@@ -347,6 +351,20 @@ const UserList: React.FC = () => {
                 okButtonType="primary"
                 onCancel={() => setCreateModal({ isOpen: false })}
               >
+                {!settings.currentSettings.localLogin && (
+                  <Alert
+                    title={intl.formatMessage(messages.localLoginDisabled, {
+                      strong: function strong(msg) {
+                        return (
+                          <strong className="font-semibold text-yellow-100">
+                            {msg}
+                          </strong>
+                        );
+                      },
+                    })}
+                    type="warning"
+                  />
+                )}
                 {!notificationSettings?.emailEnabled && (
                   <Alert
                     title={intl.formatMessage(messages.passwordinfodescription)}
