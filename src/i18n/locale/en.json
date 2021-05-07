@@ -183,7 +183,7 @@
   "components.RequestList.showallrequests": "Show All Requests",
   "components.RequestList.sortAdded": "Request Date",
   "components.RequestList.sortModified": "Last Modified",
-  "components.RequestModal.AdvancedRequester.advancedoptions": "Advanced Options",
+  "components.RequestModal.AdvancedRequester.advancedoptions": "Advanced",
   "components.RequestModal.AdvancedRequester.animenote": "* This series is an anime.",
   "components.RequestModal.AdvancedRequester.default": "{name} (Default)",
   "components.RequestModal.AdvancedRequester.destinationserver": "Destination Server",
