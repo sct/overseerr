@@ -1,14 +1,7 @@
 # Telegram
 
 {% hint style="info" %}
-All notification types will be sent to the chat ID configured in your Overseerr application settings.
-
-If a user has configured a chat ID and has **Enable Notifications** checked in their Telegram notification user settings as well, they will be sent the following notification types for requests which they submit:
-
-- Media Approved (does not include automatic approvals)
-- Media Declined
-- Media Available
-
+Users can optionally configure their own notifications in their user settings.
 {% endhint %}
 
 ## Configuration

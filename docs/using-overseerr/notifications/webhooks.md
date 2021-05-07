@@ -1,6 +1,6 @@
 # Webhook
 
-The webhook notification agent allows you to send a custom JSON payload to any endpoint.
+The webhook notification agent enables you to send a custom JSON payload to any endpoint for specific notification events.
 
 ## Configuration
 
