@@ -116,7 +116,7 @@
     "autoprefixer": "^10.2.5",
     "babel-plugin-react-intl": "^8.2.25",
     "babel-plugin-react-intl-auto": "^3.3.0",
-    "commitizen": "^4.2.3",
+    "commitizen": "^4.2.4",
     "copyfiles": "^2.4.1",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.25.0",
