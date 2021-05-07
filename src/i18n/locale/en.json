@@ -290,6 +290,7 @@
   "components.Settings.Notifications.NotificationsSlack.webhookUrl": "Webhook URL",
   "components.Settings.Notifications.NotificationsSlack.webhookUrlTip": "Create an <WebhookLink>Incoming Webhook</WebhookLink> integration",
   "components.Settings.Notifications.NotificationsWebPush.agentenabled": "Enable Agent",
+  "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "In order to receive web push notifications, Overseerr must be served over HTTPS.",
   "components.Settings.Notifications.NotificationsWebPush.toastWebPushTestFailed": "Web push test notification failed to send.",
   "components.Settings.Notifications.NotificationsWebPush.toastWebPushTestSending": "Sending web push test notification…",
   "components.Settings.Notifications.NotificationsWebPush.toastWebPushTestSuccess": "Web push test notification sent!",

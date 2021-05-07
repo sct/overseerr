@@ -5,6 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 import globalMessages from '../../../../i18n/globalMessages';
+import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
@@ -16,6 +17,8 @@ const messages = defineMessages({
   toastWebPushTestSending: 'Sending web push test notification…',
   toastWebPushTestSuccess: 'Web push test notification sent!',
   toastWebPushTestFailed: 'Web push test notification failed to send.',
+  httpsRequirement:
+    'In order to receive web push notifications, Overseerr must be served over HTTPS.',
 });
 
 const NotificationsWebPush: React.FC = () => {
@@ -32,6 +35,12 @@ const NotificationsWebPush: React.FC = () => {
 
   return (
     <>
+      {!data?.https && (
+        <Alert
+          title={intl.formatMessage(messages.httpsRequirement)}
+          type="warning"
+        />
+      )}
       <Formik
         initialValues={{
           enabled: data.enabled,
