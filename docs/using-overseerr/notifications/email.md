@@ -1,32 +1,20 @@
 # Email
 
+## Configuration
+
 {% hint style="info" %}
-The following email notification types are sent to _all_ users with the **Manage Requests** permission, as these notification types are intended for application administrators rather than end users:
-
-- Media Requested
-- Media Automatically Approved
-- Media Failed
-
-On the other hand, the email notification types below are only sent to the user who submitted the request:
-
-- Media Approved (does not include automatic approvals)
-- Media Declined
-- Media Available
-
-In order for users to receive email notifications, they must have **Enable Notifications** checked in their email notification user settings.
+If the [Application URL](../settings/README.md#application-url) setting is configured in **Settings &rarr; General**, Overseerr will explicitly set the origin server hostname when connecting to the SMTP host.
 {% endhint %}
 
-## Configuration
+### Sender Name (optional)
+
+Configure a friendly name for the email sender (e.g., "Overseerr").
 
 ### Sender Address
 
 Set this to the email address you would like to appear in the "from" field of the email message.
 
 Depending on your email provider, this may need to be an address you own. For example, Gmail requires this to be your actual email address.
-
-### Sender Name (optional)
-
-Configure a friendly name for the email sender.
 
 ### SMTP Host
 

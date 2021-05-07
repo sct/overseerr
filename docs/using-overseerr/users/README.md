@@ -42,6 +42,10 @@ You can also click the check boxes and click the **Bulk Edit** button to set use
 
 You can optionally set a "friendly name" for any user. This name will be used in lieu of their Plex username (for users imported from Plex) or their email address (for manually-created local users).
 
+#### Display Language
+
+Users can override the [global display language](../settings/README.md#display-language) to use Overseerr in their preferred language.
+
 #### Discover Region & Discover Language
 
 Users can override the [global filter settings](../settings/README.md#discover-region-and-discover-language) to suit their own preferences.
