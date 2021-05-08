@@ -38,13 +38,11 @@ const messages = defineMessages({
   pgpPrivateKey: 'PGP Private Key',
   pgpPrivateKeyTip:
     'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
-  validationPgpPrivateKey:
-    'You must provide a valid PGP private key if a PGP password is entered',
+  validationPgpPrivateKey: 'You must provide a valid PGP private key',
   pgpPassword: 'PGP Password',
   pgpPasswordTip:
     'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
-  validationPgpPassword:
-    'You must provide a PGP password if a PGP private key is entered',
+  validationPgpPassword: 'You must provide a PGP password',
 });
 
 export function OpenPgpLink(msg: string): JSX.Element {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -12,6 +12,7 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import SensitiveInput from '../../../Common/SensitiveInput';
 import NotificationTypeSelector, {
   ALL_NOTIFICATIONS,
 } from '../../../NotificationTypeSelector';
@@ -108,8 +109,9 @@ const UserEmailSettings: React.FC = () => {
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field
-                    as="textarea"
+                  <SensitiveInput
+                    as="field"
+                    type="textarea"
                     id="pgpKey"
                     name="pgpKey"
                     rows="10"

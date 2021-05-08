@@ -19,7 +19,7 @@ const messages = defineMessages({
   userTokenTip:
     'Your 30-character <UsersGroupsLink>user or group identifier</UsersGroupsLink>',
   validationAccessTokenRequired: 'You must provide a valid application token',
-  validationUserTokenRequired: 'You must provide a valid user key',
+  validationUserTokenRequired: 'You must provide a valid user or group key',
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   toastPushoverTestSending: 'Sending Pushover test notification…',
