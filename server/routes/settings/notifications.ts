@@ -259,12 +259,10 @@ notificationRoutes.post('/email/test', async (req, res, next) => {
   }
 });
 
-notificationRoutes.get('/webpush', (req, res) => {
+notificationRoutes.get('/webpush', (_req, res) => {
   const settings = getSettings();
 
-  res
-    .status(200)
-    .json({ ...settings.notifications.agents.webpush, https: req.secure });
+  res.status(200).json(settings.notifications.agents.webpush);
 });
 
 notificationRoutes.post('/webpush', (req, res) => {
@@ -273,9 +271,7 @@ notificationRoutes.post('/webpush', (req, res) => {
   settings.notifications.agents.webpush = req.body;
   settings.save();
 
-  res
-    .status(200)
-    .json({ ...settings.notifications.agents.webpush, https: req.secure });
+  res.status(200).json(settings.notifications.agents.webpush);
 });
 
 notificationRoutes.post('/webpush/test', async (req, res, next) => {

@@ -35,7 +35,7 @@ const NotificationsWebPush: React.FC = () => {
 
   return (
     <>
-      {!data?.https && (
+      {!window.location.protocol.startsWith('https') && (
         <Alert
           title={intl.formatMessage(messages.httpsRequirement)}
           type="warning"
