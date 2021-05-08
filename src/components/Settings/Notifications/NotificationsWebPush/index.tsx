@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
@@ -25,9 +25,14 @@ const NotificationsWebPush: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
+  const [isHttps, setIsHttps] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/webpush'
   );
+
+  useEffect(() => {
+    setIsHttps(window.location.protocol.startsWith('https'));
+  }, []);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -35,7 +40,7 @@ const NotificationsWebPush: React.FC = () => {
 
   return (
     <>
-      {!window.location.protocol.startsWith('https') && (
+      {!isHttps && (
         <Alert
           title={intl.formatMessage(messages.httpsRequirement)}
           type="warning"
