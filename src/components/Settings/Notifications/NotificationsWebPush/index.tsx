@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 import globalMessages from '../../../../i18n/globalMessages';
+import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
@@ -16,15 +17,22 @@ const messages = defineMessages({
   toastWebPushTestSending: 'Sending web push test notification…',
   toastWebPushTestSuccess: 'Web push test notification sent!',
   toastWebPushTestFailed: 'Web push test notification failed to send.',
+  httpsRequirement:
+    'In order to receive web push notifications, Overseerr must be served over HTTPS.',
 });
 
 const NotificationsWebPush: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
+  const [isHttps, setIsHttps] = useState(false);
   const { data, error, revalidate } = useSWR(
     '/api/v1/settings/notifications/webpush'
   );
+
+  useEffect(() => {
+    setIsHttps(window.location.protocol.startsWith('https'));
+  }, []);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -32,6 +40,12 @@ const NotificationsWebPush: React.FC = () => {
 
   return (
     <>
+      {!isHttps && (
+        <Alert
+          title={intl.formatMessage(messages.httpsRequirement)}
+          type="warning"
+        />
+      )}
       <Formik
         initialValues={{
           enabled: data.enabled,

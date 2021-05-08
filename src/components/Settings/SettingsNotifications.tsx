@@ -38,6 +38,17 @@ const SettingsNotifications: React.FC = ({ children }) => {
       regex: /^\/settings\/notifications\/email/,
     },
     {
+      text: intl.formatMessage(messages.webpush),
+      content: (
+        <span className="flex items-center">
+          <CloudIcon className="h-4 mr-2" />
+          {intl.formatMessage(messages.webpush)}
+        </span>
+      ),
+      route: '/settings/notifications/webpush',
+      regex: /^\/settings\/notifications\/webpush/,
+    },
+    {
       text: 'Discord',
       content: (
         <span className="flex items-center">
@@ -102,17 +113,6 @@ const SettingsNotifications: React.FC = ({ children }) => {
       ),
       route: '/settings/notifications/telegram',
       regex: /^\/settings\/notifications\/telegram/,
-    },
-    {
-      text: intl.formatMessage(messages.webpush),
-      content: (
-        <span className="flex items-center">
-          <CloudIcon className="h-4 mr-2" />
-          {intl.formatMessage(messages.webpush)}
-        </span>
-      ),
-      route: '/settings/notifications/webpush',
-      regex: /^\/settings\/notifications\/webpush/,
     },
     {
       text: intl.formatMessage(messages.webhook),
