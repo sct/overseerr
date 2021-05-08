@@ -307,6 +307,9 @@ const NotificationsEmail: React.FC = () => {
               <label htmlFor="encryption" className="text-label">
                 {intl.formatMessage(messages.encryption)}
                 <span className="label-required">*</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.encryptionTip)}
+                </span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
