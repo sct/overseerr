@@ -701,6 +701,7 @@
   "components.UserList.importfromplex": "Import Users from Plex",
   "components.UserList.importfromplexerror": "Something went wrong while importing users from Plex.",
   "components.UserList.lastupdated": "Last Updated",
+  "components.UserList.localLoginDisabled": "The <strong>Enable Local Sign-In</strong> setting is currently disabled.",
   "components.UserList.localuser": "Local User",
   "components.UserList.nouserstoimport": "No new users to import from Plex.",
   "components.UserList.owner": "Owner",
