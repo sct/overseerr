@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import {
   availableLanguages,
-  AvailableLocales,
+  AvailableLocale,
 } from '../../../context/LanguageContext';
 import useClickOutside from '../../../hooks/useClickOutside';
 import useLocale from '../../../hooks/useLocale';
@@ -58,10 +58,10 @@ const LanguagePicker: React.FC = () => {
                 id="language"
                 className="rounded-md"
                 onChange={(e) =>
-                  setLocale && setLocale(e.target.value as AvailableLocales)
+                  setLocale && setLocale(e.target.value as AvailableLocale)
                 }
                 onBlur={(e) =>
-                  setLocale && setLocale(e.target.value as AvailableLocales)
+                  setLocale && setLocale(e.target.value as AvailableLocale)
                 }
                 defaultValue={locale}
               >
