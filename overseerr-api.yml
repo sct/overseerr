@@ -398,7 +398,6 @@ components:
         activeLanguageProfileId:
           type: number
           example: 1
-          nullable: true
         activeAnimeProfileId:
           type: number
           nullable: true
@@ -1665,6 +1664,51 @@ paths:
                   appDataPath:
                     type: string
                     example: /app/config
+  /status/services:
+    get:
+      summary: Get status of connected services
+      description: Returns the status of connections to configured Plex, Radarr, and Sonarr servers.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Current status of services
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plex:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      url:
+                        type: string
+                      connected:
+                        type: boolean
+                  radarr:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        connected:
+                          type: boolean
+                  sonarr:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        connected:
+                          type: boolean
   /settings/main:
     get:
       summary: Get main settings

@@ -1,6 +1,11 @@
 import { Router } from 'express';
+import { getRepository } from 'typeorm';
 import GithubAPI from '../api/github';
+import PlexAPI from '../api/plexapi';
+import RadarrAPI from '../api/servarr/radarr';
+import SonarrAPI from '../api/servarr/sonarr';
 import TheMovieDb from '../api/themoviedb';
+import { User } from '../entity/User';
 import { StatusResponse } from '../interfaces/api/settingsInterfaces';
 import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
@@ -79,6 +84,103 @@ router.get('/status/appdata', (_req, res) => {
     appDataPath: appDataPath(),
   });
 });
+
+router.get(
+  '/status/services',
+  isAuthenticated(Permission.MANAGE_SETTINGS),
+  async (_req, res) => {
+    const settings = getSettings();
+
+    let plexConnected: boolean;
+    try {
+      const admin = await getRepository(User).findOneOrFail({
+        select: ['id', 'plexToken'],
+        order: { id: 'ASC' },
+      });
+      const plexApi = new PlexAPI({ plexToken: admin.plexToken });
+
+      await plexApi.getStatus();
+
+      plexConnected = true;
+    } catch (e) {
+      plexConnected = false;
+    }
+
+    const radarrServers = await Promise.all(
+      settings.radarr.map(async (radarr) => {
+        try {
+          const radarrApi = new RadarrAPI({
+            apiKey: radarr.apiKey,
+            url: RadarrAPI.buildUrl(radarr, '/api/v3'),
+          });
+
+          const defaultProfile = (await radarrApi.getProfiles()).some(
+            (profile) => profile.id === radarr.activeProfileId
+          );
+          const defaultFolder = (await radarrApi.getRootFolders()).some(
+            (folder) => folder.path === radarr.activeDirectory
+          );
+
+          return {
+            name: radarr.name,
+            url: radarr.externalUrl,
+            connected: defaultProfile && defaultFolder,
+          };
+        } catch (e) {
+          return {
+            name: radarr.name,
+            url: radarr.externalUrl,
+            connected: false,
+          };
+        }
+      })
+    );
+
+    const sonarrServers = await Promise.all(
+      settings.sonarr.map(async (sonarr) => {
+        try {
+          const sonarrApi = new SonarrAPI({
+            apiKey: sonarr.apiKey,
+            url: SonarrAPI.buildUrl(sonarr, '/api/v3'),
+          });
+
+          const defaultProfile = (await sonarrApi.getProfiles()).some(
+            (profile) => profile.id === sonarr.activeProfileId
+          );
+          const defaultFolder = (await sonarrApi.getRootFolders()).some(
+            (folder) => folder.path === sonarr.activeDirectory
+          );
+          const defaultLanguageProfile = (
+            await sonarrApi.getLanguageProfiles()
+          ).some((profile) => profile.id === sonarr.activeLanguageProfileId);
+
+          return {
+            name: sonarr.name,
+            url: sonarr.externalUrl,
+            connected:
+              defaultProfile && defaultFolder && defaultLanguageProfile,
+          };
+        } catch (e) {
+          return {
+            name: sonarr.name,
+            url: sonarr.externalUrl,
+            connected: false,
+          };
+        }
+      })
+    );
+
+    return res.status(200).json({
+      plex: {
+        name: settings.plex.name,
+        url: settings.plex.webAppUrl,
+        connected: plexConnected,
+      },
+      radarr: radarrServers,
+      sonarr: sonarrServers,
+    });
+  }
+);
 
 router.use('/user', isAuthenticated(), user);
 router.get('/settings/public', async (req, res) => {

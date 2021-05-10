@@ -61,7 +61,7 @@ export interface SonarrSettings extends DVRSettings {
   activeAnimeProfileName?: string;
   activeAnimeDirectory?: string;
   activeAnimeLanguageProfileId?: number;
-  activeLanguageProfileId?: number;
+  activeLanguageProfileId: number;
   animeTags?: number[];
   enableSeasonFolders: boolean;
 }

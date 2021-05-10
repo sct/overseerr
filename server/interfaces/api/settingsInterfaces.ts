@@ -53,3 +53,17 @@ export interface StatusResponse {
   updateAvailable: boolean;
   commitsBehind: number;
 }
+
+export interface ServicesResponse {
+  plex: { name: string; url: string; connected: boolean };
+  radarr: {
+    name: string;
+    url?: string;
+    connected: boolean;
+  }[];
+  sonarr: {
+    name: string;
+    url?: string;
+    connected: boolean;
+  }[];
+}
