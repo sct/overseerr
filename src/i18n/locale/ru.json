@@ -137,7 +137,6 @@
   "components.Settings.plexsettingsDescription": "",
   "components.Settings.port": "Порт",
   "components.Settings.radarrsettings": "",
-  "components.Settings.servername": "Название сервера",
   "components.Settings.sonarrsettings": "",
   "components.Settings.ssl": "SSL",
   "components.Settings.startscan": "Начать сканирование",
