@@ -4,7 +4,6 @@ import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import useSWR from 'swr';
 import globalMessages from '../../../../i18n/globalMessages';
-import Alert from '../../../Common/Alert';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
@@ -12,19 +11,13 @@ import Modal from '../../../Common/Modal';
 import Transition from '../../../Transition';
 
 const messages = defineMessages({
-  releases: 'Releases',
-  releasedataMissing: 'Release data unavailable. Is GitHub down?',
-  versionChangelog: 'Version Changelog',
+  versionHistory: 'Version History',
+  releasedataMissing: 'Data is currently unavailable.',
   viewongithub: 'View on GitHub',
   latestversion: 'Latest',
-  currentversion: 'Current Version',
+  currentversion: 'Current',
   viewchangelog: 'View Changelog',
-  runningDevelopMessage:
-    'The latest changes to the <code>develop</code> branch of Overseerr are not shown below. Please see the commit history for this branch on <GithubLink>GitHub</GithubLink> for details.',
 });
-
-const REPO_RELEASE_API =
-  'https://api.github.com/repos/sct/overseerr/releases?per_page=20';
 
 interface GitHubRelease {
   url: string;
@@ -45,21 +38,41 @@ interface GitHubRelease {
   body: string;
 }
 
+interface GitHubCommit {
+  sha: string;
+  node_id: string;
+  commit: {
+    author: { name: string; email: string; date: string };
+    committer: { name: string; email: string; date: string };
+    message: string;
+  };
+  url: string;
+  html_url: string;
+  comments_url: string;
+}
+
 interface ReleaseProps {
-  release: GitHubRelease;
+  name: string;
+  url: string;
+  description: string;
+  timestamp: string;
+  isCurrent: boolean;
   isLatest: boolean;
-  currentVersion: string;
 }
 
 const Release: React.FC<ReleaseProps> = ({
-  currentVersion,
-  release,
+  name,
+  url,
+  description,
+  timestamp,
+  isCurrent,
   isLatest,
 }) => {
   const intl = useIntl();
   const [isModalOpen, setModalOpen] = useState(false);
+
   return (
-    <div className="flex flex-col px-4 py-2 bg-gray-800 rounded-md sm:flex-row">
+    <div className="flex flex-col w-full px-4 py-2 space-y-3 bg-gray-800 rounded-md shadow-md sm:space-y-0 sm:space-x-3 sm:flex-row ring-1 ring-gray-700">
       <Transition
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
@@ -72,50 +85,46 @@ const Release: React.FC<ReleaseProps> = ({
         <Modal
           onCancel={() => setModalOpen(false)}
           iconSvg={<DocumentTextIcon />}
-          title={intl.formatMessage(messages.versionChangelog)}
+          title={name}
           cancelText={intl.formatMessage(globalMessages.close)}
           okText={intl.formatMessage(messages.viewongithub)}
           onOk={() => {
-            window.open(release.html_url, '_blank');
+            window.open(url, '_blank');
           }}
         >
           <div className="prose">
-            <ReactMarkdown>{release.body}</ReactMarkdown>
+            <ReactMarkdown>{description}</ReactMarkdown>
           </div>
         </Modal>
       </Transition>
-      <div className="flex items-center justify-center mb-4 sm:mb-0 sm:justify-start">
-        <span className="mt-1 mr-2 text-xs">
-          <FormattedRelativeTime
-            value={Math.floor(
-              (new Date(release.created_at).getTime() - Date.now()) / 1000
-            )}
-            updateIntervalInSeconds={1}
-            numeric="auto"
-          />
+      <div className="flex items-center justify-center flex-grow w-full space-x-2 truncate sm:justify-start">
+        <span className="text-lg font-bold truncate">
+          <span className="mr-2 text-xs font-normal whitespace-nowrap">
+            <FormattedRelativeTime
+              value={Math.floor(
+                (new Date(timestamp).getTime() - Date.now()) / 1000
+              )}
+              updateIntervalInSeconds={1}
+              numeric="auto"
+            />
+          </span>
+          {name}
         </span>
-        <span className="text-lg font-bold">{release.name}</span>
         {isLatest && (
-          <span className="ml-2 -mt-1">
-            <Badge badgeType="primary">
-              {intl.formatMessage(messages.latestversion)}
-            </Badge>
-          </span>
+          <Badge badgeType="success">
+            {intl.formatMessage(messages.latestversion)}
+          </Badge>
         )}
-        {release.name.includes(currentVersion) && (
-          <span className="ml-2 -mt-1">
-            <Badge badgeType="success">
-              {intl.formatMessage(messages.currentversion)}
-            </Badge>
-          </span>
+        {isCurrent && (
+          <Badge badgeType="primary">
+            {intl.formatMessage(messages.currentversion)}
+          </Badge>
         )}
       </div>
-      <div className="flex-1 text-center sm:text-right">
-        <Button buttonType="primary" onClick={() => setModalOpen(true)}>
-          <DocumentTextIcon />
-          <span>{intl.formatMessage(messages.viewchangelog)}</span>
-        </Button>
-      </div>
+      <Button buttonType="primary" onClick={() => setModalOpen(true)}>
+        <DocumentTextIcon />
+        <span>{intl.formatMessage(messages.viewchangelog)}</span>
+      </Button>
     </div>
   );
 };
@@ -126,7 +135,11 @@ interface ReleasesProps {
 
 const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
   const intl = useIntl();
-  const { data, error } = useSWR<GitHubRelease[]>(REPO_RELEASE_API);
+
+  const REPO_API = `https://api.github.com/repos/sct/overseerr/${
+    currentVersion.startsWith('develop-') ? 'commits' : 'releases'
+  }?per_page=20`;
+  const { data, error } = useSWR<GitHubRelease[] | GitHubCommit[]>(REPO_API);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -142,40 +155,39 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
 
   return (
     <div>
-      <h3 className="heading">{intl.formatMessage(messages.releases)}</h3>
-      <div className="section">
-        {currentVersion.startsWith('develop-') && (
-          <Alert
-            title={intl.formatMessage(messages.runningDevelopMessage, {
-              code: function code(msg) {
-                return <code className="bg-opacity-50">{msg}</code>;
-              },
-              GithubLink: function GithubLink(msg) {
-                return (
-                  <a
-                    href="https://github.com/sct/overseerr"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-yellow-100 underline transition duration-300 hover:text-white"
-                  >
-                    {msg}
-                  </a>
-                );
-              },
+      <h3 className="heading">{intl.formatMessage(messages.versionHistory)}</h3>
+      <div className="space-y-3 section">
+        {currentVersion.startsWith('develop-')
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            data?.map((commit: any, index: number) => {
+              return (
+                <div key={`commit-${commit.sha}`}>
+                  <Release
+                    name={commit.sha}
+                    url={commit.html_url}
+                    description={commit.commit.message}
+                    timestamp={commit.commit.author.date}
+                    isCurrent={currentVersion.includes(commit.sha)}
+                    isLatest={index === 0}
+                  />
+                </div>
+              );
+            })
+          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            data?.map((release: any, index: number) => {
+              return (
+                <div key={`release-${release.id}`}>
+                  <Release
+                    name={release.name}
+                    url={release.html_url}
+                    description={release.body}
+                    timestamp={release.created_at}
+                    isCurrent={release.name.includes(currentVersion)}
+                    isLatest={index === 0}
+                  />
+                </div>
+              );
             })}
-          />
-        )}
-        {data?.map((release, index) => {
-          return (
-            <div key={`release-${release.id}`} className="mb-2">
-              <Release
-                release={release}
-                currentVersion={currentVersion}
-                isLatest={index === 0}
-              />
-            </div>
-          );
-        })}
       </div>
     </div>
   );
