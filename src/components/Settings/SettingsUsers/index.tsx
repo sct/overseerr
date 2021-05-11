@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import type { MainSettings } from '../../../../server/lib/settings';
 import globalMessages from '../../../i18n/globalMessages';
 import Button from '../../Common/Button';
@@ -80,6 +80,7 @@ const SettingsUsers: React.FC = () => {
                 },
                 defaultPermissions: values.defaultPermissions,
               });
+              mutate('/api/v1/settings/public');
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
                 autoDismiss: true,
