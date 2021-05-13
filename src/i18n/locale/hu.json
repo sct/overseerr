@@ -183,7 +183,6 @@
   "components.UserList.deleteuser": "Felhasználó törlése",
   "components.UserList.deleteconfirm": "Biztos vagy benne, hogy törlöd ezt a felhasználót? A felhasználó összes adata törlődni fog.",
   "components.UserList.creating": "Létrehozás…",
-  "components.UserList.createuser": "Felhasználó létrehozása",
   "components.UserList.createlocaluser": "Helyi felhasználó létrehozása",
   "components.UserList.admin": "Adminisztrátor",
   "components.UserList.created": "Létrehozva",
