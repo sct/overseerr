@@ -214,7 +214,6 @@
   "components.UserList.deleteuser": "Apagar Utilizador",
   "components.UserList.deleteconfirm": "Tem certeza que deseja apagar esse utilizador? Todos os seus dados de solicitação serão removidos permanentemente.",
   "components.UserList.creating": "Criando…",
-  "components.UserList.createuser": "Criar Utilizador",
   "components.UserList.createlocaluser": "Criar Utilizador Local",
   "components.Setup.welcome": "Bem-Vindo ao Overseerr",
   "components.Setup.tip": "Dica",

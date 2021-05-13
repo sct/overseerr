@@ -300,7 +300,6 @@
   "components.UserList.localuser": "Usuario local",
   "components.UserList.email": "Dirección de correo electrónico",
   "components.UserList.creating": "Creando…",
-  "components.UserList.createuser": "Crear usuario",
   "components.UserList.createlocaluser": "Crear usuario local",
   "components.UserList.create": "Crear",
   "components.UserList.autogeneratepassword": "Generar Contraseña Automáticamente",

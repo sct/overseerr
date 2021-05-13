@@ -324,7 +324,6 @@
   "components.UserList.password": "Passwort",
   "components.UserList.localuser": "Lokaler Benutzer",
   "components.UserList.email": "E-Mail-Adresse",
-  "components.UserList.createuser": "Benutzer erstellen",
   "components.UserList.createlocaluser": "Lokalen Benutzer erstellen",
   "components.UserList.create": "Erstellen",
   "components.Login.validationpasswordrequired": "Du musst ein Passwort angeben",

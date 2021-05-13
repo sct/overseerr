@@ -321,7 +321,6 @@
   "components.UserList.password": "Mot de passe",
   "components.UserList.localuser": "Utilisateur local",
   "components.UserList.creating": "Création…",
-  "components.UserList.createuser": "Créer un utilisateur",
   "components.UserList.createlocaluser": "Créer un utilisateur local",
   "components.UserList.create": "Créer",
   "components.UserList.autogeneratepassword": "Générer automatiquement le mot de passe",

@@ -200,7 +200,6 @@
   "i18n.edit": "Редактировать",
   "components.UserList.deleteuser": "Удалить пользователя",
   "components.UserList.creating": "Создание…",
-  "components.UserList.createuser": "Создать пользователя",
   "components.UserList.createlocaluser": "Создать локального пользователя",
   "components.UserList.create": "Создать",
   "components.TvDetails.network": "Сеть",
