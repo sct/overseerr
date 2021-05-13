@@ -82,9 +82,12 @@ router.post(
       const body = req.body;
       const userRepository = getRepository(User);
 
-      const existingUser = await userRepository.findOne({
-        where: { email: body.email },
-      });
+      const existingUser = await userRepository
+        .createQueryBuilder('user')
+        .where('LOWER(user.email) = :email', {
+          email: body.email.toLowerCase(),
+        })
+        .getOne();
 
       if (existingUser) {
         return next({
@@ -393,17 +396,21 @@ router.post(
       for (const rawUser of plexUsersResponse.MediaContainer.User) {
         const account = rawUser.$;
 
-        const user = await userRepository.findOne({
-          where: [{ plexId: account.id }, { email: account.email }],
-        });
+        const user = await userRepository
+          .createQueryBuilder('user')
+          .where('user.plexId = :id', { id: account.id })
+          .orWhere('LOWER(user.email) = :email', {
+            email: account.email.toLowerCase(),
+          })
+          .getOne();
 
         if (user) {
-          // Update the users avatar with their plex thumbnail (incase it changed)
+          // Update the user's avatar with their Plex thumbnail, in case it changed
           user.avatar = account.thumb;
           user.email = account.email;
           user.plexUsername = account.username;
 
-          // in-case the user was previously a local account
+          // In case the user was previously a local account
           if (user.userType === UserType.LOCAL) {
             user.userType = UserType.PLEX;
             user.plexId = parseInt(account.id);
@@ -418,7 +425,7 @@ router.post(
           if (
             account.email &&
             account.username &&
-            (await mainPlexTv.checkUserAccess(Number(account.id)))
+            (await mainPlexTv.checkUserAccess(parseInt(account.id)))
           ) {
             const newUser = new User({
               plexUsername: account.username,
