@@ -317,19 +317,6 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   </span>
                 </Button>
               )}
-            {requestData.status !== MediaRequestStatus.PENDING &&
-              hasPermission(Permission.MANAGE_REQUESTS) && (
-                <Button
-                  buttonType="danger"
-                  buttonSize="sm"
-                  onClick={() => deleteRequest()}
-                >
-                  <TrashIcon style={{ marginRight: '0' }} />
-                  <span className="hidden ml-1.5 sm:block">
-                    {intl.formatMessage(globalMessages.delete)}
-                  </span>
-                </Button>
-              )}
             {requestData.status === MediaRequestStatus.PENDING &&
               hasPermission(Permission.MANAGE_REQUESTS) && (
                 <>
