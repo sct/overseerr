@@ -5,7 +5,6 @@
   "components.UserList.deleteuser": "Suprimeix l'usuari",
   "components.UserList.deleteconfirm": "Esteu segur que voleu suprimir aquest usuari? S'eliminaran totes les sol·licituds de forma permanent.",
   "components.UserList.creating": "S'està creant …",
-  "components.UserList.createuser": "Crea un usuari",
   "components.UserList.createlocaluser": "Crea un usuari local",
   "components.UserList.created": "Creat",
   "components.UserList.create": "Crea",
