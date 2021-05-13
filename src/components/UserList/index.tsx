@@ -58,7 +58,6 @@ const messages = defineMessages({
     'Are you sure you want to delete this user? All of their request data will be permanently removed.',
   localuser: 'Local User',
   createlocaluser: 'Create Local User',
-  createuser: 'Create User',
   creating: 'Creating…',
   create: 'Create',
   validationpasswordminchars:
@@ -67,6 +66,7 @@ const messages = defineMessages({
   usercreatedfailedexisting:
     'The provided email address is already in use by another user.',
   usercreatedsuccess: 'User created successfully!',
+  displayName: 'Display Name',
   email: 'Email Address',
   password: 'Password',
   passwordinfodescription:
@@ -294,6 +294,7 @@ const UserList: React.FC = () => {
       >
         <Formik
           initialValues={{
+            displayName: '',
             email: '',
             password: '',
             genpassword: false,
@@ -302,6 +303,7 @@ const UserList: React.FC = () => {
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/user', {
+                username: values.displayName,
                 email: values.email,
                 password: values.genpassword ? null : values.password,
               });
@@ -338,7 +340,7 @@ const UserList: React.FC = () => {
           }) => {
             return (
               <Modal
-                title={intl.formatMessage(messages.createuser)}
+                title={intl.formatMessage(messages.createlocaluser)}
                 iconSvg={<UserAddIcon />}
                 onOk={() => handleSubmit()}
                 okText={
@@ -372,8 +374,23 @@ const UserList: React.FC = () => {
                 )}
                 <Form className="section">
                   <div className="form-row">
+                    <label htmlFor="displayName" className="text-label">
+                      {intl.formatMessage(messages.displayName)}
+                    </label>
+                    <div className="form-input">
+                      <div className="form-input-field">
+                        <Field
+                          id="displayName"
+                          name="displayName"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-row">
                     <label htmlFor="email" className="text-label">
                       {intl.formatMessage(messages.email)}
+                      <span className="label-required">*</span>
                     </label>
                     <div className="form-input">
                       <div className="form-input-field">
@@ -417,6 +434,9 @@ const UserList: React.FC = () => {
                   >
                     <label htmlFor="password" className="text-label">
                       {intl.formatMessage(messages.password)}
+                      {!values.genpassword && (
+                        <span className="label-required">*</span>
+                      )}
                     </label>
                     <div className="form-input">
                       <div className="form-input-field">
