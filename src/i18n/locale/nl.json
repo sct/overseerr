@@ -318,7 +318,6 @@
   "components.UserList.autogeneratepassword": "Automatisch wachtwoord genereren",
   "components.UserList.create": "Aanmaken",
   "components.UserList.createlocaluser": "Lokale gebruiker aanmaken",
-  "components.UserList.createuser": "Gebruiker aanmaken",
   "components.UserList.usercreatedfailed": "Er ging iets mis bij het aanmaken van de gebruiker.",
   "components.UserList.creating": "Bezig met aanmaken…",
   "components.UserList.validationpasswordminchars": "Wachtwoord is te kort; moet minimaal 8 tekens bevatten",
@@ -862,5 +861,9 @@
   "components.Settings.Notifications.encryption": "Encryptiemethode",
   "components.Settings.webAppUrl": "URL van <WebAppLink>Web App</WebAppLink>",
   "components.Settings.validationWebAppUrl": "U moet een geldige URL van de Plex Web App opgeven",
-  "components.Settings.webAppUrlTip": "Stuur gebruikers optioneel naar de web-app op uw server in plaats van de \"gehoste\" web-app"
+  "components.Settings.webAppUrlTip": "Stuur gebruikers optioneel naar de web-app op uw server in plaats van de \"gehoste\" web-app",
+  "components.UserList.localLoginDisabled": "De instelling <strong>Lokaal aanmelden inschakelen</strong> is momenteel uitgeschakeld.",
+  "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "Om web-pushmeldingen te ontvangen, moet Overseerr via HTTPS worden weergegeven.",
+  "components.RequestList.RequestItem.requesteddate": "Aangevraagd",
+  "components.RequestCard.failedretry": "Er ging opnieuw iets mis tijdens het aanvragen."
 }
