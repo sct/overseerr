@@ -32,6 +32,7 @@ const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   failedretry: 'Something went wrong while retrying the request.',
   requested: 'Requested',
+  requesteddate: 'Requested',
   modified: 'Modified',
   modifieduserdate: '{date} by {user}',
   mediaerror: 'The associated title for this request is no longer available.',
@@ -219,33 +220,23 @@ const RequestItem: React.FC<RequestItemProps> = ({
               </a>
             </Link>
             <div className="flex flex-col justify-center pl-2 overflow-hidden xl:pl-4">
-              <div className="card-field">
-                <Link
-                  href={
-                    requestData.type === 'movie'
-                      ? `/movie/${requestData.media.tmdbId}`
-                      : `/tv/${requestData.media.tmdbId}`
-                  }
-                >
-                  <a className="min-w-0 mr-2 text-lg text-white truncate xl:text-xl hover:underline">
-                    {isMovie(title) ? title.title : title.name}
-                  </a>
-                </Link>
+              <div className="pt-0.5 sm:pt-1 text-xs text-white">
+                {(isMovie(title)
+                  ? title.releaseDate
+                  : title.firstAirDate
+                )?.slice(0, 4)}
               </div>
-              <div className="card-field">
-                <Link href={`/users/${requestData.requestedBy.id}`}>
-                  <a className="flex items-center group">
-                    <img
-                      src={requestData.requestedBy.avatar}
-                      alt=""
-                      className="avatar-sm"
-                    />
-                    <span className="text-sm text-gray-300 truncate group-hover:underline">
-                      {requestData.requestedBy.displayName}
-                    </span>
-                  </a>
-                </Link>
-              </div>
+              <Link
+                href={
+                  requestData.type === 'movie'
+                    ? `/movie/${requestData.media.tmdbId}`
+                    : `/tv/${requestData.media.tmdbId}`
+                }
+              >
+                <a className="min-w-0 mr-2 text-lg text-white truncate xl:text-xl hover:underline">
+                  {isMovie(title) ? title.title : title.name}
+                </a>
+              </Link>
               {!isMovie(title) && request.seasons.length > 0 && (
                 <div className="card-field">
                   <span className="card-field-name">
@@ -276,7 +267,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               )}
             </div>
           </div>
-          <div className="z-10 flex flex-col justify-center w-full pr-4 mt-4 ml-4 text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">
+          <div className="z-10 flex flex-col justify-center w-full pr-4 mt-4 ml-4 overflow-hidden text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">
             <div className="card-field">
               <span className="card-field-name">
                 {intl.formatMessage(globalMessages.status)}
@@ -308,29 +299,20 @@ const RequestItem: React.FC<RequestItemProps> = ({
               )}
             </div>
             <div className="card-field">
-              <span className="card-field-name">
-                {intl.formatMessage(messages.requested)}
-              </span>
-              <span className="text-gray-300">
-                {intl.formatDate(requestData.createdAt, {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
-            </div>
-            <div className="card-field">
-              <span className="card-field-name">
-                {intl.formatMessage(messages.modified)}
-              </span>
-              <span className="truncate">
-                {requestData.modifiedBy ? (
-                  <span className="flex text-sm text-gray-300">
+              {hasPermission(
+                [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+                { type: 'or' }
+              ) ? (
+                <>
+                  <span className="card-field-name">
+                    {intl.formatMessage(messages.requested)}
+                  </span>
+                  <span className="flex text-sm text-gray-300 truncate">
                     {intl.formatMessage(messages.modifieduserdate, {
                       date: (
                         <FormattedRelativeTime
                           value={Math.floor(
-                            (new Date(requestData.updatedAt).getTime() -
+                            (new Date(requestData.createdAt).getTime() -
                               Date.now()) /
                               1000
                           )}
@@ -339,26 +321,77 @@ const RequestItem: React.FC<RequestItemProps> = ({
                         />
                       ),
                       user: (
-                        <Link href={`/users/${requestData.modifiedBy.id}`}>
-                          <a className="flex items-center group">
+                        <Link href={`/users/${requestData.requestedBy.id}`}>
+                          <a className="flex items-center truncate group">
                             <img
-                              src={requestData.modifiedBy.avatar}
+                              src={requestData.requestedBy.avatar}
                               alt=""
                               className="ml-1.5 avatar-sm"
                             />
                             <span className="text-sm truncate group-hover:underline">
-                              {requestData.modifiedBy.displayName}
+                              {requestData.requestedBy.displayName}
                             </span>
                           </a>
                         </Link>
                       ),
                     })}
                   </span>
-                ) : (
-                  <span className="text-sm text-gray-300">N/A</span>
-                )}
-              </span>
+                </>
+              ) : (
+                <>
+                  <span className="card-field-name">
+                    {intl.formatMessage(messages.requesteddate)}
+                  </span>
+                  <span className="flex text-sm text-gray-300 truncate">
+                    <FormattedRelativeTime
+                      value={Math.floor(
+                        (new Date(requestData.createdAt).getTime() -
+                          Date.now()) /
+                          1000
+                      )}
+                      updateIntervalInSeconds={1}
+                      numeric="auto"
+                    />
+                  </span>
+                </>
+              )}
             </div>
+            {requestData.modifiedBy && (
+              <div className="card-field">
+                <span className="card-field-name">
+                  {intl.formatMessage(messages.modified)}
+                </span>
+                <span className="flex text-sm text-gray-300 truncate">
+                  {intl.formatMessage(messages.modifieduserdate, {
+                    date: (
+                      <FormattedRelativeTime
+                        value={Math.floor(
+                          (new Date(requestData.updatedAt).getTime() -
+                            Date.now()) /
+                            1000
+                        )}
+                        updateIntervalInSeconds={1}
+                        numeric="auto"
+                      />
+                    ),
+                    user: (
+                      <Link href={`/users/${requestData.modifiedBy.id}`}>
+                        <a className="flex items-center truncate group">
+                          <img
+                            src={requestData.modifiedBy.avatar}
+                            alt=""
+                            className="ml-1.5 avatar-sm"
+                          />
+                          <span className="text-sm truncate group-hover:underline">
+                            {requestData.modifiedBy.displayName}
+                          </span>
+                        </a>
+                      </Link>
+                    ),
+                  })}
+                </span>
+              </div>
+            )}
           </div>
         </div>
         <div className="z-10 flex flex-col justify-center w-full pl-4 pr-4 mt-4 space-y-2 xl:mt-0 xl:items-end xl:w-96 xl:pl-0">

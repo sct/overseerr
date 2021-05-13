@@ -198,7 +198,7 @@ img.avatar-sm {
 }
 
 .card-field {
-  @apply flex items-center py-0.5 sm:py-1 text-sm;
+  @apply flex items-center py-0.5 sm:py-1 text-sm truncate;
 }
 
 .card-field-name {
