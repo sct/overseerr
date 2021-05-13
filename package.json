@@ -131,7 +131,7 @@
     "lint-staged": "^11.0.0",
     "nodemon": "^2.0.7",
     "postcss": "^8.2.15",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.0",
     "semantic-release": "^17.4.3",
     "semantic-release-docker-buildx": "^1.0.1",
     "tailwindcss": "^2.1.2",
