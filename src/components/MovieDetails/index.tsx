@@ -184,8 +184,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     ? settings.currentSettings.region
     : 'US';
 
-  const releases = data.releases.results.find((r) => r.iso_3166_1 === region)
-    ?.release_dates;
+  const releases = data.releases.results.find(
+    (r) => r.iso_3166_1 === region
+  )?.release_dates;
 
   // Release date types:
   // 1. Premiere
