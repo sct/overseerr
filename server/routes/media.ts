@@ -15,10 +15,8 @@ mediaRoutes.get('/', async (req, res, next) => {
   const pageSize = req.query.take ? Number(req.query.take) : 20;
   const skip = req.query.skip ? Number(req.query.skip) : 0;
 
-  let statusFilter:
-    | MediaStatus
-    | FindOperator<MediaStatus>
-    | undefined = undefined;
+  let statusFilter: MediaStatus | FindOperator<MediaStatus> | undefined =
+    undefined;
 
   switch (req.query.filter) {
     case 'available':

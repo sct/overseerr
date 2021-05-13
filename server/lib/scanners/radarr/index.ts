@@ -10,7 +10,8 @@ type SyncStatus = StatusBase & {
 
 class RadarrScanner
   extends BaseScanner<RadarrMovie>
-  implements RunnableScanner<SyncStatus> {
+  implements RunnableScanner<SyncStatus>
+{
   private servers: RadarrSettings[];
   private currentServer: RadarrSettings;
   private radarrApi: RadarrAPI;

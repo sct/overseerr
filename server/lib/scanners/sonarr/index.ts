@@ -16,7 +16,8 @@ type SyncStatus = StatusBase & {
 
 class SonarrScanner
   extends BaseScanner<SonarrSeries>
-  implements RunnableScanner<SyncStatus> {
+  implements RunnableScanner<SyncStatus>
+{
   private servers: SonarrSettings[];
   private currentServer: SonarrSettings;
   private sonarrApi: SonarrAPI;

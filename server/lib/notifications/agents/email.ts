@@ -16,7 +16,8 @@ import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 class EmailAgent
   extends BaseAgent<NotificationAgentEmail>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentEmail {
     if (this.settings) {
       return this.settings;

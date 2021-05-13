@@ -40,7 +40,8 @@ const KeyMap: Record<string, string | KeyMapFunction> = {
 
 class WebhookAgent
   extends BaseAgent<NotificationAgentWebhook>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentWebhook {
     if (this.settings) {
       return this.settings;

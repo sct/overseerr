@@ -106,9 +106,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     `/api/v1/tv/${router.query.tvId}/ratings`
   );
 
-  const sortedCrew = useMemo(() => sortCrewPriority(data?.credits.crew ?? []), [
-    data,
-  ]);
+  const sortedCrew = useMemo(
+    () => sortCrewPriority(data?.credits.crew ?? []),
+    [data]
+  );
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -189,8 +190,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     );
   }
 
-  const seasonCount = data.seasons.filter((season) => season.seasonNumber !== 0)
-    .length;
+  const seasonCount = data.seasons.filter(
+    (season) => season.seasonNumber !== 0
+  ).length;
 
   if (seasonCount) {
     seriesAttributes.push(

@@ -43,7 +43,8 @@ interface SlackBlockEmbed {
 
 class SlackAgent
   extends BaseAgent<NotificationAgentSlack>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentSlack {
     if (this.settings) {
       return this.settings;

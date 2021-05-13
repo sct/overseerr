@@ -26,7 +26,8 @@ interface PushNotificationPayload {
 
 class WebPushAgent
   extends BaseAgent<NotificationAgentConfig>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentConfig {
     if (this.settings) {
       return this.settings;

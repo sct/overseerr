@@ -26,7 +26,8 @@ interface TelegramPhotoPayload {
 
 class TelegramAgent
   extends BaseAgent<NotificationAgentTelegram>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   private baseUrl = 'https://api.telegram.org/';
 
   protected getSettings(): NotificationAgentTelegram {

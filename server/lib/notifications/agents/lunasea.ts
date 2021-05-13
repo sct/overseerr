@@ -7,7 +7,8 @@ import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 class LunaSeaAgent
   extends BaseAgent<NotificationAgentLunaSea>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentLunaSea {
     if (this.settings) {
       return this.settings;

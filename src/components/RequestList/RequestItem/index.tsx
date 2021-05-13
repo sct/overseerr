@@ -106,12 +106,13 @@ const RequestItem: React.FC<RequestItemProps> = ({
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}` : null
   );
-  const { data: requestData, revalidate, mutate } = useSWR<MediaRequest>(
-    `/api/v1/request/${request.id}`,
-    {
-      initialData: request,
-    }
-  );
+  const {
+    data: requestData,
+    revalidate,
+    mutate,
+  } = useSWR<MediaRequest>(`/api/v1/request/${request.id}`, {
+    initialData: request,
+  });
 
   const [isRetrying, setRetrying] = useState(false);
 

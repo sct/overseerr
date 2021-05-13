@@ -12,7 +12,8 @@ interface PushbulletPayload {
 
 class PushbulletAgent
   extends BaseAgent<NotificationAgentPushbullet>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentPushbullet {
     if (this.settings) {
       return this.settings;

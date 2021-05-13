@@ -102,13 +102,12 @@ const UserList: React.FC = () => {
       pageIndex * currentPageSize
     }&sort=${currentSort}`
   );
-  const {
-    data: notificationSettings,
-  } = useSWR<UserSettingsNotificationsResponse>(
-    currentUser
-      ? `/api/v1/user/${currentUser?.id}/settings/notifications`
-      : null
-  );
+  const { data: notificationSettings } =
+    useSWR<UserSettingsNotificationsResponse>(
+      currentUser
+        ? `/api/v1/user/${currentUser?.id}/settings/notifications`
+        : null
+    );
 
   const [isDeleting, setDeleting] = useState(false);
   const [isImporting, setImporting] = useState(false);

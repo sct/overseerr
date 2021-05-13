@@ -91,7 +91,8 @@ interface DiscordWebhookPayload {
 
 class DiscordAgent
   extends BaseAgent<NotificationAgentDiscord>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentDiscord {
     if (this.settings) {
       return this.settings;
@@ -217,11 +218,8 @@ class DiscordAgent
     let content = undefined;
 
     try {
-      const {
-        botUsername,
-        botAvatarUrl,
-        webhookUrl,
-      } = this.getSettings().options;
+      const { botUsername, botAvatarUrl, webhookUrl } =
+        this.getSettings().options;
 
       if (!webhookUrl) {
         return false;

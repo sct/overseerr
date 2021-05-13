@@ -18,7 +18,8 @@ interface PushoverPayload {
 
 class PushoverAgent
   extends BaseAgent<NotificationAgentPushover>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentPushover {
     if (this.settings) {
       return this.settings;
@@ -170,13 +171,8 @@ class PushoverAgent
 
       const { accessToken, userToken } = this.getSettings().options;
 
-      const {
-        title,
-        message,
-        url,
-        url_title,
-        priority,
-      } = this.constructMessageDetails(type, payload);
+      const { title, message, url, url_title, priority } =
+        this.constructMessageDetails(type, payload);
 
       await axios.post(endpoint, {
         token: accessToken,
