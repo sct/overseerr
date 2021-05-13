@@ -298,7 +298,6 @@
   "components.RequestButton.approverequest": "Approva la richiesta",
   "components.RequestButton.approve4krequests": "Approva {requestCount, plural, one {Richiesta 4K} other {{requestCount} Richieste 4K}}",
   "components.UserList.creating": "Creazione…",
-  "components.UserList.createuser": "Crea un utente",
   "components.UserList.createlocaluser": "Crea un utente locale",
   "components.UserList.create": "Crea",
   "components.UserList.autogeneratepassword": "Genera automaticamente la password",
