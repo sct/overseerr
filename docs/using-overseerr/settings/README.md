@@ -18,7 +18,7 @@ Set this to the externally-accessible URL of your Overseerr instance. If configu
 
 ### Enable Proxy Support
 
-If you have Overseerr behind a [reverse proxy](../../extending-overseerr/reverse-proxy-examples.md), enable this setting to allow Overseerr to correctly register client IP addresses. For details, please see the [Express documentation](http://expressjs.com/en/guide/behind-proxies.html).
+If you have Overseerr behind a [reverse proxy](../../extending-overseerr/reverse-proxy.md), enable this setting to allow Overseerr to correctly register client IP addresses. For details, please see the [Express documentation](http://expressjs.com/en/guide/behind-proxies.html).
 
 This setting is **disabled** by default.
 
@@ -174,11 +174,11 @@ Enter your Radarr/Sonarr API key here. Do _not_ share these key publicly, as the
 
 You can locate the required API keys in Radarr/Sonarr in **Settings &rarr; General &rarr; Security**.
 
-#### Base URL
+#### URL Base
 
-If you have configured a base URL for Radarr/Sonarr, you _must_ enter it here in order for Overseerr to connect to those services!
+If you have configured a URL base for your Radarr/Sonarr server, you _must_ enter it here in order for Overseerr to connect to those services!
 
-You can verify whether or not you have a base URL configured in Radarr/Sonarr in **Settings &rarr; General &rarr; Host**. (Note that a restart of your Radarr/Sonarr servers is required if you modify this setting!)
+You can verify whether or not you have a URL base configured in your Radarr/Sonarr server at **Settings &rarr; General &rarr; Host**. (Note that a restart of your Radarr/Sonarr server is required if you modify this setting!)
 
 #### Profiles, Root Folder, Minimum Availability
 
