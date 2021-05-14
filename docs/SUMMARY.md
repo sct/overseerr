@@ -24,9 +24,10 @@
 ## Support
 
 - [Frequently Asked Questions (FAQ)](support/faq.md)
-- [Asking for Support](support/asking-for-support.md)
+- [Need Help?](support/need-help.md)
 
 ## Extending Overseerr
 
-- [Reverse Proxy Examples](extending-overseerr/reverse-proxy-examples.md)
-- [Fail2ban Filter](extending-overseerr/fail2ban.md)
+- [Reverse Proxy](extending-overseerr/reverse-proxy.md)
+- [Fail2ban](extending-overseerr/fail2ban.md)
+- [Third-Party Integrations](extending-overseerr/third-party.md)

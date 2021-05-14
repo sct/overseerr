@@ -1,7 +1,7 @@
 # Frequently Asked Questions (FAQ)
 
 {% hint style="info" %}
-If you can't find the solution to your problem here, please seek help on [Discord](https://discord.gg/PkCWJSeCk7).
+If you can't find the solution to your problem here, please read [Need Help?](./need-help.md) and reach out to us on [Discord](https://discord.gg/PkCWJSeCk7).
 
 _Please do not post questions or support requests on the GitHub issue tracker!_
 {% endhint %}
@@ -16,7 +16,7 @@ Use a third-party update mechanism (such as [Watchtower](https://github.com/cont
 
 The easiest but least secure method is to simply forward an external port (e.g., `5055`) on your router to the internal port used by Overseerr (default is TCP `5055`). Visit [Port Forward](http://portforward.com/) for instructions for your particular router. You would then be able to access Overseerr via `http://EXTERNAL-IP-ADDRESS:5055`.
 
-A more advanced, user-friendly, and secure (if using SSL) method is to set up a web server and use a reverse proxy to access Overseerr. Please refer to our [reverse proxy examples](../extending-overseerr/reverse-proxy-examples.md) for more information.
+A more advanced, user-friendly, and secure (if using SSL) method is to set up a web server and use a reverse proxy to access Overseerr. Please refer to our [reverse proxy examples](../extending-overseerr/reverse-proxy.md) for more information.
 
 The most secure method (but also the most inconvenient method) is to set up a VPN tunnel to your home server. You would then be able to access Overseerr as if you were on your local network, via `http://LOCAL-IP-ADDRESS:5055`.
 
@@ -26,9 +26,9 @@ You sure can! We are using [Weblate](https://hosted.weblate.org/engage/overseerr
 
 ### Where can I find the changelog?
 
-You can find the changelog in the **Settings &rarr; About** page in your Overseerr instance if you are using the `latest` tag. You can alternatively review the [release/version history on GitHub](https://github.com/sct/overseerr/releases).
+You can find the changelog for your version (stable/`latest`,s or `develop`) in the **Settings &rarr; About** page in your Overseerr instance.
 
-If you are using the `develop` tag, please refer to the [commit history for that branch on GitHub](https://github.com/sct/overseerr/commits/develop).
+You can alternatively review the [stable release history](https://github.com/sct/overseerr/releases) and [`develop` branch commit history](https://github.com/sct/overseerr/commits/develop) on GitHub.
 
 ### Some media is missing from Overseerr that I know is in Plex!
 
@@ -68,17 +68,17 @@ You can also perform the following to verify the media item has a GUID Overseerr
 
 ### Where can I find the log files?
 
-Please see [these instructions on how to locate and share your logs](./asking-for-support#how-can-i-share-my-logs).
+Please see [these instructions on how to locate and share your logs](./need-help.md#how-can-i-share-my-logs).
 
 ## Users
 
 ### Why can't I see all of my Plex users?
 
-Please see the [documentation for importing users from Plex](../using-overseerr/users#importing-users-from-plex).
+Please see the [documentation for importing users from Plex](../using-overseerr/users/README.md#importing-users-from-plex).
 
 ### Can I create local users in Overseerr?
 
-Yes! Please see the [documentation for creating local users](../using-overseerr/users#creating-local-users).
+Yes! Please see the [documentation for creating local users](../using-overseerr/users/README.md#creating-local-users).
 
 ### Is is possible to set user roles in Overseerr?
 
@@ -104,15 +104,15 @@ Check the minimum availability setting in your Radarr server. If a movie does no
 
 ### Help! My request still shows "requested" even though it is in Plex!
 
-See "[Some media is missing from Overseerr that I know is in Plex!](./faq.md#some-media-is-missing-from-overseerr-that-i-know-is-in-plex)" for troubleshooting steps.
+See "[Some media is missing from Overseerr that I know is in Plex!](#some-media-is-missing-from-overseerr-that-i-know-is-in-plex)" for troubleshooting steps.
 
 ### Series requests keep failing!
 
-If you configured a base URL in Sonarr, make sure you have set the base URL option appropriately in Overseerr.
+If you configured a URL base in Sonarr, make sure you have also configured the [URL Base](../using-overseerr/settings/README.md#url-base) setting for your Sonarr server in Overseerr.
 
 Also, check that you are using Sonarr v3 and that you have configured a default language profile in Overseerr.
 
-Language profile support for Sonarr was added in [#860](https://github.com/sct/overseerr/pull/860), along with a new, _required_ **Language Profile** setting. If series requests are failing, make sure that you have a default language profile configured for each of your Sonarr servers in **Settings &rarr; Services**.
+Language profile support for Sonarr was added in [v1.20.0](https://github.com/sct/overseerr/releases/tag/v1.20.0) along with a new, _required_ **Language Profile** setting. If series requests are failing, make sure that you have a default language profile configured for each of your Sonarr servers in **Settings &rarr; Services**.
 
 ## Notifications
 
