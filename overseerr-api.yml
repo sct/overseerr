@@ -4536,7 +4536,7 @@ paths:
           name: language
           schema:
             type: string
-            example: en-US
+            example: en
       responses:
         '200':
           description: TV details
