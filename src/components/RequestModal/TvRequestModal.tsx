@@ -92,7 +92,9 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   );
 
   const currentlyRemaining =
-    (quota?.tv.remaining ?? 0) - selectedSeasons.length;
+    (quota?.tv.remaining ?? 0) -
+    selectedSeasons.length +
+    (editRequest?.seasons ?? []).length;
 
   const updateRequest = async () => {
     if (!editRequest) {
