@@ -10,7 +10,7 @@ import { UserSettingsGeneralResponse } from '../../../server/interfaces/api/user
 import type { MainSettings } from '../../../server/lib/settings';
 import {
   availableLanguages,
-  AvailableLocales,
+  AvailableLocale,
 } from '../../context/LanguageContext';
 import useLocale from '../../hooks/useLocale';
 import { Permission, useUser } from '../../hooks/useUser';
@@ -160,7 +160,7 @@ const SettingsMain: React.FC = () => {
                 setLocale(
                   (userData?.locale
                     ? userData.locale
-                    : values.locale) as AvailableLocales
+                    : values.locale) as AvailableLocale
                 );
               }
 

@@ -3,7 +3,7 @@ import { ArrowLeftIcon, InformationCircleIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { AvailableLocales } from '../../context/LanguageContext';
+import { AvailableLocale } from '../../context/LanguageContext';
 import useLocale from '../../hooks/useLocale';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
@@ -30,7 +30,7 @@ const Layout: React.FC = ({ children }) => {
       setLocale(
         (user?.settings?.locale
           ? user.settings.locale
-          : currentSettings.locale) as AvailableLocales
+          : currentSettings.locale) as AvailableLocale
       );
     }
   }, [setLocale, currentSettings.locale, user]);

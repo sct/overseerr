@@ -399,7 +399,7 @@ class TheMovieDb extends ExternalAPI {
   public getDiscoverTv = async ({
     sortBy = 'popularity.desc',
     page = 1,
-    language = 'en-US',
+    language = 'en',
     firstAirDateGte,
     firstAirDateLte,
     includeEmptyReleaseDate = false,

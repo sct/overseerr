@@ -14,19 +14,21 @@ import StatusChecker from '../components/StatusChacker';
 import Toast from '../components/Toast';
 import ToastContainer from '../components/ToastContainer';
 import { InteractionProvider } from '../context/InteractionContext';
-import { AvailableLocales, LanguageContext } from '../context/LanguageContext';
+import { AvailableLocale, LanguageContext } from '../context/LanguageContext';
 import { SettingsProvider } from '../context/SettingsContext';
 import { UserContext } from '../context/UserContext';
 import { User } from '../hooks/useUser';
 import '../styles/globals.css';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const loadLocaleData = (locale: AvailableLocales): Promise<any> => {
+const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
   switch (locale) {
     case 'ca':
       return import('../i18n/locale/ca.json');
     case 'de':
       return import('../i18n/locale/de.json');
+    case 'el':
+      return import('../i18n/locale/el.json');
     case 'es':
       return import('../i18n/locale/es.json');
     case 'fr':
@@ -67,7 +69,7 @@ type MessagesType = Record<string, any>;
 interface ExtendedAppProps extends AppProps {
   user: User;
   messages: MessagesType;
-  locale: AvailableLocales;
+  locale: AvailableLocale;
   currentSettings: PublicSettingsResponse;
 }
 
@@ -86,7 +88,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
 }: ExtendedAppProps) => {
   let component: React.ReactNode;
   const [loadedMessages, setMessages] = useState<MessagesType>(messages);
-  const [currentLocale, setLocale] = useState<AvailableLocales>(locale);
+  const [currentLocale, setLocale] = useState<AvailableLocale>(locale);
 
   useEffect(() => {
     loadLocaleData(currentLocale).then(setMessages);
@@ -214,7 +216,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     ? user.settings.locale
     : currentSettings.locale;
 
-  const messages = await loadLocaleData(locale as AvailableLocales);
+  const messages = await loadLocaleData(locale as AvailableLocale);
 
   return { ...appInitialProps, user, messages, locale, currentSettings };
 };

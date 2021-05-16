@@ -8,7 +8,7 @@ import useSWR from 'swr';
 import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import {
   availableLanguages,
-  AvailableLocales,
+  AvailableLocale,
 } from '../../../../context/LanguageContext';
 import useLocale from '../../../../hooks/useLocale';
 import useSettings from '../../../../hooks/useSettings';
@@ -124,7 +124,7 @@ const UserGeneralSettings: React.FC = () => {
               setLocale(
                 (values.locale
                   ? values.locale
-                  : currentSettings.locale) as AvailableLocales
+                  : currentSettings.locale) as AvailableLocale
               );
             }
 
