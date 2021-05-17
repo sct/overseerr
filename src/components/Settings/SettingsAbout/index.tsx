@@ -113,14 +113,35 @@ const SettingsAbout: React.FC = () => {
               {data.version.replace('develop-', '')}
             </code>
             {status?.updateAvailable ? (
-              <Badge badgeType="warning" className="ml-2">
-                {intl.formatMessage(messages.outofdate)}
-              </Badge>
+              <a
+                href={`https://github.com/sct/overseerr/compare/${data.version.replace(
+                  'develop-',
+                  ''
+                )}...develop`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Badge
+                  badgeType="warning"
+                  className="ml-2 transition !cursor-pointer hover:bg-yellow-400"
+                >
+                  {intl.formatMessage(messages.outofdate)}
+                </Badge>
+              </a>
             ) : (
               status?.commitTag !== 'local' && (
-                <Badge badgeType="success" className="ml-2">
-                  {intl.formatMessage(messages.uptodate)}
-                </Badge>
+                <a
+                  href="https://github.com/sct/overseerr/commits/develop"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Badge
+                    badgeType="success"
+                    className="ml-2 transition !cursor-pointer hover:bg-green-400"
+                  >
+                    {intl.formatMessage(messages.uptodate)}
+                  </Badge>
+                </a>
               )
             )}
           </List.Item>
