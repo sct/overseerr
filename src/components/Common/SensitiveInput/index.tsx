@@ -43,6 +43,7 @@ const SensitiveInput: React.FC<SensitiveInputProps> = ({
           e.preventDefault();
           setHidden(!isHidden);
         }}
+        type="button"
         className="input-action"
       >
         {isHidden ? <EyeOffIcon /> : <EyeIcon />}
