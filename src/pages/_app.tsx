@@ -91,6 +91,14 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
   const [currentLocale, setLocale] = useState<AvailableLocale>(locale);
 
   useEffect(() => {
+    setLocale(
+      (user?.settings?.locale
+        ? user.settings.locale
+        : currentSettings.locale) as AvailableLocale
+    );
+  }, [currentSettings.locale, user?.settings?.locale]);
+
+  useEffect(() => {
     loadLocaleData(currentLocale).then(setMessages);
   }, [currentLocale]);
 
