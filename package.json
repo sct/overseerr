@@ -112,7 +112,7 @@
     "@types/yamljs": "^0.2.31",
     "@types/yup": "^0.29.11",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
-    "@typescript-eslint/parser": "^4.23.0",
+    "@typescript-eslint/parser": "^4.24.0",
     "autoprefixer": "^10.2.5",
     "babel-plugin-react-intl": "^8.2.25",
     "babel-plugin-react-intl-auto": "^3.3.0",
