@@ -225,7 +225,8 @@ img.avatar-sm {
   @apply pt-5 mt-8 text-white border-t border-gray-700;
 }
 
-label {
+label,
+.group-label {
   @apply block mb-1 text-sm font-medium leading-5 text-gray-400;
 }
 
@@ -327,10 +328,6 @@ svg.icon-sm {
 
 .form-group {
   @apply mt-6 text-white;
-}
-
-.group-label {
-  @apply block mb-1 text-sm font-medium leading-6 text-gray-400;
 }
 
 .toast {
