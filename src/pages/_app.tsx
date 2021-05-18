@@ -64,7 +64,7 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
 // with our combined user prop
 // This is specific to _app.tsx. Other pages will not need to do this!
 type NextAppComponentType = typeof App;
-type MessagesType = Record<string, any>;
+type MessagesType = Record<string, string>;
 
 interface ExtendedAppProps extends AppProps {
   user: User;
@@ -89,14 +89,6 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
   let component: React.ReactNode;
   const [loadedMessages, setMessages] = useState<MessagesType>(messages);
   const [currentLocale, setLocale] = useState<AvailableLocale>(locale);
-
-  useEffect(() => {
-    setLocale(
-      (user?.settings?.locale
-        ? user.settings.locale
-        : currentSettings.locale) as AvailableLocale
-    );
-  }, [currentSettings.locale, user?.settings?.locale]);
 
   useEffect(() => {
     loadLocaleData(currentLocale).then(setMessages);

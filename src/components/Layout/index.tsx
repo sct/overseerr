@@ -3,6 +3,9 @@ import { ArrowLeftIcon, InformationCircleIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { AvailableLocale } from '../../context/LanguageContext';
+import useLocale from '../../hooks/useLocale';
+import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
 import SearchInput from './SearchInput';
 import Sidebar from './Sidebar';
@@ -16,9 +19,21 @@ const messages = defineMessages({
 const Layout: React.FC = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
+  const { currentSettings } = useSettings();
+  const { setLocale } = useLocale();
+
+  useEffect(() => {
+    if (setLocale && user) {
+      setLocale(
+        (user?.settings?.locale
+          ? user.settings.locale
+          : currentSettings.locale) as AvailableLocale
+      );
+    }
+  }, [setLocale, currentSettings.locale, user]);
 
   useEffect(() => {
     const updateScrolled = () => {
