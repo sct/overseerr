@@ -862,6 +862,11 @@
   "components.Settings.validationWebAppUrl": "Devi fornire un URL valido di Plex Web App",
   "components.Settings.locale": "Lingua Interfaccia",
   "components.Settings.SettingsUsers.newPlexLoginTip": "Permetti agli utenti di Plex di accedere senza essere prima importati",
-  "components.Settings.SettingsUsers.newPlexLogin": "Abilita accesso dei nuovi utenti Plex",
-  "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "Per ricevere le notifiche web push, Overseerr deve essere servito su HTTPS."
+  "components.Settings.SettingsUsers.newPlexLogin": "Abilita nuovo accesso con Plex",
+  "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "Per ricevere le notifiche web push, Overseerr deve essere servito su HTTPS.",
+  "components.UserList.displayName": "Nome da mostrare",
+  "components.RequestList.RequestItem.requesteddate": "Richiesto",
+  "components.RequestCard.failedretry": "Qualcosa è andato storto nel riprovare la richiesta.",
+  "components.Settings.SettingsUsers.localLoginTip": "Consentire agli utenti di accedere utilizzando l'indirizzo di posta elettronica e la password, anziché Plex OAuth",
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Permessi assegnati ai nuovi utenti"
 }

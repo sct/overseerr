@@ -837,7 +837,7 @@
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestFailed": "LunaSea 測試通知發送失敗。",
   "components.Settings.Notifications.NotificationsWebhook.toastWebhookTestSuccess": "網絡鉤手測試通知已發送！",
   "components.Settings.SettingsUsers.newPlexLoginTip": "讓還沒導入的 Plex 用戶登錄",
-  "components.Settings.SettingsUsers.newPlexLogin": "允許新 Plex 用戶登錄",
+  "components.Settings.SettingsUsers.newPlexLogin": "允許新的 Plex 登錄",
   "components.PermissionEdit.requestTv": "提交電視節目請求",
   "components.PermissionEdit.requestMovies": "提交電影請求",
   "components.PermissionEdit.requestMoviesDescription": "授予提交非 4K 電影請求的權限。",
@@ -865,5 +865,8 @@
   "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "Overseerr 必須通過 HTTPS 投放才能使用網絡推送通知。",
   "components.UserList.localLoginDisabled": "<strong>允許本地登錄</strong>的設置目前被禁用。",
   "components.RequestList.RequestItem.requesteddate": "請求日期",
-  "components.RequestCard.failedretry": "重試提交請求中出了點問題。"
+  "components.RequestCard.failedretry": "重試提交請求中出了點問題。",
+  "components.UserList.displayName": "顯示名稱",
+  "components.Settings.SettingsUsers.localLoginTip": "讓用戶使用電子郵件地址和密碼登錄",
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "授予給新用戶的權限"
 }

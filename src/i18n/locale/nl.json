@@ -810,7 +810,7 @@
   "components.Settings.Notifications.NotificationsLunaSea.settingsSaved": "Instellingen voor meldingen LunaSea met succes opgeslagen!",
   "components.Settings.Notifications.NotificationsLunaSea.settingsFailed": "Instellingen voor meldingen LunaSea niet opgeslagen.",
   "components.Settings.SettingsUsers.newPlexLoginTip": "Plex-gebruikers toestaan zich aan te melden zonder eerst geïmporteerd te zijn",
-  "components.Settings.SettingsUsers.newPlexLogin": "Aanmelding nieuwe Plex-gebruiker inschakelen",
+  "components.Settings.SettingsUsers.newPlexLogin": "Nieuwe Plex-aanmelding inschakelen",
   "components.Settings.Notifications.toastTelegramTestSuccess": "Testmelding Telegram verzonden!",
   "components.Settings.Notifications.toastTelegramTestSending": "Testmelding Telegram verzenden…",
   "components.Settings.Notifications.toastTelegramTestFailed": "Testmelding Telegram niet verzonden.",
@@ -865,5 +865,8 @@
   "components.UserList.localLoginDisabled": "De instelling <strong>Lokaal aanmelden inschakelen</strong> is momenteel uitgeschakeld.",
   "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "Om web-pushmeldingen te ontvangen, moet Overseerr via HTTPS worden weergegeven.",
   "components.RequestList.RequestItem.requesteddate": "Aangevraagd",
-  "components.RequestCard.failedretry": "Er ging opnieuw iets mis tijdens het aanvragen."
+  "components.RequestCard.failedretry": "Er ging opnieuw iets mis tijdens het aanvragen.",
+  "components.UserList.displayName": "Weergavenaam",
+  "components.Settings.SettingsUsers.localLoginTip": "Sta gebruikers toe om in te loggen met hun e-mailadres en wachtwoord, in plaats van met Plex OAuth",
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Initiële machtigingen toegekend aan nieuwe gebruikers"
 }
