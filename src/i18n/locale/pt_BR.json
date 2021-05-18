@@ -858,5 +858,15 @@
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "Habilitar Agente",
   "components.PermissionEdit.requestTvDescription": "Concede permissão para solicitar séries em não 4K.",
   "components.PermissionEdit.requestTv": "Solicitar Séries",
-  "components.PermissionEdit.requestMoviesDescription": "Concede permissão para solicitar filmes em não 4K."
+  "components.PermissionEdit.requestMoviesDescription": "Concede permissão para solicitar filmes em não 4K.",
+  "components.Settings.Notifications.chatIdTip": "Inicie um chat com seu bot, adicione <GetIdBotLink>@get_id_bot</GetIdBotLink> e execute o comando <code>/my_id</code>",
+  "components.UserList.localLoginDisabled": "A opção <strong>Habilitar Autenticação Local</strong> está atualmente desabilitada.",
+  "components.UserList.displayName": "Nome de Exibição",
+  "components.Settings.webAppUrlTip": "Você tem a opção de direcionar os usuários ao aplicativo web ao invés da versão \"hospedada\" em seu servidor",
+  "components.Settings.webAppUrl": "URL do <WebAppLink>Aplicativo Web</WebAppLink>",
+  "components.Settings.noDefault4kServer": "Um servidor {serverType} 4K deve ser marcado como padrão para que usuários possam solicitar {mediaType} em 4K.",
+  "components.RequestList.RequestItem.requesteddate": "Solicitado",
+  "components.RequestCard.failedretry": "Algo deu errado ao retentar fazer a solicitação.",
+  "components.Settings.SettingsUsers.localLoginTip": "Permitir que usuários se autentiquem usando seus endereços e-mails e senhas ao invés de Plex OAuth",
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Permissões iniciais atribuídas à novos usuários"
 }
