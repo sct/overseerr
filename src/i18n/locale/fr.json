@@ -386,7 +386,7 @@
   "components.PermissionEdit.autoapproveMovies": "Validation automatique des films",
   "components.PermissionEdit.autoapproveDescription": "Accorde la validation automatique pour toutes les demandes non-4K.",
   "components.PermissionEdit.autoapprove": "Validation automatique",
-  "components.PermissionEdit.advancedrequestDescription": "Accorde l'autorisation d'utiliser les options de demande avancées.",
+  "components.PermissionEdit.advancedrequestDescription": "Accorde la permission d'utiliser les options de demande avancées.",
   "components.PermissionEdit.advancedrequest": "Demandes avancées",
   "components.PermissionEdit.adminDescription": "Accès administrateur complet. Contourne toutes les autres permissions (sélectionnées ou non).",
   "components.PermissionEdit.admin": "Admin",
@@ -418,7 +418,7 @@
   "components.Settings.RadarrModal.syncEnabled": "Activer les scans",
   "components.Settings.RadarrModal.externalUrl": "URL externe",
   "components.MovieDetails.markavailable": "Marquer comme disponible",
-  "components.MovieDetails.mark4kavailable": "Marquer comme disponible en 4K",
+  "components.MovieDetails.mark4kavailable": "Marquer comme Disponible en 4K",
   "components.MovieDetails.playonplex": "Lire sur Plex",
   "components.MovieDetails.play4konplex": "Lire en 4K sur Plex",
   "components.MovieDetails.openradarr4k": "Ouvrir le film dans Radarr 4K",
@@ -826,5 +826,10 @@
   "components.Settings.Notifications.encryption": "Méthode de chiffrement",
   "components.Settings.Notifications.encryptionDefault": "Utiliser STARTTLS si disponible",
   "components.Settings.Notifications.encryptionOpportunisticTls": "Toujours utiliser STARTTLS",
-  "components.DownloadBlock.estimatedtime": "Estimé {time}"
+  "components.DownloadBlock.estimatedtime": "Estimé {time}",
+  "components.Settings.Notifications.NotificationsPushover.userTokenTip": "Votre <UsersGroupsLink>identifiant d'utilisateur ou de groupe</UsersGroupsLink> de 30 caractères",
+  "components.Settings.Notifications.NotificationsPushover.accessTokenTip": "<ApplicationRegistrationLink>Enregistrer une application</ApplicationRegistrationLink> pour l'utiliser avec Overseerr",
+  "components.RequestList.RequestItem.requesteddate": "Demandé",
+  "components.RequestCard.failedretry": "Une erreur s'est produite lors du renvoi de la demande.",
+  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Paramètres de notification Web Push enregistrés avec succès !"
 }

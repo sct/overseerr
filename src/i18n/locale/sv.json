@@ -863,5 +863,8 @@
   "components.Settings.webAppUrl": "<WebAppLink>Webbapp</WebAppLink> URL",
   "components.Settings.validationWebAppUrl": "Du måste ange en giltig webbadress för Plex-webbapp",
   "components.UserList.localLoginDisabled": "Inställningen <strong>Aktivera lokal inloggning</strong> är för närvarande inaktiverad.",
-  "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "För att kunna ta emot push-notiser måste Overseerr serveras via HTTPS."
+  "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "För att kunna ta emot push-notiser måste Overseerr serveras via HTTPS.",
+  "components.UserList.displayName": "Visningsnamn",
+  "components.RequestList.RequestItem.requesteddate": "Begärd",
+  "components.RequestCard.failedretry": "Något gick fel vid nytt försök av begäran."
 }
