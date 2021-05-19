@@ -31,7 +31,9 @@ export class MediaSubscriber implements EntitySubscriberInterface {
           relatedRequests.forEach((request) => {
             notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
               notifyUser: request.requestedBy,
-              subject: movie.title,
+              subject: `${movie.title}${
+                movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
+              }`,
               message: movie.overview,
               media: entity,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
@@ -84,7 +86,9 @@ export class MediaSubscriber implements EntitySubscriberInterface {
           );
           const tv = await tmdb.getTvShow({ tvId: entity.tmdbId });
           notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
-            subject: tv.name,
+            subject: `${tv.name}${
+              tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
+            }`,
             message: tv.overview,
             notifyUser: request.requestedBy,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
