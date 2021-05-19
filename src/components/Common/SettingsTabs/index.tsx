@@ -136,34 +136,32 @@ const SettingsTabs: React.FC<{
           </nav>
         </div>
       ) : (
-        <div className="hidden sm:block">
-          <div className="border-b border-gray-600">
-            <nav className="flex -mb-px">
-              {settingsRoutes
-                .filter(
-                  (route) =>
-                    !route.hidden &&
-                    (route.requiredPermission
-                      ? hasPermission(
-                          route.requiredPermission,
-                          currentUser?.permissions ?? 0,
-                          route.permissionType
-                        )
-                      : true)
-                )
-                .map((route, index) => (
-                  <SettingsLink
-                    tabType={tabType}
-                    currentPath={router.pathname}
-                    route={route.route}
-                    regex={route.regex}
-                    key={`standard-settings-link-${index}`}
-                  >
-                    {route.text}
-                  </SettingsLink>
-                ))}
-            </nav>
-          </div>
+        <div className="hidden overflow-x-scroll border-b border-gray-600 sm:block hide-scrollbar">
+          <nav className="flex">
+            {settingsRoutes
+              .filter(
+                (route) =>
+                  !route.hidden &&
+                  (route.requiredPermission
+                    ? hasPermission(
+                        route.requiredPermission,
+                        currentUser?.permissions ?? 0,
+                        route.permissionType
+                      )
+                    : true)
+              )
+              .map((route, index) => (
+                <SettingsLink
+                  tabType={tabType}
+                  currentPath={router.pathname}
+                  route={route.route}
+                  regex={route.regex}
+                  key={`standard-settings-link-${index}`}
+                >
+                  {route.text}
+                </SettingsLink>
+              ))}
+          </nav>
         </div>
       )}
     </>
