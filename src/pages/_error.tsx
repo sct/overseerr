@@ -40,8 +40,8 @@ const Error: NextPage<ErrorProps> = ({ statusCode }) => {
       <div className="text-4xl">
         {statusCode
           ? intl.formatMessage(messages.errormessagewithcode, {
-              statusCode: statusCode,
-              message: getErrorMessage(statusCode),
+              statusCode,
+              error: getErrorMessage(statusCode),
             })
           : getErrorMessage(statusCode)}
       </div>
