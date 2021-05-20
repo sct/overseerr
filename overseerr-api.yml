@@ -1595,6 +1595,8 @@ components:
         pgpKey:
           type: string
           nullable: true
+        discordEnabled:
+          type: boolean
         discordEnabledTypes:
           type: number
           nullable: true

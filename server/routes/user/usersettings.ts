@@ -252,6 +252,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
       return res.status(200).json({
         emailEnabled: settings?.email.enabled,
         pgpKey: user.settings?.pgpKey,
+        discordEnabled: settings?.discord.enabled,
         discordEnabledTypes: settings?.discord.enabled
           ? settings?.discord.types
           : 0,
