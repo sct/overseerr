@@ -69,8 +69,8 @@ const Layout: React.FC = ({ children }) => {
           }}
         >
           <button
-            className={`px-4 ${
-              isScrolled ? 'text-gray-200' : 'text-gray-400'
+            className={`px-4 text-white ${
+              isScrolled ? 'opacity-90' : 'opacity-70'
             } focus:outline-none md:hidden transition duration-300`}
             aria-label="Open sidebar"
             onClick={() => setSidebarOpen(true)}
@@ -79,15 +79,15 @@ const Layout: React.FC = ({ children }) => {
           </button>
           <div className="flex items-center justify-between flex-1 pr-4 md:pr-4 md:pl-4">
             <button
-              className={`mr-2 ${
-                isScrolled ? 'text-gray-200' : 'text-gray-400'
+              className={`mr-2 text-white ${
+                isScrolled ? 'opacity-90' : 'opacity-70'
               } transition duration-300 hover:text-white pwa-only focus:outline-none focus:text-white`}
               onClick={() => router.back()}
             >
               <ArrowLeftIcon className="w-7" />
             </button>
             <SearchInput />
-            <div className="flex items-center ml-2">
+            <div className="flex items-center">
               <UserDropdown />
             </div>
           </div>
