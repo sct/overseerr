@@ -597,18 +597,19 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
-            {data.nextEpisodeToAir && (
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.nextAirDate)}</span>
-                <span className="media-fact-value">
-                  {intl.formatDate(data.nextEpisodeToAir.airDate, {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
-              </div>
-            )}
+            {data.nextEpisodeToAir &&
+              data.nextEpisodeToAir.airDate !== data.firstAirDate && (
+                <div className="media-fact">
+                  <span>{intl.formatMessage(messages.nextAirDate)}</span>
+                  <span className="media-fact-value">
+                    {intl.formatDate(data.nextEpisodeToAir.airDate, {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </span>
+                </div>
+              )}
             {data.episodeRunTime.length > 0 && (
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.episodeRuntime)}</span>
