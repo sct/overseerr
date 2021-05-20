@@ -62,7 +62,7 @@ This setting is **enabled** by default.
 
 ## Users
 
-### Enable Local User Sign-In
+### Enable Local Sign-In
 
 When enabled, users who have configured passwords will be allowed to sign in using their email address.
 
@@ -70,9 +70,9 @@ When disabled, Plex OAuth becomes the only sign-in option, and any "local users"
 
 This setting is **enabled** by default.
 
-### Enable New Plex User Sign-In
+### Enable New Plex Sign-In
 
-When enabled, users with access to your Plex server will be able to sign in to Overseerr even if they have not yet been imported. Users will be automatically assigned the permissions configured in the [Default User Permissions](#default-user-permissions) setting upon first sign-in.
+When enabled, users with access to your Plex server will be able to sign in to Overseerr even if they have not yet been imported. Users will be automatically assigned the permissions configured in the [Default Permissions](#default-permissions) setting upon first sign-in.
 
 This setting is **enabled** by default.
 
@@ -84,11 +84,11 @@ Unless an [override](../users/README.md#movie-request-limit-and-series-request-l
 
 Note that users with the **Manage Users** permission are exempt from request limits, since that permission also grants the ability to submit requests on behalf of other users.
 
-### Default User Permissions
+### Default Permissions
 
 Select the permissions you would like assigned to new users to have by default upon account creation.
 
-If [Enable New Plex User Sign-In](#enable-new-plex-user-sign-in) is enabled, any user with access to your Plex server will be able to sign in to Overseerr, and they will be granted the permissions you select here upon first sign-in.
+If [Enable New Plex Sign-In](#enable-new-plex-sign-in) is enabled, any user with access to your Plex server will be able to sign in to Overseerr, and they will be granted the permissions you select here upon first sign-in.
 
 This setting only affects new users, and has no impact on existing users. In order to modify permissions for existing users, you will need to [edit the users](../users/README.md#editing-users).
 
@@ -133,14 +133,18 @@ Overseerr will perform a full scan of your Plex libraries once every 24 hours (r
 ## Services
 
 {% hint style="info" %}
-If you keep separate copies of non-4K and 4K content in your media libraries, you will need to set up multiple Radarr/Sonarr instances and link each of them to Overseerr.
+**If you keep separate copies of non-4K and 4K content in your media libraries, you will need to set up multiple Radarr/Sonarr instances and link each of them to Overseerr.**
 
 Overseerr checks these linked servers to determine whether or not media has already been requested or is available, so two servers of each type are required _if you keep separate non-4K and 4K copies of media_.
 
-If you only maintain one copy of media, you can instead simply set up one server and set the "Quality Profile" setting on a per-request basis.
+**If you only maintain one copy of media, you can instead simply set up one server and set the "Quality Profile" setting on a per-request basis.**
 {% endhint %}
 
 ### Radarr/Sonarr Settings
+
+{% hint style="warning" %}
+**Only v3 Radarr/Sonarr servers are supported!** If your Radarr/Sonarr server is still running v2, you will need to upgrade in order to add it to Overseerr.
+{% endhint %}
 
 #### Default Server
 
