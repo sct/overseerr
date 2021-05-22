@@ -293,6 +293,7 @@ requestRoutes.post('/', async (req, res, next) => {
         )
           ? MediaRequestStatus.APPROVED
           : MediaRequestStatus.PENDING,
+        modifiedBy: requestUser.id === req.user?.id ? undefined : req.user,
         is4k: req.body.is4k,
         serverId: req.body.serverId,
         profileId: req.body.profileId,
