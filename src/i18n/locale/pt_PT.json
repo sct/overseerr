@@ -810,7 +810,7 @@
   "components.Settings.noDefault4kServer": "Um servidor 4K {serverType} deve ser marcado como padrão para permitir que os utilizador enviem solicitações 4K de {mediaType}.",
   "components.Settings.is4k": "4K",
   "components.Settings.SettingsUsers.newPlexLoginTip": "Permitir que Utilizadores do Plex se conectem sem primeiro serem importados",
-  "components.Settings.SettingsUsers.newPlexLogin": "Ativar nova conexão de utilizador Plex",
+  "components.Settings.SettingsUsers.newPlexLogin": "Ativar nova conexão Plex",
   "components.Settings.Notifications.toastTelegramTestSuccess": "Notificação de teste Telegram enviada!",
   "components.Settings.Notifications.toastEmailTestSuccess": "Notificação de teste e-mail enviada!",
   "components.Settings.Notifications.toastDiscordTestSuccess": "Notificação de teste Discord enviada!",
@@ -866,5 +866,7 @@
   "components.Settings.Notifications.NotificationsLunaSea.webhookUrlTip": "Sua <LunaSeaLink>URL de webhook</LunaSeaLink> para notificação baseada em utilizador ou dispositivo",
   "components.RequestList.RequestItem.requesteddate": "Solicitado",
   "components.RequestCard.failedretry": "Algo errou ao retentar fazer a solicitação.",
-  "components.DownloadBlock.estimatedtime": "Estimativa {time}"
+  "components.DownloadBlock.estimatedtime": "Estimativa {time}",
+  "components.Settings.SettingsUsers.localLoginTip": "Permitir que os utilizadores se conectem usando e-mail e palavra-passe, em vez de Plex OAuth",
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Permissões iniciais atribuídas a novos utilizadores"
 }
