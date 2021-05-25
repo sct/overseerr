@@ -837,7 +837,7 @@
   "components.Settings.Notifications.NotificationsPushover.toastPushoverTestFailed": "Pushover-testmeddelandet kunde inte skickas.",
   "components.Settings.Notifications.NotificationsPushbullet.toastPushbulletTestSuccess": "Pushbullet testmeddelande skickat!",
   "components.Settings.SettingsUsers.newPlexLoginTip": "Tillåt Plex-användare att logga in utan att först importeras",
-  "components.Settings.SettingsUsers.newPlexLogin": "Aktivera ny Plex-användarinloggning",
+  "components.Settings.SettingsUsers.newPlexLogin": "Aktivera ny Plex-inloggning",
   "components.PermissionEdit.requestTvDescription": "Bevilja tillstånd att begära serier som inte är 4K.",
   "components.PermissionEdit.requestTv": "Begär serie",
   "components.PermissionEdit.requestMoviesDescription": "Ger tillstånd att begära filmer som inte är 4K.",
@@ -866,5 +866,7 @@
   "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "För att kunna ta emot push-notiser måste Overseerr serveras via HTTPS.",
   "components.UserList.displayName": "Visningsnamn",
   "components.RequestList.RequestItem.requesteddate": "Begärd",
-  "components.RequestCard.failedretry": "Något gick fel vid nytt försök av begäran."
+  "components.RequestCard.failedretry": "Något gick fel vid nytt försök av begäran.",
+  "components.Settings.SettingsUsers.localLoginTip": "Tillåt användare att logga in med sin e-postadress och lösenord istället för Plex OAuth",
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Inledande behörigheter som tilldelats nya användare"
 }
