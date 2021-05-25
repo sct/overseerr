@@ -416,7 +416,8 @@ class BaseScanner<T> {
                   season.status === MediaStatus.AVAILABLE
               )
             ? MediaStatus.PARTIALLY_AVAILABLE
-            : media.seasons.some(
+            : !seasons.length ||
+              media.seasons.some(
                 (season) => season.status === MediaStatus.PROCESSING
               )
             ? MediaStatus.PROCESSING
@@ -431,7 +432,8 @@ class BaseScanner<T> {
                   season.status4k === MediaStatus.AVAILABLE
               )
             ? MediaStatus.PARTIALLY_AVAILABLE
-            : media.seasons.some(
+            : !seasons.length ||
+              media.seasons.some(
                 (season) => season.status4k === MediaStatus.PROCESSING
               )
             ? MediaStatus.PROCESSING
