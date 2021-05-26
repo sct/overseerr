@@ -188,7 +188,9 @@ const UserGeneralSettings: React.FC = () => {
                       id="displayName"
                       name="displayName"
                       type="text"
-                      placeholder={user?.displayName}
+                      placeholder={
+                        user?.plexUsername ? user.plexUsername : user?.email
+                      }
                     />
                   </div>
                   {errors.displayName && touched.displayName && (
