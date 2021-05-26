@@ -1574,10 +1574,10 @@
     underscore "~1.13.1"
     underscore.deep "~0.5.1"
 
-"@ladjs/i18n@^7.2.2":
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-7.2.2.tgz#4148fb848fafbf9c20e64b1b7cb0e8b0c7c5cf56"
-  integrity sha512-N9jR6Fnd7gQ4Z1BMvjgNqAukC/B69D85NmLZ95w/X7ZwO1cdqr73DiOoWoYvswe5wYCbGpqDdqP0cxYo4BsrEw==
+"@ladjs/i18n@^7.2.3":
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-7.2.3.tgz#ea1872642709f25b12c2c28fefcdcc5b28cc270a"
+  integrity sha512-bCqZH47iH9XlfjG2IknNxfovvqtfRfmZYYwnTR+8e0FSz6ZKgF/u7X3PAM/sYz/YAc/01Z3/T2bZlmbSrFtUcg==
   dependencies:
     "@hapi/boom" "^9.1.2"
     "@ladjs/country-language" "^0.2.1"
@@ -5278,12 +5278,12 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-email-templates@^8.0.6:
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/email-templates/-/email-templates-8.0.6.tgz#34923dd12c08ba76b7d56f4f6f8a670e21445dde"
-  integrity sha512-mPHRfLM3PnVD4Bb1cAorwbyzKATw1YPA1w9XuMy6edBsY9girgYln/kFKSjpwoS97PkIoKrDM8kvZD4fLQzdTw==
+email-templates@^8.0.7:
+  version "8.0.7"
+  resolved "https://registry.yarnpkg.com/email-templates/-/email-templates-8.0.7.tgz#4cdaa0bfd56bc3191262fe4b82cea5bf61bdef1a"
+  integrity sha512-Qlr9z5Zp1EFjs1T8zdFoQiBZNBdqo44OvlqSE36905dijnB06AZ8aPg+AycfC23obEA82gYGplGP25Khn2vrBg==
   dependencies:
-    "@ladjs/i18n" "^7.2.2"
+    "@ladjs/i18n" "^7.2.3"
     consolidate "^0.16.0"
     debug "^4.3.1"
     get-paths "^0.0.7"
@@ -9524,12 +9524,7 @@ nodemailer@6.4.18:
   resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.4.18.tgz#2788c85792844fc17befda019031609017f4b9a1"
   integrity sha512-ht9cXxQ+lTC+t00vkSIpKHIyM4aXIsQ1tcbQCn5IOnxYHi81W2XOaU66EQBFFpbtzLEBTC94gmkbD4mGZQzVpA==
 
-nodemailer@^6.5.0:
-  version "6.5.0"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.5.0.tgz#d12c28d8d48778918e25f1999d97910231b175d9"
-  integrity sha512-Tm4RPrrIZbnqDKAvX+/4M+zovEReiKlEXWDzG4iwtpL9X34MJY+D5LnQPH/+eghe8DLlAVshHAJZAZWBGhkguw==
-
-nodemailer@^6.6.0:
+nodemailer@^6.5.0, nodemailer@^6.6.0:
   version "6.6.0"
   resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.6.0.tgz#ed47bb572b48d9d0dca3913fdc156203f438f427"
   integrity sha512-ikSMDU1nZqpo2WUPE0wTTw/NGGImTkwpJKDIFPZT+YvvR9Sj+ze5wzu95JHkBMglQLoG2ITxU21WukCC/XsFkg==

@@ -32,7 +32,7 @@
     "copy-to-clipboard": "^3.3.1",
     "country-flag-icons": "^1.2.10",
     "csurf": "^1.11.0",
-    "email-templates": "^8.0.6",
+    "email-templates": "^8.0.7",
     "express": "^4.17.1",
     "express-openapi-validator": "^4.12.10",
     "express-rate-limit": "^5.2.6",
