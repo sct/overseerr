@@ -57,7 +57,10 @@ authRoutes.post('/plex', async (req, res, next) => {
       // Update the user's avatar with their Plex thumbnail, in case it changed
       user.avatar = account.thumb;
       user.email = account.email;
-      user.plexUsername = account.username;
+      user.plexUsername =
+        account.username.toLowerCase() === account.email.toLowerCase()
+          ? ''
+          : account.username;
 
       // In case the user was previously a local account
       if (user.userType === UserType.LOCAL) {
@@ -65,7 +68,10 @@ authRoutes.post('/plex', async (req, res, next) => {
         user.plexId = account.id;
       }
 
-      if (user.username === account.username) {
+      if (
+        user.username === account.username ||
+        (user.username ?? '').toLowerCase() === user.email.toLowerCase()
+      ) {
         user.username = '';
       }
       await userRepository.save(user);
@@ -77,7 +83,10 @@ authRoutes.post('/plex', async (req, res, next) => {
       if (totalUsers === 0) {
         user = new User({
           email: account.email,
-          plexUsername: account.username,
+          plexUsername:
+            account.username.toLowerCase() === account.email.toLowerCase()
+              ? ''
+              : account.username,
           plexId: account.id,
           plexToken: account.authToken,
           permissions: Permission.ADMIN,
@@ -118,7 +127,10 @@ authRoutes.post('/plex', async (req, res, next) => {
         if (await mainPlexTv.checkUserAccess(account.id)) {
           user = new User({
             email: account.email,
-            plexUsername: account.username,
+            plexUsername:
+              account.username.toLowerCase() === account.email.toLowerCase()
+                ? ''
+                : account.username,
             plexId: account.id,
             plexToken: account.authToken,
             permissions: settings.main.defaultPermissions,

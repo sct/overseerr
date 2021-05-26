@@ -52,7 +52,7 @@ export class User {
   public email: string;
 
   @Column({ nullable: true })
-  public plexUsername: string;
+  public plexUsername?: string;
 
   @Column({ nullable: true })
   public username?: string;
@@ -220,7 +220,7 @@ export class User {
 
   @AfterLoad()
   public setDisplayName(): void {
-    this.displayName = this.username || this.plexUsername;
+    this.displayName = this.username || this.plexUsername || this.email;
   }
 
   public async getQuota(): Promise<QuotaResponse> {

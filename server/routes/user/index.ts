@@ -31,7 +31,7 @@ router.get('/', async (req, res, next) => {
         break;
       case 'displayname':
         query = query.orderBy(
-          '(CASE WHEN user.username IS NULL THEN user.plexUsername ELSE user.username END)',
+          "(CASE WHEN (user.username IS NULL OR user.username = '') THEN (CASE WHEN (user.plexUsername IS NULL OR user.plexUsername = '') THEN LOWER(user.email) ELSE LOWER(user.plexUsername) END) ELSE LOWER(user.username) END)",
           'ASC'
         );
         break;
@@ -409,14 +409,20 @@ router.post(
             // Update the user's avatar with their Plex thumbnail, in case it changed
             user.avatar = account.thumb;
             user.email = account.email;
-            user.plexUsername = account.username;
+            user.plexUsername =
+              account.username.toLowerCase() === account.email.toLowerCase()
+                ? ''
+                : account.username;
 
             // In case the user was previously a local account
             if (user.userType === UserType.LOCAL) {
               user.userType = UserType.PLEX;
               user.plexId = parseInt(account.id);
 
-              if (user.username === account.username) {
+              if (
+                user.username === account.username ||
+                (user.username ?? '').toLowerCase() === user.email.toLowerCase()
+              ) {
                 user.username = '';
               }
             }
@@ -424,7 +430,10 @@ router.post(
           } else {
             if (await mainPlexTv.checkUserAccess(parseInt(account.id))) {
               const newUser = new User({
-                plexUsername: account.username,
+                plexUsername:
+                  account.username.toLowerCase() === account.email.toLowerCase()
+                    ? ''
+                    : account.username,
                 email: account.email,
                 permissions: settings.main.defaultPermissions,
                 plexId: parseInt(account.id),
