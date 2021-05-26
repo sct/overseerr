@@ -11,7 +11,7 @@ module.exports = {
         width: 'width',
       },
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
       },
       typography: (theme) => ({
         DEFAULT: {
