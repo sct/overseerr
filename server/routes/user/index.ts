@@ -396,51 +396,49 @@ router.post(
       for (const rawUser of plexUsersResponse.MediaContainer.User) {
         const account = rawUser.$;
 
-        const user = await userRepository
-          .createQueryBuilder('user')
-          .where('user.plexId = :id', { id: account.id })
-          .orWhere('LOWER(user.email) = :email', {
-            email: account.email.toLowerCase(),
-          })
-          .getOne();
+        if (account.email) {
+          const user = await userRepository
+            .createQueryBuilder('user')
+            .where('user.plexId = :id', { id: account.id })
+            .orWhere('LOWER(user.email) = :email', {
+              email: account.email.toLowerCase(),
+            })
+            .getOne();
 
-        if (user) {
-          // Update the user's avatar with their Plex thumbnail, in case it changed
-          user.avatar = account.thumb;
-          user.email = account.email;
-          user.plexUsername = account.username;
+          if (user) {
+            // Update the user's avatar with their Plex thumbnail, in case it changed
+            user.avatar = account.thumb;
+            user.email = account.email;
+            user.plexUsername = account.username;
 
-          // In case the user was previously a local account
-          if (user.userType === UserType.LOCAL) {
-            user.userType = UserType.PLEX;
-            user.plexId = parseInt(account.id);
+            // In case the user was previously a local account
+            if (user.userType === UserType.LOCAL) {
+              user.userType = UserType.PLEX;
+              user.plexId = parseInt(account.id);
 
-            if (user.username === account.username) {
-              user.username = '';
+              if (user.username === account.username) {
+                user.username = '';
+              }
             }
-          }
-          await userRepository.save(user);
-        } else {
-          // Check to make sure it's a real account
-          if (
-            account.email &&
-            account.username &&
-            (await mainPlexTv.checkUserAccess(parseInt(account.id)))
-          ) {
-            const newUser = new User({
-              plexUsername: account.username,
-              email: account.email,
-              permissions: settings.main.defaultPermissions,
-              plexId: parseInt(account.id),
-              plexToken: '',
-              avatar: account.thumb,
-              userType: UserType.PLEX,
-            });
-            await userRepository.save(newUser);
-            createdUsers.push(newUser);
+            await userRepository.save(user);
+          } else {
+            if (await mainPlexTv.checkUserAccess(parseInt(account.id))) {
+              const newUser = new User({
+                plexUsername: account.username,
+                email: account.email,
+                permissions: settings.main.defaultPermissions,
+                plexId: parseInt(account.id),
+                plexToken: '',
+                avatar: account.thumb,
+                userType: UserType.PLEX,
+              });
+              await userRepository.save(newUser);
+              createdUsers.push(newUser);
+            }
           }
         }
       }
+
       return res.status(201).json(User.filterMany(createdUsers));
     } catch (e) {
       next({ status: 500, message: e.message });
