@@ -806,7 +806,7 @@
   "components.Settings.locale": "Idioma de visualització",
   "components.Settings.is4k": "4K",
   "components.Settings.SettingsUsers.newPlexLoginTip": "Permetre als usuaris de Plex iniciar la sessió sense haver-los importat prèviament",
-  "components.Settings.SettingsUsers.newPlexLogin": "Activa l'inici de sessió de nou usuari de Plex",
+  "components.Settings.SettingsUsers.newPlexLogin": "Activa nou inici de sessió de Plex",
   "components.Settings.Notifications.toastTelegramTestSuccess": "S'ha enviat la notificació de prova de Telegram!",
   "components.Settings.Notifications.toastTelegramTestSending": "S'està enviant la notificació de prova de Telegram…",
   "components.Settings.Notifications.toastEmailTestSuccess": "S'ha enviat una notificació de prova per correu electrònic!",
@@ -863,5 +863,10 @@
   "components.Settings.validationWebAppUrl": "Heu de proporcionar un URL d'aplicació web Plex vàlid",
   "components.Settings.Notifications.webhookUrlTip": "Creeu una <DiscordWebhookLink>integració de webhook</DiscordWebhookLink> al vostre servidor",
   "components.Settings.Notifications.encryptionOpportunisticTls": "Utilitzeu sempre STARTTLS",
-  "components.Settings.Notifications.encryptionNone": "Cap"
+  "components.Settings.Notifications.encryptionNone": "Cap",
+  "components.UserList.displayName": "Nom de visualització",
+  "components.Settings.SettingsUsers.localLoginTip": "Permetre als usuaris iniciar la sessió mitjançant la seva adreça de correu electrònic i contrasenya, en lloc de l'autenticació de Plex",
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Permisos inicials assignats a usuaris nous",
+  "components.RequestList.RequestItem.requesteddate": "Sol·licitat",
+  "components.RequestCard.failedretry": "S'ha produït un error en tornar a demanar la sol·licitud."
 }
