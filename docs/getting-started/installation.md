@@ -99,7 +99,7 @@ Use a 3rd party updating mechanism such as [Watchtower](https://github.com/conta
 
 ## Windows
 
-Please refer to the [docker for windows documentation](https://docs.docker.com/docker-for-windows/) for installation.
+Please refer to the [Docker Desktop for Windows user manual](https://docs.docker.com/docker-for-windows/) for details on how to install Docker on Windows.
 
 {% hint style="danger" %}
 **WSL2 will need to be installed to prevent DB corruption!** Please see the [Docker Desktop WSL 2 backend documentation](https://docs.docker.com/docker-for-windows/wsl/) for instructions on how to enable WSL2. The command below will only work with WSL2 installed!
