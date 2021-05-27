@@ -42,7 +42,7 @@ const messages = defineMessages({
   originallanguageTip: 'Filter content by original language',
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
-  enableOverride: 'Enable Override',
+  enableOverride: 'Override Global Limit',
   applanguage: 'Display Language',
   languageDefault: 'Default ({language})',
 });
