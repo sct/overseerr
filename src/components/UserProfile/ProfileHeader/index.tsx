@@ -65,11 +65,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 {user.displayName}
               </a>
             </Link>
-            {user.displayName !== user.email && (
-              <span className="text-sm text-gray-400 sm:text-lg sm:ml-2">
-                ({user.email})
-              </span>
-            )}
+            {user.displayName !== user.email &&
+              (user.id === loggedInUser?.id ||
+                hasPermission(Permission.MANAGE_USERS)) && (
+                <span className="text-sm text-gray-400 sm:text-lg sm:ml-2">
+                  ({user.email})
+                </span>
+              )}
           </h1>
           <p className="text-sm font-medium text-gray-400">
             {subtextItems.reduce((prev, curr) => (
