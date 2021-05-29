@@ -11,7 +11,7 @@ const messages = defineMessages({
   mediarequestedDescription:
     'Send notifications when users submit new media requests which require approval.',
   usermediarequestedDescription:
-    'Get notified when users submit new media requests which require approval.',
+    'Get notified when other users submit new media requests which require approval.',
   mediaapproved: 'Media Approved',
   mediaapprovedDescription:
     'Send notifications when media requests are manually approved.',
@@ -19,9 +19,9 @@ const messages = defineMessages({
     'Get notified when your media requests are approved.',
   mediaAutoApproved: 'Media Automatically Approved',
   mediaAutoApprovedDescription:
-    'Send notifications when media requests are automatically approved.',
+    'Send notifications when users submit new media requests which are automatically approved.',
   usermediaAutoApprovedDescription:
-    'Get notified when media requests are automatically approved.',
+    'Get notified when other users submit new media requests which are automatically approved.',
   mediaavailable: 'Media Available',
   mediaavailableDescription:
     'Send notifications when media requests become available.',
