@@ -269,7 +269,10 @@ class TelegramAgent
               user.settings?.hasNotificationType(
                 NotificationAgentKey.TELEGRAM,
                 type
-              )
+              ) &&
+              // Check if it's the user's own auto-approved request
+              (type !== Notification.MEDIA_AUTO_APPROVED ||
+                user.id !== payload.request?.requestedBy.id)
           )
           .map(async (user) => {
             if (
