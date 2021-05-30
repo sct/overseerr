@@ -2,6 +2,7 @@ import logger from '../../logger';
 import type { NotificationAgent, NotificationPayload } from './agents/agent';
 
 export enum Notification {
+  NONE = 0,
   MEDIA_PENDING = 2,
   MEDIA_APPROVED = 4,
   MEDIA_AVAILABLE = 8,

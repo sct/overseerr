@@ -43,6 +43,11 @@ class WebPushAgent
     payload: NotificationPayload
   ): PushNotificationPayload {
     switch (type) {
+      case Notification.NONE:
+        return {
+          notificationType: Notification[type],
+          subject: 'Unknown',
+        };
       case Notification.TEST_NOTIFICATION:
         return {
           notificationType: Notification[type],

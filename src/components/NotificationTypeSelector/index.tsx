@@ -44,6 +44,7 @@ export const hasNotificationType = (
 };
 
 export enum Notification {
+  NONE = 0,
   MEDIA_PENDING = 2,
   MEDIA_APPROVED = 4,
   MEDIA_AVAILABLE = 8,
