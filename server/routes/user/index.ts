@@ -31,7 +31,7 @@ router.get('/', async (req, res, next) => {
         break;
       case 'displayname':
         query = query.orderBy(
-          "(CASE WHEN (user.username IS NULL OR user.username = '') THEN (CASE WHEN (user.plexUsername IS NULL OR user.plexUsername = '') THEN LOWER(user.email) ELSE LOWER(user.plexUsername) END) ELSE LOWER(user.username) END)",
+          "(CASE WHEN (user.username IS NULL OR user.username = '') THEN (CASE WHEN (user.plexUsername IS NULL OR user.plexUsername = '') THEN user.email ELSE LOWER(user.plexUsername) END) ELSE LOWER(user.username) END)",
           'ASC'
         );
         break;
@@ -84,7 +84,7 @@ router.post(
 
       const existingUser = await userRepository
         .createQueryBuilder('user')
-        .where('LOWER(user.email) = :email', {
+        .where('user.email = :email', {
           email: body.email.toLowerCase(),
         })
         .getOne();
@@ -400,7 +400,7 @@ router.post(
           const user = await userRepository
             .createQueryBuilder('user')
             .where('user.plexId = :id', { id: account.id })
-            .orWhere('LOWER(user.email) = :email', {
+            .orWhere('user.email = :email', {
               email: account.email.toLowerCase(),
             })
             .getOne();

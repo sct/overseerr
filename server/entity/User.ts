@@ -48,7 +48,13 @@ export class User {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({ unique: true })
+  @Column({
+    unique: true,
+    transformer: {
+      from: (value: string): string => value.toLowerCase(),
+      to: (value: string): string => value.toLowerCase(),
+    },
+  })
   public email: string;
 
   @Column({ nullable: true })

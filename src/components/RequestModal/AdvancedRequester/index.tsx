@@ -523,7 +523,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                             {selectedUser.displayName}
                           </span>
                           {selectedUser.displayName.toLowerCase() !==
-                            selectedUser.email.toLowerCase() && (
+                            selectedUser.email && (
                             <span className="ml-1 text-gray-400 truncate">
                               ({selectedUser.email})
                             </span>
@@ -573,7 +573,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                                     {user.displayName}
                                   </span>
                                   {user.displayName.toLowerCase() !==
-                                    user.email.toLowerCase() && (
+                                    user.email && (
                                     <span className="ml-1 text-gray-400 truncate">
                                       ({user.email})
                                     </span>

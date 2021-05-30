@@ -43,7 +43,7 @@ authRoutes.post('/plex', async (req, res, next) => {
     let user = await userRepository
       .createQueryBuilder('user')
       .where('user.plexId = :id', { id: account.id })
-      .orWhere('LOWER(user.email) = :email', {
+      .orWhere('user.email = :email', {
         email: account.email.toLowerCase(),
       })
       .getOne();
@@ -174,7 +174,7 @@ authRoutes.post('/local', async (req, res, next) => {
     const user = await userRepository
       .createQueryBuilder('user')
       .select(['user.id', 'user.password'])
-      .where('LOWER(user.email) = :email', { email: body.email.toLowerCase() })
+      .where('user.email = :email', { email: body.email.toLowerCase() })
       .getOne();
 
     const isCorrectCredentials = await user?.passwordMatch(body.password);
@@ -241,7 +241,7 @@ authRoutes.post('/reset-password', async (req, res) => {
 
   const user = await userRepository
     .createQueryBuilder('user')
-    .where('LOWER(user.email) = :email', { email: body.email.toLowerCase() })
+    .where('user.email = :email', { email: body.email.toLowerCase() })
     .getOne();
 
   if (user) {
