@@ -43,7 +43,7 @@ authRoutes.post('/plex', async (req, res, next) => {
     let user = await userRepository
       .createQueryBuilder('user')
       .where('user.plexId = :id', { id: account.id })
-      .orWhere('LOWER(user.email) = :email', {
+      .orWhere('user.email = :email', {
         email: account.email.toLowerCase(),
       })
       .getOne();
@@ -65,9 +65,6 @@ authRoutes.post('/plex', async (req, res, next) => {
         user.plexId = account.id;
       }
 
-      if (user.username === account.username) {
-        user.username = '';
-      }
       await userRepository.save(user);
     } else {
       // Here we check if it's the first user. If it is, we create the user with no check
@@ -177,7 +174,7 @@ authRoutes.post('/local', async (req, res, next) => {
     const user = await userRepository
       .createQueryBuilder('user')
       .select(['user.id', 'user.password'])
-      .where('LOWER(user.email) = :email', { email: body.email.toLowerCase() })
+      .where('user.email = :email', { email: body.email.toLowerCase() })
       .getOne();
 
     const isCorrectCredentials = await user?.passwordMatch(body.password);
@@ -244,7 +241,7 @@ authRoutes.post('/reset-password', async (req, res) => {
 
   const user = await userRepository
     .createQueryBuilder('user')
-    .where('LOWER(user.email) = :email', { email: body.email.toLowerCase() })
+    .where('user.email = :email', { email: body.email.toLowerCase() })
     .getOne();
 
   if (user) {

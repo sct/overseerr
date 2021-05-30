@@ -602,9 +602,11 @@ const UserList: React.FC = () => {
                         {user.displayName}
                       </a>
                     </Link>
-                    <div className="text-sm leading-5 text-gray-300">
-                      {user.email}
-                    </div>
+                    {user.displayName.toLowerCase() !== user.email && (
+                      <div className="text-sm leading-5 text-gray-300">
+                        {user.email}
+                      </div>
+                    )}
                   </div>
                 </div>
               </Table.TD>

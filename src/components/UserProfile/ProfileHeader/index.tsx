@@ -65,7 +65,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 {user.displayName}
               </a>
             </Link>
-            {user.email && (
+            {user.email && user.displayName.toLowerCase() !== user.email && (
               <span className="text-sm text-gray-400 sm:text-lg sm:ml-2">
                 ({user.email})
               </span>

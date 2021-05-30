@@ -522,9 +522,12 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                           <span className="block ml-3">
                             {selectedUser.displayName}
                           </span>
-                          <span className="ml-1 text-gray-400 truncate">
-                            ({selectedUser.email})
-                          </span>
+                          {selectedUser.displayName.toLowerCase() !==
+                            selectedUser.email && (
+                            <span className="ml-1 text-gray-400 truncate">
+                              ({selectedUser.email})
+                            </span>
+                          )}
                         </span>
                         <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 pointer-events-none">
                           <ChevronDownIcon className="w-5 h-5" />
@@ -569,9 +572,12 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                                   <span className="flex-shrink-0 block ml-3">
                                     {user.displayName}
                                   </span>
-                                  <span className="ml-1 text-gray-400 truncate">
-                                    ({user.email})
-                                  </span>
+                                  {user.displayName.toLowerCase() !==
+                                    user.email && (
+                                    <span className="ml-1 text-gray-400 truncate">
+                                      ({user.email})
+                                    </span>
+                                  )}
                                 </span>
                                 {selected && (
                                   <span
