@@ -409,31 +409,18 @@ router.post(
             // Update the user's avatar with their Plex thumbnail, in case it changed
             user.avatar = account.thumb;
             user.email = account.email;
-            user.plexUsername =
-              account.username.toLowerCase() === account.email.toLowerCase()
-                ? ''
-                : account.username;
+            user.plexUsername = account.username;
 
             // In case the user was previously a local account
             if (user.userType === UserType.LOCAL) {
               user.userType = UserType.PLEX;
               user.plexId = parseInt(account.id);
-
-              if (
-                user.username === account.username ||
-                (user.username ?? '').toLowerCase() === user.email.toLowerCase()
-              ) {
-                user.username = '';
-              }
             }
             await userRepository.save(user);
           } else {
             if (await mainPlexTv.checkUserAccess(parseInt(account.id))) {
               const newUser = new User({
-                plexUsername:
-                  account.username.toLowerCase() === account.email.toLowerCase()
-                    ? ''
-                    : account.username,
+                plexUsername: account.username,
                 email: account.email,
                 permissions: settings.main.defaultPermissions,
                 plexId: parseInt(account.id),
