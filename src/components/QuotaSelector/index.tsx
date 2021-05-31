@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  movieRequestLimit: '{quotaLimit} movie(s) per {quotaDays} day(s)',
-  tvRequestLimit: '{quotaLimit} season(s) per {quotaDays} day(s)',
+  movieRequests:
+    '{quotaLimit} <quotaUnits>{movies} per {quotaDays} {days}</quotaUnits>',
+  tvRequests:
+    '{quotaLimit} <quotaUnits>{seasons} per {quotaDays} {days}</quotaUnits>',
+  movies: '{count, plural, one {movie} other {movies}}',
+  seasons: '{count, plural, one {season} other {seasons}}',
+  days: '{count, plural, one {day} other {days}}',
   unlimited: 'Unlimited',
 });
 
@@ -47,9 +52,7 @@ const QuotaSelector: React.FC<QuotaSelectorProps> = ({
   return (
     <div className={`${isDisabled ? 'opacity-50' : ''}`}>
       {intl.formatMessage(
-        mediaType === 'movie'
-          ? messages.movieRequestLimit
-          : messages.tvRequestLimit,
+        mediaType === 'movie' ? messages.movieRequests : messages.tvRequests,
         {
           quotaLimit: (
             <select
@@ -82,6 +85,16 @@ const QuotaSelector: React.FC<QuotaSelectorProps> = ({
               ))}
             </select>
           ),
+          movies: intl.formatMessage(messages.movies, { count: quotaLimit }),
+          seasons: intl.formatMessage(messages.seasons, { count: quotaLimit }),
+          days: intl.formatMessage(messages.days, { count: quotaDays }),
+          quotaUnits: function quotaUnits(msg) {
+            return (
+              <span className={limitOverride || quotaLimit ? '' : 'hidden'}>
+                {msg}
+              </span>
+            );
+          },
         }
       )}
     </div>
