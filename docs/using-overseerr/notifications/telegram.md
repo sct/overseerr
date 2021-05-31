@@ -28,4 +28,4 @@ To obtain your chat ID, simply create a new group chat, add [@get_id_bot](https:
 
 ### Send Silently (optional)
 
-Instagram allows you to enable silent notifications. Those will present a pop-up to the user, but will not make any sound. That's a per user configuration.
+Optionally, notifications can be sent silently. Silent notifications send messages without notification sounds.
