@@ -58,7 +58,7 @@
     "react-select": "^4.3.1",
     "react-spring": "^8.0.27",
     "react-toast-notifications": "^2.4.4",
-    "react-transition-group": "^4.4.1",
+    "react-transition-group": "^4.4.2",
     "react-truncate-markup": "^5.1.0",
     "react-use-clipboard": "1.0.7",
     "reflect-metadata": "^0.1.13",
