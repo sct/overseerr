@@ -51,8 +51,8 @@ export class User {
   @Column({
     unique: true,
     transformer: {
-      from: (value: string): string => value.toLowerCase(),
-      to: (value: string): string => value.toLowerCase(),
+      from: (value: string): string => (value ?? '').toLowerCase(),
+      to: (value: string): string => (value ?? '').toLowerCase(),
     },
   })
   public email: string;
