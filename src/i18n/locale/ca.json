@@ -77,8 +77,6 @@
   "components.RequestBlock.profilechanged": "Perfil de qualitat",
   "components.RegionSelector.regionServerDefault": "Predeterminada ({Region})",
   "components.PlexLoginButton.signinwithplex": "Inicieu la sessió",
-  "components.QuotaSelector.movieRequestLimit": "{quotaLimit} pel·lícula(es) cada {quotaDays} dia(es)",
-  "components.QuotaSelector.tvRequestLimit": "{quotaLimit} temporada(es) cada {quotaDays} dia(es)",
   "components.RegionSelector.regionDefault": "Totes les regions",
   "components.QuotaSelector.unlimited": "Il·limitat",
   "components.PlexLoginButton.signingin": "S'està iniciant la sessió…",
