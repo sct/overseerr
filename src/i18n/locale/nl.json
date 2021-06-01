@@ -683,7 +683,7 @@
   "components.UserProfile.limit": "{remaining} van {limit}",
   "components.UserProfile.UserSettings.UserGeneralSettings.seriesrequestlimit": "Aanvraaglimiet voor series",
   "components.UserProfile.UserSettings.UserGeneralSettings.movierequestlimit": "Aanvraaglimiet voor films",
-  "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "Overschrijven inschakelen",
+  "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "Globale limiet overschrijven",
   "components.Settings.SettingsUsers.movieRequestLimitLabel": "Globale aanvraaglimiet voor films",
   "components.Settings.SettingsUsers.tvRequestLimitLabel": "Globale aanvraaglimiet voor series",
   "components.RequestModal.QuotaDisplay.seasonlimit": "{limit, plural, one {seizoen} other {seizoenen}}",
@@ -698,8 +698,6 @@
   "components.RequestModal.QuotaDisplay.allowedRequestsUser": "Deze gebruiker mag elke <strong>{days}</strong> dagen <strong>{limit}</strong> {type} aanvragen.",
   "components.RequestModal.QuotaDisplay.allowedRequests": "Je mag elke <strong>{days}</strong> dagen <strong>{limit}</strong> {type} aanvragen.",
   "components.QuotaSelector.unlimited": "Onbeperkt",
-  "components.QuotaSelector.tvRequestLimit": "{quotaLimit} seizoen(en) per {quotaDays} dag(en)",
-  "components.QuotaSelector.movieRequestLimit": "{quotaLimit} film(s) per {quotaDays} dag(en)",
   "i18n.view": "Bekijken",
   "i18n.tvshow": "Serie",
   "i18n.testing": "Bezig met testen…",
@@ -868,5 +866,10 @@
   "components.RequestCard.failedretry": "Er ging opnieuw iets mis tijdens het aanvragen.",
   "components.UserList.displayName": "Weergavenaam",
   "components.Settings.SettingsUsers.localLoginTip": "Sta gebruikers toe om in te loggen met hun e-mailadres en wachtwoord, in plaats van met Plex OAuth",
-  "components.Settings.SettingsUsers.defaultPermissionsTip": "Initiële machtigingen toegekend aan nieuwe gebruikers"
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Initiële machtigingen toegekend aan nieuwe gebruikers",
+  "components.QuotaSelector.tvRequests": "{quotaLimit} <quotaUnits>{seasons} per {quotaDays} {days}</quotaUnits>",
+  "components.QuotaSelector.seasons": "{count, plural, one {seizoen} other {seizoenen}}",
+  "components.QuotaSelector.movieRequests": "{quotaLimit} <quotaUnits>{movies} per {quotaDays} {days}</quotaUnits>",
+  "components.QuotaSelector.movies": "{count, plural, one {film} other {films}}",
+  "components.QuotaSelector.days": "{count, plural, one {dag} other {dagen}}"
 }
