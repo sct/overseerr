@@ -723,7 +723,7 @@
   "components.UserList.nouserstoimport": "No new users to import from Plex.",
   "components.UserList.owner": "Owner",
   "components.UserList.password": "Password",
-  "components.UserList.passwordinfodescription": "Enable email notifications to allow automatic password generation.",
+  "components.UserList.passwordinfodescription": "Configure an application URL and enable email notifications to allow automatic password generation.",
   "components.UserList.plexuser": "Plex User",
   "components.UserList.role": "Role",
   "components.UserList.sortCreated": "Creation Date",

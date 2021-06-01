@@ -148,6 +148,7 @@ CoreApp.getInitialProps = async (initialProps) => {
   let currentSettings: PublicSettingsResponse = {
     initialized: false,
     applicationTitle: '',
+    applicationUrl: '',
     hideAvailable: false,
     movie4kEnabled: false,
     series4kEnabled: false,
@@ -159,6 +160,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     vapidPublic: '',
     enablePushRegistration: false,
     locale: 'en',
+    emailEnabled: false,
   };
 
   if (ctx.res) {

@@ -15,7 +15,6 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
-import { UserSettingsNotificationsResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
 import { hasPermission } from '../../../server/lib/permissions';
 import useSettings from '../../hooks/useSettings';
 import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
@@ -70,7 +69,7 @@ const messages = defineMessages({
   email: 'Email Address',
   password: 'Password',
   passwordinfodescription:
-    'Enable email notifications to allow automatic password generation.',
+    'Configure an application URL and enable email notifications to allow automatic password generation.',
   autogeneratepassword: 'Automatically Generate Password',
   autogeneratepasswordTip: 'Email a server-generated password to the user',
   validationEmail: 'You must provide a valid email address',
@@ -102,12 +101,6 @@ const UserList: React.FC = () => {
       pageIndex * currentPageSize
     }&sort=${currentSort}`
   );
-  const { data: notificationSettings } =
-    useSWR<UserSettingsNotificationsResponse>(
-      currentUser
-        ? `/api/v1/user/${currentUser?.id}/settings/notifications`
-        : null
-    );
 
   const [isDeleting, setDeleting] = useState(false);
   const [isImporting, setImporting] = useState(false);
@@ -254,6 +247,10 @@ const UserList: React.FC = () => {
   const hasNextPage = data.pageInfo.pages > pageIndex + 1;
   const hasPrevPage = pageIndex > 0;
 
+  const passwordGenerationEnabled =
+    settings.currentSettings.applicationUrl &&
+    settings.currentSettings.emailEnabled;
+
   return (
     <>
       <PageTitle title={intl.formatMessage(messages.users)} />
@@ -366,12 +363,15 @@ const UserList: React.FC = () => {
                     type="warning"
                   />
                 )}
-                {!notificationSettings?.emailEnabled && (
-                  <Alert
-                    title={intl.formatMessage(messages.passwordinfodescription)}
-                    type="info"
-                  />
-                )}
+                {currentHasPermission(Permission.MANAGE_SETTINGS) &&
+                  !passwordGenerationEnabled && (
+                    <Alert
+                      title={intl.formatMessage(
+                        messages.passwordinfodescription
+                      )}
+                      type="info"
+                    />
+                  )}
                 <Form className="section">
                   <div className="form-row">
                     <label htmlFor="displayName" className="text-label">
@@ -408,7 +408,7 @@ const UserList: React.FC = () => {
                   </div>
                   <div
                     className={`form-row ${
-                      notificationSettings?.emailEnabled ? '' : 'opacity-50'
+                      passwordGenerationEnabled ? '' : 'opacity-50'
                     }`}
                   >
                     <label htmlFor="genpassword" className="checkbox-label">
@@ -422,7 +422,7 @@ const UserList: React.FC = () => {
                         type="checkbox"
                         id="genpassword"
                         name="genpassword"
-                        disabled={!notificationSettings?.emailEnabled}
+                        disabled={!passwordGenerationEnabled}
                         onClick={() => setFieldValue('password', '')}
                       />
                     </div>
