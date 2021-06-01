@@ -134,7 +134,7 @@
     "prettier": "^2.3.0",
     "semantic-release": "^17.4.3",
     "semantic-release-docker-buildx": "^1.0.1",
-    "tailwindcss": "^2.1.2",
+    "tailwindcss": "^2.1.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.3.2"
   },
