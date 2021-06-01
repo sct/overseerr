@@ -612,7 +612,7 @@
   "components.Settings.SettingsUsers.toastSettingsSuccess": "用戶設置保存成功！",
   "components.Settings.SettingsUsers.toastSettingsFailure": "保存設置中出了點問題。",
   "components.Settings.Notifications.emailNotificationTypesAlertDescriptionPt2": "「<strong>請求批准</strong>」、「<strong>請求拒絕</strong>」、「<strong>媒體可觀看</strong>」通知類型，將發送通知給請求者。",
-  "components.NotificationTypeSelector.mediaAutoApprovedDescription": "當請求被自動批准時發送通知。",
+  "components.NotificationTypeSelector.mediaAutoApprovedDescription": "當用戶提交自動批准的請求時發送通知。",
   "components.NotificationTypeSelector.mediaAutoApproved": "請求自動批准",
   "components.UserProfile.UserSettings.UserPermissions.unauthorizedDescription": "您不能編輯自己的權限。",
   "components.UserProfile.UserSettings.unauthorizedDescription": "您無權編輯此用戶的設置。",
@@ -689,11 +689,9 @@
   "components.UserProfile.limit": "{limit} 之 {remaining}",
   "components.UserProfile.pastdays": "{type}（前 {days} 天）",
   "components.UserProfile.requestsperdays": "剩餘 {limit}",
-  "components.QuotaSelector.tvRequestLimit": "每 {days} 天 {quotaLimit} 季",
-  "components.QuotaSelector.movieRequestLimit": "每 {days} 天 {quotaLimit} 部電影",
   "components.QuotaSelector.unlimited": "無限",
   "components.RequestModal.QuotaDisplay.movie": "電影",
-  "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "啟用覆寫",
+  "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "覆寫全局限制",
   "components.UserProfile.unlimited": "無限",
   "components.UserProfile.totalrequests": "請求總數",
   "components.UserProfile.seriesrequest": "電視節目請求",
@@ -868,5 +866,10 @@
   "components.RequestCard.failedretry": "重試提交請求中出了點問題。",
   "components.UserList.displayName": "顯示名稱",
   "components.Settings.SettingsUsers.localLoginTip": "讓用戶使用電子郵件地址和密碼登錄",
-  "components.Settings.SettingsUsers.defaultPermissionsTip": "授予給新用戶的權限"
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "授予給新用戶的權限",
+  "components.QuotaSelector.days": "天",
+  "components.QuotaSelector.seasons": "季",
+  "components.QuotaSelector.movies": "部電影",
+  "components.QuotaSelector.movieRequests": "<quotaUnits>每 {quotaDays} {days} </quotaUnits>{quotaLimit}<quotaUnits> {movies}</quotaUnits>",
+  "components.QuotaSelector.tvRequests": "<quotaUnits>每 {quotaDays} {days} </quotaUnits>{quotaLimit}<quotaUnits> {seasons}</quotaUnits>"
 }
