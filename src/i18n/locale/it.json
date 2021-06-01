@@ -704,7 +704,7 @@
   "components.UserProfile.limit": "{remaining} di {limit}",
   "components.UserProfile.UserSettings.UserGeneralSettings.seriesrequestlimit": "Limite Richiesta Serie",
   "components.UserProfile.UserSettings.UserGeneralSettings.movierequestlimit": "Limite Richiesta Film",
-  "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "Abilita Override",
+  "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "Ignora Limite Globale",
   "components.TvDetails.originaltitle": "Titolo Originale",
   "components.Settings.SettingsUsers.tvRequestLimitLabel": "Limite Globale Richiesta Serie",
   "components.Settings.SettingsUsers.movieRequestLimitLabel": "Limite Globale Richiesta Film",
@@ -721,8 +721,6 @@
   "components.RequestModal.QuotaDisplay.allowedRequestsUser": "Questo utente è autorizzato a richiedere <strong>{limit}</strong> {type} ogni <strong>{days}</strong> giorni.",
   "components.RequestModal.QuotaDisplay.allowedRequests": "Puoi richiedere <strong>{limit}</strong> {type} ogni <strong>{days}</strong> giorni.",
   "components.QuotaSelector.unlimited": "Illimitato",
-  "components.QuotaSelector.tvRequestLimit": "{quotaLimit} stagione/i per {quotaDays} giorno/i",
-  "components.QuotaSelector.movieRequestLimit": "{quotaLimit} film per {quotaDays} giorno/i",
   "components.LanguageSelector.originalLanguageDefault": "Tutte le lingue",
   "components.LanguageSelector.languageServerDefault": "Predefinito ({language})",
   "components.Settings.SonarrModal.testFirstTags": "Verifica la connessione per caricare i tag",
@@ -868,5 +866,10 @@
   "components.RequestList.RequestItem.requesteddate": "Richiesto",
   "components.RequestCard.failedretry": "Qualcosa è andato storto nel riprovare la richiesta.",
   "components.Settings.SettingsUsers.localLoginTip": "Consentire agli utenti di accedere utilizzando l'indirizzo di posta elettronica e la password, anziché Plex OAuth",
-  "components.Settings.SettingsUsers.defaultPermissionsTip": "Permessi assegnati ai nuovi utenti"
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Permessi assegnati ai nuovi utenti",
+  "components.QuotaSelector.movieRequests": "{quotaLimit} <quotaUnits>{movies} per {quotaDays} {days}</quotaUnits>",
+  "components.QuotaSelector.tvRequests": "{quotaLimit} <quotaUnits>{seasons} per {quotaDays} {days}</quotaUnits>",
+  "components.QuotaSelector.seasons": "{count, plural, one {stagione} other {stagioni}}",
+  "components.QuotaSelector.movies": "{count, plural, one {film} other {film}}",
+  "components.QuotaSelector.days": "{count, plural, one {giorno} other {giorni}}"
 }
