@@ -777,8 +777,6 @@
   "components.RequestList.RequestItem.cancelRequest": "Anfrage abbrechen",
   "components.RequestCard.mediaerror": "Der zugehörige Titel für diese Anfrage ist nicht mehr verfügbar.",
   "components.QuotaSelector.unlimited": "Unbegrenzt",
-  "components.QuotaSelector.tvRequestLimit": "{quotaLimit} Staffel(n) pro {quotaDays} Tag(e)",
-  "components.QuotaSelector.movieRequestLimit": "{quotaLimit} Film(e) pro {quotaDays} Tag(e)",
   "components.NotificationTypeSelector.notificationTypes": "Benachrichtigungstypen",
   "components.MovieDetails.originaltitle": "Originaltitel",
   "components.Layout.betawarning": "Dies ist BETA Software. Funktionen können kaputt und/oder instabil sein. Bitte melde alle Probleme auf GitHub!",
