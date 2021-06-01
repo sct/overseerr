@@ -24,7 +24,7 @@ Enter a valid email address at which the user can receive messages pertaining to
 
 #### Automatically Generate Password
 
-If [email notifications](../notifications/email.md) have been configured and enabled, Overseerr can automatically generate a password for the new user.
+If an [application URL](../settings/README.md#application-url) is set and [email notifications](../notifications/email.md) have been configured and enabled, Overseerr can automatically generate a password for the new user.
 
 #### Password
 
