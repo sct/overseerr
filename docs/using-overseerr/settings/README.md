@@ -14,7 +14,9 @@ If you aren't a huge fan of the name "Overseerr" and would like to display somet
 
 ### Application URL
 
-Set this to the externally-accessible URL of your Overseerr instance. If configured, [notifications](../notifications/README.md) will include links!
+Set this to the externally-accessible URL of your Overseerr instance.
+
+You must configure this setting in order to enable password reset and [generation](../users/README.md#automatically-generate-password) emails.
 
 ### Enable Proxy Support
 
