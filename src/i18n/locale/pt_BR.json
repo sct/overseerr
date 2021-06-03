@@ -720,8 +720,6 @@
   "components.RequestModal.QuotaDisplay.allowedRequestsUser": "Esse usuário pode solicitar <strong>{limit}</strong> {type} a cada <strong>{days}</strong> dias.",
   "components.RequestModal.QuotaDisplay.allowedRequests": "Você pode solicitar <strong>{limit}</strong> {type} a cada <strong>{days}</strong> dias.",
   "components.QuotaSelector.unlimited": "Ilimitados(as)",
-  "components.QuotaSelector.movieRequestLimit": "{quotaLimit} filme(s) a cada {quotaDays} dia(s)",
-  "components.QuotaSelector.tvRequestLimit": "{quotaLimit} temporadas(s) a cada {quotaDays} dia(s)",
   "components.MovieDetails.originaltitle": "Título Original",
   "components.LanguageSelector.originalLanguageDefault": "Todos Idiomas",
   "components.LanguageSelector.languageServerDefault": "Padrão ({language})",

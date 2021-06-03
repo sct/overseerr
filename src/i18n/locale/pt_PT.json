@@ -680,8 +680,6 @@
   "components.RequestModal.QuotaDisplay.allowedRequests": "Você tem direito para solicitar <strong>{limit}</strong> {type} cada <strong>{days}</strong> dias.",
   "components.QuotaSelector.unlimited": "Ilimitado",
   "components.UserProfile.unlimited": "Ilimitado",
-  "components.QuotaSelector.tvRequestLimit": "{quotaLimit} termporada(s) por {quotaDays} dia(s)",
-  "components.QuotaSelector.movieRequestLimit": "{quotaLimit} filme(s) por {quotaDays} dia(s)",
   "components.RequestModal.QuotaDisplay.requiredquota": "Você precisa ter pelo menos <strong>{seasons}</strong> {seasons, plural, one {solicitação de temporada} other {solicitações de temporadas}} restantes para enviar uma solicitação para esta série.",
   "components.UserProfile.totalrequests": "Solicitações Totais",
   "components.UserProfile.seriesrequest": "Solicitações de Séries",

@@ -245,8 +245,6 @@
   "components.RequestBlock.requestoverrides": "Παρακάμψεις των Αιτημάτων",
   "components.RequestBlock.profilechanged": "Προφίλ Ποιότητας",
   "components.RegionSelector.regionDefault": "Όλες οι Περιοχές",
-  "components.QuotaSelector.tvRequestLimit": "{quotaLimit} σεζόν ανά {quotaDays} ημέρα(-ες)",
-  "components.QuotaSelector.movieRequestLimit": "{quotaLimit} ταινία(ες) ανά {quotaDays} ημέρα(ες)",
   "components.PlexLoginButton.signinwithplex": "Σύνδεση",
   "components.PlexLoginButton.signingin": "Συνδέεται …",
   "components.PersonDetails.crewmember": "Συνεργείο",

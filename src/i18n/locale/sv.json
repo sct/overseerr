@@ -683,8 +683,6 @@
   "components.RequestModal.QuotaDisplay.allowedRequestsUser": "Denna användare är tillåten att begära <strong>{limit}</strong> {type} varje <strong>{days}</strong> dagar.",
   "components.RequestModal.QuotaDisplay.allowedRequests": "Du är tillåten att begära <strong>{limit}</strong> {type} varje <strong>{days}</strong> dagar.",
   "components.QuotaSelector.unlimited": "Obegränsat",
-  "components.QuotaSelector.tvRequestLimit": "{quotaLimit} säsong(er) per {quotaDays} dag(ar)",
-  "components.QuotaSelector.movieRequestLimit": "{quotaLimit} film(er) per {quotaDays} dag(ar)",
   "i18n.view": "Visa",
   "i18n.tvshow": "Serier",
   "i18n.testing": "Testar…",
@@ -714,7 +712,7 @@
   "components.UserProfile.limit": "{remaining} av {limit}",
   "components.UserProfile.UserSettings.UserGeneralSettings.seriesrequestlimit": "Serieförfrågnings gräns",
   "components.UserProfile.UserSettings.UserGeneralSettings.movierequestlimit": "Filmförfrågnings gräns",
-  "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "Aktivera överskrivning",
+  "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "Överskrid den globala gränsen",
   "components.Settings.SettingsUsers.tvRequestLimitLabel": "Global serieförfrågnings gräns",
   "components.Settings.SettingsUsers.movieRequestLimitLabel": "Global filmförfrågnings gräns",
   "components.RequestModal.QuotaDisplay.requiredquotaUser": "Den här användaren behöver ha minst <strong>{seasons}</strong> {seasons, plural, one {säsongsförfrågan} other {säsongsförfrågningar}} kvar för att skicka in en begäran om denna serie.",
@@ -868,5 +866,10 @@
   "components.RequestList.RequestItem.requesteddate": "Begärd",
   "components.RequestCard.failedretry": "Något gick fel vid nytt försök av begäran.",
   "components.Settings.SettingsUsers.localLoginTip": "Tillåt användare att logga in med sin e-postadress och lösenord istället för Plex OAuth",
-  "components.Settings.SettingsUsers.defaultPermissionsTip": "Inledande behörigheter som tilldelats nya användare"
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Inledande behörigheter som tilldelats nya användare",
+  "components.QuotaSelector.movieRequests": "{quotaLimit} <quotaUnits>{movies} per {quotaDays} {days}</quotaUnits>",
+  "components.QuotaSelector.tvRequests": "{quotaLimit} <quotaUnits>{seasons} per {quotaDays} {days}</quotaUnits>",
+  "components.QuotaSelector.seasons": "{count, plural, one {säsong} other {säsonger}}",
+  "components.QuotaSelector.movies": "{count, plural, one {film} other {filmer}}",
+  "components.QuotaSelector.days": "{count, plural, one {dag} other {dagar}}"
 }
