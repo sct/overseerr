@@ -4,7 +4,7 @@ The web push notification agent enables you and your users to receive Overseerr 
 
 This notification agent does not require any configuration, but is not enabled in Overseerr by default.
 
-{% hint style="info" %}
+{% hint style="warning" %}
 **The web push agent only works via HTTPS.** Refer to our [reverse proxy examples](../../extending-overseerr/reverse-proxy.md) for help on proxying Overseerr traffic via HTTPS.
 {% endhint %}
 
