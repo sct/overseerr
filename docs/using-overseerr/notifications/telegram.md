@@ -9,12 +9,12 @@ Users can optionally configure their own notifications in their user settings.
 {% hint style="info" %}
 In order to configure Telegram notifications, you first need to [create a bot](https://telegram.me/BotFather).
 
-Bots **cannot** initiate conversations with users, users must have your bot added to a conversation in order to receive notifications.
+Bots **cannot** initiate conversations with users, so users must have your bot added to a conversation in order to receive notifications.
 {% endhint %}
 
 ### Bot Username (optional)
 
-If this value is configured, users will be able to start a chat with your bot and configure their own personal notifications.
+If this value is configured, users will be able to click a link to start a chat with your bot and configure their own personal notifications.
 
 The bot username should end with `_bot`, and the `@` prefix should be omitted.
 
