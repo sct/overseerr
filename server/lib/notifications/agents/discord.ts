@@ -193,12 +193,10 @@ class DiscordAgent
     };
   }
 
-  public shouldSend(type: Notification): boolean {
-    if (
-      this.getSettings().enabled &&
-      this.getSettings().options.webhookUrl &&
-      hasNotificationType(type, this.getSettings().types)
-    ) {
+  public shouldSend(): boolean {
+    const settings = this.getSettings();
+
+    if (settings.enabled && settings.options.webhookUrl) {
       return true;
     }
 
@@ -209,6 +207,12 @@ class DiscordAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
+    const settings = this.getSettings();
+
+    if (!hasNotificationType(type, settings.types ?? 0)) {
+      return true;
+    }
+
     logger.debug('Sending Discord notification', {
       label: 'Notifications',
       type: Notification[type],
@@ -218,13 +222,6 @@ class DiscordAgent
     let content = undefined;
 
     try {
-      const { botUsername, botAvatarUrl, webhookUrl } =
-        this.getSettings().options;
-
-      if (!webhookUrl) {
-        return false;
-      }
-
       if (payload.notifyUser) {
         // Mention user who submitted the request
         if (
@@ -258,9 +255,9 @@ class DiscordAgent
           .join(' ');
       }
 
-      await axios.post(webhookUrl, {
-        username: botUsername,
-        avatar_url: botAvatarUrl,
+      await axios.post(settings.options.webhookUrl, {
+        username: settings.options.botUsername,
+        avatar_url: settings.options.botAvatarUrl,
         embeds: [this.buildEmbed(type, payload)],
         content,
       } as DiscordWebhookPayload);

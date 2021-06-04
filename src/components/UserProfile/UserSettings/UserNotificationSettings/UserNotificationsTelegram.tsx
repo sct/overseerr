@@ -11,12 +11,11 @@ import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import { ALL_NOTIFICATIONS } from '../../../NotificationTypeSelector';
+import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
   telegramsettingsfailed: 'Telegram notification settings failed to save.',
-  enableTelegram: 'Enable Notifications',
   telegramChatId: 'Chat ID',
   telegramChatIdTipLong:
     '<TelegramBotLink>Start a chat</TelegramBotLink>, add <GetIdBotLink>@get_id_bot</GetIdBotLink>, and issue the <code>/my_id</code> command',
@@ -36,8 +35,8 @@ const UserTelegramSettings: React.FC = () => {
 
   const UserNotificationsTelegramSchema = Yup.object().shape({
     telegramChatId: Yup.string()
-      .when('enableTelegram', {
-        is: true,
+      .when('types', {
+        is: (value: unknown) => !!value,
         then: Yup.string()
           .nullable()
           .required(intl.formatMessage(messages.validationTelegramChatId)),
@@ -56,9 +55,9 @@ const UserTelegramSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableTelegram: !!data?.notificationTypes.telegram,
         telegramChatId: data?.telegramChatId,
         telegramSendSilently: data?.telegramSendSilently,
+        types: data?.notificationTypes.telegram ?? 0,
       }}
       validationSchema={UserNotificationsTelegramSchema}
       enableReinitialize
@@ -70,7 +69,7 @@ const UserTelegramSettings: React.FC = () => {
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
             notificationTypes: {
-              telegram: values.enableTelegram ? ALL_NOTIFICATIONS : 0,
+              telegram: values.types,
             },
           });
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
@@ -87,21 +86,17 @@ const UserTelegramSettings: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, isValid }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        isValid,
+        values,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         return (
           <Form className="section">
-            <div className="form-row">
-              <label htmlFor="enableTelegram" className="checkbox-label">
-                {intl.formatMessage(messages.enableTelegram)}
-              </label>
-              <div className="form-input">
-                <Field
-                  type="checkbox"
-                  id="enableTelegram"
-                  name="enableTelegram"
-                />
-              </div>
-            </div>
             <div className="form-row">
               <label htmlFor="telegramChatId" className="text-label">
                 {intl.formatMessage(messages.telegramChatId)}
@@ -166,6 +161,19 @@ const UserTelegramSettings: React.FC = () => {
                 />
               </div>
             </div>
+            <NotificationTypeSelector
+              user={user}
+              currentTypes={values.types}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

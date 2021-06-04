@@ -21,6 +21,7 @@ const messages = defineMessages({
   toastSlackTestSuccess: 'Slack test notification sent!',
   toastSlackTestFailed: 'Slack test notification failed to send.',
   validationWebhookUrl: 'You must provide a valid URL',
+  validationTypes: 'You must select at least one notification type',
 });
 
 const NotificationsSlack: React.FC = () => {
@@ -41,6 +42,13 @@ const NotificationsSlack: React.FC = () => {
         otherwise: Yup.string().nullable(),
       })
       .url(intl.formatMessage(messages.validationWebhookUrl)),
+    types: Yup.number().when('enabled', {
+      is: true,
+      then: Yup.number()
+        .nullable()
+        .moreThan(0, intl.formatMessage(messages.validationTypes)),
+      otherwise: Yup.number().nullable(),
+    }),
   });
 
   if (!data && !error) {
@@ -78,7 +86,15 @@ const NotificationsSlack: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        values,
+        isValid,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         const testSettings = async () => {
           setIsTesting(true);
           let toastId: string | undefined;
@@ -168,8 +184,20 @@ const NotificationsSlack: React.FC = () => {
               </div>
             </div>
             <NotificationTypeSelector
-              currentTypes={values.types}
-              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              currentTypes={values.enabled ? values.types : 0}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+
+                if (newTypes) {
+                  setFieldValue('enabled', true);
+                }
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
             />
             <div className="actions">
               <div className="flex justify-end">

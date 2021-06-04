@@ -30,6 +30,11 @@ export const hasNotificationType = (
     total = types;
   }
 
+  // Test notifications don't need to be enabled
+  if (!(value & Notification.TEST_NOTIFICATION)) {
+    value += Notification.TEST_NOTIFICATION;
+  }
+
   return !!(value & total);
 };
 
@@ -51,7 +56,7 @@ class NotificationManager {
     });
 
     this.activeAgents.forEach((agent) => {
-      if (agent.shouldSend(type)) {
+      if (agent.shouldSend()) {
         agent.send(type, payload);
       }
     });

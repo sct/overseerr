@@ -6,12 +6,10 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import globalMessages from '../../../i18n/globalMessages';
-import Alert from '../../Common/Alert';
 import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import SensitiveInput from '../../Common/SensitiveInput';
-import NotificationTypeSelector from '../../NotificationTypeSelector';
 
 const messages = defineMessages({
   validationSmtpHostRequired: 'You must provide a valid hostname or IP address',
@@ -37,20 +35,14 @@ const messages = defineMessages({
   allowselfsigned: 'Allow Self-Signed Certificates',
   senderName: 'Sender Name',
   validationEmail: 'You must provide a valid email address',
-  emailNotificationTypesAlertDescription:
-    '<strong>Media Requested</strong>, <strong>Media Automatically Approved</strong>, and <strong>Media Failed</strong> email notifications are sent to all users with the <strong>Manage Requests</strong> permission.',
-  emailNotificationTypesAlertDescriptionPt2:
-    '<strong>Media Approved</strong>, <strong>Media Declined</strong>, and <strong>Media Available</strong> email notifications are sent to the user who submitted the request.',
   pgpPrivateKey: 'PGP Private Key',
   pgpPrivateKeyTip:
     'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
-  validationPgpPrivateKey:
-    'You must provide a valid PGP private key if a PGP password is entered',
+  validationPgpPrivateKey: 'You must provide a valid PGP private key',
   pgpPassword: 'PGP Password',
   pgpPasswordTip:
     'Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
-  validationPgpPassword:
-    'You must provide a PGP password if a PGP private key is entered',
+  validationPgpPassword: 'You must provide a PGP password',
 });
 
 export function OpenPgpLink(msg: string): JSX.Element {
@@ -130,7 +122,6 @@ const NotificationsEmail: React.FC = () => {
     <Formik
       initialValues={{
         enabled: data.enabled,
-        types: data.types,
         emailFrom: data.options.emailFrom,
         smtpHost: data.options.smtpHost,
         smtpPort: data.options.smtpPort ?? 587,
@@ -153,7 +144,6 @@ const NotificationsEmail: React.FC = () => {
         try {
           await axios.post('/api/v1/settings/notifications/email', {
             enabled: values.enabled,
-            types: values.types,
             options: {
               emailFrom: values.emailFrom,
               smtpHost: values.smtpHost,
@@ -184,7 +174,7 @@ const NotificationsEmail: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
+      {({ errors, touched, isSubmitting, values, isValid }) => {
         const testSettings = async () => {
           setIsTesting(true);
           let toastId: string | undefined;
@@ -201,7 +191,6 @@ const NotificationsEmail: React.FC = () => {
             );
             await axios.post('/api/v1/settings/notifications/email/test', {
               enabled: true,
-              types: values.types,
               options: {
                 emailFrom: values.emailFrom,
                 smtpHost: values.smtpHost,
@@ -238,274 +227,234 @@ const NotificationsEmail: React.FC = () => {
         };
 
         return (
-          <>
-            <Alert
-              title={
-                <>
-                  <p className="mb-2">
-                    {intl.formatMessage(
-                      messages.emailNotificationTypesAlertDescription,
-                      {
-                        strong: function strong(msg) {
-                          return (
-                            <strong className="font-semibold text-indigo-100">
-                              {msg}
-                            </strong>
-                          );
-                        },
-                      }
-                    )}
-                  </p>
-                  <p>
-                    {intl.formatMessage(
-                      messages.emailNotificationTypesAlertDescriptionPt2,
-                      {
-                        strong: function strong(msg) {
-                          return (
-                            <strong className="font-semibold text-indigo-100">
-                              {msg}
-                            </strong>
-                          );
-                        },
-                      }
-                    )}
-                  </p>
-                </>
-              }
-              type="info"
-            />
-            <Form className="section">
-              <div className="form-row">
-                <label htmlFor="enabled" className="checkbox-label">
-                  {intl.formatMessage(messages.agentenabled)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
-                  <Field type="checkbox" id="enabled" name="enabled" />
+          <Form className="section">
+            <div className="form-row">
+              <label htmlFor="enabled" className="checkbox-label">
+                {intl.formatMessage(messages.agentenabled)}
+                <span className="label-required">*</span>
+              </label>
+              <div className="form-input">
+                <Field type="checkbox" id="enabled" name="enabled" />
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="senderName" className="text-label">
+                {intl.formatMessage(messages.senderName)}
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field id="senderName" name="senderName" type="text" />
                 </div>
               </div>
-              <div className="form-row">
-                <label htmlFor="senderName" className="text-label">
-                  {intl.formatMessage(messages.senderName)}
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field id="senderName" name="senderName" type="text" />
-                  </div>
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="emailFrom" className="text-label">
-                  {intl.formatMessage(messages.emailsender)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field
-                      id="emailFrom"
-                      name="emailFrom"
-                      type="text"
-                      inputMode="email"
-                    />
-                  </div>
-                  {errors.emailFrom && touched.emailFrom && (
-                    <div className="error">{errors.emailFrom}</div>
-                  )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="smtpHost" className="text-label">
-                  {intl.formatMessage(messages.smtpHost)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field
-                      id="smtpHost"
-                      name="smtpHost"
-                      type="text"
-                      inputMode="url"
-                    />
-                  </div>
-                  {errors.smtpHost && touched.smtpHost && (
-                    <div className="error">{errors.smtpHost}</div>
-                  )}
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="smtpPort" className="text-label">
-                  {intl.formatMessage(messages.smtpPort)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
+            </div>
+            <div className="form-row">
+              <label htmlFor="emailFrom" className="text-label">
+                {intl.formatMessage(messages.emailsender)}
+                <span className="label-required">*</span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
                   <Field
-                    id="smtpPort"
-                    name="smtpPort"
+                    id="emailFrom"
+                    name="emailFrom"
                     type="text"
-                    inputMode="numeric"
-                    className="short"
+                    inputMode="email"
                   />
-                  {errors.smtpPort && touched.smtpPort && (
-                    <div className="error">{errors.smtpPort}</div>
-                  )}
                 </div>
+                {errors.emailFrom && touched.emailFrom && (
+                  <div className="error">{errors.emailFrom}</div>
+                )}
               </div>
-              <div className="form-row">
-                <label htmlFor="encryption" className="text-label">
-                  {intl.formatMessage(messages.encryption)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field as="select" id="encryption" name="encryption">
-                      <option value="none">
-                        {intl.formatMessage(messages.encryptionNone)}
-                      </option>
-                      <option value="default">
-                        {intl.formatMessage(messages.encryptionDefault)}
-                      </option>
-                      <option value="opportunistic">
-                        {intl.formatMessage(
-                          messages.encryptionOpportunisticTls
-                        )}
-                      </option>
-                      <option value="implicit">
-                        {intl.formatMessage(messages.encryptionImplicitTls)}
-                      </option>
-                    </Field>
-                  </div>
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="allowSelfSigned" className="checkbox-label">
-                  {intl.formatMessage(messages.allowselfsigned)}
-                </label>
-                <div className="form-input">
+            </div>
+            <div className="form-row">
+              <label htmlFor="smtpHost" className="text-label">
+                {intl.formatMessage(messages.smtpHost)}
+                <span className="label-required">*</span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
                   <Field
-                    type="checkbox"
-                    id="allowSelfSigned"
-                    name="allowSelfSigned"
+                    id="smtpHost"
+                    name="smtpHost"
+                    type="text"
+                    inputMode="url"
+                  />
+                </div>
+                {errors.smtpHost && touched.smtpHost && (
+                  <div className="error">{errors.smtpHost}</div>
+                )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="smtpPort" className="text-label">
+                {intl.formatMessage(messages.smtpPort)}
+                <span className="label-required">*</span>
+              </label>
+              <div className="form-input">
+                <Field
+                  id="smtpPort"
+                  name="smtpPort"
+                  type="text"
+                  inputMode="numeric"
+                  className="short"
+                />
+                {errors.smtpPort && touched.smtpPort && (
+                  <div className="error">{errors.smtpPort}</div>
+                )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="encryption" className="text-label">
+                {intl.formatMessage(messages.encryption)}
+                <span className="label-required">*</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.encryptionTip)}
+                </span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field as="select" id="encryption" name="encryption">
+                    <option value="none">
+                      {intl.formatMessage(messages.encryptionNone)}
+                    </option>
+                    <option value="default">
+                      {intl.formatMessage(messages.encryptionDefault)}
+                    </option>
+                    <option value="opportunistic">
+                      {intl.formatMessage(messages.encryptionOpportunisticTls)}
+                    </option>
+                    <option value="implicit">
+                      {intl.formatMessage(messages.encryptionImplicitTls)}
+                    </option>
+                  </Field>
+                </div>
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="allowSelfSigned" className="checkbox-label">
+                {intl.formatMessage(messages.allowselfsigned)}
+              </label>
+              <div className="form-input">
+                <Field
+                  type="checkbox"
+                  id="allowSelfSigned"
+                  name="allowSelfSigned"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="authUser" className="text-label">
+                {intl.formatMessage(messages.authUser)}
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field id="authUser" name="authUser" type="text" />
+                </div>
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="authPass" className="text-label">
+                {intl.formatMessage(messages.authPass)}
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <SensitiveInput
+                    as="field"
+                    id="authPass"
+                    name="authPass"
+                    autoComplete="one-time-code"
                   />
                 </div>
               </div>
-              <div className="form-row">
-                <label htmlFor="authUser" className="text-label">
-                  {intl.formatMessage(messages.authUser)}
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <Field id="authUser" name="authUser" type="text" />
-                  </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="pgpPrivateKey" className="text-label">
+                <span className="mr-2">
+                  {intl.formatMessage(messages.pgpPrivateKey)}
+                </span>
+                <Badge badgeType="danger">
+                  {intl.formatMessage(globalMessages.advanced)}
+                </Badge>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.pgpPrivateKeyTip, {
+                    OpenPgpLink: OpenPgpLink,
+                  })}
+                </span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <SensitiveInput
+                    as="field"
+                    id="pgpPrivateKey"
+                    name="pgpPrivateKey"
+                    type="textarea"
+                    rows="10"
+                    className="font-mono text-xs"
+                  />
                 </div>
+                {errors.pgpPrivateKey && touched.pgpPrivateKey && (
+                  <div className="error">{errors.pgpPrivateKey}</div>
+                )}
               </div>
-              <div className="form-row">
-                <label htmlFor="authPass" className="text-label">
-                  {intl.formatMessage(messages.authPass)}
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <SensitiveInput
-                      as="field"
-                      id="authPass"
-                      name="authPass"
-                      autoComplete="one-time-code"
-                    />
-                  </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="pgpPassword" className="text-label">
+                <span className="mr-2">
+                  {intl.formatMessage(messages.pgpPassword)}
+                </span>
+                <Badge badgeType="danger">
+                  {intl.formatMessage(globalMessages.advanced)}
+                </Badge>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.pgpPasswordTip, {
+                    OpenPgpLink: OpenPgpLink,
+                  })}
+                </span>
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <SensitiveInput
+                    as="field"
+                    id="pgpPassword"
+                    name="pgpPassword"
+                    autoComplete="one-time-code"
+                  />
                 </div>
+                {errors.pgpPassword && touched.pgpPassword && (
+                  <div className="error">{errors.pgpPassword}</div>
+                )}
               </div>
-              <div className="form-row">
-                <label htmlFor="pgpPrivateKey" className="text-label">
-                  <span className="mr-2">
-                    {intl.formatMessage(messages.pgpPrivateKey)}
-                  </span>
-                  <Badge badgeType="danger">
-                    {intl.formatMessage(globalMessages.advanced)}
-                  </Badge>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.pgpPrivateKeyTip, {
-                      OpenPgpLink: OpenPgpLink,
-                    })}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <SensitiveInput
-                      as="field"
-                      id="pgpPrivateKey"
-                      name="pgpPrivateKey"
-                      type="textarea"
-                      rows="10"
-                      className="font-mono text-xs"
-                    />
-                  </div>
-                  {errors.pgpPrivateKey && touched.pgpPrivateKey && (
-                    <div className="error">{errors.pgpPrivateKey}</div>
-                  )}
-                </div>
+            </div>
+            <div className="actions">
+              <div className="flex justify-end">
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <Button
+                    buttonType="warning"
+                    disabled={isSubmitting || !isValid || isTesting}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      testSettings();
+                    }}
+                  >
+                    {isTesting
+                      ? intl.formatMessage(globalMessages.testing)
+                      : intl.formatMessage(globalMessages.test)}
+                  </Button>
+                </span>
+                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <Button
+                    buttonType="primary"
+                    type="submit"
+                    disabled={isSubmitting || !isValid || isTesting}
+                  >
+                    {isSubmitting
+                      ? intl.formatMessage(globalMessages.saving)
+                      : intl.formatMessage(globalMessages.save)}
+                  </Button>
+                </span>
               </div>
-              <div className="form-row">
-                <label htmlFor="pgpPassword" className="text-label">
-                  <span className="mr-2">
-                    {intl.formatMessage(messages.pgpPassword)}
-                  </span>
-                  <Badge badgeType="danger">
-                    {intl.formatMessage(globalMessages.advanced)}
-                  </Badge>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.pgpPasswordTip, {
-                      OpenPgpLink: OpenPgpLink,
-                    })}
-                  </span>
-                </label>
-                <div className="form-input">
-                  <div className="form-input-field">
-                    <SensitiveInput
-                      as="field"
-                      id="pgpPassword"
-                      name="pgpPassword"
-                      autoComplete="one-time-code"
-                    />
-                  </div>
-                  {errors.pgpPassword && touched.pgpPassword && (
-                    <div className="error">{errors.pgpPassword}</div>
-                  )}
-                </div>
-              </div>
-              <NotificationTypeSelector
-                currentTypes={values.types}
-                onUpdate={(newTypes) => setFieldValue('types', newTypes)}
-              />
-              <div className="actions">
-                <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="warning"
-                      disabled={isSubmitting || !isValid || isTesting}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        testSettings();
-                      }}
-                    >
-                      {isTesting
-                        ? intl.formatMessage(globalMessages.testing)
-                        : intl.formatMessage(globalMessages.test)}
-                    </Button>
-                  </span>
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      type="submit"
-                      disabled={isSubmitting || !isValid || isTesting}
-                    >
-                      {isSubmitting
-                        ? intl.formatMessage(globalMessages.saving)
-                        : intl.formatMessage(globalMessages.save)}
-                    </Button>
-                  </span>
-                </div>
-              </div>
-            </Form>
-          </>
+            </div>
+          </Form>
         );
       }}
     </Formik>

@@ -218,12 +218,10 @@ class SlackAgent
     };
   }
 
-  public shouldSend(type: Notification): boolean {
-    if (
-      this.getSettings().enabled &&
-      this.getSettings().options.webhookUrl &&
-      hasNotificationType(type, this.getSettings().types)
-    ) {
+  public shouldSend(): boolean {
+    const settings = this.getSettings();
+
+    if (settings.enabled && settings.options.webhookUrl) {
       return true;
     }
 
@@ -234,19 +232,22 @@ class SlackAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
+    const settings = this.getSettings();
+
+    if (!hasNotificationType(type, settings.types ?? 0)) {
+      return true;
+    }
+
     logger.debug('Sending Slack notification', {
       label: 'Notifications',
       type: Notification[type],
       subject: payload.subject,
     });
     try {
-      const webhookUrl = this.getSettings().options.webhookUrl;
-
-      if (!webhookUrl) {
-        return false;
-      }
-
-      await axios.post(webhookUrl, this.buildEmbed(type, payload));
+      await axios.post(
+        settings.options.webhookUrl,
+        this.buildEmbed(type, payload)
+      );
 
       return true;
     } catch (e) {
