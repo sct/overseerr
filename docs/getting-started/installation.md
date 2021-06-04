@@ -1,7 +1,7 @@
 # Installation
 
 {% hint style="danger" %}
-Overseerr is currently in beta. If you would like to help test the bleeding edge, please use the image **`sctx/overseerr:develop`**!
+**Overseerr is currently in BETA.** If you would like to help test the bleeding edge, please use the image **`sctx/overseerr:develop`**!
 {% endhint %}
 
 {% hint style="info" %}
@@ -99,10 +99,10 @@ Use a 3rd party updating mechanism such as [Watchtower](https://github.com/conta
 
 ## Windows
 
-Please refer to the [docker for windows documentation](https://docs.docker.com/docker-for-windows/) for installation.
+Please refer to the [Docker Desktop for Windows user manual](https://docs.docker.com/docker-for-windows/) for details on how to install Docker on Windows.
 
 {% hint style="danger" %}
-**WSL2 will need to be installed to prevent DB corruption! Please see** [**Docker Desktop WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) **on how to enable WSL2. The command below will only work with WSL2 installed!**
+**WSL2 will need to be installed to prevent DB corruption!** Please see the [Docker Desktop WSL 2 backend documentation](https://docs.docker.com/docker-for-windows/wsl/) for instructions on how to enable WSL2. The command below will only work with WSL2 installed!
 {% endhint %}
 
 ```bash
@@ -110,13 +110,17 @@ docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/her
 ```
 
 {% hint style="info" %}
-Docker on Windows works differently than it does on Linux; it uses a VM to run a stripped-down Linux and then runs docker within that. The volume mounts are exposed to the docker in this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database which can lead to slow behavior and crashes. If you must run in docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host. It's worth noting that this warning also extends to other containers which use SQLite databases.
+Docker on Windows works differently than it does on Linux; it runs Docker inside of a stripped-down Linux VM. Volume mounts are exposed to Docker inside this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database, which can lead to slow behavior and crashes.
+
+**If you must run Docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host.** (This also applies to other containers with SQLite databases.)
 {% endhint %}
 
 ## Linux
 
 {% hint style="info" %}
-The [Overseerr snap](https://snapcraft.io/overseerr) is the only officially supported Linux install method aside from [Docker](#docker). Currently, the listening port cannot be changed, so port `5055` will need to be available on your host. To install `snapd`, please refer to the [Snapcraft documentation](https://snapcraft.io/docs/installing-snapd).
+The [Overseerr snap](https://snapcraft.io/overseerr) is the only officially supported Linux install method aside from [Docker](#docker).
+
+Currently, the listening port cannot be changed, so port `5055` will need to be available on your host. To install `snapd`, please refer to the [Snapcraft documentation](https://snapcraft.io/docs/installing-snapd).
 {% endhint %}
 
 **To install:**
@@ -151,7 +155,7 @@ Portage overlay [GitHub Repository](https://github.com/chriscpritchard/overseerr
 
 This is now included in the list of [Gentoo repositories](https://overlays.gentoo.org/), so can be easily enabled with `eselect repository`
 
-Efforts will be made to keep up to date with the latest releases, however, this cannot be guaranteed.
+Efforts will be made to keep up-to-date with the latest releases; however, this cannot be guaranteed.
 
 **To enable:**
 To enable using `eselect repository`, run:

@@ -1,4 +1,4 @@
-# Reverse Proxy Examples
+# Reverse Proxy
 
 {% hint style="warning" %}
 Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported.

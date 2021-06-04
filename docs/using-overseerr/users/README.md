@@ -6,13 +6,13 @@ The user account created during Overseerr setup is the "Owner" account, which ca
 
 ## Adding Users
 
-There are currently two methods to add users to Overseerr: importing Plex users and creating "local users." All new users are created with the [default permissions](../settings/README.md#default-user-permissions) defined in **Settings &rarr; Users**.
+There are currently two methods to add users to Overseerr: importing Plex users and creating "local users." All new users are created with the [default permissions](../settings/README.md#default-permissions) defined in **Settings &rarr; Users**.
 
 ### Importing Users from Plex
 
 Clicking the **Import Users from Plex** button on the **User List** page will fetch the list of users with access to the Plex server from [plex.tv](https://www.plex.tv/), and add them to Overseerr automatically.
 
-Importing Plex users is not required, however. Any user with access to the Plex server can log in to Overseerr even if they have not been imported, and will be assigned the configured [default permissions](../settings/README.md#default-user-permissions) upon their first login.
+Importing Plex users is not required, however. Any user with access to the Plex server can log in to Overseerr even if they have not been imported, and will be assigned the configured [default permissions](../settings/README.md#default-permissions) upon their first login.
 
 ### Creating Local Users
 
@@ -24,7 +24,7 @@ Enter a valid email address at which the user can receive messages pertaining to
 
 #### Automatically Generate Password
 
-If [email notifications](../notifications/email.md) have been configured and enabled, Overseerr can automatically generate a password for the new user.
+If an [application URL](../settings/README.md#application-url) is set and [email notifications](../notifications/email.md) have been configured and enabled, Overseerr can automatically generate a password for the new user.
 
 #### Password
 
@@ -41,6 +41,10 @@ You can also click the check boxes and click the **Bulk Edit** button to set use
 #### Display Name
 
 You can optionally set a "friendly name" for any user. This name will be used in lieu of their Plex username (for users imported from Plex) or their email address (for manually-created local users).
+
+#### Display Language
+
+Users can override the [global display language](../settings/README.md#display-language) to use Overseerr in their preferred language.
 
 #### Discover Region & Discover Language
 
