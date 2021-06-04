@@ -372,7 +372,6 @@
   "components.Login.email": "E-postadresse",
   "components.AppDataWarning.dockerVolumeMissingDescription": "Volum Mount <code>{appDataPath}</code> er ikke konfigurert korrekt. All data vil slettes når containeren stoppes eller startes på nytt.",
   "i18n.requested": "Forespurt",
-  "components.Settings.Notifications.emailNotificationTypesAlertDescription": "E-postvarsler for <strong>Media forespurt</strong>, <strong>Media automatisk godkjent</strong> og <strong>Media feilet</strong> blir sendt til alle brukere med <strong>Administrer forespørsler</strong> tilgang.",
   "components.RequestModal.requestedited": "Redigerte forespørsel for <strong>{title}</strong>.",
   "components.RequestModal.alreadyrequested": "Allerede forespurt",
   "components.RequestList.RequestItem.requested": "Forespurt",
