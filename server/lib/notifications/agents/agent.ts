@@ -24,6 +24,6 @@ export abstract class BaseAgent<T extends NotificationAgentConfig> {
 }
 
 export interface NotificationAgent {
-  shouldSend(type: Notification): boolean;
+  shouldSend(): boolean;
   send(type: Notification, payload: NotificationPayload): Promise<boolean>;
 }

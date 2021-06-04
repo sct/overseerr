@@ -20,6 +20,7 @@ export interface UserSettingsNotificationsResponse {
   emailEnabled?: boolean;
   pgpKey?: string;
   discordEnabled?: boolean;
+  discordEnabledTypes?: number;
   discordId?: string;
   telegramEnabled?: boolean;
   telegramBotUsername?: string;

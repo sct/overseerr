@@ -30,12 +30,13 @@ class PushoverAgent
     return settings.notifications.agents.pushover;
   }
 
-  public shouldSend(type: Notification): boolean {
+  public shouldSend(): boolean {
+    const settings = this.getSettings();
+
     if (
-      this.getSettings().enabled &&
-      this.getSettings().options.accessToken &&
-      this.getSettings().options.userToken &&
-      hasNotificationType(type, this.getSettings().types)
+      settings.enabled &&
+      settings.options.accessToken &&
+      settings.options.userToken
     ) {
       return true;
     }
@@ -161,6 +162,12 @@ class PushoverAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
+    const settings = this.getSettings();
+
+    if (!hasNotificationType(type, settings.types ?? 0)) {
+      return true;
+    }
+
     logger.debug('Sending Pushover notification', {
       label: 'Notifications',
       type: Notification[type],
@@ -169,14 +176,12 @@ class PushoverAgent
     try {
       const endpoint = 'https://api.pushover.net/1/messages.json';
 
-      const { accessToken, userToken } = this.getSettings().options;
-
       const { title, message, url, url_title, priority } =
         this.constructMessageDetails(type, payload);
 
       await axios.post(endpoint, {
-        token: accessToken,
-        user: userToken,
+        token: settings.options.accessToken,
+        user: settings.options.userToken,
         title: title,
         message: message,
         url: url,

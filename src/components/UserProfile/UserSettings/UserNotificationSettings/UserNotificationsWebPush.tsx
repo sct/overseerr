@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -10,12 +10,13 @@ import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import { ALL_NOTIFICATIONS } from '../../../NotificationTypeSelector';
+import NotificationTypeSelector, {
+  ALL_NOTIFICATIONS,
+} from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   webpushsettingssaved: 'Web push notification settings saved successfully!',
   webpushsettingsfailed: 'Web push notification settings failed to save.',
-  enableWebPush: 'Enable Notifications',
 });
 
 const UserWebPushSettings: React.FC = () => {
@@ -34,18 +35,18 @@ const UserWebPushSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableWebPush: !!(data?.notificationTypes.webpush ?? true),
-        pgpKey: data?.pgpKey,
+        types: data?.notificationTypes.webpush ?? ALL_NOTIFICATIONS,
       }}
       enableReinitialize
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
+            pgpKey: data?.pgpKey,
             discordId: data?.discordId,
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {
-              webpush: values.enableWebPush ? ALL_NOTIFICATIONS : 0,
+              webpush: values.types,
             },
           });
           mutate('/api/v1/settings/public');
@@ -63,21 +64,30 @@ const UserWebPushSettings: React.FC = () => {
         }
       }}
     >
-      {({ isSubmitting, isValid }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        isValid,
+        values,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         return (
           <Form className="section">
-            <div className="form-row">
-              <label htmlFor="enableEmail" className="checkbox-label">
-                {intl.formatMessage(messages.enableWebPush)}
-              </label>
-              <div className="form-input">
-                <Field
-                  type="checkbox"
-                  id="enableWebPush"
-                  name="enableWebPush"
-                />
-              </div>
-            </div>
+            <NotificationTypeSelector
+              user={user}
+              currentTypes={values.types}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

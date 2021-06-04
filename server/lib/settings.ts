@@ -113,7 +113,7 @@ interface FullPublicSettings extends PublicSettings {
 
 export interface NotificationAgentConfig {
   enabled: boolean;
-  types: number;
+  types?: number;
   options: Record<string, unknown>;
 }
 export interface NotificationAgentDiscord extends NotificationAgentConfig {
@@ -150,7 +150,7 @@ export interface NotificationAgentEmail extends NotificationAgentConfig {
 export interface NotificationAgentLunaSea extends NotificationAgentConfig {
   options: {
     webhookUrl: string;
-    profileName: string;
+    profileName?: string;
   };
 }
 
@@ -173,7 +173,6 @@ export interface NotificationAgentPushover extends NotificationAgentConfig {
   options: {
     accessToken: string;
     userToken: string;
-    priority: number;
   };
 }
 
@@ -181,7 +180,7 @@ export interface NotificationAgentWebhook extends NotificationAgentConfig {
   options: {
     webhookUrl: string;
     jsonPayload: string;
-    authHeader: string;
+    authHeader?: string;
   };
 }
 
@@ -272,7 +271,6 @@ class Settings {
         agents: {
           email: {
             enabled: false,
-            types: 0,
             options: {
               emailFrom: '',
               smtpHost: '',
@@ -288,8 +286,6 @@ class Settings {
             enabled: false,
             types: 0,
             options: {
-              botUsername: '',
-              botAvatarUrl: '',
               webhookUrl: '',
             },
           },
@@ -298,7 +294,6 @@ class Settings {
             types: 0,
             options: {
               webhookUrl: '',
-              profileName: '',
             },
           },
           slack: {
@@ -312,7 +307,6 @@ class Settings {
             enabled: false,
             types: 0,
             options: {
-              botUsername: '',
               botAPI: '',
               chatId: '',
               sendSilently: false,
@@ -331,7 +325,6 @@ class Settings {
             options: {
               accessToken: '',
               userToken: '',
-              priority: 0,
             },
           },
           webhook: {
@@ -339,14 +332,12 @@ class Settings {
             types: 0,
             options: {
               webhookUrl: '',
-              authHeader: '',
               jsonPayload:
                 'IntcbiAgICBcIm5vdGlmaWNhdGlvbl90eXBlXCI6IFwie3tub3RpZmljYXRpb25fdHlwZX19XCIsXG4gICAgXCJzdWJqZWN0XCI6IFwie3tzdWJqZWN0fX1cIixcbiAgICBcIm1lc3NhZ2VcIjogXCJ7e21lc3NhZ2V9fVwiLFxuICAgIFwiaW1hZ2VcIjogXCJ7e2ltYWdlfX1cIixcbiAgICBcImVtYWlsXCI6IFwie3tub3RpZnl1c2VyX2VtYWlsfX1cIixcbiAgICBcInVzZXJuYW1lXCI6IFwie3tub3RpZnl1c2VyX3VzZXJuYW1lfX1cIixcbiAgICBcImF2YXRhclwiOiBcInt7bm90aWZ5dXNlcl9hdmF0YXJ9fVwiLFxuICAgIFwie3ttZWRpYX19XCI6IHtcbiAgICAgICAgXCJtZWRpYV90eXBlXCI6IFwie3ttZWRpYV90eXBlfX1cIixcbiAgICAgICAgXCJ0bWRiSWRcIjogXCJ7e21lZGlhX3RtZGJpZH19XCIsXG4gICAgICAgIFwiaW1kYklkXCI6IFwie3ttZWRpYV9pbWRiaWR9fVwiLFxuICAgICAgICBcInR2ZGJJZFwiOiBcInt7bWVkaWFfdHZkYmlkfX1cIixcbiAgICAgICAgXCJzdGF0dXNcIjogXCJ7e21lZGlhX3N0YXR1c319XCIsXG4gICAgICAgIFwic3RhdHVzNGtcIjogXCJ7e21lZGlhX3N0YXR1czRrfX1cIlxuICAgIH0sXG4gICAgXCJ7e2V4dHJhfX1cIjogW10sXG4gICAgXCJ7e3JlcXVlc3R9fVwiOiB7XG4gICAgICAgIFwicmVxdWVzdF9pZFwiOiBcInt7cmVxdWVzdF9pZH19XCIsXG4gICAgICAgIFwicmVxdWVzdGVkQnlfZW1haWxcIjogXCJ7e3JlcXVlc3RlZEJ5X2VtYWlsfX1cIixcbiAgICAgICAgXCJyZXF1ZXN0ZWRCeV91c2VybmFtZVwiOiBcInt7cmVxdWVzdGVkQnlfdXNlcm5hbWV9fVwiLFxuICAgICAgICBcInJlcXVlc3RlZEJ5X2F2YXRhclwiOiBcInt7cmVxdWVzdGVkQnlfYXZhdGFyfX1cIlxuICAgIH1cbn0i',
             },
           },
           webpush: {
             enabled: false,
-            types: 0,
             options: {},
           },
         },

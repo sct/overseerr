@@ -23,6 +23,7 @@ const messages = defineMessages({
   toastPushbulletTestSending: 'Sending Pushbullet test notification…',
   toastPushbulletTestSuccess: 'Pushbullet test notification sent!',
   toastPushbulletTestFailed: 'Pushbullet test notification failed to send.',
+  validationTypes: 'You must select at least one notification type',
 });
 
 const NotificationsPushbullet: React.FC = () => {
@@ -40,6 +41,13 @@ const NotificationsPushbullet: React.FC = () => {
         .nullable()
         .required(intl.formatMessage(messages.validationAccessTokenRequired)),
       otherwise: Yup.string().nullable(),
+    }),
+    types: Yup.number().when('enabled', {
+      is: true,
+      then: Yup.number()
+        .nullable()
+        .moreThan(0, intl.formatMessage(messages.validationTypes)),
+      otherwise: Yup.number().nullable(),
     }),
   });
 
@@ -78,7 +86,15 @@ const NotificationsPushbullet: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        values,
+        isValid,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         const testSettings = async () => {
           setIsTesting(true);
           let toastId: string | undefined;
@@ -170,8 +186,20 @@ const NotificationsPushbullet: React.FC = () => {
               </div>
             </div>
             <NotificationTypeSelector
-              currentTypes={values.types}
-              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              currentTypes={values.enabled ? values.types : 0}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+
+                if (newTypes) {
+                  setFieldValue('enabled', true);
+                }
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
             />
             <div className="actions">
               <div className="flex justify-end">

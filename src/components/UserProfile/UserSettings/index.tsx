@@ -65,6 +65,8 @@ const UserSettings: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.menuNotifications),
       route: data?.emailEnabled
         ? '/settings/notifications/email'
+        : data?.webPushEnabled
+        ? '/settings/notifications/webpush'
         : '/settings/notifications/discord',
       regex: /\/settings\/notifications/,
     },
