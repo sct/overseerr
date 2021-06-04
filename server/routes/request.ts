@@ -293,20 +293,7 @@ requestRoutes.post('/', async (req, res, next) => {
         )
           ? MediaRequestStatus.APPROVED
           : MediaRequestStatus.PENDING,
-        modifiedBy: req.user?.hasPermission(
-          [
-            req.body.is4k
-              ? Permission.AUTO_APPROVE_4K
-              : Permission.AUTO_APPROVE,
-            req.body.is4k
-              ? Permission.AUTO_APPROVE_4K_MOVIE
-              : Permission.AUTO_APPROVE_MOVIE,
-            Permission.MANAGE_REQUESTS,
-          ],
-          { type: 'or' }
-        )
-          ? req.user
-          : undefined,
+        modifiedBy: requestUser.id === req.user?.id ? undefined : req.user,
         is4k: req.body.is4k,
         serverId: req.body.serverId,
         profileId: req.body.profileId,
