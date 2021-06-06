@@ -39,6 +39,42 @@ server {
 }
 ```
 
+## Nginx Proxy Manager
+
+Add a new proxy host and configure the following fields:
+
+![NPM example](../../public/images/docs/npm_example.png)
+
+**Tab Details**
+
+1 Your host name for overseerr
+
+2 Keep the scheme on http
+
+3 The internal LAN IP of the server / docker container
+
+4 Port number of the overseerr container (default is 5055)
+
+5 Enable "Cache Assets"
+
+6 Enable “Block Common Exploits”
+
+**Tab SSL**
+
+7 Choose your method for the SSL Certificate. If you are not sure, use “Request a new SSL Certificate”
+
+8 Enable “Force SSL”
+
+9 Enable “HTTP/2 Support”
+
+If you requested a new SSL Certificate in step 7 continue, otherwise click Save
+
+10 Enter your Email address
+
+11 Enable “I Agree to the Let’s Encrypt Terms of Service” if you agree
+
+Click Save
+
 ## Traefik (v2)
 
 Add the following labels to the Overseerr service in your `docker-compose.yml` file:
