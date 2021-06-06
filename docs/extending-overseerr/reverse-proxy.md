@@ -41,39 +41,22 @@ server {
 
 ## Nginx Proxy Manager
 
-Add a new proxy host and configure the following fields:
+Add a new proxy host with the following settings:
 
-![NPM example](../../public/images/docs/npm_example.png)
+### Details
 
-**Tab Details**
+- **Domain Names:** Your desired external Overseerr hostname; e.g., `overseerr.example.com`
+- **Scheme:** `http`
+- **Forward Hostname / IP:** Internal Overseerr hostname or IP
+- **Forward Port:** `5055`
+- **Cache Assets:** yes
+- **Block Common Exploits:** yes
 
-1 Your host name for overseerr
+### SSL
 
-2 Keep the scheme on http
-
-3 The internal LAN IP of the server / docker container
-
-4 Port number of the overseerr container (default is 5055)
-
-5 Enable "Cache Assets"
-
-6 Enable “Block Common Exploits”
-
-**Tab SSL**
-
-7 Choose your method for the SSL Certificate. If you are not sure, use “Request a new SSL Certificate”
-
-8 Enable “Force SSL”
-
-9 Enable “HTTP/2 Support”
-
-If you requested a new SSL Certificate in step 7 continue, otherwise click Save
-
-10 Enter your Email address
-
-11 Enable “I Agree to the Let’s Encrypt Terms of Service” if you agree
-
-Click Save
+- **SSL Certificate:** Select one of the options; if you are not sure, pick “Request a new SSL Certificate”
+- **Force SSL:** yes
+- **HTTP/2 Support:** yes
 
 ## Traefik (v2)
 
