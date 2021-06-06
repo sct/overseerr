@@ -1630,6 +1630,15 @@ components:
         discordId:
           type: string
           nullable: true
+        pushbulletAccessToken:
+          type: string
+          nullable: true
+        pushoverApplicationToken:
+          type: string
+          nullable: true
+        pushoverUserKey:
+          type: string
+          nullable: true
         telegramEnabled:
           type: boolean
         telegramBotUsername:

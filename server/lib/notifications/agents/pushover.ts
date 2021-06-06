@@ -1,8 +1,15 @@
 import axios from 'axios';
+import { getRepository } from 'typeorm';
 import { hasNotificationType, Notification } from '..';
 import { MediaType } from '../../../constants/media';
+import { User } from '../../../entity/User';
 import logger from '../../../logger';
-import { getSettings, NotificationAgentPushover } from '../../settings';
+import { Permission } from '../../permissions';
+import {
+  getSettings,
+  NotificationAgentKey,
+  NotificationAgentPushover,
+} from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface PushoverPayload {
@@ -31,29 +38,13 @@ class PushoverAgent
   }
 
   public shouldSend(): boolean {
-    const settings = this.getSettings();
-
-    if (
-      settings.enabled &&
-      settings.options.accessToken &&
-      settings.options.userToken
-    ) {
-      return true;
-    }
-
-    return false;
+    return true;
   }
 
-  private constructMessageDetails(
+  private getNotificationPayload(
     type: Notification,
     payload: NotificationPayload
-  ): {
-    title: string;
-    message: string;
-    url: string | undefined;
-    url_title: string | undefined;
-    priority: number;
-  } {
+  ): Partial<PushoverPayload> {
     const settings = getSettings();
     let messageTitle = '';
     let message = '';
@@ -155,6 +146,7 @@ class PushoverAgent
       url,
       url_title,
       priority,
+      html: 1,
     };
   }
 
@@ -163,45 +155,138 @@ class PushoverAgent
     payload: NotificationPayload
   ): Promise<boolean> {
     const settings = this.getSettings();
+    const endpoint = 'https://api.pushover.net/1/messages.json';
+    const notificationPayload = this.getNotificationPayload(type, payload);
 
-    if (!hasNotificationType(type, settings.types ?? 0)) {
-      return true;
-    }
-
-    logger.debug('Sending Pushover notification', {
-      label: 'Notifications',
-      type: Notification[type],
-      subject: payload.subject,
-    });
-    try {
-      const endpoint = 'https://api.pushover.net/1/messages.json';
-
-      const { title, message, url, url_title, priority } =
-        this.constructMessageDetails(type, payload);
-
-      await axios.post(endpoint, {
-        token: settings.options.accessToken,
-        user: settings.options.userToken,
-        title: title,
-        message: message,
-        url: url,
-        url_title: url_title,
-        priority: priority,
-        html: 1,
-      } as PushoverPayload);
-
-      return true;
-    } catch (e) {
-      logger.error('Error sending Pushover notification', {
+    // Send system notification
+    if (
+      hasNotificationType(type, settings.types ?? 0) &&
+      settings.enabled &&
+      settings.options.accessToken &&
+      settings.options.userToken
+    ) {
+      logger.debug('Sending Pushover notification', {
         label: 'Notifications',
         type: Notification[type],
         subject: payload.subject,
-        errorMessage: e.message,
-        response: e.response?.data,
       });
 
-      return false;
+      try {
+        await axios.post(endpoint, {
+          ...notificationPayload,
+          token: settings.options.accessToken,
+          user: settings.options.userToken,
+        } as PushoverPayload);
+      } catch (e) {
+        logger.error('Error sending Pushover notification', {
+          label: 'Notifications',
+          type: Notification[type],
+          subject: payload.subject,
+          errorMessage: e.message,
+          response: e.response?.data,
+        });
+
+        return false;
+      }
     }
+
+    if (payload.notifyUser) {
+      // Send notification to the user who submitted the request
+      if (
+        payload.notifyUser.settings?.hasNotificationType(
+          NotificationAgentKey.PUSHOVER,
+          type
+        ) &&
+        payload.notifyUser.settings?.pushoverApplicationToken &&
+        payload.notifyUser.settings?.pushoverUserKey &&
+        payload.notifyUser.settings.pushoverApplicationToken !==
+          settings.options.accessToken &&
+        payload.notifyUser.settings?.pushoverUserKey !==
+          settings.options.userToken
+      ) {
+        logger.debug('Sending Pushover notification', {
+          label: 'Notifications',
+          recipient: payload.notifyUser.displayName,
+          type: Notification[type],
+          subject: payload.subject,
+        });
+
+        try {
+          await axios.post(endpoint, {
+            ...notificationPayload,
+            token: payload.notifyUser.settings.pushoverApplicationToken,
+            user: payload.notifyUser.settings.pushoverUserKey,
+          } as PushoverPayload);
+        } catch (e) {
+          logger.error('Error sending Pushover notification', {
+            label: 'Notifications',
+            recipient: payload.notifyUser.displayName,
+            type: Notification[type],
+            subject: payload.subject,
+            errorMessage: e.message,
+            response: e.response?.data,
+          });
+
+          return false;
+        }
+      }
+    } else {
+      // Send notifications to all users with the Manage Requests permission
+      const userRepository = getRepository(User);
+      const users = await userRepository.find();
+
+      await Promise.all(
+        users
+          .filter(
+            (user) =>
+              user.hasPermission(Permission.MANAGE_REQUESTS) &&
+              user.settings?.hasNotificationType(
+                NotificationAgentKey.PUSHOVER,
+                type
+              ) &&
+              // Check if it's the user's own auto-approved request
+              (type !== Notification.MEDIA_AUTO_APPROVED ||
+                user.id !== payload.request?.requestedBy.id)
+          )
+          .map(async (user) => {
+            if (
+              user.settings?.pushoverApplicationToken &&
+              user.settings?.pushoverUserKey &&
+              user.settings.pushoverApplicationToken !==
+                settings.options.accessToken &&
+              user.settings.pushoverUserKey !== settings.options.userToken
+            ) {
+              logger.debug('Sending Pushover notification', {
+                label: 'Notifications',
+                recipient: user.displayName,
+                type: Notification[type],
+                subject: payload.subject,
+              });
+
+              try {
+                await axios.post(endpoint, {
+                  ...notificationPayload,
+                  token: user.settings.pushoverApplicationToken,
+                  user: user.settings.pushoverUserKey,
+                } as PushoverPayload);
+              } catch (e) {
+                logger.error('Error sending Pushover notification', {
+                  label: 'Notifications',
+                  recipient: user.displayName,
+                  type: Notification[type],
+                  subject: payload.subject,
+                  errorMessage: e.message,
+                  response: e.response?.data,
+                });
+
+                return false;
+              }
+            }
+          })
+      );
+    }
+
+    return true;
   }
 }
 

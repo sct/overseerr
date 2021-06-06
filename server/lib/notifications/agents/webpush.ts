@@ -206,6 +206,11 @@ class WebPushAgent
         settings.vapidPrivate
       );
 
+      const notificationPayload = Buffer.from(
+        JSON.stringify(this.getNotificationPayload(type, payload)),
+        'utf-8'
+      );
+
       await Promise.all(
         pushSubs.map(async (sub) => {
           logger.debug('Sending web push notification', {
@@ -224,10 +229,7 @@ class WebPushAgent
                   p256dh: sub.p256dh,
                 },
               },
-              Buffer.from(
-                JSON.stringify(this.getNotificationPayload(type, payload)),
-                'utf-8'
-              )
+              notificationPayload
             );
           } catch (e) {
             logger.error(

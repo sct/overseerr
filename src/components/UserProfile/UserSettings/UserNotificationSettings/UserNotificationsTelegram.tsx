@@ -37,7 +37,7 @@ const UserTelegramSettings: React.FC = () => {
   const UserNotificationsTelegramSchema = Yup.object().shape({
     telegramChatId: Yup.string()
       .when('types', {
-        is: (value: unknown) => !!value,
+        is: (types: number) => !!types,
         then: Yup.string()
           .nullable()
           .required(intl.formatMessage(messages.validationTelegramChatId)),
@@ -67,6 +67,9 @@ const UserTelegramSettings: React.FC = () => {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
             pgpKey: data?.pgpKey,
             discordId: data?.discordId,
+            pushbulletAccessToken: data?.pushbulletAccessToken,
+            pushoverApplicationToken: data?.pushoverApplicationToken,
+            pushoverUserKey: data?.pushoverUserKey,
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
             notificationTypes: {
