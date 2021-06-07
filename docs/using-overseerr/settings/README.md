@@ -126,7 +126,7 @@ Note that you will need to enter the full path to the web app (e.g., `https://pl
 
 In this section, simply select the libraries you would like Overseerr to scan. Overseerr will periodically check the selected libraries for available content to update the media status that is displayed to users.
 
-If you do not see your Plex libraries listed, verify your Plex settings are correct and click the **Scan Plex Libraries** button.
+If you do not see your Plex libraries listed, verify your Plex settings are correct and click the **Sync Libraries** button.
 
 ### Manual Library Scan
 
