@@ -1,5 +1,4 @@
 import { getClientIp } from '@supercharge/request-ip';
-import bodyParser from 'body-parser';
 import { TypeormStore } from 'connect-typeorm/out';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
@@ -71,9 +70,9 @@ app
       server.enable('trust proxy');
     }
     server.use(cookieParser());
-    server.use(bodyParser.json());
-    server.use(bodyParser.urlencoded({ extended: true }));
-    server.use((req, res, next) => {
+    server.use(express.json());
+    server.use(express.urlencoded({ extended: true }));
+    server.use((req, _res, next) => {
       try {
         const descriptor = Object.getOwnPropertyDescriptor(req, 'ip');
         if (descriptor?.writable === true) {
