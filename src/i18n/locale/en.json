@@ -673,6 +673,7 @@
   "components.Setup.signinMessage": "Get started by signing in with your Plex account",
   "components.Setup.tip": "Tip",
   "components.Setup.welcome": "Welcome to Overseerr",
+  "components.StatusBadge.status": "{status}",
   "components.StatusBadge.status4k": "4K {status}",
   "components.StatusChacker.newversionDescription": "Overseerr has been updated! Please click the button below to reload the page.",
   "components.StatusChacker.newversionavailable": "Application Update",
