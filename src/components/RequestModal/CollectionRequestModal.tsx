@@ -339,6 +339,12 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
                 <tbody className="bg-gray-600 divide-y divide-gray-700">
                   {data?.parts.map((part) => {
                     const partRequest = getPartRequest(part.id);
+                    const partMedia =
+                      part.mediaInfo &&
+                      part.mediaInfo[is4k ? 'status4k' : 'status'] !==
+                        MediaStatus.UNKNOWN
+                        ? part.mediaInfo
+                        : undefined;
 
                     return (
                       <tr key={`part-${part.id}`}>
@@ -347,10 +353,7 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
                             role="checkbox"
                             tabIndex={0}
                             aria-checked={
-                              (part.mediaInfo &&
-                                part.mediaInfo[is4k ? 'status4k' : 'status'] !==
-                                  MediaStatus.UNKNOWN) ||
-                              isSelectedPart(part.id)
+                              !!partMedia || isSelectedPart(part.id)
                             }
                             onClick={() => togglePart(part.id)}
                             onKeyDown={(e) => {
@@ -359,13 +362,11 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
                               }
                             }}
                             className={`pt-2 relative inline-flex items-center justify-center flex-shrink-0 h-5 w-10 cursor-pointer focus:outline-none ${
-                              (part.mediaInfo &&
-                                part.mediaInfo[is4k ? 'status4k' : 'status'] !==
-                                  MediaStatus.UNKNOWN) ||
+                              !!partMedia ||
+                              partRequest ||
                               (quota?.movie.limit &&
                                 currentlyRemaining <= 0 &&
-                                !isSelectedPart(part.id)) ||
-                              partRequest
+                                !isSelectedPart(part.id))
                                 ? 'opacity-50'
                                 : ''
                             }`}
@@ -373,10 +374,7 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
                             <span
                               aria-hidden="true"
                               className={`${
-                                (part.mediaInfo &&
-                                  part.mediaInfo[
-                                    is4k ? 'status4k' : 'status'
-                                  ] !== MediaStatus.UNKNOWN) ||
+                                !!partMedia ||
                                 partRequest ||
                                 isSelectedPart(part.id)
                                   ? 'bg-indigo-500'
@@ -386,10 +384,7 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
                             <span
                               aria-hidden="true"
                               className={`${
-                                (part.mediaInfo &&
-                                  part.mediaInfo[
-                                    is4k ? 'status4k' : 'status'
-                                  ] !== MediaStatus.UNKNOWN) ||
+                                !!partMedia ||
                                 partRequest ||
                                 isSelectedPart(part.id)
                                   ? 'translate-x-5'
@@ -402,40 +397,33 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
                           {part.title}
                         </td>
                         <td className="py-4 pr-2 text-sm leading-5 text-gray-200 md:px-6 whitespace-nowrap">
-                          {!partRequest &&
-                            (!part.mediaInfo ||
-                              part.mediaInfo[is4k ? 'status4k' : 'status'] ===
-                                MediaStatus.UNKNOWN) && (
-                              <Badge>
-                                {intl.formatMessage(
-                                  globalMessages.notrequested
-                                )}
-                              </Badge>
-                            )}
-                          {!part.mediaInfo &&
+                          {!partMedia && !partRequest && (
+                            <Badge>
+                              {intl.formatMessage(globalMessages.notrequested)}
+                            </Badge>
+                          )}
+                          {!partMedia &&
                             partRequest?.status ===
                               MediaRequestStatus.PENDING && (
                               <Badge badgeType="warning">
                                 {intl.formatMessage(globalMessages.pending)}
                               </Badge>
                             )}
-                          {((!part.mediaInfo &&
+                          {((!partMedia &&
                             partRequest?.status ===
                               MediaRequestStatus.APPROVED) ||
-                            (part.mediaInfo &&
-                              part.mediaInfo[is4k ? 'status4k' : 'status'] ===
-                                MediaStatus.PROCESSING)) && (
+                            partMedia?.[is4k ? 'status4k' : 'status'] ===
+                              MediaStatus.PROCESSING) && (
                             <Badge badgeType="primary">
                               {intl.formatMessage(globalMessages.requested)}
                             </Badge>
                           )}
-                          {part.mediaInfo &&
-                            part.mediaInfo[is4k ? 'status4k' : 'status'] ===
-                              MediaStatus.AVAILABLE && (
-                              <Badge badgeType="success">
-                                {intl.formatMessage(globalMessages.available)}
-                              </Badge>
-                            )}
+                          {partMedia?.[is4k ? 'status4k' : 'status'] ===
+                            MediaStatus.AVAILABLE && (
+                            <Badge badgeType="success">
+                              {intl.formatMessage(globalMessages.available)}
+                            </Badge>
+                          )}
                         </td>
                       </tr>
                     );
