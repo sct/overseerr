@@ -92,7 +92,7 @@ Use a 3rd party updating mechanism such as [Watchtower](https://github.com/conta
 ## Unraid
 
 1. Ensure you have the **Community Applications** plugin installed.
-2. Inside the **Communtiy Applications** app store, search for **Overseerr**.
+2. Inside the **Community Applications** app store, search for **Overseerr**.
 3. Click the **Install Button**.
 4. On the following **Add Container** screen, make changes to the **Host Port** and **Host Path 1**\(Appdata\) as needed.
 5. Click apply and access "Overseerr" at your `<ServerIP:HostPort>` in a web browser.
