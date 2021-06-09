@@ -94,11 +94,9 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   const [isRefreshingPresets, setIsRefreshingPresets] = useState(false);
   const [availableServers, setAvailableServers] =
     useState<PlexDevice[] | null>(null);
-  const {
-    data: data,
-    error: error,
-    revalidate: revalidate,
-  } = useSWR<PlexSettings>('/api/v1/settings/plex');
+  const { data, error, revalidate } = useSWR<PlexSettings>(
+    '/api/v1/settings/plex'
+  );
   const { data: dataSync, revalidate: revalidateSync } = useSWR<SyncStatus>(
     '/api/v1/settings/plex/sync',
     {
@@ -540,7 +538,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         </p>
       </div>
       <div className="section">
-        <Button onClick={() => syncLibraries()} disabled={isSyncing}>
+        <Button
+          onClick={() => syncLibraries()}
+          disabled={isSyncing || !data?.ip || !data?.port}
+        >
           <RefreshIcon
             className={isSyncing ? 'animate-spin' : ''}
             style={{ animationDirection: 'reverse' }}
@@ -619,7 +620,11 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
             )}
             <div className="flex-1 text-right">
               {!dataSync?.running ? (
-                <Button buttonType="warning" onClick={() => startScan()}>
+                <Button
+                  buttonType="warning"
+                  onClick={() => startScan()}
+                  disabled={isSyncing || !activeLibraries.length}
+                >
                   <SearchIcon />
                   <span>{intl.formatMessage(messages.startscan)}</span>
                 </Button>
