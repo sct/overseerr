@@ -238,7 +238,7 @@
   "components.Settings.toastSettingsFailure": "保存設置中出了點問題。",
   "components.UserList.deleteconfirm": "確定要刪除這個用戶嗎？此用戶的所有儲存資料將被清除。",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "無法獲取軟體版本資料。GitHub 崩潰了嗎？",
-  "components.UserList.passwordinfodescription": "啟用電子郵件通知才能自動生成密碼。",
+  "components.UserList.passwordinfodescription": "設置應用程式網址以及啟用電子郵件通知，才能自動生成密碼。",
   "components.Settings.Notifications.validationBotAPIRequired": "請輸入機器人授權令牌",
   "components.Settings.Notifications.botAPI": "Bot 機器人授權令牌",
   "components.Settings.menuServices": "伺服器",
