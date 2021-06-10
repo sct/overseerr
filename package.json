@@ -119,7 +119,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-formatjs": "^2.15.5",
+    "eslint-plugin-formatjs": "^2.15.7",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
