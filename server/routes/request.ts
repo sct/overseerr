@@ -256,6 +256,9 @@ requestRoutes.post('/', async (req, res, next) => {
         .leftJoin('request.media', 'media')
         .where('request.is4k = :is4k', { is4k: req.body.is4k })
         .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
+        .andWhere('request.status != :requestStatus', {
+          requestStatus: MediaRequestStatus.DECLINED,
+        })
         .getOne();
 
       if (existing) {
