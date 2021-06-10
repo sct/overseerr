@@ -92,8 +92,9 @@ interface SettingsPlexProps {
 const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isRefreshingPresets, setIsRefreshingPresets] = useState(false);
-  const [availableServers, setAvailableServers] =
-    useState<PlexDevice[] | null>(null);
+  const [availableServers, setAvailableServers] = useState<PlexDevice[] | null>(
+    null
+  );
   const { data, error, revalidate } = useSWR<PlexSettings>(
     '/api/v1/settings/plex'
   );
