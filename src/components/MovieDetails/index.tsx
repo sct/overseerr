@@ -73,6 +73,7 @@ const messages = defineMessages({
   play4konplex: 'Play in 4K on Plex',
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark as Available in 4K',
+  streamingproviders: 'Currently Streaming On',
 });
 
 interface MovieDetailsProps {
@@ -212,6 +213,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         ))
     );
   }
+
+  const streamingProviders =
+    data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
+      ?.flatrate ?? [];
 
   return (
     <div
@@ -635,6 +640,20 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                       >
                         <a className="block hover:underline">{s.name}</a>
                       </Link>
+                    );
+                  })}
+                </span>
+              </div>
+            )}
+            {!!streamingProviders.length && (
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.streamingproviders)}</span>
+                <span className="media-fact-value">
+                  {streamingProviders.map((p) => {
+                    return (
+                      <span className="block" key={`provider-${p.id}`}>
+                        {p.name}
+                      </span>
                     );
                   })}
                 </span>
