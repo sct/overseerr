@@ -1,4 +1,4 @@
-# Reverse Proxy Examples
+# Reverse Proxy
 
 {% hint style="warning" %}
 Base URLs cannot be configured in Overseerr. With this limitation, only subdomain configurations are supported.
@@ -6,7 +6,10 @@ Base URLs cannot be configured in Overseerr. With this limitation, only subdomai
 A Nginx subfolder workaround configuration is provided below, but it is not officially supported.
 {% endhint %}
 
-## SWAG
+## Nginx
+
+{% tabs %}
+{% tab title="SWAG" %}
 
 A sample proxy configuration is included in [SWAG (Secure Web Application Gateway)](https://github.com/linuxserver/docker-swag).
 
@@ -39,27 +42,29 @@ server {
 }
 ```
 
-## Traefik (v2)
+{% endtab %}
 
-Add the following labels to the Overseerr service in your `docker-compose.yml` file:
+{% tab title="Nginx Proxy Manager" %}
 
-```text
-labels:
-  - "traefik.enable=true"
-  ## HTTP Routers
-  - "traefik.http.routers.overseerr-rtr.entrypoints=https"
-  - "traefik.http.routers.overseerr-rtr.rule=Host(`overseerr.domain.com`)"
-  - "traefik.http.routers.overseerr-rtr.tls=true"
-  ## HTTP Services
-  - "traefik.http.routers.overseerr-rtr.service=overseerr-svc"
-  - "traefik.http.services.overseerr-svc.loadbalancer.server.port=5055"
-```
+Add a new proxy host with the following settings:
 
-For more information, please refer to the [Traefik documentation](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/).
+### Details
 
-## Nginx
+- **Domain Names:** Your desired external Overseerr hostname; e.g., `overseerr.example.com`
+- **Scheme:** `http`
+- **Forward Hostname / IP:** Internal Overseerr hostname or IP
+- **Forward Port:** `5055`
+- **Cache Assets:** yes
+- **Block Common Exploits:** yes
 
-{% tabs %}
+### SSL
+
+- **SSL Certificate:** Select one of the options; if you are not sure, pick “Request a new SSL Certificate”
+- **Force SSL:** yes
+- **HTTP/2 Support:** yes
+
+{% endtab %}
+
 {% tab title="Subdomain" %}
 
 Add the following configuration to a new file `/etc/nginx/sites-available/overseerr.example.com.conf`:
@@ -148,14 +153,20 @@ location ^~ /overseerr {
 {% endtab %}
 {% endtabs %}
 
-Next, test the configuration:
+## Traefik (v2)
 
-```bash
-sudo nginx -t
+Add the following labels to the Overseerr service in your `docker-compose.yml` file:
+
+```text
+labels:
+  - "traefik.enable=true"
+  ## HTTP Routers
+  - "traefik.http.routers.overseerr-rtr.entrypoints=https"
+  - "traefik.http.routers.overseerr-rtr.rule=Host(`overseerr.domain.com`)"
+  - "traefik.http.routers.overseerr-rtr.tls=true"
+  ## HTTP Services
+  - "traefik.http.routers.overseerr-rtr.service=overseerr-svc"
+  - "traefik.http.services.overseerr-svc.loadbalancer.server.port=5055"
 ```
 
-Finally, reload `nginx` for the new configuration to take effect:
-
-```bash
-sudo systemctl reload nginx
-```
+For more information, please refer to the [Traefik documentation](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/).

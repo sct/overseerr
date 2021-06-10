@@ -5,6 +5,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
+import useSettings from '../../hooks/useSettings';
 import Button from '../Common/Button';
 import SensitiveInput from '../Common/SensitiveInput';
 
@@ -25,6 +26,7 @@ interface LocalLoginProps {
 
 const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
   const intl = useIntl();
+  const settings = useSettings();
   const [loginError, setLoginError] = useState<string | null>(null);
 
   const LoginSchema = Yup.object().shape({
@@ -35,6 +37,10 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
       intl.formatMessage(messages.validationpasswordrequired)
     ),
   });
+
+  const passwordResetEnabled =
+    settings.currentSettings.applicationUrl &&
+    settings.currentSettings.emailEnabled;
 
   return (
     <Formik
@@ -60,7 +66,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
         return (
           <>
             <Form>
-              <div className="sm:border-t sm:border-gray-800">
+              <div>
                 <label htmlFor="email" className="text-label">
                   {intl.formatMessage(messages.email)}
                 </label>
@@ -101,17 +107,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                 )}
               </div>
               <div className="pt-5 mt-8 border-t border-gray-700">
-                <div className="flex justify-between">
-                  <span className="inline-flex rounded-md shadow-sm">
-                    <Link href="/resetpassword" passHref>
-                      <Button as="a" buttonType="ghost">
-                        <SupportIcon />
-                        <span>
-                          {intl.formatMessage(messages.forgotpassword)}
-                        </span>
-                      </Button>
-                    </Link>
-                  </span>
+                <div className="flex flex-row-reverse justify-between">
                   <span className="inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
@@ -126,6 +122,18 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       </span>
                     </Button>
                   </span>
+                  {passwordResetEnabled && (
+                    <span className="inline-flex rounded-md shadow-sm">
+                      <Link href="/resetpassword" passHref>
+                        <Button as="a" buttonType="ghost">
+                          <SupportIcon />
+                          <span>
+                            {intl.formatMessage(messages.forgotpassword)}
+                          </span>
+                        </Button>
+                      </Link>
+                    </span>
+                  )}
                 </div>
               </div>
             </Form>

@@ -40,7 +40,8 @@ const KeyMap: Record<string, string | KeyMapFunction> = {
 
 class WebhookAgent
   extends BaseAgent<NotificationAgentWebhook>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentWebhook {
     if (this.settings) {
       return this.settings;
@@ -112,12 +113,10 @@ class WebhookAgent
     return this.parseKeys(parsedJSON, payload, type);
   }
 
-  public shouldSend(type: Notification): boolean {
-    if (
-      this.getSettings().enabled &&
-      this.getSettings().options.webhookUrl &&
-      hasNotificationType(type, this.getSettings().types)
-    ) {
+  public shouldSend(): boolean {
+    const settings = this.getSettings();
+
+    if (settings.enabled && settings.options.webhookUrl) {
       return true;
     }
 
@@ -128,6 +127,12 @@ class WebhookAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
+    const settings = this.getSettings();
+
+    if (!hasNotificationType(type, settings.types ?? 0)) {
+      return true;
+    }
+
     logger.debug('Sending webhook notification', {
       label: 'Notifications',
       type: Notification[type],
@@ -135,17 +140,17 @@ class WebhookAgent
     });
 
     try {
-      const { webhookUrl, authHeader } = this.getSettings().options;
-
-      if (!webhookUrl) {
-        return false;
-      }
-
-      await axios.post(webhookUrl, this.buildPayload(type, payload), {
-        headers: {
-          Authorization: authHeader,
-        },
-      });
+      await axios.post(
+        settings.options.webhookUrl,
+        this.buildPayload(type, payload),
+        settings.options.authHeader
+          ? {
+              headers: {
+                Authorization: settings.options.authHeader,
+              },
+            }
+          : undefined
+      );
 
       return true;
     } catch (e) {

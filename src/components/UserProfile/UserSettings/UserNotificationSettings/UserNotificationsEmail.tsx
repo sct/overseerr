@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -12,13 +12,15 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Badge from '../../../Common/Badge';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import { ALL_NOTIFICATIONS } from '../../../NotificationTypeSelector';
+import SensitiveInput from '../../../Common/SensitiveInput';
+import NotificationTypeSelector, {
+  ALL_NOTIFICATIONS,
+} from '../../../NotificationTypeSelector';
 import { OpenPgpLink } from '../../../Settings/Notifications/NotificationsEmail';
 
 const messages = defineMessages({
   emailsettingssaved: 'Email notification settings saved successfully!',
   emailsettingsfailed: 'Email notification settings failed to save.',
-  enableEmail: 'Enable Notifications',
   pgpPublicKey: 'PGP Public Key',
   pgpPublicKeyTip:
     'Encrypt email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>',
@@ -38,7 +40,7 @@ const UserEmailSettings: React.FC = () => {
     pgpKey: Yup.string()
       .nullable()
       .matches(
-        /^-----BEGIN PGP PUBLIC KEY BLOCK-----.+-----END PGP PUBLIC KEY BLOCK-----$/,
+        /-----BEGIN PGP PUBLIC KEY BLOCK-----.+-----END PGP PUBLIC KEY BLOCK-----/s,
         intl.formatMessage(messages.validationPgpPublicKey)
       ),
   });
@@ -50,8 +52,8 @@ const UserEmailSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableEmail: !!(data?.notificationTypes.email ?? true),
         pgpKey: data?.pgpKey,
+        types: data?.notificationTypes.email ?? ALL_NOTIFICATIONS,
       }}
       validationSchema={UserNotificationsEmailSchema}
       enableReinitialize
@@ -63,7 +65,7 @@ const UserEmailSettings: React.FC = () => {
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {
-              email: values.enableEmail ? ALL_NOTIFICATIONS : 0,
+              email: values.types,
             },
           });
           addToast(intl.formatMessage(messages.emailsettingssaved), {
@@ -80,17 +82,17 @@ const UserEmailSettings: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, isValid }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        isValid,
+        values,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         return (
           <Form className="section">
-            <div className="form-row">
-              <label htmlFor="enableEmail" className="checkbox-label">
-                {intl.formatMessage(messages.enableEmail)}
-              </label>
-              <div className="form-input">
-                <Field type="checkbox" id="enableEmail" name="enableEmail" />
-              </div>
-            </div>
             <div className="form-row">
               <label htmlFor="pgpKey" className="text-label">
                 <span className="mr-2">
@@ -107,8 +109,9 @@ const UserEmailSettings: React.FC = () => {
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field
-                    as="textarea"
+                  <SensitiveInput
+                    as="field"
+                    type="textarea"
                     id="pgpKey"
                     name="pgpKey"
                     rows="10"
@@ -120,6 +123,19 @@ const UserEmailSettings: React.FC = () => {
                 )}
               </div>
             </div>
+            <NotificationTypeSelector
+              user={user}
+              currentTypes={values.types}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

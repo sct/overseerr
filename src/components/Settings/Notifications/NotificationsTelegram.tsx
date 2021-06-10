@@ -105,7 +105,15 @@ const NotificationsTelegram: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        values,
+        isValid,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         const testSettings = async () => {
           setIsTesting(true);
           let toastId: string | undefined;
@@ -232,6 +240,24 @@ const NotificationsTelegram: React.FC = () => {
               <label htmlFor="chatId" className="text-label">
                 {intl.formatMessage(messages.chatId)}
                 <span className="label-required">*</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.chatIdTip, {
+                    GetIdBotLink: function GetIdBotLink(msg) {
+                      return (
+                        <a
+                          href="https://telegram.me/get_id_bot"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      );
+                    },
+                    code: function code(msg) {
+                      return <code>{msg}</code>;
+                    },
+                  })}
+                </span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
@@ -254,8 +280,20 @@ const NotificationsTelegram: React.FC = () => {
               </div>
             </div>
             <NotificationTypeSelector
-              currentTypes={values.types}
-              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              currentTypes={values.enabled ? values.types : 0}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+
+                if (newTypes) {
+                  setFieldValue('enabled', true);
+                }
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
             />
             <div className="actions">
               <div className="flex justify-end">

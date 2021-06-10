@@ -51,10 +51,8 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   is4k = false,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
-  const [
-    requestOverrides,
-    setRequestOverrides,
-  ] = useState<RequestOverrides | null>(null);
+  const [requestOverrides, setRequestOverrides] =
+    useState<RequestOverrides | null>(null);
   const { addToast } = useToasts();
   const { data, error } = useSWR<MovieDetails>(`/api/v1/movie/${tmdbId}`, {
     revalidateOnMount: true,
@@ -237,6 +235,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         secondaryButtonType="danger"
         cancelText={intl.formatMessage(globalMessages.close)}
         iconSvg={<DownloadIcon />}
+        backdrop={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data?.backdropPath}`}
       >
         {isOwner
           ? intl.formatMessage(messages.pendingapproval)
@@ -295,6 +294,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       }
       okButtonType={'primary'}
       iconSvg={<DownloadIcon />}
+      backdrop={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data?.backdropPath}`}
     >
       {hasAutoApprove && !quota?.movie.restricted && (
         <div className="mt-6">

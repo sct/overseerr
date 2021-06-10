@@ -171,6 +171,9 @@ components:
           readOnly: true
           items:
             $ref: '#/components/schemas/PlexLibrary'
+        webAppUrl:
+          type: string
+          example: 'https://app.plex.tv/desktop'
       required:
         - name
         - machineId
@@ -1210,8 +1213,6 @@ components:
               type: string
             userToken:
               type: string
-            priority:
-              type: number
     LunaSeaSettings:
       type: object
       properties:
@@ -1596,6 +1597,9 @@ components:
           nullable: true
         discordEnabled:
           type: boolean
+        discordEnabledTypes:
+          type: number
+          nullable: true
         discordId:
           type: string
           nullable: true
@@ -4533,7 +4537,7 @@ paths:
           name: language
           schema:
             type: string
-            example: en-US
+            example: en
       responses:
         '200':
           description: TV details

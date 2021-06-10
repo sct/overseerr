@@ -108,7 +108,7 @@ const ResetPassword: React.FC = () => {
                 {({ errors, touched, isSubmitting, isValid }) => {
                   return (
                     <Form>
-                      <div className="sm:border-t sm:border-gray-800">
+                      <div>
                         <label
                           htmlFor="password"
                           className="block my-1 text-sm font-medium leading-5 text-gray-400 sm:mt-px"

@@ -1,14 +1,7 @@
 # Telegram
 
 {% hint style="info" %}
-All notification types will be sent to the chat ID configured in your Overseerr application settings.
-
-If a user has configured a chat ID and has **Enable Notifications** checked in their Telegram notification user settings as well, they will be sent the following notification types for requests which they submit:
-
-- Media Approved (does not include automatic approvals)
-- Media Declined
-- Media Available
-
+Users can optionally configure their own notifications in their user settings.
 {% endhint %}
 
 ## Configuration
@@ -16,12 +9,12 @@ If a user has configured a chat ID and has **Enable Notifications** checked in t
 {% hint style="info" %}
 In order to configure Telegram notifications, you first need to [create a bot](https://telegram.me/BotFather).
 
-Bots **cannot** initiate conversations with users, users must have your bot added to a conversation in order to receive notifications.
+Bots **cannot** initiate conversations with users, so users must have your bot added to a conversation in order to receive notifications.
 {% endhint %}
 
 ### Bot Username (optional)
 
-If this value is configured, users will be able to start a chat with your bot and configure their own personal notifications.
+If this value is configured, users will be able to click a link to start a chat with your bot and configure their own personal notifications.
 
 The bot username should end with `_bot`, and the `@` prefix should be omitted.
 
@@ -35,4 +28,4 @@ To obtain your chat ID, simply create a new group chat, add [@get_id_bot](https:
 
 ### Send Silently (optional)
 
-Instagram allows you to enable silent notifications. Those will present a pop-up to the user, but will not make any sound. That's a per user configuration.
+Optionally, notifications can be sent silently. Silent notifications send messages without notification sounds.

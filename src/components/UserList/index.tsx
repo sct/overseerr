@@ -15,8 +15,8 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
-import { UserSettingsNotificationsResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
 import { hasPermission } from '../../../server/lib/permissions';
+import useSettings from '../../hooks/useSettings';
 import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
 import { Permission, User, UserType, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
@@ -57,7 +57,6 @@ const messages = defineMessages({
     'Are you sure you want to delete this user? All of their request data will be permanently removed.',
   localuser: 'Local User',
   createlocaluser: 'Create Local User',
-  createuser: 'Create User',
   creating: 'Creating…',
   create: 'Create',
   validationpasswordminchars:
@@ -66,10 +65,11 @@ const messages = defineMessages({
   usercreatedfailedexisting:
     'The provided email address is already in use by another user.',
   usercreatedsuccess: 'User created successfully!',
+  displayName: 'Display Name',
   email: 'Email Address',
   password: 'Password',
   passwordinfodescription:
-    'Enable email notifications to allow automatic password generation.',
+    'Configure an application URL and enable email notifications to allow automatic password generation.',
   autogeneratepassword: 'Automatically Generate Password',
   autogeneratepasswordTip: 'Email a server-generated password to the user',
   validationEmail: 'You must provide a valid email address',
@@ -77,6 +77,8 @@ const messages = defineMessages({
   sortUpdated: 'Last Updated',
   sortDisplayName: 'Display Name',
   sortRequests: 'Request Count',
+  localLoginDisabled:
+    'The <strong>Enable Local Sign-In</strong> setting is currently disabled.',
 });
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
@@ -84,6 +86,7 @@ type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 const UserList: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const [currentSort, setCurrentSort] = useState<Sort>('created');
@@ -97,13 +100,6 @@ const UserList: React.FC = () => {
     `/api/v1/user?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&sort=${currentSort}`
-  );
-  const {
-    data: notificationSettings,
-  } = useSWR<UserSettingsNotificationsResponse>(
-    currentUser
-      ? `/api/v1/user/${currentUser?.id}/settings/notifications`
-      : null
   );
 
   const [isDeleting, setDeleting] = useState(false);
@@ -251,6 +247,10 @@ const UserList: React.FC = () => {
   const hasNextPage = data.pageInfo.pages > pageIndex + 1;
   const hasPrevPage = pageIndex > 0;
 
+  const passwordGenerationEnabled =
+    settings.currentSettings.applicationUrl &&
+    settings.currentSettings.emailEnabled;
+
   return (
     <>
       <PageTitle title={intl.formatMessage(messages.users)} />
@@ -291,6 +291,7 @@ const UserList: React.FC = () => {
       >
         <Formik
           initialValues={{
+            displayName: '',
             email: '',
             password: '',
             genpassword: false,
@@ -299,6 +300,7 @@ const UserList: React.FC = () => {
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/user', {
+                username: values.displayName,
                 email: values.email,
                 password: values.genpassword ? null : values.password,
               });
@@ -335,7 +337,7 @@ const UserList: React.FC = () => {
           }) => {
             return (
               <Modal
-                title={intl.formatMessage(messages.createuser)}
+                title={intl.formatMessage(messages.createlocaluser)}
                 iconSvg={<UserAddIcon />}
                 onOk={() => handleSubmit()}
                 okText={
@@ -347,16 +349,48 @@ const UserList: React.FC = () => {
                 okButtonType="primary"
                 onCancel={() => setCreateModal({ isOpen: false })}
               >
-                {!notificationSettings?.emailEnabled && (
+                {!settings.currentSettings.localLogin && (
                   <Alert
-                    title={intl.formatMessage(messages.passwordinfodescription)}
-                    type="info"
+                    title={intl.formatMessage(messages.localLoginDisabled, {
+                      strong: function strong(msg) {
+                        return (
+                          <strong className="font-semibold text-yellow-100">
+                            {msg}
+                          </strong>
+                        );
+                      },
+                    })}
+                    type="warning"
                   />
                 )}
+                {currentHasPermission(Permission.MANAGE_SETTINGS) &&
+                  !passwordGenerationEnabled && (
+                    <Alert
+                      title={intl.formatMessage(
+                        messages.passwordinfodescription
+                      )}
+                      type="info"
+                    />
+                  )}
                 <Form className="section">
+                  <div className="form-row">
+                    <label htmlFor="displayName" className="text-label">
+                      {intl.formatMessage(messages.displayName)}
+                    </label>
+                    <div className="form-input">
+                      <div className="form-input-field">
+                        <Field
+                          id="displayName"
+                          name="displayName"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-row">
                     <label htmlFor="email" className="text-label">
                       {intl.formatMessage(messages.email)}
+                      <span className="label-required">*</span>
                     </label>
                     <div className="form-input">
                       <div className="form-input-field">
@@ -374,7 +408,7 @@ const UserList: React.FC = () => {
                   </div>
                   <div
                     className={`form-row ${
-                      notificationSettings?.emailEnabled ? '' : 'opacity-50'
+                      passwordGenerationEnabled ? '' : 'opacity-50'
                     }`}
                   >
                     <label htmlFor="genpassword" className="checkbox-label">
@@ -388,7 +422,7 @@ const UserList: React.FC = () => {
                         type="checkbox"
                         id="genpassword"
                         name="genpassword"
-                        disabled={!notificationSettings?.emailEnabled}
+                        disabled={!passwordGenerationEnabled}
                         onClick={() => setFieldValue('password', '')}
                       />
                     </div>
@@ -400,6 +434,9 @@ const UserList: React.FC = () => {
                   >
                     <label htmlFor="password" className="text-label">
                       {intl.formatMessage(messages.password)}
+                      {!values.genpassword && (
+                        <span className="label-required">*</span>
+                      )}
                     </label>
                     <div className="form-input">
                       <div className="form-input-field">
@@ -565,9 +602,11 @@ const UserList: React.FC = () => {
                         {user.displayName}
                       </a>
                     </Link>
-                    <div className="text-sm leading-5 text-gray-300">
-                      {user.email}
-                    </div>
+                    {user.displayName.toLowerCase() !== user.email && (
+                      <div className="text-sm leading-5 text-gray-300">
+                        {user.email}
+                      </div>
+                    )}
                   </div>
                 </div>
               </Table.TD>

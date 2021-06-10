@@ -251,20 +251,22 @@ requestRoutes.post('/', async (req, res, next) => {
     }
 
     if (req.body.mediaType === MediaType.MOVIE) {
-      const existing = await requestRepository.findOne({
-        where: {
-          media: {
-            tmdbId: tmdbMedia.id,
-          },
-          requestedBy: req.user,
-          is4k: req.body.is4k,
-        },
-      });
+      const existing = await requestRepository
+        .createQueryBuilder('request')
+        .leftJoin('request.media', 'media')
+        .where('request.is4k = :is4k', { is4k: req.body.is4k })
+        .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
+        .andWhere('request.status != :requestStatus', {
+          requestStatus: MediaRequestStatus.DECLINED,
+        })
+        .getOne();
 
       if (existing) {
         logger.warn('Duplicate request for media blocked', {
           tmdbId: tmdbMedia.id,
           mediaType: req.body.mediaType,
+          is4k: req.body.is4k,
+          label: 'Media Request',
         });
         return next({
           status: 409,

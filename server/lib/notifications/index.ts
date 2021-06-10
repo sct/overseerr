@@ -2,6 +2,7 @@ import logger from '../../logger';
 import type { NotificationAgent, NotificationPayload } from './agents/agent';
 
 export enum Notification {
+  NONE = 0,
   MEDIA_PENDING = 2,
   MEDIA_APPROVED = 4,
   MEDIA_AVAILABLE = 8,
@@ -29,6 +30,11 @@ export const hasNotificationType = (
     total = types;
   }
 
+  // Test notifications don't need to be enabled
+  if (!(value & Notification.TEST_NOTIFICATION)) {
+    value += Notification.TEST_NOTIFICATION;
+  }
+
   return !!(value & total);
 };
 
@@ -50,7 +56,7 @@ class NotificationManager {
     });
 
     this.activeAgents.forEach((agent) => {
-      if (agent.shouldSend(type)) {
+      if (agent.shouldSend()) {
         agent.send(type, payload);
       }
     });

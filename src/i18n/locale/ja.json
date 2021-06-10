@@ -137,7 +137,6 @@
   "components.Settings.plexsettingsDescription": "Plex サーバーの設定。Overseerr は、Plex サーバーを使用して、間隔をおいてライブラリをスキャンし、利用可能なコンテンツを確認します。",
   "components.Settings.port": "ポート",
   "components.Settings.radarrsettings": "Radarr 設定",
-  "components.Settings.servername": "サーバー名",
   "components.Settings.sonarrsettings": "Sonarr 設定",
   "components.Settings.ssl": "SSL",
   "components.Settings.startscan": "スキャンを開始",

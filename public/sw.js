@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // Incrementing OFFLINE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 // This variable is intentionally declared and unused.
@@ -33,7 +34,7 @@ self.addEventListener("activate", (event) => {
   );
 
   // Tell the active service worker to take control of the page immediately.
-  self.clients.claim();
+  clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -57,6 +58,7 @@ self.addEventListener("fetch", (event) => {
           // due to a network error.
           // If fetch() returns a valid HTTP response with a response code in
           // the 4xx or 5xx range, the catch() will NOT be called.
+          // eslint-disable-next-line no-console
           console.log("Fetch failed; returning offline page instead.", error);
 
           const cache = await caches.open(CACHE_NAME);
@@ -73,6 +75,7 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: payload.message,
+    badge: 'badge-128x128.png',
     icon: payload.image ? payload.image : 'android-chrome-192x192.png',
     vibrate: [100, 50, 100],
     data: {
@@ -109,7 +112,7 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(payload.subject, options)
   );
-})
+});
 
 self.addEventListener('notificationclick', (event) => {
   const notificationData = event.notification.data;
@@ -117,20 +120,20 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
   if (event.action === 'viewmedia') {
-    self.clients.openWindow(notificationData.actionUrl);
+    clients.openWindow(notificationData.actionUrl);
   } else if (event.action === 'approve') {
     fetch(`/api/v1/request/${notificationData.requestId}/approve`, {
       method: 'POST',
     });
 
-    self.clients.openWindow(notificationData.actionUrl);
+    clients.openWindow(notificationData.actionUrl);
   } else if (event.action === 'decline') {
     fetch(`/api/v1/request/${notificationData.requestId}/decline`, {
       method: 'POST',
     });
 
-    self.clients.openWindow(notificationData.actionUrl);
+    clients.openWindow(notificationData.actionUrl);
   } else if (notificationData.actionUrl) {
-    self.clients.openWindow(notificationData.actionUrl);
+    clients.openWindow(notificationData.actionUrl);
   }
 }, false);

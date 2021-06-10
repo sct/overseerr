@@ -74,10 +74,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     (season) => season.seasonNumber
   );
   const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${tmdbId}`);
-  const [
-    requestOverrides,
-    setRequestOverrides,
-  ] = useState<RequestOverrides | null>(null);
+  const [requestOverrides, setRequestOverrides] =
+    useState<RequestOverrides | null>(null);
   const [selectedSeasons, setSelectedSeasons] = useState<number[]>(
     editRequest ? editingSeasons : []
   );
@@ -94,7 +92,9 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   );
 
   const currentlyRemaining =
-    (quota?.tv.remaining ?? 0) - selectedSeasons.length;
+    (quota?.tv.remaining ?? 0) -
+    selectedSeasons.length +
+    (editRequest?.seasons ?? []).length;
 
   const updateRequest = async () => {
     if (!editRequest) {
@@ -420,6 +420,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           : intl.formatMessage(globalMessages.cancel)
       }
       iconSvg={<DownloadIcon />}
+      backdrop={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data?.backdropPath}`}
     >
       {editRequest
         ? isOwner

@@ -30,7 +30,8 @@ type SyncStatus = StatusBase & {
 
 class PlexScanner
   extends BaseScanner<PlexLibraryItem>
-  implements RunnableScanner<SyncStatus> {
+  implements RunnableScanner<SyncStatus>
+{
   private plexClient: PlexAPI;
   private libraries: Library[];
   private currentLibrary: Library;

@@ -38,7 +38,7 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
                   : currentTypes + option.value
               );
             }}
-            defaultChecked={
+            checked={
               hasNotificationType(option.value, currentTypes) ||
               (!!parent?.value &&
                 hasNotificationType(parent.value, currentTypes))
@@ -46,10 +46,12 @@ const NotificationType: React.FC<NotificationTypeProps> = ({
           />
         </div>
         <div className="ml-3 text-sm leading-6">
-          <label htmlFor={option.id} className="font-medium text-white">
-            {option.name}
+          <label htmlFor={option.id} className="block font-medium text-white">
+            <div className="flex flex-col">
+              <span>{option.name}</span>
+              <span className="text-gray-500">{option.description}</span>
+            </div>
           </label>
-          <p className="text-gray-500">{option.description}</p>
         </div>
       </div>
       {(option.children ?? []).map((child) => (

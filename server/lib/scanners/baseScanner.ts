@@ -145,9 +145,8 @@ class BaseScanner<T> {
           existing[is4k ? 'externalServiceId4k' : 'externalServiceId'] !==
             externalServiceId
         ) {
-          existing[
-            is4k ? 'externalServiceId4k' : 'externalServiceId'
-          ] = externalServiceId;
+          existing[is4k ? 'externalServiceId4k' : 'externalServiceId'] =
+            externalServiceId;
           changedExisting = true;
         }
 
@@ -156,9 +155,8 @@ class BaseScanner<T> {
           existing[is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] !==
             externalServiceSlug
         ) {
-          existing[
-            is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'
-          ] = externalServiceSlug;
+          existing[is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =
+            externalServiceSlug;
           changedExisting = true;
         }
 
@@ -389,15 +387,13 @@ class BaseScanner<T> {
         }
 
         if (externalServiceId !== undefined) {
-          media[
-            is4k ? 'externalServiceId4k' : 'externalServiceId'
-          ] = externalServiceId;
+          media[is4k ? 'externalServiceId4k' : 'externalServiceId'] =
+            externalServiceId;
         }
 
         if (externalServiceSlug !== undefined) {
-          media[
-            is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'
-          ] = externalServiceSlug;
+          media[is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =
+            externalServiceSlug;
         }
 
         // If the show is already available, and there are no new seasons, dont adjust
@@ -420,7 +416,8 @@ class BaseScanner<T> {
                   season.status === MediaStatus.AVAILABLE
               )
             ? MediaStatus.PARTIALLY_AVAILABLE
-            : media.seasons.some(
+            : !seasons.length ||
+              media.seasons.some(
                 (season) => season.status === MediaStatus.PROCESSING
               )
             ? MediaStatus.PROCESSING
@@ -435,7 +432,8 @@ class BaseScanner<T> {
                   season.status4k === MediaStatus.AVAILABLE
               )
             ? MediaStatus.PARTIALLY_AVAILABLE
-            : media.seasons.some(
+            : !seasons.length ||
+              media.seasons.some(
                 (season) => season.status4k === MediaStatus.PROCESSING
               )
             ? MediaStatus.PROCESSING

@@ -6,13 +6,13 @@
 <img src="https://github.com/sct/overseerr/workflows/Overseerr%20CI/badge.svg" alt="Overseerr CI">
 </p>
 <p align="center">
-<a href="https://discord.gg/PkCWJSeCk7"><img src="https://img.shields.io/discord/783137440809746482" alt="Discord"></a>
+<a href="https://discord.gg/overseerr"><img src="https://img.shields.io/discord/783137440809746482" alt="Discord"></a>
 <a href="https://hub.docker.com/r/sctx/overseerr"><img src="https://img.shields.io/docker/pulls/sctx/overseerr" alt="Docker pulls"></a>
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-50-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-54-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -44,7 +44,7 @@ https://docs.overseerr.dev/getting-started/installation
 ## Support
 
 - Check out the [Overseerr Documentation](https://docs.overseerr.dev/) before asking for help. Your question might already be in the [FAQ](https://docs.overseerr.dev/support/faq).
-- You can get support on [Discord](https://discord.gg/PkCWJSeCk7).
+- You can get support on [Discord](https://discord.gg/overseerr).
 - You can ask questions in the Help category of our [GitHub Discussions](https://github.com/sct/overseerr/discussions).
 - Bug reports and feature requests can be submitted via [GitHub Issues](https://github.com/sct/overseerr/issues).
 
@@ -58,7 +58,7 @@ You can also access the API documentation from your local Overseerr install at h
 
 You can ask questions, share ideas, and more in [GitHub Discussions](https://github.com/sct/overseerr/discussions).
 
-If you would like to chat with other members of our growing community, [join the Overseerr Discord server](https://discord.gg/PkCWJSeCk7)!
+If you would like to chat with other members of our growing community, [join the Overseerr Discord server](https://discord.gg/overseerr)!
 
 Our [Code of Conduct](https://github.com/sct/overseerr/blob/develop/CODE_OF_CONDUCT.md) applies to all Overseerr community channels.
 
@@ -139,6 +139,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/Dabu-dot"><img src="https://avatars.githubusercontent.com/u/52525576?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dabu-dot</b></sub></a><br /><a href="#translation-Dabu-dot" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/Jabster28"><img src="https://avatars.githubusercontent.com/u/29015942?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jabster28</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Jabster28" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/littlerooster"><img src="https://avatars.githubusercontent.com/u/83890654?v=4?s=100" width="100px;" alt=""/><br /><sub><b>littlerooster</b></sub></a><br /><a href="#translation-littlerooster" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/dphildebrandt"><img src="https://avatars.githubusercontent.com/u/154459?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dustin Hildebrandt</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=dphildebrandt" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Generator"><img src="https://avatars.githubusercontent.com/u/44146?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bruno Guerreiro</b></sub></a><br /><a href="#translation-Generator" title="Translation">🌍</a></td>
   </tr>
 </table>
 

@@ -19,12 +19,13 @@ const messages = defineMessages({
   userTokenTip:
     'Your 30-character <UsersGroupsLink>user or group identifier</UsersGroupsLink>',
   validationAccessTokenRequired: 'You must provide a valid application token',
-  validationUserTokenRequired: 'You must provide a valid user key',
+  validationUserTokenRequired: 'You must provide a valid user or group key',
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   toastPushoverTestSending: 'Sending Pushover test notification…',
   toastPushoverTestSuccess: 'Pushover test notification sent!',
   toastPushoverTestFailed: 'Pushover test notification failed to send.',
+  validationTypes: 'You must select at least one notification type',
 });
 
 const NotificationsPushover: React.FC = () => {
@@ -60,6 +61,13 @@ const NotificationsPushover: React.FC = () => {
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationUserTokenRequired)
       ),
+    types: Yup.number().when('enabled', {
+      is: true,
+      then: Yup.number()
+        .nullable()
+        .moreThan(0, intl.formatMessage(messages.validationTypes)),
+      otherwise: Yup.number().nullable(),
+    }),
   });
 
   if (!data && !error) {
@@ -99,7 +107,15 @@ const NotificationsPushover: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        values,
+        isValid,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         const testSettings = async () => {
           setIsTesting(true);
           let toastId: string | undefined;
@@ -160,20 +176,19 @@ const NotificationsPushover: React.FC = () => {
                 <span className="label-required">*</span>
                 <span className="label-tip">
                   {intl.formatMessage(messages.accessTokenTip, {
-                    ApplicationRegistrationLink: function ApplicationRegistrationLink(
-                      msg
-                    ) {
-                      return (
-                        <a
-                          href="https://pushover.net/api#registration"
-                          className="text-white transition duration-300 hover:underline"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
+                    ApplicationRegistrationLink:
+                      function ApplicationRegistrationLink(msg) {
+                        return (
+                          <a
+                            href="https://pushover.net/api#registration"
+                            className="text-white transition duration-300 hover:underline"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {msg}
+                          </a>
+                        );
+                      },
                   })}
                 </span>
               </label>
@@ -217,8 +232,20 @@ const NotificationsPushover: React.FC = () => {
               </div>
             </div>
             <NotificationTypeSelector
-              currentTypes={values.types}
-              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              currentTypes={values.enabled ? values.types : 0}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+
+                if (newTypes) {
+                  setFieldValue('enabled', true);
+                }
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
             />
             <div className="actions">
               <div className="flex justify-end">

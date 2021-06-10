@@ -23,6 +23,7 @@ const messages = defineMessages({
   toastLunaSeaTestSending: 'Sending LunaSea test notification…',
   toastLunaSeaTestSuccess: 'LunaSea test notification sent!',
   toastLunaSeaTestFailed: 'LunaSea test notification failed to send.',
+  validationTypes: 'You must select at least one notification type',
 });
 
 const NotificationsLunaSea: React.FC = () => {
@@ -43,6 +44,13 @@ const NotificationsLunaSea: React.FC = () => {
         otherwise: Yup.string().nullable(),
       })
       .url(intl.formatMessage(messages.validationWebhookUrl)),
+    types: Yup.number().when('enabled', {
+      is: true,
+      then: Yup.number()
+        .nullable()
+        .moreThan(0, intl.formatMessage(messages.validationTypes)),
+      otherwise: Yup.number().nullable(),
+    }),
   });
 
   if (!data && !error) {
@@ -82,7 +90,15 @@ const NotificationsLunaSea: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, values, isValid, setFieldValue }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        values,
+        isValid,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         const testSettings = async () => {
           setIsTesting(true);
           let toastId: string | undefined;
@@ -190,8 +206,20 @@ const NotificationsLunaSea: React.FC = () => {
               </div>
             </div>
             <NotificationTypeSelector
-              currentTypes={values.types}
-              onUpdate={(newTypes) => setFieldValue('types', newTypes)}
+              currentTypes={values.enabled ? values.types : 0}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+
+                if (newTypes) {
+                  setFieldValue('enabled', true);
+                }
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
             />
             <div className="actions">
               <div className="flex justify-end">

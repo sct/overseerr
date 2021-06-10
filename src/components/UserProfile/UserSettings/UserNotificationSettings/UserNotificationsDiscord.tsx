@@ -11,12 +11,11 @@ import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
-import { ALL_NOTIFICATIONS } from '../../../NotificationTypeSelector';
+import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   discordsettingssaved: 'Discord notification settings saved successfully!',
   discordsettingsfailed: 'Discord notification settings failed to save.',
-  enableDiscord: 'Enable Mentions',
   discordId: 'User ID',
   discordIdTip:
     'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your user account',
@@ -34,8 +33,8 @@ const UserNotificationsDiscord: React.FC = () => {
 
   const UserNotificationsDiscordSchema = Yup.object().shape({
     discordId: Yup.string()
-      .when('enableDiscord', {
-        is: true,
+      .when('types', {
+        is: (value: unknown) => !!value,
         then: Yup.string()
           .nullable()
           .required(intl.formatMessage(messages.validationDiscordId)),
@@ -51,8 +50,10 @@ const UserNotificationsDiscord: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        enableDiscord: !!data?.notificationTypes.discord,
         discordId: data?.discordId,
+        types:
+          (data?.discordEnabledTypes ?? 0) &
+          (data?.notificationTypes.discord ?? 0),
       }}
       validationSchema={UserNotificationsDiscordSchema}
       enableReinitialize
@@ -64,7 +65,7 @@ const UserNotificationsDiscord: React.FC = () => {
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {
-              discord: values.enableDiscord ? ALL_NOTIFICATIONS : 0,
+              discord: values.types,
             },
           });
           addToast(intl.formatMessage(messages.discordsettingssaved), {
@@ -81,27 +82,23 @@ const UserNotificationsDiscord: React.FC = () => {
         }
       }}
     >
-      {({ errors, touched, isSubmitting, isValid }) => {
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        isValid,
+        values,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         return (
           <Form className="section">
-            {data?.discordEnabled && (
-              <div className="form-row">
-                <label htmlFor="enableDiscord" className="checkbox-label">
-                  {intl.formatMessage(messages.enableDiscord)}
-                </label>
-                <div className="form-input">
-                  <Field
-                    type="checkbox"
-                    id="enableDiscord"
-                    name="enableDiscord"
-                  />
-                </div>
-              </div>
-            )}
             <div className="form-row">
               <label htmlFor="discordId" className="text-label">
-                <span>{intl.formatMessage(messages.discordId)}</span>
-                <span className="label-required">*</span>
+                {intl.formatMessage(messages.discordId)}
+                {!!data?.discordEnabledTypes && (
+                  <span className="label-required">*</span>
+                )}
                 <span className="label-tip">
                   {intl.formatMessage(messages.discordIdTip, {
                     FindDiscordIdLink: function FindDiscordIdLink(msg) {
@@ -127,6 +124,20 @@ const UserNotificationsDiscord: React.FC = () => {
                 )}
               </div>
             </div>
+            <NotificationTypeSelector
+              user={user}
+              enabledTypes={data?.discordEnabledTypes ?? 0}
+              currentTypes={values.types}
+              onUpdate={(newTypes) => {
+                setFieldValue('types', newTypes);
+                setFieldTouched('types');
+              }}
+              error={
+                errors.types && touched.types
+                  ? (errors.types as string)
+                  : undefined
+              }
+            />
             <div className="actions">
               <div className="flex justify-end">
                 <span className="inline-flex ml-3 rounded-md shadow-sm">

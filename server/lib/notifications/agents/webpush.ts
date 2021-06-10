@@ -1,6 +1,6 @@
 import { getRepository } from 'typeorm';
 import webpush from 'web-push';
-import { hasNotificationType, Notification } from '..';
+import { Notification } from '..';
 import { MediaType } from '../../../constants/media';
 import { User } from '../../../entity/User';
 import { UserPushSubscription } from '../../../entity/UserPushSubscription';
@@ -26,7 +26,8 @@ interface PushNotificationPayload {
 
 class WebPushAgent
   extends BaseAgent<NotificationAgentConfig>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentConfig {
     if (this.settings) {
       return this.settings;
@@ -42,6 +43,11 @@ class WebPushAgent
     payload: NotificationPayload
   ): PushNotificationPayload {
     switch (type) {
+      case Notification.NONE:
+        return {
+          notificationType: Notification[type],
+          subject: 'Unknown',
+        };
       case Notification.TEST_NOTIFICATION:
         return {
           notificationType: Notification[type],
@@ -129,11 +135,8 @@ class WebPushAgent
     }
   }
 
-  public shouldSend(type: Notification): boolean {
-    if (
-      this.getSettings().enabled &&
-      hasNotificationType(type, this.getSettings().types)
-    ) {
+  public shouldSend(): boolean {
+    if (this.getSettings().enabled) {
       return true;
     }
 
@@ -144,11 +147,6 @@ class WebPushAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending web push notification', {
-      label: 'Notifications',
-      type: Notification[type],
-      subject: payload.subject,
-    });
     const userRepository = getRepository(User);
     const userPushSubRepository = getRepository(UserPushSubscription);
     const settings = getSettings();
@@ -184,7 +182,10 @@ class WebPushAgent
             NotificationAgentKey.WEBPUSH,
             type
           ) ??
-            true)
+            true) &&
+          // Check if it's the user's own auto-approved request
+          (type !== Notification.MEDIA_AUTO_APPROVED ||
+            user.id !== payload.request?.requestedBy.id)
       );
 
       const allSubs = await userPushSubRepository
@@ -204,8 +205,15 @@ class WebPushAgent
         settings.vapidPrivate
       );
 
-      Promise.all(
+      await Promise.all(
         pushSubs.map(async (sub) => {
+          logger.debug('Sending web push notification', {
+            label: 'Notifications',
+            recipient: sub.user.displayName,
+            type: Notification[type],
+            subject: payload.subject,
+          });
+
           try {
             await webpush.sendNotification(
               {
@@ -221,12 +229,24 @@ class WebPushAgent
               )
             );
           } catch (e) {
+            logger.error(
+              'Error sending web push notification; removing subscription',
+              {
+                label: 'Notifications',
+                recipient: sub.user.displayName,
+                type: Notification[type],
+                subject: payload.subject,
+                errorMessage: e.message,
+              }
+            );
+
             // Failed to send notification so we need to remove the subscription
             userPushSubRepository.remove(sub);
           }
         })
       );
     }
+
     return true;
   }
 }

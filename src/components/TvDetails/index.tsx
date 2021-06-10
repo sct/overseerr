@@ -106,9 +106,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     `/api/v1/tv/${router.query.tvId}/ratings`
   );
 
-  const sortedCrew = useMemo(() => sortCrewPriority(data?.credits.crew ?? []), [
-    data,
-  ]);
+  const sortedCrew = useMemo(
+    () => sortCrewPriority(data?.credits.crew ?? []),
+    [data]
+  );
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -189,8 +190,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     );
   }
 
-  const seasonCount = data.seasons.filter((season) => season.seasonNumber !== 0)
-    .length;
+  const seasonCount = data.seasons.filter(
+    (season) => season.seasonNumber !== 0
+  ).length;
 
   if (seasonCount) {
     seriesAttributes.push(
@@ -595,18 +597,19 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
-            {data.nextEpisodeToAir && (
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.nextAirDate)}</span>
-                <span className="media-fact-value">
-                  {intl.formatDate(data.nextEpisodeToAir.airDate, {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
-              </div>
-            )}
+            {data.nextEpisodeToAir &&
+              data.nextEpisodeToAir.airDate !== data.firstAirDate && (
+                <div className="media-fact">
+                  <span>{intl.formatMessage(messages.nextAirDate)}</span>
+                  <span className="media-fact-value">
+                    {intl.formatDate(data.nextEpisodeToAir.airDate, {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </span>
+                </div>
+              )}
             {data.episodeRunTime.length > 0 && (
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.episodeRuntime)}</span>

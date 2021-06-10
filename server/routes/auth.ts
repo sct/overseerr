@@ -40,9 +40,13 @@ authRoutes.post('/plex', async (req, res, next) => {
     const account = await plextv.getUser();
 
     // Next let's see if the user already exists
-    let user = await userRepository.findOne({
-      where: { plexId: account.id },
-    });
+    let user = await userRepository
+      .createQueryBuilder('user')
+      .where('user.plexId = :id', { id: account.id })
+      .orWhere('user.email = :email', {
+        email: account.email.toLowerCase(),
+      })
+      .getOne();
 
     if (user) {
       // Let's check if their Plex token is up-to-date
@@ -55,9 +59,12 @@ authRoutes.post('/plex', async (req, res, next) => {
       user.email = account.email;
       user.plexUsername = account.username;
 
-      if (user.username === account.username) {
-        user.username = '';
+      // In case the user was previously a local account
+      if (user.userType === UserType.LOCAL) {
+        user.userType = UserType.PLEX;
+        user.plexId = account.id;
       }
+
       await userRepository.save(user);
     } else {
       // Here we check if it's the first user. If it is, we create the user with no check
@@ -164,10 +171,11 @@ authRoutes.post('/local', async (req, res, next) => {
     });
   }
   try {
-    const user = await userRepository.findOne({
-      select: ['id', 'password'],
-      where: { email: body.email },
-    });
+    const user = await userRepository
+      .createQueryBuilder('user')
+      .select(['user.id', 'user.password'])
+      .where('user.email = :email', { email: body.email.toLowerCase() })
+      .getOne();
 
     const isCorrectCredentials = await user?.passwordMatch(body.password);
 
@@ -231,9 +239,10 @@ authRoutes.post('/reset-password', async (req, res) => {
       .json({ error: 'You must provide an email address.' });
   }
 
-  const user = await userRepository.findOne({
-    where: { email: body.email },
-  });
+  const user = await userRepository
+    .createQueryBuilder('user')
+    .where('user.email = :email', { email: body.email.toLowerCase() })
+    .getOne();
 
   if (user) {
     await user.resetPassword();

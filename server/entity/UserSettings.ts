@@ -108,7 +108,10 @@ export class UserSettings {
   })
   public notificationTypes: Partial<NotificationAgentTypes>;
 
-  public hasNotificationType(key: NotificationAgentKey, type: Notification) {
+  public hasNotificationType(
+    key: NotificationAgentKey,
+    type: Notification
+  ): boolean {
     return hasNotificationType(type, this.notificationTypes[key] ?? 0);
   }
 }

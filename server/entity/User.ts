@@ -48,11 +48,17 @@ export class User {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({ unique: true })
+  @Column({
+    unique: true,
+    transformer: {
+      from: (value: string): string => (value ?? '').toLowerCase(),
+      to: (value: string): string => (value ?? '').toLowerCase(),
+    },
+  })
   public email: string;
 
   @Column({ nullable: true })
-  public plexUsername: string;
+  public plexUsername?: string;
 
   @Column({ nullable: true })
   public username?: string;
@@ -220,7 +226,7 @@ export class User {
 
   @AfterLoad()
   public setDisplayName(): void {
-    this.displayName = this.username || this.plexUsername;
+    this.displayName = this.username || this.plexUsername || this.email;
   }
 
   public async getQuota(): Promise<QuotaResponse> {

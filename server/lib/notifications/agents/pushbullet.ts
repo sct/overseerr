@@ -12,7 +12,8 @@ interface PushbulletPayload {
 
 class PushbulletAgent
   extends BaseAgent<NotificationAgentPushbullet>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentPushbullet {
     if (this.settings) {
       return this.settings;
@@ -23,12 +24,10 @@ class PushbulletAgent
     return settings.notifications.agents.pushbullet;
   }
 
-  public shouldSend(type: Notification): boolean {
-    if (
-      this.getSettings().enabled &&
-      this.getSettings().options.accessToken &&
-      hasNotificationType(type, this.getSettings().types)
-    ) {
+  public shouldSend(): boolean {
+    const settings = this.getSettings();
+
+    if (settings.enabled && settings.options.accessToken) {
       return true;
     }
 
@@ -136,6 +135,12 @@ class PushbulletAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
+    const settings = this.getSettings();
+
+    if (!hasNotificationType(type, settings.types ?? 0)) {
+      return true;
+    }
+
     logger.debug('Sending Pushbullet notification', {
       label: 'Notifications',
       type: Notification[type],
@@ -143,14 +148,10 @@ class PushbulletAgent
     });
 
     try {
-      const endpoint = 'https://api.pushbullet.com/v2/pushes';
-
-      const { accessToken } = this.getSettings().options;
-
       const { title, body } = this.constructMessageDetails(type, payload);
 
       await axios.post(
-        endpoint,
+        'https://api.pushbullet.com/v2/pushes',
         {
           type: 'note',
           title: title,
@@ -158,7 +159,7 @@ class PushbulletAgent
         } as PushbulletPayload,
         {
           headers: {
-            'Access-Token': accessToken,
+            'Access-Token': settings.options.accessToken,
           },
         }
       );

@@ -10,7 +10,7 @@ import { UserSettingsGeneralResponse } from '../../../server/interfaces/api/user
 import type { MainSettings } from '../../../server/lib/settings';
 import {
   availableLanguages,
-  AvailableLocales,
+  AvailableLocale,
 } from '../../context/LanguageContext';
 import useLocale from '../../hooks/useLocale';
 import { Permission, useUser } from '../../hooks/useUser';
@@ -160,7 +160,7 @@ const SettingsMain: React.FC = () => {
                 setLocale(
                   (userData?.locale
                     ? userData.locale
-                    : values.locale) as AvailableLocales
+                    : values.locale) as AvailableLocale
                 );
               }
 
@@ -298,9 +298,11 @@ const SettingsMain: React.FC = () => {
                   <div className="form-input">
                     <div className="form-input-field">
                       <Field as="select" id="locale" name="locale">
-                        {(Object.keys(
-                          availableLanguages
-                        ) as (keyof typeof availableLanguages)[]).map((key) => (
+                        {(
+                          Object.keys(
+                            availableLanguages
+                          ) as (keyof typeof availableLanguages)[]
+                        ).map((key) => (
                           <option
                             key={key}
                             value={availableLanguages[key].code}

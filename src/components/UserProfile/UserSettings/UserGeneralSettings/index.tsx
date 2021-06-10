@@ -8,7 +8,7 @@ import useSWR from 'swr';
 import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import {
   availableLanguages,
-  AvailableLocales,
+  AvailableLocale,
 } from '../../../../context/LanguageContext';
 import useLocale from '../../../../hooks/useLocale';
 import useSettings from '../../../../hooks/useSettings';
@@ -42,7 +42,7 @@ const messages = defineMessages({
   originallanguageTip: 'Filter content by original language',
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
-  enableOverride: 'Enable Override',
+  enableOverride: 'Override Global Limit',
   applanguage: 'Display Language',
   languageDefault: 'Default ({language})',
 });
@@ -124,7 +124,7 @@ const UserGeneralSettings: React.FC = () => {
               setLocale(
                 (values.locale
                   ? values.locale
-                  : currentSettings.locale) as AvailableLocales
+                  : currentSettings.locale) as AvailableLocale
               );
             }
 
@@ -188,7 +188,9 @@ const UserGeneralSettings: React.FC = () => {
                       id="displayName"
                       name="displayName"
                       type="text"
-                      placeholder={user?.displayName}
+                      placeholder={
+                        user?.plexUsername ? user.plexUsername : user?.email
+                      }
                     />
                   </div>
                   {errors.displayName && touched.displayName && (
@@ -209,9 +211,11 @@ const UserGeneralSettings: React.FC = () => {
                             availableLanguages[currentSettings.locale].display,
                         })}
                       </option>
-                      {(Object.keys(
-                        availableLanguages
-                      ) as (keyof typeof availableLanguages)[]).map((key) => (
+                      {(
+                        Object.keys(
+                          availableLanguages
+                        ) as (keyof typeof availableLanguages)[]
+                      ).map((key) => (
                         <option
                           key={key}
                           value={availableLanguages[key].code}

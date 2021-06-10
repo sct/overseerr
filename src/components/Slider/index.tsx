@@ -89,9 +89,9 @@ const Slider: React.FC<SliderProps> = ({
   const [, setX] = useSpring(() => ({
     from: { x: 0 },
     to: { x: 0 },
-    onFrame: (props: { x: number }) => {
+    onChange: (results) => {
       if (containerRef.current) {
-        containerRef.current.scrollLeft = props.x;
+        containerRef.current.scrollLeft = results.value.x;
       }
     },
   }));
@@ -111,14 +111,12 @@ const Slider: React.FC<SliderProps> = ({
         scrollPosition - scrollOffset - visibleItems * cardWidth,
         0
       );
-      setX({
+      setX.start({
         from: { x: scrollPosition },
-        to: {
-          x: newX,
-        },
-        onFrame: (props: { x: number }) => {
+        to: { x: newX },
+        onChange: (results) => {
           if (containerRef.current) {
-            containerRef.current.scrollLeft = props.x;
+            containerRef.current.scrollLeft = results.value.x;
           }
         },
         reset: true,
@@ -135,14 +133,12 @@ const Slider: React.FC<SliderProps> = ({
         scrollPosition - scrollOffset + visibleItems * cardWidth,
         containerRef.current?.scrollWidth ?? 0 - clientWidth
       );
-      setX({
+      setX.start({
         from: { x: scrollPosition },
-        to: {
-          x: newX,
-        },
-        onFrame: (props: { x: number }) => {
+        to: { x: newX },
+        onChange: (results) => {
           if (containerRef.current) {
-            containerRef.current.scrollLeft = props.x;
+            containerRef.current.scrollLeft = results.value.x;
           }
         },
         reset: true,

@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import type { MainSettings } from '../../../../server/lib/settings';
 import globalMessages from '../../../i18n/globalMessages';
 import Button from '../../Common/Button';
@@ -19,11 +19,14 @@ const messages = defineMessages({
   toastSettingsSuccess: 'User settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   localLogin: 'Enable Local Sign-In',
-  newPlexLogin: 'Enable New Plex User Sign-In',
+  localLoginTip:
+    'Allow users to sign in using their email address and password, instead of Plex OAuth',
+  newPlexLogin: 'Enable New Plex Sign-In',
   newPlexLoginTip: 'Allow Plex users to sign in without first being imported',
   movieRequestLimitLabel: 'Global Movie Request Limit',
   tvRequestLimitLabel: 'Global Series Request Limit',
   defaultPermissions: 'Default Permissions',
+  defaultPermissionsTip: 'Initial permissions assigned to new users',
 });
 
 const SettingsUsers: React.FC = () => {
@@ -80,6 +83,7 @@ const SettingsUsers: React.FC = () => {
                 },
                 defaultPermissions: values.defaultPermissions,
               });
+              mutate('/api/v1/settings/public');
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
                 autoDismiss: true,
@@ -101,6 +105,9 @@ const SettingsUsers: React.FC = () => {
                 <div className="form-row">
                   <label htmlFor="localLogin" className="checkbox-label">
                     {intl.formatMessage(messages.localLogin)}
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.localLoginTip)}
+                    </span>
                   </label>
                   <div className="form-input">
                     <Field
@@ -169,6 +176,9 @@ const SettingsUsers: React.FC = () => {
                   <div className="form-row">
                     <span id="group-label" className="group-label">
                       {intl.formatMessage(messages.defaultPermissions)}
+                      <span className="label-tip">
+                        {intl.formatMessage(messages.defaultPermissionsTip)}
+                      </span>
                     </span>
                     <div className="form-input">
                       <div className="max-w-lg">

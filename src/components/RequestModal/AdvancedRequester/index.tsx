@@ -26,7 +26,7 @@ type OptionType = {
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
 const messages = defineMessages({
-  advancedoptions: 'Advanced Options',
+  advancedoptions: 'Advanced',
   destinationserver: 'Destination Server',
   qualityprofile: 'Quality Profile',
   rootfolder: 'Root Folder',
@@ -97,21 +97,19 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     defaultOverrides?.tags ?? []
   );
 
-  const {
-    data: serverData,
-    isValidating,
-  } = useSWR<ServiceCommonServerWithDetails>(
-    selectedServer !== null
-      ? `/api/v1/service/${
-          type === 'movie' ? 'radarr' : 'sonarr'
-        }/${selectedServer}`
-      : null,
-    {
-      refreshInterval: 0,
-      refreshWhenHidden: false,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data: serverData, isValidating } =
+    useSWR<ServiceCommonServerWithDetails>(
+      selectedServer !== null
+        ? `/api/v1/service/${
+            type === 'movie' ? 'radarr' : 'sonarr'
+          }/${selectedServer}`
+        : null,
+      {
+        refreshInterval: 0,
+        refreshWhenHidden: false,
+        revalidateOnFocus: false,
+      }
+    );
 
   const [selectedUser, setSelectedUser] = useState<User | null>(
     requestUser ?? null
@@ -276,9 +274,9 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       </div>
       <div className="p-4 bg-gray-600 rounded-md shadow">
         {!!data && selectedServer !== null && (
-          <>
-            <div className="flex flex-col items-center justify-between md:flex-row">
-              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
+          <div className="flex flex-col md:flex-row">
+            {data.filter((server) => server.is4k === is4k).length > 1 && (
+              <div className="flex-grow flex-shrink-0 w-full mb-3 md:w-1/4 md:pr-4 last:pr-0">
                 <label htmlFor="server">
                   {intl.formatMessage(messages.destinationserver)}
                 </label>
@@ -288,7 +286,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   value={selectedServer}
                   onChange={(e) => setSelectedServer(Number(e.target.value))}
                   onBlur={(e) => setSelectedServer(Number(e.target.value))}
-                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                  className="bg-gray-800 border-gray-700"
                 >
                   {data
                     .filter((server) => server.is4k === is4k)
@@ -306,7 +304,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                     ))}
                 </select>
               </div>
-              <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:pr-4 md:mb-0">
+            )}
+            {(isValidating ||
+              !serverData ||
+              serverData.profiles.length > 1) && (
+              <div className="flex-grow flex-shrink-0 w-full mb-3 md:w-1/4 md:pr-4 last:pr-0">
                 <label htmlFor="profile">
                   {intl.formatMessage(messages.qualityprofile)}
                 </label>
@@ -316,7 +318,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   value={selectedProfile}
                   onChange={(e) => setSelectedProfile(Number(e.target.value))}
                   onBlur={(e) => setSelectedProfile(Number(e.target.value))}
-                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                  className="bg-gray-800 border-gray-700"
                   disabled={isValidating || !serverData}
                 >
                   {(isValidating || !serverData) && (
@@ -346,11 +348,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                     ))}
                 </select>
               </div>
-              <div
-                className={`flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0 ${
-                  type === 'tv' ? 'md:pr-4' : ''
-                }`}
-              >
+            )}
+            {(isValidating ||
+              !serverData ||
+              serverData.rootFolders.length > 1) && (
+              <div className="flex-grow flex-shrink-0 w-full mb-3 md:w-1/4 md:pr-4 last:pr-0">
                 <label htmlFor="folder">
                   {intl.formatMessage(messages.rootfolder)}
                 </label>
@@ -360,7 +362,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   value={selectedFolder}
                   onChange={(e) => setSelectedFolder(e.target.value)}
                   onBlur={(e) => setSelectedFolder(e.target.value)}
-                  className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                  className="bg-gray-800 border-gray-700"
                   disabled={isValidating || !serverData}
                 >
                   {(isValidating || !serverData) && (
@@ -399,8 +401,12 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                     ))}
                 </select>
               </div>
-              {type === 'tv' && (
-                <div className="flex-grow flex-shrink-0 w-full mb-2 md:w-1/4 md:mb-0">
+            )}
+            {type === 'tv' &&
+              (isValidating ||
+                !serverData ||
+                (serverData.languageProfiles ?? []).length > 1) && (
+                <div className="flex-grow flex-shrink-0 w-full mb-3 md:w-1/4 md:pr-4 last:pr-0">
                   <label htmlFor="language">
                     {intl.formatMessage(messages.languageprofile)}
                   </label>
@@ -414,7 +420,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                     onBlur={(e) =>
                       setSelectedLanguage(parseInt(e.target.value))
                     }
-                    className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 text-white transition duration-150 ease-in-out bg-gray-800 border-gray-700 rounded-md form-select focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                    className="bg-gray-800 border-gray-700"
                     disabled={isValidating || !serverData}
                   >
                     {(isValidating || !serverData) && (
@@ -447,147 +453,151 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   </select>
                 </div>
               )}
-            </div>
-          </>
-        )}
-        {!!data && selectedServer !== null && (
-          <div className="mt-0 sm:mt-2">
-            <label htmlFor="tags">{intl.formatMessage(messages.tags)}</label>
-            <Select
-              name="tags"
-              options={(serverData?.tags ?? []).map((tag) => ({
-                label: tag.label,
-                value: tag.id,
-              }))}
-              isMulti
-              isDisabled={isValidating || !serverData}
-              placeholder={
-                isValidating || !serverData
-                  ? intl.formatMessage(globalMessages.loading)
-                  : intl.formatMessage(messages.selecttags)
-              }
-              className="react-select-container react-select-container-dark"
-              classNamePrefix="react-select"
-              value={selectedTags.map((tagId) => {
-                const foundTag = serverData?.tags.find(
-                  (tag) => tag.id === tagId
-                );
-                return {
-                  value: foundTag?.id,
-                  label: foundTag?.label,
-                };
-              })}
-              onChange={(
-                value: OptionTypeBase | OptionsType<OptionType> | null
-              ) => {
-                if (!Array.isArray(value)) {
-                  return;
-                }
-                setSelectedTags(value?.map((option) => option.value));
-              }}
-              noOptionsMessage={() => intl.formatMessage(messages.notagoptions)}
-            />
           </div>
         )}
+        {selectedServer !== null &&
+          (isValidating || !serverData || !!serverData?.tags?.length) && (
+            <div className="mb-2">
+              <label htmlFor="tags">{intl.formatMessage(messages.tags)}</label>
+              <Select
+                name="tags"
+                options={(serverData?.tags ?? []).map((tag) => ({
+                  label: tag.label,
+                  value: tag.id,
+                }))}
+                isMulti
+                isDisabled={isValidating || !serverData}
+                placeholder={
+                  isValidating || !serverData
+                    ? intl.formatMessage(globalMessages.loading)
+                    : intl.formatMessage(messages.selecttags)
+                }
+                className="react-select-container react-select-container-dark"
+                classNamePrefix="react-select"
+                value={selectedTags.map((tagId) => {
+                  const foundTag = serverData?.tags.find(
+                    (tag) => tag.id === tagId
+                  );
+                  return {
+                    value: foundTag?.id,
+                    label: foundTag?.label,
+                  };
+                })}
+                onChange={(
+                  value: OptionTypeBase | OptionsType<OptionType> | null
+                ) => {
+                  if (!Array.isArray(value)) {
+                    return;
+                  }
+                  setSelectedTags(value?.map((option) => option.value));
+                }}
+                noOptionsMessage={() =>
+                  intl.formatMessage(messages.notagoptions)
+                }
+              />
+            </div>
+          )}
         {hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS]) &&
           selectedUser && (
-            <div className="mt-2 first:mt-0">
-              <Listbox
-                as="div"
-                value={selectedUser}
-                onChange={(value) => setSelectedUser(value)}
-                className="space-y-1"
-              >
-                {({ open }) => (
-                  <>
-                    <Listbox.Label>
-                      {intl.formatMessage(messages.requestas)}
-                    </Listbox.Label>
-                    <div className="relative">
-                      <span className="inline-block w-full rounded-md shadow-sm">
-                        <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out bg-gray-800 border border-gray-700 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5">
-                          <span className="flex items-center">
-                            <img
-                              src={selectedUser.avatar}
-                              alt=""
-                              className="flex-shrink-0 w-6 h-6 rounded-full"
-                            />
-                            <span className="block ml-3">
-                              {selectedUser.displayName}
-                            </span>
+            <Listbox
+              as="div"
+              value={selectedUser}
+              onChange={(value) => setSelectedUser(value)}
+              className="space-y-1"
+            >
+              {({ open }) => (
+                <>
+                  <Listbox.Label>
+                    {intl.formatMessage(messages.requestas)}
+                  </Listbox.Label>
+                  <div className="relative">
+                    <span className="inline-block w-full rounded-md shadow-sm">
+                      <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out bg-gray-800 border border-gray-700 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5">
+                        <span className="flex items-center">
+                          <img
+                            src={selectedUser.avatar}
+                            alt=""
+                            className="flex-shrink-0 w-6 h-6 rounded-full"
+                          />
+                          <span className="block ml-3">
+                            {selectedUser.displayName}
+                          </span>
+                          {selectedUser.displayName.toLowerCase() !==
+                            selectedUser.email && (
                             <span className="ml-1 text-gray-400 truncate">
                               ({selectedUser.email})
                             </span>
-                          </span>
-                          <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 pointer-events-none">
-                            <ChevronDownIcon className="w-5 h-5" />
-                          </span>
-                        </Listbox.Button>
-                      </span>
+                          )}
+                        </span>
+                        <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 pointer-events-none">
+                          <ChevronDownIcon className="w-5 h-5" />
+                        </span>
+                      </Listbox.Button>
+                    </span>
 
-                      <Transition
-                        show={open}
-                        enter="transition ease-in duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                        className="w-full mt-1 bg-gray-800 rounded-md shadow-lg"
+                    <Transition
+                      show={open}
+                      enter="transition ease-in duration-300"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leave="transition ease-in duration-100"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                      className="w-full mt-1 bg-gray-800 rounded-md shadow-lg"
+                    >
+                      <Listbox.Options
+                        static
+                        className="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
                       >
-                        <Listbox.Options
-                          static
-                          className="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
-                        >
-                          {userData?.results.map((user) => (
-                            <Listbox.Option key={user.id} value={user}>
-                              {({ selected, active }) => (
-                                <div
+                        {userData?.results.map((user) => (
+                          <Listbox.Option key={user.id} value={user}>
+                            {({ selected, active }) => (
+                              <div
+                                className={`${
+                                  active
+                                    ? 'text-white bg-indigo-600'
+                                    : 'text-gray-300'
+                                } cursor-default select-none relative py-2 pl-8 pr-4`}
+                              >
+                                <span
                                   className={`${
-                                    active
-                                      ? 'text-white bg-indigo-600'
-                                      : 'text-gray-300'
-                                  } cursor-default select-none relative py-2 pl-8 pr-4`}
+                                    selected ? 'font-semibold' : 'font-normal'
+                                  } flex items-center`}
                                 >
-                                  <span
-                                    className={`${
-                                      selected ? 'font-semibold' : 'font-normal'
-                                    } flex items-center`}
-                                  >
-                                    <img
-                                      src={user.avatar}
-                                      alt=""
-                                      className="flex-shrink-0 w-6 h-6 rounded-full"
-                                    />
-                                    <span className="flex-shrink-0 block ml-3">
-                                      {user.displayName}
-                                    </span>
+                                  <img
+                                    src={user.avatar}
+                                    alt=""
+                                    className="flex-shrink-0 w-6 h-6 rounded-full"
+                                  />
+                                  <span className="flex-shrink-0 block ml-3">
+                                    {user.displayName}
+                                  </span>
+                                  {user.displayName.toLowerCase() !==
+                                    user.email && (
                                     <span className="ml-1 text-gray-400 truncate">
                                       ({user.email})
                                     </span>
-                                  </span>
-                                  {selected && (
-                                    <span
-                                      className={`${
-                                        active
-                                          ? 'text-white'
-                                          : 'text-indigo-600'
-                                      } absolute inset-y-0 left-0 flex items-center pl-1.5`}
-                                    >
-                                      <CheckIcon className="w-5 h-5" />
-                                    </span>
                                   )}
-                                </div>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </Transition>
-                    </div>
-                  </>
-                )}
-              </Listbox>
-            </div>
+                                </span>
+                                {selected && (
+                                  <span
+                                    className={`${
+                                      active ? 'text-white' : 'text-indigo-600'
+                                    } absolute inset-y-0 left-0 flex items-center pl-1.5`}
+                                  >
+                                    <CheckIcon className="w-5 h-5" />
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
+                    </Transition>
+                  </div>
+                </>
+              )}
+            </Listbox>
           )}
         {isAnime && (
           <div className="mt-4 italic">

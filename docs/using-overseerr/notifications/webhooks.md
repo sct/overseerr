@@ -1,6 +1,6 @@
 # Webhook
 
-The webhook notification agent allows you to send a custom JSON payload to any endpoint.
+The webhook notification agent enables you to send a custom JSON payload to any endpoint for specific notification events.
 
 ## Configuration
 
@@ -18,7 +18,7 @@ This value will be sent as an `Authorization` HTTP header.
 
 ### JSON Payload
 
-Customize the JSON payload to suit your needs. Overseerr provides several [template variables](./webhooks.md#template-variables) for use in the payload, which will be replaced with the relevant data when the notifications are triggered.
+Customize the JSON payload to suit your needs. Overseerr provides several [template variables](#template-variables) for use in the payload, which will be replaced with the relevant data when the notifications are triggered.
 
 ## Template Variables
 
@@ -67,12 +67,12 @@ The following variables must be used as a key in the JSON payload (e.g., `"{{ext
 
 These `{{media}}` special variables are only included in media-related notifications, such as requests.
 
-- `{{media_type}}` Media type. Either `movie` or `tv`.
+- `{{media_type}}` Media type (`movie` or `tv`).
 - `{{media_tmdbid}}` Media's TMDb ID.
 - `{{media_imdbid}}` Media's IMDb ID.
 - `{{media_tvdbid}}` Media's TVDB ID.
-- `{{media_status}}` Media's availability status (e.g., `AVAILABLE` or `PENDING`).
-- `{{media_status4k}}` Media's 4K availability status (e.g., `AVAILABLE` or `PENDING`).
+- `{{media_status}}` Media's availability status (`UNKNOWN`, `PENDING`, `PROCESSING`, `PARTIALLY_AVAILABLE`, or `AVAILABLE`).
+- `{{media_status4k}}` Media's 4K availability status (`UNKNOWN`, `PENDING`, `PROCESSING`, `PARTIALLY_AVAILABLE`, or `AVAILABLE`)
 
 #### Request
 
@@ -82,5 +82,5 @@ The `{{request}}` special variables are only included in request-related notific
 - `{{requestedBy_username}}` Requesting user's username.
 - `{{requestedBy_email}}` Requesting user's email address.
 - `{{requestedBy_avatar}}` Requesting user's avatar URL.
-- `{{requestedBy_settings_discordId}}` Requesting user's Discord ID (if one is set).
-- `{{requestedBy_settings_telegramChatId}}` Requesting user's Telegram Chat ID (if one is set).
+- `{{requestedBy_settings_discordId}}` Requesting user's Discord ID (if set).
+- `{{requestedBy_settings_telegramChatId}}` Requesting user's Telegram Chat ID (if set).
