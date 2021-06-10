@@ -9,6 +9,7 @@ export interface SettingsContextProps {
 const defaultSettings = {
   initialized: false,
   applicationTitle: 'Overseerr',
+  applicationUrl: '',
   hideAvailable: false,
   localLogin: true,
   movie4kEnabled: false,
@@ -20,6 +21,7 @@ const defaultSettings = {
   vapidPublic: '',
   enablePushRegistration: false,
   locale: 'en',
+  emailEnabled: false,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

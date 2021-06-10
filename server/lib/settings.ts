@@ -98,6 +98,7 @@ interface PublicSettings {
 
 interface FullPublicSettings extends PublicSettings {
   applicationTitle: string;
+  applicationUrl: string;
   hideAvailable: boolean;
   localLogin: boolean;
   movie4kEnabled: boolean;
@@ -109,6 +110,7 @@ interface FullPublicSettings extends PublicSettings {
   vapidPublic: string;
   enablePushRegistration: boolean;
   locale: string;
+  emailEnabled: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -396,6 +398,7 @@ class Settings {
     return {
       ...this.data.public,
       applicationTitle: this.data.main.applicationTitle,
+      applicationUrl: this.data.main.applicationUrl,
       hideAvailable: this.data.main.hideAvailable,
       localLogin: this.data.main.localLogin,
       movie4kEnabled: this.data.radarr.some(
@@ -411,6 +414,7 @@ class Settings {
       vapidPublic: this.vapidPublic,
       enablePushRegistration: this.data.notifications.agents.webpush.enabled,
       locale: this.data.main.locale,
+      emailEnabled: this.data.notifications.agents.email.enabled,
     };
   }
 

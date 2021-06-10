@@ -22,6 +22,7 @@ export interface SettingsAboutResponse {
 export interface PublicSettingsResponse {
   initialized: boolean;
   applicationTitle: string;
+  applicationUrl: string;
   hideAvailable: boolean;
   localLogin: boolean;
   movie4kEnabled: boolean;
@@ -33,6 +34,7 @@ export interface PublicSettingsResponse {
   vapidPublic: string;
   enablePushRegistration: boolean;
   locale: string;
+  emailEnabled: boolean;
 }
 
 export interface CacheItem {
