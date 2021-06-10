@@ -1,3 +1,65 @@
+# [1.25.0](https://github.com/sct/overseerr/compare/v1.24.0...v1.25.0) (2021-06-10)
+
+
+### Bug Fixes
+
+* **frontend:** add missing route guards to settings pages ([#1700](https://github.com/sct/overseerr/issues/1700)) ([78fc1f7](https://github.com/sct/overseerr/commit/78fc1f7b7d9ef912077066a3605fed6237fb4c8a))
+* **locale:** set locale based on user settings upon login ([#1584](https://github.com/sct/overseerr/issues/1584)) ([f48312e](https://github.com/sct/overseerr/commit/f48312e833ed5d48c41179d0eadbc66d45486d8a))
+* **notif:** include year in Media Available notifications ([#1672](https://github.com/sct/overseerr/issues/1672)) ([11aa712](https://github.com/sct/overseerr/commit/11aa712eb0e8796874c96fbcc9b51b523108e2d4))
+* **plex:** disable library sync if Plex not configured, and disable scan if no libraries ([#1764](https://github.com/sct/overseerr/issues/1764)) ([22238fe](https://github.com/sct/overseerr/commit/22238fe4f711267d001be95942b3151c536e0c18))
+* **plex:** do not fail to import Plex users when Plex Home has managed users ([#1699](https://github.com/sct/overseerr/issues/1699)) ([310cdb3](https://github.com/sct/overseerr/commit/310cdb36df1601bca5e57f0bc796c44111b8435f))
+* **plex:** sync libraries after saving settings ([#1592](https://github.com/sct/overseerr/issues/1592)) ([9749d72](https://github.com/sct/overseerr/commit/9749d723fc0a282b291c06ee68a6e174dcec1c5b))
+* **requests:** appropriately set modifiedBy user for new requests ([#1684](https://github.com/sct/overseerr/issues/1684)) ([a3f04b3](https://github.com/sct/overseerr/commit/a3f04b3f3522d46dc65178bddd1e986426e48050))
+* **requests:** do not prevent duplicate requests if other requests are declined ([de0759c](https://github.com/sct/overseerr/commit/de0759c26a9e857e2b8d7244673625fc79ee4660))
+* **requests:** prevent duplicate movie requests ([126d866](https://github.com/sct/overseerr/commit/126d8665ee2808fc0bc37df4ca61f3e63be096e2))
+* check that application URL and email agent are configured for password reset/generation ([#1724](https://github.com/sct/overseerr/issues/1724)) ([091d66a](https://github.com/sct/overseerr/commit/091d66a1928d3c69a11eab2a789b4639b5ba9817))
+* correctly display error messages ([#1653](https://github.com/sct/overseerr/issues/1653)) ([31cb717](https://github.com/sct/overseerr/commit/31cb7176d286e706575a2dc8003df13f3e737106))
+* handle null values in User email transform ([#1712](https://github.com/sct/overseerr/issues/1712)) ([4a042f1](https://github.com/sct/overseerr/commit/4a042f12be6510ee47de3a7e025497f8d132d6a1))
+* **lang:** only set locale once at page load and move subsequent updates back into Layout ([14756f4](https://github.com/sct/overseerr/commit/14756f4b208c5b201a6e632b43e7a21c5bec6f9c)), closes [#1662](https://github.com/sct/overseerr/issues/1662)
+* **locale:** properly restore display language upon page refresh ([#1646](https://github.com/sct/overseerr/issues/1646)) ([e85d1ce](https://github.com/sct/overseerr/commit/e85d1ce94ec45d8f5d086722cfd88e0e2c5b4bb6))
+* **notifications:** default webpush notification agent to enabled for users for settings response ([7520e24](https://github.com/sct/overseerr/commit/7520e24e9287e214dd31224f1201e9b6385fd567)), closes [#1663](https://github.com/sct/overseerr/issues/1663)
+* **quotas:** do not count already-requested seasons when editing TV request ([#1649](https://github.com/sct/overseerr/issues/1649)) ([808ccf1](https://github.com/sct/overseerr/commit/808ccf1c6975f853db6dc89f4d9f1f5488dbaae3))
+* **requests:** remove requestedBy user param from existing movie request check ([#1569](https://github.com/sct/overseerr/issues/1569)) ([788f3dc](https://github.com/sct/overseerr/commit/788f3dc435ae224fcc4d4cb2890b1b9b494c64e8))
+* **sensitiveinput:** do not capture enter key input ([#1650](https://github.com/sct/overseerr/issues/1650)) ([bb8d14b](https://github.com/sct/overseerr/commit/bb8d14b5ffd840eff0c2a00e1b5d318677a5ca5f))
+* **sonarr:** do not mark media as failed if there is no season data on TVDB ([#1691](https://github.com/sct/overseerr/issues/1691)) ([0cd7fa0](https://github.com/sct/overseerr/commit/0cd7fa0f1a00d129339be13550a4f694c820a0e9))
+* **tv:** don't show duplicate air date ([#1666](https://github.com/sct/overseerr/issues/1666)) ([e1f5feb](https://github.com/sct/overseerr/commit/e1f5febe7bbf27e77b6f5d057c2c3f7e22898734))
+* **ui:** add clarification to user settings ([#1644](https://github.com/sct/overseerr/issues/1644)) ([2ef57e9](https://github.com/sct/overseerr/commit/2ef57e9b1a5b4d0a1499921f4e26b0b0712d7ded))
+* **ui:** correct horizontal overflow behavior of settings tabs ([#1667](https://github.com/sct/overseerr/issues/1667)) ([e6d5f0a](https://github.com/sct/overseerr/commit/e6d5f0abfebdc24f25d08822b57a8eb7bc48e137))
+* **ui:** hide advanced request options when there is only one choice ([#1591](https://github.com/sct/overseerr/issues/1591)) ([6b26188](https://github.com/sct/overseerr/commit/6b26188d888a1f80bd36a1968e41333bab2af794))
+* **ui:** improve QuotaSelector display of unlimited and singular values ([#1704](https://github.com/sct/overseerr/issues/1704)) ([59b2ec1](https://github.com/sct/overseerr/commit/59b2ec11fa8868bf6873ffa80f4999ae10d65637))
+* perform case-insensitive match for local user email addresses ([#1633](https://github.com/sct/overseerr/issues/1633)) ([928b8a7](https://github.com/sct/overseerr/commit/928b8a71cf361b7bc2b8957c621f5b66c4657b1e))
+* **ui:** apply pointer cursor style for clickable status badges ([#1632](https://github.com/sct/overseerr/issues/1632)) ([6968caa](https://github.com/sct/overseerr/commit/6968caa35a70c172bdd57c984fde6cb6a04a1470))
+* **ui:** remove delete button from request cards ([#1635](https://github.com/sct/overseerr/issues/1635)) ([6b37242](https://github.com/sct/overseerr/commit/6b37242a3f5a3b332d259f4814d235d751ae2491))
+* switch PGP regex to span multiple lines ([#1598](https://github.com/sct/overseerr/issues/1598)) ([d0703aa](https://github.com/sct/overseerr/commit/d0703aa37772759e8e28b5da7187e97e7aadc495))
+* **ui:** hide Plex alert after setup and add local login warning to local user modal ([#1600](https://github.com/sct/overseerr/issues/1600)) ([694d0ff](https://github.com/sct/overseerr/commit/694d0ffcf6b3e3fa00175400fa4217a7d6eb787f))
+
+
+### Features
+
+* **lang:** add Greek display language ([#1605](https://github.com/sct/overseerr/issues/1605)) ([2241564](https://github.com/sct/overseerr/commit/22415642e8602809e3507e5b13dc2f8de3000003))
+* **lang:** translations update from Weblate ([#1585](https://github.com/sct/overseerr/issues/1585)) ([361ea77](https://github.com/sct/overseerr/commit/361ea77588db3dc04a51dd3a62c73ae1297cdce2))
+* **lang:** translations update from Weblate ([#1603](https://github.com/sct/overseerr/issues/1603)) ([2efa7fa](https://github.com/sct/overseerr/commit/2efa7faf20d05a5fc423e0151c6b46fe6212d096))
+* **lang:** translations update from Weblate ([#1639](https://github.com/sct/overseerr/issues/1639)) ([d22400d](https://github.com/sct/overseerr/commit/d22400dbc9320743498eeb8e6a4dcbccf1a4d52d))
+* **lang:** translations update from Weblate ([#1676](https://github.com/sct/overseerr/issues/1676)) ([8a80571](https://github.com/sct/overseerr/commit/8a805716e3e34ae8d081ad47f9d4cd68f88b0116))
+* **lang:** translations update from Weblate ([#1703](https://github.com/sct/overseerr/issues/1703)) ([6a3649f](https://github.com/sct/overseerr/commit/6a3649f620e518ff07a48c17ce1182aaedff398a))
+* **lang:** translations update from Weblate ([#1727](https://github.com/sct/overseerr/issues/1727)) ([60c3ced](https://github.com/sct/overseerr/commit/60c3ced9e2466568eecde93c88410c87ff0b796f))
+* **lang:** translations update from Weblate ([#1746](https://github.com/sct/overseerr/issues/1746)) ([37a4df6](https://github.com/sct/overseerr/commit/37a4df646cc3e3101360037f1b6f061a734eb5e2))
+* **lang:** translations update from Weblate ([#1768](https://github.com/sct/overseerr/issues/1768)) ([dedf95e](https://github.com/sct/overseerr/commit/dedf95e574a15a708866c381353e58ce3b3a1a61))
+* add display name to create local user modal ([#1631](https://github.com/sct/overseerr/issues/1631)) ([44c3edb](https://github.com/sct/overseerr/commit/44c3edb98568ba15eb525e665115429cfb15d28b))
+* allow users to select notification types ([#1512](https://github.com/sct/overseerr/issues/1512)) ([e605989](https://github.com/sct/overseerr/commit/e60598905b2d6eef7c1872d0c9e92e6d70508ae8))
+* **notif:** prevent manage-request users receiving auto-approve notif from their requests ([#1707](https://github.com/sct/overseerr/issues/1707)) ([#1709](https://github.com/sct/overseerr/issues/1709)) ([9ead8bb](https://github.com/sct/overseerr/commit/9ead8bb1f1680b522550f963502c83e2f99d1e96))
+* **plex:** add support for custom Plex Web App URLs ([#1581](https://github.com/sct/overseerr/issues/1581)) ([a640a91](https://github.com/sct/overseerr/commit/a640a91390f1411637ad379a8253002fdf60480f))
+* **pwa:** add notification badge icon ([#1695](https://github.com/sct/overseerr/issues/1695)) ([9b3b6a9](https://github.com/sct/overseerr/commit/9b3b6a9170b25209e54c74aa9e96659bc2d19edd))
+* **ui:** request list item & request card improvements ([#1532](https://github.com/sct/overseerr/issues/1532)) ([d7b9b1a](https://github.com/sct/overseerr/commit/d7b9b1a525ec6d1d81ad6fe4e55994dd8428988f))
+* **webpush:** add warning to web push settings re: HTTPS requirement ([#1599](https://github.com/sct/overseerr/issues/1599)) ([0c4fb64](https://github.com/sct/overseerr/commit/0c4fb6446be425905a120df5be9a28b052e884c0))
+
+
+### Reverts
+
+* **deps:** revert back to typeorm 0.2.32 ([4368c3a](https://github.com/sct/overseerr/commit/4368c3aa4f88425ec08f3b555419e572cfa320e3))
+* **deps:** use 10.1.3 until css import issue is resolved ([2254248](https://github.com/sct/overseerr/commit/2254248abc0f2051a9dd28d9663c7ab1d0b547b6))
+* **requests:** go back to old modifiedBy request values for now ([0918b25](https://github.com/sct/overseerr/commit/0918b254132b0541999486e1f0679d0c0cd65864))
+
 # [1.24.0](https://github.com/sct/overseerr/compare/v1.23.2...v1.24.0) (2021-05-05)
 
 
