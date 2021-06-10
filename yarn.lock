@@ -10293,10 +10293,10 @@ opener@^1.5.1:
   resolved "https://registry.yarnpkg.com/opener/-/opener-1.5.2.tgz#5d37e1f35077b9dcac4301372271afdeb2a13598"
   integrity sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==
 
-openpgp@^5.0.0-2:
-  version "5.0.0-2"
-  resolved "https://registry.yarnpkg.com/openpgp/-/openpgp-5.0.0-2.tgz#da54385eb9298c259bc6aa76ab556532298897d4"
-  integrity sha512-es+5A50Y+4JbtV+eugLPW9v/UkUIOufeOUyTcjbG8SMILNaLY9nEwUSJKDjQOadY+16w7Uqt0FDQ3Z1Vq7/F9g==
+openpgp@^5.0.0-3:
+  version "5.0.0-3"
+  resolved "https://registry.yarnpkg.com/openpgp/-/openpgp-5.0.0-3.tgz#08bbd878edc7c8e3c8443d8ace2c3b2236e3150c"
+  integrity sha512-5Yzd7hjoCtR0m27yrM6+Li1RcuUPIyVJXKMfR82HJotfst5NEEQHxCyUJvDWc8SqKS53zFyTl0SlPaZ08C2PxA==
   dependencies:
     asn1.js "^5.0.0"
 
