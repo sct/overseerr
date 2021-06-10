@@ -107,23 +107,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                 )}
               </div>
               <div className="pt-5 mt-8 border-t border-gray-700">
-                <div
-                  className={`flex ${
-                    passwordResetEnabled ? 'justify-between' : 'justify-end'
-                  }`}
-                >
-                  {passwordResetEnabled && (
-                    <span className="inline-flex rounded-md shadow-sm">
-                      <Link href="/resetpassword" passHref>
-                        <Button as="a" buttonType="ghost">
-                          <SupportIcon />
-                          <span>
-                            {intl.formatMessage(messages.forgotpassword)}
-                          </span>
-                        </Button>
-                      </Link>
-                    </span>
-                  )}
+                <div className="flex flex-row-reverse justify-between">
                   <span className="inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
@@ -138,6 +122,18 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       </span>
                     </Button>
                   </span>
+                  {passwordResetEnabled && (
+                    <span className="inline-flex rounded-md shadow-sm">
+                      <Link href="/resetpassword" passHref>
+                        <Button as="a" buttonType="ghost">
+                          <SupportIcon />
+                          <span>
+                            {intl.formatMessage(messages.forgotpassword)}
+                          </span>
+                        </Button>
+                      </Link>
+                    </span>
+                  )}
                 </div>
               </div>
             </Form>
