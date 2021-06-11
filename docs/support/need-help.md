@@ -35,6 +35,6 @@ Try to answer the following questions:
 
 ## How can I share my logs?
 
-1. Locate the current log file at `<your Overseeerr config directory>/logs/overseerr.log`.
+1. Locate the current log file at `<your Overseerr config directory>/logs/overseerr.log`.
 2. Open the log file and **copy its contents** into a [**secret gist** on GitHub](https://gist.github.com/). If you upload your logs elsewhere, we may ask you to share them again via GitHub Gist.
 3. **Share the link/URL to your secret gist** in the [`#support` channel in our Discord server](https://discord.gg/overseerr).
