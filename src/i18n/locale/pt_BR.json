@@ -318,7 +318,7 @@
   "components.UserList.validationpasswordminchars": "Senha muito curta; necessário ter no mínimo 8 caracteres",
   "components.UserList.usercreatedsuccess": "Usuário criado com sucesso!",
   "components.UserList.usercreatedfailed": "Algo deu errado ao criar usuário.",
-  "components.UserList.passwordinfodescription": "Habilite notificações via e-mail para permitir a geração automática de senha.",
+  "components.UserList.passwordinfodescription": "Configure a URL da aplicação e habilite notificações via e-mail para permitir a geração automática de senha.",
   "components.UserList.password": "Senha",
   "components.UserList.localuser": "Usuário Local",
   "components.UserList.email": "Endereço de E-mail",
