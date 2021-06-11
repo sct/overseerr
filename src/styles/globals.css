@@ -170,7 +170,7 @@ a.crew-name {
 }
 
 .media-fact-value {
-  @apply flex-1 text-sm text-right text-gray-400;
+  @apply flex-1 ml-2 text-sm text-right text-gray-400;
 }
 
 .media-ratings {
