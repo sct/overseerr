@@ -322,7 +322,7 @@
   "components.UserList.creating": "Bezig met aanmaken…",
   "components.UserList.validationpasswordminchars": "Wachtwoord is te kort; moet minimaal 8 tekens bevatten",
   "components.UserList.usercreatedsuccess": "Gebruiker met succes aangemaakt!",
-  "components.UserList.passwordinfodescription": "E-mailmeldingen moeten ingeschakeld worden om wachtwoorden automatisch te genereren.",
+  "components.UserList.passwordinfodescription": "Configureer een applicatie-URL en schakel e-mailmeldingen in om automatische wachtwoordgeneratie mogelijk te maken.",
   "components.UserList.password": "Wachtwoord",
   "components.UserList.localuser": "Lokale gebruiker",
   "components.UserList.email": "E-mailadres",
