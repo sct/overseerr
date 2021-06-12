@@ -47,6 +47,7 @@ import RequestButton from '../RequestButton';
 import RequestModal from '../RequestModal';
 import Slider from '../Slider';
 import StatusBadge from '../StatusBadge';
+import StreamingProviders from '../StreamingProviders';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -80,7 +81,6 @@ const messages = defineMessages({
   seasons: '{seasonCount, plural, one {# Season} other {# Seasons}}',
   episodeRuntime: 'Episode Runtime',
   episodeRuntimeMinutes: '{runtime} minutes',
-  streamingproviders: 'Currently Streaming On',
 });
 
 interface TvDetailsProps {
@@ -236,10 +236,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       ) ?? []
     ).length;
 
-  const streamingProviders =
-    data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
-      ?.flatrate ?? [];
-
   return (
     <div
       className="media-page"
@@ -282,8 +278,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         onClose={() => setShowManager(false)}
         subText={data.name}
       >
-        {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
-          (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
+        {(!!(data?.mediaInfo?.downloadStatus ?? []).length ||
+          !!(data?.mediaInfo?.downloadStatus4k ?? []).length) && (
           <>
             <h3 className="mb-2 text-xl">
               {intl.formatMessage(messages.downloadstatus)}
@@ -433,7 +429,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           <div className="media-status">
             <StatusBadge
               status={data.mediaInfo?.status}
-              inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
+              inProgress={!!(data.mediaInfo?.downloadStatus ?? []).length}
               plexUrl={data.mediaInfo?.plexUrl}
             />
             {settings.currentSettings.series4kEnabled &&
@@ -443,9 +439,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <StatusBadge
                   status={data.mediaInfo?.status4k}
                   is4k
-                  inProgress={
-                    (data.mediaInfo?.downloadStatus4k ?? []).length > 0
-                  }
+                  inProgress={!!(data.mediaInfo?.downloadStatus4k ?? []).length}
                   plexUrl4k={data.mediaInfo?.plexUrl4k}
                 />
               )}
@@ -459,7 +453,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             )}
           </h1>
           <span className="media-attributes">
-            {seriesAttributes.length > 0 &&
+            {!!seriesAttributes.length &&
               seriesAttributes
                 .map((t, k) => <span key={k}>{t}</span>)
                 .reduce((prev, curr) => (
@@ -499,31 +493,34 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               ? data.overview
               : intl.formatMessage(messages.overviewunavailable)}
           </p>
-          {sortedCrew.length > 0 && (
+          {!!sortedCrew.length && (
             <>
               <ul className="media-crew">
-                {(data.createdBy.length > 0
-                  ? [
-                      ...data.createdBy.map(
-                        (person): Partial<Crew> => ({
-                          id: person.id,
-                          job: 'Creator',
-                          name: person.name,
-                        })
-                      ),
-                      ...sortedCrew,
-                    ]
-                  : sortedCrew
-                )
-                  .slice(0, 6)
-                  .map((person) => (
-                    <li key={`crew-${person.job}-${person.id}`}>
-                      <span>{person.job}</span>
-                      <Link href={`/person/${person.id}`}>
-                        <a className="crew-name">{person.name}</a>
-                      </Link>
-                    </li>
-                  ))}
+                {
+                  !!(
+                    data.createdBy.length
+                      ? [
+                          ...data.createdBy.map(
+                            (person): Partial<Crew> => ({
+                              id: person.id,
+                              job: 'Creator',
+                              name: person.name,
+                            })
+                          ),
+                          ...sortedCrew,
+                        ]
+                      : sortedCrew
+                  )
+                    .slice(0, 6)
+                    .map((person) => (
+                      <li key={`crew-${person.job}-${person.id}`}>
+                        <span>{person.job}</span>
+                        <Link href={`/person/${person.id}`}>
+                          <a className="crew-name">{person.name}</a>
+                        </Link>
+                      </li>
+                    ))
+                }
               </ul>
               <div className="flex justify-end mt-4">
                 <Link href={`/tv/${data.id}/crew`}>
@@ -615,7 +612,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   </span>
                 </div>
               )}
-            {data.episodeRunTime.length > 0 && (
+            {!!data.episodeRunTime.length && (
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.episodeRuntime)}</span>
                 <span className="media-fact-value">
@@ -643,7 +640,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
-            {data.networks.length > 0 && (
+            {!!data.networks.length && (
               <div className="media-fact">
                 <span>
                   {intl.formatMessage(messages.network, {
@@ -668,20 +665,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
-            {!!streamingProviders.length && (
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.streamingproviders)}</span>
-                <span className="media-fact-value">
-                  {streamingProviders.map((p) => {
-                    return (
-                      <span className="block" key={`provider-${p.id}`}>
-                        {p.name}
-                      </span>
-                    );
-                  })}
-                </span>
-              </div>
-            )}
+            <StreamingProviders
+              streamingProviders={
+                data?.watchProviders?.find(
+                  (provider) => provider.iso_3166_1 === region
+                )?.flatrate ?? []
+              }
+            />
             <div className="media-fact">
               <ExternalLinkBlock
                 mediaType="tv"
@@ -695,7 +685,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           </div>
         </div>
       </div>
-      {data.credits.cast.length > 0 && (
+      {!!data.credits.cast.length && (
         <>
           <div className="slider-header">
             <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>

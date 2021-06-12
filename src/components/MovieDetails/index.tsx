@@ -44,6 +44,7 @@ import RequestBlock from '../RequestBlock';
 import RequestButton from '../RequestButton';
 import Slider from '../Slider';
 import StatusBadge from '../StatusBadge';
+import StreamingProviders from '../StreamingProviders';
 
 const messages = defineMessages({
   originaltitle: 'Original Title',
@@ -214,10 +215,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     );
   }
 
-  const streamingProviders =
-    data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
-      ?.flatrate ?? [];
-
   return (
     <div
       className="media-page"
@@ -250,8 +247,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         onClose={() => setShowManager(false)}
         subText={data.title}
       >
-        {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
-          (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
+        {(!!(data?.mediaInfo?.downloadStatus ?? []).length ||
+          !!(data?.mediaInfo?.downloadStatus4k ?? []).length) && (
           <>
             <h3 className="mb-2 text-xl">
               {intl.formatMessage(messages.downloadstatus)}
@@ -398,7 +395,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           <div className="media-status">
             <StatusBadge
               status={data.mediaInfo?.status}
-              inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
+              inProgress={!!(data.mediaInfo?.downloadStatus ?? []).length}
               plexUrl={data.mediaInfo?.plexUrl}
             />
             {settings.currentSettings.movie4kEnabled &&
@@ -411,9 +408,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 <StatusBadge
                   status={data.mediaInfo?.status4k}
                   is4k
-                  inProgress={
-                    (data.mediaInfo?.downloadStatus4k ?? []).length > 0
-                  }
+                  inProgress={!!(data.mediaInfo?.downloadStatus4k ?? []).length}
                   plexUrl4k={data.mediaInfo?.plexUrl4k}
                 />
               )}
@@ -427,7 +422,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             )}
           </h1>
           <span className="media-attributes">
-            {movieAttributes.length > 0 &&
+            {!!movieAttributes.length &&
               movieAttributes
                 .map((t, k) => <span key={k}>{t}</span>)
                 .reduce((prev, curr) => (
@@ -465,7 +460,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               ? data.overview
               : intl.formatMessage(messages.overviewunavailable)}
           </p>
-          {sortedCrew.length > 0 && (
+          {!!sortedCrew.length && (
             <>
               <ul className="media-crew">
                 {sortedCrew.slice(0, 6).map((person) => (
@@ -582,7 +577,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
-            {data.revenue > 0 && (
+            {!!data.revenue && (
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.revenue)}</span>
                 <span className="media-fact-value">
@@ -593,7 +588,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
-            {data.budget > 0 && (
+            {!!data.budget && (
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.budget)}</span>
                 <span className="media-fact-value">
@@ -645,20 +640,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
-            {!!streamingProviders.length && (
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.streamingproviders)}</span>
-                <span className="media-fact-value">
-                  {streamingProviders.map((p) => {
-                    return (
-                      <span className="block" key={`provider-${p.id}`}>
-                        {p.name}
-                      </span>
-                    );
-                  })}
-                </span>
-              </div>
-            )}
+            <StreamingProviders
+              streamingProviders={
+                data?.watchProviders?.find(
+                  (provider) => provider.iso_3166_1 === region
+                )?.flatrate ?? []
+              }
+            />
             <div className="media-fact">
               <ExternalLinkBlock
                 mediaType="movie"
@@ -672,7 +660,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           </div>
         </div>
       </div>
-      {data.credits.cast.length > 0 && (
+      {!!data.credits.cast.length && (
         <>
           <div className="slider-header">
             <Link href="/movie/[movieId]/cast" as={`/movie/${data.id}/cast`}>
