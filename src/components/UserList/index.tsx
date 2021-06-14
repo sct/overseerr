@@ -1,5 +1,7 @@
 import { TrashIcon } from '@heroicons/react/outline';
 import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
   InboxInIcon,
   PencilIcon,
   SortDescendingIcon,
@@ -740,7 +742,8 @@ const UserList: React.FC = () => {
                       updateQueryParams('page', (page - 1).toString())
                     }
                   >
-                    {intl.formatMessage(globalMessages.previous)}
+                    <ChevronLeftIcon />
+                    <span>{intl.formatMessage(globalMessages.previous)}</span>
                   </Button>
                   <Button
                     disabled={!hasNextPage}
@@ -748,7 +751,8 @@ const UserList: React.FC = () => {
                       updateQueryParams('page', (page + 1).toString())
                     }
                   >
-                    {intl.formatMessage(globalMessages.next)}
+                    <span>{intl.formatMessage(globalMessages.next)}</span>
+                    <ChevronRightIcon />
                   </Button>
                 </div>
               </nav>

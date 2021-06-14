@@ -1,4 +1,9 @@
-import { FilterIcon, SortDescendingIcon } from '@heroicons/react/solid';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  FilterIcon,
+  SortDescendingIcon,
+} from '@heroicons/react/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -271,13 +276,15 @@ const RequestList: React.FC = () => {
               disabled={!hasPrevPage}
               onClick={() => updateQueryParams('page', (page - 1).toString())}
             >
-              {intl.formatMessage(globalMessages.previous)}
+              <ChevronLeftIcon />
+              <span>{intl.formatMessage(globalMessages.previous)}</span>
             </Button>
             <Button
               disabled={!hasNextPage}
               onClick={() => updateQueryParams('page', (page + 1).toString())}
             >
-              {intl.formatMessage(globalMessages.next)}
+              <span>{intl.formatMessage(globalMessages.next)}</span>
+              <ChevronRightIcon />
             </Button>
           </div>
         </nav>
