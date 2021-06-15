@@ -158,23 +158,23 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
       <h3 className="heading">{intl.formatMessage(messages.versionHistory)}</h3>
       <div className="space-y-3 section">
         {currentVersion.startsWith('develop-')
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data?.map((commit: any, index: number) => {
-              return (
-                <div key={`commit-${commit.sha}`}>
-                  <Release
-                    name={commit.sha}
-                    url={commit.html_url}
-                    description={commit.commit.message}
-                    timestamp={commit.commit.author.date}
-                    isCurrent={currentVersion.includes(commit.sha)}
-                    isLatest={index === 0}
-                  />
-                </div>
-              );
-            })
-          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data?.map((release: any, index: number) => {
+          ? (data as GitHubCommit[])
+              .filter((commit) => !commit.commit.message.includes('[skip ci]'))
+              .map((commit, index) => {
+                return (
+                  <div key={`commit-${commit.sha}`}>
+                    <Release
+                      name={commit.sha}
+                      url={commit.html_url}
+                      description={commit.commit.message}
+                      timestamp={commit.commit.author.date}
+                      isCurrent={currentVersion.includes(commit.sha)}
+                      isLatest={index === 0}
+                    />
+                  </div>
+                );
+              })
+          : (data as GitHubRelease[]).map((release, index) => {
               return (
                 <div key={`release-${release.id}`}>
                   <Release
