@@ -109,8 +109,7 @@ class PlexScanner
         for (const library of this.libraries) {
           this.currentLibrary = library;
           this.log(`Beginning to process library: ${library.name}`, 'info');
-          this.items =
-            (await this.plexClient.getLibraryContents(library.id)) ?? [];
+          this.items = await this.plexClient.getLibraryContents(library.id);
           await this.loop(this.processItem.bind(this), { sessionId });
         }
       }

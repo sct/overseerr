@@ -142,7 +142,7 @@ class PlexAPI {
       `/library/sections/${id}/all`
     );
 
-    return response.MediaContainer.Metadata;
+    return response.MediaContainer.Metadata ?? [];
   }
 
   public async getMetadata(
