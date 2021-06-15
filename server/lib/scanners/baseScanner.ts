@@ -1,5 +1,5 @@
+import { randomUUID } from 'crypto';
 import { getRepository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import TheMovieDb from '../../api/themoviedb';
 import { MediaStatus, MediaType } from '../../constants/media';
 import Media from '../../entity/Media';
@@ -512,7 +512,7 @@ class BaseScanner<T> {
    */
   protected startRun(): string {
     const settings = getSettings();
-    const sessionId = uuid();
+    const sessionId = randomUUID();
     this.sessionId = sessionId;
 
     this.log('Scan starting', 'info', { sessionId });
