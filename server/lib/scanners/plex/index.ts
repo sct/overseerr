@@ -7,9 +7,9 @@ import { User } from '../../../entity/User';
 import { getSettings, Library } from '../../settings';
 import BaseScanner, {
   MediaIds,
+  ProcessableSeason,
   RunnableScanner,
   StatusBase,
-  ProcessableSeason,
 } from '../baseScanner';
 
 const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
