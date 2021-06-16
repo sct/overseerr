@@ -24,11 +24,11 @@ Set this to the hostname or IP address of your SMTP host/server.
 
 Set this to a supported port number for your SMTP host. `465` and `587` are commonly used.
 
-### Enable SSL (optional)
+### Encryption Method
 
-This setting should only be enabled for ports that use [implicit SSL/TLS](https://tools.ietf.org/html/rfc8314) (e.g., port `465` in most cases).
+In most cases, [Use Implicit TLS](https://tools.ietf.org/html/rfc8314) should be selected for port 465, and [Use STARTTLS if available](https://en.wikipedia.org/wiki/Opportunistic_TLS) for port 587. Please refer to your email provider's documentations for details on how to configure this setting.
 
-For servers that support [opportunistic TLS/STARTTLS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (typically via port `587`), this setting should **not** be enabled.
+The default value for this setting is **Use STARTTLS if available**.
 
 ### SMTP Username & Password
 
