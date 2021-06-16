@@ -13,7 +13,7 @@ import LanguagePicker from '../Layout/LanguagePicker';
 const messages = defineMessages({
   passwordreset: 'Password Reset',
   resetpassword: 'Reset your password',
-  emailresetlink: 'Email a Recovery Link',
+  emailresetlink: 'Email Recovery Link',
   email: 'Email Address',
   validationemailrequired: 'You must provide a valid email address',
   gobacklogin: 'Return to Sign-In Page',
