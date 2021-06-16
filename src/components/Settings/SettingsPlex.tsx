@@ -342,6 +342,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           handleSubmit,
           setFieldValue,
           isSubmitting,
+          isValid,
         }) => {
           return (
             <form className="section" onSubmit={handleSubmit}>
@@ -517,7 +518,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
                         ? intl.formatMessage(globalMessages.saving)

@@ -143,7 +143,7 @@ const UserPasswordChange: React.FC = () => {
           }
         }}
       >
-        {({ errors, touched, isSubmitting }) => {
+        {({ errors, touched, isSubmitting, isValid }) => {
           return (
             <Form className="section">
               {!data.hasPassword && (
@@ -221,7 +221,7 @@ const UserPasswordChange: React.FC = () => {
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !isValid}
                     >
                       {isSubmitting
                         ? intl.formatMessage(globalMessages.saving)
