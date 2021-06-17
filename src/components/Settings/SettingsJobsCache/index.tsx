@@ -1,10 +1,5 @@
-import {
-  PencilIcon,
-  PlayIcon,
-  StopIcon,
-  TrashIcon,
-} from '@heroicons/react/outline';
-import { PencilIcon as SolidPencilIcon } from '@heroicons/react/solid';
+import { PlayIcon, StopIcon, TrashIcon } from '@heroicons/react/outline';
+import { PencilIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import React, { useState } from 'react';
 import {
@@ -16,6 +11,7 @@ import {
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
+import { ScheduledJob } from '../../../../server/job/schedule';
 import Spinner from '../../../assets/spinner.svg';
 import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';
@@ -59,19 +55,17 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   'sonarr-scan': 'Sonarr Scan',
   'download-sync': 'Download Sync',
   'download-sync-reset': 'Download Sync Reset',
-  editJobSchedule: 'Modify Job Schedule',
-  jobScheduleEditSaved: 'Job schedule modified',
-  jobScheduleEditFailed:
-    'Something went wrong while modifying the job schedule',
-  editJobSchedulePrompt: 'Select job schedule',
-  editJobScheduleSelector:
-    'Every {jobScheduleMinutes} minute(s) or {jobScheduleHours} hour(s)',
+  editJobSchedule: 'Modify Job',
+  jobScheduleEditSaved: 'Job edited successfully!',
+  jobScheduleEditFailed: 'Something went wrong while saving the job.',
+  editJobSchedulePrompt: 'Frequency',
+  editJobScheduleSelectorHours:
+    'Every {jobScheduleHours, plural, one {hour} other {{jobScheduleHours} hours}}',
+  editJobScheduleSelectorMinutes:
+    'Every {jobScheduleMinutes, plural, one {minute} other {{jobScheduleMinutes} minutes}}',
 });
 
-interface Job {
-  id: string;
-  name: string;
-  type: 'process' | 'command';
+interface Job extends Omit<ScheduledJob, 'running' | 'cancelFn'> {
   nextExecutionTime: string;
   running: boolean;
 }
@@ -97,7 +91,7 @@ const SettingsJobs: React.FC = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [jobScheduleMinutes, setJobScheduleMinutes] = useState(5);
-  const [jobScheduleHours, setJobScheduleHours] = useState(0);
+  const [jobScheduleHours, setJobScheduleHours] = useState(1);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -144,26 +138,22 @@ const SettingsJobs: React.FC = () => {
   };
 
   const scheduleJob = async () => {
-    const jobScheduleCron = ['0', '*', '*', '*', '*', '*'];
+    const jobScheduleCron = ['0', '0', '*', '*', '*', '*'];
 
     try {
-      if (!jobScheduleMinutes && !jobScheduleHours) {
-        throw Error;
-      }
-
-      if (jobScheduleMinutes) {
+      if (jobEditModal.job?.interval === 'short') {
         jobScheduleCron[1] = `*/${jobScheduleMinutes}`;
-      }
-
-      if (jobScheduleHours) {
+      } else if (jobEditModal.job?.interval === 'long') {
         jobScheduleCron[2] = `*/${jobScheduleHours}`;
+      } else {
+        // jobs with interval: fixed should not be editable
+        throw new Error();
       }
 
       setIsSaving(true);
       await axios.post(
         `/api/v1/settings/jobs/${jobEditModal.job?.id}/schedule`,
         {
-          ids: jobEditModal.job?.id,
           schedule: jobScheduleCron.join(' '),
         }
       );
@@ -207,7 +197,7 @@ const SettingsJobs: React.FC = () => {
               ? intl.formatMessage(globalMessages.saving)
               : intl.formatMessage(globalMessages.save)
           }
-          iconSvg={<SolidPencilIcon className="w-6 h-6" />}
+          iconSvg={<PencilIcon />}
           onCancel={() => setJobEditModal({ isOpen: false })}
           okDisabled={isSaving}
           onOk={() => scheduleJob()}
@@ -219,42 +209,47 @@ const SettingsJobs: React.FC = () => {
                   {intl.formatMessage(messages.editJobSchedulePrompt)}
                 </label>
                 <div className="form-input">
-                  {intl.formatMessage(messages.editJobScheduleSelector, {
-                    jobScheduleMinutes: (
-                      <select
-                        name="jobScheduleMinutes"
-                        className="inline short"
-                        value={jobScheduleMinutes}
-                        onChange={(e) =>
-                          setJobScheduleMinutes(Number(e.target.value))
-                        }
-                        disabled={!!jobScheduleHours}
-                      >
-                        {[...Array(60)].map((_v, i) => (
-                          <option value={i} key={`jobScheduleMinutes-${i}`}>
-                            {i}
-                          </option>
-                        ))}
-                      </select>
-                    ),
-                    jobScheduleHours: (
-                      <select
-                        name="jobScheduleHours"
-                        className="inline short"
-                        value={jobScheduleHours}
-                        onChange={(e) =>
-                          setJobScheduleHours(Number(e.target.value))
-                        }
-                        disabled={!!jobScheduleMinutes}
-                      >
-                        {[...Array(100)].map((_v, i) => (
-                          <option value={i} key={`jobScheduleHours-${i}`}>
-                            {i}
-                          </option>
-                        ))}
-                      </select>
-                    ),
-                  })}
+                  {jobEditModal.job?.interval === 'short' ? (
+                    <select
+                      name="jobScheduleMinutes"
+                      className="inline"
+                      value={jobScheduleMinutes}
+                      onChange={(e) =>
+                        setJobScheduleMinutes(Number(e.target.value))
+                      }
+                    >
+                      {[5, 10, 15, 20, 30, 60].map((v) => (
+                        <option value={v} key={`jobScheduleMinutes-${v}`}>
+                          {intl.formatMessage(
+                            messages.editJobScheduleSelectorMinutes,
+                            {
+                              jobScheduleMinutes: v,
+                            }
+                          )}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <select
+                      name="jobScheduleHours"
+                      className="inline"
+                      value={jobScheduleHours}
+                      onChange={(e) =>
+                        setJobScheduleHours(Number(e.target.value))
+                      }
+                    >
+                      {[1, 2, 3, 4, 6, 8, 12, 24].map((v) => (
+                        <option value={v} key={`jobScheduleHours-${v}`}>
+                          {intl.formatMessage(
+                            messages.editJobScheduleSelectorHours,
+                            {
+                              jobScheduleHours: v,
+                            }
+                          )}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               </div>
             </form>
@@ -315,14 +310,18 @@ const SettingsJobs: React.FC = () => {
                   </div>
                 </Table.TD>
                 <Table.TD alignText="right">
-                  <Button
-                    className="mr-2"
-                    buttonType="warning"
-                    onClick={() => setJobEditModal({ isOpen: true, job: job })}
-                  >
-                    <PencilIcon className="w-5 h-5 mr-1" />
-                    {intl.formatMessage(globalMessages.edit)}
-                  </Button>
+                  {job.interval !== 'fixed' && (
+                    <Button
+                      className="mr-2"
+                      buttonType="warning"
+                      onClick={() =>
+                        setJobEditModal({ isOpen: true, job: job })
+                      }
+                    >
+                      <PencilIcon />
+                      {intl.formatMessage(globalMessages.edit)}
+                    </Button>
+                  )}
                   {job.running ? (
                     <Button buttonType="danger" onClick={() => cancelJob(job)}>
                       <StopIcon />
