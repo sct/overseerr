@@ -512,6 +512,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "liviokanone",
+      "name": "Livio",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37431541?v=4",
+      "profile": "http://www.unext.co.jp",
+      "contributions": [
+        "design"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
