@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import { randomBytes } from 'crypto';
 import * as openpgp from 'openpgp';
 import { Transform, TransformCallback } from 'stream';
 
@@ -107,7 +107,7 @@ class PGPEncryptor extends Transform {
     }
 
     // Generate a new boundary for the email content
-    const boundary = 'nm_' + crypto.randomBytes(14).toString('hex');
+    const boundary = 'nm_' + randomBytes(14).toString('hex');
     /**
      * Concatenate everything into single strings
      * and add pgp headers to the email headers

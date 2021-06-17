@@ -1,7 +1,7 @@
+import { randomUUID } from 'crypto';
 import fs from 'fs';
 import { merge } from 'lodash';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
 import webpush from 'web-push';
 import { Permission } from './permissions';
 
@@ -234,7 +234,7 @@ class Settings {
 
   constructor(initialSettings?: AllSettings) {
     this.data = {
-      clientId: uuidv4(),
+      clientId: randomUUID(),
       vapidPrivate: '',
       vapidPublic: '',
       main: {
@@ -428,7 +428,7 @@ class Settings {
 
   get clientId(): string {
     if (!this.data.clientId) {
-      this.data.clientId = uuidv4();
+      this.data.clientId = randomUUID();
       this.save();
     }
 
@@ -454,7 +454,7 @@ class Settings {
   }
 
   private generateApiKey(): string {
-    return Buffer.from(`${Date.now()}${uuidv4()})`).toString('base64');
+    return Buffer.from(`${Date.now()}${randomUUID()})`).toString('base64');
   }
 
   private generateVapidKeys(force = false): void {

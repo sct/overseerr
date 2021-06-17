@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
 import path from 'path';
 import { default as generatePassword } from 'secure-random-password';
 import {
@@ -15,7 +16,6 @@ import {
   RelationCount,
   UpdateDateColumn,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import { MediaRequestStatus, MediaType } from '../constants/media';
 import { UserType } from '../constants/user';
 import { QuotaResponse } from '../interfaces/api/userInterfaces';
@@ -189,7 +189,7 @@ export class User {
   }
 
   public async resetPassword(): Promise<void> {
-    const guid = uuid();
+    const guid = randomUUID();
     this.resetPasswordGuid = guid;
 
     // 24 hours into the future
