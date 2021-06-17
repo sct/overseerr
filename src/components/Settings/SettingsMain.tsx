@@ -178,7 +178,14 @@ const SettingsMain: React.FC = () => {
             }
           }}
         >
-          {({ errors, touched, isSubmitting, values, setFieldValue }) => {
+          {({
+            errors,
+            touched,
+            isSubmitting,
+            isValid,
+            values,
+            setFieldValue,
+          }) => {
             return (
               <Form className="section">
                 {userHasPermission(Permission.ADMIN) && (
@@ -397,7 +404,7 @@ const SettingsMain: React.FC = () => {
                       <Button
                         buttonType="primary"
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !isValid}
                       >
                         {isSubmitting
                           ? intl.formatMessage(globalMessages.saving)
