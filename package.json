@@ -90,7 +90,7 @@
     "@types/csurf": "^1.11.1",
     "@types/email-templates": "^8.0.3",
     "@types/express": "^4.17.12",
-    "@types/express-rate-limit": "^5.1.1",
+    "@types/express-rate-limit": "^5.1.2",
     "@types/express-session": "^1.17.3",
     "@types/lodash": "^4.14.170",
     "@types/node": "^15.6.1",

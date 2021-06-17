@@ -2256,10 +2256,10 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.45.tgz#e9387572998e5ecdac221950dab3e8c3b16af884"
   integrity sha512-jnqIUKDUqJbDIUxm0Uj7bnlMnRm1T/eZ9N+AVMqhPgzrba2GhGG5o/jCTwmdPK709nEZsGoMzXEDUjcXHa3W0g==
 
-"@types/express-rate-limit@^5.1.1":
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/@types/express-rate-limit/-/express-rate-limit-5.1.1.tgz#e5b0239d18c1580e52ae56dce4248333302a1dc8"
-  integrity sha512-6oMYZBLlhxC5sdcRXXz528QyfGz3zTy9YdHwqlxLfgx5Cd3zwYaUjjPpJcaTtHmRefLi9P8kLBPz2wB7yz4JtQ==
+"@types/express-rate-limit@^5.1.2":
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/@types/express-rate-limit/-/express-rate-limit-5.1.2.tgz#51f030ce722fe298269f85378b49a34837a1d2ca"
+  integrity sha512-loN1dcr0WEKsbVtXNQKDef4Fmh25prfy+gESrwTDofIhAt17ngTxrsDiEZxLemmfHH279x206CdUB9XHXS9E6Q==
   dependencies:
     "@types/express" "*"
 
@@ -2296,17 +2296,7 @@
   dependencies:
     "@types/express" "*"
 
-"@types/express@*":
-  version "4.17.8"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.8.tgz#3df4293293317e61c60137d273a2e96cd8d5f27a"
-  integrity sha512-wLhcKh3PMlyA2cNAB9sjM1BntnhPMiM0JOBwPBqttjHev2428MLEB4AYVN+d8s2iyCVZac+o41Pflm/ZH5vLXQ==
-  dependencies:
-    "@types/body-parser" "*"
-    "@types/express-serve-static-core" "*"
-    "@types/qs" "*"
-    "@types/serve-static" "*"
-
-"@types/express@^4.17.12":
+"@types/express@*", "@types/express@^4.17.12":
   version "4.17.12"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.12.tgz#4bc1bf3cd0cfe6d3f6f2853648b40db7d54de350"
   integrity sha512-pTYas6FrP15B1Oa0bkN5tQMNqOcVXa9j4FTFtO8DWI9kppKib+6NJtfTOOLcwxuuYvcX2+dVG6et1SxW/Kc17Q==
