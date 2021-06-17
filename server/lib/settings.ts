@@ -219,7 +219,13 @@ interface JobSettings {
   schedule: string;
 }
 
-type JobName = string;
+export type JobId =
+  | 'plex-recently-added-scan'
+  | 'plex-full-scan'
+  | 'radarr-scan'
+  | 'sonarr-scan'
+  | 'download-sync'
+  | 'download-sync-reset';
 
 interface AllSettings {
   clientId: string;
@@ -231,7 +237,7 @@ interface AllSettings {
   sonarr: SonarrSettings[];
   public: PublicSettings;
   notifications: NotificationSettings;
-  jobs: Record<JobName, JobSettings>;
+  jobs: Record<JobId, JobSettings>;
 }
 
 const SETTINGS_PATH = process.env.CONFIG_DIRECTORY
@@ -353,7 +359,26 @@ class Settings {
           },
         },
       },
-      jobs: {},
+      jobs: {
+        'plex-recently-added-scan': {
+          schedule: '0 */5 * * * *',
+        },
+        'plex-full-scan': {
+          schedule: '0 0 3 * * *',
+        },
+        'radarr-scan': {
+          schedule: '0 0 4 * * *',
+        },
+        'sonarr-scan': {
+          schedule: '0 30 4 * * *',
+        },
+        'download-sync': {
+          schedule: '0 * * * * *',
+        },
+        'download-sync-reset': {
+          schedule: '0 0 1 * * *',
+        },
+      },
     };
     if (initialSettings) {
       this.data = merge(this.data, initialSettings);
@@ -436,11 +461,11 @@ class Settings {
     this.data.notifications = data;
   }
 
-  get jobs(): Record<JobName, JobSettings> {
+  get jobs(): Record<JobId, JobSettings> {
     return this.data.jobs;
   }
 
-  set jobs(data: Record<JobName, JobSettings>) {
+  set jobs(data: Record<JobId, JobSettings>) {
     this.data.jobs = data;
   }
 
