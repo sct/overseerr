@@ -1,27 +1,20 @@
 import { MenuAlt2Icon } from '@heroicons/react/outline';
-import { ArrowLeftIcon, InformationCircleIcon } from '@heroicons/react/solid';
+import { ArrowLeftIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
 import { AvailableLocale } from '../../context/LanguageContext';
 import useLocale from '../../hooks/useLocale';
 import useSettings from '../../hooks/useSettings';
-import { Permission, useUser } from '../../hooks/useUser';
+import { useUser } from '../../hooks/useUser';
 import SearchInput from './SearchInput';
 import Sidebar from './Sidebar';
 import UserDropdown from './UserDropdown';
 
-const messages = defineMessages({
-  betawarning:
-    'This is BETA software. Features may be broken and/or unstable. Please report any issues on GitHub!',
-});
-
 const Layout: React.FC = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { user, hasPermission } = useUser();
+  const { user } = useUser();
   const router = useRouter();
-  const intl = useIntl();
   const { currentSettings } = useSettings();
   const { setLocale } = useLocale();
 
@@ -95,33 +88,7 @@ const Layout: React.FC = ({ children }) => {
 
         <main className="relative z-0 top-16 focus:outline-none" tabIndex={0}>
           <div className="mb-6">
-            <div className="px-4 mx-auto max-w-8xl">
-              {router.pathname === '/' && hasPermission(Permission.ADMIN) && (
-                <div className="p-4 mt-6 bg-indigo-700 rounded-md">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <InformationCircleIcon className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="flex-1 ml-3 md:flex md:justify-between">
-                      <p className="text-sm leading-5 text-white">
-                        {intl.formatMessage(messages.betawarning)}
-                      </p>
-                      <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
-                        <a
-                          href="http://github.com/sct/overseerr"
-                          className="font-medium text-indigo-100 transition duration-150 ease-in-out whitespace-nowrap hover:text-white"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          GitHub &rarr;
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {children}
-            </div>
+            <div className="px-4 mx-auto max-w-8xl">{children}</div>
           </div>
         </main>
       </div>

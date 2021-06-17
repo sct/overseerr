@@ -106,7 +106,7 @@ a.slider-title svg {
 }
 
 .media-title > h1 {
-  @apply text-2xl xl:text-4xl;
+  @apply text-2xl font-bold xl:text-4xl;
 }
 
 h1 > .media-year {

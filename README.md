@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://i.imgur.com/TMoEG7g.png" alt="Overseerr">
+<img src="./public/logo_full.svg" alt="Overseerr" style="margin: 20px 0;">
 </p>
 <p align="center">
 <img src="https://github.com/sct/overseerr/workflows/Overseerr%20Release/badge.svg?branch=master" alt="Overseerr Release" />

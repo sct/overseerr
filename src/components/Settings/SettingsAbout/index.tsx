@@ -1,3 +1,4 @@
+import { InformationCircleIcon } from '@heroicons/react/solid';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
@@ -28,6 +29,8 @@ const messages = defineMessages({
   preferredmethod: 'Preferred',
   outofdate: 'Out of Date',
   uptodate: 'Up to Date',
+  betawarning:
+    'This is BETA software. Features may be broken and/or unstable. Please report any issues on GitHub!',
 });
 
 const SettingsAbout: React.FC = () => {
@@ -54,6 +57,28 @@ const SettingsAbout: React.FC = () => {
           intl.formatMessage(globalMessages.settings),
         ]}
       />
+      <div className="p-4 mt-6 bg-indigo-700 rounded-md">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <InformationCircleIcon className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1 ml-3 md:flex md:justify-between">
+            <p className="text-sm leading-5 text-white">
+              {intl.formatMessage(messages.betawarning)}
+            </p>
+            <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
+              <a
+                href="http://github.com/sct/overseerr"
+                className="font-medium text-indigo-100 transition duration-150 ease-in-out whitespace-nowrap hover:text-white"
+                target="_blank"
+                rel="noreferrer"
+              >
+                GitHub &rarr;
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
       <div className="section">
         <List title={intl.formatMessage(messages.overseerrinformation)}>
           <List.Item
