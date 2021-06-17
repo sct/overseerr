@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import { isEqual, truncate } from 'lodash';
 import {
   AfterInsert,
   AfterRemove,
@@ -145,7 +145,11 @@ export class MediaRequest {
           subject: `${movie.title}${
             movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
           }`,
-          message: movie.overview,
+          message: truncate(movie.overview, {
+            length: 500,
+            separator: /\s/,
+            omission: '…',
+          }),
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
           media,
           request: this,
@@ -158,7 +162,11 @@ export class MediaRequest {
           subject: `${tv.name}${
             tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
           }`,
-          message: tv.overview,
+          message: truncate(tv.overview, {
+            length: 500,
+            separator: /\s/,
+            omission: '…',
+          }),
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
           media,
           extra: [
@@ -217,7 +225,11 @@ export class MediaRequest {
             subject: `${movie.title}${
               movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
             }`,
-            message: movie.overview,
+            message: truncate(movie.overview, {
+              length: 500,
+              separator: /\s/,
+              omission: '…',
+            }),
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
             notifyUser: autoApproved ? undefined : this.requestedBy,
             media,
@@ -236,7 +248,11 @@ export class MediaRequest {
             subject: `${tv.name}${
               tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
             }`,
-            message: tv.overview,
+            message: truncate(tv.overview, {
+              length: 500,
+              separator: /\s/,
+              omission: '…',
+            }),
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
             notifyUser: autoApproved ? undefined : this.requestedBy,
             media,
@@ -495,7 +511,11 @@ export class MediaRequest {
               subject: `${movie.title}${
                 movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
               }`,
-              message: movie.overview,
+              message: truncate(movie.overview, {
+                length: 500,
+                separator: /\s/,
+                omission: '…',
+              }),
               media,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
               request: this,
@@ -707,7 +727,11 @@ export class MediaRequest {
                   ? ` (${series.first_air_date.slice(0, 4)})`
                   : ''
               }`,
-              message: series.overview,
+              message: truncate(series.overview, {
+                length: 500,
+                separator: /\s/,
+                omission: '…',
+              }),
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${series.poster_path}`,
               media,
               extra: [
