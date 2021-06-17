@@ -69,8 +69,8 @@ const Setup: React.FC = () => {
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
         <img
-          src="/logo.png"
-          className="max-w-full sm:max-w-md sm:mx-auto"
+          src="/logo_stacked.svg"
+          className="max-w-full mb-10 sm:max-w-md sm:mx-auto"
           alt="Logo"
         />
         <AppDataWarning />

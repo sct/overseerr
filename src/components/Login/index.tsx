@@ -77,8 +77,8 @@ const Login: React.FC = () => {
       <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />
       </div>
-      <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
-        <img src="/logo.png" className="max-w-full" alt="Logo" />
+      <div className="relative z-40 flex flex-col items-center px-4 mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+        <img src="/logo_stacked.svg" className="max-w-full mb-10" alt="Logo" />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
           {intl.formatMessage(messages.signinheader)}
         </h2>
