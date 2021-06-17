@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
+import globalMessages from '../../i18n/globalMessages';
 import Button from '../Common/Button';
 import ImageFader from '../Common/ImageFader';
 import SensitiveInput from '../Common/SensitiveInput';
@@ -163,7 +164,9 @@ const ResetPassword: React.FC = () => {
                               type="submit"
                               disabled={isSubmitting || !isValid}
                             >
-                              {intl.formatMessage(messages.resetpassword)}
+                              {isSubmitting
+                                ? intl.formatMessage(globalMessages.saving)
+                                : intl.formatMessage(globalMessages.save)}
                             </Button>
                           </span>
                         </div>

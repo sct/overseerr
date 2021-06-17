@@ -246,7 +246,7 @@
   "components.RequestModal.selectseason": "Select Season(s)",
   "components.ResetPassword.confirmpassword": "Confirm Password",
   "components.ResetPassword.email": "Email Address",
-  "components.ResetPassword.emailresetlink": "Email a Recovery Link",
+  "components.ResetPassword.emailresetlink": "Email Recovery Link",
   "components.ResetPassword.gobacklogin": "Return to Sign-In Page",
   "components.ResetPassword.password": "Password",
   "components.ResetPassword.passwordreset": "Password Reset",
