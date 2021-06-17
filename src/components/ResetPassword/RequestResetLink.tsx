@@ -48,7 +48,11 @@ const ResetPassword: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
-        <img src="/logo_stacked.svg" className="max-w-full mb-10" alt="Logo" />
+        <img
+          src="/logo_stacked.svg"
+          className="max-w-full mx-auto mb-10"
+          alt="Logo"
+        />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
           {intl.formatMessage(messages.resetpassword)}
         </h2>
