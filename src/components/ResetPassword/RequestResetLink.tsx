@@ -35,6 +35,7 @@ const ResetPassword: React.FC = () => {
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
       <PageTitle title={intl.formatMessage(messages.passwordreset)} />
       <ImageFader
+        forceOptimize
         backgroundImages={[
           '/images/rotate1.jpg',
           '/images/rotate2.jpg',

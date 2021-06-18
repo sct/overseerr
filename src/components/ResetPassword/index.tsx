@@ -49,6 +49,7 @@ const ResetPassword: React.FC = () => {
   return (
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
       <ImageFader
+        forceOptimize
         backgroundImages={[
           '/images/rotate1.jpg',
           '/images/rotate2.jpg',
