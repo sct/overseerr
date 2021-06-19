@@ -137,7 +137,7 @@ const Modal: React.FC<ModalProps> = ({
             >
               {title && (
                 <span
-                  className="text-lg font-medium leading-6 text-white"
+                  className="text-lg font-bold leading-6 text-white"
                   id="modal-headline"
                 >
                   {title}

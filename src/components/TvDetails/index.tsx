@@ -280,7 +280,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
           (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
           <>
-            <h3 className="mb-2 text-xl">
+            <h3 className="mb-2 text-xl font-bold">
               {intl.formatMessage(messages.downloadstatus)}
             </h3>
             <div className="mb-6 overflow-hidden bg-gray-600 rounded-md shadow">
@@ -344,7 +344,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               </div>
             </div>
           )}
-        <h3 className="mb-2 text-xl">
+        <h3 className="mb-2 text-xl font-bold">
           {intl.formatMessage(messages.manageModalRequests)}
         </h3>
         <div className="overflow-hidden bg-gray-600 rounded-md shadow">
@@ -625,7 +625,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <span>{intl.formatMessage(messages.originallanguage)}</span>
                 <span className="media-fact-value">
                   <Link href={`/discover/tv/language/${data.originalLanguage}`}>
-                    <a className="hover:underline">
+                    <a>
                       {intl.formatDisplayName(data.originalLanguage, {
                         type: 'language',
                         fallback: 'none',
@@ -652,7 +652,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                         href={`/discover/tv/network/${n.id}`}
                         key={`network-${n.id}`}
                       >
-                        <a className="hover:underline">{n.name}</a>
+                        <a>{n.name}</a>
                       </Link>
                     ))
                     .reduce((prev, curr) => (

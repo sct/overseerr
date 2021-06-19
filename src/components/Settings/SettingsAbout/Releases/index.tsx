@@ -94,7 +94,7 @@ const Release: React.FC<ReleaseProps> = ({
             numeric="auto"
           />
         </span>
-        <span className="text-lg">{release.name}</span>
+        <span className="text-lg font-bold">{release.name}</span>
         {isLatest && (
           <span className="ml-2 -mt-1">
             <Badge badgeType="primary">

@@ -61,7 +61,9 @@ const PersonCard: React.FC<PersonCardProps> = ({
                   <UserCircleIcon className="h-full" />
                 )}
               </div>
-              <div className="w-full text-center truncate">{name}</div>
+              <div className="w-full font-bold text-center truncate">
+                {name}
+              </div>
               {subName && (
                 <div
                   className="overflow-hidden text-sm text-center text-gray-300 whitespace-normal"

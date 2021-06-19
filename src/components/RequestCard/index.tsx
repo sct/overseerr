@@ -204,7 +204,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
           </div>
         )}
         <div className="relative z-10 flex flex-col flex-1 min-w-0 pr-4">
-          <div className="hidden text-xs text-white sm:flex">
+          <div className="hidden text-xs font-medium text-white sm:flex">
             {(isMovie(title) ? title.releaseDate : title.firstAirDate)?.slice(
               0,
               4
@@ -217,7 +217,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                 : `/tv/${requestData.media.tmdbId}`
             }
           >
-            <a className="overflow-hidden text-base text-white sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
+            <a className="overflow-hidden text-base font-bold text-white sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
               {isMovie(title) ? title.title : title.name}
             </a>
           </Link>
@@ -242,7 +242,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
           )}
           {!isMovie(title) && request.seasons.length > 0 && (
             <div className="items-center my-0.5 sm:my-1 text-sm hidden sm:flex">
-              <span className="mr-2 font-medium">
+              <span className="mr-2 font-bold ">
                 {intl.formatMessage(messages.seasons, {
                   seasonCount:
                     title.seasons.filter((season) => season.seasonNumber !== 0)
@@ -268,7 +268,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             </div>
           )}
           <div className="flex items-center mt-2 text-sm sm:mt-1">
-            <span className="hidden mr-2 font-medium sm:block">
+            <span className="hidden mr-2 font-bold sm:block">
               {intl.formatMessage(globalMessages.status)}
             </span>
             {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
