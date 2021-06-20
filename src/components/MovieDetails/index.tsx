@@ -6,6 +6,8 @@ import {
 } from '@heroicons/react/outline';
 import {
   CheckCircleIcon,
+  ChevronDoubleDownIcon,
+  ChevronDoubleUpIcon,
   DocumentRemoveIcon,
   ExternalLinkIcon,
 } from '@heroicons/react/solid';
@@ -73,6 +75,8 @@ const messages = defineMessages({
   play4konplex: 'Play in 4K on Plex',
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark as Available in 4K',
+  showmore: 'Show More',
+  showless: 'Show Less',
 });
 
 interface MovieDetailsProps {
@@ -86,6 +90,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const intl = useIntl();
   const { locale } = useLocale();
   const [showManager, setShowManager] = useState(false);
+  const minStudios = 3;
+  const [studiosToShow, setStudiosToShow] = useState(minStudios);
 
   const { data, error, revalidate } = useSWR<MovieDetailsType>(
     `/api/v1/movie/${router.query.movieId}`,
@@ -110,6 +116,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   if (!data) {
     return <Error statusCode={404} />;
   }
+
+  const showAllStudios = data.productionCompanies.length <= minStudios + 1;
 
   const mediaLinks: PlayButtonLink[] = [];
 
@@ -619,7 +627,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
-            {data.productionCompanies.length > 0 && (
+            {!!data.productionCompanies.length && (
               <div className="media-fact">
                 <span>
                   {intl.formatMessage(messages.studio, {
@@ -627,16 +635,48 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   })}
                 </span>
                 <span className="media-fact-value">
-                  {data.productionCompanies.map((s) => {
-                    return (
-                      <Link
-                        href={`/discover/movies/studio/${s.id}`}
-                        key={`studio-${s.id}`}
-                      >
-                        <a className="block">{s.name}</a>
-                      </Link>
-                    );
-                  })}
+                  {data.productionCompanies
+                    .slice(
+                      0,
+                      showAllStudios
+                        ? data.productionCompanies.length
+                        : studiosToShow
+                    )
+                    .map((s) => {
+                      return (
+                        <Link
+                          href={`/discover/movies/studio/${s.id}`}
+                          key={`studio-${s.id}`}
+                        >
+                          <a className="block">{s.name}</a>
+                        </Link>
+                      );
+                    })}
+                  {!showAllStudios && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setStudiosToShow(
+                          studiosToShow === minStudios
+                            ? data.productionCompanies.length
+                            : minStudios
+                        );
+                      }}
+                    >
+                      <span className="flex items-center">
+                        {intl.formatMessage(
+                          studiosToShow === minStudios
+                            ? messages.showmore
+                            : messages.showless
+                        )}
+                        {studiosToShow === minStudios ? (
+                          <ChevronDoubleDownIcon className="w-4 h-4 ml-1" />
+                        ) : (
+                          <ChevronDoubleUpIcon className="w-4 h-4 ml-1" />
+                        )}
+                      </span>
+                    </button>
+                  )}
                 </span>
               </div>
             )}
