@@ -19,8 +19,10 @@ body {
 }
 
 .sidebar {
+  @apply border-r border-gray-700;
   padding-top: env(safe-area-inset-top);
   padding-left: env(safe-area-inset-left);
+  background: linear-gradient(180deg, #232a36 0%, #131928 100%);
 }
 
 .slideover {
