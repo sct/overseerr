@@ -67,11 +67,11 @@ ul.cards-horizontal {
 }
 
 .slider-title {
-  @apply inline-flex items-center text-xl leading-7 text-gray-300 sm:text-2xl sm:leading-9 sm:truncate;
+  @apply inline-flex items-center text-xl font-bold leading-7 text-gray-300 sm:text-2xl sm:leading-9 sm:truncate;
 }
 
 a.slider-title {
-  @apply hover:text-white;
+  @apply transition duration-300 hover:text-white;
 }
 
 a.slider-title svg {
@@ -114,7 +114,11 @@ h1 > .media-year {
 }
 
 .media-attributes {
-  @apply mt-1 text-xs sm:text-sm xl:text-base xl:mt-0;
+  @apply mt-1 text-xs text-gray-300 sm:text-sm xl:text-base xl:mt-0;
+}
+
+.media-attributes a {
+  @apply transition duration-300 hover:text-white hover:underline;
 }
 
 .media-actions {
@@ -138,7 +142,7 @@ h1 > .media-year {
 }
 
 .media-overview h2 {
-  @apply text-xl text-gray-300 sm:text-2xl;
+  @apply text-xl font-bold text-gray-300 sm:text-2xl;
 }
 
 .media-overview p {
@@ -150,10 +154,11 @@ ul.media-crew {
 }
 
 ul.media-crew > li {
-  @apply flex flex-col col-span-1 font-bold;
+  @apply flex flex-col col-span-1 font-bold text-gray-300;
 }
 
-a.crew-name {
+a.crew-name,
+.media-fact-value a {
   @apply font-normal text-gray-400 transition duration-300 hover:underline hover:text-gray-100;
 }
 
@@ -162,7 +167,7 @@ a.crew-name {
 }
 
 .media-facts {
-  @apply text-sm bg-gray-900 border border-gray-700 rounded-lg shadow;
+  @apply text-sm font-bold text-gray-300 bg-gray-900 border border-gray-700 rounded-lg shadow;
 }
 
 .media-fact {
@@ -170,7 +175,7 @@ a.crew-name {
 }
 
 .media-fact-value {
-  @apply flex-1 text-sm text-right text-gray-400;
+  @apply flex-1 text-sm font-normal text-right text-gray-400;
 }
 
 .media-ratings {
@@ -186,11 +191,11 @@ a.crew-name {
 }
 
 .heading {
-  @apply text-2xl leading-8 text-gray-100;
+  @apply text-2xl font-bold leading-8 text-gray-100;
 }
 
 .description {
-  @apply max-w-4xl mt-1 text-sm leading-5 text-gray-500;
+  @apply max-w-4xl mt-1 text-sm leading-5 text-gray-400;
 }
 
 img.avatar-sm {
@@ -202,7 +207,7 @@ img.avatar-sm {
 }
 
 .card-field-name {
-  @apply mr-2 font-medium;
+  @apply mr-2 font-bold;
 }
 
 .section {
@@ -227,7 +232,7 @@ img.avatar-sm {
 
 label,
 .group-label {
-  @apply block mb-1 text-sm font-medium leading-5 text-gray-400;
+  @apply block mb-1 text-sm font-bold leading-5 text-gray-400;
 }
 
 label.checkbox-label {
@@ -247,7 +252,7 @@ label a {
 }
 
 .label-tip {
-  @apply block text-gray-500;
+  @apply block font-medium text-gray-500;
 }
 
 button,

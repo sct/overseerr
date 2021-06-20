@@ -67,7 +67,7 @@ const UserDropdown: React.FC = () => {
           >
             <Link href={`/profile`}>
               <a
-                className="flex items-center px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+                className="flex items-center px-4 py-2 text-sm font-medium text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
                 role="menuitem"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -83,7 +83,7 @@ const UserDropdown: React.FC = () => {
             </Link>
             <Link href={`/profile/settings`}>
               <a
-                className="flex items-center px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+                className="flex items-center px-4 py-2 text-sm font-medium text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
                 role="menuitem"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -99,7 +99,7 @@ const UserDropdown: React.FC = () => {
             </Link>
             <a
               href="#"
-              className="flex items-center px-4 py-2 text-sm text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
+              className="flex items-center px-4 py-2 text-sm font-medium text-gray-200 transition duration-150 ease-in-out hover:bg-gray-600"
               role="menuitem"
               onClick={() => logout()}
             >

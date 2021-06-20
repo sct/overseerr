@@ -13,7 +13,7 @@ interface AlertProps {
 const Alert: React.FC<AlertProps> = ({ title, children, type }) => {
   let design = {
     bgColor: 'bg-yellow-600',
-    titleColor: 'text-yellow-200',
+    titleColor: 'text-yellow-100',
     textColor: 'text-yellow-300',
     svg: <ExclamationIcon className="w-5 h-5" />,
   };
@@ -22,7 +22,7 @@ const Alert: React.FC<AlertProps> = ({ title, children, type }) => {
     case 'info':
       design = {
         bgColor: 'bg-indigo-600',
-        titleColor: 'text-indigo-200',
+        titleColor: 'text-indigo-100',
         textColor: 'text-indigo-300',
         svg: <InformationCircleIcon className="w-5 h-5" />,
       };
@@ -30,7 +30,7 @@ const Alert: React.FC<AlertProps> = ({ title, children, type }) => {
     case 'error':
       design = {
         bgColor: 'bg-red-600',
-        titleColor: 'text-red-200',
+        titleColor: 'text-red-100',
         textColor: 'text-red-300',
         svg: <XCircleIcon className="w-5 h-5" />,
       };

@@ -248,7 +248,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
           (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
           <>
-            <h3 className="mb-2 text-xl">
+            <h3 className="mb-2 text-xl font-bold">
               {intl.formatMessage(messages.downloadstatus)}
             </h3>
             <div className="mb-6 overflow-hidden bg-gray-600 rounded-md shadow">
@@ -309,7 +309,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 )}
             </div>
           )}
-        <h3 className="mb-2 text-xl">
+        <h3 className="mb-2 text-xl font-bold">
           {intl.formatMessage(messages.manageModalRequests)}
         </h3>
         <div className="overflow-hidden bg-gray-600 rounded-md shadow">
@@ -606,7 +606,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   <Link
                     href={`/discover/movies/language/${data.originalLanguage}`}
                   >
-                    <a className="hover:underline">
+                    <a>
                       {intl.formatDisplayName(data.originalLanguage, {
                         type: 'language',
                         fallback: 'none',
@@ -633,7 +633,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         href={`/discover/movies/studio/${s.id}`}
                         key={`studio-${s.id}`}
                       >
-                        <a className="block hover:underline">{s.name}</a>
+                        <a className="block">{s.name}</a>
                       </Link>
                     );
                   })}

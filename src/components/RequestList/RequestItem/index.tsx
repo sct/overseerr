@@ -221,7 +221,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               </a>
             </Link>
             <div className="flex flex-col justify-center pl-2 overflow-hidden xl:pl-4">
-              <div className="pt-0.5 sm:pt-1 text-xs text-white">
+              <div className="font-medium pt-0.5 sm:pt-1 text-xs text-white">
                 {(isMovie(title)
                   ? title.releaseDate
                   : title.firstAirDate
@@ -234,7 +234,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                     : `/tv/${requestData.media.tmdbId}`
                 }
               >
-                <a className="min-w-0 mr-2 text-lg text-white truncate xl:text-xl hover:underline">
+                <a className="min-w-0 mr-2 text-lg font-bold text-white truncate xl:text-xl hover:underline">
                   {isMovie(title) ? title.title : title.name}
                 </a>
               </Link>

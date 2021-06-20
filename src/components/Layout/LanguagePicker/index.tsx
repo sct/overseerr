@@ -10,7 +10,7 @@ import useLocale from '../../../hooks/useLocale';
 import Transition from '../../Transition';
 
 const messages = defineMessages({
-  changelanguage: 'Change Language',
+  displaylanguage: 'Display Language',
 });
 
 const LanguagePicker: React.FC = () => {
@@ -50,9 +50,9 @@ const LanguagePicker: React.FC = () => {
             <div>
               <label
                 htmlFor="language"
-                className="block pb-2 text-sm font-medium leading-5 text-gray-300"
+                className="block pb-2 text-sm font-bold leading-5 text-gray-300"
               >
-                {intl.formatMessage(messages.changelanguage)}
+                {intl.formatMessage(messages.displaylanguage)}
               </label>
               <select
                 id="language"
