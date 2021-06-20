@@ -159,7 +159,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                       })}
                     </nav>
                     {hasPermission(Permission.ADMIN) && (
-                      <VersionStatus onClick={() => setClosed()} />
+                      <div className="px-2">
+                        <VersionStatus onClick={() => setClosed()} />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -213,7 +215,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                   );
                 })}
               </nav>
-              {hasPermission(Permission.ADMIN) && <VersionStatus />}
+              {hasPermission(Permission.ADMIN) && (
+                <div className="px-2">
+                  <VersionStatus />
+                </div>
+              )}
             </div>
           </div>
         </div>
