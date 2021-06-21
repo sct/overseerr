@@ -627,7 +627,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 </span>
               </div>
             )}
-            {!!data.productionCompanies.length && (
+            {data.productionCompanies.length > 0 && (
               <div className="media-fact">
                 <span>
                   {intl.formatMessage(messages.studio, {
