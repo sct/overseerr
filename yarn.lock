@@ -2829,17 +2829,7 @@ ajv-keywords@^3.5.2:
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
   integrity sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==
 
-ajv@^6.10.0, ajv@^6.12.3, ajv@^6.12.4:
-  version "6.12.4"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.4.tgz#0614facc4522127fa713445c6bfd3ebd376e2234"
-  integrity sha512-eienB2c9qVQs2KWexhkrdMLVDoIQCz5KSeLxwg9Lzk4DOfBtIK9PQwwufcsn1jjGuf9WZmqPMbGxOzfcuphJCQ==
-  dependencies:
-    fast-deep-equal "^3.1.1"
-    fast-json-stable-stringify "^2.0.0"
-    json-schema-traverse "^0.4.1"
-    uri-js "^4.2.2"
-
-ajv@^6.12.5, ajv@^6.12.6:
+ajv@^6.10.0, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.5, ajv@^6.12.6:
   version "6.12.6"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
   integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
@@ -6022,10 +6012,10 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express-openapi-validator@^4.12.12:
-  version "4.12.12"
-  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-4.12.12.tgz#3d2a788722a435d08aa93778a31db294c35d2a7e"
-  integrity sha512-VXvsypcmagC3W3H/1/ixeP+6wyElg2i9TM8xLdQ0NoSFtzAqO7kpej43AGpoApp6nNcw25cdXHRIot/nEyx9Xg==
+express-openapi-validator@^4.12.14:
+  version "4.12.14"
+  resolved "https://registry.yarnpkg.com/express-openapi-validator/-/express-openapi-validator-4.12.14.tgz#864bf7859f5fd460c3559d556b23b7b2f72738bd"
+  integrity sha512-mCb9Y8TkVFpa4pfBbXWsNbaHw8k5OIPubZCljD83JVjluEkfjAzXVYxaOnlCb/6f6IcisnK3dElQtEsEXDyi2g==
   dependencies:
     "@types/multer" "^1.4.5"
     ajv "^6.12.6"
