@@ -139,13 +139,13 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                               }}
                               role="button"
                               tabIndex={0}
-                              className={`flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none focus:bg-gray-700 transition ease-in-out duration-150
+                              className={`flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-white focus:outline-none transition ease-in-out duration-150
                                 ${
                                   router.pathname.match(
                                     sidebarLink.activeRegExp
                                   )
-                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600'
-                                    : ''
+                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
+                                    : 'hover:bg-gray-700 focus:bg-gray-700'
                                 }
                               `}
                             >
@@ -198,13 +198,13 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                       as={sidebarLink.as}
                     >
                       <a
-                        className={`flex group items-center px-2 py-2 text-lg leading-6 rounded-md text-white hover:text-white focus:outline-none transition ease-in-out duration-150
+                        className={`flex group items-center px-2 py-2 text-lg leading-6 font-medium rounded-md text-white focus:outline-none transition ease-in-out duration-150
                                 ${
                                   router.pathname.match(
                                     sidebarLink.activeRegExp
                                   )
-                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600'
-                                    : ''
+                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
+                                    : 'hover:bg-gray-700 focus:bg-gray-700'
                                 }
                               `}
                       >
