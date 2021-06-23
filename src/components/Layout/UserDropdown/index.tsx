@@ -49,11 +49,11 @@ const UserDropdown: React.FC = () => {
       <Transition
         show={isDropdownOpen}
         enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
+        enterFrom="opacity-0 scale-95"
+        enterTo="opacity-100 scale-100"
         leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-95"
       >
         <div
           className="absolute right-0 w-48 mt-2 origin-top-right rounded-md shadow-lg"

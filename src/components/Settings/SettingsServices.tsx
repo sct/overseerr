@@ -248,10 +248,10 @@ const SettingsServices: React.FC = () => {
       )}
       <Transition
         show={deleteServerModal.open}
-        enter="transition ease-in-out duration-300 transform opacity-0"
+        enter="transition ease-in-out duration-300 opacity-0"
         enterFrom="opacity-0"
         enterTo="opacuty-100"
-        leave="transition ease-in-out duration-300 transform opacity-100"
+        leave="transition ease-in-out duration-300 opacity-100"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >

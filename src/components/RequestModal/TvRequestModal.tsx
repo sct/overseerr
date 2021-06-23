@@ -515,7 +515,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                           aria-hidden="true"
                           className={`${
                             isAllSeasons() ? 'translate-x-5' : 'translate-x-0'
-                          } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow transform group-focus:ring group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
+                          } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow group-focus:ring group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
                         ></span>
                       </span>
                     </th>
@@ -603,7 +603,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                                   isSelectedSeason(season.seasonNumber)
                                     ? 'translate-x-5'
                                     : 'translate-x-0'
-                                } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow transform group-focus:ring group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
+                                } absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow group-focus:ring group-focus:border-blue-300 transition-transform ease-in-out duration-200`}
                               ></span>
                             </span>
                           </td>

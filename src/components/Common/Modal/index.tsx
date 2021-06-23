@@ -79,7 +79,7 @@ const Modal: React.FC<ModalProps> = ({
       }}
     >
       <Transition
-        enter="transition opacity-0 duration-300 transform scale-75"
+        enter="transition opacity-0 duration-300 scale-75"
         enterFrom="opacity-0 scale-75"
         enterTo="opacity-100 scale-100"
         leave="transition opacity-100 duration-300"
@@ -92,7 +92,7 @@ const Modal: React.FC<ModalProps> = ({
         </div>
       </Transition>
       <Transition
-        enter="transition opacity-0 duration-300 transform scale-75"
+        enter="transition opacity-0 duration-300 scale-75"
         enterFrom="opacity-0 scale-75"
         enterTo="opacity-100 scale-100"
         leave="transition opacity-100 duration-300"
@@ -101,7 +101,7 @@ const Modal: React.FC<ModalProps> = ({
         show={!loading}
       >
         <div
-          className="relative inline-block w-full px-4 pt-5 pb-4 overflow-auto text-left align-bottom transition-all transform bg-gray-700 shadow-xl ring-1 ring-gray-500 sm:rounded-lg sm:my-8 sm:align-middle sm:max-w-3xl"
+          className="relative inline-block w-full px-4 pt-5 pb-4 overflow-auto text-left align-bottom transition-all bg-gray-700 shadow-xl ring-1 ring-gray-500 sm:rounded-lg sm:my-8 sm:align-middle sm:max-w-3xl"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"

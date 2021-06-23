@@ -37,7 +37,7 @@ const LibraryItem: React.FC<LibraryItemProps> = ({
               aria-hidden="true"
               className={`${
                 isEnabled ? 'translate-x-5' : 'translate-x-0'
-              } relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200`}
+              } relative inline-block h-5 w-5 rounded-full bg-white shadow transition ease-in-out duration-200`}
             >
               <span
                 className={`${
