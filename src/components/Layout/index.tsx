@@ -46,6 +46,7 @@ const Layout: React.FC = ({ children }) => {
 
   return (
     <div className="flex h-full min-w-0 min-h-full bg-gray-900">
+      <div className="fixed inset-0 z-20 w-full h-1 border-t border-gray-700 pwa-only" />
       <div className="absolute top-0 w-full h-64 from-gray-800 to-gray-900 bg-gradient-to-bl">
         <div className="relative inset-0 w-full h-full from-gray-900 to-transparent bg-gradient-to-t" />
       </div>
