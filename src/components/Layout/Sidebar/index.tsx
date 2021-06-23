@@ -174,7 +174,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
         </Transition>
       </div>
 
-      <div className="fixed top-0 bottom-0 left-0 hidden md:flex md:flex-shrink-0">
+      <div className="fixed top-0 bottom-0 left-0 z-30 hidden md:flex md:flex-shrink-0">
         <div className="flex flex-col w-64 sidebar">
           <div className="flex flex-col flex-1 h-0">
             <div className="flex flex-col flex-1 pt-8 pb-4 overflow-y-auto">
