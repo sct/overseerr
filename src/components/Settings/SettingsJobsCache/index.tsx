@@ -11,7 +11,7 @@ import {
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
-import { ScheduledJob } from '../../../../server/job/schedule';
+import { JobId } from '../../../../server/lib/settings';
 import Spinner from '../../../assets/spinner.svg';
 import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';
@@ -65,7 +65,11 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
     'Every {jobScheduleMinutes, plural, one {minute} other {{jobScheduleMinutes} minutes}}',
 });
 
-interface Job extends Omit<ScheduledJob, 'running' | 'cancelFn'> {
+interface Job {
+  id: JobId;
+  name: string;
+  type: 'process' | 'command';
+  interval: 'short' | 'long' | 'fixed';
   nextExecutionTime: string;
   running: boolean;
 }
