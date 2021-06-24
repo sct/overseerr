@@ -6,7 +6,7 @@ import { sonarrScanner } from '../lib/scanners/sonarr';
 import { getSettings, JobId } from '../lib/settings';
 import logger from '../logger';
 
-export interface ScheduledJob {
+interface ScheduledJob {
   id: JobId;
   job: schedule.Job;
   name: string;
