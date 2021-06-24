@@ -91,7 +91,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const { locale } = useLocale();
   const [showManager, setShowManager] = useState(false);
   const minStudios = 3;
-  const [studiosToShow, setStudiosToShow] = useState(minStudios);
+  const [showMoreStudios, setShowMoreStudios] = useState(false);
 
   const { data, error, revalidate } = useSWR<MovieDetailsType>(
     `/api/v1/movie/${router.query.movieId}`,
@@ -118,7 +118,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   }
 
   const showAllStudios = data.productionCompanies.length <= minStudios + 1;
-
   const mediaLinks: PlayButtonLink[] = [];
 
   if (
@@ -638,9 +637,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   {data.productionCompanies
                     .slice(
                       0,
-                      showAllStudios
+                      showAllStudios || showMoreStudios
                         ? data.productionCompanies.length
-                        : studiosToShow
+                        : minStudios
                     )
                     .map((s) => {
                       return (
@@ -656,20 +655,16 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     <button
                       type="button"
                       onClick={() => {
-                        setStudiosToShow(
-                          studiosToShow === minStudios
-                            ? data.productionCompanies.length
-                            : minStudios
-                        );
+                        setShowMoreStudios(!showMoreStudios);
                       }}
                     >
                       <span className="flex items-center">
                         {intl.formatMessage(
-                          studiosToShow === minStudios
+                          !showMoreStudios
                             ? messages.showmore
                             : messages.showless
                         )}
-                        {studiosToShow === minStudios ? (
+                        {!showMoreStudios ? (
                           <ChevronDoubleDownIcon className="w-4 h-4 ml-1" />
                         ) : (
                           <ChevronDoubleUpIcon className="w-4 h-4 ml-1" />
