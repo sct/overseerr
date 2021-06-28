@@ -101,7 +101,6 @@
   "components.Layout.Sidebar.requests": "Peticiones",
   "components.Layout.Sidebar.dashboard": "Descubrir",
   "components.Layout.SearchInput.searchPlaceholder": "Buscar Películas y Series",
-  "components.Layout.LanguagePicker.changelanguage": "Cambiar Idioma",
   "components.Discover.upcomingmovies": "Próximas Películas",
   "components.Discover.upcoming": "Próximas Películas",
   "components.Discover.trending": "Tendencias",
@@ -776,7 +775,6 @@
   "components.Layout.VersionStatus.outofdate": "Desactualizado",
   "components.Discover.noRequests": "Sin peticiones.",
   "components.UserList.autogeneratepasswordTip": "Envía por email una contraseña al usuario generada por el servidor",
-  "components.Layout.betawarning": "¡Este es un software BETA. Algunas funcionalidades podrían fallar. Por favor, reporta cualquier problema en Github!",
   "i18n.retrying": "Reintentando…",
   "components.Settings.serverSecure": "seguro",
   "components.UserList.usercreatedfailedexisting": "La dirección de email proporcionada ya está en uso por otro usuario.",
@@ -833,5 +831,6 @@
   "components.PermissionEdit.requestTvDescription": "Conceder permisos para solicitar series no en 4k.",
   "components.PermissionEdit.requestTv": "Solicitar Series",
   "components.PermissionEdit.requestMoviesDescription": "Conceder permisos para solicitar películas no en 4K.",
-  "components.PermissionEdit.requestMovies": "Solicitar películas"
+  "components.PermissionEdit.requestMovies": "Solicitar películas",
+  "components.Settings.SettingsAbout.betawarning": "¡Este es un software BETA. Algunas funcionalidades podrían fallar. Por favor, reporta cualquier problema en Github!"
 }
