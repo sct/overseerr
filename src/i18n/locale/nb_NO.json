@@ -8,7 +8,6 @@
   "components.Discover.trending": "Trender",
   "components.Discover.upcoming": "Kommende filmer",
   "components.Discover.upcomingmovies": "Kommende filmer",
-  "components.Layout.LanguagePicker.changelanguage": "Endre språk",
   "components.Layout.SearchInput.searchPlaceholder": "Søk i filmer og TV-serier",
   "components.Layout.Sidebar.dashboard": "Oppdag",
   "components.Layout.Sidebar.requests": "Forespørsler",
@@ -608,5 +607,5 @@
   "components.RequestList.RequestItem.cancelRequest": "Avbryt forespørsel",
   "components.RequestCard.mediaerror": "Media koblet til denne forespørselen er ikke lenger tilgjengelig.",
   "components.Discover.noRequests": "Ingen forespørsler.",
-  "components.Layout.betawarning": "Dette er BETA-programvare. Funksjoner kan være ødelagte og/eller ustabile. Vennligst rapporter problemer på GitHub!"
+  "components.Settings.SettingsAbout.betawarning": "Dette er beta-programvare. Funksjoner kan utebli og/eller være ustabile. Innrapporter problemer på GitHub."
 }
