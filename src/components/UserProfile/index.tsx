@@ -134,13 +134,10 @@ const UserProfile: React.FC = () => {
                   {quota.movie.limit ? (
                     <>
                       <ProgressCircle
-                        progress={Math.max(
-                          0,
-                          Math.round(
-                            ((quota?.movie.remaining ?? 0) /
-                              (quota?.movie.limit ?? 1)) *
-                              100
-                          )
+                        progress={Math.round(
+                          ((quota?.movie.remaining ?? 0) /
+                            (quota?.movie.limit ?? 1)) *
+                            100
                         )}
                         useHeatLevel
                         className="w-8 h-8 mr-2"
@@ -150,10 +147,7 @@ const UserProfile: React.FC = () => {
                           limit: (
                             <span className="text-3xl font-semibold">
                               {intl.formatMessage(messages.limit, {
-                                remaining: Math.max(
-                                  0,
-                                  quota.movie.remaining ?? 0
-                                ),
+                                remaining: quota.movie.remaining,
                                 limit: quota.movie.limit,
                               })}
                             </span>
@@ -196,13 +190,10 @@ const UserProfile: React.FC = () => {
                   {quota.tv.limit ? (
                     <>
                       <ProgressCircle
-                        progress={Math.max(
-                          0,
-                          Math.round(
-                            ((quota?.tv.remaining ?? 0) /
-                              (quota?.tv.limit ?? 1)) *
-                              100
-                          )
+                        progress={Math.round(
+                          ((quota?.tv.remaining ?? 0) /
+                            (quota?.tv.limit ?? 1)) *
+                            100
                         )}
                         useHeatLevel
                         className="w-8 h-8 mr-2"
@@ -212,7 +203,7 @@ const UserProfile: React.FC = () => {
                           limit: (
                             <span className="text-3xl font-semibold">
                               {intl.formatMessage(messages.limit, {
-                                remaining: Math.max(0, quota.tv.remaining ?? 0),
+                                remaining: quota.tv.remaining,
                                 limit: quota.tv.limit,
                               })}
                             </span>
