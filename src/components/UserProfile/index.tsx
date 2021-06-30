@@ -150,7 +150,10 @@ const UserProfile: React.FC = () => {
                           limit: (
                             <span className="text-3xl font-semibold">
                               {intl.formatMessage(messages.limit, {
-                                remaining: quota.movie.remaining,
+                                remaining: Math.max(
+                                  0,
+                                  quota.movie.remaining ?? 0
+                                ),
                                 limit: quota.movie.limit,
                               })}
                             </span>
@@ -209,7 +212,7 @@ const UserProfile: React.FC = () => {
                           limit: (
                             <span className="text-3xl font-semibold">
                               {intl.formatMessage(messages.limit, {
-                                remaining: quota.tv.remaining,
+                                remaining: Math.max(0, quota.tv.remaining ?? 0),
                                 limit: quota.tv.limit,
                               })}
                             </span>
