@@ -134,13 +134,10 @@ const UserProfile: React.FC = () => {
                   {quota.movie.limit ? (
                     <>
                       <ProgressCircle
-                        progress={Math.max(
-                          0,
-                          Math.round(
-                            ((quota?.movie.remaining ?? 0) /
-                              (quota?.movie.limit ?? 1)) *
-                              100
-                          )
+                        progress={Math.round(
+                          ((quota?.movie.remaining ?? 0) /
+                            (quota?.movie.limit ?? 1)) *
+                            100
                         )}
                         useHeatLevel
                         className="w-8 h-8 mr-2"
@@ -193,13 +190,10 @@ const UserProfile: React.FC = () => {
                   {quota.tv.limit ? (
                     <>
                       <ProgressCircle
-                        progress={Math.max(
-                          0,
-                          Math.round(
-                            ((quota?.tv.remaining ?? 0) /
-                              (quota?.tv.limit ?? 1)) *
-                              100
-                          )
+                        progress={Math.round(
+                          ((quota?.tv.remaining ?? 0) /
+                            (quota?.tv.limit ?? 1)) *
+                            100
                         )}
                         useHeatLevel
                         className="w-8 h-8 mr-2"

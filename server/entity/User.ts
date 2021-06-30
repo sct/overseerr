@@ -307,7 +307,7 @@ export class User {
         limit: movieQuotaLimit,
         used: movieQuotaUsed,
         remaining: movieQuotaLimit
-          ? movieQuotaLimit - movieQuotaUsed
+          ? Math.max(0, movieQuotaLimit - movieQuotaUsed)
           : undefined,
         restricted:
           movieQuotaLimit && movieQuotaLimit - movieQuotaUsed <= 0
@@ -318,7 +318,9 @@ export class User {
         days: tvQuotaDays,
         limit: tvQuotaLimit,
         used: tvQuotaUsed,
-        remaining: tvQuotaLimit ? tvQuotaLimit - tvQuotaUsed : undefined,
+        remaining: tvQuotaLimit
+          ? Math.max(0, tvQuotaLimit - tvQuotaUsed)
+          : undefined,
         restricted:
           tvQuotaLimit && tvQuotaLimit - tvQuotaUsed <= 0 ? true : false,
       },
