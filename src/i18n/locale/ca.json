@@ -190,7 +190,6 @@
   "components.Layout.Sidebar.requests": "Sol·licituds",
   "components.Layout.Sidebar.dashboard": "Descobriu",
   "components.Layout.SearchInput.searchPlaceholder": "Cerqueu Pel·lícules i Sèries",
-  "components.Layout.LanguagePicker.changelanguage": "Canvieu d'idioma",
   "components.Discover.upcomingtv": "Pròximes sèries",
   "components.Discover.upcomingmovies": "Pròximes pel·lícules",
   "components.Discover.upcoming": "Pròximes pel·lícules",
@@ -773,7 +772,6 @@
   "components.RequestCard.mediaerror": "El títol associat per a aquesta sol·licitud ja no està disponible.",
   "components.RequestCard.deleterequest": "Suprimeix la sol·licitud",
   "components.NotificationTypeSelector.notificationTypes": "Tipus de notificacions",
-  "components.Layout.betawarning": "Aquest és un programari BETA. Algunes funcionalitats poden fallar. Informeu de qualsevol problema a GitHub!",
   "components.Layout.VersionStatus.streamstable": "Overseer (Estable)",
   "components.Layout.VersionStatus.streamdevelop": "Overseerr (Desenvolupament)",
   "components.Layout.VersionStatus.outofdate": "No està actualitzat",
@@ -860,5 +858,6 @@
   "components.Settings.SettingsUsers.localLoginTip": "Permetre als usuaris iniciar la sessió mitjançant la seva adreça de correu electrònic i contrasenya, en lloc de l'autenticació de Plex",
   "components.Settings.SettingsUsers.defaultPermissionsTip": "Permisos inicials assignats a usuaris nous",
   "components.RequestList.RequestItem.requesteddate": "Sol·licitat",
-  "components.RequestCard.failedretry": "S'ha produït un error en tornar a demanar la sol·licitud."
+  "components.RequestCard.failedretry": "S'ha produït un error en tornar a demanar la sol·licitud.",
+  "components.Settings.SettingsAbout.betawarning": "Aquest és un programari BETA. Algunes funcionalitats poden fallar. Informeu de qualsevol problema a GitHub!"
 }
