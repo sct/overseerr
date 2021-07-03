@@ -5,7 +5,6 @@ head
   meta(http-equiv='x-ua-compatible' content='ie=edge')
   meta(name='viewport' content='width=device-width, initial-scale=1')
   meta(name='format-detection' content='telephone=no, date=no, address=no, email=no')
-  link(href='https://fonts.googleapis.com/css?family=Nunito+Sans:400,700&amp;display=swap' rel='stylesheet' media='screen')
   //if mso
     xml
       o:officedocumentsettings
@@ -25,93 +24,53 @@ head
       font-family: 'Segoe UI', sans-serif;
       mso-line-height-rule: exactly;
       }
+      html {
+      font-size: calc(16px + 6 * ((100vw - 600px) / 680));
+      }
   style.
     @media (max-width: 600px) {
     .sm-w-full {
     width: 100% !important;
     }
+    .incsize {
+    font-size: larger;
     }
-div(role='article' aria-roledescription='email' aria-label='' lang='en')
-  table(style="\
-  background-color: #f2f4f6;\
-  font-family: 'Nunito Sans', -apple-system, 'Segoe UI', sans-serif;\
-  width: 100%;\
-  " width='100%' bgcolor='#f2f4f6' cellpadding='0' cellspacing='0' role='presentation')
+    }
+div(style='display: block; background-color: #111827;')
+  table(style='margin: 0 auto; font-family: sans-serif; color: #fff;' class='sm-w-full')
     tr
-      td(align='center')
-        table(style='width: 100%' width='100%' cellpadding='0' cellspacing='0' role='presentation')
-          tr
-            td(align='center' style='\
-            padding-top: 25px;\
-            padding-bottom: 25px;\
-            text-align: center;\
-            ')
-              a(href=applicationUrl style='\
-              text-shadow: 0 1px 0 #ffffff;\
-              font-weight: 700;\
-              font-size: 24px;\
-              color: #a8aaaf;\
-              text-decoration: none;\
-              ')
-                | #{applicationTitle}
-          tr
-            td(style='width: 100%' width='100%')
-              table.sm-w-full(align='center' style='\
-              background-color: #ffffff;\
-              margin-left: auto;\
-              margin-right: auto;\
-              width: 570px;\
-              ' width='570' bgcolor='#ffffff' cellpadding='0' cellspacing='0' role='presentation')
-                tr
-                  td(style='padding: 45px')
-                    div(style='font-size: 16px')
-                      | #{body}
-                      br
-                      br
-                      p(style='margin-top: 4px; text-align: center')
-                        b
-                          | #{mediaName}
-                        each extra in mediaExtra
-                          br
-                          | #{extra.name}:&nbsp;
-                          | #{extra.value}
-                      table(align='center' cellpadding='0' cellspacing='0' role='presentation')
-                        tr
-                          td
-                            a(href=actionUrl style='color: #3869d4')
-                              img(src=imageUrl alt='')
-        p(style='\
-        font-size: 16px;\
-        line-height: 24px;\
-        margin-top: 6px;\
-        margin-bottom: 20px;\
-        color: #51545e;\
-        ')
-          | Requested by #{requestedBy} at #{timestamp}
-        p(style='\
-        font-size: 13px;\
-        line-height: 24px;\
-        margin-top: 6px;\
-        margin-bottom: 20px;\
-        color: #51545e;\
-        ')
-          a(href=actionUrl style='color: #3869d4') Open in #{applicationTitle}
-tr
-  td
-    table.sm-w-full(align='center' style='\
-    margin-left: auto;\
-    margin-right: auto;\
-    text-align: center;\
-    width: 570px;\
-    ' width='570' cellpadding='0' cellspacing='0' role='presentation')
-      tr
-        td(align='center' style='font-size: 16px; padding: 45px')
-          p(style='\
-          font-size: 13px;\
-          line-height: 24px;\
-          margin-top: 6px;\
-          margin-bottom: 20px;\
-          text-align: center;\
-          color: #a8aaaf;\
-          ')
-            | #{applicationTitle}
+      td(style="text-align: center;")
+        a(href=applicationUrl)
+          img(src=applicationUrl +'/logo.png' style='width: 24rem; padding: 1rem; image-rendering: crisp-edges; image-rendering: -webkit-optimize-contrast;')
+    tr
+      td(style='text-align: center;')
+        div(style='margin: 0rem 1rem 1rem; font-size: 1.25em;')
+          span(class='incsize') #{body}
+    tr
+      td
+        div(style='box-sizing: border-box; margin: 0; width: 100%; color: #fff; border-radius: .75rem; padding: 1rem; border: 1px solid rgba(100, 100, 100, 1); background: linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgb(17, 24, 39) 75%), url(' + imageUrl + ') center 25%/cover')
+          table(style='color: #fff; width: 100%;')
+            tr
+              td(style='vertical-align: top; font-size: 1.125rem; line-height: 1.75rem;')
+                a(href=actionUrl style='display: block; max-width: 16rem; overflow: hidden; color: #fff; text-overflow: ellipsis; white-space: nowrap;')
+                  span(class='incsize')
+                    | #{mediaName}
+                div(style='overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .875rem; line-height: 1.25rem; padding-top: .25rem; padding-bottom: .25rem;')
+                  span(style='display: block;' class='incsize')
+                    | Requested by #{requestedBy}
+                each extra in mediaExtra
+                  span(style='display: block;' class='incsize')
+                    | #{extra.name}:&nbsp;
+                    | #{extra.value}
+              td(rowspan='2' style='width: 7rem;')
+                a(style='display: block; width: 7rem; overflow: hidden; border-radius: .375rem; border: 1px solid rgba(100, 100, 100, 1);' href=actionUrl)
+                  div(style='overflow: hidden; box-sizing: border-box; margin: 0px;')
+                    img(alt='' src=imageUrl style='box-sizing: border-box; padding: 0px; border: none; margin: auto; display: block; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;')
+            tr
+              td(style='font-size: .75rem; line-height: 1rem; vertical-align: bottom')
+                span(class='incsize') #{timestamp}
+    tr
+      td
+        a(href=actionUrl style='display: block; margin: 1.5rem 3rem 2.5rem 3rem; text-decoration: none; font-size: 0.9rem; line-height: 2.25rem;')
+          span(style='padding: 0.2rem; font-weight: 600; text-align: center; border-radius: 10px; background-color: rgb(99,102,241); color: #fff; display: block; border: 1px solid rgba(255, 255, 255, 0.2);' class='incsize')
+            | Open in #{applicationTitle}
