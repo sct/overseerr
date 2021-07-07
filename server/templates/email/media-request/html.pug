@@ -62,14 +62,14 @@ div(style='display: block; background-color: #111827;')
                 a(href=actionUrl style='display: block; max-width: 20rem; color: #fff; font-weight: 700; text-decoration: none; padding-right: 1rem;' class='title')
                   span(class='incsize')
                     | #{mediaName}
-                div(style='overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .875rem; line-height: 1.25rem; padding-top: .25rem; padding-bottom: .25rem;')
+                div(style='overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #d1d5db; font-size: .875rem; line-height: 1.25rem; padding-top: .25rem; padding-bottom: .25rem;')
                   span(style='display: block;' class='incsize')
-                    b
+                    b(style='color: #9ca3af; font-weight: 700;')
                       | Requested By&nbsp;
                     | #{requestedBy}
                   each extra in mediaExtra
                     span(style='display: block;' class='incsize')
-                      b
+                      b(style='color: #9ca3af; font-weight: 700;')
                         | #{extra.name}&nbsp;
                       | #{extra.value}
               td(rowspan='2' style='width: 7rem;')
