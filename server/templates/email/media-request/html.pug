@@ -32,6 +32,9 @@ head
     html {
     font-family: 'Inter', Arial, Sans-Serif;
     }
+    .title:hover * {
+    text-decoration: underline;
+    }
     @media (max-width: 600px) {
     .sm-w-full {
     width: 100% !important;
@@ -45,7 +48,7 @@ div(style='display: block; background-color: #111827;')
     tr
       td(style="text-align: center;")
         a(href=applicationUrl)
-          img(src=applicationUrl +'/logo_full.svg' style='width: 24rem; padding: 1rem;')
+          img(src=applicationUrl +'/logo_full.svg' style='width: 26rem; padding: 1rem;')
     tr
       td(style='text-align: center;')
         div(style='margin: 0rem 1rem 1rem; font-size: 1.25em;')
@@ -56,7 +59,7 @@ div(style='display: block; background-color: #111827;')
           table(style='color: #fff; width: 100%;')
             tr
               td(style='vertical-align: top; font-size: 1.125rem; line-height: 1.75rem;')
-                a(href=actionUrl style='display: block; max-width: 16rem; overflow: hidden; color: #fff; text-overflow: ellipsis; white-space: nowrap;')
+                a(href=actionUrl style='display: block; max-width: 20rem; color: #fff; text-decoration: none; padding-right: 1rem;' class='title')
                   span(class='incsize')
                     | #{mediaName}
                 div(style='overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .875rem; line-height: 1.25rem; padding-top: .25rem; padding-bottom: .25rem;')
