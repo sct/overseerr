@@ -160,7 +160,8 @@ ul.media-crew > li {
 }
 
 a.crew-name,
-.media-fact-value a {
+.media-fact-value a,
+.media-fact-value button {
   @apply font-normal text-gray-400 transition duration-300 hover:underline hover:text-gray-100;
 }
 
@@ -173,11 +174,11 @@ a.crew-name,
 }
 
 .media-fact {
-  @apply flex px-4 py-2 border-b border-gray-700 last:border-b-0;
+  @apply flex justify-between px-4 py-2 border-b border-gray-700 last:border-b-0;
 }
 
 .media-fact-value {
-  @apply flex-1 text-sm font-normal text-right text-gray-400;
+  @apply text-sm font-normal text-right text-gray-400;
 }
 
 .media-ratings {
