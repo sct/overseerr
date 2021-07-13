@@ -83,6 +83,8 @@
   "components.MovieDetails.releasedate": "Release Date",
   "components.MovieDetails.revenue": "Revenue",
   "components.MovieDetails.runtime": "{minutes} minutes",
+  "components.MovieDetails.showless": "Show Less",
+  "components.MovieDetails.showmore": "Show More",
   "components.MovieDetails.similar": "Similar Titles",
   "components.MovieDetails.studio": "{studioCount, plural, one {Studio} other {Studios}}",
   "components.MovieDetails.viewfullcrew": "View Full Crew",

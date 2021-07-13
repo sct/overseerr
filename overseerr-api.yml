@@ -4204,6 +4204,9 @@ paths:
                   type: string
                 languageProfileId:
                   type: number
+                userId:
+                  type: number
+                  nullable: true
               required:
                 - mediaType
                 - mediaId
