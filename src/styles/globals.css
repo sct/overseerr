@@ -303,11 +303,11 @@ button.input-action {
 .button-md svg,
 button.input-action svg,
 .plex-button svg {
-  @apply w-5 h-5 mr-2 last:mr-0;
+  @apply w-5 h-5 ml-2 mr-2 first:ml-0 last:mr-0;
 }
 
 .button-sm svg {
-  @apply w-4 h-4 mr-1.5 last:mr-0;
+  @apply w-4 h-4 ml-1.5 mr-1.5 first:ml-0 last:mr-0;
 }
 
 .modal-icon {
