@@ -1,3 +1,4 @@
+import { SupportIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -165,9 +166,12 @@ const ResetPassword: React.FC = () => {
                               type="submit"
                               disabled={isSubmitting || !isValid}
                             >
-                              {isSubmitting
-                                ? intl.formatMessage(globalMessages.saving)
-                                : intl.formatMessage(globalMessages.save)}
+                              <SupportIcon />
+                              <span>
+                                {isSubmitting
+                                  ? intl.formatMessage(globalMessages.saving)
+                                  : intl.formatMessage(globalMessages.save)}
+                              </span>
                             </Button>
                           </span>
                         </div>

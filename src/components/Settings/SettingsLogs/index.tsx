@@ -1,4 +1,6 @@
 import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
   ClipboardCopyIcon,
   DocumentSearchIcon,
   FilterIcon,
@@ -421,7 +423,8 @@ const SettingsLogs: React.FC = () => {
                         updateQueryParams('page', (page - 1).toString())
                       }
                     >
-                      {intl.formatMessage(globalMessages.previous)}
+                      <ChevronLeftIcon />
+                      <span>{intl.formatMessage(globalMessages.previous)}</span>
                     </Button>
                     <Button
                       disabled={!hasNextPage}
@@ -429,7 +432,8 @@ const SettingsLogs: React.FC = () => {
                         updateQueryParams('page', (page + 1).toString())
                       }
                     >
-                      {intl.formatMessage(globalMessages.next)}
+                      <span>{intl.formatMessage(globalMessages.next)}</span>
+                      <ChevronRightIcon />
                     </Button>
                   </div>
                 </nav>
