@@ -252,10 +252,12 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
       return res.status(200).json({
         emailEnabled: settings?.email.enabled,
         pgpKey: user.settings?.pgpKey,
-        discordEnabled: settings?.discord.enabled,
-        discordEnabledTypes: settings?.discord.enabled
-          ? settings?.discord.types
-          : 0,
+        discordEnabled:
+          settings?.discord.enabled && settings.discord.options.enableMentions,
+        discordEnabledTypes:
+          settings?.discord.enabled && settings.discord.options.enableMentions
+            ? settings.discord.types
+            : 0,
         discordId: user.settings?.discordId,
         telegramEnabled: settings?.telegram.enabled,
         telegramBotUsername: settings?.telegram.options.botUsername,

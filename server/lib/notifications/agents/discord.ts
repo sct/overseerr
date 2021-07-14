@@ -222,37 +222,39 @@ class DiscordAgent
     let content = undefined;
 
     try {
-      if (payload.notifyUser) {
-        // Mention user who submitted the request
-        if (
-          payload.notifyUser.settings?.hasNotificationType(
-            NotificationAgentKey.DISCORD,
-            type
-          ) &&
-          payload.notifyUser.settings?.discordId
-        ) {
-          content = `<@${payload.notifyUser.settings.discordId}>`;
-        }
-      } else {
-        // Mention all users with the Manage Requests permission
-        const userRepository = getRepository(User);
-        const users = await userRepository.find();
+      if (settings.options.enableMentions) {
+        if (payload.notifyUser) {
+          // Mention user who submitted the request
+          if (
+            payload.notifyUser.settings?.hasNotificationType(
+              NotificationAgentKey.DISCORD,
+              type
+            ) &&
+            payload.notifyUser.settings?.discordId
+          ) {
+            content = `<@${payload.notifyUser.settings.discordId}>`;
+          }
+        } else {
+          // Mention all users with the Manage Requests permission
+          const userRepository = getRepository(User);
+          const users = await userRepository.find();
 
-        content = users
-          .filter(
-            (user) =>
-              user.hasPermission(Permission.MANAGE_REQUESTS) &&
-              user.settings?.hasNotificationType(
-                NotificationAgentKey.DISCORD,
-                type
-              ) &&
-              user.settings?.discordId &&
-              // Check if it's the user's own auto-approved request
-              (type !== Notification.MEDIA_AUTO_APPROVED ||
-                user.id !== payload.request?.requestedBy.id)
-          )
-          .map((user) => `<@${user.settings?.discordId}>`)
-          .join(' ');
+          content = users
+            .filter(
+              (user) =>
+                user.hasPermission(Permission.MANAGE_REQUESTS) &&
+                user.settings?.hasNotificationType(
+                  NotificationAgentKey.DISCORD,
+                  type
+                ) &&
+                user.settings?.discordId &&
+                // Check if it's the user's own auto-approved request
+                (type !== Notification.MEDIA_AUTO_APPROVED ||
+                  user.id !== payload.request?.requestedBy.id)
+            )
+            .map((user) => `<@${user.settings?.discordId}>`)
+            .join(' ');
+        }
       }
 
       await axios.post(settings.options.webhookUrl, {
