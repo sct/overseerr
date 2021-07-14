@@ -402,6 +402,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               status={data.mediaInfo?.status}
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               plexUrl={data.mediaInfo?.plexUrl}
+              serviceUrl={
+                hasPermission(Permission.MANAGE_REQUESTS)
+                  ? data.mediaInfo?.serviceUrl
+                  : undefined
+              }
             />
             {settings.currentSettings.movie4kEnabled &&
               hasPermission(
@@ -416,7 +421,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0
                   }
-                  plexUrl4k={data.mediaInfo?.plexUrl4k}
+                  plexUrl={data.mediaInfo?.plexUrl4k}
+                  serviceUrl={
+                    hasPermission(Permission.MANAGE_REQUESTS)
+                      ? data.mediaInfo?.serviceUrl4k
+                      : undefined
+                  }
                 />
               )}
           </div>
