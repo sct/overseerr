@@ -440,7 +440,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         !(
           quota?.tv.limit &&
           !settings.currentSettings.partialRequestsEnabled &&
-          unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+          unrequestedSeasons.length > (quota?.tv.remaining ?? 0)
         ) &&
         getAllRequestedSeasons().length < getAllSeasons().length &&
         !editRequest && (
@@ -457,7 +457,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           quota={quota?.tv}
           remaining={
             !settings.currentSettings.partialRequestsEnabled &&
-            unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+            unrequestedSeasons.length > (quota?.tv.remaining ?? 0)
               ? 0
               : currentlyRemaining
           }
@@ -468,7 +468,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           }
           overLimit={
             !settings.currentSettings.partialRequestsEnabled &&
-            unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+            unrequestedSeasons.length > (quota?.tv.remaining ?? 0)
               ? unrequestedSeasons.length
               : undefined
           }
@@ -667,28 +667,26 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       </div>
       {(hasPermission(Permission.REQUEST_ADVANCED) ||
         hasPermission(Permission.MANAGE_REQUESTS)) && (
-        <div className="mt-4">
-          <AdvancedRequester
-            type="tv"
-            is4k={is4k}
-            isAnime={data?.keywords.some(
-              (keyword) => keyword.id === ANIME_KEYWORD_ID
-            )}
-            onChange={(overrides) => setRequestOverrides(overrides)}
-            requestUser={editRequest?.requestedBy}
-            defaultOverrides={
-              editRequest
-                ? {
-                    folder: editRequest.rootFolder,
-                    profile: editRequest.profileId,
-                    server: editRequest.serverId,
-                    language: editRequest.languageProfileId,
-                    tags: editRequest.tags,
-                  }
-                : undefined
-            }
-          />
-        </div>
+        <AdvancedRequester
+          type="tv"
+          is4k={is4k}
+          isAnime={data?.keywords.some(
+            (keyword) => keyword.id === ANIME_KEYWORD_ID
+          )}
+          onChange={(overrides) => setRequestOverrides(overrides)}
+          requestUser={editRequest?.requestedBy}
+          defaultOverrides={
+            editRequest
+              ? {
+                  folder: editRequest.rootFolder,
+                  profile: editRequest.profileId,
+                  server: editRequest.serverId,
+                  language: editRequest.languageProfileId,
+                  tags: editRequest.tags,
+                }
+              : undefined
+          }
+        />
       )}
     </Modal>
   );

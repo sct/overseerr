@@ -244,22 +244,20 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
             })}
         {(hasPermission(Permission.REQUEST_ADVANCED) ||
           hasPermission(Permission.MANAGE_REQUESTS)) && (
-          <div className="mt-4">
-            <AdvancedRequester
-              type="movie"
-              is4k={is4k}
-              requestUser={editRequest.requestedBy}
-              defaultOverrides={{
-                folder: editRequest.rootFolder,
-                profile: editRequest.profileId,
-                server: editRequest.serverId,
-                tags: editRequest.tags,
-              }}
-              onChange={(overrides) => {
-                setRequestOverrides(overrides);
-              }}
-            />
-          </div>
+          <AdvancedRequester
+            type="movie"
+            is4k={is4k}
+            requestUser={editRequest.requestedBy}
+            defaultOverrides={{
+              folder: editRequest.rootFolder,
+              profile: editRequest.profileId,
+              server: editRequest.serverId,
+              tags: editRequest.tags,
+            }}
+            onChange={(overrides) => {
+              setRequestOverrides(overrides);
+            }}
+          />
         )}
       </Modal>
     );

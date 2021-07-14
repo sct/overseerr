@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Listbox, Transition } from '@headlessui/react';
 import { AdjustmentsIcon } from '@heroicons/react/outline';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
@@ -125,7 +124,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     if (userData?.results && !requestUser) {
       setSelectedUser(userData.results.find((u) => u.id === user?.id) ?? null);
     }
-  }, [userData?.results]);
+  }, [requestUser, user, userData]);
 
   useEffect(() => {
     let defaultServer = data?.find(
@@ -143,7 +142,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     ) {
       setSelectedServer(defaultServer.id);
     }
-  }, [data]);
+  }, [data, defaultOverrides, is4k, selectedServer]);
 
   useEffect(() => {
     if (serverData) {
@@ -204,7 +203,15 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         setSelectedTags(defaultTags);
       }
     }
-  }, [serverData]);
+  }, [
+    defaultOverrides,
+    isAnime,
+    selectedFolder,
+    selectedLanguage,
+    selectedProfile,
+    selectedTags,
+    serverData,
+  ]);
 
   useEffect(() => {
     if (defaultOverrides && defaultOverrides.server != null) {
@@ -226,13 +233,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     if (defaultOverrides && defaultOverrides.tags != null) {
       setSelectedTags(defaultOverrides.tags);
     }
-  }, [
-    defaultOverrides?.server,
-    defaultOverrides?.folder,
-    defaultOverrides?.profile,
-    defaultOverrides?.language,
-    defaultOverrides?.tags,
-  ]);
+  }, [defaultOverrides]);
 
   useEffect(() => {
     if (selectedServer !== null || selectedUser) {
@@ -252,6 +253,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     selectedUser,
     selectedLanguage,
     selectedTags,
+    onChange,
   ]);
 
   if (!data && !error) {
@@ -268,7 +270,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
 
   return (
     <>
-      <div className="flex items-center mb-2 font-bold tracking-wider">
+      <div className="flex items-center mt-4 mb-2 font-bold tracking-wider">
         <AdjustmentsIcon className="w-5 h-5 mr-1.5" />
         {intl.formatMessage(messages.advancedoptions)}
       </div>
