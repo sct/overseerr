@@ -1,15 +1,17 @@
 import schedule from 'node-schedule';
-import logger from '../logger';
 import downloadTracker from '../lib/downloadtracker';
 import { plexFullScanner, plexRecentScanner } from '../lib/scanners/plex';
 import { radarrScanner } from '../lib/scanners/radarr';
 import { sonarrScanner } from '../lib/scanners/sonarr';
+import { getSettings, JobId } from '../lib/settings';
+import logger from '../logger';
 
 interface ScheduledJob {
-  id: string;
+  id: JobId;
   job: schedule.Job;
   name: string;
   type: 'process' | 'command';
+  interval: 'short' | 'long' | 'fixed';
   running?: () => boolean;
   cancelFn?: () => void;
 }
@@ -17,12 +19,15 @@ interface ScheduledJob {
 export const scheduledJobs: ScheduledJob[] = [];
 
 export const startJobs = (): void => {
+  const jobs = getSettings().jobs;
+
   // Run recently added plex scan every 5 minutes
   scheduledJobs.push({
     id: 'plex-recently-added-scan',
     name: 'Plex Recently Added Scan',
     type: 'process',
-    job: schedule.scheduleJob('0 */5 * * * *', () => {
+    interval: 'short',
+    job: schedule.scheduleJob(jobs['plex-recently-added-scan'].schedule, () => {
       logger.info('Starting scheduled job: Plex Recently Added Scan', {
         label: 'Jobs',
       });
@@ -37,7 +42,8 @@ export const startJobs = (): void => {
     id: 'plex-full-scan',
     name: 'Plex Full Library Scan',
     type: 'process',
-    job: schedule.scheduleJob('0 0 3 * * *', () => {
+    interval: 'long',
+    job: schedule.scheduleJob(jobs['plex-full-scan'].schedule, () => {
       logger.info('Starting scheduled job: Plex Full Library Scan', {
         label: 'Jobs',
       });
@@ -52,7 +58,8 @@ export const startJobs = (): void => {
     id: 'radarr-scan',
     name: 'Radarr Scan',
     type: 'process',
-    job: schedule.scheduleJob('0 0 4 * * *', () => {
+    interval: 'long',
+    job: schedule.scheduleJob(jobs['radarr-scan'].schedule, () => {
       logger.info('Starting scheduled job: Radarr Scan', { label: 'Jobs' });
       radarrScanner.run();
     }),
@@ -65,7 +72,8 @@ export const startJobs = (): void => {
     id: 'sonarr-scan',
     name: 'Sonarr Scan',
     type: 'process',
-    job: schedule.scheduleJob('0 30 4 * * *', () => {
+    interval: 'long',
+    job: schedule.scheduleJob(jobs['sonarr-scan'].schedule, () => {
       logger.info('Starting scheduled job: Sonarr Scan', { label: 'Jobs' });
       sonarrScanner.run();
     }),
@@ -73,23 +81,27 @@ export const startJobs = (): void => {
     cancelFn: () => sonarrScanner.cancel(),
   });
 
-  // Run download sync
+  // Run download sync every minute
   scheduledJobs.push({
     id: 'download-sync',
     name: 'Download Sync',
     type: 'command',
-    job: schedule.scheduleJob('0 * * * * *', () => {
-      logger.debug('Starting scheduled job: Download Sync', { label: 'Jobs' });
+    interval: 'fixed',
+    job: schedule.scheduleJob(jobs['download-sync'].schedule, () => {
+      logger.debug('Starting scheduled job: Download Sync', {
+        label: 'Jobs',
+      });
       downloadTracker.updateDownloads();
     }),
   });
 
-  // Reset download sync
+  // Reset download sync everyday at 01:00 am
   scheduledJobs.push({
     id: 'download-sync-reset',
     name: 'Download Sync Reset',
     type: 'command',
-    job: schedule.scheduleJob('0 0 1 * * *', () => {
+    interval: 'long',
+    job: schedule.scheduleJob(jobs['download-sync-reset'].schedule, () => {
       logger.info('Starting scheduled job: Download Sync Reset', {
         label: 'Jobs',
       });
