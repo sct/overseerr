@@ -560,13 +560,13 @@ class TheMovieDb extends ExternalAPI {
     }
   }
 
-  public async getMovieByImdbId({
+  public async getMediaByImdbId({
     imdbId,
     language = 'en',
   }: {
     imdbId: string;
     language?: string;
-  }): Promise<TmdbMovieDetails> {
+  }): Promise<TmdbMovieDetails | TmdbTvDetails> {
     try {
       const extResponse = await this.getByExternalId({
         externalId: imdbId,
@@ -574,20 +574,23 @@ class TheMovieDb extends ExternalAPI {
       });
 
       if (extResponse.movie_results[0]) {
-        const movie = await this.getMovie({
+        return await this.getMovie({
           movieId: extResponse.movie_results[0].id,
           language,
         });
-
-        return movie;
       }
 
-      throw new Error(
-        '[TMDb] Failed to find a title with the provided IMDB id'
-      );
+      if (extResponse.tv_results[0]) {
+        return await this.getTvShow({
+          tvId: extResponse.tv_results[0].id,
+          language,
+        });
+      }
+
+      throw new Error(`No movie or show returned from API for ID ${imdbId}`);
     } catch (e) {
       throw new Error(
-        `[TMDb] Failed to get movie by external imdb ID: ${e.message}`
+        `[TMDb] Failed to find media using external IMDb ID: ${e.message}`
       );
     }
   }
