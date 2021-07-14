@@ -768,6 +768,10 @@ components:
           $ref: '#/components/schemas/ExternalIds'
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
+        watchProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/WatchProviders'
     Episode:
       type: object
       properties:
@@ -942,6 +946,10 @@ components:
             $ref: '#/components/schemas/Keyword'
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
+        watchProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/WatchProviders'
     MediaRequest:
       type: object
       properties:
@@ -1631,6 +1639,33 @@ components:
           type: number
         webpush:
           type: number
+    WatchProviders:
+      type: array
+      items:
+        type: object
+        properties:
+          iso_3166_1:
+            type: string
+          link:
+            type: string
+          buy:
+            type: array
+            items:
+              $ref: '#/components/schemas/WatchProviderDetails'
+          flatrate:
+            items:
+              $ref: '#/components/schemas/WatchProviderDetails'
+    WatchProviderDetails:
+      type: object
+      properties:
+        displayPriority:
+          type: number
+        logoPath:
+          type: string
+        id:
+          type: number
+        name:
+          type: string
   securitySchemes:
     cookieAuth:
       type: apiKey

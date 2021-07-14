@@ -166,6 +166,10 @@ export interface TmdbMovieDetails {
   };
   external_ids: TmdbExternalIds;
   videos: TmdbVideoResult;
+  'watch/providers'?: {
+    id: number;
+    results?: { [iso_3166_1: string]: TmdbWatchProviders };
+  };
 }
 
 export interface TmdbVideo {
@@ -269,6 +273,10 @@ export interface TmdbTvDetails {
     results: TmdbKeyword[];
   };
   videos: TmdbVideoResult;
+  'watch/providers'?: {
+    id: number;
+    results?: { [iso_3166_1: string]: TmdbWatchProviders };
+  };
 }
 
 export interface TmdbVideoResult {
@@ -400,4 +408,17 @@ export interface TmdbNetwork {
   homepage?: string;
   logo_path?: string;
   origin_country?: string;
+}
+
+export interface TmdbWatchProviders {
+  link?: string;
+  buy?: TmdbWatchProviderDetails[];
+  flatrate?: TmdbWatchProviderDetails[];
+}
+
+export interface TmdbWatchProviderDetails {
+  display_priority?: number;
+  logo_path?: string;
+  provider_id: number;
+  provider_name: string;
 }
