@@ -63,6 +63,9 @@ const UserEmailSettings: React.FC = () => {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
             pgpKey: values.pgpKey,
             discordId: data?.discordId,
+            pushbulletAccessToken: data?.pushbulletAccessToken,
+            pushoverApplicationToken: data?.pushoverApplicationToken,
+            pushoverUserKey: data?.pushoverUserKey,
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {

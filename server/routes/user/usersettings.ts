@@ -257,6 +257,9 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
           ? settings?.discord.types
           : 0,
         discordId: user.settings?.discordId,
+        pushbulletAccessToken: user.settings?.pushbulletAccessToken,
+        pushoverApplicationToken: user.settings?.pushoverApplicationToken,
+        pushoverUserKey: user.settings?.pushoverUserKey,
         telegramEnabled: settings?.telegram.enabled,
         telegramBotUsername: settings?.telegram.options.botUsername,
         telegramChatId: user.settings?.telegramChatId,
@@ -298,6 +301,9 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
           user: req.user,
           pgpKey: req.body.pgpKey,
           discordId: req.body.discordId,
+          pushbulletAccessToken: req.body.pushbulletAccessToken,
+          pushoverApplicationToken: req.body.pushoverApplicationToken,
+          pushoverUserKey: req.body.pushoverUserKey,
           telegramChatId: req.body.telegramChatId,
           telegramSendSilently: req.body.telegramSendSilently,
           notificationTypes: req.body.notificationTypes,
@@ -305,6 +311,10 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
       } else {
         user.settings.pgpKey = req.body.pgpKey;
         user.settings.discordId = req.body.discordId;
+        user.settings.pushbulletAccessToken = req.body.pushbulletAccessToken;
+        user.settings.pushoverApplicationToken =
+          req.body.pushoverApplicationToken;
+        user.settings.pushoverUserKey = req.body.pushoverUserKey;
         user.settings.telegramChatId = req.body.telegramChatId;
         user.settings.telegramSendSilently = req.body.telegramSendSilently;
         user.settings.notificationTypes = Object.assign(
@@ -319,6 +329,9 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
       return res.status(200).json({
         pgpKey: user.settings?.pgpKey,
         discordId: user.settings?.discordId,
+        pushbulletAccessToken: user.settings?.pushbulletAccessToken,
+        pushoverApplicationToken: user.settings?.pushoverApplicationToken,
+        pushoverUserKey: user.settings?.pushoverUserKey,
         telegramChatId: user.settings?.telegramChatId,
         telegramSendSilently: user?.settings?.telegramSendSilently,
         notificationTypes: user.settings.notificationTypes,

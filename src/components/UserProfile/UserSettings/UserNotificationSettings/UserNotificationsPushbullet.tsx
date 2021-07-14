@@ -1,6 +1,5 @@
-import { SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -12,18 +11,20 @@ import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import SensitiveInput from '../../../Common/SensitiveInput';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
-  discordsettingssaved: 'Discord notification settings saved successfully!',
-  discordsettingsfailed: 'Discord notification settings failed to save.',
-  discordId: 'User ID',
-  discordIdTip:
-    'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your user account',
-  validationDiscordId: 'You must provide a valid user ID',
+  pushbulletsettingssaved:
+    'Pushbullet notification settings saved successfully!',
+  pushbulletsettingsfailed: 'Pushbullet notification settings failed to save.',
+  pushbulletAccessToken: 'Access Token',
+  pushbulletAccessTokenTip:
+    'Create a token from your <PushbulletSettingsLink>Account Settings</PushbulletSettingsLink>',
+  validationPushbulletAccessToken: 'You must provide an access token',
 });
 
-const UserNotificationsDiscord: React.FC = () => {
+const UserPushbulletSettings: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -32,16 +33,14 @@ const UserNotificationsDiscord: React.FC = () => {
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
 
-  const UserNotificationsDiscordSchema = Yup.object().shape({
-    discordId: Yup.string()
-      .when('types', {
-        is: (types: number) => !!types,
-        then: Yup.string()
-          .nullable()
-          .required(intl.formatMessage(messages.validationDiscordId)),
-        otherwise: Yup.string().nullable(),
-      })
-      .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
+  const UserNotificationsPushbulletSchema = Yup.object().shape({
+    pushbulletAccessToken: Yup.string().when('types', {
+      is: (types: number) => !!types,
+      then: Yup.string()
+        .nullable()
+        .required(intl.formatMessage(messages.validationPushbulletAccessToken)),
+      otherwise: Yup.string().nullable(),
+    }),
   });
 
   if (!data && !error) {
@@ -51,33 +50,31 @@ const UserNotificationsDiscord: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        discordId: data?.discordId,
-        types:
-          (data?.discordEnabledTypes ?? 0) &
-          (data?.notificationTypes.discord ?? 0),
+        pushbulletAccessToken: data?.pushbulletAccessToken,
+        types: data?.notificationTypes.pushbullet ?? 0,
       }}
-      validationSchema={UserNotificationsDiscordSchema}
+      validationSchema={UserNotificationsPushbulletSchema}
       enableReinitialize
       onSubmit={async (values) => {
         try {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
             pgpKey: data?.pgpKey,
-            discordId: values.discordId,
-            pushbulletAccessToken: data?.pushbulletAccessToken,
+            discordId: data?.discordId,
+            pushbulletAccessToken: values.pushbulletAccessToken,
             pushoverApplicationToken: data?.pushoverApplicationToken,
             pushoverUserKey: data?.pushoverUserKey,
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {
-              discord: values.types,
+              pushbullet: values.types,
             },
           });
-          addToast(intl.formatMessage(messages.discordsettingssaved), {
+          addToast(intl.formatMessage(messages.pushbulletsettingssaved), {
             appearance: 'success',
             autoDismiss: true,
           });
         } catch (e) {
-          addToast(intl.formatMessage(messages.discordsettingsfailed), {
+          addToast(intl.formatMessage(messages.pushbulletsettingsfailed), {
             appearance: 'error',
             autoDismiss: true,
           });
@@ -98,39 +95,47 @@ const UserNotificationsDiscord: React.FC = () => {
         return (
           <Form className="section">
             <div className="form-row">
-              <label htmlFor="discordId" className="text-label">
-                {intl.formatMessage(messages.discordId)}
-                {!!data?.discordEnabledTypes && (
-                  <span className="label-required">*</span>
+              <label htmlFor="pushbulletAccessToken" className="text-label">
+                {intl.formatMessage(messages.pushbulletAccessToken)}
+                <span className="label-required">*</span>
+                {data?.pushbulletAccessToken && (
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.pushbulletAccessTokenTip, {
+                      PushbulletSettingsLink: function PushbulletSettingsLink(
+                        msg
+                      ) {
+                        return (
+                          <a
+                            href="https://www.pushbullet.com/#settings/account"
+                            className="text-white transition duration-300 hover:underline"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {msg}
+                          </a>
+                        );
+                      },
+                    })}
+                  </span>
                 )}
-                <span className="label-tip">
-                  {intl.formatMessage(messages.discordIdTip, {
-                    FindDiscordIdLink: function FindDiscordIdLink(msg) {
-                      return (
-                        <a
-                          href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
-                  })}
-                </span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field id="discordId" name="discordId" type="text" />
+                  <SensitiveInput
+                    as="field"
+                    id="pushbulletAccessToken"
+                    name="pushbulletAccessToken"
+                    type="text"
+                  />
                 </div>
-                {errors.discordId && touched.discordId && (
-                  <div className="error">{errors.discordId}</div>
-                )}
+                {errors.pushbulletAccessToken &&
+                  touched.pushbulletAccessToken && (
+                    <div className="error">{errors.pushbulletAccessToken}</div>
+                  )}
               </div>
             </div>
             <NotificationTypeSelector
               user={user}
-              enabledTypes={data?.discordEnabledTypes ?? 0}
               currentTypes={values.types}
               onUpdate={(newTypes) => {
                 setFieldValue('types', newTypes);
@@ -150,12 +155,9 @@ const UserNotificationsDiscord: React.FC = () => {
                     type="submit"
                     disabled={isSubmitting || !isValid}
                   >
-                    <SaveIcon />
-                    <span>
-                      {isSubmitting
-                        ? intl.formatMessage(globalMessages.saving)
-                        : intl.formatMessage(globalMessages.save)}
-                    </span>
+                    {isSubmitting
+                      ? intl.formatMessage(globalMessages.saving)
+                      : intl.formatMessage(globalMessages.save)}
                   </Button>
                 </span>
               </div>
@@ -167,4 +169,4 @@ const UserNotificationsDiscord: React.FC = () => {
   );
 };
 
-export default UserNotificationsDiscord;
+export default UserPushbulletSettings;

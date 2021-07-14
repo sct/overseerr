@@ -44,6 +44,9 @@ const UserWebPushSettings: React.FC = () => {
           await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
             pgpKey: data?.pgpKey,
             discordId: data?.discordId,
+            pushbulletAccessToken: data?.pushbulletAccessToken,
+            pushoverApplicationToken: data?.pushoverApplicationToken,
+            pushoverUserKey: data?.pushoverUserKey,
             telegramChatId: data?.telegramChatId,
             telegramSendSilently: data?.telegramSendSilently,
             notificationTypes: {

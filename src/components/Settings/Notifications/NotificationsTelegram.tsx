@@ -51,8 +51,8 @@ const NotificationsTelegram: React.FC = () => {
       otherwise: Yup.string().nullable(),
     }),
     chatId: Yup.string()
-      .when('enabled', {
-        is: true,
+      .when(['enabled', 'types'], {
+        is: (enabled: boolean, types: number) => enabled && !!types,
         then: Yup.string()
           .nullable()
           .required(intl.formatMessage(messages.validationChatIdRequired)),

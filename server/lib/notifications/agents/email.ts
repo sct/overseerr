@@ -45,17 +45,13 @@ class EmailAgent
 
   private buildMessage(
     type: Notification,
-    payload: NotificationPayload,
-    toEmail: string
-  ): EmailOptions | undefined {
+    payload: NotificationPayload
+  ): Partial<EmailOptions> | undefined {
     const { applicationUrl, applicationTitle } = getSettings().main;
 
     if (type === Notification.TEST_NOTIFICATION) {
       return {
         template: path.join(__dirname, '../../../templates/email/test-email'),
-        message: {
-          to: toEmail,
-        },
         locals: {
           body: payload.message,
           applicationUrl,
@@ -126,9 +122,6 @@ class EmailAgent
           __dirname,
           '../../../templates/email/media-request'
         ),
-        message: {
-          to: toEmail,
-        },
         locals: {
           requestType,
           body,
@@ -154,6 +147,13 @@ class EmailAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
+    const settings = this.getSettings();
+    const emailMessage = this.buildMessage(type, payload);
+
+    if (!emailMessage) {
+      return false;
+    }
+
     if (payload.notifyUser) {
       // Send notification to the user who submitted the request
       if (
@@ -175,12 +175,16 @@ class EmailAgent
 
         try {
           const email = new PreparedEmail(
-            this.getSettings(),
+            settings,
             payload.notifyUser.settings?.pgpKey
           );
-          await email.send(
-            this.buildMessage(type, payload, payload.notifyUser.email)
-          );
+
+          await email.send({
+            ...emailMessage,
+            message: {
+              to: payload.notifyUser.email,
+            },
+          });
         } catch (e) {
           logger.error('Error sending email notification', {
             label: 'Notifications',
@@ -224,11 +228,14 @@ class EmailAgent
             });
 
             try {
-              const email = new PreparedEmail(
-                this.getSettings(),
-                user.settings?.pgpKey
-              );
-              await email.send(this.buildMessage(type, payload, user.email));
+              const email = new PreparedEmail(settings, user.settings?.pgpKey);
+
+              await email.send({
+                ...emailMessage,
+                message: {
+                  to: user.email,
+                },
+              });
             } catch (e) {
               logger.error('Error sending email notification', {
                 label: 'Notifications',

@@ -22,6 +22,9 @@ export interface UserSettingsNotificationsResponse {
   discordEnabled?: boolean;
   discordEnabledTypes?: number;
   discordId?: string;
+  pushbulletAccessToken?: string;
+  pushoverApplicationToken?: string;
+  pushoverUserKey?: string;
   telegramEnabled?: boolean;
   telegramBotUsername?: string;
   telegramChatId?: string;
