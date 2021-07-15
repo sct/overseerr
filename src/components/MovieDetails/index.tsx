@@ -36,7 +36,7 @@ import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
-import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+import PlayButton, { PlayButtonLink, PlayButtonLinkTypes } from '../Common/PlayButton';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import IssueModal from '../IssueModal';
 import ManageSlideOver from '../ManageSlideOver';
@@ -146,6 +146,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
 
   if (trailerUrl) {
     mediaLinks.push({
+      type: PlayButtonLinkTypes.Trailer,
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
       svg: <FilmIcon />,

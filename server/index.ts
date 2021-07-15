@@ -28,6 +28,7 @@ import { getSettings } from './lib/settings';
 import logger from './logger';
 import routes from './routes';
 import { getAppVersion } from './utils/appVersion';
+import { URL } from 'url';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -166,6 +167,28 @@ app
       next();
     });
     server.use('/api/v1', routes);
+    server.get('/deep-link', (req, res) => {
+      const url = req.query.url as string;
+      if (!url) {
+        res.status(400);
+        res.send('URL was not supplied.');
+        return;
+      }
+
+      const parsedUrl = new URL(url);
+      const deepLinkURL = parsedUrl.searchParams.get('v');
+
+      res.send(`
+        <script type="text/javascript">
+            window.onload = function() {
+                window.location = 'youtube://${deepLinkURL}';
+                window.setTimeout(function() {
+                    window.location = "${url}";
+                }, 25);
+            };
+        </script>
+      `);
+    });
     server.get('*', (req, res) => handle(req, res));
     server.use(
       (
