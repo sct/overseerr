@@ -16,20 +16,23 @@ import {
 } from './common';
 import Media from '../entity/Media';
 
+export enum VideoType {
+  Clip = 'Clip',
+  Teaser = 'Teaser',
+  Trailer = 'Trailer',
+  Featurette = 'Featurette',
+  OpeningCredits = 'Opening Credits',
+  BehindTheScenes = 'Behind the Scenes',
+  Bloopers = 'Bloopers',
+}
+
 export interface Video {
   url?: string;
   site: 'YouTube';
   key: string;
   name: string;
   size: number;
-  type:
-    | 'Clip'
-    | 'Teaser'
-    | 'Trailer'
-    | 'Featurette'
-    | 'Opening Credits'
-    | 'Behind the Scenes'
-    | 'Bloopers';
+  type: VideoType;
 }
 
 export interface MovieDetails {

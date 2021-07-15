@@ -1,3 +1,5 @@
+import { VideoType } from '../../models/Movie';
+
 interface TmdbMediaResult {
   id: number;
   media_type: string;
@@ -174,14 +176,7 @@ export interface TmdbVideo {
   name: string;
   site: 'YouTube';
   size: number;
-  type:
-    | 'Clip'
-    | 'Teaser'
-    | 'Trailer'
-    | 'Featurette'
-    | 'Opening Credits'
-    | 'Behind the Scenes'
-    | 'Bloopers';
+  type: VideoType;
 }
 
 export interface TmdbTvEpisodeResult {
