@@ -47,6 +47,7 @@ import RequestButton from '../RequestButton';
 import RequestModal from '../RequestModal';
 import Slider from '../Slider';
 import StatusBadge from '../StatusBadge';
+import { VideoType } from '../../../server/models/Movie';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -143,12 +144,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   }
 
   const trailerUrl = data.relatedVideos
-    ?.filter((r) => r.type === 'Trailer')
+    ?.filter((r) => r.type === VideoType.Trailer)
     .sort((a, b) => a.size - b.size)
     .pop()?.url;
 
   if (trailerUrl) {
     mediaLinks.push({
+      type: VideoType.Trailer,
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
       svg: <FilmIcon />,

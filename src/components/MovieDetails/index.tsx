@@ -36,7 +36,10 @@ import CachedImage from '../Common/CachedImage';
 import ConfirmButton from '../Common/ConfirmButton';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
-import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
+import PlayButton, {
+  PlayButtonLink,
+  PlayButtonLinkTypes,
+} from '../Common/PlayButton';
 import SlideOver from '../Common/SlideOver';
 import DownloadBlock from '../DownloadBlock';
 import ExternalLinkBlock from '../ExternalLinkBlock';
@@ -46,6 +49,7 @@ import RequestBlock from '../RequestBlock';
 import RequestButton from '../RequestButton';
 import Slider from '../Slider';
 import StatusBadge from '../StatusBadge';
+import { VideoType } from '../../../server/models/Movie';
 
 const messages = defineMessages({
   originaltitle: 'Original Title',
@@ -147,12 +151,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   }
 
   const trailerUrl = data.relatedVideos
-    ?.filter((r) => r.type === 'Trailer')
+    ?.filter((r) => r.type === VideoType.Trailer)
     .sort((a, b) => a.size - b.size)
     .pop()?.url;
 
   if (trailerUrl) {
     mediaLinks.push({
+      type: PlayButtonLinkTypes.Trailer,
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
       svg: <FilmIcon />,
