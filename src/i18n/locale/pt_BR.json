@@ -877,5 +877,7 @@
   "components.NotificationTypeSelector.usermediaapprovedDescription": "Seja notificado quando suas solicitações de mídia são aprovadas.",
   "components.NotificationTypeSelector.usermediaAutoApprovedDescription": "Seja notificado quando outros usuários solicitarem novas mídias que são automaticamente aprovadas.",
   "components.Settings.SettingsAbout.betawarning": "Essa é uma versão BETA. Algumas funcionalidades podem ser instáveis ou não funcionarem. Por favor reporte qualquer problema no GitHub!",
-  "components.Layout.LanguagePicker.displaylanguage": "Idioma da Interface"
+  "components.Layout.LanguagePicker.displaylanguage": "Idioma da Interface",
+  "components.MovieDetails.showmore": "Mostrar Mais",
+  "components.MovieDetails.showless": "Mostrar Menos"
 }
