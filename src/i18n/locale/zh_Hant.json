@@ -877,5 +877,7 @@
   "components.NotificationTypeSelector.usermediaapprovedDescription": "當您的請求被手動批准時得到通知。",
   "components.NotificationTypeSelector.usermediaAutoApprovedDescription": "當其他用戶提交自動批准的請求時得到通知。",
   "components.Settings.SettingsAbout.betawarning": "這是測試版軟體，所以可能會不穩定或被破壞。請向 GitHub 報告問題！",
-  "components.Layout.LanguagePicker.displaylanguage": "顯示語言"
+  "components.Layout.LanguagePicker.displaylanguage": "顯示語言",
+  "components.MovieDetails.showmore": "顯示更多",
+  "components.MovieDetails.showless": "顯示更少"
 }
