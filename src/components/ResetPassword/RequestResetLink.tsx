@@ -1,4 +1,4 @@
-import { AtSymbolIcon } from '@heroicons/react/outline';
+import { ArrowLeftIcon, MailIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -68,7 +68,8 @@ const ResetPassword: React.FC = () => {
                 <span className="flex justify-center mt-4 rounded-md shadow-sm">
                   <Link href="/login" passHref>
                     <Button as="a" buttonType="ghost">
-                      {intl.formatMessage(messages.gobacklogin)}
+                      <ArrowLeftIcon />
+                      <span>{intl.formatMessage(messages.gobacklogin)}</span>
                     </Button>
                   </Link>
                 </span>
@@ -125,7 +126,7 @@ const ResetPassword: React.FC = () => {
                               type="submit"
                               disabled={isSubmitting || !isValid}
                             >
-                              <AtSymbolIcon />
+                              <MailIcon />
                               <span>
                                 {intl.formatMessage(messages.emailresetlink)}
                               </span>

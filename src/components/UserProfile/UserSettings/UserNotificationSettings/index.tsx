@@ -1,5 +1,4 @@
-import { AtSymbolIcon } from '@heroicons/react/outline';
-import { CloudIcon } from '@heroicons/react/solid';
+import { CloudIcon, MailIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -34,7 +33,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.email),
       content: (
         <span className="flex items-center">
-          <AtSymbolIcon className="h-4 mr-2" />
+          <MailIcon className="h-4 mr-2" />
           {intl.formatMessage(messages.email)}
         </span>
       ),

@@ -1,3 +1,4 @@
+import { SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
@@ -114,9 +115,12 @@ const UserPermissions: React.FC = () => {
                       type="submit"
                       disabled={isSubmitting}
                     >
-                      {isSubmitting
-                        ? intl.formatMessage(globalMessages.saving)
-                        : intl.formatMessage(globalMessages.save)}
+                      <SaveIcon />
+                      <span>
+                        {isSubmitting
+                          ? intl.formatMessage(globalMessages.saving)
+                          : intl.formatMessage(globalMessages.save)}
+                      </span>
                     </Button>
                   </span>
                 </div>

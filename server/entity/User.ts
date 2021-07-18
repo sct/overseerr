@@ -212,7 +212,7 @@ export class User {
         },
         locals: {
           resetPasswordLink,
-          applicationUrl: resetPasswordLink,
+          applicationUrl,
           applicationTitle,
         },
       });
