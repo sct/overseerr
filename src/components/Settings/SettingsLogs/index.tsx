@@ -323,13 +323,13 @@ const SettingsLogs: React.FC = () => {
                   </Table.TD>
                   <Table.TD className="text-gray-300">{row.label}</Table.TD>
                   <Table.TD className="text-gray-300">{row.message}</Table.TD>
-                  <Table.TD className="flex items-center justify-end">
+                  <Table.TD className="flex flex-wrap items-center justify-end -m-1">
                     {row.data && (
                       <Button
                         buttonType="primary"
                         buttonSize="sm"
                         onClick={() => setActiveLog(row)}
-                        className="mr-2"
+                        className="m-1"
                       >
                         <DocumentSearchIcon className="icon-md" />
                       </Button>
@@ -338,6 +338,7 @@ const SettingsLogs: React.FC = () => {
                       buttonType="primary"
                       buttonSize="sm"
                       onClick={() => copyLogString(row)}
+                      className="m-1"
                     >
                       <ClipboardCopyIcon className="icon-md" />
                     </Button>
@@ -349,7 +350,7 @@ const SettingsLogs: React.FC = () => {
             {data.results.length === 0 && (
               <tr className="relative h-24 p-2 text-white">
                 <Table.TD colSpan={5} noPadding>
-                  <div className="flex flex-col items-center justify-center w-screen p-6 lg:w-full">
+                  <div className="flex flex-col items-center justify-center w-screen p-6 md:w-full">
                     <span className="text-base">
                       {intl.formatMessage(globalMessages.noresults)}
                     </span>
@@ -371,7 +372,7 @@ const SettingsLogs: React.FC = () => {
             <tr className="bg-gray-700">
               <Table.TD colSpan={5} noPadding>
                 <nav
-                  className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
+                  className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row md:w-full"
                   aria-label="Pagination"
                 >
                   <div className="hidden lg:flex lg:flex-1">
@@ -391,8 +392,8 @@ const SettingsLogs: React.FC = () => {
                         })}
                     </p>
                   </div>
-                  <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
-                    <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
+                  <div className="flex justify-center sm:flex-1 sm:justify-start md:justify-center">
+                    <span className="items-center -mt-3 text-sm sm:-ml-4 md:ml-0 sm:mt-0">
                       {intl.formatMessage(globalMessages.resultsperpage, {
                         pageSize: (
                           <select
