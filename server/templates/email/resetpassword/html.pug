@@ -45,10 +45,15 @@ div(style='display: block; background-color: #111827;')
       td(style='text-align: center;')
         div(style='margin: 0rem 1rem 1rem; font-size: 1.25em;')
           span
-            | We received a request to reset your password. If you did not request that your password be reset, you can safely ignore this email.
+            | Your #{applicationTitle} account password was requested to be reset. Click below to reset your password.
     if resetPasswordLink
       tr
         td
           a(href=resetPasswordLink style='display: block; margin: 1.5rem 3rem 2.5rem 3rem; text-decoration: none; font-size: 1.0em; line-height: 2.25em;')
             span(style='padding: 0.2rem; font-weight: 500; text-align: center; border-radius: 10px; background-color: rgb(99,102,241); color: #fff; display: block; border: 1px solid rgba(255, 255, 255, 0.2);')
-              | Reset #{applicationTitle} Password
+              | Reset Password
+    tr
+      td(style='text-align: center;')
+        div(style='margin: 1rem; font-size: .85em;')
+          span
+            | If you did not request that your password be reset, you can safely ignore this email.
