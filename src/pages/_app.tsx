@@ -1,3 +1,4 @@
+import { Auth0Provider } from '@auth0/auth0-react';
 import axios from 'axios';
 import App, { AppInitialProps, AppProps } from 'next/app';
 import Head from 'next/head';
@@ -110,34 +111,45 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
         fetcher: (url) => axios.get(url).then((res) => res.data),
       }}
     >
-      <LanguageContext.Provider value={{ locale: currentLocale, setLocale }}>
-        <IntlProvider
-          locale={currentLocale}
-          defaultLocale="en"
-          messages={loadedMessages}
-        >
-          <LoadingBar />
-          <SettingsProvider currentSettings={currentSettings}>
-            <InteractionProvider>
-              <ToastProvider components={{ Toast, ToastContainer }}>
-                <Head>
-                  <title>{currentSettings.applicationTitle}</title>
-                  <meta
-                    name="viewport"
-                    content="initial-scale=1, viewport-fit=cover, width=device-width"
-                  ></meta>
-                  <PWAHeader
-                    applicationTitle={currentSettings.applicationTitle}
-                  />
-                </Head>
-                <StatusChecker />
-                <ServiceWorkerSetup />
-                <UserContext initialUser={user}>{component}</UserContext>
-              </ToastProvider>
-            </InteractionProvider>
-          </SettingsProvider>
-        </IntlProvider>
-      </LanguageContext.Provider>
+      <Auth0Provider
+        audience={currentSettings.oidcAudience} // auth0 api
+        domain={currentSettings.oidcDomain}
+        clientId={currentSettings.oidcClientId}
+        redirectUri={`${
+          process.env.NODE_ENV !== 'production'
+            ? 'http://localhost:5055'
+            : currentSettings.applicationUrl
+        }/login`}
+      >
+        <LanguageContext.Provider value={{ locale: currentLocale, setLocale }}>
+          <IntlProvider
+            locale={currentLocale}
+            defaultLocale="en"
+            messages={loadedMessages}
+          >
+            <LoadingBar />
+            <SettingsProvider currentSettings={currentSettings}>
+              <InteractionProvider>
+                <ToastProvider components={{ Toast, ToastContainer }}>
+                  <Head>
+                    <title>{currentSettings.applicationTitle}</title>
+                    <meta
+                      name="viewport"
+                      content="initial-scale=1, viewport-fit=cover, width=device-width"
+                    ></meta>
+                    <PWAHeader
+                      applicationTitle={currentSettings.applicationTitle}
+                    />
+                  </Head>
+                  <StatusChecker />
+                  <ServiceWorkerSetup />
+                  <UserContext initialUser={user}>{component}</UserContext>
+                </ToastProvider>
+              </InteractionProvider>
+            </SettingsProvider>
+          </IntlProvider>
+        </LanguageContext.Provider>
+      </Auth0Provider>
     </SWRConfig>
   );
 };
@@ -153,6 +165,10 @@ CoreApp.getInitialProps = async (initialProps) => {
     movie4kEnabled: false,
     series4kEnabled: false,
     localLogin: true,
+    oidcLogin: false,
+    oidcAudience: '',
+    oidcDomain: '',
+    oidcClientId: '',
     region: '',
     originalLanguage: '',
     partialRequestsEnabled: true,

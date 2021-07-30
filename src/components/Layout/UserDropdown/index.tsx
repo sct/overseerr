@@ -1,3 +1,4 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { LogoutIcon } from '@heroicons/react/outline';
 import { CogIcon, UserIcon } from '@heroicons/react/solid';
 import axios from 'axios';
@@ -20,9 +21,13 @@ const UserDropdown: React.FC = () => {
   const { user, revalidate } = useUser();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   useClickOutside(dropdownRef, () => setDropdownOpen(false));
+  const { isAuthenticated, logout: oidcLogout } = useAuth0();
 
   const logout = async () => {
     const response = await axios.post('/api/v1/auth/logout');
+    if (isAuthenticated) {
+      await oidcLogout();
+    }
 
     if (response.data?.status === 'ok') {
       revalidate();

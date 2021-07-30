@@ -1,4 +1,6 @@
+import axios from 'axios';
 import { Router } from 'express';
+import gravatarUrl from 'gravatar-url';
 import { getRepository } from 'typeorm';
 import PlexTvAPI from '../api/plextv';
 import { UserType } from '../constants/user';
@@ -6,7 +8,7 @@ import { User } from '../entity/User';
 import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
-import { isAuthenticated } from '../middleware/auth';
+import { checkJwt, checkScopes, isAuthenticated } from '../middleware/auth';
 
 const authRoutes = Router();
 
@@ -203,6 +205,60 @@ authRoutes.post('/local', async (req, res, next) => {
       req.session.userId = user.id;
     }
 
+    return res.status(200).json(user?.filter() ?? {});
+  } catch (e) {
+    logger.error('Something went wrong while attempting to authenticate.', {
+      label: 'Auth',
+      error: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Something went wrong.',
+    });
+  }
+});
+
+authRoutes.get('/oidc', checkJwt(), checkScopes, async (req, res, next) => {
+  const settings = getSettings();
+  const userRepository = getRepository(User);
+
+  try {
+    const authHeader = req.headers.authorization;
+
+    const response = await axios.get(
+      `https://${settings.main.oidcDomain}/userinfo`,
+      { headers: { Authorization: authHeader } }
+    );
+    const { email } = response.data;
+
+    const existingUser = await userRepository
+      .createQueryBuilder('user')
+      .select(['user.id', 'user.password'])
+      .where('user.email = :email', { email: email })
+      .getOne();
+
+    // If user exist, set logged in session
+    if (existingUser && req.session) {
+      req.session.userId = existingUser.id;
+      return res.status(200).json(existingUser?.filter() ?? {});
+    }
+
+    // create new user
+    const avatar = gravatarUrl(email, { default: 'mm', size: 200 });
+    const user = new User({
+      avatar: avatar,
+      username: email,
+      email: email,
+      permissions: settings.main.defaultPermissions,
+      plexToken: '',
+      userType: UserType.LOCAL,
+    });
+    await userRepository.save(user);
+
+    // Set logged in session for newly created user
+    if (user && req.session) {
+      req.session.userId = user.id;
+    }
     return res.status(200).json(user?.filter() ?? {});
   } catch (e) {
     logger.error('Something went wrong while attempting to authenticate.', {

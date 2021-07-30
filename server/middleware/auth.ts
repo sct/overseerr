@@ -1,3 +1,6 @@
+import jwt from 'express-jwt';
+import jwtAuthz from 'express-jwt-authz';
+import jwksRsa from 'jwks-rsa';
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
 import { Permission, PermissionCheckOptions } from '../lib/permissions';
@@ -53,3 +56,26 @@ export const isAuthenticated = (
   };
   return authMiddleware;
 };
+
+// checking the JWT
+export const checkJwt = (): Middleware => {
+  const settings = getSettings();
+  settings.load();
+  return jwt({
+    // Dynamically provide a signing key based on the kid in the header and the signing keys provided by the JWKS endpoint
+    secret: jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: `https://${settings.fullPublicSettings.oidcDomain}/.well-known/jwks.json`,
+    }),
+
+    // Validate the audience and the issuer
+    audience: `${settings.fullPublicSettings.oidcAudience}`, //replace with your API's audience, available at Dashboard > APIs
+    issuer: `https://${settings.fullPublicSettings.oidcDomain}/`,
+    algorithms: ['RS256'],
+  });
+};
+
+// validate scopes
+export const checkScopes = jwtAuthz(['openid', 'profile', 'email']);

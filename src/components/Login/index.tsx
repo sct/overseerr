@@ -12,12 +12,14 @@ import LanguagePicker from '../Layout/LanguagePicker';
 import PlexLoginButton from '../PlexLoginButton';
 import Transition from '../Transition';
 import LocalLogin from './LocalLogin';
+import OIDCLoginButton from './OIDCLoginButton';
 
 const messages = defineMessages({
   signin: 'Sign In',
   signinheader: 'Sign in to continue',
   signinwithplex: 'Use your Plex account',
   signinwithoverseerr: 'Use your {applicationTitle} account',
+  signinwithoidc: 'Use your {OIDCProvider} account',
 });
 
 const Login: React.FC = () => {
@@ -138,9 +140,7 @@ const Login: React.FC = () => {
                     <div>
                       <button
                         className={`font-bold w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 hover:bg-gray-700 hover:cursor-pointer ${
-                          openIndexes.includes(1)
-                            ? 'text-indigo-500'
-                            : 'sm:rounded-b-lg'
+                          openIndexes.includes(1) ? 'text-indigo-500' : ''
                         }`}
                         onClick={() => handleClick(1)}
                       >
@@ -156,6 +156,28 @@ const Login: React.FC = () => {
                       </AccordionContent>
                     </div>
                   )}
+                  <div>
+                    <button
+                      className={`font-bold w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 hover:bg-gray-700 hover:cursor-pointer ${
+                        openIndexes.includes(2)
+                          ? 'text-indigo-500'
+                          : 'sm:rounded-b-lg'
+                      }`}
+                      onClick={() => handleClick(2)}
+                    >
+                      {intl.formatMessage(messages.signinwithoidc, {
+                        OIDCProvider: 'Auth0',
+                      })}
+                    </button>
+                    <AccordionContent isOpen={openIndexes.includes(2)}>
+                      <div className="px-10 py-8">
+                        <OIDCLoginButton
+                          revalidate={revalidate}
+                          setError={setError}
+                        />
+                      </div>
+                    </AccordionContent>
+                  </div>
                 </>
               )}
             </Accordion>

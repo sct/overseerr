@@ -25,6 +25,10 @@ export interface PublicSettingsResponse {
   applicationUrl: string;
   hideAvailable: boolean;
   localLogin: boolean;
+  oidcLogin: boolean;
+  oidcAudience: string;
+  oidcDomain: string;
+  oidcClientId: string;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
   region: string;

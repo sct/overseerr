@@ -24,6 +24,11 @@ const messages = defineMessages({
     'Allow users to sign in using their email address and password, instead of Plex OAuth',
   newPlexLogin: 'Enable New Plex Sign-In',
   newPlexLoginTip: 'Allow Plex users to sign in without first being imported',
+  oidcLogin: 'Enable OIDC Sign-In',
+  oidcLoginTip: 'Allow users to sign in using an OIDC identity provider',
+  oidcAudience: 'OIDC Audience',
+  oidcDomain: 'OIDC Domain',
+  oidcClientId: 'OIDC Client ID',
   movieRequestLimitLabel: 'Global Movie Request Limit',
   tvRequestLimitLabel: 'Global Series Request Limit',
   defaultPermissions: 'Default Permissions',
@@ -60,6 +65,10 @@ const SettingsUsers: React.FC = () => {
           initialValues={{
             localLogin: data?.localLogin,
             newPlexLogin: data?.newPlexLogin,
+            oidcLogin: data?.oidcLogin,
+            oidcAudience: data?.oidcAudience,
+            oidcDomain: data?.oidcDomain,
+            oidcClientId: data?.oidcClientId,
             movieQuotaLimit: data?.defaultQuotas.movie.quotaLimit ?? 0,
             movieQuotaDays: data?.defaultQuotas.movie.quotaDays ?? 7,
             tvQuotaLimit: data?.defaultQuotas.tv.quotaLimit ?? 0,
@@ -72,6 +81,10 @@ const SettingsUsers: React.FC = () => {
               await axios.post('/api/v1/settings/main', {
                 localLogin: values.localLogin,
                 newPlexLogin: values.newPlexLogin,
+                oidcLogin: values.oidcLogin,
+                oidcAudience: values.oidcAudience,
+                oidcDomain: values.oidcDomain,
+                oidcClientId: values.oidcClientId,
                 defaultQuotas: {
                   movie: {
                     quotaLimit: values.movieQuotaLimit,
@@ -137,6 +150,62 @@ const SettingsUsers: React.FC = () => {
                         setFieldValue('newPlexLogin', !values.newPlexLogin);
                       }}
                     />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="oidcLogin" className="checkbox-label">
+                    {intl.formatMessage(messages.oidcLogin)}
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.oidcLoginTip)}
+                    </span>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="oidcLogin"
+                      name="oidcLogin"
+                      onChange={() => {
+                        setFieldValue('oidcLogin', !values.oidcLogin);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="oidcAudience" className="text-label">
+                    {intl.formatMessage(messages.oidcAudience)}
+                  </label>
+                  <div className="form-input">
+                    <div className="form-input-field">
+                      <Field
+                        id="oidcAudience"
+                        name="oidcAudience"
+                        type="text"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="oidcDomain" className="text-label">
+                    {intl.formatMessage(messages.oidcDomain)}
+                  </label>
+                  <div className="form-input">
+                    <div className="form-input-field">
+                      <Field id="oidcDomain" name="oidcDomain" type="text" />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="oidcClientId" className="text-label">
+                    {intl.formatMessage(messages.oidcClientId)}
+                  </label>
+                  <div className="form-input">
+                    <div className="form-input-field">
+                      <Field
+                        id="oidcClientId"
+                        name="oidcClientId"
+                        type="text"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="form-row">
