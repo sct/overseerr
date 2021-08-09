@@ -52,11 +52,11 @@ const Layout: React.FC = ({ children }) => {
       </div>
       <Sidebar open={isSidebarOpen} setClosed={() => setSidebarOpen(false)} />
 
-      <div className="relative flex flex-col flex-1 w-0 min-w-0 mb-16 md:ml-64">
+      <div className="relative flex flex-col flex-1 w-0 min-w-0 mb-16 lg:ml-64">
         <div
           className={`searchbar fixed left-0 right-0 top-0 z-10 flex flex-shrink-0 bg-opacity-80 transition duration-300 ${
             isScrolled ? 'bg-gray-700' : 'bg-transparent'
-          } md:left-64`}
+          } lg:left-64`}
           style={{
             backdropFilter: isScrolled ? 'blur(5px)' : undefined,
             WebkitBackdropFilter: isScrolled ? 'blur(5px)' : undefined,
@@ -65,7 +65,7 @@ const Layout: React.FC = ({ children }) => {
           <button
             className={`px-4 text-white ${
               isScrolled ? 'opacity-90' : 'opacity-70'
-            } focus:outline-none md:hidden transition duration-300`}
+            } focus:outline-none lg:hidden transition duration-300`}
             aria-label="Open sidebar"
             onClick={() => setSidebarOpen(true)}
           >
