@@ -13,7 +13,7 @@ const SearchInput: React.FC = () => {
   const { searchValue, setSearchValue, setIsOpen, clear } = useSearchInput();
   return (
     <div className="flex flex-1">
-      <div className="flex w-full md:ml-0">
+      <div className="flex w-full">
         <label htmlFor="search_field" className="sr-only">
           Search
         </label>
