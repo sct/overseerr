@@ -46,7 +46,7 @@ const SettingsLink: React.FC<{
 
   if (tabType === 'button') {
     linkClasses =
-      'px-3 py-2 ml-8 text-sm font-medium transition duration-300 rounded-md whitespace-nowrap first:ml-0';
+      'px-3 py-2 text-sm font-medium transition duration-300 rounded-md whitespace-nowrap mx-2 my-1';
     activeLinkColor = 'bg-indigo-700';
     inactiveLinkColor = 'bg-gray-800 hover:bg-gray-700 focus:bg-gray-700';
   }
@@ -119,8 +119,8 @@ const SettingsTabs: React.FC<{
         </select>
       </div>
       {tabType === 'button' ? (
-        <div className="hidden overflow-x-scroll overflow-y-hidden sm:block hide-scrollbar">
-          <nav className="flex space-x-4" aria-label="Tabs">
+        <div className="hidden sm:block">
+          <nav className="flex flex-wrap -mx-2 -my-1" aria-label="Tabs">
             {settingsRoutes.map((route, index) => (
               <SettingsLink
                 tabType={tabType}
