@@ -168,7 +168,7 @@ app
     });
     server.use('/api/v1', routes);
     server.get('/deep-link', (req, res) => {
-      const url = req.query.url as string;
+      const url = encodeURI(req.query.url as string);
       if (!url) {
         res.status(400);
         res.send('URL was not supplied.');
