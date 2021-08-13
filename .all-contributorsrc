@@ -530,6 +530,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "nicospz",
+      "name": "Nicolás Espinoza",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31373060?v=4",
+      "profile": "https://github.com/nicospz",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
