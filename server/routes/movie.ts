@@ -39,6 +39,12 @@ movieRoutes.get('/:id/recommendations', async (req, res) => {
     language: req.locale ?? (req.query.language as string),
   });
 
+  // The TMDB API returns the last result of page 1 as the first result of page 2 and so on.
+  // We need to remove the first result of the results array to prevent duplicates.
+  if (results.page > 1) {
+    results.results.shift();
+  }
+
   const media = await Media.getRelatedMedia(
     results.results.map((result) => result.id)
   );
