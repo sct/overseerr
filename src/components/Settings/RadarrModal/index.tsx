@@ -318,7 +318,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     port: values.port,
                     useSsl: values.ssl,
                   });
-                  if (!values.baseUrl || values.baseUrl === '') {
+                  if (!values.baseUrl || values.baseUrl === '/') {
                     setFieldValue('baseUrl', testResponse.urlBase);
                   }
                 }

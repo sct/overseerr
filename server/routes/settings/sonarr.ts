@@ -57,7 +57,7 @@ sonarrRoutes.post('/test', async (req, res, next) => {
       languageProfiles,
       tags,
       urlBase:
-        req.body.baseUrl && req.body.baseUrl !== ''
+        req.body.baseUrl && req.body.baseUrl !== '/'
           ? req.body.baseUrl
           : urlBase,
     });

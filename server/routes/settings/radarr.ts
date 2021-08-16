@@ -59,7 +59,7 @@ radarrRoutes.post<
       })),
       tags,
       urlBase:
-        req.body.baseUrl && req.body.baseUrl !== ''
+        req.body.baseUrl && req.body.baseUrl !== '/'
           ? req.body.baseUrl
           : urlBase,
     });
