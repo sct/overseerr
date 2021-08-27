@@ -877,5 +877,7 @@
   "components.NotificationTypeSelector.usermediaapprovedDescription": "Bli meddelad när dina medieförfrågningar godkänns.",
   "components.NotificationTypeSelector.usermediaAutoApprovedDescription": "Bli meddelad när andra användare skickar in nya medieförfrågningar som automatiskt godkänns.",
   "components.Settings.SettingsAbout.betawarning": "Detta är en BETA-programvara. Funktioner kan vara trasiga och/eller instabila. Rapportera eventuella problem på GitHub!",
-  "components.Layout.LanguagePicker.displaylanguage": "Visningsspråk"
+  "components.Layout.LanguagePicker.displaylanguage": "Visningsspråk",
+  "components.MovieDetails.showmore": "Visa mer",
+  "components.MovieDetails.showless": "Visa mindre"
 }
