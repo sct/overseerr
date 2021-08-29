@@ -290,7 +290,7 @@
   "components.Settings.Notifications.NotificationsPushover.userToken": "Gebruikers- of groepssleutel",
   "i18n.request": "Aanvragen",
   "components.RequestButton.requestmore4k": "Meer in 4K aanvragen",
-  "components.RequestButton.approverequests": "{requestCount, plural, one {verzoek} other {{requestCount} verzoeken}} goedkeuren",
+  "components.RequestButton.approverequests": "{requestCount, plural, one {Verzoek} other {{requestCount} Verzoeken}} goedkeuren",
   "components.RequestButton.approve4krequests": "{requestCount, plural, one {4K-verzoek} other {{requestCount} 4K-verzoeken}} goedkeuren",
   "components.RequestButton.declinerequests": "{requestCount, plural, one {verzoek} other {{requestCount} verzoeken}} weigeren",
   "components.RequestButton.decline4krequests": "{requestCount, plural, one {4K-verzoek} other {{requestCount} 4K-verzoeken}} weigeren",
@@ -877,5 +877,7 @@
   "components.NotificationTypeSelector.usermediaavailableDescription": "Een melding ontvangen wanneer je mediaverzoeken beschikbaar zijn.",
   "components.NotificationTypeSelector.usermediaAutoApprovedDescription": "Een melding ontvangen wanneer andere gebruikers nieuwe mediaverzoeken indienen die automatisch worden goedgekeurd.",
   "components.Settings.SettingsAbout.betawarning": "Dit is BETA software. Functies kunnen kapot en/of instabiel zijn. Meld eventuele problemen op GitHub!",
-  "components.Layout.LanguagePicker.displaylanguage": "Weergavetaal"
+  "components.Layout.LanguagePicker.displaylanguage": "Weergavetaal",
+  "components.MovieDetails.showmore": "Meer tonen",
+  "components.MovieDetails.showless": "Minder tonen"
 }

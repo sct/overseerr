@@ -473,7 +473,7 @@
   "components.TvDetails.playonplex": "Riproduci su Plex",
   "components.TvDetails.play4konplex": "Riproduci in 4K su Plex",
   "components.TvDetails.opensonarr4k": "Apri la serie in 4K Sonarr",
-  "components.TvDetails.opensonarr": "Apei la serie in Sonarr",
+  "components.TvDetails.opensonarr": "Apri la serie in Sonarr",
   "components.TvDetails.markavailable": "Segna come disponibile",
   "components.TvDetails.downloadstatus": "Stato dello scaricamento",
   "components.TvDetails.allseasonsmarkedavailable": "* Tutte le stagioni saranno contrassegnate come disponibili.",
@@ -877,5 +877,7 @@
   "components.NotificationTypeSelector.usermediaavailableDescription": "Ricevi una notifica quando le tue richieste diventano disponibili.",
   "components.NotificationTypeSelector.usermediaapprovedDescription": "Ricevi una notifica quando le tue richieste vengono approvate.",
   "components.NotificationTypeSelector.usermediaAutoApprovedDescription": "Ricevi una notifica quando altri utenti inviano nuove richieste che vengono approvate automaticamente.",
-  "components.Layout.LanguagePicker.displaylanguage": "Lingua Interfaccia"
+  "components.Layout.LanguagePicker.displaylanguage": "Lingua Interfaccia",
+  "components.MovieDetails.showmore": "Mostra di più",
+  "components.MovieDetails.showless": "Mostra meno"
 }
