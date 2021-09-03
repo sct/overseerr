@@ -40,6 +40,9 @@ RUN apk add --no-cache tzdata tini
 # copy from build image
 COPY --from=BUILD_IMAGE /app ./
 
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=10s \
+    CMD wget http://localhost:5055/api/v1/status -qO /dev/null || exit 1
+
 ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "yarn", "start" ]
 
