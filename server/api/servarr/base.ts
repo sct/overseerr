@@ -112,13 +112,9 @@ class ServarrBase<QueueItemAppendT> extends ExternalAPI {
 
   public getSystemStatus = async (): Promise<SystemStatus> => {
     try {
-      const data = await this.getRolling<SystemStatus>(
-        '/system/status',
-        undefined,
-        3600
-      );
+      const response = await this.axios.get<SystemStatus>('/system/status');
 
-      return data;
+      return response.data;
     } catch (e) {
       throw new Error(
         `[${this.apiName}] Failed to retrieve system status: ${e.message}`
