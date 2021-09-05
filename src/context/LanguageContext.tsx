@@ -17,6 +17,7 @@ export type AvailableLocale =
   | 'ru'
   | 'sr'
   | 'sv'
+  | 'zh-CN'
   | 'zh-TW';
 
 type AvailableLanguageObject = Record<
@@ -92,6 +93,10 @@ export const availableLanguages: AvailableLanguageObject = {
   'zh-TW': {
     code: 'zh-TW',
     display: '‪繁體中文‬',
+  },
+  'zh-CN': {
+    code: 'zh-CN',
+    display: '‪简体中文‬',
   },
 };
 
