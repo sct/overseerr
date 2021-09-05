@@ -16,7 +16,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 ```bash
 docker run -d \
   --name overseerr \
-  -e LOG_LEVEL=info \
+  -e LOG_LEVEL=debug \
   -e TZ=Asia/Tokyo \
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
@@ -39,7 +39,7 @@ services:
     image: sctx/overseerr:latest
     container_name: overseerr
     environment:
-      - LOG_LEVEL=info
+      - LOG_LEVEL=debug
       - TZ=Asia/Tokyo
     ports:
       - 5055:5055
@@ -56,7 +56,7 @@ services:
 docker run -d \
   --name overseerr \
   --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ] \
-  -e LOG_LEVEL=info \
+  -e LOG_LEVEL=debug \
   -e TZ=Asia/Tokyo \
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
@@ -121,7 +121,7 @@ or the Docker Desktop app:
 Then, create and start the Overseerr container:
 
 ```bash
-docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "overseerr-data:/app/config" --restart unless-stopped sctx/overseerr
+docker run -d -e LOG_LEVEL=debug -e TZ=Asia/Tokyo -p 5055:5055 -v "overseerr-data:/app/config" --restart unless-stopped sctx/overseerr
 ```
 
 If using a named volume like above, you can safely ignore the warning about the `/app/config` folder being incorrectly mounted on the setup page.
