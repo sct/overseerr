@@ -23,15 +23,14 @@ const messages = defineMessages({
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
   edit: 'Edit Request',
-  editAndApprove: 'Edit & Approve Request',
+  approve: 'Approve Request',
   cancel: 'Cancel Request',
   pendingrequest: 'Pending Request for {title}',
   pending4krequest: 'Pending 4K Request for {title}',
   requestfrom: "{username}'s request is pending approval.",
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request for <strong>{title}</strong> edited successfully!',
-  requestEditedAndApproved:
-    'Request for <strong>{title}</strong> edited and approved successfully!',
+  requestApproved: 'Request for <strong>{title}</strong> approved!',
   requesterror: 'Something went wrong while submitting the request.',
   pendingapproval: 'Your request is pending approval.',
 });
@@ -159,7 +158,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
     }
   };
 
-  const updateRequest = async (alsoAcceptRequest = false) => {
+  const updateRequest = async (alsoApproveRequest = false) => {
     setIsUpdating(true);
 
     try {
@@ -172,15 +171,15 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         tags: requestOverrides?.tags,
       });
 
-      if (alsoAcceptRequest) {
+      if (alsoApproveRequest) {
         await axios.post(`/api/v1/request/${editRequest?.id}/approve`);
       }
 
       addToast(
         <span>
           {intl.formatMessage(
-            alsoAcceptRequest
-              ? messages.requestEditedAndApproved
+            alsoApproveRequest
+              ? messages.requestApproved
               : messages.requestedited,
             {
               title: data?.title,
@@ -211,8 +210,6 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
 
   if (editRequest) {
     const isOwner = editRequest.requestedBy.id === user?.id;
-    const canManageRequests = hasPermission(Permission.MANAGE_REQUESTS);
-    const canEditRequests = hasPermission(Permission.REQUEST_ADVANCED);
 
     return (
       <Modal
@@ -224,31 +221,43 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           { title: data?.title }
         )}
         onOk={() =>
-          canManageRequests
+          hasPermission(Permission.MANAGE_REQUESTS)
             ? updateRequest(true)
-            : canEditRequests
+            : hasPermission(Permission.REQUEST_ADVANCED)
             ? updateRequest()
             : cancelRequest()
         }
         okDisabled={isUpdating}
         okText={
-          canManageRequests
-            ? intl.formatMessage(messages.editAndApprove)
-            : canEditRequests
+          hasPermission(Permission.MANAGE_REQUESTS)
+            ? intl.formatMessage(messages.approve)
+            : hasPermission(Permission.REQUEST_ADVANCED)
             ? intl.formatMessage(messages.edit)
             : intl.formatMessage(messages.cancel)
         }
         okButtonType={
-          canManageRequests ? 'success' : canEditRequests ? 'primary' : 'danger'
+          hasPermission(Permission.MANAGE_REQUESTS)
+            ? 'success'
+            : hasPermission(Permission.REQUEST_ADVANCED)
+            ? 'primary'
+            : 'danger'
         }
         onSecondary={
-          isOwner && (canManageRequests || canEditRequests)
+          isOwner &&
+          hasPermission(
+            [Permission.REQUEST_ADVANCED, Permission.MANAGE_REQUESTS],
+            { type: 'or' }
+          )
             ? () => cancelRequest()
             : undefined
         }
         secondaryDisabled={isUpdating}
         secondaryText={
-          isOwner && (canManageRequests || canEditRequests)
+          isOwner &&
+          hasPermission(
+            [Permission.REQUEST_ADVANCED, Permission.MANAGE_REQUESTS],
+            { type: 'or' }
+          )
             ? intl.formatMessage(messages.cancel)
             : undefined
         }

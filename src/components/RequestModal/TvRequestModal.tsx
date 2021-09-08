@@ -30,7 +30,7 @@ const messages = defineMessages({
   requesttitle: 'Request {title}',
   request4ktitle: 'Request {title} in 4K',
   edit: 'Edit Request',
-  editAndApprove: 'Edit & Approve Request',
+  approve: 'Approve Request',
   cancel: 'Cancel Request',
   pendingrequest: 'Pending Request for {title}',
   pending4krequest: 'Pending 4K Request for {title}',
@@ -46,8 +46,7 @@ const messages = defineMessages({
   extras: 'Extras',
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request for <strong>{title}</strong> edited successfully!',
-  requestEditedAndApproved:
-    'Request for <strong>{title}</strong> edited and approved successfully!',
+  requestApproved: 'Request for <strong>{title}</strong> approved!',
   requestcancelled: 'Request for <strong>{title}</strong> canceled.',
   autoapproval: 'Automatic Approval',
   requesterror: 'Something went wrong while submitting the request.',
@@ -99,7 +98,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
     selectedSeasons.length +
     (editRequest?.seasons ?? []).length;
 
-  const updateRequest = async (alsoAcceptRequest = false) => {
+  const updateRequest = async (alsoApproveRequest = false) => {
     if (!editRequest) {
       return;
     }
@@ -121,7 +120,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           seasons: selectedSeasons,
         });
 
-        if (alsoAcceptRequest) {
+        if (alsoApproveRequest) {
           await axios.post(`/api/v1/request/${editRequest.id}/approve`);
         }
       } else {
@@ -132,8 +131,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         <span>
           {selectedSeasons.length > 0
             ? intl.formatMessage(
-                alsoAcceptRequest
-                  ? messages.requestEditedAndApproved
+                alsoApproveRequest
+                  ? messages.requestApproved
                   : messages.requestedited,
                 {
                   title: data?.name,
@@ -361,7 +360,6 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   };
 
   const isOwner = editRequest && editRequest.requestedBy.id === user?.id;
-  const canManageRequests = hasPermission(Permission.MANAGE_REQUESTS);
 
   return !data?.externalIds.tvdbId && searchModal.show ? (
     <SearchByNameModal
@@ -383,7 +381,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       onCancel={tvdbId ? () => setSearchModal({ show: true }) : onCancel}
       onOk={() =>
         editRequest
-          ? canManageRequests
+          ? hasPermission(Permission.MANAGE_REQUESTS)
             ? updateRequest(true)
             : updateRequest()
           : sendRequest()
@@ -402,8 +400,8 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         editRequest
           ? selectedSeasons.length === 0
             ? intl.formatMessage(messages.cancel)
-            : canManageRequests
-            ? intl.formatMessage(messages.editAndApprove)
+            : hasPermission(Permission.MANAGE_REQUESTS)
+            ? intl.formatMessage(messages.approve)
             : intl.formatMessage(messages.edit)
           : getAllRequestedSeasons().length >= getAllSeasons().length
           ? intl.formatMessage(messages.alreadyrequested)
@@ -431,7 +429,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           ? settings.currentSettings.partialRequestsEnabled &&
             selectedSeasons.length === 0
             ? 'danger'
-            : canManageRequests
+            : hasPermission(Permission.MANAGE_REQUESTS)
             ? 'success'
             : 'primary'
           : 'primary'
