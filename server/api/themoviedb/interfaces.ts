@@ -311,7 +311,7 @@ export interface TmdbKeyword {
   name: string;
 }
 
-export interface TmdbPersonDetail {
+export interface TmdbPersonDetails {
   id: number;
   name: string;
   birthday: string;
@@ -320,7 +320,7 @@ export interface TmdbPersonDetail {
   also_known_as?: string[];
   gender: number;
   biography: string;
-  popularity: string;
+  popularity: number;
   place_of_birth?: string;
   profile_path?: string;
   adult: boolean;
