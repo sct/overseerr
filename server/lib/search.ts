@@ -110,3 +110,39 @@ searchProviders.push({
     };
   },
 });
+
+searchProviders.push({
+  id: 'TVDB',
+  pattern: new RegExp(/(?<=[tT][vV][dD][bB]:)\d+/),
+  search: async (
+    id: number,
+    language?: string
+  ): Promise<TmdbSearchMultiResponse> => {
+    const tmdb = new TheMovieDb();
+
+    const responses = await tmdb.getByExternalId({
+      externalId: id,
+      type: 'tvdb',
+      language,
+    });
+
+    const results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[] = [];
+
+    // set the media_type here since getting it from TMDb doesn't include the media_type
+    // should set this in the api module?
+    if (responses.movie_results.length) {
+      results.push({ ...responses.movie_results[0], media_type: 'movie' });
+    } else if (responses.tv_results.length) {
+      results.push({ ...responses.tv_results[0], media_type: 'tv' });
+    } else {
+      results.push({ ...responses.person_results[0], media_type: 'person' });
+    }
+
+    return {
+      page: 1,
+      total_pages: 1,
+      total_results: results.length,
+      results,
+    };
+  },
+});
