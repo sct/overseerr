@@ -67,6 +67,7 @@ export interface TmdbUpcomingMoviesResponse extends TmdbPaginatedResponse {
 export interface TmdbExternalIdResponse {
   movie_results: TmdbMovieResult[];
   tv_results: TmdbTvResult[];
+  person_results: TmdbPersonResult[];
 }
 
 export interface TmdbCreditCast {

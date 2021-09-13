@@ -54,36 +54,59 @@ searchProviders.push({
       | PromiseFulfilledResult<TmdbPersonDetails>
       | undefined;
 
+    const results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[] = [];
+
     if (selectedResponse) {
-      let results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[];
-
       if (isMovieDetails(selectedResponse.value)) {
-        results = [mapMovieDetailsToResult(selectedResponse.value)];
+        results.push(mapMovieDetailsToResult(selectedResponse.value));
       } else if (isTvDetails(selectedResponse.value)) {
-        results = [mapTvDetailsToResult(selectedResponse.value)];
+        results.push(mapTvDetailsToResult(selectedResponse.value));
       } else {
-        results = [mapPersonDetailsToResult(selectedResponse.value)];
+        results.push(mapPersonDetailsToResult(selectedResponse.value));
       }
-
-      return {
-        page: 1,
-        total_pages: 1,
-        total_results: 1,
-        results,
-      };
-    } else {
-      return {
-        page: 1,
-        total_pages: 0,
-        total_results: 0,
-        results: [],
-      };
     }
+
+    return {
+      page: 1,
+      total_pages: 1,
+      total_results: results.length,
+      results,
+    };
   },
 });
 
-// searchProviders.push({
-//   id: 'IMDb',
-//   pattern: new RegExp(/(?<=[iI][mM][dD][bB]:(tt){0,1})\d+/),
-//   search: async (id: number): Promise<TmdbSearchMultiResponse> => {},
-// });
+searchProviders.push({
+  id: 'IMDb',
+  pattern: new RegExp(/(?<=[iI][mM][dD][bB]:(tt){0,1})\d+/),
+  search: async (
+    id: number,
+    language?: string
+  ): Promise<TmdbSearchMultiResponse> => {
+    const tmdb = new TheMovieDb();
+
+    const responses = await tmdb.getByExternalId({
+      externalId: `tt${id}`,
+      type: 'imdb',
+      language,
+    });
+
+    const results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[] = [];
+
+    // set the media_type here since getting it from TMDb doesn't include the media_type
+    // should set this in the api module?
+    if (responses.movie_results.length) {
+      results.push({ ...responses.movie_results[0], media_type: 'movie' });
+    } else if (responses.tv_results.length) {
+      results.push({ ...responses.tv_results[0], media_type: 'tv' });
+    } else {
+      results.push({ ...responses.person_results[0], media_type: 'person' });
+    }
+
+    return {
+      page: 1,
+      total_pages: 1,
+      total_results: results.length,
+      results,
+    };
+  },
+});
