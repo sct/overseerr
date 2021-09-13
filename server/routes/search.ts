@@ -15,7 +15,7 @@ searchRoutes.get('/', async (req, res) => {
   if (searchProvider) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const id = queryString.match(searchProvider.pattern)![0];
-    results = await searchProvider.search(parseInt(id));
+    results = await searchProvider.search(parseInt(id), req.locale);
   } else {
     const tmdb = new TheMovieDb();
 
