@@ -4798,7 +4798,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonDetail'
+                $ref: '#/components/schemas/PersonDetails'
 
   /person/{personId}/combined_credits:
     get:
