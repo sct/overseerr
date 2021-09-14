@@ -37,10 +37,7 @@ class PushbulletAgent
   private constructMessageDetails(
     type: Notification,
     payload: NotificationPayload
-  ): {
-    title: string;
-    body: string;
-  } {
+  ): PushbulletPayload {
     let messageTitle = '';
     let message = '';
 
@@ -156,7 +153,8 @@ class PushbulletAgent
           type: 'note',
           title: title,
           body: body,
-        } as PushbulletPayload,
+          channel_tag: settings.options.channelTag,
+        },
         {
           headers: {
             'Access-Token': settings.options.accessToken,

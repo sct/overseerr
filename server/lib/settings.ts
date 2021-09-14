@@ -168,6 +168,7 @@ export interface NotificationAgentTelegram extends NotificationAgentConfig {
 export interface NotificationAgentPushbullet extends NotificationAgentConfig {
   options: {
     accessToken: string;
+    channelTag?: string;
   };
 }
 

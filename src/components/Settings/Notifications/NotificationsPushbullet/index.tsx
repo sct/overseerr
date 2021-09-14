@@ -17,6 +17,7 @@ const messages = defineMessages({
   accessToken: 'Access Token',
   accessTokenTip:
     'Create a token from your <PushbulletSettingsLink>Account Settings</PushbulletSettingsLink>',
+  channelTag: 'Channel Tag',
   validationAccessTokenRequired: 'You must provide an access token',
   pushbulletSettingsSaved:
     'Pushbullet notification settings saved successfully!',
@@ -62,6 +63,7 @@ const NotificationsPushbullet: React.FC = () => {
         enabled: data?.enabled,
         types: data?.types,
         accessToken: data?.options.accessToken,
+        channelTag: data?.options.channelTag,
       }}
       validationSchema={NotificationsPushbulletSchema}
       onSubmit={async (values) => {
@@ -71,6 +73,7 @@ const NotificationsPushbullet: React.FC = () => {
             types: values.types,
             options: {
               accessToken: values.accessToken,
+              channelTag: values.channelTag,
             },
           });
           addToast(intl.formatMessage(messages.pushbulletSettingsSaved), {
@@ -115,6 +118,7 @@ const NotificationsPushbullet: React.FC = () => {
               types: values.types,
               options: {
                 accessToken: values.accessToken,
+                channelTag: values.channelTag,
               },
             });
 
@@ -184,6 +188,16 @@ const NotificationsPushbullet: React.FC = () => {
                 {errors.accessToken && touched.accessToken && (
                   <div className="error">{errors.accessToken}</div>
                 )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="channelTag" className="text-label">
+                {intl.formatMessage(messages.channelTag)}
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field id="channelTag" name="channelTag" type="text" />
+                </div>
               </div>
             </div>
             <NotificationTypeSelector
