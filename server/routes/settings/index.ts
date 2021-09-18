@@ -20,7 +20,7 @@ import { scheduledJobs } from '../../job/schedule';
 import cacheManager, { AvailableCacheIds } from '../../lib/cache';
 import { Permission } from '../../lib/permissions';
 import { plexFullScanner } from '../../lib/scanners/plex';
-import { getSettings, Library, MainSettings } from '../../lib/settings';
+import { getSettings, MainSettings } from '../../lib/settings';
 import logger from '../../logger';
 import { isAuthenticated } from '../../middleware/auth';
 import { getAppVersion } from '../../utils/appVersion';
@@ -197,26 +197,7 @@ settingsRoutes.get('/plex/library', async (req, res) => {
     });
     const plexapi = new PlexAPI({ plexToken: admin.plexToken });
 
-    const libraries = await plexapi.getLibraries();
-
-    const newLibraries: Library[] = libraries
-      // Remove libraries that are not movie or show
-      .filter((library) => library.type === 'movie' || library.type === 'show')
-      // Remove libraries that do not have a metadata agent set (usually personal video libraries)
-      .filter((library) => library.agent !== 'com.plexapp.agents.none')
-      .map((library) => {
-        const existing = settings.plex.libraries.find(
-          (l) => l.id === library.key && l.name === library.title
-        );
-
-        return {
-          id: library.key,
-          name: library.title,
-          enabled: existing?.enabled ?? false,
-        };
-      });
-
-    settings.plex.libraries = newLibraries;
+    await plexapi.syncLibraries();
   }
 
   const enabledLibraries = req.query.enable
