@@ -306,7 +306,7 @@
   "components.RequestButton.viewrequest": "Ver Solicitação",
   "components.RequestButton.requestmore4k": "Solicitar Mais em 4K",
   "components.RequestButton.requestmore": "Solicitar Mais",
-  "components.RequestButton.declinerequests": "Aprovar {requestCount, plural, one {Solicitação} other {{requestCount} Solicitações}}",
+  "components.RequestButton.declinerequests": "Rejeitar {requestCount, plural, one {Solicitação} other {{requestCount} Solicitações}}",
   "components.RequestButton.declinerequest4k": "Rejeitar Solicitação 4K",
   "components.RequestButton.declinerequest": "Rejeitar Solicitação",
   "components.RequestButton.decline4krequests": "Rejeitar {requestCount, plural, one {Solicitação} other {{requestCount} Solicitações}} em 4K",
