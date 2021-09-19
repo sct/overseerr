@@ -178,7 +178,7 @@ a.crew-name,
 }
 
 .media-fact-value {
-  @apply text-sm font-normal text-right text-gray-400;
+  @apply ml-2 text-sm font-normal text-right text-gray-400;
 }
 
 .media-ratings {

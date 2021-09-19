@@ -1,25 +1,27 @@
-import {
-  Genre,
-  ProductionCompany,
-  Cast,
-  Crew,
-  mapAggregateCast,
-  mapCrew,
-  ExternalIds,
-  mapExternalIds,
-  Keyword,
-  mapVideos,
-  TvNetwork,
-} from './common';
 import type {
-  TmdbTvEpisodeResult,
-  TmdbTvSeasonResult,
-  TmdbTvDetails,
-  TmdbSeasonWithEpisodes,
-  TmdbTvRatingResult,
   TmdbNetwork,
+  TmdbSeasonWithEpisodes,
+  TmdbTvDetails,
+  TmdbTvEpisodeResult,
+  TmdbTvRatingResult,
+  TmdbTvSeasonResult,
 } from '../api/themoviedb/interfaces';
 import type Media from '../entity/Media';
+import {
+  Cast,
+  Crew,
+  ExternalIds,
+  Genre,
+  Keyword,
+  mapAggregateCast,
+  mapCrew,
+  mapExternalIds,
+  mapVideos,
+  mapWatchProviders,
+  ProductionCompany,
+  TvNetwork,
+  WatchProviders,
+} from './common';
 import { Video } from './Movie';
 
 interface Episode {
@@ -102,6 +104,7 @@ export interface TvDetails {
   externalIds: ExternalIds;
   keywords: Keyword[];
   mediaInfo?: Media;
+  watchProviders?: WatchProviders[];
 }
 
 const mapEpisodeResult = (episode: TmdbTvEpisodeResult): Episode => ({
@@ -213,4 +216,5 @@ export const mapTvDetails = (
     name: keyword.name,
   })),
   mediaInfo: media,
+  watchProviders: mapWatchProviders(show['watch/providers']?.results ?? {}),
 });
