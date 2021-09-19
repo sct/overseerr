@@ -109,7 +109,7 @@ class RottenTomatoes extends ExternalAPI {
 
       return {
         title: movie.name,
-        url: movie.url,
+        url: `https://www.rottentomatoes.com${movie.url}`,
         criticsRating:
           movie.meterClass === 'certified_fresh'
             ? 'Certified Fresh'
