@@ -3,18 +3,20 @@ import type {
   TmdbMovieReleaseResult,
   TmdbProductionCompany,
 } from '../api/themoviedb/interfaces';
+import Media from '../entity/Media';
 import {
-  ProductionCompany,
-  Genre,
   Cast,
   Crew,
+  ExternalIds,
+  Genre,
   mapCast,
   mapCrew,
-  ExternalIds,
   mapExternalIds,
   mapVideos,
+  mapWatchProviders,
+  ProductionCompany,
+  WatchProviders,
 } from './common';
-import Media from '../entity/Media';
 
 export interface Video {
   url?: string;
@@ -78,6 +80,7 @@ export interface MovieDetails {
   mediaInfo?: Media;
   externalIds: ExternalIds;
   plexUrl?: string;
+  watchProviders?: WatchProviders[];
 }
 
 export const mapProductionCompany = (
@@ -136,4 +139,5 @@ export const mapMovieDetails = (
     : undefined,
   externalIds: mapExternalIds(movie.external_ids),
   mediaInfo: media,
+  watchProviders: mapWatchProviders(movie['watch/providers']?.results ?? {}),
 });

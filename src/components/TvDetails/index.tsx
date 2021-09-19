@@ -80,6 +80,7 @@ const messages = defineMessages({
   seasons: '{seasonCount, plural, one {# Season} other {# Seasons}}',
   episodeRuntime: 'Episode Runtime',
   episodeRuntimeMinutes: '{runtime} minutes',
+  streamingproviders: 'Currently Streaming On',
 });
 
 interface TvDetailsProps {
@@ -234,6 +235,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         (season) => season.status4k === MediaStatus.AVAILABLE
       ) ?? []
     ).length;
+
+  const streamingProviders =
+    data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
+      ?.flatrate ?? [];
 
   return (
     <div
@@ -660,6 +665,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                         {prev}, {curr}
                       </>
                     ))}
+                </span>
+              </div>
+            )}
+            {!!streamingProviders.length && (
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.streamingproviders)}</span>
+                <span className="media-fact-value">
+                  {streamingProviders.map((p) => {
+                    return (
+                      <span className="block" key={`provider-${p.id}`}>
+                        {p.name}
+                      </span>
+                    );
+                  })}
                 </span>
               </div>
             )}
