@@ -1,3 +1,4 @@
+import { truncate } from 'lodash';
 import {
   EntitySubscriberInterface,
   EventSubscriber,
@@ -34,7 +35,11 @@ export class MediaSubscriber implements EntitySubscriberInterface {
               subject: `${movie.title}${
                 movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
               }`,
-              message: movie.overview,
+              message: truncate(movie.overview, {
+                length: 500,
+                separator: /\s/,
+                omission: '…',
+              }),
               media: entity,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
               request: request,
@@ -89,7 +94,11 @@ export class MediaSubscriber implements EntitySubscriberInterface {
             subject: `${tv.name}${
               tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
             }`,
-            message: tv.overview,
+            message: truncate(tv.overview, {
+              length: 500,
+              separator: /\s/,
+              omission: '…',
+            }),
             notifyUser: request.requestedBy,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
             media: entity,

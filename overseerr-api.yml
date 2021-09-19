@@ -52,7 +52,13 @@ components:
         email:
           type: string
           example: 'hey@itsme.com'
+          readOnly: true
+        username:
+          type: string
         plexToken:
+          type: string
+          readOnly: true
+        plexUsername:
           type: string
           readOnly: true
         userType:
@@ -77,13 +83,6 @@ components:
           type: number
           example: 5
           readOnly: true
-        requests:
-          type: array
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/MediaRequest'
-        settings:
-          $ref: '#/components/schemas/UserSettings'
       required:
         - id
         - email
@@ -92,11 +91,11 @@ components:
     UserSettings:
       type: object
       properties:
-        discordId:
+        locale:
           type: string
         region:
           type: string
-        language:
+        originalLanguage:
           type: string
     MainSettings:
       type: object
@@ -398,7 +397,6 @@ components:
         activeLanguageProfileId:
           type: number
           example: 1
-          nullable: true
         activeAnimeProfileId:
           type: number
           nullable: true
@@ -408,6 +406,7 @@ components:
         activeAnimeProfileName:
           type: string
           example: 720p/1080p
+          nullable: true
         activeAnimeDirectory:
           type: string
           nullable: true
@@ -769,6 +768,10 @@ components:
           $ref: '#/components/schemas/ExternalIds'
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
+        watchProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/WatchProviders'
     Episode:
       type: object
       properties:
@@ -943,6 +946,10 @@ components:
             $ref: '#/components/schemas/Keyword'
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
+        watchProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/WatchProviders'
     MediaRequest:
       type: object
       properties:
@@ -953,7 +960,7 @@ components:
         status:
           type: number
           example: 0
-          description: Status of the request. 1 = PENDING APPROVAL, 2 = APPROVED, 3 = DECLINED, 4 = AVAILABLE
+          description: Status of the request. 1 = PENDING APPROVAL, 2 = APPROVED, 3 = DECLINED
           readOnly: true
         media:
           $ref: '#/components/schemas/MediaInfo'
@@ -1587,9 +1594,8 @@ components:
     UserSettingsNotifications:
       type: object
       properties:
-        notificationAgents:
-          type: number
-          example: 0
+        notificationTypes:
+          $ref: '#/components/schemas/NotificationAgentTypes'
         emailEnabled:
           type: boolean
         pgpKey:
@@ -1614,6 +1620,52 @@ components:
         telegramSendSilently:
           type: boolean
           nullable: true
+    NotificationAgentTypes:
+      type: object
+      properties:
+        discord:
+          type: number
+        email:
+          type: number
+        pushbullet:
+          type: number
+        pushover:
+          type: number
+        slack:
+          type: number
+        telegram:
+          type: number
+        webhook:
+          type: number
+        webpush:
+          type: number
+    WatchProviders:
+      type: array
+      items:
+        type: object
+        properties:
+          iso_3166_1:
+            type: string
+          link:
+            type: string
+          buy:
+            type: array
+            items:
+              $ref: '#/components/schemas/WatchProviderDetails'
+          flatrate:
+            items:
+              $ref: '#/components/schemas/WatchProviderDetails'
+    WatchProviderDetails:
+      type: object
+      properties:
+        displayPriority:
+          type: number
+        logoPath:
+          type: string
+        id:
+          type: number
+        name:
+          type: string
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -1842,8 +1894,8 @@ paths:
                       $ref: '#/components/schemas/PlexLibrary'
   /settings/plex/devices/servers:
     get:
-      summary: Gets the user's available plex servers
-      description: Returns a list of available plex servers and their connectivity state
+      summary: Gets the user's available Plex servers
+      description: Returns a list of available Plex servers and their connectivity state
       tags:
         - settings
       responses:
@@ -2980,7 +3032,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: 'hey@itsme.com'
+                username:
+                  type: string
+                permissions:
+                  type: number
       responses:
         '201':
           description: The created user
@@ -2991,7 +3051,7 @@ paths:
     put:
       summary: Update batch of users
       description: |
-        Update users with given IDs with provided values in request `body.settings`. You cannot update users' plex tokens through this request.
+        Update users with given IDs with provided values in request `body.settings`. You cannot update users' Plex tokens through this request.
 
         Requires the `MANAGE_USERS` permission.
       tags:
@@ -3018,7 +3078,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-
   /user/import-from-plex:
     post:
       summary: Import all users from Plex
@@ -3067,7 +3126,7 @@ paths:
     get:
       summary: Get user by ID
       description: |
-        Retrieves user details in a JSON object.. Requires the `MANAGE_USERS` permission.
+        Retrieves user details in a JSON object. Requires the `MANAGE_USERS` permission.
       tags:
         - users
       parameters:
@@ -4180,6 +4239,9 @@ paths:
                   type: string
                 languageProfileId:
                   type: number
+                userId:
+                  type: number
+                  nullable: true
               required:
                 - mediaType
                 - mediaId

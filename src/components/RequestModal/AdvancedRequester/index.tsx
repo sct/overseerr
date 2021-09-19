@@ -117,7 +117,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
 
   const { data: userData } = useSWR<UserResultsResponse>(
     hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS])
-      ? '/api/v1/user?take=1000'
+      ? '/api/v1/user?take=1000&sort=displayname'
       : null
   );
 

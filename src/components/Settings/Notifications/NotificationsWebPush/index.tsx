@@ -1,3 +1,4 @@
+import { BeakerIcon, SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
@@ -132,9 +133,12 @@ const NotificationsWebPush: React.FC = () => {
                         testSettings();
                       }}
                     >
-                      {isTesting
-                        ? intl.formatMessage(globalMessages.testing)
-                        : intl.formatMessage(globalMessages.test)}
+                      <BeakerIcon />
+                      <span>
+                        {isTesting
+                          ? intl.formatMessage(globalMessages.testing)
+                          : intl.formatMessage(globalMessages.test)}
+                      </span>
                     </Button>
                   </span>
                   <span className="inline-flex ml-3 rounded-md shadow-sm">
@@ -143,9 +147,12 @@ const NotificationsWebPush: React.FC = () => {
                       type="submit"
                       disabled={isSubmitting || isTesting}
                     >
-                      {isSubmitting
-                        ? intl.formatMessage(globalMessages.saving)
-                        : intl.formatMessage(globalMessages.save)}
+                      <SaveIcon />
+                      <span>
+                        {isSubmitting
+                          ? intl.formatMessage(globalMessages.saving)
+                          : intl.formatMessage(globalMessages.save)}
+                      </span>
                     </Button>
                   </span>
                 </div>

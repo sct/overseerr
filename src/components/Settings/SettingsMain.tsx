@@ -1,3 +1,4 @@
+import { SaveIcon } from '@heroicons/react/outline';
 import { RefreshIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -178,7 +179,14 @@ const SettingsMain: React.FC = () => {
             }
           }}
         >
-          {({ errors, touched, isSubmitting, values, setFieldValue }) => {
+          {({
+            errors,
+            touched,
+            isSubmitting,
+            isValid,
+            values,
+            setFieldValue,
+          }) => {
             return (
               <Form className="section">
                 {userHasPermission(Permission.ADMIN) && (
@@ -397,11 +405,14 @@ const SettingsMain: React.FC = () => {
                       <Button
                         buttonType="primary"
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !isValid}
                       >
-                        {isSubmitting
-                          ? intl.formatMessage(globalMessages.saving)
-                          : intl.formatMessage(globalMessages.save)}
+                        <SaveIcon />
+                        <span>
+                          {isSubmitting
+                            ? intl.formatMessage(globalMessages.saving)
+                            : intl.formatMessage(globalMessages.save)}
+                        </span>
                       </Button>
                     </span>
                   </div>

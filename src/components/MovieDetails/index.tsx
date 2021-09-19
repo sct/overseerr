@@ -6,6 +6,8 @@ import {
 } from '@heroicons/react/outline';
 import {
   CheckCircleIcon,
+  ChevronDoubleDownIcon,
+  ChevronDoubleUpIcon,
   DocumentRemoveIcon,
   ExternalLinkIcon,
 } from '@heroicons/react/solid';
@@ -73,6 +75,9 @@ const messages = defineMessages({
   play4konplex: 'Play in 4K on Plex',
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark as Available in 4K',
+  showmore: 'Show More',
+  showless: 'Show Less',
+  streamingproviders: 'Currently Streaming On',
 });
 
 interface MovieDetailsProps {
@@ -86,6 +91,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const intl = useIntl();
   const { locale } = useLocale();
   const [showManager, setShowManager] = useState(false);
+  const minStudios = 3;
+  const [showMoreStudios, setShowMoreStudios] = useState(false);
 
   const { data, error, revalidate } = useSWR<MovieDetailsType>(
     `/api/v1/movie/${router.query.movieId}`,
@@ -111,6 +118,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     return <Error statusCode={404} />;
   }
 
+  const showAllStudios = data.productionCompanies.length <= minStudios + 1;
   const mediaLinks: PlayButtonLink[] = [];
 
   if (
@@ -213,6 +221,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     );
   }
 
+  const streamingProviders =
+    data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
+      ?.flatrate ?? [];
+
   return (
     <div
       className="media-page"
@@ -248,7 +260,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
           (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
           <>
-            <h3 className="mb-2 text-xl">
+            <h3 className="mb-2 text-xl font-bold">
               {intl.formatMessage(messages.downloadstatus)}
             </h3>
             <div className="mb-6 overflow-hidden bg-gray-600 rounded-md shadow">
@@ -309,7 +321,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 )}
             </div>
           )}
-        <h3 className="mb-2 text-xl">
+        <h3 className="mb-2 text-xl font-bold">
           {intl.formatMessage(messages.manageModalRequests)}
         </h3>
         <div className="overflow-hidden bg-gray-600 rounded-md shadow">
@@ -606,7 +618,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   <Link
                     href={`/discover/movies/language/${data.originalLanguage}`}
                   >
-                    <a className="hover:underline">
+                    <a>
                       {intl.formatDisplayName(data.originalLanguage, {
                         type: 'language',
                         fallback: 'none',
@@ -627,14 +639,56 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   })}
                 </span>
                 <span className="media-fact-value">
-                  {data.productionCompanies.map((s) => {
+                  {data.productionCompanies
+                    .slice(
+                      0,
+                      showAllStudios || showMoreStudios
+                        ? data.productionCompanies.length
+                        : minStudios
+                    )
+                    .map((s) => {
+                      return (
+                        <Link
+                          href={`/discover/movies/studio/${s.id}`}
+                          key={`studio-${s.id}`}
+                        >
+                          <a className="block">{s.name}</a>
+                        </Link>
+                      );
+                    })}
+                  {!showAllStudios && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowMoreStudios(!showMoreStudios);
+                      }}
+                    >
+                      <span className="flex items-center">
+                        {intl.formatMessage(
+                          !showMoreStudios
+                            ? messages.showmore
+                            : messages.showless
+                        )}
+                        {!showMoreStudios ? (
+                          <ChevronDoubleDownIcon className="w-4 h-4 ml-1" />
+                        ) : (
+                          <ChevronDoubleUpIcon className="w-4 h-4 ml-1" />
+                        )}
+                      </span>
+                    </button>
+                  )}
+                </span>
+              </div>
+            )}
+            {!!streamingProviders.length && (
+              <div className="media-fact">
+                <span>{intl.formatMessage(messages.streamingproviders)}</span>
+                <span className="media-fact-value">
+                  {streamingProviders.map((p) => {
                     return (
-                      <Link
-                        href={`/discover/movies/studio/${s.id}`}
-                        key={`studio-${s.id}`}
-                      >
-                        <a className="block hover:underline">{s.name}</a>
-                      </Link>
+                      <span className="block" key={`provider-${p.id}`}>
+                        {p.name}
+                      </span>
                     );
                   })}
                 </span>

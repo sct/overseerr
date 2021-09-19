@@ -350,6 +350,14 @@ requestRoutes.post('/', async (req, res, next) => {
           status: 202,
           message: 'No seasons available to request',
         });
+      } else if (
+        quotas.tv.limit &&
+        finalSeasons.length > (quotas.tv.remaining ?? 0)
+      ) {
+        return next({
+          status: 403,
+          message: 'Series Quota Exceeded',
+        });
       }
 
       await mediaRepository.save(media);

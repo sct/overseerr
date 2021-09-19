@@ -99,7 +99,7 @@ const UserProfile: React.FC = () => {
           <div className="relative z-40">
             <dl className="grid grid-cols-1 gap-5 mt-5 lg:grid-cols-3">
               <div className="px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ring-gray-700 sm:p-6">
-                <dt className="text-sm font-medium text-gray-300 truncate">
+                <dt className="text-sm font-bold text-gray-300 truncate">
                   {intl.formatMessage(messages.totalrequests)}
                 </dt>
                 <dd className="mt-1 text-3xl font-semibold text-white">
@@ -115,11 +115,11 @@ const UserProfile: React.FC = () => {
                 } sm:p-6`}
               >
                 <dt
-                  className={`text-sm font-medium truncate ${
+                  className={`text-sm font-bold truncate ${
                     quota.movie.restricted ? 'text-red-500' : 'text-gray-300'
                   }`}
                 >
-                  {quota.tv.limit
+                  {quota.movie.limit
                     ? intl.formatMessage(messages.pastdays, {
                         type: intl.formatMessage(messages.movierequests),
                         days: quota?.movie.days,
@@ -134,13 +134,10 @@ const UserProfile: React.FC = () => {
                   {quota.movie.limit ? (
                     <>
                       <ProgressCircle
-                        progress={Math.max(
-                          0,
-                          Math.round(
-                            ((quota?.movie.remaining ?? 0) /
-                              (quota?.movie.limit ?? 1)) *
-                              100
-                          )
+                        progress={Math.round(
+                          ((quota?.movie.remaining ?? 0) /
+                            (quota?.movie.limit ?? 1)) *
+                            100
                         )}
                         useHeatLevel
                         className="w-8 h-8 mr-2"
@@ -159,7 +156,7 @@ const UserProfile: React.FC = () => {
                       </div>
                     </>
                   ) : (
-                    <span className="text-3xl">
+                    <span className="text-3xl font-semibold">
                       {intl.formatMessage(messages.unlimited)}
                     </span>
                   )}
@@ -174,7 +171,7 @@ const UserProfile: React.FC = () => {
                 } sm:p-6`}
               >
                 <dt
-                  className={`text-sm font-medium truncate ${
+                  className={`text-sm font-bold truncate ${
                     quota.tv.restricted ? 'text-red-500' : 'text-gray-300'
                   }`}
                 >
@@ -193,13 +190,10 @@ const UserProfile: React.FC = () => {
                   {quota.tv.limit ? (
                     <>
                       <ProgressCircle
-                        progress={Math.max(
-                          0,
-                          Math.round(
-                            ((quota?.tv.remaining ?? 0) /
-                              (quota?.tv.limit ?? 1)) *
-                              100
-                          )
+                        progress={Math.round(
+                          ((quota?.tv.remaining ?? 0) /
+                            (quota?.tv.limit ?? 1)) *
+                            100
                         )}
                         useHeatLevel
                         className="w-8 h-8 mr-2"
@@ -218,7 +212,7 @@ const UserProfile: React.FC = () => {
                       </div>
                     </>
                   ) : (
-                    <span className="text-3xl">
+                    <span className="text-3xl font-semibold">
                       {intl.formatMessage(messages.unlimited)}
                     </span>
                   )}

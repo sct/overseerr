@@ -1,5 +1,7 @@
 import { TrashIcon } from '@heroicons/react/outline';
 import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
   InboxInIcon,
   PencilIcon,
   SortDescendingIcon,
@@ -41,11 +43,11 @@ const messages = defineMessages({
     '{userCount, plural, one {# new user} other {# new users}} imported from Plex successfully!',
   nouserstoimport: 'No new users to import from Plex.',
   user: 'User',
-  totalrequests: 'Total Requests',
-  accounttype: 'Account Type',
+  totalrequests: 'Requests',
+  accounttype: 'Type',
   role: 'Role',
   created: 'Created',
-  lastupdated: 'Last Updated',
+  lastupdated: 'Updated',
   bulkedit: 'Bulk Edit',
   owner: 'Owner',
   admin: 'Admin',
@@ -598,7 +600,7 @@ const UserList: React.FC = () => {
                   </Link>
                   <div className="ml-4">
                     <Link href={`/users/${user.id}`}>
-                      <a className="text-sm font-medium leading-5 transition duration-300 hover:underline">
+                      <a className="text-base font-bold leading-5 transition duration-300 hover:underline">
                         {user.displayName}
                       </a>
                     </Link>
@@ -740,7 +742,8 @@ const UserList: React.FC = () => {
                       updateQueryParams('page', (page - 1).toString())
                     }
                   >
-                    {intl.formatMessage(globalMessages.previous)}
+                    <ChevronLeftIcon />
+                    <span>{intl.formatMessage(globalMessages.previous)}</span>
                   </Button>
                   <Button
                     disabled={!hasNextPage}
@@ -748,7 +751,8 @@ const UserList: React.FC = () => {
                       updateQueryParams('page', (page + 1).toString())
                     }
                   >
-                    {intl.formatMessage(globalMessages.next)}
+                    <span>{intl.formatMessage(globalMessages.next)}</span>
+                    <ChevronRightIcon />
                   </Button>
                 </div>
               </nav>

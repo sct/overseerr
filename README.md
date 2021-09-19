@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://i.imgur.com/TMoEG7g.png" alt="Overseerr">
+<img src="./public/logo_full.svg" alt="Overseerr" style="margin: 20px 0;">
 </p>
 <p align="center">
 <img src="https://github.com/sct/overseerr/workflows/Overseerr%20Release/badge.svg?branch=master" alt="Overseerr Release" />
@@ -12,7 +12,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-54-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-58-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -143,6 +143,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/littlerooster"><img src="https://avatars.githubusercontent.com/u/83890654?v=4?s=100" width="100px;" alt=""/><br /><sub><b>littlerooster</b></sub></a><br /><a href="#translation-littlerooster" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/dphildebrandt"><img src="https://avatars.githubusercontent.com/u/154459?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dustin Hildebrandt</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=dphildebrandt" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Generator"><img src="https://avatars.githubusercontent.com/u/44146?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bruno Guerreiro</b></sub></a><br /><a href="#translation-Generator" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/iceHtwoO"><img src="https://avatars.githubusercontent.com/u/27020492?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alexander Neuhäuser</b></sub></a><br /><a href="#translation-iceHtwoO" title="Translation">🌍</a></td>
+    <td align="center"><a href="http://www.unext.co.jp"><img src="https://avatars.githubusercontent.com/u/37431541?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Livio</b></sub></a><br /><a href="#design-liviokanone" title="Design">🎨</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/tangentThought"><img src="https://avatars.githubusercontent.com/u/25516090?v=4?s=100" width="100px;" alt=""/><br /><sub><b>tangentThought</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=tangentThought" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/nicospz"><img src="https://avatars.githubusercontent.com/u/31373060?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolás Espinoza</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=nicospz" title="Code">💻</a></td>
   </tr>
 </table>
 

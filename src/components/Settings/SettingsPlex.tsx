@@ -1,3 +1,4 @@
+import { SaveIcon } from '@heroicons/react/outline';
 import { RefreshIcon, SearchIcon, XIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
@@ -342,6 +343,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           handleSubmit,
           setFieldValue,
           isSubmitting,
+          isValid,
         }) => {
           return (
             <form className="section" onSubmit={handleSubmit}>
@@ -517,11 +519,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !isValid}
                     >
-                      {isSubmitting
-                        ? intl.formatMessage(globalMessages.saving)
-                        : intl.formatMessage(globalMessages.save)}
+                      <SaveIcon />
+                      <span>
+                        {isSubmitting
+                          ? intl.formatMessage(globalMessages.saving)
+                          : intl.formatMessage(globalMessages.save)}
+                      </span>
                     </Button>
                   </span>
                 </div>

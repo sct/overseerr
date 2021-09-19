@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import { randomBytes } from 'crypto';
 import * as openpgp from 'openpgp';
 import { Transform, TransformCallback } from 'stream';
 
@@ -41,7 +41,7 @@ class PGPEncryptor extends Transform {
     const validPublicKeys = await Promise.all(
       this._encryptionKeys.map((armoredKey) => openpgp.readKey({ armoredKey }))
     );
-    let privateKey: openpgp.Key | undefined;
+    let privateKey: openpgp.PrivateKey | undefined;
 
     // Just return the message if there is no one to encrypt for
     if (!validPublicKeys.length) {
@@ -51,7 +51,7 @@ class PGPEncryptor extends Transform {
 
     // Only sign the message if private key and password exist
     if (this._signingKey && this._password) {
-      privateKey = await openpgp.readKey({
+      privateKey = await openpgp.readPrivateKey({
         armoredKey: this._signingKey,
       });
 
@@ -107,7 +107,7 @@ class PGPEncryptor extends Transform {
     }
 
     // Generate a new boundary for the email content
-    const boundary = 'nm_' + crypto.randomBytes(14).toString('hex');
+    const boundary = 'nm_' + randomBytes(14).toString('hex');
     /**
      * Concatenate everything into single strings
      * and add pgp headers to the email headers
@@ -135,8 +135,8 @@ class PGPEncryptor extends Transform {
           emailPartDelimiter +
           messageParts.join(emailPartDelimiter),
       }),
-      publicKeys: validPublicKeys,
-      privateKeys: privateKey,
+      encryptionKeys: validPublicKeys,
+      signingKeys: privateKey,
     });
 
     const body =

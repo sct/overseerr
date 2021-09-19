@@ -73,7 +73,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
                 <div className="flex flex-col h-full overflow-y-scroll bg-gray-700 shadow-xl">
                   <header className="px-4 space-y-1 bg-indigo-600 slideover">
                     <div className="flex items-center justify-between space-x-3">
-                      <h2 className="text-lg font-medium leading-7 text-white">
+                      <h2 className="text-lg font-bold leading-7 text-white">
                         {title}
                       </h2>
                       <div className="flex items-center h-7">

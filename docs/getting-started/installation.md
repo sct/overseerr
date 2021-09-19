@@ -16,7 +16,7 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 ```bash
 docker run -d \
   --name overseerr \
-  -e LOG_LEVEL=info \
+  -e LOG_LEVEL=debug \
   -e TZ=Asia/Tokyo \
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
@@ -39,7 +39,7 @@ services:
     image: sctx/overseerr:latest
     container_name: overseerr
     environment:
-      - LOG_LEVEL=info
+      - LOG_LEVEL=debug
       - TZ=Asia/Tokyo
     ports:
       - 5055:5055
@@ -56,7 +56,7 @@ services:
 docker run -d \
   --name overseerr \
   --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ] \
-  -e LOG_LEVEL=info \
+  -e LOG_LEVEL=debug \
   -e TZ=Asia/Tokyo \
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
@@ -99,20 +99,41 @@ Use a 3rd party updating mechanism such as [Watchtower](https://github.com/conta
 
 ## Windows
 
-Please refer to the [Docker Desktop for Windows user manual](https://docs.docker.com/docker-for-windows/) for details on how to install Docker on Windows.
+Please refer to the [Docker Desktop for Windows user manual](https://docs.docker.com/docker-for-windows/) for details on how to install Docker on Windows. There is no need to install a Linux distro if using named volumes like in the example below.
 
 {% hint style="danger" %}
-**WSL2 will need to be installed to prevent DB corruption!** Please see the [Docker Desktop WSL 2 backend documentation](https://docs.docker.com/docker-for-windows/wsl/) for instructions on how to enable WSL2. The command below will only work with WSL2 installed!
+**WSL2 will need to be installed to prevent DB corruption!** Please see the [Docker Desktop WSL 2 backend documentation](https://docs.docker.com/docker-for-windows/wsl/) for instructions on how to enable WSL2. The commands below will only work with WSL2 installed!
 {% endhint %}
 
+First, create a volume to store the configuration data for Overseerr using using either the Docker CLI:
+
 ```bash
-docker run -d -e LOG_LEVEL=info -e TZ=Asia/Tokyo -p 5055:5055 -v "/your/path/here:/app/config" --restart unless-stopped sctx/overseerr
+docker volume create overseerr-data
 ```
+
+or the Docker Desktop app:
+
+1. Open the Docker Desktop app
+2. Head to the Volumes tab
+3. Click on the "New Volume" button near the top right
+4. Enter a name for the volume (example: `overseerr-data`) and hit "Create"
+
+Then, create and start the Overseerr container:
+
+```bash
+docker run -d -e LOG_LEVEL=debug -e TZ=Asia/Tokyo -p 5055:5055 -v "overseerr-data:/app/config" --restart unless-stopped sctx/overseerr
+```
+
+If using a named volume like above, you can safely ignore the warning about the `/app/config` folder being incorrectly mounted on the setup page.
+
+To access the files inside the volume created above, navigate to `\\wsl$\docker-desktop-data\version-pack-data\community\docker\volumes\overseerr-data\_data` using File Explorer.
 
 {% hint style="info" %}
 Docker on Windows works differently than it does on Linux; it runs Docker inside of a stripped-down Linux VM. Volume mounts are exposed to Docker inside this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database, which can lead to slow behavior and crashes.
 
 **If you must run Docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host.** (This also applies to other containers with SQLite databases.)
+
+Named volumes, like in the example commands above, are automatically mounted inside the VM.
 {% endhint %}
 
 ## Linux

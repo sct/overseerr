@@ -128,10 +128,12 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
           />
         </div>
         <div className="ml-3 text-sm leading-6">
-          <label htmlFor={option.id} className="block font-medium text-white">
+          <label htmlFor={option.id} className="block">
             <div className="flex flex-col">
-              <span>{option.name}</span>
-              <span className="text-gray-500">{option.description}</span>
+              <span className="font-medium text-white">{option.name}</span>
+              <span className="font-normal text-gray-400">
+                {option.description}
+              </span>
             </div>
           </label>
         </div>

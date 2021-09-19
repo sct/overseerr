@@ -129,7 +129,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                 mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
               }`}
             >
-              <div className="flex items-center h-4 px-2 py-2 text-xs font-normal tracking-wider text-center text-white uppercase sm:h-5">
+              <div className="flex items-center h-4 px-2 py-2 text-xs font-medium tracking-wider text-center text-white uppercase sm:h-5">
                 {mediaType === 'movie'
                   ? intl.formatMessage(globalMessages.movie)
                   : intl.formatMessage(globalMessages.tvshow)}
@@ -199,10 +199,12 @@ const TitleCard: React.FC<TitleCardProps> = ({
                           : 'pb-11'
                       }`}
                     >
-                      {year && <div className="text-sm">{year}</div>}
+                      {year && (
+                        <div className="text-sm font-medium">{year}</div>
+                      )}
 
                       <h1
-                        className="text-xl leading-tight whitespace-normal"
+                        className="text-xl font-bold leading-tight whitespace-normal"
                         style={{
                           WebkitLineClamp: 3,
                           display: '-webkit-box',

@@ -59,18 +59,14 @@ const QuotaDisplay: React.FC<QuotaDisplayProps> = ({
       <div className="flex items-center">
         <ProgressCircle
           className="w-8 h-8"
-          progress={Math.max(
-            0,
-            Math.round(
-              ((remaining ?? quota?.remaining ?? 0) / (quota?.limit ?? 1)) * 100
-            )
+          progress={Math.round(
+            ((remaining ?? quota?.remaining ?? 0) / (quota?.limit ?? 1)) * 100
           )}
           useHeatLevel
         />
         <div
           className={`flex items-end ${
-            Math.max(0, remaining ?? quota?.remaining ?? 0) === 0 ||
-            quota?.restricted
+            (remaining ?? quota?.remaining ?? 0) <= 0 || quota?.restricted
               ? 'text-red-500'
               : ''
           }`}
@@ -79,7 +75,7 @@ const QuotaDisplay: React.FC<QuotaDisplayProps> = ({
             {overLimit !== undefined
               ? intl.formatMessage(messages.notenoughseasonrequests)
               : intl.formatMessage(messages.requestsremaining, {
-                  remaining: Math.max(0, remaining ?? quota?.remaining ?? 0),
+                  remaining: remaining ?? quota?.remaining ?? 0,
                   type: intl.formatMessage(
                     mediaType === 'movie' ? messages.movie : messages.season
                   ),

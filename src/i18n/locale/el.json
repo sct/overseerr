@@ -83,7 +83,6 @@
   "components.Login.loginerror": "Κάτι πήγε στραβά κατά την προσπάθεια σύνδεσης.",
   "components.Login.forgotpassword": "Ξέχασες τον κωδικό πρόσβασης;",
   "components.Login.email": "Διεύθυνση ηλεκτρονικού ταχυδρομείου",
-  "components.Layout.betawarning": "Αυτό είναι λογισμικό BETA. Οι λειτουργίες ενδέχεται να είναι σπασμένες ή/και ασταθείς. Παρακαλώ αναφέρετε τυχόν προβλήματα με το GitHub!",
   "components.Layout.VersionStatus.streamstable": "Overseer Σταθερή Έκδοση",
   "components.Discover.popularmovies": "Δημοφιλείς Ταινίες",
   "components.Discover.discovertv": "Δημοφιλείς Σειρές",
@@ -116,7 +115,6 @@
   "components.Layout.Sidebar.requests": "Αιτήματα",
   "components.Layout.Sidebar.dashboard": "Ανακάλυψε",
   "components.Layout.SearchInput.searchPlaceholder": "Αναζήτηση Ταινιών και Τηλεοπτικών Σειρών",
-  "components.Layout.LanguagePicker.changelanguage": "Αλλαγή Γλώσσας",
   "components.LanguageSelector.originalLanguageDefault": "Όλες οι Γλώσσες",
   "components.LanguageSelector.languageServerDefault": "Προεπιλεγμένη ({language})",
   "components.DownloadBlock.estimatedtime": "Εκτιμώμενος {time}",
@@ -855,5 +853,6 @@
   "i18n.testing": "Γίνεται Δοκιμή…",
   "i18n.test": "Δοκιμή",
   "i18n.status": "Κατάσταση",
-  "i18n.showingresults": "Εμφάνιση <strong>{from}</strong> έως <strong>{to}</strong> από <strong>{total}</strong> αποτελέσματα"
+  "i18n.showingresults": "Εμφάνιση <strong>{from}</strong> έως <strong>{to}</strong> από <strong>{total}</strong> αποτελέσματα",
+  "components.Settings.SettingsAbout.betawarning": "Αυτό είναι λογισμικό BETA. Οι λειτουργίες ενδέχεται να είναι σπασμένες ή/και ασταθείς. Παρακαλώ αναφέρετε τυχόν προβλήματα με το GitHub!"
 }

@@ -53,7 +53,7 @@ const VersionStatus: React.FC<VersionStatusProps> = ({ onClick }) => {
         className={`flex items-center p-2 mx-2 text-xs transition duration-300 rounded-lg ring-1 ring-gray-700 ${
           data.updateAvailable
             ? 'bg-yellow-500 text-white hover:bg-yellow-400'
-            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            : 'bg-gray-900 text-gray-300 hover:bg-gray-800'
         }`}
       >
         {data.commitTag === 'local' ? (

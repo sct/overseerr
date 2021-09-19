@@ -77,8 +77,8 @@ const Login: React.FC = () => {
       <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />
       </div>
-      <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-md">
-        <img src="/logo.png" className="max-w-full" alt="Logo" />
+      <div className="relative z-40 flex flex-col items-center px-4 mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+        <img src="/logo_stacked.svg" className="max-w-full mb-10" alt="Logo" />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
           {intl.formatMessage(messages.signinheader)}
         </h2>
@@ -115,7 +115,7 @@ const Login: React.FC = () => {
               {({ openIndexes, handleClick, AccordionContent }) => (
                 <>
                   <button
-                    className={`w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 sm:rounded-t-lg ${
+                    className={`font-bold w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 sm:rounded-t-lg ${
                       openIndexes.includes(0) && 'text-indigo-500'
                     } ${
                       settings.currentSettings.localLogin &&
@@ -137,7 +137,7 @@ const Login: React.FC = () => {
                   {settings.currentSettings.localLogin && (
                     <div>
                       <button
-                        className={`w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 hover:bg-gray-700 hover:cursor-pointer ${
+                        className={`font-bold w-full py-2 text-sm text-center text-gray-400 transition-colors duration-200 bg-gray-800 cursor-default focus:outline-none bg-opacity-70 hover:bg-gray-700 hover:cursor-pointer ${
                           openIndexes.includes(1)
                             ? 'text-indigo-500'
                             : 'sm:rounded-b-lg'
