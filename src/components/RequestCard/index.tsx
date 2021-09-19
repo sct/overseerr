@@ -298,7 +298,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                     : requestData.media.plexUrl
                 }
                 serviceUrl={
-                  hasPermission(Permission.MANAGE_REQUESTS)
+                  hasPermission(Permission.ADMIN)
                     ? requestData.is4k
                       ? requestData.media.serviceUrl4k
                       : requestData.media.serviceUrl

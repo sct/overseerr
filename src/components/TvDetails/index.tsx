@@ -431,7 +431,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               plexUrl={data.mediaInfo?.plexUrl}
               serviceUrl={
-                hasPermission(Permission.MANAGE_REQUESTS)
+                hasPermission(Permission.ADMIN)
                   ? data.mediaInfo?.serviceUrl
                   : undefined
               }
@@ -448,7 +448,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   }
                   plexUrl={data.mediaInfo?.plexUrl4k}
                   serviceUrl={
-                    hasPermission(Permission.MANAGE_REQUESTS)
+                    hasPermission(Permission.ADMIN)
                       ? data.mediaInfo?.serviceUrl4k
                       : undefined
                   }
