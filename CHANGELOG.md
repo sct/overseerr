@@ -1,3 +1,37 @@
+# [1.26.0](https://github.com/sct/overseerr/compare/v1.25.0...v1.26.0) (2021-09-19)
+
+
+### Bug Fixes
+
+* **email:** omit links when application URL is not configured ([#1806](https://github.com/sct/overseerr/issues/1806)) ([1133a34](https://github.com/sct/overseerr/commit/1133a34ffdf95c4d036be0264fe7f94f64007e8f))
+* **lang:** minor changes to password reset strings ([#1798](https://github.com/sct/overseerr/issues/1798)) ([a41245c](https://github.com/sct/overseerr/commit/a41245c703688743ec24f9b4a53e70f3340daa0f))
+* **notif:** truncate media overviews ([#1800](https://github.com/sct/overseerr/issues/1800)) ([42e45f3](https://github.com/sct/overseerr/commit/42e45f38e5ede7df0fc4bdb20a970917b2361569))
+* **plex:** do not fail to scan empty libraries ([#1771](https://github.com/sct/overseerr/issues/1771)) ([6789b87](https://github.com/sct/overseerr/commit/6789b8701cb644d9a3f1384f30b3dff707201ef7))
+* **quota:** block multi-season requests that would exceed a user's quota ([#1874](https://github.com/sct/overseerr/issues/1874)) ([8a55f85](https://github.com/sct/overseerr/commit/8a55f85d3ef14ccb83b139acb35d0746431637be))
+* **rt-api:** use rotten-tomatoes 2.0 search api for movies ([a11bb49](https://github.com/sct/overseerr/commit/a11bb49663ec345332c4dd70ddbb49ce230b5c3c))
+* **ui:** center logo on password reset pages ([#1807](https://github.com/sct/overseerr/issues/1807)) ([b8e82b5](https://github.com/sct/overseerr/commit/b8e82b5b4d3cb49ec372e3dce3cd89dff440ffd0))
+* **ui:** change sidebar breakpoint to lg ([#1972](https://github.com/sct/overseerr/issues/1972)) ([70bd9e9](https://github.com/sct/overseerr/commit/70bd9e9308b607206b60a2a36a511de6e397a3db))
+* **ui:** do not allow submission of invalid form inputs ([#1799](https://github.com/sct/overseerr/issues/1799)) ([910d00c](https://github.com/sct/overseerr/commit/910d00c19522a70125bfb5e5081a7ef4000e7f54))
+* **ui:** do not display negative remaining quota ([#1859](https://github.com/sct/overseerr/issues/1859)) ([3841fb0](https://github.com/sct/overseerr/commit/3841fb06ebe1e09250362cc6cb401fdca12eef7f))
+* **ui:** fix notifications settings buttons overflowing ([#1911](https://github.com/sct/overseerr/issues/1911)) ([0ce18b2](https://github.com/sct/overseerr/commit/0ce18b21ca547af6c083c3f248e22b7daf92aef0))
+* **ui:** sort 'Request As' user dropdown by display name ([#2099](https://github.com/sct/overseerr/issues/2099)) ([bb09f8e](https://github.com/sct/overseerr/commit/bb09f8eaf70f6d0c981f31bd5f3c8afb2fe101ab))
+* **webpush:** load user in push sub query ([#1894](https://github.com/sct/overseerr/issues/1894)) ([6f2db6a](https://github.com/sct/overseerr/commit/6f2db6a6ccf299262cf86d91acf639b921f28286))
+* correct logo filename ([#1805](https://github.com/sct/overseerr/issues/1805)) ([f95be83](https://github.com/sct/overseerr/commit/f95be832f95a68b114ff24a65ffa0ebbd71b4121))
+
+
+### Features
+
+* list streaming providers on movie/TV detail pages ([#1778](https://github.com/sct/overseerr/issues/1778)) ([98ece67](https://github.com/sct/overseerr/commit/98ece67655a5dffe894974e337a3603afeed0236))
+* **lang:** add Simplified Chinese display language ([#2032](https://github.com/sct/overseerr/issues/2032)) ([590ea7e](https://github.com/sct/overseerr/commit/590ea7e40460e381377b212d00869f191908b41f))
+* **lang:** translated using Weblate (German) ([#1791](https://github.com/sct/overseerr/issues/1791)) ([15f7941](https://github.com/sct/overseerr/commit/15f7941269075b7e12de8bbc0f98418af70df380))
+* **lang:** translations update from Weblate ([#1772](https://github.com/sct/overseerr/issues/1772)) ([6a75a05](https://github.com/sct/overseerr/commit/6a75a05c2348455d5374132a2574d988879d543a))
+* **lang:** translations update from Weblate ([#1796](https://github.com/sct/overseerr/issues/1796)) ([57b52fc](https://github.com/sct/overseerr/commit/57b52fc9cccd3fac93cdb68e36cf652ddbcdf86c))
+* **lang:** translations update from Weblate ([#1910](https://github.com/sct/overseerr/issues/1910)) ([fe89fd5](https://github.com/sct/overseerr/commit/fe89fd5f12460cb1b3acb09fb16b62497ef50f5f))
+* **lang:** translations update from Weblate ([#2058](https://github.com/sct/overseerr/issues/2058)) ([db42c46](https://github.com/sct/overseerr/commit/db42c4678145d2a9676aa71b6773607b696f7cea))
+* **notif:** Restyle HTML email notifications Part 2 ([#1917](https://github.com/sct/overseerr/issues/1917)) ([376149d](https://github.com/sct/overseerr/commit/376149d6ebb4db28d949391115f475afdd4e7d48))
+* **ui:** add 'show more/less...' for studios on movie details page ([#1770](https://github.com/sct/overseerr/issues/1770)) ([680ea0c](https://github.com/sct/overseerr/commit/680ea0c87a9ae143413354680c421d62bccd869d))
+* new logo, who dis? ([#1802](https://github.com/sct/overseerr/issues/1802)) ([beb5637](https://github.com/sct/overseerr/commit/beb5637d9f5c01d773eaee93035b7c195c2ae5f2))
+
 # [1.25.0](https://github.com/sct/overseerr/compare/v1.24.0...v1.25.0) (2021-06-10)
 
 
