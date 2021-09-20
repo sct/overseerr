@@ -1,3 +1,10 @@
+## [1.26.1](https://github.com/sct/overseerr/compare/v1.26.0...v1.26.1) (2021-09-20)
+
+
+### Bug Fixes
+
+* **rt-api:** correctly format movie urls ([4c6009b](https://github.com/sct/overseerr/commit/4c6009bc2c3ff5f657a806363e3bdf7cd83d4261))
+
 # [1.26.0](https://github.com/sct/overseerr/compare/v1.25.0...v1.26.0) (2021-09-19)
 
 
