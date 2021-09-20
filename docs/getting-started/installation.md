@@ -36,17 +36,22 @@ To run the container as a specific user/group, you may optionally add `--user=[ 
 
 **Updating:**
 
+Stop and remove the existing container:
+
 ```bash
-# Stop the Overseerr container
 docker stop overseerr
-
-# Remove the Overseerr container
 docker rm overseerr
+```
 
-# Pull the latest image
+Pull the latest image:
+
+```bash
 docker pull sctx/overseerr
+```
 
-# Run the Overseerr container with the same parameters originally used to create the container
+Finally, run the container with the same parameters originally used to create the container:
+
+```bash
 docker run -d ...
 ```
 
@@ -90,11 +95,15 @@ docker-compose up -d
 
 **Updating:**
 
-```bash
-# Pull the latest image
-docker-compose pull overseerr
+Pull the latest image:
 
-# Restart all services defined in the Compose file
+```bash
+docker-compose pull overseerr
+```
+
+Restart all services defined in the Compose file:
+
+```bash
 docker-compose up -d
 ```
 
@@ -167,9 +176,10 @@ To install the development build, add the `--edge` argument to the above command
 {% endhint %}
 
 **Updating:**
+
 Snap will keep Overseerr up-to-date automatically. You can force a refresh by using the following command.
 
-```
+```bash
 sudo snap refresh
 ```
 
