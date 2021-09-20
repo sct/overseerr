@@ -10,8 +10,16 @@ After running Overseerr for the first time, configure it by visiting the web UI 
 
 ## Docker
 
+{% hint style="warning" %}
+Be sure to replace `/path/to/appdata/config` in the below examples with a valid host directory path. If this volume mount is not configured correctly, your Overseerr settings/data will not be persisted when the container is recreated (e.g., when updating the image or rebooting your machine).
+
+The `TZ` environment variable value should also be set to the [TZ database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) of your time zone!
+{% endhint %}
+
 {% tabs %}
-{% tab title="Basic" %}
+{% tab title="docker run Command" %}
+
+**Installation:**
 
 ```bash
 docker run -d \
@@ -24,11 +32,37 @@ docker run -d \
   sctx/overseerr
 ```
 
+To run the container as a specific user/group, you may optionally add `--user=[ user | user:group | uid | uid:gid | user:gid | uid:group ]` to the above command.
+
+**Updating:**
+
+```bash
+# Stop the Overseerr container
+docker stop overseerr
+
+# Remove the Overseerr container
+docker rm overseerr
+
+# Pull the latest update
+docker pull sctx/overseerr
+
+# Run the Overseerr container with the same parameters as before
+docker run -d ...
+```
+
+{% hint style="info" %}
+You may alternatively use a third-party updating mechanism, such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros), to keep Overseerr up-to-date automatically.
+{% endhint %}
+
 {% endtab %}
 
-{% tab title="Compose" %}
+{% tab title="Docker Compose" %}
 
-**docker-compose.yml:**
+For more details on how to use Docker Compose, please [review the official Compose documentation](https://docs.docker.com/compose/reference/).
+
+**Installation:**
+
+Define the `overseerr` service in your `docker-compose.yml` as follows:
 
 ```yaml
 ---
@@ -48,46 +82,24 @@ services:
     restart: unless-stopped
 ```
 
-{% endtab %}
-
-{% tab title="UID/GID" %}
-
-```text
-docker run -d \
-  --name overseerr \
-  --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ] \
-  -e LOG_LEVEL=debug \
-  -e TZ=Asia/Tokyo \
-  -p 5055:5055 \
-  -v /path/to/appdata/config:/app/config \
-  --restart unless-stopped \
-   sctx/overseerr
-```
-
-{% endtab %}
-
-{% tab title="Manual Update" %}
+Then, start all services defined in the your Compose file:
 
 ```bash
-# Stop the Overseerr container
-docker stop overseerr
+docker-compose up -d
+```
 
-# Remove the Overseerr container
-docker rm overseerr
+**Updating:**
 
+```bash
 # Pull the latest update
-docker pull sctx/overseerr
+docker-compose pull overseerr
 
 # Run the Overseerr container with the same parameters as before
-docker run -d ...
+docker-compose up -d
 ```
 
 {% endtab %}
 {% endtabs %}
-
-{% hint style="info" %}
-Use a 3rd party updating mechanism such as [Watchtower](https://github.com/containrrr/watchtower) or [Ouroboros](https://github.com/pyouroboros/ouroboros) to keep Overseerr up-to-date automatically.
-{% endhint %}
 
 ## Unraid
 
@@ -144,11 +156,15 @@ The [Overseerr snap](https://snapcraft.io/overseerr) is the only officially supp
 Currently, the listening port cannot be changed, so port `5055` will need to be available on your host. To install `snapd`, please refer to the [Snapcraft documentation](https://snapcraft.io/docs/installing-snapd).
 {% endhint %}
 
-**To install:**
+**Installation:**
 
 ```
 sudo snap install overseerr
 ```
+
+{% hint style="danger" %}
+To install the development build, add the `--edge` argument to the above command (i.e., `sudo snap install overseerr --edge`). However, note that this version can break any moment. Be prepared to troubleshoot any issues that arise!
+{% endhint %}
 
 **Updating:**
 Snap will keep Overseerr up-to-date automatically. You can force a refresh by using the following command.
@@ -156,16 +172,6 @@ Snap will keep Overseerr up-to-date automatically. You can force a refresh by us
 ```
 sudo snap refresh
 ```
-
-**To install the development build:**
-
-```
-sudo snap install overseerr --edge
-```
-
-{% hint style="danger" %}
-This version can break any moment. Be prepared to troubleshoot any issues that arise!
-{% endhint %}
 
 ## Third-Party
 
