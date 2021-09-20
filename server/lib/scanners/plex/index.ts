@@ -4,6 +4,7 @@ import animeList from '../../../api/animelist';
 import PlexAPI, { PlexLibraryItem, PlexMetadata } from '../../../api/plexapi';
 import { TmdbTvDetails } from '../../../api/themoviedb/interfaces';
 import { User } from '../../../entity/User';
+import cacheManager from '../../cache';
 import { getSettings, Library } from '../../settings';
 import BaseScanner, {
   MediaIds,
@@ -38,7 +39,7 @@ class PlexScanner
   private isRecentOnly = false;
 
   public constructor(isRecentOnly = false) {
-    super('Plex Scan');
+    super('Plex Scan', { bundleSize: 50 });
     this.isRecentOnly = isRecentOnly;
   }
 
@@ -46,7 +47,7 @@ class PlexScanner
     return {
       running: this.running,
       progress: this.progress,
-      total: this.items.length,
+      total: this.totalSize ?? 0,
       currentLibrary: this.currentLibrary,
       libraries: this.libraries,
     };
@@ -82,10 +83,17 @@ class PlexScanner
           this.currentLibrary = library;
           this.log(
             `Beginning to process recently added for library: ${library.name}`,
-            'info'
+            'info',
+            { lastScan: library.lastScan }
           );
           const libraryItems = await this.plexClient.getRecentlyAdded(
-            library.id
+            library.id,
+            library.lastScan
+              ? {
+                  // We remove 10 minutes from the last scan as a buffer
+                  addedAt: library.lastScan - 1000 * 60 * 10,
+                }
+              : undefined
           );
 
           // Bundle items up by rating keys
@@ -104,13 +112,26 @@ class PlexScanner
           });
 
           await this.loop(this.processItem.bind(this), { sessionId });
+
+          // After run completes, update last scan time
+          const newLibraries = settings.plex.libraries.map((lib) => {
+            if (lib.id === library.id) {
+              return {
+                ...lib,
+                lastScan: Date.now(),
+              };
+            }
+            return lib;
+          });
+
+          settings.plex.libraries = newLibraries;
+          settings.save();
         }
       } else {
         for (const library of this.libraries) {
           this.currentLibrary = library;
           this.log(`Beginning to process library: ${library.name}`, 'info');
-          this.items = await this.plexClient.getLibraryContents(library.id);
-          await this.loop(this.processItem.bind(this), { sessionId });
+          await this.paginateLibrary(library, { sessionId });
         }
       }
       this.log(
@@ -124,6 +145,52 @@ class PlexScanner
     } finally {
       this.endRun(sessionId);
     }
+  }
+
+  private async paginateLibrary(
+    library: Library,
+    { start = 0, sessionId }: { start?: number; sessionId: string }
+  ) {
+    if (!this.running) {
+      throw new Error('Sync was aborted.');
+    }
+
+    if (this.sessionId !== sessionId) {
+      throw new Error('New session was started. Old session aborted.');
+    }
+
+    const response = await this.plexClient.getLibraryContents(library.id, {
+      size: this.protectedBundleSize,
+      offset: start,
+    });
+
+    this.progress = start;
+    this.totalSize = response.totalSize;
+
+    if (response.items.length === 0) {
+      return;
+    }
+
+    await Promise.all(
+      response.items.map(async (item) => {
+        await this.processItem(item);
+      })
+    );
+
+    if (response.items.length < this.protectedBundleSize) {
+      return;
+    }
+
+    await new Promise<void>((resolve, reject) =>
+      setTimeout(() => {
+        this.paginateLibrary(library, {
+          start: start + this.protectedBundleSize,
+          sessionId,
+        })
+          .then(() => resolve())
+          .catch((e) => reject(new Error(e.message)));
+      }, this.protectedUpdateRate)
+    );
   }
 
   private async processItem(plexitem: PlexLibraryItem) {
@@ -147,9 +214,8 @@ class PlexScanner
 
   private async processPlexMovie(plexitem: PlexLibraryItem) {
     const mediaIds = await this.getMediaIds(plexitem);
-    const metadata = await this.plexClient.getMetadata(plexitem.ratingKey);
 
-    const has4k = metadata.Media.some(
+    const has4k = plexitem.Media.some(
       (media) => media.videoResolution === '4k'
     );
 
@@ -263,10 +329,25 @@ class PlexScanner
   }
 
   private async getMediaIds(plexitem: PlexLibraryItem): Promise<MediaIds> {
-    const mediaIds: Partial<MediaIds> = {};
+    let mediaIds: Partial<MediaIds> = {};
     // Check if item is using new plex movie/tv agent
     if (plexitem.guid.match(plexRegex)) {
-      const metadata = await this.plexClient.getMetadata(plexitem.ratingKey);
+      const guidCache = cacheManager.getCache('plexguid');
+
+      const cachedGuids = guidCache.data.get<MediaIds>(plexitem.ratingKey);
+
+      if (cachedGuids) {
+        this.log('GUIDs are cached. Skipping metadata request.', 'debug', {
+          mediaIds: cachedGuids,
+          title: plexitem.title,
+        });
+        mediaIds = cachedGuids;
+      }
+
+      const metadata =
+        plexitem.Guid && plexitem.Guid.length > 0
+          ? plexitem
+          : await this.plexClient.getMetadata(plexitem.ratingKey);
 
       // If there is no Guid field at all, then we bail
       if (!metadata.Guid) {
@@ -295,6 +376,10 @@ class PlexScanner
         });
         mediaIds.tmdbId = tmdbMovie.id;
       }
+
+      // Cache GUIDs
+      guidCache.data.set(plexitem.ratingKey, mediaIds);
+
       // Check if the agent is IMDb
     } else if (plexitem.guid.match(imdbRegex)) {
       const imdbMatch = plexitem.guid.match(imdbRegex);

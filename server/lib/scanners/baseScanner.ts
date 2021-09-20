@@ -55,6 +55,7 @@ class BaseScanner<T> {
   private updateRate;
   protected progress = 0;
   protected items: T[] = [];
+  protected totalSize?: number = 0;
   protected scannerName: string;
   protected enable4kMovie = false;
   protected enable4kShow = false;
@@ -608,6 +609,14 @@ class BaseScanner<T> {
     optional?: Record<string, unknown>
   ): void {
     logger[level](message, { label: this.scannerName, ...optional });
+  }
+
+  get protectedUpdateRate(): number {
+    return this.updateRate;
+  }
+
+  get protectedBundleSize(): number {
+    return this.bundleSize;
   }
 }
 

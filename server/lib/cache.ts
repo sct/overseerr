@@ -1,6 +1,12 @@
 import NodeCache from 'node-cache';
 
-export type AvailableCacheIds = 'tmdb' | 'radarr' | 'sonarr' | 'rt' | 'github';
+export type AvailableCacheIds =
+  | 'tmdb'
+  | 'radarr'
+  | 'sonarr'
+  | 'rt'
+  | 'github'
+  | 'plexguid';
 
 const DEFAULT_TTL = 300;
 const DEFAULT_CHECK_PERIOD = 120;
@@ -46,6 +52,10 @@ class CacheManager {
     }),
     github: new Cache('github', 'GitHub API', {
       stdTtl: 21600,
+      checkPeriod: 60 * 30,
+    }),
+    plexguid: new Cache('plexguid', 'Plex GUID Cache', {
+      stdTtl: 86400 * 7, // 1 week cache
       checkPeriod: 60 * 30,
     }),
   };
