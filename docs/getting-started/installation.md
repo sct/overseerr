@@ -43,10 +43,10 @@ docker stop overseerr
 # Remove the Overseerr container
 docker rm overseerr
 
-# Pull the latest update
+# Pull the latest image
 docker pull sctx/overseerr
 
-# Run the Overseerr container with the same parameters as before
+# Run the Overseerr container with the same parameters originally used to create the container
 docker run -d ...
 ```
 
@@ -91,10 +91,10 @@ docker-compose up -d
 **Updating:**
 
 ```bash
-# Pull the latest update
+# Pull the latest image
 docker-compose pull overseerr
 
-# Run the Overseerr container with the same parameters as before
+# Restart all services defined in the Compose file
 docker-compose up -d
 ```
 
