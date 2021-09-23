@@ -62,6 +62,13 @@ If you would like to chat with other members of our growing community, [join the
 
 Our [Code of Conduct](https://github.com/sct/overseerr/blob/develop/CODE_OF_CONDUCT.md) applies to all Overseerr community channels.
 
+## Third-party integration for Overseerr
+
+| Name | Intergration with | Github project               
+|----------|:---------------------------:|:----------------------------:|
+| Requestrr | Discord | [Link](https://github.com/darkalfx/requestrr)
+| Doplarr | Discord | [Link](https://github.com/kiranshila/Doplarr)
+
 ## Contributing
 
 You can help improve Overseerr too! Check out our [Contribution Guide](https://github.com/sct/overseerr/blob/develop/CONTRIBUTING.md) to get started.
