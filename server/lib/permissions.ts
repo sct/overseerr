@@ -21,6 +21,7 @@ export enum Permission {
   MANAGE_ISSUES = 1048576,
   VIEW_ISSUES = 2097152,
   CREATE_ISSUES = 4194304,
+  RECENT_VIEW = 8388608,
 }
 
 export interface PermissionCheckOptions {

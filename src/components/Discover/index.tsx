@@ -4,6 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
+import { Permission, useUser } from '../../hooks/useUser';
 import PageTitle from '../Common/PageTitle';
 import MediaSlider from '../MediaSlider';
 import RequestCard from '../RequestCard';
@@ -28,6 +29,7 @@ const messages = defineMessages({
 
 const Discover = () => {
   const intl = useIntl();
+  const { hasPermission } = useUser();
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
     '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded',
@@ -43,23 +45,29 @@ const Discover = () => {
   return (
     <>
       <PageTitle title={intl.formatMessage(messages.discover)} />
-      <div className="slider-header">
-        <div className="slider-title">
-          <span>{intl.formatMessage(messages.recentlyAdded)}</span>
-        </div>
-      </div>
-      <Slider
-        sliderKey="media"
-        isLoading={!media && !mediaError}
-        isEmpty={!!media && !mediaError && media.results.length === 0}
-        items={media?.results?.map((item) => (
-          <TmdbTitleCard
-            key={`media-slider-item-${item.id}`}
-            tmdbId={item.tmdbId}
-            type={item.mediaType}
+      {hasPermission([Permission.MANAGE_REQUESTS, Permission.RECENT_VIEW], {
+        type: 'or',
+      }) && (
+        <>
+          <div className="slider-header">
+            <div className="slider-title">
+              <span>{intl.formatMessage(messages.recentlyAdded)}</span>
+            </div>
+          </div>
+          <Slider
+            sliderKey="media"
+            isLoading={!media && !mediaError}
+            isEmpty={!!media && !mediaError && media.results.length === 0}
+            items={media?.results?.map((item) => (
+              <TmdbTitleCard
+                key={`media-slider-item-${item.id}`}
+                tmdbId={item.tmdbId}
+                type={item.mediaType}
+              />
+            ))}
           />
-        ))}
-      />
+        </>
+      )}
       <div className="slider-header">
         <Link href="/requests?filter=all">
           <a className="slider-title">
