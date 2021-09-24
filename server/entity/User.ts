@@ -178,6 +178,7 @@ export class User {
           password: password,
           applicationUrl,
           applicationTitle,
+          recipientName: this.username,
         },
       });
     } catch (e) {
@@ -214,6 +215,7 @@ export class User {
           resetPasswordLink,
           applicationUrl,
           applicationTitle,
+          recipientName: this.username ?? this.plexUsername,
         },
       });
     } catch (e) {
