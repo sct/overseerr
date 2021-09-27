@@ -14,6 +14,7 @@ import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import PageTitle from '../../../Common/PageTitle';
 import PermissionEdit from '../../../PermissionEdit';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   toastSettingsSuccess: 'Permissions saved successfully!',
@@ -29,7 +30,7 @@ const UserPermissions: React.FC = () => {
   const { user: currentUser } = useUser();
   const { user, mutate } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<{ permissions?: number }>(
-    user ? `/api/v1/user/${user?.id}/settings/permissions` : null
+    user ? getPath(`/user/${user?.id}/settings/permissions`) : null
   );
 
   if (!data && !error) {
@@ -75,9 +76,12 @@ const UserPermissions: React.FC = () => {
         enableReinitialize
         onSubmit={async (values) => {
           try {
-            await axios.post(`/api/v1/user/${user?.id}/settings/permissions`, {
-              permissions: values.currentPermissions ?? 0,
-            });
+            await axios.post(
+              getPath(`/user/${user?.id}/settings/permissions`),
+              {
+                permissions: values.currentPermissions ?? 0,
+              }
+            );
 
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
               autoDismiss: true,

@@ -11,6 +11,7 @@ import Header from '../Common/Header';
 import PageTitle from '../Common/PageTitle';
 import Error from '../../pages/_error';
 import useDiscover from '../../hooks/useDiscover';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   search: 'Search',
@@ -30,7 +31,7 @@ const Search: React.FC = () => {
     fetchMore,
     error,
   } = useDiscover<MovieResult | TvResult | PersonResult>(
-    `/api/v1/search`,
+    getPath(`/search`),
     {
       query: router.query.query,
     },

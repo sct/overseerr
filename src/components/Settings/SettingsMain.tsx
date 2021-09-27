@@ -24,6 +24,7 @@ import SensitiveInput from '../Common/SensitiveInput';
 import LanguageSelector from '../LanguageSelector';
 import RegionSelector from '../RegionSelector';
 import CopyButton from './CopyButton';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   general: 'General',
@@ -66,10 +67,10 @@ const SettingsMain: React.FC = () => {
   const intl = useIntl();
   const { setLocale } = useLocale();
   const { data, error, revalidate } = useSWR<MainSettings>(
-    '/api/v1/settings/main'
+    getPath('/settings/main')
   );
   const { data: userData } = useSWR<UserSettingsGeneralResponse>(
-    currentUser ? `/api/v1/user/${currentUser.id}/settings/main` : null
+    currentUser ? getPath(`/user/${currentUser.id}/settings/main`) : null
   );
 
   const MainSettingsSchema = Yup.object().shape({
@@ -92,7 +93,7 @@ const SettingsMain: React.FC = () => {
 
   const regenerate = async () => {
     try {
-      await axios.post('/api/v1/settings/main/regenerate');
+      await axios.post(getPath('/settings/main/regenerate'));
 
       revalidate();
       addToast(intl.formatMessage(messages.toastApiKeySuccess), {
@@ -144,7 +145,7 @@ const SettingsMain: React.FC = () => {
           validationSchema={MainSettingsSchema}
           onSubmit={async (values) => {
             try {
-              await axios.post('/api/v1/settings/main', {
+              await axios.post(getPath('/settings/main'), {
                 applicationTitle: values.applicationTitle,
                 applicationUrl: values.applicationUrl,
                 csrfProtection: values.csrfProtection,
@@ -155,7 +156,7 @@ const SettingsMain: React.FC = () => {
                 partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
               });
-              mutate('/api/v1/settings/public');
+              mutate(getPath('/settings/public'));
 
               if (setLocale) {
                 setLocale(

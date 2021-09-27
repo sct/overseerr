@@ -7,6 +7,7 @@ import PageTitle from '../../Common/PageTitle';
 import { useRouter } from 'next/router';
 import globalMessages from '../../../i18n/globalMessages';
 import useDiscover from '../../../hooks/useDiscover';
+import { getPath } from '../../../utils/pathBuilder';
 import Error from '../../../pages/_error';
 
 const messages = defineMessages({
@@ -27,7 +28,7 @@ const DiscoverMovieGenre: React.FC = () => {
     error,
     firstResultData,
   } = useDiscover<MovieResult, { genre: { id: number; name: string } }>(
-    `/api/v1/discover/movies/genre/${router.query.genreId}`
+    getPath(`/discover/movies/genre/${router.query.genreId}`)
   );
 
   if (error) {

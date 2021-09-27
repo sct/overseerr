@@ -9,6 +9,7 @@ import Header from '../../Common/Header';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import PersonCard from '../../PersonCard';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   fullseriescast: 'Full Series Cast',
@@ -17,7 +18,9 @@ const messages = defineMessages({
 const TvCast: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
-  const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${router.query.tvId}`);
+  const { data, error } = useSWR<TvDetails>(
+    getPath(`/tv/${router.query.tvId}`)
+  );
 
   if (!data && !error) {
     return <LoadingSpinner />;

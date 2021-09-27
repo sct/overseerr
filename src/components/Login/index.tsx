@@ -12,6 +12,7 @@ import LanguagePicker from '../Layout/LanguagePicker';
 import PlexLoginButton from '../PlexLoginButton';
 import Transition from '../Transition';
 import LocalLogin from './LocalLogin';
+import { getPath, getUiPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   signin: 'Sign In',
@@ -36,7 +37,7 @@ const Login: React.FC = () => {
     const login = async () => {
       setProcessing(true);
       try {
-        const response = await axios.post('/api/v1/auth/plex', { authToken });
+        const response = await axios.post(getPath('/auth/plex'), { authToken });
 
         if (response.data?.id) {
           revalidate();
@@ -72,7 +73,7 @@ const Login: React.FC = () => {
           '/images/rotate4.jpg',
           '/images/rotate5.jpg',
           '/images/rotate6.jpg',
-        ]}
+        ].map((image) => getUiPath(image))}
       />
       <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />

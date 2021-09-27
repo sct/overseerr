@@ -13,6 +13,7 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import SettingsTabs, { SettingsRoute } from '../../Common/SettingsTabs';
 import ProfileHeader from '../ProfileHeader';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   menuGeneralSettings: 'General',
@@ -30,7 +31,7 @@ const UserSettings: React.FC = ({ children }) => {
   const { user, error } = useUser({ id: Number(router.query.userId) });
   const intl = useIntl();
   const { data } = useSWR<UserSettingsNotificationsResponse>(
-    user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+    user ? getPath(`/user/${user?.id}/settings/notifications`) : null
   );
 
   if (!user && !error) {

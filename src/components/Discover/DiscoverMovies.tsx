@@ -5,6 +5,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import Header from '../Common/Header';
 import PageTitle from '../Common/PageTitle';
 import useDiscover from '../../hooks/useDiscover';
+import { getPath } from '../../utils/pathBuilder';
+
 import Error from '../../pages/_error';
 
 const messages = defineMessages({
@@ -22,7 +24,7 @@ const DiscoverMovies: React.FC = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<MovieResult>('/api/v1/discover/movies');
+  } = useDiscover<MovieResult>(getPath('/discover/movies'));
 
   if (error) {
     return <Error statusCode={500} />;

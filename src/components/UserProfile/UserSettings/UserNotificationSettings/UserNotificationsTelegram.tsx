@@ -13,6 +13,7 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   telegramsettingssaved: 'Telegram notification settings saved successfully!',
@@ -31,7 +32,7 @@ const UserTelegramSettings: React.FC = () => {
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
-    user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+    user ? getPath(`/user/${user?.id}/settings/notifications`) : null
   );
 
   const UserNotificationsTelegramSchema = Yup.object().shape({
@@ -64,15 +65,18 @@ const UserTelegramSettings: React.FC = () => {
       enableReinitialize
       onSubmit={async (values) => {
         try {
-          await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
-            pgpKey: data?.pgpKey,
-            discordId: data?.discordId,
-            telegramChatId: values.telegramChatId,
-            telegramSendSilently: values.telegramSendSilently,
-            notificationTypes: {
-              telegram: values.types,
-            },
-          });
+          await axios.post(
+            getPath(`/user/${user?.id}/settings/notifications`),
+            {
+              pgpKey: data?.pgpKey,
+              discordId: data?.discordId,
+              telegramChatId: values.telegramChatId,
+              telegramSendSilently: values.telegramSendSilently,
+              notificationTypes: {
+                telegram: values.types,
+              },
+            }
+          );
           addToast(intl.formatMessage(messages.telegramsettingssaved), {
             appearance: 'success',
             autoDismiss: true,

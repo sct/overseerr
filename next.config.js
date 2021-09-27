@@ -1,7 +1,9 @@
 module.exports = {
   env: {
     commitTag: process.env.COMMIT_TAG || 'local',
+    BASE_PATH: process.env.BASE_PATH,
   },
+  basePath: process.env.BASE_PATH,
   images: {
     domains: ['image.tmdb.org'],
   },

@@ -13,6 +13,7 @@ import List from '../../Common/List';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import Releases from './Releases';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   about: 'About',
@@ -36,10 +37,10 @@ const messages = defineMessages({
 const SettingsAbout: React.FC = () => {
   const intl = useIntl();
   const { data, error } = useSWR<SettingsAboutResponse>(
-    '/api/v1/settings/about'
+    getPath('/settings/about')
   );
 
-  const { data: status } = useSWR<StatusResponse>('/api/v1/status');
+  const { data: status } = useSWR<StatusResponse>(getPath('/status'));
 
   if (!data && !error) {
     return <LoadingSpinner />;

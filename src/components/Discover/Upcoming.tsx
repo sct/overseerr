@@ -6,6 +6,7 @@ import Header from '../Common/Header';
 import PageTitle from '../Common/PageTitle';
 import useDiscover from '../../hooks/useDiscover';
 import Error from '../../pages/_error';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   upcomingmovies: 'Upcoming Movies',
@@ -22,7 +23,7 @@ const UpcomingMovies: React.FC = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<MovieResult>('/api/v1/discover/movies/upcoming');
+  } = useDiscover<MovieResult>(getPath('/discover/movies/upcoming'));
 
   if (error) {
     return <Error statusCode={500} />;

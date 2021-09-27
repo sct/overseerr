@@ -8,6 +8,7 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import GenreCard from '../../GenreCard';
 import { genreColorMap } from '../constants';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   seriesgenres: 'Series Genres',
@@ -16,7 +17,7 @@ const messages = defineMessages({
 const TvGenreList: React.FC = () => {
   const intl = useIntl();
   const { data, error } = useSWR<GenreSliderItem[]>(
-    `/api/v1/discover/genreslider/tv`
+    getPath(`/discover/genreslider/tv`)
   );
 
   if (!data && !error) {

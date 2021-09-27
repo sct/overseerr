@@ -12,6 +12,7 @@ import globalMessages from '../../../i18n/globalMessages';
 import Modal from '../../Common/Modal';
 import SensitiveInput from '../../Common/SensitiveInput';
 import Transition from '../../Transition';
+import { getPath } from '../../../utils/pathBuilder';
 
 type OptionType = {
   value: string;
@@ -167,7 +168,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
       setIsTesting(true);
       try {
         const response = await axios.post<TestResponse>(
-          '/api/v1/settings/radarr/test',
+          getPath('/settings/radarr/test'),
           {
             hostname,
             apiKey,
@@ -268,10 +269,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
               preventSearch: !values.enableSearch,
             };
             if (!radarr) {
-              await axios.post('/api/v1/settings/radarr', submission);
+              await axios.post(getPath('/settings/radarr'), submission);
             } else {
               await axios.put(
-                `/api/v1/settings/radarr/${radarr.id}`,
+                getPath(`/settings/radarr/${radarr.id}`),
                 submission
               );
             }

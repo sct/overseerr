@@ -6,6 +6,7 @@ import Header from '../Common/Header';
 import PageTitle from '../Common/PageTitle';
 import useDiscover from '../../hooks/useDiscover';
 import Error from '../../pages/_error';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   discovertv: 'Popular Series',
@@ -22,7 +23,7 @@ const DiscoverTv: React.FC = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<TvResult>('/api/v1/discover/tv');
+  } = useDiscover<TvResult>(getPath('/discover/tv'));
 
   if (error) {
     return <Error statusCode={500} />;

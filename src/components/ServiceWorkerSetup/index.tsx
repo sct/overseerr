@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, { useEffect } from 'react';
 import useSettings from '../../hooks/useSettings';
 import { useUser } from '../../hooks/useUser';
+import { getPath } from '../../utils/pathBuilder';
 
 const ServiceWorkerSetup: React.FC = () => {
   const { currentSettings } = useSettings();
@@ -26,7 +27,7 @@ const ServiceWorkerSetup: React.FC = () => {
             const parsedSub = JSON.parse(JSON.stringify(sub));
 
             if (parsedSub.keys.p256dh && parsedSub.keys.auth) {
-              await axios.post('/api/v1/user/registerPushSubscription', {
+              await axios.post(getPath('/user/registerPushSubscription'), {
                 endpoint: parsedSub.endpoint,
                 p256dh: parsedSub.keys.p256dh,
                 auth: parsedSub.keys.auth,

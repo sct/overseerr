@@ -7,6 +7,7 @@ import { User, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Modal from '../Common/Modal';
 import PermissionEdit from '../PermissionEdit';
+import { getPath } from '../../utils/pathBuilder';
 
 interface BulkEditProps {
   selectedUserIds: number[];
@@ -44,7 +45,7 @@ const BulkEditModal: React.FC<BulkEditProps> = ({
   const updateUsers = async () => {
     try {
       setIsSaving(true);
-      const { data: updated } = await axios.put<User[]>(`/api/v1/user`, {
+      const { data: updated } = await axios.put<User[]>(getPath(`/user`), {
         ids: selectedUserIds,
         permissions: currentPermission,
       });

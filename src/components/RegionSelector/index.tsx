@@ -8,6 +8,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { Region } from '../../../server/lib/settings';
 import useSettings from '../../hooks/useSettings';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   regionDefault: 'All Regions',
@@ -29,7 +30,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
 }) => {
   const { currentSettings } = useSettings();
   const intl = useIntl();
-  const { data: regions } = useSWR<Region[]>('/api/v1/regions');
+  const { data: regions } = useSWR<Region[]>(getPath('/regions'));
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
 
   const allRegion: Region = useMemo(

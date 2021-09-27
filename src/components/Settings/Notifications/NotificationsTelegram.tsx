@@ -11,6 +11,7 @@ import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import SensitiveInput from '../../Common/SensitiveInput';
 import NotificationTypeSelector from '../../NotificationTypeSelector';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
@@ -39,7 +40,7 @@ const NotificationsTelegram: React.FC = () => {
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/telegram'
+    getPath('/settings/notifications/telegram')
   );
 
   const NotificationsTelegramSchema = Yup.object().shape({
@@ -81,7 +82,7 @@ const NotificationsTelegram: React.FC = () => {
       validationSchema={NotificationsTelegramSchema}
       onSubmit={async (values) => {
         try {
-          await axios.post('/api/v1/settings/notifications/telegram', {
+          await axios.post(getPath('/settings/notifications/telegram'), {
             enabled: values.enabled,
             types: values.types,
             options: {
@@ -129,7 +130,7 @@ const NotificationsTelegram: React.FC = () => {
                 toastId = id;
               }
             );
-            await axios.post('/api/v1/settings/notifications/telegram/test', {
+            await axios.post(getPath('/settings/notifications/telegram/test'), {
               enabled: true,
               types: values.types,
               options: {

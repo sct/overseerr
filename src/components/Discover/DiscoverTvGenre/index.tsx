@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import globalMessages from '../../../i18n/globalMessages';
 import useDiscover from '../../../hooks/useDiscover';
 import Error from '../../../pages/_error';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   genreSeries: '{genre} Series',
@@ -27,7 +28,7 @@ const DiscoverTvGenre: React.FC = () => {
     error,
     firstResultData,
   } = useDiscover<TvResult, { genre: { id: number; name: string } }>(
-    `/api/v1/discover/tv/genre/${router.query.genreId}`
+    getPath(`/discover/tv/genre/${router.query.genreId}`)
   );
 
   if (error) {

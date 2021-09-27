@@ -10,6 +10,7 @@ import Error from '../../pages/_error';
 import Header from '../Common/Header';
 import ListView from '../Common/ListView';
 import PageTitle from '../Common/PageTitle';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
@@ -18,7 +19,9 @@ const messages = defineMessages({
 const TvRecommendations: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
-  const { data: tvData } = useSWR<TvDetails>(`/api/v1/tv/${router.query.tvId}`);
+  const { data: tvData } = useSWR<TvDetails>(
+    getPath(`/tv/${router.query.tvId}`)
+  );
   const {
     isLoadingInitialData,
     isEmpty,
@@ -27,7 +30,9 @@ const TvRecommendations: React.FC = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<TvResult>(`/api/v1/tv/${router.query.tvId}/recommendations`);
+  } = useDiscover<TvResult>(
+    getPath(`/tv/${router.query.tvId}/recommendations`)
+  );
 
   if (error) {
     return <Error statusCode={500} />;

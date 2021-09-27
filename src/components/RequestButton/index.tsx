@@ -18,6 +18,7 @@ import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import RequestModal from '../RequestModal';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   viewrequest: 'View Request',
@@ -96,7 +97,9 @@ const RequestButton: React.FC<RequestButtonProps> = ({
     request: MediaRequest,
     type: 'approve' | 'decline'
   ) => {
-    const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
+    const response = await axios.post(
+      getPath(`/request/${request.id}/${type}`)
+    );
 
     if (response) {
       onUpdate();
@@ -113,7 +116,7 @@ const RequestButton: React.FC<RequestButtonProps> = ({
 
     await Promise.all(
       requests.map(async (request) => {
-        return axios.post(`/api/v1/request/${request.id}/${type}`);
+        return axios.post(getPath(`/request/${request.id}/${type}`));
       })
     );
 

@@ -12,6 +12,7 @@ import Error from '../../../../pages/_error';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import PageTitle from '../../../Common/PageTitle';
 import SettingsTabs, { SettingsRoute } from '../../../Common/SettingsTabs';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   notifications: 'Notifications',
@@ -25,7 +26,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.userId) });
   const { data, error } = useSWR<UserSettingsNotificationsResponse>(
-    user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+    user ? getPath(`/user/${user?.id}/settings/notifications`) : null
   );
 
   const settingsRoutes: SettingsRoute[] = [

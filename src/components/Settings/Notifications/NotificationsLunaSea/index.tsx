@@ -10,6 +10,7 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
@@ -32,7 +33,7 @@ const NotificationsLunaSea: React.FC = () => {
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/lunasea'
+    getPath('/settings/notifications/lunasea')
   );
 
   const NotificationsLunaSeaSchema = Yup.object().shape({
@@ -69,7 +70,7 @@ const NotificationsLunaSea: React.FC = () => {
       validationSchema={NotificationsLunaSeaSchema}
       onSubmit={async (values) => {
         try {
-          await axios.post('/api/v1/settings/notifications/lunasea', {
+          await axios.post(getPath('/settings/notifications/lunasea'), {
             enabled: values.enabled,
             types: values.types,
             options: {
@@ -114,7 +115,7 @@ const NotificationsLunaSea: React.FC = () => {
                 toastId = id;
               }
             );
-            await axios.post('/api/v1/settings/notifications/lunasea/test', {
+            await axios.post(getPath('/settings/notifications/lunasea/test'), {
               enabled: true,
               types: values.types,
               options: {

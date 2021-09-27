@@ -10,6 +10,7 @@ import Error from '../../pages/_error';
 import Header from '../Common/Header';
 import ListView from '../Common/ListView';
 import PageTitle from '../Common/PageTitle';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',
@@ -19,7 +20,7 @@ const MovieRecommendations: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
   const { data: movieData } = useSWR<MovieDetails>(
-    `/api/v1/movie/${router.query.movieId}`
+    getPath(`/movie/${router.query.movieId}`)
   );
   const {
     isLoadingInitialData,
@@ -30,7 +31,7 @@ const MovieRecommendations: React.FC = () => {
     fetchMore,
     error,
   } = useDiscover<MovieResult>(
-    `/api/v1/movie/${router.query.movieId}/recommendations`
+    getPath(`/movie/${router.query.movieId}/recommendations`)
   );
 
   if (error) {

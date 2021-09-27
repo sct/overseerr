@@ -7,6 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import useClickOutside from '../../../hooks/useClickOutside';
 import { useUser } from '../../../hooks/useUser';
 import Transition from '../../Transition';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   myprofile: 'Profile',
@@ -22,7 +23,7 @@ const UserDropdown: React.FC = () => {
   useClickOutside(dropdownRef, () => setDropdownOpen(false));
 
   const logout = async () => {
-    const response = await axios.post('/api/v1/auth/logout');
+    const response = await axios.post(getPath('/auth/logout'));
 
     if (response.data?.status === 'ok') {
       revalidate();

@@ -17,6 +17,7 @@ import Button from '../Common/Button';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
 import LibraryItem from './LibraryItem';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   plex: 'Plex',
@@ -97,10 +98,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
     null
   );
   const { data, error, revalidate } = useSWR<PlexSettings>(
-    '/api/v1/settings/plex'
+    getPath('/settings/plex')
   );
   const { data: dataSync, revalidate: revalidateSync } = useSWR<SyncStatus>(
-    '/api/v1/settings/plex/sync',
+    getPath('/settings/plex/sync'),
     {
       refreshInterval: 1000,
     }
@@ -159,7 +160,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       params.enable = activeLibraries.join(',');
     }
 
-    await axios.get('/api/v1/settings/plex/library', {
+    await axios.get(getPath('/settings/plex/library'), {
       params,
     });
     setIsSyncing(false);
@@ -181,7 +182,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         }
       );
       const response = await axios.get<PlexDevice[]>(
-        '/api/v1/settings/plex/devices/servers'
+        getPath('/settings/plex/devices/servers')
       );
       if (response.data) {
         setAvailableServers(response.data);
@@ -207,14 +208,14 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   };
 
   const startScan = async () => {
-    await axios.post('/api/v1/settings/plex/sync', {
+    await axios.post(getPath('/settings/plex/sync'), {
       start: true,
     });
     revalidateSync();
   };
 
   const cancelScan = async () => {
-    await axios.post('/api/v1/settings/plex/sync', {
+    await axios.post(getPath('/settings/plex/sync'), {
       cancel: true,
     });
     revalidateSync();
@@ -231,11 +232,11 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           .join(',');
       }
 
-      await axios.get('/api/v1/settings/plex/library', {
+      await axios.get(getPath('/settings/plex/library'), {
         params,
       });
     } else {
-      await axios.get('/api/v1/settings/plex/library', {
+      await axios.get(getPath('/settings/plex/library'), {
         params: {
           enable: [...activeLibraries, libraryId].join(','),
         },
@@ -305,7 +306,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 toastId = id;
               }
             );
-            await axios.post('/api/v1/settings/plex', {
+            await axios.post(getPath('/settings/plex'), {
               ip: values.hostname,
               port: Number(values.port),
               useSsl: values.useSsl,

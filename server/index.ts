@@ -128,10 +128,12 @@ app
       });
     }
 
+    const basePath = process.env.BASE_PATH || '';
+
     // Set up sessions
     const sessionRespository = getRepository(Session);
     server.use(
-      '/api',
+      `${basePath}/api`,
       session({
         secret: settings.clientId,
         resave: false,
@@ -146,7 +148,12 @@ app
       })
     );
     const apiDocs = YAML.load(API_SPEC_PATH);
-    server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
+    apiDocs.servers[0].variables.basePath.default = basePath;
+    server.use(
+      `${basePath}/api-docs`,
+      swaggerUi.serve,
+      swaggerUi.setup(apiDocs, { swaggerOptions: { basePath: basePath } })
+    );
     server.use(
       OpenApiValidator.middleware({
         apiSpec: API_SPEC_PATH,
@@ -165,7 +172,7 @@ app
       };
       next();
     });
-    server.use('/api/v1', routes);
+    server.use(`${basePath}/api/v1`, routes);
     server.get('*', (req, res) => handle(req, res));
     server.use(
       (

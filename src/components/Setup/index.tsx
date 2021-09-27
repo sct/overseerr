@@ -14,6 +14,7 @@ import SettingsPlex from '../Settings/SettingsPlex';
 import SettingsServices from '../Settings/SettingsServices';
 import LoginWithPlex from './LoginWithPlex';
 import SetupSteps from './SetupSteps';
+import { getPath, getUiPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   setup: 'Setup',
@@ -39,13 +40,13 @@ const Setup: React.FC = () => {
   const finishSetup = async () => {
     setIsUpdating(true);
     const response = await axios.post<{ initialized: boolean }>(
-      '/api/v1/settings/initialize'
+      getPath('/settings/initialize')
     );
 
     setIsUpdating(false);
     if (response.data.initialized) {
-      await axios.post('/api/v1/settings/main', { locale });
-      mutate('/api/v1/settings/public');
+      await axios.post(getPath('/settings/main'), { locale });
+      mutate(getPath('/settings/public'));
 
       router.push('/');
     }
@@ -62,14 +63,14 @@ const Setup: React.FC = () => {
           '/images/rotate4.jpg',
           '/images/rotate5.jpg',
           '/images/rotate6.jpg',
-        ]}
+        ].map((image) => getUiPath(image))}
       />
       <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
         <img
-          src="/logo_stacked.svg"
+          src={getUiPath('/logo_stacked.svg')}
           className="max-w-full mb-10 sm:max-w-md sm:mx-auto"
           alt="Logo"
         />

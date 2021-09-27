@@ -14,6 +14,7 @@ import MovieGenreSlider from './MovieGenreSlider';
 import NetworkSlider from './NetworkSlider';
 import StudioSlider from './StudioSlider';
 import TvGenreSlider from './TvGenreSlider';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   discover: 'Discover',
@@ -31,13 +32,13 @@ const Discover: React.FC = () => {
   const intl = useIntl();
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
-    '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded',
+    getPath('/media?filter=allavailable&take=20&sort=mediaAdded'),
     { revalidateOnMount: true }
   );
 
   const { data: requests, error: requestError } =
     useSWR<RequestResultsResponse>(
-      '/api/v1/request?filter=all&take=10&sort=modified&skip=0',
+      getPath('/request?filter=all&take=10&sort=modified&skip=0'),
       { revalidateOnMount: true }
     );
 
@@ -85,34 +86,34 @@ const Discover: React.FC = () => {
       <MediaSlider
         sliderKey="trending"
         title={intl.formatMessage(messages.trending)}
-        url="/api/v1/discover/trending"
+        url={getPath('/discover/trending')}
         linkUrl="/discover/trending"
       />
       <MediaSlider
         sliderKey="popular-movies"
         title={intl.formatMessage(messages.popularmovies)}
-        url="/api/v1/discover/movies"
+        url={getPath('/discover/movies')}
         linkUrl="/discover/movies"
       />
       <MovieGenreSlider />
       <MediaSlider
         sliderKey="upcoming"
         title={intl.formatMessage(messages.upcoming)}
+        url={getPath('/discover/movies/upcoming')}
         linkUrl="/discover/movies/upcoming"
-        url="/api/v1/discover/movies/upcoming"
       />
       <StudioSlider />
       <MediaSlider
         sliderKey="popular-tv"
         title={intl.formatMessage(messages.populartv)}
-        url="/api/v1/discover/tv"
+        url={getPath('/discover/tv')}
         linkUrl="/discover/tv"
       />
       <TvGenreSlider />
       <MediaSlider
         sliderKey="upcoming-tv"
         title={intl.formatMessage(messages.upcomingtv)}
-        url="/api/v1/discover/tv/upcoming"
+        url={getPath('/discover/tv/upcoming')}
         linkUrl="/discover/tv/upcoming"
       />
       <NetworkSlider />

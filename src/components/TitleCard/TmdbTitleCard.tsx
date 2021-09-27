@@ -4,6 +4,7 @@ import useSWR from 'swr';
 import TitleCard from '.';
 import type { MovieDetails } from '../../../server/models/Movie';
 import type { TvDetails } from '../../../server/models/Tv';
+import { getPath } from '../../utils/pathBuilder';
 
 interface TmdbTitleCardProps {
   tmdbId: number;
@@ -19,7 +20,7 @@ const TmdbTitleCard: React.FC<TmdbTitleCardProps> = ({ tmdbId, type }) => {
     triggerOnce: true,
   });
   const url =
-    type === 'movie' ? `/api/v1/movie/${tmdbId}` : `/api/v1/tv/${tmdbId}`;
+    type === 'movie' ? getPath(`/movie/${tmdbId}`) : getPath(`/tv/${tmdbId}`);
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}` : null
   );

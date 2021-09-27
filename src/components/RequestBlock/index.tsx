@@ -18,6 +18,7 @@ import globalMessages from '../../i18n/globalMessages';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import RequestModal from '../RequestModal';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -40,7 +41,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
 
   const updateRequest = async (type: 'approve' | 'decline'): Promise<void> => {
     setIsUpdating(true);
-    await axios.post(`/api/v1/request/${request.id}/${type}`);
+    await axios.post(getPath(`/request/${request.id}/${type}`));
 
     if (onUpdate) {
       onUpdate();
@@ -50,7 +51,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
 
   const deleteRequest = async () => {
     setIsUpdating(true);
-    await axios.delete(`/api/v1/request/${request.id}`);
+    await axios.delete(getPath(`/request/${request.id}`));
 
     if (onUpdate) {
       onUpdate();

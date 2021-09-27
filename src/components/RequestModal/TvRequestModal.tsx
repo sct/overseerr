@@ -23,6 +23,7 @@ import Modal from '../Common/Modal';
 import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 import QuotaDisplay from './QuotaDisplay';
 import SearchByNameModal from './SearchByNameModal';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',
@@ -73,7 +74,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   const editingSeasons: number[] = (editRequest?.seasons ?? []).map(
     (season) => season.seasonNumber
   );
-  const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${tmdbId}`);
+  const { data, error } = useSWR<TvDetails>(getPath(`/tv/${tmdbId}`));
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);
   const [selectedSeasons, setSelectedSeasons] = useState<number[]>(
@@ -88,7 +89,9 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   });
   const [tvdbId, setTvdbId] = useState<number | undefined>(undefined);
   const { data: quota } = useSWR<QuotaResponse>(
-    user ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota` : null
+    user
+      ? getPath(`/user/${requestOverrides?.user?.id ?? user.id}/quota`)
+      : null
   );
 
   const currentlyRemaining =
@@ -107,7 +110,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
 
     try {
       if (selectedSeasons.length > 0) {
-        await axios.put(`/api/v1/request/${editRequest.id}`, {
+        await axios.put(getPath(`/request/${editRequest.id}`), {
           mediaType: 'tv',
           serverId: requestOverrides?.server,
           profileId: requestOverrides?.profile,
@@ -118,7 +121,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           seasons: selectedSeasons,
         });
       } else {
-        await axios.delete(`/api/v1/request/${editRequest.id}`);
+        await axios.delete(getPath(`/request/${editRequest.id}`));
       }
 
       addToast(
@@ -181,7 +184,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           tags: requestOverrides.tags,
         };
       }
-      const response = await axios.post<MediaRequest>('/api/v1/request', {
+      const response = await axios.post<MediaRequest>(getPath('/request'), {
         mediaId: data?.id,
         tvdbId: tvdbId ?? data?.externalIds.tvdbId,
         mediaType: 'tv',

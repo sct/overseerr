@@ -15,6 +15,7 @@ import Alert from '../Common/Alert';
 import Modal from '../Common/Modal';
 import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 import QuotaDisplay from './QuotaDisplay';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',
@@ -54,13 +55,15 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);
   const { addToast } = useToasts();
-  const { data, error } = useSWR<MovieDetails>(`/api/v1/movie/${tmdbId}`, {
+  const { data, error } = useSWR<MovieDetails>(getPath(`/movie/${tmdbId}`), {
     revalidateOnMount: true,
   });
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const { data: quota } = useSWR<QuotaResponse>(
-    user ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota` : null
+    user
+      ? getPath(`/user/${requestOverrides?.user?.id ?? user.id}/quota`)
+      : null
   );
 
   useEffect(() => {
@@ -83,7 +86,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           tags: requestOverrides.tags,
         };
       }
-      const response = await axios.post<MediaRequest>('/api/v1/request', {
+      const response = await axios.post<MediaRequest>(getPath('/request'), {
         mediaId: data?.id,
         mediaType: 'movie',
         is4k,
@@ -132,7 +135,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
 
     try {
       const response = await axios.delete<MediaRequest>(
-        `/api/v1/request/${editRequest?.id}`
+        getPath(`/request/${editRequest?.id}`)
       );
 
       if (response.status === 204) {
@@ -160,7 +163,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
     setIsUpdating(true);
 
     try {
-      await axios.put(`/api/v1/request/${editRequest?.id}`, {
+      await axios.put(getPath(`/request/${editRequest?.id}`), {
         mediaType: 'movie',
         serverId: requestOverrides?.server,
         profileId: requestOverrides?.profile,

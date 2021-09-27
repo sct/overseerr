@@ -7,6 +7,7 @@ import globalMessages from '../../../i18n/globalMessages';
 import Alert from '../../Common/Alert';
 import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
 import Modal from '../../Common/Modal';
+import { getPath, getUiPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   notvdbiddescription:
@@ -35,7 +36,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
 }) => {
   const intl = useIntl();
   const { data, error } = useSWR<SonarrSeries[]>(
-    `/api/v1/service/sonarr/lookup/${tmdbId}`
+    getPath(`/service/sonarr/lookup/${tmdbId}`)
   );
 
   const handleClick = (tvdbId: number) => {
@@ -75,7 +76,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
                 <img
                   src={
                     item.remotePoster ??
-                    '/images/overseerr_poster_not_found.png'
+                    getUiPath('/images/overseerr_poster_not_found.png')
                   }
                   alt={item.title}
                   className="w-auto rounded-md h-100"

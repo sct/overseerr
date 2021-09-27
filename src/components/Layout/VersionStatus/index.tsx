@@ -9,6 +9,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { StatusResponse } from '../../../../server/interfaces/api/settingsInterfaces';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   streamdevelop: 'Overseerr Develop',
@@ -24,7 +25,7 @@ interface VersionStatusProps {
 
 const VersionStatus: React.FC<VersionStatusProps> = ({ onClick }) => {
   const intl = useIntl();
-  const { data } = useSWR<StatusResponse>('/api/v1/status', {
+  const { data } = useSWR<StatusResponse>(getPath('/status'), {
     refreshInterval: 60 * 1000,
   });
 

@@ -14,6 +14,7 @@ import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector, {
   ALL_NOTIFICATIONS,
 } from '../../../NotificationTypeSelector';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   webpushsettingssaved: 'Web push notification settings saved successfully!',
@@ -26,7 +27,7 @@ const UserWebPushSettings: React.FC = () => {
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
-    user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+    user ? getPath(`/user/${user?.id}/settings/notifications`) : null
   );
 
   if (!data && !error) {
@@ -41,16 +42,19 @@ const UserWebPushSettings: React.FC = () => {
       enableReinitialize
       onSubmit={async (values) => {
         try {
-          await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
-            pgpKey: data?.pgpKey,
-            discordId: data?.discordId,
-            telegramChatId: data?.telegramChatId,
-            telegramSendSilently: data?.telegramSendSilently,
-            notificationTypes: {
-              webpush: values.types,
-            },
-          });
-          mutate('/api/v1/settings/public');
+          await axios.post(
+            getPath(`/user/${user?.id}/settings/notifications`),
+            {
+              pgpKey: data?.pgpKey,
+              discordId: data?.discordId,
+              telegramChatId: data?.telegramChatId,
+              telegramSendSilently: data?.telegramSendSilently,
+              notificationTypes: {
+                webpush: values.types,
+              },
+            }
+          );
+          mutate(getPath('/settings/public'));
           addToast(intl.formatMessage(messages.webpushsettingssaved), {
             appearance: 'success',
             autoDismiss: true,

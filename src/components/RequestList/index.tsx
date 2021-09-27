@@ -18,6 +18,7 @@ import Header from '../Common/Header';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
 import RequestItem from './RequestItem';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   requests: 'Requests',
@@ -52,11 +53,13 @@ const RequestList: React.FC = () => {
   const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
   const { data, error, revalidate } = useSWR<RequestResultsResponse>(
-    `/api/v1/request?take=${currentPageSize}&skip=${
-      pageIndex * currentPageSize
-    }&filter=${currentFilter}&sort=${currentSort}${
-      router.query.userId ? `&requestedBy=${router.query.userId}` : ''
-    }`
+    getPath(
+      `/request?take=${currentPageSize}&skip=${
+        pageIndex * currentPageSize
+      }&filter=${currentFilter}&sort=${currentSort}${
+        router.query.userId ? `&requestedBy=${router.query.userId}` : ''
+      }`
+    )
   );
 
   // Restore last set filter values on component mount

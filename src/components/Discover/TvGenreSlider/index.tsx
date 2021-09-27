@@ -7,6 +7,7 @@ import { GenreSliderItem } from '../../../../server/interfaces/api/discoverInter
 import GenreCard from '../../GenreCard';
 import Slider from '../../Slider';
 import { genreColorMap } from '../constants';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   tvgenres: 'Series Genres',
@@ -15,7 +16,7 @@ const messages = defineMessages({
 const TvGenreSlider: React.FC = () => {
   const intl = useIntl();
   const { data, error } = useSWR<GenreSliderItem[]>(
-    `/api/v1/discover/genreslider/tv`,
+    getPath(`/discover/genreslider/tv`),
     {
       refreshInterval: 0,
       revalidateOnFocus: false,

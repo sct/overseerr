@@ -18,6 +18,7 @@ import NotificationTypeSelector, {
   ALL_NOTIFICATIONS,
 } from '../../../NotificationTypeSelector';
 import { OpenPgpLink } from '../../../Settings/Notifications/NotificationsEmail';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   emailsettingssaved: 'Email notification settings saved successfully!',
@@ -34,7 +35,7 @@ const UserEmailSettings: React.FC = () => {
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
-    user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+    user ? getPath(`/user/${user?.id}/settings/notifications`) : null
   );
 
   const UserNotificationsEmailSchema = Yup.object().shape({
@@ -60,15 +61,18 @@ const UserEmailSettings: React.FC = () => {
       enableReinitialize
       onSubmit={async (values) => {
         try {
-          await axios.post(`/api/v1/user/${user?.id}/settings/notifications`, {
-            pgpKey: values.pgpKey,
-            discordId: data?.discordId,
-            telegramChatId: data?.telegramChatId,
-            telegramSendSilently: data?.telegramSendSilently,
-            notificationTypes: {
-              email: values.types,
-            },
-          });
+          await axios.post(
+            getPath(`/user/${user?.id}/settings/notifications`),
+            {
+              pgpKey: values.pgpKey,
+              discordId: data?.discordId,
+              telegramChatId: data?.telegramChatId,
+              telegramSendSilently: data?.telegramSendSilently,
+              notificationTypes: {
+                email: values.types,
+              },
+            }
+          );
           addToast(intl.formatMessage(messages.emailsettingssaved), {
             appearance: 'success',
             autoDismiss: true,

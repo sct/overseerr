@@ -18,6 +18,7 @@ import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import Table from '../../Common/Table';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   jobsandcache: 'Jobs & Cache',
@@ -64,11 +65,11 @@ interface Job {
 const SettingsJobs: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
-  const { data, error, revalidate } = useSWR<Job[]>('/api/v1/settings/jobs', {
+  const { data, error, revalidate } = useSWR<Job[]>(getPath('/settings/jobs'), {
     refreshInterval: 5000,
   });
   const { data: cacheData, revalidate: cacheRevalidate } = useSWR<CacheItem[]>(
-    '/api/v1/settings/cache',
+    getPath('/settings/cache'),
     {
       refreshInterval: 10000,
     }
@@ -79,7 +80,7 @@ const SettingsJobs: React.FC = () => {
   }
 
   const runJob = async (job: Job) => {
-    await axios.post(`/api/v1/settings/jobs/${job.id}/run`);
+    await axios.post(getPath(`/settings/jobs/${job.id}/run`));
     addToast(
       intl.formatMessage(messages.jobstarted, {
         jobname: intl.formatMessage(messages[job.id] ?? messages.unknownJob),
@@ -93,7 +94,7 @@ const SettingsJobs: React.FC = () => {
   };
 
   const cancelJob = async (job: Job) => {
-    await axios.post(`/api/v1/settings/jobs/${job.id}/cancel`);
+    await axios.post(getPath(`/settings/jobs/${job.id}/cancel`));
     addToast(
       intl.formatMessage(messages.jobcancelled, {
         jobname: intl.formatMessage(messages[job.id] ?? messages.unknownJob),
@@ -107,7 +108,7 @@ const SettingsJobs: React.FC = () => {
   };
 
   const flushCache = async (cache: CacheItem) => {
-    await axios.post(`/api/v1/settings/cache/${cache.id}/flush`);
+    await axios.post(getPath(`/settings/cache/${cache.id}/flush`));
     addToast(
       intl.formatMessage(messages.cacheflushed, { cachename: cache.name }),
       {

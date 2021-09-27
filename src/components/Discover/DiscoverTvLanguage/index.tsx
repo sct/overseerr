@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import globalMessages from '../../../i18n/globalMessages';
 import useDiscover from '../../../hooks/useDiscover';
 import Error from '../../../pages/_error';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   languageSeries: '{language} Series',
@@ -34,7 +35,7 @@ const DiscoverTvLanguage: React.FC = () => {
         name: string;
       };
     }
-  >(`/api/v1/discover/tv/language/${router.query.language}`);
+  >(getPath(`/discover/tv/language/${router.query.language}`));
 
   if (error) {
     return <Error statusCode={500} />;

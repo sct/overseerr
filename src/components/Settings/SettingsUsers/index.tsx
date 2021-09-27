@@ -12,6 +12,7 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import PermissionEdit from '../../PermissionEdit';
 import QuotaSelector from '../../QuotaSelector';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   users: 'Users',
@@ -34,7 +35,7 @@ const SettingsUsers: React.FC = () => {
   const { addToast } = useToasts();
   const intl = useIntl();
   const { data, error, revalidate } = useSWR<MainSettings>(
-    '/api/v1/settings/main'
+    getPath('/settings/main')
   );
 
   if (!data && !error) {
@@ -69,7 +70,7 @@ const SettingsUsers: React.FC = () => {
           enableReinitialize
           onSubmit={async (values) => {
             try {
-              await axios.post('/api/v1/settings/main', {
+              await axios.post(getPath('/settings/main'), {
                 localLogin: values.localLogin,
                 newPlexLogin: values.newPlexLogin,
                 defaultQuotas: {
@@ -84,7 +85,7 @@ const SettingsUsers: React.FC = () => {
                 },
                 defaultPermissions: values.defaultPermissions,
               });
-              mutate('/api/v1/settings/public');
+              mutate(getPath('/settings/public'));
 
               addToast(intl.formatMessage(messages.toastSettingsSuccess), {
                 autoDismiss: true,

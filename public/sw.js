@@ -122,13 +122,13 @@ self.addEventListener('notificationclick', (event) => {
   if (event.action === 'viewmedia') {
     clients.openWindow(notificationData.actionUrl);
   } else if (event.action === 'approve') {
-    fetch(`/api/v1/request/${notificationData.requestId}/approve`, {
+    fetch(getPath(`/request/${notificationData.requestId}/approve`), {
       method: 'POST',
     });
 
     clients.openWindow(notificationData.actionUrl);
   } else if (event.action === 'decline') {
-    fetch(`/api/v1/request/${notificationData.requestId}/decline`, {
+    fetch(getPath(`/request/${notificationData.requestId}/decline`), {
       method: 'POST',
     });
 

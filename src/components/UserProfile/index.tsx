@@ -19,6 +19,7 @@ import ProgressCircle from '../Common/ProgressCircle';
 import RequestCard from '../RequestCard';
 import Slider from '../Slider';
 import ProfileHeader from './ProfileHeader';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   recentrequests: 'Recent Requests',
@@ -46,10 +47,10 @@ const UserProfile: React.FC = () => {
   >({});
 
   const { data: requests, error: requestError } = useSWR<UserRequestsResponse>(
-    user ? `/api/v1/user/${user?.id}/requests?take=10&skip=0` : null
+    user ? getPath(`/user/${user?.id}/requests?take=10&skip=0`) : null
   );
   const { data: quota } = useSWR<QuotaResponse>(
-    user ? `/api/v1/user/${user.id}/quota` : null
+    user ? getPath(`/user/${user.id}/quota`) : null
   );
 
   const updateAvailableTitles = useCallback(

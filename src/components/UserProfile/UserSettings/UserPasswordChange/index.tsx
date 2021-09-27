@@ -15,6 +15,7 @@ import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import PageTitle from '../../../Common/PageTitle';
 import SensitiveInput from '../../../Common/SensitiveInput';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   password: 'Password',
@@ -46,7 +47,7 @@ const UserPasswordChange: React.FC = () => {
   const { user: currentUser } = useUser();
   const { user, hasPermission } = useUser({ id: Number(router.query.userId) });
   const { data, error, revalidate } = useSWR<{ hasPassword: boolean }>(
-    user ? `/api/v1/user/${user?.id}/settings/password` : null
+    user ? getPath(`/user/${user?.id}/settings/password`) : null
   );
 
   const PasswordChangeSchema = Yup.object().shape({
@@ -116,7 +117,7 @@ const UserPasswordChange: React.FC = () => {
         enableReinitialize
         onSubmit={async (values, { resetForm }) => {
           try {
-            await axios.post(`/api/v1/user/${user?.id}/settings/password`, {
+            await axios.post(getPath(`/user/${user?.id}/settings/password`), {
               currentPassword: values.currentPassword,
               newPassword: values.newPassword,
               confirmPassword: values.confirmPassword,

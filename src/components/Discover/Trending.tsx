@@ -9,6 +9,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import Header from '../Common/Header';
 import PageTitle from '../Common/PageTitle';
 import useDiscover from '../../hooks/useDiscover';
+import { getPath } from '../../utils/pathBuilder';
 import Error from '../../pages/_error';
 
 const messages = defineMessages({
@@ -26,7 +27,7 @@ const Trending: React.FC = () => {
     fetchMore,
     error,
   } = useDiscover<MovieResult | TvResult | PersonResult>(
-    '/api/v1/discover/trending'
+    getPath('/discover/trending')
   );
 
   if (error) {

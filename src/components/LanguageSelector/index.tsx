@@ -7,6 +7,7 @@ import type { OptionsType, OptionTypeBase } from 'react-select';
 import useSWR from 'swr';
 import { Language } from '../../../server/lib/settings';
 import globalMessages from '../../i18n/globalMessages';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   originalLanguageDefault: 'All Languages',
@@ -44,7 +45,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   isUserSettings = false,
 }) => {
   const intl = useIntl();
-  const { data: languages } = useSWR<Language[]>('/api/v1/languages');
+  const { data: languages } = useSWR<Language[]>(getPath('/languages'));
 
   const sortedLanguages = useMemo(() => {
     languages?.forEach((language) => {

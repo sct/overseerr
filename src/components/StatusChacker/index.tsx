@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import { StatusResponse } from '../../../server/interfaces/api/settingsInterfaces';
 import Modal from '../Common/Modal';
 import Transition from '../Transition';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   newversionavailable: 'Application Update',
@@ -15,7 +16,7 @@ const messages = defineMessages({
 
 const StatusChecker: React.FC = () => {
   const intl = useIntl();
-  const { data, error } = useSWR<StatusResponse>('/api/v1/status', {
+  const { data, error } = useSWR<StatusResponse>(getPath('/status'), {
     refreshInterval: 60 * 1000,
   });
 

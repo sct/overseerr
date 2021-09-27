@@ -11,6 +11,7 @@ import Button from '../Common/Button';
 import ImageFader from '../Common/ImageFader';
 import SensitiveInput from '../Common/SensitiveInput';
 import LanguagePicker from '../Layout/LanguagePicker';
+import { getPath, getUiPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   passwordreset: 'Password Reset',
@@ -58,7 +59,7 @@ const ResetPassword: React.FC = () => {
           '/images/rotate4.jpg',
           '/images/rotate5.jpg',
           '/images/rotate6.jpg',
-        ]}
+        ].map((image) => getUiPath(image))}
       />
       <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />
@@ -97,7 +98,7 @@ const ResetPassword: React.FC = () => {
                 validationSchema={ResetSchema}
                 onSubmit={async (values) => {
                   const response = await axios.post(
-                    `/api/v1/auth/reset-password/${guid}`,
+                    getPath(`/auth/reset-password/${guid}`),
                     {
                       password: values.password,
                     }

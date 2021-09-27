@@ -35,10 +35,12 @@ tags:
   - name: service
     description: Endpoints related to getting service (Radarr/Sonarr) details.
 servers:
-  - url: '{server}/api/v1'
+  - url: '{server}{basePath}/api/v1'
     variables:
       server:
         default: http://localhost:5055
+      basePath:
+        default: ''
 
 components:
   schemas:

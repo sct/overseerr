@@ -47,6 +47,7 @@ import RequestButton from '../RequestButton';
 import RequestModal from '../RequestModal';
 import Slider from '../Slider';
 import StatusBadge from '../StatusBadge';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',
@@ -97,14 +98,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const [showManager, setShowManager] = useState(false);
 
   const { data, error, revalidate } = useSWR<TvDetailsType>(
-    `/api/v1/tv/${router.query.tvId}`,
+    getPath(`/tv/${router.query.tvId}`),
     {
       initialData: tv,
     }
   );
 
   const { data: ratingData } = useSWR<RTRating>(
-    `/api/v1/tv/${router.query.tvId}/ratings`
+    getPath(`/tv/${router.query.tvId}/ratings`)
   );
 
   const sortedCrew = useMemo(
@@ -158,13 +159,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   const deleteMedia = async () => {
     if (data?.mediaInfo?.id) {
-      await axios.delete(`/api/v1/media/${data?.mediaInfo?.id}`);
+      await axios.delete(getPath(`/media/${data?.mediaInfo?.id}`));
       revalidate();
     }
   };
 
   const markAvailable = async (is4k = false) => {
-    await axios.post(`/api/v1/media/${data?.mediaInfo?.id}/available`, {
+    await axios.post(getPath(`/media/${data?.mediaInfo?.id}/available`), {
       is4k,
     });
     revalidate();
@@ -724,14 +725,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       <MediaSlider
         sliderKey="recommendations"
         title={intl.formatMessage(messages.recommendations)}
-        url={`/api/v1/tv/${router.query.tvId}/recommendations`}
+        url={getPath(`/tv/${router.query.tvId}/recommendations`)}
         linkUrl={`/tv/${data.id}/recommendations`}
         hideWhenEmpty
       />
       <MediaSlider
         sliderKey="similar"
         title={intl.formatMessage(messages.similar)}
-        url={`/api/v1/tv/${router.query.tvId}/similar`}
+        url={getPath(`/tv/${router.query.tvId}/similar`)}
         linkUrl={`/tv/${data.id}/similar`}
         hideWhenEmpty
       />

@@ -10,6 +10,7 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
@@ -34,7 +35,7 @@ const NotificationsPushover: React.FC = () => {
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/pushover'
+    getPath('/settings/notifications/pushover')
   );
 
   const NotificationsPushoverSchema = Yup.object().shape({
@@ -86,7 +87,7 @@ const NotificationsPushover: React.FC = () => {
       validationSchema={NotificationsPushoverSchema}
       onSubmit={async (values) => {
         try {
-          await axios.post('/api/v1/settings/notifications/pushover', {
+          await axios.post(getPath('/settings/notifications/pushover'), {
             enabled: values.enabled,
             types: values.types,
             options: {
@@ -131,7 +132,7 @@ const NotificationsPushover: React.FC = () => {
                 toastId = id;
               }
             );
-            await axios.post('/api/v1/settings/notifications/pushover/test', {
+            await axios.post(getPath('/settings/notifications/pushover/test'), {
               enabled: true,
               types: values.types,
               options: {

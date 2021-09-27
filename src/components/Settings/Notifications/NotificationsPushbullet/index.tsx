@@ -11,6 +11,7 @@ import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import SensitiveInput from '../../../Common/SensitiveInput';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   agentEnabled: 'Enable Agent',
@@ -32,7 +33,7 @@ const NotificationsPushbullet: React.FC = () => {
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/pushbullet'
+    getPath('/settings/notifications/pushbullet')
   );
 
   const NotificationsPushbulletSchema = Yup.object().shape({
@@ -66,7 +67,7 @@ const NotificationsPushbullet: React.FC = () => {
       validationSchema={NotificationsPushbulletSchema}
       onSubmit={async (values) => {
         try {
-          await axios.post('/api/v1/settings/notifications/pushbullet', {
+          await axios.post(getPath('/settings/notifications/pushbullet'), {
             enabled: values.enabled,
             types: values.types,
             options: {
@@ -110,13 +111,16 @@ const NotificationsPushbullet: React.FC = () => {
                 toastId = id;
               }
             );
-            await axios.post('/api/v1/settings/notifications/pushbullet/test', {
-              enabled: true,
-              types: values.types,
-              options: {
-                accessToken: values.accessToken,
-              },
-            });
+            await axios.post(
+              getPath('/settings/notifications/pushbullet/test'),
+              {
+                enabled: true,
+                types: values.types,
+                options: {
+                  accessToken: values.accessToken,
+                },
+              }
+            );
 
             if (toastId) {
               removeToast(toastId);

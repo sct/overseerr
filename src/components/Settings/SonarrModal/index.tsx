@@ -12,6 +12,7 @@ import globalMessages from '../../../i18n/globalMessages';
 import Modal from '../../Common/Modal';
 import SensitiveInput from '../../Common/SensitiveInput';
 import Transition from '../../Transition';
+import { getPath } from '../../../utils/pathBuilder';
 
 type OptionType = {
   value: string;
@@ -178,7 +179,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
       setIsTesting(true);
       try {
         const response = await axios.post<TestResponse>(
-          '/api/v1/settings/sonarr/test',
+          getPath('/settings/sonarr/test'),
           {
             hostname,
             apiKey,
@@ -299,10 +300,10 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
               preventSearch: !values.enableSearch,
             };
             if (!sonarr) {
-              await axios.post('/api/v1/settings/sonarr', submission);
+              await axios.post(getPath('/settings/sonarr'), submission);
             } else {
               await axios.put(
-                `/api/v1/settings/sonarr/${sonarr.id}`,
+                getPath(`/settings/sonarr/${sonarr.id}`),
                 submission
               );
             }

@@ -9,6 +9,7 @@ import Header from '../../Common/Header';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import PersonCard from '../../PersonCard';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   fullcrew: 'Full Crew',
@@ -18,7 +19,7 @@ const MovieCrew: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
   const { data, error } = useSWR<MovieDetails>(
-    `/api/v1/movie/${router.query.movieId}`
+    getPath(`/movie/${router.query.movieId}`)
   );
 
   if (!data && !error) {

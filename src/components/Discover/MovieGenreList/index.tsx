@@ -8,6 +8,7 @@ import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
 import GenreCard from '../../GenreCard';
 import { genreColorMap } from '../constants';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   moviegenres: 'Movie Genres',
@@ -16,7 +17,7 @@ const messages = defineMessages({
 const MovieGenreList: React.FC = () => {
   const intl = useIntl();
   const { data, error } = useSWR<GenreSliderItem[]>(
-    `/api/v1/discover/genreslider/movie`
+    getPath(`/discover/genreslider/movie`)
   );
 
   if (!data && !error) {

@@ -19,6 +19,7 @@ import { SettingsProvider } from '../context/SettingsContext';
 import { UserContext } from '../context/UserContext';
 import { User } from '../hooks/useUser';
 import '../styles/globals.css';
+import { getPath, getUiPath } from '../utils/pathBuilder';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
@@ -168,7 +169,9 @@ CoreApp.getInitialProps = async (initialProps) => {
   if (ctx.res) {
     // Check if app is initialized and redirect if necessary
     const response = await axios.get<PublicSettingsResponse>(
-      `http://localhost:${process.env.PORT || 5055}/api/v1/settings/public`
+      `http://localhost:${process.env.PORT || 5055}${getPath(
+        '/settings/public'
+      )}`
     );
 
     currentSettings = response.data;
@@ -178,7 +181,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     if (!initialized) {
       if (!router.pathname.match(/(setup|login\/plex)/)) {
         ctx.res.writeHead(307, {
-          Location: '/setup',
+          Location: getUiPath('/setup'),
         });
         ctx.res.end();
       }
@@ -186,14 +189,14 @@ CoreApp.getInitialProps = async (initialProps) => {
       try {
         // Attempt to get the user by running a request to the local api
         const response = await axios.get<User>(
-          `http://localhost:${process.env.PORT || 5055}/api/v1/auth/me`,
+          `http://localhost:${process.env.PORT || 5055}${getPath('/auth/me')}`,
           { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
         );
         user = response.data;
 
         if (router.pathname.match(/(setup|login)/)) {
           ctx.res.writeHead(307, {
-            Location: '/',
+            Location: getUiPath('/'),
           });
           ctx.res.end();
         }
@@ -203,7 +206,7 @@ CoreApp.getInitialProps = async (initialProps) => {
         // before anything actually renders
         if (!router.pathname.match(/(login|setup|resetpassword)/)) {
           ctx.res.writeHead(307, {
-            Location: '/login',
+            Location: getUiPath('/login'),
           });
           ctx.res.end();
         }

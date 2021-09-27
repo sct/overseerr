@@ -9,6 +9,7 @@ import globalMessages from '../../../i18n/globalMessages';
 import useDiscover from '../../../hooks/useDiscover';
 import Error from '../../../pages/_error';
 import { ProductionCompany } from '../../../../server/models/common';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   studioMovies: '{studio} Movies',
@@ -28,7 +29,7 @@ const DiscoverMovieStudio: React.FC = () => {
     error,
     firstResultData,
   } = useDiscover<MovieResult, { studio: ProductionCompany }>(
-    `/api/v1/discover/movies/studio/${router.query.studioId}`
+    getPath(`/discover/movies/studio/${router.query.studioId}`)
   );
 
   if (error) {

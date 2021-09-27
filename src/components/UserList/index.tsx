@@ -33,6 +33,7 @@ import SensitiveInput from '../Common/SensitiveInput';
 import Table from '../Common/Table';
 import Transition from '../Transition';
 import BulkEditModal from './BulkEditModal';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   users: 'Users',
@@ -177,7 +178,7 @@ const UserList: React.FC = () => {
     setDeleting(true);
 
     try {
-      await axios.delete(`/api/v1/user/${deleteModal.user?.id}`);
+      await axios.delete(getPath(`/user/${deleteModal.user?.id}`));
 
       addToast(intl.formatMessage(messages.userdeleted), {
         autoDismiss: true,
@@ -200,7 +201,7 @@ const UserList: React.FC = () => {
 
     try {
       const { data: createdUsers } = await axios.post(
-        '/api/v1/user/import-from-plex'
+        getPath('/user/import-from-plex')
       );
       addToast(
         createdUsers.length
@@ -301,7 +302,7 @@ const UserList: React.FC = () => {
           validationSchema={CreateUserSchema}
           onSubmit={async (values) => {
             try {
-              await axios.post('/api/v1/user', {
+              await axios.post(getPath('/user'), {
                 username: values.displayName,
                 email: values.email,
                 password: values.genpassword ? null : values.password,

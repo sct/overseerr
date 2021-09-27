@@ -11,6 +11,7 @@ import { MediaStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { Collection } from '../../../server/models/Collection';
 import useSettings from '../../hooks/useSettings';
+import { getPath, getUiPath } from '../../utils/pathBuilder';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
@@ -53,15 +54,16 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
   const [is4k, setIs4k] = useState(false);
 
   const { data, error, revalidate } = useSWR<Collection>(
-    `/api/v1/collection/${router.query.collectionId}`,
+    getPath(`/collection/${router.query.collectionId}`),
     {
       initialData: collection,
       revalidateOnMount: true,
     }
   );
 
-  const { data: genres } =
-    useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);
+  const { data: genres } = useSWR<{ id: number; name: string }[]>(
+    getPath(`/genres/movie`)
+  );
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -135,7 +137,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
       setRequesting(true);
       await Promise.all(
         requestableParts.map(async (part) => {
-          await axios.post<MediaRequest>('/api/v1/request', {
+          await axios.post<MediaRequest>(getPath('/request'), {
             mediaId: part.id,
             mediaType: 'movie',
             is4k,
@@ -282,7 +284,7 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
             src={
               data.posterPath
                 ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
-                : '/images/overseerr_poster_not_found.png'
+                : getUiPath('/images/overseerr_poster_not_found.png')
             }
             alt=""
             layout="responsive"

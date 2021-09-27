@@ -27,6 +27,7 @@ import CachedImage from '../../Common/CachedImage';
 import ConfirmButton from '../../Common/ConfirmButton';
 import RequestModal from '../../RequestModal';
 import StatusBadge from '../../StatusBadge';
+import { getPath, getUiPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -58,7 +59,7 @@ const RequestItemError: React.FC<RequestItemErroProps> = ({
   const { hasPermission } = useUser();
 
   const deleteRequest = async () => {
-    await axios.delete(`/api/v1/media/${mediaId}`);
+    await axios.delete(getPath(`/media/${mediaId}`));
     revalidateList();
   };
 
@@ -101,8 +102,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const url =
     request.type === 'movie'
-      ? `/api/v1/movie/${request.media.tmdbId}`
-      : `/api/v1/tv/${request.media.tmdbId}`;
+      ? getPath(`/movie/${request.media.tmdbId}`)
+      : getPath(`/tv/${request.media.tmdbId}`);
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}` : null
   );
@@ -110,14 +111,16 @@ const RequestItem: React.FC<RequestItemProps> = ({
     data: requestData,
     revalidate,
     mutate,
-  } = useSWR<MediaRequest>(`/api/v1/request/${request.id}`, {
+  } = useSWR<MediaRequest>(getPath(`/request/${request.id}`), {
     initialData: request,
   });
 
   const [isRetrying, setRetrying] = useState(false);
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
-    const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
+    const response = await axios.post(
+      getPath(`/request/${request.id}/${type}`)
+    );
 
     if (response) {
       revalidate();
@@ -125,7 +128,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   };
 
   const deleteRequest = async () => {
-    await axios.delete(`/api/v1/request/${request.id}`);
+    await axios.delete(getPath(`/request/${request.id}`));
 
     revalidateList();
   };
@@ -134,7 +137,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
     setRetrying(true);
 
     try {
-      const result = await axios.post(`/api/v1/request/${request.id}/retry`);
+      const result = await axios.post(getPath(`/request/${request.id}/retry`));
       mutate(result.data);
     } catch (e) {
       addToast(intl.formatMessage(messages.failedretry), {
@@ -210,7 +213,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   src={
                     title.posterPath
                       ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
-                      : '/images/overseerr_poster_not_found.png'
+                      : getUiPath('/images/overseerr_poster_not_found.png')
                   }
                   alt=""
                   layout="responsive"
@@ -230,8 +233,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
               <Link
                 href={
                   requestData.type === 'movie'
-                    ? `/movie/${requestData.media.tmdbId}`
-                    : `/tv/${requestData.media.tmdbId}`
+                    ? getUiPath(`/movie/${requestData.media.tmdbId}`)
+                    : getUiPath(`/tv/${requestData.media.tmdbId}`)
                 }
               >
                 <a className="min-w-0 mr-2 text-lg font-bold text-white truncate xl:text-xl hover:underline">

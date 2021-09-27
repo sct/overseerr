@@ -2,6 +2,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import Alert from '../Common/Alert';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   dockerVolumeMissingDescription:
@@ -11,7 +12,7 @@ const messages = defineMessages({
 const AppDataWarning: React.FC = () => {
   const intl = useIntl();
   const { data, error } = useSWR<{ appData: boolean; appDataPath: string }>(
-    '/api/v1/status/appdata'
+    getPath('/status/appdata')
   );
 
   if (!data && !error) {

@@ -19,6 +19,7 @@ import PageTitle from '../Common/PageTitle';
 import Transition from '../Transition';
 import RadarrModal from './RadarrModal';
 import SonarrModal from './SonarrModal';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   services: 'Services',
@@ -166,12 +167,12 @@ const SettingsServices: React.FC = () => {
     data: radarrData,
     error: radarrError,
     revalidate: revalidateRadarr,
-  } = useSWR<RadarrSettings[]>('/api/v1/settings/radarr');
+  } = useSWR<RadarrSettings[]>(getPath('/settings/radarr'));
   const {
     data: sonarrData,
     error: sonarrError,
     revalidate: revalidateSonarr,
-  } = useSWR<SonarrSettings[]>('/api/v1/settings/sonarr');
+  } = useSWR<SonarrSettings[]>(getPath('/settings/sonarr'));
   const [editRadarrModal, setEditRadarrModal] = useState<{
     open: boolean;
     radarr: RadarrSettings | null;
@@ -198,12 +199,14 @@ const SettingsServices: React.FC = () => {
 
   const deleteServer = async () => {
     await axios.delete(
-      `/api/v1/settings/${deleteServerModal.type}/${deleteServerModal.serverId}`
+      getPath(
+        `/settings/${deleteServerModal.type}/${deleteServerModal.serverId}`
+      )
     );
     setDeleteServerModal({ open: false, serverId: null, type: 'radarr' });
     revalidateRadarr();
     revalidateSonarr();
-    mutate('/api/v1/settings/public');
+    mutate(getPath('/settings/public'));
   };
 
   return (
@@ -230,7 +233,7 @@ const SettingsServices: React.FC = () => {
           onClose={() => setEditRadarrModal({ open: false, radarr: null })}
           onSave={() => {
             revalidateRadarr();
-            mutate('/api/v1/settings/public');
+            mutate(getPath('/settings/public'));
             setEditRadarrModal({ open: false, radarr: null });
           }}
         />
@@ -241,7 +244,7 @@ const SettingsServices: React.FC = () => {
           onClose={() => setEditSonarrModal({ open: false, sonarr: null })}
           onSave={() => {
             revalidateSonarr();
-            mutate('/api/v1/settings/public');
+            mutate(getPath('/settings/public'));
             setEditSonarrModal({ open: false, sonarr: null });
           }}
         />

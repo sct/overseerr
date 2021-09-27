@@ -23,6 +23,7 @@ import PageTitle from '../../../Common/PageTitle';
 import LanguageSelector from '../../../LanguageSelector';
 import QuotaSelector from '../../../QuotaSelector';
 import RegionSelector from '../../../RegionSelector';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   general: 'General',
@@ -61,7 +62,7 @@ const UserGeneralSettings: React.FC = () => {
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const { currentSettings } = useSettings();
   const { data, error, revalidate } = useSWR<UserSettingsGeneralResponse>(
-    user ? `/api/v1/user/${user?.id}/settings/main` : null
+    user ? getPath(`/user/${user?.id}/settings/main`) : null
   );
 
   useEffect(() => {
@@ -108,7 +109,7 @@ const UserGeneralSettings: React.FC = () => {
         enableReinitialize
         onSubmit={async (values) => {
           try {
-            await axios.post(`/api/v1/user/${user?.id}/settings/main`, {
+            await axios.post(getPath(`/user/${user?.id}/settings/main`), {
               username: values.displayName,
               region: values.region,
               originalLanguage: values.originalLanguage,

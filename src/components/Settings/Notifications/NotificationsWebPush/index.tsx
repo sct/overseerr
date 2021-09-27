@@ -9,6 +9,7 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Alert from '../../../Common/Alert';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
@@ -27,7 +28,7 @@ const NotificationsWebPush: React.FC = () => {
   const [isTesting, setIsTesting] = useState(false);
   const [isHttps, setIsHttps] = useState(false);
   const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/webpush'
+    getPath('/settings/notifications/webpush')
   );
 
   useEffect(() => {
@@ -52,11 +53,11 @@ const NotificationsWebPush: React.FC = () => {
         }}
         onSubmit={async (values) => {
           try {
-            await axios.post('/api/v1/settings/notifications/webpush', {
+            await axios.post(getPath('/settings/notifications/webpush'), {
               enabled: values.enabled,
               options: {},
             });
-            mutate('/api/v1/settings/public');
+            mutate(getPath('/settings/public'));
             addToast(intl.formatMessage(messages.webpushsettingssaved), {
               appearance: 'success',
               autoDismiss: true,
@@ -86,10 +87,13 @@ const NotificationsWebPush: React.FC = () => {
                   toastId = id;
                 }
               );
-              await axios.post('/api/v1/settings/notifications/webpush/test', {
-                enabled: true,
-                options: {},
-              });
+              await axios.post(
+                getPath('/settings/notifications/webpush/test'),
+                {
+                  enabled: true,
+                  options: {},
+                }
+              );
 
               if (toastId) {
                 removeToast(toastId);

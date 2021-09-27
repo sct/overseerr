@@ -11,6 +11,7 @@ import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import SensitiveInput from '../../Common/SensitiveInput';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   validationSmtpHostRequired: 'You must provide a valid hostname or IP address',
@@ -59,7 +60,7 @@ const NotificationsEmail: React.FC = () => {
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/email'
+    getPath('/settings/notifications/email')
   );
 
   const NotificationsEmailSchema = Yup.object().shape(
@@ -143,7 +144,7 @@ const NotificationsEmail: React.FC = () => {
       validationSchema={NotificationsEmailSchema}
       onSubmit={async (values) => {
         try {
-          await axios.post('/api/v1/settings/notifications/email', {
+          await axios.post(getPath('/settings/notifications/email'), {
             enabled: values.enabled,
             options: {
               emailFrom: values.emailFrom,
@@ -160,7 +161,7 @@ const NotificationsEmail: React.FC = () => {
               pgpPassword: values.pgpPassword,
             },
           });
-          mutate('/api/v1/settings/public');
+          mutate(getPath('/settings/public'));
 
           addToast(intl.formatMessage(messages.emailsettingssaved), {
             appearance: 'success',
@@ -191,7 +192,7 @@ const NotificationsEmail: React.FC = () => {
                 toastId = id;
               }
             );
-            await axios.post('/api/v1/settings/notifications/email/test', {
+            await axios.post(getPath('/settings/notifications/email/test'), {
               enabled: true,
               options: {
                 emailFrom: values.emailFrom,

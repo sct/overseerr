@@ -10,6 +10,7 @@ import Error from '../../pages/_error';
 import Header from '../Common/Header';
 import ListView from '../Common/ListView';
 import PageTitle from '../Common/PageTitle';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   similar: 'Similar Titles',
@@ -19,7 +20,7 @@ const MovieSimilar: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
   const { data: movieData } = useSWR<MovieDetails>(
-    `/api/v1/movie/${router.query.movieId}`
+    getPath(`/movie/${router.query.movieId}`)
   );
   const {
     isLoadingInitialData,
@@ -29,7 +30,9 @@ const MovieSimilar: React.FC = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<MovieResult>(`/api/v1/movie/${router.query.movieId}/similar`);
+  } = useDiscover<MovieResult>(
+    getPath(`/movie/${router.query.movieId}/similar`)
+  );
 
   if (error) {
     return <Error statusCode={500} />;

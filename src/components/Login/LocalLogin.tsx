@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import useSettings from '../../hooks/useSettings';
 import Button from '../Common/Button';
 import SensitiveInput from '../Common/SensitiveInput';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   email: 'Email Address',
@@ -51,7 +52,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
       validationSchema={LoginSchema}
       onSubmit={async (values) => {
         try {
-          await axios.post('/api/v1/auth/local', {
+          await axios.post(getPath('/auth/local'), {
             email: values.email,
             password: values.password,
           });

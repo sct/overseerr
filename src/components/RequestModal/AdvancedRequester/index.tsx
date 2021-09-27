@@ -17,6 +17,7 @@ import { Permission, User, useUser } from '../../../hooks/useUser';
 import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';
 import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
+import { getPath } from '../../../utils/pathBuilder';
 
 type OptionType = {
   value: string;
@@ -69,7 +70,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const { data, error } = useSWR<ServiceCommonServer[]>(
-    `/api/v1/service/${type === 'movie' ? 'radarr' : 'sonarr'}`,
+    getPath(`/service/${type === 'movie' ? 'radarr' : 'sonarr'}`),
     {
       refreshInterval: 0,
       refreshWhenHidden: false,
@@ -100,9 +101,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
   const { data: serverData, isValidating } =
     useSWR<ServiceCommonServerWithDetails>(
       selectedServer !== null
-        ? `/api/v1/service/${
-            type === 'movie' ? 'radarr' : 'sonarr'
-          }/${selectedServer}`
+        ? getPath(
+            `/service/${
+              type === 'movie' ? 'radarr' : 'sonarr'
+            }/${selectedServer}`
+          )
         : null,
       {
         refreshInterval: 0,
@@ -117,7 +120,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
 
   const { data: userData } = useSWR<UserResultsResponse>(
     hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS])
-      ? '/api/v1/user?take=1000&sort=displayname'
+      ? getPath('/user?take=1000&sort=displayname')
       : null
   );
 

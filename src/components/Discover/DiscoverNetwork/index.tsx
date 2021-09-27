@@ -9,6 +9,7 @@ import globalMessages from '../../../i18n/globalMessages';
 import useDiscover from '../../../hooks/useDiscover';
 import Error from '../../../pages/_error';
 import { TvNetwork } from '../../../../server/models/common';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   networkSeries: '{network} Series',
@@ -28,7 +29,7 @@ const DiscoverTvNetwork: React.FC = () => {
     error,
     firstResultData,
   } = useDiscover<TvResult, { network: TvNetwork }>(
-    `/api/v1/discover/tv/network/${router.query.networkId}`
+    getPath(`/discover/tv/network/${router.query.networkId}`)
   );
 
   if (error) {

@@ -13,6 +13,7 @@ import useClickOutside from '../../../hooks/useClickOutside';
 import { Permission, useUser } from '../../../hooks/useUser';
 import Transition from '../../Transition';
 import VersionStatus from '../VersionStatus';
+import { getUiPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   dashboard: 'Discover',
@@ -114,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                     <div className="flex items-center flex-shrink-0 px-2">
                       <span className="px-4 text-xl text-gray-50">
                         <a href="/">
-                          <img src="/logo_full.svg" alt="Logo" />
+                          <img src={getUiPath('/logo_full.svg')} alt="Logo" />
                         </a>
                       </span>
                     </div>

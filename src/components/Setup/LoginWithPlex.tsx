@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useUser } from '../../hooks/useUser';
 import PlexLoginButton from '../PlexLoginButton';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   welcome: 'Welcome to Overseerr',
@@ -24,7 +25,7 @@ const LoginWithPlex: React.FC<LoginWithPlexProps> = ({ onComplete }) => {
 
   useEffect(() => {
     const login = async () => {
-      const response = await axios.post('/api/v1/auth/plex', { authToken });
+      const response = await axios.post(getPath('/auth/plex'), { authToken });
 
       if (response.data?.id) {
         revalidate();

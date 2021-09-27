@@ -1,6 +1,7 @@
 import React from 'react';
 import useSWR from 'swr';
 import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
+import { getPath } from '../utils/pathBuilder';
 
 export interface SettingsContextProps {
   currentSettings: PublicSettingsResponse;
@@ -33,7 +34,7 @@ export const SettingsProvider: React.FC<SettingsContextProps> = ({
   currentSettings,
 }) => {
   const { data, error } = useSWR<PublicSettingsResponse>(
-    '/api/v1/settings/public',
+    getPath('/settings/public'),
     { initialData: currentSettings }
   );
 

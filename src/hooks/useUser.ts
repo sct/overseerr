@@ -7,6 +7,7 @@ import {
   PermissionCheckOptions,
 } from '../../server/lib/permissions';
 import { NotificationAgentKey } from '../../server/lib/settings';
+import { getPath } from '../utils/pathBuilder';
 
 export { Permission, UserType };
 export type { PermissionCheckOptions };
@@ -56,7 +57,7 @@ export const useUser = ({
   initialData,
 }: { id?: number; initialData?: User } = {}): UserHookResponse => {
   const { data, error, revalidate, mutate } = useSwr<User>(
-    id ? `/api/v1/user/${id}` : `/api/v1/auth/me`,
+    id ? getPath(`/user/${id}`) : getPath(`/auth/me`),
     {
       initialData,
       refreshInterval: 30000,

@@ -27,6 +27,7 @@ import Modal from '../../Common/Modal';
 import PageTitle from '../../Common/PageTitle';
 import Table from '../../Common/Table';
 import Transition from '../../Transition';
+import { getPath } from '../../../utils/pathBuilder';
 
 const messages = defineMessages({
   logs: 'Logs',
@@ -69,16 +70,18 @@ const SettingsLogs: React.FC = () => {
   };
 
   const { data, error } = useSWR<LogsResultsResponse>(
-    `/api/v1/settings/logs?take=${currentPageSize}&skip=${
-      pageIndex * currentPageSize
-    }&filter=${currentFilter}`,
+    getPath(
+      `/settings/logs?take=${currentPageSize}&skip=${
+        pageIndex * currentPageSize
+      }&filter=${currentFilter}`
+    ),
     {
       refreshInterval: refreshInterval,
       revalidateOnFocus: false,
     }
   );
 
-  const { data: appData } = useSWR('/api/v1/status/appdata');
+  const { data: appData } = useSWR(getPath('/status/appdata'));
 
   useEffect(() => {
     const filterString = window.localStorage.getItem('logs-display-settings');

@@ -14,6 +14,7 @@ import ImageFader from '../Common/ImageFader';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
 import TitleCard from '../TitleCard';
+import { getPath } from '../../utils/pathBuilder';
 
 const messages = defineMessages({
   birthdate: 'Born {birthdate}',
@@ -28,13 +29,13 @@ const PersonDetails: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
   const { data, error } = useSWR<PersonDetail>(
-    `/api/v1/person/${router.query.personId}`
+    getPath(`/person/${router.query.personId}`)
   );
   const [showBio, setShowBio] = useState(false);
 
   const { data: combinedCredits, error: errorCombinedCredits } =
     useSWR<PersonCombinedCreditsResponse>(
-      `/api/v1/person/${router.query.personId}/combined_credits`
+      getPath(`/person/${router.query.personId}/combined_credits`)
     );
 
   const sortedCast = useMemo(() => {

@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 import { MediaRequest } from '../../server/entity/MediaRequest';
 import { ServiceCommonServer } from '../../server/interfaces/api/serviceInterfaces';
+import { getPath } from '../utils/pathBuilder';
 
 interface OverrideStatus {
   server: string | null;
@@ -10,7 +11,7 @@ interface OverrideStatus {
 
 const useRequestOverride = (request: MediaRequest): OverrideStatus => {
   const { data } = useSWR<ServiceCommonServer[]>(
-    `/api/v1/service/${request.type === 'movie' ? 'radarr' : 'sonarr'}`
+    getPath(`/service/${request.type === 'movie' ? 'radarr' : 'sonarr'}`)
   );
 
   if (!data) {

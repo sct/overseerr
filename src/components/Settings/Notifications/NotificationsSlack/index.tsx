@@ -10,6 +10,7 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
+import { getPath } from '../../../../utils/pathBuilder';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
@@ -30,7 +31,7 @@ const NotificationsSlack: React.FC = () => {
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/slack'
+    getPath('/settings/notifications/slack')
   );
 
   const NotificationsSlackSchema = Yup.object().shape({
@@ -66,7 +67,7 @@ const NotificationsSlack: React.FC = () => {
       validationSchema={NotificationsSlackSchema}
       onSubmit={async (values) => {
         try {
-          await axios.post('/api/v1/settings/notifications/slack', {
+          await axios.post(getPath('/settings/notifications/slack'), {
             enabled: values.enabled,
             types: values.types,
             options: {
@@ -110,7 +111,7 @@ const NotificationsSlack: React.FC = () => {
                 toastId = id;
               }
             );
-            await axios.post('/api/v1/settings/notifications/slack/test', {
+            await axios.post(getPath('/settings/notifications/slack/test'), {
               enabled: true,
               types: values.types,
               options: {

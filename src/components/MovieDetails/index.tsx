@@ -31,6 +31,7 @@ import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
 import { sortCrewPriority } from '../../utils/creditHelpers';
+import { getPath, getUiPath } from '../../utils/pathBuilder';
 import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
 import ConfirmButton from '../Common/ConfirmButton';
@@ -95,14 +96,14 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const [showMoreStudios, setShowMoreStudios] = useState(false);
 
   const { data, error, revalidate } = useSWR<MovieDetailsType>(
-    `/api/v1/movie/${router.query.movieId}`,
+    getPath(`/movie/${router.query.movieId}`),
     {
       initialData: movie,
     }
   );
 
   const { data: ratingData } = useSWR<RTRating>(
-    `/api/v1/movie/${router.query.movieId}/ratings`
+    getPath(`/movie/${router.query.movieId}/ratings`)
   );
 
   const sortedCrew = useMemo(
@@ -162,13 +163,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
 
   const deleteMedia = async () => {
     if (data?.mediaInfo?.id) {
-      await axios.delete(`/api/v1/media/${data?.mediaInfo?.id}`);
+      await axios.delete(getPath(`/media/${data?.mediaInfo?.id}`));
       revalidate();
     }
   };
 
   const markAvailable = async (is4k = false) => {
-    await axios.post(`/api/v1/media/${data?.mediaInfo?.id}/available`, {
+    await axios.post(getPath(`/media/${data?.mediaInfo?.id}/available`), {
       is4k,
     });
     revalidate();
@@ -392,7 +393,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             src={
               data.posterPath
                 ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
-                : '/images/overseerr_poster_not_found.png'
+                : getUiPath('/images/overseerr_poster_not_found.png')
             }
             alt=""
             layout="responsive"
@@ -736,14 +737,14 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       <MediaSlider
         sliderKey="recommendations"
         title={intl.formatMessage(messages.recommendations)}
-        url={`/api/v1/movie/${router.query.movieId}/recommendations`}
+        url={getPath(`/movie/${router.query.movieId}/recommendations`)}
         linkUrl={`/movie/${data.id}/recommendations`}
         hideWhenEmpty
       />
       <MediaSlider
         sliderKey="similar"
         title={intl.formatMessage(messages.similar)}
-        url={`/api/v1/movie/${router.query.movieId}/similar`}
+        url={getPath(`/movie/${router.query.movieId}/similar`)}
         linkUrl={`/movie/${data.id}/similar`}
         hideWhenEmpty
       />

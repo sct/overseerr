@@ -7,6 +7,7 @@ import PageTitle from '../../Common/PageTitle';
 import { useRouter } from 'next/router';
 import globalMessages from '../../../i18n/globalMessages';
 import useDiscover from '../../../hooks/useDiscover';
+import { getPath } from '../../../utils/pathBuilder';
 import Error from '../../../pages/_error';
 
 const messages = defineMessages({
@@ -34,7 +35,7 @@ const DiscoverMovieLanguage: React.FC = () => {
         name: string;
       };
     }
-  >(`/api/v1/discover/movies/language/${router.query.language}`);
+  >(getPath(`/discover/movies/language/${router.query.language}`));
 
   if (error) {
     return <Error statusCode={500} />;
