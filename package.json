@@ -107,7 +107,7 @@
     "@types/xml2js": "^0.4.9",
     "@types/yamljs": "^0.2.31",
     "@types/yup": "^0.29.13",
-    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.31.1",
     "autoprefixer": "^10.3.4",
     "babel-plugin-react-intl": "^8.2.25",
