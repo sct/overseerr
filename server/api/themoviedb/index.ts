@@ -15,6 +15,7 @@ import {
   TmdbRegion,
   TmdbSearchMovieResponse,
   TmdbSearchMultiResponse,
+  TmdbSearchPeopleResponse,
   TmdbSearchTvResponse,
   TmdbSeasonWithEpisodes,
   TmdbTvDetails,
@@ -799,6 +800,27 @@ class TheMovieDb extends ExternalAPI {
       return tvGenres;
     } catch (e) {
       throw new Error(`[TMDb] Failed to fetch TV genres: ${e.message}`);
+    }
+  }
+
+  public async getDiscoverPeople({
+    page = 1,
+    language = 'en',
+  }: {
+    page?: number;
+    language?: string;
+  }): Promise<TmdbSearchPeopleResponse> {
+    try {
+      const data = await this.get<TmdbSearchPeopleResponse>('/person/popular', {
+        params: {
+          page,
+          language,
+        },
+      });
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDb] Failed to fetch popular people: ${e.message}`);
     }
   }
 }

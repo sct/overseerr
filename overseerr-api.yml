@@ -3585,6 +3585,12 @@ paths:
         - search
       parameters:
         - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum: [popularity.asc, popularity.desc, release_date.asc, release_date.desc, revenue.asc, revenue.desc, primary_release_date.asc, primary_release_date.desc, original_title.asc, original_title.desc, vote_average.asc, vote_average.desc, vote_count.asc, vote_count.desc]
+            default: popularity.desc
+        - in: query
           name: page
           schema:
             type: number
@@ -3813,6 +3819,12 @@ paths:
       tags:
         - search
       parameters:
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum: [popularity.asc, popularity.desc, vote_average.asc, vote_average.desc, vote_count.asc, vote_count.desc, first_air_date.asc, first_air_date.desc]
+            default: popularity.desc
         - in: query
           name: page
           schema:
@@ -4186,6 +4198,45 @@ paths:
                     name:
                       type: string
                       example: Genre Name
+  /discover/people:
+    get:
+      summary: Discover people
+      description: Returns a list of people in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PersonResult'
   /request:
     get:
       summary: Get all requests

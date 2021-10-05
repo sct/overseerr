@@ -25,6 +25,7 @@ const messages = defineMessages({
   noRequests: 'No requests.',
   upcoming: 'Upcoming Movies',
   trending: 'Trending',
+  popularpeople: 'Popular People',
 });
 
 const Discover: React.FC = () => {
@@ -116,6 +117,12 @@ const Discover: React.FC = () => {
         linkUrl="/discover/tv/upcoming"
       />
       <NetworkSlider />
+      <MediaSlider
+        sliderKey="popular-people"
+        title={intl.formatMessage(messages.popularpeople)}
+        url="/api/v1/discover/people"
+        linkUrl="/discover/people"
+      />
     </>
   );
 };

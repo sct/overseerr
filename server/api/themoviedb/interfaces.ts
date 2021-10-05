@@ -56,6 +56,10 @@ export interface TmdbSearchTvResponse extends TmdbPaginatedResponse {
   results: TmdbTvResult[];
 }
 
+export interface TmdbSearchPeopleResponse extends TmdbPaginatedResponse {
+  results: TmdbPersonResult[];
+}
+
 export interface TmdbUpcomingMoviesResponse extends TmdbPaginatedResponse {
   dates: {
     maximum: string;

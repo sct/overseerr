@@ -567,4 +567,22 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   }
 );
 
+discoverRoutes.get('/people', async (req, res) => {
+  const tmdb = new TheMovieDb();
+
+  const data = await tmdb.getDiscoverPeople({
+    page: Number(req.query.page),
+    language: req.locale ?? (req.query.language as string),
+  });
+
+  return res.status(200).json({
+    page: data.page,
+    totalPages: data.total_pages,
+    totalResults: data.total_results,
+    results: data.results
+      .map((result) => mapPersonResult(result))
+      .filter((item) => !item.adult),
+  });
+});
+
 export default discoverRoutes;
