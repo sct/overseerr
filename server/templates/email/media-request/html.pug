@@ -30,7 +30,7 @@ div(style='display: block; background-color: #111827; padding: 2.5rem 0;')
       tr
         td(style='text-align: center;')
           div(style='margin: 1rem 0 0; font-size: 1.25em;')
-            | Hi, #{recipientName}!
+            | Hi, #{recipientName.replace('.', '.\ufeff')}!
     tr
       td(style='text-align: center;')
         div(style='margin: 1rem 0 0; font-size: 1.25em;')
@@ -42,13 +42,12 @@ div(style='display: block; background-color: #111827; padding: 2.5rem 0;')
             tr
               td(style='vertical-align: top;')
                 a(href=actionUrl style='display: block; max-width: 20rem; color: #fff; font-weight: 700; text-decoration: none; margin: 0 1rem 0.25rem 0; font-size: 1.3em; line-height: 1.25em; margin-bottom: 5px;' class='title')
-                  span
-                    | #{mediaName}
+                  | #{mediaName}
                 div(style='overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #d1d5db; font-size: .975em; line-height: 1.45em; padding-top: .25rem; padding-bottom: .25rem;')
                   span(style='display: block;')
                     b(style='color: #9ca3af; font-weight: 700;')
                       | Requested By&nbsp;
-                    | #{requestedBy}
+                    | #{requestedBy.replace('.', '.\ufeff')}
                   each extra in mediaExtra
                     span(style='display: block;')
                       b(style='color: #9ca3af; font-weight: 700;')
