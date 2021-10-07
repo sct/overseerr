@@ -63,6 +63,8 @@ const messages = defineMessages({
   episodeRuntime: 'Episode Runtime',
   episodeRuntimeMinutes: '{runtime} minutes',
   streamingproviders: 'Currently Streaming On',
+  productioncountries:
+    'Production {countryCount, plural, one {Country} other {Countries}}',
 });
 
 interface TvDetailsProps {
@@ -533,6 +535,30 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
+            {data.productionCountries.length > 0 && (
+              <div className="media-fact">
+                <span>
+                  {intl.formatMessage(messages.productioncountries, {
+                    countryCount: data.productionCountries.length,
+                  })}
+                </span>
+                <span className="media-fact-value">
+                  {data.productionCountries.map((c) => {
+                    return (
+                      <span
+                        className="block"
+                        key={`prodcountry-${c.iso_3166_1}`}
+                      >
+                        {intl.formatDisplayName(c.iso_3166_1, {
+                          type: 'region',
+                          fallback: 'none',
+                        }) ?? c.name}
+                      </span>
+                    );
+                  })}
+                </span>
+              </div>
+            )}
             {data.networks.length > 0 && (
               <div className="media-fact">
                 <span>
@@ -552,7 +578,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     ))
                     .reduce((prev, curr) => (
                       <>
-                        {prev}, {curr}
+                        {intl.formatMessage(globalMessages.delimitedlist, {
+                          a: prev,
+                          b: curr,
+                        })}
                       </>
                     ))}
                 </span>

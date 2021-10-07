@@ -69,6 +69,8 @@ const messages = defineMessages({
   showmore: 'Show More',
   showless: 'Show Less',
   streamingproviders: 'Currently Streaming On',
+  productioncountries:
+    'Production {countryCount, plural, one {Country} other {Countries}}',
 });
 
 interface MovieDetailsProps {
@@ -593,6 +595,30 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         )?.name}
                     </a>
                   </Link>
+                </span>
+              </div>
+            )}
+            {data.productionCountries.length > 0 && (
+              <div className="media-fact">
+                <span>
+                  {intl.formatMessage(messages.productioncountries, {
+                    countryCount: data.productionCountries.length,
+                  })}
+                </span>
+                <span className="media-fact-value">
+                  {data.productionCountries.map((c) => {
+                    return (
+                      <span
+                        className="block"
+                        key={`prodcountry-${c.iso_3166_1}`}
+                      >
+                        {intl.formatDisplayName(c.iso_3166_1, {
+                          type: 'region',
+                          fallback: 'none',
+                        }) ?? c.name}
+                      </span>
+                    );
+                  })}
                 </span>
               </div>
             )}
