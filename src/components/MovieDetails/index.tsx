@@ -1,8 +1,10 @@
 import {
   ArrowCircleRightIcon,
+  CloudIcon,
   CogIcon,
   FilmIcon,
   PlayIcon,
+  TicketIcon,
 } from '@heroicons/react/outline';
 import {
   CheckCircleIcon,
@@ -12,6 +14,7 @@ import {
   ExternalLinkIcon,
 } from '@heroicons/react/solid';
 import axios from 'axios';
+import { uniqBy } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
@@ -49,7 +52,8 @@ import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   originaltitle: 'Original Title',
-  releasedate: 'Release Date',
+  releasedate:
+    '{releaseCount, plural, one {Release Date} other {Release Dates}}',
   revenue: 'Revenue',
   budget: 'Budget',
   watchtrailer: 'Watch Trailer',
@@ -179,20 +183,29 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     : settings.currentSettings.region
     ? settings.currentSettings.region
     : 'US';
+
+  const releases = data.releases.results.find(
+    (r) => r.iso_3166_1 === region
+  )?.release_dates;
+
+  // Release date types:
+  // 1. Premiere
+  // 2. Theatrical (limited)
+  // 3. Theatrical
+  // 4. Digital
+  // 5. Physical
+  // 6. TV
+  const filteredReleases = uniqBy(
+    releases?.filter((r) => r.type > 2 && r.type < 6),
+    'type'
+  );
+
   const movieAttributes: React.ReactNode[] = [];
 
-  if (
-    data.releases.results.length &&
-    (data.releases.results.find((r) => r.iso_3166_1 === region)
-      ?.release_dates[0].certification ||
-      data.releases.results[0].release_dates[0].certification)
-  ) {
+  const certification = releases?.find((r) => r.certification)?.certification;
+  if (certification) {
     movieAttributes.push(
-      <span className="p-0.5 py-0 border rounded-md">
-        {data.releases.results.find((r) => r.iso_3166_1 === region)
-          ?.release_dates[0].certification ||
-          data.releases.results[0].release_dates[0].certification}
-      </span>
+      <span className="p-0.5 py-0 border rounded-md">{certification}</span>
     );
   }
 
@@ -577,17 +590,66 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <span>{intl.formatMessage(globalMessages.status)}</span>
               <span className="media-fact-value">{data.status}</span>
             </div>
-            {data.releaseDate && (
+            {filteredReleases && filteredReleases.length > 0 ? (
               <div className="media-fact">
-                <span>{intl.formatMessage(messages.releasedate)}</span>
-                <span className="media-fact-value">
-                  {intl.formatDate(data.releaseDate, {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
+                <span>
+                  {intl.formatMessage(messages.releasedate, {
+                    releaseCount: filteredReleases.length,
                   })}
                 </span>
+                <span className="media-fact-value">
+                  {filteredReleases.map((r, i) => (
+                    <span
+                      className="flex items-center justify-end"
+                      key={`release-date-${i}`}
+                    >
+                      {r.type === 3 ? (
+                        // Theatrical
+                        <TicketIcon className="w-4 h-4" />
+                      ) : r.type === 4 ? (
+                        // Digital
+                        <CloudIcon className="w-4 h-4" />
+                      ) : (
+                        // Physical
+                        <svg
+                          className="w-4 h-4"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="m12 2c-5.5242 0-10 4.4758-10 10 0 5.5242 4.4758 10 10 10 5.5242 0 10-4.4758 10-10 0-5.5242-4.4758-10-10-10zm0 18.065c-4.4476 0-8.0645-3.6169-8.0645-8.0645 0-4.4476 3.6169-8.0645 8.0645-8.0645 4.4476 0 8.0645 3.6169 8.0645 8.0645 0 4.4476-3.6169 8.0645-8.0645 8.0645zm0-14.516c-3.5565 0-6.4516 2.8952-6.4516 6.4516h1.2903c0-2.8468 2.3145-5.1613 5.1613-5.1613zm0 2.9032c-1.9597 0-3.5484 1.5887-3.5484 3.5484s1.5887 3.5484 3.5484 3.5484 3.5484-1.5887 3.5484-3.5484-1.5887-3.5484-3.5484-3.5484zm0 4.8387c-0.71371 0-1.2903-0.57661-1.2903-1.2903s0.57661-1.2903 1.2903-1.2903 1.2903 0.57661 1.2903 1.2903-0.57661 1.2903-1.2903 1.2903z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      )}
+                      <span className="ml-1.5">
+                        {intl.formatDate(r.release_date, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </span>
+                  ))}
+                </span>
               </div>
+            ) : (
+              data.releaseDate && (
+                <div className="media-fact">
+                  <span>
+                    {intl.formatMessage(messages.releasedate, {
+                      releaseCount: 1,
+                    })}
+                  </span>
+                  <span className="media-fact-value">
+                    {intl.formatDate(data.releaseDate, {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </span>
+                </div>
+              )
             )}
             {data.revenue > 0 && (
               <div className="media-fact">
