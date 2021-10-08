@@ -879,5 +879,7 @@
   "components.NotificationTypeSelector.usermediaAutoApprovedDescription": "Ricevi una notifica quando altri utenti inviano nuove richieste che vengono approvate automaticamente.",
   "components.Layout.LanguagePicker.displaylanguage": "Lingua Interfaccia",
   "components.MovieDetails.showmore": "Mostra di più",
-  "components.MovieDetails.showless": "Mostra meno"
+  "components.MovieDetails.showless": "Mostra meno",
+  "components.TvDetails.streamingproviders": "Ora in streaming su",
+  "components.MovieDetails.streamingproviders": "Ora in streaming su"
 }
