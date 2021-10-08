@@ -12,7 +12,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-59-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-60-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -150,6 +150,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/tangentThought"><img src="https://avatars.githubusercontent.com/u/25516090?v=4?s=100" width="100px;" alt=""/><br /><sub><b>tangentThought</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=tangentThought" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/nicospz"><img src="https://avatars.githubusercontent.com/u/31373060?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolás Espinoza</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=nicospz" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/sootylunatic"><img src="https://avatars.githubusercontent.com/u/36486087?v=4?s=100" width="100px;" alt=""/><br /><sub><b>sootylunatic</b></sub></a><br /><a href="#translation-sootylunatic" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/JoKerIsCraZy"><img src="https://avatars.githubusercontent.com/u/47474211?v=4?s=100" width="100px;" alt=""/><br /><sub><b>JoKerIsCraZy</b></sub></a><br /><a href="#translation-JoKerIsCraZy" title="Translation">🌍</a></td>
   </tr>
 </table>
 
