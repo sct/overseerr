@@ -194,14 +194,11 @@ router.use('/:id/settings', userSettingsRoutes);
 router.get<{ id: string }, UserRequestsResponse>(
   '/:id/requests',
   async (req, res, next) => {
-    const userRepository = getRepository(User);
-    const requestRepository = getRepository(MediaRequest);
-
     const pageSize = req.query.take ? Number(req.query.take) : 20;
     const skip = req.query.skip ? Number(req.query.skip) : 0;
 
     try {
-      const user = await userRepository.findOne({
+      const user = await getRepository(User).findOne({
         where: { id: Number(req.params.id) },
       });
 
@@ -209,12 +206,32 @@ router.get<{ id: string }, UserRequestsResponse>(
         return next({ status: 404, message: 'User not found.' });
       }
 
-      const [requests, requestCount] = await requestRepository.findAndCount({
-        where: { requestedBy: user },
-        order: { id: 'DESC' },
-        take: pageSize,
-        skip,
-      });
+      if (
+        user.id !== req.user?.id &&
+        !req.user?.hasPermission(
+          [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+          { type: 'or' }
+        )
+      ) {
+        return next({
+          status: 403,
+          message: "You do not have permission to view this user's requests.",
+        });
+      }
+
+      const [requests, requestCount] = await getRepository(MediaRequest)
+        .createQueryBuilder('request')
+        .leftJoinAndSelect('request.media', 'media')
+        .leftJoinAndSelect('request.seasons', 'seasons')
+        .leftJoinAndSelect('request.modifiedBy', 'modifiedBy')
+        .leftJoinAndSelect('request.requestedBy', 'requestedBy')
+        .andWhere('requestedBy.id = :id', {
+          id: req.user?.id,
+        })
+        .orderBy('request.id', 'DESC')
+        .take(pageSize)
+        .skip(skip)
+        .getManyAndCount();
 
       return res.status(200).json({
         pageInfo: {
