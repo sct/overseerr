@@ -226,7 +226,7 @@ router.get<{ id: string }, UserRequestsResponse>(
         .leftJoinAndSelect('request.modifiedBy', 'modifiedBy')
         .leftJoinAndSelect('request.requestedBy', 'requestedBy')
         .andWhere('requestedBy.id = :id', {
-          id: req.user?.id,
+          id: user.id,
         })
         .orderBy('request.id', 'DESC')
         .take(pageSize)
