@@ -879,5 +879,7 @@
   "components.Settings.SettingsAbout.betawarning": "Detta är en BETA-programvara. Funktioner kan vara trasiga och/eller instabila. Rapportera eventuella problem på GitHub!",
   "components.Layout.LanguagePicker.displaylanguage": "Visningsspråk",
   "components.MovieDetails.showmore": "Visa mer",
-  "components.MovieDetails.showless": "Visa mindre"
+  "components.MovieDetails.showless": "Visa mindre",
+  "components.TvDetails.streamingproviders": "Strömmas för närvarande på",
+  "components.MovieDetails.streamingproviders": "Strömmas för närvarande på"
 }

@@ -7,7 +7,7 @@
   "components.MovieDetails.similar": "Títulos Semelhantes",
   "components.MovieDetails.runtime": "{minutes} minutos",
   "components.MovieDetails.revenue": "Receita",
-  "components.MovieDetails.releasedate": "Lançamento",
+  "components.MovieDetails.releasedate": "{releaseCount, plural, one {Lançamento} other {Lançamentos}}",
   "components.MovieDetails.recommendations": "Recomendações",
   "components.MovieDetails.overviewunavailable": "Sinopse indisponível.",
   "components.MovieDetails.overview": "Sinopse",
@@ -879,5 +879,7 @@
   "components.Settings.SettingsAbout.betawarning": "Essa é uma versão BETA. Algumas funcionalidades podem ser instáveis ou não funcionarem. Por favor reporte qualquer problema no GitHub!",
   "components.Layout.LanguagePicker.displaylanguage": "Idioma da Interface",
   "components.MovieDetails.showmore": "Mostrar Mais",
-  "components.MovieDetails.showless": "Mostrar Menos"
+  "components.MovieDetails.showless": "Mostrar Menos",
+  "components.TvDetails.streamingproviders": "Em Exibição na",
+  "components.MovieDetails.streamingproviders": "Em Exibição na"
 }

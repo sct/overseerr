@@ -879,5 +879,7 @@
   "components.Settings.SettingsAbout.betawarning": "Dit is BETA software. Functies kunnen kapot en/of instabiel zijn. Meld eventuele problemen op GitHub!",
   "components.Layout.LanguagePicker.displaylanguage": "Weergavetaal",
   "components.MovieDetails.showmore": "Meer tonen",
-  "components.MovieDetails.showless": "Minder tonen"
+  "components.MovieDetails.showless": "Minder tonen",
+  "components.TvDetails.streamingproviders": "Momenteel te streamen op",
+  "components.MovieDetails.streamingproviders": "Momenteel te streamen op"
 }

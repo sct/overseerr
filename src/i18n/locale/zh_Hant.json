@@ -879,5 +879,7 @@
   "components.Settings.SettingsAbout.betawarning": "這是測試版軟體，所以可能會不穩定或被破壞。請向 GitHub 報告問題！",
   "components.Layout.LanguagePicker.displaylanguage": "顯示語言",
   "components.MovieDetails.showmore": "顯示更多",
-  "components.MovieDetails.showless": "顯示更少"
+  "components.MovieDetails.showless": "顯示更少",
+  "components.TvDetails.streamingproviders": "目前流式傳輸於",
+  "components.MovieDetails.streamingproviders": "目前流式傳輸於"
 }
