@@ -878,5 +878,7 @@
   "components.MovieDetails.showmore": "Montrer plus",
   "components.MovieDetails.showless": "Montrer moins",
   "components.Layout.LanguagePicker.displaylanguage": "Langue d'affichage",
-  "components.UserList.localLoginDisabled": "Le paramètre <strong>Activer la connexion locale</strong> est actuellement désactivé."
+  "components.UserList.localLoginDisabled": "Le paramètre <strong>Activer la connexion locale</strong> est actuellement désactivé.",
+  "components.TvDetails.streamingproviders": "Disponible en streaming sur",
+  "components.MovieDetails.streamingproviders": "Disponible en streaming sur"
 }
