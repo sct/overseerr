@@ -41,8 +41,7 @@ To run the container as a specific user/group, you may optionally add `--user=[ 
 Stop and remove the existing container:
 
 ```bash
-docker stop overseerr
-docker rm overseerr
+docker stop overseerr && docker rm overseerr
 ```
 
 Pull the latest image:
@@ -103,7 +102,7 @@ Pull the latest image:
 docker-compose pull overseerr
 ```
 
-Restart all services defined in the Compose file:
+Then, restart all services defined in the Compose file:
 
 ```bash
 docker-compose up -d
