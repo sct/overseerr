@@ -119,3 +119,9 @@ Language profile support for Sonarr was added in [v1.20.0](https://github.com/sc
 ### I am getting "Username and Password not accepted" when attempting to send email notifications via Gmail!
 
 If you have 2-Step Verification enabled on your account, you will need to create an [app password](https://support.google.com/mail/answer/185833).
+
+### The logo image in email notifications is broken!
+
+This may be an issue with how you are proxying your Overseerr instance. A good first troubleshooting step is to verify that the [`Content-Security-Policy` HTTP header](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) being set by your proxy (if any) is configured appropriately to allow external embedding of the image.
+
+For Gmail users, another possible issue is that Google's image URL proxy is being blocked from fetching the image. If using Cloudflare, overzealous firewall rules could be the culprit.
