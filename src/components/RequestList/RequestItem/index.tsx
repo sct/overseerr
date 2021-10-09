@@ -109,9 +109,35 @@ const RequestItemError = ({
                 <span className="card-field-name">
                   {intl.formatMessage(globalMessages.status)}
                 </span>
-                <Badge badgeType="danger">
-                  {intl.formatMessage(globalMessages.unknown)}
-                </Badge>
+                {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
+                  MediaStatus.UNKNOWN ||
+                requestData.status === MediaRequestStatus.DECLINED ? (
+                  <Badge badgeType="danger">
+                    {requestData.status === MediaRequestStatus.DECLINED
+                      ? intl.formatMessage(globalMessages.declined)
+                      : intl.formatMessage(globalMessages.failed)}
+                  </Badge>
+                ) : (
+                  <StatusBadge
+                    status={
+                      requestData.media[
+                        requestData.is4k ? 'status4k' : 'status'
+                      ]
+                    }
+                    inProgress={
+                      (
+                        requestData.media[
+                          requestData.is4k
+                            ? 'downloadStatus4k'
+                            : 'downloadStatus'
+                        ] ?? []
+                      ).length > 0
+                    }
+                    is4k={requestData.is4k}
+                    plexUrl={requestData.media.plexUrl}
+                    plexUrl4k={requestData.media.plexUrl4k}
+                  />
+                )}
               </div>
               <div className="card-field">
                 {hasPermission(
