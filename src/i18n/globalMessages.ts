@@ -10,6 +10,7 @@ const globalMessages = defineMessages({
   requesting: 'Requesting…',
   request: 'Request',
   request4k: 'Request in 4K',
+  unknown: 'Unknown',
   failed: 'Failed',
   pending: 'Pending',
   declined: 'Declined',
