@@ -17,7 +17,7 @@ The `TZ` environment variable value should also be set to the [TZ database name]
 {% endhint %}
 
 {% tabs %}
-{% tab title="docker run Command" %}
+{% tab title="Docker CLI" %}
 
 **Installation:**
 
