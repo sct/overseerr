@@ -19,6 +19,8 @@ The `TZ` environment variable value should also be set to the [TZ database name]
 {% tabs %}
 {% tab title="Docker CLI" %}
 
+For details on the Docker CLI, please [review the official `docker run` documentation](https://docs.docker.com/engine/reference/run/).
+
 **Installation:**
 
 ```bash
@@ -63,7 +65,7 @@ You may alternatively use a third-party updating mechanism, such as [Watchtower]
 
 {% tab title="Docker Compose" %}
 
-For more details on how to use Docker Compose, please [review the official Compose documentation](https://docs.docker.com/compose/reference/).
+For details on how to use Docker Compose, please [review the official Compose documentation](https://docs.docker.com/compose/reference/).
 
 **Installation:**
 
