@@ -25,7 +25,7 @@
   "components.MovieDetails.overview": "Overzicht",
   "components.MovieDetails.overviewunavailable": "Overzicht niet beschikbaar.",
   "components.MovieDetails.recommendations": "Aanbevelingen",
-  "components.MovieDetails.releasedate": "Releasedatum",
+  "components.MovieDetails.releasedate": "{releaseCount, plural, one {Releasedatum} other {Releasedata}}",
   "components.MovieDetails.revenue": "Omzet",
   "components.MovieDetails.runtime": "{minutes} minuten",
   "components.MovieDetails.similar": "Vergelijkbare titels",
