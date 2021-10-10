@@ -90,18 +90,6 @@ const SettingsAbout: React.FC = () => {
                 code: function code(msg) {
                   return <code className="bg-opacity-50">{msg}</code>;
                 },
-                GithubLink: function GithubLink(msg) {
-                  return (
-                    <a
-                      href="https://github.com/sct/overseerr"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-yellow-100 underline transition duration-300 hover:text-white"
-                    >
-                      {msg}
-                    </a>
-                  );
-                },
               })}
             />
           )}
