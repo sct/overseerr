@@ -100,26 +100,31 @@ const SettingsAbout: React.FC = () => {
             <code className="truncate">
               {data.version.replace('develop-', '')}
             </code>
-            {status?.updateAvailable ? (
-              <a
-                href={`https://github.com/sct/overseerr/compare/${data.version.replace(
-                  'develop-',
-                  ''
-                )}...develop`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Badge
-                  badgeType="warning"
-                  className="ml-2 transition !cursor-pointer hover:bg-yellow-400"
-                >
-                  {intl.formatMessage(messages.outofdate)}
-                </Badge>
-              </a>
-            ) : (
-              status?.commitTag !== 'local' && (
+            {status?.commitTag !== 'local' &&
+              (status?.updateAvailable ? (
                 <a
-                  href="https://github.com/sct/overseerr/commits/develop"
+                  href={
+                    data.version.startsWith('develop-')
+                      ? `https://github.com/sct/overseerr/compare/${status.commitTag}...develop`
+                      : 'https://github.com/sct/overseerr/releases'
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Badge
+                    badgeType="warning"
+                    className="ml-2 transition !cursor-pointer hover:bg-yellow-400"
+                  >
+                    {intl.formatMessage(messages.outofdate)}
+                  </Badge>
+                </a>
+              ) : (
+                <a
+                  href={
+                    data.version.startsWith('develop-')
+                      ? 'https://github.com/sct/overseerr/commits/develop'
+                      : 'https://github.com/sct/overseerr/releases'
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -130,8 +135,7 @@ const SettingsAbout: React.FC = () => {
                     {intl.formatMessage(messages.uptodate)}
                   </Badge>
                 </a>
-              )
-            )}
+              ))}
           </List.Item>
           <List.Item title={intl.formatMessage(messages.totalmedia)}>
             {intl.formatNumber(data.totalMediaItems)}
