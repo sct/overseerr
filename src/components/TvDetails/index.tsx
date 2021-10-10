@@ -5,6 +5,8 @@ import {
   FilmIcon,
   PlayIcon,
 } from '@heroicons/react/outline';
+import { hasFlag } from 'country-flag-icons';
+import 'country-flag-icons/3x2/flags.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
@@ -546,13 +548,20 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   {data.productionCountries.map((c) => {
                     return (
                       <span
-                        className="block"
+                        className="flex items-center justify-end"
                         key={`prodcountry-${c.iso_3166_1}`}
                       >
-                        {intl.formatDisplayName(c.iso_3166_1, {
-                          type: 'region',
-                          fallback: 'none',
-                        }) ?? c.name}
+                        {hasFlag(c.iso_3166_1) && (
+                          <span
+                            className={`mr-1.5 text-xs leading-5 flag:${c.iso_3166_1}`}
+                          />
+                        )}
+                        <span>
+                          {intl.formatDisplayName(c.iso_3166_1, {
+                            type: 'region',
+                            fallback: 'none',
+                          }) ?? c.name}
+                        </span>
                       </span>
                     );
                   })}
