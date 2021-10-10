@@ -3,6 +3,7 @@ import fs from 'fs';
 import { merge } from 'lodash';
 import path from 'path';
 import webpush from 'web-push';
+import { JobId } from '../job/schedule';
 import { Permission } from './permissions';
 
 export interface Library {
@@ -218,14 +219,6 @@ interface NotificationSettings {
 interface JobSettings {
   schedule: string;
 }
-
-export type JobId =
-  | 'plex-recently-added-scan'
-  | 'plex-full-scan'
-  | 'radarr-scan'
-  | 'sonarr-scan'
-  | 'download-sync'
-  | 'download-sync-reset';
 
 interface AllSettings {
   clientId: string;

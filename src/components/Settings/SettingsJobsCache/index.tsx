@@ -11,7 +11,7 @@ import {
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
-import { JobId } from '../../../../server/lib/settings';
+import { JobId } from '../../../../server/job/schedule';
 import Spinner from '../../../assets/spinner.svg';
 import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';
@@ -242,7 +242,7 @@ const SettingsJobs: React.FC = () => {
                         setJobScheduleHours(Number(e.target.value))
                       }
                     >
-                      {[1, 2, 3, 4, 6, 8, 12, 24].map((v) => (
+                      {[1, 2, 3, 4, 6, 8, 12, 24, 48, 72].map((v) => (
                         <option value={v} key={`jobScheduleHours-${v}`}>
                           {intl.formatMessage(
                             messages.editJobScheduleSelectorHours,
