@@ -3,16 +3,8 @@ import downloadTracker from '../lib/downloadtracker';
 import { plexFullScanner, plexRecentScanner } from '../lib/scanners/plex';
 import { radarrScanner } from '../lib/scanners/radarr';
 import { sonarrScanner } from '../lib/scanners/sonarr';
-import { getSettings } from '../lib/settings';
+import { getSettings, JobId } from '../lib/settings';
 import logger from '../logger';
-
-export type JobId =
-  | 'plex-recently-added-scan'
-  | 'plex-full-scan'
-  | 'radarr-scan'
-  | 'sonarr-scan'
-  | 'download-sync'
-  | 'download-sync-reset';
 
 interface ScheduledJob {
   id: JobId;

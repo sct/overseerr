@@ -11,7 +11,7 @@ import {
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
-import { JobId } from '../../../../server/job/schedule';
+import { JobId } from '../../../../server/lib/settings';
 import Spinner from '../../../assets/spinner.svg';
 import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';
