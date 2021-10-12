@@ -58,31 +58,32 @@ const Discover = () => {
   return (
     <>
       <PageTitle title={intl.formatMessage(messages.discover)} />
-      {hasPermission([Permission.MANAGE_REQUESTS, Permission.RECENT_VIEW], {
-        type: 'or',
-      }) && (
-        <>
-          <div className="slider-header">
-            <div className="slider-title">
-              <span>{intl.formatMessage(messages.recentlyAdded)}</span>
+      {(!media || !!media.results.length) &&
+        hasPermission([Permission.MANAGE_REQUESTS, Permission.RECENT_VIEW], {
+          type: 'or',
+        }) && (
+          <>
+            <div className="slider-header">
+              <div className="slider-title">
+                <span>{intl.formatMessage(messages.recentlyAdded)}</span>
+              </div>
             </div>
-          </div>
-          <Slider
-            sliderKey="media"
-            isLoading={!media && !mediaError}
-            isEmpty={!!media && !mediaError && media.results.length === 0}
-            items={media?.results?.map((item) => (
-              <TmdbTitleCard
-                key={`media-slider-item-${item.id}`}
-                id={item.id}
-                tmdbId={item.tmdbId}
-                tvdbId={item.tvdbId}
-                type={item.mediaType}
-              />
-            ))}
-          />
-        </>
-      )}
+            <Slider
+              sliderKey="media"
+              isLoading={!media && !mediaError}
+              isEmpty={!!media && !mediaError && media.results.length === 0}
+              items={media?.results?.map((item) => (
+                <TmdbTitleCard
+                  key={`media-slider-item-${item.id}`}
+                  id={item.id}
+                  tmdbId={item.tmdbId}
+                  tvdbId={item.tvdbId}
+                  type={item.mediaType}
+                />
+              ))}
+            />
+          </>
+        )}
       <div className="slider-header">
         <Link href="/requests?filter=all">
           <a className="slider-title">
