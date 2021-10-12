@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
-import { merge, omit } from 'lodash';
+import { merge, omit, sortBy } from 'lodash';
 import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import { getRepository } from 'typeorm';
@@ -224,6 +224,50 @@ settingsRoutes.post('/plex/sync', (req, res) => {
   }
   return res.status(200).json(plexFullScanner.status());
 });
+
+settingsRoutes.get(
+  '/plex/users',
+  isAuthenticated(Permission.MANAGE_USERS),
+  async (req, res) => {
+    const userRepository = getRepository(User);
+    const qb = userRepository.createQueryBuilder('user');
+
+    const admin = await userRepository.findOneOrFail({
+      select: ['id', 'plexToken'],
+      order: { id: 'ASC' },
+    });
+    const plexApi = new PlexTvAPI(admin.plexToken ?? '');
+    const plexUsers = (await plexApi.getUsers()).MediaContainer.User.map(
+      (user) => user.$
+    );
+
+    const unimportedUsers: {
+      id: string;
+      title: string;
+      username: string;
+      email: string;
+      thumb: string;
+    }[] = [];
+
+    await Promise.all(
+      plexUsers.map(async (user) => {
+        if (
+          !(await qb
+            .where('user.plexId = :id', { id: user.id })
+            .orWhere('user.email = :email', {
+              email: user.email.toLowerCase(),
+            })
+            .getOne()) &&
+          (await plexApi.checkUserAccess(parseInt(user.id)))
+        ) {
+          unimportedUsers.push(user);
+        }
+      })
+    );
+
+    return res.status(200).json(sortBy(unimportedUsers, 'username'));
+  }
+);
 
 settingsRoutes.get(
   '/logs',
