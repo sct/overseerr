@@ -10,7 +10,7 @@ There are currently two methods to add users to Overseerr: importing Plex users 
 
 ### Importing Users from Plex
 
-Clicking the **Import Users from Plex** button on the **User List** page will fetch the list of users with access to the Plex server from [plex.tv](https://www.plex.tv/), and add them to Overseerr automatically.
+Clicking the **Import Plex Users** button on the **User List** page will fetch the list of users with access to the Plex server from [plex.tv](https://www.plex.tv/), and add them to Overseerr automatically.
 
 Importing Plex users is not required, however. Any user with access to the Plex server can log in to Overseerr even if they have not been imported, and will be assigned the configured [default permissions](../settings/README.md#default-permissions) upon their first login.
 
