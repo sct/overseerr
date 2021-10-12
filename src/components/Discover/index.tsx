@@ -59,6 +59,7 @@ const Discover = () => {
     <>
       <PageTitle title={intl.formatMessage(messages.discover)} />
       {(!media || !!media.results.length) &&
+        !mediaError &&
         hasPermission([Permission.MANAGE_REQUESTS, Permission.RECENT_VIEW], {
           type: 'or',
         }) && (
@@ -70,41 +71,43 @@ const Discover = () => {
             </div>
             <Slider
               sliderKey="media"
-              isLoading={!media && !mediaError}
-              isEmpty={!!media && !mediaError && media.results.length === 0}
-              items={media?.results?.map((item) => (
+              isLoading={!media}
+              isEmpty={!!media && media.results.length === 0}
+              items={(media?.results ?? []).map((item) => (
                 <TmdbTitleCard
                   key={`media-slider-item-${item.id}`}
-                  id={item.id}
                   tmdbId={item.tmdbId}
-                  tvdbId={item.tvdbId}
                   type={item.mediaType}
                 />
               ))}
             />
           </>
         )}
-      <div className="slider-header">
-        <Link href="/requests?filter=all">
-          <a className="slider-title">
-            <span>{intl.formatMessage(messages.recentrequests)}</span>
-            <ArrowCircleRightIcon />
-          </a>
-        </Link>
-      </div>
-      <Slider
-        sliderKey="requests"
-        isLoading={!requests && !requestError}
-        isEmpty={!!requests && !requestError && requests.results.length === 0}
-        items={(requests?.results ?? []).map((request) => (
-          <RequestCard
-            key={`request-slider-item-${request.id}`}
-            request={request}
+      {(!requests || !!requests.results.length) && !requestError && (
+        <>
+          <div className="slider-header">
+            <Link href="/requests?filter=all">
+              <a className="slider-title">
+                <span>{intl.formatMessage(messages.recentrequests)}</span>
+                <ArrowCircleRightIcon />
+              </a>
+            </Link>
+          </div>
+          <Slider
+            sliderKey="requests"
+            isLoading={!requests}
+            isEmpty={!!requests && requests.results.length === 0}
+            items={(requests?.results ?? []).map((request) => (
+              <RequestCard
+                key={`request-slider-item-${request.id}`}
+                request={request}
+              />
+            ))}
+            placeholder={<RequestCard.Placeholder />}
+            emptyMessage={intl.formatMessage(messages.noRequests)}
           />
-        ))}
-        placeholder={<RequestCard.Placeholder />}
-        emptyMessage={intl.formatMessage(messages.noRequests)}
-      />
+        </>
+      )}
       {(!watchlistItems || !!watchlistItems.results.length) && !watchlistError && (
         <>
           <div className="slider-header">
