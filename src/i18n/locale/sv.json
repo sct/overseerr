@@ -146,7 +146,7 @@
   "components.MovieDetails.similar": "Liknande Titlar",
   "components.MovieDetails.runtime": "{minutes} minuter",
   "components.MovieDetails.revenue": "Inkomster",
-  "components.MovieDetails.releasedate": "Utgivningsdatum",
+  "components.MovieDetails.releasedate": "{releaseCount, plural, one {Utgivningsdatum} other {Utgivningsdatum}}",
   "components.MovieDetails.recommendations": "Rekommendationer",
   "components.MovieDetails.overview": "Beskrivning",
   "components.MovieDetails.overviewunavailable": "Beskrivning otillgänglig.",

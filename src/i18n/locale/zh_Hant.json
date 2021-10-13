@@ -524,7 +524,7 @@
   "components.Layout.UserDropdown.settings": "設定",
   "components.Layout.UserDropdown.myprofile": "個人資料",
   "components.UserProfile.UserSettings.UserPasswordChange.validationConfirmPassword": "密碼必須匹配",
-  "components.UserProfile.UserSettings.UserPasswordChange.currentpassword": "目前密碼",
+  "components.UserProfile.UserSettings.UserPasswordChange.currentpassword": "目前的密碼",
   "components.UserProfile.UserSettings.UserPasswordChange.newpassword": "新密碼",
   "components.UserProfile.UserSettings.UserPasswordChange.validationCurrentPassword": "請輸入當前的密碼",
   "components.UserProfile.UserSettings.UserPasswordChange.validationNewPassword": "請輸入新密碼",
@@ -764,7 +764,7 @@
   "components.Layout.VersionStatus.commitsbehind": "落後 {commitsBehind} 個提交",
   "components.Layout.VersionStatus.outofdate": "非最新版本",
   "components.Layout.VersionStatus.streamstable": "Overseerr 穩定版",
-  "components.Layout.VersionStatus.streamdevelop": "Overseerr 開發版",
+  "components.Layout.VersionStatus.streamdevelop": "Overseerr「develop」開發版",
   "components.Settings.SettingsAbout.outofdate": "非最新版本",
   "components.Settings.SettingsAbout.uptodate": "最新",
   "components.Settings.noDefaultNon4kServer": "如果您只有一個 {serverType} 伺服器，請勿把它設定為 4K 伺服器。",
@@ -772,8 +772,8 @@
   "components.Settings.serviceSettingsDescription": "關於 {serverType} 伺服器的設定。{serverType} 伺服器數沒有最大值限制，但您只能指定兩個預設伺服器（一個非 4K、一個 4K）。",
   "components.Settings.mediaTypeSeries": "電視節目",
   "components.Settings.mediaTypeMovie": "電影",
-  "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSet": "此使用者目前沒有密碼。設定密碼以允許此使用者使用電子郵件地址登入。",
-  "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSetOwnAccount": "您的帳戶目前沒有密碼。設定密碼以允許使用電子郵件地址登入。",
+  "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSet": "此使用者的帳戶目前沒有設密碼。若在以下設定密碼，此使用者就能使用「本地登入」。",
+  "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSetOwnAccount": "您的帳戶目前沒有設密碼。若在以下設定密碼，您就能使用「本地登入」。",
   "components.UserList.autogeneratepasswordTip": "通過電子郵件發送伺服器生成的密碼給使用者",
   "i18n.retrying": "重試中…",
   "components.Settings.serverSecure": "SSL",
@@ -880,6 +880,6 @@
   "components.Layout.LanguagePicker.displaylanguage": "顯示語言",
   "components.MovieDetails.showmore": "顯示更多",
   "components.MovieDetails.showless": "顯示更少",
-  "components.TvDetails.streamingproviders": "目前流式傳輸於",
-  "components.MovieDetails.streamingproviders": "目前流式傳輸於"
+  "components.TvDetails.streamingproviders": "目前的流媒體服務",
+  "components.MovieDetails.streamingproviders": "目前的流媒體服務"
 }
