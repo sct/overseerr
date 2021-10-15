@@ -205,7 +205,6 @@ export enum NotificationAgentKey {
   TELEGRAM = 'telegram',
   WEBHOOK = 'webhook',
   WEBPUSH = 'webpush',
-  GOTIFY = 'gotify',
 }
 
 interface NotificationAgents {
@@ -219,7 +218,6 @@ interface NotificationAgents {
   telegram: NotificationAgentTelegram;
   webhook: NotificationAgentWebhook;
   webpush: NotificationAgentConfig;
-  gotify: NotificationAgentGotify;
 }
 
 interface NotificationSettings {
