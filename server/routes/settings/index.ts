@@ -2,6 +2,7 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
 import { merge, omit } from 'lodash';
+import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import { getRepository } from 'typeorm';
 import { URL } from 'url';
@@ -49,7 +50,7 @@ settingsRoutes.get('/main', (req, res, next) => {
   const settings = getSettings();
 
   if (!req.user) {
-    return next({ status: 500, message: 'User missing from request' });
+    return next({ status: 400, message: 'User missing from request' });
   }
 
   res.status(200).json(filteredMainSettings(req.user, settings.main));
@@ -310,6 +311,7 @@ settingsRoutes.get('/jobs', (_req, res) => {
       id: job.id,
       name: job.name,
       type: job.type,
+      interval: job.interval,
       nextExecutionTime: job.job.nextInvocation(),
       running: job.running ? job.running() : false,
     }))
@@ -329,6 +331,7 @@ settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
     id: scheduledJob.id,
     name: scheduledJob.name,
     type: scheduledJob.type,
+    interval: scheduledJob.interval,
     nextExecutionTime: scheduledJob.job.nextInvocation(),
     running: scheduledJob.running ? scheduledJob.running() : false,
   });
@@ -353,9 +356,42 @@ settingsRoutes.post<{ jobId: string }>(
       id: scheduledJob.id,
       name: scheduledJob.name,
       type: scheduledJob.type,
+      interval: scheduledJob.interval,
       nextExecutionTime: scheduledJob.job.nextInvocation(),
       running: scheduledJob.running ? scheduledJob.running() : false,
     });
+  }
+);
+
+settingsRoutes.post<{ jobId: string }>(
+  '/jobs/:jobId/schedule',
+  (req, res, next) => {
+    const scheduledJob = scheduledJobs.find(
+      (job) => job.id === req.params.jobId
+    );
+
+    if (!scheduledJob) {
+      return next({ status: 404, message: 'Job not found' });
+    }
+
+    const result = rescheduleJob(scheduledJob.job, req.body.schedule);
+    const settings = getSettings();
+
+    if (result) {
+      settings.jobs[scheduledJob.id].schedule = req.body.schedule;
+      settings.save();
+
+      return res.status(200).json({
+        id: scheduledJob.id,
+        name: scheduledJob.name,
+        type: scheduledJob.type,
+        interval: scheduledJob.interval,
+        nextExecutionTime: scheduledJob.job.nextInvocation(),
+        running: scheduledJob.running ? scheduledJob.running() : false,
+      });
+    } else {
+      return next({ status: 400, message: 'Invalid job schedule' });
+    }
   }
 );
 
