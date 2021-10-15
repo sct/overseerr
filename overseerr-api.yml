@@ -5167,6 +5167,22 @@ paths:
                     name:
                       type: string
                       example: Drama
+  /backdrops:
+    get:
+      summary: Get backdrops of trending items
+      description: Returns a list of backdrop image paths in a JSON array.
+      security: []
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
 
 security:
   - cookieAuth: []
