@@ -423,5 +423,19 @@
   "components.Settings.SettingsJobsCache.cachemisses": "Neúspěchy",
   "components.NotificationTypeSelector.usermediadeclinedDescription": "Dostat oznámení o odmítnutí vašich požadavků na média.",
   "components.NotificationTypeSelector.usermediaavailableDescription": "Dostat oznámení, jakmile budou k dispozici žádosti o média.",
-  "components.Layout.VersionStatus.commitsbehind": "{commitsBehind} {commitsBehind, plural, one {commit} other {commits}} za"
+  "components.Layout.VersionStatus.commitsbehind": "{commitsBehind} {commitsBehind, plural, one {commit} other {commits}} za",
+  "components.Setup.configureplex": "Konfigurovat Plex",
+  "components.Settings.serverpresetRefreshing": "Načítání serverů…",
+  "components.Settings.applicationTitle": "Název aplikace",
+  "components.Settings.originallanguage": "Jazyk pro vyhledávání",
+  "components.Settings.plexsettings": "Nastavení Plexu",
+  "components.Settings.scan": "Synchronizovat knihovny",
+  "components.Settings.plexlibraries": "Plex knihovny",
+  "components.Settings.applicationurl": "Adresa URL aplikace",
+  "components.Settings.notrunning": "Není spuštěno",
+  "components.Settings.radarrsettings": "Nastavení Radarru",
+  "components.Settings.region": "Region pro vyhledávání",
+  "components.Settings.startscan": "Spustit skenování",
+  "components.Settings.serverpresetManualMessage": "Manuální konfigurace",
+  "components.Settings.sonarrsettings": "Nastavení Sonarru"
 }
