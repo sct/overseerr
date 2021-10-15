@@ -881,5 +881,9 @@
   "components.MovieDetails.showmore": "Mostrar Mais",
   "components.MovieDetails.showless": "Mostrar Menos",
   "components.TvDetails.streamingproviders": "Em Exibição na",
-  "components.MovieDetails.streamingproviders": "Em Exibição na"
+  "components.MovieDetails.streamingproviders": "Em Exibição na",
+  "components.Settings.SettingsJobsCache.jobScheduleEditSaved": "Tarefa editada com sucesso!",
+  "components.Settings.SettingsJobsCache.editJobSchedulePrompt": "Frequência",
+  "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "A cada {jobScheduleHours, plural, one {hora} other {{jobScheduleHours} horas}}",
+  "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "A cada {jobScheduleMinutes, plural, one {minuto} other {{jobScheduleMinutes} minutos}}"
 }
