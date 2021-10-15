@@ -17,7 +17,7 @@ const messages = defineMessages({
   token: 'Application Token',
   validationUrlRequired: 'You must provide a valid URL',
   validationUrlTrailingSlash: 'URL must not end in a trailing slash',
-  validationTokenRequired: 'You must provide a valid application token',
+  validationTokenRequired: 'You must provide an application token',
   gotifysettingssaved: 'Gotify notification settings saved successfully!',
   gotifysettingsfailed: 'Gotify notification settings failed to save.',
   toastGotifyTestSending: 'Sending Gotify test notification…',
