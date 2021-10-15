@@ -13,6 +13,7 @@ Overseerr currently supports the following notification agents:
 - [Slack](./slack.md)
 - [Telegram](./telegram.md)
 - [Webhooks](./webhooks.md)
+- [Gotify](./gotify.md)
 
 ## Setting Up Notifications
 

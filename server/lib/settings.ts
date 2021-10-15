@@ -188,6 +188,13 @@ export interface NotificationAgentWebhook extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentGotify extends NotificationAgentConfig {
+  options: {
+    url: string;
+    token: string;
+  };
+}
+
 export enum NotificationAgentKey {
   DISCORD = 'discord',
   EMAIL = 'email',
@@ -197,6 +204,7 @@ export enum NotificationAgentKey {
   TELEGRAM = 'telegram',
   WEBHOOK = 'webhook',
   WEBPUSH = 'webpush',
+  GOTIFY = 'gotify',
 }
 
 interface NotificationAgents {
@@ -209,6 +217,7 @@ interface NotificationAgents {
   telegram: NotificationAgentTelegram;
   webhook: NotificationAgentWebhook;
   webpush: NotificationAgentConfig;
+  gotify: NotificationAgentGotify;
 }
 
 interface NotificationSettings {
@@ -343,6 +352,14 @@ class Settings {
           webpush: {
             enabled: false,
             options: {},
+          },
+          gotify: {
+            enabled: false,
+            types: 0,
+            options: {
+              url: '',
+              token: '',
+            },
           },
         },
       },
