@@ -1232,6 +1232,8 @@ components:
         options:
           type: object
           properties:
+            url:
+              type: string
             token:
               type: string
     LunaSeaSettings:

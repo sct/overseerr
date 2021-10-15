@@ -198,18 +198,19 @@ export interface NotificationAgentGotify extends NotificationAgentConfig {
 export enum NotificationAgentKey {
   DISCORD = 'discord',
   EMAIL = 'email',
+  GOTIFY = 'gotify',
   PUSHBULLET = 'pushbullet',
   PUSHOVER = 'pushover',
   SLACK = 'slack',
   TELEGRAM = 'telegram',
   WEBHOOK = 'webhook',
   WEBPUSH = 'webpush',
-  GOTIFY = 'gotify',
 }
 
 interface NotificationAgents {
   discord: NotificationAgentDiscord;
   email: NotificationAgentEmail;
+  gotify: NotificationAgentGotify;
   lunasea: NotificationAgentLunaSea;
   pushbullet: NotificationAgentPushbullet;
   pushover: NotificationAgentPushover;
@@ -217,7 +218,6 @@ interface NotificationAgents {
   telegram: NotificationAgentTelegram;
   webhook: NotificationAgentWebhook;
   webpush: NotificationAgentConfig;
-  gotify: NotificationAgentGotify;
 }
 
 interface NotificationSettings {

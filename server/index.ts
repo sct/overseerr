@@ -76,6 +76,7 @@ app
     notificationManager.registerAgents([
       new DiscordAgent(),
       new EmailAgent(),
+      new GotifyAgent(),
       new LunaSeaAgent(),
       new PushbulletAgent(),
       new PushoverAgent(),
@@ -83,7 +84,6 @@ app
       new TelegramAgent(),
       new WebhookAgent(),
       new WebPushAgent(),
-      new GotifyAgent(),
     ]);
 
     // Start Jobs

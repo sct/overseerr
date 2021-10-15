@@ -31,7 +31,7 @@ class GotifyAgent
   public shouldSend(): boolean {
     const settings = this.getSettings();
 
-    if (settings.enabled && settings.options.token) {
+    if (settings.enabled && settings.options.url && settings.options.token) {
       return true;
     }
 
@@ -162,10 +162,7 @@ class GotifyAgent
       subject: payload.subject,
     });
     try {
-      const baseUrl = settings.options.url.endsWith('/')
-        ? settings.options.url.slice(0, -1)
-        : settings.options.url;
-      const endpoint = baseUrl + '/message?token=' + settings.options.token;
+      const endpoint = `${settings.options.url}/message?token=${settings.options.token}`;
 
       const { title, message, priority } = this.constructMessageDetails(
         type,

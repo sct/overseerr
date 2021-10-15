@@ -13,12 +13,11 @@ import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',
-  url: 'Gotify URL',
-  token: 'Token',
-  urlTip: 'Your Gotify base url (including port)',
-  tokenTip: 'Your Gotify application token',
-  validationUrlRequired: 'You must provide a valid url',
-  validationTokenRequired: 'You must provide a valid token',
+  url: 'Server URL',
+  token: 'Application Token',
+  validationUrlRequired: 'You must provide a valid URL',
+  validationUrlTrailingSlash: 'URL must not end in a trailing slash',
+  validationTokenRequired: 'You must provide a valid application token',
   gotifysettingssaved: 'Gotify notification settings saved successfully!',
   gotifysettingsfailed: 'Gotify notification settings failed to save.',
   toastGotifyTestSending: 'Sending Gotify test notification…',
@@ -36,13 +35,20 @@ const NotificationsGotify: React.FC = () => {
   );
 
   const NotificationsGotifySchema = Yup.object().shape({
-    url: Yup.string().when('enabled', {
-      is: true,
-      then: Yup.string()
-        .nullable()
-        .required(intl.formatMessage(messages.validationUrlRequired)),
-      otherwise: Yup.string().nullable(),
-    }),
+    url: Yup.string()
+      .when('enabled', {
+        is: true,
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationUrlRequired)),
+        otherwise: Yup.string().nullable(),
+      })
+      .url(intl.formatMessage(messages.validationUrlRequired))
+      .test(
+        'no-trailing-slash',
+        intl.formatMessage(messages.validationUrlTrailingSlash),
+        (value) => !value || !value.endsWith('/')
+      ),
     token: Yup.string().when('enabled', {
       is: true,
       then: Yup.string()
@@ -163,9 +169,6 @@ const NotificationsGotify: React.FC = () => {
               <label htmlFor="url" className="text-label">
                 {intl.formatMessage(messages.url)}
                 <span className="label-required">*</span>
-                <span className="label-tip">
-                  {intl.formatMessage(messages.urlTip)}
-                </span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
@@ -180,9 +183,6 @@ const NotificationsGotify: React.FC = () => {
               <label htmlFor="token" className="text-label">
                 {intl.formatMessage(messages.token)}
                 <span className="label-required">*</span>
-                <span className="label-tip">
-                  {intl.formatMessage(messages.tokenTip)}
-                </span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">

@@ -7,13 +7,13 @@ Overseerr currently supports the following notification agents:
 - [Email](./email.md)
 - [Web Push](./webpush.md)
 - [Discord](./discord.md)
+- [Gotify](./gotify.md)
 - [LunaSea](./lunasea.md)
 - [Pushbullet](./pushbullet.md)
 - [Pushover](./pushover.md)
 - [Slack](./slack.md)
 - [Telegram](./telegram.md)
 - [Webhooks](./webhooks.md)
-- [Gotify](./gotify.md)
 
 ## Setting Up Notifications
 
