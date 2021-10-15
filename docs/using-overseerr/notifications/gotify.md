@@ -2,14 +2,12 @@
 
 ## Configuration
 
-### Server URL
+### Gotify URL
 
-Set this to the URL of your Gotify server.
+This is the url of your Gotify server. This should be the base url with no trailing slash, ie. http://sample.your-gotify-server.com.
 
-### Application Token
+### Application/Token
 
-Add an application to your Gotify server, and set this field to the generated application token.
+Add an application to Gotify named 'Overseerr' or similar and copy the 'Token' in this field.
 
-{% hint style="info" %}
-Please refer to the [Gotify API documentation](https://gotify.net/docs) for more details on configuring these notifications.
-{% endhint %}
+For more details on registering applications or the token, please see the [Gotify API documentation](https://gotify.net/docs/).

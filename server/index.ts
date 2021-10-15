@@ -85,6 +85,7 @@ app
       new TelegramAgent(),
       new WebhookAgent(),
       new WebPushAgent(),
+      new GotifyAgent(),
     ]);
 
     // Start Jobs
