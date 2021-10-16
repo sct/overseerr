@@ -1299,7 +1299,7 @@ components:
         running:
           type: boolean
           example: false
-    PersonDetail:
+    PersonDetails:
       type: object
       properties:
         id:
