@@ -62,13 +62,6 @@ const NotificationsPushover: React.FC = () => {
         /^[a-z\d]{30}$/i,
         intl.formatMessage(messages.validationUserTokenRequired)
       ),
-    types: Yup.number().when('enabled', {
-      is: true,
-      then: Yup.number()
-        .nullable()
-        .moreThan(0, intl.formatMessage(messages.validationTypes)),
-      otherwise: Yup.number().nullable(),
-    }),
   });
 
   if (!data && !error) {
@@ -243,8 +236,8 @@ const NotificationsPushover: React.FC = () => {
                 }
               }}
               error={
-                errors.types && touched.types
-                  ? (errors.types as string)
+                values.enabled && !values.types && touched.types
+                  ? intl.formatMessage(messages.validationTypes)
                   : undefined
               }
             />
@@ -271,7 +264,12 @@ const NotificationsPushover: React.FC = () => {
                   <Button
                     buttonType="primary"
                     type="submit"
-                    disabled={isSubmitting || !isValid || isTesting}
+                    disabled={
+                      isSubmitting ||
+                      !isValid ||
+                      isTesting ||
+                      (values.enabled && !values.types)
+                    }
                   >
                     <SaveIcon />
                     <span>
