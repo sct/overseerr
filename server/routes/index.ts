@@ -2,8 +2,6 @@ import { Router } from 'express';
 import GithubAPI from '../api/github';
 import TheMovieDb from '../api/themoviedb';
 import { TmdbMovieResult, TmdbTvResult } from '../api/themoviedb/interfaces';
-import { MediaType } from '../constants/media';
-import Media from '../entity/Media';
 import { StatusResponse } from '../interfaces/api/settingsInterfaces';
 import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
@@ -178,32 +176,17 @@ router.get('/backdrops', async (req, res) => {
     | TmdbTvResult
   )[];
 
-  const media = await Media.getRelatedMedia(data.map((result) => result.id));
-
-  return res.status(200).json(
-    data
-      .map(
-        (result) =>
-          (isMovie(result)
-            ? mapMovieResult(
-                result,
-                media.find(
-                  (med) =>
-                    med.tmdbId === result.id &&
-                    med.mediaType === MediaType.MOVIE
-                )
-              )
-            : mapTvResult(
-                result,
-                media.find(
-                  (med) =>
-                    med.tmdbId === result.id && med.mediaType === MediaType.TV
-                )
-              )
-          ).backdropPath
-      )
-      .filter((backdropPath) => !!backdropPath)
-  );
+  return res
+    .status(200)
+    .json(
+      data
+        .map(
+          (result) =>
+            (isMovie(result) ? mapMovieResult(result) : mapTvResult(result))
+              .backdropPath
+        )
+        .filter((backdropPath) => !!backdropPath)
+    );
 });
 
 router.get('/', (_req, res) => {
