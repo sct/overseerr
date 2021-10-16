@@ -296,6 +296,10 @@ select.short {
   @apply w-min;
 }
 
+button > span {
+  @apply whitespace-nowrap;
+}
+
 button.input-action {
   @apply relative inline-flex items-center px-3 sm:px-3.5 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 hover:bg-indigo-500 active:bg-gray-100 active:text-gray-700 last:rounded-r-md;
 }
