@@ -53,7 +53,7 @@
     "react-dom": "17.0.2",
     "react-intersection-observer": "^8.32.1",
     "react-intl": "5.20.10",
-    "react-markdown": "^6.0.2",
+    "react-markdown": "^7.0.1",
     "react-select": "^4.3.1",
     "react-spring": "^9.2.4",
     "react-toast-notifications": "^2.5.1",
