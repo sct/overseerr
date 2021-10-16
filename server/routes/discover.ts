@@ -12,7 +12,7 @@ import { mapMovieResult, mapPersonResult, mapTvResult } from '../models/Search';
 import { mapNetwork } from '../models/Tv';
 import { isMovie, isPerson } from '../utils/typeHelpers';
 
-const createTmdbWithRegionLanaguage = (user?: User): TheMovieDb => {
+export const createTmdbWithRegionLanguage = (user?: User): TheMovieDb => {
   const settings = getSettings();
 
   const region =
@@ -38,7 +38,7 @@ const createTmdbWithRegionLanaguage = (user?: User): TheMovieDb => {
 const discoverRoutes = Router();
 
 discoverRoutes.get('/movies', async (req, res) => {
-  const tmdb = createTmdbWithRegionLanaguage(req.user);
+  const tmdb = createTmdbWithRegionLanguage(req.user);
 
   const data = await tmdb.getDiscoverMovies({
     page: Number(req.query.page),
@@ -69,7 +69,7 @@ discoverRoutes.get('/movies', async (req, res) => {
 discoverRoutes.get<{ language: string }>(
   '/movies/language/:language',
   async (req, res, next) => {
-    const tmdb = createTmdbWithRegionLanaguage(req.user);
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     const languages = await tmdb.getLanguages();
 
@@ -112,7 +112,7 @@ discoverRoutes.get<{ language: string }>(
 discoverRoutes.get<{ genreId: string }>(
   '/movies/genre/:genreId',
   async (req, res, next) => {
-    const tmdb = createTmdbWithRegionLanaguage(req.user);
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     const genres = await tmdb.getMovieGenres({
       language: req.locale ?? (req.query.language as string),
@@ -194,7 +194,7 @@ discoverRoutes.get<{ studioId: string }>(
 );
 
 discoverRoutes.get('/movies/upcoming', async (req, res) => {
-  const tmdb = createTmdbWithRegionLanaguage(req.user);
+  const tmdb = createTmdbWithRegionLanguage(req.user);
 
   const now = new Date();
   const offset = now.getTimezoneOffset();
@@ -228,7 +228,7 @@ discoverRoutes.get('/movies/upcoming', async (req, res) => {
 });
 
 discoverRoutes.get('/tv', async (req, res) => {
-  const tmdb = createTmdbWithRegionLanaguage(req.user);
+  const tmdb = createTmdbWithRegionLanguage(req.user);
 
   const data = await tmdb.getDiscoverTv({
     page: Number(req.query.page),
@@ -259,7 +259,7 @@ discoverRoutes.get('/tv', async (req, res) => {
 discoverRoutes.get<{ language: string }>(
   '/tv/language/:language',
   async (req, res, next) => {
-    const tmdb = createTmdbWithRegionLanaguage(req.user);
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     const languages = await tmdb.getLanguages();
 
@@ -301,7 +301,7 @@ discoverRoutes.get<{ language: string }>(
 discoverRoutes.get<{ genreId: string }>(
   '/tv/genre/:genreId',
   async (req, res, next) => {
-    const tmdb = createTmdbWithRegionLanaguage(req.user);
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     const genres = await tmdb.getTvGenres({
       language: req.locale ?? (req.query.language as string),
@@ -382,7 +382,7 @@ discoverRoutes.get<{ networkId: string }>(
 );
 
 discoverRoutes.get('/tv/upcoming', async (req, res) => {
-  const tmdb = createTmdbWithRegionLanaguage(req.user);
+  const tmdb = createTmdbWithRegionLanguage(req.user);
 
   const now = new Date();
   const offset = now.getTimezoneOffset();
@@ -416,7 +416,7 @@ discoverRoutes.get('/tv/upcoming', async (req, res) => {
 });
 
 discoverRoutes.get('/trending', async (req, res) => {
-  const tmdb = createTmdbWithRegionLanaguage(req.user);
+  const tmdb = createTmdbWithRegionLanguage(req.user);
 
   const data = await tmdb.getAllTrending({
     page: Number(req.query.page),
