@@ -7,11 +7,10 @@ import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import { checkUser, isAuthenticated } from '../middleware/auth';
 import { mapProductionCompany } from '../models/Movie';
-import { mapMovieResult, mapTvResult } from '../models/Search';
 import { mapNetwork } from '../models/Tv';
 import { appDataPath, appDataStatus } from '../utils/appDataVolume';
 import { getAppVersion, getCommitTag } from '../utils/appVersion';
-import { isMovie, isPerson } from '../utils/typeHelpers';
+import { isPerson } from '../utils/typeHelpers';
 import authRoutes from './auth';
 import collectionRoutes from './collection';
 import discoverRoutes, { createTmdbWithRegionLanguage } from './discover';
@@ -180,11 +179,7 @@ router.get('/backdrops', async (req, res) => {
     .status(200)
     .json(
       data
-        .map(
-          (result) =>
-            (isMovie(result) ? mapMovieResult(result) : mapTvResult(result))
-              .backdropPath
-        )
+        .map((result) => result.backdrop_path)
         .filter((backdropPath) => !!backdropPath)
     );
 });
