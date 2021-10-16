@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwind screens;
 
 html {
   min-height: calc(100% + env(safe-area-inset-top));
@@ -182,7 +181,7 @@ a.crew-name,
 }
 
 .media-ratings {
-  @apply flex items-center justify-center px-4 py-2 border-b border-gray-700 last:border-b-0;
+  @apply flex items-center justify-center px-4 py-2 font-medium border-b border-gray-700 last:border-b-0;
 }
 
 .media-rating {
@@ -211,6 +210,10 @@ img.avatar-sm {
 
 .card-field-name {
   @apply mr-2 font-bold;
+}
+
+.card-field a {
+  @apply transition duration-300 hover:text-white hover:underline;
 }
 
 .section {

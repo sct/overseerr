@@ -430,6 +430,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               status={data.mediaInfo?.status}
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               plexUrl={data.mediaInfo?.plexUrl}
+              serviceUrl={
+                hasPermission(Permission.ADMIN)
+                  ? data.mediaInfo?.serviceUrl
+                  : undefined
+              }
             />
             {settings.currentSettings.series4kEnabled &&
               hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
@@ -441,7 +446,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0
                   }
-                  plexUrl4k={data.mediaInfo?.plexUrl4k}
+                  plexUrl={data.mediaInfo?.plexUrl4k}
+                  serviceUrl={
+                    hasPermission(Permission.ADMIN)
+                      ? data.mediaInfo?.serviceUrl4k
+                      : undefined
+                  }
                 />
               )}
           </div>
