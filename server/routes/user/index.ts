@@ -109,7 +109,7 @@ router.post(
 
       const user = new User({
         avatar: body.avatar ?? avatar,
-        username: body.username ?? body.email,
+        username: body.username,
         email: body.email,
         password: body.password,
         permissions: settings.main.defaultPermissions,

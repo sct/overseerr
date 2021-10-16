@@ -26,11 +26,11 @@ div(style='display: block; background-color: #111827; padding: 2.5rem 0;')
         else
           div(style='margin: 0 1rem 2.5rem; font-size: 3em; font-weight: 700;')
             | #{applicationTitle}
-    if recipientName
+    if recipientName !== recipientEmail
       tr
         td(style='text-align: center;')
           div(style='margin: 1rem 0 0; font-size: 1.25em;')
-            | Hi, #{recipientName.replace('.', '.\ufeff')}!
+            | Hi, #{recipientName.replace(/\.|@/g, ((x) => x + '\ufeff'))}!
     tr
       td(style='text-align: center;')
         div(style='margin: 1rem 0 0; font-size: 1.25em;')

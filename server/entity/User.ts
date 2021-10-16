@@ -215,7 +215,8 @@ export class User {
           resetPasswordLink,
           applicationUrl,
           applicationTitle,
-          recipientName: this.username ?? this.plexUsername,
+          recipientName: this.displayName,
+          recipientEmail: this.email,
         },
       });
     } catch (e) {

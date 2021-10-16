@@ -62,6 +62,7 @@ class EmailAgent
           applicationUrl,
           applicationTitle,
           recipientName,
+          recipientEmail,
         },
       };
     }
@@ -146,6 +147,7 @@ class EmailAgent
           applicationUrl,
           applicationTitle,
           recipientName,
+          recipientEmail,
         },
       };
     }
@@ -186,7 +188,7 @@ class EmailAgent
               type,
               payload,
               payload.notifyUser.email,
-              payload.notifyUser.username ?? payload.notifyUser.plexUsername
+              payload.notifyUser.displayName
             )
           );
         } catch (e) {
@@ -237,12 +239,7 @@ class EmailAgent
                 user.settings?.pgpKey
               );
               await email.send(
-                this.buildMessage(
-                  type,
-                  payload,
-                  user.email,
-                  user.username ?? user.plexUsername
-                )
+                this.buildMessage(type, payload, user.email, user.displayName)
               );
             } catch (e) {
               logger.error('Error sending email notification', {
