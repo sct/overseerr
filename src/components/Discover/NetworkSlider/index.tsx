@@ -21,12 +21,6 @@ const networks: Network[] = [
     url: '/discover/tv/network/213',
   },
   {
-    name: 'Hulu',
-    image:
-      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/pqUTCleNUiTLAVlelGxUgWn1ELh.png',
-    url: '/discover/tv/network/453',
-  },
-  {
     name: 'Disney+',
     image:
       'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/gJ8VX6JSu3ciXHuC2dDGAo2lvwM.png',
@@ -43,6 +37,12 @@ const networks: Network[] = [
     image:
       'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/4KAy34EHvRM25Ih8wb82AuGU7zJ.png',
     url: '/discover/tv/network/2552',
+  },
+  {
+    name: 'Hulu',
+    image:
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/pqUTCleNUiTLAVlelGxUgWn1ELh.png',
+    url: '/discover/tv/network/453',
   },
   {
     name: 'HBO',
