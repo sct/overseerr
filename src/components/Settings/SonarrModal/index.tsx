@@ -92,6 +92,7 @@ interface TestResponse {
     id: number;
     label: string;
   }[];
+  urlBase?: string;
 }
 
 interface SonarrModalProps {
@@ -348,6 +349,9 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     port: values.port,
                     useSsl: values.ssl,
                   });
+                  if (!values.baseUrl || values.baseUrl === '/') {
+                    setFieldValue('baseUrl', testResponse.urlBase);
+                  }
                 }
               }}
               secondaryDisabled={
