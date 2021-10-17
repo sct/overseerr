@@ -28,8 +28,6 @@ const messages = defineMessages({
   defaultPermissions: 'Default Permissions',
   defaultPermissionsTip: 'Initial permissions assigned to new users',
   signinMethods: 'Sign-In Methods',
-  plexSigninHoverTip:
-    'To disable Plex OAuth, email notifications must be enabled and the server owner must have a password configured for their account.',
   passwordSignin: '{applicationTitle} Password',
   validationSigninMethods: 'At least one sign-in method must be selected',
 });
@@ -75,7 +73,7 @@ const SettingsUsers = () => {
 
   const allowPlexSigninDisable =
     ownerData?.hasPassword &&
-    settings.currentSettings.applicationUrl &&
+    !!settings.currentSettings.applicationUrl &&
     settings.currentSettings.emailEnabled;
 
   return (
@@ -162,10 +160,7 @@ const SettingsUsers = () => {
                     <div className="form-input-area max-w-xl space-y-1.5">
                       <div
                         className={`relative flex items-start ${
-                          ownerData?.hasPassword &&
-                          settings.currentSettings.emailEnabled
-                            ? ''
-                            : 'opacity-50'
+                          allowPlexSigninDisable ? '' : 'opacity-50'
                         }`}
                       >
                         <div className="flex h-6 items-center">
@@ -177,23 +172,11 @@ const SettingsUsers = () => {
                               setFieldValue('plexLogin', !values.plexLogin);
                             }}
                             disabled={!allowPlexSigninDisable}
-                            title={
-                              !allowPlexSigninDisable
-                                ? intl.formatMessage(
-                                    messages.plexSigninHoverTip
-                                  )
-                                : undefined
-                            }
                           />
                         </div>
                         <label
                           htmlFor="plexLogin"
                           className="ml-3 block text-sm font-semibold leading-6 text-white"
-                          title={
-                            !allowPlexSigninDisable
-                              ? intl.formatMessage(messages.plexSigninHoverTip)
-                              : undefined
-                          }
                         >
                           Plex OAuth
                         </label>

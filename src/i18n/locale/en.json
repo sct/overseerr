@@ -686,7 +686,6 @@
   "components.Settings.SettingsUsers.newPlexLogin": "Enable New Plex Sign-Ins",
   "components.Settings.SettingsUsers.newPlexLoginTip": "Allow Plex users with access to the media server to sign in without being imported",
   "components.Settings.SettingsUsers.passwordSignin": "{applicationTitle} Password",
-  "components.Settings.SettingsUsers.plexSigninHoverTip": "To disable Plex OAuth, email notifications must be enabled and the server owner must have a password configured for their account.",
   "components.Settings.SettingsUsers.signinMethods": "Sign-In Methods",
   "components.Settings.SettingsUsers.toastSettingsFailure": "Something went wrong while saving settings.",
   "components.Settings.SettingsUsers.toastSettingsSuccess": "User settings saved successfully!",
