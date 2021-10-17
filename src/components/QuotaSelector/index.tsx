@@ -50,7 +50,7 @@ const QuotaSelector = ({
   }, [limitFieldName, onChange, quotaLimit]);
 
   return (
-    <div className={`${isDisabled ? 'opacity-50' : ''}`}>
+    <span className={isDisabled ? 'opacity-50' : ''}>
       {intl.formatMessage(
         mediaType === 'movie' ? messages.movieRequests : messages.tvRequests,
         {
@@ -97,7 +97,7 @@ const QuotaSelector = ({
           },
         }
       )}
-    </div>
+    </span>
   );
 };
 

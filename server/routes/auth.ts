@@ -30,11 +30,12 @@ authRoutes.post('/plex', async (req, res, next) => {
   const userRepository = getRepository(User);
   const body = req.body as { authToken?: string };
 
-  if (!body.authToken) {
-    return next({
-      status: 500,
-      message: 'Authentication token required.',
-    });
+  if (!settings.main.plexLogin) {
+    return res.status(500).json({ error: 'Plex sign-in is disabled.' });
+  } else if (!body.authToken) {
+    return res
+      .status(500)
+      .json({ error: 'You must provide an authentication token' });
   }
   try {
     // First we need to use this auth token to get the user's email from plex.tv

@@ -381,17 +381,15 @@ const NotificationTypeSelector = ({
           {intl.formatMessage(messages.notificationTypes)}
           {!user && <span className="label-required">*</span>}
         </span>
-        <div className="form-input-area">
-          <div className="max-w-lg">
-            {availableTypes.map((type) => (
-              <NotificationType
-                key={`notification-type-${type.id}`}
-                option={type}
-                currentTypes={currentTypes}
-                onUpdate={onUpdate}
-              />
-            ))}
-          </div>
+        <div className="form-input-area max-w-xl">
+          {availableTypes.map((type) => (
+            <NotificationType
+              key={`notification-type-${type.id}`}
+              option={type}
+              currentTypes={currentTypes}
+              onUpdate={onUpdate}
+            />
+          ))}
           {error && <div className="error">{error}</div>}
         </div>
       </div>

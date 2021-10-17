@@ -122,16 +122,14 @@ const PermissionOption = ({
             checked={checked}
           />
         </div>
-        <div className="ml-3 text-sm leading-6">
-          <label htmlFor={option.id} className="block">
-            <div className="flex flex-col">
-              <span className="font-medium text-white">{option.name}</span>
-              <span className="font-normal text-gray-400">
-                {option.description}
-              </span>
-            </div>
-          </label>
-        </div>
+        <label htmlFor={option.id} className="flex flex-col ml-3 text-sm">
+          <span className="font-semibold leading-6 text-white">
+            {option.name}
+          </span>
+          <span className="font-normal text-gray-400">
+            {option.description}
+          </span>
+        </label>
       </div>
       {(option.children ?? []).map((child) => (
         <div key={`permission-child-${child.id}`} className="mt-4 pl-10">

@@ -13,6 +13,7 @@ const defaultSettings = {
   applicationUrl: '',
   hideAvailable: false,
   localLogin: true,
+  plexLogin: true,
   movie4kEnabled: false,
   series4kEnabled: false,
   region: '',

@@ -127,6 +127,9 @@ components:
         localLogin:
           type: boolean
           example: true
+        plexLogin:
+          type: boolean
+          example: true
         newPlexLogin:
           type: boolean
           example: true

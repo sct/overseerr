@@ -30,10 +30,9 @@ const messages = defineMessages({
     'Password is too short; should be a minimum of 8 characters',
   validationConfirmPassword: 'You must confirm the new password',
   validationConfirmPasswordSame: 'Passwords must match',
-  noPasswordSet:
-    'This user account currently does not have a password set. Configure a password below to enable this account to sign in as a "local user."',
+  noPasswordSet: 'This user account currently does not have a password set.',
   noPasswordSetOwnAccount:
-    'Your account currently does not have a password set. Configure a password below to enable sign-in as a "local user" using your email address.',
+    'Your account currently does not have a password set.',
   nopermissionDescription:
     "You do not have permission to modify this user's password.",
 });
