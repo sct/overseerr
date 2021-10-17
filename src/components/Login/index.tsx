@@ -67,6 +67,32 @@ const Login = () => {
     revalidateOnFocus: false,
   });
 
+  const signinMethods: {
+    buttonText: string;
+    content: React.ReactNode;
+  }[] = [];
+
+  if (settings.currentSettings.plexLogin) {
+    signinMethods.push({
+      buttonText: intl.formatMessage(messages.signinwithplex),
+      content: (
+        <PlexLoginButton
+          isProcessing={isProcessing}
+          onAuthToken={(authToken) => setAuthToken(authToken)}
+        />
+      ),
+    });
+  }
+
+  if (settings.currentSettings.localLogin) {
+    signinMethods.push({
+      buttonText: intl.formatMessage(messages.signinwithoverseerr, {
+        applicationTitle: settings.currentSettings.applicationTitle,
+      }),
+      content: <LocalLogin revalidate={revalidate} />,
+    });
+  }
+
   return (
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
       <PageTitle title={intl.formatMessage(messages.signin)} />
@@ -118,65 +144,31 @@ const Login = () => {
             <Accordion single atLeastOne>
               {({ openIndexes, handleClick, AccordionContent }) => (
                 <>
-                  {settings.currentSettings.plexLogin && (
+                  {signinMethods.map((signinMethod, index) => (
                     <>
                       <button
-                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 focus:outline-none sm:rounded-t-lg ${
-                          openIndexes.includes(0) ||
-                          !settings.currentSettings.localLogin
+                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-base font-bold focus:outline-none sm:first:rounded-t-lg ${
+                          openIndexes.includes(index)
                             ? 'text-indigo-500'
-                            : ''
+                            : `text-gray-400 ${
+                                index === signinMethods.length - 1
+                                  ? 'sm:rounded-b-lg'
+                                  : ''
+                              }`
                         } ${
-                          settings.currentSettings.localLogin
-                            ? 'hover:cursor-pointer hover:bg-gray-700'
+                          signinMethods.length > 1
+                            ? 'transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700'
                             : ''
                         }`}
-                        onClick={() => handleClick(0)}
+                        onClick={() => handleClick(index)}
                       >
-                        {intl.formatMessage(messages.signinwithplex)}
+                        {signinMethod.buttonText}
                       </button>
-                      <AccordionContent isOpen={openIndexes.includes(0)}>
-                        <div className="px-10 py-8">
-                          <PlexLoginButton
-                            isProcessing={isProcessing}
-                            onAuthToken={(authToken) => setAuthToken(authToken)}
-                          />
-                        </div>
+                      <AccordionContent isOpen={openIndexes.includes(index)}>
+                        <div className="px-10 py-8">{signinMethod.content}</div>
                       </AccordionContent>
                     </>
-                  )}
-                  {settings.currentSettings.localLogin && (
-                    <>
-                      <button
-                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 focus:outline-none ${
-                          openIndexes.includes(1) ||
-                          !settings.currentSettings.plexLogin
-                            ? 'text-indigo-500'
-                            : 'sm:rounded-b-lg'
-                        } ${
-                          settings.currentSettings.plexLogin
-                            ? 'hover:cursor-pointer hover:bg-gray-700'
-                            : 'sm:rounded-t-lg'
-                        }`}
-                        onClick={() => handleClick(1)}
-                      >
-                        {intl.formatMessage(messages.signinwithoverseerr, {
-                          applicationTitle:
-                            settings.currentSettings.applicationTitle,
-                        })}
-                      </button>
-                      <AccordionContent
-                        isOpen={
-                          openIndexes.includes(1) ||
-                          !settings.currentSettings.plexLogin
-                        }
-                      >
-                        <div className="px-10 py-8">
-                          <LocalLogin revalidate={revalidate} />
-                        </div>
-                      </AccordionContent>
-                    </>
-                  )}
+                  ))}
                 </>
               )}
             </Accordion>
