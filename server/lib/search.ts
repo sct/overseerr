@@ -18,7 +18,7 @@ import { isMovieDetails, isTvDetails } from '../utils/typeHelpers';
 interface SearchProvider {
   id: string;
   pattern: RegExp;
-  search: (id: number, language?: string) => Promise<TmdbSearchMultiResponse>;
+  search: (id: string, language?: string) => Promise<TmdbSearchMultiResponse>;
 }
 
 const searchProviders: SearchProvider[] = [];
@@ -33,14 +33,14 @@ searchProviders.push({
   id: 'TMDb',
   pattern: new RegExp(/(?<=[tT][mM][dD][bB]:)\d+/),
   search: async (
-    id: number,
+    id: string,
     language?: string
   ): Promise<TmdbSearchMultiResponse> => {
     const tmdb = new TheMovieDb();
 
-    const moviePromise = tmdb.getMovie({ movieId: id, language });
-    const tvShowPromise = tmdb.getTvShow({ tvId: id, language });
-    const personPromise = tmdb.getPerson({ personId: id, language });
+    const moviePromise = tmdb.getMovie({ movieId: parseInt(id), language });
+    const tvShowPromise = tmdb.getTvShow({ tvId: parseInt(id), language });
+    const personPromise = tmdb.getPerson({ personId: parseInt(id), language });
 
     const responses = await Promise.allSettled([
       moviePromise,
@@ -79,7 +79,7 @@ searchProviders.push({
   id: 'IMDb',
   pattern: new RegExp(/(?<=[iI][mM][dD][bB]:(tt){0,1})\d+/),
   search: async (
-    id: number,
+    id: string,
     language?: string
   ): Promise<TmdbSearchMultiResponse> => {
     const tmdb = new TheMovieDb();
@@ -115,13 +115,13 @@ searchProviders.push({
   id: 'TVDB',
   pattern: new RegExp(/(?<=[tT][vV][dD][bB]:)\d+/),
   search: async (
-    id: number,
+    id: string,
     language?: string
   ): Promise<TmdbSearchMultiResponse> => {
     const tmdb = new TheMovieDb();
 
     const responses = await tmdb.getByExternalId({
-      externalId: id,
+      externalId: parseInt(id),
       type: 'tvdb',
       language,
     });
