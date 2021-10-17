@@ -19,13 +19,19 @@ export interface AccordionChildProps {
 type AccordionContentProps = {
   isOpen: boolean;
   children: React.ReactNode;
+  className?: string;
 };
 
 export const AccordionContent = ({
   isOpen,
   children,
+  className,
 }: AccordionContentProps) => {
-  return <AnimateHeight height={isOpen ? 'auto' : 0}>{children}</AnimateHeight>;
+  return (
+    <AnimateHeight height={isOpen ? 'auto' : 0} className={className}>
+      {children}
+    </AnimateHeight>
+  );
 };
 
 const Accordion = ({

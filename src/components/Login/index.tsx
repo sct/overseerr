@@ -145,29 +145,39 @@ const Login = () => {
               {({ openIndexes, handleClick, AccordionContent }) => (
                 <>
                   {signinMethods.map((signinMethod, index) => (
-                    <>
+                    <div
+                      key={`accordion-${index}`}
+                      className="ring-1 ring-gray-700 sm:first:rounded-t-lg sm:last:rounded-b-lg"
+                    >
                       <button
-                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-base font-bold focus:outline-none sm:first:rounded-t-lg ${
+                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-base font-bold focus:outline-none ${
+                          index === 0 ? 'sm:rounded-t-lg' : ''
+                        } ${
                           openIndexes.includes(index)
                             ? 'text-indigo-500'
                             : `text-gray-400 ${
                                 index === signinMethods.length - 1
                                   ? 'sm:rounded-b-lg'
                                   : ''
+                              } ${
+                                signinMethods.length > 1
+                                  ? 'transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700'
+                                  : ''
                               }`
-                        } ${
-                          signinMethods.length > 1
-                            ? 'transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700'
-                            : ''
                         }`}
                         onClick={() => handleClick(index)}
                       >
                         {signinMethod.buttonText}
                       </button>
-                      <AccordionContent isOpen={openIndexes.includes(index)}>
+                      <AccordionContent
+                        isOpen={openIndexes.includes(index)}
+                        className={
+                          index < signinMethods.length - 1 ? 'mb-px' : ''
+                        }
+                      >
                         <div className="px-10 py-8">{signinMethod.content}</div>
                       </AccordionContent>
-                    </>
+                    </div>
                   ))}
                 </>
               )}
