@@ -228,7 +228,6 @@
   "components.Settings.SettingsAbout.Releases.viewongithub": "Ver en GitHub",
   "components.Settings.SettingsAbout.Releases.viewchangelog": "Ver registro de cambios",
   "components.Settings.SettingsAbout.Releases.versionChangelog": "Cambios de la versión",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "Los últimos cambios de la rama de <code>desarrollo</code> de Overserr no se muestran a continuación. Por favor, consulta la historia de subidas de esta rama en <GithubLink>GitHub </GithubLink> para obtener los detalles.",
   "components.Settings.SettingsAbout.Releases.releases": "Versiones",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "Información de la versión no disponible. ¿GitHub está caído?",
   "components.Settings.SettingsAbout.Releases.latestversion": "Última Versión",
@@ -881,5 +880,13 @@
   "components.Settings.Notifications.botApiTip": "<CreateBotLink>Crea un bot</CreateBotLink> para usar con Overseerr",
   "components.Settings.Notifications.encryptionTip": "Normalmente, TLS Implícito usa el puerto 465 y STARTTLS usa el puerto 587",
   "components.UserList.localLoginDisabled": "El ajuste para <strong>Habilitar el Inicio de Sesión Local</strong> está actualmente deshabilitado.",
-  "components.Settings.SettingsUsers.defaultPermissionsTip": "Permisos iniciales asignados a nuevos usuarios"
+  "components.Settings.SettingsUsers.defaultPermissionsTip": "Permisos iniciales asignados a nuevos usuarios",
+  "components.Settings.SettingsAbout.runningDevelop": "Estás utilizando la rama de <code>develop</code> de Overseerr, la cual solo se recomienda para aquellos que contribuyen al desarrollo o al soporte de las pruebas de nuevos desarrollos.",
+  "components.StatusBadge.status": "{status}",
+  "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "Cada {jobScheduleMinutes, plural, one {minuto} other {{jobScheduleMinutes} minutos}}",
+  "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "Cada {jobScheduleHours, plural, one {hora} other {{jobScheduleHours} horas}}",
+  "components.Settings.SettingsJobsCache.jobScheduleEditFailed": "Algo fue mal al guardar la tarea programada.",
+  "components.Settings.SettingsJobsCache.editJobSchedule": "Modificar tarea programada",
+  "components.Settings.SettingsJobsCache.editJobSchedulePrompt": "Frecuencia",
+  "components.Settings.SettingsJobsCache.jobScheduleEditSaved": "¡Tarea programada modificada con éxito!"
 }
