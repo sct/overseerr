@@ -15,8 +15,10 @@ import {
 } from '../models/Search';
 import { isMovieDetails, isTvDetails } from '../utils/typeHelpers';
 
+type SearchProviderId = 'TMDb' | 'IMDb' | 'TVDB';
+
 interface SearchProvider {
-  id: string;
+  id: SearchProviderId;
   pattern: RegExp;
   search: (id: string, language?: string) => Promise<TmdbSearchMultiResponse>;
 }

@@ -13,8 +13,9 @@ searchRoutes.get('/', async (req, res) => {
   let results: TmdbSearchMultiResponse;
 
   if (searchProvider) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const id = queryString.toLowerCase().match(searchProvider.pattern)![0];
+    const [id] = queryString
+      .toLowerCase()
+      .match(searchProvider.pattern) as RegExpMatchArray;
     results = await searchProvider.search(
       id,
       req.locale ?? (req.query.language as string)
