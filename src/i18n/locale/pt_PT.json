@@ -306,7 +306,6 @@
   "components.Settings.SettingsAbout.Releases.viewongithub": "Ver no GitHub",
   "components.Settings.SettingsAbout.Releases.viewchangelog": "Ver Mudanças",
   "components.Settings.SettingsAbout.Releases.versionChangelog": "Mudanças Nesta Versão",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "As últimas mudanças na branch <code>develop</code> do Overseerr não são mostradas abaixo. Por favor, veja o histórico de commits para esta branch no <GithubLink>GitHub</GithubLink> para detalhes.",
   "components.Settings.SettingsAbout.Releases.releases": "Versões",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "Informações de versão indisponíveis. O GitHub está abaixo?",
   "components.Settings.SettingsAbout.Releases.latestversion": "Mais Recente",
@@ -881,5 +880,6 @@
   "components.TvDetails.streamingproviders": "Atualmente a Exibir em",
   "components.MovieDetails.showmore": "Mostrar Mais",
   "components.Layout.LanguagePicker.displaylanguage": "Idioma da Interface",
-  "components.MovieDetails.showless": "Mostrar Menos"
+  "components.MovieDetails.showless": "Mostrar Menos",
+  "components.StatusBadge.status": "{status}"
 }

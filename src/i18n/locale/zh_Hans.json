@@ -542,7 +542,7 @@
   "components.Settings.SettingsJobsCache.jobsDescription": "Overseerr 将定时运行以下的維護任務。手动执行工作不会影响它正常的时间表。",
   "components.Settings.SettingsJobsCache.jobs": "作业",
   "components.Settings.SettingsJobsCache.jobname": "作业名",
-  "components.Settings.SettingsJobsCache.jobcancelled": "{jobname} 已被取消。",
+  "components.Settings.SettingsJobsCache.jobcancelled": "{jobname}已被取消。",
   "components.Settings.SettingsJobsCache.flushcache": "清除缓存",
   "components.Settings.SettingsJobsCache.download-sync-reset": "下载状态同步复位",
   "components.Settings.SettingsJobsCache.download-sync": "下载状态同步",
@@ -574,12 +574,11 @@
   "components.Settings.SettingsAbout.about": "关于 Overseerr",
   "components.Settings.SettingsAbout.Releases.viewongithub": "在 GitHub 上查看",
   "components.Settings.SettingsAbout.Releases.viewchangelog": "查看变更日志",
-  "components.Settings.SettingsAbout.Releases.versionChangelog": "变更日志",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "<code>develop</code> 分支的变更日志不会显示在以下。请直接到 <GithubLink>GitHub</GithubLink> 查看变更日志。",
+  "components.Settings.SettingsAbout.Releases.versionChangelog": "{version} 更新日志",
   "components.Settings.SettingsAbout.Releases.releases": "软件版本",
-  "components.Settings.SettingsAbout.Releases.releasedataMissing": "无法获取软件版本资料。GitHub 崩潰了吗？",
+  "components.Settings.SettingsAbout.Releases.releasedataMissing": "软件发行数据当前不可用。",
   "components.Settings.SettingsAbout.Releases.latestversion": "最新软件版本",
-  "components.Settings.SettingsAbout.Releases.currentversion": "目前的软件版本",
+  "components.Settings.SettingsAbout.Releases.currentversion": "当前版本",
   "components.Settings.RadarrModal.validationRootFolderRequired": "必须设置根目录",
   "components.Settings.RadarrModal.validationProfileRequired": "必须设置质量",
   "components.Settings.RadarrModal.validationPortRequired": "请输入有效的端口",
@@ -879,5 +878,6 @@
   "components.Settings.Notifications.encryptionNone": "不使用加密",
   "components.Settings.Notifications.encryptionImplicitTls": "使用传输层安全标准（TLS）",
   "components.Settings.Notifications.encryptionDefault": "盡可能使用 STARTTLS",
-  "components.Settings.Notifications.encryption": "加密方式"
+  "components.Settings.Notifications.encryption": "加密方式",
+  "components.StatusBadge.status": "{status}"
 }

@@ -229,7 +229,6 @@
   "components.Settings.SettingsAbout.Releases.viewongithub": "Auf GitHub anzeigen",
   "components.Settings.SettingsAbout.Releases.viewchangelog": "Änderungsprotokoll anzeigen",
   "components.Settings.SettingsAbout.Releases.versionChangelog": "Änderungsprotokoll",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "Die neuesten Änderungen am <code>Entwicklungszweig</code> von Overseerr werden unten nicht angezeigt. Weitere Informationen findest du im Commit-Verlauf für diesen Zweig auf <GithubLink>GitHub</GithubLink>.",
   "components.Settings.SettingsAbout.Releases.releases": "Veröffentlichungen",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "Informationen der Version nicht verfügbar. Ist GitHub offline?",
   "components.Settings.SettingsAbout.Releases.latestversion": "Neuste",
@@ -881,5 +880,6 @@
   "components.MovieDetails.showless": "Weniger Anzeigen",
   "components.MovieDetails.showmore": "Mehr Anzeigen",
   "components.MovieDetails.streamingproviders": "Streamt derzeit auf",
-  "components.TvDetails.streamingproviders": "Streamt derzeit auf"
+  "components.TvDetails.streamingproviders": "Streamt derzeit auf",
+  "components.StatusBadge.status": "{status}"
 }

@@ -229,7 +229,6 @@
   "components.Settings.SettingsAbout.Releases.viewongithub": "Visualizza su GitHub",
   "components.Settings.SettingsAbout.Releases.viewchangelog": "Visualizza il registro modifiche",
   "components.Settings.SettingsAbout.Releases.versionChangelog": "Registro versione",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "Le ultime modifiche di Overserr <code>develop</code> non sono mostrate di seguito. Consulta <GithubLink>GitHub</GithubLink> per maggiori dettagli.",
   "components.Settings.SettingsAbout.Releases.releases": "Versioni",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "Dati di versione non disponibili. GitHub è down?",
   "components.Settings.SettingsAbout.Releases.latestversion": "Versione più recente",
@@ -881,5 +880,6 @@
   "components.MovieDetails.showmore": "Mostra di più",
   "components.MovieDetails.showless": "Mostra meno",
   "components.TvDetails.streamingproviders": "Ora in streaming su",
-  "components.MovieDetails.streamingproviders": "Ora in streaming su"
+  "components.MovieDetails.streamingproviders": "Ora in streaming su",
+  "components.StatusBadge.status": "{status}"
 }

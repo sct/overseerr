@@ -47,5 +47,6 @@
   "components.Discover.DiscoverMovieGenre.genreMovies": "{genre} Film",
   "components.CollectionDetails.requestcollection4k": "Ønskesamling i 4k",
   "components.CollectionDetails.requestcollection": "Ønskesamling",
-  "components.CollectionDetails.overview": "Overblik"
+  "components.CollectionDetails.overview": "Overblik",
+  "components.StatusBadge.status": "{status}"
 }

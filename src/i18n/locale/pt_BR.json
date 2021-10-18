@@ -179,12 +179,11 @@
   "components.Settings.SettingsAbout.supportoverseerr": "Apoie o Overseerr",
   "components.Settings.SettingsAbout.Releases.viewongithub": "Ver no GitHub",
   "components.Settings.SettingsAbout.Releases.viewchangelog": "Ver Mudanças",
-  "components.Settings.SettingsAbout.Releases.versionChangelog": "Mudanças Nessa Versão",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "As últimas mudanças na versão em <code>desenvolvimento</code> não serão exibidas abaixo. Por favor acesse o histórico de mudanças no <GithubLink>GitHub</GithubLink> para detalhes.",
+  "components.Settings.SettingsAbout.Releases.versionChangelog": "Mudanças em {version}",
   "components.Settings.SettingsAbout.Releases.releases": "Versões",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "Informações de versão indisponíveis. O GitHub está indisponível?",
   "components.Settings.SettingsAbout.Releases.latestversion": "Última Versão",
-  "components.Settings.SettingsAbout.Releases.currentversion": "Versão Atual",
+  "components.Settings.SettingsAbout.Releases.currentversion": "Atual",
   "components.TvDetails.recommendations": "Recomendações",
   "components.TvDetails.overviewunavailable": "Sinopse indisponível.",
   "components.TvDetails.overview": "Sinopse",
@@ -885,5 +884,6 @@
   "components.Settings.SettingsJobsCache.jobScheduleEditSaved": "Tarefa editada com sucesso!",
   "components.Settings.SettingsJobsCache.editJobSchedulePrompt": "Frequência",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "A cada {jobScheduleHours, plural, one {hora} other {{jobScheduleHours} horas}}",
-  "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "A cada {jobScheduleMinutes, plural, one {minuto} other {{jobScheduleMinutes} minutos}}"
+  "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "A cada {jobScheduleMinutes, plural, one {minuto} other {{jobScheduleMinutes} minutos}}",
+  "components.StatusBadge.status": "{status}"
 }

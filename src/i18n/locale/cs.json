@@ -437,5 +437,6 @@
   "components.Settings.region": "Region pro vyhledávání",
   "components.Settings.startscan": "Spustit skenování",
   "components.Settings.serverpresetManualMessage": "Manuální konfigurace",
-  "components.Settings.sonarrsettings": "Nastavení Sonarru"
+  "components.Settings.sonarrsettings": "Nastavení Sonarru",
+  "components.StatusBadge.status": "{status}"
 }

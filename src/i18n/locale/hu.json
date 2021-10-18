@@ -518,7 +518,6 @@
   "components.Settings.SettingsAbout.Releases.viewongithub": "Megtekintés a GitHubon",
   "components.Settings.SettingsAbout.Releases.viewchangelog": "Változásnapló megtekintése",
   "components.Settings.SettingsAbout.Releases.versionChangelog": "Verzió változásnapló",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "Az Overseerr <code>develop</code> ágának legutóbbi módosításait az alábbiakban nem mutatjuk be. A részletekért lásd az ág \"commit history\"-ját a <GithubLink>GitHub</GithubLink>-on.",
   "components.Settings.SettingsAbout.Releases.releases": "Kiadások",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "Kiadási adatok nem állnak rendelkezésre. A GitHub nem elérhető?",
   "components.Settings.SettingsAbout.Releases.latestversion": "Legújabb",
@@ -879,5 +878,6 @@
   "components.ResetPassword.gobacklogin": "Vissza a bejelentkező lapra",
   "components.ResetPassword.emailresetlink": "Email visszaállítási link",
   "components.ResetPassword.email": "Email cím",
-  "components.ResetPassword.confirmpassword": "Jelszó megerősítése"
+  "components.ResetPassword.confirmpassword": "Jelszó megerősítése",
+  "components.StatusBadge.status": "{status}"
 }
