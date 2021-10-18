@@ -222,5 +222,6 @@
   "components.Discover.popularmovies": "Popularni Filmovi",
   "components.Discover.discovertv": "Popularne Serije",
   "components.Discover.discovermovies": "Popunarni Filmov",
-  "pages.errormessagewithcode": "{statusCode} - {error}"
+  "pages.errormessagewithcode": "{statusCode} - {error}",
+  "components.StatusBadge.status": "{status}"
 }
