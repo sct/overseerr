@@ -23,7 +23,7 @@ interface SearchProvider {
 
 const searchProviders: SearchProvider[] = [];
 
-export const getSearchProvider = (
+export const findSearchProvider = (
   query: string
 ): SearchProvider | undefined => {
   return searchProviders.find((provider) => provider.pattern.test(query));
@@ -31,7 +31,7 @@ export const getSearchProvider = (
 
 searchProviders.push({
   id: 'TMDb',
-  pattern: new RegExp(/(?<=[tT][mM][dD][bB]:)\d+/),
+  pattern: new RegExp(/(?<=tmdb:)\d+/),
   search: async (
     id: string,
     language?: string
@@ -48,22 +48,29 @@ searchProviders.push({
       personPromise,
     ]);
 
-    const selectedResponse = responses.find((r) => r.status === 'fulfilled') as
-      | PromiseFulfilledResult<TmdbMovieDetails>
-      | PromiseFulfilledResult<TmdbTvDetails>
-      | PromiseFulfilledResult<TmdbPersonDetails>
-      | undefined;
+    const successfulResponses = responses.filter(
+      (r) => r.status === 'fulfilled'
+    ) as
+      | (
+          | PromiseFulfilledResult<TmdbMovieDetails>
+          | PromiseFulfilledResult<TmdbTvDetails>
+          | PromiseFulfilledResult<TmdbPersonDetails>
+        )[];
 
     const results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[] = [];
 
-    if (selectedResponse) {
-      if (isMovieDetails(selectedResponse.value)) {
-        results.push(mapMovieDetailsToResult(selectedResponse.value));
-      } else if (isTvDetails(selectedResponse.value)) {
-        results.push(mapTvDetailsToResult(selectedResponse.value));
-      } else {
-        results.push(mapPersonDetailsToResult(selectedResponse.value));
-      }
+    if (successfulResponses.length) {
+      results.push(
+        ...successfulResponses.map((r) => {
+          if (isMovieDetails(r.value)) {
+            return mapMovieDetailsToResult(r.value);
+          } else if (isTvDetails(r.value)) {
+            return mapTvDetailsToResult(r.value);
+          } else {
+            return mapPersonDetailsToResult(r.value);
+          }
+        })
+      );
     }
 
     return {
@@ -77,7 +84,7 @@ searchProviders.push({
 
 searchProviders.push({
   id: 'IMDb',
-  pattern: new RegExp(/(?<=[iI][mM][dD][bB]:(tt){0,1})\d+/),
+  pattern: new RegExp(/(?<=imdb:)(tt|nm)\d+/),
   search: async (
     id: string,
     language?: string
@@ -85,22 +92,28 @@ searchProviders.push({
     const tmdb = new TheMovieDb();
 
     const responses = await tmdb.getByExternalId({
-      externalId: `tt${id}`,
+      externalId: id,
       type: 'imdb',
       language,
     });
 
     const results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[] = [];
 
-    // set the media_type here since getting it from TMDb doesn't include the media_type
-    // should set this in the api module?
-    if (responses.movie_results.length) {
-      results.push({ ...responses.movie_results[0], media_type: 'movie' });
-    } else if (responses.tv_results.length) {
-      results.push({ ...responses.tv_results[0], media_type: 'tv' });
-    } else {
-      results.push({ ...responses.person_results[0], media_type: 'person' });
-    }
+    // set the media_type here since searching by external id doesn't return it
+    results.push(
+      ...(responses.movie_results.map((movie) => ({
+        ...movie,
+        media_type: 'movie',
+      })) as TmdbMovieResult[]),
+      ...(responses.tv_results.map((tv) => ({
+        ...tv,
+        media_type: 'tv',
+      })) as TmdbTvResult[]),
+      ...(responses.person_results.map((person) => ({
+        ...person,
+        media_type: 'person',
+      })) as TmdbPersonResult[])
+    );
 
     return {
       page: 1,
@@ -113,7 +126,7 @@ searchProviders.push({
 
 searchProviders.push({
   id: 'TVDB',
-  pattern: new RegExp(/(?<=[tT][vV][dD][bB]:)\d+/),
+  pattern: new RegExp(/(?<=tvdb:)\d+/),
   search: async (
     id: string,
     language?: string
@@ -128,15 +141,21 @@ searchProviders.push({
 
     const results: (TmdbMovieResult | TmdbTvResult | TmdbPersonResult)[] = [];
 
-    // set the media_type here since getting it from TMDb doesn't include the media_type
-    // should set this in the api module?
-    if (responses.movie_results.length) {
-      results.push({ ...responses.movie_results[0], media_type: 'movie' });
-    } else if (responses.tv_results.length) {
-      results.push({ ...responses.tv_results[0], media_type: 'tv' });
-    } else {
-      results.push({ ...responses.person_results[0], media_type: 'person' });
-    }
+    // set the media_type here since searching by external id doesn't return it
+    results.push(
+      ...(responses.movie_results.map((movie) => ({
+        ...movie,
+        media_type: 'movie',
+      })) as TmdbMovieResult[]),
+      ...(responses.tv_results.map((tv) => ({
+        ...tv,
+        media_type: 'tv',
+      })) as TmdbTvResult[]),
+      ...(responses.person_results.map((person) => ({
+        ...person,
+        media_type: 'person',
+      })) as TmdbPersonResult[])
+    );
 
     return {
       page: 1,
