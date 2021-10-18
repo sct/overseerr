@@ -68,11 +68,15 @@ This setting is **enabled** by default.
 
 Select the sign-in methods you would like to allow.
 
-In order to disable Plex OAuth, [email notifications](../notifications/email.md) must be enabled and the server owner must have a password configured for their account.
+In order to disable Plex OAuth:
+
+- an [application title](#application-title) must be set,
+- [email notifications](../notifications/email.md) must be enabled,
+- and the server owner must have a password configured for their account.
 
 Both Plex OAuth and password sign-in are enabled by default.
 
-### Enable New Plex Sign-In
+### Enable New Plex Sign-Ins
 
 When enabled, users with access to your Plex server will be able to sign in to Overseerr even if they have not yet been imported. Users will be automatically assigned the permissions configured in the [Default Permissions](#default-permissions) setting upon first sign-in.
 
