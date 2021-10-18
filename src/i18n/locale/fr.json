@@ -221,7 +221,7 @@
   "components.Settings.toastApiKeyFailure": "Une erreur s'est produite lors de la génération de la nouvelle clé API.",
   "components.Settings.SonarrModal.animerootfolder": "Dossier racine pour anime",
   "components.Settings.SonarrModal.animequalityprofile": "Profil qualité pour anime",
-  "components.MovieDetails.studio": "{studioCount, plural, one {Studio} autre {Studios}}",
+  "components.MovieDetails.studio": "{studioCount, plural, one {Studio} other {Studios}}",
   "components.Settings.SettingsAbout.supportoverseerr": "Soutenez Overseerr",
   "i18n.close": "Fermer",
   "components.Settings.SettingsAbout.timezone": "Fuseau horaire",
@@ -229,7 +229,6 @@
   "components.Settings.SettingsAbout.Releases.viewongithub": "Voir sur GitHub",
   "components.Settings.SettingsAbout.Releases.viewchangelog": "Voir le journal des modifications",
   "components.Settings.SettingsAbout.Releases.versionChangelog": "Journal des modifications de version",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "Les dernières modifications apportées à la branche <code>develop</code> d'Overseerr ne sont pas affichées ci-dessous. Veuillez consulter l'historique des validations de cette branche sur <GithubLink>GitHub</GithubLink> pour plus de détails.",
   "components.Settings.SettingsAbout.Releases.releases": "Versions",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "Données de sortie indisponibles. GitHub est-il en panne ?",
   "components.Settings.SettingsAbout.Releases.latestversion": "Dernière version",
@@ -881,5 +880,6 @@
   "components.UserList.localLoginDisabled": "Le paramètre <strong>Activer la connexion locale</strong> est actuellement désactivé.",
   "components.TvDetails.streamingproviders": "Disponible en streaming sur",
   "components.MovieDetails.streamingproviders": "Actuellement diffusé sur",
-  "components.Settings.Notifications.NotificationsSlack.webhookUrlTip": "Créer une <WebhookLink>Webhook entrant</WebhookLink> intégration"
+  "components.Settings.Notifications.NotificationsSlack.webhookUrlTip": "Créer une <WebhookLink>Webhook entrant</WebhookLink> intégration",
+  "components.StatusBadge.status": "{status}"
 }
