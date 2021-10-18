@@ -178,6 +178,7 @@ export class User {
           password: password,
           applicationUrl,
           applicationTitle,
+          recipientName: this.username,
         },
       });
     } catch (e) {
@@ -214,6 +215,8 @@ export class User {
           resetPasswordLink,
           applicationUrl,
           applicationTitle,
+          recipientName: this.displayName,
+          recipientEmail: this.email,
         },
       });
     } catch (e) {
