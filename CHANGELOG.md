@@ -1,3 +1,33 @@
+# [1.27.0](https://github.com/sct/overseerr/compare/v1.26.1...v1.27.0) (2021-10-19)
+
+
+### Bug Fixes
+
+* **api:** return queried user's requests instead of own requests ([#2174](https://github.com/sct/overseerr/issues/2174)) ([0edb1f4](https://github.com/sct/overseerr/commit/0edb1f452b6ff4a49ae2bde15f7273769788cf4f))
+* **api:** use query builder for user requests endpoint ([#2119](https://github.com/sct/overseerr/issues/2119)) ([a20f395](https://github.com/sct/overseerr/commit/a20f395c94c97dd7ddbc25590f15def2c9bf13c9))
+* apply request overrides iff override & selected servers match ([#2164](https://github.com/sct/overseerr/issues/2164)) ([50ce198](https://github.com/sct/overseerr/commit/50ce198471b1a3777a183d68904bbfb39ebd4523))
+* **email:** do not attempt to display logo if app URL not configured ([#2125](https://github.com/sct/overseerr/issues/2125)) ([b3b421a](https://github.com/sct/overseerr/commit/b3b421a67408a4a48d23c15341fcdf7aaf19b25a))
+* **frontend:** notification type validation ([#2207](https://github.com/sct/overseerr/issues/2207)) ([2f204b9](https://github.com/sct/overseerr/commit/2f204b995269a53ae36f2a8733f27ae6ab70da5a))
+* **scripts:** update migration scripts ([#2208](https://github.com/sct/overseerr/issues/2208)) [skip ci] ([d0ac74e](https://github.com/sct/overseerr/commit/d0ac74ea4bbfcf3d25d30cbd422d9df1c1259a18))
+* **ui:** refinements for 'About' page ([#2173](https://github.com/sct/overseerr/issues/2173)) ([084a842](https://github.com/sct/overseerr/commit/084a842a4f9b6caaed22edbe77bc9e414bc1f387))
+
+
+### Features
+
+* display release dates for theatrical, digital, and physical release types ([#1492](https://github.com/sct/overseerr/issues/1492)) ([a4dca23](https://github.com/sct/overseerr/commit/a4dca2356b7605026f7bc45b691496e765c3328c))
+* dynamically fetch login screen backdrop images ([#2206](https://github.com/sct/overseerr/issues/2206)) ([3486d0b](https://github.com/sct/overseerr/commit/3486d0bf5520cbdff60bd8fd023caed76c452973))
+* **frontend:** add Hulu to network slider ([#2204](https://github.com/sct/overseerr/issues/2204)) ([1e402f7](https://github.com/sct/overseerr/commit/1e402f710b53c11855aab0abdb4b12c51c30b022))
+* **jobs:** allow modifying job schedules ([#1440](https://github.com/sct/overseerr/issues/1440)) ([82614ca](https://github.com/sct/overseerr/commit/82614ca4410782a12d65b4c0a6526ff064be1241))
+* **lang:** add Czech and Danish display languages ([#2176](https://github.com/sct/overseerr/issues/2176)) ([8d8db6c](https://github.com/sct/overseerr/commit/8d8db6cf5d98d4e498a31db339d02f8a98057c8d))
+* **lang:** translations update from Weblate ([#2101](https://github.com/sct/overseerr/issues/2101)) ([c73cf7b](https://github.com/sct/overseerr/commit/c73cf7b19cbc19e97a777c0facb9264fb0113093))
+* **lang:** translations update from Weblate ([#2179](https://github.com/sct/overseerr/issues/2179)) ([e3312ce](https://github.com/sct/overseerr/commit/e3312cef33821c8cb76a4a63bd565c78d67b3e0b))
+* **lang:** translations update from Weblate ([#2185](https://github.com/sct/overseerr/issues/2185)) ([dce10f7](https://github.com/sct/overseerr/commit/dce10f743f52cb04036e2cdaee280e26a81b253b))
+* **lang:** translations update from Weblate ([#2202](https://github.com/sct/overseerr/issues/2202)) ([492d8e3](https://github.com/sct/overseerr/commit/492d8e3daa5fb99aa9df2a18978085d5ddd581e7))
+* **lang:** translations update from Weblate ([#2210](https://github.com/sct/overseerr/issues/2210)) ([0a6ef6c](https://github.com/sct/overseerr/commit/0a6ef6cc81376f7a02f1483109be7ae4ab851c48))
+* **plex-scan:** plex scanner improvements ([#2105](https://github.com/sct/overseerr/issues/2105)) ([afda9c7](https://github.com/sct/overseerr/commit/afda9c7dc222137b0e6654a6beb4737cf2c1752e))
+* **servarr:** auto fill base url when testing service if missing ([#1995](https://github.com/sct/overseerr/issues/1995)) ([739f667](https://github.com/sct/overseerr/commit/739f667b54d8dec258b74d0cd8fd8b3b88dcf8d5))
+* **ui:** link processing/requested status badges to service URL ([#1761](https://github.com/sct/overseerr/issues/1761)) ([032c14a](https://github.com/sct/overseerr/commit/032c14a22680f62f8106943297b081b68645ce61))
+
 ## [1.26.1](https://github.com/sct/overseerr/compare/v1.26.0...v1.26.1) (2021-09-20)
 
 
