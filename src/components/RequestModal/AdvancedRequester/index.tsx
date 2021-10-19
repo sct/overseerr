@@ -150,21 +150,21 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       const defaultProfile = serverData.profiles.find(
         (profile) =>
           profile.id ===
-          (isAnime
+          (isAnime && serverData.server.activeAnimeProfileId
             ? serverData.server.activeAnimeProfileId
             : serverData.server.activeProfileId)
       );
       const defaultFolder = serverData.rootFolders.find(
         (folder) =>
           folder.path ===
-          (isAnime
+          (isAnime && serverData.server.activeAnimeDirectory
             ? serverData.server.activeAnimeDirectory
             : serverData.server.activeDirectory)
       );
       const defaultLanguage = serverData.languageProfiles?.find(
         (language) =>
           language.id ===
-          (isAnime
+          (isAnime && serverData.server.activeAnimeLanguageProfileId
             ? serverData.server.activeAnimeLanguageProfileId
             : serverData.server.activeLanguageProfileId)
       );
@@ -172,10 +172,15 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         ? serverData.server.activeAnimeTags
         : serverData.server.activeTags;
 
+      const applyOverrides =
+        defaultOverrides &&
+        ((defaultOverrides.server === null && serverData.server.isDefault) ||
+          defaultOverrides.server === serverData.server.id);
+
       if (
         defaultProfile &&
         defaultProfile.id !== selectedProfile &&
-        (!defaultOverrides || defaultOverrides.profile === null)
+        (!applyOverrides || defaultOverrides.profile === null)
       ) {
         setSelectedProfile(defaultProfile.id);
       }
@@ -183,7 +188,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       if (
         defaultFolder &&
         defaultFolder.path !== selectedFolder &&
-        (!defaultOverrides || defaultOverrides.folder === null)
+        (!applyOverrides || !defaultOverrides.folder)
       ) {
         setSelectedFolder(defaultFolder.path ?? '');
       }
@@ -191,7 +196,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       if (
         defaultLanguage &&
         defaultLanguage.id !== selectedLanguage &&
-        (!defaultOverrides || defaultOverrides.language === null)
+        (!applyOverrides || defaultOverrides.language === null)
       ) {
         setSelectedLanguage(defaultLanguage.id);
       }
@@ -199,7 +204,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       if (
         defaultTags &&
         !isEqual(defaultTags, selectedTags) &&
-        (!defaultOverrides || defaultOverrides.tags === null)
+        (!applyOverrides || defaultOverrides.tags === null)
       ) {
         setSelectedTags(defaultTags);
       }
@@ -215,7 +220,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
       setSelectedProfile(defaultOverrides.profile);
     }
 
-    if (defaultOverrides && defaultOverrides.folder != null) {
+    if (defaultOverrides && defaultOverrides.folder) {
       setSelectedFolder(defaultOverrides.folder);
     }
 
@@ -241,7 +246,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         profile: selectedProfile !== -1 ? selectedProfile : undefined,
         server: selectedServer ?? undefined,
         user: selectedUser ?? undefined,
-        language: selectedLanguage ?? undefined,
+        language: selectedLanguage !== -1 ? selectedLanguage : undefined,
         tags: selectedTags,
       });
     }

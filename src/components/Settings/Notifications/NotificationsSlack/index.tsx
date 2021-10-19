@@ -43,13 +43,6 @@ const NotificationsSlack: React.FC = () => {
         otherwise: Yup.string().nullable(),
       })
       .url(intl.formatMessage(messages.validationWebhookUrl)),
-    types: Yup.number().when('enabled', {
-      is: true,
-      then: Yup.number()
-        .nullable()
-        .moreThan(0, intl.formatMessage(messages.validationTypes)),
-      otherwise: Yup.number().nullable(),
-    }),
   });
 
   if (!data && !error) {
@@ -195,8 +188,8 @@ const NotificationsSlack: React.FC = () => {
                 }
               }}
               error={
-                errors.types && touched.types
-                  ? (errors.types as string)
+                values.enabled && !values.types && touched.types
+                  ? intl.formatMessage(messages.validationTypes)
                   : undefined
               }
             />
@@ -223,7 +216,12 @@ const NotificationsSlack: React.FC = () => {
                   <Button
                     buttonType="primary"
                     type="submit"
-                    disabled={isSubmitting || !isValid || isTesting}
+                    disabled={
+                      isSubmitting ||
+                      !isValid ||
+                      isTesting ||
+                      (values.enabled && !values.types)
+                    }
                   >
                     <SaveIcon />
                     <span>

@@ -144,7 +144,7 @@ export class MediaSubscriber implements EntitySubscriberInterface {
       event.entity.mediaType === MediaType.MOVIE &&
       event.entity.status === MediaStatus.AVAILABLE
     ) {
-      this.notifyAvailableMovie(event.entity, event.databaseEntity);
+      this.notifyAvailableMovie(event.entity as Media, event.databaseEntity);
     }
 
     if (
@@ -152,21 +152,21 @@ export class MediaSubscriber implements EntitySubscriberInterface {
       (event.entity.status === MediaStatus.AVAILABLE ||
         event.entity.status === MediaStatus.PARTIALLY_AVAILABLE)
     ) {
-      this.notifyAvailableSeries(event.entity, event.databaseEntity);
+      this.notifyAvailableSeries(event.entity as Media, event.databaseEntity);
     }
 
     if (
       event.entity.status === MediaStatus.AVAILABLE &&
       event.databaseEntity.status === MediaStatus.PENDING
     ) {
-      this.updateChildRequestStatus(event.entity, false);
+      this.updateChildRequestStatus(event.entity as Media, false);
     }
 
     if (
       event.entity.status4k === MediaStatus.AVAILABLE &&
       event.databaseEntity.status4k === MediaStatus.PENDING
     ) {
-      this.updateChildRequestStatus(event.entity, true);
+      this.updateChildRequestStatus(event.entity as Media, true);
     }
   }
 }

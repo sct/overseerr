@@ -12,7 +12,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-58-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-67-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -149,6 +149,17 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/tangentThought"><img src="https://avatars.githubusercontent.com/u/25516090?v=4?s=100" width="100px;" alt=""/><br /><sub><b>tangentThought</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=tangentThought" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/nicospz"><img src="https://avatars.githubusercontent.com/u/31373060?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolás Espinoza</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=nicospz" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/sootylunatic"><img src="https://avatars.githubusercontent.com/u/36486087?v=4?s=100" width="100px;" alt=""/><br /><sub><b>sootylunatic</b></sub></a><br /><a href="#translation-sootylunatic" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/JoKerIsCraZy"><img src="https://avatars.githubusercontent.com/u/47474211?v=4?s=100" width="100px;" alt=""/><br /><sub><b>JoKerIsCraZy</b></sub></a><br /><a href="#translation-JoKerIsCraZy" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://daddie.dev"><img src="https://avatars.githubusercontent.com/u/33762262?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Daddie0</b></sub></a><br /><a href="#translation-GoByeBye" title="Translation">🌍</a></td>
+    <td align="center"><a href="http://ungaro.me"><img src="https://avatars.githubusercontent.com/u/43807696?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Simone</b></sub></a><br /><a href="#translation-Simoneu01" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/adan89lion"><img src="https://avatars.githubusercontent.com/u/6585644?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Seohyun Joo</b></sub></a><br /><a href="#translation-adan89lion" title="Translation">🌍</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/ty4ko"><img src="https://avatars.githubusercontent.com/u/21213535?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sergey</b></sub></a><br /><a href="#translation-ty4ko" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/skafte1990"><img src="https://avatars.githubusercontent.com/u/31465453?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Shaaft</b></sub></a><br /><a href="#translation-skafte1990" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/sr093906"><img src="https://avatars.githubusercontent.com/u/8369201?v=4?s=100" width="100px;" alt=""/><br /><sub><b>sr093906</b></sub></a><br /><a href="#translation-sr093906" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/Nackophilz"><img src="https://avatars.githubusercontent.com/u/61667226?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nackophilz</b></sub></a><br /><a href="#translation-Nackophilz" title="Translation">🌍</a></td>
   </tr>
 </table>
 

@@ -46,7 +46,8 @@ class EmailAgent
   private buildMessage(
     type: Notification,
     payload: NotificationPayload,
-    toEmail: string
+    recipientEmail: string,
+    recipientName?: string
   ): EmailOptions | undefined {
     const { applicationUrl, applicationTitle } = getSettings().main;
 
@@ -54,12 +55,14 @@ class EmailAgent
       return {
         template: path.join(__dirname, '../../../templates/email/test-email'),
         message: {
-          to: toEmail,
+          to: recipientEmail,
         },
         locals: {
           body: payload.message,
           applicationUrl,
           applicationTitle,
+          recipientName,
+          recipientEmail,
         },
       };
     }
@@ -127,7 +130,7 @@ class EmailAgent
           '../../../templates/email/media-request'
         ),
         message: {
-          to: toEmail,
+          to: recipientEmail,
         },
         locals: {
           requestType,
@@ -143,6 +146,8 @@ class EmailAgent
             : undefined,
           applicationUrl,
           applicationTitle,
+          recipientName,
+          recipientEmail,
         },
       };
     }
@@ -179,7 +184,12 @@ class EmailAgent
             payload.notifyUser.settings?.pgpKey
           );
           await email.send(
-            this.buildMessage(type, payload, payload.notifyUser.email)
+            this.buildMessage(
+              type,
+              payload,
+              payload.notifyUser.email,
+              payload.notifyUser.displayName
+            )
           );
         } catch (e) {
           logger.error('Error sending email notification', {
@@ -228,7 +238,9 @@ class EmailAgent
                 this.getSettings(),
                 user.settings?.pgpKey
               );
-              await email.send(this.buildMessage(type, payload, user.email));
+              await email.send(
+                this.buildMessage(type, payload, user.email, user.displayName)
+              );
             } catch (e) {
               logger.error('Error sending email notification', {
                 label: 'Notifications',

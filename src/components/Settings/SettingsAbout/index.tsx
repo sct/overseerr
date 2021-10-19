@@ -8,6 +8,7 @@ import {
 } from '../../../../server/interfaces/api/settingsInterfaces';
 import globalMessages from '../../../i18n/globalMessages';
 import Error from '../../../pages/_error';
+import Alert from '../../Common/Alert';
 import Badge from '../../Common/Badge';
 import List from '../../Common/List';
 import LoadingSpinner from '../../Common/LoadingSpinner';
@@ -16,7 +17,7 @@ import Releases from './Releases';
 
 const messages = defineMessages({
   about: 'About',
-  overseerrinformation: 'Overseerr Information',
+  overseerrinformation: 'About Overseerr',
   version: 'Version',
   totalmedia: 'Total Media',
   totalrequests: 'Total Requests',
@@ -31,6 +32,8 @@ const messages = defineMessages({
   uptodate: 'Up to Date',
   betawarning:
     'This is BETA software. Features may be broken and/or unstable. Please report any issues on GitHub!',
+  runningDevelop:
+    'You are running the <code>develop</code> branch of Overseerr, which is only recommended for those contributing to development or assisting with bleeding-edge testing.',
 });
 
 const SettingsAbout: React.FC = () => {
@@ -81,22 +84,58 @@ const SettingsAbout: React.FC = () => {
       </div>
       <div className="section">
         <List title={intl.formatMessage(messages.overseerrinformation)}>
+          {data.version.startsWith('develop-') && (
+            <Alert
+              title={intl.formatMessage(messages.runningDevelop, {
+                code: function code(msg) {
+                  return <code className="bg-opacity-50">{msg}</code>;
+                },
+              })}
+            />
+          )}
           <List.Item
             title={intl.formatMessage(messages.version)}
-            className="truncate"
+            className="flex flex-row items-center truncate"
           >
-            <code>{data.version.replace('develop-', '')}</code>
-            {status?.updateAvailable ? (
-              <Badge badgeType="warning" className="ml-2">
-                {intl.formatMessage(messages.outofdate)}
-              </Badge>
-            ) : (
-              status?.commitTag !== 'local' && (
-                <Badge badgeType="success" className="ml-2">
-                  {intl.formatMessage(messages.uptodate)}
-                </Badge>
-              )
-            )}
+            <code className="truncate">
+              {data.version.replace('develop-', '')}
+            </code>
+            {status?.commitTag !== 'local' &&
+              (status?.updateAvailable ? (
+                <a
+                  href={
+                    data.version.startsWith('develop-')
+                      ? `https://github.com/sct/overseerr/compare/${status.commitTag}...develop`
+                      : 'https://github.com/sct/overseerr/releases'
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Badge
+                    badgeType="warning"
+                    className="ml-2 transition !cursor-pointer hover:bg-yellow-400"
+                  >
+                    {intl.formatMessage(messages.outofdate)}
+                  </Badge>
+                </a>
+              ) : (
+                <a
+                  href={
+                    data.version.startsWith('develop-')
+                      ? 'https://github.com/sct/overseerr/commits/develop'
+                      : 'https://github.com/sct/overseerr/releases'
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Badge
+                    badgeType="success"
+                    className="ml-2 transition !cursor-pointer hover:bg-green-400"
+                  >
+                    {intl.formatMessage(messages.uptodate)}
+                  </Badge>
+                </a>
+              ))}
           </List.Item>
           <List.Item title={intl.formatMessage(messages.totalmedia)}>
             {intl.formatNumber(data.totalMediaItems)}
@@ -118,7 +157,7 @@ const SettingsAbout: React.FC = () => {
               href="https://docs.overseerr.dev"
               target="_blank"
               rel="noreferrer"
-              className="text-indigo-500 hover:underline"
+              className="text-indigo-500 transition duration-300 hover:underline"
             >
               https://docs.overseerr.dev
             </a>
@@ -128,7 +167,7 @@ const SettingsAbout: React.FC = () => {
               href="https://github.com/sct/overseerr/discussions"
               target="_blank"
               rel="noreferrer"
-              className="text-indigo-500 hover:underline"
+              className="text-indigo-500 transition duration-300 hover:underline"
             >
               https://github.com/sct/overseerr/discussions
             </a>
@@ -138,7 +177,7 @@ const SettingsAbout: React.FC = () => {
               href="https://discord.gg/overseerr"
               target="_blank"
               rel="noreferrer"
-              className="text-indigo-500 hover:underline"
+              className="text-indigo-500 transition duration-300 hover:underline"
             >
               https://discord.gg/overseerr
             </a>
@@ -154,7 +193,7 @@ const SettingsAbout: React.FC = () => {
               href="https://github.com/sponsors/sct"
               target="_blank"
               rel="noreferrer"
-              className="text-indigo-500 hover:underline"
+              className="text-indigo-500 transition duration-300 hover:underline"
             >
               https://github.com/sponsors/sct
             </a>
@@ -167,7 +206,7 @@ const SettingsAbout: React.FC = () => {
               href="https://patreon.com/overseerr"
               target="_blank"
               rel="noreferrer"
-              className="text-indigo-500 hover:underline"
+              className="text-indigo-500 transition duration-300 hover:underline"
             >
               https://patreon.com/overseerr
             </a>

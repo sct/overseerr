@@ -666,7 +666,6 @@
   "components.Settings.Notifications.smtpHost": "Amfitrió SMTP",
   "components.Settings.Notifications.emailsettingsfailed": "No s'ha pogut desar la configuració de les notificacions per correu electrònic.",
   "components.Settings.RadarrModal.apiKey": "Clau API",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "Els últims canvis a la branca <code>develop</code> de Overseerr no es mostren a continuació. Vegeu l'historial de pujades d'aquesta branca a <GithubLink>GitHub</GithubLink> per a més detalls.",
   "components.Settings.SettingsAbout.Releases.releases": "Versions",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "La informació de la versió no està disponible. GitHub està fora de línia?",
   "components.Settings.SettingsAbout.Releases.latestversion": "Última versió",
@@ -879,5 +878,6 @@
   "components.NotificationTypeSelector.usermediaAutoApprovedDescription": "Rep notificacions quan altres usuaris envien sol·licituds de mitjans nous que s’aprovin automàticament.",
   "components.MovieDetails.showmore": "Mostra més",
   "components.MovieDetails.showless": "Mostra menys",
-  "components.Layout.LanguagePicker.displaylanguage": "Idioma de visualització"
+  "components.Layout.LanguagePicker.displaylanguage": "Idioma de visualització",
+  "components.StatusBadge.status": "{status}"
 }

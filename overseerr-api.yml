@@ -1278,6 +1278,27 @@ components:
             allowSelfSigned:
               type: boolean
               example: false
+    Job:
+      type: object
+      properties:
+        id:
+          type: string
+          example: job-name
+        type:
+          type: string
+          enum: [process, command]
+        interval:
+          type: string
+          enum: [short, long, fixed]
+        name:
+          type: string
+          example: A Job Name
+        nextExecutionTime:
+          type: string
+          example: '2020-09-02T05:02:23.000Z'
+        running:
+          type: boolean
+          example: false
     PersonDetail:
       type: object
       properties:
@@ -2214,23 +2235,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      example: job-name
-                    name:
-                      type: string
-                      example: A Job Name
-                    type:
-                      type: string
-                      enum: [process, command]
-                    nextExecutionTime:
-                      type: string
-                      example: '2020-09-02T05:02:23.000Z'
-                    running:
-                      type: boolean
-                      example: false
+                  $ref: '#/components/schemas/Job'
   /settings/jobs/{jobId}/run:
     post:
       summary: Invoke a specific job
@@ -2249,23 +2254,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: job-name
-                  type:
-                    type: string
-                    enum: [process, command]
-                  name:
-                    type: string
-                    example: A Job Name
-                  nextExecutionTime:
-                    type: string
-                    example: '2020-09-02T05:02:23.000Z'
-                  running:
-                    type: boolean
-                    example: false
+                $ref: '#/components/schemas/Job'
   /settings/jobs/{jobId}/cancel:
     post:
       summary: Cancel a specific job
@@ -2284,23 +2273,36 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: job-name
-                  type:
-                    type: string
-                    enum: [process, command]
-                  name:
-                    type: string
-                    example: A Job Name
-                  nextExecutionTime:
-                    type: string
-                    example: '2020-09-02T05:02:23.000Z'
-                  running:
-                    type: boolean
-                    example: false
+                $ref: '#/components/schemas/Job'
+  /settings/jobs/{jobId}/schedule:
+    post:
+      summary: Modify job schedule
+      description: Re-registers the job with the schedule specified. Will return the job in JSON format.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                schedule:
+                  type: string
+                  example: '0 */5 * * * *'
+      responses:
+        '200':
+          description: Rescheduled job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
   /settings/cache:
     get:
       summary: Get a list of active caches
@@ -2398,7 +2400,7 @@ paths:
                       example: Server ready on port 5055
                     timestamp:
                       type: string
-                      example: 2020-12-15T16:20:00.069Z
+                      example: '2020-12-15T16:20:00.069Z'
   /settings/notifications/email:
     get:
       summary: Get email notification settings
@@ -5165,6 +5167,22 @@ paths:
                     name:
                       type: string
                       example: Drama
+  /backdrops:
+    get:
+      summary: Get backdrops of trending items
+      description: Returns a list of backdrop image paths in a JSON array.
+      security: []
+      tags:
+        - tmdb
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
 
 security:
   - cookieAuth: []

@@ -406,7 +406,6 @@
   "components.Settings.SettingsJobsCache.cacheDescription": "Το Overseerr αποθηκεύει προσωρινά αιτήματα σε εξωτερικά τελικά σημεία API για τη βελτιστοποίηση της απόδοσης και την αποφυγή περιττών κλήσεων API.",
   "components.Settings.SettingsJobsCache.cache": "Κρυφή μνήμη",
   "components.Settings.SettingsAbout.version": "Έκδοση",
-  "components.Settings.SettingsAbout.Releases.runningDevelopMessage": "Οι τελευταίες αλλαγές στο <code>develop</code> branch του Overseerr δεν φαίνονται παρακάτω. Παρακαλώ ανάτρεξε στο ιστορικό δευσμεύσεων του branch στο <GithubLink>GitHub</GithubLink> για λεπτομέρειες.",
   "components.Settings.SettingsAbout.Releases.releases": "Εκδόσεις",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "Οι εκδόσεις λογισμικού δεν είναι διαθέσιμες. Μήπως έχει πέσει το GitHub;",
   "components.Settings.SettingsAbout.Releases.latestversion": "Πιο πρόσφατη",
@@ -854,5 +853,6 @@
   "i18n.test": "Δοκιμή",
   "i18n.status": "Κατάσταση",
   "i18n.showingresults": "Εμφάνιση <strong>{from}</strong> έως <strong>{to}</strong> από <strong>{total}</strong> αποτελέσματα",
-  "components.Settings.SettingsAbout.betawarning": "Αυτό είναι λογισμικό BETA. Οι λειτουργίες ενδέχεται να είναι σπασμένες ή/και ασταθείς. Παρακαλώ αναφέρετε τυχόν προβλήματα με το GitHub!"
+  "components.Settings.SettingsAbout.betawarning": "Αυτό είναι λογισμικό BETA. Οι λειτουργίες ενδέχεται να είναι σπασμένες ή/και ασταθείς. Παρακαλώ αναφέρετε τυχόν προβλήματα με το GitHub!",
+  "components.StatusBadge.status": "{status}"
 }

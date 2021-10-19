@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import useSWR from 'swr';
 import useSettings from '../../hooks/useSettings';
 import { useUser } from '../../hooks/useUser';
 import Accordion from '../Common/Accordion';
@@ -60,19 +61,21 @@ const Login: React.FC = () => {
     }
   }, [user, router]);
 
+  const { data: backdrops } = useSWR<string[]>('/api/v1/backdrops', {
+    refreshInterval: 0,
+    refreshWhenHidden: false,
+    revalidateOnFocus: false,
+  });
+
   return (
     <div className="relative flex flex-col min-h-screen bg-gray-900 py-14">
       <PageTitle title={intl.formatMessage(messages.signin)} />
       <ImageFader
-        forceOptimize
-        backgroundImages={[
-          '/images/rotate1.jpg',
-          '/images/rotate2.jpg',
-          '/images/rotate3.jpg',
-          '/images/rotate4.jpg',
-          '/images/rotate5.jpg',
-          '/images/rotate6.jpg',
-        ]}
+        backgroundImages={
+          backdrops?.map(
+            (backdrop) => `https://www.themoviedb.org/t/p/original${backdrop}`
+          ) ?? []
+        }
       />
       <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />

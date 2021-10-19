@@ -671,5 +671,7 @@
   "components.Settings.Notifications.NotificationsWebPush.agentenabled": "Aktiver",
   "components.Settings.Notifications.NotificationsSlack.validationTypes": "Du må velge minst én varseltype",
   "components.Settings.Notifications.NotificationsPushover.validationAccessTokenRequired": "Du må oppgi en gyldig tilgangsnøkkel",
-  "components.Settings.Notifications.NotificationsPushbullet.validationTypes": "Du må velge minst én varseltype"
+  "components.Settings.Notifications.NotificationsPushbullet.validationTypes": "Du må velge minst én varseltype",
+  "components.StatusBadge.status4k": "",
+  "components.StatusBadge.status": "{status}"
 }

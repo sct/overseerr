@@ -10,7 +10,9 @@ import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import { createConnection, getRepository } from 'typeorm';
 import YAML from 'yamljs';
+import PlexAPI from './api/plexapi';
 import { Session } from './entity/Session';
+import { User } from './entity/User';
 import { startJobs } from './job/schedule';
 import notificationManager from './lib/notifications';
 import DiscordAgent from './lib/notifications/agents/discord';
@@ -48,6 +50,26 @@ app
 
     // Load Settings
     const settings = getSettings().load();
+
+    // Migrate library types
+    if (
+      settings.plex.libraries.length > 1 &&
+      !settings.plex.libraries[0].type
+    ) {
+      const userRepository = getRepository(User);
+      const admin = await userRepository.findOne({
+        select: ['id', 'plexToken'],
+        order: { id: 'ASC' },
+      });
+
+      if (admin) {
+        const plexapi = new PlexAPI({ plexToken: admin.plexToken });
+        await plexapi.syncLibraries();
+        logger.info('Migrating libraries to include media type', {
+          label: 'Settings',
+        });
+      }
+    }
 
     // Register Notification Agents
     notificationManager.registerAgents([

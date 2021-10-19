@@ -177,17 +177,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     : 'US';
   const seriesAttributes: React.ReactNode[] = [];
 
-  if (
-    data.contentRatings.results.length &&
-    data.contentRatings.results.find(
-      (r) => r.iso_3166_1 === region || data.contentRatings.results[0].rating
-    )
-  ) {
+  const contentRating = data.contentRatings.results.find(
+    (r) => r.iso_3166_1 === region
+  )?.rating;
+  if (contentRating) {
     seriesAttributes.push(
-      <span className="p-0.5 py-0 border rounded-md">
-        {data.contentRatings.results.find((r) => r.iso_3166_1 === region)
-          ?.rating || data.contentRatings.results[0].rating}
-      </span>
+      <span className="p-0.5 py-0 border rounded-md">{contentRating}</span>
     );
   }
 
@@ -435,6 +430,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               status={data.mediaInfo?.status}
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               plexUrl={data.mediaInfo?.plexUrl}
+              serviceUrl={
+                hasPermission(Permission.ADMIN)
+                  ? data.mediaInfo?.serviceUrl
+                  : undefined
+              }
             />
             {settings.currentSettings.series4kEnabled &&
               hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
@@ -446,7 +446,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0
                   }
-                  plexUrl4k={data.mediaInfo?.plexUrl4k}
+                  plexUrl={data.mediaInfo?.plexUrl4k}
+                  serviceUrl={
+                    hasPermission(Permission.ADMIN)
+                      ? data.mediaInfo?.serviceUrl4k
+                      : undefined
+                  }
                 />
               )}
           </div>

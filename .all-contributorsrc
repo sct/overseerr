@@ -539,6 +539,87 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "sootylunatic",
+      "name": "sootylunatic",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36486087?v=4",
+      "profile": "https://github.com/sootylunatic",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "JoKerIsCraZy",
+      "name": "JoKerIsCraZy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/47474211?v=4",
+      "profile": "https://github.com/JoKerIsCraZy",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "GoByeBye",
+      "name": "Daddie0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/33762262?v=4",
+      "profile": "https://daddie.dev",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "Simoneu01",
+      "name": "Simone",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43807696?v=4",
+      "profile": "http://ungaro.me",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "adan89lion",
+      "name": "Seohyun Joo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6585644?v=4",
+      "profile": "https://github.com/adan89lion",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "ty4ko",
+      "name": "Sergey",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21213535?v=4",
+      "profile": "https://github.com/ty4ko",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "skafte1990",
+      "name": "Shaaft",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31465453?v=4",
+      "profile": "https://github.com/skafte1990",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "sr093906",
+      "name": "sr093906",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8369201?v=4",
+      "profile": "https://github.com/sr093906",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "Nackophilz",
+      "name": "Nackophilz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/61667226?v=4",
+      "profile": "https://github.com/Nackophilz",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",

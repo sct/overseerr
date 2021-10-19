@@ -2,6 +2,7 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
 import { merge, omit } from 'lodash';
+import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import { getRepository } from 'typeorm';
 import { URL } from 'url';
@@ -20,7 +21,7 @@ import { scheduledJobs } from '../../job/schedule';
 import cacheManager, { AvailableCacheIds } from '../../lib/cache';
 import { Permission } from '../../lib/permissions';
 import { plexFullScanner } from '../../lib/scanners/plex';
-import { getSettings, Library, MainSettings } from '../../lib/settings';
+import { getSettings, MainSettings } from '../../lib/settings';
 import logger from '../../logger';
 import { isAuthenticated } from '../../middleware/auth';
 import { getAppVersion } from '../../utils/appVersion';
@@ -49,7 +50,7 @@ settingsRoutes.get('/main', (req, res, next) => {
   const settings = getSettings();
 
   if (!req.user) {
-    return next({ status: 500, message: 'User missing from request' });
+    return next({ status: 400, message: 'User missing from request' });
   }
 
   res.status(200).json(filteredMainSettings(req.user, settings.main));
@@ -197,26 +198,7 @@ settingsRoutes.get('/plex/library', async (req, res) => {
     });
     const plexapi = new PlexAPI({ plexToken: admin.plexToken });
 
-    const libraries = await plexapi.getLibraries();
-
-    const newLibraries: Library[] = libraries
-      // Remove libraries that are not movie or show
-      .filter((library) => library.type === 'movie' || library.type === 'show')
-      // Remove libraries that do not have a metadata agent set (usually personal video libraries)
-      .filter((library) => library.agent !== 'com.plexapp.agents.none')
-      .map((library) => {
-        const existing = settings.plex.libraries.find(
-          (l) => l.id === library.key && l.name === library.title
-        );
-
-        return {
-          id: library.key,
-          name: library.title,
-          enabled: existing?.enabled ?? false,
-        };
-      });
-
-    settings.plex.libraries = newLibraries;
+    await plexapi.syncLibraries();
   }
 
   const enabledLibraries = req.query.enable
@@ -329,6 +311,7 @@ settingsRoutes.get('/jobs', (_req, res) => {
       id: job.id,
       name: job.name,
       type: job.type,
+      interval: job.interval,
       nextExecutionTime: job.job.nextInvocation(),
       running: job.running ? job.running() : false,
     }))
@@ -348,6 +331,7 @@ settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
     id: scheduledJob.id,
     name: scheduledJob.name,
     type: scheduledJob.type,
+    interval: scheduledJob.interval,
     nextExecutionTime: scheduledJob.job.nextInvocation(),
     running: scheduledJob.running ? scheduledJob.running() : false,
   });
@@ -372,9 +356,42 @@ settingsRoutes.post<{ jobId: string }>(
       id: scheduledJob.id,
       name: scheduledJob.name,
       type: scheduledJob.type,
+      interval: scheduledJob.interval,
       nextExecutionTime: scheduledJob.job.nextInvocation(),
       running: scheduledJob.running ? scheduledJob.running() : false,
     });
+  }
+);
+
+settingsRoutes.post<{ jobId: string }>(
+  '/jobs/:jobId/schedule',
+  (req, res, next) => {
+    const scheduledJob = scheduledJobs.find(
+      (job) => job.id === req.params.jobId
+    );
+
+    if (!scheduledJob) {
+      return next({ status: 404, message: 'Job not found' });
+    }
+
+    const result = rescheduleJob(scheduledJob.job, req.body.schedule);
+    const settings = getSettings();
+
+    if (result) {
+      settings.jobs[scheduledJob.id].schedule = req.body.schedule;
+      settings.save();
+
+      return res.status(200).json({
+        id: scheduledJob.id,
+        name: scheduledJob.name,
+        type: scheduledJob.type,
+        interval: scheduledJob.interval,
+        nextExecutionTime: scheduledJob.job.nextInvocation(),
+        running: scheduledJob.running ? scheduledJob.running() : false,
+      });
+    } else {
+      return next({ status: 400, message: 'Invalid job schedule' });
+    }
   }
 );
 
