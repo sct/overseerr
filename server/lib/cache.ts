@@ -40,7 +40,7 @@ class Cache {
 
 class CacheManager {
   private availableCaches: Record<AvailableCacheIds, Cache> = {
-    tmdb: new Cache('tmdb', 'TMDb API', {
+    tmdb: new Cache('tmdb', 'The Movie Database API', {
       stdTtl: 21600,
       checkPeriod: 60 * 30,
     }),
