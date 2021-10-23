@@ -551,7 +551,7 @@
   "components.Settings.Notifications.NotificationsPushover.pushoversettingssaved": "Настройки уведомлений Pushover успешно сохранены!",
   "components.Settings.Notifications.NotificationsPushover.pushoversettingsfailed": "Не удалось сохранить настройки уведомлений Pushover.",
   "components.Settings.Notifications.NotificationsPushover.accessTokenTip": "<ApplicationRegistrationLink>Зарегистрируйте приложение</ApplicationRegistrationLink> для использования с Overseerr",
-  "i18n.view": "Вид",
+  "i18n.view": "Посмотреть",
   "i18n.notrequested": "Не запрошено",
   "i18n.noresults": "Результатов нет.",
   "i18n.delimitedlist": "{a}, {b}",
