@@ -77,7 +77,7 @@
   "components.StatusChacker.reloadOverseerr": "刷新页面",
   "components.StatusChacker.newversionavailable": "软件更新",
   "components.StatusChacker.newversionDescription": "Overseerr 软件已更新。请点击以下的按钮刷新页面。",
-  "components.StatusBadge.status4k": "4K 版 {status}",
+  "components.StatusBadge.status4k": "4K 版{status}",
   "components.Setup.welcome": "欢迎來到 Overseerr",
   "components.Setup.tip": "提示",
   "components.Setup.signinMessage": "首先，请使用您的 Plex 账户登入",
