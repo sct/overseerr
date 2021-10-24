@@ -20,6 +20,12 @@ A more advanced, user-friendly, and secure (if using SSL) method is to set up a 
 
 The most secure method (but also the most inconvenient method) is to set up a VPN tunnel to your home server. You would then be able to access Overseerr as if you were on your local network, via `http://LOCAL-IP-ADDRESS:5055`.
 
+### Are there mobile apps for Overseerr?
+
+Since Overseerr has an almost native app experience when installed as a Progressive Web App (PWA), there are no plans to develop mobile apps for Overseerr.
+
+Out of the box, Overseerr already fulfills most of the [PWA install criteria](https://web.dev/install-criteria/). You simply need to make sure that your Overseerr instance is being served over HTTPS (e.g., via a [reverse proxy](../extending-overseerr/reverse-proxy.md)).
+
 ### Overseerr is amazing! But it is not translated in my language yet! Can I help with translations?
 
 You sure can! We are using [Weblate](https://hosted.weblate.org/engage/overseerr/) for translations. If your language is not listed, please [open a feature request on GitHub](https://github.com/sct/overseerr/issues/new/choose).
