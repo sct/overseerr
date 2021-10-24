@@ -37,17 +37,19 @@ const messages = defineMessages({
     'Send notifications when media requests are declined.',
   usermediadeclinedDescription:
     'Get notified when your media requests are declined.',
-  issuecreated: 'Issue Created',
-  issuecreatedDescription: 'Send notifications when new issues are created.',
+  issuecreated: 'Issue Reported',
+  issuecreatedDescription: 'Send notifications when issues are reported.',
+  userissuecreatedDescription: 'Get notified when other users report issues.',
   issuecomment: 'Issue Comment',
   issuecommentDescription:
     'Send notifications when issues receive new comments.',
   userissuecommentDescription:
-    'Send notifications when your issue receives new comments.',
+    'Get notified when your issues receive new comments.',
+  adminissuecommentDescription:
+    'Get notified when issues receive new comments.',
   issueresolved: 'Issue Resolved',
   issueresolvedDescription: 'Send notifications when issues are resolved.',
-  userissueresolvedDescription:
-    'Send notifications when your issues are resolved.',
+  userissueresolvedDescription: 'Get notified when your issues are resolved.',
 });
 
 export const hasNotificationType = (
@@ -249,7 +251,11 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
       {
         id: 'issue-created',
         name: intl.formatMessage(messages.issuecreated),
-        description: intl.formatMessage(messages.issuecreatedDescription),
+        description: intl.formatMessage(
+          user
+            ? messages.userissuecreatedDescription
+            : messages.issuecreatedDescription
+        ),
         value: Notification.ISSUE_CREATED,
         hidden: user && !hasPermission(Permission.MANAGE_ISSUES),
       },
@@ -258,11 +264,14 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
         name: intl.formatMessage(messages.issuecomment),
         description: intl.formatMessage(
           user
-            ? messages.userissuecommentDescription
+            ? hasPermission(Permission.MANAGE_ISSUES)
+              ? messages.adminissuecommentDescription
+              : messages.userissuecommentDescription
             : messages.issuecommentDescription
         ),
         value: Notification.ISSUE_COMMENT,
-        hasNotifyUser: true,
+        hasNotifyUser:
+          user && hasPermission(Permission.MANAGE_ISSUES) ? false : true,
       },
       {
         id: 'issue-resolved',
