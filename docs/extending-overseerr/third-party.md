@@ -10,5 +10,6 @@ We do not officially support these third-party integrations. If you run into any
 - [Requestrr](https://github.com/darkalfx/requestrr/wiki/Configuring-Overseerr), a Discord chatbot
 - [Doplarr](https://github.com/kiranshila/Doplarr), a Discord request bot
 - [ha-overseerr](https://github.com/vaparr/ha-overseerr), a custom Home Assistant component
+- [Overseerr-Extension](https://github.com/RemiRigal/Overseerr-Extension), a browser extension TMDb and IMDb
 - [OverCLIrr](https://github.com/WillFantom/OverCLIrr), a command-line tool
 - [Overseerr Exporter](https://github.com/WillFantom/overseerr-exporter), a Prometheus exporter
