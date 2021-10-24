@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddPushbulletPushoverUserSettings1622912219908
+export class AddPushbulletPushoverUserSettings1635079863457
   implements MigrationInterface
 {
-  name = 'AddPushbulletPushoverUserSettings1622912219908';
+  name = 'AddPushbulletPushoverUserSettings1635079863457';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
