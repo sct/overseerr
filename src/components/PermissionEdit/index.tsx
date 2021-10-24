@@ -49,6 +49,12 @@ export const messages = defineMessages({
     'Grant permission to use advanced request options.',
   viewrequests: 'View Requests',
   viewrequestsDescription: "Grant permission to view other users' requests.",
+  manageissues: 'Manage Issues',
+  manageissuesDescription: 'Grant permission to manage Overseerr issues.',
+  createissues: 'Create Issues',
+  createissuesDescription: 'Grant permission to create new issues.',
+  viewissues: 'View Issues',
+  viewissuesDescription: "Grant permission to view other users' issues.",
 });
 
 interface PermissionEditProps {
@@ -220,6 +226,26 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
               type: 'or',
             },
           ],
+        },
+      ],
+    },
+    {
+      id: 'manageissues',
+      name: intl.formatMessage(messages.manageissues),
+      description: intl.formatMessage(messages.manageissuesDescription),
+      permission: Permission.MANAGE_ISSUES,
+      children: [
+        {
+          id: 'createissues',
+          name: intl.formatMessage(messages.createissues),
+          description: intl.formatMessage(messages.createissuesDescription),
+          permission: Permission.CREATE_ISSUES,
+        },
+        {
+          id: 'viewissues',
+          name: intl.formatMessage(messages.viewissues),
+          description: intl.formatMessage(messages.viewissuesDescription),
+          permission: Permission.VIEW_ISSUES,
         },
       ],
     },

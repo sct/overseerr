@@ -37,6 +37,17 @@ const messages = defineMessages({
     'Send notifications when media requests are declined.',
   usermediadeclinedDescription:
     'Get notified when your media requests are declined.',
+  issuecreated: 'Issue Created',
+  issuecreatedDescription: 'Send notifications when new issues are created.',
+  issuecomment: 'Issue Comment',
+  issuecommentDescription:
+    'Send notifications when issues receive new comments.',
+  userissuecommentDescription:
+    'Send notifications when your issue receives new comments.',
+  issueresolved: 'Issue Resolved',
+  issueresolvedDescription: 'Send notifications when issues are resolved.',
+  userissueresolvedDescription:
+    'Send notifications when your issues are resolved.',
 });
 
 export const hasNotificationType = (
@@ -74,6 +85,9 @@ export enum Notification {
   TEST_NOTIFICATION = 32,
   MEDIA_DECLINED = 64,
   MEDIA_AUTO_APPROVED = 128,
+  ISSUE_CREATED = 256,
+  ISSUE_COMMENT = 512,
+  ISSUE_RESOLVED = 1024,
 }
 
 export const ALL_NOTIFICATIONS = Object.values(Notification)
@@ -231,6 +245,35 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
         ),
         value: Notification.MEDIA_FAILED,
         hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
+      },
+      {
+        id: 'issue-created',
+        name: intl.formatMessage(messages.issuecreated),
+        description: intl.formatMessage(messages.issuecreatedDescription),
+        value: Notification.ISSUE_CREATED,
+        hidden: user && !hasPermission(Permission.MANAGE_ISSUES),
+      },
+      {
+        id: 'issue-comment',
+        name: intl.formatMessage(messages.issuecomment),
+        description: intl.formatMessage(
+          user
+            ? messages.userissuecommentDescription
+            : messages.issuecommentDescription
+        ),
+        value: Notification.ISSUE_COMMENT,
+        hasNotifyUser: true,
+      },
+      {
+        id: 'issue-resolved',
+        name: intl.formatMessage(messages.issueresolved),
+        description: intl.formatMessage(
+          user
+            ? messages.userissueresolvedDescription
+            : messages.issueresolvedDescription
+        ),
+        value: Notification.ISSUE_RESOLVED,
+        hasNotifyUser: true,
       },
     ];
 

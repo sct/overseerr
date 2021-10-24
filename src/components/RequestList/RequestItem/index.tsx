@@ -104,7 +104,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    inView ? `${url}` : null
+    inView ? url : null
   );
   const {
     data: requestData,

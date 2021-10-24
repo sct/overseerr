@@ -43,11 +43,6 @@ class WebPushAgent
     payload: NotificationPayload
   ): PushNotificationPayload {
     switch (type) {
-      case Notification.NONE:
-        return {
-          notificationType: Notification[type],
-          subject: 'Unknown',
-        };
       case Notification.TEST_NOTIFICATION:
         return {
           notificationType: Notification[type],
@@ -131,6 +126,11 @@ class WebPushAgent
           tmdbId: payload.media?.tmdbId,
           requestId: payload.request?.id,
           actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
+        };
+      default:
+        return {
+          notificationType: Notification[type],
+          subject: 'Unknown',
         };
     }
   }

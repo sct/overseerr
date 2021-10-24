@@ -323,7 +323,9 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
                 .map((t, k) => <span key={k}>{t}</span>)
                 .reduce((prev, curr) => (
                   <>
-                    {prev} | {curr}
+                    {prev}
+                    <span>|</span>
+                    {curr}
                   </>
                 ))}
           </span>
