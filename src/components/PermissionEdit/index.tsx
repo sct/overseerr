@@ -15,7 +15,7 @@ export const messages = defineMessages({
     'Grant permission to modify global settings. A user must have this permission to grant it to others.',
   managerequests: 'Manage Requests',
   managerequestsDescription:
-    'Grant permission to manage requests. All requests made by a user with this permission will be automatically approved.',
+    'Grant permission to manage media requests. All requests made by a user with this permission will be automatically approved.',
   request: 'Request',
   requestDescription: 'Grant permission to submit requests for non-4K media.',
   requestMovies: 'Request Movies',
@@ -25,7 +25,8 @@ export const messages = defineMessages({
   requestTvDescription:
     'Grant permission to submit requests for non-4K series.',
   autoapprove: 'Auto-Approve',
-  autoapproveDescription: 'Grant automatic approval for all non-4K requests.',
+  autoapproveDescription:
+    'Grant automatic approval for all non-4K media requests.',
   autoapproveMovies: 'Auto-Approve Movies',
   autoapproveMoviesDescription:
     'Grant automatic approval for non-4K movie requests.',
@@ -33,7 +34,8 @@ export const messages = defineMessages({
   autoapproveSeriesDescription:
     'Grant automatic approval for non-4K series requests.',
   autoapprove4k: 'Auto-Approve 4K',
-  autoapprove4kDescription: 'Grant automatic approval for all 4K requests.',
+  autoapprove4kDescription:
+    'Grant automatic approval for all 4K media requests.',
   autoapprove4kMovies: 'Auto-Approve 4K Movies',
   autoapprove4kMoviesDescription:
     'Grant automatic approval for 4K movie requests.',
@@ -49,17 +51,17 @@ export const messages = defineMessages({
   request4kTvDescription: 'Grant permission to submit requests for 4K series.',
   advancedrequest: 'Advanced Requests',
   advancedrequestDescription:
-    'Grant permission to modify advanced request options.',
+    'Grant permission to modify advanced media request options.',
   viewrequests: 'View Requests',
   viewrequestsDescription:
-    'Grant permission to view requests submitted by other users.',
+    'Grant permission to view media requests submitted by other users.',
   manageissues: 'Manage Issues',
-  manageissuesDescription: 'Grant permission to manage issues.',
+  manageissuesDescription: 'Grant permission to manage media issues.',
   createissues: 'Report Issues',
-  createissuesDescription: 'Grant permission to report issues with media.',
+  createissuesDescription: 'Grant permission to report media issues.',
   viewissues: 'View Issues',
   viewissuesDescription:
-    'Grant permission to view issues reported by other users.',
+    'Grant permission to view media issues reported by other users.',
 });
 
 interface PermissionEditProps {
