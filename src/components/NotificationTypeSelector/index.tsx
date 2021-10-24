@@ -101,7 +101,7 @@ export interface NotificationItem {
   name: string;
   description: string;
   value: Notification;
-  hasNotifyUser?: boolean;
+  hasNotifyUser: boolean;
   children?: NotificationItem[];
   hidden?: boolean;
 }
@@ -189,6 +189,7 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
             : messages.mediarequestedDescription
         ),
         value: Notification.MEDIA_PENDING,
+        hasNotifyUser: false,
         hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
       },
       {
@@ -200,6 +201,7 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
             : messages.mediaAutoApprovedDescription
         ),
         value: Notification.MEDIA_AUTO_APPROVED,
+        hasNotifyUser: false,
         hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
       },
       {
@@ -247,6 +249,7 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
         ),
         value: Notification.MEDIA_FAILED,
         hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
+        hasNotifyUser: false,
       },
       {
         id: 'issue-created',
@@ -258,6 +261,7 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
         ),
         value: Notification.ISSUE_CREATED,
         hidden: user && !hasPermission(Permission.MANAGE_ISSUES),
+        hasNotifyUser: false,
       },
       {
         id: 'issue-comment',
@@ -271,7 +275,7 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
         ),
         value: Notification.ISSUE_COMMENT,
         hasNotifyUser:
-          user && hasPermission(Permission.MANAGE_ISSUES) ? false : true,
+          !user || hasPermission(Permission.MANAGE_ISSUES) ? false : true,
       },
       {
         id: 'issue-resolved',
