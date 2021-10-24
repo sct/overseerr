@@ -43,12 +43,13 @@ const messages = defineMessages({
   reopenissue: 'Reopen Issue',
   reopenissueandcomment: 'Reopen with Comment',
   issuepagetitle: 'Issue',
-  openinradarr: 'Open in Radarr',
-  openinsonarr: 'Open in Sonarr',
-  toasteditdescriptionsuccess: 'Successfully edited the issue description.',
-  toasteditdescriptionfailed: 'Something went wrong editing the description.',
-  toaststatusupdated: 'Issue status updated.',
-  toaststatusupdatefailed: 'Something went wrong updating the issue status.',
+  openinarr: 'Open in {arr}',
+  toasteditdescriptionsuccess: 'Edited the issue description successfully!',
+  toasteditdescriptionfailed:
+    'Something went wrong while editing the issue description.',
+  toaststatusupdated: 'Updated the issue status successfully!',
+  toaststatusupdatefailed:
+    'Something went wrong while updating the issue status.',
   issuetype: 'Issue Type',
   mediatype: 'Media Type',
   lastupdated: 'Last Updated',
@@ -62,8 +63,8 @@ const messages = defineMessages({
   episode: 'Episode {episodeNumber}',
   deleteissue: 'Delete Issue',
   deleteissueconfirm: 'Are you sure you want to delete this issue?',
-  toastissuedeleted: 'Issue deleted succesfully.',
-  toastissuedeletefailed: 'Something went wrong deleting the issue.',
+  toastissuedeleted: 'Deleted the issue successfully!',
+  toastissuedeletefailed: 'Something went wrong while deleting the issue.',
   nocomments: 'No comments.',
   unknownissuetype: 'Unknown',
 });
@@ -172,12 +173,7 @@ const IssueDetails: React.FC = () => {
         height: 493,
       }}
     >
-      <PageTitle
-        title={[
-          intl.formatMessage(messages.issuepagetitle),
-          isMovie(data) ? data.title : data.name,
-        ]}
-      />
+      <PageTitle title={[intl.formatMessage(messages.issuepagetitle), title]} />
       <Transition
         enter="transition opacity-0 duration-300"
         enterFrom="opacity-0"
@@ -383,11 +379,12 @@ const IssueDetails: React.FC = () => {
                   >
                     <ExternalLinkIcon />
                     <span>
-                      {intl.formatMessage(
-                        issueData.media.mediaType === MediaType.MOVIE
-                          ? messages.openinradarr
-                          : messages.openinsonarr
-                      )}
+                      {intl.formatMessage(messages.openinarr, {
+                        arr:
+                          issueData.media.mediaType === MediaType.MOVIE
+                            ? 'Radarr'
+                            : 'Sonarr',
+                      })}
                     </span>
                   </Button>
                 )}
@@ -581,11 +578,12 @@ const IssueDetails: React.FC = () => {
                 >
                   <ExternalLinkIcon />
                   <span>
-                    {intl.formatMessage(
-                      issueData.media.mediaType === MediaType.MOVIE
-                        ? messages.openinradarr
-                        : messages.openinsonarr
-                    )}
+                    {intl.formatMessage(messages.openinarr, {
+                      arr:
+                        issueData.media.mediaType === MediaType.MOVIE
+                          ? 'Radarr'
+                          : 'Sonarr',
+                    })}
                   </span>
                 </Button>
               )}

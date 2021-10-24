@@ -27,8 +27,8 @@ const messages = defineMessages({
   manageModalClearMedia: 'Clear Media Data',
   manageModalClearMediaWarning:
     '* This will irreversibly remove all data for this {mediaType}, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
-  openarr: 'Open {mediaType} in {arr}',
-  openarr4k: 'Open {mediaType} in 4K {arr}',
+  openarr: 'Open in {arr}',
+  openarr4k: 'Open in 4K {arr}',
   downloadstatus: 'Download Status',
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark as Available in 4K',

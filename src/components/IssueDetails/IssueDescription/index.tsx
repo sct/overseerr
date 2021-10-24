@@ -5,13 +5,12 @@ import React, { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import { Permission, useUser } from '../../../hooks/useUser';
+import globalMessages from '../../../i18n/globalMessages';
 import Button from '../../Common/Button';
 
 const messages = defineMessages({
   description: 'Description',
   edit: 'Edit Description',
-  cancel: 'Cancel',
-  save: 'Save Changes',
   deleteissue: 'Delete Issue',
 });
 
@@ -125,10 +124,10 @@ const IssueDescription: React.FC<IssueDescriptionProps> = ({
                     type="button"
                     onClick={() => setIsEditing(false)}
                   >
-                    <span>{intl.formatMessage(messages.cancel)}</span>
+                    <span>{intl.formatMessage(globalMessages.cancel)}</span>
                   </Button>
                   <Button buttonType="primary">
-                    <span>{intl.formatMessage(messages.save)}</span>
+                    <span>{intl.formatMessage(globalMessages.save)}</span>
                   </Button>
                 </div>
               </Form>
