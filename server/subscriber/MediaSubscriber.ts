@@ -13,7 +13,7 @@ import Season from '../entity/Season';
 import notificationManager, { Notification } from '../lib/notifications';
 
 @EventSubscriber()
-export class MediaSubscriber implements EntitySubscriberInterface {
+export class MediaSubscriber implements EntitySubscriberInterface<Media> {
   private async notifyAvailableMovie(entity: Media, dbEntity?: Media) {
     if (
       entity.status === MediaStatus.AVAILABLE &&
@@ -168,5 +168,9 @@ export class MediaSubscriber implements EntitySubscriberInterface {
     ) {
       this.updateChildRequestStatus(event.entity as Media, true);
     }
+  }
+
+  public listenTo(): typeof Media {
+    return Media;
   }
 }

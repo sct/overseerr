@@ -10,6 +10,9 @@ export enum Notification {
   TEST_NOTIFICATION = 32,
   MEDIA_DECLINED = 64,
   MEDIA_AUTO_APPROVED = 128,
+  ISSUE_CREATED = 256,
+  ISSUE_COMMENT = 512,
+  ISSUE_RESOLVED = 1024,
 }
 
 export const hasNotificationType = (

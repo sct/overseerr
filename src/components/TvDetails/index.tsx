@@ -1,15 +1,10 @@
 import {
   ArrowCircleRightIcon,
   CogIcon,
+  ExclamationIcon,
   FilmIcon,
   PlayIcon,
 } from '@heroicons/react/outline';
-import {
-  CheckCircleIcon,
-  DocumentRemoveIcon,
-  ExternalLinkIcon,
-} from '@heroicons/react/solid';
-import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
@@ -17,6 +12,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RTRating } from '../../../server/api/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
+import { IssueStatus } from '../../../server/constants/issue';
 import { MediaStatus } from '../../../server/constants/media';
 import { Crew } from '../../../server/models/common';
 import { TvDetails as TvDetailsType } from '../../../server/models/Tv';
@@ -33,16 +29,14 @@ import Error from '../../pages/_error';
 import { sortCrewPriority } from '../../utils/creditHelpers';
 import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
-import ConfirmButton from '../Common/ConfirmButton';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
 import PlayButton, { PlayButtonLink } from '../Common/PlayButton';
-import SlideOver from '../Common/SlideOver';
-import DownloadBlock from '../DownloadBlock';
 import ExternalLinkBlock from '../ExternalLinkBlock';
+import IssueModal from '../IssueModal';
+import ManageSlideOver from '../ManageSlideOver';
 import MediaSlider from '../MediaSlider';
 import PersonCard from '../PersonCard';
-import RequestBlock from '../RequestBlock';
 import RequestButton from '../RequestButton';
 import RequestModal from '../RequestModal';
 import Slider from '../Slider';
@@ -58,25 +52,13 @@ const messages = defineMessages({
   similar: 'Similar Series',
   watchtrailer: 'Watch Trailer',
   overviewunavailable: 'Overview unavailable.',
-  manageModalTitle: 'Manage Series',
-  manageModalRequests: 'Requests',
-  manageModalNoRequests: 'No requests.',
-  manageModalClearMedia: 'Clear Media Data',
-  manageModalClearMediaWarning:
-    '* This will irreversibly remove all data for this series, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
   originaltitle: 'Original Title',
   showtype: 'Series Type',
   anime: 'Anime',
   network: '{networkCount, plural, one {Network} other {Networks}}',
   viewfullcrew: 'View Full Crew',
-  opensonarr: 'Open Series in Sonarr',
-  opensonarr4k: 'Open Series in 4K Sonarr',
-  downloadstatus: 'Download Status',
   playonplex: 'Play on Plex',
   play4konplex: 'Play in 4K on Plex',
-  markavailable: 'Mark as Available',
-  mark4kavailable: 'Mark as Available in 4K',
-  allseasonsmarkedavailable: '* All seasons will be marked as available.',
   seasons: '{seasonCount, plural, one {# Season} other {# Seasons}}',
   episodeRuntime: 'Episode Runtime',
   episodeRuntimeMinutes: '{runtime} minutes',
@@ -95,6 +77,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const { locale } = useLocale();
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showManager, setShowManager] = useState(false);
+  const [showIssueModal, setShowIssueModal] = useState(false);
 
   const { data, error, revalidate } = useSWR<TvDetailsType>(
     `/api/v1/tv/${router.query.tvId}`,
@@ -155,20 +138,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       svg: <FilmIcon />,
     });
   }
-
-  const deleteMedia = async () => {
-    if (data?.mediaInfo?.id) {
-      await axios.delete(`/api/v1/media/${data?.mediaInfo?.id}`);
-      revalidate();
-    }
-  };
-
-  const markAvailable = async (is4k = false) => {
-    await axios.post(`/api/v1/media/${data?.mediaInfo?.id}/available`, {
-      is4k,
-    });
-    revalidate();
-  };
 
   const region = user?.settings?.region
     ? user.settings.region
@@ -261,6 +230,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         </div>
       )}
       <PageTitle title={data.name} />
+      <IssueModal
+        onCancel={() => setShowIssueModal(false)}
+        show={showIssueModal}
+        mediaType="tv"
+        tmdbId={data.id}
+      />
       <RequestModal
         tmdbId={data.id}
         show={showRequestModal}
@@ -271,144 +246,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         }}
         onCancel={() => setShowRequestModal(false)}
       />
-      <SlideOver
-        show={showManager}
-        title={intl.formatMessage(messages.manageModalTitle)}
+      <ManageSlideOver
+        data={data}
+        mediaType="tv"
         onClose={() => setShowManager(false)}
-        subText={data.name}
-      >
-        {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
-          (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
-          <>
-            <h3 className="mb-2 text-xl font-bold">
-              {intl.formatMessage(messages.downloadstatus)}
-            </h3>
-            <div className="mb-6 overflow-hidden bg-gray-600 rounded-md shadow">
-              <ul>
-                {data.mediaInfo?.downloadStatus?.map((status, index) => (
-                  <li
-                    key={`dl-status-${status.externalId}-${index}`}
-                    className="border-b border-gray-700 last:border-b-0"
-                  >
-                    <DownloadBlock downloadItem={status} />
-                  </li>
-                ))}
-                {data.mediaInfo?.downloadStatus4k?.map((status, index) => (
-                  <li
-                    key={`dl-status-${status.externalId}-${index}`}
-                    className="border-b border-gray-700 last:border-b-0"
-                  >
-                    <DownloadBlock downloadItem={status} is4k />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </>
-        )}
-        {data?.mediaInfo &&
-          (data.mediaInfo.status !== MediaStatus.AVAILABLE ||
-            (data.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
-              settings.currentSettings.series4kEnabled)) && (
-            <div className="mb-6">
-              {data?.mediaInfo &&
-                data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
-                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
-                    <Button
-                      onClick={() => markAvailable()}
-                      className="w-full sm:mb-0"
-                      buttonType="success"
-                    >
-                      <CheckCircleIcon />
-                      <span>{intl.formatMessage(messages.markavailable)}</span>
-                    </Button>
-                  </div>
-                )}
-              {data?.mediaInfo &&
-                data?.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
-                settings.currentSettings.series4kEnabled && (
-                  <div className="flex flex-col mb-2 sm:flex-row flex-nowrap">
-                    <Button
-                      onClick={() => markAvailable(true)}
-                      className="w-full sm:mb-0"
-                      buttonType="success"
-                    >
-                      <CheckCircleIcon />
-                      <span>
-                        {intl.formatMessage(messages.mark4kavailable)}
-                      </span>
-                    </Button>
-                  </div>
-                )}
-              <div className="mt-3 text-xs text-gray-400">
-                {intl.formatMessage(messages.allseasonsmarkedavailable)}
-              </div>
-            </div>
-          )}
-        <h3 className="mb-2 text-xl font-bold">
-          {intl.formatMessage(messages.manageModalRequests)}
-        </h3>
-        <div className="overflow-hidden bg-gray-600 rounded-md shadow">
-          <ul>
-            {data.mediaInfo?.requests?.map((request) => (
-              <li
-                key={`manage-request-${request.id}`}
-                className="border-b border-gray-700 last:border-b-0"
-              >
-                <RequestBlock request={request} onUpdate={() => revalidate()} />
-              </li>
-            ))}
-            {(data.mediaInfo?.requests ?? []).length === 0 && (
-              <li className="py-4 text-center text-gray-400">
-                {intl.formatMessage(messages.manageModalNoRequests)}
-              </li>
-            )}
-          </ul>
-        </div>
-        {(data?.mediaInfo?.serviceUrl || data?.mediaInfo?.serviceUrl4k) && (
-          <div className="mt-8">
-            {data?.mediaInfo?.serviceUrl && (
-              <a
-                href={data?.mediaInfo?.serviceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="block mb-2 last:mb-0"
-              >
-                <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon />
-                  <span>{intl.formatMessage(messages.opensonarr)}</span>
-                </Button>
-              </a>
-            )}
-            {data?.mediaInfo?.serviceUrl4k && (
-              <a
-                href={data?.mediaInfo?.serviceUrl4k}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon />
-                  <span>{intl.formatMessage(messages.opensonarr4k)}</span>
-                </Button>
-              </a>
-            )}
-          </div>
-        )}
-        {data?.mediaInfo && (
-          <div className="mt-8">
-            <ConfirmButton
-              onClick={() => deleteMedia()}
-              confirmText={intl.formatMessage(globalMessages.areyousure)}
-              className="w-full"
-            >
-              <DocumentRemoveIcon />
-              <span>{intl.formatMessage(messages.manageModalClearMedia)}</span>
-            </ConfirmButton>
-            <div className="mt-3 text-xs text-gray-400">
-              {intl.formatMessage(messages.manageModalClearMediaWarning)}
-            </div>
-          </div>
-        )}
-      </SlideOver>
+        revalidate={() => revalidate()}
+        show={showManager}
+      />
       <div className="media-header">
         <div className="media-poster">
           <CachedImage
@@ -469,7 +313,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 .map((t, k) => <span key={k}>{t}</span>)
                 .reduce((prev, curr) => (
                   <>
-                    {prev} | {curr}
+                    {prev}
+                    <span>|</span>
+                    {curr}
                   </>
                 ))}
           </span>
@@ -484,13 +330,41 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             isShowComplete={isComplete}
             is4kShowComplete={is4kComplete}
           />
+          {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
+            data.mediaInfo?.status4k === MediaStatus.AVAILABLE ||
+            data.mediaInfo?.status === MediaStatus.PARTIALLY_AVAILABLE ||
+            data?.mediaInfo?.status4k === MediaStatus.PARTIALLY_AVAILABLE) &&
+            hasPermission(
+              [Permission.CREATE_ISSUES, Permission.MANAGE_ISSUES],
+              {
+                type: 'or',
+              }
+            ) && (
+              <Button
+                buttonType="danger"
+                className="ml-2 first:ml-0"
+                onClick={() => setShowIssueModal(true)}
+              >
+                <ExclamationIcon className="w-5" />
+              </Button>
+            )}
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
               buttonType="default"
               className="ml-2 first:ml-0"
               onClick={() => setShowManager(true)}
             >
-              <CogIcon />
+              <CogIcon className="!mr-0" />
+              {(
+                data.mediaInfo?.issues.filter(
+                  (issue) => issue.status === IssueStatus.OPEN
+                ) ?? []
+              ).length > 0 && (
+                <>
+                  <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1" />
+                  <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1 animate-ping" />
+                </>
+              )}
             </Button>
           )}
         </div>

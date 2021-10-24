@@ -13,131 +13,134 @@ import { isAuthenticated } from '../middleware/auth';
 
 const requestRoutes = Router();
 
-requestRoutes.get('/', async (req, res, next) => {
-  try {
-    const pageSize = req.query.take ? Number(req.query.take) : 10;
-    const skip = req.query.skip ? Number(req.query.skip) : 0;
-    const requestedBy = req.query.requestedBy
-      ? Number(req.query.requestedBy)
-      : null;
+requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
+  '/',
+  async (req, res, next) => {
+    try {
+      const pageSize = req.query.take ? Number(req.query.take) : 10;
+      const skip = req.query.skip ? Number(req.query.skip) : 0;
+      const requestedBy = req.query.requestedBy
+        ? Number(req.query.requestedBy)
+        : null;
 
-    let statusFilter: MediaRequestStatus[];
+      let statusFilter: MediaRequestStatus[];
 
-    switch (req.query.filter) {
-      case 'approved':
-      case 'processing':
-      case 'available':
-        statusFilter = [MediaRequestStatus.APPROVED];
-        break;
-      case 'pending':
-        statusFilter = [MediaRequestStatus.PENDING];
-        break;
-      case 'unavailable':
-        statusFilter = [
-          MediaRequestStatus.PENDING,
-          MediaRequestStatus.APPROVED,
-        ];
-        break;
-      default:
-        statusFilter = [
-          MediaRequestStatus.PENDING,
-          MediaRequestStatus.APPROVED,
-          MediaRequestStatus.DECLINED,
-        ];
-    }
+      switch (req.query.filter) {
+        case 'approved':
+        case 'processing':
+        case 'available':
+          statusFilter = [MediaRequestStatus.APPROVED];
+          break;
+        case 'pending':
+          statusFilter = [MediaRequestStatus.PENDING];
+          break;
+        case 'unavailable':
+          statusFilter = [
+            MediaRequestStatus.PENDING,
+            MediaRequestStatus.APPROVED,
+          ];
+          break;
+        default:
+          statusFilter = [
+            MediaRequestStatus.PENDING,
+            MediaRequestStatus.APPROVED,
+            MediaRequestStatus.DECLINED,
+          ];
+      }
 
-    let mediaStatusFilter: MediaStatus[];
+      let mediaStatusFilter: MediaStatus[];
 
-    switch (req.query.filter) {
-      case 'available':
-        mediaStatusFilter = [MediaStatus.AVAILABLE];
-        break;
-      case 'processing':
-      case 'unavailable':
-        mediaStatusFilter = [
-          MediaStatus.UNKNOWN,
-          MediaStatus.PENDING,
-          MediaStatus.PROCESSING,
-          MediaStatus.PARTIALLY_AVAILABLE,
-        ];
-        break;
-      default:
-        mediaStatusFilter = [
-          MediaStatus.UNKNOWN,
-          MediaStatus.PENDING,
-          MediaStatus.PROCESSING,
-          MediaStatus.PARTIALLY_AVAILABLE,
-          MediaStatus.AVAILABLE,
-        ];
-    }
+      switch (req.query.filter) {
+        case 'available':
+          mediaStatusFilter = [MediaStatus.AVAILABLE];
+          break;
+        case 'processing':
+        case 'unavailable':
+          mediaStatusFilter = [
+            MediaStatus.UNKNOWN,
+            MediaStatus.PENDING,
+            MediaStatus.PROCESSING,
+            MediaStatus.PARTIALLY_AVAILABLE,
+          ];
+          break;
+        default:
+          mediaStatusFilter = [
+            MediaStatus.UNKNOWN,
+            MediaStatus.PENDING,
+            MediaStatus.PROCESSING,
+            MediaStatus.PARTIALLY_AVAILABLE,
+            MediaStatus.AVAILABLE,
+          ];
+      }
 
-    let sortFilter: string;
+      let sortFilter: string;
 
-    switch (req.query.sort) {
-      case 'modified':
-        sortFilter = 'request.updatedAt';
-        break;
-      default:
-        sortFilter = 'request.id';
-    }
+      switch (req.query.sort) {
+        case 'modified':
+          sortFilter = 'request.updatedAt';
+          break;
+        default:
+          sortFilter = 'request.id';
+      }
 
-    let query = getRepository(MediaRequest)
-      .createQueryBuilder('request')
-      .leftJoinAndSelect('request.media', 'media')
-      .leftJoinAndSelect('request.seasons', 'seasons')
-      .leftJoinAndSelect('request.modifiedBy', 'modifiedBy')
-      .leftJoinAndSelect('request.requestedBy', 'requestedBy')
-      .where('request.status IN (:...requestStatus)', {
-        requestStatus: statusFilter,
-      })
-      .andWhere(
-        '((request.is4k = 0 AND media.status IN (:...mediaStatus)) OR (request.is4k = 1 AND media.status4k IN (:...mediaStatus)))',
-        {
-          mediaStatus: mediaStatusFilter,
+      let query = getRepository(MediaRequest)
+        .createQueryBuilder('request')
+        .leftJoinAndSelect('request.media', 'media')
+        .leftJoinAndSelect('request.seasons', 'seasons')
+        .leftJoinAndSelect('request.modifiedBy', 'modifiedBy')
+        .leftJoinAndSelect('request.requestedBy', 'requestedBy')
+        .where('request.status IN (:...requestStatus)', {
+          requestStatus: statusFilter,
+        })
+        .andWhere(
+          '((request.is4k = 0 AND media.status IN (:...mediaStatus)) OR (request.is4k = 1 AND media.status4k IN (:...mediaStatus)))',
+          {
+            mediaStatus: mediaStatusFilter,
+          }
+        );
+
+      if (
+        !req.user?.hasPermission(
+          [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+          { type: 'or' }
+        )
+      ) {
+        if (requestedBy && requestedBy !== req.user?.id) {
+          return next({
+            status: 403,
+            message: "You do not have permission to view this user's requests.",
+          });
         }
-      );
 
-    if (
-      !req.user?.hasPermission(
-        [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
-        { type: 'or' }
-      )
-    ) {
-      if (requestedBy && requestedBy !== req.user?.id) {
-        return next({
-          status: 403,
-          message: "You do not have permission to view this user's requests.",
+        query = query.andWhere('requestedBy.id = :id', {
+          id: req.user?.id,
+        });
+      } else if (requestedBy) {
+        query = query.andWhere('requestedBy.id = :id', {
+          id: requestedBy,
         });
       }
 
-      query = query.andWhere('requestedBy.id = :id', {
-        id: req.user?.id,
+      const [requests, requestCount] = await query
+        .orderBy(sortFilter, 'DESC')
+        .take(pageSize)
+        .skip(skip)
+        .getManyAndCount();
+
+      return res.status(200).json({
+        pageInfo: {
+          pages: Math.ceil(requestCount / pageSize),
+          pageSize,
+          results: requestCount,
+          page: Math.ceil(skip / pageSize) + 1,
+        },
+        results: requests,
       });
-    } else if (requestedBy) {
-      query = query.andWhere('requestedBy.id = :id', {
-        id: requestedBy,
-      });
+    } catch (e) {
+      next({ status: 500, message: e.message });
     }
-
-    const [requests, requestCount] = await query
-      .orderBy(sortFilter, 'DESC')
-      .take(pageSize)
-      .skip(skip)
-      .getManyAndCount();
-
-    return res.status(200).json({
-      pageInfo: {
-        pages: Math.ceil(requestCount / pageSize),
-        pageSize,
-        results: requestCount,
-        page: Math.ceil(skip / pageSize) + 1,
-      },
-      results: requests,
-    } as RequestResultsResponse);
-  } catch (e) {
-    next({ status: 500, message: e.message });
   }
-});
+);
 
 requestRoutes.post('/', async (req, res, next) => {
   const tmdb = new TheMovieDb();
@@ -665,7 +668,10 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
 
     return res.status(204).send();
   } catch (e) {
-    logger.error(e.message);
+    logger.error('Something went wrong deleting a request.', {
+      label: 'API',
+      errorMessage: e.message,
+    });
     next({ status: 404, message: 'Request not found.' });
   }
 });

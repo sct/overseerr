@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { getRepository } from 'typeorm';
 import { hasNotificationType, Notification } from '..';
+import { IssueStatus, IssueTypeNames } from '../../../constants/issue';
+import { MediaType } from '../../../constants/media';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
 import { Permission } from '../../permissions';
@@ -120,6 +122,48 @@ class DiscordAgent
       });
     }
 
+    // If payload has an issue attached, push issue specific fields
+    if (payload.issue) {
+      fields.push(
+        {
+          name: 'Created By',
+          value: payload.issue.createdBy.displayName,
+          inline: true,
+        },
+        {
+          name: 'Issue Type',
+          value: IssueTypeNames[payload.issue.issueType],
+          inline: true,
+        },
+        {
+          name: 'Issue Status',
+          value:
+            payload.issue.status === IssueStatus.OPEN ? 'Open' : 'Resolved',
+          inline: true,
+        }
+      );
+
+      if (payload.issue.media.mediaType === MediaType.TV) {
+        fields.push({
+          name: 'Affected Season',
+          value:
+            payload.issue.problemSeason > 0
+              ? `Season ${payload.issue.problemSeason}`
+              : 'All Seasons',
+        });
+
+        if (payload.issue.problemSeason > 0) {
+          fields.push({
+            name: 'Affected Episode',
+            value:
+              payload.issue.problemEpisode > 0
+                ? `Episode ${payload.issue.problemEpisode}`
+                : 'All Episodes',
+          });
+        }
+      }
+    }
+
     switch (type) {
       case Notification.MEDIA_PENDING:
         color = EmbedColors.ORANGE;
@@ -161,6 +205,16 @@ class DiscordAgent
           value: 'Failed',
           inline: true,
         });
+        break;
+      case Notification.ISSUE_CREATED:
+      case Notification.ISSUE_COMMENT:
+      case Notification.ISSUE_RESOLVED:
+        color = EmbedColors.ORANGE;
+
+        if (payload.issue && payload.issue.status === IssueStatus.RESOLVED) {
+          color = EmbedColors.GREEN;
+        }
+
         break;
     }
 

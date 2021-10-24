@@ -27,6 +27,7 @@ import {
 } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
+import Issue from './Issue';
 import { MediaRequest } from './MediaRequest';
 import SeasonRequest from './SeasonRequest';
 import { UserPushSubscription } from './UserPushSubscription';
@@ -114,6 +115,9 @@ export class User {
 
   @OneToMany(() => UserPushSubscription, (pushSub) => pushSub.user)
   public pushSubscriptions: UserPushSubscription[];
+
+  @OneToMany(() => Issue, (issue) => issue.createdBy, { cascade: true })
+  public createdIssues: Issue[];
 
   @CreateDateColumn()
   public createdAt: Date;

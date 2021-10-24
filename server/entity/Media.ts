@@ -16,6 +16,7 @@ import { MediaStatus, MediaType } from '../constants/media';
 import downloadTracker, { DownloadingItem } from '../lib/downloadtracker';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
+import Issue from './Issue';
 import { MediaRequest } from './MediaRequest';
 import Season from './Season';
 
@@ -54,7 +55,7 @@ class Media {
     try {
       const media = await mediaRepository.findOne({
         where: { tmdbId: id, mediaType },
-        relations: ['requests'],
+        relations: ['requests', 'issues'],
       });
 
       return media;
@@ -96,6 +97,9 @@ class Media {
     eager: true,
   })
   public seasons: Season[];
+
+  @OneToMany(() => Issue, (issue) => issue.media, { cascade: true })
+  public issues: Issue[];
 
   @CreateDateColumn()
   public createdAt: Date;
