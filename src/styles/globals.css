@@ -118,7 +118,7 @@
   }
 
   .media-attributes {
-    @apply flex items-center mt-1 space-x-1 text-xs text-gray-300 sm:text-sm xl:text-base xl:mt-0;
+    @apply flex flex-wrap items-center justify-center mt-1 space-x-1 text-xs text-gray-300 sm:text-sm xl:text-base xl:mt-0 xl:justify-start;
   }
 
   .media-attributes a {
