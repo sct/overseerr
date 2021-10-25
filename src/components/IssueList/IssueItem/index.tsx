@@ -169,15 +169,10 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
               </a>
             </Link>
             {problemSeasonEpisodeLine.length > 0 && (
-              <div className="text-sm text-gray-200">
-                {problemSeasonEpisodeLine
-                  .map((t, k) => <span key={k}>{t}</span>)
-                  .reduce((prev, curr) => (
-                    <>
-                      {prev}
-                      {curr}
-                    </>
-                  ))}
+              <div className="card-field">
+                {problemSeasonEpisodeLine.map((t, k) => (
+                  <span key={k}>{t}</span>
+                ))}
               </div>
             )}
           </div>
