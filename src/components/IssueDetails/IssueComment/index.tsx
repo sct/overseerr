@@ -226,11 +226,11 @@ const IssueComment: React.FC<IssueCommentProps> = ({
           </div>
         </div>
         <div
-          className={`flex justify-between items-center text-xs pt-2 px-2 ${
+          className={`flex justify-between items-center text-xs pt-2 ${
             isReversed ? 'flex-row-reverse' : 'flex-row'
           }`}
         >
-          <span className="flex items-center">
+          <span>
             {intl.formatMessage(
               comment.createdAt !== comment.updatedAt
                 ? messages.postedbyedited
@@ -242,15 +242,8 @@ const IssueComment: React.FC<IssueCommentProps> = ({
                       isActiveUser ? '/profile' : `/users/${comment.user.id}`
                     }
                   >
-                    <a className="inline-flex items-center h-full ml-1 group">
-                      <img
-                        className="avatar-sm"
-                        src={comment.user.avatar}
-                        alt=""
-                      />
-                      <span className="font-semibold text-gray-100 transition duration-300 group-hover:text-white group-hover:underline">
-                        {comment.user.displayName}
-                      </span>
+                    <a className="font-semibold text-gray-100 transition duration-300 hover:text-white hover:underline">
+                      {comment.user.displayName}
                     </a>
                   </Link>
                 ),
