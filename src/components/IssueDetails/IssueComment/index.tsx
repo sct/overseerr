@@ -3,6 +3,7 @@ import { ExclamationIcon } from '@heroicons/react/outline';
 import { DotsVerticalIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
@@ -14,11 +15,11 @@ import Modal from '../../Common/Modal';
 import Transition from '../../Transition';
 
 const messages = defineMessages({
-  postedby: 'Posted by {username} {relativeTime}',
-  postedbyedited: 'Posted by {username} {relativeTime} (Edited)',
+  postedby: 'Posted {relativeTime} by {username}',
+  postedbyedited: 'Posted {relativeTime} by {username} (Edited)',
   delete: 'Delete Comment',
   areyousuredelete: 'Are you sure you want to delete this comment?',
-  validationComment: 'You must provide a message',
+  validationComment: 'You must enter a message',
   edit: 'Edit Comment',
 });
 
@@ -86,11 +87,15 @@ const IssueComment: React.FC<IssueCommentProps> = ({
           {intl.formatMessage(messages.areyousuredelete)}
         </Modal>
       </Transition>
-      <img
-        src={comment.user.avatar}
-        alt=""
-        className="w-10 h-10 rounded-full ring-1 ring-gray-500"
-      />
+      <Link href={isActiveUser ? '/profile' : `/users/${comment.user.id}`}>
+        <a>
+          <img
+            src={comment.user.avatar}
+            alt=""
+            className="w-10 h-10 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
+          />
+        </a>
+      </Link>
       <div className="relative flex-1">
         <div className="w-full rounded-md shadow ring-1 ring-gray-500">
           {(belongsToUser || hasPermission(Permission.MANAGE_ISSUES)) && (
@@ -221,7 +226,7 @@ const IssueComment: React.FC<IssueCommentProps> = ({
           </div>
         </div>
         <div
-          className={`flex justify-between items-center text-xs pt-2 px-2 ${
+          className={`flex justify-between items-center text-xs pt-2 ${
             isReversed ? 'flex-row-reverse' : 'flex-row'
           }`}
         >
@@ -232,14 +237,15 @@ const IssueComment: React.FC<IssueCommentProps> = ({
                 : messages.postedby,
               {
                 username: (
-                  <a
+                  <Link
                     href={
                       isActiveUser ? '/profile' : `/users/${comment.user.id}`
                     }
-                    className="font-semibold text-gray-100 transition duration-300 hover:underline hover:text-white"
                   >
-                    {comment.user.displayName}
-                  </a>
+                    <a className="font-semibold text-gray-100 transition duration-300 hover:text-white hover:underline">
+                      {comment.user.displayName}
+                    </a>
+                  </Link>
                 ),
                 relativeTime: (
                   <FormattedRelativeTime

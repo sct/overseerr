@@ -18,11 +18,9 @@ import { issueOptions } from '../../IssueModal/constants';
 
 const messages = defineMessages({
   openeduserdate: '{date} by {user}',
-  allseasons: 'All Seasons',
-  season: 'Season {seasonNumber}',
+  seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
+  episodes: '{episodeCount, plural, one {Episode} other {Episodes}}',
   problemepisode: 'Affected Episode',
-  allepisodes: 'All Episodes',
-  episode: 'Episode {episodeNumber}',
   issuetype: 'Type',
   issuestatus: 'Status',
   opened: 'Opened',
@@ -55,7 +53,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
   if (!title && !error) {
     return (
       <div
-        className="w-full bg-gray-800 h-52 sm:h-40 xl:h-24 rounded-xl animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-xl xl:h-28 animate-pulse"
         ref={ref}
       />
     );
@@ -69,30 +67,48 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
     (opt) => opt.issueType === issue?.issueType
   );
 
-  const problemSeasonEpisodeLine = [];
+  const problemSeasonEpisodeLine: React.ReactNode[] = [];
 
   if (!isMovie(title) && issue) {
     problemSeasonEpisodeLine.push(
-      issue.problemSeason > 0
-        ? intl.formatMessage(messages.season, {
-            seasonNumber: issue.problemSeason,
-          })
-        : intl.formatMessage(messages.allseasons)
+      <>
+        <span className="card-field-name">
+          {intl.formatMessage(messages.seasons, {
+            seasonCount: issue.problemSeason ? 1 : 0,
+          })}
+        </span>
+        <span className="mr-4 uppercase">
+          <Badge>
+            {issue.problemSeason > 0
+              ? issue.problemSeason
+              : intl.formatMessage(globalMessages.all)}
+          </Badge>
+        </span>
+      </>
     );
 
     if (issue.problemSeason > 0) {
       problemSeasonEpisodeLine.push(
-        issue.problemEpisode > 0
-          ? intl.formatMessage(messages.episode, {
-              episodeNumber: issue.problemEpisode,
-            })
-          : intl.formatMessage(messages.allepisodes)
+        <>
+          <span className="card-field-name">
+            {intl.formatMessage(messages.episodes, {
+              episodeCount: issue.problemEpisode ? 1 : 0,
+            })}
+          </span>
+          <span className="uppercase">
+            <Badge>
+              {issue.problemEpisode > 0
+                ? issue.problemEpisode
+                : intl.formatMessage(globalMessages.all)}
+            </Badge>
+          </span>
+        </>
       );
     }
   }
 
   return (
-    <div className="relative flex flex-col justify-between w-full py-2 overflow-hidden text-gray-400 bg-gray-800 shadow-md h-52 sm:h-40 xl:h-24 ring-1 ring-gray-700 rounded-xl xl:flex-row">
+    <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl xl:h-28 xl:flex-row">
       {title.backdropPath && (
         <div className="absolute inset-0 z-0 w-full bg-center bg-cover xl:w-2/3">
           <CachedImage
@@ -119,7 +135,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
                 : `/tv/${issue.media.tmdbId}`
             }
           >
-            <a className="relative flex-shrink-0 w-10 h-auto overflow-hidden transition duration-300 scale-100 rounded-md transform-gpu hover:scale-105">
+            <a className="relative flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md transform-gpu hover:scale-105">
               <CachedImage
                 src={
                   title.posterPath
@@ -153,8 +169,10 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
               </a>
             </Link>
             {problemSeasonEpisodeLine.length > 0 && (
-              <div className="text-sm text-gray-200">
-                {problemSeasonEpisodeLine.join(' | ')}
+              <div className="card-field">
+                {problemSeasonEpisodeLine.map((t, k) => (
+                  <span key={k}>{t}</span>
+                ))}
               </div>
             )}
           </div>
@@ -212,7 +230,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
                             alt=""
                             className="ml-1.5 avatar-sm"
                           />
-                          <span className="text-sm truncate group-hover:underline">
+                          <span className="text-sm font-semibold truncate group-hover:underline group-hover:text-white">
                             {issue.createdBy.displayName}
                           </span>
                         </a>

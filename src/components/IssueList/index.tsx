@@ -94,7 +94,7 @@ const IssueList: React.FC = () => {
     <>
       <PageTitle title={intl.formatMessage(messages.issues)} />
       <div className="flex flex-col justify-between mb-4 lg:items-end lg:flex-row">
-        <Header>Issues</Header>
+        <Header>{intl.formatMessage(messages.issues)}</Header>
         <div className="flex flex-col flex-grow mt-2 sm:flex-row lg:flex-grow-0">
           <div className="flex flex-grow mb-2 sm:mb-0 sm:mr-2 lg:flex-grow-0">
             <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
@@ -157,7 +157,7 @@ const IssueList: React.FC = () => {
       </div>
       {data.results.map((issue) => {
         return (
-          <div className="mb-2" key={`issue-item-${issue.id}`}>
+          <div className="py-2" key={`issue-item-${issue.id}`}>
             <IssueItem issue={issue} />
           </div>
         );

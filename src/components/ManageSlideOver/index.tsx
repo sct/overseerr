@@ -1,8 +1,5 @@
-import {
-  CheckCircleIcon,
-  DocumentRemoveIcon,
-  ExternalLinkIcon,
-} from '@heroicons/react/solid';
+import { ServerIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, DocumentRemoveIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -208,7 +205,7 @@ const ManageSlideOver: React.FC<
                 className="block mb-2 last:mb-0"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon />
+                  <ServerIcon />
                   <span>
                     {intl.formatMessage(messages.openarr, {
                       mediaType: intl.formatMessage(
@@ -229,7 +226,7 @@ const ManageSlideOver: React.FC<
                 rel="noreferrer"
               >
                 <Button buttonType="ghost" className="w-full">
-                  <ExternalLinkIcon />
+                  <ServerIcon />
                   <span>
                     {intl.formatMessage(messages.openarr4k, {
                       mediaType: intl.formatMessage(
