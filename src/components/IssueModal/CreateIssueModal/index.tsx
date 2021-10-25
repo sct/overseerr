@@ -278,10 +278,10 @@ const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
               </div>
             </RadioGroup>
             <div className="flex-col mt-4 space-y-2">
-              <span>
-                {intl.formatMessage(messages.whatswrong)}{' '}
+              <label htmlFor="message">
+                {intl.formatMessage(messages.whatswrong)}
                 <span className="label-required">*</span>
-              </span>
+              </label>
               <Field
                 as="textarea"
                 name="message"
