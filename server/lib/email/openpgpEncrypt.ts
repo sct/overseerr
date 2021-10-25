@@ -51,11 +51,12 @@ class PGPEncryptor extends Transform {
 
     // Only sign the message if private key and password exist
     if (this._signingKey && this._password) {
-      privateKey = await openpgp.readPrivateKey({
-        armoredKey: this._signingKey,
+      privateKey = await openpgp.decryptKey({
+        privateKey: await openpgp.readPrivateKey({
+          armoredKey: this._signingKey,
+        }),
+        passphrase: this._password,
       });
-
-      await openpgp.decryptKey({ privateKey, passphrase: this._password });
     }
 
     const emailPartDelimiter = '\r\n\r\n';
