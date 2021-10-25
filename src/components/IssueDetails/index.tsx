@@ -44,7 +44,7 @@ const messages = defineMessages({
   reopenissueandcomment: 'Reopen with Comment',
   issuepagetitle: 'Issue',
   playonplex: 'Play on Plex',
-  play4konplex: 'Play 4K on Plex',
+  play4konplex: 'Play in 4K on Plex',
   openinarr: 'Open in {arr}',
   openin4karr: 'Open in 4K {arr}',
   toasteditdescriptionsuccess: 'Issue description edited successfully!',
@@ -228,7 +228,7 @@ const IssueDetails: React.FC = () => {
         <div className="media-title">
           <div className="media-status">
             {issueData.status === IssueStatus.OPEN && (
-              <Badge badgeType="primary">
+              <Badge badgeType="warning">
                 {intl.formatMessage(globalMessages.open)}
               </Badge>
             )}

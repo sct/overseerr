@@ -9,9 +9,12 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
+import { MediaStatus } from '../../../../server/constants/media';
 import type Issue from '../../../../server/entity/Issue';
 import { MovieDetails } from '../../../../server/models/Movie';
 import { TvDetails } from '../../../../server/models/Tv';
+import useSettings from '../../../hooks/useSettings';
+import { Permission, useUser } from '../../../hooks/useUser';
 import globalMessages from '../../../i18n/globalMessages';
 import Button from '../../Common/Button';
 import Modal from '../../Common/Modal';
@@ -21,7 +24,9 @@ const messages = defineMessages({
   validationMessageRequired: 'You must provide a description',
   issomethingwrong: 'Is there a problem with {title}?',
   whatswrong: "What's wrong?",
-  providedetail: 'Provide a detailed explanation of the issue.',
+  providedetail:
+    'Please provide a detailed explanation of the issue you encountered.',
+  extras: 'Extras',
   season: 'Season {seasonNumber}',
   episode: 'Episode {episodeNumber}',
   allseasons: 'All Seasons',
@@ -56,6 +61,8 @@ const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
   tmdbId,
 }) => {
   const intl = useIntl();
+  const settings = useSettings();
+  const { hasPermission } = useUser();
   const { addToast } = useToasts();
   const { data, error } = useSWR<MovieDetails | TvDetails>(
     tmdbId ? `/api/v1/${mediaType}/${tmdbId}` : null
@@ -64,6 +71,20 @@ const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
   if (!tmdbId) {
     return null;
   }
+
+  const availableSeasons = (data?.mediaInfo?.seasons ?? [])
+    .filter(
+      (season) =>
+        season.status === MediaStatus.AVAILABLE ||
+        season.status === MediaStatus.PARTIALLY_AVAILABLE ||
+        (settings.currentSettings.series4kEnabled &&
+          hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+            type: 'or',
+          }) &&
+          (season.status4k === MediaStatus.AVAILABLE ||
+            season.status4k === MediaStatus.PARTIALLY_AVAILABLE))
+    )
+    .map((season) => season.seasonNumber);
 
   const CreateIssueModalSchema = Yup.object().shape({
     message: Yup.string().required(
@@ -76,7 +97,7 @@ const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
       initialValues={{
         selectedIssue: issueOptions[0],
         message: '',
-        problemSeason: 0,
+        problemSeason: availableSeasons.length === 1 ? availableSeasons[0] : 0,
         problemEpisode: 0,
       }}
       validationSchema={CreateIssueModalSchema}
@@ -162,18 +183,23 @@ const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
                         as="select"
                         id="problemSeason"
                         name="problemSeason"
+                        disabled={availableSeasons.length === 1}
                       >
-                        <option value={0}>
-                          {intl.formatMessage(messages.allseasons)}
-                        </option>
-                        {data.seasons.map((season) => (
+                        {availableSeasons.length > 1 && (
+                          <option value={0}>
+                            {intl.formatMessage(messages.allseasons)}
+                          </option>
+                        )}
+                        {availableSeasons.map((season) => (
                           <option
-                            value={season.seasonNumber}
-                            key={`problem-season-${season.seasonNumber}`}
+                            value={season}
+                            key={`problem-season-${season}`}
                           >
-                            {intl.formatMessage(messages.season, {
-                              seasonNumber: season.seasonNumber,
-                            })}
+                            {season === 0
+                              ? intl.formatMessage(messages.extras)
+                              : intl.formatMessage(messages.season, {
+                                  seasonNumber: season,
+                                })}
                           </option>
                         ))}
                       </Field>
