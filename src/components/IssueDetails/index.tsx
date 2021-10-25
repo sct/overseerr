@@ -2,7 +2,8 @@ import {
   ChatIcon,
   CheckCircleIcon,
   ExclamationIcon,
-  ExternalLinkIcon,
+  PlayIcon,
+  ServerIcon,
 } from '@heroicons/react/outline';
 import { RefreshIcon } from '@heroicons/react/solid';
 import axios from 'axios';
@@ -20,7 +21,6 @@ import type Issue from '../../../server/entity/Issue';
 import type { MovieDetails } from '../../../server/models/Movie';
 import type { TvDetails } from '../../../server/models/Tv';
 import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
@@ -34,8 +34,7 @@ import IssueComment from './IssueComment';
 import IssueDescription from './IssueDescription';
 
 const messages = defineMessages({
-  openedby:
-    '#{issueId} opened {relativeTime} by <UserLink>{username}</UserLink>',
+  openedby: '#{issueId} opened {relativeTime} by {username}',
   closeissue: 'Close Issue',
   closeissueandcomment: 'Close with Comment',
   leavecomment: 'Comment',
@@ -43,15 +42,17 @@ const messages = defineMessages({
   reopenissue: 'Reopen Issue',
   reopenissueandcomment: 'Reopen with Comment',
   issuepagetitle: 'Issue',
+  playonplex: 'Play on Plex',
+  play4konplex: 'Play 4K on Plex',
   openinarr: 'Open in {arr}',
-  toasteditdescriptionsuccess: 'Edited the issue description successfully!',
+  openin4karr: 'Open in 4K {arr}',
+  toasteditdescriptionsuccess: 'Issue description edited successfully!',
   toasteditdescriptionfailed:
     'Something went wrong while editing the issue description.',
-  toaststatusupdated: 'Updated the issue status successfully!',
+  toaststatusupdated: 'Issue status updated successfully!',
   toaststatusupdatefailed:
     'Something went wrong while updating the issue status.',
-  issuetype: 'Issue Type',
-  mediatype: 'Media Type',
+  issuetype: 'Type',
   lastupdated: 'Last Updated',
   statusopen: 'Open',
   statusresolved: 'Resolved',
@@ -63,7 +64,7 @@ const messages = defineMessages({
   episode: 'Episode {episodeNumber}',
   deleteissue: 'Delete Issue',
   deleteissueconfirm: 'Are you sure you want to delete this issue?',
-  toastissuedeleted: 'Deleted the issue successfully!',
+  toastissuedeleted: 'Issue deleted successfully!',
   toastissuedeletefailed: 'Something went wrong while deleting the issue.',
   nocomments: 'No comments.',
   unknownissuetype: 'Unknown',
@@ -95,8 +96,6 @@ const IssueDetails: React.FC = () => {
   const issueOption = issueOptions.find(
     (opt) => opt.issueType === issueData?.issueType
   );
-
-  const mediaType = issueData?.media.mediaType;
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -212,7 +211,7 @@ const IssueDetails: React.FC = () => {
           />
         </div>
       )}
-      <div className="flex flex-col items-center pt-4 lg:items-end lg:flex-row">
+      <div className="media-header">
         <div className="media-poster">
           <CachedImage
             src={
@@ -259,27 +258,26 @@ const IssueDetails: React.FC = () => {
           <span className="media-attributes">
             {intl.formatMessage(messages.openedby, {
               issueId: issueData.id,
-              username: issueData.createdBy.displayName,
-              UserLink: function UserLink(msg) {
-                return (
-                  <div className="inline-flex items-center h-full mx-1">
-                    <Link href={`/users/${issueData.createdBy.id}`}>
-                      <a className="flex-shrink-0 w-6 h-6 mr-1">
-                        <img
-                          className="w-6 h-6 rounded-full"
-                          src={issueData.createdBy.avatar}
-                          alt=""
-                        />
-                      </a>
-                    </Link>
-                    <Link href={`/users/${issueData.createdBy.id}`}>
-                      <a className="font-semibold text-gray-100 transition hover:underline hover:text-white">
-                        {msg}
-                      </a>
-                    </Link>
-                  </div>
-                );
-              },
+              username: (
+                <Link
+                  href={
+                    issueData.createdBy.id === currentUser?.id
+                      ? '/profile'
+                      : `/users/${issueData.createdBy.id}`
+                  }
+                >
+                  <a className="inline-flex items-center h-full ml-1 xl:ml-1.5 group">
+                    <img
+                      className="w-5 h-5 mr-0.5 transition duration-300 scale-100 rounded-full xl:w-6 xl:h-6 xl:mr-1 transform-gpu group-hover:scale-105"
+                      src={issueData.createdBy.avatar}
+                      alt=""
+                    />
+                    <span className="font-semibold text-gray-100 transition duration-300 group-hover:text-white group-hover:underline">
+                      {issueData.createdBy.displayName}
+                    </span>
+                  </a>
+                </Link>
+              ),
               relativeTime: (
                 <FormattedRelativeTime
                   value={Math.floor(
@@ -306,16 +304,6 @@ const IssueDetails: React.FC = () => {
           />
           <div className="mt-8 lg:hidden">
             <div className="media-facts">
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.mediatype)}</span>
-                <span className="media-fact-value">
-                  {intl.formatMessage(
-                    mediaType === MediaType.MOVIE
-                      ? globalMessages.movie
-                      : globalMessages.tvshow
-                  )}
-                </span>
-              </div>
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.issuetype)}</span>
                 <span className="media-fact-value">
@@ -366,20 +354,66 @@ const IssueDetails: React.FC = () => {
                 </span>
               </div>
             </div>
-            {hasPermission(Permission.MANAGE_ISSUES) && (
-              <div className="flex flex-col mt-4 mb-6 space-y-2">
-                {issueData?.media.serviceUrl && (
+            <div className="flex flex-col mt-4 mb-6 space-y-2">
+              {issueData?.media.plexUrl && (
+                <Button
+                  as="a"
+                  href={issueData?.media.plexUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full"
+                  buttonType="ghost"
+                >
+                  <PlayIcon />
+                  <span>{intl.formatMessage(messages.playonplex)}</span>
+                </Button>
+              )}
+              {issueData?.media.serviceUrl && hasPermission(Permission.ADMIN) && (
+                <Button
+                  as="a"
+                  href={issueData?.media.serviceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full"
+                  buttonType="ghost"
+                >
+                  <ServerIcon />
+                  <span>
+                    {intl.formatMessage(messages.openinarr, {
+                      arr:
+                        issueData.media.mediaType === MediaType.MOVIE
+                          ? 'Radarr'
+                          : 'Sonarr',
+                    })}
+                  </span>
+                </Button>
+              )}
+              {issueData?.media.plexUrl4k && (
+                <Button
+                  as="a"
+                  href={issueData?.media.plexUrl4k}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full"
+                  buttonType="ghost"
+                >
+                  <PlayIcon />
+                  <span>{intl.formatMessage(messages.play4konplex)}</span>
+                </Button>
+              )}
+              {issueData?.media.serviceUrl4k &&
+                hasPermission(Permission.ADMIN) && (
                   <Button
                     as="a"
-                    href={issueData?.media.serviceUrl}
+                    href={issueData?.media.serviceUrl4k}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full"
                     buttonType="ghost"
                   >
-                    <ExternalLinkIcon />
+                    <ServerIcon />
                     <span>
-                      {intl.formatMessage(messages.openinarr, {
+                      {intl.formatMessage(messages.openin4karr, {
                         arr:
                           issueData.media.mediaType === MediaType.MOVIE
                             ? 'Radarr'
@@ -388,8 +422,7 @@ const IssueDetails: React.FC = () => {
                     </span>
                   </Button>
                 )}
-              </div>
-            )}
+            </div>
           </div>
           <div className="mt-6">
             <div className="font-semibold text-gray-100 lg:text-xl">
@@ -513,16 +546,6 @@ const IssueDetails: React.FC = () => {
                 )}
               </span>
             </div>
-            <div className="media-fact">
-              <span>{intl.formatMessage(messages.mediatype)}</span>
-              <span className="media-fact-value">
-                {intl.formatMessage(
-                  mediaType === MediaType.MOVIE
-                    ? globalMessages.movie
-                    : globalMessages.tvshow
-                )}
-              </span>
-            </div>
             {issueData.media.mediaType === MediaType.TV && (
               <>
                 <div className="media-fact">
@@ -565,30 +588,74 @@ const IssueDetails: React.FC = () => {
               </span>
             </div>
           </div>
-          {hasPermission(Permission.MANAGE_ISSUES) && (
-            <div className="flex flex-col mt-4 mb-6 space-y-2">
-              {issueData?.media.serviceUrl && (
-                <Button
-                  as="a"
-                  href={issueData?.media.serviceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full"
-                  buttonType="ghost"
-                >
-                  <ExternalLinkIcon />
-                  <span>
-                    {intl.formatMessage(messages.openinarr, {
-                      arr:
-                        issueData.media.mediaType === MediaType.MOVIE
-                          ? 'Radarr'
-                          : 'Sonarr',
-                    })}
-                  </span>
-                </Button>
-              )}
-            </div>
-          )}
+          <div className="flex flex-col mt-4 mb-6 space-y-2">
+            {issueData?.media.plexUrl && (
+              <Button
+                as="a"
+                href={issueData?.media.plexUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full"
+                buttonType="ghost"
+              >
+                <PlayIcon />
+                <span>{intl.formatMessage(messages.playonplex)}</span>
+              </Button>
+            )}
+            {issueData?.media.serviceUrl && hasPermission(Permission.ADMIN) && (
+              <Button
+                as="a"
+                href={issueData?.media.serviceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full"
+                buttonType="ghost"
+              >
+                <ServerIcon />
+                <span>
+                  {intl.formatMessage(messages.openinarr, {
+                    arr:
+                      issueData.media.mediaType === MediaType.MOVIE
+                        ? 'Radarr'
+                        : 'Sonarr',
+                  })}
+                </span>
+              </Button>
+            )}
+            {issueData?.media.plexUrl4k && (
+              <Button
+                as="a"
+                href={issueData?.media.plexUrl4k}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full"
+                buttonType="ghost"
+              >
+                <PlayIcon />
+                <span>{intl.formatMessage(messages.play4konplex)}</span>
+              </Button>
+            )}
+            {issueData?.media.serviceUrl4k && hasPermission(Permission.ADMIN) && (
+              <Button
+                as="a"
+                href={issueData?.media.serviceUrl4k}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full"
+                buttonType="ghost"
+              >
+                <ServerIcon />
+                <span>
+                  {intl.formatMessage(messages.openin4karr, {
+                    arr:
+                      issueData.media.mediaType === MediaType.MOVIE
+                        ? 'Radarr'
+                        : 'Sonarr',
+                  })}
+                </span>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

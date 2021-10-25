@@ -204,7 +204,7 @@
   }
 
   img.avatar-sm {
-    @apply w-5 h-5 mr-1.5 rounded-full transition duration-300 scale-100 transform-gpu group-hover:scale-105;
+    @apply w-5 h-5 mr-1 transition duration-300 scale-100 rounded-full transform-gpu group-hover:scale-105;
   }
 
   .card-field {

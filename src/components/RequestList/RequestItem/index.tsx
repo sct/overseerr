@@ -339,7 +339,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                               alt=""
                               className="ml-1.5 avatar-sm"
                             />
-                            <span className="text-sm truncate group-hover:underline">
+                            <span className="text-sm font-semibold truncate group-hover:underline group-hover:text-white">
                               {requestData.requestedBy.displayName}
                             </span>
                           </a>
@@ -393,7 +393,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                             alt=""
                             className="ml-1.5 avatar-sm"
                           />
-                          <span className="text-sm truncate group-hover:underline">
+                          <span className="text-sm font-semibold truncate group-hover:underline group-hover:text-white">
                             {requestData.modifiedBy.displayName}
                           </span>
                         </a>

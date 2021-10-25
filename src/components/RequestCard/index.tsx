@@ -233,7 +233,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                     alt=""
                     className="avatar-sm"
                   />
-                  <span className="truncate group-hover:underline">
+                  <span className="font-semibold truncate group-hover:underline group-hover:text-white">
                     {requestData.requestedBy.displayName}
                   </span>
                 </a>
