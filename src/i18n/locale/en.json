@@ -64,8 +64,6 @@
   "components.IssueDetails.reopenissue": "Reopen Issue",
   "components.IssueDetails.reopenissueandcomment": "Reopen with Comment",
   "components.IssueDetails.season": "Season {seasonNumber}",
-  "components.IssueDetails.statusopen": "Open",
-  "components.IssueDetails.statusresolved": "Resolved",
   "components.IssueDetails.toasteditdescriptionfailed": "Something went wrong while editing the issue description.",
   "components.IssueDetails.toasteditdescriptionsuccess": "Issue description edited successfully!",
   "components.IssueDetails.toastissuedeleted": "Issue deleted successfully!",

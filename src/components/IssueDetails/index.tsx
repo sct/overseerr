@@ -21,6 +21,7 @@ import type Issue from '../../../server/entity/Issue';
 import type { MovieDetails } from '../../../server/models/Movie';
 import type { TvDetails } from '../../../server/models/Tv';
 import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
@@ -54,8 +55,6 @@ const messages = defineMessages({
     'Something went wrong while updating the issue status.',
   issuetype: 'Type',
   lastupdated: 'Last Updated',
-  statusopen: 'Open',
-  statusresolved: 'Resolved',
   problemseason: 'Affected Season',
   allseasons: 'All Seasons',
   season: 'Season {seasonNumber}',
@@ -230,12 +229,12 @@ const IssueDetails: React.FC = () => {
           <div className="media-status">
             {issueData.status === IssueStatus.OPEN && (
               <Badge badgeType="primary">
-                {intl.formatMessage(messages.statusopen)}
+                {intl.formatMessage(globalMessages.open)}
               </Badge>
             )}
             {issueData.status === IssueStatus.RESOLVED && (
               <Badge badgeType="success">
-                {intl.formatMessage(messages.statusresolved)}
+                {intl.formatMessage(globalMessages.resolved)}
               </Badge>
             )}
           </div>
