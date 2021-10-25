@@ -877,7 +877,7 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.pushbulletsettingsfailed": "Pushbullet notification settings failed to save.",
   "components.UserProfile.UserSettings.UserNotificationSettings.pushbulletsettingssaved": "Pushbullet notification settings saved successfully!",
   "components.UserProfile.UserSettings.UserNotificationSettings.pushoverApplicationToken": "Application API Token",
-  "components.UserProfile.UserSettings.UserNotificationSettings.pushoverApplicationTokenTip": "<ApplicationRegistrationLink>Register an application</ApplicationRegistrationLink> for use with Overseerr",
+  "components.UserProfile.UserSettings.UserNotificationSettings.pushoverApplicationTokenTip": "<ApplicationRegistrationLink>Register an application</ApplicationRegistrationLink> for use with {applicationTitle}",
   "components.UserProfile.UserSettings.UserNotificationSettings.pushoverUserKey": "User or Group Key",
   "components.UserProfile.UserSettings.UserNotificationSettings.pushoverUserKeyTip": "Your 30-character <UsersGroupsLink>user or group identifier</UsersGroupsLink>",
   "components.UserProfile.UserSettings.UserNotificationSettings.pushoversettingsfailed": "Pushover notification settings failed to save.",

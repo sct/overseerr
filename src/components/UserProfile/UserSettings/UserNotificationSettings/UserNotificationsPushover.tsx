@@ -7,6 +7,7 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
@@ -18,7 +19,7 @@ const messages = defineMessages({
   pushoversettingsfailed: 'Pushover notification settings failed to save.',
   pushoverApplicationToken: 'Application API Token',
   pushoverApplicationTokenTip:
-    '<ApplicationRegistrationLink>Register an application</ApplicationRegistrationLink> for use with Overseerr',
+    '<ApplicationRegistrationLink>Register an application</ApplicationRegistrationLink> for use with {applicationTitle}',
   pushoverUserKey: 'User or Group Key',
   pushoverUserKeyTip:
     'Your 30-character <UsersGroupsLink>user or group identifier</UsersGroupsLink>',
@@ -29,6 +30,7 @@ const messages = defineMessages({
 
 const UserPushoverSettings: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const { addToast } = useToasts();
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.userId) });
@@ -121,25 +123,24 @@ const UserPushoverSettings: React.FC = () => {
               <label htmlFor="pushoverApplicationToken" className="text-label">
                 {intl.formatMessage(messages.pushoverApplicationToken)}
                 <span className="label-required">*</span>
-                {data?.pushoverApplicationToken && (
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.pushoverApplicationTokenTip, {
-                      ApplicationRegistrationLink:
-                        function ApplicationRegistrationLink(msg) {
-                          return (
-                            <a
-                              href="https://pushover.net/api#registration"
-                              className="text-white transition duration-300 hover:underline"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {msg}
-                            </a>
-                          );
-                        },
-                    })}
-                  </span>
-                )}
+                <span className="label-tip">
+                  {intl.formatMessage(messages.pushoverApplicationTokenTip, {
+                    ApplicationRegistrationLink:
+                      function ApplicationRegistrationLink(msg) {
+                        return (
+                          <a
+                            href="https://pushover.net/api#registration"
+                            className="text-white transition duration-300 hover:underline"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {msg}
+                          </a>
+                        );
+                      },
+                    applicationTitle: settings.currentSettings.applicationTitle,
+                  })}
+                </span>
               </label>
               <div className="form-input">
                 <div className="form-input-field">
