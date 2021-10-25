@@ -13,14 +13,6 @@ const issueRoutes = Router();
 
 issueRoutes.get<Record<string, string>, IssueResultsResponse>(
   '/',
-  isAuthenticated(
-    [
-      Permission.MANAGE_ISSUES,
-      Permission.VIEW_ISSUES,
-      Permission.CREATE_ISSUES,
-    ],
-    { type: 'or' }
-  ),
   async (req, res, next) => {
     const pageSize = req.query.take ? Number(req.query.take) : 10;
     const skip = req.query.skip ? Number(req.query.skip) : 0;
@@ -68,7 +60,7 @@ issueRoutes.get<Record<string, string>, IssueResultsResponse>(
         return next({
           status: 403,
           message:
-            'You do not have permission to view issues created by other users',
+            'You do not have permission to view issues reported by other users.',
         });
       }
       query = query.andWhere('createdBy.id = :id', { id: req.user?.id });
@@ -146,62 +138,48 @@ issueRoutes.post<
   }
 );
 
-issueRoutes.get<{ issueId: string }>(
-  '/:issueId',
-  isAuthenticated(
-    [
-      Permission.MANAGE_ISSUES,
-      Permission.VIEW_ISSUES,
-      Permission.CREATE_ISSUES,
-    ],
-    { type: 'or' }
-  ),
-  async (req, res, next) => {
-    const issueRepository = getRepository(Issue);
-    // Satisfy typescript here. User is set, we assure you!
-    if (!req.user) {
-      return next({ status: 500, message: 'User missing from request.' });
-    }
-
-    try {
-      const issue = await issueRepository
-        .createQueryBuilder('issue')
-        .leftJoinAndSelect('issue.comments', 'comments')
-        .leftJoinAndSelect('issue.createdBy', 'createdBy')
-        .leftJoinAndSelect('comments.user', 'user')
-        .leftJoinAndSelect('issue.media', 'media')
-        .where('issue.id = :issueId', { issueId: Number(req.params.issueId) })
-        .getOneOrFail();
-
-      if (
-        issue.createdBy.id !== req.user.id &&
-        !req.user.hasPermission(
-          [Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES],
-          { type: 'or' }
-        )
-      ) {
-        return next({
-          status: 403,
-          message: 'You do not have permission to view this issue.',
-        });
-      }
-
-      return res.status(200).json(issue);
-    } catch (e) {
-      logger.debug('Failed to retrieve issue.', {
-        label: 'API',
-        errorMessage: e.message,
-      });
-      next({ status: 500, message: 'Issue not found.' });
-    }
+issueRoutes.get<{ issueId: string }>('/:issueId', async (req, res, next) => {
+  const issueRepository = getRepository(Issue);
+  // Satisfy typescript here. User is set, we assure you!
+  if (!req.user) {
+    return next({ status: 500, message: 'User missing from request.' });
   }
-);
+
+  try {
+    const issue = await issueRepository
+      .createQueryBuilder('issue')
+      .leftJoinAndSelect('issue.comments', 'comments')
+      .leftJoinAndSelect('issue.createdBy', 'createdBy')
+      .leftJoinAndSelect('comments.user', 'user')
+      .leftJoinAndSelect('issue.media', 'media')
+      .where('issue.id = :issueId', { issueId: Number(req.params.issueId) })
+      .getOneOrFail();
+
+    if (
+      issue.createdBy.id !== req.user.id &&
+      !req.user.hasPermission(
+        [Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES],
+        { type: 'or' }
+      )
+    ) {
+      return next({
+        status: 403,
+        message: 'You do not have permission to view this issue.',
+      });
+    }
+
+    return res.status(200).json(issue);
+  } catch (e) {
+    logger.debug('Failed to retrieve issue.', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 500, message: 'Issue not found.' });
+  }
+});
 
 issueRoutes.post<{ issueId: string }, Issue, { message: string }>(
   '/:issueId/comment',
-  isAuthenticated([Permission.MANAGE_ISSUES, Permission.CREATE_ISSUES], {
-    type: 'or',
-  }),
   async (req, res, next) => {
     const issueRepository = getRepository(Issue);
     // Satisfy typescript here. User is set, we assure you!

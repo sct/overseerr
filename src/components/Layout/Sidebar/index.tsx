@@ -58,12 +58,6 @@ const SidebarLinks: SidebarLinkProps[] = [
       <ExclamationIcon className="w-6 h-6 mr-3 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300" />
     ),
     activeRegExp: /^\/issues/,
-    requiredPermission: [
-      Permission.MANAGE_ISSUES,
-      Permission.CREATE_ISSUES,
-      Permission.VIEW_ISSUES,
-    ],
-    permissionType: 'or',
   },
   {
     href: '/users',

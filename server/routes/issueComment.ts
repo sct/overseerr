@@ -3,22 +3,11 @@ import { getRepository } from 'typeorm';
 import IssueComment from '../entity/IssueComment';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
-import { isAuthenticated } from '../middleware/auth';
 
 const issueCommentRoutes = Router();
 
 issueCommentRoutes.get<{ commentId: string }, IssueComment>(
   '/:commentId',
-  isAuthenticated(
-    [
-      Permission.MANAGE_ISSUES,
-      Permission.VIEW_ISSUES,
-      Permission.CREATE_ISSUES,
-    ],
-    {
-      type: 'or',
-    }
-  ),
   async (req, res, next) => {
     const issueCommentRepository = getRepository(IssueComment);
 
@@ -55,46 +44,37 @@ issueCommentRoutes.put<
   { commentId: string },
   IssueComment,
   { message: string }
->(
-  '/:commentId',
-  isAuthenticated([Permission.MANAGE_ISSUES, Permission.CREATE_ISSUES], {
-    type: 'or',
-  }),
-  async (req, res, next) => {
-    const issueCommentRepository = getRepository(IssueComment);
+>('/:commentId', async (req, res, next) => {
+  const issueCommentRepository = getRepository(IssueComment);
 
-    try {
-      const comment = await issueCommentRepository.findOneOrFail({
-        where: { id: Number(req.params.commentId) },
+  try {
+    const comment = await issueCommentRepository.findOneOrFail({
+      where: { id: Number(req.params.commentId) },
+    });
+
+    if (comment.user.id !== req.user?.id) {
+      return next({
+        status: 403,
+        message: 'You can only edit your own comments.',
       });
-
-      if (comment.user.id !== req.user?.id) {
-        return next({
-          status: 403,
-          message: 'You can only edit your own comments.',
-        });
-      }
-
-      comment.message = req.body.message;
-
-      await issueCommentRepository.save(comment);
-
-      return res.status(200).json(comment);
-    } catch (e) {
-      logger.debug('Put request for issue comment failed', {
-        label: 'API',
-        errorMessage: e.message,
-      });
-      next({ status: 404, message: 'Issue comment not found.' });
     }
+
+    comment.message = req.body.message;
+
+    await issueCommentRepository.save(comment);
+
+    return res.status(200).json(comment);
+  } catch (e) {
+    logger.debug('Put request for issue comment failed', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 404, message: 'Issue comment not found.' });
   }
-);
+});
 
 issueCommentRoutes.delete<{ commentId: string }, IssueComment>(
   '/:commentId',
-  isAuthenticated([Permission.MANAGE_ISSUES, Permission.CREATE_ISSUES], {
-    type: 'or',
-  }),
   async (req, res, next) => {
     const issueCommentRepository = getRepository(IssueComment);
 
