@@ -53,7 +53,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
   if (!title && !error) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-xl xl:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-xl xl:h-28 animate-pulse"
         ref={ref}
       />
     );
@@ -108,7 +108,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
   }
 
   return (
-    <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl xl:h-32 xl:flex-row">
+    <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl xl:h-28 xl:flex-row">
       {title.backdropPath && (
         <div className="absolute inset-0 z-0 w-full bg-center bg-cover xl:w-2/3">
           <CachedImage
@@ -135,7 +135,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
                 : `/tv/${issue.media.tmdbId}`
             }
           >
-            <a className="relative flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md sm:w-14 transform-gpu hover:scale-105">
+            <a className="relative flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md transform-gpu hover:scale-105">
               <CachedImage
                 src={
                   title.posterPath
