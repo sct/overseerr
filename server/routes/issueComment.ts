@@ -3,11 +3,22 @@ import { getRepository } from 'typeorm';
 import IssueComment from '../entity/IssueComment';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
+import { isAuthenticated } from '../middleware/auth';
 
 const issueCommentRoutes = Router();
 
 issueCommentRoutes.get<{ commentId: string }, IssueComment>(
   '/:commentId',
+  isAuthenticated(
+    [
+      Permission.MANAGE_ISSUES,
+      Permission.VIEW_ISSUES,
+      Permission.CREATE_ISSUES,
+    ],
+    {
+      type: 'or',
+    }
+  ),
   async (req, res, next) => {
     const issueCommentRepository = getRepository(IssueComment);
 
@@ -75,6 +86,9 @@ issueCommentRoutes.put<
 
 issueCommentRoutes.delete<{ commentId: string }, IssueComment>(
   '/:commentId',
+  isAuthenticated([Permission.MANAGE_ISSUES, Permission.CREATE_ISSUES], {
+    type: 'or',
+  }),
   async (req, res, next) => {
     const issueCommentRepository = getRepository(IssueComment);
 
