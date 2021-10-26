@@ -274,6 +274,11 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
             : messages.issuecommentDescription
         ),
         value: Notification.ISSUE_COMMENT,
+        hidden:
+          user &&
+          !hasPermission([Permission.MANAGE_ISSUES, Permission.CREATE_ISSUES], {
+            type: 'or',
+          }),
         hasNotifyUser:
           !user || hasPermission(Permission.MANAGE_ISSUES) ? false : true,
       },
@@ -286,6 +291,11 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
             : messages.issueresolvedDescription
         ),
         value: Notification.ISSUE_RESOLVED,
+        hidden:
+          user &&
+          !hasPermission([Permission.MANAGE_ISSUES, Permission.CREATE_ISSUES], {
+            type: 'or',
+          }),
         hasNotifyUser: true,
       },
     ];
