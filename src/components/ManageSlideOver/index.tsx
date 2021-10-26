@@ -156,7 +156,9 @@ const ManageSlideOver: React.FC<
             )}
           </div>
         )}
-      {hasPermission(Permission.MANAGE_ISSUES) &&
+      {hasPermission([Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES], {
+        type: 'or',
+      }) &&
         (data.mediaInfo?.issues ?? []).length > 0 && (
           <>
             <h3 className="mb-2 text-xl">

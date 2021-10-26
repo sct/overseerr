@@ -359,7 +359,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               onClick={() => setShowManager(true)}
             >
               <CogIcon className="!mr-0" />
-              {hasPermission(Permission.MANAGE_ISSUES) &&
+              {hasPermission(
+                [Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES],
+                {
+                  type: 'or',
+                }
+              ) &&
                 (
                   data.mediaInfo?.issues.filter(
                     (issue) => issue.status === IssueStatus.OPEN
