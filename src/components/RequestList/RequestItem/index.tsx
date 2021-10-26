@@ -134,8 +134,18 @@ const RequestItemError = ({
                       ).length > 0
                     }
                     is4k={requestData.is4k}
-                    plexUrl={requestData.media.plexUrl}
-                    plexUrl4k={requestData.media.plexUrl4k}
+                    plexUrl={
+                      requestData.is4k
+                        ? requestData.media.plexUrl4k
+                        : requestData.media.plexUrl
+                    }
+                    serviceUrl={
+                      hasPermission(Permission.ADMIN)
+                        ? requestData.is4k
+                          ? requestData.media.serviceUrl4k
+                          : requestData.media.serviceUrl
+                        : undefined
+                    }
                   />
                 )}
               </div>
