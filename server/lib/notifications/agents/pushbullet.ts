@@ -19,6 +19,7 @@ interface PushbulletPayload {
   type: string;
   title: string;
   body: string;
+  channel_tag?: string;
 }
 
 class PushbulletAgent
