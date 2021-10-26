@@ -80,26 +80,62 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
                 ),
               })}
             </div>
-            {requestData && hasPermission(Permission.MANAGE_REQUESTS) && (
+            {requestData && (
               <>
-                <div className="card-field">
-                  <span className="card-field-name">
-                    {intl.formatMessage(messages.tmdbid)}
-                  </span>
-                  <span className="flex truncate text-sm text-gray-300">
-                    {requestData.media.tmdbId}
-                  </span>
-                </div>
-                {requestData.media.tvdbId && (
-                  <div className="card-field !hidden sm:!flex">
-                    <span className="card-field-name">
-                      {intl.formatMessage(messages.tvdbid)}
-                    </span>
-                    <span className="flex truncate text-sm text-gray-300">
-                      {requestData?.media.tvdbId}
-                    </span>
+                {hasPermission(
+                  [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+                  { type: 'or' }
+                ) && (
+                  <div className="card-field !hidden sm:!block">
+                    <Link href={`/users/${requestData.requestedBy.id}`}>
+                      <a className="group flex items-center">
+                        <img
+                          src={requestData.requestedBy.avatar}
+                          alt=""
+                          className="avatar-sm"
+                        />
+                        <span className="truncate group-hover:underline">
+                          {requestData.requestedBy.displayName}
+                        </span>
+                      </a>
+                    </Link>
                   </div>
                 )}
+                <div className="mt-2 flex items-center text-sm sm:mt-1">
+                  <span className="mr-2 hidden font-bold sm:block">
+                    {intl.formatMessage(globalMessages.status)}
+                  </span>
+                  {requestData.media[
+                    requestData.is4k ? 'status4k' : 'status'
+                  ] === MediaStatus.UNKNOWN ||
+                  requestData.status === MediaRequestStatus.DECLINED ? (
+                    <Badge badgeType="danger">
+                      {requestData.status === MediaRequestStatus.DECLINED
+                        ? intl.formatMessage(globalMessages.declined)
+                        : intl.formatMessage(globalMessages.failed)}
+                    </Badge>
+                  ) : (
+                    <StatusBadge
+                      status={
+                        requestData.media[
+                          requestData.is4k ? 'status4k' : 'status'
+                        ]
+                      }
+                      inProgress={
+                        (
+                          requestData.media[
+                            requestData.is4k
+                              ? 'downloadStatus4k'
+                              : 'downloadStatus'
+                          ] ?? []
+                        ).length > 0
+                      }
+                      is4k={requestData.is4k}
+                      plexUrl={requestData.media.plexUrl}
+                      plexUrl4k={requestData.media.plexUrl4k}
+                    />
+                  )}
+                </div>
               </>
             )}
             <div className="flex flex-1 items-end space-x-2">
