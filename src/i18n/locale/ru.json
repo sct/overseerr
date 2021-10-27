@@ -869,5 +869,16 @@
   "components.Settings.SettingsJobsCache.jobScheduleEditFailed": "Что-то пошло не так при сохранении задания.",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "Каждый {jobScheduleHours, plural, one {час} other {{jobScheduleHours} часа(ов)}}",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "Каждую {jobScheduleMinutes, plural, one {минуту} other {{jobScheduleMinutes} минут(ы)}}",
-  "components.StatusBadge.status": "{status}"
+  "components.StatusBadge.status": "{status}",
+  "components.IssueDetails.IssueComment.areyousuredelete": "Вы уверены, что хотите удалить этот комментарий?",
+  "components.IssueDetails.IssueComment.delete": "Удалить комментарий",
+  "components.IssueDetails.IssueComment.edit": "Редактировать комментарий",
+  "components.IssueDetails.IssueComment.postedby": "Опубликовано {relativeTime} пользователем {username}",
+  "components.IssueDetails.IssueComment.postedbyedited": "Опубликовано {relativeTime} пользователем {username} (изменено)",
+  "components.IssueDetails.IssueComment.validationComment": "Вы должны ввести сообщение",
+  "components.IssueDetails.IssueDescription.deleteissue": "Удалить проблему",
+  "components.IssueDetails.IssueDescription.description": "Описание",
+  "components.IssueDetails.IssueDescription.edit": "Редактировать описание",
+  "components.IssueDetails.allseasons": "Все сезоны",
+  "components.IssueDetails.allepisodes": "Все эпизоды"
 }
