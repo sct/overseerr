@@ -1,6 +1,6 @@
 {
   "components.RequestModal.requestseasons": "Zatraži {seasonCount} {seasonCount, plural, jednu {Season} više {Seasons}}",
-  "components.Layout.Sidebar.dashboard": "Pronadji Novo",
+  "components.Layout.Sidebar.dashboard": "Pronađi novo",
   "pages.returnHome": "Povratak na glavnu stranicu",
   "pages.oops": "Ups",
   "i18n.unavailable": "Nije dostupno",
@@ -173,7 +173,7 @@
   "components.RequestModal.season": "Sezona",
   "components.RequestModal.requesttitle": "Zatraži {title}",
   "components.RequestModal.requestfrom": "Trenutno postoji zahtev na čekanju od {username}",
-  "components.RequestModal.requestadmin": "Vaš zahtev će odmah biti prihvaćen.",
+  "components.RequestModal.requestadmin": "Ovaj zahtev će odmah biti prihvaćen.",
   "components.RequestModal.requestSuccess": "poslat zahtev za <strong>{title}</strong> .",
   "components.RequestModal.requestCancel": "Zahtev za <strong>{title}</strong> otkazan.",
   "components.RequestModal.pendingrequest": "Zahtev za {title} na čekanju",
@@ -213,5 +213,6 @@
   "components.Discover.discovertv": "Popularne Serije",
   "components.Discover.discovermovies": "Popunarni Filmov",
   "pages.errormessagewithcode": "{statusCode} - {error}",
-  "components.StatusBadge.status": "{status}"
+  "components.StatusBadge.status": "{status}",
+  "components.UserProfile.movierequests": "Zahtev za film"
 }
