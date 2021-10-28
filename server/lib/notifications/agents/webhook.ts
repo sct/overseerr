@@ -23,20 +23,13 @@ const KeyMap: Record<string, string | KeyMapFunction> = {
   notifyuser_avatar: 'notifyUser.avatar',
   notifyuser_settings_discordId: 'notifyUser.settings.discordId',
   notifyuser_settings_telegramChatId: 'notifyUser.settings.telegramChatId',
-  media_tmdbid: (payload) =>
-    (payload.request ?? payload.issue)?.media?.tmdbId.toString() ?? '',
-  media_tvdbid: (payload) =>
-    (payload.request ?? payload.issue)?.media?.tvdbId?.toString() ?? '',
-  media_type: (payload) =>
-    (payload.request ?? payload.issue)?.media?.mediaType ?? '',
-  media_status: (payload) => {
-    const media = (payload.request ?? payload.issue)?.media;
-    return media ? MediaStatus[media.status] : '';
-  },
-  media_status4k: (payload) => {
-    const media = (payload.request ?? payload.issue)?.media;
-    return media ? MediaStatus[media.status4k] : '';
-  },
+  media_tmdbid: 'media.tmdbId',
+  media_tvdbid: 'media.tvdbId',
+  media_type: 'media.mediaType',
+  media_status: (payload) =>
+    payload.media ? MediaStatus[payload.media.status] : '',
+  media_status4k: (payload) =>
+    payload.media ? MediaStatus[payload.media.status4k] : '',
   request_id: 'request.id',
   requestedBy_username: 'request.requestedBy.displayName',
   requestedBy_email: 'request.requestedBy.email',
@@ -81,13 +74,19 @@ class WebhookAgent
     payload: NotificationPayload,
     type: Notification
   ): Record<string, unknown> {
+    payload.media =
+      payload.request?.media ??
+      payload.issue?.media ??
+      payload.comment?.issue?.media;
+    payload.issue = payload.issue ?? payload.comment?.issue;
+
     Object.keys(finalPayload).forEach((key) => {
       if (key === '{{extra}}') {
         finalPayload.extra = payload.extra ?? [];
         delete finalPayload[key];
         key = 'extra';
       } else if (key === '{{media}}') {
-        if (payload.request?.media || payload.issue?.media) {
+        if (payload.media) {
           finalPayload.media = finalPayload[key];
         } else {
           finalPayload.media = null;
@@ -102,6 +101,22 @@ class WebhookAgent
         }
         delete finalPayload[key];
         key = 'request';
+      } else if (key === '{{issue}}') {
+        if (payload.issue) {
+          finalPayload.issue = finalPayload[key];
+        } else {
+          finalPayload.issue = null;
+        }
+        delete finalPayload[key];
+        key = 'issue';
+      } else if (key === '{{comment}}') {
+        if (payload.comment) {
+          finalPayload.comment = finalPayload[key];
+        } else {
+          finalPayload.comment = null;
+        }
+        delete finalPayload[key];
+        key = 'comment';
       }
 
       if (typeof finalPayload[key] === 'string') {

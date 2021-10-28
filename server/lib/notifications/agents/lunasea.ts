@@ -24,6 +24,7 @@ class LunaSeaAgent
       payload.request?.media ??
       payload.issue?.media ??
       payload.comment?.issue?.media;
+    const issue = payload.issue ?? payload.comment?.issue;
 
     return {
       notification_type: Notification[type],
@@ -52,12 +53,12 @@ class LunaSeaAgent
             requestedBy_avatar: payload.request.requestedBy.avatar,
           }
         : null,
-      issue: payload.issue
+      issue: issue
         ? {
-            issue_id: payload.issue.id,
-            createdBy_email: payload.issue.createdBy.email,
-            createdBy_username: payload.issue.createdBy.displayName,
-            createdBy_avatar: payload.issue.createdBy.avatar,
+            issue_id: issue.id,
+            createdBy_email: issue.createdBy.email,
+            createdBy_username: issue.createdBy.displayName,
+            createdBy_avatar: issue.createdBy.avatar,
           }
         : null,
       comment: payload.comment
