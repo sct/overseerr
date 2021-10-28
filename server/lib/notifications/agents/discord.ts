@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { getRepository } from 'typeorm';
-import { hasNotificationType, Notification } from '..';
-import { IssueStatus, IssueTypeNames } from '../../../constants/issue';
-import { MediaType } from '../../../constants/media';
+import {
+  hasNotificationType,
+  Notification,
+  shouldSendAdminNotification,
+} from '..';
+import { IssueStatus, IssueTypeName } from '../../../constants/issue';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
-import { Permission } from '../../permissions';
 import {
   getSettings,
   NotificationAgentDiscord,
@@ -109,9 +111,13 @@ class DiscordAgent
     type: Notification,
     payload: NotificationPayload
   ): DiscordRichEmbed {
-    const settings = getSettings();
-    let color = EmbedColors.DARK_PURPLE;
+    const { applicationUrl } = getSettings().main;
+    const media =
+      payload.request?.media ??
+      payload.issue?.media ??
+      payload.comment?.issue?.media;
 
+    let color = EmbedColors.DARK_PURPLE;
     const fields: Field[] = [];
 
     if (payload.request) {
@@ -120,19 +126,51 @@ class DiscordAgent
         value: payload.request.requestedBy.displayName,
         inline: true,
       });
+
+      let status = '';
+      switch (type) {
+        case Notification.MEDIA_PENDING:
+          color = EmbedColors.ORANGE;
+          status = 'Pending Approval';
+          break;
+        case Notification.MEDIA_APPROVED:
+        case Notification.MEDIA_AUTO_APPROVED:
+          color = EmbedColors.PURPLE;
+          status = 'Processing';
+          break;
+        case Notification.MEDIA_AVAILABLE:
+          color = EmbedColors.GREEN;
+          status = 'Available';
+          break;
+        case Notification.MEDIA_DECLINED:
+          color = EmbedColors.RED;
+          status = 'Declined';
+          break;
+        case Notification.MEDIA_FAILED:
+          color = EmbedColors.RED;
+          status = 'Failed';
+          break;
+      }
+
+      if (status) {
+        fields.push({
+          name: 'Request Status',
+          value: status,
+          inline: true,
+        });
+      }
     }
 
-    // If payload has an issue attached, push issue specific fields
     if (payload.issue) {
       fields.push(
         {
-          name: 'Created By',
+          name: 'Reported By',
           value: payload.issue.createdBy.displayName,
           inline: true,
         },
         {
           name: 'Issue Type',
-          value: IssueTypeNames[payload.issue.issueType],
+          value: IssueTypeName[payload.issue.issueType],
           inline: true,
         },
         {
@@ -143,85 +181,44 @@ class DiscordAgent
         }
       );
 
-      if (payload.issue.media.mediaType === MediaType.TV) {
-        fields.push({
-          name: 'Affected Season',
-          value:
-            payload.issue.problemSeason > 0
-              ? `Season ${payload.issue.problemSeason}`
-              : 'All Seasons',
-        });
-
-        if (payload.issue.problemSeason > 0) {
-          fields.push({
-            name: 'Affected Episode',
-            value:
-              payload.issue.problemEpisode > 0
-                ? `Episode ${payload.issue.problemEpisode}`
-                : 'All Episodes',
-          });
-        }
+      switch (type) {
+        case Notification.ISSUE_CREATED:
+        case Notification.ISSUE_REOPENED:
+          color = EmbedColors.RED;
+          break;
+        case Notification.ISSUE_COMMENT:
+          color = EmbedColors.ORANGE;
+          break;
+        case Notification.ISSUE_RESOLVED:
+          color = EmbedColors.GREEN;
+          break;
       }
     }
 
-    switch (type) {
-      case Notification.MEDIA_PENDING:
-        color = EmbedColors.ORANGE;
-        fields.push({
-          name: 'Status',
-          value: 'Pending Approval',
-          inline: true,
-        });
-        break;
-      case Notification.MEDIA_APPROVED:
-      case Notification.MEDIA_AUTO_APPROVED:
-        color = EmbedColors.PURPLE;
-        fields.push({
-          name: 'Status',
-          value: 'Processing',
-          inline: true,
-        });
-        break;
-      case Notification.MEDIA_AVAILABLE:
-        color = EmbedColors.GREEN;
-        fields.push({
-          name: 'Status',
-          value: 'Available',
-          inline: true,
-        });
-        break;
-      case Notification.MEDIA_DECLINED:
-        color = EmbedColors.RED;
-        fields.push({
-          name: 'Status',
-          value: 'Declined',
-          inline: true,
-        });
-        break;
-      case Notification.MEDIA_FAILED:
-        color = EmbedColors.RED;
-        fields.push({
-          name: 'Status',
-          value: 'Failed',
-          inline: true,
-        });
-        break;
-      case Notification.ISSUE_CREATED:
-      case Notification.ISSUE_COMMENT:
-      case Notification.ISSUE_RESOLVED:
-        color = EmbedColors.ORANGE;
-
-        if (payload.issue && payload.issue.status === IssueStatus.RESOLVED) {
-          color = EmbedColors.GREEN;
-        }
-
-        break;
+    for (const extra of payload.extra ?? []) {
+      fields.push({
+        name: extra.name,
+        value: extra.value,
+        inline: true,
+      });
     }
 
-    const url =
-      settings.main.applicationUrl && payload.media
-        ? `${settings.main.applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`
-        : undefined;
+    if (payload.comment) {
+      fields.push({
+        name: `Comment from ${payload.comment.user.displayName}`,
+        value: payload.comment.message,
+        inline: false,
+      });
+    }
+
+    const issue = payload.issue ?? payload.comment?.issue;
+    const url = applicationUrl
+      ? issue
+        ? `${applicationUrl}/issue/${issue.id}`
+        : media
+        ? `${applicationUrl}/${media.mediaType}/${media.tmdbId}`
+        : undefined
+      : undefined;
 
     return {
       title: payload.subject,
@@ -229,18 +226,12 @@ class DiscordAgent
       description: payload.message,
       color,
       timestamp: new Date().toISOString(),
-      author: {
-        name: settings.main.applicationTitle,
-        url: settings.main.applicationUrl,
-      },
-      fields: [
-        ...fields,
-        // If we have extra data, map it to fields for discord notifications
-        ...(payload.extra ?? []).map((extra) => ({
-          name: extra.name,
-          value: extra.value,
-        })),
-      ],
+      author: payload.event
+        ? {
+            name: payload.event,
+          }
+        : undefined,
+      fields,
       thumbnail: {
         url: payload.image,
       },
@@ -288,29 +279,28 @@ class DiscordAgent
           content = `<@${payload.notifyUser.settings.discordId}>`;
         }
       } else {
-        // Mention all users with the Manage Requests permission
+        // Mention all users with the relevant management permission
         const userRepository = getRepository(User);
         const users = await userRepository.find();
 
         content = users
           .filter(
             (user) =>
-              user.hasPermission(Permission.MANAGE_REQUESTS) &&
               user.settings?.hasNotificationType(
                 NotificationAgentKey.DISCORD,
                 type
               ) &&
               user.settings?.discordId &&
-              // Check if it's the user's own auto-approved request
-              (type !== Notification.MEDIA_AUTO_APPROVED ||
-                user.id !== payload.request?.requestedBy.id)
+              shouldSendAdminNotification(type, user, payload)
           )
           .map((user) => `<@${user.settings?.discordId}>`)
           .join(' ');
       }
 
       await axios.post(settings.options.webhookUrl, {
-        username: settings.options.botUsername,
+        username: settings.options.botUsername
+          ? settings.options.botUsername
+          : getSettings().main.applicationTitle,
         avatar_url: settings.options.botAvatarUrl,
         embeds: [this.buildEmbed(type, payload)],
         content,

@@ -1,11 +1,11 @@
 import { getRepository } from 'typeorm';
 import webpush from 'web-push';
-import { Notification } from '..';
+import { Notification, shouldSendAdminNotification } from '..';
+import { IssueType, IssueTypeName } from '../../../constants/issue';
 import { MediaType } from '../../../constants/media';
 import { User } from '../../../entity/User';
 import { UserPushSubscription } from '../../../entity/UserPushSubscription';
 import logger from '../../../logger';
-import { Permission } from '../../permissions';
 import {
   getSettings,
   NotificationAgentConfig,
@@ -15,12 +15,11 @@ import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface PushNotificationPayload {
   notificationType: string;
-  mediaType?: 'movie' | 'tv';
-  tmdbId?: number;
   subject: string;
   message?: string;
   image?: string;
   actionUrl?: string;
+  actionUrlTitle?: string;
   requestId?: number;
 }
 
@@ -42,97 +41,84 @@ class WebPushAgent
     type: Notification,
     payload: NotificationPayload
   ): PushNotificationPayload {
+    const media =
+      payload.request?.media ??
+      payload.issue?.media ??
+      payload.comment?.issue?.media;
+    const mediaType = media
+      ? media.mediaType === MediaType.MOVIE
+        ? 'movie'
+        : 'series'
+      : undefined;
+
+    const issue = payload.issue ?? payload.comment?.issue;
+    const issueType = issue
+      ? issue.issueType !== IssueType.OTHER
+        ? `${IssueTypeName[issue.issueType].toLowerCase()} issue`
+        : 'issue'
+      : undefined;
+
+    let message: string | undefined;
     switch (type) {
       case Notification.TEST_NOTIFICATION:
-        return {
-          notificationType: Notification[type],
-          subject: payload.subject,
-          message: payload.message,
-        };
+        message = payload.message;
+        break;
       case Notification.MEDIA_APPROVED:
-        return {
-          notificationType: Notification[type],
-          subject: payload.subject,
-          message: `Your ${
-            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request has been approved.`,
-          image: payload.image,
-          mediaType: payload.media?.mediaType,
-          tmdbId: payload.media?.tmdbId,
-          requestId: payload.request?.id,
-          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-        };
+        message = `Your ${mediaType} request has been approved.`;
+        break;
       case Notification.MEDIA_AUTO_APPROVED:
-        return {
-          notificationType: Notification[type],
-          subject: payload.subject,
-          message: `Automatically approved a new ${
-            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request from ${payload.request?.requestedBy.displayName}.`,
-          image: payload.image,
-          mediaType: payload.media?.mediaType,
-          tmdbId: payload.media?.tmdbId,
-          requestId: payload.request?.id,
-          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-        };
+        message = `Automatically approved a new ${mediaType} request from ${payload.request?.requestedBy.displayName}.`;
+        break;
       case Notification.MEDIA_AVAILABLE:
-        return {
-          notificationType: Notification[type],
-          subject: payload.subject,
-          message: `Your ${
-            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request is now available!`,
-          image: payload.image,
-          mediaType: payload.media?.mediaType,
-          tmdbId: payload.media?.tmdbId,
-          requestId: payload.request?.id,
-          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-        };
+        message = `Your ${mediaType} request is now available!`;
+        break;
       case Notification.MEDIA_DECLINED:
-        return {
-          notificationType: Notification[type],
-          subject: payload.subject,
-          message: `Your ${
-            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request was declined.`,
-          image: payload.image,
-          mediaType: payload.media?.mediaType,
-          tmdbId: payload.media?.tmdbId,
-          requestId: payload.request?.id,
-          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-        };
+        message = `Your ${mediaType} request was declined.`;
+        break;
       case Notification.MEDIA_FAILED:
-        return {
-          notificationType: Notification[type],
-          subject: payload.subject,
-          message: `Failed to process ${
-            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request.`,
-          image: payload.image,
-          mediaType: payload.media?.mediaType,
-          tmdbId: payload.media?.tmdbId,
-          requestId: payload.request?.id,
-          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-        };
+        message = `Failed to process ${mediaType} request.`;
+        break;
       case Notification.MEDIA_PENDING:
-        return {
-          notificationType: Notification[type],
-          subject: payload.subject,
-          message: `Approval required for new ${
-            payload.media?.mediaType === MediaType.MOVIE ? 'movie' : 'series'
-          } request from ${payload.request?.requestedBy.displayName}.`,
-          image: payload.image,
-          mediaType: payload.media?.mediaType,
-          tmdbId: payload.media?.tmdbId,
-          requestId: payload.request?.id,
-          actionUrl: `/${payload.media?.mediaType}/${payload.media?.tmdbId}`,
-        };
+        message = `Approval required for a new ${mediaType} request from ${payload.request?.requestedBy.displayName}.`;
+        break;
+      case Notification.ISSUE_CREATED:
+        message = `A new ${issueType} was reported by ${payload.issue?.createdBy.displayName}.`;
+        break;
+      case Notification.ISSUE_COMMENT:
+        message = `${payload.comment?.user.displayName} commented on the ${issueType}.`;
+        break;
+      case Notification.ISSUE_RESOLVED:
+        message = `The ${issueType} you reported has been resolved!`;
+        break;
+      case Notification.ISSUE_REOPENED:
+        message = `The ${issueType} was reopened by ${payload.issue?.modifiedBy?.displayName}.`;
+        break;
       default:
         return {
           notificationType: Notification[type],
           subject: 'Unknown',
         };
     }
+
+    const actionUrl = issue
+      ? `/issue/${issue.id}`
+      : media
+      ? `/${media.mediaType}/${media.tmdbId}`
+      : undefined;
+
+    const actionUrlTitle = actionUrl
+      ? `View ${issue ? 'Issue' : 'Media'}`
+      : undefined;
+
+    return {
+      notificationType: Notification[type],
+      subject: payload.subject,
+      message,
+      image: payload.image,
+      requestId: payload.request?.id,
+      actionUrl,
+      actionUrlTitle,
+    };
   }
 
   public shouldSend(): boolean {
@@ -165,17 +151,18 @@ class WebPushAgent
       ) ??
         true)
     ) {
+      // Send notification to the target user
       const notifySubs = await userPushSubRepository.find({
         where: { user: payload.notifyUser.id },
       });
 
       pushSubs = notifySubs;
     } else if (!payload.notifyUser) {
+      // Send notifications to all users with the relevant management permission
       const users = await userRepository.find();
 
       const manageUsers = users.filter(
         (user) =>
-          user.hasPermission(Permission.MANAGE_REQUESTS) &&
           // Check if user has webpush notifications enabled and fallback to true if undefined
           // since web push should default to true
           (user.settings?.hasNotificationType(
@@ -183,9 +170,7 @@ class WebPushAgent
             type
           ) ??
             true) &&
-          // Check if it's the user's own auto-approved request
-          (type !== Notification.MEDIA_AUTO_APPROVED ||
-            user.id !== payload.request?.requestedBy.id)
+          shouldSendAdminNotification(type, user, payload)
       );
 
       const allSubs = await userPushSubRepository

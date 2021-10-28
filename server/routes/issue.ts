@@ -277,6 +277,7 @@ issueRoutes.post<{ issueId: string; status: string }, Issue>(
       }
 
       issue.status = newStatus;
+      issue.modifiedBy = req.user;
 
       await issueRepository.save(issue);
 

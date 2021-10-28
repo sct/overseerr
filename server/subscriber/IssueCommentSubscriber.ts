@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash';
 import {
   EntitySubscriberInterface,
   EventSubscriber,
@@ -5,6 +6,7 @@ import {
   InsertEvent,
 } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
+import { IssueType, IssueTypeName } from '../constants/issue';
 import { MediaType } from '../constants/media';
 import IssueComment from '../entity/IssueComment';
 import notificationManager, { Notification } from '../lib/notifications';
@@ -36,23 +38,36 @@ export class IssueCommentSubscriber
     if (issue.media.mediaType === MediaType.MOVIE) {
       const movie = await tmdb.getMovie({ movieId: issue.media.tmdbId });
 
-      title = movie.title;
+      title = `${movie.title}${
+        movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
+      }`;
       image = `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`;
     } else {
       const tvshow = await tmdb.getTvShow({ tvId: issue.media.tmdbId });
 
-      title = tvshow.name;
+      title = `${tvshow.name}${
+        tvshow.first_air_date ? ` (${tvshow.first_air_date.slice(0, 4)})` : ''
+      }`;
       image = `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tvshow.poster_path}`;
     }
 
-    notificationManager.sendNotification(Notification.ISSUE_COMMENT, {
-      subject: `New Issue Comment: ${title}`,
-      message: entity.message,
-      issue,
-      image,
-      notifyUser:
-        issue.createdBy.id !== entity.user.id ? issue.createdBy : undefined,
-    });
+    const [firstComment] = sortBy(issue.comments, 'id');
+
+    if (entity.id !== firstComment.id) {
+      notificationManager.sendNotification(Notification.ISSUE_COMMENT, {
+        event: `New Comment on ${
+          issue.issueType !== IssueType.OTHER
+            ? `${IssueTypeName[issue.issueType]} `
+            : ''
+        }Issue`,
+        subject: title,
+        message: firstComment.message,
+        comment: entity,
+        image,
+        notifyUser:
+          issue.createdBy.id !== entity.user.id ? issue.createdBy : undefined,
+      });
+    }
   }
 
   public afterInsert(event: InsertEvent<IssueComment>): void {

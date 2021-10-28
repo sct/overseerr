@@ -1,19 +1,20 @@
 import { Notification } from '..';
 import type Issue from '../../../entity/Issue';
-import type Media from '../../../entity/Media';
+import IssueComment from '../../../entity/IssueComment';
 import { MediaRequest } from '../../../entity/MediaRequest';
 import { User } from '../../../entity/User';
 import { NotificationAgentConfig } from '../../settings';
 
 export interface NotificationPayload {
+  event?: string;
   subject: string;
   notifyUser?: User;
-  media?: Media;
   image?: string;
   message?: string;
   extra?: { name: string; value: string }[];
   request?: MediaRequest;
   issue?: Issue;
+  comment?: IssueComment;
 }
 
 export abstract class BaseAgent<T extends NotificationAgentConfig> {

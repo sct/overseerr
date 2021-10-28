@@ -24,12 +24,13 @@ Customize the JSON payload to suit your needs. Overseerr provides several [templ
 
 ### General
 
-- `{{notification_type}}` The type of notification. (Ex. `MEDIA_PENDING` or `MEDIA_APPROVED`)
-- `{{subject}}` The notification subject message. (For request notifications, this is the media title)
-- `{{message}}` Notification message body. (For request notifications, this is the media's overview/synopsis)
-- `{{image}}` Associated image with the request. (For request notifications, this is the media's poster)
+- `{{notification_type}}` The type of notification. (E.g. `MEDIA_PENDING` or `MEDIA_APPROVED`.)
+- `{{event}}` A description of the notification event.
+- `{{subject}}` The notification subject message. (This is typically the media title.)
+- `{{message}}` Notification message body. (For request notifications, this is the media's overview/synopsis. For issue notifications, this is the issue description.)
+- `{{image}}` Associated image with the request. (This is typically the media's poster.)
 
-### User
+### Notify User
 
 These variables are for the target recipient of the notification.
 
@@ -40,7 +41,7 @@ These variables are for the target recipient of the notification.
 - `{{notifyuser_settings_telegramChatId}}` Target user's Telegram Chat ID (if one is set).
 
 {% hint style="info" %}
-The `notifyuser` variables are not set for the following notification types, as they are intended for application administrators rather than end users:
+The `notifyuser` variables are not set for the following request notification types, as they are intended for application administrators rather than end users:
 
 - Media Requested
 - Media Automatically Approved
@@ -59,8 +60,10 @@ If you would like to use the requesting user's information in your webhook, plea
 
 The following variables must be used as a key in the JSON payload (e.g., `"{{extra}}": []`).
 
-- `{{request}}` This object will be `null` if there is no relevant request object for the notification.
 - `{{media}}` This object will be `null` if there is no relevant media object for the notification.
+- `{{request}}` This object will be `null` if there is no relevant request object for the notification.
+- `{{issue}}` This object will be `null` if there is no relevant issue object for the notification.
+- `{{comment}}` This object will be `null` if there is no relevant issue comment object for the notification.
 - `{{extra}}` This object will contain the "extra" array of additional data for certain notifications.
 
 #### Media
@@ -69,7 +72,6 @@ These `{{media}}` special variables are only included in media-related notificat
 
 - `{{media_type}}` Media type (`movie` or `tv`).
 - `{{media_tmdbid}}` Media's TMDb ID.
-- `{{media_imdbid}}` Media's IMDb ID.
 - `{{media_tvdbid}}` Media's TVDB ID.
 - `{{media_status}}` Media's availability status (`UNKNOWN`, `PENDING`, `PROCESSING`, `PARTIALLY_AVAILABLE`, or `AVAILABLE`).
 - `{{media_status4k}}` Media's 4K availability status (`UNKNOWN`, `PENDING`, `PROCESSING`, `PARTIALLY_AVAILABLE`, or `AVAILABLE`)
@@ -84,3 +86,25 @@ The `{{request}}` special variables are only included in request-related notific
 - `{{requestedBy_avatar}}` Requesting user's avatar URL.
 - `{{requestedBy_settings_discordId}}` Requesting user's Discord ID (if set).
 - `{{requestedBy_settings_telegramChatId}}` Requesting user's Telegram Chat ID (if set).
+
+#### Issue
+
+The `{{issue}}` special variables are only included in issue-related notifications.
+
+- `{{issue_id}}` Issue ID.
+- `{{reportedBy_username}}` Requesting user's username.
+- `{{reportedBy_email}}` Requesting user's email address.
+- `{{reportedBy_avatar}}` Requesting user's avatar URL.
+- `{{reportedBy_settings_discordId}}` Requesting user's Discord ID (if set).
+- `{{reportedBy_settings_telegramChatId}}` Requesting user's Telegram Chat ID (if set).
+
+#### Comment
+
+The `{{comment}}` special variables are only included in issue comment-related notifications.
+
+- `{{comment_message}}` Comment message.
+- `{{commentedBy_username}}` Commenting user's username.
+- `{{commentedBy_email}}` Commenting user's email address.
+- `{{commentedBy_avatar}}` Commenting user's avatar URL.
+- `{{commentedBy_settings_discordId}}` Commenting user's Discord ID (if set).
+- `{{commentedBy_settings_telegramChatId}}` Commenting user's Telegram Chat ID (if set).

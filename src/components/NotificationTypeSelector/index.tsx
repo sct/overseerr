@@ -50,6 +50,9 @@ const messages = defineMessages({
   issueresolved: 'Issue Resolved',
   issueresolvedDescription: 'Send notifications when issues are resolved.',
   userissueresolvedDescription: 'Get notified when your issues are resolved.',
+  issuereopened: 'Issue Reopened',
+  issuereopenedDescription: 'Send notifications when issues are reopened.',
+  userissuereopenedDescription: 'Get notified when issues are reopened.',
 });
 
 export const hasNotificationType = (
@@ -90,6 +93,7 @@ export enum Notification {
   ISSUE_CREATED = 256,
   ISSUE_COMMENT = 512,
   ISSUE_RESOLVED = 1024,
+  ISSUE_REOPENED = 2048,
 }
 
 export const ALL_NOTIFICATIONS = Object.values(Notification)
@@ -297,6 +301,18 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
             type: 'or',
           }),
         hasNotifyUser: true,
+      },
+      {
+        id: 'issue-reopened',
+        name: intl.formatMessage(messages.issuereopened),
+        description: intl.formatMessage(
+          user
+            ? messages.userissuereopenedDescription
+            : messages.issuereopenedDescription
+        ),
+        value: Notification.ISSUE_REOPENED,
+        hidden: user && !hasPermission(Permission.MANAGE_ISSUES),
+        hasNotifyUser: false,
       },
     ];
 

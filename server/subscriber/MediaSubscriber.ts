@@ -40,7 +40,6 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
                 separator: /\s/,
                 omission: '…',
               }),
-              media: entity,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
               request: request,
             });
@@ -101,10 +100,9 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
             }),
             notifyUser: request.requestedBy,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
-            media: entity,
             extra: [
               {
-                name: 'Seasons',
+                name: 'Requested Seasons',
                 value: request.seasons
                   .map((season) => season.seasonNumber)
                   .join(', '),

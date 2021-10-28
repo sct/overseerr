@@ -20,22 +20,27 @@ class LunaSeaAgent
   }
 
   private buildPayload(type: Notification, payload: NotificationPayload) {
+    const media =
+      payload.request?.media ??
+      payload.issue?.media ??
+      payload.comment?.issue?.media;
+
     return {
       notification_type: Notification[type],
+      event: payload.event,
       subject: payload.subject,
       message: payload.message,
       image: payload.image ?? null,
       email: payload.notifyUser?.email,
-      username: payload.notifyUser?.username,
+      username: payload.notifyUser?.displayName,
       avatar: payload.notifyUser?.avatar,
-      media: payload.media
+      media: media
         ? {
-            media_type: payload.media.mediaType,
-            tmdbId: payload.media.tmdbId,
-            imdbId: payload.media.imdbId,
-            tvdbId: payload.media.tvdbId,
-            status: MediaStatus[payload.media.status],
-            status4k: MediaStatus[payload.media.status4k],
+            media_type: media.mediaType,
+            tmdbId: media.tmdbId,
+            tvdbId: media.tvdbId,
+            status: MediaStatus[media.status],
+            status4k: MediaStatus[media.status4k],
           }
         : null,
       extra: payload.extra ?? [],
@@ -45,6 +50,22 @@ class LunaSeaAgent
             requestedBy_email: payload.request.requestedBy.email,
             requestedBy_username: payload.request.requestedBy.displayName,
             requestedBy_avatar: payload.request.requestedBy.avatar,
+          }
+        : null,
+      issue: payload.issue
+        ? {
+            issue_id: payload.issue.id,
+            createdBy_email: payload.issue.createdBy.email,
+            createdBy_username: payload.issue.createdBy.displayName,
+            createdBy_avatar: payload.issue.createdBy.avatar,
+          }
+        : null,
+      comment: payload.comment
+        ? {
+            comment_id: payload.comment.id,
+            commentedBy_email: payload.comment.user.email,
+            commentedBy_username: payload.comment.user.displayName,
+            commentedBy_avatar: payload.comment.user.avatar,
           }
         : null,
     };

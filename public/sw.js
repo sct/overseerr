@@ -90,8 +90,8 @@ self.addEventListener('push', (event) => {
   if (payload.actionUrl){
     options.actions.push(
       {
-        action: 'viewmedia',
-        title: 'View Media',
+        action: 'view',
+        title: payload.actionUrlTitle ?? 'View',
       }
     );
   }
@@ -119,7 +119,7 @@ self.addEventListener('notificationclick', (event) => {
 
   event.notification.close();
 
-  if (event.action === 'viewmedia') {
+  if (event.action === 'view') {
     clients.openWindow(notificationData.actionUrl);
   } else if (event.action === 'approve') {
     fetch(`/api/v1/request/${notificationData.requestId}/approve`, {
