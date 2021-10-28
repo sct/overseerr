@@ -962,10 +962,13 @@
   "components.NotificationTypeSelector.issueresolvedDescription": "Envoyez des notifications lorsque les problèmes sont résolus.",
   "components.Settings.SettingsJobsCache.editJobSchedulePrompt": "Fréquence",
   "components.Settings.SettingsJobsCache.jobScheduleEditSaved": "Tâche modifiée avec succès !",
-  "i18n.open": "Ouvrir",
+  "i18n.open": "Ouvert",
   "components.Settings.SettingsJobsCache.editJobSchedule": "Modifier la tâche",
   "components.NotificationTypeSelector.userissuecreatedDescription": "Recevez une notification lorsque d’autres utilisateurs signalent des problèmes.",
   "components.PermissionEdit.manageissuesDescription": "Accorder la permission de gérer les problèmes relatifs aux médias.",
   "components.Settings.SettingsJobsCache.jobScheduleEditFailed": "Un problème est survenu lors de l'enregistrement de la tâche.",
-  "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "Toutes les {jobScheduleMinutes, plural, one {minute} other {{jobScheduleMinutes} minutes}}"
+  "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "Toutes les {jobScheduleMinutes, plural, one {minute} other {{jobScheduleMinutes} minutes}}",
+  "components.IssueDetails.openin4karr": "Ouvrir en 4K {arr}",
+  "components.IssueDetails.play4konplex": "Lire sur Plex en 4K",
+  "components.IssueDetails.playonplex": "Lire sur Plex"
 }
