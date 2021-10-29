@@ -244,15 +244,11 @@ const IssueDetails: React.FC = () => {
                 issueData.media.mediaType === MediaType.MOVIE ? 'movie' : 'tv'
               }/${data.id}`}
             >
-              <a className="hover:underline">
-                {title}{' '}
-                {releaseYear && (
-                  <span className="media-year">
-                    ({releaseYear.slice(0, 4)})
-                  </span>
-                )}
-              </a>
-            </Link>
+              <a className="hover:underline">{title}</a>
+            </Link>{' '}
+            {releaseYear && (
+              <span className="media-year">({releaseYear.slice(0, 4)})</span>
+            )}
           </h1>
           <span className="media-attributes">
             {intl.formatMessage(messages.openedby, {
