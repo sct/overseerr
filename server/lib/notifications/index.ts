@@ -70,16 +70,17 @@ export const shouldSendAdminNotification = (
 ): boolean => {
   return (
     user.hasPermission(getAdminPermission(type)) &&
-    // Check if it's the user's own auto-approved request
+    // Check if the user submitted this request (on behalf of themself OR another user)
     (type !== Notification.MEDIA_AUTO_APPROVED ||
-      user.id !== payload.request?.requestedBy.id) &&
-    // Check if it's the user's own issue
+      user.id !==
+        (payload.request?.modifiedBy ?? payload.request?.requestedBy)?.id) &&
+    // Check if the user created this issue
     (type !== Notification.ISSUE_CREATED ||
       user.id !== payload.issue?.createdBy.id) &&
-    // Check if it's the user's own issue comment
+    // Check if the user submitted this issue comment
     (type !== Notification.ISSUE_COMMENT ||
       user.id !== payload.comment?.user.id) &&
-    // Check if it's an issue the user reopened
+    // Check if the user reopened this issue
     (type !== Notification.ISSUE_REOPENED ||
       user.id !== payload.issue?.modifiedBy?.id)
   );
