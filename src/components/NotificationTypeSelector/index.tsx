@@ -41,9 +41,10 @@ const messages = defineMessages({
   issuecreatedDescription: 'Send notifications when issues are reported.',
   userissuecreatedDescription: 'Get notified when other users report issues.',
   issuecomment: 'Issue Comment',
-  issuecommentDescription: 'Send notifications when users comment on issues.',
+  issuecommentDescription:
+    'Send notifications when issues receive new comments.',
   userissuecommentDescription:
-    'Get notified when issues you reported are commented on.',
+    'Get notified when issues you reported receive new comments.',
   adminissuecommentDescription:
     'Get notified when other users comment on issues.',
   issueresolved: 'Issue Resolved',
