@@ -63,7 +63,7 @@ class PushoverAgent
     }
 
     if (payload.request) {
-      message += `<small>\n\n<b>Requested By</b>\n${payload.request.requestedBy.displayName}</small>`;
+      message += `<small>\n\n<b>Requested By:</b> ${payload.request.requestedBy.displayName}</small>`;
 
       let status = '';
       switch (type) {
@@ -88,14 +88,14 @@ class PushoverAgent
       }
 
       if (status) {
-        message += `<small>\n\n<b>Request Status</b>\n${status}</small>`;
+        message += `<small>\n<b>Request Status:</b> ${status}</small>`;
       }
     } else if (payload.issue) {
-      message += `<small>\n\n<b>Reported By</b>\n${payload.issue.createdBy.displayName}</small>`;
-      message += `<small>\n\n<b>Issue Type</b>\n${
+      message += `<small>\n\n<b>Reported By:</b> ${payload.issue.createdBy.displayName}</small>`;
+      message += `<small>\n<b>Issue Type:</b> ${
         IssueTypeName[payload.issue.issueType]
       }</small>`;
-      message += `<small>\n\n<b>Issue Status</b>\n${
+      message += `<small>\n<b>Issue Status:</b> ${
         payload.issue.status === IssueStatus.OPEN ? 'Open' : 'Resolved'
       }</small>`;
 
@@ -103,11 +103,11 @@ class PushoverAgent
         priority = 1;
       }
     } else if (payload.comment) {
-      message += `<small>\n\n<b>Comment from ${payload.comment.user.displayName}</b>\n${payload.comment.message}</small>`;
+      message += `<small>\n\n<b>Comment from ${payload.comment.user.displayName}:</b> ${payload.comment.message}</small>`;
     }
 
     for (const extra of payload.extra ?? []) {
-      message += `<small>\n\n<b>${extra.name}</b>\n${extra.value}</small>`;
+      message += `<small>\n<b>${extra.name}:</b> ${extra.value}</small>`;
     }
 
     const issue = payload.issue ?? payload.comment?.issue;
@@ -173,7 +173,6 @@ class PushoverAgent
     }
 
     if (payload.notifyUser) {
-      // Send notification to the target user
       if (
         payload.notifyUser.settings?.hasNotificationType(
           NotificationAgentKey.PUSHOVER,
@@ -212,8 +211,9 @@ class PushoverAgent
           return false;
         }
       }
-    } else {
-      // Send notifications to all users with the relevant management permission
+    }
+
+    if (payload.notifyAdmin) {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
 

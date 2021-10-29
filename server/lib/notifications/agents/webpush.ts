@@ -157,8 +157,9 @@ class WebPushAgent
       });
 
       pushSubs = notifySubs;
-    } else if (!payload.notifyUser) {
-      // Send notifications to all users with the relevant management permission
+    }
+
+    if (payload.notifyAdmin) {
       const users = await userRepository.find();
 
       const manageUsers = users.filter(

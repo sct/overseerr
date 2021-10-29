@@ -268,7 +268,6 @@ class DiscordAgent
 
     try {
       if (payload.notifyUser) {
-        // Mention user who submitted the request
         if (
           payload.notifyUser.settings?.hasNotificationType(
             NotificationAgentKey.DISCORD,
@@ -278,8 +277,9 @@ class DiscordAgent
         ) {
           content = `<@${payload.notifyUser.settings.discordId}>`;
         }
-      } else {
-        // Mention all users with the relevant management permission
+      }
+
+      if (payload.notifyAdmin) {
         const userRepository = getRepository(User);
         const users = await userRepository.find();
 

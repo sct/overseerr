@@ -31,6 +31,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
           relatedRequests.forEach((request) => {
             notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
+              notifyAdmin: false,
               notifyUser: request.requestedBy,
               subject: `${movie.title}${
                 movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
@@ -98,6 +99,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
               separator: /\s/,
               omission: '…',
             }),
+            notifyAdmin: false,
             notifyUser: request.requestedBy,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
             extra: [

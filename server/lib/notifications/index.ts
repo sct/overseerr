@@ -69,6 +69,7 @@ export const shouldSendAdminNotification = (
   payload: NotificationPayload
 ): boolean => {
   return (
+    user.id !== payload.notifyUser?.id &&
     user.hasPermission(getAdminPermission(type)) &&
     // Check if the user submitted this request (on behalf of themself OR another user)
     (type !== Notification.MEDIA_AUTO_APPROVED ||

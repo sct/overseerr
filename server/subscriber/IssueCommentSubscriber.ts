@@ -10,6 +10,7 @@ import { IssueType, IssueTypeName } from '../constants/issue';
 import { MediaType } from '../constants/media';
 import IssueComment from '../entity/IssueComment';
 import notificationManager, { Notification } from '../lib/notifications';
+import { Permission } from '../lib/permissions';
 
 @EventSubscriber()
 export class IssueCommentSubscriber
@@ -54,7 +55,8 @@ export class IssueCommentSubscriber
     const [firstComment] = sortBy(issue.comments, 'id');
 
     if (entity.id !== firstComment.id) {
-      const notificationPayload = {
+      // Send notifications to all issue managers
+      notificationManager.sendNotification(Notification.ISSUE_COMMENT, {
         event: `New Comment on ${
           issue.issueType !== IssueType.OTHER
             ? `${IssueTypeName[issue.issueType]} `
@@ -64,21 +66,13 @@ export class IssueCommentSubscriber
         message: firstComment.message,
         comment: entity,
         image,
-      };
-
-      // Send notifications to all issue managers
-      notificationManager.sendNotification(
-        Notification.ISSUE_COMMENT,
-        notificationPayload
-      );
-
-      // Send notification to issue creator (if it isn't their own comment)
-      if (issue.createdBy.id !== entity.user.id) {
-        notificationManager.sendNotification(Notification.ISSUE_COMMENT, {
-          ...notificationPayload,
-          notifyUser: issue.createdBy,
-        });
-      }
+        notifyAdmin: true,
+        notifyUser:
+          !issue.createdBy.hasPermission(Permission.MANAGE_ISSUES) &&
+          issue.createdBy.id !== entity.user.id
+            ? issue.createdBy
+            : undefined,
+      });
     }
   }
 

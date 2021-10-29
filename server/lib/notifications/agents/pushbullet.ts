@@ -137,7 +137,6 @@ class PushbulletAgent
     }
 
     if (payload.notifyUser) {
-      // Send notification to the target user
       if (
         payload.notifyUser.settings?.hasNotificationType(
           NotificationAgentKey.PUSHBULLET,
@@ -173,8 +172,9 @@ class PushbulletAgent
           return false;
         }
       }
-    } else {
-      // Send notifications to all users with the relevant management permission
+    }
+
+    if (payload.notifyAdmin) {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
 

@@ -17,6 +17,7 @@ const notificationRoutes = Router();
 
 const sendTestNotification = async (agent: NotificationAgent, user: User) =>
   await agent.send(Notification.TEST_NOTIFICATION, {
+    notifyAdmin: false,
     notifyUser: user,
     subject: 'Test Notification',
     message: 'Check check, 1, 2, 3. Are we coming in clear?',

@@ -10,6 +10,7 @@ import { IssueStatus, IssueType, IssueTypeName } from '../constants/issue';
 import { MediaType } from '../constants/media';
 import Issue from '../entity/Issue';
 import notificationManager, { Notification } from '../lib/notifications';
+import { Permission } from '../lib/permissions';
 
 @EventSubscriber()
 export class IssueSubscriber implements EntitySubscriberInterface<Issue> {
@@ -40,27 +41,21 @@ export class IssueSubscriber implements EntitySubscriberInterface<Issue> {
     const [firstComment] = sortBy(entity.comments, 'id');
     const extra: { name: string; value: string }[] = [];
 
-    if (entity.media.mediaType === MediaType.TV) {
+    if (entity.media.mediaType === MediaType.TV && entity.problemSeason > 0) {
       extra.push({
         name: 'Affected Season',
-        value:
-          entity.problemSeason > 0
-            ? entity.problemSeason.toString()
-            : 'All Seasons',
+        value: entity.problemSeason.toString(),
       });
 
-      if (entity.problemSeason > 0) {
+      if (entity.problemEpisode > 0) {
         extra.push({
           name: 'Affected Episode',
-          value:
-            entity.problemEpisode > 0
-              ? entity.problemEpisode.toString()
-              : 'All Episodes',
+          value: entity.problemEpisode.toString(),
         });
       }
     }
 
-    const notificationPayload = {
+    notificationManager.sendNotification(type, {
       event:
         type === Notification.ISSUE_CREATED
           ? `New ${
@@ -84,21 +79,14 @@ export class IssueSubscriber implements EntitySubscriberInterface<Issue> {
       issue: entity,
       image,
       extra,
-    };
-
-    // Send notifications to all issue managers
-    notificationManager.sendNotification(type, notificationPayload);
-
-    // Send notification to issue creator
-    if (
-      type === Notification.ISSUE_RESOLVED ||
-      type === Notification.ISSUE_REOPENED
-    ) {
-      notificationManager.sendNotification(type, {
-        ...notificationPayload,
-        notifyUser: entity.createdBy,
-      });
-    }
+      notifyAdmin: true,
+      notifyUser:
+        !entity.createdBy.hasPermission(Permission.MANAGE_ISSUES) &&
+        (type === Notification.ISSUE_RESOLVED ||
+          type === Notification.ISSUE_REOPENED)
+          ? entity.createdBy
+          : undefined,
+    });
   }
 
   public afterInsert(event: InsertEvent<Issue>): void {

@@ -186,7 +186,6 @@ class EmailAgent
     payload: NotificationPayload
   ): Promise<boolean> {
     if (payload.notifyUser) {
-      // Send notification to the target user
       if (
         !payload.notifyUser.settings ||
         // Check if user has email notifications enabled and fallback to true if undefined
@@ -229,8 +228,9 @@ class EmailAgent
           return false;
         }
       }
-    } else {
-      // Send notifications to all users with the relevant management permission
+    }
+
+    if (payload.notifyAdmin) {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
 

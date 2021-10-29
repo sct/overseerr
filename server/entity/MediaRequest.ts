@@ -152,6 +152,7 @@ export class MediaRequest {
             omission: '…',
           }),
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+          notifyAdmin: true,
           request: this,
         });
       }
@@ -177,6 +178,7 @@ export class MediaRequest {
                 .join(', '),
             },
           ],
+          notifyAdmin: true,
           request: this,
         });
       }
@@ -238,6 +240,7 @@ export class MediaRequest {
               omission: '…',
             }),
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+            notifyAdmin: autoApproved,
             notifyUser: autoApproved ? undefined : this.requestedBy,
             request: this,
           }
@@ -267,6 +270,7 @@ export class MediaRequest {
               omission: '…',
             }),
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
+            notifyAdmin: autoApproved,
             notifyUser: autoApproved ? undefined : this.requestedBy,
             extra: [
               {
@@ -530,6 +534,7 @@ export class MediaRequest {
                 omission: '…',
               }),
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+              notifyAdmin: true,
               request: this,
             });
           });
@@ -754,6 +759,7 @@ export class MediaRequest {
                     .join(', '),
                 },
               ],
+              notifyAdmin: true,
               request: this,
             });
           });

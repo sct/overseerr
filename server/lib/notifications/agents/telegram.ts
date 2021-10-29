@@ -81,7 +81,7 @@ class TelegramAgent
     }
 
     if (payload.request) {
-      message += `\n\n\*Requested By\*\n${this.escapeText(
+      message += `\n\n\*Requested By:\* ${this.escapeText(
         payload.request?.requestedBy.displayName
       )}`;
 
@@ -106,24 +106,24 @@ class TelegramAgent
       }
 
       if (status) {
-        message += `\n\n\*Request Status\*\n${status}`;
+        message += `\n\*Request Status:\* ${status}`;
       }
     } else if (payload.issue) {
-      message += `\n\n\*Reported By\*\n${this.escapeText(
+      message += `\n\n\*Reported By:\* ${this.escapeText(
         payload.issue.createdBy.displayName
       )}`;
-      message += `\n\*Issue Type\*\n${IssueTypeName[payload.issue.issueType]}`;
-      message += `\n\*Issue Status\*\n${
+      message += `\n\*Issue Type:\* ${IssueTypeName[payload.issue.issueType]}`;
+      message += `\n\*Issue Status:\* ${
         payload.issue.status === IssueStatus.OPEN ? 'Open' : 'Resolved'
       }`;
     } else if (payload.comment) {
       message += `\n\n\*Comment from ${this.escapeText(
         payload.comment.user.displayName
-      )}\*\n${this.escapeText(payload.comment.message)}`;
+      )}:\* ${this.escapeText(payload.comment.message)}`;
     }
 
     for (const extra of payload.extra ?? []) {
-      message += `\n\n\*${extra.name}\*\n${extra.value}`;
+      message += `\n\*${extra.name}:\* ${extra.value}`;
     }
 
     const url = applicationUrl
@@ -230,8 +230,9 @@ class TelegramAgent
           return false;
         }
       }
-    } else {
-      // Send notifications to all users with the relevant management permission
+    }
+
+    if (payload.notifyAdmin) {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
 
