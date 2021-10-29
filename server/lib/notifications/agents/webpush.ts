@@ -151,7 +151,6 @@ class WebPushAgent
       ) ??
         true)
     ) {
-      // Send notification to the target user
       const notifySubs = await userPushSubRepository.find({
         where: { user: payload.notifyUser.id },
       });

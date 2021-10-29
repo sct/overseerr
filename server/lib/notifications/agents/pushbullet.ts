@@ -43,12 +43,10 @@ class PushbulletAgent
     type: Notification,
     payload: NotificationPayload
   ): PushbulletPayload {
-    const title = payload.event ?? payload.subject;
-    let body = payload.event ? payload.subject : '';
-
-    if (payload.message) {
-      body += `${body ? '\n\n' : ''}${payload.message}`;
-    }
+    const title = payload.event
+      ? `${payload.event} - ${payload.subject}`
+      : payload.subject;
+    let body = payload.message ?? '';
 
     if (payload.request) {
       body += `\n\nRequested By: ${payload.request.requestedBy.displayName}`;

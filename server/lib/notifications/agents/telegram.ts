@@ -72,10 +72,9 @@ class TelegramAgent
     const issue = payload.issue ?? payload.comment?.issue;
 
     /* eslint-disable no-useless-escape */
-    let message = `\*${this.escapeText(payload.event ?? payload.subject)}\*`;
-    if (payload.event) {
-      message += `\n\n\*${this.escapeText(payload.subject)}\*`;
-    }
+    let message = `\*${this.escapeText(
+      payload.event ? `${payload.event} - ${payload.subject}` : payload.subject
+    )}\*`;
     if (payload.message) {
       message += `\n${this.escapeText(payload.message)}`;
     }
@@ -194,7 +193,6 @@ class TelegramAgent
     }
 
     if (payload.notifyUser) {
-      // Send notification to the target user
       if (
         payload.notifyUser.settings?.hasNotificationType(
           NotificationAgentKey.TELEGRAM,
