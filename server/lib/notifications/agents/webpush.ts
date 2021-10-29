@@ -88,7 +88,7 @@ class WebPushAgent
         message = `${payload.comment?.user.displayName} commented on the ${issueType}.`;
         break;
       case Notification.ISSUE_RESOLVED:
-        message = `The ${issueType} you reported has been resolved!`;
+        message = `The ${issueType} was marked as resolved by ${payload.issue?.modifiedBy?.displayName}!`;
         break;
       case Notification.ISSUE_REOPENED:
         message = `The ${issueType} was reopened by ${payload.issue?.modifiedBy?.displayName}.`;

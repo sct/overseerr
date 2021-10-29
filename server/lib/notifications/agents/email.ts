@@ -145,7 +145,7 @@ class EmailAgent
           body = `${payload.comment?.user.displayName} commented on the ${issueType} for the ${mediaType} ${payload.subject}:`;
           break;
         case Notification.ISSUE_RESOLVED:
-          body = `The ${issueType} you reported for the ${mediaType} ${payload.subject} has been resolved!`;
+          body = `The ${issueType} for the ${mediaType} ${payload.subject} was marked as resolved by ${payload.issue?.modifiedBy?.displayName}!`;
           break;
         case Notification.ISSUE_REOPENED:
           body = `The ${issueType} for the ${mediaType} ${payload.subject} was reopened by ${payload.issue?.modifiedBy?.displayName}.`;

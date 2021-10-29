@@ -80,8 +80,9 @@ export const shouldSendAdminNotification = (
     // Check if the user submitted this issue comment
     (type !== Notification.ISSUE_COMMENT ||
       user.id !== payload.comment?.user.id) &&
-    // Check if the user reopened this issue
-    (type !== Notification.ISSUE_REOPENED ||
+    // Check if the user resolved/reopened this issue
+    ((type !== Notification.ISSUE_RESOLVED &&
+      type !== Notification.ISSUE_REOPENED) ||
       user.id !== payload.issue?.modifiedBy?.id)
   );
 };

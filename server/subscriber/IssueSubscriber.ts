@@ -60,7 +60,7 @@ export class IssueSubscriber implements EntitySubscriberInterface<Issue> {
       }
     }
 
-    notificationManager.sendNotification(type, {
+    const notificationPayload = {
       event:
         type === Notification.ISSUE_CREATED
           ? `New ${
@@ -84,9 +84,21 @@ export class IssueSubscriber implements EntitySubscriberInterface<Issue> {
       issue: entity,
       image,
       extra,
-      notifyUser:
-        type === Notification.ISSUE_RESOLVED ? entity.createdBy : undefined,
-    });
+    };
+
+    // Send notifications to all issue managers
+    notificationManager.sendNotification(type, notificationPayload);
+
+    // Send notification to issue creator
+    if (
+      type === Notification.ISSUE_RESOLVED ||
+      type === Notification.ISSUE_REOPENED
+    ) {
+      notificationManager.sendNotification(type, {
+        ...notificationPayload,
+        notifyUser: entity.createdBy,
+      });
+    }
   }
 
   public afterInsert(event: InsertEvent<Issue>): void {
