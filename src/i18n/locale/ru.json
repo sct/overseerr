@@ -842,7 +842,7 @@
   "components.Settings.general": "Общее",
   "components.Settings.hideAvailable": "Скрывать доступные медиа",
   "components.Settings.SettingsUsers.userSettingsDescription": "Настройте глобальные параметры и параметры по умолчанию для пользователей.",
-  "components.Settings.email": "Адрес электронной почты",
+  "components.Settings.email": "Электронная почта",
   "components.Settings.csrfProtectionHoverTip": "НЕ включайте этот параметр, если вы не понимаете, что делаете!",
   "components.Settings.csrfProtection": "Включить защиту от CSRF",
   "components.Settings.SonarrModal.validationApplicationUrlTrailingSlash": "URL-адрес не должен заканчиваться косой чертой",

@@ -921,7 +921,7 @@
   "components.NotificationTypeSelector.userissueresolvedDescription": "Ser notificado cuando tus incidencias sean resueltas.",
   "components.IssueModal.CreateIssueModal.whatswrong": "¿Qué sucede?",
   "components.ManageSlideOver.manageModalClearMedia": "Limpiar Datos de los Contenidos",
-  "components.ManageSlideOver.manageModalTitle": "Gersionar {mediaType}",
+  "components.ManageSlideOver.manageModalTitle": "Gestionar {mediaType}",
   "components.ManageSlideOver.markavailable": "Marcar como Disponible",
   "components.ManageSlideOver.openarr": "Abrir en {arr}",
   "components.NotificationTypeSelector.adminissuecommentDescription": "Ser notificado para nuevos comentarios de incidencias.",
