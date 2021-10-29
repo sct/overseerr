@@ -138,8 +138,8 @@ class SlackAgent
         type: 'context',
         elements: [
           {
-            type: 'plain_text',
-            text: payload.event,
+            type: 'mrkdwn',
+            text: `*${payload.event}*`,
           },
         ],
       });
