@@ -54,7 +54,7 @@ export class IssueCommentSubscriber
     const [firstComment] = sortBy(issue.comments, 'id');
 
     if (entity.id !== firstComment.id) {
-      notificationManager.sendNotification(Notification.ISSUE_COMMENT, {
+      const notificationPayload = {
         event: `New Comment on ${
           issue.issueType !== IssueType.OTHER
             ? `${IssueTypeName[issue.issueType]} `
@@ -64,9 +64,21 @@ export class IssueCommentSubscriber
         message: firstComment.message,
         comment: entity,
         image,
-        notifyUser:
-          issue.createdBy.id !== entity.user.id ? issue.createdBy : undefined,
-      });
+      };
+
+      // Send notifications to all issue managers
+      notificationManager.sendNotification(
+        Notification.ISSUE_COMMENT,
+        notificationPayload
+      );
+
+      // Send notification to issue creator (if it isn't their own comment)
+      if (issue.createdBy.id !== entity.user.id) {
+        notificationManager.sendNotification(Notification.ISSUE_COMMENT, {
+          ...notificationPayload,
+          notifyUser: issue.createdBy,
+        });
+      }
     }
   }
 
