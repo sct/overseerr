@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
+import { IssueStatus, IssueType } from '../../../constants/issue';
 import { MediaStatus } from '../../../constants/media';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentLunaSea } from '../../settings';
@@ -56,6 +57,8 @@ class LunaSeaAgent
       issue: issue
         ? {
             issue_id: issue.id,
+            issue_type: IssueType[issue.issueType],
+            issue_status: IssueStatus[issue.status],
             createdBy_email: issue.createdBy.email,
             createdBy_username: issue.createdBy.displayName,
             createdBy_avatar: issue.createdBy.avatar,

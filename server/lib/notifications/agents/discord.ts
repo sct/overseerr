@@ -159,9 +159,7 @@ class DiscordAgent
           inline: true,
         });
       }
-    }
-
-    if (payload.issue) {
+    } else if (payload.issue) {
       fields.push(
         {
           name: 'Reported By',
@@ -193,6 +191,12 @@ class DiscordAgent
           color = EmbedColors.GREEN;
           break;
       }
+    } else if (payload.comment) {
+      fields.push({
+        name: `Comment from ${payload.comment.user.displayName}`,
+        value: payload.comment.message,
+        inline: false,
+      });
     }
 
     for (const extra of payload.extra ?? []) {
@@ -200,14 +204,6 @@ class DiscordAgent
         name: extra.name,
         value: extra.value,
         inline: true,
-      });
-    }
-
-    if (payload.comment) {
-      fields.push({
-        name: `Comment from ${payload.comment.user.displayName}`,
-        value: payload.comment.message,
-        inline: false,
       });
     }
 
