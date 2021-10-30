@@ -41,20 +41,15 @@ class WebPushAgent
     type: Notification,
     payload: NotificationPayload
   ): PushNotificationPayload {
-    const media =
-      payload.request?.media ??
-      payload.issue?.media ??
-      payload.comment?.issue?.media;
-    const mediaType = media
-      ? media.mediaType === MediaType.MOVIE
+    const mediaType = payload.media
+      ? payload.media.mediaType === MediaType.MOVIE
         ? 'movie'
         : 'series'
       : undefined;
 
-    const issue = payload.issue ?? payload.comment?.issue;
-    const issueType = issue
-      ? issue.issueType !== IssueType.OTHER
-        ? `${IssueTypeName[issue.issueType].toLowerCase()} issue`
+    const issueType = payload.issue
+      ? payload.issue.issueType !== IssueType.OTHER
+        ? `${IssueTypeName[payload.issue.issueType].toLowerCase()} issue`
         : 'issue'
       : undefined;
 
@@ -100,14 +95,14 @@ class WebPushAgent
         };
     }
 
-    const actionUrl = issue
-      ? `/issue/${issue.id}`
-      : media
-      ? `/${media.mediaType}/${media.tmdbId}`
+    const actionUrl = payload.issue
+      ? `/issue/${payload.issue.id}`
+      : payload.media
+      ? `/${payload.media.mediaType}/${payload.media.tmdbId}`
       : undefined;
 
     const actionUrlTitle = actionUrl
-      ? `View ${issue ? 'Issue' : 'Media'}`
+      ? `View ${payload.issue ? 'Issue' : 'Media'}`
       : undefined;
 
     return {

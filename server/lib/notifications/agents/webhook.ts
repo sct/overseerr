@@ -74,12 +74,6 @@ class WebhookAgent
     payload: NotificationPayload,
     type: Notification
   ): Record<string, unknown> {
-    payload.media =
-      payload.request?.media ??
-      payload.issue?.media ??
-      payload.comment?.issue?.media;
-    payload.issue = payload.issue ?? payload.comment?.issue;
-
     Object.keys(finalPayload).forEach((key) => {
       if (key === '{{extra}}') {
         finalPayload.extra = payload.extra ?? [];

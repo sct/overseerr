@@ -65,11 +65,6 @@ class TelegramAgent
     payload: NotificationPayload
   ): Partial<TelegramMessagePayload | TelegramPhotoPayload> {
     const { applicationUrl, applicationTitle } = getSettings().main;
-    const media =
-      payload.request?.media ??
-      payload.issue?.media ??
-      payload.comment?.issue?.media;
-    const issue = payload.issue ?? payload.comment?.issue;
 
     /* eslint-disable no-useless-escape */
     let message = `\*${this.escapeText(
@@ -107,6 +102,10 @@ class TelegramAgent
       if (status) {
         message += `\n\*Request Status:\* ${status}`;
       }
+    } else if (payload.comment) {
+      message += `\n\n\*Comment from ${this.escapeText(
+        payload.comment.user.displayName
+      )}:\* ${this.escapeText(payload.comment.message)}`;
     } else if (payload.issue) {
       message += `\n\n\*Reported By:\* ${this.escapeText(
         payload.issue.createdBy.displayName
@@ -115,10 +114,6 @@ class TelegramAgent
       message += `\n\*Issue Status:\* ${
         payload.issue.status === IssueStatus.OPEN ? 'Open' : 'Resolved'
       }`;
-    } else if (payload.comment) {
-      message += `\n\n\*Comment from ${this.escapeText(
-        payload.comment.user.displayName
-      )}:\* ${this.escapeText(payload.comment.message)}`;
     }
 
     for (const extra of payload.extra ?? []) {
@@ -126,10 +121,10 @@ class TelegramAgent
     }
 
     const url = applicationUrl
-      ? issue
-        ? `${applicationUrl}/issue/${issue.id}`
-        : media
-        ? `${applicationUrl}/${media.mediaType}/${media.tmdbId}`
+      ? payload.issue
+        ? `${applicationUrl}/issue/${payload.issue.id}`
+        : payload.media
+        ? `${applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`
         : undefined
       : undefined;
 

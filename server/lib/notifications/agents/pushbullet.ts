@@ -74,14 +74,14 @@ class PushbulletAgent
       if (status) {
         body += `\nRequest Status: ${status}`;
       }
+    } else if (payload.comment) {
+      body += `\n\nComment from ${payload.comment.user.displayName}:\n${payload.comment.message}`;
     } else if (payload.issue) {
       body += `\n\nReported By: ${payload.issue.createdBy.displayName}`;
       body += `\nIssue Type: ${IssueTypeName[payload.issue.issueType]}`;
       body += `\nIssue Status: ${
         payload.issue.status === IssueStatus.OPEN ? 'Open' : 'Resolved'
       }`;
-    } else if (payload.comment) {
-      body += `\n\nComment from ${payload.comment.user.displayName}:\n${payload.comment.message}`;
     }
 
     for (const extra of payload.extra ?? []) {

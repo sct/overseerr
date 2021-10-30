@@ -21,12 +21,6 @@ class LunaSeaAgent
   }
 
   private buildPayload(type: Notification, payload: NotificationPayload) {
-    const media =
-      payload.request?.media ??
-      payload.issue?.media ??
-      payload.comment?.issue?.media;
-    const issue = payload.issue ?? payload.comment?.issue;
-
     return {
       notification_type: Notification[type],
       event: payload.event,
@@ -36,13 +30,13 @@ class LunaSeaAgent
       email: payload.notifyUser?.email,
       username: payload.notifyUser?.displayName,
       avatar: payload.notifyUser?.avatar,
-      media: media
+      media: payload.media
         ? {
-            media_type: media.mediaType,
-            tmdbId: media.tmdbId,
-            tvdbId: media.tvdbId,
-            status: MediaStatus[media.status],
-            status4k: MediaStatus[media.status4k],
+            media_type: payload.media.mediaType,
+            tmdbId: payload.media.tmdbId,
+            tvdbId: payload.media.tvdbId,
+            status: MediaStatus[payload.media.status],
+            status4k: MediaStatus[payload.media.status4k],
           }
         : null,
       extra: payload.extra ?? [],
@@ -54,14 +48,14 @@ class LunaSeaAgent
             requestedBy_avatar: payload.request.requestedBy.avatar,
           }
         : null,
-      issue: issue
+      issue: payload.issue
         ? {
-            issue_id: issue.id,
-            issue_type: IssueType[issue.issueType],
-            issue_status: IssueStatus[issue.status],
-            createdBy_email: issue.createdBy.email,
-            createdBy_username: issue.createdBy.displayName,
-            createdBy_avatar: issue.createdBy.avatar,
+            issue_id: payload.issue.id,
+            issue_type: IssueType[payload.issue.issueType],
+            issue_status: IssueStatus[payload.issue.status],
+            createdBy_email: payload.issue.createdBy.email,
+            createdBy_username: payload.issue.createdBy.displayName,
+            createdBy_avatar: payload.issue.createdBy.avatar,
           }
         : null,
       comment: payload.comment

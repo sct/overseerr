@@ -112,10 +112,6 @@ class DiscordAgent
     payload: NotificationPayload
   ): DiscordRichEmbed {
     const { applicationUrl } = getSettings().main;
-    const media =
-      payload.request?.media ??
-      payload.issue?.media ??
-      payload.comment?.issue?.media;
 
     let color = EmbedColors.DARK_PURPLE;
     const fields: Field[] = [];
@@ -159,6 +155,12 @@ class DiscordAgent
           inline: true,
         });
       }
+    } else if (payload.comment) {
+      fields.push({
+        name: `Comment from ${payload.comment.user.displayName}`,
+        value: payload.comment.message,
+        inline: false,
+      });
     } else if (payload.issue) {
       fields.push(
         {
@@ -191,12 +193,6 @@ class DiscordAgent
           color = EmbedColors.GREEN;
           break;
       }
-    } else if (payload.comment) {
-      fields.push({
-        name: `Comment from ${payload.comment.user.displayName}`,
-        value: payload.comment.message,
-        inline: false,
-      });
     }
 
     for (const extra of payload.extra ?? []) {
@@ -207,12 +203,11 @@ class DiscordAgent
       });
     }
 
-    const issue = payload.issue ?? payload.comment?.issue;
     const url = applicationUrl
-      ? issue
-        ? `${applicationUrl}/issue/${issue.id}`
-        : media
-        ? `${applicationUrl}/${media.mediaType}/${media.tmdbId}`
+      ? payload.issue
+        ? `${applicationUrl}/issue/${payload.issue.id}`
+        : payload.media
+        ? `${applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`
         : undefined
       : undefined;
 

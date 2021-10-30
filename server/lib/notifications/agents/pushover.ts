@@ -49,10 +49,6 @@ class PushoverAgent
     payload: NotificationPayload
   ): Partial<PushoverPayload> {
     const { applicationUrl, applicationTitle } = getSettings().main;
-    const media =
-      payload.request?.media ??
-      payload.issue?.media ??
-      payload.comment?.issue?.media;
 
     const title = payload.event ?? payload.subject;
     let message = payload.event ? `<b>${payload.subject}</b>` : '';
@@ -90,6 +86,8 @@ class PushoverAgent
       if (status) {
         message += `<small>\n<b>Request Status:</b> ${status}</small>`;
       }
+    } else if (payload.comment) {
+      message += `<small>\n\n<b>Comment from ${payload.comment.user.displayName}:</b> ${payload.comment.message}</small>`;
     } else if (payload.issue) {
       message += `<small>\n\n<b>Reported By:</b> ${payload.issue.createdBy.displayName}</small>`;
       message += `<small>\n<b>Issue Type:</b> ${
@@ -102,20 +100,17 @@ class PushoverAgent
       if (type === Notification.ISSUE_CREATED) {
         priority = 1;
       }
-    } else if (payload.comment) {
-      message += `<small>\n\n<b>Comment from ${payload.comment.user.displayName}:</b> ${payload.comment.message}</small>`;
     }
 
     for (const extra of payload.extra ?? []) {
       message += `<small>\n<b>${extra.name}:</b> ${extra.value}</small>`;
     }
 
-    const issue = payload.issue ?? payload.comment?.issue;
     const url = applicationUrl
-      ? issue
-        ? `${applicationUrl}/issue/${issue.id}`
-        : media
-        ? `${applicationUrl}/${media.mediaType}/${media.tmdbId}`
+      ? payload.issue
+        ? `${applicationUrl}/issue/${payload.issue.id}`
+        : payload.media
+        ? `${applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`
         : undefined
       : undefined;
     const url_title = url

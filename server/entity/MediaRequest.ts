@@ -152,8 +152,9 @@ export class MediaRequest {
             omission: '…',
           }),
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-          notifyAdmin: true,
+          media,
           request: this,
+          notifyAdmin: true,
         });
       }
 
@@ -170,6 +171,7 @@ export class MediaRequest {
             omission: '…',
           }),
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
+          media,
           extra: [
             {
               name: 'Requested Seasons',
@@ -178,8 +180,8 @@ export class MediaRequest {
                 .join(', '),
             },
           ],
-          notifyAdmin: true,
           request: this,
+          notifyAdmin: true,
         });
       }
     }
@@ -242,6 +244,7 @@ export class MediaRequest {
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
             notifyAdmin: autoApproved,
             notifyUser: autoApproved ? undefined : this.requestedBy,
+            media,
             request: this,
           }
         );
@@ -272,6 +275,7 @@ export class MediaRequest {
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
             notifyAdmin: autoApproved,
             notifyUser: autoApproved ? undefined : this.requestedBy,
+            media,
             extra: [
               {
                 name: 'Requested Seasons',
@@ -533,9 +537,10 @@ export class MediaRequest {
                 separator: /\s/,
                 omission: '…',
               }),
+              media,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-              notifyAdmin: true,
               request: this,
+              notifyAdmin: true,
             });
           });
         logger.info('Sent request to Radarr', { label: 'Media Request' });
@@ -751,6 +756,7 @@ export class MediaRequest {
                 omission: '…',
               }),
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${series.poster_path}`,
+              media,
               extra: [
                 {
                   name: 'Requested Seasons',
@@ -759,8 +765,8 @@ export class MediaRequest {
                     .join(', '),
                 },
               ],
-              notifyAdmin: true,
               request: this,
+              notifyAdmin: true,
             });
           });
         logger.info('Sent request to Sonarr', { label: 'Media Request' });

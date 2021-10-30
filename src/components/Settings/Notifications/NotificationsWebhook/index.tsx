@@ -37,6 +37,8 @@ const defaultPayload = {
   },
   '{{issue}}': {
     issue_id: '{{issue_id}}',
+    issue_type: '{{issue_type}}',
+    issue_status: '{{issue_status}}',
     reportedBy_email: '{{reportedBy_email}}',
     reportedBy_username: '{{reportedBy_username}}',
     reportedBy_avatar: '{{reportedBy_avatar}}',

@@ -77,6 +77,7 @@ export class IssueSubscriber implements EntitySubscriberInterface<Issue> {
       subject: title,
       message: firstComment.message,
       issue: entity,
+      media: entity.media,
       image,
       extra,
       notifyAdmin: true,

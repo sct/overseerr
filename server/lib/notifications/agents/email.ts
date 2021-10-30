@@ -67,12 +67,8 @@ class EmailAgent
       };
     }
 
-    const media =
-      payload.request?.media ??
-      payload.issue?.media ??
-      payload.comment?.issue?.media;
-    const mediaType = media
-      ? media.mediaType === MediaType.MOVIE
+    const mediaType = payload.media
+      ? payload.media.mediaType === MediaType.MOVIE
         ? 'movie'
         : 'series'
       : undefined;
@@ -98,7 +94,7 @@ class EmailAgent
           break;
         case Notification.MEDIA_FAILED:
           body = `A request for the following ${mediaType} failed to be added to ${
-            media?.mediaType === MediaType.MOVIE ? 'Radarr' : 'Sonarr'
+            payload.media?.mediaType === MediaType.MOVIE ? 'Radarr' : 'Sonarr'
           }:`;
           break;
       }
@@ -120,7 +116,7 @@ class EmailAgent
           timestamp: new Date().toTimeString(),
           requestedBy: payload.request.requestedBy.displayName,
           actionUrl: applicationUrl
-            ? `${applicationUrl}/${media?.mediaType}/${media?.tmdbId}`
+            ? `${applicationUrl}/${payload.media?.mediaType}/${payload.media?.tmdbId}`
             : undefined,
           applicationUrl,
           applicationTitle,
@@ -128,27 +124,26 @@ class EmailAgent
           recipientEmail,
         },
       };
-    } else if (payload.issue || payload.comment) {
-      const issue = payload.issue ?? payload.comment?.issue;
+    } else if (payload.issue) {
       const issueType =
-        issue && issue.issueType !== IssueType.OTHER
-          ? `${IssueTypeName[issue.issueType].toLowerCase()} issue`
+        payload.issue && payload.issue.issueType !== IssueType.OTHER
+          ? `${IssueTypeName[payload.issue.issueType].toLowerCase()} issue`
           : 'issue';
 
       let body = '';
 
       switch (type) {
         case Notification.ISSUE_CREATED:
-          body = `A new ${issueType} has been reported by ${issue?.createdBy.displayName} for the ${mediaType} ${payload.subject}:`;
+          body = `A new ${issueType} has been reported by ${payload.issue.createdBy.displayName} for the ${mediaType} ${payload.subject}:`;
           break;
         case Notification.ISSUE_COMMENT:
           body = `${payload.comment?.user.displayName} commented on the ${issueType} for the ${mediaType} ${payload.subject}:`;
           break;
         case Notification.ISSUE_RESOLVED:
-          body = `The ${issueType} for the ${mediaType} ${payload.subject} was marked as resolved by ${payload.issue?.modifiedBy?.displayName}!`;
+          body = `The ${issueType} for the ${mediaType} ${payload.subject} was marked as resolved by ${payload.issue.modifiedBy?.displayName}!`;
           break;
         case Notification.ISSUE_REOPENED:
-          body = `The ${issueType} for the ${mediaType} ${payload.subject} was reopened by ${payload.issue?.modifiedBy?.displayName}.`;
+          body = `The ${issueType} for the ${mediaType} ${payload.subject} was reopened by ${payload.issue.modifiedBy?.displayName}.`;
           break;
       }
 
@@ -166,9 +161,8 @@ class EmailAgent
           extra: payload.extra ?? [],
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
-          reportedBy: issue?.createdBy.displayName,
           actionUrl: applicationUrl
-            ? `${applicationUrl}/issue/${issue?.id}`
+            ? `${applicationUrl}/issue/${payload.issue.id}`
             : undefined,
           applicationUrl,
           applicationTitle,

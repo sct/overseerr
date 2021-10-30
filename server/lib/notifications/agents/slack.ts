@@ -61,10 +61,6 @@ class SlackAgent
     payload: NotificationPayload
   ): SlackBlockEmbed {
     const { applicationUrl, applicationTitle } = getSettings().main;
-    const media =
-      payload.request?.media ??
-      payload.issue?.media ??
-      payload.comment?.issue?.media;
 
     const fields: EmbedField[] = [];
 
@@ -100,6 +96,11 @@ class SlackAgent
           text: `*Request Status*\n${status}`,
         });
       }
+    } else if (payload.comment) {
+      fields.push({
+        type: 'mrkdwn',
+        text: `*Comment from ${payload.comment.user.displayName}*\n${payload.comment.message}`,
+      });
     } else if (payload.issue) {
       fields.push(
         {
@@ -117,11 +118,6 @@ class SlackAgent
           }`,
         }
       );
-    } else if (payload.comment) {
-      fields.push({
-        type: 'mrkdwn',
-        text: `*Comment from ${payload.comment.user.displayName}*\n${payload.comment.message}`,
-      });
     }
 
     for (const extra of payload.extra ?? []) {
@@ -177,12 +173,11 @@ class SlackAgent
       });
     }
 
-    const issue = payload.issue ?? payload.comment?.issue;
     const url = applicationUrl
-      ? issue
-        ? `${applicationUrl}/issue/${issue.id}`
-        : media
-        ? `${applicationUrl}/${media.mediaType}/${media.tmdbId}`
+      ? payload.issue
+        ? `${applicationUrl}/issue/${payload.issue.id}`
+        : payload.media
+        ? `${applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`
         : undefined
       : undefined;
 

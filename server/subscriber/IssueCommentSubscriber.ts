@@ -9,6 +9,7 @@ import TheMovieDb from '../api/themoviedb';
 import { IssueType, IssueTypeName } from '../constants/issue';
 import { MediaType } from '../constants/media';
 import IssueComment from '../entity/IssueComment';
+import Media from '../entity/Media';
 import notificationManager, { Notification } from '../lib/notifications';
 import { Permission } from '../lib/permissions';
 
@@ -21,30 +22,36 @@ export class IssueCommentSubscriber
   }
 
   private async sendIssueCommentNotification(entity: IssueComment) {
-    const issueCommentRepository = getRepository(IssueComment);
     let title: string;
     let image: string;
     const tmdb = new TheMovieDb();
-    const issuecomment = await issueCommentRepository.findOne({
-      where: { id: entity.id },
-      relations: ['issue'],
-    });
 
-    const issue = issuecomment?.issue;
-
+    const issue = (
+      await getRepository(IssueComment).findOne({
+        where: { id: entity.id },
+        relations: ['issue'],
+      })
+    )?.issue;
     if (!issue) {
       return;
     }
 
-    if (issue.media.mediaType === MediaType.MOVIE) {
-      const movie = await tmdb.getMovie({ movieId: issue.media.tmdbId });
+    const media = await getRepository(Media).findOne({
+      where: { id: issue.media.id },
+    });
+    if (!media) {
+      return;
+    }
+
+    if (media.mediaType === MediaType.MOVIE) {
+      const movie = await tmdb.getMovie({ movieId: media.tmdbId });
 
       title = `${movie.title}${
         movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
       }`;
       image = `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`;
     } else {
-      const tvshow = await tmdb.getTvShow({ tvId: issue.media.tmdbId });
+      const tvshow = await tmdb.getTvShow({ tvId: media.tmdbId });
 
       title = `${tvshow.name}${
         tvshow.first_air_date ? ` (${tvshow.first_air_date.slice(0, 4)})` : ''
@@ -65,6 +72,8 @@ export class IssueCommentSubscriber
         subject: title,
         message: firstComment.message,
         comment: entity,
+        issue,
+        media,
         image,
         notifyAdmin: true,
         notifyUser:
