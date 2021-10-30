@@ -15,20 +15,22 @@ const messages = defineMessages({
 });
 
 interface IssueDescriptionProps {
-  issueId: number;
   description: string;
+  belongsToUser: boolean;
+  commentCount: number;
   onEdit: (newDescription: string) => void;
   onDelete: () => void;
 }
 
 const IssueDescription: React.FC<IssueDescriptionProps> = ({
-  issueId,
   description,
+  belongsToUser,
+  commentCount,
   onEdit,
   onDelete,
 }) => {
   const intl = useIntl();
-  const { user, hasPermission } = useUser();
+  const { hasPermission } = useUser();
   const [isEditing, setIsEditing] = useState(false);
 
   return (
@@ -37,7 +39,7 @@ const IssueDescription: React.FC<IssueDescriptionProps> = ({
         <div className="font-semibold text-gray-100 lg:text-xl">
           {intl.formatMessage(messages.description)}
         </div>
-        {(hasPermission(Permission.MANAGE_ISSUES) || user?.id === issueId) && (
+        {(hasPermission(Permission.MANAGE_ISSUES) || belongsToUser) && (
           <Menu as="div" className="relative inline-block text-left">
             {({ open }) => (
               <>
@@ -63,35 +65,39 @@ const IssueDescription: React.FC<IssueDescriptionProps> = ({
                     className="absolute right-0 w-56 mt-2 origin-top-right bg-gray-700 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   >
                     <div className="py-1">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            onClick={() => setIsEditing(true)}
-                            className={`block w-full text-left px-4 py-2 text-sm ${
-                              active
-                                ? 'bg-gray-600 text-white'
-                                : 'text-gray-100'
-                            }`}
-                          >
-                            {intl.formatMessage(messages.edit)}
-                          </button>
-                        )}
-                      </Menu.Item>
-
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            onClick={() => onDelete()}
-                            className={`block w-full text-left px-4 py-2 text-sm ${
-                              active
-                                ? 'bg-gray-600 text-white'
-                                : 'text-gray-100'
-                            }`}
-                          >
-                            {intl.formatMessage(messages.deleteissue)}
-                          </button>
-                        )}
-                      </Menu.Item>
+                      {belongsToUser && (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={() => setIsEditing(true)}
+                              className={`block w-full text-left px-4 py-2 text-sm ${
+                                active
+                                  ? 'bg-gray-600 text-white'
+                                  : 'text-gray-100'
+                              }`}
+                            >
+                              {intl.formatMessage(messages.edit)}
+                            </button>
+                          )}
+                        </Menu.Item>
+                      )}
+                      {(hasPermission(Permission.MANAGE_ISSUES) ||
+                        !commentCount) && (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={() => onDelete()}
+                              className={`block w-full text-left px-4 py-2 text-sm ${
+                                active
+                                  ? 'bg-gray-600 text-white'
+                                  : 'text-gray-100'
+                              }`}
+                            >
+                              {intl.formatMessage(messages.deleteissue)}
+                            </button>
+                          )}
+                        </Menu.Item>
+                      )}
                     </div>
                   </Menu.Items>
                 </Transition>

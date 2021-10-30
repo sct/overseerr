@@ -39,7 +39,7 @@ const IssueComment: React.FC<IssueCommentProps> = ({
   const intl = useIntl();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const { user, hasPermission } = useUser();
+  const { hasPermission } = useUser();
 
   const EditCommentSchema = Yup.object().shape({
     newMessage: Yup.string().required(
@@ -58,8 +58,6 @@ const IssueComment: React.FC<IssueCommentProps> = ({
       }
     }
   };
-
-  const belongsToUser = comment.user.id === user?.id;
 
   return (
     <div
@@ -98,7 +96,7 @@ const IssueComment: React.FC<IssueCommentProps> = ({
       </Link>
       <div className="relative flex-1">
         <div className="w-full rounded-md shadow ring-1 ring-gray-500">
-          {(belongsToUser || hasPermission(Permission.MANAGE_ISSUES)) && (
+          {(isActiveUser || hasPermission(Permission.MANAGE_ISSUES)) && (
             <Menu
               as="div"
               className="absolute z-40 inline-block text-left top-2 right-1"
@@ -129,20 +127,22 @@ const IssueComment: React.FC<IssueCommentProps> = ({
                       className="absolute right-0 w-56 mt-2 origin-top-right bg-gray-700 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                     >
                       <div className="py-1">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              onClick={() => setIsEditing(true)}
-                              className={`block w-full text-left px-4 py-2 text-sm ${
-                                active
-                                  ? 'bg-gray-600 text-white'
-                                  : 'text-gray-100'
-                              }`}
-                            >
-                              {intl.formatMessage(messages.edit)}
-                            </button>
-                          )}
-                        </Menu.Item>
+                        {isActiveUser && (
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                onClick={() => setIsEditing(true)}
+                                className={`block w-full text-left px-4 py-2 text-sm ${
+                                  active
+                                    ? 'bg-gray-600 text-white'
+                                    : 'text-gray-100'
+                                }`}
+                              >
+                                {intl.formatMessage(messages.edit)}
+                              </button>
+                            )}
+                          </Menu.Item>
+                        )}
                         <Menu.Item>
                           {({ active }) => (
                             <button
