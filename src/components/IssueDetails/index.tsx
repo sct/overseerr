@@ -260,7 +260,7 @@ const IssueDetails: React.FC = () => {
               username: (
                 <Link
                   href={
-                    issueData.createdBy.id === currentUser?.id
+                    belongsToUser
                       ? '/profile'
                       : `/users/${issueData.createdBy.id}`
                   }
@@ -294,8 +294,9 @@ const IssueDetails: React.FC = () => {
       <div className="relative z-10 flex mt-6 text-gray-300">
         <div className="flex-1 lg:pr-4">
           <IssueDescription
-            issueId={issueData.id}
             description={firstComment.message}
+            belongsToUser={belongsToUser}
+            commentCount={otherComments.length}
             onEdit={(newMessage) => {
               editFirstComment(newMessage);
             }}

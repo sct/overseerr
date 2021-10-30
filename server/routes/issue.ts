@@ -302,7 +302,7 @@ issueRoutes.delete('/:issueId', async (req, res, next) => {
 
     if (
       !req.user?.hasPermission(Permission.MANAGE_ISSUES) &&
-      issue.createdBy.id !== req.user?.id
+      (issue.createdBy.id !== req.user?.id || issue.comments.length > 1)
     ) {
       return next({
         status: 401,

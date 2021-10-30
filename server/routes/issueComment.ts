@@ -68,13 +68,10 @@ issueCommentRoutes.put<
         where: { id: Number(req.params.commentId) },
       });
 
-      if (
-        !req.user?.hasPermission([Permission.MANAGE_ISSUES], { type: 'or' }) &&
-        comment.user.id !== req.user?.id
-      ) {
+      if (comment.user.id !== req.user?.id) {
         return next({
           status: 403,
-          message: 'You do not have permission to edit this comment.',
+          message: 'You can only edit your own comments.',
         });
       }
 
