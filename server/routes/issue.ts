@@ -68,7 +68,7 @@ issueRoutes.get<Record<string, string>, IssueResultsResponse>(
         return next({
           status: 403,
           message:
-            'You do not have permission to view issues created by other users',
+            'You do not have permission to view issues reported by other users',
         });
       }
       query = query.andWhere('createdBy.id = :id', { id: req.user?.id });
@@ -291,35 +291,41 @@ issueRoutes.post<{ issueId: string; status: string }, Issue>(
   }
 );
 
-issueRoutes.delete('/:issueId', async (req, res, next) => {
-  const issueRepository = getRepository(Issue);
+issueRoutes.delete(
+  '/:issueId',
+  isAuthenticated([Permission.MANAGE_ISSUES, Permission.CREATE_ISSUES], {
+    type: 'or',
+  }),
+  async (req, res, next) => {
+    const issueRepository = getRepository(Issue);
 
-  try {
-    const issue = await issueRepository.findOneOrFail({
-      where: { id: Number(req.params.issueId) },
-      relations: ['createdBy'],
-    });
-
-    if (
-      !req.user?.hasPermission(Permission.MANAGE_ISSUES) &&
-      (issue.createdBy.id !== req.user?.id || issue.comments.length > 1)
-    ) {
-      return next({
-        status: 401,
-        message: 'You do not have permission to delete this issue.',
+    try {
+      const issue = await issueRepository.findOneOrFail({
+        where: { id: Number(req.params.issueId) },
+        relations: ['createdBy'],
       });
+
+      if (
+        !req.user?.hasPermission(Permission.MANAGE_ISSUES) &&
+        (issue.createdBy.id !== req.user?.id || issue.comments.length > 1)
+      ) {
+        return next({
+          status: 401,
+          message: 'You do not have permission to delete this issue.',
+        });
+      }
+
+      await issueRepository.remove(issue);
+
+      return res.status(204).send();
+    } catch (e) {
+      logger.error('Something went wrong deleting an issue.', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 404, message: 'Issue not found.' });
     }
-
-    await issueRepository.remove(issue);
-
-    return res.status(204).send();
-  } catch (e) {
-    logger.error('Something went wrong deleting an issue.', {
-      label: 'API',
-      errorMessage: e.message,
-    });
-    next({ status: 404, message: 'Issue not found.' });
   }
-});
+);
 
 export default issueRoutes;

@@ -500,9 +500,26 @@ requestRoutes.get('/:requestId', async (req, res, next) => {
       relations: ['requestedBy', 'modifiedBy'],
     });
 
+    if (
+      request.requestedBy.id !== req.user?.id &&
+      !req.user?.hasPermission(
+        [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+        { type: 'or' }
+      )
+    ) {
+      return next({
+        status: 403,
+        message: 'You do not have permission to view this request.',
+      });
+    }
+
     return res.status(200).json(request);
   } catch (e) {
-    next({ status: 404, message: 'Request not found' });
+    logger.debug('Failed to retrieve request.', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 404, message: 'Request not found.' });
   }
 });
 
