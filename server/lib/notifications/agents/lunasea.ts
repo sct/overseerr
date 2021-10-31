@@ -60,7 +60,7 @@ class LunaSeaAgent
         : null,
       comment: payload.comment
         ? {
-            comment_id: payload.comment.id,
+            comment_message: payload.comment.message,
             commentedBy_email: payload.comment.user.email,
             commentedBy_username: payload.comment.user.displayName,
             commentedBy_avatar: payload.comment.user.avatar,
