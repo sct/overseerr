@@ -8,6 +8,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import type Issue from '../../../server/entity/Issue';
+import globalMessages from '../../i18n/globalMessages';
 import Button from '../Common/Button';
 import { issueOptions } from '../IssueModal/constants';
 
@@ -56,7 +57,7 @@ const IssueBlock: React.FC<IssueBlockProps> = ({ issue }) => {
           <Link href={`/issues/${issue.id}`} passHref>
             <Button buttonType="primary" buttonSize="sm" as="a">
               <EyeIcon />
-              <span>View</span>
+              <span>{intl.formatMessage(globalMessages.view)}</span>
             </Button>
           </Link>
         </div>

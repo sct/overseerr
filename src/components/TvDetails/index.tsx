@@ -331,9 +331,14 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             is4kShowComplete={is4kComplete}
           />
           {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
-            data.mediaInfo?.status4k === MediaStatus.AVAILABLE ||
             data.mediaInfo?.status === MediaStatus.PARTIALLY_AVAILABLE ||
-            data?.mediaInfo?.status4k === MediaStatus.PARTIALLY_AVAILABLE) &&
+            (settings.currentSettings.series4kEnabled &&
+              hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+                type: 'or',
+              }) &&
+              (data.mediaInfo?.status4k === MediaStatus.AVAILABLE ||
+                data?.mediaInfo?.status4k ===
+                  MediaStatus.PARTIALLY_AVAILABLE))) &&
             hasPermission(
               [Permission.CREATE_ISSUES, Permission.MANAGE_ISSUES],
               {
@@ -341,7 +346,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               }
             ) && (
               <Button
-                buttonType="danger"
+                buttonType="warning"
                 className="ml-2 first:ml-0"
                 onClick={() => setShowIssueModal(true)}
               >
@@ -351,20 +356,26 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
           {hasPermission(Permission.MANAGE_REQUESTS) && (
             <Button
               buttonType="default"
-              className="ml-2 first:ml-0"
+              className="relative ml-2 first:ml-0"
               onClick={() => setShowManager(true)}
             >
               <CogIcon className="!mr-0" />
-              {(
-                data.mediaInfo?.issues.filter(
-                  (issue) => issue.status === IssueStatus.OPEN
-                ) ?? []
-              ).length > 0 && (
-                <>
-                  <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1" />
-                  <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1 animate-ping" />
-                </>
-              )}
+              {hasPermission(
+                [Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES],
+                {
+                  type: 'or',
+                }
+              ) &&
+                (
+                  data.mediaInfo?.issues.filter(
+                    (issue) => issue.status === IssueStatus.OPEN
+                  ) ?? []
+                ).length > 0 && (
+                  <>
+                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1" />
+                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1 animate-ping" />
+                  </>
+                )}
             </Button>
           )}
         </div>

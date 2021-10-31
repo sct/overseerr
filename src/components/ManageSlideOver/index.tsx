@@ -19,6 +19,7 @@ import RequestBlock from '../RequestBlock';
 
 const messages = defineMessages({
   manageModalTitle: 'Manage {mediaType}',
+  manageModalIssues: 'Open Issues',
   manageModalRequests: 'Requests',
   manageModalNoRequests: 'No requests.',
   manageModalClearMedia: 'Clear Media Data',
@@ -76,6 +77,11 @@ const ManageSlideOver: React.FC<
     });
     revalidate();
   };
+
+  const openIssues =
+    data.mediaInfo?.issues?.filter(
+      (issue) => issue.status === IssueStatus.OPEN
+    ) ?? [];
 
   return (
     <SlideOver
@@ -155,14 +161,17 @@ const ManageSlideOver: React.FC<
             )}
           </div>
         )}
-      {(data.mediaInfo?.issues ?? []).length > 0 && (
-        <>
-          <h3 className="mb-2 text-xl">Open Issues</h3>
-          <div className="mb-4 overflow-hidden bg-gray-600 rounded-md shadow">
-            <ul>
-              {data.mediaInfo?.issues
-                ?.filter((issue) => issue.status === IssueStatus.OPEN)
-                .map((issue) => (
+      {hasPermission([Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES], {
+        type: 'or',
+      }) &&
+        openIssues.length > 0 && (
+          <>
+            <h3 className="mb-2 text-xl">
+              {intl.formatMessage(messages.manageModalIssues)}
+            </h3>
+            <div className="mb-4 overflow-hidden bg-gray-600 rounded-md shadow">
+              <ul>
+                {openIssues.map((issue) => (
                   <li
                     key={`manage-issue-${issue.id}`}
                     className="border-b border-gray-700 last:border-b-0"
@@ -170,10 +179,10 @@ const ManageSlideOver: React.FC<
                     <IssueBlock issue={issue} />
                   </li>
                 ))}
-            </ul>
-          </div>
-        </>
-      )}
+              </ul>
+            </div>
+          </>
+        )}
       <h3 className="mb-2 text-xl">
         {intl.formatMessage(messages.manageModalRequests)}
       </h3>

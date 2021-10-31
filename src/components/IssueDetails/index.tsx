@@ -44,7 +44,7 @@ const messages = defineMessages({
   reopenissueandcomment: 'Reopen with Comment',
   issuepagetitle: 'Issue',
   playonplex: 'Play on Plex',
-  play4konplex: 'Play 4K on Plex',
+  play4konplex: 'Play in 4K on Plex',
   openinarr: 'Open in {arr}',
   openin4karr: 'Open in 4K {arr}',
   toasteditdescriptionsuccess: 'Issue description edited successfully!',
@@ -228,7 +228,7 @@ const IssueDetails: React.FC = () => {
         <div className="media-title">
           <div className="media-status">
             {issueData.status === IssueStatus.OPEN && (
-              <Badge badgeType="primary">
+              <Badge badgeType="warning">
                 {intl.formatMessage(globalMessages.open)}
               </Badge>
             )}
@@ -244,15 +244,11 @@ const IssueDetails: React.FC = () => {
                 issueData.media.mediaType === MediaType.MOVIE ? 'movie' : 'tv'
               }/${data.id}`}
             >
-              <a className="hover:underline">
-                {title}{' '}
-                {releaseYear && (
-                  <span className="media-year">
-                    ({releaseYear.slice(0, 4)})
-                  </span>
-                )}
-              </a>
-            </Link>
+              <a className="hover:underline">{title}</a>
+            </Link>{' '}
+            {releaseYear && (
+              <span className="media-year">({releaseYear.slice(0, 4)})</span>
+            )}
           </h1>
           <span className="media-attributes">
             {intl.formatMessage(messages.openedby, {

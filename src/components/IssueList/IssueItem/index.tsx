@@ -183,7 +183,7 @@ const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
               {intl.formatMessage(messages.issuestatus)}
             </span>
             {issue.status === IssueStatus.OPEN ? (
-              <Badge badgeType="primary">
+              <Badge badgeType="warning">
                 {intl.formatMessage(globalMessages.open)}
               </Badge>
             ) : (

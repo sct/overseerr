@@ -46,8 +46,7 @@ const messages = defineMessages({
   totalrequests: 'Requests',
   accounttype: 'Type',
   role: 'Role',
-  created: 'Created',
-  lastupdated: 'Updated',
+  created: 'Joined',
   bulkedit: 'Bulk Edit',
   owner: 'Owner',
   admin: 'Admin',
@@ -75,8 +74,7 @@ const messages = defineMessages({
   autogeneratepassword: 'Automatically Generate Password',
   autogeneratepasswordTip: 'Email a server-generated password to the user',
   validationEmail: 'You must provide a valid email address',
-  sortCreated: 'Creation Date',
-  sortUpdated: 'Last Updated',
+  sortCreated: 'Join Date',
   sortDisplayName: 'Display Name',
   sortRequests: 'Request Count',
   localLoginDisabled:
@@ -91,7 +89,7 @@ const UserList: React.FC = () => {
   const settings = useSettings();
   const { addToast } = useToasts();
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
-  const [currentSort, setCurrentSort] = useState<Sort>('created');
+  const [currentSort, setCurrentSort] = useState<Sort>('displayname');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
 
   const page = router.query.page ? Number(router.query.page) : 1;
@@ -522,9 +520,6 @@ const UserList: React.FC = () => {
               <option value="created">
                 {intl.formatMessage(messages.sortCreated)}
               </option>
-              <option value="updated">
-                {intl.formatMessage(messages.sortUpdated)}
-              </option>
               <option value="requests">
                 {intl.formatMessage(messages.sortRequests)}
               </option>
@@ -556,7 +551,6 @@ const UserList: React.FC = () => {
             <Table.TH>{intl.formatMessage(messages.accounttype)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.lastupdated)}</Table.TH>
             <Table.TH className="text-right">
               {(data.results ?? []).length > 1 && (
                 <Button
@@ -647,13 +641,6 @@ const UserList: React.FC = () => {
               </Table.TD>
               <Table.TD>
                 {intl.formatDate(user.createdAt, {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </Table.TD>
-              <Table.TD>
-                {intl.formatDate(user.updatedAt, {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
