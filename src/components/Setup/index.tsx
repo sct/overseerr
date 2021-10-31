@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { mutate } from 'swr';
+import useSWR, { mutate } from 'swr';
 import useLocale from '../../hooks/useLocale';
 import AppDataWarning from '../AppDataWarning';
 import Badge from '../Common/Badge';
@@ -51,18 +51,21 @@ const Setup: React.FC = () => {
     }
   };
 
+  const { data: backdrops } = useSWR<string[]>('/api/v1/backdrops', {
+    refreshInterval: 0,
+    refreshWhenHidden: false,
+    revalidateOnFocus: false,
+  });
+
   return (
     <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900">
       <PageTitle title={intl.formatMessage(messages.setup)} />
       <ImageFader
-        backgroundImages={[
-          '/images/rotate1.jpg',
-          '/images/rotate2.jpg',
-          '/images/rotate3.jpg',
-          '/images/rotate4.jpg',
-          '/images/rotate5.jpg',
-          '/images/rotate6.jpg',
-        ]}
+        backgroundImages={
+          backdrops?.map(
+            (backdrop) => `https://www.themoviedb.org/t/p/original${backdrop}`
+          ) ?? []
+        }
       />
       <div className="absolute z-50 top-4 right-4">
         <LanguagePicker />
