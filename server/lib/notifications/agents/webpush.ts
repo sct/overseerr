@@ -132,7 +132,7 @@ class WebPushAgent
     const userPushSubRepository = getRepository(UserPushSubscription);
     const settings = getSettings();
 
-    let pushSubs: UserPushSubscription[] = [];
+    const pushSubs: UserPushSubscription[] = [];
 
     const mainUser = await userRepository.findOne({ where: { id: 1 } });
 
@@ -150,7 +150,7 @@ class WebPushAgent
         where: { user: payload.notifyUser.id },
       });
 
-      pushSubs = notifySubs;
+      pushSubs.push(...notifySubs);
     }
 
     if (payload.notifyAdmin) {
@@ -176,7 +176,7 @@ class WebPushAgent
         })
         .getMany();
 
-      pushSubs = allSubs;
+      pushSubs.push(...allSubs);
     }
 
     if (mainUser && pushSubs.length > 0) {

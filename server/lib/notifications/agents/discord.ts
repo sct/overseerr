@@ -255,7 +255,7 @@ class DiscordAgent
       subject: payload.subject,
     });
 
-    let content = undefined;
+    const userMentions: string[] = [];
 
     try {
       if (payload.notifyUser) {
@@ -264,9 +264,9 @@ class DiscordAgent
             NotificationAgentKey.DISCORD,
             type
           ) &&
-          payload.notifyUser.settings?.discordId
+          payload.notifyUser.settings.discordId
         ) {
-          content = `<@${payload.notifyUser.settings.discordId}>`;
+          userMentions.push(`<@${payload.notifyUser.settings.discordId}>`);
         }
       }
 
@@ -274,18 +274,19 @@ class DiscordAgent
         const userRepository = getRepository(User);
         const users = await userRepository.find();
 
-        content = users
-          .filter(
-            (user) =>
-              user.settings?.hasNotificationType(
-                NotificationAgentKey.DISCORD,
-                type
-              ) &&
-              user.settings?.discordId &&
-              shouldSendAdminNotification(type, user, payload)
-          )
-          .map((user) => `<@${user.settings?.discordId}>`)
-          .join(' ');
+        userMentions.push(
+          ...users
+            .filter(
+              (user) =>
+                user.settings?.hasNotificationType(
+                  NotificationAgentKey.DISCORD,
+                  type
+                ) &&
+                user.settings.discordId &&
+                shouldSendAdminNotification(type, user, payload)
+            )
+            .map((user) => `<@${user.settings?.discordId}>`)
+        );
       }
 
       await axios.post(settings.options.webhookUrl, {
@@ -294,14 +295,13 @@ class DiscordAgent
           : getSettings().main.applicationTitle,
         avatar_url: settings.options.botAvatarUrl,
         embeds: [this.buildEmbed(type, payload)],
-        content,
+        content: userMentions.join(' '),
       } as DiscordWebhookPayload);
 
       return true;
     } catch (e) {
       logger.error('Error sending Discord notification', {
         label: 'Notifications',
-        mentions: content,
         type: Notification[type],
         subject: payload.subject,
         errorMessage: e.message,
