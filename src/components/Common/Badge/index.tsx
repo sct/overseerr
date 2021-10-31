@@ -13,7 +13,7 @@ const Badge: React.FC<BadgeProps> = ({
   children,
 }) => {
   const badgeStyle = [
-    'px-2 inline-flex text-xs leading-5 font-semibold rounded-full',
+    'px-2 inline-flex text-xs leading-5 font-semibold rounded-full whitespace-nowrap',
   ];
 
   if (url) {

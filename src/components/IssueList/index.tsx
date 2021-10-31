@@ -19,7 +19,7 @@ import IssueItem from './IssueItem';
 
 const messages = defineMessages({
   issues: 'Issues',
-  sortAdded: 'Request Date',
+  sortAdded: 'Most Recent',
   sortModified: 'Last Modified',
   showallissues: 'Show All Issues',
 });
