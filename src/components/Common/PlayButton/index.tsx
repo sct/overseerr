@@ -8,8 +8,8 @@ interface PlayButtonProps {
 }
 
 export enum PlayButtonLinkTypes {
-  Web = 'web',
-  Trailer = 'trailer',
+  WEB = 'web',
+  TRAILER = 'trailer',
 }
 
 export interface PlayButtonLink {
