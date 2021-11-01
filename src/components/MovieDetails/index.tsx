@@ -149,7 +149,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
 
   if (trailerUrl) {
     mediaLinks.push({
-      type: PlayButtonLinkTypes.Trailer,
+      type: PlayButtonLinkTypes.TRAILER,
       text: intl.formatMessage(messages.watchtrailer),
       url: trailerUrl,
       svg: <FilmIcon />,

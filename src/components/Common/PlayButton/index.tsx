@@ -24,7 +24,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({ links }) => {
 
   function openLink(link: PlayButtonLink): void {
     switch (link.type) {
-      case PlayButtonLinkTypes.Trailer:
+      case PlayButtonLinkTypes.TRAILER:
         if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
           window.open(`/deep-link?url=${link.url}`, '_blank');
           return;
