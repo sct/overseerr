@@ -67,22 +67,8 @@ app
           label: 'Settings',
         });
 
-        try {
-          const plexapi = new PlexAPI({ plexToken: admin.plexToken });
-          await plexapi.syncLibraries();
-
-          logger.info('Plex library migration completed successfully', {
-            label: 'Settings',
-          });
-        } catch (e) {
-          logger.error('Failed to fetch Plex libraries', {
-            label: 'Settings',
-            message: e.message,
-          });
-
-          settings.plex.libraries = [];
-          settings.save();
-        }
+        const plexapi = new PlexAPI({ plexToken: admin.plexToken });
+        await plexapi.syncLibraries();
       }
     }
 
