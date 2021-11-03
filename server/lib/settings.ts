@@ -35,6 +35,14 @@ export interface PlexSettings {
   webAppUrl?: string;
 }
 
+export interface TautulliSettings {
+  hostname?: string;
+  port?: number;
+  useSsl?: boolean;
+  urlBase?: string;
+  apiKey?: string;
+}
+
 export interface DVRSettings {
   id: number;
   name: string;
@@ -244,6 +252,7 @@ interface AllSettings {
   vapidPrivate: string;
   main: MainSettings;
   plex: PlexSettings;
+  tautulli: TautulliSettings;
   radarr: RadarrSettings[];
   sonarr: SonarrSettings[];
   public: PublicSettings;
@@ -290,6 +299,7 @@ class Settings {
         useSsl: false,
         libraries: [],
       },
+      tautulli: {},
       radarr: [],
       sonarr: [],
       public: {
@@ -423,6 +433,14 @@ class Settings {
 
   set plex(data: PlexSettings) {
     this.data.plex = data;
+  }
+
+  get tautulli(): TautulliSettings {
+    return this.data.tautulli;
+  }
+
+  set tautulli(data: TautulliSettings) {
+    this.data.tautulli = data;
   }
 
   get radarr(): RadarrSettings[] {

@@ -145,6 +145,9 @@ class Media {
   public plexUrl?: string;
   public plexUrl4k?: string;
 
+  public tautulliUrl?: string;
+  public tautulliUrl4k?: string;
+
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
   }
@@ -152,6 +155,13 @@ class Media {
   @AfterLoad()
   public setPlexUrls(): void {
     const { machineId, webAppUrl } = getSettings().plex;
+    const tautulliSettings = getSettings().tautulli;
+    const tautulliUrl =
+      tautulliSettings.hostname && tautulliSettings.port
+        ? `${tautulliSettings.useSsl ? 'https' : 'http'}://${
+            tautulliSettings.hostname
+          }:${tautulliSettings.port}${tautulliSettings.urlBase ?? ''}`
+        : undefined;
 
     if (this.ratingKey) {
       this.plexUrl = `${
@@ -159,6 +169,10 @@ class Media {
       }#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${
         this.ratingKey
       }`;
+
+      if (tautulliUrl) {
+        this.tautulliUrl = `${tautulliUrl}/info?rating_key=${this.ratingKey}`;
+      }
     }
 
     if (this.ratingKey4k) {
@@ -167,6 +181,10 @@ class Media {
       }#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${
         this.ratingKey4k
       }`;
+
+      if (tautulliUrl) {
+        this.tautulliUrl4k = `${tautulliUrl}/info?rating_key=${this.ratingKey4k}`;
+      }
     }
   }
 

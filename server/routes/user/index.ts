@@ -1,8 +1,12 @@
 import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
+import { uniqWith } from 'lodash';
+import moment from 'moment';
 import { getRepository, Not } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
+import TautulliAPI, { parseDuration } from '../../api/tautulli';
 import { UserType } from '../../constants/user';
+import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
 import { UserPushSubscription } from '../../entity/UserPushSubscription';
@@ -10,6 +14,7 @@ import {
   QuotaResponse,
   UserRequestsResponse,
   UserResultsResponse,
+  UserWatchHistoryResponse,
 } from '../../interfaces/api/userInterfaces';
 import { hasPermission, Permission } from '../../lib/permissions';
 import { getSettings } from '../../lib/settings';
@@ -488,6 +493,81 @@ router.get<{ id: string }, QuotaResponse>(
       return res.status(200).json(quotas);
     } catch (e) {
       next({ status: 404, message: e.message });
+    }
+  }
+);
+
+router.get<{ id: string }, UserWatchHistoryResponse>(
+  '/:id/watch_history',
+  async (req, res, next) => {
+    if (
+      Number(req.params.id) !== req.user?.id &&
+      !req.user?.hasPermission(Permission.ADMIN)
+    ) {
+      return next({
+        status: 403,
+        message: 'You do not have permission to access this endpoint.',
+      });
+    }
+
+    const settings = getSettings().tautulli;
+
+    if (!settings.hostname || !settings.port || !settings.apiKey) {
+      return next({
+        status: 404,
+        message: 'Tautulli API not configured.',
+      });
+    }
+
+    try {
+      const mediaRepository = getRepository(Media);
+      const user = await getRepository(User).findOneOrFail({
+        where: { id: Number(req.params.id) },
+        select: ['id', 'plexId'],
+      });
+
+      const tautulli = new TautulliAPI(settings);
+
+      const watchHistory = await tautulli.getUserWatchHistory(user);
+      const media = (
+        await Promise.all(
+          uniqWith(watchHistory.data, (recordA, recordB) =>
+            recordA.grandparent_rating_key && recordB.grandparent_rating_key
+              ? recordA.grandparent_rating_key ===
+                recordB.grandparent_rating_key
+              : recordA.parent_rating_key && recordB.parent_rating_key
+              ? recordA.parent_rating_key === recordB.parent_rating_key
+              : recordA.rating_key === recordB.rating_key
+          )
+            .slice(0, 20)
+            .map(
+              async (record) =>
+                await mediaRepository.findOne({
+                  where: {
+                    ratingKey:
+                      record.media_type === 'movie'
+                        ? record.rating_key
+                        : record.grandparent_rating_key,
+                  },
+                })
+            )
+        )
+      ).filter((media) => !!media) as Media[];
+
+      moment.locale(req.locale ?? 'en');
+
+      return res.status(200).json({
+        playCount: watchHistory.recordsFiltered,
+        playDuration: moment
+          .duration(parseDuration(watchHistory.total_duration), 'seconds')
+          .humanize(),
+        media,
+      });
+    } catch (e) {
+      next({
+        status: 500,
+        message: 'Failed to fetch user watch history.',
+      });
     }
   }
 );

@@ -83,12 +83,7 @@ const SettingsMain: React.FC = () => {
       .test(
         'no-trailing-slash',
         intl.formatMessage(messages.validationApplicationUrlTrailingSlash),
-        (value) => {
-          if (value?.substr(value.length - 1) === '/') {
-            return false;
-          }
-          return true;
-        }
+        (value) => !value || !value.endsWith('/')
       ),
   });
 

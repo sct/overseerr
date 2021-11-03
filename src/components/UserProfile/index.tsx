@@ -2,11 +2,12 @@ import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
+import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import {
   QuotaResponse,
   UserRequestsResponse,
+  UserWatchHistoryResponse,
 } from '../../../server/interfaces/api/userInterfaces';
 import { MovieDetails } from '../../../server/models/Movie';
 import { TvDetails } from '../../../server/models/Tv';
@@ -18,6 +19,7 @@ import PageTitle from '../Common/PageTitle';
 import ProgressCircle from '../Common/ProgressCircle';
 import RequestCard from '../RequestCard';
 import Slider from '../Slider';
+import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
 import ProfileHeader from './ProfileHeader';
 
 const messages = defineMessages({
@@ -30,6 +32,7 @@ const messages = defineMessages({
   pastdays: '{type} (past {days} days)',
   movierequests: 'Movie Requests',
   seriesrequest: 'Series Requests',
+  recentlywatched: 'Recently Watched',
 });
 
 type MediaTitle = MovieDetails | TvDetails;
@@ -50,6 +53,9 @@ const UserProfile: React.FC = () => {
   );
   const { data: quota } = useSWR<QuotaResponse>(
     user ? `/api/v1/user/${user.id}/quota` : null
+  );
+  const { data: watchHistory } = useSWR<UserWatchHistoryResponse>(
+    user ? `/api/v1/user/${user.id}/watch_history` : null
   );
 
   const updateAvailableTitles = useCallback(
@@ -103,10 +109,9 @@ const UserProfile: React.FC = () => {
                   {intl.formatMessage(messages.totalrequests)}
                 </dt>
                 <dd className="mt-1 text-3xl font-semibold text-white">
-                  {intl.formatNumber(user.requestCount)}
+                  <FormattedNumber value={user.requestCount} />
                 </dd>
               </div>
-
               <div
                 className={`px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ${
                   quota.movie.restricted
@@ -162,7 +167,6 @@ const UserProfile: React.FC = () => {
                   )}
                 </dd>
               </div>
-
               <div
                 className={`px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ${
                   quota.tv.restricted
@@ -253,6 +257,29 @@ const UserProfile: React.FC = () => {
           />
         </>
       )}
+      {(user.id === currentUser?.id ||
+        currentHasPermission(Permission.ADMIN)) &&
+        !!watchHistory?.media.length && (
+          <>
+            <div className="slider-header">
+              <div className="slider-title">
+                <span>{intl.formatMessage(messages.recentlywatched)}</span>
+              </div>
+            </div>
+            <Slider
+              sliderKey="media"
+              isLoading={!watchHistory}
+              isEmpty={!watchHistory?.media.length}
+              items={watchHistory.media.map((item) => (
+                <TmdbTitleCard
+                  key={`media-slider-item-${item.id}`}
+                  tmdbId={item.tmdbId}
+                  type={item.mediaType}
+                />
+              ))}
+            />
+          </>
+        )}
     </>
   );
 };
