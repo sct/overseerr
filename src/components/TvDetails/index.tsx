@@ -354,7 +354,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <ExclamationIcon className="w-5" />
               </Button>
             )}
-          {hasPermission(Permission.MANAGE_REQUESTS) && (
+          {hasPermission(Permission.MANAGE_REQUESTS) && data.mediaInfo && (
             <Button
               buttonType="default"
               className="relative ml-2 first:ml-0"
