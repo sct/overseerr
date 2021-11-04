@@ -150,7 +150,6 @@
   "components.TvDetails.similar": "類似シリーズ",
   "components.UserList.admin": "管理者",
   "components.UserList.created": "作成日",
-  "components.UserList.lastupdated": "更新日",
   "components.UserList.plexuser": "Plexユーザー",
   "components.UserList.role": "役割",
   "components.UserList.totalrequests": "リクエスト数",
