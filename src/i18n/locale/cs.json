@@ -147,7 +147,6 @@
   "components.UserList.role": "Role",
   "components.UserList.password": "Heslo",
   "components.UserList.owner": "Vlastník",
-  "components.UserList.lastupdated": "Aktualizováno",
   "components.UserList.creating": "Vytváření…",
   "components.UserList.created": "Vytvořeno",
   "components.UserList.create": "Vytvořit",
