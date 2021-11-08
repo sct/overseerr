@@ -33,6 +33,8 @@ const globalMessages = defineMessages({
   saving: 'Saving…',
   import: 'Import',
   importing: 'Importing…',
+  create: 'Create',
+  creating: 'Creating…',
   close: 'Close',
   edit: 'Edit',
   areyousure: 'Are you sure?',

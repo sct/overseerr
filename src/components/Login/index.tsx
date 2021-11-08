@@ -18,7 +18,7 @@ const messages = defineMessages({
   signin: 'Sign In',
   signinheader: 'Sign in to continue',
   signinwithplex: 'Use your Plex account',
-  signinwithoverseerr: 'Use your {applicationTitle} account',
+  signinwithoverseerr: 'Use your {applicationTitle} password',
 });
 
 const Login = () => {
