@@ -38,7 +38,7 @@
   "components.RequestModal.requestSuccess": "<strong>{title}</strong> demandé avec succès !",
   "components.RequestModal.requestadmin": "Cette demande sera validée automatiquement.",
   "components.RequestModal.requestfrom": "La demande de {username} est en attente de validation.",
-  "components.RequestModal.requestseasons": "Demander {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}",
+  "components.RequestModal.requestseasons": "Demander {seasonCount} {seasonCount, plural, one {Saison} other {Saisons}}",
   "components.RequestModal.requesttitle": "Demander {title}",
   "components.RequestModal.season": "Saison",
   "components.RequestModal.seasonnumber": "Saison {number}",
@@ -968,5 +968,7 @@
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "Toutes les {jobScheduleMinutes, plural, one {minute} other {{jobScheduleMinutes} minutes}}",
   "components.IssueDetails.openin4karr": "Ouvrir en 4K {arr}",
   "components.IssueDetails.play4konplex": "Lire sur Plex en 4K",
-  "components.IssueDetails.playonplex": "Lire sur Plex"
+  "components.IssueDetails.playonplex": "Lire sur Plex",
+  "components.UserProfile.UserSettings.UserNotificationSettings.pushbulletAccessToken": "Jeton d'accès",
+  "components.IssueList.IssueItem.seasons": "{seasonCount, plural, one {Saison} other {Saisons}}"
 }
