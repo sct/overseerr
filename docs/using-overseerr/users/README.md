@@ -8,7 +8,7 @@ The user account created during Overseerr setup is the "Owner" account, which ca
 
 There are currently two methods to add users to Overseerr: importing Plex users and creating "local users." All new users are created with the [default permissions](../settings/README.md#default-permissions) defined in **Settings &rarr; Users**.
 
-### Importing Users from Plex
+### Importing Plex Users
 
 Clicking the **Import Plex Users** button on the **User List** page will fetch the list of users with access to the Plex server from [plex.tv](https://www.plex.tv/), and add them to Overseerr automatically.
 

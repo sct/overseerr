@@ -322,7 +322,7 @@ const UserList: React.FC = () => {
                     title={intl.formatMessage(messages.localLoginDisabled, {
                       strong: function strong(msg) {
                         return (
-                          <strong className="font-semibold text-yellow-100">
+                          <strong className="font-semibold text-white">
                             {msg}
                           </strong>
                         );
