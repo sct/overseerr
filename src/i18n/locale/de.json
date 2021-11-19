@@ -597,7 +597,7 @@
   "components.Settings.partialRequestsEnabled": "Teilserienanfragen erlauben",
   "components.Settings.Notifications.pgpPrivateKey": "PGP Privater Schlüssel",
   "components.Settings.Notifications.pgpPassword": "PGP Passwort",
-  "components.RequestModal.requestall": "Alle Jahreszeiten Anfordern",
+  "components.RequestModal.requestall": "Alle Staffeln anfordern",
   "components.RequestModal.alreadyrequested": "Bereits Angefragt",
   "components.RequestModal.AdvancedRequester.folder": "{path} ({space})",
   "components.NotificationTypeSelector.mediaAutoApprovedDescription": "Sende eine Benachrichtigung, wenn das angeforderte Medium automatisch genehmigt wird.",
