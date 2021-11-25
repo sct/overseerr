@@ -3,7 +3,7 @@ import type { PaginatedResponse } from './common';
 export type LogMessage = {
   timestamp: string;
   level: string;
-  label: string;
+  label?: string;
   message: string;
   data?: Record<string, unknown>;
 };
