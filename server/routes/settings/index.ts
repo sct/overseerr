@@ -263,7 +263,7 @@ settingsRoutes.get(
           if (!line.length) return;
 
           const jsonRegexp = new RegExp(
-            /[{[]{1}([,:{}[\]0-9.\-+Eaeflnr-u \n\r\t]|".*?")+[}\]]{1}/
+            /[{[]{1}([,:{}[\]0-9.\-+Eaeflnr-u \n\r\t]|"[^"\n]*?")+[}\]]{1}/
           );
 
           const timestamp = line.match(new RegExp(/.{24}/)) || [];
