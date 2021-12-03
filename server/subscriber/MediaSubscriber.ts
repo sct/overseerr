@@ -31,6 +31,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
           relatedRequests.forEach((request) => {
             notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
+              event: 'Movie Now Available',
               notifyAdmin: false,
               notifyUser: request.requestedBy,
               subject: `${movie.title}${
@@ -92,6 +93,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
           );
           const tv = await tmdb.getTvShow({ tvId: entity.tmdbId });
           notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
+            event: 'Series Now Available',
             subject: `${tv.name}${
               tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
             }`,
