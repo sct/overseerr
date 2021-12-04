@@ -63,11 +63,12 @@ app
       });
 
       if (admin) {
-        const plexapi = new PlexAPI({ plexToken: admin.plexToken });
-        await plexapi.syncLibraries();
-        logger.info('Migrating libraries to include media type', {
+        logger.info('Migrating Plex libraries to include media type', {
           label: 'Settings',
         });
+
+        const plexapi = new PlexAPI({ plexToken: admin.plexToken });
+        await plexapi.syncLibraries();
       }
     }
 
