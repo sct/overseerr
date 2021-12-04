@@ -46,7 +46,13 @@ radarrRoutes.post<
       url: RadarrAPI.buildUrl(req.body, '/api/v3'),
     });
 
-    const { urlBase } = await radarr.getSystemStatus();
+    const urlBase =
+      req.body.baseUrl && req.body.baseUrl !== '/'
+        ? req.body.baseUrl
+        : await radarr
+            .getSystemStatus()
+            .then((value) => value.urlBase)
+            .catch(() => undefined);
     const profiles = await radarr.getProfiles();
     const folders = await radarr.getRootFolders();
     const tags = await radarr.getTags();
@@ -58,10 +64,7 @@ radarrRoutes.post<
         path: folder.path,
       })),
       tags,
-      urlBase:
-        req.body.baseUrl && req.body.baseUrl !== '/'
-          ? req.body.baseUrl
-          : urlBase,
+      urlBase,
     });
   } catch (e) {
     logger.error('Failed to test Radarr', {

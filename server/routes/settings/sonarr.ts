@@ -42,7 +42,13 @@ sonarrRoutes.post('/test', async (req, res, next) => {
       url: SonarrAPI.buildUrl(req.body, '/api/v3'),
     });
 
-    const { urlBase } = await sonarr.getSystemStatus();
+    const urlBase =
+      req.body.baseUrl && req.body.baseUrl !== '/'
+        ? req.body.baseUrl
+        : await sonarr
+            .getSystemStatus()
+            .then((value) => value.urlBase)
+            .catch(() => undefined);
     const profiles = await sonarr.getProfiles();
     const folders = await sonarr.getRootFolders();
     const languageProfiles = await sonarr.getLanguageProfiles();
@@ -56,10 +62,7 @@ sonarrRoutes.post('/test', async (req, res, next) => {
       })),
       languageProfiles,
       tags,
-      urlBase:
-        req.body.baseUrl && req.body.baseUrl !== '/'
-          ? req.body.baseUrl
-          : urlBase,
+      urlBase,
     });
   } catch (e) {
     logger.error('Failed to test Sonarr', {
