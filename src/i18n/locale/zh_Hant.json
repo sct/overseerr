@@ -929,7 +929,7 @@
   "components.IssueModal.CreateIssueModal.providedetail": "請詳細解釋您遇到的問題。",
   "components.IssueModal.CreateIssueModal.submitissue": "報告問題",
   "components.IssueModal.CreateIssueModal.toastFailedCreate": "提出問題報告中出了點問題。",
-  "components.NotificationTypeSelector.userissueresolvedDescription": "當您的問題解決時取得通知。",
+  "components.NotificationTypeSelector.userissueresolvedDescription": "當您報告的問題解決時取得通知。",
   "components.PermissionEdit.createissues": "報告問題",
   "components.PermissionEdit.createissuesDescription": "授予報告媒體問題的權限。",
   "components.IssueDetails.leavecomment": "發表評論",
@@ -944,7 +944,7 @@
   "components.NotificationTypeSelector.issuecreated": "問題報告",
   "components.NotificationTypeSelector.issuecreatedDescription": "當使用者報告問題時發送通知。",
   "components.NotificationTypeSelector.issuecomment": "問題評論",
-  "components.NotificationTypeSelector.adminissuecommentDescription": "當問題有新評論時取得通知。",
+  "components.NotificationTypeSelector.adminissuecommentDescription": "當其他使用者加新評論時取得通知。",
   "components.NotificationTypeSelector.issuecommentDescription": "當問題有新評論時發送通知。",
   "components.NotificationTypeSelector.issueresolvedDescription": "當問題解決時發送通知。",
   "components.IssueDetails.openinarr": "開啟 {arr} 伺服器",
@@ -959,7 +959,7 @@
   "components.IssueDetails.IssueComment.validationComment": "請輸入評論",
   "components.IssueDetails.IssueComment.areyousuredelete": "確定要刪除這個評論嗎？",
   "components.IssueModal.CreateIssueModal.toastSuccessCreate": "為 <strong>{title}</strong> 報告問題成功！",
-  "components.NotificationTypeSelector.userissuecommentDescription": "當您的問題有新評論時取得通知。",
+  "components.NotificationTypeSelector.userissuecommentDescription": "當您報告的問題有新評論時取得通知。",
   "components.IssueDetails.IssueComment.postedby": "由 {username} {relativeTime}發表",
   "components.IssueDetails.IssueComment.postedbyedited": "由 {username} {relativeTime}發表（已編輯）",
   "components.UserProfile.UserSettings.UserNotificationSettings.validationPushbulletAccessToken": "請輸入 API 令牌",
@@ -985,5 +985,10 @@
   "components.IssueDetails.reopenissueandcomment": "發表評論及重新開啟問題",
   "components.IssueDetails.reopenissue": "重新開啟問題",
   "components.ManageSlideOver.manageModalIssues": "未解決問題",
-  "components.IssueModal.CreateIssueModal.extras": "特輯"
+  "components.IssueModal.CreateIssueModal.extras": "特輯",
+  "components.NotificationTypeSelector.issuereopened": "問題重新開啟",
+  "components.NotificationTypeSelector.adminissuereopenedDescription": "當其他使用者重新開啟問題時取得通知。",
+  "components.NotificationTypeSelector.adminissueresolvedDescription": "當其他使用者解決問題時取得通知。",
+  "components.NotificationTypeSelector.issuereopenedDescription": "當問題重新開啟時發送通知。",
+  "components.NotificationTypeSelector.userissuereopenedDescription": "當您報告的問題重新開啟時取得通知。"
 }
