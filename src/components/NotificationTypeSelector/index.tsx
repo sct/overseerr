@@ -44,12 +44,21 @@ const messages = defineMessages({
   issuecommentDescription:
     'Send notifications when issues receive new comments.',
   userissuecommentDescription:
-    'Get notified when your issues receive new comments.',
+    'Get notified when issues you reported receive new comments.',
   adminissuecommentDescription:
-    'Get notified when issues receive new comments.',
+    'Get notified when other users comment on issues.',
   issueresolved: 'Issue Resolved',
   issueresolvedDescription: 'Send notifications when issues are resolved.',
-  userissueresolvedDescription: 'Get notified when your issues are resolved.',
+  userissueresolvedDescription:
+    'Get notified when issues you reported are resolved.',
+  adminissueresolvedDescription:
+    'Get notified when issues are resolved by other users.',
+  issuereopened: 'Issue Reopened',
+  issuereopenedDescription: 'Send notifications when issues are reopened.',
+  userissuereopenedDescription:
+    'Get notified when issues you reported are reopened.',
+  adminissuereopenedDescription:
+    'Get notified when issues are reopened by other users.',
 });
 
 export const hasNotificationType = (
@@ -90,6 +99,7 @@ export enum Notification {
   ISSUE_CREATED = 256,
   ISSUE_COMMENT = 512,
   ISSUE_RESOLVED = 1024,
+  ISSUE_REOPENED = 2048,
 }
 
 export const ALL_NOTIFICATIONS = Object.values(Notification)
@@ -287,7 +297,9 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
         name: intl.formatMessage(messages.issueresolved),
         description: intl.formatMessage(
           user
-            ? messages.userissueresolvedDescription
+            ? hasPermission(Permission.MANAGE_ISSUES)
+              ? messages.adminissueresolvedDescription
+              : messages.userissueresolvedDescription
             : messages.issueresolvedDescription
         ),
         value: Notification.ISSUE_RESOLVED,
@@ -296,7 +308,27 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
           !hasPermission([Permission.MANAGE_ISSUES, Permission.CREATE_ISSUES], {
             type: 'or',
           }),
-        hasNotifyUser: true,
+        hasNotifyUser:
+          !user || hasPermission(Permission.MANAGE_ISSUES) ? false : true,
+      },
+      {
+        id: 'issue-reopened',
+        name: intl.formatMessage(messages.issuereopened),
+        description: intl.formatMessage(
+          user
+            ? hasPermission(Permission.MANAGE_ISSUES)
+              ? messages.adminissuereopenedDescription
+              : messages.userissuereopenedDescription
+            : messages.issuereopenedDescription
+        ),
+        value: Notification.ISSUE_REOPENED,
+        hidden:
+          user &&
+          !hasPermission([Permission.MANAGE_ISSUES, Permission.CREATE_ISSUES], {
+            type: 'or',
+          }),
+        hasNotifyUser:
+          !user || hasPermission(Permission.MANAGE_ISSUES) ? false : true,
       },
     ];
 

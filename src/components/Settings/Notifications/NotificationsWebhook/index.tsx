@@ -18,27 +18,38 @@ const JSONEditor = dynamic(() => import('../../../JSONEditor'), { ssr: false });
 
 const defaultPayload = {
   notification_type: '{{notification_type}}',
+  event: '{{event}}',
   subject: '{{subject}}',
   message: '{{message}}',
   image: '{{image}}',
-  email: '{{notifyuser_email}}',
-  username: '{{notifyuser_username}}',
-  avatar: '{{notifyuser_avatar}}',
   '{{media}}': {
     media_type: '{{media_type}}',
     tmdbId: '{{media_tmdbid}}',
-    imdbId: '{{media_imdbid}}',
     tvdbId: '{{media_tvdbid}}',
     status: '{{media_status}}',
     status4k: '{{media_status4k}}',
   },
-  '{{extra}}': [],
   '{{request}}': {
     request_id: '{{request_id}}',
     requestedBy_email: '{{requestedBy_email}}',
     requestedBy_username: '{{requestedBy_username}}',
     requestedBy_avatar: '{{requestedBy_avatar}}',
   },
+  '{{issue}}': {
+    issue_id: '{{issue_id}}',
+    issue_type: '{{issue_type}}',
+    issue_status: '{{issue_status}}',
+    reportedBy_email: '{{reportedBy_email}}',
+    reportedBy_username: '{{reportedBy_username}}',
+    reportedBy_avatar: '{{reportedBy_avatar}}',
+  },
+  '{{comment}}': {
+    comment_message: '{{comment_message}}',
+    commentedBy_email: '{{commentedBy_email}}',
+    commentedBy_username: '{{commentedBy_username}}',
+    commentedBy_avatar: '{{commentedBy_avatar}}',
+  },
+  '{{extra}}': [],
 };
 
 const messages = defineMessages({

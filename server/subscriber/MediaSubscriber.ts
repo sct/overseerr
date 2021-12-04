@@ -31,6 +31,8 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
           relatedRequests.forEach((request) => {
             notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
+              event: 'Movie Now Available',
+              notifyAdmin: false,
               notifyUser: request.requestedBy,
               subject: `${movie.title}${
                 movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
@@ -42,7 +44,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
               }),
               media: entity,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-              request: request,
+              request,
             });
           });
         }
@@ -91,6 +93,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
           );
           const tv = await tmdb.getTvShow({ tvId: entity.tmdbId });
           notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
+            event: 'Series Now Available',
             subject: `${tv.name}${
               tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
             }`,
@@ -99,18 +102,19 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
               separator: /\s/,
               omission: '…',
             }),
+            notifyAdmin: false,
             notifyUser: request.requestedBy,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
             media: entity,
             extra: [
               {
-                name: 'Seasons',
+                name: 'Requested Seasons',
                 value: request.seasons
                   .map((season) => season.seasonNumber)
                   .join(', '),
               },
             ],
-            request: request,
+            request,
           });
         }
       }

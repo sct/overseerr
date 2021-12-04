@@ -142,6 +142,7 @@ export class MediaRequest {
       if (this.type === MediaType.MOVIE) {
         const movie = await tmdb.getMovie({ movieId: media.tmdbId });
         notificationManager.sendNotification(Notification.MEDIA_PENDING, {
+          event: 'New Movie Request',
           subject: `${movie.title}${
             movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
           }`,
@@ -153,12 +154,14 @@ export class MediaRequest {
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
           media,
           request: this,
+          notifyAdmin: true,
         });
       }
 
       if (this.type === MediaType.TV) {
         const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
         notificationManager.sendNotification(Notification.MEDIA_PENDING, {
+          event: 'New Series Request',
           subject: `${tv.name}${
             tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
           }`,
@@ -171,13 +174,14 @@ export class MediaRequest {
           media,
           extra: [
             {
-              name: 'Seasons',
+              name: 'Requested Seasons',
               value: this.seasons
                 .map((season) => season.seasonNumber)
                 .join(', '),
             },
           ],
           request: this,
+          notifyAdmin: true,
         });
       }
     }
@@ -222,6 +226,13 @@ export class MediaRequest {
               : Notification.MEDIA_APPROVED
             : Notification.MEDIA_DECLINED,
           {
+            event: `Movie Request ${
+              this.status === MediaRequestStatus.APPROVED
+                ? autoApproved
+                  ? 'Automatically Approved'
+                  : 'Approved'
+                : 'Declined'
+            }`,
             subject: `${movie.title}${
               movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
             }`,
@@ -231,6 +242,7 @@ export class MediaRequest {
               omission: '…',
             }),
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
+            notifyAdmin: autoApproved,
             notifyUser: autoApproved ? undefined : this.requestedBy,
             media,
             request: this,
@@ -245,6 +257,13 @@ export class MediaRequest {
               : Notification.MEDIA_APPROVED
             : Notification.MEDIA_DECLINED,
           {
+            event: `Series Request ${
+              this.status === MediaRequestStatus.APPROVED
+                ? autoApproved
+                  ? 'Automatically Approved'
+                  : 'Approved'
+                : 'Declined'
+            }`,
             subject: `${tv.name}${
               tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
             }`,
@@ -254,11 +273,12 @@ export class MediaRequest {
               omission: '…',
             }),
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
+            notifyAdmin: autoApproved,
             notifyUser: autoApproved ? undefined : this.requestedBy,
             media,
             extra: [
               {
-                name: 'Seasons',
+                name: 'Requested Seasons',
                 value: this.seasons
                   .map((season) => season.seasonNumber)
                   .join(', '),
@@ -508,6 +528,7 @@ export class MediaRequest {
             );
 
             notificationManager.sendNotification(Notification.MEDIA_FAILED, {
+              event: `Movie Request Failed`,
               subject: `${movie.title}${
                 movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
               }`,
@@ -519,6 +540,7 @@ export class MediaRequest {
               media,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
               request: this,
+              notifyAdmin: true,
             });
           });
         logger.info('Sent request to Radarr', { label: 'Media Request' });
@@ -722,6 +744,7 @@ export class MediaRequest {
             );
 
             notificationManager.sendNotification(Notification.MEDIA_FAILED, {
+              event: `Series Request Failed`,
               subject: `${series.name}${
                 series.first_air_date
                   ? ` (${series.first_air_date.slice(0, 4)})`
@@ -736,13 +759,14 @@ export class MediaRequest {
               media,
               extra: [
                 {
-                  name: 'Seasons',
+                  name: 'Requested Seasons',
                   value: this.seasons
                     .map((season) => season.seasonNumber)
                     .join(', '),
                 },
               ],
               request: this,
+              notifyAdmin: true,
             });
           });
         logger.info('Sent request to Sonarr', { label: 'Media Request' });
