@@ -46,6 +46,7 @@ class WebPushAgent
         ? 'movie'
         : 'series'
       : undefined;
+    const is4k = payload.request?.is4k;
 
     const issueType = payload.issue
       ? payload.issue.issueType !== IssueType.OTHER
@@ -59,22 +60,34 @@ class WebPushAgent
         message = payload.message;
         break;
       case Notification.MEDIA_APPROVED:
-        message = `Your ${mediaType} request has been approved.`;
+        message = `Your ${
+          is4k ? '4K ' : ''
+        }${mediaType} request has been approved.`;
         break;
       case Notification.MEDIA_AUTO_APPROVED:
-        message = `Automatically approved a new ${mediaType} request from ${payload.request?.requestedBy.displayName}.`;
+        message = `Automatically approved a new ${
+          is4k ? '4K ' : ''
+        }${mediaType} request from ${
+          payload.request?.requestedBy.displayName
+        }.`;
         break;
       case Notification.MEDIA_AVAILABLE:
-        message = `Your ${mediaType} request is now available!`;
+        message = `Your ${
+          is4k ? '4K ' : ''
+        }${mediaType} request is now available!`;
         break;
       case Notification.MEDIA_DECLINED:
-        message = `Your ${mediaType} request was declined.`;
+        message = `Your ${is4k ? '4K ' : ''}${mediaType} request was declined.`;
         break;
       case Notification.MEDIA_FAILED:
-        message = `Failed to process ${mediaType} request.`;
+        message = `Failed to process ${is4k ? '4K ' : ''}${mediaType} request.`;
         break;
       case Notification.MEDIA_PENDING:
-        message = `Approval required for a new ${mediaType} request from ${payload.request?.requestedBy.displayName}.`;
+        message = `Approval required for a new ${
+          is4k ? '4K ' : ''
+        }${mediaType} request from ${
+          payload.request?.requestedBy.displayName
+        }.`;
         break;
       case Notification.ISSUE_CREATED:
         message = `A new ${issueType} was reported by ${payload.issue?.createdBy.displayName}.`;
