@@ -46,13 +46,10 @@ radarrRoutes.post<
       url: RadarrAPI.buildUrl(req.body, '/api/v3'),
     });
 
-    const urlBase =
-      req.body.baseUrl && req.body.baseUrl !== '/'
-        ? req.body.baseUrl
-        : await radarr
-            .getSystemStatus()
-            .then((value) => value.urlBase)
-            .catch(() => undefined);
+    const urlBase = await radarr
+      .getSystemStatus()
+      .then((value) => value.urlBase)
+      .catch(() => req.body.baseUrl);
     const profiles = await radarr.getProfiles();
     const folders = await radarr.getRootFolders();
     const tags = await radarr.getTags();

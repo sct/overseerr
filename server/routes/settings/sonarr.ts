@@ -42,13 +42,10 @@ sonarrRoutes.post('/test', async (req, res, next) => {
       url: SonarrAPI.buildUrl(req.body, '/api/v3'),
     });
 
-    const urlBase =
-      req.body.baseUrl && req.body.baseUrl !== '/'
-        ? req.body.baseUrl
-        : await sonarr
-            .getSystemStatus()
-            .then((value) => value.urlBase)
-            .catch(() => undefined);
+    const urlBase = await sonarr
+      .getSystemStatus()
+      .then((value) => value.urlBase)
+      .catch(() => req.body.baseUrl);
     const profiles = await sonarr.getProfiles();
     const folders = await sonarr.getRootFolders();
     const languageProfiles = await sonarr.getLanguageProfiles();
