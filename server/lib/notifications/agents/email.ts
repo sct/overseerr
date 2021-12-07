@@ -72,28 +72,41 @@ class EmailAgent
         ? 'movie'
         : 'series'
       : undefined;
+    const is4k = payload.request?.is4k;
 
     if (payload.request) {
       let body = '';
 
       switch (type) {
         case Notification.MEDIA_PENDING:
-          body = `A new request for the following ${mediaType} is pending approval:`;
+          body = `A new request for the following ${mediaType} ${
+            is4k ? 'in 4K ' : ''
+          }is pending approval:`;
           break;
         case Notification.MEDIA_APPROVED:
-          body = `Your request for the following ${mediaType} has been approved:`;
+          body = `Your request for the following ${mediaType} ${
+            is4k ? 'in 4K ' : ''
+          }has been approved:`;
           break;
         case Notification.MEDIA_AUTO_APPROVED:
-          body = `A new request for the following ${mediaType} has been automatically approved:`;
+          body = `A new request for the following ${mediaType} ${
+            is4k ? 'in 4K ' : ''
+          }has been automatically approved:`;
           break;
         case Notification.MEDIA_AVAILABLE:
-          body = `Your request for the following ${mediaType} is now available:`;
+          body = `Your request for the following ${mediaType} ${
+            is4k ? 'in 4K ' : ''
+          }is now available:`;
           break;
         case Notification.MEDIA_DECLINED:
-          body = `Your request for the following ${mediaType} was declined:`;
+          body = `Your request for the following ${mediaType} ${
+            is4k ? 'in 4K ' : ''
+          }was declined:`;
           break;
         case Notification.MEDIA_FAILED:
-          body = `A request for the following ${mediaType} failed to be added to ${
+          body = `A request for the following ${mediaType} ${
+            is4k ? 'in 4K ' : ''
+          }failed to be added to ${
             payload.media?.mediaType === MediaType.MOVIE ? 'Radarr' : 'Sonarr'
           }:`;
           break;

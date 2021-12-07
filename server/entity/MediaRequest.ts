@@ -142,7 +142,7 @@ export class MediaRequest {
       if (this.type === MediaType.MOVIE) {
         const movie = await tmdb.getMovie({ movieId: media.tmdbId });
         notificationManager.sendNotification(Notification.MEDIA_PENDING, {
-          event: 'New Movie Request',
+          event: `New ${this.is4k ? '4K ' : ''}Movie Request`,
           subject: `${movie.title}${
             movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
           }`,
@@ -161,7 +161,7 @@ export class MediaRequest {
       if (this.type === MediaType.TV) {
         const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
         notificationManager.sendNotification(Notification.MEDIA_PENDING, {
-          event: 'New Series Request',
+          event: `New ${this.is4k ? '4K ' : ''}Series Request`,
           subject: `${tv.name}${
             tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
           }`,
@@ -226,7 +226,7 @@ export class MediaRequest {
               : Notification.MEDIA_APPROVED
             : Notification.MEDIA_DECLINED,
           {
-            event: `Movie Request ${
+            event: `${this.is4k ? '4K ' : ''}Movie Request ${
               this.status === MediaRequestStatus.APPROVED
                 ? autoApproved
                   ? 'Automatically Approved'
@@ -257,7 +257,7 @@ export class MediaRequest {
               : Notification.MEDIA_APPROVED
             : Notification.MEDIA_DECLINED,
           {
-            event: `Series Request ${
+            event: `${this.is4k ? '4K ' : ''}Series Request ${
               this.status === MediaRequestStatus.APPROVED
                 ? autoApproved
                   ? 'Automatically Approved'
@@ -528,7 +528,7 @@ export class MediaRequest {
             );
 
             notificationManager.sendNotification(Notification.MEDIA_FAILED, {
-              event: `Movie Request Failed`,
+              event: `${this.is4k ? '4K ' : ''}Movie Request Failed`,
               subject: `${movie.title}${
                 movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
               }`,
@@ -744,7 +744,7 @@ export class MediaRequest {
             );
 
             notificationManager.sendNotification(Notification.MEDIA_FAILED, {
-              event: `Series Request Failed`,
+              event: `${this.is4k ? '4K ' : ''}Series Request Failed`,
               subject: `${series.name}${
                 series.first_air_date
                   ? ` (${series.first_air_date.slice(0, 4)})`
