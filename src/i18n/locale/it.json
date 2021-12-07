@@ -890,7 +890,7 @@
   "components.IssueModal.CreateIssueModal.whatswrong": "Qual è il problema?",
   "components.IssueModal.issueAudio": "Audio",
   "components.IssueModal.issueOther": "Altro",
-  "components.IssueModal.issueSubtitles": "Sottotitoli",
+  "components.IssueModal.issueSubtitles": "Sottotitolo",
   "components.IssueModal.issueVideo": "Video",
   "components.ManageSlideOver.markavailable": "Segna come disponibile",
   "components.ManageSlideOver.tvshow": "serie tv",
@@ -946,7 +946,7 @@
   "components.ManageSlideOver.manageModalIssues": "Segnalazioni aperte",
   "components.IssueModal.CreateIssueModal.extras": "Extra",
   "components.PermissionEdit.manageissues": "Gestisci segnalazioni",
-  "components.NotificationTypeSelector.adminissuecommentDescription": "Ricevi una notifica quando una segnalazione riceve un nuovo commento.",
+  "components.NotificationTypeSelector.adminissuecommentDescription": "Ricevi una notifica quando altri utenti commentano nella segnalazione.",
   "components.NotificationTypeSelector.issuecomment": "Commenti segnalazione",
   "components.NotificationTypeSelector.issuecommentDescription": "Invia notifiche quando le segnalazioni ricevono nuovi commenti.",
   "components.IssueDetails.openedby": "#{issueId} aperto il {relativeTime} da {username}",
@@ -954,7 +954,7 @@
   "components.PermissionEdit.viewissues": "Guarda segnalazione",
   "components.PermissionEdit.manageissuesDescription": "Concedi permesso per gestire le segnalazioni del contenuto.",
   "components.Settings.SettingsJobsCache.jobScheduleEditFailed": "Qualcosa è andato storto nel salvataggio del job.",
-  "components.NotificationTypeSelector.userissuecommentDescription": "Ricevi una notificai quando un tua segnalazione riceve nuovi commmenti.",
+  "components.NotificationTypeSelector.userissuecommentDescription": "Ricevi una notifica quando una segnalazione riceve nuovi commenti.",
   "components.Settings.SettingsJobsCache.editJobSchedule": "Modifica Job",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "Ogni {jobScheduleHours, plural, one {ora} other {{jobScheduleHours} ore}}",
   "components.IssueList.IssueItem.opened": "Aperto",
@@ -985,5 +985,10 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.validationPushoverUserKey": "Devi fornire una chiave utente o di gruppo valida",
   "i18n.resolved": "Risolto",
   "i18n.open": "Aperto",
-  "components.Settings.SettingsAbout.runningDevelop": "Stai eseguendo la versione <code>develop</code> di Overseerr, che è raccomandata soltanto a chi aiuta nello sviluppo o nel testing dell'applicazione."
+  "components.Settings.SettingsAbout.runningDevelop": "Stai eseguendo la versione <code>develop</code> di Overseerr, che è raccomandata soltanto a chi aiuta nello sviluppo o nel testing dell'applicazione.",
+  "components.NotificationTypeSelector.adminissuereopenedDescription": "Ricevi una notifica quanto le segnalazioni vengono riaperte da altri utenti.",
+  "components.NotificationTypeSelector.adminissueresolvedDescription": "Ricevi una notifica quanto le segnalazioni vengono risolte da altri utenti.",
+  "components.NotificationTypeSelector.issuereopened": "Segnalazione Riaperta",
+  "components.NotificationTypeSelector.issuereopenedDescription": "Invia una notifica quando le segnalazioni vengono riaperte.",
+  "components.NotificationTypeSelector.userissuereopenedDescription": "Ricevi una notifica quanto le tue segnalazioni vengono riaperte."
 }
