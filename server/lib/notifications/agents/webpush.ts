@@ -109,7 +109,7 @@ class WebPushAgent
     }
 
     const actionUrl = payload.issue
-      ? `/issue/${payload.issue.id}`
+      ? `/issues/${payload.issue.id}`
       : payload.media
       ? `/${payload.media.mediaType}/${payload.media.tmdbId}`
       : undefined;

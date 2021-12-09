@@ -175,7 +175,7 @@ class EmailAgent
           imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
           actionUrl: applicationUrl
-            ? `${applicationUrl}/issue/${payload.issue.id}`
+            ? `${applicationUrl}/issues/${payload.issue.id}`
             : undefined,
           applicationUrl,
           applicationTitle,
