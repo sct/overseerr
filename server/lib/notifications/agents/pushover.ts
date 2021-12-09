@@ -108,7 +108,7 @@ class PushoverAgent
 
     const url = applicationUrl
       ? payload.issue
-        ? `${applicationUrl}/issue/${payload.issue.id}`
+        ? `${applicationUrl}/issues/${payload.issue.id}`
         : payload.media
         ? `${applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`
         : undefined
