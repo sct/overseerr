@@ -111,7 +111,7 @@ const Modal: React.FC<ModalProps> = ({
           }}
         >
           {backdrop && (
-            <div className="absolute top-0 left-0 right-0 z-0 w-full h-64">
+            <div className="absolute top-0 left-0 right-0 z-0 w-full h-64 max-h-full">
               <CachedImage
                 alt=""
                 src={backdrop}

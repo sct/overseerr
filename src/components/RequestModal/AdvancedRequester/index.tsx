@@ -267,7 +267,17 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     );
   }
 
-  if ((!data || selectedServer === null) && !selectedUser) {
+  if (
+    (!data ||
+      selectedServer === null ||
+      (data.filter((server) => server.is4k === is4k).length < 2 &&
+        (!serverData ||
+          (serverData.profiles.length < 2 &&
+            serverData.rootFolders.length < 2 &&
+            (serverData.languageProfiles ?? []).length < 2 &&
+            !serverData.tags?.length)))) &&
+    (!selectedUser || (userData?.results ?? []).length < 2)
+  ) {
     return null;
   }
 
@@ -503,7 +513,8 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             </div>
           )}
         {hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS]) &&
-          selectedUser && (
+          selectedUser &&
+          (userData?.results ?? []).length > 1 && (
             <Listbox
               as="div"
               value={selectedUser}

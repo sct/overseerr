@@ -549,11 +549,11 @@ requestRoutes.put<{ requestId: string }>(
         });
       }
 
-      let requestUser = req.user;
+      let requestUser = request.requestedBy;
 
       if (
         req.body.userId &&
-        req.body.userId !== req.user?.id &&
+        req.body.userId !== request.requestedBy.id &&
         !req.user?.hasPermission([
           Permission.MANAGE_USERS,
           Permission.MANAGE_REQUESTS,
