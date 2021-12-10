@@ -909,7 +909,7 @@
   "components.ManageSlideOver.openarr": "Открыть в {arr}",
   "components.ManageSlideOver.openarr4k": "Открыть в 4К {arr}",
   "components.ManageSlideOver.tvshow": "сериал",
-  "components.NotificationTypeSelector.userissueresolvedDescription": "Получать уведомления, когда ваши проблемы получают решение.",
+  "components.NotificationTypeSelector.userissueresolvedDescription": "Получать уведомления, когда проблемы, о которых вы сообщили, получают решение.",
   "components.NotificationTypeSelector.issuecomment": "Комментарий к проблеме",
   "components.PermissionEdit.createissuesDescription": "Предоставить разрешение на сообщения о проблемах с медиафайлами.",
   "components.PermissionEdit.manageissuesDescription": "Предоставить разрешение на управление проблемами с медиафайлами.",
@@ -952,8 +952,8 @@
   "components.IssueModal.issueSubtitles": "Субтитры",
   "components.IssueModal.issueVideo": "Видео",
   "components.IssueModal.CreateIssueModal.reportissue": "Сообщить о проблеме",
-  "components.NotificationTypeSelector.adminissuecommentDescription": "Получать уведомления, когда к проблемам появляются новые комментарии.",
-  "components.NotificationTypeSelector.userissuecommentDescription": "Получать уведомления, когда к вашим проблемам появляются новые комментарии.",
+  "components.NotificationTypeSelector.adminissuecommentDescription": "Получать уведомления, когда другие пользователи остовляют комментарии к проблемам.",
+  "components.NotificationTypeSelector.userissuecommentDescription": "Получать уведомления, когда к проблемам, о которых вы сообщили, появляются новые комментарии.",
   "components.NotificationTypeSelector.issuecommentDescription": "Отправлять уведомления, когда к проблемам появляются новые комментарии.",
   "components.NotificationTypeSelector.issuecreated": "Проблема опубликована",
   "components.NotificationTypeSelector.issueresolved": "Проблема решена",
@@ -985,5 +985,10 @@
   "components.IssueModal.CreateIssueModal.submitissue": "Отправить проблему",
   "components.IssueModal.CreateIssueModal.providedetail": "Пожалуйста, предоставьте подробное описание проблемы, с которой вы столкнулись.",
   "components.IssueModal.CreateIssueModal.whatswrong": "Что не так?",
-  "components.Layout.Sidebar.issues": "Проблемы"
+  "components.Layout.Sidebar.issues": "Проблемы",
+  "components.NotificationTypeSelector.issuereopenedDescription": "Отправлять уведомления, когда проблемы открыты заново.",
+  "components.NotificationTypeSelector.userissuereopenedDescription": "Получать уведомления, когда проблемы о которых вы сообщили будут открыты заново.",
+  "components.NotificationTypeSelector.adminissuereopenedDescription": "Получать уведомления, когда проблемы открыты заново другими пользователями.",
+  "components.NotificationTypeSelector.issuereopened": "Проблема открыта заново",
+  "components.NotificationTypeSelector.adminissueresolvedDescription": "Получать уведомления, когда проблемы решены другими пользователями."
 }
