@@ -806,7 +806,7 @@
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestSuccess": "S'ha enviat la notificació de prova de LunaSea!",
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestSending": "S'està enviant la notificació de prova de LunaSea…",
   "components.Settings.Notifications.NotificationsLunaSea.settingsSaved": "La configuració de les notificacions de LunaSea s'ha desat correctament!",
-  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Només és necessari si no s'utilitza el perfil <code>predeterminat</code>",
+  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Només és necessari si no s'utilitza el perfil <code>default</code>",
   "components.Settings.Notifications.NotificationsLunaSea.profileName": "Nom de perfil",
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "Activa l'agent",
   "components.PermissionEdit.requestTvDescription": "Concedeix permís per sol·licitar sèries no 4K.",

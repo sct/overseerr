@@ -770,7 +770,7 @@
   "components.Settings.Notifications.NotificationsLunaSea.validationWebhookUrl": "Du måste ange en giltig URL",
   "components.Settings.Notifications.NotificationsLunaSea.settingsSaved": "LunaSea-aviseringsinställningar har sparats!",
   "components.Settings.Notifications.NotificationsLunaSea.settingsFailed": "LunaSea-aviseringsinställningarna kunde inte sparas.",
-  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Krävs endast om du inte använder <code>standardprofilen</code>",
+  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Krävs endast om du inte använder <code>default</code>",
   "components.Settings.Notifications.NotificationsLunaSea.profileName": "Profilnamn",
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "Aktivera agent",
   "components.Settings.Notifications.NotificationsPushbullet.toastPushbulletTestSending": "Skickar Pushbullet testmeddelande …",

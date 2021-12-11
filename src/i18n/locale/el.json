@@ -125,7 +125,7 @@
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestFailed": "Αποτυχία αποστολής δοκιμαστικής ειδοποίησης LunaSea.",
   "components.Settings.Notifications.NotificationsLunaSea.settingsSaved": "Οι ρυθμίσεις ειδοποιήσεων LunaSea αποθηκεύτηκαν με επιτυχία!",
   "components.Settings.Notifications.NotificationsLunaSea.settingsFailed": "Οι ρυθμίσεις των ειδοποιήσεων LunaSea δεν κατάφεραν να αποθηκευτούν.",
-  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Χρειάζεται μόνο εφόσον δεν χρησιμοποιείται το <code>προεπιλεγμένο</code> προφίλ",
+  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Χρειάζεται μόνο εφόσον δεν χρησιμοποιείται το <code>default</code> προφίλ",
   "components.Settings.Notifications.NotificationsLunaSea.profileName": "Όνομα Προφίλ",
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "Ενεργοποίηση του Μεταφορέα",
   "components.Search.searchresults": "Αποτελέσματα αναζήτησης",

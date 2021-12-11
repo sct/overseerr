@@ -820,7 +820,7 @@
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestFailed": "Falha ao enviar notificação de teste via LunaSea.",
   "components.Settings.Notifications.NotificationsLunaSea.settingsSaved": "Configurações de notificação via LunaSea salvas com sucesso!",
   "components.Settings.Notifications.NotificationsLunaSea.settingsFailed": "Falha ao salvar configurações de notificação via LunaSea.",
-  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Necessário apenas quando não estiver usando o perfil <code>padrão</code>",
+  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Necessário apenas quando não estiver usando o perfil <code>default</code>",
   "components.Settings.Notifications.NotificationsLunaSea.profileName": "Nome de Perfil",
   "components.Settings.Notifications.NotificationsWebPush.agentenabled": "Habilitar Agente",
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "Habilitar Agente",

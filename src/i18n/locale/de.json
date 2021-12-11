@@ -957,7 +957,7 @@
   "components.NotificationTypeSelector.userissuecreatedDescription": "Lassen Sie sich benachrichtigen, wenn andere Benutzer Probleme melden.",
   "components.NotificationTypeSelector.userissueresolvedDescription": "Lassen Sie sich benachrichtigen, wenn Ihre Probleme gelöst sind.",
   "components.PermissionEdit.createissues": "Probleme melden",
-  "components.Settings.SettingsAbout.runningDevelop": "Sie benutzen den <code>Entwicklungszweig</code> von Overseerr, der nur für diejenigen empfohlen wird, die an der Entwicklung mitwirken oder bei den neuesten Tests helfen.",
+  "components.Settings.SettingsAbout.runningDevelop": "Sie benutzen den <code>develop</code> von Overseerr, der nur für diejenigen empfohlen wird, die an der Entwicklung mitwirken oder bei den neuesten Tests helfen.",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "Alle {jobScheduleHours, plural, one {hour} other {{jobScheduleHours} hours}}",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "Alle {jobScheduleMinutes, plural, one {minute} other {{jobScheduleMinutes} minutes}}",
   "components.Settings.SettingsJobsCache.jobScheduleEditFailed": "Beim Speichern des Auftrags ging etwas schief.",
