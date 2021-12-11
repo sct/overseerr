@@ -803,7 +803,7 @@
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestFailed": "Fallo al enviar la notificación de prueba de LunaSea.",
   "components.Settings.Notifications.NotificationsLunaSea.settingsSaved": "¡Los ajustes de notificación se han guardado con éxito!",
   "components.Settings.Notifications.NotificationsLunaSea.settingsFailed": "Fallo al guardar los ajustes de notificación de LunaSea.",
-  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Requerido solo si no se usa el perfil por <code>defecto</code>",
+  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Requerido solo si no se usa el perfil por <code>default</code>",
   "components.Settings.Notifications.NotificationsLunaSea.profileName": "Nombre de Perfil",
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "Habilitar Agente",
   "components.PermissionEdit.requestTvDescription": "Conceder permisos para solicitar series que no sean 4k.",
