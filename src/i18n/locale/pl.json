@@ -285,7 +285,7 @@
   "components.ResetPassword.validationpasswordrequired": "Musisz podać hasło",
   "components.Search.search": "Szukaj",
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "Włącz agenta",
-  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Wymagane tylko wtedy, gdy nie używasz profilu <code>domyślnego</code>",
+  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Wymagane tylko wtedy, gdy nie używasz profilu <code>default</code>",
   "components.Settings.Notifications.NotificationsLunaSea.settingsFailed": "Nie udało się zapisać ustawień powiadomień LunaSea.",
   "components.Settings.Notifications.NotificationsLunaSea.settingsSaved": "Ustawienia powiadomień LunaSea zostały pomyślnie zapisane!",
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestFailed": "Nie udało się wysłać powiadomienia testowego LunaSea.",
