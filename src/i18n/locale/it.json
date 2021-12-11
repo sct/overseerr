@@ -774,7 +774,7 @@
   "components.Settings.Notifications.NotificationsLunaSea.validationWebhookUrl": "È necessario fornire un URL valido",
   "components.Settings.Notifications.NotificationsLunaSea.settingsSaved": "Impostazioni LunaSea salvate con successo!",
   "components.Settings.Notifications.NotificationsLunaSea.settingsFailed": "Impossibile salvare le impostazioni di notifica LunaSea.",
-  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Richiesto solo se non si usa il profilo <code>predefinito</code>",
+  "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Richiesto solo se non si usa il profilo <code>default</code>",
   "components.Settings.Notifications.NotificationsLunaSea.profileName": "Nome Profilo",
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "Abilita Agente",
   "components.PermissionEdit.requestTvDescription": "Concedere l'autorizzazione per richiedere serie non 4K.",
