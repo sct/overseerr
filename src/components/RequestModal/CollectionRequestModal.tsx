@@ -58,7 +58,10 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const { data: quota } = useSWR<QuotaResponse>(
-    user ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota` : null
+    user &&
+      (!requestOverrides?.user?.id || hasPermission(Permission.MANAGE_USERS))
+      ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota`
+      : null
   );
 
   const currentlyRemaining =
