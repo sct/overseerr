@@ -36,7 +36,8 @@ const messages = defineMessages({
   requestfrom: "{username}'s request is pending approval.",
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
-  requestall: 'Request All Seasons',
+  requestseasons4k:
+    'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}} in 4K',
   alreadyrequested: 'Already Requested',
   selectseason: 'Select Season(s)',
   season: 'Season',
@@ -387,12 +388,17 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           : getAllRequestedSeasons().length >= getAllSeasons().length
           ? intl.formatMessage(messages.alreadyrequested)
           : !settings.currentSettings.partialRequestsEnabled
-          ? intl.formatMessage(messages.requestall)
+          ? intl.formatMessage(
+              is4k ? globalMessages.request4k : globalMessages.request
+            )
           : selectedSeasons.length === 0
           ? intl.formatMessage(messages.selectseason)
-          : intl.formatMessage(messages.requestseasons, {
-              seasonCount: selectedSeasons.length,
-            })
+          : intl.formatMessage(
+              is4k ? messages.requestseasons4k : messages.requestseasons,
+              {
+                seasonCount: selectedSeasons.length,
+              }
+            )
       }
       okDisabled={
         editRequest
