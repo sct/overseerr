@@ -3,6 +3,7 @@ import {
   EntitySubscriberInterface,
   EventSubscriber,
   getRepository,
+  Not,
   UpdateEvent,
 } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
@@ -26,7 +27,11 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       if (entity.mediaType === MediaType.MOVIE) {
         const requestRepository = getRepository(MediaRequest);
         const relatedRequests = await requestRepository.find({
-          where: { media: entity, is4k },
+          where: {
+            media: entity,
+            is4k,
+            status: Not(MediaRequestStatus.DECLINED),
+          },
         });
 
         if (relatedRequests.length > 0) {
@@ -88,7 +93,11 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
       for (const changedSeasonNumber of changedSeasons) {
         const requests = await requestRepository.find({
-          where: { media: entity, is4k: true },
+          where: {
+            media: entity,
+            is4k,
+            status: Not(MediaRequestStatus.DECLINED),
+          },
         });
         const request = requests.find(
           (request) =>
