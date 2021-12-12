@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Listbox, Transition } from '@headlessui/react';
 import { AdjustmentsIcon } from '@heroicons/react/outline';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
@@ -124,7 +125,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     if (userData?.results && !requestUser) {
       setSelectedUser(userData.results.find((u) => u.id === user?.id) ?? null);
     }
-  }, [requestUser, user, userData]);
+  }, [userData?.results]);
 
   useEffect(() => {
     let defaultServer = data?.find(
@@ -142,7 +143,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     ) {
       setSelectedServer(defaultServer.id);
     }
-  }, [data, defaultOverrides, is4k, selectedServer]);
+  }, [data]);
 
   useEffect(() => {
     if (serverData) {
@@ -208,15 +209,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
         setSelectedTags(defaultTags);
       }
     }
-  }, [
-    defaultOverrides,
-    isAnime,
-    selectedFolder,
-    selectedLanguage,
-    selectedProfile,
-    selectedTags,
-    serverData,
-  ]);
+  }, [serverData]);
 
   useEffect(() => {
     if (defaultOverrides && defaultOverrides.server != null) {
@@ -238,7 +231,13 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     if (defaultOverrides && defaultOverrides.tags != null) {
       setSelectedTags(defaultOverrides.tags);
     }
-  }, [defaultOverrides]);
+  }, [
+    defaultOverrides?.server,
+    defaultOverrides?.folder,
+    defaultOverrides?.profile,
+    defaultOverrides?.language,
+    defaultOverrides?.tags,
+  ]);
 
   useEffect(() => {
     if (selectedServer !== null || selectedUser) {
@@ -258,7 +257,6 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
     selectedUser,
     selectedLanguage,
     selectedTags,
-    onChange,
   ]);
 
   if (!data && !error) {
