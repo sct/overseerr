@@ -53,7 +53,7 @@ const networks: Network[] = [
   {
     name: 'Discovery+',
     image:
-      'https://www.themoviedb.org/t/p/h100_filter(negate,000,666)/1D1bS3Dyw4ScYnFWTlBOvJXC3nb.png',
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/1D1bS3Dyw4ScYnFWTlBOvJXC3nb.png',
     url: '/discover/tv/network/4353',
   },
   {
