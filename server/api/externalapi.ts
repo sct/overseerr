@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import NodeCache from 'node-cache';
+import { getSettings } from '../lib/settings';
 
 // 5 minute default TTL (in seconds)
 const DEFAULT_TTL = 300;
@@ -22,15 +23,7 @@ class ExternalAPI {
     params: Record<string, unknown>,
     options: ExternalAPIOptions = {}
   ) {
-    this.axios = axios.create({
-      baseURL: baseUrl,
-      params,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...options.headers,
-      },
-    });
+    this.axios = this.createAxiosInstance(baseUrl, params, options);
     this.baseUrl = baseUrl;
     this.cache = options.nodeCache;
   }
@@ -96,6 +89,53 @@ class ExternalAPI {
     }
 
     return `${this.baseUrl}${endpoint}${JSON.stringify(params)}`;
+  }
+
+  private createAxiosInstance(
+    baseUrl: string,
+    params: Record<string, unknown>,
+    options: ExternalAPIOptions
+  ) {
+    const proxySettings = getSettings().main.proxy;
+    const privateIPAddressRegexp = new RegExp(
+      /(^192\.168\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])$)|(^172\.([1][6-9]|[2][0-9]|[3][0-1])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])$)|(^10\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])$)/
+    );
+
+    const useProxy =
+      proxySettings.enabled &&
+      !proxySettings.options.ignoredAddresses.some(
+        (ignoredAddress) => this.baseUrl === ignoredAddress
+      ) &&
+      !(
+        proxySettings.options.bypassLocalAddresses &&
+        privateIPAddressRegexp.test(this.baseUrl)
+      )
+        ? true
+        : false;
+
+    return axios.create({
+      baseURL: baseUrl,
+      params,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        ...options.headers,
+      },
+      proxy: useProxy
+        ? {
+            protocol: proxySettings.options.protocol,
+            host: proxySettings.options.hostname,
+            port: proxySettings.options.port,
+            auth:
+              proxySettings.options.authUser && proxySettings.options.authPass
+                ? {
+                    username: proxySettings.options.authUser,
+                    password: proxySettings.options.authPass,
+                  }
+                : undefined,
+          }
+        : false,
+    });
   }
 }
 

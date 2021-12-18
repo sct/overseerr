@@ -82,6 +82,19 @@ interface Quota {
   quotaDays?: number;
 }
 
+interface ProxySettings {
+  enabled: boolean;
+  options: {
+    protocol: 'http' | 'https';
+    hostname: string;
+    port: number;
+    authUser?: string;
+    authPass?: string;
+    bypassLocalAddresses: boolean;
+    ignoredAddresses: string[];
+  };
+}
+
 export interface MainSettings {
   apiKey: string;
   applicationTitle: string;
@@ -101,6 +114,7 @@ export interface MainSettings {
   trustProxy: boolean;
   partialRequestsEnabled: boolean;
   locale: string;
+  proxy: ProxySettings;
 }
 
 interface PublicSettings {
@@ -293,6 +307,16 @@ class Settings {
         trustProxy: false,
         partialRequestsEnabled: true,
         locale: 'en',
+        proxy: {
+          enabled: false,
+          options: {
+            protocol: 'http',
+            hostname: '',
+            port: 8080,
+            bypassLocalAddresses: false,
+            ignoredAddresses: [],
+          },
+        },
       },
       plex: {
         name: '',
