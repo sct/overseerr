@@ -269,7 +269,7 @@ settingsRoutes.get(
           const timestamp = line.match(new RegExp(/.{24}/)) || [];
           const level = line.match(new RegExp(/(?<=.{24}\s\[).+?(?=\])/)) || [];
           const label =
-            line.match(new RegExp(/(?<=.{24}\s\[.+\]\[).+(?=\])/)) || [];
+            line.match(new RegExp(/(?<=.{24}\s\[.+\]\[).+?(?=\])/)) || [];
           const message =
             line.match(new RegExp(/(?<=\[.+\]:\s)[\s\S][^\r]+/)) || [];
           const data = message[0].match(jsonRegexp) || [];
