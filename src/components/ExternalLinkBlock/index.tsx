@@ -4,6 +4,7 @@ import ImdbLogo from '../../assets/services/imdb.svg';
 import PlexLogo from '../../assets/services/plex.svg';
 import RTLogo from '../../assets/services/rt.svg';
 import TmdbLogo from '../../assets/services/tmdb.svg';
+import TraktLogo from '../../assets/services/trakt.svg';
 import TvdbLogo from '../../assets/services/tvdb.svg';
 import useLocale from '../../hooks/useLocale';
 
@@ -39,14 +40,26 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
         </a>
       )}
       {tmdbId && (
-        <a
-          href={`https://www.themoviedb.org/${mediaType}/${tmdbId}?language=${locale}`}
-          className="w-8 transition duration-300 opacity-50 hover:opacity-100"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <TmdbLogo />
-        </a>
+        <>
+          <a
+            href={`https://www.themoviedb.org/${mediaType}/${tmdbId}?language=${locale}`}
+            className="w-8 transition duration-300 opacity-50 hover:opacity-100"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <TmdbLogo />
+          </a>
+          <a
+            href={`https://trakt.tv/search/tmdb/${tmdbId}?id_type=${
+              mediaType === 'movie' ? 'movie' : 'show'
+            }`}
+            className="w-8 transition duration-300 opacity-50 hover:opacity-100"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <TraktLogo />
+          </a>
+        </>
       )}
       {tvdbId && mediaType === MediaType.TV && (
         <a
