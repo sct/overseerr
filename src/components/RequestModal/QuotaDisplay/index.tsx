@@ -99,8 +99,8 @@ const QuotaDisplay: React.FC<QuotaDisplayProps> = ({
             <div className="mb-2">
               {intl.formatMessage(
                 userOverride
-                  ? messages.requiredquota
-                  : messages.requiredquotaUser,
+                  ? messages.requiredquotaUser
+                  : messages.requiredquota,
                 {
                   seasons: overLimit,
                   strong: function strong(msg) {

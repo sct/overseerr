@@ -60,7 +60,10 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const { data: quota } = useSWR<QuotaResponse>(
-    user ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota` : null
+    user &&
+      (!requestOverrides?.user?.id || hasPermission(Permission.MANAGE_USERS))
+      ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota`
+      : null
   );
 
   useEffect(() => {
@@ -244,22 +247,20 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
             })}
         {(hasPermission(Permission.REQUEST_ADVANCED) ||
           hasPermission(Permission.MANAGE_REQUESTS)) && (
-          <div className="mt-4">
-            <AdvancedRequester
-              type="movie"
-              is4k={is4k}
-              requestUser={editRequest.requestedBy}
-              defaultOverrides={{
-                folder: editRequest.rootFolder,
-                profile: editRequest.profileId,
-                server: editRequest.serverId,
-                tags: editRequest.tags,
-              }}
-              onChange={(overrides) => {
-                setRequestOverrides(overrides);
-              }}
-            />
-          </div>
+          <AdvancedRequester
+            type="movie"
+            is4k={is4k}
+            requestUser={editRequest.requestedBy}
+            defaultOverrides={{
+              folder: editRequest.rootFolder,
+              profile: editRequest.profileId,
+              server: editRequest.serverId,
+              tags: editRequest.tags,
+            }}
+            onChange={(overrides) => {
+              setRequestOverrides(overrides);
+            }}
+          />
         )}
       </Modal>
     );
