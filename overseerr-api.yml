@@ -909,6 +909,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductionCompany'
+        productionCountries:
+          type: array
+          items:
+            type: object
+            properties:
+              iso_3166_1:
+                type: string
+              name:
+                type: string
         spokenLanguages:
           type: array
           items:
