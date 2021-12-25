@@ -1,5 +1,4 @@
 {
-  "components.CollectionDetails.requestSuccess": "<strong>{title}</strong> er blevet forespurgt!",
   "components.Discover.discovermovies": "Populære Film",
   "components.MediaSlider.ShowMoreCard.seemore": "Se Mere",
   "components.Login.validationpasswordrequired": "Angiv et kodeord",
@@ -52,8 +51,6 @@
   "components.MovieDetails.originaltitle": "Originaltitel",
   "components.AppDataWarning.dockerVolumeMissingDescription": "Volume mount'et, <code>{appDataPath}</code>, var ikke konfigureret korrekt. Al data vil blive slettet når containeren stoppes eller genstartes.",
   "components.CollectionDetails.numberofmovies": "{count} Film",
-  "components.CollectionDetails.requestswillbecreated": "Der vil oprettes forespørgsler for følgende titler:",
-  "components.CollectionDetails.requestswillbecreated4k": "Der vil oprettes 4K forespørgsler for følgende titler:",
   "components.Discover.DiscoverTvGenre.genreSeries": "{genre} Serier",
   "components.Discover.DiscoverTvLanguage.languageSeries": "Serier på {language}",
   "components.Discover.StudioSlider.studios": "Studier",
@@ -301,7 +298,6 @@
   "components.RequestModal.numberofepisodes": "Antal Episoder",
   "components.RequestModal.pending4krequest": "Afventende 4K Forespørgsler for {title}",
   "components.RequestModal.pendingapproval": "Din forespørgsel afventer godkendelse.",
-  "components.RequestModal.requestall": "Forespørg om Alle Sæsoner",
   "components.ResetPassword.resetpasswordsuccessmessage": "Kodeord er nulstillet!",
   "components.Settings.Notifications.NotificationsLunaSea.profileName": "Profilnavn",
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestSuccess": "LunaSea testnotifikation er afsendt!",
