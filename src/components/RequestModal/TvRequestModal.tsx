@@ -36,7 +36,8 @@ const messages = defineMessages({
   requestfrom: "{username}'s request is pending approval.",
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
-  requestall: 'Request All Seasons',
+  requestseasons4k:
+    'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}} in 4K',
   alreadyrequested: 'Already Requested',
   selectseason: 'Select Season(s)',
   season: 'Season',
@@ -88,7 +89,10 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
   });
   const [tvdbId, setTvdbId] = useState<number | undefined>(undefined);
   const { data: quota } = useSWR<QuotaResponse>(
-    user ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota` : null
+    user &&
+      (!requestOverrides?.user?.id || hasPermission(Permission.MANAGE_USERS))
+      ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota`
+      : null
   );
 
   const currentlyRemaining =
@@ -387,12 +391,17 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           : getAllRequestedSeasons().length >= getAllSeasons().length
           ? intl.formatMessage(messages.alreadyrequested)
           : !settings.currentSettings.partialRequestsEnabled
-          ? intl.formatMessage(messages.requestall)
+          ? intl.formatMessage(
+              is4k ? globalMessages.request4k : globalMessages.request
+            )
           : selectedSeasons.length === 0
           ? intl.formatMessage(messages.selectseason)
-          : intl.formatMessage(messages.requestseasons, {
-              seasonCount: selectedSeasons.length,
-            })
+          : intl.formatMessage(
+              is4k ? messages.requestseasons4k : messages.requestseasons,
+              {
+                seasonCount: selectedSeasons.length,
+              }
+            )
       }
       okDisabled={
         editRequest
@@ -440,7 +449,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
         !(
           quota?.tv.limit &&
           !settings.currentSettings.partialRequestsEnabled &&
-          unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+          unrequestedSeasons.length > (quota?.tv.remaining ?? 0)
         ) &&
         getAllRequestedSeasons().length < getAllSeasons().length &&
         !editRequest && (
@@ -457,7 +466,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           quota={quota?.tv}
           remaining={
             !settings.currentSettings.partialRequestsEnabled &&
-            unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+            unrequestedSeasons.length > (quota?.tv.remaining ?? 0)
               ? 0
               : currentlyRemaining
           }
@@ -468,7 +477,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           }
           overLimit={
             !settings.currentSettings.partialRequestsEnabled &&
-            unrequestedSeasons.length > (quota?.tv.limit ?? 0)
+            unrequestedSeasons.length > (quota?.tv.remaining ?? 0)
               ? unrequestedSeasons.length
               : undefined
           }
@@ -667,28 +676,26 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       </div>
       {(hasPermission(Permission.REQUEST_ADVANCED) ||
         hasPermission(Permission.MANAGE_REQUESTS)) && (
-        <div className="mt-4">
-          <AdvancedRequester
-            type="tv"
-            is4k={is4k}
-            isAnime={data?.keywords.some(
-              (keyword) => keyword.id === ANIME_KEYWORD_ID
-            )}
-            onChange={(overrides) => setRequestOverrides(overrides)}
-            requestUser={editRequest?.requestedBy}
-            defaultOverrides={
-              editRequest
-                ? {
-                    folder: editRequest.rootFolder,
-                    profile: editRequest.profileId,
-                    server: editRequest.serverId,
-                    language: editRequest.languageProfileId,
-                    tags: editRequest.tags,
-                  }
-                : undefined
-            }
-          />
-        </div>
+        <AdvancedRequester
+          type="tv"
+          is4k={is4k}
+          isAnime={data?.keywords.some(
+            (keyword) => keyword.id === ANIME_KEYWORD_ID
+          )}
+          onChange={(overrides) => setRequestOverrides(overrides)}
+          requestUser={editRequest?.requestedBy}
+          defaultOverrides={
+            editRequest
+              ? {
+                  folder: editRequest.rootFolder,
+                  profile: editRequest.profileId,
+                  server: editRequest.serverId,
+                  language: editRequest.languageProfileId,
+                  tags: editRequest.tags,
+                }
+              : undefined
+          }
+        />
       )}
     </Modal>
   );
