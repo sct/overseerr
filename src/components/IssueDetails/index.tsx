@@ -67,6 +67,7 @@ const messages = defineMessages({
   toastissuedeletefailed: 'Something went wrong while deleting the issue.',
   nocomments: 'No comments.',
   unknownissuetype: 'Unknown',
+  commentplaceholder: 'Add a comment…',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -460,7 +461,9 @@ const IssueDetails: React.FC = () => {
                           id="message"
                           name="message"
                           as="textarea"
-                          placeholder="Respond with a comment..."
+                          placeholder={intl.formatMessage(
+                            messages.commentplaceholder
+                          )}
                           className="h-20"
                         />
                         <div className="flex items-center justify-end mt-4 space-x-2">
