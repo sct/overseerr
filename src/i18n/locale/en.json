@@ -42,6 +42,7 @@
   "components.IssueDetails.allseasons": "All Seasons",
   "components.IssueDetails.closeissue": "Close Issue",
   "components.IssueDetails.closeissueandcomment": "Close with Comment",
+  "components.IssueDetails.commentplaceholder": "Add a comment…",
   "components.IssueDetails.comments": "Comments",
   "components.IssueDetails.deleteissue": "Delete Issue",
   "components.IssueDetails.deleteissueconfirm": "Are you sure you want to delete this issue?",
