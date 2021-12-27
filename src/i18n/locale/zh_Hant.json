@@ -992,5 +992,6 @@
   "components.RequestModal.requestmovies": "提出請求",
   "components.MovieDetails.productioncountries": "製作國家",
   "components.RequestModal.selectmovies": "請選擇電影",
-  "components.TvDetails.productioncountries": "製作國家"
+  "components.TvDetails.productioncountries": "製作國家",
+  "components.IssueDetails.commentplaceholder": "發表評論…"
 }
