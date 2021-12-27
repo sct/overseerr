@@ -986,5 +986,11 @@
   "components.NotificationTypeSelector.adminissueresolvedDescription": "Notifica'm quan altres usuaris resolguin incidències.",
   "components.NotificationTypeSelector.issuereopened": "Incidències reobertes",
   "components.NotificationTypeSelector.issuereopenedDescription": "Notifica'm quan es tornin a obrir incidències.",
-  "components.NotificationTypeSelector.userissuereopenedDescription": "Notifica'm quan es tornin a obrir incidències reportades per mi."
+  "components.NotificationTypeSelector.userissuereopenedDescription": "Notifica'm quan es tornin a obrir incidències reportades per mi.",
+  "components.RequestModal.requestmovies4k": "{count} {count, plural, one {Pel·lícula} other {Pel·lícules}} en 4K solicitada/es",
+  "components.RequestModal.requestseasons4k": "{seasonCount} {seasonCount, plural, one {temporada} other {temporades}} solicitada/es",
+  "components.RequestModal.selectmovies": "Selecciona les pel·lícules",
+  "components.TvDetails.productioncountries": "{countryCount, plural, one {País} other {Països}} de producció",
+  "components.RequestModal.requestmovies": "{count} {count, plural, one {Pel·lícula} other {Pel·lícules}} solicitada/es",
+  "components.MovieDetails.productioncountries": "{countryCount, plural, one {País} other {Països}} de producció"
 }

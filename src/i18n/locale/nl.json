@@ -986,5 +986,12 @@
   "components.NotificationTypeSelector.issuereopened": "Probleem opnieuw ingediend",
   "components.NotificationTypeSelector.adminissuereopenedDescription": "Ontvang een melding wanneer problemen door andere gebruikers opnieuw worden ingediend.",
   "components.NotificationTypeSelector.issuereopenedDescription": "Stuur meldingen wanneer problemen opnieuw worden ingediend.",
-  "components.NotificationTypeSelector.userissuereopenedDescription": "Ontvang een bericht wanneer problemen die jij hebt gemeld, opnieuw worden ingediend."
+  "components.NotificationTypeSelector.userissuereopenedDescription": "Ontvang een bericht wanneer problemen die jij hebt gemeld, opnieuw worden ingediend.",
+  "components.RequestModal.requestseasons4k": "{seasonCount} {seasonCount, plural, one {seizoen} other {seizoenen}} in 4K aanvragen",
+  "components.RequestModal.requestmovies": "{count} {count, plural, one {film} other {films}} aanvragen",
+  "components.RequestModal.selectmovies": "Film(s) selecteren",
+  "components.MovieDetails.productioncountries": "Productie{countryCount, plural, one {land} other {landen}}",
+  "components.RequestModal.requestmovies4k": "{count} {count, plural, one {film} other {films}} in 4K aanvragen",
+  "components.TvDetails.productioncountries": "Productie{countryCount, plural, one {land} other {landen}}",
+  "components.IssueDetails.commentplaceholder": "Voeg een opmerking toe…"
 }

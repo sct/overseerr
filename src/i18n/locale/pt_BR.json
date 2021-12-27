@@ -664,7 +664,7 @@
   "i18n.canceling": "Cancelando…",
   "i18n.back": "Voltar",
   "i18n.areyousure": "Você tem certeza?",
-  "i18n.all": "Todas",
+  "i18n.all": "Todas(os)",
   "components.UserProfile.requestsperdays": "{limit} restante(s)",
   "components.UserProfile.unlimited": "Ilimitadas",
   "components.UserProfile.totalrequests": "Total de Solicitações",
@@ -864,8 +864,8 @@
   "components.IssueDetails.IssueComment.areyousuredelete": "Você tem certeza que deseja apagar este comentário?",
   "components.IssueDetails.IssueComment.delete": "Apagar Comentário",
   "components.IssueDetails.IssueComment.edit": "Editar Comentário",
-  "components.IssueDetails.IssueComment.postedby": "Feito há {relativeTime} por {username}",
-  "components.IssueDetails.IssueComment.postedbyedited": "Feito há {relativeTime} por {username} (Edited)",
+  "components.IssueDetails.IssueComment.postedby": "Feito {relativeTime} por {username}",
+  "components.IssueDetails.IssueComment.postedbyedited": "Feito {relativeTime} por {username} (Edited)",
   "components.IssueDetails.IssueComment.validationComment": "Você deve escrever uma mensagem",
   "components.IssueDetails.closeissueandcomment": "Fechar com Comentário",
   "components.IssueDetails.comments": "Comentários",
@@ -992,5 +992,6 @@
   "components.PermissionEdit.createissues": "Reportar Problemas",
   "components.NotificationTypeSelector.issuecreated": "Problema Reportado",
   "i18n.open": "Aberto",
-  "i18n.resolved": "Resolvido"
+  "i18n.resolved": "Resolvido",
+  "components.IssueDetails.commentplaceholder": "Adicionar um comentário…"
 }
