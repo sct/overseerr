@@ -397,7 +397,7 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
                             ></span>
                           </span>
                         </td>
-                        <td className="flex items-center px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6 whitespace-nowrap">
+                        <td className="flex items-center px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6">
                           <div className="relative flex-shrink-0 w-10 h-auto overflow-hidden rounded-md">
                             <CachedImage
                               src={
