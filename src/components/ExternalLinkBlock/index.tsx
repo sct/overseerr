@@ -40,26 +40,14 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
         </a>
       )}
       {tmdbId && (
-        <>
-          <a
-            href={`https://www.themoviedb.org/${mediaType}/${tmdbId}?language=${locale}`}
-            className="w-8 transition duration-300 opacity-50 hover:opacity-100"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <TmdbLogo />
-          </a>
-          <a
-            href={`https://trakt.tv/search/tmdb/${tmdbId}?id_type=${
-              mediaType === 'movie' ? 'movie' : 'show'
-            }`}
-            className="w-8 transition duration-300 opacity-50 hover:opacity-100"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <TraktLogo />
-          </a>
-        </>
+        <a
+          href={`https://www.themoviedb.org/${mediaType}/${tmdbId}?language=${locale}`}
+          className="w-8 transition duration-300 opacity-50 hover:opacity-100"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <TmdbLogo />
+        </a>
       )}
       {tvdbId && mediaType === MediaType.TV && (
         <a
@@ -89,6 +77,18 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
           rel="noreferrer"
         >
           <RTLogo />
+        </a>
+      )}
+      {tmdbId && (
+        <a
+          href={`https://trakt.tv/search/tmdb/${tmdbId}?id_type=${
+            mediaType === 'movie' ? 'movie' : 'show'
+          }`}
+          className="w-8 transition duration-300 opacity-50 hover:opacity-100"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <TraktLogo />
         </a>
       )}
     </div>
