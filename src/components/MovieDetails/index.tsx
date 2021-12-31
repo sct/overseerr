@@ -11,6 +11,8 @@ import {
   ChevronDoubleDownIcon,
   ChevronDoubleUpIcon,
 } from '@heroicons/react/solid';
+import { hasFlag } from 'country-flag-icons';
+import 'country-flag-icons/3x2/flags.css';
 import { uniqBy } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -69,6 +71,8 @@ const messages = defineMessages({
   showmore: 'Show More',
   showless: 'Show Less',
   streamingproviders: 'Currently Streaming On',
+  productioncountries:
+    'Production {countryCount, plural, one {Country} other {Countries}}',
 });
 
 interface MovieDetailsProps {
@@ -593,6 +597,37 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         )?.name}
                     </a>
                   </Link>
+                </span>
+              </div>
+            )}
+            {data.productionCountries.length > 0 && (
+              <div className="media-fact">
+                <span>
+                  {intl.formatMessage(messages.productioncountries, {
+                    countryCount: data.productionCountries.length,
+                  })}
+                </span>
+                <span className="media-fact-value">
+                  {data.productionCountries.map((c) => {
+                    return (
+                      <span
+                        className="flex items-center justify-end"
+                        key={`prodcountry-${c.iso_3166_1}`}
+                      >
+                        {hasFlag(c.iso_3166_1) && (
+                          <span
+                            className={`mr-1.5 text-xs leading-5 flag:${c.iso_3166_1}`}
+                          />
+                        )}
+                        <span>
+                          {intl.formatDisplayName(c.iso_3166_1, {
+                            type: 'region',
+                            fallback: 'none',
+                          }) ?? c.name}
+                        </span>
+                      </span>
+                    );
+                  })}
                 </span>
               </div>
             )}

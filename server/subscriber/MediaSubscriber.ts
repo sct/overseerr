@@ -3,6 +3,7 @@ import {
   EntitySubscriberInterface,
   EventSubscriber,
   getRepository,
+  Not,
   UpdateEvent,
 } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
@@ -14,15 +15,23 @@ import notificationManager, { Notification } from '../lib/notifications';
 
 @EventSubscriber()
 export class MediaSubscriber implements EntitySubscriberInterface<Media> {
-  private async notifyAvailableMovie(entity: Media, dbEntity?: Media) {
+  private async notifyAvailableMovie(
+    entity: Media,
+    dbEntity: Media,
+    is4k: boolean
+  ) {
     if (
-      entity.status === MediaStatus.AVAILABLE &&
-      dbEntity?.status !== MediaStatus.AVAILABLE
+      entity[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE &&
+      dbEntity[is4k ? 'status4k' : 'status'] !== MediaStatus.AVAILABLE
     ) {
       if (entity.mediaType === MediaType.MOVIE) {
         const requestRepository = getRepository(MediaRequest);
         const relatedRequests = await requestRepository.find({
-          where: { media: entity, is4k: false },
+          where: {
+            media: entity,
+            is4k,
+            status: Not(MediaRequestStatus.DECLINED),
+          },
         });
 
         if (relatedRequests.length > 0) {
@@ -31,6 +40,8 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
           relatedRequests.forEach((request) => {
             notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
+              event: `${is4k ? '4K ' : ''}Movie Request Now Available`,
+              notifyAdmin: false,
               notifyUser: request.requestedBy,
               subject: `${movie.title}${
                 movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
@@ -42,7 +53,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
               }),
               media: entity,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
-              request: request,
+              request,
             });
           });
         }
@@ -50,15 +61,25 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
     }
   }
 
-  private async notifyAvailableSeries(entity: Media, dbEntity: Media) {
+  private async notifyAvailableSeries(
+    entity: Media,
+    dbEntity: Media,
+    is4k: boolean
+  ) {
     const seasonRepository = getRepository(Season);
     const newAvailableSeasons = entity.seasons
-      .filter((season) => season.status === MediaStatus.AVAILABLE)
+      .filter(
+        (season) =>
+          season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE
+      )
       .map((season) => season.seasonNumber);
     const oldSeasonIds = dbEntity.seasons.map((season) => season.id);
     const oldSeasons = await seasonRepository.findByIds(oldSeasonIds);
     const oldAvailableSeasons = oldSeasons
-      .filter((season) => season.status === MediaStatus.AVAILABLE)
+      .filter(
+        (season) =>
+          season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE
+      )
       .map((season) => season.seasonNumber);
 
     const changedSeasons = newAvailableSeasons.filter(
@@ -72,7 +93,11 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
       for (const changedSeasonNumber of changedSeasons) {
         const requests = await requestRepository.find({
-          where: { media: entity, is4k: false },
+          where: {
+            media: entity,
+            is4k,
+            status: Not(MediaRequestStatus.DECLINED),
+          },
         });
         const request = requests.find(
           (request) =>
@@ -91,6 +116,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
           );
           const tv = await tmdb.getTvShow({ tvId: entity.tmdbId });
           notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
+            event: `${is4k ? '4K ' : ''}Series Request Now Available`,
             subject: `${tv.name}${
               tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
             }`,
@@ -99,18 +125,19 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
               separator: /\s/,
               omission: '…',
             }),
+            notifyAdmin: false,
             notifyUser: request.requestedBy,
             image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
             media: entity,
             extra: [
               {
-                name: 'Seasons',
+                name: 'Requested Seasons',
                 value: request.seasons
                   .map((season) => season.seasonNumber)
                   .join(', '),
               },
             ],
-            request: request,
+            request,
           });
         }
       }
@@ -144,7 +171,22 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       event.entity.mediaType === MediaType.MOVIE &&
       event.entity.status === MediaStatus.AVAILABLE
     ) {
-      this.notifyAvailableMovie(event.entity as Media, event.databaseEntity);
+      this.notifyAvailableMovie(
+        event.entity as Media,
+        event.databaseEntity,
+        false
+      );
+    }
+
+    if (
+      event.entity.mediaType === MediaType.MOVIE &&
+      event.entity.status4k === MediaStatus.AVAILABLE
+    ) {
+      this.notifyAvailableMovie(
+        event.entity as Media,
+        event.databaseEntity,
+        true
+      );
     }
 
     if (
@@ -152,7 +194,23 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       (event.entity.status === MediaStatus.AVAILABLE ||
         event.entity.status === MediaStatus.PARTIALLY_AVAILABLE)
     ) {
-      this.notifyAvailableSeries(event.entity as Media, event.databaseEntity);
+      this.notifyAvailableSeries(
+        event.entity as Media,
+        event.databaseEntity,
+        false
+      );
+    }
+
+    if (
+      event.entity.mediaType === MediaType.TV &&
+      (event.entity.status4k === MediaStatus.AVAILABLE ||
+        event.entity.status4k === MediaStatus.PARTIALLY_AVAILABLE)
+    ) {
+      this.notifyAvailableSeries(
+        event.entity as Media,
+        event.databaseEntity,
+        true
+      );
     }
 
     if (

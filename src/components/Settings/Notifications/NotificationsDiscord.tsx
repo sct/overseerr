@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
+import useSettings from '../../../hooks/useSettings';
 import globalMessages from '../../../i18n/globalMessages';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
@@ -29,6 +30,7 @@ const messages = defineMessages({
 
 const NotificationsDiscord: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
   const { data, error, revalidate } = useSWR(
@@ -195,7 +197,12 @@ const NotificationsDiscord: React.FC = () => {
               </label>
               <div className="form-input">
                 <div className="form-input-field">
-                  <Field id="botUsername" name="botUsername" type="text" />
+                  <Field
+                    id="botUsername"
+                    name="botUsername"
+                    type="text"
+                    placeholder={settings.currentSettings.applicationTitle}
+                  />
                 </div>
                 {errors.botUsername && touched.botUsername && (
                   <div className="error">{errors.botUsername}</div>

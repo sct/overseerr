@@ -5,6 +5,8 @@ import {
   FilmIcon,
   PlayIcon,
 } from '@heroicons/react/outline';
+import { hasFlag } from 'country-flag-icons';
+import 'country-flag-icons/3x2/flags.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
@@ -63,6 +65,8 @@ const messages = defineMessages({
   episodeRuntime: 'Episode Runtime',
   episodeRuntimeMinutes: '{runtime} minutes',
   streamingproviders: 'Currently Streaming On',
+  productioncountries:
+    'Production {countryCount, plural, one {Country} other {Countries}}',
 });
 
 interface TvDetailsProps {
@@ -533,6 +537,37 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 </span>
               </div>
             )}
+            {data.productionCountries.length > 0 && (
+              <div className="media-fact">
+                <span>
+                  {intl.formatMessage(messages.productioncountries, {
+                    countryCount: data.productionCountries.length,
+                  })}
+                </span>
+                <span className="media-fact-value">
+                  {data.productionCountries.map((c) => {
+                    return (
+                      <span
+                        className="flex items-center justify-end"
+                        key={`prodcountry-${c.iso_3166_1}`}
+                      >
+                        {hasFlag(c.iso_3166_1) && (
+                          <span
+                            className={`mr-1.5 text-xs leading-5 flag:${c.iso_3166_1}`}
+                          />
+                        )}
+                        <span>
+                          {intl.formatDisplayName(c.iso_3166_1, {
+                            type: 'region',
+                            fallback: 'none',
+                          }) ?? c.name}
+                        </span>
+                      </span>
+                    );
+                  })}
+                </span>
+              </div>
+            )}
             {data.networks.length > 0 && (
               <div className="media-fact">
                 <span>
@@ -552,7 +587,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     ))
                     .reduce((prev, curr) => (
                       <>
-                        {prev}, {curr}
+                        {intl.formatMessage(globalMessages.delimitedlist, {
+                          a: prev,
+                          b: curr,
+                        })}
                       </>
                     ))}
                 </span>

@@ -251,6 +251,10 @@ export interface TmdbTvDetails {
     name: string;
     origin_country: string;
   }[];
+  production_countries: {
+    iso_3166_1: string;
+    name: string;
+  }[];
   spoken_languages: {
     english_name: string;
     iso_639_1: string;

@@ -17,32 +17,32 @@ const Badge: React.FC<BadgeProps> = ({
   ];
 
   if (url) {
-    badgeStyle.push('transition cursor-pointer');
+    badgeStyle.push('transition cursor-pointer !no-underline');
   } else {
     badgeStyle.push('cursor-default');
   }
 
   switch (badgeType) {
     case 'danger':
-      badgeStyle.push('bg-red-600 text-red-100');
+      badgeStyle.push('bg-red-600 !text-red-100');
       if (url) {
         badgeStyle.push('hover:bg-red-500');
       }
       break;
     case 'warning':
-      badgeStyle.push('bg-yellow-500 text-yellow-100');
+      badgeStyle.push('bg-yellow-500 !text-yellow-100');
       if (url) {
         badgeStyle.push('hover:bg-yellow-400');
       }
       break;
     case 'success':
-      badgeStyle.push('bg-green-500 text-green-100');
+      badgeStyle.push('bg-green-500 !text-green-100');
       if (url) {
         badgeStyle.push('hover:bg-green-400');
       }
       break;
     default:
-      badgeStyle.push('bg-indigo-500 text-indigo-100');
+      badgeStyle.push('bg-indigo-500 !text-indigo-100');
       if (url) {
         badgeStyle.push('hover:bg-indigo-400');
       }
@@ -54,8 +54,13 @@ const Badge: React.FC<BadgeProps> = ({
 
   if (url) {
     return (
-      <a href={url} target="_blank" rel="noopener noreferrer">
-        <span className={badgeStyle.join(' ')}>{children}</span>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={badgeStyle.join(' ')}
+      >
+        {children}
       </a>
     );
   } else {
