@@ -986,5 +986,12 @@
   "components.NotificationTypeSelector.issuereopened": "Problem ponownie otwarty",
   "components.NotificationTypeSelector.userissuereopenedDescription": "Otrzymuj powiadomienia o ponownym otwarciu zgłoszonych problemów.",
   "components.NotificationTypeSelector.adminissuereopenedDescription": "Otrzymuj powiadomienia, gdy problemy zostaną ponownie otwarte przez innych użytkowników.",
-  "components.NotificationTypeSelector.issuereopenedDescription": "Wysyłaj powiadomienia, gdy problemy zostaną ponownie otwarte."
+  "components.NotificationTypeSelector.issuereopenedDescription": "Wysyłaj powiadomienia, gdy problemy zostaną ponownie otwarte.",
+  "components.RequestModal.requestmovies4k": "Prośba o {count} {count, plural, one {film} other {filmów}} w 4k",
+  "components.RequestModal.selectmovies": "Wybierz film(y)",
+  "components.RequestModal.requestmovies": "Prośba o {count} {count, plural, one {film} other {filmów}}",
+  "components.IssueDetails.commentplaceholder": "Dodaj komentarz…",
+  "components.MovieDetails.productioncountries": "Produkcja {countryCount, plural, one {kraj} other {kraje}}",
+  "components.RequestModal.requestseasons4k": "Prośba o {seasonCount} {seasonCount, plural, one {sezon} other {sezony}} w 4K",
+  "components.TvDetails.productioncountries": "Produkcja {countryCount, plural, one {kraj} other {kraje}}"
 }

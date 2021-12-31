@@ -874,7 +874,7 @@
   "components.IssueDetails.comments": "评论",
   "components.IssueDetails.deleteissueconfirm": "您是否确实要删除此 issue？",
   "components.IssueDetails.episode": "第 {episodeNumber} 集",
-  "components.IssueDetails.issuepagetitle": "Issue",
+  "components.IssueDetails.issuepagetitle": "问题",
   "components.IssueDetails.lastupdated": "最后更新时间",
   "components.IssueDetails.leavecomment": "评论",
   "components.IssueDetails.openinarr": "在 {arr} 中打开",
