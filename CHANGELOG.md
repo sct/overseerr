@@ -1,3 +1,62 @@
+# [1.28.0](https://github.com/sct/overseerr/compare/v1.27.0...v1.28.0) (2022-01-01)
+
+
+### Bug Fixes
+
+* add missing route guards to issues pages ([#2235](https://github.com/sct/overseerr/issues/2235)) ([c79dc9f](https://github.com/sct/overseerr/commit/c79dc9f70f512dbec0e3460ee78dbc9feccfbbb1))
+* allow basic HTTP auth in hostname validation ([#2307](https://github.com/sct/overseerr/issues/2307)) ([d48a7ba](https://github.com/sct/overseerr/commit/d48a7ba518f9c79d70e499037cb730eb3efe2c08))
+* **docker:** explicitly install python3 ([#2273](https://github.com/sct/overseerr/issues/2273)) [skip ci] ([f1cd087](https://github.com/sct/overseerr/commit/f1cd0878a5c74bddc864f5f8ce9e2f041bdde5ec))
+* **email:** use decrypted private key ([#2232](https://github.com/sct/overseerr/issues/2232)) ([8d29685](https://github.com/sct/overseerr/commit/8d2968572a569ed77a4d7c14ae1dc69935fa847e))
+* **frontend:** more issues-related fixes ([#2234](https://github.com/sct/overseerr/issues/2234)) ([3ec4a9c](https://github.com/sct/overseerr/commit/3ec4a9c76e1f31bee5c8801b389721bf8e5884e0))
+* **frontend:** setup page backdrops ([#2251](https://github.com/sct/overseerr/issues/2251)) ([78a8091](https://github.com/sct/overseerr/commit/78a8091bcd29a7cf50cc7c493c28710389817adf))
+* **frontend:** use consistent formatting & strings ([#2231](https://github.com/sct/overseerr/issues/2231)) ([2164471](https://github.com/sct/overseerr/commit/216447121b686b6d01a31b95ec0c8eb005f6b103))
+* handle Plex library settings migration failure gracefully ([#2254](https://github.com/sct/overseerr/issues/2254)) ([ed53810](https://github.com/sct/overseerr/commit/ed53810fb33f70722361c67d176ff4edf531ba45))
+* **issues:** only allow edit of own comments & do not allow non-admin delete of issues with comments ([#2248](https://github.com/sct/overseerr/issues/2248)) ([bba09d6](https://github.com/sct/overseerr/commit/bba09d69c1bc55c2f35db5a7986e7c935cc9619c))
+* **lang:** add missing string ([#2370](https://github.com/sct/overseerr/issues/2370)) ([d36c1d2](https://github.com/sct/overseerr/commit/d36c1d29295020efb76bac21a443b6f9049802f3))
+* **lang:** string edits ([#2229](https://github.com/sct/overseerr/issues/2229)) ([ab20c21](https://github.com/sct/overseerr/commit/ab20c21184639e1c7725f7cae96249c6fa157351))
+* **lang:** translations update from Weblate ([#2212](https://github.com/sct/overseerr/issues/2212)) ([85aec4f](https://github.com/sct/overseerr/commit/85aec4f8925746ebae9bcc99d8480b78ccfd851e))
+* **logs:** handle unexpected log messages ([#2303](https://github.com/sct/overseerr/issues/2303)) ([f284e4a](https://github.com/sct/overseerr/commit/f284e4ab978e502d2cc08e76226a8ebac91bb48f))
+* **logs:** lazily parse log message label ([#2359](https://github.com/sct/overseerr/issues/2359)) ([5af06bd](https://github.com/sct/overseerr/commit/5af06bd87226fbc6176b0c5e362824793165a34e))
+* **notif:** correct issue notif action URLs ([#2333](https://github.com/sct/overseerr/issues/2333)) ([dc7f959](https://github.com/sct/overseerr/commit/dc7f959cb422a8d89bcebc78377f1513412e542c))
+* **notif:** only send MEDIA_AVAILABLE notifications for non-declined requests ([#2343](https://github.com/sct/overseerr/issues/2343)) ([fcb0dcf](https://github.com/sct/overseerr/commit/fcb0dcf5be64bf9ca814bfe119586908922099c5))
+* **requests:** do not fail request edits if acting user lacks Manage Users permission ([#2338](https://github.com/sct/overseerr/issues/2338)) ([91bfff7](https://github.com/sct/overseerr/commit/91bfff71b7c05c9b9aad2c95282533eefbb6b2e7))
+* secure session cookie ([#2308](https://github.com/sct/overseerr/issues/2308)) ([7f330af](https://github.com/sct/overseerr/commit/7f330aff2e1d3546e8dd1a3e4b037b9beb1cc7f0))
+* **servarr:** handle baseurl error when testing connection ([#2294](https://github.com/sct/overseerr/issues/2294)) ([93b5ea2](https://github.com/sct/overseerr/commit/93b5ea20ca590996f6dc90713a76800180d0621c))
+* **servarr:** handle servaarr server being unavailable when scanning downloads ([#2358](https://github.com/sct/overseerr/issues/2358)) ([488874f](https://github.com/sct/overseerr/commit/488874fc17e4e4719e90d383b83b1e1a5217213b))
+* sort collection parts by release date ([#2368](https://github.com/sct/overseerr/issues/2368)) ([1b3797c](https://github.com/sct/overseerr/commit/1b3797cf6e6ef6b3d8c81e644382f6e3f68cfaaa))
+* **ui:** request badge styling in request list ([#2302](https://github.com/sct/overseerr/issues/2302)) ([f2375c9](https://github.com/sct/overseerr/commit/f2375c902b79dcb1f349500862775ae57ea7d406))
+
+
+### Features
+
+* add production countries to movie/TV detail pages ([#2170](https://github.com/sct/overseerr/issues/2170)) ([30b20df](https://github.com/sct/overseerr/commit/30b20df37a9604ba1c066f89e54a5482a09575ea))
+* add quotas, advanced options, and toggles to collection request modal ([#1742](https://github.com/sct/overseerr/issues/1742)) ([af40212](https://github.com/sct/overseerr/commit/af40212a738f8d6d9a5bf26dc20c0c87780d6020))
+* **frontend:** add Discovery+ to network slider ([#2345](https://github.com/sct/overseerr/issues/2345)) ([2ded8f5](https://github.com/sct/overseerr/commit/2ded8f5484168bd7b8f45124d9ebdd296a5708d5))
+* issues ([#2180](https://github.com/sct/overseerr/issues/2180)) ([e402c42](https://github.com/sct/overseerr/commit/e402c42aaa7d795cd724856a2e23615bb1a3695d))
+* **lang:** add Polish display language ([#2261](https://github.com/sct/overseerr/issues/2261)) ([c760cea](https://github.com/sct/overseerr/commit/c760ceaa5f36c77fa3ce320fae1b4597d2d8b976))
+* **lang:** translated using Weblate (Chinese (Traditional)) ([#2272](https://github.com/sct/overseerr/issues/2272)) ([d401e33](https://github.com/sct/overseerr/commit/d401e33249cbbca6e707479e5f0207e298ef3248))
+* **lang:** translations update from Hosted Weblate ([#2277](https://github.com/sct/overseerr/issues/2277)) ([92732fc](https://github.com/sct/overseerr/commit/92732fcb42c56242d16daab00e2d38740b92dea0))
+* **lang:** translations update from Hosted Weblate ([#2315](https://github.com/sct/overseerr/issues/2315)) ([6245be1](https://github.com/sct/overseerr/commit/6245be1e10dda67c869b59522c1290e7c100145f))
+* **lang:** translations update from Hosted Weblate ([#2320](https://github.com/sct/overseerr/issues/2320)) ([68112fa](https://github.com/sct/overseerr/commit/68112faefbd64d5c71d3eff21620767f88ccfc34))
+* **lang:** translations update from Hosted Weblate ([#2325](https://github.com/sct/overseerr/issues/2325)) ([febf067](https://github.com/sct/overseerr/commit/febf0677b880d2fed2822ce510db7cbb0826a920))
+* **lang:** translations update from Hosted Weblate ([#2336](https://github.com/sct/overseerr/issues/2336)) ([3f7ef7a](https://github.com/sct/overseerr/commit/3f7ef7af97a807ef38041f4f2642b565aa33d066))
+* **lang:** translations update from Hosted Weblate ([#2341](https://github.com/sct/overseerr/issues/2341)) ([33fe0bd](https://github.com/sct/overseerr/commit/33fe0bdd1e00da40e85b4e4b4780134b31a105d2))
+* **lang:** translations update from Hosted Weblate ([#2346](https://github.com/sct/overseerr/issues/2346)) ([50dc934](https://github.com/sct/overseerr/commit/50dc9341dd98cb2d8ef3ef6471882a5a9b060afa))
+* **lang:** translations update from Hosted Weblate ([#2364](https://github.com/sct/overseerr/issues/2364)) ([d437cc2](https://github.com/sct/overseerr/commit/d437cc25392e9c0881888371ffabc82892a1b15c))
+* **lang:** translations update from Hosted Weblate ([#2366](https://github.com/sct/overseerr/issues/2366)) ([cc2b2bc](https://github.com/sct/overseerr/commit/cc2b2bc7a8ecd89e1feb38a907596b16df9bf0fc))
+* **lang:** translations update from Hosted Weblate ([#2374](https://github.com/sct/overseerr/issues/2374)) ([b9bedac](https://github.com/sct/overseerr/commit/b9bedac7d7ba85223ecf1d9b93b96e2a490d571a))
+* **lang:** translations update from Weblate ([#2226](https://github.com/sct/overseerr/issues/2226)) ([62b3dc5](https://github.com/sct/overseerr/commit/62b3dc5471c28f4d0e4399cb3bc8bfab94cff5ea))
+* **lang:** translations update from Weblate ([#2241](https://github.com/sct/overseerr/issues/2241)) ([2b0b8e0](https://github.com/sct/overseerr/commit/2b0b8e05d9c95ff9218cea858a920a2815871186))
+* **lang:** translations update from Weblate ([#2244](https://github.com/sct/overseerr/issues/2244)) ([0828b00](https://github.com/sct/overseerr/commit/0828b008badc8b512316799a6787bb7c403658d5))
+* **lang:** translations update from Weblate ([#2247](https://github.com/sct/overseerr/issues/2247)) ([8c49309](https://github.com/sct/overseerr/commit/8c49309c35c31f7bcd0b84b0a307febc16842f68))
+* **lang:** translations update from Weblate ([#2252](https://github.com/sct/overseerr/issues/2252)) ([99d5000](https://github.com/sct/overseerr/commit/99d50004e58f6b4594df0a171f6bc668635ec50c))
+* **lang:** translations update from Weblate ([#2265](https://github.com/sct/overseerr/issues/2265)) ([b1b367a](https://github.com/sct/overseerr/commit/b1b367aac625ed3eb865832c94c2352e5a5c40f5))
+* **notif:** 4K media notifications ([#2324](https://github.com/sct/overseerr/issues/2324)) ([88a8c1a](https://github.com/sct/overseerr/commit/88a8c1aa596e1113d6da52e5e8cbe443abc6384f))
+* **notif:** add Pushbullet and Pushover agents to user notification settings ([#1740](https://github.com/sct/overseerr/issues/1740)) ([aeb7a48](https://github.com/sct/overseerr/commit/aeb7a48d72cec3fa2b857030aad3eaa0a457a896))
+* **notif:** issue notifications ([#2242](https://github.com/sct/overseerr/issues/2242)) ([c9ffac3](https://github.com/sct/overseerr/commit/c9ffac33f7c04d926f8c45295703689d42fe87af))
+* **search:** close search bar when hitting return ([#2260](https://github.com/sct/overseerr/issues/2260)) ([b423dc1](https://github.com/sct/overseerr/commit/b423dc167d12f0ba49f902876bceb2e876e35f58))
+* **ui:** allow admins to edit & approve request from advanced request modal ([#2067](https://github.com/sct/overseerr/issues/2067)) ([340f1a2](https://github.com/sct/overseerr/commit/340f1a211952bd2e8f40f0ea4622b52dbe934e85))
+
 # [1.27.0](https://github.com/sct/overseerr/compare/v1.26.1...v1.27.0) (2021-10-19)
 
 
