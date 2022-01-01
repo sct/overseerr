@@ -3,7 +3,6 @@ import { ExclamationIcon } from '@heroicons/react/outline';
 import { ArrowCircleRightIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
-import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -18,6 +17,7 @@ import { Permission, useUser } from '../../../hooks/useUser';
 import globalMessages from '../../../i18n/globalMessages';
 import Button from '../../Common/Button';
 import Modal from '../../Common/Modal';
+import Link from '../../Link';
 import { issueOptions } from '../constants';
 
 const messages = defineMessages({

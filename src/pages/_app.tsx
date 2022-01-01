@@ -19,7 +19,9 @@ import { SettingsProvider } from '../context/SettingsContext';
 import { UserContext } from '../context/UserContext';
 import { User } from '../hooks/useUser';
 import '../styles/globals.css';
+import addBasePath from '../utils/addBasePath';
 
+const basePath = addBasePath('');
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
   switch (locale) {
@@ -83,6 +85,10 @@ interface ExtendedAppProps extends AppProps {
 
 if (typeof window === 'undefined') {
   global.Intl = require('intl');
+}
+
+if (basePath) {
+  axios.defaults.baseURL = basePath;
 }
 
 const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
@@ -172,9 +178,10 @@ CoreApp.getInitialProps = async (initialProps) => {
   };
 
   if (ctx.res) {
+    const serverUrl = `http://localhost:${process.env.PORT || 5055}${basePath}`;
     // Check if app is initialized and redirect if necessary
     const response = await axios.get<PublicSettingsResponse>(
-      `http://localhost:${process.env.PORT || 5055}/api/v1/settings/public`
+      `${serverUrl}/api/v1/settings/public`
     );
 
     currentSettings = response.data;
@@ -184,22 +191,21 @@ CoreApp.getInitialProps = async (initialProps) => {
     if (!initialized) {
       if (!router.pathname.match(/(setup|login\/plex)/)) {
         ctx.res.writeHead(307, {
-          Location: '/setup',
+          Location: addBasePath('/setup'),
         });
         ctx.res.end();
       }
     } else {
       try {
         // Attempt to get the user by running a request to the local api
-        const response = await axios.get<User>(
-          `http://localhost:${process.env.PORT || 5055}/api/v1/auth/me`,
-          { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
-        );
+        const response = await axios.get<User>(`${serverUrl}/api/v1/auth/me`, {
+          headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined,
+        });
         user = response.data;
 
         if (router.pathname.match(/(setup|login)/)) {
           ctx.res.writeHead(307, {
-            Location: '/',
+            Location: addBasePath('/'),
           });
           ctx.res.end();
         }
@@ -209,7 +215,7 @@ CoreApp.getInitialProps = async (initialProps) => {
         // before anything actually renders
         if (!router.pathname.match(/(login|setup|resetpassword)/)) {
           ctx.res.writeHead(307, {
-            Location: '/login',
+            Location: addBasePath('/login'),
           });
           ctx.res.end();
         }
@@ -223,7 +229,7 @@ CoreApp.getInitialProps = async (initialProps) => {
   );
 
   const locale = user?.settings?.locale
-    ? user.settings.locale
+    ? user?.settings.locale
     : currentSettings.locale;
 
   const messages = await loadLocaleData(locale as AvailableLocale);

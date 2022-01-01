@@ -3,10 +3,13 @@
 // previously cached resources to be updated from the network.
 // This variable is intentionally declared and unused.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const OFFLINE_VERSION = 3;
+const OFFLINE_VERSION = 4;
 const CACHE_NAME = "offline";
+
+// use scope path to determine if we are running in basePath
+const BASE_PATH = (new URL(self.registration.scope)).pathname.replace(/\/$/, '')
 // Customize this with a different URL if needed.
-const OFFLINE_URL = "/offline.html";
+const OFFLINE_URL = BASE_PATH + "/offline.html";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -120,16 +123,16 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
   if (event.action === 'approve') {
-    fetch(`/api/v1/request/${notificationData.requestId}/approve`, {
+    fetch(`${BASE_PATH}/api/v1/request/${notificationData.requestId}/approve`, {
       method: 'POST',
     });
   } else if (event.action === 'decline') {
-    fetch(`/api/v1/request/${notificationData.requestId}/decline`, {
+    fetch(`${BASE_PATH}/api/v1/request/${notificationData.requestId}/decline`, {
       method: 'POST',
     });
   }
-  
+
   if (notificationData.actionUrl) {
-    clients.openWindow(notificationData.actionUrl);
+    clients.openWindow(BASE_PATH + notificationData.actionUrl);
   }
 }, false);

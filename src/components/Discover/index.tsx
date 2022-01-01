@@ -1,11 +1,11 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
-import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
 import PageTitle from '../Common/PageTitle';
+import Link from '../Link';
 import MediaSlider from '../MediaSlider';
 import RequestCard from '../RequestCard';
 import Slider from '../Slider';

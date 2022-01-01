@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Bowser from 'bowser';
+import addBasePath from './addBasePath';
 
 interface PlexHeaders {
   Accept: string;
@@ -177,7 +178,7 @@ class PlexOAuth {
 
     //Set url to login/plex/loading so browser doesn't block popup
     const newWindow = window.open(
-      '/login/plex/loading',
+      addBasePath('/login/plex/loading'),
       title,
       'scrollbars=yes, width=' +
         w +

@@ -6,7 +6,6 @@ import {
   XIcon,
 } from '@heroicons/react/solid';
 import axios from 'axios';
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
@@ -25,6 +24,7 @@ import { withProperties } from '../../utils/typeHelpers';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
+import Link from '../Link';
 import RequestModal from '../RequestModal';
 import StatusBadge from '../StatusBadge';
 

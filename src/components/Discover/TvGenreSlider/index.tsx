@@ -1,10 +1,10 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
-import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { GenreSliderItem } from '../../../../server/interfaces/api/discoverInterfaces';
 import GenreCard from '../../GenreCard';
+import Link from '../../Link';
 import Slider from '../../Slider';
 import { genreColorMap } from '../constants';
 

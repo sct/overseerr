@@ -4,13 +4,13 @@ import {
   EyeIcon,
   UserIcon,
 } from '@heroicons/react/solid';
-import Link from 'next/link';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import type Issue from '../../../server/entity/Issue';
 import globalMessages from '../../i18n/globalMessages';
 import Button from '../Common/Button';
 import { issueOptions } from '../IssueModal/constants';
+import Link from '../Link';
 
 interface IssueBlockProps {
   issue: Issue;

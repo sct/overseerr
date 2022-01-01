@@ -1,10 +1,10 @@
 import React from 'react';
 import type { MovieResult } from '../../../../server/models/Search';
+import { useRouter } from '../../../hooks/useRouter';
 import ListView from '../../Common/ListView';
 import { defineMessages, useIntl } from 'react-intl';
 import Header from '../../Common/Header';
 import PageTitle from '../../Common/PageTitle';
-import { useRouter } from 'next/router';
 import globalMessages from '../../../i18n/globalMessages';
 import useDiscover from '../../../hooks/useDiscover';
 import Error from '../../../pages/_error';

@@ -1,7 +1,7 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/solid';
-import Link from 'next/link';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import Link from '../../Link';
 
 const messages = defineMessages({
   seemore: 'See More',

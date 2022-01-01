@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useUser, User } from '../hooks/useUser';
 import { useRouter } from 'next/dist/client/router';
+import addBasePath from '../utils/addBasePath';
 
 interface UserContextProps {
   initialUser: User;
@@ -30,7 +31,7 @@ export const UserContext: React.FC<UserContextProps> = ({
       !routing.current
     ) {
       routing.current = true;
-      location.href = '/login';
+      location.href = addBasePath('/login');
     }
   }, [router, user, error]);
 

@@ -4,11 +4,11 @@ import {
   CodeIcon,
   ServerIcon,
 } from '@heroicons/react/outline';
-import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { StatusResponse } from '../../../../server/interfaces/api/settingsInterfaces';
+import Link from '../../Link';
 
 const messages = defineMessages({
   streamdevelop: 'Overseerr Develop',

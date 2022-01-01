@@ -8,7 +8,6 @@ import {
   PlayIcon,
 } from '@heroicons/react/solid';
 import copy from 'copy-to-clipboard';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -17,6 +16,7 @@ import {
   LogMessage,
   LogsResultsResponse,
 } from '../../../../server/interfaces/api/settingsInterfaces';
+import { useRouter } from '../../../hooks/useRouter';
 import { useUpdateQueryParams } from '../../../hooks/useUpdateQueryParams';
 import globalMessages from '../../../i18n/globalMessages';
 import Error from '../../../pages/_error';

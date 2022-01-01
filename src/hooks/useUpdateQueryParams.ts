@@ -1,6 +1,7 @@
-import { NextRouter, useRouter } from 'next/router';
+import { NextRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { useCallback } from 'react';
+import { useRouter } from './useRouter';
 
 type UseQueryParamReturnedFunction = (
   query: ParsedUrlQuery,

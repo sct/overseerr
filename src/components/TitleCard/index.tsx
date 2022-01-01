@@ -1,6 +1,5 @@
 import { DownloadIcon } from '@heroicons/react/outline';
 import { BellIcon, CheckIcon, ClockIcon } from '@heroicons/react/solid';
-import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { MediaStatus } from '../../../server/constants/media';
@@ -12,6 +11,7 @@ import globalMessages from '../../i18n/globalMessages';
 import { withProperties } from '../../utils/typeHelpers';
 import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
+import Link from '../Link';
 import RequestModal from '../RequestModal';
 import Transition from '../Transition';
 import Placeholder from './Placeholder';

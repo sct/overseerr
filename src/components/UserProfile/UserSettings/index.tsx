@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { UserSettingsNotificationsResponse } from '../../../../server/interfaces/api/userSettingsInterfaces';
 import { hasPermission, Permission } from '../../../../server/lib/permissions';
+import { useRouter } from '../../../hooks/useRouter';
 import useSettings from '../../../hooks/useSettings';
 import { useUser } from '../../../hooks/useUser';
 import globalMessages from '../../../i18n/globalMessages';

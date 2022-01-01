@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -10,6 +9,7 @@ import Error from '../../pages/_error';
 import Header from '../Common/Header';
 import ListView from '../Common/ListView';
 import PageTitle from '../Common/PageTitle';
+import Link from '../Link';
 
 const messages = defineMessages({
   recommendations: 'Recommendations',

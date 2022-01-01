@@ -3,10 +3,13 @@ import { NextPage } from 'next';
 import React from 'react';
 import type { MovieDetails as MovieDetailsType } from '../../../../server/models/Movie';
 import MovieDetails from '../../../components/MovieDetails';
+import addBasePath from '../../../utils/addBasePath';
 
 interface MoviePageProps {
   movie?: MovieDetailsType;
 }
+
+const basePath = addBasePath('');
 
 const MoviePage: NextPage<MoviePageProps> = ({ movie }) => {
   return <MovieDetails movie={movie} />;
@@ -15,7 +18,7 @@ const MoviePage: NextPage<MoviePageProps> = ({ movie }) => {
 MoviePage.getInitialProps = async (ctx) => {
   if (ctx.req) {
     const response = await axios.get<MovieDetailsType>(
-      `http://localhost:${process.env.PORT || 5055}/api/v1/movie/${
+      `http://localhost:${process.env.PORT || 5055}${basePath}/api/v1/movie/${
         ctx.query.movieId
       }`,
       {

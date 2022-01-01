@@ -1,7 +1,6 @@
 import { SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -12,6 +11,7 @@ import {
   AvailableLocale,
 } from '../../../../context/LanguageContext';
 import useLocale from '../../../../hooks/useLocale';
+import { useRouter } from '../../../../hooks/useRouter';
 import useSettings from '../../../../hooks/useSettings';
 import { Permission, UserType, useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';

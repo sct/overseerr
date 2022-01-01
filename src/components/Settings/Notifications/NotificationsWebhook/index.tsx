@@ -3,7 +3,6 @@ import { QuestionMarkCircleIcon, RefreshIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -12,6 +11,7 @@ import * as Yup from 'yup';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
+import Link from '../../../Link';
 import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const JSONEditor = dynamic(() => import('../../../JSONEditor'), { ssr: false });

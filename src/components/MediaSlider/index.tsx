@@ -1,5 +1,4 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
-import Link from 'next/link';
 import React, { useEffect } from 'react';
 import { useSWRInfinite } from 'swr';
 import { MediaStatus } from '../../../server/constants/media';
@@ -9,6 +8,7 @@ import type {
   TvResult,
 } from '../../../server/models/Search';
 import useSettings from '../../hooks/useSettings';
+import Link from '../Link';
 import PersonCard from '../PersonCard';
 import Slider from '../Slider';
 import TitleCard from '../TitleCard';

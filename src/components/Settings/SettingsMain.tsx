@@ -33,6 +33,9 @@ const messages = defineMessages({
   apikey: 'API Key',
   applicationTitle: 'Application Title',
   applicationurl: 'Application URL',
+  basePath: 'Base Path',
+  basePathTip:
+    'Configure Overseerr to run under a sub-path of a domain (Overseerr must be restarted for changes to take effect)',
   region: 'Discover Region',
   regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
@@ -44,7 +47,7 @@ const messages = defineMessages({
   hideAvailable: 'Hide Available Media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip:
-    'Set external API access to read-only (requires HTTPS, and Overseerr must be reloaded for changes to take effect)',
+    'Set external API access to read-only (requires HTTPS, and Overseerr must be restarted for changes to take effect)',
   csrfProtectionHoverTip:
     'Do NOT enable this setting unless you understand what you are doing!',
   cacheImages: 'Enable Image Caching',
@@ -52,10 +55,12 @@ const messages = defineMessages({
     'Optimize and store all images locally (consumes a significant amount of disk space)',
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
-    'Allow Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
+    'Allow Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be restarted for changes to take effect)',
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
+  validationBasePathLeadingSlash: 'Path must begin with a leading slash',
+  validationBasePathTrailingSlash: 'Path must not end in a trailing slash',
   partialRequestsEnabled: 'Allow Partial Series Requests',
   locale: 'Display Language',
 });
@@ -81,12 +86,18 @@ const SettingsMain: React.FC = () => {
       .test(
         'no-trailing-slash',
         intl.formatMessage(messages.validationApplicationUrlTrailingSlash),
-        (value) => {
-          if (value?.substr(value.length - 1) === '/') {
-            return false;
-          }
-          return true;
-        }
+        (value) => !value || !value.endsWith('/')
+      ),
+    basePath: Yup.string()
+      .test(
+        'leading-slash',
+        intl.formatMessage(messages.validationBasePathLeadingSlash),
+        (value) => !value || value.startsWith('/')
+      )
+      .test(
+        'no-trailing-slash',
+        intl.formatMessage(messages.validationBasePathTrailingSlash),
+        (value) => !value || !value.endsWith('/')
       ),
   });
 
@@ -132,6 +143,7 @@ const SettingsMain: React.FC = () => {
           initialValues={{
             applicationTitle: data?.applicationTitle,
             applicationUrl: data?.applicationUrl,
+            basePath: data?.basePath,
             csrfProtection: data?.csrfProtection,
             hideAvailable: data?.hideAvailable,
             locale: data?.locale ?? 'en',
@@ -147,6 +159,7 @@ const SettingsMain: React.FC = () => {
               await axios.post('/api/v1/settings/main', {
                 applicationTitle: values.applicationTitle,
                 applicationUrl: values.applicationUrl,
+                basePath: values.basePath,
                 csrfProtection: values.csrfProtection,
                 hideAvailable: values.hideAvailable,
                 locale: values.locale,
@@ -252,6 +265,27 @@ const SettingsMain: React.FC = () => {
                     </div>
                     {errors.applicationUrl && touched.applicationUrl && (
                       <div className="error">{errors.applicationUrl}</div>
+                    )}
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="basePath" className="text-label">
+                    <span>{intl.formatMessage(messages.basePath)}</span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.basePathTip)}
+                    </span>
+                  </label>
+                  <div className="form-input">
+                    <div className="form-input-field">
+                      <Field
+                        id="basePath"
+                        name="basePath"
+                        type="text"
+                        inputMode="url"
+                      />
+                    </div>
+                    {errors.basePath && touched.basePath && (
+                      <div className="error">{errors.basePath}</div>
                     )}
                   </div>
                 </div>

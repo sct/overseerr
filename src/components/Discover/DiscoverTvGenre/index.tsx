@@ -4,10 +4,10 @@ import ListView from '../../Common/ListView';
 import { defineMessages, useIntl } from 'react-intl';
 import Header from '../../Common/Header';
 import PageTitle from '../../Common/PageTitle';
-import { useRouter } from 'next/router';
 import globalMessages from '../../../i18n/globalMessages';
 import useDiscover from '../../../hooks/useDiscover';
 import Error from '../../../pages/_error';
+import { useRouter } from '../../../hooks/useRouter';
 
 const messages = defineMessages({
   genreSeries: '{genre} Series',

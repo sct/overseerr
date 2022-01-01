@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR, { mutate } from 'swr';
 import useLocale from '../../hooks/useLocale';
+import { useRouter } from '../../hooks/useRouter';
+import addBasePath from '../../utils/addBasePath';
 import AppDataWarning from '../AppDataWarning';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
@@ -72,7 +73,7 @@ const Setup: React.FC = () => {
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
         <img
-          src="/logo_stacked.svg"
+          src={addBasePath('/logo_stacked.svg')}
           className="max-w-full mb-10 sm:max-w-md sm:mx-auto"
           alt="Logo"
         />

@@ -1,13 +1,13 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { TvDetails } from '../../../../server/models/Tv';
+import { useRouter } from '../../../hooks/useRouter';
 import Error from '../../../pages/_error';
 import Header from '../../Common/Header';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import PageTitle from '../../Common/PageTitle';
+import Link from '../../Link';
 import PersonCard from '../../PersonCard';
 
 const messages = defineMessages({

@@ -1,9 +1,9 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../components/Common/PageTitle';
+import Link from '../components/Link';
 import type { Undefinable } from '../utils/typeHelpers';
 
 interface ErrorProps {

@@ -9,8 +9,6 @@ import {
 } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -18,6 +16,7 @@ import useSWR from 'swr';
 import * as Yup from 'yup';
 import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
 import { hasPermission } from '../../../server/lib/permissions';
+import { useRouter } from '../../hooks/useRouter';
 import useSettings from '../../hooks/useSettings';
 import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
 import { Permission, User, UserType, useUser } from '../../hooks/useUser';
@@ -31,6 +30,7 @@ import Modal from '../Common/Modal';
 import PageTitle from '../Common/PageTitle';
 import SensitiveInput from '../Common/SensitiveInput';
 import Table from '../Common/Table';
+import Link from '../Link';
 import Transition from '../Transition';
 import BulkEditModal from './BulkEditModal';
 

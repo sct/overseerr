@@ -2,8 +2,8 @@
 import type { UrlObject } from 'url';
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import useDebouncedState from './useDebouncedState';
-import { useRouter } from 'next/router';
 import type { Nullable } from '../utils/typeHelpers';
+import { useRouter } from './useRouter';
 
 type Url = string | UrlObject;
 

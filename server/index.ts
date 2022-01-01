@@ -2,7 +2,7 @@ import { getClientIp } from '@supercharge/request-ip';
 import { TypeormStore } from 'connect-typeorm/out';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
-import express, { NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Request, Response, Router } from 'express';
 import * as OpenApiValidator from 'express-openapi-validator';
 import session, { Store } from 'express-session';
 import next from 'next';
@@ -30,17 +30,13 @@ import routes from './routes';
 import { getAppVersion } from './utils/appVersion';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
+const NEXT_CONFIG_PATH = path.join(__dirname, '../next.config.js');
 
 logger.info(`Starting Overseerr version ${getAppVersion()}`);
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-const handle = app.getRequestHandler();
 
-app
-  .prepare()
-  .then(async () => {
-    const dbConnection = await createConnection();
-
+createConnection()
+  .then(async (dbConnection) => {
     // Run migrations in production
     if (process.env.NODE_ENV === 'production') {
       await dbConnection.query('PRAGMA foreign_keys=OFF');
@@ -50,6 +46,34 @@ app
 
     // Load Settings
     const settings = getSettings().load();
+
+    const { default: nextConfig } = await import(NEXT_CONFIG_PATH);
+
+    let basePath = settings.main.basePath;
+    if (basePath) {
+      // Ensure base path is free of invalid characters
+      basePath = encodeURI(basePath);
+      logger.debug(`Serving from base path ${basePath}`);
+
+      nextConfig.rewrites = async () => ({
+        beforeFiles: [
+          /* Strip off base path for serving pages */
+          {
+            source: basePath + '/:path*',
+            destination: '/:path*',
+          },
+        ],
+      });
+      nextConfig.publicRuntimeConfig = { basePath };
+    }
+
+    const app = next({ dev, conf: nextConfig });
+    const handle = app.getRequestHandler();
+
+    if (basePath) {
+      app.setAssetPrefix(basePath + '/');
+    }
+    await app.prepare();
 
     // Migrate library types
     if (
@@ -131,7 +155,9 @@ app
 
     // Set up sessions
     const sessionRespository = getRepository(Session);
-    server.use(
+    const apiRoutes = Router();
+    server.use(basePath || '/', apiRoutes);
+    apiRoutes.use(
       '/api',
       session({
         secret: settings.clientId,
@@ -150,8 +176,8 @@ app
       })
     );
     const apiDocs = YAML.load(API_SPEC_PATH);
-    server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
-    server.use(
+    apiRoutes.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
+    apiRoutes.use(
       OpenApiValidator.middleware({
         apiSpec: API_SPEC_PATH,
         validateRequests: true,
@@ -162,15 +188,15 @@ app
      * OpenAPI validator. Otherwise, they are treated as objects instead of strings
      * and response validation will fail
      */
-    server.use((_req, res, next) => {
+    apiRoutes.use((_req, res, next) => {
       const original = res.json;
       res.json = function jsonp(json) {
         return original.call(this, JSON.parse(JSON.stringify(json)));
       };
       next();
     });
-    server.use('/api/v1', routes);
-    server.get('*', (req, res) => handle(req, res));
+    apiRoutes.use('/api/v1', routes);
+    apiRoutes.get('*', (req, res) => handle(req, res));
     server.use(
       (
         err: { status: number; message: string; errors: string[] },

@@ -1,5 +1,4 @@
 import { CloudIcon, MailIcon } from '@heroicons/react/solid';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
@@ -8,6 +7,7 @@ import DiscordLogo from '../../../../assets/extlogos/discord.svg';
 import PushbulletLogo from '../../../../assets/extlogos/pushbullet.svg';
 import PushoverLogo from '../../../../assets/extlogos/pushover.svg';
 import TelegramLogo from '../../../../assets/extlogos/telegram.svg';
+import { useRouter } from '../../../../hooks/useRouter';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';

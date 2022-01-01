@@ -1,5 +1,4 @@
 import { groupBy } from 'lodash';
-import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import TruncateMarkup from 'react-truncate-markup';
@@ -7,6 +6,7 @@ import useSWR from 'swr';
 import type { PersonCombinedCreditsResponse } from '../../../server/interfaces/api/personInterfaces';
 import type { PersonDetail } from '../../../server/models/Person';
 import Ellipsis from '../../assets/ellipsis.svg';
+import { useRouter } from '../../hooks/useRouter';
 import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
 import CachedImage from '../Common/CachedImage';

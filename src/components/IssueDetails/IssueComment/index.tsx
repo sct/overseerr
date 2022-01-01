@@ -3,7 +3,6 @@ import { ExclamationIcon } from '@heroicons/react/outline';
 import { DotsVerticalIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import Link from 'next/link';
 import React, { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
@@ -12,6 +11,7 @@ import type { default as IssueCommentType } from '../../../../server/entity/Issu
 import { Permission, useUser } from '../../../hooks/useUser';
 import Button from '../../Common/Button';
 import Modal from '../../Common/Modal';
+import Link from '../../Link';
 import Transition from '../../Transition';
 
 const messages = defineMessages({

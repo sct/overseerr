@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, { useEffect } from 'react';
 import useSettings from '../../hooks/useSettings';
 import { useUser } from '../../hooks/useUser';
+import addBasePath from '../../utils/addBasePath';
 
 const ServiceWorkerSetup: React.FC = () => {
   const { currentSettings } = useSettings();
@@ -10,7 +11,7 @@ const ServiceWorkerSetup: React.FC = () => {
   useEffect(() => {
     if ('serviceWorker' in navigator && user?.id) {
       navigator.serviceWorker
-        .register('/sw.js')
+        .register(addBasePath('/sw.js'))
         .then(async (registration) => {
           console.log(
             '[SW] Registration successful, scope is:',

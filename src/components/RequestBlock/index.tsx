@@ -8,7 +8,6 @@ import {
   XIcon,
 } from '@heroicons/react/solid';
 import axios from 'axios';
-import Link from 'next/link';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { MediaRequestStatus } from '../../../server/constants/media';
@@ -17,6 +16,7 @@ import useRequestOverride from '../../hooks/useRequestOverride';
 import globalMessages from '../../i18n/globalMessages';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
+import Link from '../Link';
 import RequestModal from '../RequestModal';
 
 const messages = defineMessages({

@@ -1,16 +1,17 @@
 import { SupportIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
+import { useRouter } from '../../hooks/useRouter';
 import globalMessages from '../../i18n/globalMessages';
+import addBasePath from '../../utils/addBasePath';
 import Button from '../Common/Button';
 import ImageFader from '../Common/ImageFader';
 import SensitiveInput from '../Common/SensitiveInput';
 import LanguagePicker from '../Layout/LanguagePicker';
+import Link from '../Link';
 
 const messages = defineMessages({
   passwordreset: 'Password Reset',
@@ -64,7 +65,11 @@ const ResetPassword: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 flex flex-col items-center px-4 mt-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <img src="/logo_stacked.svg" className="max-w-full mb-10" alt="Logo" />
+        <img
+          src={addBasePath('/logo_stacked.svg')}
+          className="max-w-full mb-10"
+          alt="Logo"
+        />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
           {intl.formatMessage(messages.resetpassword)}
         </h2>

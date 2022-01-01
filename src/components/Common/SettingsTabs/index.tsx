@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { hasPermission, Permission } from '../../../../server/lib/permissions';
+import { useRouter } from '../../../hooks/useRouter';
 import { useUser } from '../../../hooks/useUser';
+import Link from '../../Link';
 
 export interface SettingsRoute {
   text: string;

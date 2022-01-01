@@ -1,11 +1,11 @@
 import { SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import { useRouter } from '../../../../hooks/useRouter';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';

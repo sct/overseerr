@@ -1,6 +1,5 @@
 import { DownloadIcon } from '@heroicons/react/outline';
 import { uniq } from 'lodash';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -15,6 +14,7 @@ import ButtonWithDropdown from '../Common/ButtonWithDropdown';
 import CachedImage from '../Common/CachedImage';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
+import Link from '../Link';
 import RequestModal from '../RequestModal';
 import Slider from '../Slider';
 import StatusBadge from '../StatusBadge';

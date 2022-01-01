@@ -1,10 +1,10 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import {
   TvResult,
   MovieResult,
   PersonResult,
 } from '../../../server/models/Search';
+import { useRouter } from '../../hooks/useRouter';
 import ListView from '../Common/ListView';
 import { defineMessages, useIntl } from 'react-intl';
 import Header from '../Common/Header';

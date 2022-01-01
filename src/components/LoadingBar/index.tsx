@@ -1,7 +1,7 @@
 import { NProgress } from '@tanem/react-nprogress';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { useRouter } from 'next/router';
+import { useRouter } from '../../hooks/useRouter';
 
 interface BarProps {
   progress: number;

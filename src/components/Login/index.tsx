@@ -1,11 +1,12 @@
 import { XCircleIcon } from '@heroicons/react/solid';
 import axios from 'axios';
-import { useRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
+import { useRouter } from '../../hooks/useRouter';
 import useSettings from '../../hooks/useSettings';
 import { useUser } from '../../hooks/useUser';
+import addBasePath from '../../utils/addBasePath';
 import Accordion from '../Common/Accordion';
 import ImageFader from '../Common/ImageFader';
 import PageTitle from '../Common/PageTitle';
@@ -81,7 +82,11 @@ const Login: React.FC = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 flex flex-col items-center px-4 mt-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <img src="/logo_stacked.svg" className="max-w-full mb-10" alt="Logo" />
+        <img
+          src={addBasePath('/logo_stacked.svg')}
+          className="max-w-full mb-10"
+          alt="Logo"
+        />
         <h2 className="mt-2 text-3xl font-extrabold leading-9 text-center text-gray-100">
           {intl.formatMessage(messages.signinheader)}
         </h2>

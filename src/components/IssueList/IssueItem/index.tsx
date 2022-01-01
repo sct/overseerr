@@ -1,5 +1,4 @@
 import { EyeIcon } from '@heroicons/react/solid';
-import Link from 'next/link';
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
@@ -15,6 +14,7 @@ import Badge from '../../Common/Badge';
 import Button from '../../Common/Button';
 import CachedImage from '../../Common/CachedImage';
 import { issueOptions } from '../../IssueModal/constants';
+import Link from '../../Link';
 
 const messages = defineMessages({
   openeduserdate: '{date} by {user}',

@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import { SonarrSeries } from '../../../../server/api/servarr/sonarr';
 import globalMessages from '../../../i18n/globalMessages';
 import Alert from '../../Common/Alert';
+import CachedImage from '../../Common/CachedImage';
 import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
 import Modal from '../../Common/Modal';
 
@@ -72,7 +73,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
               } `}
             >
               <div className="flex items-center flex-none w-24 space-x-4">
-                <img
+                <CachedImage
                   src={
                     item.remotePoster ??
                     '/images/overseerr_poster_not_found.png'
