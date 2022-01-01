@@ -321,7 +321,9 @@ const SettingsLogs: React.FC = () => {
                       {row.level.toUpperCase()}
                     </Badge>
                   </Table.TD>
-                  <Table.TD className="text-gray-300">{row.label}</Table.TD>
+                  <Table.TD className="text-gray-300">
+                    {row.label ?? ''}
+                  </Table.TD>
                   <Table.TD className="text-gray-300">{row.message}</Table.TD>
                   <Table.TD className="flex flex-wrap items-center justify-end -m-1">
                     {row.data && (

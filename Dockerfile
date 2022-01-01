@@ -7,8 +7,10 @@ ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
 RUN \
   case "${TARGETPLATFORM}" in \
-    'linux/arm64') apk add --no-cache python make g++ ;; \
-    'linux/arm/v7') apk add --no-cache python make g++ ;; \
+    'linux/arm64' | 'linux/arm/v7') \
+      apk add --no-cache python3 make g++ && \
+      ln -s /usr/bin/python3 /usr/bin/python \
+      ;; \
   esac
 
 COPY package.json yarn.lock ./

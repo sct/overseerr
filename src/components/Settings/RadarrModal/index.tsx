@@ -26,7 +26,7 @@ const messages = defineMessages({
   editradarr: 'Edit Radarr Server',
   edit4kradarr: 'Edit 4K Radarr Server',
   validationNameRequired: 'You must provide a server name',
-  validationHostnameRequired: 'You must provide a hostname or IP address',
+  validationHostnameRequired: 'You must provide a valid hostname or IP address',
   validationPortRequired: 'You must provide a valid port number',
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
@@ -113,7 +113,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
     hostname: Yup.string()
       .required(intl.formatMessage(messages.validationHostnameRequired))
       .matches(
-        /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+        /^(((([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])):((([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))@)?(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
         intl.formatMessage(messages.validationHostnameRequired)
       ),
     port: Yup.number()

@@ -63,7 +63,7 @@ const RequestItemError: React.FC<RequestItemErroProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-64 px-10 bg-gray-800 lg:flex-row ring-1 ring-red-500 rounded-xl xl:h-32">
+    <div className="flex flex-col items-center justify-center w-full h-64 px-10 bg-gray-800 lg:flex-row ring-1 ring-red-500 rounded-xl xl:h-28">
       <span className="text-sm text-center text-gray-300 lg:text-left">
         {intl.formatMessage(messages.mediaerror)}
       </span>
@@ -104,7 +104,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    inView ? `${url}` : null
+    inView ? url : null
   );
   const {
     data: requestData,
@@ -149,7 +149,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title && !error) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-xl xl:h-32 animate-pulse"
+        className="w-full h-64 bg-gray-800 rounded-xl xl:h-28 animate-pulse"
         ref={ref}
       />
     );
@@ -178,7 +178,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl xl:h-32 xl:flex-row">
+      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl xl:h-28 xl:flex-row">
         {title.backdropPath && (
           <div className="absolute inset-0 z-0 w-full bg-center bg-cover xl:w-2/3">
             <CachedImage
@@ -205,7 +205,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   : `/tv/${requestData.media.tmdbId}`
               }
             >
-              <a className="relative flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md sm:w-14 transform-gpu hover:scale-105">
+              <a className="relative flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md transform-gpu hover:scale-105">
                 <CachedImage
                   src={
                     title.posterPath
@@ -339,7 +339,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                               alt=""
                               className="ml-1.5 avatar-sm"
                             />
-                            <span className="text-sm truncate group-hover:underline">
+                            <span className="text-sm font-semibold truncate group-hover:underline group-hover:text-white">
                               {requestData.requestedBy.displayName}
                             </span>
                           </a>
@@ -393,7 +393,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                             alt=""
                             className="ml-1.5 avatar-sm"
                           />
-                          <span className="text-sm truncate group-hover:underline">
+                          <span className="text-sm font-semibold truncate group-hover:underline group-hover:text-white">
                             {requestData.modifiedBy.displayName}
                           </span>
                         </a>

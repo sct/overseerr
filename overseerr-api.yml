@@ -909,6 +909,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductionCompany'
+        productionCountries:
+          type: array
+          items:
+            type: object
+            properties:
+              iso_3166_1:
+                type: string
+              name:
+                type: string
         spokenLanguages:
           type: array
           items:
@@ -1630,6 +1639,15 @@ components:
         discordId:
           type: string
           nullable: true
+        pushbulletAccessToken:
+          type: string
+          nullable: true
+        pushoverApplicationToken:
+          type: string
+          nullable: true
+        pushoverUserKey:
+          type: string
+          nullable: true
         telegramEnabled:
           type: boolean
         telegramBotUsername:
@@ -1687,6 +1705,36 @@ components:
           type: number
         name:
           type: string
+    Issue:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        issueType:
+          type: number
+          example: 1
+        media:
+          $ref: '#/components/schemas/MediaInfo'
+        createdBy:
+          $ref: '#/components/schemas/User'
+        modifiedBy:
+          $ref: '#/components/schemas/User'
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/IssueComment'
+    IssueComment:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        user:
+          $ref: '#/components/schemas/User'
+        message:
+          type: string
+          example: A comment
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -5183,7 +5231,251 @@ paths:
                 type: array
                 items:
                   type: string
+  /issue:
+    get:
+      summary: Get all issues
+      description: |
+        Returns a list of issues in JSON format.
+      tags:
+        - issue
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 20
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [added, modified]
+            default: added
+        - in: query
+          name: filter
+          schema:
+            type: string
+            enum: [all, open, resolved]
+            default: open
+        - in: query
+          name: requestedBy
+          schema:
+            type: number
+            nullable: true
+            example: 1
+      responses:
+        '200':
+          description: Issues returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Issue'
+    post:
+      summary: Create new issue
+      description: |
+        Creates a new issue
+      tags:
+        - issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                issueType:
+                  type: number
+                message:
+                  type: string
+                mediaId:
+                  type: number
+      responses:
+        '201':
+          description: Succesfully created the issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+  /issue/{issueId}:
+    get:
+      summary: Get issue
+      description: |
+        Returns a single issue in JSON format.
+      tags:
+        - issue
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        '200':
+          description: Issues returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+    delete:
+      summary: Delete issue
+      description: Removes an issue. If the user has the `MANAGE_ISSUES` permission, any issue can be removed. Otherwise, only a users own issues can be removed.
+      tags:
+        - issue
+      parameters:
+        - in: path
+          name: issueId
+          description: Issue ID
+          required: true
+          example: '1'
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Succesfully removed issue
+  /issue/{issueId}/comment:
+    post:
+      summary: Create a comment
+      description: |
+        Creates a comment and returns associated issue in JSON format.
+      tags:
+        - issue
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: number
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+              required:
+                - message
+      responses:
+        '200':
+          description: Issue returned with new comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+  /issueComment/{commentId}:
+    get:
+      summary: Get issue comment
+      description: |
+        Returns a single issue comment in JSON format.
+      tags:
+        - issue
+      parameters:
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: string
+            example: 1
+      responses:
+        '200':
+          description: Comment returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueComment'
+    put:
+      summary: Update issue comment
+      description: |
+        Updates and returns a single issue comment in JSON format.
+      tags:
+        - issue
+      parameters:
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: string
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      responses:
+        '200':
+          description: Comment updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueComment'
+    delete:
+      summary: Delete issue comment
+      description: |
+        Deletes an issue comment. Only users with `MANAGE_ISSUES` or the user who created the comment can perform this action.
+      tags:
+        - issue
+      parameters:
+        - in: path
+          name: commentId
+          description: Issue Comment ID
+          required: true
+          example: '1'
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Succesfully removed issue comment
+  /issue/{issueId}/{status}:
+    post:
+      summary: Update an issue's status
+      description: |
+        Updates an issue's status to approved or declined. Also returns the issue in a JSON object.
 
+        Requires the `MANAGE_ISSUES` permission or `ADMIN`.
+      tags:
+        - issue
+      parameters:
+        - in: path
+          name: issueId
+          description: Issue ID
+          required: true
+          schema:
+            type: string
+            example: '1'
+        - in: path
+          name: status
+          description: New status
+          required: true
+          schema:
+            type: string
+            enum: [open, resolved]
+      responses:
+        '200':
+          description: Issue status changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
 security:
   - cookieAuth: []
   - apiKey: []

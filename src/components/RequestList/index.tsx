@@ -22,7 +22,7 @@ import RequestItem from './RequestItem';
 const messages = defineMessages({
   requests: 'Requests',
   showallrequests: 'Show All Requests',
-  sortAdded: 'Request Date',
+  sortAdded: 'Most Recent',
   sortModified: 'Last Modified',
 });
 

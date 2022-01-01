@@ -5,6 +5,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import DiscordLogo from '../../../../assets/extlogos/discord.svg';
+import PushbulletLogo from '../../../../assets/extlogos/pushbullet.svg';
+import PushoverLogo from '../../../../assets/extlogos/pushover.svg';
 import TelegramLogo from '../../../../assets/extlogos/telegram.svg';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
@@ -63,6 +65,28 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       ),
       route: '/settings/notifications/discord',
       regex: /\/settings\/notifications\/discord/,
+    },
+    {
+      text: 'Pushbullet',
+      content: (
+        <span className="flex items-center">
+          <PushbulletLogo className="h-4 mr-2" />
+          Pushbullet
+        </span>
+      ),
+      route: '/settings/notifications/pushbullet',
+      regex: /\/settings\/notifications\/pushbullet/,
+    },
+    {
+      text: 'Pushover',
+      content: (
+        <span className="flex items-center">
+          <PushoverLogo className="h-4 mr-2" />
+          Pushover
+        </span>
+      ),
+      route: '/settings/notifications/pushover',
+      regex: /\/settings\/notifications\/pushover/,
     },
     {
       text: 'Telegram',

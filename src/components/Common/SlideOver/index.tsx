@@ -7,7 +7,7 @@ import Transition from '../../Transition';
 
 interface SlideOverProps {
   show?: boolean;
-  title: string;
+  title: React.ReactNode;
   subText?: string;
   onClose: () => void;
 }

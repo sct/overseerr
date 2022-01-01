@@ -15,6 +15,10 @@
     "migration:run": "ts-node --project server/tsconfig.json ./node_modules/typeorm/cli.js migration:run",
     "format": "prettier --write ."
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sct/overseerr.git"
+  },
   "license": "MIT",
   "dependencies": {
     "@headlessui/react": "^1.4.1",
