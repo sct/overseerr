@@ -77,7 +77,7 @@ parts:
     prime: [.next, ./*]
 
 apps:
-  deamon:
+  daemon:
     command: /bin/sh -c "cd $SNAP && node dist/index.js"
     daemon: simple
     restart-condition: on-failure
