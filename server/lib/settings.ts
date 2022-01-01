@@ -85,9 +85,9 @@ interface Quota {
 interface ProxySettings {
   enabled: boolean;
   options: {
-    protocol: 'http' | 'https';
     hostname: string;
     port: number;
+    useSSL: boolean;
     authUser?: string;
     authPass?: string;
     bypassLocalAddresses: boolean;
@@ -310,9 +310,9 @@ class Settings {
         proxy: {
           enabled: false,
           options: {
-            protocol: 'http',
             hostname: '',
             port: 8080,
+            useSSL: false,
             bypassLocalAddresses: false,
             ignoredAddresses: [],
           },

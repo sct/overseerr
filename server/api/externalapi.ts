@@ -123,7 +123,7 @@ class ExternalAPI {
       },
       proxy: useProxy
         ? {
-            protocol: proxySettings.options.protocol,
+            protocol: proxySettings.options.useSSL ? 'https' : 'http',
             host: proxySettings.options.hostname,
             port: proxySettings.options.port,
             auth:
