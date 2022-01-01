@@ -992,5 +992,8 @@
   "components.MovieDetails.productioncountries": "{countryCount, plural, one {Paese} other {Paesi}} di produzione",
   "components.TvDetails.productioncountries": "{countryCount, plural, one {Paese} other {Paesi}} di produzione",
   "components.RequestModal.requestmovies": "Richiedi {count} {count, plural, one {Film} other {Films}}",
-  "components.RequestModal.requestmovies4k": "Richiedi {count} {count, plural, one {Film} other {Films}} in 4K"
+  "components.RequestModal.requestmovies4k": "Richiedi {count} {count, plural, one {Film} other {Films}} in 4K",
+  "components.IssueDetails.commentplaceholder": "Aggiungi un commento…",
+  "components.RequestModal.requestApproved": "Richiesta di <strong>{title}</strong> approvata!",
+  "components.RequestModal.approve": "Approva richiesta"
 }

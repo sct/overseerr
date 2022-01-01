@@ -993,5 +993,7 @@
   "components.NotificationTypeSelector.issuecreated": "Problema Reportado",
   "i18n.open": "Aberto",
   "i18n.resolved": "Resolvido",
-  "components.IssueDetails.commentplaceholder": "Adicionar um comentário…"
+  "components.IssueDetails.commentplaceholder": "Adicionar um comentário…",
+  "components.RequestModal.requestApproved": "Solicitação de <strong>{title}</strong> aprovada!",
+  "components.RequestModal.approve": "Aprovar Solicitação"
 }
