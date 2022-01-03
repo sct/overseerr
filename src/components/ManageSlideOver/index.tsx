@@ -226,6 +226,23 @@ const ManageSlideOver: React.FC<
                 {intl.formatMessage(messages.manageModalMedia)}
               </h3>
               <div className="space-y-2">
+                {data?.mediaInfo?.serviceUrl && (
+                  <a
+                    href={data?.mediaInfo?.serviceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block"
+                  >
+                    <Button buttonType="ghost" className="w-full">
+                      <ServerIcon />
+                      <span>
+                        {intl.formatMessage(messages.openarr, {
+                          arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+                        })}
+                      </span>
+                    </Button>
+                  </a>
+                )}
                 {!!watchHistory?.data?.playCount &&
                   !!watchHistory.data.userCount && (
                     <div className="space-y-1">
@@ -297,17 +314,16 @@ const ManageSlideOver: React.FC<
                       </div>
                     </div>
                   )}
-                {data?.mediaInfo?.serviceUrl && (
+                {data?.mediaInfo?.serviceUrl4k && (
                   <a
-                    href={data?.mediaInfo?.serviceUrl}
+                    href={data?.mediaInfo?.serviceUrl4k}
                     target="_blank"
                     rel="noreferrer"
-                    className="block"
                   >
                     <Button buttonType="ghost" className="w-full">
                       <ServerIcon />
                       <span>
-                        {intl.formatMessage(messages.openarr, {
+                        {intl.formatMessage(messages.openarr4k, {
                           arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
                         })}
                       </span>
@@ -385,22 +401,6 @@ const ManageSlideOver: React.FC<
                       </div>
                     </div>
                   )}
-                {data?.mediaInfo?.serviceUrl4k && (
-                  <a
-                    href={data?.mediaInfo?.serviceUrl4k}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Button buttonType="ghost" className="w-full">
-                      <ServerIcon />
-                      <span>
-                        {intl.formatMessage(messages.openarr4k, {
-                          arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
-                        })}
-                      </span>
-                    </Button>
-                  </a>
-                )}
               </div>
             </div>
           )}
