@@ -738,7 +738,7 @@
   "components.Layout.VersionStatus.commitsbehind": "落後 {commitsBehind} 個提交",
   "components.Layout.VersionStatus.outofdate": "非最新版本",
   "components.Layout.VersionStatus.streamstable": "Overseerr 穩定版",
-  "components.Layout.VersionStatus.streamdevelop": "Overseerr「develop」開發版",
+  "components.Layout.VersionStatus.streamdevelop": "Overseerr 開發版",
   "components.Settings.SettingsAbout.outofdate": "非最新版本",
   "components.Settings.SettingsAbout.uptodate": "最新",
   "components.Settings.noDefaultNon4kServer": "如果您只有一個 {serverType} 伺服器，請勿把它設定為 4K 伺服器。",
@@ -995,5 +995,8 @@
   "components.TvDetails.productioncountries": "製作國家",
   "components.IssueDetails.commentplaceholder": "發表評論…",
   "components.RequestModal.requestApproved": "<strong>{title}</strong> 的請求已被批准。",
-  "components.RequestModal.approve": "批准請求"
+  "components.RequestModal.approve": "批准請求",
+  "components.Settings.RadarrModal.inCinemas": "已上映",
+  "components.Settings.RadarrModal.released": "已發佈",
+  "components.Settings.RadarrModal.announced": "已公佈"
 }
