@@ -587,7 +587,6 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         <option value="announced">Announced</option>
                         <option value="inCinemas">In Cinemas</option>
                         <option value="released">Released</option>
-                        <option value="preDB">PreDB</option>
                       </Field>
                     </div>
                     {errors.minimumAvailability &&
