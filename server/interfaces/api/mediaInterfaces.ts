@@ -6,7 +6,7 @@ export interface MediaResultsResponse extends PaginatedResponse {
   results: Media[];
 }
 
-export interface MediaWatchHistoryResponse {
+export interface MediaWatchDataResponse {
   data?: {
     playCount: number;
     playDuration: string;

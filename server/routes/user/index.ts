@@ -4,7 +4,7 @@ import { uniqWith } from 'lodash';
 import moment from 'moment';
 import { getRepository, Not } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
-import TautulliAPI, { parseDuration } from '../../api/tautulli';
+import TautulliAPI from '../../api/tautulli';
 import { UserType } from '../../constants/user';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
@@ -14,7 +14,7 @@ import {
   QuotaResponse,
   UserRequestsResponse,
   UserResultsResponse,
-  UserWatchHistoryResponse,
+  UserWatchDataResponse,
 } from '../../interfaces/api/userInterfaces';
 import { hasPermission, Permission } from '../../lib/permissions';
 import { getSettings } from '../../lib/settings';
@@ -498,8 +498,8 @@ router.get<{ id: string }, QuotaResponse>(
   }
 );
 
-router.get<{ id: string }, UserWatchHistoryResponse>(
-  '/:id/watch_history',
+router.get<{ id: string }, UserWatchDataResponse>(
+  '/:id/watch_data',
   async (req, res, next) => {
     if (
       Number(req.params.id) !== req.user?.id &&
@@ -508,7 +508,7 @@ router.get<{ id: string }, UserWatchHistoryResponse>(
       return next({
         status: 403,
         message:
-          "You do not have permission to view this user's watch history.",
+          "You do not have permission to view this user's recently watched media.",
       });
     }
 
@@ -530,10 +530,12 @@ router.get<{ id: string }, UserWatchHistoryResponse>(
 
       const tautulli = new TautulliAPI(settings);
 
+      const watchStats = await tautulli.getUserWatchStats(user);
       const watchHistory = await tautulli.getUserWatchHistory(user);
+
       const media = (
         await Promise.all(
-          uniqWith(watchHistory.data, (recordA, recordB) =>
+          uniqWith(watchHistory, (recordA, recordB) =>
             recordA.grandparent_rating_key && recordB.grandparent_rating_key
               ? recordA.grandparent_rating_key ===
                 recordB.grandparent_rating_key
@@ -559,11 +561,11 @@ router.get<{ id: string }, UserWatchHistoryResponse>(
       moment.locale(req.locale ?? 'en');
 
       return res.status(200).json({
-        playCount: watchHistory.recordsFiltered,
+        playCount: watchStats.total_plays,
         playDuration: moment
-          .duration(parseDuration(watchHistory.total_duration), 'seconds')
+          .duration(watchStats.total_time, 'seconds')
           .humanize(),
-        media,
+        recentlyWatched: media,
       });
     } catch (e) {
       next({

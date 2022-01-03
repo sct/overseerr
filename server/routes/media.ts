@@ -1,14 +1,13 @@
 import { Router } from 'express';
-import { uniqBy } from 'lodash';
 import moment from 'moment';
 import { FindOneOptions, FindOperator, getRepository, In } from 'typeorm';
-import TautulliAPI, { parseDuration } from '../api/tautulli';
+import TautulliAPI from '../api/tautulli';
 import { MediaStatus, MediaType } from '../constants/media';
 import Media from '../entity/Media';
 import { User } from '../entity/User';
 import {
   MediaResultsResponse,
-  MediaWatchHistoryResponse,
+  MediaWatchDataResponse,
 } from '../interfaces/api/mediaInterfaces';
 import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
@@ -169,8 +168,8 @@ mediaRoutes.delete(
   }
 );
 
-mediaRoutes.get<{ id: string }, MediaWatchHistoryResponse>(
-  '/:id/watch_history',
+mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
+  '/:id/watch_data',
   isAuthenticated(Permission.ADMIN),
   async (req, res, next) => {
     const settings = getSettings().tautulli;
@@ -194,21 +193,19 @@ mediaRoutes.get<{ id: string }, MediaWatchHistoryResponse>(
       const tautulli = new TautulliAPI(settings);
       const userRepository = getRepository(User);
 
-      const response: MediaWatchHistoryResponse = {};
+      const response: MediaWatchDataResponse = {};
       moment.locale(req.locale ?? 'en');
 
       if (media.ratingKey) {
-        const watchHistory = await tautulli.getMediaWatchHistory(
-          MediaType.TV,
-          media.ratingKey
-        );
-        const uniqueUserIds = uniqBy(watchHistory.data, 'user_id').map(
-          (record) => record.user_id
-        );
+        const watchStats = await tautulli.getMediaWatchStats(media.ratingKey);
+        const watchUsers = await tautulli.getMediaWatchUsers(media.ratingKey);
+
         const users = (
           await Promise.all(
-            uniqueUserIds.map(async (userId) => {
-              const tautulliUser = await tautulli.getUser(userId.toString());
+            watchUsers.map(async (watchUser) => {
+              const tautulliUser = await tautulli.getUser(
+                watchUser.user_id.toString()
+              );
 
               if (tautulliUser.email) {
                 return await userRepository
@@ -223,27 +220,29 @@ mediaRoutes.get<{ id: string }, MediaWatchHistoryResponse>(
         ).filter((user) => !!user) as User[];
 
         response.data = {
-          playCount: watchHistory.recordsFiltered,
+          playCount: watchStats.total_plays,
           playDuration: moment
-            .duration(parseDuration(watchHistory.total_duration), 'seconds')
+            .duration(watchStats.total_time, 'seconds')
             .humanize(),
-          userCount: uniqueUserIds.length,
+          userCount: watchUsers.length,
           users,
         };
       }
 
       if (media.ratingKey4k) {
-        const watchHistory4k = await tautulli.getMediaWatchHistory(
-          MediaType.TV,
+        const watchStats4k = await tautulli.getMediaWatchStats(
           media.ratingKey4k
         );
-        const uniqueUserIds4k = uniqBy(watchHistory4k.data, 'user_id').map(
-          (record) => record.user_id
+        const watchUsers4k = await tautulli.getMediaWatchUsers(
+          media.ratingKey4k
         );
+
         const users4k = (
           await Promise.all(
-            uniqueUserIds4k.map(async (userId) => {
-              const tautulliUser = await tautulli.getUser(userId.toString());
+            watchUsers4k.map(async (watchUser) => {
+              const tautulliUser = await tautulli.getUser(
+                watchUser.user_id.toString()
+              );
 
               if (tautulliUser.email) {
                 return await userRepository
@@ -258,11 +257,11 @@ mediaRoutes.get<{ id: string }, MediaWatchHistoryResponse>(
         ).filter((user) => !!user) as User[];
 
         response.data4k = {
-          playCount: watchHistory4k.recordsFiltered,
+          playCount: watchStats4k.total_plays,
           playDuration: moment
-            .duration(parseDuration(watchHistory4k.total_duration), 'seconds')
+            .duration(watchStats4k.total_time, 'seconds')
             .humanize(),
-          userCount: uniqueUserIds4k.length,
+          userCount: watchUsers4k.length,
           users: users4k,
         };
       }

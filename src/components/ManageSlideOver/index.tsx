@@ -14,7 +14,7 @@ import {
   MediaRequestStatus,
   MediaStatus,
 } from '../../../server/constants/media';
-import { MediaWatchHistoryResponse } from '../../../server/interfaces/api/mediaInterfaces';
+import { MediaWatchDataResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import { MovieDetails } from '../../../server/models/Movie';
 import { TvDetails } from '../../../server/models/Tv';
 import useSettings from '../../hooks/useSettings';
@@ -89,8 +89,8 @@ const ManageSlideOver: React.FC<
   const { user: currentUser, hasPermission } = useUser();
   const intl = useIntl();
   const settings = useSettings();
-  const { data: watchHistory } = useSWR<MediaWatchHistoryResponse>(
-    data.mediaInfo ? `/api/v1/media/${data.mediaInfo.id}/watch_history` : null
+  const { data: watchData } = useSWR<MediaWatchDataResponse>(
+    data.mediaInfo ? `/api/v1/media/${data.mediaInfo.id}/watch_data` : null
   );
 
   const deleteMedia = async () => {
@@ -218,9 +218,8 @@ const ManageSlideOver: React.FC<
         {hasPermission(Permission.ADMIN) &&
           (data.mediaInfo?.serviceUrl ||
             data.mediaInfo?.serviceUrl4k ||
-            (watchHistory?.data?.playCount && watchHistory.data.userCount) ||
-            (watchHistory?.data4k?.playCount &&
-              watchHistory.data4k.userCount)) && (
+            (watchData?.data?.playCount && watchData.data.userCount) ||
+            (watchData?.data4k?.playCount && watchData.data4k.userCount)) && (
             <div>
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalMedia)}
@@ -243,77 +242,73 @@ const ManageSlideOver: React.FC<
                     </Button>
                   </a>
                 )}
-                {!!watchHistory?.data?.playCount &&
-                  !!watchHistory.data.userCount && (
-                    <div className="space-y-1">
-                      <div className="flex flex-row items-center justify-between p-4 overflow-hidden text-sm text-gray-400 bg-gray-600 rounded-md shadow">
-                        <div className="my-auto">
-                          {intl.formatMessage(messages.playdata, {
-                            users:
-                              watchHistory.data.users.length === 0
-                                ? intl.formatMessage(messages.users, {
-                                    userCount: watchHistory.data.userCount,
-                                  })
-                                : intl.formatMessage(
-                                    watchHistory.data.userCount >
-                                      Math.min(
-                                        3,
-                                        watchHistory.data.users.length
-                                      )
-                                      ? messages.usernameswithcount
-                                      : messages.usernames,
-                                    {
-                                      nameCount: Math.min(
-                                        3,
-                                        watchHistory.data.users.length
-                                      ),
-                                      firstUser: watchHistory.data.users[0]
-                                        ? userLink(watchHistory.data.users[0])
-                                        : null,
-                                      secondUser: watchHistory.data.users[1]
-                                        ? userLink(watchHistory.data.users[1])
-                                        : null,
-                                      thirdUser: watchHistory.data.users[2]
-                                        ? userLink(watchHistory.data.users[2])
-                                        : null,
-                                      otherUsers: intl.formatMessage(
-                                        messages.otherusers,
-                                        {
-                                          userCount:
-                                            watchHistory.data.userCount -
-                                            Math.min(
-                                              3,
-                                              watchHistory.data.users.length
-                                            ),
-                                        }
-                                      ),
-                                    }
-                                  ),
-                            userCount: watchHistory.data.userCount,
-                            playCount: watchHistory.data.playCount,
-                            playDuration: watchHistory.data.playDuration,
-                            mediaType: intl.formatMessage(
-                              mediaType === 'movie'
-                                ? messages.movie
-                                : messages.tvshow
-                            ),
-                          })}
-                        </div>
-                        <div className="flex flex-wrap flex-shrink-0 ml-2">
-                          <a
-                            href={data.mediaInfo?.tautulliUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="block"
-                          >
-                            <Button buttonType="primary" as="a">
-                              <EyeIcon />
-                            </Button>
-                          </a>
-                        </div>
+                {!!watchData?.data?.playCount && !!watchData.data.userCount && (
+                  <div className="space-y-1">
+                    <div className="flex flex-row items-center justify-between p-4 overflow-hidden text-sm text-gray-400 bg-gray-600 rounded-md shadow">
+                      <div className="my-auto">
+                        {intl.formatMessage(messages.playdata, {
+                          users:
+                            watchData.data.users.length === 0
+                              ? intl.formatMessage(messages.users, {
+                                  userCount: watchData.data.userCount,
+                                })
+                              : intl.formatMessage(
+                                  watchData.data.userCount >
+                                    Math.min(3, watchData.data.users.length)
+                                    ? messages.usernameswithcount
+                                    : messages.usernames,
+                                  {
+                                    nameCount: Math.min(
+                                      3,
+                                      watchData.data.users.length
+                                    ),
+                                    firstUser: watchData.data.users[0]
+                                      ? userLink(watchData.data.users[0])
+                                      : null,
+                                    secondUser: watchData.data.users[1]
+                                      ? userLink(watchData.data.users[1])
+                                      : null,
+                                    thirdUser: watchData.data.users[2]
+                                      ? userLink(watchData.data.users[2])
+                                      : null,
+                                    otherUsers: intl.formatMessage(
+                                      messages.otherusers,
+                                      {
+                                        userCount:
+                                          watchData.data.userCount -
+                                          Math.min(
+                                            3,
+                                            watchData.data.users.length
+                                          ),
+                                      }
+                                    ),
+                                  }
+                                ),
+                          userCount: watchData.data.userCount,
+                          playCount: watchData.data.playCount,
+                          playDuration: watchData.data.playDuration,
+                          mediaType: intl.formatMessage(
+                            mediaType === 'movie'
+                              ? messages.movie
+                              : messages.tvshow
+                          ),
+                        })}
+                      </div>
+                      <div className="flex flex-wrap flex-shrink-0 ml-2">
+                        <a
+                          href={data.mediaInfo?.tautulliUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block"
+                        >
+                          <Button buttonType="primary" as="a">
+                            <EyeIcon />
+                          </Button>
+                        </a>
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
                 {data?.mediaInfo?.serviceUrl4k && (
                   <a
                     href={data?.mediaInfo?.serviceUrl4k}
@@ -330,55 +325,52 @@ const ManageSlideOver: React.FC<
                     </Button>
                   </a>
                 )}
-                {!!watchHistory?.data4k?.playCount &&
-                  !!watchHistory.data4k.userCount && (
+                {!!watchData?.data4k?.playCount &&
+                  !!watchData.data4k.userCount && (
                     <div className="space-y-1">
                       <div className="flex flex-row items-center justify-between p-4 overflow-hidden text-sm text-gray-400 bg-gray-600 rounded-md shadow">
                         <div className="my-auto">
                           {intl.formatMessage(messages.playdata, {
                             users:
-                              watchHistory.data4k.users.length === 0
+                              watchData.data4k.users.length === 0
                                 ? intl.formatMessage(messages.users, {
-                                    userCount: watchHistory.data4k.userCount,
+                                    userCount: watchData.data4k.userCount,
                                   })
                                 : intl.formatMessage(
-                                    watchHistory.data4k.userCount >
-                                      Math.min(
-                                        3,
-                                        watchHistory.data4k.users.length
-                                      )
+                                    watchData.data4k.userCount >
+                                      Math.min(3, watchData.data4k.users.length)
                                       ? messages.usernameswithcount
                                       : messages.usernames,
                                     {
                                       nameCount: Math.min(
                                         3,
-                                        watchHistory.data4k.users.length
+                                        watchData.data4k.users.length
                                       ),
-                                      firstUser: watchHistory.data4k.users[0]
-                                        ? userLink(watchHistory.data4k.users[0])
+                                      firstUser: watchData.data4k.users[0]
+                                        ? userLink(watchData.data4k.users[0])
                                         : null,
-                                      secondUser: watchHistory.data4k.users[1]
-                                        ? userLink(watchHistory.data4k.users[1])
+                                      secondUser: watchData.data4k.users[1]
+                                        ? userLink(watchData.data4k.users[1])
                                         : null,
-                                      thirdUser: watchHistory.data4k.users[2]
-                                        ? userLink(watchHistory.data4k.users[2])
+                                      thirdUser: watchData.data4k.users[2]
+                                        ? userLink(watchData.data4k.users[2])
                                         : null,
                                       otherUsers: intl.formatMessage(
                                         messages.otherusers,
                                         {
                                           userCount:
-                                            watchHistory.data4k.userCount -
+                                            watchData.data4k.userCount -
                                             Math.min(
                                               3,
-                                              watchHistory.data4k.users.length
+                                              watchData.data4k.users.length
                                             ),
                                         }
                                       ),
                                     }
                                   ),
-                            userCount: watchHistory.data4k.userCount,
-                            playCount: watchHistory.data4k.playCount,
-                            playDuration: watchHistory.data4k.playDuration,
+                            userCount: watchData.data4k.userCount,
+                            playCount: watchData.data4k.playCount,
+                            playDuration: watchData.data4k.playDuration,
                             mediaType: intl.formatMessage(
                               mediaType === 'movie'
                                 ? messages.movie

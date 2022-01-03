@@ -3695,9 +3695,9 @@ paths:
                   permissions:
                     type: number
                     example: 2
-  /user/{userId}/watch_history:
+  /user/{userId}/watch_data:
     get:
-      summary: Get watch history data
+      summary: Get watch data
       description: |
         Returns play count, play duration, and recently watched media.
 
@@ -5134,9 +5134,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaInfo'
-  /media/{mediaId}/watch_history:
+  /media/{mediaId}/watch_data:
     get:
-      summary: Get watch history data
+      summary: Get watch data
       description: |
         Returns play count, play duration, and users who have watched the media.
 

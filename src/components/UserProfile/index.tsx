@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import {
   QuotaResponse,
   UserRequestsResponse,
-  UserWatchHistoryResponse,
+  UserWatchDataResponse,
 } from '../../../server/interfaces/api/userInterfaces';
 import { MovieDetails } from '../../../server/models/Movie';
 import { TvDetails } from '../../../server/models/Tv';
@@ -54,8 +54,8 @@ const UserProfile: React.FC = () => {
   const { data: quota } = useSWR<QuotaResponse>(
     user ? `/api/v1/user/${user.id}/quota` : null
   );
-  const { data: watchHistory } = useSWR<UserWatchHistoryResponse>(
-    user ? `/api/v1/user/${user.id}/watch_history` : null
+  const { data: watchData } = useSWR<UserWatchDataResponse>(
+    user ? `/api/v1/user/${user.id}/watch_data` : null
   );
 
   const updateAvailableTitles = useCallback(
@@ -259,7 +259,7 @@ const UserProfile: React.FC = () => {
       )}
       {(user.id === currentUser?.id ||
         currentHasPermission(Permission.ADMIN)) &&
-        !!watchHistory?.media.length && (
+        !!watchData?.recentlyWatched.length && (
           <>
             <div className="slider-header">
               <div className="slider-title">
@@ -268,9 +268,9 @@ const UserProfile: React.FC = () => {
             </div>
             <Slider
               sliderKey="media"
-              isLoading={!watchHistory}
-              isEmpty={!watchHistory?.media.length}
-              items={watchHistory.media.map((item) => (
+              isLoading={!watchData}
+              isEmpty={!watchData?.recentlyWatched.length}
+              items={watchData.recentlyWatched.map((item) => (
                 <TmdbTitleCard
                   key={`media-slider-item-${item.id}`}
                   tmdbId={item.tmdbId}

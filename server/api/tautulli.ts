@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios';
-import { MediaType } from '../constants/media';
 import { User } from '../entity/User';
 import { TautulliSettings } from '../lib/settings';
 import logger from '../logger';
@@ -45,20 +44,49 @@ export interface TautulliHistoryRecord {
   year: number;
 }
 
-interface TautulliHistoryResponseData {
-  draw: number;
-  recordsTotal: number;
-  recordsFiltered: number;
-  total_duration: string;
-  filter_duration: string;
-  data: TautulliHistoryRecord[];
-}
-
 interface TautulliHistoryResponse {
   response: {
     result: string;
     message?: string;
-    data: TautulliHistoryResponseData;
+    data: {
+      draw: number;
+      recordsTotal: number;
+      recordsFiltered: number;
+      total_duration: string;
+      filter_duration: string;
+      data: TautulliHistoryRecord[];
+    };
+  };
+}
+
+interface TautulliWatchStats {
+  query_days: number;
+  total_time: number;
+  total_plays: number;
+}
+
+interface TautulliWatchStatsResponse {
+  response: {
+    result: string;
+    message?: string;
+    data: TautulliWatchStats[];
+  };
+}
+
+interface TautulliWatchUser {
+  friendly_name: string;
+  user_id: number;
+  user_thumb: string;
+  username: string;
+  total_plays: number;
+  total_time: number;
+}
+
+interface TautulliWatchUsersResponse {
+  response: {
+    result: string;
+    message?: string;
+    data: TautulliWatchUser[];
   };
 }
 
@@ -84,32 +112,6 @@ interface TautulliUser {
 
 interface TautulliUserResponse {
   response: { result: string; message?: string; data: TautulliUser };
-}
-
-export function parseDuration(duration: string): number {
-  const regexp = new RegExp(
-    /^(?:(?<days>\d+)\sdays?\s?)?(?:(?<hours>\d+)\shrs?\s?)?(?:(?<minutes>\d+)\smins?\s?)?(?:(?<seconds>\d+)\ssecs?)?$/
-  );
-
-  const groups = duration.match(regexp)?.groups;
-  let durationVal = 0;
-
-  if (groups) {
-    if (groups.days) {
-      durationVal += Number(groups.days) * 86400;
-    }
-    if (groups.hours) {
-      durationVal += Number(groups.hours) * 3600;
-    }
-    if (groups.minutes) {
-      durationVal += Number(groups.minutes) * 60;
-    }
-    if (groups.seconds) {
-      durationVal += Number(groups.seconds);
-    }
-  }
-
-  return durationVal;
 }
 
 class TautulliAPI {
@@ -141,49 +143,97 @@ class TautulliAPI {
     }
   }
 
-  public async getMediaWatchHistory(
-    mediaType: MediaType,
+  public async getMediaWatchStats(
     ratingKey: string
-  ): Promise<TautulliHistoryResponseData> {
-    let params: Record<string, unknown> = {
-      cmd: 'get_history',
-      grouping: 1,
-      order_column: 'date',
-      order_dir: 'desc',
-      length: 100,
-    };
-
-    if (mediaType === MediaType.MOVIE) {
-      params = { ...params, rating_key: ratingKey };
-    } else if (mediaType === MediaType.TV) {
-      params = { ...params, grandparent_rating_key: ratingKey };
-    }
-
+  ): Promise<TautulliWatchStats> {
     try {
       return (
-        await this.axios.get<TautulliHistoryResponse>('/api/v2', {
-          params,
+        await this.axios.get<TautulliWatchStatsResponse>('/api/v2', {
+          params: {
+            cmd: 'get_item_watch_time_stats',
+            rating_key: ratingKey,
+            query_days: 0,
+            grouping: 1,
+          },
         })
-      ).data.response.data;
+      ).data.response.data[0];
     } catch (e) {
       logger.error(
-        'Something went wrong fetching media watch history from Tautulli',
+        'Something went wrong fetching media watch stats from Tautulli',
         {
           label: 'Tautulli API',
           errorMessage: e.message,
-          mediaType,
           ratingKey,
         }
       );
       throw new Error(
-        `[Tautulli] Failed to fetch media watch history: ${e.message}`
+        `[Tautulli] Failed to fetch media watch stats: ${e.message}`
+      );
+    }
+  }
+
+  public async getMediaWatchUsers(
+    ratingKey: string
+  ): Promise<TautulliWatchUser[]> {
+    try {
+      return (
+        await this.axios.get<TautulliWatchUsersResponse>('/api/v2', {
+          params: {
+            cmd: 'get_item_user_stats',
+            rating_key: ratingKey,
+            grouping: 1,
+          },
+        })
+      ).data.response.data;
+    } catch (e) {
+      logger.error(
+        'Something went wrong fetching media watch users from Tautulli',
+        {
+          label: 'Tautulli API',
+          errorMessage: e.message,
+          ratingKey,
+        }
+      );
+      throw new Error(
+        `[Tautulli] Failed to fetch media watch users: ${e.message}`
+      );
+    }
+  }
+
+  public async getUserWatchStats(user: User): Promise<TautulliWatchStats> {
+    try {
+      if (!user.plexId) {
+        throw new Error('User does not have an associated Plex ID');
+      }
+
+      return (
+        await this.axios.get<TautulliWatchStatsResponse>('/api/v2', {
+          params: {
+            cmd: 'get_user_watch_time_stats',
+            user_id: user.plexId,
+            query_days: 0,
+            grouping: 1,
+          },
+        })
+      ).data.response.data[0];
+    } catch (e) {
+      logger.error(
+        'Something went wrong fetching user watch stats from Tautulli',
+        {
+          label: 'Tautulli API',
+          errorMessage: e.message,
+          user: user.displayName,
+        }
+      );
+      throw new Error(
+        `[Tautulli] Failed to fetch user watch stats: ${e.message}`
       );
     }
   }
 
   public async getUserWatchHistory(
     user: User
-  ): Promise<TautulliHistoryResponseData> {
+  ): Promise<TautulliHistoryRecord[]> {
     try {
       if (!user.plexId) {
         throw new Error('User does not have an associated Plex ID');
@@ -200,7 +250,7 @@ class TautulliAPI {
             length: 100,
           },
         })
-      ).data.response.data;
+      ).data.response.data.data;
     } catch (e) {
       logger.error(
         'Something went wrong fetching user watch history from Tautulli',
