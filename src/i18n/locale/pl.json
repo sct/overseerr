@@ -993,5 +993,10 @@
   "components.IssueDetails.commentplaceholder": "Dodaj komentarz…",
   "components.MovieDetails.productioncountries": "Produkcja {countryCount, plural, one {kraj} other {kraje}}",
   "components.RequestModal.requestseasons4k": "Prośba o {seasonCount} {seasonCount, plural, one {sezon} other {sezony}} w 4K",
-  "components.TvDetails.productioncountries": "Produkcja {countryCount, plural, one {kraj} other {kraje}}"
+  "components.TvDetails.productioncountries": "Produkcja {countryCount, plural, one {kraj} other {kraje}}",
+  "components.RequestModal.approve": "Zatwierdź prośbę",
+  "components.RequestModal.requestApproved": "Prośba o <strong>{title}</strong> zatwierdzona!",
+  "components.Settings.RadarrModal.announced": "Zapowiedziany",
+  "components.Settings.RadarrModal.inCinemas": "W kinach",
+  "components.Settings.RadarrModal.released": "Wydany"
 }

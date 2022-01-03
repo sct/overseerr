@@ -995,5 +995,8 @@
   "i18n.resolved": "Resolvido",
   "components.IssueDetails.commentplaceholder": "Adicionar um comentário…",
   "components.RequestModal.requestApproved": "Solicitação de <strong>{title}</strong> aprovada!",
-  "components.RequestModal.approve": "Aprovar Solicitação"
+  "components.RequestModal.approve": "Aprovar Solicitação",
+  "components.Settings.RadarrModal.announced": "Anunciado",
+  "components.Settings.RadarrModal.inCinemas": "Nos Cinemas",
+  "components.Settings.RadarrModal.released": "Lançado"
 }
