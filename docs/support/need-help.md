@@ -19,6 +19,8 @@ Please try to include as much information as possible. A vague statement like "i
 
 Try to answer the following questions:
 
+- What version of Overseerr do you have installed?
+- How do you have Overseerr installed?
 - What were you trying to do, and how did you attempt it?
   - What command did you enter?
   - What did you click on?
