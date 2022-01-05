@@ -4,12 +4,19 @@ import addBasePath from '../utils/addBasePath';
 
 const basePath = addBasePath('');
 
+const delBasePath = (path: string) => {
+  path = path.slice(basePath.length);
+  if (!path.startsWith('/')) {
+    path = `/${path}`;
+  }
+  return path;
+};
+
 const urlPropertyFields = [
   'pathname',
   'events',
   'route',
   'query',
-  'asPath',
   'components',
   'isFallback',
   'basePath',
@@ -42,6 +49,9 @@ const wrapRouter = (target: any): NextRouter => {
     },
     get basePath() {
       return basePath;
+    },
+    get asPath(): string {
+      return delBasePath(target.asPath);
     },
   };
 

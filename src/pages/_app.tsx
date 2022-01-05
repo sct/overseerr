@@ -1,4 +1,5 @@
 import axios from 'axios';
+// import { Handler } from 'express';
 import App, { AppInitialProps, AppProps } from 'next/app';
 import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
@@ -85,6 +86,24 @@ interface ExtendedAppProps extends AppProps {
 
 if (typeof window === 'undefined') {
   global.Intl = require('intl');
+} else {
+  /*
+   * Your scientists were so preoccupied with whether they could,
+   * they didn't stop to think if they should
+   * ~ Ian Malcolm
+   *
+   * Cursed fragile hack to update clientside rewrites in runtime.
+   * TODO - figure out how to do this better or be officially supported
+   * */
+  const cb = window.__BUILD_MANIFEST_CB;
+  window.__BUILD_MANIFEST_CB = () => {
+    (window?.__BUILD_MANIFEST?.__rewrites as any)?.beforeFiles?.push({
+      source: basePath + '/:path*',
+      destination: '/:path*',
+    });
+    window.__BUILD_MANIFEST_CB = cb;
+    cb?.();
+  };
 }
 
 if (basePath) {
