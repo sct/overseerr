@@ -54,7 +54,7 @@ app
 
     // Load Settings
     const settings = getSettings().load();
-    restartFlag.initializeSettings(settings);
+    restartFlag.initializeSettings(settings.main);
 
     // Migrate library types
     if (

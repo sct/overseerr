@@ -1,19 +1,18 @@
-import { cloneDeep } from 'lodash';
-import Settings, { getSettings } from '../lib/settings';
+import { getSettings, MainSettings } from '../lib/settings';
 
 class RestartFlag {
-  private settings: Settings;
+  private settings: MainSettings;
 
-  public initializeSettings(settings: Settings): void {
-    this.settings = cloneDeep(settings);
+  public initializeSettings(settings: MainSettings): void {
+    this.settings = { ...settings };
   }
 
   public isSet(): boolean {
-    const settings = getSettings();
+    const settings = getSettings().main;
 
     return (
-      this.settings.main.csrfProtection !== settings.main.csrfProtection ||
-      this.settings.main.trustProxy !== settings.main.trustProxy
+      this.settings.csrfProtection !== settings.csrfProtection ||
+      this.settings.trustProxy !== settings.trustProxy
     );
   }
 }
