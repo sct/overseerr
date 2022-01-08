@@ -713,6 +713,7 @@
   "components.Settings.currentlibrary": "Current Library: {name}",
   "components.Settings.default": "Default",
   "components.Settings.default4k": "Default 4K",
+  "components.Settings.deleteServer": "Delete {serverType} Server",
   "components.Settings.deleteserverconfirm": "Are you sure you want to delete this server?",
   "components.Settings.email": "Email",
   "components.Settings.enablessl": "Use SSL",
