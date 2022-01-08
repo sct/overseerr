@@ -130,7 +130,7 @@ const Modal: React.FC<ModalProps> = ({
               />
             </div>
           )}
-          <div className="relative overflow-x-hidden sm:flex sm:items-center">
+          <div className="relative p-px overflow-x-hidden sm:flex sm:items-center">
             {iconSvg && <div className="modal-icon">{iconSvg}</div>}
             <div
               className={`mt-3 truncate text-center text-white sm:mt-0 sm:text-left ${
@@ -149,7 +149,11 @@ const Modal: React.FC<ModalProps> = ({
             </div>
           </div>
           {children && (
-            <div className="relative mt-4 text-sm leading-5 text-gray-300">
+            <div
+              className={`relative mt-4 text-sm leading-5 text-gray-300 ${
+                !(onCancel || onOk || onSecondary || onTertiary) ? 'mb-3' : ''
+              }`}
+            >
               {children}
             </div>
           )}

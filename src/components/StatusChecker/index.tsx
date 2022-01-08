@@ -1,20 +1,27 @@
-import { SparklesIcon } from '@heroicons/react/outline';
+import { RefreshIcon, SparklesIcon } from '@heroicons/react/outline';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { StatusResponse } from '../../../server/interfaces/api/settingsInterfaces';
+import useSettings from '../../hooks/useSettings';
+import { Permission, useUser } from '../../hooks/useUser';
 import Modal from '../Common/Modal';
 import Transition from '../Transition';
 
 const messages = defineMessages({
-  newversionavailable: 'Application Update',
-  newversionDescription:
-    'Overseerr has been updated! Please click the button below to reload the page.',
-  reloadOverseerr: 'Reload',
+  appUpdated: '{applicationTitle} Updated',
+  appUpdatedDescription:
+    'Please click the button below to reload the application.',
+  reloadApp: 'Reload {applicationTitle}',
+  restartRequired: 'Server Restart Required',
+  restartRequiredDescription:
+    'Please restart the server to apply the updated settings.',
 });
 
 const StatusChecker: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
+  const { hasPermission } = useUser();
   const { data, error } = useSWR<StatusResponse>('/api/v1/status', {
     refreshInterval: 60 * 1000,
   });
@@ -36,17 +43,34 @@ const StatusChecker: React.FC = () => {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
       appear
-      show={data.commitTag !== process.env.commitTag}
+      show={
+        (hasPermission(Permission.ADMIN) && data.restartRequired) ||
+        data.commitTag !== process.env.commitTag
+      }
     >
-      <Modal
-        iconSvg={<SparklesIcon />}
-        title={intl.formatMessage(messages.newversionavailable)}
-        onOk={() => location.reload()}
-        okText={intl.formatMessage(messages.reloadOverseerr)}
-        backgroundClickable={false}
-      >
-        {intl.formatMessage(messages.newversionDescription)}
-      </Modal>
+      {hasPermission(Permission.ADMIN) && data.restartRequired ? (
+        <Modal
+          iconSvg={<RefreshIcon />}
+          title={intl.formatMessage(messages.restartRequired)}
+          backgroundClickable={false}
+        >
+          {intl.formatMessage(messages.restartRequiredDescription)}
+        </Modal>
+      ) : (
+        <Modal
+          iconSvg={<SparklesIcon />}
+          title={intl.formatMessage(messages.appUpdated, {
+            applicationTitle: settings.currentSettings.applicationTitle,
+          })}
+          onOk={() => location.reload()}
+          okText={intl.formatMessage(messages.reloadApp, {
+            applicationTitle: settings.currentSettings.applicationTitle,
+          })}
+          backgroundClickable={false}
+        >
+          {intl.formatMessage(messages.appUpdatedDescription)}
+        </Modal>
+      )}
     </Transition>
   );
 };
