@@ -1,5 +1,5 @@
 import { RefreshIcon, SparklesIcon } from '@heroicons/react/outline';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { StatusResponse } from '../../../server/interfaces/api/settingsInterfaces';
@@ -28,6 +28,12 @@ const StatusChecker: React.FC = () => {
   });
   const [alertDismissed, setAlertDismissed] = useState(false);
 
+  useEffect(() => {
+    if (!data?.restartRequired) {
+      setAlertDismissed(false);
+    }
+  }, [data?.restartRequired]);
+
   if (!data && !error) {
     return null;
   }
@@ -46,20 +52,22 @@ const StatusChecker: React.FC = () => {
       leaveTo="opacity-0"
       appear
       show={
-        (hasPermission(Permission.ADMIN) &&
-          data.restartRequired &&
-          !alertDismissed) ||
-        data.commitTag !== process.env.commitTag
+        !alertDismissed &&
+        ((hasPermission(Permission.ADMIN) && data.restartRequired) ||
+          data.commitTag !== process.env.commitTag)
       }
     >
-      {hasPermission(Permission.ADMIN) &&
-      data.restartRequired &&
-      !alertDismissed ? (
+      {hasPermission(Permission.ADMIN) && data.restartRequired ? (
         <Modal
           iconSvg={<RefreshIcon />}
           title={intl.formatMessage(messages.restartRequired)}
           backgroundClickable={false}
-          onOk={() => setAlertDismissed(true)}
+          onOk={() => {
+            setAlertDismissed(true);
+            if (data.commitTag !== process.env.commitTag) {
+              location.reload();
+            }
+          }}
           okText={intl.formatMessage(globalMessages.close)}
         >
           {intl.formatMessage(messages.restartRequiredDescription)}
