@@ -54,10 +54,7 @@ const UserSettings: React.FC = ({ children }) => {
       regex: /\/settings\/password/,
       hidden:
         (!settings.currentSettings.localLogin &&
-          !hasPermission(
-            Permission.MANAGE_SETTINGS,
-            currentUser?.permissions ?? 0
-          )) ||
+          !hasPermission(Permission.ADMIN, currentUser?.permissions ?? 0)) ||
         (currentUser?.id !== 1 &&
           currentUser?.id !== user?.id &&
           hasPermission(Permission.ADMIN, user?.permissions ?? 0)),

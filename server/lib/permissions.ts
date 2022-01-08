@@ -1,7 +1,6 @@
 export enum Permission {
   NONE = 0,
   ADMIN = 2,
-  MANAGE_SETTINGS = 4,
   MANAGE_USERS = 8,
   MANAGE_REQUESTS = 16,
   REQUEST = 32,

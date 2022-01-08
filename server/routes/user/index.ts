@@ -258,12 +258,7 @@ export const canMakePermissionsChange = (
   user?: User
 ): boolean =>
   // Only let the owner grant admin privileges
-  !(hasPermission(Permission.ADMIN, permissions) && user?.id !== 1) ||
-  // Only let users with the manage settings permission, grant the same permission
-  !(
-    hasPermission(Permission.MANAGE_SETTINGS, permissions) &&
-    !hasPermission(Permission.MANAGE_SETTINGS, user?.permissions ?? 0)
-  );
+  !(hasPermission(Permission.ADMIN, permissions) && user?.id !== 1);
 
 router.put<
   Record<string, never>,

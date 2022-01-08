@@ -12,9 +12,6 @@ export const messages = defineMessages({
   users: 'Manage Users',
   usersDescription:
     'Grant permission to manage users. Users with this permission cannot modify users with or grant the Admin privilege.',
-  settings: 'Manage Settings',
-  settingsDescription:
-    'Grant permission to modify global settings. A user must have this permission to grant it to others.',
   managerequests: 'Manage Requests',
   managerequestsDescription:
     'Grant permission to manage media requests. All requests made by a user with this permission will be automatically approved.',
@@ -87,12 +84,6 @@ export const PermissionEdit: React.FC<PermissionEditProps> = ({
       name: intl.formatMessage(messages.admin),
       description: intl.formatMessage(messages.adminDescription),
       permission: Permission.ADMIN,
-    },
-    {
-      id: 'settings',
-      name: intl.formatMessage(messages.settings),
-      description: intl.formatMessage(messages.settingsDescription),
-      permission: Permission.MANAGE_SETTINGS,
     },
     {
       id: 'users',

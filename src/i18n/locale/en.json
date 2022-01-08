@@ -245,8 +245,6 @@
   "components.PermissionEdit.requestMoviesDescription": "Grant permission to submit requests for non-4K movies.",
   "components.PermissionEdit.requestTv": "Request Series",
   "components.PermissionEdit.requestTvDescription": "Grant permission to submit requests for non-4K series.",
-  "components.PermissionEdit.settings": "Manage Settings",
-  "components.PermissionEdit.settingsDescription": "Grant permission to modify global settings. A user must have this permission to grant it to others.",
   "components.PermissionEdit.users": "Manage Users",
   "components.PermissionEdit.usersDescription": "Grant permission to manage users. Users with this permission cannot modify users with or grant the Admin privilege.",
   "components.PermissionEdit.viewissues": "View Issues",

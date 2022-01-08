@@ -102,11 +102,7 @@ router.get('/settings/public', async (req, res) => {
     return res.status(200).json(settings.fullPublicSettings);
   }
 });
-router.use(
-  '/settings',
-  isAuthenticated(Permission.MANAGE_SETTINGS),
-  settingsRoutes
-);
+router.use('/settings', isAuthenticated(Permission.ADMIN), settingsRoutes);
 router.use('/search', isAuthenticated(), searchRoutes);
 router.use('/discover', isAuthenticated(), discoverRoutes);
 router.use('/request', isAuthenticated(), requestRoutes);

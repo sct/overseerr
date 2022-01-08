@@ -80,7 +80,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'settings',
     svgIcon: <CogIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/settings/,
-    requiredPermission: Permission.MANAGE_SETTINGS,
+    requiredPermission: Permission.ADMIN,
   },
 ];
 
