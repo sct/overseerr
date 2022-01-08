@@ -1,10 +1,11 @@
 import { RefreshIcon, SparklesIcon } from '@heroicons/react/outline';
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { StatusResponse } from '../../../server/interfaces/api/settingsInterfaces';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
+import globalMessages from '../../i18n/globalMessages';
 import Modal from '../Common/Modal';
 import Transition from '../Transition';
 
@@ -25,6 +26,7 @@ const StatusChecker: React.FC = () => {
   const { data, error } = useSWR<StatusResponse>('/api/v1/status', {
     refreshInterval: 60 * 1000,
   });
+  const [alertDismissed, setAlertDismissed] = useState(false);
 
   if (!data && !error) {
     return null;
@@ -44,15 +46,21 @@ const StatusChecker: React.FC = () => {
       leaveTo="opacity-0"
       appear
       show={
-        (hasPermission(Permission.ADMIN) && data.restartRequired) ||
+        (hasPermission(Permission.ADMIN) &&
+          data.restartRequired &&
+          !alertDismissed) ||
         data.commitTag !== process.env.commitTag
       }
     >
-      {hasPermission(Permission.ADMIN) && data.restartRequired ? (
+      {hasPermission(Permission.ADMIN) &&
+      data.restartRequired &&
+      !alertDismissed ? (
         <Modal
           iconSvg={<RefreshIcon />}
           title={intl.formatMessage(messages.restartRequired)}
           backgroundClickable={false}
+          onOk={() => setAlertDismissed(true)}
+          okText={intl.formatMessage(globalMessages.close)}
         >
           {intl.formatMessage(messages.restartRequiredDescription)}
         </Modal>

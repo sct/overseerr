@@ -31,6 +31,7 @@ import { getSettings } from './lib/settings';
 import logger from './logger';
 import routes from './routes';
 import { getAppVersion } from './utils/appVersion';
+import restartFlag from './utils/restartFlag';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -53,6 +54,7 @@ app
 
     // Load Settings
     const settings = getSettings().load();
+    restartFlag.initializeSettings(settings);
 
     // Migrate library types
     if (

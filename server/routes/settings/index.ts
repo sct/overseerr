@@ -30,7 +30,6 @@ import logger from '../../logger';
 import { isAuthenticated } from '../../middleware/auth';
 import { appDataPath } from '../../utils/appDataVolume';
 import { getAppVersion } from '../../utils/appVersion';
-import restartFlag from '../../utils/restartFlag';
 import notificationRoutes from './notifications';
 import radarrRoutes from './radarr';
 import sonarrRoutes from './sonarr';
@@ -64,13 +63,6 @@ settingsRoutes.get('/main', (req, res, next) => {
 
 settingsRoutes.post('/main', (req, res) => {
   const settings = getSettings();
-
-  if (
-    settings.main.csrfProtection !== req.body.csrfProtection ||
-    settings.main.trustProxy !== req.body.trustProxy
-  ) {
-    restartFlag.set();
-  }
 
   settings.main = merge(settings.main, req.body);
   settings.save();
