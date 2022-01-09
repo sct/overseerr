@@ -16,6 +16,7 @@ import { useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
 import Badge from '../Common/Badge';
+import CachedImage from '../Common/CachedImage';
 import Modal from '../Common/Modal';
 import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
 import QuotaDisplay from './QuotaDisplay';
@@ -396,8 +397,29 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
                             ></span>
                           </span>
                         </td>
-                        <td className="px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6 whitespace-nowrap">
-                          {part.title}
+                        <td className="flex items-center px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6">
+                          <div className="relative flex-shrink-0 w-10 h-auto overflow-hidden rounded-md">
+                            <CachedImage
+                              src={
+                                part.posterPath
+                                  ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${part.posterPath}`
+                                  : '/images/overseerr_poster_not_found.png'
+                              }
+                              alt=""
+                              layout="responsive"
+                              width={600}
+                              height={900}
+                              objectFit="cover"
+                            />
+                          </div>
+                          <div className="flex flex-col justify-center pl-2">
+                            <div className="text-xs font-medium">
+                              {part.releaseDate?.slice(0, 4)}
+                            </div>
+                            <div className="text-base font-bold">
+                              {part.title}
+                            </div>
+                          </div>
                         </td>
                         <td className="py-4 pr-2 text-sm leading-5 text-gray-200 md:px-6 whitespace-nowrap">
                           {!partMedia && !partRequest && (

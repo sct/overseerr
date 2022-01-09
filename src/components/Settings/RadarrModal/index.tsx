@@ -67,6 +67,9 @@ const messages = defineMessages({
   validationBaseUrlTrailingSlash: 'Base URL must not end in a trailing slash',
   notagoptions: 'No tags.',
   selecttags: 'Select tags',
+  announced: 'Announced',
+  inCinemas: 'In Cinemas',
+  released: 'Released',
 });
 
 interface TestResponse {
@@ -584,10 +587,15 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         id="minimumAvailability"
                         name="minimumAvailability"
                       >
-                        <option value="announced">Announced</option>
-                        <option value="inCinemas">In Cinemas</option>
-                        <option value="released">Released</option>
-                        <option value="preDB">PreDB</option>
+                        <option value="announced">
+                          {intl.formatMessage(messages.announced)}
+                        </option>
+                        <option value="inCinemas">
+                          {intl.formatMessage(messages.inCinemas)}
+                        </option>
+                        <option value="released">
+                          {intl.formatMessage(messages.released)}
+                        </option>
                       </Field>
                     </div>
                     {errors.minimumAvailability &&
