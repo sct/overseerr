@@ -19,7 +19,7 @@ const messages = defineMessages({
   discordsettingsfailed: 'Discord notification settings failed to save.',
   discordId: 'User ID',
   discordIdTip:
-    'The <FindDiscordIdLink>ID number</FindDiscordIdLink> for your user account',
+    'The <FindDiscordIdLink>multi-digit ID number</FindDiscordIdLink> associated with your user account',
   validationDiscordId: 'You must provide a valid user ID',
 });
 
@@ -28,6 +28,7 @@ const UserNotificationsDiscord: React.FC = () => {
   const { addToast } = useToasts();
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.userId) });
+  const { user: currentUser } = useUser();
   const {
     data,
     error,
@@ -107,21 +108,23 @@ const UserNotificationsDiscord: React.FC = () => {
                 {!!data?.discordEnabledTypes && (
                   <span className="label-required">*</span>
                 )}
-                <span className="label-tip">
-                  {intl.formatMessage(messages.discordIdTip, {
-                    FindDiscordIdLink: function FindDiscordIdLink(msg) {
-                      return (
-                        <a
-                          href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
-                  })}
-                </span>
+                {currentUser?.id === user?.id && (
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.discordIdTip, {
+                      FindDiscordIdLink: function FindDiscordIdLink(msg) {
+                        return (
+                          <a
+                            href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {msg}
+                          </a>
+                        );
+                      },
+                    })}
+                  </span>
+                )}
               </label>
               <div className="form-input">
                 <div className="form-input-field">

@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import * as Yup from 'yup';
 import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import {
   availableLanguages,
@@ -46,6 +47,10 @@ const messages = defineMessages({
   enableOverride: 'Override Global Limit',
   applanguage: 'Display Language',
   languageDefault: 'Default ({language})',
+  discordId: 'Discord User ID',
+  discordIdTip:
+    'The <FindDiscordIdLink>multi-digit ID number</FindDiscordIdLink> associated with your Discord user account',
+  validationDiscordId: 'You must provide a valid Discord user ID',
 });
 
 const UserGeneralSettings: React.FC = () => {
@@ -71,6 +76,12 @@ const UserGeneralSettings: React.FC = () => {
   } = useSWR<UserSettingsGeneralResponse>(
     user ? `/api/v1/user/${user?.id}/settings/main` : null
   );
+
+  const UserGeneralSettingsSchema = Yup.object().shape({
+    discordId: Yup.string()
+      .nullable()
+      .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
+  });
 
   useEffect(() => {
     setMovieQuotaEnabled(
@@ -104,8 +115,9 @@ const UserGeneralSettings: React.FC = () => {
       </div>
       <Formik
         initialValues={{
-          locale: data?.locale,
           displayName: data?.username,
+          discordId: data?.discordId,
+          locale: data?.locale,
           region: data?.region,
           originalLanguage: data?.originalLanguage,
           movieQuotaLimit: data?.movieQuotaLimit,
@@ -113,11 +125,14 @@ const UserGeneralSettings: React.FC = () => {
           tvQuotaLimit: data?.tvQuotaLimit,
           tvQuotaDays: data?.tvQuotaDays,
         }}
+        validationSchema={UserGeneralSettingsSchema}
         enableReinitialize
         onSubmit={async (values) => {
           try {
             await axios.post(`/api/v1/user/${user?.id}/settings/main`, {
               username: values.displayName,
+              discordId: values.discordId,
+              locale: values.locale,
               region: values.region,
               originalLanguage: values.originalLanguage,
               movieQuotaLimit: movieQuotaEnabled
@@ -126,7 +141,6 @@ const UserGeneralSettings: React.FC = () => {
               movieQuotaDays: movieQuotaEnabled ? values.movieQuotaDays : null,
               tvQuotaLimit: tvQuotaEnabled ? values.tvQuotaLimit : null,
               tvQuotaDays: tvQuotaEnabled ? values.tvQuotaDays : null,
-              locale: values.locale,
             });
 
             if (currentUser?.id === user?.id && setLocale) {
@@ -152,7 +166,14 @@ const UserGeneralSettings: React.FC = () => {
           }
         }}
       >
-        {({ errors, touched, isSubmitting, values, setFieldValue }) => {
+        {({
+          errors,
+          touched,
+          isSubmitting,
+          isValid,
+          values,
+          setFieldValue,
+        }) => {
           return (
             <Form className="section">
               <div className="form-row">
@@ -204,6 +225,36 @@ const UserGeneralSettings: React.FC = () => {
                   </div>
                   {errors.displayName && touched.displayName && (
                     <div className="error">{errors.displayName}</div>
+                  )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="discordId" className="text-label">
+                  {intl.formatMessage(messages.discordId)}
+                  {currentUser?.id === user?.id && (
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.discordIdTip, {
+                        FindDiscordIdLink: function FindDiscordIdLink(msg) {
+                          return (
+                            <a
+                              href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {msg}
+                            </a>
+                          );
+                        },
+                      })}
+                    </span>
+                  )}
+                </label>
+                <div className="form-input">
+                  <div className="form-input-field">
+                    <Field id="discordId" name="discordId" type="text" />
+                  </div>
+                  {errors.discordId && touched.discordId && (
+                    <div className="error">{errors.discordId}</div>
                   )}
                 </div>
               </div>
@@ -364,7 +415,7 @@ const UserGeneralSettings: React.FC = () => {
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !isValid}
                     >
                       <SaveIcon />
                       <span>

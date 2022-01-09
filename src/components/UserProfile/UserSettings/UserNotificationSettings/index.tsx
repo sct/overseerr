@@ -65,6 +65,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       ),
       route: '/settings/notifications/discord',
       regex: /\/settings\/notifications\/discord/,
+      hidden: !data?.discordEnabled,
     },
     {
       text: 'Pushbullet',
