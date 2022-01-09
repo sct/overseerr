@@ -986,5 +986,17 @@
   "components.NotificationTypeSelector.issuereopened": "Problem återöppnat",
   "components.NotificationTypeSelector.issuereopenedDescription": "Skicka avisering när ett problem at återöppnats.",
   "components.NotificationTypeSelector.userissuereopenedDescription": "Få avisering när ett problem som du har rapporterat har återöppnats.",
-  "components.NotificationTypeSelector.adminissueresolvedDescription": "Få avisering när ett problem har blivit löst."
+  "components.NotificationTypeSelector.adminissueresolvedDescription": "Få avisering när ett problem har blivit löst.",
+  "components.MovieDetails.productioncountries": "Produktions{countryCount, plural, one {land} other {länder}}",
+  "components.RequestModal.selectmovies": "Välj Film(er)",
+  "components.IssueDetails.commentplaceholder": "Lägg till en kommentar…",
+  "components.RequestModal.approve": "Godkänn efterfrågan",
+  "components.RequestModal.requestApproved": "Begäran av <strong>{title}</strong> godkänd!",
+  "components.RequestModal.requestmovies": "Begär {count} {count, plural, one {Film} other {Filmer}}",
+  "components.RequestModal.requestmovies4k": "Begär {count} {count, plural, one {Film} other {Filmer}} i 4K",
+  "components.RequestModal.requestseasons4k": "Begär {seasonCount} {seasonCount, plural, one {Säsong} other {Säsonger}} i 4K",
+  "components.Settings.RadarrModal.inCinemas": "På Bio",
+  "components.Settings.RadarrModal.released": "Släppt",
+  "components.Settings.RadarrModal.announced": "Annonserat",
+  "components.TvDetails.productioncountries": "Produktions{countryCount, plural, one {land} other {länder}}"
 }

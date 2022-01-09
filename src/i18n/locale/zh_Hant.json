@@ -109,7 +109,7 @@
   "components.NotificationTypeSelector.mediaapproved": "請求批准",
   "components.NotificationTypeSelector.mediaavailableDescription": "當請求的媒體可觀看時發送通知。",
   "components.NotificationTypeSelector.mediaapprovedDescription": "當請求被手動批准時發送通知。",
-  "components.NotificationTypeSelector.mediaavailable": "媒體可觀看",
+  "components.NotificationTypeSelector.mediaavailable": "請求可觀看",
   "components.MovieDetails.watchtrailer": "觀看預告片",
   "components.MovieDetails.viewfullcrew": "檢視完整製作群",
   "components.MovieDetails.studio": "製作公司",
