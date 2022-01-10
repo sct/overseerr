@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
-import { MediaType } from '../../../constants/media';
+import { IssueStatus, IssueTypeName } from '../../../constants/issue';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentGotify } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
@@ -46,101 +46,64 @@ class GotifyAgent
     message: string;
     priority: number;
   } {
-    const settings = getSettings();
-    let messageTitle = '';
-    let message = '';
+    const { applicationUrl, applicationTitle } = getSettings().main;
     let priority = 0;
 
-    const title = payload.subject;
-    const plot = payload.message;
-    const username = payload.request?.requestedBy.displayName;
+    const title = payload.event
+      ? `${payload.event} - ${payload.subject}`
+      : payload.subject;
+    let message = payload.message ?? '';
 
-    switch (type) {
-      case Notification.MEDIA_PENDING:
-        messageTitle = `New ${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request`;
-        message += `**${title}**`;
-        if (plot) {
-          message += `\n${plot}`;
-        }
-        message += `\n\n**Request By**\n${username}`;
-        message += `\n\n**Status**\nPending Approval`;
-        break;
-      case Notification.MEDIA_APPROVED:
-        messageTitle = `${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request Approved`;
-        message += `**${title}**`;
-        if (plot) {
-          message += `\n${plot}`;
-        }
-        message += `\n\n**Requested By**\n${username}`;
-        message += `\n\n**Status**\nProcessing`;
-        break;
-      case Notification.MEDIA_AUTO_APPROVED:
-        messageTitle = `${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request Automatically Approved`;
-        message += `**${title}**`;
-        if (plot) {
-          message += `\n${plot}`;
-        }
-        message += `\n\n**Requested By**\n${username}`;
-        message += `\n\n**Status**\nProcessing`;
-        break;
-      case Notification.MEDIA_AVAILABLE:
-        messageTitle = `${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Now Available`;
-        message += `**${title}**`;
-        if (plot) {
-          message += `\n${plot}`;
-        }
-        message += `\n\n**Requested By**\n${username}`;
-        message += `\n\n**Status**\nAvailable`;
-        break;
-      case Notification.MEDIA_DECLINED:
-        messageTitle = `${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request Declined`;
-        message += `**${title}**`;
-        if (plot) {
-          message += `\n${plot}`;
-        }
-        message += `\n\n**Requested By**\n${username}`;
-        message += `\n\n**Status**\nDeclined`;
+    if (payload.request) {
+      message += `\n\nRequested By: ${payload.request.requestedBy.displayName}`;
+
+      let status = '';
+      switch (type) {
+        case Notification.MEDIA_PENDING:
+          status = 'Pending Approval';
+          break;
+        case Notification.MEDIA_APPROVED:
+        case Notification.MEDIA_AUTO_APPROVED:
+          status = 'Processing';
+          break;
+        case Notification.MEDIA_AVAILABLE:
+          status = 'Available';
+          break;
+        case Notification.MEDIA_DECLINED:
+          status = 'Declined';
+          break;
+        case Notification.MEDIA_FAILED:
+          status = 'Failed';
+          break;
+      }
+      if (status) {
+        message += `\nRequest Status: ${status}`;
+      }
+    } else if (payload.comment) {
+      message += `\nComment from ${payload.comment.user.displayName}:\n${payload.comment.message}`;
+    } else if (payload.issue) {
+      message += `\n\nReported By: ${payload.issue.createdBy.displayName}`;
+      message += `\nIssue Type: ${IssueTypeName[payload.issue.issueType]}`;
+      message += `\nIssue Status: ${
+        payload.issue.status === IssueStatus.OPEN ? 'Open' : 'Resolved'
+      }`;
+
+      if (type == Notification.ISSUE_CREATED) {
         priority = 1;
-        break;
-      case Notification.MEDIA_FAILED:
-        messageTitle = `${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request`;
-        message += `**${title}**`;
-        if (plot) {
-          message += `\n${plot}`;
-        }
-        message += `\n\n**Requested By**\n${username}`;
-        message += `\n\n**Status**\nFailed`;
-        priority = 1;
-        break;
-      case Notification.TEST_NOTIFICATION:
-        messageTitle = 'Test Notification';
-        message += `${plot}`;
-        break;
+      }
     }
 
     for (const extra of payload.extra ?? []) {
       message += `\n\n**${extra.name}**\n${extra.value}`;
     }
 
-    if (settings.main.applicationUrl && payload.media) {
-      const actionUrl = `${settings.main.applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`;
-      message += `\n\nOpen in ${settings.main.applicationTitle}(${actionUrl})`;
+    if (applicationUrl && payload.media) {
+      const actionUrl = `${applicationUrl}/${payload.media.mediaType}/${payload.media.tmdbId}`;
+      message += `\n\nOpen in ${applicationTitle}(${actionUrl})`;
     }
 
     return {
-      title: messageTitle,
+      title,
       message,
       priority,
     };
