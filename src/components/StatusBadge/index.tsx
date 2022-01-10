@@ -16,6 +16,8 @@ interface StatusBadgeProps {
   inProgress?: boolean;
   plexUrl?: string;
   serviceUrl?: string;
+  tmdbId?: number;
+  mediaType?: 'movie' | 'tv';
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({
@@ -24,13 +26,18 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   inProgress = false,
   plexUrl,
   serviceUrl,
+  tmdbId,
+  mediaType,
 }) => {
   const intl = useIntl();
+
+  const manageLink =
+    tmdbId && mediaType ? `/${mediaType}/${tmdbId}?manage` : undefined;
 
   switch (status) {
     case MediaStatus.AVAILABLE:
       return (
-        <Badge badgeType="success" url={plexUrl}>
+        <Badge badgeType="success" href={manageLink ?? plexUrl}>
           <div className="flex items-center">
             <span>
               {intl.formatMessage(is4k ? messages.status4k : messages.status, {
@@ -44,7 +51,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
     case MediaStatus.PARTIALLY_AVAILABLE:
       return (
-        <Badge badgeType="success" url={plexUrl}>
+        <Badge badgeType="success" href={manageLink ?? plexUrl}>
           <div className="flex items-center">
             <span>
               {intl.formatMessage(is4k ? messages.status4k : messages.status, {
@@ -58,7 +65,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
     case MediaStatus.PROCESSING:
       return (
-        <Badge badgeType="primary" url={serviceUrl}>
+        <Badge badgeType="primary" href={manageLink ?? serviceUrl}>
           <div className="flex items-center">
             <span>
               {intl.formatMessage(is4k ? messages.status4k : messages.status, {
@@ -74,7 +81,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
     case MediaStatus.PENDING:
       return (
-        <Badge badgeType="warning">
+        <Badge badgeType="warning" href={manageLink}>
           {intl.formatMessage(is4k ? messages.status4k : messages.status, {
             status: intl.formatMessage(globalMessages.pending),
           })}

@@ -85,7 +85,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const router = useRouter();
   const intl = useIntl();
   const { locale } = useLocale();
-  const [showManager, setShowManager] = useState(false);
+  const [showManager, setShowManager] = useState(
+    router.query.manage !== undefined ? true : false
+  );
   const minStudios = 3;
   const [showMoreStudios, setShowMoreStudios] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
@@ -276,12 +278,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <StatusBadge
               status={data.mediaInfo?.status}
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
-              plexUrl={data.mediaInfo?.plexUrl}
-              serviceUrl={
-                hasPermission(Permission.ADMIN)
-                  ? data.mediaInfo?.serviceUrl
-                  : undefined
-              }
+              tmdbId={data.mediaInfo?.tmdbId}
+              mediaType="movie"
             />
             {settings.currentSettings.movie4kEnabled &&
               hasPermission(
@@ -296,12 +294,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0
                   }
-                  plexUrl={data.mediaInfo?.plexUrl4k}
-                  serviceUrl={
-                    hasPermission(Permission.ADMIN)
-                      ? data.mediaInfo?.serviceUrl4k
-                      : undefined
-                  }
+                  tmdbId={data.mediaInfo?.tmdbId}
+                  mediaType="movie"
                 />
               )}
           </div>
