@@ -90,7 +90,9 @@ const ManageSlideOver: React.FC<
   const intl = useIntl();
   const settings = useSettings();
   const { data: watchData } = useSWR<MediaWatchDataResponse>(
-    data.mediaInfo ? `/api/v1/media/${data.mediaInfo.id}/watch_data` : null
+    data.mediaInfo && hasPermission(Permission.ADMIN)
+      ? `/api/v1/media/${data.mediaInfo.id}/watch_data`
+      : null
   );
 
   const deleteMedia = async () => {
