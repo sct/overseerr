@@ -182,7 +182,7 @@
   "components.TvDetails.recommendations": "Recomendações",
   "components.TvDetails.overviewunavailable": "Sinopse indisponível.",
   "components.TvDetails.overview": "Sinopse",
-  "components.TvDetails.originallanguage": "Língua original",
+  "components.TvDetails.originallanguage": "Língua Original",
   "components.TvDetails.network": "{networkCount, plural, one {Emissora} other {Emissoras}}",
   "components.TvDetails.cast": "Elenco",
   "components.TvDetails.anime": "Animes",
@@ -595,7 +595,7 @@
   "components.NotificationTypeSelector.mediaAutoApproved": "Solicitação Aprovada Automaticamente",
   "components.TvDetails.episodeRuntimeMinutes": "{runtime} minutos",
   "components.RequestModal.AdvancedRequester.folder": "{path} ({space})",
-  "components.TvDetails.episodeRuntime": "Extensão de episódio",
+  "components.TvDetails.episodeRuntime": "Extensão de Episódio",
   "components.Discover.TvGenreSlider.tvgenres": "Gêneros de Séries",
   "components.Discover.TvGenreList.seriesgenres": "Gêneros de Séries",
   "components.Discover.MovieGenreSlider.moviegenres": "Gêneros de Filmes",
@@ -998,5 +998,6 @@
   "components.RequestModal.approve": "Aprovar Solicitação",
   "components.Settings.RadarrModal.announced": "Anunciado",
   "components.Settings.RadarrModal.inCinemas": "Nos Cinemas",
-  "components.Settings.RadarrModal.released": "Lançado"
+  "components.Settings.RadarrModal.released": "Lançado",
+  "components.Settings.Notifications.enableMentions": "Habilitar Menções"
 }
