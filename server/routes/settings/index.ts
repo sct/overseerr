@@ -241,7 +241,7 @@ settingsRoutes.get(
       (user) => user.$
     );
 
-    const unimportedUsers: {
+    const unimportedPlexUsers: {
       id: string;
       title: string;
       username: string;
@@ -249,23 +249,31 @@ settingsRoutes.get(
       thumb: string;
     }[] = [];
 
+    const existingUsers = await qb
+      .where('user.plexId IN (:...plexIds)', {
+        plexIds: plexUsers.map((plexUser) => plexUser.id),
+      })
+      .orWhere('user.email IN (:...plexEmails)', {
+        plexEmails: plexUsers.map((plexUser) => plexUser.email.toLowerCase()),
+      })
+      .getMany();
+
     await Promise.all(
-      plexUsers.map(async (user) => {
+      plexUsers.map(async (plexUser) => {
         if (
-          !(await qb
-            .where('user.plexId = :id', { id: user.id })
-            .orWhere('user.email = :email', {
-              email: user.email.toLowerCase(),
-            })
-            .getOne()) &&
-          (await plexApi.checkUserAccess(parseInt(user.id)))
+          !existingUsers.find(
+            (user) =>
+              user.plexId === parseInt(plexUser.id) ||
+              user.email === plexUser.email.toLowerCase()
+          ) &&
+          (await plexApi.checkUserAccess(parseInt(plexUser.id)))
         ) {
-          unimportedUsers.push(user);
+          unimportedPlexUsers.push(plexUser);
         }
       })
     );
 
-    return res.status(200).json(sortBy(unimportedUsers, 'username'));
+    return res.status(200).json(sortBy(unimportedPlexUsers, 'username'));
   }
 );
 
