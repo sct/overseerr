@@ -48,7 +48,7 @@
   "components.IssueModal.issueVideo": "Wideo",
   "components.ManageSlideOver.manageModalIssues": "Otwarte problemy",
   "components.ManageSlideOver.manageModalRequests": "Prośby",
-  "components.NotificationTypeSelector.mediarequested": "Prośba o oczekujące na zatwierdzenie",
+  "components.NotificationTypeSelector.mediarequested": "Prośba o oczekuje na zatwierdzenie",
   "components.PermissionEdit.admin": "Admin",
   "components.PermissionEdit.autoapprove4kMovies": "Automatyczne zatwierdzanie filmów 4K",
   "components.IssueDetails.openin4karr": "Otwórz w 4K {arr}",
@@ -998,5 +998,6 @@
   "components.RequestModal.requestApproved": "Prośba o <strong>{title}</strong> zatwierdzona!",
   "components.Settings.RadarrModal.announced": "Zapowiedziany",
   "components.Settings.RadarrModal.inCinemas": "W kinach",
-  "components.Settings.RadarrModal.released": "Wydany"
+  "components.Settings.RadarrModal.released": "Wydany",
+  "components.Settings.Notifications.enableMentions": "Włącz wzmianki"
 }
