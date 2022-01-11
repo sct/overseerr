@@ -736,7 +736,7 @@
   "components.NotificationTypeSelector.notificationTypes": "Meldingtypes",
   "components.Discover.noRequests": "Geen verzoeken.",
   "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSetOwnAccount": "Er is voor jouw account momenteel geen wachtwoord ingesteld. Configureer hieronder een wachtwoord om in te kunnen loggen als een \"lokale gebruiker\" met uw e-mailadres.",
-  "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSet": "Voor deze gebruikersaccount is er momenteel geen wachtwoord ingesteld. Configureer hieronder een wachtwoord om ervoor te zorgen dat dit account zich kan aanmelden als een \"lokale gebruiker\".",
+  "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSet": "Deze gebruikersaccount heeft momenteel geen wachtwoord ingesteld. Configureer hieronder een wachtwoord zodat deze account in staat is om zich aan te melden als een \"lokale gebruiker\".",
   "components.Settings.serviceSettingsDescription": "Configureer je {serverType} server(s) hieronder. Je kunt meerdere {serverType} servers verbinden, maar slechts twee ervan kunnen als standaard worden gemarkeerd (één niet-4K en één 4K). Beheerders kunnen vóór de goedkeuring de server die gebruikt wordt om nieuwe aanvragen te verwerken aanpassen.",
   "components.Settings.noDefaultServer": "Ten minste één {serverType} server moet als standaard worden gemarkeerd om {mediaType}verzoeken te kunnen verwerken.",
   "components.Settings.noDefaultNon4kServer": "Als je slechts één enkele {serverType} server hebt voor zowel niet-4K als 4K-inhoud (of als je alleen 4K-inhoud downloadt), dan moet je {serverType} server <strong>NIET</strong> aangeduid worden als een 4K-server.",
@@ -993,5 +993,10 @@
   "components.MovieDetails.productioncountries": "Productie{countryCount, plural, one {land} other {landen}}",
   "components.RequestModal.requestmovies4k": "{count} {count, plural, one {film} other {films}} in 4K aanvragen",
   "components.TvDetails.productioncountries": "Productie{countryCount, plural, one {land} other {landen}}",
-  "components.IssueDetails.commentplaceholder": "Voeg een opmerking toe…"
+  "components.IssueDetails.commentplaceholder": "Voeg een opmerking toe…",
+  "components.RequestModal.requestApproved": "Verzoek voor <strong>{title}</strong> goedgekeurd!",
+  "components.RequestModal.approve": "Verzoek goedkeuren",
+  "components.Settings.RadarrModal.inCinemas": "In de bioscoop",
+  "components.Settings.RadarrModal.released": "Uitgekomen",
+  "components.Settings.RadarrModal.announced": "Aangekondigd"
 }
