@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 interface BadgeProps {
@@ -65,9 +66,9 @@ const Badge: React.FC<BadgeProps> = ({
     );
   } else if (href) {
     return (
-      <a href={href} className={badgeStyle.join(' ')}>
-        {children}
-      </a>
+      <Link href={href}>
+        <a className={badgeStyle.join(' ')}>{children}</a>
+      </Link>
     );
   } else {
     return <span className={badgeStyle.join(' ')}>{children}</span>;
