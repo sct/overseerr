@@ -448,6 +448,7 @@
   "components.Settings.Notifications.emailsender": "Sender Address",
   "components.Settings.Notifications.emailsettingsfailed": "Email notification settings failed to save.",
   "components.Settings.Notifications.emailsettingssaved": "Email notification settings saved successfully!",
+  "components.Settings.Notifications.enableMentions": "Enable Mentions",
   "components.Settings.Notifications.encryption": "Encryption Method",
   "components.Settings.Notifications.encryptionDefault": "Use STARTTLS if available",
   "components.Settings.Notifications.encryptionImplicitTls": "Use Implicit TLS",
