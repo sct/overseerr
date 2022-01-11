@@ -446,8 +446,8 @@ notificationRoutes.post('/gotify/test', async (req, rest, next) => {
   const gotifyAgent = new GotifyAgent(req.body);
   if (
     await gotifyAgent.send(Notification.TEST_NOTIFICATION, {
-      notifyUser: req.user,
       notifyAdmin: false,
+      notifyUser: req.user,
       subject: 'Test Notification',
       message:
         'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',

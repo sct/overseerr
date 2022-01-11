@@ -76,6 +76,7 @@ class GotifyAgent
           status = 'Failed';
           break;
       }
+
       if (status) {
         message += `\nRequest Status: ${status}`;
       }
