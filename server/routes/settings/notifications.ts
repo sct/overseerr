@@ -415,7 +415,7 @@ notificationRoutes.post('/gotify/test', async (req, rest, next) => {
   } else {
     return next({
       status: 500,
-      message: 'Failed to send gotify notification.',
+      message: 'Failed to send Gotify notification.',
     });
   }
 });
