@@ -6,8 +6,6 @@ import { getSettings, NotificationAgentGotify } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
 
 interface GotifyPayload {
-  token: string;
-  user: string;
   title: string;
   message: string;
   priority: number;
@@ -38,14 +36,10 @@ class GotifyAgent
     return false;
   }
 
-  private constructMessageDetails(
+  private getNotificationPayload(
     type: Notification,
     payload: NotificationPayload
-  ): {
-    title: string;
-    message: string;
-    priority: number;
-  } {
+  ): GotifyPayload {
     const { applicationUrl, applicationTitle } = getSettings().main;
     let priority = 0;
 
@@ -104,6 +98,11 @@ class GotifyAgent
     }
 
     return {
+      extras: {
+        'client::display': {
+          contentType: 'text/markdown',
+        },
+      },
       title,
       message,
       priority,
@@ -127,22 +126,9 @@ class GotifyAgent
     });
     try {
       const endpoint = `${settings.options.url}/message?token=${settings.options.token}`;
+      const notificationPayload = this.getNotificationPayload(type, payload);
 
-      const { title, message, priority } = this.constructMessageDetails(
-        type,
-        payload
-      );
-
-      await axios.post(endpoint, {
-        extras: {
-          'client::display': {
-            contentType: 'text/markdown',
-          },
-        },
-        title: title,
-        message: message,
-        priority: priority,
-      } as GotifyPayload);
+      await axios.post(endpoint, notificationPayload);
 
       return true;
     } catch (e) {
