@@ -39,7 +39,7 @@ interface EmbedBlock {
 }
 
 interface SlackBlockEmbed {
-  text?: string;
+  text: string;
   blocks: EmbedBlock[];
 }
 
