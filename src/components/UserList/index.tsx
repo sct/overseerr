@@ -33,15 +33,12 @@ import SensitiveInput from '../Common/SensitiveInput';
 import Table from '../Common/Table';
 import Transition from '../Transition';
 import BulkEditModal from './BulkEditModal';
+import PlexImportModal from './PlexImportModal';
 
 const messages = defineMessages({
   users: 'Users',
   userlist: 'User List',
-  importfromplex: 'Import Users from Plex',
-  importfromplexerror: 'Something went wrong while importing users from Plex.',
-  importedfromplex:
-    '{userCount, plural, one {# new user} other {# new users}} imported from Plex successfully!',
-  nouserstoimport: 'No new users to import from Plex.',
+  importfromplex: 'Import Plex Users',
   user: 'User',
   totalrequests: 'Requests',
   accounttype: 'Type',
@@ -103,7 +100,7 @@ const UserList: React.FC = () => {
   );
 
   const [isDeleting, setDeleting] = useState(false);
-  const [isImporting, setImporting] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     user?: User;
@@ -190,35 +187,6 @@ const UserList: React.FC = () => {
     } finally {
       setDeleting(false);
       revalidate();
-    }
-  };
-
-  const importFromPlex = async () => {
-    setImporting(true);
-
-    try {
-      const { data: createdUsers } = await axios.post(
-        '/api/v1/user/import-from-plex'
-      );
-      addToast(
-        createdUsers.length
-          ? intl.formatMessage(messages.importedfromplex, {
-              userCount: createdUsers.length,
-            })
-          : intl.formatMessage(messages.nouserstoimport),
-        {
-          autoDismiss: true,
-          appearance: 'success',
-        }
-      );
-    } catch (e) {
-      addToast(intl.formatMessage(messages.importfromplexerror), {
-        autoDismiss: true,
-        appearance: 'error',
-      });
-    } finally {
-      revalidate();
-      setImporting(false);
     }
   };
 
@@ -354,7 +322,7 @@ const UserList: React.FC = () => {
                     title={intl.formatMessage(messages.localLoginDisabled, {
                       strong: function strong(msg) {
                         return (
-                          <strong className="font-semibold text-yellow-100">
+                          <strong className="font-semibold text-white">
                             {msg}
                           </strong>
                         );
@@ -481,6 +449,24 @@ const UserList: React.FC = () => {
         />
       </Transition>
 
+      <Transition
+        enter="opacity-0 transition duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="opacity-100 transition duration-300"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+        show={showImportModal}
+      >
+        <PlexImportModal
+          onCancel={() => setShowImportModal(false)}
+          onComplete={() => {
+            setShowImportModal(false);
+            revalidate();
+          }}
+        />
+      </Transition>
+
       <div className="flex flex-col justify-between lg:items-end lg:flex-row">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
         <div className="flex flex-col flex-grow mt-2 lg:flex-row lg:flex-grow-0">
@@ -496,8 +482,7 @@ const UserList: React.FC = () => {
             <Button
               className="flex-grow outline lg:mr-2"
               buttonType="primary"
-              disabled={isImporting}
-              onClick={() => importFromPlex()}
+              onClick={() => setShowImportModal(true)}
             >
               <InboxInIcon />
               <span>{intl.formatMessage(messages.importfromplex)}</span>

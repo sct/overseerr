@@ -400,6 +400,7 @@ router.post(
     try {
       const settings = getSettings();
       const userRepository = getRepository(User);
+      const body = req.body as { plexIds: string[] } | undefined;
 
       // taken from auth.ts
       const mainUser = await userRepository.findOneOrFail({
@@ -434,7 +435,7 @@ router.post(
               user.plexId = parseInt(account.id);
             }
             await userRepository.save(user);
-          } else {
+          } else if (!body || body.plexIds.includes(account.id)) {
             if (await mainPlexTv.checkUserAccess(parseInt(account.id))) {
               const newUser = new User({
                 plexUsername: account.username,

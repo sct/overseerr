@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
-import { merge, omit } from 'lodash';
+import { merge, omit, sortBy } from 'lodash';
 import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import { getRepository } from 'typeorm';
@@ -224,6 +224,58 @@ settingsRoutes.post('/plex/sync', (req, res) => {
   }
   return res.status(200).json(plexFullScanner.status());
 });
+
+settingsRoutes.get(
+  '/plex/users',
+  isAuthenticated(Permission.MANAGE_USERS),
+  async (req, res) => {
+    const userRepository = getRepository(User);
+    const qb = userRepository.createQueryBuilder('user');
+
+    const admin = await userRepository.findOneOrFail({
+      select: ['id', 'plexToken'],
+      order: { id: 'ASC' },
+    });
+    const plexApi = new PlexTvAPI(admin.plexToken ?? '');
+    const plexUsers = (await plexApi.getUsers()).MediaContainer.User.map(
+      (user) => user.$
+    );
+
+    const unimportedPlexUsers: {
+      id: string;
+      title: string;
+      username: string;
+      email: string;
+      thumb: string;
+    }[] = [];
+
+    const existingUsers = await qb
+      .where('user.plexId IN (:...plexIds)', {
+        plexIds: plexUsers.map((plexUser) => plexUser.id),
+      })
+      .orWhere('user.email IN (:...plexEmails)', {
+        plexEmails: plexUsers.map((plexUser) => plexUser.email.toLowerCase()),
+      })
+      .getMany();
+
+    await Promise.all(
+      plexUsers.map(async (plexUser) => {
+        if (
+          !existingUsers.find(
+            (user) =>
+              user.plexId === parseInt(plexUser.id) ||
+              user.email === plexUser.email.toLowerCase()
+          ) &&
+          (await plexApi.checkUserAccess(parseInt(plexUser.id)))
+        ) {
+          unimportedPlexUsers.push(plexUser);
+        }
+      })
+    );
+
+    return res.status(200).json(sortBy(unimportedPlexUsers, 'username'));
+  }
+);
 
 settingsRoutes.get(
   '/logs',

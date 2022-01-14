@@ -113,6 +113,7 @@ interface FullPublicSettings extends PublicSettings {
   enablePushRegistration: boolean;
   locale: string;
   emailEnabled: boolean;
+  newPlexLogin: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -469,6 +470,7 @@ class Settings {
       enablePushRegistration: this.data.notifications.agents.webpush.enabled,
       locale: this.data.main.locale,
       emailEnabled: this.data.notifications.agents.email.enabled,
+      newPlexLogin: this.data.main.newPlexLogin,
     };
   }
 

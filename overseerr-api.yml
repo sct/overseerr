@@ -1994,6 +1994,36 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PlexDevice'
+  /settings/plex/users:
+    get:
+      summary: Get Plex users
+      description: |
+        Returns a list of Plex users in a JSON array.
+
+        Requires the `MANAGE_USERS` permission.
+      tags:
+        - settings
+        - users
+      responses:
+        '200':
+          description: Plex users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    username:
+                      type: string
+                    email:
+                      type: string
+                    thumb:
+                      type: string
   /settings/radarr:
     get:
       summary: Get Radarr settings
@@ -3196,11 +3226,22 @@ paths:
     post:
       summary: Import all users from Plex
       description: |
-        Requests users from the Plex Server and creates a new user for each of them
+        Fetches and imports users from the Plex server. If a list of Plex IDs is provided in the request body, only the specified users will be imported. Otherwise, all users will be imported.
 
         Requires the `MANAGE_USERS` permission.
       tags:
         - users
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plexIds:
+                  type: array
+                  items:
+                    type: string
       responses:
         '201':
           description: A list of the newly created users

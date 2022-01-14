@@ -22,6 +22,7 @@ const defaultSettings = {
   enablePushRegistration: false,
   locale: 'en',
   emailEnabled: false,
+  newPlexLogin: true,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({
