@@ -17,6 +17,7 @@ import { startJobs } from './job/schedule';
 import notificationManager from './lib/notifications';
 import DiscordAgent from './lib/notifications/agents/discord';
 import EmailAgent from './lib/notifications/agents/email';
+import GotifyAgent from './lib/notifications/agents/gotify';
 import LunaSeaAgent from './lib/notifications/agents/lunasea';
 import PushbulletAgent from './lib/notifications/agents/pushbullet';
 import PushoverAgent from './lib/notifications/agents/pushover';
@@ -76,6 +77,7 @@ app
     notificationManager.registerAgents([
       new DiscordAgent(),
       new EmailAgent(),
+      new GotifyAgent(),
       new LunaSeaAgent(),
       new PushbulletAgent(),
       new PushoverAgent(),
@@ -139,6 +141,9 @@ app
         saveUninitialized: false,
         cookie: {
           maxAge: 1000 * 60 * 60 * 24 * 30,
+          httpOnly: true,
+          sameSite: true,
+          secure: 'auto',
         },
         store: new TypeormStore({
           cleanupLimit: 2,

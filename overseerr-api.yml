@@ -909,6 +909,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductionCompany'
+        productionCountries:
+          type: array
+          items:
+            type: object
+            properties:
+              iso_3166_1:
+                type: string
+              name:
+                type: string
         spokenLanguages:
           type: array
           items:
@@ -1129,6 +1138,8 @@ components:
               type: string
             webhookUrl:
               type: string
+            enableMentions:
+              type: boolean
     SlackSettings:
       type: object
       properties:
@@ -1219,6 +1230,22 @@ components:
             accessToken:
               type: string
             userToken:
+              type: string
+    GotifySettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            url:
+              type: string
+            token:
               type: string
     LunaSeaSettings:
       type: object
@@ -2667,6 +2694,52 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PushoverSettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/gotify:
+    get:
+      summary: Get Gotify notification settings
+      description: Returns current Gotify notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned Gotify settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GotifySettings'
+    post:
+      summary: Update Gotify notification settings
+      description: Update Gotify notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GotifySettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GotifySettings'
+  /settings/notifications/gotify/test:
+    post:
+      summary: Test Gotify settings
+      description: Sends a test notification to the Gotify agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GotifySettings'
       responses:
         '204':
           description: Test notification attempted

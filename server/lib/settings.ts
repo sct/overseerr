@@ -125,6 +125,7 @@ export interface NotificationAgentDiscord extends NotificationAgentConfig {
     botUsername?: string;
     botAvatarUrl?: string;
     webhookUrl: string;
+    enableMentions: boolean;
   };
 }
 
@@ -188,9 +189,17 @@ export interface NotificationAgentWebhook extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentGotify extends NotificationAgentConfig {
+  options: {
+    url: string;
+    token: string;
+  };
+}
+
 export enum NotificationAgentKey {
   DISCORD = 'discord',
   EMAIL = 'email',
+  GOTIFY = 'gotify',
   PUSHBULLET = 'pushbullet',
   PUSHOVER = 'pushover',
   SLACK = 'slack',
@@ -202,6 +211,7 @@ export enum NotificationAgentKey {
 interface NotificationAgents {
   discord: NotificationAgentDiscord;
   email: NotificationAgentEmail;
+  gotify: NotificationAgentGotify;
   lunasea: NotificationAgentLunaSea;
   pushbullet: NotificationAgentPushbullet;
   pushover: NotificationAgentPushover;
@@ -304,6 +314,7 @@ class Settings {
             types: 0,
             options: {
               webhookUrl: '',
+              enableMentions: true,
             },
           },
           lunasea: {
@@ -356,6 +367,14 @@ class Settings {
           webpush: {
             enabled: false,
             options: {},
+          },
+          gotify: {
+            enabled: false,
+            types: 0,
+            options: {
+              url: '',
+              token: '',
+            },
           },
         },
       },

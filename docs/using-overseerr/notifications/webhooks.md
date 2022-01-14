@@ -47,15 +47,15 @@ These variables are for the target recipient of the notification.
 {% hint style="info" %}
 The `notifyuser` variables are not defined for the following request notification types, as they are intended for application administrators rather than end users:
 
-- Media Requested
-- Media Automatically Approved
-- Media Failed
+- Request Pending Approval
+- Request Automatically Approved
+- Request Processing Failed
 
 On the other hand, the `notifyuser` variables _will_ be replaced with the requesting user's information for the below notification types:
 
-- Media Approved
-- Media Declined
-- Media Available
+- Request Approved
+- Request Declined
+- Request Available
 
 If you would like to use the requesting user's information in your webhook, please instead include the relevant variables from the [Request](#request) section below.
 {% endhint %}
