@@ -202,7 +202,7 @@ class SlackAgent
     }
 
     return {
-      text: payload.event,
+      text: payload.event ?? payload.subject,
       blocks,
     };
   }
