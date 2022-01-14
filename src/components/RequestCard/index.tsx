@@ -279,7 +279,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
               MediaStatus.UNKNOWN ? (
               <Badge
                 badgeType="danger"
-                href={`/${requestData.type}/${requestData.media.tmdbId}?manage`}
+                href={`/${requestData.type}/${requestData.media.tmdbId}?manage=1`}
               >
                 {intl.formatMessage(globalMessages.failed)}
               </Badge>

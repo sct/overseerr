@@ -281,7 +281,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 ] === MediaStatus.UNKNOWN ? (
                 <Badge
                   badgeType="danger"
-                  href={`/${requestData.type}/${requestData.media.tmdbId}?manage`}
+                  href={`/${requestData.type}/${requestData.media.tmdbId}?manage=1`}
                 >
                   {intl.formatMessage(globalMessages.failed)}
                 </Badge>

@@ -32,7 +32,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   const intl = useIntl();
 
   const manageLink =
-    tmdbId && mediaType ? `/${mediaType}/${tmdbId}?manage` : undefined;
+    tmdbId && mediaType ? `/${mediaType}/${tmdbId}?manage=1` : undefined;
 
   switch (status) {
     case MediaStatus.AVAILABLE:
