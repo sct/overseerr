@@ -175,7 +175,6 @@ const PWAHeader: React.FC<PWAHeaderProps> = ({ applicationTitle }) => {
       />
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
-      <meta name="theme-color" content="#1f2937" />
     </>
   );
 };
