@@ -1326,7 +1326,7 @@ components:
         running:
           type: boolean
           example: false
-    PersonDetail:
+    PersonDetails:
       type: object
       properties:
         id:
@@ -4871,7 +4871,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonDetail'
+                $ref: '#/components/schemas/PersonDetails'
 
   /person/{personId}/combined_credits:
     get:
