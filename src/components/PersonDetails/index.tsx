@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import TruncateMarkup from 'react-truncate-markup';
 import useSWR from 'swr';
 import type { PersonCombinedCreditsResponse } from '../../../server/interfaces/api/personInterfaces';
-import type { PersonDetail } from '../../../server/models/Person';
+import type { PersonDetails as PersonDetailsType } from '../../../server/models/Person';
 import Ellipsis from '../../assets/ellipsis.svg';
 import globalMessages from '../../i18n/globalMessages';
 import Error from '../../pages/_error';
@@ -27,7 +27,7 @@ const messages = defineMessages({
 const PersonDetails: React.FC = () => {
   const intl = useIntl();
   const router = useRouter();
-  const { data, error } = useSWR<PersonDetail>(
+  const { data, error } = useSWR<PersonDetailsType>(
     `/api/v1/person/${router.query.personId}`
   );
   const [showBio, setShowBio] = useState(false);
