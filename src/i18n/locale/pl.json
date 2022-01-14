@@ -999,5 +999,17 @@
   "components.Settings.RadarrModal.announced": "Zapowiedziany",
   "components.Settings.RadarrModal.inCinemas": "W kinach",
   "components.Settings.RadarrModal.released": "Wydany",
-  "components.Settings.Notifications.enableMentions": "Włącz wzmianki"
+  "components.Settings.Notifications.enableMentions": "Włącz wzmianki",
+  "components.Settings.Notifications.NotificationsGotify.gotifysettingsfailed": "Nie udało się zapisać ustawień powiadomień Gotify.",
+  "components.Settings.Notifications.NotificationsGotify.gotifysettingssaved": "Ustawienia powiadomień Gotify zostały pomyślnie zapisane!",
+  "components.Settings.Notifications.NotificationsGotify.toastGotifyTestSending": "Wysyłanie powiadomienia o testowego Gotify…",
+  "components.Settings.Notifications.NotificationsGotify.toastGotifyTestSuccess": "Wysłano powiadomienie testowe Gotify!",
+  "components.Settings.Notifications.NotificationsGotify.url": "Adres URL serwera",
+  "components.Settings.Notifications.NotificationsGotify.validationTypes": "Musisz wybrać co najmniej jeden typ powiadomienia",
+  "components.Settings.Notifications.NotificationsGotify.validationUrlRequired": "Musisz podać prawidłowy adres URL",
+  "components.Settings.Notifications.NotificationsGotify.validationUrlTrailingSlash": "Adres URL nie może kończyć się ukośnikiem",
+  "components.Settings.Notifications.NotificationsGotify.agentenabled": "Włącz agenta",
+  "components.Settings.Notifications.NotificationsGotify.toastGotifyTestFailed": "Nie udało się wysłać powiadomienia testowego Gotify.",
+  "components.Settings.Notifications.NotificationsGotify.token": "Token aplikacji",
+  "components.Settings.Notifications.NotificationsGotify.validationTokenRequired": "Musisz podać prawidłowy token aplikacji"
 }

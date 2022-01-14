@@ -999,5 +999,7 @@
   "components.Settings.RadarrModal.announced": "Anunciado",
   "components.Settings.RadarrModal.inCinemas": "Nos Cinemas",
   "components.Settings.RadarrModal.released": "Lançado",
-  "components.Settings.Notifications.enableMentions": "Habilitar Menções"
+  "components.Settings.Notifications.enableMentions": "Habilitar Menções",
+  "components.Settings.Notifications.NotificationsGotify.agentenabled": "Habilitar Agente",
+  "components.Settings.Notifications.NotificationsGotify.gotifysettingsfailed": "Falha ao salvar configurações de notificação via Gotify."
 }
