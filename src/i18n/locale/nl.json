@@ -1009,7 +1009,7 @@
   "components.Settings.Notifications.NotificationsGotify.toastGotifyTestSuccess": "Testmelding Gotify verzonden!",
   "components.Settings.Notifications.NotificationsGotify.toastGotifyTestSending": "Testmelding Gotify verzenden…",
   "components.Settings.Notifications.NotificationsGotify.url": "URL server",
-  "components.Settings.Notifications.NotificationsGotify.validationTokenRequired": "Je moet een geldig toepassingstoken opgeven",
+  "components.Settings.Notifications.NotificationsGotify.validationTokenRequired": "Je moet een toepassingstoken opgeven",
   "components.Settings.Notifications.NotificationsGotify.validationTypes": "Je moet ten minste één meldingstype selecteren",
   "components.Settings.Notifications.NotificationsGotify.validationUrlTrailingSlash": "URL mag niet eindigen op een schuine streep",
   "components.Settings.Notifications.NotificationsGotify.validationUrlRequired": "Je moet een geldige URL opgeven",
