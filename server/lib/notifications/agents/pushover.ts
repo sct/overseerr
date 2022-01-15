@@ -173,12 +173,12 @@ class PushoverAgent
           NotificationAgentKey.PUSHOVER,
           type
         ) &&
-        payload.notifyUser.settings?.pushoverApplicationToken &&
-        payload.notifyUser.settings?.pushoverUserKey &&
-        payload.notifyUser.settings.pushoverApplicationToken !==
-          settings.options.accessToken &&
-        payload.notifyUser.settings?.pushoverUserKey !==
-          settings.options.userToken
+        payload.notifyUser.settings.pushoverApplicationToken &&
+        payload.notifyUser.settings.pushoverUserKey &&
+        (payload.notifyUser.settings.pushoverApplicationToken !==
+          settings.options.accessToken ||
+          payload.notifyUser.settings.pushoverUserKey !==
+            settings.options.userToken)
       ) {
         logger.debug('Sending Pushover notification', {
           label: 'Notifications',

@@ -1231,6 +1231,22 @@ components:
               type: string
             userToken:
               type: string
+    GotifySettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            url:
+              type: string
+            token:
+              type: string
     LunaSeaSettings:
       type: object
       properties:
@@ -1310,7 +1326,7 @@ components:
         running:
           type: boolean
           example: false
-    PersonDetail:
+    PersonDetails:
       type: object
       properties:
         id:
@@ -1978,6 +1994,36 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PlexDevice'
+  /settings/plex/users:
+    get:
+      summary: Get Plex users
+      description: |
+        Returns a list of Plex users in a JSON array.
+
+        Requires the `MANAGE_USERS` permission.
+      tags:
+        - settings
+        - users
+      responses:
+        '200':
+          description: Plex users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    username:
+                      type: string
+                    email:
+                      type: string
+                    thumb:
+                      type: string
   /settings/radarr:
     get:
       summary: Get Radarr settings
@@ -2681,6 +2727,52 @@ paths:
       responses:
         '204':
           description: Test notification attempted
+  /settings/notifications/gotify:
+    get:
+      summary: Get Gotify notification settings
+      description: Returns current Gotify notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned Gotify settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GotifySettings'
+    post:
+      summary: Update Gotify notification settings
+      description: Update Gotify notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GotifySettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GotifySettings'
+  /settings/notifications/gotify/test:
+    post:
+      summary: Test Gotify settings
+      description: Sends a test notification to the Gotify agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GotifySettings'
+      responses:
+        '204':
+          description: Test notification attempted
   /settings/notifications/slack:
     get:
       summary: Get Slack notification settings
@@ -3134,11 +3226,22 @@ paths:
     post:
       summary: Import all users from Plex
       description: |
-        Requests users from the Plex Server and creates a new user for each of them
+        Fetches and imports users from the Plex server. If a list of Plex IDs is provided in the request body, only the specified users will be imported. Otherwise, all users will be imported.
 
         Requires the `MANAGE_USERS` permission.
       tags:
         - users
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plexIds:
+                  type: array
+                  items:
+                    type: string
       responses:
         '201':
           description: A list of the newly created users
@@ -4809,7 +4912,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonDetail'
+                $ref: '#/components/schemas/PersonDetails'
 
   /person/{personId}/combined_credits:
     get:

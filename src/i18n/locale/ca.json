@@ -112,7 +112,7 @@
   "components.PermissionEdit.autoapprove4k": "Aprovació automàtica 4K",
   "components.PermissionEdit.autoapprove": "Aprovació automàtica",
   "components.NotificationTypeSelector.mediadeclined": "Continguts rebutjats",
-  "components.NotificationTypeSelector.mediarequested": "Contingut sol·licitat",
+  "components.NotificationTypeSelector.mediarequested": "Sol·licitud pendent d'aprovació",
   "components.NotificationTypeSelector.mediaAutoApprovedDescription": "Envieu notificacions quan els usuaris envien sol·licituds de suports nous que s’aprovin automàticament.",
   "components.PermissionEdit.advancedrequestDescription": "Dona permís per modificar opcions avançades en les sol·licituds.",
   "components.PermissionEdit.advancedrequest": "Sol·licituds avançades",
@@ -120,7 +120,7 @@
   "components.PermissionEdit.admin": "Administrador",
   "components.NotificationTypeSelector.mediarequestedDescription": "Envia notificacions quan es demana contingut que requereix aprovació.",
   "components.NotificationTypeSelector.mediafailedDescription": "Envia notificacions quan el mitjà sol·licitat no s’afegeix a Radarr o Sonarr.",
-  "components.NotificationTypeSelector.mediafailed": "S'ha produït un error en el contingut multimèdia",
+  "components.NotificationTypeSelector.mediafailed": "S'ha produït un error en el processament de la sol·licitud",
   "components.NotificationTypeSelector.mediadeclinedDescription": "Envia notificacions quan es rebutja una sol·licitud.",
   "components.NotificationTypeSelector.mediaavailableDescription": "Envia notificacions quan el contingut sol·licitat estigui disponible.",
   "components.NotificationTypeSelector.mediaavailable": "Continguts disponibles",
@@ -992,5 +992,12 @@
   "components.RequestModal.selectmovies": "Selecciona les pel·lícules",
   "components.TvDetails.productioncountries": "{countryCount, plural, one {País} other {Països}} de producció",
   "components.RequestModal.requestmovies": "{count} {count, plural, one {Pel·lícula} other {Pel·lícules}} solicitada/es",
-  "components.MovieDetails.productioncountries": "{countryCount, plural, one {País} other {Països}} de producció"
+  "components.MovieDetails.productioncountries": "{countryCount, plural, one {País} other {Països}} de producció",
+  "components.RequestModal.approve": "Aprova la sol·licitud",
+  "components.RequestModal.requestApproved": "S'ha aprovat la sol·licitud de <strong>{title}</strong>!",
+  "components.Settings.Notifications.enableMentions": "Activa les mencions",
+  "components.Settings.RadarrModal.announced": "Anunciat",
+  "components.Settings.RadarrModal.inCinemas": "Als cinemes",
+  "components.IssueDetails.commentplaceholder": "Afegeix un comentari…",
+  "components.Settings.RadarrModal.released": "Alliberat"
 }

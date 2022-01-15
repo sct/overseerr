@@ -10,7 +10,7 @@ import {
   TmdbMovieDetails,
   TmdbNetwork,
   TmdbPersonCombinedCredits,
-  TmdbPersonDetail,
+  TmdbPersonDetails,
   TmdbProductionCompany,
   TmdbRegion,
   TmdbSearchMovieResponse,
@@ -122,9 +122,9 @@ class TheMovieDb extends ExternalAPI {
   }: {
     personId: number;
     language?: string;
-  }): Promise<TmdbPersonDetail> => {
+  }): Promise<TmdbPersonDetails> => {
     try {
-      const data = await this.get<TmdbPersonDetail>(`/person/${personId}`, {
+      const data = await this.get<TmdbPersonDetails>(`/person/${personId}`, {
         params: { language },
       });
 

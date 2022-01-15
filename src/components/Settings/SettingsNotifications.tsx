@@ -2,6 +2,7 @@ import { CloudIcon, LightningBoltIcon, MailIcon } from '@heroicons/react/solid';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import DiscordLogo from '../../assets/extlogos/discord.svg';
+import GotifyLogo from '../../assets/extlogos/gotify.svg';
 import LunaSeaLogo from '../../assets/extlogos/lunasea.svg';
 import PushbulletLogo from '../../assets/extlogos/pushbullet.svg';
 import PushoverLogo from '../../assets/extlogos/pushover.svg';
@@ -57,6 +58,17 @@ const SettingsNotifications: React.FC = ({ children }) => {
       ),
       route: '/settings/notifications/discord',
       regex: /^\/settings\/notifications\/discord/,
+    },
+    {
+      text: 'Gotify',
+      content: (
+        <span className="flex items-center">
+          <GotifyLogo className="h-4 mr-2" />
+          Gotify
+        </span>
+      ),
+      route: '/settings/notifications/gotify',
+      regex: /^\/settings\/notifications\/gotify/,
     },
     {
       text: 'LunaSea',
