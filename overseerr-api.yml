@@ -4422,21 +4422,22 @@ paths:
               schema:
                 type: object
                 properties:
+                  total:
+                    type: number
+                  movie:
+                    type: number
+                  tv:
+                    type: number
                   pending:
                     type: number
-                    example: 0
                   approved:
                     type: number
-                    example: 10
+                  declined:
+                    type: number
                   processing:
                     type: number
-                    example: 4
                   available:
                     type: number
-                    example: 6
-                required:
-                  - pending
-                  - approved
   /request/{requestId}:
     get:
       summary: Get MediaRequest
