@@ -34,9 +34,11 @@ const NotificationsDiscord: React.FC = () => {
   const settings = useSettings();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/discord'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/discord');
 
   const NotificationsDiscordSchema = Yup.object().shape({
     botAvatarUrl: Yup.string()

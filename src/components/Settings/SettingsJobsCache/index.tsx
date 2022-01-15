@@ -77,10 +77,14 @@ interface Job {
 const SettingsJobs: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
-  const { data, error, revalidate } = useSWR<Job[]>('/api/v1/settings/jobs', {
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<Job[]>('/api/v1/settings/jobs', {
     refreshInterval: 5000,
   });
-  const { data: cacheData, revalidate: cacheRevalidate } = useSWR<CacheItem[]>(
+  const { data: cacheData, mutate: cacheRevalidate } = useSWR<CacheItem[]>(
     '/api/v1/settings/cache',
     {
       refreshInterval: 10000,

@@ -45,7 +45,11 @@ const UserPasswordChange: React.FC = () => {
   const router = useRouter();
   const { user: currentUser } = useUser();
   const { user, hasPermission } = useUser({ id: Number(router.query.userId) });
-  const { data, error, revalidate } = useSWR<{ hasPassword: boolean }>(
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<{ hasPassword: boolean }>(
     user ? `/api/v1/user/${user?.id}/settings/password` : null
   );
 

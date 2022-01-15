@@ -29,7 +29,11 @@ const UserPushbulletSettings: React.FC = () => {
   const { addToast } = useToasts();
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.userId) });
-  const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
 

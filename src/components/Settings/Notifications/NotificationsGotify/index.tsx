@@ -30,9 +30,11 @@ const NotificationsGotify: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/gotify'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/gotify');
 
   const NotificationsGotifySchema = Yup.object().shape({
     url: Yup.string()

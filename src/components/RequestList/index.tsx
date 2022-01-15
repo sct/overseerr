@@ -51,7 +51,11 @@ const RequestList: React.FC = () => {
   const pageIndex = page - 1;
   const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
-  const { data, error, revalidate } = useSWR<RequestResultsResponse>(
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<RequestResultsResponse>(
     `/api/v1/request?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&filter=${currentFilter}&sort=${currentSort}${

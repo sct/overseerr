@@ -26,9 +26,11 @@ const NotificationsWebPush: React.FC = () => {
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
   const [isHttps, setIsHttps] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/webpush'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/webpush');
 
   useEffect(() => {
     setIsHttps(window.location.protocol.startsWith('https'));

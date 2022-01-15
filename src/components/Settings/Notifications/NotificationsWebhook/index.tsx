@@ -74,9 +74,11 @@ const NotificationsWebhook: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/webhook'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/webhook');
 
   const NotificationsWebhookSchema = Yup.object().shape({
     webhookUrl: Yup.string()

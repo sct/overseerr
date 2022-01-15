@@ -29,9 +29,11 @@ const NotificationsSlack: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/slack'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/slack');
 
   const NotificationsSlackSchema = Yup.object().shape({
     webhookUrl: Yup.string()

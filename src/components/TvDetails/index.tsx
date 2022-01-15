@@ -83,12 +83,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const [showManager, setShowManager] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
 
-  const { data, error, revalidate } = useSWR<TvDetailsType>(
-    `/api/v1/tv/${router.query.tvId}`,
-    {
-      initialData: tv,
-    }
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<TvDetailsType>(`/api/v1/tv/${router.query.tvId}`, {
+    fallbackData: tv,
+  });
 
   const { data: ratingData } = useSWR<RTRating>(
     `/api/v1/tv/${router.query.tvId}/ratings`

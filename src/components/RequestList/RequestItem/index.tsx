@@ -106,13 +106,12 @@ const RequestItem: React.FC<RequestItemProps> = ({
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? url : null
   );
-  const {
-    data: requestData,
-    revalidate,
-    mutate,
-  } = useSWR<MediaRequest>(`/api/v1/request/${request.id}`, {
-    initialData: request,
-  });
+  const { data: requestData, mutate: revalidate } = useSWR<MediaRequest>(
+    `/api/v1/request/${request.id}`,
+    {
+      fallbackData: request,
+    }
+  );
 
   const [isRetrying, setRetrying] = useState(false);
 
@@ -135,7 +134,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
     try {
       const result = await axios.post(`/api/v1/request/${request.id}/retry`);
-      mutate(result.data);
+      revalidate(result.data);
     } catch (e) {
       addToast(intl.formatMessage(messages.failedretry), {
         autoDismiss: true,

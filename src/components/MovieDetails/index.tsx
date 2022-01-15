@@ -90,12 +90,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const [showMoreStudios, setShowMoreStudios] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
 
-  const { data, error, revalidate } = useSWR<MovieDetailsType>(
-    `/api/v1/movie/${router.query.movieId}`,
-    {
-      initialData: movie,
-    }
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<MovieDetailsType>(`/api/v1/movie/${router.query.movieId}`, {
+    fallbackData: movie,
+  });
 
   const { data: ratingData } = useSWR<RTRating>(
     `/api/v1/movie/${router.query.movieId}/ratings`
