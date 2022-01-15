@@ -1,9 +1,5 @@
-import { ServerIcon } from '@heroicons/react/outline';
-import {
-  CheckCircleIcon,
-  DocumentRemoveIcon,
-  EyeIcon,
-} from '@heroicons/react/solid';
+import { ServerIcon, ViewListIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, DocumentRemoveIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
 import React from 'react';
@@ -18,7 +14,7 @@ import { MediaWatchDataResponse } from '../../../server/interfaces/api/mediaInte
 import { MovieDetails } from '../../../server/models/Movie';
 import { TvDetails } from '../../../server/models/Tv';
 import useSettings from '../../hooks/useSettings';
-import { Permission, User, useUser } from '../../hooks/useUser';
+import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Button from '../Common/Button';
 import ConfirmButton from '../Common/ConfirmButton';
@@ -46,18 +42,10 @@ const messages = defineMessages({
   markallseasons4kavailable: 'Mark All Seasons as Available in 4K',
   opentautulli: 'Open Watch History in Tautulli',
   opentautulli4k: 'Open 4K Watch History in Tautulli',
-  users: '{userCount, number} {userCount, plural, one {user} other {users}}',
-  otherusers:
-    '{userCount, number} other {userCount, plural, one {user} other {users}}',
-  usernames:
-    '{nameCount, plural, one {{firstUser}} =2 {{firstUser} and {secondUser}} other {{firstUser}, {secondUser}, and {thirdUser}}}',
-  usernameswithcount:
-    '{nameCount, plural, one {{firstUser}} =2 {{firstUser}, {secondUser},} other {{firstUser}, {secondUser}, {thirdUser},}} and {otherUsers}',
-  playdata:
-    '{users} {userCount, plural, one {has} other {have}} played this {mediaType} {playCount, number} {playCount, plural, one {time} other {times}} (total duration of approximately {playDuration})',
-  playdata4k:
-    '{users} {userCount, plural, one {has} other {have}} played this {mediaType} in 4K {playCount, number} {playCount, plural, one {time} other {times}} (total duration of approximately {playDuration})',
-  // Recreated here for lowercase versions to go with the modal clear media warning
+  users:
+    '<strong>{userCount, number} {userCount, plural, one {user} other {users}}</strong> {userCount, plural, one {has} other {have}} played this {mediaType} <strong>{playCount, number} {playCount, plural, one {time} other {times}}</strong>:',
+  users4k:
+    '<strong>{userCount, number} {userCount, plural, one {user} other {users}}</strong> {userCount, plural, one {has} other {have}} played this {mediaType} in 4K <strong>{playCount, number} {playCount, plural, one {time} other {times}}</strong>:',
   movie: 'movie',
   tvshow: 'series',
 });
@@ -120,18 +108,6 @@ const ManageSlideOver: React.FC<
     data.mediaInfo?.issues?.filter(
       (issue) => issue.status === IssueStatus.OPEN
     ) ?? [];
-
-  function userLink(user: User): JSX.Element {
-    return (
-      <Link
-        href={user.id === currentUser?.id ? '/profile' : `/users/${user.id}`}
-      >
-        <a className="font-semibold text-gray-100 transition duration-300 hover:text-white hover:underline">
-          {user.displayName}
-        </a>
-      </Link>
-    );
-  }
 
   return (
     <SlideOver
@@ -227,6 +203,59 @@ const ManageSlideOver: React.FC<
                 {intl.formatMessage(messages.manageModalMedia)}
               </h3>
               <div className="space-y-2">
+                {!!watchData?.data?.userCount && (
+                  <div>
+                    <div className="p-4 space-y-1 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow rounded-t-md">
+                      <div>
+                        {intl.formatMessage(messages.users, {
+                          userCount: watchData.data.users.length,
+                          playCount: watchData.data.playCount,
+                          mediaType: intl.formatMessage(
+                            mediaType === 'movie'
+                              ? messages.movie
+                              : messages.tvshow
+                          ),
+                          strong: function strong(msg) {
+                            return <strong>{msg}</strong>;
+                          },
+                        })}
+                      </div>
+                      <div className="inline-flex">
+                        {watchData.data.users.map((user) => (
+                          <Link
+                            href={
+                              currentUser?.id === user.id
+                                ? '/profile'
+                                : `/users/${user.id}`
+                            }
+                            key={`watch-user-${user.id}`}
+                          >
+                            <a>
+                              <img
+                                src={user.avatar}
+                                alt={user.displayName}
+                                className="w-8 h-8 mr-1 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
+                              />
+                            </a>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                    <a
+                      href={data.mediaInfo?.tautulliUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Button
+                        buttonType="ghost"
+                        className="w-full rounded-t-none"
+                      >
+                        <ViewListIcon />
+                        <span>{intl.formatMessage(messages.opentautulli)}</span>
+                      </Button>
+                    </a>
+                  </div>
+                )}
                 {data?.mediaInfo?.serviceUrl && (
                   <a
                     href={data?.mediaInfo?.serviceUrl}
@@ -244,71 +273,59 @@ const ManageSlideOver: React.FC<
                     </Button>
                   </a>
                 )}
-                {!!watchData?.data?.playCount && !!watchData.data.userCount && (
-                  <div className="space-y-1">
-                    <div className="flex flex-row items-center justify-between p-4 overflow-hidden text-sm text-gray-400 bg-gray-600 rounded-md shadow">
-                      <div className="my-auto">
-                        {intl.formatMessage(messages.playdata, {
-                          users:
-                            watchData.data.users.length === 0
-                              ? intl.formatMessage(messages.users, {
-                                  userCount: watchData.data.userCount,
-                                })
-                              : intl.formatMessage(
-                                  watchData.data.userCount >
-                                    Math.min(3, watchData.data.users.length)
-                                    ? messages.usernameswithcount
-                                    : messages.usernames,
-                                  {
-                                    nameCount: Math.min(
-                                      3,
-                                      watchData.data.users.length
-                                    ),
-                                    firstUser: watchData.data.users[0]
-                                      ? userLink(watchData.data.users[0])
-                                      : null,
-                                    secondUser: watchData.data.users[1]
-                                      ? userLink(watchData.data.users[1])
-                                      : null,
-                                    thirdUser: watchData.data.users[2]
-                                      ? userLink(watchData.data.users[2])
-                                      : null,
-                                    otherUsers: intl.formatMessage(
-                                      messages.otherusers,
-                                      {
-                                        userCount:
-                                          watchData.data.userCount -
-                                          Math.min(
-                                            3,
-                                            watchData.data.users.length
-                                          ),
-                                      }
-                                    ),
-                                  }
-                                ),
-                          userCount: watchData.data.userCount,
-                          playCount: watchData.data.playCount,
-                          playDuration: watchData.data.playDuration,
+                {!!watchData?.data4k?.userCount && (
+                  <div>
+                    <div className="p-4 space-y-1 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow rounded-t-md">
+                      <div>
+                        {intl.formatMessage(messages.users, {
+                          userCount: watchData.data4k.users.length,
+                          playCount: watchData.data4k.playCount,
                           mediaType: intl.formatMessage(
                             mediaType === 'movie'
                               ? messages.movie
                               : messages.tvshow
                           ),
+                          strong: function strong(msg) {
+                            return <strong>{msg}</strong>;
+                          },
                         })}
                       </div>
-                      <div className="flex flex-wrap flex-shrink-0 ml-2">
-                        <a
-                          href={data.mediaInfo?.tautulliUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="block"
-                        >
-                          <Button buttonType="primary" as="a">
-                            <EyeIcon />
-                          </Button>
-                        </a>
+                      <div className="inline-flex">
+                        {watchData.data4k.users.map((user) => (
+                          <Link
+                            href={
+                              currentUser?.id === user.id
+                                ? '/profile'
+                                : `/users/${user.id}`
+                            }
+                            key={`watch-user-${user.id}`}
+                          >
+                            <a>
+                              <img
+                                src={user.avatar}
+                                alt={user.displayName}
+                                className="w-8 h-8 mr-1 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
+                              />
+                            </a>
+                          </Link>
+                        ))}
                       </div>
                     </div>
+                    <a
+                      href={data.mediaInfo?.tautulliUrl4k}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Button
+                        buttonType="ghost"
+                        className="w-full rounded-t-none"
+                      >
+                        <ViewListIcon />
+                        <span>
+                          {intl.formatMessage(messages.opentautulli4k)}
+                        </span>
+                      </Button>
+                    </a>
                   </div>
                 )}
                 {data?.mediaInfo?.serviceUrl4k && (
@@ -327,74 +344,6 @@ const ManageSlideOver: React.FC<
                     </Button>
                   </a>
                 )}
-                {!!watchData?.data4k?.playCount &&
-                  !!watchData.data4k.userCount && (
-                    <div className="space-y-1">
-                      <div className="flex flex-row items-center justify-between p-4 overflow-hidden text-sm text-gray-400 bg-gray-600 rounded-md shadow">
-                        <div className="my-auto">
-                          {intl.formatMessage(messages.playdata, {
-                            users:
-                              watchData.data4k.users.length === 0
-                                ? intl.formatMessage(messages.users, {
-                                    userCount: watchData.data4k.userCount,
-                                  })
-                                : intl.formatMessage(
-                                    watchData.data4k.userCount >
-                                      Math.min(3, watchData.data4k.users.length)
-                                      ? messages.usernameswithcount
-                                      : messages.usernames,
-                                    {
-                                      nameCount: Math.min(
-                                        3,
-                                        watchData.data4k.users.length
-                                      ),
-                                      firstUser: watchData.data4k.users[0]
-                                        ? userLink(watchData.data4k.users[0])
-                                        : null,
-                                      secondUser: watchData.data4k.users[1]
-                                        ? userLink(watchData.data4k.users[1])
-                                        : null,
-                                      thirdUser: watchData.data4k.users[2]
-                                        ? userLink(watchData.data4k.users[2])
-                                        : null,
-                                      otherUsers: intl.formatMessage(
-                                        messages.otherusers,
-                                        {
-                                          userCount:
-                                            watchData.data4k.userCount -
-                                            Math.min(
-                                              3,
-                                              watchData.data4k.users.length
-                                            ),
-                                        }
-                                      ),
-                                    }
-                                  ),
-                            userCount: watchData.data4k.userCount,
-                            playCount: watchData.data4k.playCount,
-                            playDuration: watchData.data4k.playDuration,
-                            mediaType: intl.formatMessage(
-                              mediaType === 'movie'
-                                ? messages.movie
-                                : messages.tvshow
-                            ),
-                          })}
-                        </div>
-                        <div className="flex flex-wrap flex-shrink-0 ml-2">
-                          <a
-                            href={data.mediaInfo?.tautulliUrl4k}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="block"
-                          >
-                            <Button buttonType="primary" as="a">
-                              <EyeIcon />
-                            </Button>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  )}
               </div>
             </div>
           )}
