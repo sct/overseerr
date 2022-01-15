@@ -568,9 +568,14 @@ router.get<{ id: string }, UserWatchDataResponse>(
         recentlyWatched: media,
       });
     } catch (e) {
+      logger.error('Something went wrong fetching user watch data', {
+        label: 'API',
+        errorMessage: e.message,
+        userId: req.params.id,
+      });
       next({
         status: 500,
-        message: 'Failed to fetch user watch history.',
+        message: 'Failed to fetch user watch data.',
       });
     }
   }

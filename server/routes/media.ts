@@ -200,24 +200,12 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
         const watchStats = await tautulli.getMediaWatchStats(media.ratingKey);
         const watchUsers = await tautulli.getMediaWatchUsers(media.ratingKey);
 
-        const users = (
-          await Promise.all(
-            watchUsers.map(async (watchUser) => {
-              const tautulliUser = await tautulli.getUser(
-                watchUser.user_id.toString()
-              );
-
-              if (tautulliUser.email) {
-                return await userRepository
-                  .createQueryBuilder('user')
-                  .where('user.email = :email', {
-                    email: tautulliUser.email.toLowerCase(),
-                  })
-                  .getOne();
-              }
-            })
-          )
-        ).filter((user) => !!user) as User[];
+        const users = await userRepository
+          .createQueryBuilder('user')
+          .where('user.plexId IN (:...plexIds)', {
+            plexIds: watchUsers.map((u) => u.user_id),
+          })
+          .getMany();
 
         response.data = {
           playCount: watchStats.total_plays,
@@ -237,24 +225,12 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
           media.ratingKey4k
         );
 
-        const users4k = (
-          await Promise.all(
-            watchUsers4k.map(async (watchUser) => {
-              const tautulliUser = await tautulli.getUser(
-                watchUser.user_id.toString()
-              );
-
-              if (tautulliUser.email) {
-                return await userRepository
-                  .createQueryBuilder('user')
-                  .where('user.email = :email', {
-                    email: tautulliUser.email.toLowerCase(),
-                  })
-                  .getOne();
-              }
-            })
-          )
-        ).filter((user) => !!user) as User[];
+        const users4k = await userRepository
+          .createQueryBuilder('user')
+          .where('user.plexId IN (:...plexIds)', {
+            plexIds: watchUsers4k.map((u) => u.user_id),
+          })
+          .getMany();
 
         response.data4k = {
           playCount: watchStats4k.total_plays,
@@ -268,7 +244,12 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
 
       return res.status(200).json(response);
     } catch (e) {
-      next({ status: 500, message: 'Failed to fetch watch history.' });
+      logger.error('Something went wrong fetching media watch data', {
+        label: 'API',
+        errorMessage: e.message,
+        mediaId: req.params.id,
+      });
+      next({ status: 500, message: 'Failed to fetch watch data.' });
     }
   }
 );

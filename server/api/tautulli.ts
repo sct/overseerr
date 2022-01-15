@@ -90,30 +90,6 @@ interface TautulliWatchUsersResponse {
   };
 }
 
-interface TautulliUser {
-  allow_guest: 0 | 1;
-  deleted_user: 0 | 1;
-  do_notify: 0 | 1;
-  email?: string;
-  friendly_name: string;
-  is_active: 0 | 1;
-  is_admin: 0 | 1;
-  is_allow_sync?: 0 | 1;
-  is_home_user?: 0 | 1;
-  is_restricted?: 0 | 1;
-  keep_history: 0 | 1;
-  last_seen?: number;
-  row_id: number;
-  shared_libraries: string[];
-  user_id: number;
-  user_thumb: string;
-  username: string;
-}
-
-interface TautulliUserResponse {
-  response: { result: string; message?: string; data: TautulliUser };
-}
-
 class TautulliAPI {
   private axios: AxiosInstance;
 
@@ -124,23 +100,6 @@ class TautulliAPI {
       }${settings.urlBase ?? ''}`,
       params: { apikey: settings.apiKey },
     });
-  }
-
-  public async getUser(userId: string): Promise<TautulliUser> {
-    try {
-      return (
-        await this.axios.get<TautulliUserResponse>('/api/v2', {
-          params: { cmd: 'get_user', user_id: userId },
-        })
-      ).data.response.data;
-    } catch (e) {
-      logger.error('Something went wrong fetching user from Tautulli', {
-        label: 'Tautulli API',
-        errorMessage: e.message,
-        userId,
-      });
-      throw new Error(`[Tautulli] Failed to fetch user: ${e.message}`);
-    }
   }
 
   public async getMediaWatchStats(
