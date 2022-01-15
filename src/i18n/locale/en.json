@@ -373,7 +373,7 @@
   "components.Settings.Notifications.NotificationsGotify.toastGotifyTestSuccess": "Gotify test notification sent!",
   "components.Settings.Notifications.NotificationsGotify.token": "Application Token",
   "components.Settings.Notifications.NotificationsGotify.url": "Server URL",
-  "components.Settings.Notifications.NotificationsGotify.validationTokenRequired": "You must provide a valid application token",
+  "components.Settings.Notifications.NotificationsGotify.validationTokenRequired": "You must provide an application token",
   "components.Settings.Notifications.NotificationsGotify.validationTypes": "You must select at least one notification type",
   "components.Settings.Notifications.NotificationsGotify.validationUrlRequired": "You must provide a valid URL",
   "components.Settings.Notifications.NotificationsGotify.validationUrlTrailingSlash": "URL must not end in a trailing slash",
