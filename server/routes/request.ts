@@ -444,6 +444,20 @@ requestRoutes.get('/count', async (_req, res, next) => {
       .createQueryBuilder('request')
       .leftJoinAndSelect('request.media', 'media');
 
+    const totalCount = await query.getCount();
+
+    const movieCount = await query
+      .where('request.type = :requestType', {
+        requestType: MediaType.MOVIE,
+      })
+      .getCount();
+
+    const tvCount = await query
+      .where('request.type = :requestType', {
+        requestType: MediaType.TV,
+      })
+      .getCount();
+
     const pendingCount = await query
       .where('request.status = :requestStatus', {
         requestStatus: MediaRequestStatus.PENDING,
@@ -456,12 +470,18 @@ requestRoutes.get('/count', async (_req, res, next) => {
       })
       .getCount();
 
+    const declinedCount = await query
+      .where('request.status = :requestStatus', {
+        requestStatus: MediaRequestStatus.DECLINED,
+      })
+      .getCount();
+
     const processingCount = await query
       .where('request.status = :requestStatus', {
         requestStatus: MediaRequestStatus.APPROVED,
       })
       .andWhere(
-        '(request.is4k = false AND media.status != :availableStatus) OR (request.is4k = true AND media.status4k != :availableStatus)',
+        '((request.is4k = false AND media.status != :availableStatus) OR (request.is4k = true AND media.status4k != :availableStatus))',
         {
           availableStatus: MediaStatus.AVAILABLE,
         }
@@ -473,7 +493,7 @@ requestRoutes.get('/count', async (_req, res, next) => {
         requestStatus: MediaRequestStatus.APPROVED,
       })
       .andWhere(
-        '(request.is4k = false AND media.status = :availableStatus) OR (request.is4k = true AND media.status4k = :availableStatus)',
+        '((request.is4k = false AND media.status = :availableStatus) OR (request.is4k = true AND media.status4k = :availableStatus))',
         {
           availableStatus: MediaStatus.AVAILABLE,
         }
@@ -481,13 +501,21 @@ requestRoutes.get('/count', async (_req, res, next) => {
       .getCount();
 
     return res.status(200).json({
+      total: totalCount,
+      movie: movieCount,
+      tv: tvCount,
       pending: pendingCount,
       approved: approvedCount,
+      declined: declinedCount,
       processing: processingCount,
       available: availableCount,
     });
   } catch (e) {
-    next({ status: 500, message: e.message });
+    logger.error('Something went wrong retrieving request counts', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 500, message: 'Unable to retrieve request counts.' });
   }
 });
 
