@@ -155,13 +155,7 @@ class Media {
   @AfterLoad()
   public setPlexUrls(): void {
     const { machineId, webAppUrl } = getSettings().plex;
-    const tautulliSettings = getSettings().tautulli;
-    const tautulliUrl =
-      tautulliSettings.hostname && tautulliSettings.port
-        ? `${tautulliSettings.useSsl ? 'https' : 'http'}://${
-            tautulliSettings.hostname
-          }:${tautulliSettings.port}${tautulliSettings.urlBase ?? ''}`
-        : undefined;
+    const { externalUrl: tautulliUrl } = getSettings().tautulli;
 
     if (this.ratingKey) {
       this.plexUrl = `${

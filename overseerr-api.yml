@@ -316,7 +316,10 @@ components:
         useSsl:
           type: boolean
           nullable: true
-        tautulliApiKey:
+        apiKey:
+          type: string
+          nullable: true
+        externalUrl:
           type: string
           nullable: true
     RadarrSettings:

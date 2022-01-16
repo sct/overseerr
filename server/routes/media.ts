@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import moment from 'moment';
 import { FindOneOptions, FindOperator, getRepository, In } from 'typeorm';
 import TautulliAPI from '../api/tautulli';
 import { MediaStatus, MediaType } from '../constants/media';
@@ -194,7 +193,6 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
       const userRepository = getRepository(User);
 
       const response: MediaWatchDataResponse = {};
-      moment.locale(req.locale ?? 'en');
 
       if (media.ratingKey) {
         const watchStats = await tautulli.getMediaWatchStats(media.ratingKey);
@@ -208,12 +206,8 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
           .getMany();
 
         response.data = {
-          playCount: watchStats.total_plays,
-          playDuration: moment
-            .duration(watchStats.total_time, 'seconds')
-            .humanize(),
-          userCount: watchUsers.length,
           users,
+          playCount: watchStats.total_plays,
         };
       }
 
@@ -233,12 +227,8 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
           .getMany();
 
         response.data4k = {
-          playCount: watchStats4k.total_plays,
-          playDuration: moment
-            .duration(watchStats4k.total_time, 'seconds')
-            .humanize(),
-          userCount: watchUsers4k.length,
           users: users4k,
+          playCount: watchStats4k.total_plays,
         };
       }
 

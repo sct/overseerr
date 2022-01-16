@@ -68,7 +68,10 @@ const messages = defineMessages({
     'Optionally configure the settings for your Tautulli server. Overseerr fetches watch history data for your Plex media from Tautulli.',
   urlBase: 'URL Base',
   tautulliApiKey: 'API Key',
+  externalUrl: 'External URL',
+  validationApiKey: 'You must provide an API key',
   validationUrl: 'You must provide a valid URL',
+  validationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationUrlBaseLeadingSlash: 'URL base must have a leading slash',
   validationUrlBaseTrailingSlash: 'URL base must not end in a trailing slash',
   toastTautulliSettingsSuccess: 'Tautulli settings saved successfully!',
@@ -159,9 +162,12 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       tautulliPort: Yup.number().when(['tautulliHostname', 'tautulliApiKey'], {
         is: (value: unknown) => !!value,
         then: Yup.number()
+          .typeError(intl.formatMessage(messages.validationPortRequired))
           .nullable()
           .required(intl.formatMessage(messages.validationPortRequired)),
-        otherwise: Yup.number().nullable(),
+        otherwise: Yup.number()
+          .typeError(intl.formatMessage(messages.validationPortRequired))
+          .nullable(),
       }),
       tautulliUrlBase: Yup.string()
         .test(
@@ -174,8 +180,26 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
           intl.formatMessage(messages.validationUrlBaseTrailingSlash),
           (value) => !value || !value.endsWith('/')
         ),
+      tautulliApiKey: Yup.string().when(['tautulliHostname', 'tautulliPort'], {
+        is: (value: unknown) => !!value,
+        then: Yup.string()
+          .nullable()
+          .required(intl.formatMessage(messages.validationApiKey)),
+        otherwise: Yup.string().nullable(),
+      }),
+      tautulliExternalUrl: Yup.string()
+        .url(intl.formatMessage(messages.validationUrl))
+        .test(
+          'no-trailing-slash',
+          intl.formatMessage(messages.validationUrlTrailingSlash),
+          (value) => !value || !value.endsWith('/')
+        ),
     },
-    [['tautulliHostname', 'tautulliPort']]
+    [
+      ['tautulliHostname', 'tautulliPort'],
+      ['tautulliHostname', 'tautulliApiKey'],
+      ['tautulliPort', 'tautulliApiKey'],
+    ]
   );
 
   const activeLibraries =
@@ -716,6 +740,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               tautulliUseSsl: dataTautulli?.useSsl,
               tautulliUrlBase: dataTautulli?.urlBase,
               tautulliApiKey: dataTautulli?.apiKey,
+              tautulliExternalUrl: dataTautulli?.externalUrl,
             }}
             validationSchema={TautulliSettingsSchema}
             onSubmit={async (values) => {
@@ -726,6 +751,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   useSsl: values.tautulliUseSsl,
                   urlBase: values.tautulliUrlBase,
                   apiKey: values.tautulliApiKey,
+                  externalUrl: values.tautulliExternalUrl,
                 } as TautulliSettings);
 
                 addToast(
@@ -839,6 +865,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   <div className="form-row">
                     <label htmlFor="tautulliApiKey" className="text-label">
                       {intl.formatMessage(messages.tautulliApiKey)}
+                      <span className="label-required">*</span>
                     </label>
                     <div className="form-input">
                       <div className="form-input-field">
@@ -852,6 +879,27 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       {errors.tautulliApiKey && touched.tautulliApiKey && (
                         <div className="error">{errors.tautulliApiKey}</div>
                       )}
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <label htmlFor="tautulliExternalUrl" className="text-label">
+                      {intl.formatMessage(messages.externalUrl)}
+                    </label>
+                    <div className="form-input">
+                      <div className="form-input-field">
+                        <Field
+                          type="text"
+                          inputMode="url"
+                          id="tautulliExternalUrl"
+                          name="tautulliExternalUrl"
+                        />
+                      </div>
+                      {errors.tautulliExternalUrl &&
+                        touched.tautulliExternalUrl && (
+                          <div className="error">
+                            {errors.tautulliExternalUrl}
+                          </div>
+                        )}
                     </div>
                   </div>
                   <div className="actions">

@@ -41,6 +41,7 @@ export interface TautulliSettings {
   useSsl?: boolean;
   urlBase?: string;
   apiKey?: string;
+  externalUrl?: string;
 }
 
 export interface DVRSettings {

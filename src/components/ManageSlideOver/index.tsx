@@ -196,66 +196,78 @@ const ManageSlideOver: React.FC<
         {hasPermission(Permission.ADMIN) &&
           (data.mediaInfo?.serviceUrl ||
             data.mediaInfo?.serviceUrl4k ||
-            (watchData?.data?.playCount && watchData.data.userCount) ||
-            (watchData?.data4k?.playCount && watchData.data4k.userCount)) && (
+            (watchData?.data?.playCount && watchData.data.users.length) ||
+            (watchData?.data4k?.playCount &&
+              watchData.data4k.users.length)) && (
             <div>
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalMedia)}
               </h3>
               <div className="space-y-2">
-                {!!watchData?.data?.userCount && (
-                  <div>
-                    <div className="p-4 space-y-1 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow rounded-t-md">
-                      <div>
-                        {intl.formatMessage(messages.users, {
-                          userCount: watchData.data.users.length,
-                          playCount: watchData.data.playCount,
-                          mediaType: intl.formatMessage(
-                            mediaType === 'movie'
-                              ? messages.movie
-                              : messages.tvshow
-                          ),
-                          strong: function strong(msg) {
-                            return <strong>{msg}</strong>;
-                          },
-                        })}
-                      </div>
-                      <div className="inline-flex">
-                        {watchData.data.users.map((user) => (
-                          <Link
-                            href={
-                              currentUser?.id === user.id
-                                ? '/profile'
-                                : `/users/${user.id}`
-                            }
-                            key={`watch-user-${user.id}`}
-                          >
-                            <a>
-                              <img
-                                src={user.avatar}
-                                alt={user.displayName}
-                                className="w-8 h-8 mr-1 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
-                              />
-                            </a>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                    <a
-                      href={data.mediaInfo?.tautulliUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Button
-                        buttonType="ghost"
-                        className="w-full rounded-t-none"
+                {!!watchData?.data?.playCount &&
+                  !!watchData?.data?.users?.length && (
+                    <div>
+                      <div
+                        className={`p-4 space-y-1 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow ${
+                          data.mediaInfo?.tautulliUrl
+                            ? 'rounded-t-md'
+                            : 'rounded-md'
+                        }`}
                       >
-                        <ViewListIcon />
-                        <span>{intl.formatMessage(messages.opentautulli)}</span>
-                      </Button>
-                    </a>
-                  </div>
-                )}
+                        <div>
+                          {intl.formatMessage(messages.users, {
+                            userCount: watchData.data.users.length,
+                            playCount: watchData.data.playCount,
+                            mediaType: intl.formatMessage(
+                              mediaType === 'movie'
+                                ? messages.movie
+                                : messages.tvshow
+                            ),
+                            strong: function strong(msg) {
+                              return <strong>{msg}</strong>;
+                            },
+                          })}
+                        </div>
+                        <div className="inline-flex">
+                          {watchData.data.users.map((user) => (
+                            <Link
+                              href={
+                                currentUser?.id === user.id
+                                  ? '/profile'
+                                  : `/users/${user.id}`
+                              }
+                              key={`watch-user-${user.id}`}
+                            >
+                              <a>
+                                <img
+                                  src={user.avatar}
+                                  alt={user.displayName}
+                                  className="w-8 h-8 mr-1 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
+                                />
+                              </a>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                      {data.mediaInfo?.tautulliUrl && (
+                        <a
+                          href={data.mediaInfo.tautulliUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <Button
+                            buttonType="ghost"
+                            className="w-full rounded-t-none"
+                          >
+                            <ViewListIcon />
+                            <span>
+                              {intl.formatMessage(messages.opentautulli)}
+                            </span>
+                          </Button>
+                        </a>
+                      )}
+                    </div>
+                  )}
                 {data?.mediaInfo?.serviceUrl && (
                   <a
                     href={data?.mediaInfo?.serviceUrl}
@@ -273,61 +285,70 @@ const ManageSlideOver: React.FC<
                     </Button>
                   </a>
                 )}
-                {!!watchData?.data4k?.userCount && (
-                  <div>
-                    <div className="p-4 space-y-1 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow rounded-t-md">
-                      <div>
-                        {intl.formatMessage(messages.users, {
-                          userCount: watchData.data4k.users.length,
-                          playCount: watchData.data4k.playCount,
-                          mediaType: intl.formatMessage(
-                            mediaType === 'movie'
-                              ? messages.movie
-                              : messages.tvshow
-                          ),
-                          strong: function strong(msg) {
-                            return <strong>{msg}</strong>;
-                          },
-                        })}
-                      </div>
-                      <div className="inline-flex">
-                        {watchData.data4k.users.map((user) => (
-                          <Link
-                            href={
-                              currentUser?.id === user.id
-                                ? '/profile'
-                                : `/users/${user.id}`
-                            }
-                            key={`watch-user-${user.id}`}
-                          >
-                            <a>
-                              <img
-                                src={user.avatar}
-                                alt={user.displayName}
-                                className="w-8 h-8 mr-1 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
-                              />
-                            </a>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                    <a
-                      href={data.mediaInfo?.tautulliUrl4k}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Button
-                        buttonType="ghost"
-                        className="w-full rounded-t-none"
+                {!!watchData?.data4k?.playCount &&
+                  !!watchData?.data4k?.users.length && (
+                    <div>
+                      <div
+                        className={`p-4 space-y-1 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow ${
+                          data.mediaInfo?.tautulliUrl
+                            ? 'rounded-t-md'
+                            : 'rounded-md'
+                        }`}
                       >
-                        <ViewListIcon />
-                        <span>
-                          {intl.formatMessage(messages.opentautulli4k)}
-                        </span>
-                      </Button>
-                    </a>
-                  </div>
-                )}
+                        <div>
+                          {intl.formatMessage(messages.users, {
+                            userCount: watchData.data4k.users.length,
+                            playCount: watchData.data4k.playCount,
+                            mediaType: intl.formatMessage(
+                              mediaType === 'movie'
+                                ? messages.movie
+                                : messages.tvshow
+                            ),
+                            strong: function strong(msg) {
+                              return <strong>{msg}</strong>;
+                            },
+                          })}
+                        </div>
+                        <div className="inline-flex">
+                          {watchData.data4k.users.map((user) => (
+                            <Link
+                              href={
+                                currentUser?.id === user.id
+                                  ? '/profile'
+                                  : `/users/${user.id}`
+                              }
+                              key={`watch-user-${user.id}`}
+                            >
+                              <a>
+                                <img
+                                  src={user.avatar}
+                                  alt={user.displayName}
+                                  className="w-8 h-8 mr-1 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
+                                />
+                              </a>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                      {data.mediaInfo?.tautulliUrl4k && (
+                        <a
+                          href={data.mediaInfo.tautulliUrl4k}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <Button
+                            buttonType="ghost"
+                            className="w-full rounded-t-none"
+                          >
+                            <ViewListIcon />
+                            <span>
+                              {intl.formatMessage(messages.opentautulli4k)}
+                            </span>
+                          </Button>
+                        </a>
+                      )}
+                    </div>
+                  )}
                 {data?.mediaInfo?.serviceUrl4k && (
                   <a
                     href={data?.mediaInfo?.serviceUrl4k}

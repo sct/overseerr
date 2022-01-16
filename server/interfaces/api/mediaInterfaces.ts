@@ -8,15 +8,11 @@ export interface MediaResultsResponse extends PaginatedResponse {
 
 export interface MediaWatchDataResponse {
   data?: {
-    playCount: number;
-    playDuration: string;
-    userCount: number;
     users: User[];
+    playCount: number;
   };
   data4k?: {
-    playCount: number;
-    playDuration: string;
-    userCount: number;
     users: User[];
+    playCount: number;
   };
 }

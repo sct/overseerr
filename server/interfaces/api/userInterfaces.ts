@@ -24,7 +24,6 @@ export interface QuotaResponse {
   tv: QuotaStatus;
 }
 export interface UserWatchDataResponse {
-  playCount: number;
-  playDuration: string;
   recentlyWatched: Media[];
+  playCount: number;
 }

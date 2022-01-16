@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
 import { uniqWith } from 'lodash';
-import moment from 'moment';
 import { getRepository, Not } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
@@ -558,14 +557,9 @@ router.get<{ id: string }, UserWatchDataResponse>(
         )
       ).filter((media) => !!media) as Media[];
 
-      moment.locale(req.locale ?? 'en');
-
       return res.status(200).json({
-        playCount: watchStats.total_plays,
-        playDuration: moment
-          .duration(watchStats.total_time, 'seconds')
-          .humanize(),
         recentlyWatched: media,
+        playCount: watchStats.total_plays,
       });
     } catch (e) {
       logger.error('Something went wrong fetching user watch data', {
