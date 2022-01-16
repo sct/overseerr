@@ -81,7 +81,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const { locale } = useLocale();
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showManager, setShowManager] = useState(
-    router.query.manage !== '1' ? true : false
+    router.query.manage == '1' ? true : false
   );
   const [showIssueModal, setShowIssueModal] = useState(false);
 

@@ -86,7 +86,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const intl = useIntl();
   const { locale } = useLocale();
   const [showManager, setShowManager] = useState(
-    router.query.manage !== '1' ? true : false
+    router.query.manage == '1' ? true : false
   );
   const minStudios = 3;
   const [showMoreStudios, setShowMoreStudios] = useState(false);
