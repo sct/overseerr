@@ -292,7 +292,7 @@ const SettingsServices: React.FC = () => {
                     serverType: 'Radarr',
                     strong: function strong(msg) {
                       return (
-                        <strong className="font-semibold text-yellow-100">
+                        <strong className="font-semibold text-white">
                           {msg}
                         </strong>
                       );
@@ -382,7 +382,7 @@ const SettingsServices: React.FC = () => {
                     serverType: 'Sonarr',
                     strong: function strong(msg) {
                       return (
-                        <strong className="font-semibold text-yellow-100">
+                        <strong className="font-semibold text-white">
                           {msg}
                         </strong>
                       );
