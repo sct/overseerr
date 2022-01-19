@@ -6,25 +6,8 @@ on:
       - master
 
 jobs:
-  test:
-    name: Lint & Test Build
-    runs-on: ubuntu-20.04
-    container: node:16.14-alpine
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install dependencies
-        env:
-          HUSKY_SKIP_INSTALL: 1
-        run: yarn
-      - name: Lint
-        run: yarn lint
-      - name: Build
-        run: yarn build
-
   semantic-release:
     name: Tag and release latest version
-    needs: test
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
