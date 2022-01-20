@@ -14,6 +14,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { MediaRequestStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import useRequestOverride from '../../hooks/useRequestOverride';
+import { useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
@@ -33,6 +34,7 @@ interface RequestBlockProps {
 }
 
 const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
+  const { user } = useUser();
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -75,14 +77,20 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
           setShowEditModal(false);
         }}
       />
-      <div className="px-4 py-4 text-gray-300">
+      <div className="px-4 py-3 text-gray-300">
         <div className="flex items-center justify-between">
           <div className="flex-col items-center flex-1 min-w-0 mr-6 text-sm leading-5">
             <div className="flex mb-1 flex-nowrap white">
               <UserIcon className="min-w-0 flex-shrink-0 mr-1.5 h-5 w-5" />
               <span className="w-40 truncate md:w-auto">
-                <Link href={`/users/${request.requestedBy.id}`}>
-                  <a className="text-gray-100 transition duration-300 hover:text-white hover:underline">
+                <Link
+                  href={
+                    request.requestedBy.id === user?.id
+                      ? '/profile'
+                      : `/users/${request.requestedBy.id}`
+                  }
+                >
+                  <a className="font-semibold text-gray-100 transition duration-300 hover:text-white hover:underline">
                     {request.requestedBy.displayName}
                   </a>
                 </Link>
@@ -92,8 +100,14 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               <div className="flex flex-nowrap">
                 <EyeIcon className="flex-shrink-0 mr-1.5 h-5 w-5" />
                 <span className="w-40 truncate md:w-auto">
-                  <Link href={`/users/${request.modifiedBy.id}`}>
-                    <a className="text-gray-100 transition duration-300 hover:text-white hover:underline">
+                  <Link
+                    href={
+                      request.modifiedBy.id === user?.id
+                        ? '/profile'
+                        : `/users/${request.modifiedBy.id}`
+                    }
+                  >
+                    <a className="font-semibold text-gray-100 transition duration-300 hover:text-white hover:underline">
                       {request.modifiedBy.displayName}
                     </a>
                   </Link>

@@ -165,6 +165,9 @@ components:
         port:
           type: number
           example: 32400
+        useSsl:
+          type: boolean
+          nullable: true
         libraries:
           type: array
           readOnly: true
@@ -172,6 +175,7 @@ components:
             $ref: '#/components/schemas/PlexLibrary'
         webAppUrl:
           type: string
+          nullable: true
           example: 'https://app.plex.tv/desktop'
       required:
         - name
@@ -298,6 +302,26 @@ components:
         - provides
         - owned
         - connection
+    TautulliSettings:
+      type: object
+      properties:
+        hostname:
+          type: string
+          nullable: true
+          example: 'tautulli.example.com'
+        port:
+          type: number
+          nullable: true
+          example: 8181
+        useSsl:
+          type: boolean
+          nullable: true
+        apiKey:
+          type: string
+          nullable: true
+        externalUrl:
+          type: string
+          nullable: true
     RadarrSettings:
       type: object
       properties:
@@ -2024,6 +2048,37 @@ paths:
                       type: string
                     thumb:
                       type: string
+  /settings/tautulli:
+    get:
+      summary: Get Tautulli settings
+      description: Retrieves current Tautulli settings.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TautulliSettings'
+    post:
+      summary: Update Tautulli settings
+      description: Updates Tautulli settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TautulliSettings'
+      responses:
+        '200':
+          description: 'Values were successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TautulliSettings'
   /settings/radarr:
     get:
       summary: Get Radarr settings
@@ -3643,6 +3698,35 @@ paths:
                   permissions:
                     type: number
                     example: 2
+  /user/{userId}/watch_data:
+    get:
+      summary: Get watch data
+      description: |
+        Returns play count, play duration, and recently watched media.
+
+        Requires the `ADMIN` permission to fetch results for other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recentlyWatched:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaInfo'
+                  playCount:
+                    type: number
   /search:
     get:
       summary: Search for movies, TV shows, or people
@@ -4914,7 +4998,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonDetails'
-
   /person/{personId}/combined_credits:
     get:
       summary: Get combined credits
@@ -5051,6 +5134,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaInfo'
+  /media/{mediaId}/watch_data:
+    get:
+      summary: Get watch data
+      description: |
+        Returns play count, play duration, and users who have watched the media.
+
+        Requires the `ADMIN` permission.
+      tags:
+        - media
+      parameters:
+        - in: path
+          name: mediaId
+          description: Media ID
+          required: true
+          example: '1'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      playCount7Days:
+                        type: number
+                      playCount30Days:
+                        type: number
+                      playCount:
+                        type: number
+                      users:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+                  data4k:
+                    type: object
+                    properties:
+                      playCount7Days:
+                        type: number
+                      playCount30Days:
+                        type: number
+                      playCount:
+                        type: number
+                      users:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
   /collection/{collectionId}:
     get:
       summary: Get collection details
