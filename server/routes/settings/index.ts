@@ -320,29 +320,33 @@ settingsRoutes.get(
         .forEach((line) => {
           if (!line.length) return;
 
-          const logMessage = JSON.parse(line);
+          try {
+            const logMessage = JSON.parse(line);
 
-          if (!filter.includes(logMessage.level)) {
-            return;
-          }
+            if (!filter.includes(logMessage.level)) {
+              return;
+            }
 
-          if (
-            !Object.keys(logMessage).every((key) =>
-              logMessageProperties.includes(key)
-            )
-          ) {
-            Object.keys(logMessage)
-              .filter((prop) => !logMessageProperties.includes(prop))
-              .forEach((prop) => {
-                Object.assign(logMessage, {
-                  data: {
-                    [prop]: logMessage[prop],
-                  },
+            if (
+              !Object.keys(logMessage).every((key) =>
+                logMessageProperties.includes(key)
+              )
+            ) {
+              Object.keys(logMessage)
+                .filter((prop) => !logMessageProperties.includes(prop))
+                .forEach((prop) => {
+                  Object.assign(logMessage, {
+                    data: {
+                      [prop]: logMessage[prop],
+                    },
+                  });
                 });
-              });
-          }
+            }
 
-          logs.push(logMessage);
+            logs.push(logMessage);
+          } catch (error) {
+            // skip line silently
+          }
         });
 
       const displayedLogs = logs.reverse().slice(skip, skip + pageSize);
