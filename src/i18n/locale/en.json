@@ -401,6 +401,7 @@
   "components.Settings.Notifications.NotificationsPushbullet.accessToken": "Access Token",
   "components.Settings.Notifications.NotificationsPushbullet.accessTokenTip": "Create a token from your <PushbulletSettingsLink>Account Settings</PushbulletSettingsLink>",
   "components.Settings.Notifications.NotificationsPushbullet.agentEnabled": "Enable Agent",
+  "components.Settings.Notifications.NotificationsPushbullet.channelTag": "Channel Tag",
   "components.Settings.Notifications.NotificationsPushbullet.pushbulletSettingsFailed": "Pushbullet notification settings failed to save.",
   "components.Settings.Notifications.NotificationsPushbullet.pushbulletSettingsSaved": "Pushbullet notification settings saved successfully!",
   "components.Settings.Notifications.NotificationsPushbullet.toastPushbulletTestFailed": "Pushbullet test notification failed to send.",
