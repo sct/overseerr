@@ -315,7 +315,6 @@ discoverRoutes.get('/tv', async (req, res, next) => {
     logger.debug('Something went wrong retrieving popular series', {
       label: 'API',
       errorMessage: e.message,
-      networkId: req.params.networkId,
     });
     return next({
       status: 500,
