@@ -239,7 +239,7 @@ settingsRoutes.get(
     const plexApi = new PlexTvAPI(admin.plexToken ?? '');
     const plexUsers = (await plexApi.getUsers()).MediaContainer.User.map(
       (user) => user.$
-    );
+    ).filter((user) => user.email);
 
     const unimportedPlexUsers: {
       id: string;
