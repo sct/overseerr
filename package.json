@@ -128,7 +128,7 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "extract-react-intl-messages": "^4.1.1",
     "husky": "^7.0.4",
-    "lint-staged": "^12.2.1",
+    "lint-staged": "^12.2.2",
     "nodemon": "^2.0.15",
     "postcss": "^8.4.5",
     "prettier": "^2.5.1",
