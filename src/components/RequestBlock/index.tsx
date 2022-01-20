@@ -77,7 +77,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
           setShowEditModal(false);
         }}
       />
-      <div className="px-4 py-4 text-gray-300">
+      <div className="px-4 py-3 text-gray-300">
         <div className="flex items-center justify-between">
           <div className="flex-col items-center flex-1 min-w-0 mr-6 text-sm leading-5">
             <div className="flex mb-1 flex-nowrap white">

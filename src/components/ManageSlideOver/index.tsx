@@ -28,6 +28,7 @@ const messages = defineMessages({
   manageModalIssues: 'Open Issues',
   manageModalRequests: 'Requests',
   manageModalMedia: 'Media',
+  manageModalMedia4k: '4K Media',
   manageModalAdvanced: 'Advanced',
   manageModalNoRequests: 'No requests.',
   manageModalClearMedia: 'Clear Data',
@@ -42,10 +43,11 @@ const messages = defineMessages({
   markallseasons4kavailable: 'Mark All Seasons as Available in 4K',
   opentautulli: 'Open Watch History in Tautulli',
   opentautulli4k: 'Open 4K Watch History in Tautulli',
-  users:
-    '<strong>{userCount, number} {userCount, plural, one {user} other {users}}</strong> {userCount, plural, one {has} other {have}} played this {mediaType} <strong>{playCount, number} {playCount, plural, one {time} other {times}}</strong>:',
-  users4k:
-    '<strong>{userCount, number} {userCount, plural, one {user} other {users}}</strong> {userCount, plural, one {has} other {have}} played this {mediaType} in 4K <strong>{playCount, number} {playCount, plural, one {time} other {times}}</strong>:',
+  plays:
+    '<strong>{playCount, number}</strong> {playCount, plural, one {play} other {plays}}',
+  pastdays: 'Past {days, number} Days',
+  alltime: 'All Time',
+  playedby: 'Played By',
   movie: 'movie',
   tvshow: 'series',
 });
@@ -109,6 +111,19 @@ const ManageSlideOver: React.FC<
       (issue) => issue.status === IssueStatus.OPEN
     ) ?? [];
 
+  const styledPlayCount = (playCount: number): JSX.Element => {
+    return (
+      <>
+        {intl.formatMessage(messages.plays, {
+          playCount,
+          strong: function strong(msg) {
+            return <strong className="text-2xl font-semibold">{msg}</strong>;
+          },
+        })}
+      </>
+    );
+  };
+
   return (
     <SlideOver
       show={show}
@@ -120,7 +135,7 @@ const ManageSlideOver: React.FC<
       onClose={() => onClose()}
       subText={isMovie(data) ? data.title : data.name}
     >
-      <div className="space-y-8">
+      <div className="space-y-6">
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
           (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
           <div>
@@ -195,79 +210,99 @@ const ManageSlideOver: React.FC<
         )}
         {hasPermission(Permission.ADMIN) &&
           (data.mediaInfo?.serviceUrl ||
-            data.mediaInfo?.serviceUrl4k ||
-            (watchData?.data?.playCount && watchData.data.users.length) ||
-            (watchData?.data4k?.playCount &&
-              watchData.data4k.users.length)) && (
+            data.mediaInfo?.tautulliUrl ||
+            watchData?.data?.playCount) && (
             <div>
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalMedia)}
               </h3>
               <div className="space-y-2">
-                {!!watchData?.data?.playCount &&
-                  !!watchData?.data?.users?.length && (
-                    <div>
-                      <div
-                        className={`p-4 space-y-1 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow ${
-                          data.mediaInfo?.tautulliUrl
-                            ? 'rounded-t-md'
-                            : 'rounded-md'
-                        }`}
-                      >
-                        <div>
-                          {intl.formatMessage(messages.users, {
-                            userCount: watchData.data.users.length,
-                            playCount: watchData.data.playCount,
-                            mediaType: intl.formatMessage(
-                              mediaType === 'movie'
-                                ? messages.movie
-                                : messages.tvshow
-                            ),
-                            strong: function strong(msg) {
-                              return <strong>{msg}</strong>;
-                            },
-                          })}
+                {!!watchData?.data && (
+                  <div>
+                    <div
+                      className={`grid grid-cols-1 divide-y divide-gray-500 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow ${
+                        data.mediaInfo?.tautulliUrl
+                          ? 'rounded-t-md'
+                          : 'rounded-md'
+                      }`}
+                    >
+                      <div className="grid grid-cols-3 divide-x divide-gray-500">
+                        <div className="px-4 py-3">
+                          <div className="font-bold">
+                            {intl.formatMessage(messages.pastdays, { days: 7 })}
+                          </div>
+                          <div className="text-white">
+                            {styledPlayCount(watchData.data.playCount7Days)}
+                          </div>
                         </div>
-                        <div className="inline-flex">
-                          {watchData.data.users.map((user) => (
-                            <Link
-                              href={
-                                currentUser?.id === user.id
-                                  ? '/profile'
-                                  : `/users/${user.id}`
-                              }
-                              key={`watch-user-${user.id}`}
-                            >
-                              <a>
-                                <img
-                                  src={user.avatar}
-                                  alt={user.displayName}
-                                  className="w-8 h-8 mr-1 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
-                                />
-                              </a>
-                            </Link>
-                          ))}
+                        <div className="px-4 py-3">
+                          <div className="font-bold">
+                            {intl.formatMessage(messages.pastdays, {
+                              days: 30,
+                            })}
+                          </div>
+                          <div className="text-white">
+                            {styledPlayCount(watchData.data.playCount30Days)}
+                          </div>
+                        </div>
+                        <div className="px-4 py-3">
+                          <div className="font-bold">
+                            {intl.formatMessage(messages.alltime)}
+                          </div>
+                          <div className="text-white">
+                            {styledPlayCount(watchData.data.playCount)}
+                          </div>
                         </div>
                       </div>
-                      {data.mediaInfo?.tautulliUrl && (
-                        <a
-                          href={data.mediaInfo.tautulliUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <Button
-                            buttonType="ghost"
-                            className="w-full rounded-t-none"
-                          >
-                            <ViewListIcon />
-                            <span>
-                              {intl.formatMessage(messages.opentautulli)}
-                            </span>
-                          </Button>
-                        </a>
+                      {!!watchData.data.users.length && (
+                        <div className="flex flex-row px-4 pt-3 pb-2 space-x-2">
+                          <span className="font-bold leading-8 shrink-0">
+                            {intl.formatMessage(messages.playedby)}
+                          </span>
+                          <span className="flex flex-row flex-wrap">
+                            {watchData.data.users.map((user) => (
+                              <Link
+                                href={
+                                  currentUser?.id === user.id
+                                    ? '/profile'
+                                    : `/users/${user.id}`
+                                }
+                                key={`watch-user-${user.id}`}
+                              >
+                                <a className="z-0 mb-1 -mr-2 hover:z-50 shrink-0">
+                                  <img
+                                    src={user.avatar}
+                                    alt={user.displayName}
+                                    className="w-8 h-8 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
+                                  />
+                                </a>
+                              </Link>
+                            ))}
+                          </span>
+                        </div>
                       )}
                     </div>
-                  )}
+                    {data.mediaInfo?.tautulliUrl && (
+                      <a
+                        href={data.mediaInfo.tautulliUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Button
+                          buttonType="ghost"
+                          className={`w-full ${
+                            watchData.data.playCount ? 'rounded-t-none' : ''
+                          }`}
+                        >
+                          <ViewListIcon />
+                          <span>
+                            {intl.formatMessage(messages.opentautulli)}
+                          </span>
+                        </Button>
+                      </a>
+                    )}
+                  </div>
+                )}
                 {data?.mediaInfo?.serviceUrl && (
                   <a
                     href={data?.mediaInfo?.serviceUrl}
@@ -285,75 +320,110 @@ const ManageSlideOver: React.FC<
                     </Button>
                   </a>
                 )}
-                {!!watchData?.data4k?.playCount &&
-                  !!watchData?.data4k?.users.length && (
-                    <div>
-                      <div
-                        className={`p-4 space-y-1 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow ${
-                          data.mediaInfo?.tautulliUrl
-                            ? 'rounded-t-md'
-                            : 'rounded-md'
-                        }`}
-                      >
-                        <div>
-                          {intl.formatMessage(messages.users, {
-                            userCount: watchData.data4k.users.length,
-                            playCount: watchData.data4k.playCount,
-                            mediaType: intl.formatMessage(
-                              mediaType === 'movie'
-                                ? messages.movie
-                                : messages.tvshow
-                            ),
-                            strong: function strong(msg) {
-                              return <strong>{msg}</strong>;
-                            },
-                          })}
+              </div>
+            </div>
+          )}
+        {hasPermission(Permission.ADMIN) &&
+          (data.mediaInfo?.serviceUrl4k ||
+            data.mediaInfo?.tautulliUrl4k ||
+            watchData?.data4k?.playCount) && (
+            <div>
+              <h3 className="mb-2 text-xl font-bold">
+                {intl.formatMessage(messages.manageModalMedia4k)}
+              </h3>
+              <div className="space-y-2">
+                {!!watchData?.data4k && (
+                  <div>
+                    <div
+                      className={`grid grid-cols-1 divide-y divide-gray-500 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow ${
+                        data.mediaInfo?.tautulliUrl4k
+                          ? 'rounded-t-md'
+                          : 'rounded-md'
+                      }`}
+                    >
+                      <div className="grid grid-cols-3 divide-x divide-gray-500">
+                        <div className="px-4 py-3">
+                          <div className="font-bold">
+                            {intl.formatMessage(messages.pastdays, { days: 7 })}
+                          </div>
+                          <div className="text-white">
+                            {styledPlayCount(watchData.data4k.playCount7Days)}
+                          </div>
                         </div>
-                        <div className="inline-flex">
-                          {watchData.data4k.users.map((user) => (
-                            <Link
-                              href={
-                                currentUser?.id === user.id
-                                  ? '/profile'
-                                  : `/users/${user.id}`
-                              }
-                              key={`watch-user-${user.id}`}
-                            >
-                              <a>
-                                <img
-                                  src={user.avatar}
-                                  alt={user.displayName}
-                                  className="w-8 h-8 mr-1 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
-                                />
-                              </a>
-                            </Link>
-                          ))}
+                        <div className="px-4 py-3">
+                          <div className="font-bold">
+                            {intl.formatMessage(messages.pastdays, {
+                              days: 30,
+                            })}
+                          </div>
+                          <div className="text-white">
+                            {styledPlayCount(watchData.data4k.playCount30Days)}
+                          </div>
+                        </div>
+                        <div className="px-4 py-3">
+                          <div className="font-bold">
+                            {intl.formatMessage(messages.alltime)}
+                          </div>
+                          <div className="text-white">
+                            {styledPlayCount(watchData.data4k.playCount)}
+                          </div>
                         </div>
                       </div>
-                      {data.mediaInfo?.tautulliUrl4k && (
-                        <a
-                          href={data.mediaInfo.tautulliUrl4k}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <Button
-                            buttonType="ghost"
-                            className="w-full rounded-t-none"
-                          >
-                            <ViewListIcon />
-                            <span>
-                              {intl.formatMessage(messages.opentautulli4k)}
-                            </span>
-                          </Button>
-                        </a>
+                      {!!watchData.data4k.users.length && (
+                        <div className="flex flex-row px-4 pt-3 pb-2 space-x-2">
+                          <span className="font-bold leading-8 shrink-0">
+                            {intl.formatMessage(messages.playedby)}
+                          </span>
+                          <span className="flex flex-row flex-wrap">
+                            {watchData.data4k.users.map((user) => (
+                              <Link
+                                href={
+                                  currentUser?.id === user.id
+                                    ? '/profile'
+                                    : `/users/${user.id}`
+                                }
+                                key={`watch-user-${user.id}`}
+                              >
+                                <a className="z-0 mb-1 -mr-2 hover:z-50 shrink-0">
+                                  <img
+                                    src={user.avatar}
+                                    alt={user.displayName}
+                                    className="w-8 h-8 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
+                                  />
+                                </a>
+                              </Link>
+                            ))}
+                          </span>
+                        </div>
                       )}
                     </div>
-                  )}
+                    {data.mediaInfo?.tautulliUrl4k && (
+                      <a
+                        href={data.mediaInfo.tautulliUrl4k}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Button
+                          buttonType="ghost"
+                          className={`w-full ${
+                            watchData.data4k.playCount ? 'rounded-t-none' : ''
+                          }`}
+                        >
+                          <ViewListIcon />
+                          <span>
+                            {intl.formatMessage(messages.opentautulli4k)}
+                          </span>
+                        </Button>
+                      </a>
+                    )}
+                  </div>
+                )}
                 {data?.mediaInfo?.serviceUrl4k && (
                   <a
                     href={data?.mediaInfo?.serviceUrl4k}
                     target="_blank"
                     rel="noreferrer"
+                    className="block"
                   >
                     <Button buttonType="ghost" className="w-full">
                       <ServerIcon />

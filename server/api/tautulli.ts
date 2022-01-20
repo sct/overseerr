@@ -104,18 +104,17 @@ class TautulliAPI {
 
   public async getMediaWatchStats(
     ratingKey: string
-  ): Promise<TautulliWatchStats> {
+  ): Promise<TautulliWatchStats[]> {
     try {
       return (
         await this.axios.get<TautulliWatchStatsResponse>('/api/v2', {
           params: {
             cmd: 'get_item_watch_time_stats',
             rating_key: ratingKey,
-            query_days: 0,
             grouping: 1,
           },
         })
-      ).data.response.data[0];
+      ).data.response.data;
     } catch (e) {
       logger.error(
         'Something went wrong fetching media watch stats from Tautulli',

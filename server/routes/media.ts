@@ -205,9 +205,20 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
           })
           .getMany();
 
+        const playCount =
+          watchStats.find((i) => i.query_days == 0)?.total_plays ?? 0;
+
+        const playCount7Days =
+          watchStats.find((i) => i.query_days == 7)?.total_plays ?? 0;
+
+        const playCount30Days =
+          watchStats.find((i) => i.query_days == 30)?.total_plays ?? 0;
+
         response.data = {
-          users,
-          playCount: watchStats.total_plays,
+          users: users,
+          playCount,
+          playCount7Days,
+          playCount30Days,
         };
       }
 
@@ -219,16 +230,27 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
           media.ratingKey4k
         );
 
-        const users4k = await userRepository
+        const users = await userRepository
           .createQueryBuilder('user')
           .where('user.plexId IN (:...plexIds)', {
             plexIds: watchUsers4k.map((u) => u.user_id),
           })
           .getMany();
 
+        const playCount =
+          watchStats4k.find((i) => i.query_days == 0)?.total_plays ?? 0;
+
+        const playCount7Days =
+          watchStats4k.find((i) => i.query_days == 7)?.total_plays ?? 0;
+
+        const playCount30Days =
+          watchStats4k.find((i) => i.query_days == 30)?.total_plays ?? 0;
+
         response.data4k = {
-          users: users4k,
-          playCount: watchStats4k.total_plays,
+          users,
+          playCount,
+          playCount7Days,
+          playCount30Days,
         };
       }
 

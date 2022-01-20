@@ -3707,7 +3707,6 @@ paths:
         Requires the `ADMIN` permission to fetch results for other users.
       tags:
         - users
-        - media
       parameters:
         - in: path
           name: userId
@@ -3722,14 +3721,12 @@ paths:
               schema:
                 type: object
                 properties:
-                  playCount:
-                    type: number
-                  playDuration:
-                    type: number
-                  media:
+                  recentlyWatched:
                     type: array
                     items:
                       $ref: '#/components/schemas/MediaInfo'
+                  playCount:
+                    type: number
   /search:
     get:
       summary: Search for movies, TV shows, or people
@@ -5162,16 +5159,32 @@ paths:
               schema:
                 type: object
                 properties:
-                  playCount:
-                    type: number
-                  playDuration:
-                    type: number
-                  userCount:
-                    type: number
-                  users:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/User'
+                  data:
+                    type: object
+                    properties:
+                      playCount7Days:
+                        type: number
+                      playCount30Days:
+                        type: number
+                      playCount:
+                        type: number
+                      users:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+                  data4k:
+                    type: object
+                    properties:
+                      playCount7Days:
+                        type: number
+                      playCount30Days:
+                        type: number
+                      playCount:
+                        type: number
+                      users:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
   /collection/{collectionId}:
     get:
       summary: Get collection details
