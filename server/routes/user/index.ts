@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
-import { uniqWith } from 'lodash';
 import { getRepository, Not } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
@@ -534,26 +533,17 @@ router.get<{ id: string }, UserWatchDataResponse>(
 
       const media = (
         await Promise.all(
-          uniqWith(watchHistory, (recordA, recordB) =>
-            recordA.grandparent_rating_key && recordB.grandparent_rating_key
-              ? recordA.grandparent_rating_key ===
-                recordB.grandparent_rating_key
-              : recordA.parent_rating_key && recordB.parent_rating_key
-              ? recordA.parent_rating_key === recordB.parent_rating_key
-              : recordA.rating_key === recordB.rating_key
+          watchHistory.map(
+            async (record) =>
+              await mediaRepository.findOne({
+                where: {
+                  ratingKey:
+                    record.media_type === 'movie'
+                      ? record.rating_key
+                      : record.grandparent_rating_key,
+                },
+              })
           )
-            .slice(0, 20)
-            .map(
-              async (record) =>
-                await mediaRepository.findOne({
-                  where: {
-                    ratingKey:
-                      record.media_type === 'movie'
-                        ? record.rating_key
-                        : record.grandparent_rating_key,
-                  },
-                })
-            )
         )
       ).filter((media) => !!media) as Media[];
 
