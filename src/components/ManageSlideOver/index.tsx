@@ -41,8 +41,7 @@ const messages = defineMessages({
   mark4kavailable: 'Mark as Available in 4K',
   markallseasonsavailable: 'Mark All Seasons as Available',
   markallseasons4kavailable: 'Mark All Seasons as Available in 4K',
-  opentautulli: 'Open Watch History in Tautulli',
-  opentautulli4k: 'Open 4K Watch History in Tautulli',
+  opentautulli: 'Open in Tautulli',
   plays:
     '<strong>{playCount, number}</strong> {playCount, plural, one {play} other {plays}}',
   pastdays: 'Past {days, number} Days',
@@ -411,7 +410,7 @@ const ManageSlideOver: React.FC<
                         >
                           <ViewListIcon />
                           <span>
-                            {intl.formatMessage(messages.opentautulli4k)}
+                            {intl.formatMessage(messages.opentautulli)}
                           </span>
                         </Button>
                       </a>
