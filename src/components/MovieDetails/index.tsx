@@ -280,6 +280,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="movie"
+              plexUrl={data.mediaInfo?.plexUrl}
             />
             {settings.currentSettings.movie4kEnabled &&
               hasPermission(
@@ -296,6 +297,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   }
                   tmdbId={data.mediaInfo?.tmdbId}
                   mediaType="movie"
+                  plexUrl={data.mediaInfo?.plexUrl4k}
                 />
               )}
           </div>

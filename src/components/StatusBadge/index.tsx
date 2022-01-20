@@ -2,6 +2,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { MediaStatus } from '../../../server/constants/media';
 import Spinner from '../../assets/spinner.svg';
+import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Badge from '../Common/Badge';
 
@@ -30,14 +31,17 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   mediaType,
 }) => {
   const intl = useIntl();
+  const { hasPermission } = useUser();
 
   const manageLink =
-    tmdbId && mediaType ? `/${mediaType}/${tmdbId}?manage=1` : undefined;
+    tmdbId && mediaType && hasPermission(Permission.MANAGE_REQUESTS)
+      ? `/${mediaType}/${tmdbId}?manage=1`
+      : undefined;
 
   switch (status) {
     case MediaStatus.AVAILABLE:
       return (
-        <Badge badgeType="success" href={manageLink ?? plexUrl}>
+        <Badge badgeType="success" href={plexUrl}>
           <div className="flex items-center">
             <span>
               {intl.formatMessage(is4k ? messages.status4k : messages.status, {
@@ -51,7 +55,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
     case MediaStatus.PARTIALLY_AVAILABLE:
       return (
-        <Badge badgeType="success" href={manageLink ?? plexUrl}>
+        <Badge badgeType="success" href={plexUrl}>
           <div className="flex items-center">
             <span>
               {intl.formatMessage(is4k ? messages.status4k : messages.status, {

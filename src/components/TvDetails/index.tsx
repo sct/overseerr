@@ -282,6 +282,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="tv"
+              plexUrl={data.mediaInfo?.plexUrl}
             />
             {settings.currentSettings.series4kEnabled &&
               hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
@@ -295,6 +296,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   }
                   tmdbId={data.mediaInfo?.tmdbId}
                   mediaType="tv"
+                  plexUrl={data.mediaInfo?.plexUrl4k}
                 />
               )}
           </div>
