@@ -165,12 +165,12 @@ const SettingsServices: React.FC = () => {
   const {
     data: radarrData,
     error: radarrError,
-    revalidate: revalidateRadarr,
+    mutate: revalidateRadarr,
   } = useSWR<RadarrSettings[]>('/api/v1/settings/radarr');
   const {
     data: sonarrData,
     error: sonarrError,
-    revalidate: revalidateSonarr,
+    mutate: revalidateSonarr,
   } = useSWR<SonarrSettings[]>('/api/v1/settings/sonarr');
   const [editRadarrModal, setEditRadarrModal] = useState<{
     open: boolean;
@@ -292,7 +292,7 @@ const SettingsServices: React.FC = () => {
                     serverType: 'Radarr',
                     strong: function strong(msg) {
                       return (
-                        <strong className="font-semibold text-yellow-100">
+                        <strong className="font-semibold text-white">
                           {msg}
                         </strong>
                       );
@@ -382,7 +382,7 @@ const SettingsServices: React.FC = () => {
                     serverType: 'Sonarr',
                     strong: function strong(msg) {
                       return (
-                        <strong className="font-semibold text-yellow-100">
+                        <strong className="font-semibold text-white">
                           {msg}
                         </strong>
                       );

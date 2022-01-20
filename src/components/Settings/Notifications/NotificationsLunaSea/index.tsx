@@ -31,9 +31,11 @@ const NotificationsLunaSea: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/lunasea'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/lunasea');
 
   const NotificationsLunaSeaSchema = Yup.object().shape({
     webhookUrl: Yup.string()

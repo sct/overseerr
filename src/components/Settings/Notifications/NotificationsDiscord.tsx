@@ -26,6 +26,7 @@ const messages = defineMessages({
   toastDiscordTestFailed: 'Discord test notification failed to send.',
   validationUrl: 'You must provide a valid URL',
   validationTypes: 'You must select at least one notification type',
+  enableMentions: 'Enable Mentions',
 });
 
 const NotificationsDiscord: React.FC = () => {
@@ -33,9 +34,11 @@ const NotificationsDiscord: React.FC = () => {
   const settings = useSettings();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/discord'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/discord');
 
   const NotificationsDiscordSchema = Yup.object().shape({
     botAvatarUrl: Yup.string()
@@ -64,6 +67,7 @@ const NotificationsDiscord: React.FC = () => {
         botUsername: data?.options.botUsername,
         botAvatarUrl: data?.options.botAvatarUrl,
         webhookUrl: data.options.webhookUrl,
+        enableMentions: data?.options.enableMentions,
       }}
       validationSchema={NotificationsDiscordSchema}
       onSubmit={async (values) => {
@@ -75,6 +79,7 @@ const NotificationsDiscord: React.FC = () => {
               botUsername: values.botUsername,
               botAvatarUrl: values.botAvatarUrl,
               webhookUrl: values.webhookUrl,
+              enableMentions: values.enableMentions,
             },
           });
 
@@ -122,6 +127,7 @@ const NotificationsDiscord: React.FC = () => {
                 botUsername: values.botUsername,
                 botAvatarUrl: values.botAvatarUrl,
                 webhookUrl: values.webhookUrl,
+                enableMentions: values.enableMentions,
               },
             });
 
@@ -225,6 +231,18 @@ const NotificationsDiscord: React.FC = () => {
                 {errors.botAvatarUrl && touched.botAvatarUrl && (
                   <div className="error">{errors.botAvatarUrl}</div>
                 )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="enableMentions" className="checkbox-label">
+                {intl.formatMessage(messages.enableMentions)}
+              </label>
+              <div className="form-input">
+                <Field
+                  type="checkbox"
+                  id="enableMentions"
+                  name="enableMentions"
+                />
               </div>
             </div>
             <NotificationTypeSelector

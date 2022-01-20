@@ -80,7 +80,7 @@ const IssueDetails: React.FC = () => {
   const intl = useIntl();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { user: currentUser, hasPermission } = useUser();
-  const { data: issueData, revalidate: revalidateIssue } = useSWR<Issue>(
+  const { data: issueData, mutate: revalidateIssue } = useSWR<Issue>(
     `/api/v1/issue/${router.query.issueId}`
   );
   const { data, error } = useSWR<MovieDetails | TvDetails>(

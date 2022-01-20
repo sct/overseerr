@@ -33,9 +33,11 @@ const messages = defineMessages({
 const SettingsUsers: React.FC = () => {
   const { addToast } = useToasts();
   const intl = useIntl();
-  const { data, error, revalidate } = useSWR<MainSettings>(
-    '/api/v1/settings/main'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<MainSettings>('/api/v1/settings/main');
 
   if (!data && !error) {
     return <LoadingSpinner />;

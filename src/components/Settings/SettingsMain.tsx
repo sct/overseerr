@@ -65,9 +65,11 @@ const SettingsMain: React.FC = () => {
   const { user: currentUser, hasPermission: userHasPermission } = useUser();
   const intl = useIntl();
   const { setLocale } = useLocale();
-  const { data, error, revalidate } = useSWR<MainSettings>(
-    '/api/v1/settings/main'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<MainSettings>('/api/v1/settings/main');
   const { data: userData } = useSWR<UserSettingsGeneralResponse>(
     currentUser ? `/api/v1/user/${currentUser.id}/settings/main` : null
   );

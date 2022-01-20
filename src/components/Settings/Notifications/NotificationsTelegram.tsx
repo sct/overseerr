@@ -38,9 +38,11 @@ const NotificationsTelegram: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/telegram'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/telegram');
 
   const NotificationsTelegramSchema = Yup.object().shape({
     botAPI: Yup.string().when('enabled', {

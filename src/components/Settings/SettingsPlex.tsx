@@ -96,10 +96,12 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
   const [availableServers, setAvailableServers] = useState<PlexDevice[] | null>(
     null
   );
-  const { data, error, revalidate } = useSWR<PlexSettings>(
-    '/api/v1/settings/plex'
-  );
-  const { data: dataSync, revalidate: revalidateSync } = useSWR<SyncStatus>(
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<PlexSettings>('/api/v1/settings/plex');
+  const { data: dataSync, mutate: revalidateSync } = useSWR<SyncStatus>(
     '/api/v1/settings/plex/sync',
     {
       refreshInterval: 1000,
