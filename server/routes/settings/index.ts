@@ -303,38 +303,46 @@ settingsRoutes.get(
     }
 
     const logFile = process.env.CONFIG_DIRECTORY
-      ? `${process.env.CONFIG_DIRECTORY}/logs/overseerr.log`
-      : path.join(__dirname, '../../../config/logs/overseerr.log');
+      ? `${process.env.CONFIG_DIRECTORY}/logs/.machinelogs.json`
+      : path.join(__dirname, '../../../config/logs/.machinelogs.json');
     const logs: LogMessage[] = [];
+    const logMessageProperties = [
+      'timestamp',
+      'level',
+      'label',
+      'message',
+      'data',
+    ];
 
     try {
-      fs.readFileSync(logFile)
-        .toString()
-        .split(/(?=\n\d{4}-\d{2})/g)
+      fs.readFileSync(logFile, 'utf-8')
+        .split('\n')
         .forEach((line) => {
           if (!line.length) return;
 
-          const jsonRegexp = new RegExp(
-            /[{[]{1}([,:{}[\]0-9.\-+Eaeflnr-u \n\r\t]|"[^"\n]*?")+[}\]]{1}/
-          );
+          const logMessage = JSON.parse(line);
 
-          const timestamp = line.match(new RegExp(/.{24}/)) || [];
-          const level = line.match(new RegExp(/(?<=.{24}\s\[).+?(?=\])/)) || [];
-          const label =
-            line.match(new RegExp(/(?<=.{24}\s\[.+\]\[).+?(?=\])/)) || [];
-          const message =
-            line.match(new RegExp(/(?<=\[.+\]:\s)[\s\S][^\r]+/)) || [];
-          const data = message[0].match(jsonRegexp) || [];
-
-          if (level.length && filter.includes(level[0])) {
-            logs.push({
-              timestamp: timestamp[0],
-              level: level[0],
-              label: label[0],
-              message: message[0].replace(jsonRegexp, ''),
-              data: data.length ? JSON.parse(data[0]) : undefined,
-            });
+          if (!filter.includes(logMessage.level)) {
+            return;
           }
+
+          if (
+            !Object.keys(logMessage).every((key) =>
+              logMessageProperties.includes(key)
+            )
+          ) {
+            Object.keys(logMessage)
+              .filter((prop) => !logMessageProperties.includes(prop))
+              .forEach((prop) => {
+                Object.assign(logMessage, {
+                  data: {
+                    [prop]: logMessage[prop],
+                  },
+                });
+              });
+          }
+
+          logs.push(logMessage);
         });
 
       const displayedLogs = logs.reverse().slice(skip, skip + pageSize);
