@@ -1239,6 +1239,9 @@ components:
           properties:
             accessToken:
               type: string
+            channelTag:
+              type: string
+              nullable: true
     PushoverSettings:
       type: object
       properties:
