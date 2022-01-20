@@ -80,7 +80,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const intl = useIntl();
   const { locale } = useLocale();
   const [showRequestModal, setShowRequestModal] = useState(false);
-  const [showManager, setShowManager] = useState(false);
+  const [showManager, setShowManager] = useState(
+    router.query.manage == '1' ? true : false
+  );
   const [showIssueModal, setShowIssueModal] = useState(false);
 
   const {
@@ -278,12 +280,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             <StatusBadge
               status={data.mediaInfo?.status}
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
+              tmdbId={data.mediaInfo?.tmdbId}
+              mediaType="tv"
               plexUrl={data.mediaInfo?.plexUrl}
-              serviceUrl={
-                hasPermission(Permission.ADMIN)
-                  ? data.mediaInfo?.serviceUrl
-                  : undefined
-              }
             />
             {settings.currentSettings.series4kEnabled &&
               hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
@@ -295,12 +294,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0
                   }
+                  tmdbId={data.mediaInfo?.tmdbId}
+                  mediaType="tv"
                   plexUrl={data.mediaInfo?.plexUrl4k}
-                  serviceUrl={
-                    hasPermission(Permission.ADMIN)
-                      ? data.mediaInfo?.serviceUrl4k
-                      : undefined
-                  }
                 />
               )}
           </div>

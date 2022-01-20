@@ -271,13 +271,17 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             <span className="hidden mr-2 font-bold sm:block">
               {intl.formatMessage(globalMessages.status)}
             </span>
-            {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
-              MediaStatus.UNKNOWN ||
-            requestData.status === MediaRequestStatus.DECLINED ? (
+            {requestData.status === MediaRequestStatus.DECLINED ? (
               <Badge badgeType="danger">
-                {requestData.status === MediaRequestStatus.DECLINED
-                  ? intl.formatMessage(globalMessages.declined)
-                  : intl.formatMessage(globalMessages.failed)}
+                {intl.formatMessage(globalMessages.declined)}
+              </Badge>
+            ) : requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
+              MediaStatus.UNKNOWN ? (
+              <Badge
+                badgeType="danger"
+                href={`/${requestData.type}/${requestData.media.tmdbId}?manage=1`}
+              >
+                {intl.formatMessage(globalMessages.failed)}
               </Badge>
             ) : (
               <StatusBadge
@@ -292,17 +296,10 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   ).length > 0
                 }
                 is4k={requestData.is4k}
+                tmdbId={requestData.media.tmdbId}
+                mediaType={requestData.type}
                 plexUrl={
-                  requestData.is4k
-                    ? requestData.media.plexUrl4k
-                    : requestData.media.plexUrl
-                }
-                serviceUrl={
-                  hasPermission(Permission.ADMIN)
-                    ? requestData.is4k
-                      ? requestData.media.serviceUrl4k
-                      : requestData.media.serviceUrl
-                    : undefined
+                  requestData.media[requestData.is4k ? 'plexUrl4k' : 'plexUrl']
                 }
               />
             )}
