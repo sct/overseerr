@@ -1,7 +1,7 @@
+import fs from 'fs';
+import path from 'path';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
-import path from 'path';
-import fs from 'fs';
 
 // Migrate away from old log
 const OLD_LOG_FILE = path.join(__dirname, '../config/logs/overseerr.log');
@@ -51,6 +51,22 @@ const logger = winston.createLogger({
       maxFiles: '7d',
       createSymlink: true,
       symlinkName: 'overseerr.log',
+    }),
+    new winston.transports.DailyRotateFile({
+      filename: process.env.CONFIG_DIRECTORY
+        ? `${process.env.CONFIG_DIRECTORY}/logs/.machinelogs-%DATE%.json`
+        : path.join(__dirname, '../config/logs/.machinelogs-%DATE%.json'),
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '1d',
+      createSymlink: true,
+      symlinkName: '.machinelogs.json',
+      format: winston.format.combine(
+        winston.format.splat(),
+        winston.format.timestamp(),
+        winston.format.json()
+      ),
     }),
   ],
 });
