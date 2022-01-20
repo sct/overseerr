@@ -259,6 +259,9 @@ requestRoutes.post('/', async (req, res, next) => {
         .leftJoin('request.media', 'media')
         .where('request.is4k = :is4k', { is4k: req.body.is4k })
         .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
+        .andWhere('media.mediaType = :mediaType', {
+          mediaType: MediaType.MOVIE,
+        })
         .andWhere('request.status != :requestStatus', {
           requestStatus: MediaRequestStatus.DECLINED,
         })
