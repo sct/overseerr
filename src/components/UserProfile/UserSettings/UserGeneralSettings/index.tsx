@@ -55,12 +55,20 @@ const UserGeneralSettings: React.FC = () => {
   const [movieQuotaEnabled, setMovieQuotaEnabled] = useState(false);
   const [tvQuotaEnabled, setTvQuotaEnabled] = useState(false);
   const router = useRouter();
-  const { user, hasPermission, mutate } = useUser({
+  const {
+    user,
+    hasPermission,
+    revalidate: revalidateUser,
+  } = useUser({
     id: Number(router.query.userId),
   });
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const { currentSettings } = useSettings();
-  const { data, error, revalidate } = useSWR<UserSettingsGeneralResponse>(
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<UserSettingsGeneralResponse>(
     user ? `/api/v1/user/${user?.id}/settings/main` : null
   );
 
@@ -140,7 +148,7 @@ const UserGeneralSettings: React.FC = () => {
             });
           } finally {
             revalidate();
-            mutate();
+            revalidateUser();
           }
         }}
       >

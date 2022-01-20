@@ -41,13 +41,14 @@ const CollectionDetails: React.FC<CollectionDetailsProps> = ({
   const [requestModal, setRequestModal] = useState(false);
   const [is4k, setIs4k] = useState(false);
 
-  const { data, error, revalidate } = useSWR<Collection>(
-    `/api/v1/collection/${router.query.collectionId}`,
-    {
-      initialData: collection,
-      revalidateOnMount: true,
-    }
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<Collection>(`/api/v1/collection/${router.query.collectionId}`, {
+    fallbackData: collection,
+    revalidateOnMount: true,
+  });
 
   const { data: genres } =
     useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);

@@ -31,9 +31,11 @@ const NotificationsPushbullet: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/pushbullet'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/pushbullet');
 
   const NotificationsPushbulletSchema = Yup.object().shape({
     accessToken: Yup.string().when('enabled', {

@@ -35,7 +35,7 @@ export const SettingsProvider: React.FC<SettingsContextProps> = ({
 }) => {
   const { data, error } = useSWR<PublicSettingsResponse>(
     '/api/v1/settings/public',
-    { initialData: currentSettings }
+    { fallbackData: currentSettings }
   );
 
   let newSettings = defaultSettings;

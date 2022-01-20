@@ -165,12 +165,12 @@ const SettingsServices: React.FC = () => {
   const {
     data: radarrData,
     error: radarrError,
-    revalidate: revalidateRadarr,
+    mutate: revalidateRadarr,
   } = useSWR<RadarrSettings[]>('/api/v1/settings/radarr');
   const {
     data: sonarrData,
     error: sonarrError,
-    revalidate: revalidateSonarr,
+    mutate: revalidateSonarr,
   } = useSWR<SonarrSettings[]>('/api/v1/settings/sonarr');
   const [editRadarrModal, setEditRadarrModal] = useState<{
     open: boolean;

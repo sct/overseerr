@@ -93,7 +93,11 @@ const UserList: React.FC = () => {
   const pageIndex = page - 1;
   const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
-  const { data, error, revalidate } = useSWR<UserResultsResponse>(
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<UserResultsResponse>(
     `/api/v1/user?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&sort=${currentSort}`
@@ -472,7 +476,7 @@ const UserList: React.FC = () => {
         <div className="flex flex-col flex-grow mt-2 lg:flex-row lg:flex-grow-0">
           <div className="flex flex-col justify-between flex-grow mb-2 sm:flex-row lg:mb-0 lg:flex-grow-0">
             <Button
-              className="flex-grow mb-2 sm:mb-0 sm:mr-2 outline"
+              className="flex-grow mb-2 sm:mb-0 sm:mr-2"
               buttonType="primary"
               onClick={() => setCreateModal({ isOpen: true })}
             >
@@ -480,7 +484,7 @@ const UserList: React.FC = () => {
               <span>{intl.formatMessage(messages.createlocaluser)}</span>
             </Button>
             <Button
-              className="flex-grow outline lg:mr-2"
+              className="flex-grow lg:mr-2"
               buttonType="primary"
               onClick={() => setShowImportModal(true)}
             >

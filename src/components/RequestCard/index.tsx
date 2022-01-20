@@ -112,9 +112,9 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
   const {
     data: requestData,
     error: requestError,
-    revalidate,
+    mutate: revalidate,
   } = useSWR<MediaRequest>(`/api/v1/request/${request.id}`, {
-    initialData: request,
+    fallbackData: request,
   });
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
