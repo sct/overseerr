@@ -505,7 +505,6 @@
   "components.Settings.locale": "表示言語",
   "components.StatusBadge.status": "{status}",
   "components.UserProfile.norequests": "リクエストが有りません。",
-  "components.ManageSlideOver.allseasonsmarkedavailable": "",
   "components.ManageSlideOver.downloadstatus": "ダウンロード状況",
   "components.ManageSlideOver.manageModalClearMedia": "メディアのデータを消去",
   "components.ManageSlideOver.manageModalRequests": "リクエスト",

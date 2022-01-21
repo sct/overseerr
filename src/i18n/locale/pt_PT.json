@@ -811,7 +811,6 @@
   "components.UserList.displayName": "Nome de Exibição",
   "components.Settings.webAppUrlTip": "Opcionalmente direcionar os utilizadores para a aplicação de web app no seu servidor, em vez da aplicação de web app \"hospedada\"",
   "components.Settings.webAppUrl": "URL <WebAppLink>Web App</WebAppLink>",
-  "components.Settings.validationWebAppUrl": "Deve fornecer um URL válido da Web App do Plex",
   "components.Settings.locale": "Idioma de Exibição",
   "components.Settings.Notifications.webhookUrlTip": "Criar um <DiscordWebhookLink>webhook de integração</DiscordWebhookLink> no seu servidor",
   "components.Settings.Notifications.encryptionTip": "Na maioria dos casos, o TLS implícito usa a porta 465 e o STARTTLS usa a porta 587",
