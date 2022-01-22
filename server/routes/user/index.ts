@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
+import { findIndex, sortBy } from 'lodash';
 import { getRepository, Not } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
+import { MediaType } from '../../constants/media';
 import { UserType } from '../../constants/user';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
@@ -520,7 +522,6 @@ router.get<{ id: string }, UserWatchDataResponse>(
     }
 
     try {
-      const mediaRepository = getRepository(Media);
       const user = await getRepository(User).findOneOrFail({
         where: { id: Number(req.params.id) },
         select: ['id', 'plexId'],
@@ -531,24 +532,49 @@ router.get<{ id: string }, UserWatchDataResponse>(
       const watchStats = await tautulli.getUserWatchStats(user);
       const watchHistory = await tautulli.getUserWatchHistory(user);
 
-      const media = (
-        await Promise.all(
-          watchHistory.map(
-            async (record) =>
-              await mediaRepository.findOne({
-                where: {
-                  ratingKey:
-                    record.media_type === 'movie'
-                      ? record.rating_key
-                      : record.grandparent_rating_key,
-                },
-              })
+      const qb = getRepository(Media).createQueryBuilder('media');
+      const recentlyWatched = sortBy(
+        await qb
+          .where(
+            '(media.mediaType = :movie AND (media.ratingKey IN (:...ratingKeys) or media.ratingKey4k IN (:...ratingKeys)))',
+            {
+              movie: MediaType.MOVIE,
+              ratingKeys: watchHistory
+                .filter((record) => record.media_type == 'movie')
+                .map((record) => record.rating_key),
+            }
           )
-        )
-      ).filter((media) => !!media) as Media[];
+          .orWhere(
+            '(media.mediaType = :tv AND (media.ratingKey IN (:...ratingKeys) or media.ratingKey4k IN (:...ratingKeys)))',
+            {
+              tv: MediaType.TV,
+              ratingKeys: watchHistory
+                .filter((record) => record.media_type == 'episode')
+                .map((record) => record.grandparent_rating_key),
+            }
+          )
+          .getMany(),
+        [
+          (media) =>
+            findIndex(
+              watchHistory,
+              (record) =>
+                (!!media.ratingKey &&
+                  (record.media_type === 'movie'
+                    ? record.rating_key === parseInt(media.ratingKey)
+                    : record.grandparent_rating_key ===
+                      parseInt(media.ratingKey))) ||
+                (!!media.ratingKey4k &&
+                  (record.media_type === 'movie'
+                    ? record.rating_key === parseInt(media.ratingKey4k)
+                    : record.grandparent_rating_key ===
+                      parseInt(media.ratingKey4k)))
+            ),
+        ]
+      );
 
       return res.status(200).json({
-        recentlyWatched: media,
+        recentlyWatched,
         playCount: watchStats.total_plays,
       });
     } catch (e) {
