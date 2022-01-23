@@ -697,9 +697,6 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                               ) as OptionType[])
                       }
                       onChange={(value: OnChangeValue<OptionType, true>) => {
-                        // if (!Array.isArray(value)) {
-                        //   return;
-                        // }
                         setFieldValue(
                           'tags',
                           value.map((option) => option.value)
