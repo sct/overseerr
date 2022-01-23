@@ -413,12 +413,16 @@
   }
 
   .react-select-container .react-select__input {
-    @apply text-base text-white border-none shadow-sm;
+    @apply text-base border-none shadow-sm ring-0;
   }
 
   .react-select-container .react-select__input input:focus {
-    @apply text-white border-none;
+    @apply border-none;
     box-shadow: none;
+  }
+
+  .react-select-container .react-select__input-container {
+    @apply text-white;
   }
 }
 
@@ -434,15 +438,6 @@
   /* Used for animating height */
   .extra-max-height {
     max-height: 100rem;
-  }
-
-  .hide-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
