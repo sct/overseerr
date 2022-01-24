@@ -207,7 +207,11 @@ const SettingsJobs = () => {
               ? intl.formatMessage(globalMessages.saving)
               : intl.formatMessage(globalMessages.save)
           }
-          onCancel={() => setJobEditModal({ isOpen: false })}
+          onCancel={() => {
+            setJobEditModal({ isOpen: false });
+            setJobScheduleHours(1);
+            setJobScheduleMinutes(5);
+          }}
           okDisabled={isSaving}
           onOk={() => scheduleJob()}
         >
