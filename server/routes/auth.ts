@@ -48,98 +48,119 @@ authRoutes.post('/plex', async (req, res, next) => {
       })
       .getOne();
 
-    if (user) {
-      // Let's check if their Plex token is up-to-date
-      if (user.plexToken !== body.authToken) {
-        user.plexToken = body.authToken;
-      }
-
-      // Update the user's avatar with their Plex thumbnail, in case it changed
-      user.avatar = account.thumb;
-      user.email = account.email;
-      user.plexUsername = account.username;
-
-      // In case the user was previously a local account
-      if (user.userType === UserType.LOCAL) {
-        user.userType = UserType.PLEX;
-        user.plexId = account.id;
-      }
+    if (!user && !(await userRepository.count())) {
+      user = new User({
+        email: account.email,
+        plexUsername: account.username,
+        plexId: account.id,
+        plexToken: account.authToken,
+        permissions: Permission.ADMIN,
+        avatar: account.thumb,
+        userType: UserType.PLEX,
+      });
 
       await userRepository.save(user);
     } else {
-      // Here we check if it's the first user. If it is, we create the user with no check
-      // and give them admin permissions
-      const totalUsers = await userRepository.count();
+      const mainUser = await userRepository.findOneOrFail({
+        select: ['id', 'plexToken', 'plexId'],
+        order: { id: 'ASC' },
+      });
+      const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
-      if (totalUsers === 0) {
-        user = new User({
-          email: account.email,
-          plexUsername: account.username,
-          plexId: account.id,
-          plexToken: account.authToken,
-          permissions: Permission.ADMIN,
-          avatar: account.thumb,
-          userType: UserType.PLEX,
-        });
-        await userRepository.save(user);
-      }
+      if (
+        settings.main.localLogin ||
+        account.id === mainUser.plexId ||
+        (await mainPlexTv.checkUserAccess(account.id))
+      ) {
+        if (user) {
+          user.plexToken = body.authToken;
+          user.avatar = account.thumb;
+          user.email = account.email;
+          user.plexUsername = account.username;
 
-      // Double check that we didn't create the first admin user before running this
-      if (!user) {
-        if (!settings.main.newPlexLogin) {
-          logger.info(
-            'Failed sign-in attempt from user who has not been imported to Overseerr.',
-            {
-              label: 'Auth',
-              account: {
-                ...account,
-                authentication_token: '__REDACTED__',
-                authToken: '__REDACTED__',
-              },
-            }
-          );
-          return next({
-            status: 403,
-            message: 'Access denied.',
-          });
-        }
+          // In case the user was previously a local account
+          if (user.userType === UserType.LOCAL) {
+            user.userType = UserType.PLEX;
+            user.plexId = account.id;
+          }
 
-        // If we get to this point, the user does not already exist so we need to create the
-        // user _assuming_ they have access to the Plex server
-        const mainUser = await userRepository.findOneOrFail({
-          select: ['id', 'plexToken'],
-          order: { id: 'ASC' },
-        });
-        const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
-
-        if (await mainPlexTv.checkUserAccess(account.id)) {
-          user = new User({
-            email: account.email,
-            plexUsername: account.username,
-            plexId: account.id,
-            plexToken: account.authToken,
-            permissions: settings.main.defaultPermissions,
-            avatar: account.thumb,
-            userType: UserType.PLEX,
-          });
           await userRepository.save(user);
         } else {
-          logger.info(
-            'Failed sign-in attempt from user without access to the Plex server.',
-            {
-              label: 'Auth',
-              account: {
-                ...account,
-                authentication_token: '__REDACTED__',
-                authToken: '__REDACTED__',
-              },
-            }
-          );
-          return next({
-            status: 403,
-            message: 'Access denied.',
-          });
+          if (!settings.main.newPlexLogin) {
+            logger.info(
+              'Failed sign-in attempt from user who has not been imported to Overseerr',
+              {
+                label: 'Auth',
+                account: {
+                  ...account,
+                  authentication_token: undefined,
+                  authToken: undefined,
+                  subscription: undefined,
+                  entitlements: undefined,
+                },
+              }
+            );
+            return next({
+              status: 403,
+              message: 'Access denied.',
+            });
+          }
+
+          // If we get to this point, the user does not already exist so we need to create the
+          // user _assuming_ they have access to the Plex server
+          if (
+            !settings.main.localLogin ||
+            (await mainPlexTv.checkUserAccess(account.id))
+          ) {
+            user = new User({
+              email: account.email,
+              plexUsername: account.username,
+              plexId: account.id,
+              plexToken: account.authToken,
+              permissions: settings.main.defaultPermissions,
+              avatar: account.thumb,
+              userType: UserType.PLEX,
+            });
+
+            await userRepository.save(user);
+          } else {
+            logger.info(
+              'Failed sign-in attempt from user without access to the Plex server',
+              {
+                label: 'Auth',
+                account: {
+                  ...account,
+                  authentication_token: undefined,
+                  authToken: undefined,
+                  subscription: undefined,
+                  entitlements: undefined,
+                },
+              }
+            );
+            return next({
+              status: 403,
+              message: 'Access denied.',
+            });
+          }
         }
+      } else {
+        logger.info(
+          'Failed sign-in attempt from user without access to the Plex server.',
+          {
+            label: 'Auth',
+            account: {
+              ...account,
+              authentication_token: undefined,
+              authToken: undefined,
+              subscription: undefined,
+              entitlements: undefined,
+            },
+          }
+        );
+        return next({
+          status: 403,
+          message: 'Access denied.',
+        });
       }
     }
 
@@ -188,7 +209,7 @@ authRoutes.post('/local', async (req, res, next) => {
           account: {
             ip: req.ip,
             email: body.email,
-            password: '__REDACTED__',
+            password: undefined,
           },
         }
       );
