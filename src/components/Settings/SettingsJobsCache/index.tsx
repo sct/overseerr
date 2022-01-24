@@ -167,6 +167,8 @@ const SettingsJobs = () => {
         autoDismiss: true,
       });
       setJobEditModal({ isOpen: false });
+      setJobScheduleHours(1);
+      setJobScheduleMinutes(5);
       revalidate();
     } catch (e) {
       addToast(intl.formatMessage(messages.jobScheduleEditFailed), {
