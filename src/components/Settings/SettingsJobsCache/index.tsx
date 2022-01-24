@@ -210,7 +210,11 @@ const SettingsJobs: React.FC = () => {
               : intl.formatMessage(globalMessages.save)
           }
           iconSvg={<PencilIcon />}
-          onCancel={() => setJobEditModal({ isOpen: false })}
+          onCancel={() => {
+            setJobEditModal({ isOpen: false });
+            setJobScheduleHours(1);
+            setJobScheduleMinutes(5);
+          }}
           okDisabled={isSaving}
           onOk={() => scheduleJob()}
         >
