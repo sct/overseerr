@@ -58,7 +58,8 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   editJobSchedule: 'Modify Job',
   jobScheduleEditSaved: 'Job edited successfully!',
   jobScheduleEditFailed: 'Something went wrong while saving the job.',
-  editJobSchedulePrompt: 'Frequency',
+  editJobScheduleCurrent: 'Current Frequency',
+  editJobSchedulePrompt: 'New Frequency',
   editJobScheduleSelectorHours:
     'Every {jobScheduleHours, plural, one {hour} other {{jobScheduleHours} hours}}',
   editJobScheduleSelectorMinutes:
@@ -70,6 +71,7 @@ interface Job {
   name: string;
   type: 'process' | 'command';
   interval: 'short' | 'long' | 'fixed';
+  cronSchedule: string;
   nextExecutionTime: string;
   running: boolean;
 }
@@ -213,8 +215,16 @@ const SettingsJobs: React.FC = () => {
           onOk={() => scheduleJob()}
         >
           <div className="section">
-            <form>
-              <div className="pb-6 form-row">
+            <form className="mb-6">
+              <div className="form-row">
+                <label className="text-label">
+                  {intl.formatMessage(messages.editJobScheduleCurrent)}
+                </label>
+                <div className="mt-2 mb-1 form-input">
+                  {jobEditModal.job?.cronSchedule}
+                </div>
+              </div>
+              <div className="form-row">
                 <label htmlFor="jobSchedule" className="text-label">
                   {intl.formatMessage(messages.editJobSchedulePrompt)}
                 </label>

@@ -12,6 +12,7 @@ interface ScheduledJob {
   name: string;
   type: 'process' | 'command';
   interval: 'short' | 'long' | 'fixed';
+  cronSchedule: string;
   running?: () => boolean;
   cancelFn?: () => void;
 }
@@ -27,6 +28,7 @@ export const startJobs = (): void => {
     name: 'Plex Recently Added Scan',
     type: 'process',
     interval: 'short',
+    cronSchedule: jobs['plex-recently-added-scan'].schedule,
     job: schedule.scheduleJob(jobs['plex-recently-added-scan'].schedule, () => {
       logger.info('Starting scheduled job: Plex Recently Added Scan', {
         label: 'Jobs',
@@ -43,6 +45,7 @@ export const startJobs = (): void => {
     name: 'Plex Full Library Scan',
     type: 'process',
     interval: 'long',
+    cronSchedule: jobs['plex-full-scan'].schedule,
     job: schedule.scheduleJob(jobs['plex-full-scan'].schedule, () => {
       logger.info('Starting scheduled job: Plex Full Library Scan', {
         label: 'Jobs',
@@ -59,6 +62,7 @@ export const startJobs = (): void => {
     name: 'Radarr Scan',
     type: 'process',
     interval: 'long',
+    cronSchedule: jobs['radarr-scan'].schedule,
     job: schedule.scheduleJob(jobs['radarr-scan'].schedule, () => {
       logger.info('Starting scheduled job: Radarr Scan', { label: 'Jobs' });
       radarrScanner.run();
@@ -73,6 +77,7 @@ export const startJobs = (): void => {
     name: 'Sonarr Scan',
     type: 'process',
     interval: 'long',
+    cronSchedule: jobs['sonarr-scan'].schedule,
     job: schedule.scheduleJob(jobs['sonarr-scan'].schedule, () => {
       logger.info('Starting scheduled job: Sonarr Scan', { label: 'Jobs' });
       sonarrScanner.run();
@@ -87,6 +92,7 @@ export const startJobs = (): void => {
     name: 'Download Sync',
     type: 'command',
     interval: 'fixed',
+    cronSchedule: jobs['download-sync'].schedule,
     job: schedule.scheduleJob(jobs['download-sync'].schedule, () => {
       logger.debug('Starting scheduled job: Download Sync', {
         label: 'Jobs',
@@ -101,6 +107,7 @@ export const startJobs = (): void => {
     name: 'Download Sync Reset',
     type: 'command',
     interval: 'long',
+    cronSchedule: jobs['download-sync-reset'].schedule,
     job: schedule.scheduleJob(jobs['download-sync-reset'].schedule, () => {
       logger.info('Starting scheduled job: Download Sync Reset', {
         label: 'Jobs',
