@@ -66,14 +66,9 @@ This setting is **enabled** by default.
 
 ### Enable Local Sign-In
 
-When enabled:
+When enabled, users who have configured passwords will be allowed to sign in using their email address.
 
-- Users who have configured passwords will be allowed to sign in using their email address.
-
-When disabled:
-
-- Plex OAuth becomes the only sign-in option, and any "local users" you have created will no longer be able to sign in to Overseerr.
-- User access to the Plex server is verified upon each sign-in attempt.
+When disabled, Plex OAuth becomes the only sign-in option, and any "local users" you have created will not be able to sign in to Overseerr.
 
 This setting is **enabled** by default.
 

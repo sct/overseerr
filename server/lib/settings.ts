@@ -286,7 +286,7 @@ class Settings {
           tv: {},
         },
         hideAvailable: false,
-        localLogin: false,
+        localLogin: true,
         newPlexLogin: true,
         region: '',
         originalLanguage: '',
