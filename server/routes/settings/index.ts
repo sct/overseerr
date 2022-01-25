@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
-import { merge, omit, sortBy } from 'lodash';
+import { merge, omit, set, sortBy } from 'lodash';
 import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import { getRepository } from 'typeorm';
@@ -349,11 +349,7 @@ settingsRoutes.get(
             Object.keys(logMessage)
               .filter((prop) => !logMessageProperties.includes(prop))
               .forEach((prop) => {
-                Object.assign(logMessage, {
-                  data: {
-                    [prop]: logMessage[prop],
-                  },
-                });
+                set(logMessage, `data.${prop}`, logMessage[prop]);
               });
           }
 
