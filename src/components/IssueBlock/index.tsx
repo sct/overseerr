@@ -30,15 +30,15 @@ const IssueBlock: React.FC<IssueBlockProps> = ({ issue }) => {
   return (
     <div className="px-4 py-3 text-gray-300">
       <div className="flex items-center justify-between">
-        <div className="flex-col items-center flex-1 min-w-0 mr-6 text-sm leading-5">
+        <div className="mr-6 min-w-0 flex-1 flex-col items-center text-sm leading-5">
           <div className="flex flex-nowrap">
-            <ExclamationIcon className="flex-shrink-0 mr-1.5 h-5 w-5" />
+            <ExclamationIcon className="mr-1.5 h-5 w-5 flex-shrink-0" />
             <span className="w-40 truncate md:w-auto">
               {intl.formatMessage(issueOption.name)}
             </span>
           </div>
-          <div className="flex mb-1 flex-nowrap white">
-            <UserIcon className="min-w-0 flex-shrink-0 mr-1.5 h-5 w-5" />
+          <div className="white mb-1 flex flex-nowrap">
+            <UserIcon className="mr-1.5 h-5 w-5 min-w-0 flex-shrink-0" />
             <span className="w-40 truncate md:w-auto">
               <Link
                 href={
@@ -53,8 +53,8 @@ const IssueBlock: React.FC<IssueBlockProps> = ({ issue }) => {
               </Link>
             </span>
           </div>
-          <div className="flex mb-1 flex-nowrap white">
-            <CalendarIcon className="min-w-0 flex-shrink-0 mr-1.5 h-5 w-5" />
+          <div className="white mb-1 flex flex-nowrap">
+            <CalendarIcon className="mr-1.5 h-5 w-5 min-w-0 flex-shrink-0" />
             <span className="w-40 truncate md:w-auto">
               {intl.formatDate(issue.createdAt, {
                 year: 'numeric',
@@ -64,7 +64,7 @@ const IssueBlock: React.FC<IssueBlockProps> = ({ issue }) => {
             </span>
           </div>
         </div>
-        <div className="flex flex-wrap flex-shrink-0 ml-2">
+        <div className="ml-2 flex flex-shrink-0 flex-wrap">
           <Link href={`/issues/${issue.id}`} passHref>
             <Button buttonType="primary" as="a">
               <EyeIcon />

@@ -101,7 +101,7 @@ const UserProfile: React.FC = () => {
     <>
       <PageTitle title={user.displayName} />
       {Object.keys(availableTitles).length > 0 && (
-        <div className="absolute left-0 right-0 z-0 -top-16 h-96">
+        <div className="absolute left-0 right-0 -top-16 z-0 h-96">
           <ImageFader
             key={user.id}
             isDarker
@@ -123,9 +123,9 @@ const UserProfile: React.FC = () => {
             { type: 'and' }
           )) && (
           <div className="relative z-40">
-            <dl className="grid grid-cols-1 gap-5 mt-5 lg:grid-cols-3">
-              <div className="px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ring-gray-700 sm:p-6">
-                <dt className="text-sm font-bold text-gray-300 truncate">
+            <dl className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
+              <div className="overflow-hidden rounded-lg bg-gray-800 bg-opacity-50 px-4 py-5 shadow ring-1 ring-gray-700 sm:p-6">
+                <dt className="truncate text-sm font-bold text-gray-300">
                   {intl.formatMessage(messages.totalrequests)}
                 </dt>
                 <dd className="mt-1 text-3xl font-semibold text-white">
@@ -133,14 +133,14 @@ const UserProfile: React.FC = () => {
                 </dd>
               </div>
               <div
-                className={`px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ${
+                className={`overflow-hidden rounded-lg bg-gray-800 bg-opacity-50 px-4 py-5 shadow ring-1 ${
                   quota.movie.restricted
-                    ? 'ring-red-500 from-red-900 to-transparent bg-gradient-to-t'
+                    ? 'bg-gradient-to-t from-red-900 to-transparent ring-red-500'
                     : 'ring-gray-700'
                 } sm:p-6`}
               >
                 <dt
-                  className={`text-sm font-bold truncate ${
+                  className={`truncate text-sm font-bold ${
                     quota.movie.restricted ? 'text-red-500' : 'text-gray-300'
                   }`}
                 >
@@ -152,7 +152,7 @@ const UserProfile: React.FC = () => {
                     : intl.formatMessage(messages.movierequests)}
                 </dt>
                 <dd
-                  className={`flex mt-1 text-sm items-center ${
+                  className={`mt-1 flex items-center text-sm ${
                     quota.movie.restricted ? 'text-red-500' : 'text-white'
                   }`}
                 >
@@ -165,7 +165,7 @@ const UserProfile: React.FC = () => {
                             100
                         )}
                         useHeatLevel
-                        className="w-8 h-8 mr-2"
+                        className="mr-2 h-8 w-8"
                       />
                       <div>
                         {intl.formatMessage(messages.requestsperdays, {
@@ -188,14 +188,14 @@ const UserProfile: React.FC = () => {
                 </dd>
               </div>
               <div
-                className={`px-4 py-5 overflow-hidden bg-gray-800 bg-opacity-50 rounded-lg shadow ring-1 ${
+                className={`overflow-hidden rounded-lg bg-gray-800 bg-opacity-50 px-4 py-5 shadow ring-1 ${
                   quota.tv.restricted
-                    ? 'ring-red-500 from-red-900 to-transparent bg-gradient-to-t'
+                    ? 'bg-gradient-to-t from-red-900 to-transparent ring-red-500'
                     : 'ring-gray-700'
                 } sm:p-6`}
               >
                 <dt
-                  className={`text-sm font-bold truncate ${
+                  className={`truncate text-sm font-bold ${
                     quota.tv.restricted ? 'text-red-500' : 'text-gray-300'
                   }`}
                 >
@@ -207,7 +207,7 @@ const UserProfile: React.FC = () => {
                     : intl.formatMessage(messages.seriesrequest)}
                 </dt>
                 <dd
-                  className={`flex items-center mt-1 text-sm ${
+                  className={`mt-1 flex items-center text-sm ${
                     quota.tv.restricted ? 'text-red-500' : 'text-white'
                   }`}
                 >
@@ -220,7 +220,7 @@ const UserProfile: React.FC = () => {
                             100
                         )}
                         useHeatLevel
-                        className="w-8 h-8 mr-2"
+                        className="mr-2 h-8 w-8"
                       />
                       <div>
                         {intl.formatMessage(messages.requestsperdays, {

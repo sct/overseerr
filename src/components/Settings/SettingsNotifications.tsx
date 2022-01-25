@@ -30,7 +30,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.email),
       content: (
         <span className="flex items-center">
-          <MailIcon className="h-4 mr-2" />
+          <MailIcon className="mr-2 h-4" />
           {intl.formatMessage(messages.email)}
         </span>
       ),
@@ -41,7 +41,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.webpush),
       content: (
         <span className="flex items-center">
-          <CloudIcon className="h-4 mr-2" />
+          <CloudIcon className="mr-2 h-4" />
           {intl.formatMessage(messages.webpush)}
         </span>
       ),
@@ -52,7 +52,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: 'Discord',
       content: (
         <span className="flex items-center">
-          <DiscordLogo className="h-4 mr-2" />
+          <DiscordLogo className="mr-2 h-4" />
           Discord
         </span>
       ),
@@ -63,7 +63,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: 'Gotify',
       content: (
         <span className="flex items-center">
-          <GotifyLogo className="h-4 mr-2" />
+          <GotifyLogo className="mr-2 h-4" />
           Gotify
         </span>
       ),
@@ -74,7 +74,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: 'LunaSea',
       content: (
         <span className="flex items-center">
-          <LunaSeaLogo className="h-4 mr-2" />
+          <LunaSeaLogo className="mr-2 h-4" />
           LunaSea
         </span>
       ),
@@ -85,7 +85,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: 'Pushbullet',
       content: (
         <span className="flex items-center">
-          <PushbulletLogo className="h-4 mr-2" />
+          <PushbulletLogo className="mr-2 h-4" />
           Pushbullet
         </span>
       ),
@@ -96,7 +96,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: 'Pushover',
       content: (
         <span className="flex items-center">
-          <PushoverLogo className="h-4 mr-2" />
+          <PushoverLogo className="mr-2 h-4" />
           Pushover
         </span>
       ),
@@ -107,7 +107,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: 'Slack',
       content: (
         <span className="flex items-center">
-          <SlackLogo className="h-4 mr-2" />
+          <SlackLogo className="mr-2 h-4" />
           Slack
         </span>
       ),
@@ -118,7 +118,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: 'Telegram',
       content: (
         <span className="flex items-center">
-          <TelegramLogo className="h-4 mr-2" />
+          <TelegramLogo className="mr-2 h-4" />
           Telegram
         </span>
       ),
@@ -129,7 +129,7 @@ const SettingsNotifications: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.webhook),
       content: (
         <span className="flex items-center">
-          <LightningBoltIcon className="h-4 mr-2" />
+          <LightningBoltIcon className="mr-2 h-4" />
           {intl.formatMessage(messages.webhook)}
         </span>
       ),
