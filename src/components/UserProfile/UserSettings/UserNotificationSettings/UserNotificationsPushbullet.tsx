@@ -153,7 +153,7 @@ const UserPushbulletSettings: React.FC = () => {
             />
             <div className="actions">
               <div className="flex justify-end">
-                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"

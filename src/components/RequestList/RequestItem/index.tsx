@@ -63,8 +63,8 @@ const RequestItemError: React.FC<RequestItemErroProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-64 px-10 bg-gray-800 lg:flex-row ring-1 ring-red-500 rounded-xl xl:h-28">
-      <span className="text-sm text-center text-gray-300 lg:text-left">
+    <div className="flex h-64 w-full flex-col items-center justify-center rounded-xl bg-gray-800 px-10 ring-1 ring-red-500 lg:flex-row xl:h-28">
+      <span className="text-center text-sm text-gray-300 lg:text-left">
         {intl.formatMessage(messages.mediaerror)}
       </span>
       {hasPermission(Permission.MANAGE_REQUESTS) && mediaId && (
@@ -148,7 +148,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
   if (!title && !error) {
     return (
       <div
-        className="w-full h-64 bg-gray-800 rounded-xl xl:h-28 animate-pulse"
+        className="h-64 w-full animate-pulse rounded-xl bg-gray-800 xl:h-28"
         ref={ref}
       />
     );
@@ -177,9 +177,9 @@ const RequestItem: React.FC<RequestItemProps> = ({
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex flex-col justify-between w-full py-4 overflow-hidden text-gray-400 bg-gray-800 shadow-md ring-1 ring-gray-700 rounded-xl xl:h-28 xl:flex-row">
+      <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
         {title.backdropPath && (
-          <div className="absolute inset-0 z-0 w-full bg-center bg-cover xl:w-2/3">
+          <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
             <CachedImage
               src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
               alt=""
@@ -195,8 +195,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
             />
           </div>
         )}
-        <div className="relative flex flex-col justify-between w-full overflow-hidden sm:flex-row">
-          <div className="relative z-10 flex items-center w-full pl-4 pr-4 overflow-hidden xl:w-7/12 2xl:w-2/3 sm:pr-0">
+        <div className="relative flex w-full flex-col justify-between overflow-hidden sm:flex-row">
+          <div className="relative z-10 flex w-full items-center overflow-hidden pl-4 pr-4 sm:pr-0 xl:w-7/12 2xl:w-2/3">
             <Link
               href={
                 requestData.type === 'movie'
@@ -204,7 +204,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   : `/tv/${requestData.media.tmdbId}`
               }
             >
-              <a className="relative flex-shrink-0 w-12 h-auto overflow-hidden transition duration-300 scale-100 rounded-md transform-gpu hover:scale-105">
+              <a className="relative h-auto w-12 flex-shrink-0 scale-100 transform-gpu overflow-hidden rounded-md transition duration-300 hover:scale-105">
                 <CachedImage
                   src={
                     title.posterPath
@@ -219,8 +219,8 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 />
               </a>
             </Link>
-            <div className="flex flex-col justify-center pl-2 overflow-hidden xl:pl-4">
-              <div className="font-medium pt-0.5 sm:pt-1 text-xs text-white">
+            <div className="flex flex-col justify-center overflow-hidden pl-2 xl:pl-4">
+              <div className="pt-0.5 text-xs font-medium text-white sm:pt-1">
                 {(isMovie(title)
                   ? title.releaseDate
                   : title.firstAirDate
@@ -233,7 +233,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                     : `/tv/${requestData.media.tmdbId}`
                 }
               >
-                <a className="min-w-0 mr-2 text-lg font-bold text-white truncate xl:text-xl hover:underline">
+                <a className="mr-2 min-w-0 truncate text-lg font-bold text-white hover:underline xl:text-xl">
                   {isMovie(title) ? title.title : title.name}
                 </a>
               </Link>
@@ -255,7 +255,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                       <Badge>{intl.formatMessage(globalMessages.all)}</Badge>
                     </span>
                   ) : (
-                    <div className="flex overflow-x-scroll hide-scrollbar flex-nowrap">
+                    <div className="hide-scrollbar flex flex-nowrap overflow-x-scroll">
                       {request.seasons.map((season) => (
                         <span key={`season-${season.id}`} className="mr-2">
                           <Badge>{season.seasonNumber}</Badge>
@@ -267,7 +267,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
               )}
             </div>
           </div>
-          <div className="z-10 flex flex-col justify-center w-full pr-4 mt-4 ml-4 overflow-hidden text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">
+          <div className="z-10 mt-4 ml-4 flex w-full flex-col justify-center overflow-hidden pr-4 text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">
             <div className="card-field">
               <span className="card-field-name">
                 {intl.formatMessage(globalMessages.status)}
@@ -317,7 +317,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   <span className="card-field-name">
                     {intl.formatMessage(messages.requested)}
                   </span>
-                  <span className="flex text-sm text-gray-300 truncate">
+                  <span className="flex truncate text-sm text-gray-300">
                     {intl.formatMessage(messages.modifieduserdate, {
                       date: (
                         <FormattedRelativeTime
@@ -332,13 +332,13 @@ const RequestItem: React.FC<RequestItemProps> = ({
                       ),
                       user: (
                         <Link href={`/users/${requestData.requestedBy.id}`}>
-                          <a className="flex items-center truncate group">
+                          <a className="group flex items-center truncate">
                             <img
                               src={requestData.requestedBy.avatar}
                               alt=""
-                              className="ml-1.5 avatar-sm"
+                              className="avatar-sm ml-1.5"
                             />
-                            <span className="text-sm font-semibold truncate group-hover:underline group-hover:text-white">
+                            <span className="truncate text-sm font-semibold group-hover:text-white group-hover:underline">
                               {requestData.requestedBy.displayName}
                             </span>
                           </a>
@@ -352,7 +352,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                   <span className="card-field-name">
                     {intl.formatMessage(messages.requesteddate)}
                   </span>
-                  <span className="flex text-sm text-gray-300 truncate">
+                  <span className="flex truncate text-sm text-gray-300">
                     <FormattedRelativeTime
                       value={Math.floor(
                         (new Date(requestData.createdAt).getTime() -
@@ -371,7 +371,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
                 <span className="card-field-name">
                   {intl.formatMessage(messages.modified)}
                 </span>
-                <span className="flex text-sm text-gray-300 truncate">
+                <span className="flex truncate text-sm text-gray-300">
                   {intl.formatMessage(messages.modifieduserdate, {
                     date: (
                       <FormattedRelativeTime
@@ -386,13 +386,13 @@ const RequestItem: React.FC<RequestItemProps> = ({
                     ),
                     user: (
                       <Link href={`/users/${requestData.modifiedBy.id}`}>
-                        <a className="flex items-center truncate group">
+                        <a className="group flex items-center truncate">
                           <img
                             src={requestData.modifiedBy.avatar}
                             alt=""
-                            className="ml-1.5 avatar-sm"
+                            className="avatar-sm ml-1.5"
                           />
-                          <span className="text-sm font-semibold truncate group-hover:underline group-hover:text-white">
+                          <span className="truncate text-sm font-semibold group-hover:text-white group-hover:underline">
                             {requestData.modifiedBy.displayName}
                           </span>
                         </a>
@@ -404,7 +404,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             )}
           </div>
         </div>
-        <div className="z-10 flex flex-col justify-center w-full pl-4 pr-4 mt-4 space-y-2 xl:mt-0 xl:items-end xl:w-96 xl:pl-0">
+        <div className="z-10 mt-4 flex w-full flex-col justify-center space-y-2 pl-4 pr-4 xl:mt-0 xl:w-96 xl:items-end xl:pl-0">
           {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
             MediaStatus.UNKNOWN &&
             requestData.status !== MediaRequestStatus.DECLINED &&
@@ -439,7 +439,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             )}
           {requestData.status === MediaRequestStatus.PENDING &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
-              <div className="flex flex-row w-full space-x-2">
+              <div className="flex w-full flex-row space-x-2">
                 <span className="w-full">
                   <Button
                     className="w-full"

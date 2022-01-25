@@ -506,7 +506,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 </label>
                 <div className="form-input">
                   <div className="form-input-field">
-                    <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
+                    <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-gray-100 sm:text-sm">
                       {values.useSsl ? 'https://' : 'http://'}
                     </span>
                     <Field
@@ -594,7 +594,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </div>
               <div className="actions">
                 <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <span className="ml-3 inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"
@@ -637,7 +637,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               : intl.formatMessage(messages.scan)}
           </span>
         </Button>
-        <ul className="grid grid-cols-1 gap-5 mt-6 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
           {data?.libraries.map((library) => (
             <LibraryItem
               name={library.name}
@@ -655,11 +655,11 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         </p>
       </div>
       <div className="section">
-        <div className="p-4 bg-gray-800 rounded-md">
-          <div className="relative w-full h-8 mb-6 overflow-hidden bg-gray-600 rounded-full">
+        <div className="rounded-md bg-gray-800 p-4">
+          <div className="relative mb-6 h-8 w-full overflow-hidden rounded-full bg-gray-600">
             {dataSync?.running && (
               <div
-                className="h-8 transition-all duration-200 ease-in-out bg-indigo-600"
+                className="h-8 bg-indigo-600 transition-all duration-200 ease-in-out"
                 style={{
                   width: `${Math.round(
                     (dataSync.progress / dataSync.total) * 100
@@ -667,7 +667,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 }}
               />
             )}
-            <div className="absolute inset-0 flex items-center justify-center w-full h-8 text-sm">
+            <div className="absolute inset-0 flex h-8 w-full items-center justify-center text-sm">
               <span>
                 {dataSync?.running
                   ? `${dataSync.progress} of ${dataSync.total}`
@@ -675,11 +675,11 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
               </span>
             </div>
           </div>
-          <div className="flex flex-col w-full sm:flex-row">
+          <div className="flex w-full flex-col sm:flex-row">
             {dataSync?.running && (
               <>
                 {dataSync.currentLibrary && (
-                  <div className="flex items-center mb-2 mr-0 sm:mb-0 sm:mr-2">
+                  <div className="mb-2 mr-0 flex items-center sm:mb-0 sm:mr-2">
                     <Badge>
                       {intl.formatMessage(messages.currentlibrary, {
                         name: dataSync.currentLibrary.name,
@@ -792,7 +792,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     </label>
                     <div className="form-input">
                       <div className="form-input-field">
-                        <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm">
+                        <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-gray-100 sm:text-sm">
                           {values.tautulliUseSsl ? 'https://' : 'http://'}
                         </span>
                         <Field
@@ -904,7 +904,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   </div>
                   <div className="actions">
                     <div className="flex justify-end">
-                      <span className="inline-flex ml-3 rounded-md shadow-sm">
+                      <span className="ml-3 inline-flex rounded-md shadow-sm">
                         <Button
                           buttonType="primary"
                           type="submit"

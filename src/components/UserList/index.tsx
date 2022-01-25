@@ -471,12 +471,12 @@ const UserList: React.FC = () => {
         />
       </Transition>
 
-      <div className="flex flex-col justify-between lg:items-end lg:flex-row">
+      <div className="flex flex-col justify-between lg:flex-row lg:items-end">
         <Header>{intl.formatMessage(messages.userlist)}</Header>
-        <div className="flex flex-col flex-grow mt-2 lg:flex-row lg:flex-grow-0">
-          <div className="flex flex-col justify-between flex-grow mb-2 sm:flex-row lg:mb-0 lg:flex-grow-0">
+        <div className="mt-2 flex flex-grow flex-col lg:flex-grow-0 lg:flex-row">
+          <div className="mb-2 flex flex-grow flex-col justify-between sm:flex-row lg:mb-0 lg:flex-grow-0">
             <Button
-              className="flex-grow mb-2 sm:mb-0 sm:mr-2"
+              className="mb-2 flex-grow sm:mb-0 sm:mr-2"
               buttonType="primary"
               onClick={() => setCreateModal({ isOpen: true })}
             >
@@ -492,9 +492,9 @@ const UserList: React.FC = () => {
               <span>{intl.formatMessage(messages.importfromplex)}</span>
             </Button>
           </div>
-          <div className="flex flex-grow mb-2 lg:mb-0 lg:flex-grow-0">
-            <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
-              <SortDescendingIcon className="w-6 h-6" />
+          <div className="mb-2 flex flex-grow lg:mb-0 lg:flex-grow-0">
+            <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-sm text-gray-100">
+              <SortDescendingIcon className="h-6 w-6" />
             </span>
             <select
               id="sort"
@@ -573,9 +573,9 @@ const UserList: React.FC = () => {
               <Table.TD>
                 <div className="flex items-center">
                   <Link href={`/users/${user.id}`}>
-                    <a className="flex-shrink-0 w-10 h-10">
+                    <a className="h-10 w-10 flex-shrink-0">
                       <img
-                        className="w-10 h-10 rounded-full"
+                        className="h-10 w-10 rounded-full"
                         src={user.avatar}
                         alt=""
                       />
@@ -666,7 +666,7 @@ const UserList: React.FC = () => {
           <tr className="bg-gray-700">
             <Table.TD colSpan={8} noPadding>
               <nav
-                className="flex flex-col items-center w-screen px-6 py-3 space-x-4 space-y-3 sm:space-y-0 sm:flex-row lg:w-full"
+                className="flex w-screen flex-col items-center space-x-4 space-y-3 px-6 py-3 sm:flex-row sm:space-y-0 lg:w-full"
                 aria-label="Pagination"
               >
                 <div className="hidden lg:flex lg:flex-1">
@@ -686,7 +686,7 @@ const UserList: React.FC = () => {
                   </p>
                 </div>
                 <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
-                  <span className="items-center -mt-3 text-sm sm:-ml-4 lg:ml-0 sm:mt-0">
+                  <span className="-mt-3 items-center text-sm sm:-ml-4 sm:mt-0 lg:ml-0">
                     {intl.formatMessage(globalMessages.resultsperpage, {
                       pageSize: (
                         <select
@@ -699,7 +699,7 @@ const UserList: React.FC = () => {
                               .then(() => window.scrollTo(0, 0));
                           }}
                           value={currentPageSize}
-                          className="inline short"
+                          className="short inline"
                         >
                           <option value="5">5</option>
                           <option value="10">10</option>
@@ -711,7 +711,7 @@ const UserList: React.FC = () => {
                     })}
                   </span>
                 </div>
-                <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
+                <div className="flex flex-auto justify-center space-x-2 sm:flex-1 sm:justify-end">
                   <Button
                     disabled={!hasPrevPage}
                     onClick={() =>

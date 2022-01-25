@@ -162,7 +162,7 @@ const UserPasswordChange: React.FC = () => {
                 />
               )}
               {data.hasPassword && user?.id === currentUser?.id && (
-                <div className="pb-6 form-row">
+                <div className="form-row pb-6">
                   <label htmlFor="currentPassword" className="text-label">
                     {intl.formatMessage(messages.currentpassword)}
                   </label>
@@ -222,7 +222,7 @@ const UserPasswordChange: React.FC = () => {
               </div>
               <div className="actions">
                 <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <span className="ml-3 inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"

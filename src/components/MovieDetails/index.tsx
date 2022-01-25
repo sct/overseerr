@@ -186,7 +186,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const certification = releases?.find((r) => r.certification)?.certification;
   if (certification) {
     movieAttributes.push(
-      <span className="p-0.5 py-0 border rounded-md">{certification}</span>
+      <span className="rounded-md border p-0.5 py-0">{certification}</span>
     );
   }
 
@@ -372,8 +372,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   ) ?? []
                 ).length > 0 && (
                   <>
-                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1" />
-                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1 animate-ping" />
+                    <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" />
+                    <div className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-red-600" />
                   </>
                 )}
             </Button>
@@ -401,11 +401,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   </li>
                 ))}
               </ul>
-              <div className="flex justify-end mt-4">
+              <div className="mt-4 flex justify-end">
                 <Link href={`/movie/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                    <ArrowCircleRightIcon className="inline-block w-5 h-5 ml-1.5" />
+                    <ArrowCircleRightIcon className="ml-1.5 inline-block h-5 w-5" />
                   </a>
                 </Link>
               </div>
@@ -417,7 +417,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <div className="mb-6">
               <Link href={`/collection/${data.collection.id}`}>
                 <a>
-                  <div className="relative z-0 overflow-hidden transition duration-300 scale-100 bg-gray-800 bg-center bg-cover rounded-lg shadow-md cursor-pointer transform-gpu group hover:scale-105 ring-1 ring-gray-700 hover:ring-gray-500">
+                  <div className="group relative z-0 scale-100 transform-gpu cursor-pointer overflow-hidden rounded-lg bg-gray-800 bg-cover bg-center shadow-md ring-1 ring-gray-700 transition duration-300 hover:scale-105 hover:ring-gray-500">
                     <div className="absolute inset-0 z-0">
                       <CachedImage
                         src={`https://image.tmdb.org/t/p/w1440_and_h320_multi_faces/${data.collection.backdropPath}`}
@@ -433,7 +433,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         }}
                       />
                     </div>
-                    <div className="relative z-10 flex items-center justify-between p-4 text-gray-200 transition duration-300 h-14 group-hover:text-white">
+                    <div className="relative z-10 flex h-14 items-center justify-between p-4 text-gray-200 transition duration-300 group-hover:text-white">
                       <div>{data.collection.name}</div>
                       <Button buttonSize="sm">
                         {intl.formatMessage(globalMessages.view)}
@@ -453,9 +453,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   <>
                     <span className="media-rating">
                       {ratingData.criticsRating === 'Rotten' ? (
-                        <RTRotten className="w-6 mr-1" />
+                        <RTRotten className="mr-1 w-6" />
                       ) : (
-                        <RTFresh className="w-6 mr-1" />
+                        <RTFresh className="mr-1 w-6" />
                       )}
                       {ratingData.criticsScore}%
                     </span>
@@ -465,9 +465,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   <>
                     <span className="media-rating">
                       {ratingData.audienceRating === 'Spilled' ? (
-                        <RTAudRotten className="w-6 mr-1" />
+                        <RTAudRotten className="mr-1 w-6" />
                       ) : (
-                        <RTAudFresh className="w-6 mr-1" />
+                        <RTAudFresh className="mr-1 w-6" />
                       )}
                       {ratingData.audienceScore}%
                     </span>
@@ -476,7 +476,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 {!!data.voteCount && (
                   <>
                     <span className="media-rating">
-                      <TmdbLogo className="w-6 mr-2" />
+                      <TmdbLogo className="mr-2 w-6" />
                       {data.voteAverage}/10
                     </span>
                   </>
@@ -509,14 +509,14 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     >
                       {r.type === 3 ? (
                         // Theatrical
-                        <TicketIcon className="w-4 h-4" />
+                        <TicketIcon className="h-4 w-4" />
                       ) : r.type === 4 ? (
                         // Digital
-                        <CloudIcon className="w-4 h-4" />
+                        <CloudIcon className="h-4 w-4" />
                       ) : (
                         // Physical
                         <svg
-                          className="w-4 h-4"
+                          className="h-4 w-4"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
                         >
@@ -667,9 +667,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                             : messages.showless
                         )}
                         {!showMoreStudios ? (
-                          <ChevronDoubleDownIcon className="w-4 h-4 ml-1" />
+                          <ChevronDoubleDownIcon className="ml-1 h-4 w-4" />
                         ) : (
-                          <ChevronDoubleUpIcon className="w-4 h-4 ml-1" />
+                          <ChevronDoubleUpIcon className="ml-1 h-4 w-4" />
                         )}
                       </span>
                     </button>
