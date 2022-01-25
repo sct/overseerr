@@ -3,10 +3,9 @@ import { Listbox, Transition } from '@headlessui/react';
 import { AdjustmentsIcon } from '@heroicons/react/outline';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { isEqual } from 'lodash';
-import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import type { OptionsType, OptionTypeBase } from 'react-select';
+import Select from 'react-select';
 import useSWR from 'swr';
 import type {
   ServiceCommonServer,
@@ -19,11 +18,9 @@ import { formatBytes } from '../../../utils/numberHelpers';
 import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
 
 type OptionType = {
-  value: string;
+  value: number;
   label: string;
 };
-
-const Select = dynamic(() => import('react-select'), { ssr: false });
 
 const messages = defineMessages({
   advancedoptions: 'Advanced',
@@ -474,7 +471,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
           (isValidating || !serverData || !!serverData?.tags?.length) && (
             <div className="mb-2">
               <label htmlFor="tags">{intl.formatMessage(messages.tags)}</label>
-              <Select
+              <Select<OptionType, true>
                 name="tags"
                 options={(serverData?.tags ?? []).map((tag) => ({
                   label: tag.label,
@@ -489,22 +486,26 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 }
                 className="react-select-container react-select-container-dark"
                 classNamePrefix="react-select"
-                value={selectedTags.map((tagId) => {
-                  const foundTag = serverData?.tags.find(
-                    (tag) => tag.id === tagId
-                  );
-                  return {
-                    value: foundTag?.id,
-                    label: foundTag?.label,
-                  };
-                })}
-                onChange={(
-                  value: OptionTypeBase | OptionsType<OptionType> | null
-                ) => {
-                  if (!Array.isArray(value)) {
-                    return;
-                  }
-                  setSelectedTags(value?.map((option) => option.value));
+                value={
+                  selectedTags
+                    .map((tagId) => {
+                      const foundTag = serverData?.tags.find(
+                        (tag) => tag.id === tagId
+                      );
+
+                      if (!foundTag) {
+                        return undefined;
+                      }
+
+                      return {
+                        value: foundTag.id,
+                        label: foundTag.label,
+                      };
+                    })
+                    .filter((option) => option !== undefined) as OptionType[]
+                }
+                onChange={(value) => {
+                  setSelectedTags(value.map((option) => option.value));
                 }}
                 noOptionsMessage={() =>
                   intl.formatMessage(messages.notagoptions)

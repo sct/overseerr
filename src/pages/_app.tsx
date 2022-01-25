@@ -194,7 +194,12 @@ CoreApp.getInitialProps = async (initialProps) => {
         // Attempt to get the user by running a request to the local api
         const response = await axios.get<User>(
           `http://localhost:${process.env.PORT || 5055}/api/v1/auth/me`,
-          { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
+          {
+            headers:
+              ctx.req && ctx.req.headers.cookie
+                ? { cookie: ctx.req.headers.cookie }
+                : undefined,
+          }
         );
         user = response.data;
 
