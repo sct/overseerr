@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Bowser from 'bowser';
 
-interface PlexHeaders {
+interface PlexHeaders extends Record<string, string> {
   Accept: string;
   'X-Plex-Product': string;
   'X-Plex-Version': string;

@@ -3,10 +3,9 @@ import { Listbox, Transition } from '@headlessui/react';
 import { AdjustmentsIcon } from '@heroicons/react/outline';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { isEqual } from 'lodash';
-import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import type { OptionsType, OptionTypeBase } from 'react-select';
+import Select from 'react-select';
 import useSWR from 'swr';
 import type {
   ServiceCommonServer,
@@ -19,11 +18,9 @@ import { formatBytes } from '../../../utils/numberHelpers';
 import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
 
 type OptionType = {
-  value: string;
+  value: number;
   label: string;
 };
-
-const Select = dynamic(() => import('react-select'), { ssr: false });
 
 const messages = defineMessages({
   advancedoptions: 'Advanced',
@@ -261,7 +258,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
 
   if (!data && !error) {
     return (
-      <div className="w-full mb-2">
+      <div className="mb-2 w-full">
         <SmallLoadingSpinner />
       </div>
     );
@@ -283,15 +280,15 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
 
   return (
     <>
-      <div className="flex items-center mt-4 mb-2 font-bold tracking-wider">
-        <AdjustmentsIcon className="w-5 h-5 mr-1.5" />
+      <div className="mt-4 mb-2 flex items-center font-bold tracking-wider">
+        <AdjustmentsIcon className="mr-1.5 h-5 w-5" />
         {intl.formatMessage(messages.advancedoptions)}
       </div>
-      <div className="p-4 bg-gray-600 rounded-md shadow">
+      <div className="rounded-md bg-gray-600 p-4 shadow">
         {!!data && selectedServer !== null && (
           <div className="flex flex-col md:flex-row">
             {data.filter((server) => server.is4k === is4k).length > 1 && (
-              <div className="flex-grow flex-shrink-0 w-full mb-3 md:w-1/4 md:pr-4 last:pr-0">
+              <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
                 <label htmlFor="server">
                   {intl.formatMessage(messages.destinationserver)}
                 </label>
@@ -301,7 +298,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   value={selectedServer}
                   onChange={(e) => setSelectedServer(Number(e.target.value))}
                   onBlur={(e) => setSelectedServer(Number(e.target.value))}
-                  className="bg-gray-800 border-gray-700"
+                  className="border-gray-700 bg-gray-800"
                 >
                   {data
                     .filter((server) => server.is4k === is4k)
@@ -323,7 +320,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             {(isValidating ||
               !serverData ||
               serverData.profiles.length > 1) && (
-              <div className="flex-grow flex-shrink-0 w-full mb-3 md:w-1/4 md:pr-4 last:pr-0">
+              <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
                 <label htmlFor="profile">
                   {intl.formatMessage(messages.qualityprofile)}
                 </label>
@@ -333,7 +330,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   value={selectedProfile}
                   onChange={(e) => setSelectedProfile(Number(e.target.value))}
                   onBlur={(e) => setSelectedProfile(Number(e.target.value))}
-                  className="bg-gray-800 border-gray-700"
+                  className="border-gray-700 bg-gray-800"
                   disabled={isValidating || !serverData}
                 >
                   {(isValidating || !serverData) && (
@@ -367,7 +364,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
             {(isValidating ||
               !serverData ||
               serverData.rootFolders.length > 1) && (
-              <div className="flex-grow flex-shrink-0 w-full mb-3 md:w-1/4 md:pr-4 last:pr-0">
+              <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
                 <label htmlFor="folder">
                   {intl.formatMessage(messages.rootfolder)}
                 </label>
@@ -377,7 +374,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   value={selectedFolder}
                   onChange={(e) => setSelectedFolder(e.target.value)}
                   onBlur={(e) => setSelectedFolder(e.target.value)}
-                  className="bg-gray-800 border-gray-700"
+                  className="border-gray-700 bg-gray-800"
                   disabled={isValidating || !serverData}
                 >
                   {(isValidating || !serverData) && (
@@ -421,7 +418,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
               (isValidating ||
                 !serverData ||
                 (serverData.languageProfiles ?? []).length > 1) && (
-                <div className="flex-grow flex-shrink-0 w-full mb-3 md:w-1/4 md:pr-4 last:pr-0">
+                <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
                   <label htmlFor="language">
                     {intl.formatMessage(messages.languageprofile)}
                   </label>
@@ -435,7 +432,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                     onBlur={(e) =>
                       setSelectedLanguage(parseInt(e.target.value))
                     }
-                    className="bg-gray-800 border-gray-700"
+                    className="border-gray-700 bg-gray-800"
                     disabled={isValidating || !serverData}
                   >
                     {(isValidating || !serverData) && (
@@ -474,7 +471,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
           (isValidating || !serverData || !!serverData?.tags?.length) && (
             <div className="mb-2">
               <label htmlFor="tags">{intl.formatMessage(messages.tags)}</label>
-              <Select
+              <Select<OptionType, true>
                 name="tags"
                 options={(serverData?.tags ?? []).map((tag) => ({
                   label: tag.label,
@@ -489,22 +486,26 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                 }
                 className="react-select-container react-select-container-dark"
                 classNamePrefix="react-select"
-                value={selectedTags.map((tagId) => {
-                  const foundTag = serverData?.tags.find(
-                    (tag) => tag.id === tagId
-                  );
-                  return {
-                    value: foundTag?.id,
-                    label: foundTag?.label,
-                  };
-                })}
-                onChange={(
-                  value: OptionTypeBase | OptionsType<OptionType> | null
-                ) => {
-                  if (!Array.isArray(value)) {
-                    return;
-                  }
-                  setSelectedTags(value?.map((option) => option.value));
+                value={
+                  selectedTags
+                    .map((tagId) => {
+                      const foundTag = serverData?.tags.find(
+                        (tag) => tag.id === tagId
+                      );
+
+                      if (!foundTag) {
+                        return undefined;
+                      }
+
+                      return {
+                        value: foundTag.id,
+                        label: foundTag.label,
+                      };
+                    })
+                    .filter((option) => option !== undefined) as OptionType[]
+                }
+                onChange={(value) => {
+                  setSelectedTags(value.map((option) => option.value));
                 }}
                 noOptionsMessage={() =>
                   intl.formatMessage(messages.notagoptions)
@@ -528,25 +529,25 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                   </Listbox.Label>
                   <div className="relative">
                     <span className="inline-block w-full rounded-md shadow-sm">
-                      <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out bg-gray-800 border border-gray-700 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5">
+                      <Listbox.Button className="focus:shadow-outline-blue relative w-full cursor-default rounded-md border border-gray-700 bg-gray-800 py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out focus:border-blue-300 focus:outline-none sm:text-sm sm:leading-5">
                         <span className="flex items-center">
                           <img
                             src={selectedUser.avatar}
                             alt=""
-                            className="flex-shrink-0 w-6 h-6 rounded-full"
+                            className="h-6 w-6 flex-shrink-0 rounded-full"
                           />
-                          <span className="block ml-3">
+                          <span className="ml-3 block">
                             {selectedUser.displayName}
                           </span>
                           {selectedUser.displayName.toLowerCase() !==
                             selectedUser.email && (
-                            <span className="ml-1 text-gray-400 truncate">
+                            <span className="ml-1 truncate text-gray-400">
                               ({selectedUser.email})
                             </span>
                           )}
                         </span>
-                        <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 pointer-events-none">
-                          <ChevronDownIcon className="w-5 h-5" />
+                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500">
+                          <ChevronDownIcon className="h-5 w-5" />
                         </span>
                       </Listbox.Button>
                     </span>
@@ -559,11 +560,11 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                       leave="transition ease-in duration-100"
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0"
-                      className="w-full mt-1 bg-gray-800 rounded-md shadow-lg"
+                      className="mt-1 w-full rounded-md bg-gray-800 shadow-lg"
                     >
                       <Listbox.Options
                         static
-                        className="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
+                        className="shadow-xs max-h-60 overflow-auto rounded-md py-1 text-base leading-6 focus:outline-none sm:text-sm sm:leading-5"
                       >
                         {userData?.results.map((user) => (
                           <Listbox.Option key={user.id} value={user}>
@@ -571,9 +572,9 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                               <div
                                 className={`${
                                   active
-                                    ? 'text-white bg-indigo-600'
+                                    ? 'bg-indigo-600 text-white'
                                     : 'text-gray-300'
-                                } cursor-default select-none relative py-2 pl-8 pr-4`}
+                                } relative cursor-default select-none py-2 pl-8 pr-4`}
                               >
                                 <span
                                   className={`${
@@ -583,14 +584,14 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                                   <img
                                     src={user.avatar}
                                     alt=""
-                                    className="flex-shrink-0 w-6 h-6 rounded-full"
+                                    className="h-6 w-6 flex-shrink-0 rounded-full"
                                   />
-                                  <span className="flex-shrink-0 block ml-3">
+                                  <span className="ml-3 block flex-shrink-0">
                                     {user.displayName}
                                   </span>
                                   {user.displayName.toLowerCase() !==
                                     user.email && (
-                                    <span className="ml-1 text-gray-400 truncate">
+                                    <span className="ml-1 truncate text-gray-400">
                                       ({user.email})
                                     </span>
                                   )}
@@ -601,7 +602,7 @@ const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
                                       active ? 'text-white' : 'text-indigo-600'
                                     } absolute inset-y-0 left-0 flex items-center pl-1.5`}
                                   >
-                                    <CheckIcon className="w-5 h-5" />
+                                    <CheckIcon className="h-5 w-5" />
                                   </span>
                                 )}
                               </div>

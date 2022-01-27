@@ -212,7 +212,7 @@ const SettingsJobs: React.FC = () => {
         >
           <div className="section">
             <form>
-              <div className="pb-6 form-row">
+              <div className="form-row pb-6">
                 <label htmlFor="jobSchedule" className="text-label">
                   {intl.formatMessage(messages.editJobSchedulePrompt)}
                 </label>
@@ -291,7 +291,7 @@ const SettingsJobs: React.FC = () => {
                         messages[job.id] ?? messages.unknownJob
                       )}
                     </span>
-                    {job.running && <Spinner className="w-5 h-5 ml-2" />}
+                    {job.running && <Spinner className="ml-2 h-5 w-5" />}
                   </div>
                 </Table.TD>
                 <Table.TD>
@@ -337,7 +337,7 @@ const SettingsJobs: React.FC = () => {
                     </Button>
                   ) : (
                     <Button buttonType="primary" onClick={() => runJob(job)}>
-                      <PlayIcon className="w-5 h-5 mr-1" />
+                      <PlayIcon className="mr-1 h-5 w-5" />
                       <span>{intl.formatMessage(messages.runnow)}</span>
                     </Button>
                   )}

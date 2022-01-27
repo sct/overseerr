@@ -141,7 +141,7 @@ const ManageSlideOver: React.FC<
             <h3 className="mb-2 text-xl font-bold">
               {intl.formatMessage(messages.downloadstatus)}
             </h3>
-            <div className="overflow-hidden bg-gray-600 rounded-md shadow">
+            <div className="overflow-hidden rounded-md bg-gray-600 shadow">
               <ul>
                 {data.mediaInfo?.downloadStatus?.map((status, index) => (
                   <li
@@ -171,7 +171,7 @@ const ManageSlideOver: React.FC<
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalIssues)}
               </h3>
-              <div className="overflow-hidden bg-gray-600 rounded-md shadow">
+              <div className="overflow-hidden rounded-md bg-gray-600 shadow">
                 <ul>
                   {openIssues.map((issue) => (
                     <li
@@ -190,7 +190,7 @@ const ManageSlideOver: React.FC<
             <h3 className="mb-2 text-xl font-bold">
               {intl.formatMessage(messages.manageModalRequests)}
             </h3>
-            <div className="overflow-hidden bg-gray-600 rounded-md shadow">
+            <div className="overflow-hidden rounded-md bg-gray-600 shadow">
               <ul>
                 {requests.map((request) => (
                   <li
@@ -219,7 +219,7 @@ const ManageSlideOver: React.FC<
                 {!!watchData?.data && (
                   <div>
                     <div
-                      className={`grid grid-cols-1 divide-y divide-gray-500 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow ${
+                      className={`grid grid-cols-1 divide-y divide-gray-500 overflow-hidden bg-gray-600 text-sm text-gray-300 shadow ${
                         data.mediaInfo?.tautulliUrl
                           ? 'rounded-t-md'
                           : 'rounded-md'
@@ -254,8 +254,8 @@ const ManageSlideOver: React.FC<
                         </div>
                       </div>
                       {!!watchData.data.users.length && (
-                        <div className="flex flex-row px-4 pt-3 pb-2 space-x-2">
-                          <span className="font-bold leading-8 shrink-0">
+                        <div className="flex flex-row space-x-2 px-4 pt-3 pb-2">
+                          <span className="shrink-0 font-bold leading-8">
                             {intl.formatMessage(messages.playedby)}
                           </span>
                           <span className="flex flex-row flex-wrap">
@@ -268,11 +268,11 @@ const ManageSlideOver: React.FC<
                                 }
                                 key={`watch-user-${user.id}`}
                               >
-                                <a className="z-0 mb-1 -mr-2 hover:z-50 shrink-0">
+                                <a className="z-0 mb-1 -mr-2 shrink-0 hover:z-50">
                                   <img
                                     src={user.avatar}
                                     alt={user.displayName}
-                                    className="w-8 h-8 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
+                                    className="h-8 w-8 scale-100 transform-gpu rounded-full ring-1 ring-gray-500 transition duration-300 hover:scale-105"
                                   />
                                 </a>
                               </Link>
@@ -334,7 +334,7 @@ const ManageSlideOver: React.FC<
                 {!!watchData?.data4k && (
                   <div>
                     <div
-                      className={`grid grid-cols-1 divide-y divide-gray-500 overflow-hidden text-sm text-gray-300 bg-gray-600 shadow ${
+                      className={`grid grid-cols-1 divide-y divide-gray-500 overflow-hidden bg-gray-600 text-sm text-gray-300 shadow ${
                         data.mediaInfo?.tautulliUrl4k
                           ? 'rounded-t-md'
                           : 'rounded-md'
@@ -369,8 +369,8 @@ const ManageSlideOver: React.FC<
                         </div>
                       </div>
                       {!!watchData.data4k.users.length && (
-                        <div className="flex flex-row px-4 pt-3 pb-2 space-x-2">
-                          <span className="font-bold leading-8 shrink-0">
+                        <div className="flex flex-row space-x-2 px-4 pt-3 pb-2">
+                          <span className="shrink-0 font-bold leading-8">
                             {intl.formatMessage(messages.playedby)}
                           </span>
                           <span className="flex flex-row flex-wrap">
@@ -383,11 +383,11 @@ const ManageSlideOver: React.FC<
                                 }
                                 key={`watch-user-${user.id}`}
                               >
-                                <a className="z-0 mb-1 -mr-2 hover:z-50 shrink-0">
+                                <a className="z-0 mb-1 -mr-2 shrink-0 hover:z-50">
                                   <img
                                     src={user.avatar}
                                     alt={user.displayName}
-                                    className="w-8 h-8 transition duration-300 scale-100 rounded-full ring-1 ring-gray-500 transform-gpu hover:scale-105"
+                                    className="h-8 w-8 scale-100 transform-gpu rounded-full ring-1 ring-gray-500 transition duration-300 hover:scale-105"
                                   />
                                 </a>
                               </Link>

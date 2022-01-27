@@ -1,10 +1,9 @@
 import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
-import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import type { OptionsType, OptionTypeBase } from 'react-select';
+import Select from 'react-select';
 import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
 import type { RadarrSettings } from '../../../../server/lib/settings';
@@ -14,11 +13,9 @@ import SensitiveInput from '../../Common/SensitiveInput';
 import Transition from '../../Transition';
 
 type OptionType = {
-  value: string;
+  value: number;
   label: string;
 };
-
-const Select = dynamic(() => import('react-select'), { ssr: false });
 
 const messages = defineMessages({
   createradarr: 'Add New Radarr Server',
@@ -611,7 +608,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.tags)}
                   </label>
                   <div className="form-input">
-                    <Select
+                    <Select<OptionType, true>
                       options={
                         isValidated
                           ? testResponse.tags.map((tag) => ({
@@ -631,24 +628,30 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                       }
                       className="react-select-container"
                       classNamePrefix="react-select"
-                      value={values.tags.map((tagId) => {
-                        const foundTag = testResponse.tags.find(
-                          (tag) => tag.id === tagId
-                        );
-                        return {
-                          value: foundTag?.id,
-                          label: foundTag?.label,
-                        };
-                      })}
-                      onChange={(
-                        value: OptionTypeBase | OptionsType<OptionType> | null
-                      ) => {
-                        if (!Array.isArray(value)) {
-                          return;
-                        }
+                      value={
+                        values.tags
+                          .map((tagId) => {
+                            const foundTag = testResponse.tags.find(
+                              (tag) => tag.id === tagId
+                            );
+
+                            if (!foundTag) {
+                              return undefined;
+                            }
+
+                            return {
+                              value: foundTag.id,
+                              label: foundTag.label,
+                            };
+                          })
+                          .filter(
+                            (option) => option !== undefined
+                          ) as OptionType[]
+                      }
+                      onChange={(value) => {
                         setFieldValue(
                           'tags',
-                          value?.map((option) => option.value)
+                          value.map((option) => option.value)
                         );
                       }}
                       noOptionsMessage={() =>

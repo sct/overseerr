@@ -48,7 +48,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
                 status: intl.formatMessage(globalMessages.available),
               })}
             </span>
-            {inProgress && <Spinner className="w-3 h-3 ml-1" />}
+            {inProgress && <Spinner className="ml-1 h-3 w-3" />}
           </div>
         </Badge>
       );
@@ -62,7 +62,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
                 status: intl.formatMessage(globalMessages.partiallyavailable),
               })}
             </span>
-            {inProgress && <Spinner className="w-3 h-3 ml-1" />}
+            {inProgress && <Spinner className="ml-1 h-3 w-3" />}
           </div>
         </Badge>
       );
@@ -78,7 +78,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
                   : intl.formatMessage(globalMessages.requested),
               })}
             </span>
-            {inProgress && <Spinner className="w-3 h-3 ml-1" />}
+            {inProgress && <Spinner className="ml-1 h-3 w-3" />}
           </div>
         </Badge>
       );

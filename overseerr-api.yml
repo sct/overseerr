@@ -3162,6 +3162,13 @@ paths:
       security: []
       tags:
         - users
+      parameters:
+        - in: path
+          name: guid
+          required: true
+          schema:
+            type: number
+            example: 1
       responses:
         '200':
           description: OK
