@@ -4183,10 +4183,10 @@ cosmiconfig@^7, cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-country-flag-icons@^1.4.19:
-  version "1.4.19"
-  resolved "https://registry.yarnpkg.com/country-flag-icons/-/country-flag-icons-1.4.19.tgz#410879a4a1b06ab28d4fc56261b391f221eba957"
-  integrity sha512-1hmXFJ4UURQt0Ex0990B7oOL4n9KLpT9NOSEmZoYh+/5DQ7/pikyqaptqCLUFFv/bYHyvYFeo0fqV82XxU6VOA==
+country-flag-icons@^1.4.20:
+  version "1.4.20"
+  resolved "https://registry.yarnpkg.com/country-flag-icons/-/country-flag-icons-1.4.20.tgz#6676e68ad62dab4c0dcaa09f900f163609b32b92"
+  integrity sha512-f9/cO9IEDIkLdOQeTUMDLEWMcDk4qbTRjbQLpy5pm+yil7Fa7QkKxgiMOQ2z1+Jht8/BAD3JJAmPG4qtK/tbUw==
 
 create-require@^1.1.0:
   version "1.1.1"
