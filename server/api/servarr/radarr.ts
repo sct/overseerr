@@ -1,7 +1,7 @@
 import logger from '../../logger';
 import ServarrBase from './base';
 
-interface RadarrMovieOptions {
+export interface RadarrMovieOptions {
   title: string;
   qualityProfileId: number;
   minimumAvailability: string;

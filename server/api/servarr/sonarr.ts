@@ -63,7 +63,7 @@ export interface SonarrSeries {
   };
 }
 
-interface AddSeriesOptions {
+export interface AddSeriesOptions {
   tvdbid: number;
   title: string;
   profileId: number;

@@ -20,7 +20,7 @@ jobs:
     name: Lint & Test Build
     needs: jobs
     runs-on: ubuntu-20.04
-    container: node:14.18-alpine
+    container: node:16.13-alpine
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
