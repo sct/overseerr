@@ -130,7 +130,7 @@ const Modal: React.FC<ModalProps> = ({
               />
             </div>
           )}
-          <div className="relative p-0.5 overflow-x-hidden sm:flex sm:items-center">
+          <div className="relative overflow-x-hidden p-0.5 sm:flex sm:items-center">
             {iconSvg && <div className="modal-icon">{iconSvg}</div>}
             <div
               className={`mt-3 truncate text-center text-white sm:mt-0 sm:text-left ${
