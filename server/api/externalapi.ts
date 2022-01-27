@@ -104,7 +104,8 @@ class ExternalAPI {
     const useProxy =
       proxySettings.enabled &&
       !proxySettings.options.ignoredAddresses.some(
-        (ignoredAddress) => this.baseUrl === ignoredAddress
+        (ignoredAddress) => this.baseUrl === ignoredAddress,
+        this
       ) &&
       !(
         proxySettings.options.bypassLocalAddresses &&

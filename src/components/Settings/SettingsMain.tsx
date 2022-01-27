@@ -18,6 +18,7 @@ import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
+import CreatableInputOnly from '../Common/CreatableInputOnly';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
 import SensitiveInput from '../Common/SensitiveInput';
@@ -68,6 +69,7 @@ const messages = defineMessages({
   proxyAuthPass: 'Authenticating Password',
   proxyBypassLocalAddresses: 'Bypass Local Addresses',
   proxyIgnoredAddresses: 'Ignored Addresses',
+  proxyIgnoredAddressesHint: 'Enter an address and press Enter or Tab…',
   proxyValidationHostname: 'You must provide a valid hostname or IP address',
   proxyValidationPort: 'You must provide a valid port number',
 });
@@ -158,7 +160,7 @@ const SettingsMain: React.FC = () => {
           proxyAuthUser: data?.proxy.options.authUser,
           proxyAuthPass: data?.proxy.options.authPass,
           proxyBypassLocalAddresses: data?.proxy.options.bypassLocalAddresses,
-          proxyIgnoredAddresses: data?.proxy.options.ignoredAddresses,
+          proxyIgnoredAddresses: data?.proxy.options.ignoredAddresses ?? [],
         }}
         enableReinitialize
         validationSchema={MainSettingsSchema}
@@ -485,7 +487,6 @@ const SettingsMain: React.FC = () => {
                               id="proxyHostname"
                               name="proxyHostname"
                               type="text"
-                              disabled={!values.proxyEnabled}
                             />
                           </div>
                           {errors.proxyHostname && touched.proxyHostname && (
@@ -505,7 +506,6 @@ const SettingsMain: React.FC = () => {
                             id="proxyPort"
                             name="proxyPort"
                             className="short"
-                            disabled={!values.proxyEnabled}
                           />
                           {errors.proxyPort && touched.proxyPort && (
                             <div className="error">{errors.proxyPort}</div>
@@ -526,7 +526,6 @@ const SettingsMain: React.FC = () => {
                             onChange={() => {
                               setFieldValue('proxyUseSSL', !values.proxyUseSSL);
                             }}
-                            disabled={!values.proxyEnabled}
                           />
                         </div>
                       </div>
@@ -540,7 +539,6 @@ const SettingsMain: React.FC = () => {
                               id="proxyAuthUser"
                               name="proxyAuthUser"
                               type="text"
-                              disabled={!values.proxyEnabled}
                             />
                           </div>
                         </div>
@@ -555,7 +553,6 @@ const SettingsMain: React.FC = () => {
                               as="field"
                               id="proxyAuthPass"
                               name="proxyAuthPass"
-                              disabled={!values.proxyEnabled}
                             />
                           </div>
                         </div>
@@ -582,8 +579,34 @@ const SettingsMain: React.FC = () => {
                                 !values.proxyBypassLocalAddresses
                               );
                             }}
-                            disabled={!values.proxyEnabled}
                           />
+                        </div>
+                      </div>
+                      <div className="form-row">
+                        <label
+                          htmlFor="proxyIgnoredAddresses"
+                          className="checkbox-label"
+                        >
+                          <span>
+                            {intl.formatMessage(messages.proxyIgnoredAddresses)}
+                          </span>
+                        </label>
+                        <div className="form-input">
+                          <div className="form-input-field">
+                            <CreatableInputOnly
+                              fieldName="proxyIgnoredAddresses"
+                              setFieldValue={setFieldValue}
+                              placeholder={intl.formatMessage(
+                                messages.proxyIgnoredAddressesHint
+                              )}
+                              value={values.proxyIgnoredAddresses.map(
+                                (address) => ({
+                                  label: address,
+                                  value: address,
+                                })
+                              )}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
