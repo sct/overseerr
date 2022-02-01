@@ -375,6 +375,25 @@ settingsRoutes.get(
       'data',
     ];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const deepValues = (obj: Record<string, any>): any[] => {
+      const values = [];
+
+      for (const val of Object.values(obj)) {
+        if (typeof val === 'string' || typeof val === 'number') {
+          values.push(val);
+        } else if (typeof val === 'object') {
+          values.push(...deepValues(val));
+        } else {
+          values.push(val);
+        }
+      }
+
+      return values;
+    };
+
+    const searchRegexp = new RegExp(req.query.search as string, 'i');
+
     try {
       fs.readFileSync(logFile, 'utf-8')
         .split('\n')
@@ -397,6 +416,19 @@ settingsRoutes.get(
               .forEach((prop) => {
                 set(logMessage, `data.${prop}`, logMessage[prop]);
               });
+          }
+
+          if (req.query.search) {
+            if (
+              // label and data are sometimes undefined
+              !searchRegexp.test(logMessage.label ?? '') &&
+              !searchRegexp.test(logMessage.message) &&
+              !deepValues(logMessage.data ?? {}).some((val) =>
+                searchRegexp.test(val)
+              )
+            ) {
+              return;
+            }
           }
 
           logs.push(logMessage);

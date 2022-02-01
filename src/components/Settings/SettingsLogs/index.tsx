@@ -17,6 +17,7 @@ import {
   FilterIcon,
   PauseIcon,
   PlayIcon,
+  SearchIcon,
 } from '@heroicons/react/solid';
 import type {
   LogMessage,
@@ -59,6 +60,8 @@ const SettingsLogs = () => {
   const { addToast } = useToasts();
   const [currentFilter, setCurrentFilter] = useState<Filter>('debug');
   const [currentPageSize, setCurrentPageSize] = useState(25);
+  const [searchFilter, debouncedSearchFilter, setSearchFilter] =
+    useDebouncedState('');
   const [refreshInterval, setRefreshInterval] = useState(5000);
   const [activeLog, setActiveLog] = useState<{
     isOpen: boolean;
@@ -76,7 +79,9 @@ const SettingsLogs = () => {
   const { data, error } = useSWR<LogsResultsResponse>(
     `/api/v1/settings/logs?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
-    }&filter=${currentFilter}`,
+    }&filter=${currentFilter}${
+      debouncedSearchFilter ? `&search=${debouncedSearchFilter}` : ''
+    }`,
     {
       refreshInterval: refreshInterval,
       revalidateOnFocus: false,
@@ -245,10 +250,21 @@ const SettingsLogs = () => {
             appDataPath: appData ? appData.appDataPath : '/app/config',
           })}
         </p>
-        <div className="mt-2 flex flex-grow flex-row sm:flex-grow-0 sm:justify-end">
+        <div className="mt-2 flex flex-grow flex-col sm:flex-grow-0 sm:flex-row sm:justify-end">
+          <div className="mb-2 flex flex-grow sm:mb-0 sm:mr-2 md:flex-grow-0">
+            <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-sm text-gray-100">
+              <SearchIcon className="h-6 w-6" />
+            </span>
+            <input
+              type="text"
+              className="rounded-r-only"
+              value={searchFilter}
+              onChange={(e) => setSearchFilter(e.target.value as string)}
+            />
+          </div>
           <div className="mb-2 flex flex-1 flex-row justify-between sm:mb-0 sm:flex-none">
             <Button
-              className="mr-2 w-full flex-grow"
+              className="mr-2 flex flex-grow"
               buttonType={refreshInterval ? 'default' : 'primary'}
               onClick={() => toggleLogs()}
             >
@@ -259,34 +275,34 @@ const SettingsLogs = () => {
                 )}
               </span>
             </Button>
-          </div>
-          <div className="mb-2 flex flex-1 sm:mb-0 sm:flex-none">
-            <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-sm text-gray-100">
-              <FilterIcon className="h-6 w-6" />
-            </span>
-            <select
-              id="filter"
-              name="filter"
-              onChange={(e) => {
-                setCurrentFilter(e.target.value as Filter);
-                router.push(router.pathname);
-              }}
-              value={currentFilter}
-              className="rounded-r-only"
-            >
-              <option value="debug">
-                {intl.formatMessage(messages.filterDebug)}
-              </option>
-              <option value="info">
-                {intl.formatMessage(messages.filterInfo)}
-              </option>
-              <option value="warn">
-                {intl.formatMessage(messages.filterWarn)}
-              </option>
-              <option value="error">
-                {intl.formatMessage(messages.filterError)}
-              </option>
-            </select>
+            <div className="flex flex-grow">
+              <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-sm text-gray-100">
+                <FilterIcon className="h-6 w-6" />
+              </span>
+              <select
+                id="filter"
+                name="filter"
+                onChange={(e) => {
+                  setCurrentFilter(e.target.value as Filter);
+                  router.push(router.pathname);
+                }}
+                value={currentFilter}
+                className="rounded-r-only"
+              >
+                <option value="debug">
+                  {intl.formatMessage(messages.filterDebug)}
+                </option>
+                <option value="info">
+                  {intl.formatMessage(messages.filterInfo)}
+                </option>
+                <option value="warn">
+                  {intl.formatMessage(messages.filterWarn)}
+                </option>
+                <option value="error">
+                  {intl.formatMessage(messages.filterError)}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
         <Table>
