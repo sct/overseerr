@@ -72,7 +72,7 @@
     "swr": "^1.2.0",
     "typeorm": "0.2.41",
     "web-push": "^3.4.5",
-    "winston": "^3.4.0",
+    "winston": "^3.5.1",
     "winston-daily-rotate-file": "^4.6.0",
     "xml2js": "^0.4.23",
     "yamljs": "^0.3.0",
