@@ -123,15 +123,13 @@ const SettingsLogs = () => {
     });
   };
 
-  if (!data && !error) {
-    return <LoadingSpinner />;
-  }
-
-  if (!data) {
+  // check if there's no data and no errors in the table
+  // so as to show a spinner inside the table and not refresh the whole component
+  if (!data && error) {
     return <Error statusCode={500} />;
   }
 
-  const hasNextPage = data.pageInfo.pages > pageIndex + 1;
+  const hasNextPage = data?.pageInfo.pages ?? 0 > pageIndex + 1;
   const hasPrevPage = pageIndex > 0;
 
   return (
@@ -316,7 +314,14 @@ const SettingsLogs = () => {
             </tr>
           </thead>
           <Table.TBody>
-            {data.results.map((row: LogMessage, index: number) => {
+            {!data ? (
+              <tr>
+                <Table.TD colSpan={5} noPadding>
+                  <LoadingSpinner />
+                </Table.TD>
+              </tr>
+            ) : (
+              data.results.map((row: LogMessage, index: number) => {
               return (
                 <tr key={`log-list-${index}`}>
                   <Table.TD className="text-gray-300">
@@ -336,8 +341,8 @@ const SettingsLogs = () => {
                           ? 'danger'
                           : row.level === 'warn'
                           ? 'warning'
-                          : row.level === 'info'
                           ? 'success'
+                          : row.level === 'info'
                           : 'default'
                       }
                     >
@@ -354,8 +359,8 @@ const SettingsLogs = () => {
                         content={intl.formatMessage(messages.viewdetails)}
                       >
                         <Button
-                          buttonType="primary"
                           buttonSize="sm"
+                          buttonType="primary"
                           onClick={() =>
                             setActiveLog({ log: row, isOpen: true })
                           }
@@ -380,9 +385,10 @@ const SettingsLogs = () => {
                   </Table.TD>
                 </tr>
               );
-            })}
+              })
+            )}
 
-            {data.results.length === 0 && (
+            {data?.results.length === 0 && (
               <tr className="relative h-24 p-2 text-white">
                 <Table.TD colSpan={5} noPadding>
                   <div className="flex w-screen flex-col items-center justify-center p-6 md:w-full">
@@ -412,13 +418,13 @@ const SettingsLogs = () => {
                 >
                   <div className="hidden lg:flex lg:flex-1">
                     <p className="text-sm">
-                      {data.results.length > 0 &&
+                      {(data?.results.length ?? 0) > 0 &&
                         intl.formatMessage(globalMessages.showingresults, {
                           from: pageIndex * currentPageSize + 1,
                           to:
-                            data.results.length < currentPageSize
+                            data?.results.length ?? 0 < currentPageSize
                               ? pageIndex * currentPageSize +
-                                data.results.length
+                                (data?.results.length ?? 0)
                               : (pageIndex + 1) * currentPageSize,
                           total: data.pageInfo.results,
                           strong: (msg: React.ReactNode) => (
