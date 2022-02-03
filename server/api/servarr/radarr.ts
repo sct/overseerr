@@ -27,7 +27,6 @@ export interface RadarrMovie {
   profileId: number;
   qualityProfileId: number;
   added: string;
-  downloaded: boolean;
   hasFile: boolean;
 }
 
@@ -85,7 +84,7 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
     try {
       const movie = await this.getMovieByTmdbId(options.tmdbId);
 
-      if (movie.downloaded) {
+      if (movie.hasFile) {
         logger.info(
           'Title already exists and is available. Skipping add and returning success',
           {
