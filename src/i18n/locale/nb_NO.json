@@ -425,7 +425,7 @@
   "components.Settings.SettingsAbout.Releases.versionChangelog": "{version} Endringslogg",
   "components.Settings.SettingsAbout.Releases.releases": "Utgivelser",
   "components.Settings.SettingsAbout.Releases.releasedataMissing": "Utgivelsesdata er for øyeblikket utilgjengelig.",
-  "components.Settings.SettingsAbout.Releases.latestversion": "Nyeste",
+  "components.Settings.SettingsAbout.Releases.latestversion": "Siste versjon",
   "components.Settings.SettingsAbout.Releases.currentversion": "Nåværende versjon",
   "components.Settings.RadarrModal.validationNameRequired": "Du må oppgi et tjenernavn",
   "components.Settings.RadarrModal.validationMinimumAvailabilityRequired": "Du må velge en minimum tilgjengelighet",
