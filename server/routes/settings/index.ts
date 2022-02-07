@@ -4,10 +4,12 @@ import fs from 'fs';
 import { merge, omit, set, sortBy } from 'lodash';
 import { rescheduleJob } from 'node-schedule';
 import path from 'path';
+import semver from 'semver';
 import { getRepository } from 'typeorm';
 import { URL } from 'url';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
+import TautulliAPI from '../../api/tautulli';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
@@ -50,7 +52,7 @@ settingsRoutes.get('/main', (req, res, next) => {
   const settings = getSettings();
 
   if (!req.user) {
-    return next({ status: 400, message: 'User missing from request' });
+    return next({ status: 400, message: 'User missing from request.' });
   }
 
   res.status(200).json(filteredMainSettings(req.user, settings.main));
@@ -71,7 +73,7 @@ settingsRoutes.post('/main/regenerate', (req, res, next) => {
   const main = settings.regenerateApiKey();
 
   if (!req.user) {
-    return next({ status: 500, message: 'User missing from request' });
+    return next({ status: 500, message: 'User missing from request.' });
   }
 
   return res.status(200).json(filteredMainSettings(req.user, main));
@@ -98,16 +100,22 @@ settingsRoutes.post('/plex', async (req, res, next) => {
 
     const result = await plexClient.getStatus();
 
-    if (result?.MediaContainer?.machineIdentifier) {
-      settings.plex.machineId = result.MediaContainer.machineIdentifier;
-      settings.plex.name = result.MediaContainer.friendlyName;
-
-      settings.save();
+    if (!result?.MediaContainer?.machineIdentifier) {
+      throw new Error('Server not found');
     }
+
+    settings.plex.machineId = result.MediaContainer.machineIdentifier;
+    settings.plex.name = result.MediaContainer.friendlyName;
+
+    settings.save();
   } catch (e) {
+    logger.error('Something went wrong testing Plex connection', {
+      label: 'API',
+      errorMessage: e.message,
+    });
     return next({
       status: 500,
-      message: `Failed to connect to Plex: ${e.message}`,
+      message: 'Unable to connect to Plex.',
     });
   }
 
@@ -180,9 +188,13 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
     }
     return res.status(200).json(devices);
   } catch (e) {
+    logger.error('Something went wrong retrieving Plex server list', {
+      label: 'API',
+      errorMessage: e.message,
+    });
     return next({
       status: 500,
-      message: `Failed to connect to Plex: ${e.message}`,
+      message: 'Unable to retrieve Plex server list.',
     });
   }
 });
@@ -231,11 +243,31 @@ settingsRoutes.get('/tautulli', (_req, res) => {
   res.status(200).json(settings.tautulli);
 });
 
-settingsRoutes.post('/tautulli', async (req, res) => {
+settingsRoutes.post('/tautulli', async (req, res, next) => {
   const settings = getSettings();
 
   Object.assign(settings.tautulli, req.body);
-  settings.save();
+
+  try {
+    const tautulliClient = new TautulliAPI(settings.tautulli);
+
+    const result = await tautulliClient.getInfo();
+
+    if (!semver.gte(semver.coerce(result?.tautulli_version) ?? '', '2.9.0')) {
+      throw new Error('Tautulli version not supported');
+    }
+
+    settings.save();
+  } catch (e) {
+    logger.error('Something went wrong testing Tautulli connection', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to connect to Tautulli.',
+    });
+  }
 
   return res.status(200).json(settings.tautulli);
 });
@@ -379,13 +411,13 @@ settingsRoutes.get(
         results: displayedLogs,
       } as LogsResultsResponse);
     } catch (error) {
-      logger.error('Something went wrong while fetching the logs', {
+      logger.error('Something went wrong while retrieving logs', {
         label: 'Logs',
         errorMessage: error.message,
       });
       return next({
         status: 500,
-        message: 'Something went wrong while fetching the logs',
+        message: 'Unable to retrieve logs.',
       });
     }
   }
@@ -408,7 +440,7 @@ settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
   const scheduledJob = scheduledJobs.find((job) => job.id === req.params.jobId);
 
   if (!scheduledJob) {
-    return next({ status: 404, message: 'Job not found' });
+    return next({ status: 404, message: 'Job not found.' });
   }
 
   scheduledJob.job.invoke();
@@ -431,7 +463,7 @@ settingsRoutes.post<{ jobId: string }>(
     );
 
     if (!scheduledJob) {
-      return next({ status: 404, message: 'Job not found' });
+      return next({ status: 404, message: 'Job not found.' });
     }
 
     if (scheduledJob.cancelFn) {
@@ -457,7 +489,7 @@ settingsRoutes.post<{ jobId: string }>(
     );
 
     if (!scheduledJob) {
-      return next({ status: 404, message: 'Job not found' });
+      return next({ status: 404, message: 'Job not found.' });
     }
 
     const result = rescheduleJob(scheduledJob.job, req.body.schedule);
@@ -476,7 +508,7 @@ settingsRoutes.post<{ jobId: string }>(
         running: scheduledJob.running ? scheduledJob.running() : false,
       });
     } else {
-      return next({ status: 400, message: 'Invalid job schedule' });
+      return next({ status: 400, message: 'Invalid job schedule.' });
     }
   }
 );
@@ -503,7 +535,7 @@ settingsRoutes.post<{ cacheId: AvailableCacheIds }>(
       return res.status(204).send();
     }
 
-    next({ status: 404, message: 'Cache does not exist.' });
+    next({ status: 404, message: 'Cache not found.' });
   }
 );
 
