@@ -122,7 +122,7 @@ const PermissionOption = ({
             checked={checked}
           />
         </div>
-        <label htmlFor={option.id} className="flex flex-col ml-3 text-sm">
+        <label htmlFor={option.id} className="ml-3 flex flex-col text-sm">
           <span className="font-semibold leading-6 text-white">
             {option.name}
           </span>
