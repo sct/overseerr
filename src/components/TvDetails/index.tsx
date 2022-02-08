@@ -9,7 +9,7 @@ import { hasFlag } from 'country-flag-icons';
 import 'country-flag-icons/3x2/flags.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RTRating } from '../../../server/api/rottentomatoes';
@@ -102,6 +102,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     [data]
   );
 
+  useEffect(() => {
+    setShowManager(router.query.manage == '1' ? true : false);
+  }, [router.query.manage]);
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -112,7 +116,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   const mediaLinks: PlayButtonLink[] = [];
 
-  if (data.mediaInfo?.plexUrl) {
+  if (
+    data.mediaInfo?.plexUrl &&
+    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+      type: 'or',
+    })
+  ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: data.mediaInfo?.plexUrl,
@@ -121,6 +130,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   }
 
   if (
+    settings.currentSettings.series4kEnabled &&
     data.mediaInfo?.plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
       type: 'or',
@@ -256,7 +266,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       <ManageSlideOver
         data={data}
         mediaType="tv"
-        onClose={() => setShowManager(false)}
+        onClose={() => {
+          setShowManager(false);
+          router.push({
+            pathname: router.pathname,
+            query: { tvId: router.query.tvId },
+          });
+        }}
         revalidate={() => revalidate()}
         show={showManager}
       />
@@ -285,9 +301,16 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
               plexUrl={data.mediaInfo?.plexUrl}
             />
             {settings.currentSettings.series4kEnabled &&
-              hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
-                type: 'or',
-              }) && (
+              hasPermission(
+                [
+                  Permission.MANAGE_REQUESTS,
+                  Permission.REQUEST_4K,
+                  Permission.REQUEST_4K_TV,
+                ],
+                {
+                  type: 'or',
+                }
+              ) && (
                 <StatusBadge
                   status={data.mediaInfo?.status4k}
                   is4k
