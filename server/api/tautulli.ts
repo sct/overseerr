@@ -90,6 +90,27 @@ interface TautulliWatchUsersResponse {
   };
 }
 
+interface TautulliInfo {
+  tautulli_install_type: string;
+  tautulli_version: string;
+  tautulli_branch: string;
+  tautulli_commit: string;
+  tautulli_platform: string;
+  tautulli_platform_release: string;
+  tautulli_platform_version: string;
+  tautulli_platform_linux_distro: string;
+  tautulli_platform_device_name: string;
+  tautulli_python_version: string;
+}
+
+interface TautulliInfoResponse {
+  response: {
+    result: string;
+    message?: string;
+    data: TautulliInfo;
+  };
+}
+
 class TautulliAPI {
   private axios: AxiosInstance;
 
@@ -100,6 +121,24 @@ class TautulliAPI {
       }${settings.urlBase ?? ''}`,
       params: { apikey: settings.apiKey },
     });
+  }
+
+  public async getInfo(): Promise<TautulliInfo> {
+    try {
+      return (
+        await this.axios.get<TautulliInfoResponse>('/api/v2', {
+          params: { cmd: 'get_tautulli_info' },
+        })
+      ).data.response.data;
+    } catch (e) {
+      logger.error('Something went wrong fetching Tautulli server info', {
+        label: 'Tautulli API',
+        errorMessage: e.message,
+      });
+      throw new Error(
+        `[Tautulli] Failed to fetch Tautulli server info: ${e.message}`
+      );
+    }
   }
 
   public async getMediaWatchStats(
