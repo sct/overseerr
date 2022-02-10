@@ -28,10 +28,7 @@ import StatusBadge from '../StatusBadge';
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   failedretry: 'Something went wrong while retrying the request.',
-  mediaerror: 'Data for this {mediaType} is no longer available.',
-  mediatypemovie: 'movie',
-  mediatypeseries: 'series',
-  mediatypefallback: 'request',
+  mediaerror: 'Failed to Retrieve {mediaType} Data',
   tmdbid: 'TMDb ID',
   tvdbid: 'TVDB ID',
   deleterequest: 'Delete Request',
@@ -74,9 +71,9 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
                 mediaType: intl.formatMessage(
                   requestData?.type
                     ? requestData?.type === 'movie'
-                      ? messages.mediatypemovie
-                      : messages.mediatypeseries
-                    : messages.mediatypefallback
+                      ? globalMessages.movie
+                      : globalMessages.tvshow
+                    : globalMessages.request
                 ),
               })}
             </div>

@@ -32,10 +32,7 @@ const messages = defineMessages({
   requesteddate: 'Requested',
   modified: 'Modified',
   modifieduserdate: '{date} by {user}',
-  mediaerror: 'Data for this {mediaType} is no longer available.',
-  mediatypemovie: 'movie',
-  mediatypeseries: 'series',
-  mediatypefallback: 'request',
+  mediaerror: 'Failed to Retrieve {mediaType} Data',
   editrequest: 'Edit Request',
   deleterequest: 'Delete Request',
   cancelRequest: 'Cancel Request',
@@ -73,9 +70,9 @@ const RequestItemError = ({
               mediaType: intl.formatMessage(
                 requestData?.type
                   ? requestData?.type === 'movie'
-                    ? messages.mediatypemovie
-                    : messages.mediatypeseries
-                  : messages.mediatypefallback
+                    ? globalMessages.movie
+                    : globalMessages.tvshow
+                  : globalMessages.request
               ),
             })}
           </div>
