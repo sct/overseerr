@@ -39,7 +39,7 @@
     "email-templates": "^8.0.8",
     "express": "^4.17.2",
     "express-openapi-validator": "^4.13.5",
-    "express-rate-limit": "^6.2.0",
+    "express-rate-limit": "^6.2.1",
     "express-session": "^1.17.2",
     "formik": "^2.2.9",
     "gravatar-url": "^3.1.0",
