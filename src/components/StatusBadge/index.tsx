@@ -37,36 +37,36 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   let mediaLink: string | undefined;
 
-  if (mediaType) {
-    if (
-      plexUrl &&
-      hasPermission(
-        is4k
-          ? [
-              Permission.REQUEST_4K,
-              mediaType === 'movie'
-                ? Permission.REQUEST_4K_MOVIE
-                : Permission.REQUEST_4K_TV,
-            ]
-          : [
-              Permission.REQUEST,
-              mediaType === 'movie'
-                ? Permission.REQUEST_MOVIE
-                : Permission.REQUEST_TV,
-            ],
-        {
-          type: 'or',
-        }
-      ) &&
-      (!is4k ||
-        (mediaType === 'movie'
-          ? settings.currentSettings.movie4kEnabled
-          : settings.currentSettings.series4kEnabled))
-    ) {
-      mediaLink = plexUrl;
-    } else if (hasPermission(Permission.MANAGE_REQUESTS)) {
-      mediaLink = tmdbId ? `/${mediaType}/${tmdbId}?manage=1` : serviceUrl;
-    }
+  if (
+    mediaType &&
+    plexUrl &&
+    hasPermission(
+      is4k
+        ? [
+            Permission.REQUEST_4K,
+            mediaType === 'movie'
+              ? Permission.REQUEST_4K_MOVIE
+              : Permission.REQUEST_4K_TV,
+          ]
+        : [
+            Permission.REQUEST,
+            mediaType === 'movie'
+              ? Permission.REQUEST_MOVIE
+              : Permission.REQUEST_TV,
+          ],
+      {
+        type: 'or',
+      }
+    ) &&
+    (!is4k ||
+      (mediaType === 'movie'
+        ? settings.currentSettings.movie4kEnabled
+        : settings.currentSettings.series4kEnabled))
+  ) {
+    mediaLink = plexUrl;
+  } else if (hasPermission(Permission.MANAGE_REQUESTS)) {
+    mediaLink =
+      mediaType && tmdbId ? `/${mediaType}/${tmdbId}?manage=1` : serviceUrl;
   }
 
   switch (status) {
