@@ -347,7 +347,7 @@
   "components.MovieDetails.markavailable": "標記為可觀看",
   "components.Settings.RadarrModal.syncEnabled": "啟用掃描",
   "i18n.experimental": "實驗性",
-  "components.UserList.bulkedit": "批量編輯",
+  "components.UserList.bulkedit": "批次編輯",
   "i18n.edit": "編輯",
   "components.Settings.serverpresetManualMessage": "手動設定",
   "components.NotificationTypeSelector.mediadeclined": "請求拒絕",
@@ -891,7 +891,7 @@
   "components.ManageSlideOver.openarr4k": "開啟 4K {arr} 伺服器",
   "components.ManageSlideOver.movie": "部電影",
   "components.ManageSlideOver.markavailable": "標記為可觀看",
-  "components.IssueModal.issueAudio": "音頻",
+  "components.IssueModal.issueAudio": "音訊",
   "components.ManageSlideOver.downloadstatus": "下載狀態",
   "components.IssueModal.CreateIssueModal.allepisodes": "所有集數",
   "components.ManageSlideOver.manageModalClearMediaWarning": "※這將會刪除包括使用者請求在內所有有關這{mediaType}的資料。如果這{mediaType}存在於您的 Plex 伺服器，資料將會在媒體庫掃描時重新建立。",
@@ -900,7 +900,7 @@
   "components.IssueModal.issueOther": "其他",
   "components.ManageSlideOver.tvshow": "個電視節目",
   "components.ManageSlideOver.manageModalTitle": "管理{mediaType}",
-  "components.IssueModal.issueVideo": "視頻",
+  "components.IssueModal.issueVideo": "影片",
   "components.IssueList.IssueItem.issuetype": "類型",
   "components.IssueDetails.problemepisode": "有問題的集數",
   "components.IssueList.IssueItem.unknownissuetype": "不明",
@@ -1036,5 +1036,8 @@
   "components.Settings.Notifications.NotificationsPushbullet.channelTag": "頻道標籤",
   "components.Settings.validationUrl": "請輸入有效的網址",
   "components.UserList.newplexsigninenabled": "<strong>允許新的 Plex 登入</strong> 的設定目前已啟用。還沒匯入的 Plex 使用者也能登入。",
-  "components.Settings.tautulliSettingsDescription": "關於 Tautulli 伺服器的設定。Overseerr 會從 Tautulli 獲取 Plex 媒體的觀看歷史記錄。"
+  "components.Settings.tautulliSettingsDescription": "關於 Tautulli 伺服器的設定。Overseerr 會從 Tautulli 獲取 Plex 媒體的觀看歷史記錄。",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Discord 使用者 ID",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "您的<FindDiscordIdLink>Discord 使用者 ID 號碼</FindDiscordIdLink>",
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "請輸入有效的 Discord 使用者 ID"
 }

@@ -489,7 +489,7 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.sendSilentlyDescription": "Skicka meddelanden utan ljud",
   "components.UserProfile.UserSettings.UserNotificationSettings.sendSilently": "Skicka tyst",
   "components.UserProfile.UserSettings.UserNotificationSettings.notificationsettings": "Aviseringsinställningar",
-  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "<FindDiscordIdLink> ID-nummer </FindDiscordIdLink> för ditt användarkonto",
+  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "Det <FindDiscordIdLink>flersiffriga ID-numret</FindDiscordIdLink> som är kopplat till ditt användarkonto",
   "components.UserProfile.UserSettings.UserNotificationSettings.discordId": "Användar-ID",
   "components.UserProfile.UserSettings.UserGeneralSettings.user": "Användare",
   "components.UserProfile.UserSettings.UserGeneralSettings.toastSettingsSuccess": "Inställningarna har sparats!",
@@ -1036,5 +1036,8 @@
   "components.Settings.tautulliSettingsDescription": "Alternativt kan du konfigurera inställningarna för din Tautulli-server. Overseerr hämtar visningshistorikdata för din Plex-media från Tautulli.",
   "components.UserProfile.recentlywatched": "Nyligen sett",
   "components.Settings.validationUrlBaseTrailingSlash": "URL-basen får inte sluta med ett snedstreck",
-  "components.Settings.validationUrlTrailingSlash": "URL får inte sluta med ett snedstreck"
+  "components.Settings.validationUrlTrailingSlash": "URL får inte sluta med ett snedstreck",
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Du måste ange ett giltigt Discord användar-ID",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Discord användar-ID",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Det <FindDiscordIdLink>flersiffriga ID-numret</FindDiscordIdLink> som är kopplat till ditt Discord-användarkonto"
 }

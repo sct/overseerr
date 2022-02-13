@@ -521,7 +521,7 @@
   "components.Layout.UserDropdown.settings": "Instellingen",
   "components.Layout.UserDropdown.myprofile": "Profiel",
   "components.UserProfile.UserSettings.UserNotificationSettings.validationDiscordId": "Je moet een geldige gebruikers-ID opgeven",
-  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "Het <FindDiscordIdLink>ID-nummer</FindDiscordIdLink> van je gebruikersaccount",
+  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "Het <FindDiscordIdLink>meercijferige ID-nummer</FindDiscordIdLink> van je gebruikersaccount",
   "components.CollectionDetails.requestcollection4k": "Collectie in 4K aanvragen",
   "components.UserProfile.UserSettings.UserGeneralSettings.regionTip": "Inhoud filteren op regionale beschikbaarheid",
   "components.UserProfile.UserSettings.UserGeneralSettings.region": "Regio van Ontdekken",
@@ -1036,5 +1036,8 @@
   "components.Settings.validationApiKey": "Je moet een API-sleutel opgeven",
   "components.Settings.toastTautulliSettingsSuccess": "Instellingen Tautulli succesvol opgeslagen!",
   "components.Settings.validationUrl": "Je moet een geldige URL opgeven",
-  "components.Settings.validationUrlBaseLeadingSlash": "URL-basis moet met een schuine streep beginnen"
+  "components.Settings.validationUrlBaseLeadingSlash": "URL-basis moet met een schuine streep beginnen",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Gebruikers-ID Discord",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Het <FindDiscordIdLink>meercijferige ID-nummer</FindDiscordIdLink> van je Discord-account",
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Je moet een geldige gebruikers-ID van Discord opgeven"
 }
