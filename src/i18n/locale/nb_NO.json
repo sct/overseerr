@@ -1036,5 +1036,8 @@
   "components.ManageSlideOver.plays": "<strong>{playCount, number}</strong> {playCount, plural, one {avspilling} other {avspillinger}}",
   "components.ManageSlideOver.alltime": "Totalt",
   "components.Settings.Notifications.NotificationsPushbullet.channelTag": "Kanal-merke",
-  "components.Settings.tautulliSettingsDescription": "Overseerr kan hente avspillingshistorikk for Plex fra Tautulli. Fyll inn innstilingene under for å etablere kommunikasjon med din Tautulli-tjener."
+  "components.Settings.tautulliSettingsDescription": "Overseerr kan hente avspillingshistorikk for Plex fra Tautulli. Fyll inn innstilingene under for å etablere kommunikasjon med din Tautulli-tjener.",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Discord Bruker ID",
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Du må oppgi en gyldig Bruker ID for Discord",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "<FindDiscordIdLink>ID-nummeret</FindDiscordIdLink> til din brukerkonto"
 }
