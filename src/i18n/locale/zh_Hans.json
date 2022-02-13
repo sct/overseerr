@@ -424,7 +424,7 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.email": "电子邮件",
   "components.UserProfile.UserSettings.UserNotificationSettings.discordsettingssaved": "Discord 通知设置保存成功！",
   "components.UserProfile.UserSettings.UserNotificationSettings.discordsettingsfailed": "Discord 通知设置保存失败。",
-  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "你的<FindDiscordIdLink>用户身分证號碼</FindDiscordIdLink>",
+  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "和用户账号关联的<FindDiscordIdLink>多位数 ID 号码</FindDiscordIdLink>",
   "components.UserProfile.UserSettings.UserNotificationSettings.discordId": "用户 ID",
   "components.UserProfile.UserSettings.UserGeneralSettings.user": "用户",
   "components.UserProfile.UserSettings.UserGeneralSettings.toastSettingsSuccess": "设置保存成功！",
