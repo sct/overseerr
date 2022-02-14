@@ -89,7 +89,7 @@
     "@semantic-release/git": "^10.0.1",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.4.0",
-    "@tailwindcss/typography": "^0.5.1",
+    "@tailwindcss/typography": "^0.5.2",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/country-flag-icons": "^1.2.0",
