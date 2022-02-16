@@ -9,7 +9,7 @@ type OptionType = {
 
 type CreatableInputOnlyProps = {
   value: OptionType[];
-  placeholder: string;
+  placeholder?: string;
   fieldName: string;
   setFieldValue: (field: string, value: unknown) => void;
 };
@@ -62,7 +62,8 @@ const CreatableInputOnly: React.FC<CreatableInputOnlyProps> = ({
       onKeyDown={handleKeyDown}
       className="react-select-container"
       classNamePrefix="react-select"
-      placeholder={placeholder}
+      // if no placeholder, the text "Select..." is displayed
+      placeholder={placeholder ?? ''}
       value={value}
       inputValue={currentInput}
     />

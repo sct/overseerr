@@ -8,7 +8,7 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
 import { UserSettingsGeneralResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
-import type { MainSettings } from '../../../server/lib/settings';
+import type { MainSettings, ProxySettings } from '../../../server/lib/settings';
 import {
   availableLanguages,
   AvailableLocale,
@@ -65,11 +65,10 @@ const messages = defineMessages({
   proxyUseSSL: 'Use SSL',
   proxyHostname: 'Hostname or IP Address',
   proxyPort: 'Port',
-  proxyAuthUser: 'Authenticating User',
-  proxyAuthPass: 'Authenticating Password',
+  proxyAuthUser: 'Username',
+  proxyAuthPass: 'Password',
   proxyBypassLocalAddresses: 'Bypass Local Addresses',
   proxyIgnoredAddresses: 'Ignored Addresses',
-  proxyIgnoredAddressesHint: 'Enter an address and press Enter or Tab…',
   proxyValidationHostname: 'You must provide a valid hostname or IP address',
   proxyValidationPort: 'You must provide a valid port number',
 });
@@ -87,6 +86,7 @@ const SettingsMain: React.FC = () => {
   const { data: userData } = useSWR<UserSettingsGeneralResponse>(
     currentUser ? `/api/v1/user/${currentUser.id}/settings/main` : null
   );
+  const { data: proxyData } = useSWR<ProxySettings>('/api/v1/settings/proxy');
 
   const MainSettingsSchema = Yup.object().shape({
     applicationTitle: Yup.string().required(
@@ -99,17 +99,24 @@ const SettingsMain: React.FC = () => {
         intl.formatMessage(messages.validationApplicationUrlTrailingSlash),
         (value) => !value || !value.endsWith('/')
       ),
+  });
+
+  const ProxySettingsSchema = Yup.object().shape({
     proxyHostname: Yup.string().when('proxyEnabled', {
       is: true,
       then: Yup.string().required(
         intl.formatMessage(messages.proxyValidationHostname)
       ),
     }),
-    proxyPort: Yup.string().when('proxyEnabled', {
+    proxyPort: Yup.number().when('proxyEnabled', {
       is: true,
-      then: Yup.string().required(
-        intl.formatMessage(messages.proxyValidationPort)
-      ),
+      then: Yup.number()
+        .nullable()
+        .typeError(intl.formatMessage(messages.proxyValidationPort))
+        .required(intl.formatMessage(messages.proxyValidationPort)),
+      otherwise: Yup.number()
+        .nullable()
+        .typeError(intl.formatMessage(messages.proxyValidationPort)),
     }),
   });
 
@@ -142,96 +149,76 @@ const SettingsMain: React.FC = () => {
           intl.formatMessage(globalMessages.settings),
         ]}
       />
-      <Formik
-        initialValues={{
-          applicationTitle: data?.applicationTitle,
-          applicationUrl: data?.applicationUrl,
-          csrfProtection: data?.csrfProtection,
-          hideAvailable: data?.hideAvailable,
-          locale: data?.locale ?? 'en',
-          region: data?.region,
-          originalLanguage: data?.originalLanguage,
-          partialRequestsEnabled: data?.partialRequestsEnabled,
-          trustProxy: data?.trustProxy,
-          proxyEnabled: data?.proxy.enabled,
-          proxyHostname: data?.proxy.options.hostname,
-          proxyPort: data?.proxy.options.port,
-          proxyUseSSL: data?.proxy.options.useSSL,
-          proxyAuthUser: data?.proxy.options.authUser,
-          proxyAuthPass: data?.proxy.options.authPass,
-          proxyBypassLocalAddresses: data?.proxy.options.bypassLocalAddresses,
-          proxyIgnoredAddresses: data?.proxy.options.ignoredAddresses ?? [],
-        }}
-        enableReinitialize
-        validationSchema={MainSettingsSchema}
-        onSubmit={async (values) => {
-          try {
-            await axios.post('/api/v1/settings/main', {
-              applicationTitle: values.applicationTitle,
-              applicationUrl: values.applicationUrl,
-              csrfProtection: values.csrfProtection,
-              hideAvailable: values.hideAvailable,
-              locale: values.locale,
-              region: values.region,
-              originalLanguage: values.originalLanguage,
-              partialRequestsEnabled: values.partialRequestsEnabled,
-              trustProxy: values.trustProxy,
-              proxy: {
-                enabled: values.proxyEnabled,
-                options: {
-                  hostname: values.proxyHostname,
-                  port: values.proxyPort,
-                  useSSL: values.proxyUseSSL,
-                  authUser: values.proxyAuthUser,
-                  authPass: values.proxyAuthPass,
-                  bypassLocalAddresses: values.proxyBypassLocalAddresses,
-                  ignoredAddresses: values.proxyIgnoredAddresses,
-                },
-              },
-            });
-            mutate('/api/v1/settings/public');
+      <div className="mb-6">
+        <h3 className="heading">
+          {intl.formatMessage(messages.generalsettings)}
+        </h3>
+        <p className="description">
+          {intl.formatMessage(messages.generalsettingsDescription)}
+        </p>
+      </div>
+      <div className="section">
+        <Formik
+          initialValues={{
+            applicationTitle: data?.applicationTitle,
+            applicationUrl: data?.applicationUrl,
+            csrfProtection: data?.csrfProtection,
+            hideAvailable: data?.hideAvailable,
+            locale: data?.locale ?? 'en',
+            region: data?.region,
+            originalLanguage: data?.originalLanguage,
+            partialRequestsEnabled: data?.partialRequestsEnabled,
+            trustProxy: data?.trustProxy,
+          }}
+          enableReinitialize
+          validationSchema={MainSettingsSchema}
+          onSubmit={async (values) => {
+            try {
+              await axios.post('/api/v1/settings/main', {
+                applicationTitle: values.applicationTitle,
+                applicationUrl: values.applicationUrl,
+                csrfProtection: values.csrfProtection,
+                hideAvailable: values.hideAvailable,
+                locale: values.locale,
+                region: values.region,
+                originalLanguage: values.originalLanguage,
+                partialRequestsEnabled: values.partialRequestsEnabled,
+                trustProxy: values.trustProxy,
+              });
+              mutate('/api/v1/settings/public');
 
-            if (setLocale) {
-              setLocale(
-                (userData?.locale
-                  ? userData.locale
-                  : values.locale) as AvailableLocale
-              );
+              if (setLocale) {
+                setLocale(
+                  (userData?.locale
+                    ? userData.locale
+                    : values.locale) as AvailableLocale
+                );
+              }
+
+              addToast(intl.formatMessage(messages.toastSettingsSuccess), {
+                autoDismiss: true,
+                appearance: 'success',
+              });
+            } catch (e) {
+              addToast(intl.formatMessage(messages.toastSettingsFailure), {
+                autoDismiss: true,
+                appearance: 'error',
+              });
+            } finally {
+              revalidate();
             }
-
-            addToast(intl.formatMessage(messages.toastSettingsSuccess), {
-              autoDismiss: true,
-              appearance: 'success',
-            });
-          } catch (e) {
-            addToast(intl.formatMessage(messages.toastSettingsFailure), {
-              autoDismiss: true,
-              appearance: 'error',
-            });
-          } finally {
-            revalidate();
-          }
-        }}
-      >
-        {({
-          errors,
-          touched,
-          values,
-          isSubmitting,
-          isValid,
-          setFieldValue,
-        }) => {
-          return (
-            <Form>
-              <div className="mb-6">
-                <h3 className="heading">
-                  {intl.formatMessage(messages.generalsettings)}
-                </h3>
-                <p className="description">
-                  {intl.formatMessage(messages.generalsettingsDescription)}
-                </p>
-              </div>
-              <div className="section">
+          }}
+        >
+          {({
+            errors,
+            touched,
+            values,
+            isSubmitting,
+            isValid,
+            setFieldValue,
+          }) => {
+            return (
+              <Form>
                 {userHasPermission(Permission.ADMIN) && (
                   <div className="form-row">
                     <label htmlFor="apiKey" className="text-label">
@@ -442,176 +429,6 @@ const SettingsMain: React.FC = () => {
                     />
                   </div>
                 </div>
-                {userHasPermission(Permission.ADMIN) && (
-                  <div className="actions">
-                    <div className="mb-6">
-                      <h3 className="heading">
-                        {intl.formatMessage(messages.proxySettings)}
-                      </h3>
-                      <p className="description">
-                        {intl.formatMessage(messages.proxySettingsDescription)}
-                      </p>
-                    </div>
-                    <div className="section">
-                      <div className="form-row">
-                        <label
-                          htmlFor="proxyEnabled"
-                          className="checkbox-label"
-                        >
-                          <span>
-                            {intl.formatMessage(messages.proxyEnabled)}
-                          </span>
-                        </label>
-                        <div className="form-input">
-                          <Field
-                            type="checkbox"
-                            id="proxyEnabled"
-                            name="proxyEnabled"
-                            onChange={() => {
-                              setFieldValue(
-                                'proxyEnabled',
-                                !values.proxyEnabled
-                              );
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-row">
-                        <label htmlFor="proxyHostname" className="text-label">
-                          {intl.formatMessage(messages.proxyHostname)}
-                          <span className="label-required">*</span>
-                        </label>
-                        <div className="form-input">
-                          <div className="form-input-field">
-                            <Field
-                              id="proxyHostname"
-                              name="proxyHostname"
-                              type="text"
-                            />
-                          </div>
-                          {errors.proxyHostname && touched.proxyHostname && (
-                            <div className="error">{errors.proxyHostname}</div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="form-row">
-                        <label htmlFor="port" className="text-label">
-                          {intl.formatMessage(messages.proxyPort)}
-                          <span className="label-required">*</span>
-                        </label>
-                        <div className="form-input">
-                          <Field
-                            type="text"
-                            inputMode="numeric"
-                            id="proxyPort"
-                            name="proxyPort"
-                            className="short"
-                          />
-                          {errors.proxyPort && touched.proxyPort && (
-                            <div className="error">{errors.proxyPort}</div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="form-row">
-                        <label htmlFor="proxyUseSSL" className="checkbox-label">
-                          <span>
-                            {intl.formatMessage(messages.proxyUseSSL)}
-                          </span>
-                        </label>
-                        <div className="form-input">
-                          <Field
-                            type="checkbox"
-                            id="proxyUseSSL"
-                            name="proxyUseSSL"
-                            onChange={() => {
-                              setFieldValue('proxyUseSSL', !values.proxyUseSSL);
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-row">
-                        <label htmlFor="proxyAuthUser" className="text-label">
-                          {intl.formatMessage(messages.proxyAuthUser)}
-                        </label>
-                        <div className="form-input">
-                          <div className="form-input-field">
-                            <Field
-                              id="proxyAuthUser"
-                              name="proxyAuthUser"
-                              type="text"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="form-row">
-                        <label htmlFor="proxyAuthPass" className="text-label">
-                          {intl.formatMessage(messages.proxyAuthPass)}
-                        </label>
-                        <div className="form-input">
-                          <div className="form-input-field">
-                            <SensitiveInput
-                              as="field"
-                              id="proxyAuthPass"
-                              name="proxyAuthPass"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="form-row">
-                        <label
-                          htmlFor="proxyBypassLocalAddresses"
-                          className="checkbox-label"
-                        >
-                          <span>
-                            {intl.formatMessage(
-                              messages.proxyBypassLocalAddresses
-                            )}
-                          </span>
-                        </label>
-                        <div className="form-input">
-                          <Field
-                            type="checkbox"
-                            id="proxyBypassLocalAddresses"
-                            name="proxyBypassLocalAddresses"
-                            onChange={() => {
-                              setFieldValue(
-                                'proxyBypassLocalAddresses',
-                                !values.proxyBypassLocalAddresses
-                              );
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-row">
-                        <label
-                          htmlFor="proxyIgnoredAddresses"
-                          className="checkbox-label"
-                        >
-                          <span>
-                            {intl.formatMessage(messages.proxyIgnoredAddresses)}
-                          </span>
-                        </label>
-                        <div className="form-input">
-                          <div className="form-input-field">
-                            <CreatableInputOnly
-                              fieldName="proxyIgnoredAddresses"
-                              setFieldValue={setFieldValue}
-                              placeholder={intl.formatMessage(
-                                messages.proxyIgnoredAddressesHint
-                              )}
-                              value={values.proxyIgnoredAddresses.map(
-                                (address) => ({
-                                  label: address,
-                                  value: address,
-                                })
-                              )}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
                 <div className="actions">
                   <div className="flex justify-end">
                     <span className="ml-3 inline-flex rounded-md shadow-sm">
@@ -630,11 +447,244 @@ const SettingsMain: React.FC = () => {
                     </span>
                   </div>
                 </div>
-              </div>
-            </Form>
-          );
-        }}
-      </Formik>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
+      {userHasPermission(Permission.ADMIN) && (
+        <>
+          <div className="mb-6">
+            <h3 className="heading">
+              {intl.formatMessage(messages.proxySettings)}
+            </h3>
+            <p className="description">
+              {intl.formatMessage(messages.proxySettingsDescription)}
+            </p>
+          </div>
+          <div className="section">
+            <Formik
+              initialValues={{
+                proxyEnabled: proxyData?.enabled,
+                proxyHostname: proxyData?.options.hostname,
+                proxyPort: proxyData?.options.port,
+                proxyUseSSL: proxyData?.options.useSSL,
+                proxyAuthUser: proxyData?.options.authUser,
+                proxyAuthPass: proxyData?.options.authPass,
+                proxyBypassLocalAddresses:
+                  proxyData?.options.bypassLocalAddresses,
+                proxyIgnoredAddresses:
+                  proxyData?.options.ignoredAddresses ?? [],
+              }}
+              enableReinitialize
+              validationSchema={ProxySettingsSchema}
+              onSubmit={async (values) => {
+                try {
+                  await axios.post('/api/v1/settings/proxy', {
+                    enabled: values.proxyEnabled,
+                    options: {
+                      hostname: values.proxyHostname,
+                      port: values.proxyPort,
+                      useSSL: values.proxyUseSSL,
+                      authUser: values.proxyAuthUser,
+                      authPass: values.proxyAuthPass,
+                      bypassLocalAddresses: values.proxyBypassLocalAddresses,
+                      ignoredAddresses: values.proxyIgnoredAddresses,
+                    },
+                  });
+
+                  addToast(intl.formatMessage(messages.toastSettingsSuccess), {
+                    autoDismiss: true,
+                    appearance: 'success',
+                  });
+                } catch (e) {
+                  addToast(intl.formatMessage(messages.toastSettingsFailure), {
+                    autoDismiss: true,
+                    appearance: 'error',
+                  });
+                } finally {
+                  revalidate();
+                }
+              }}
+            >
+              {({
+                errors,
+                touched,
+                values,
+                isSubmitting,
+                isValid,
+                setFieldValue,
+              }) => {
+                return (
+                  <Form>
+                    <div className="form-row">
+                      <label htmlFor="proxyEnabled" className="checkbox-label">
+                        <span>{intl.formatMessage(messages.proxyEnabled)}</span>
+                      </label>
+                      <div className="form-input">
+                        <Field
+                          type="checkbox"
+                          id="proxyEnabled"
+                          name="proxyEnabled"
+                          onChange={() => {
+                            setFieldValue('proxyEnabled', !values.proxyEnabled);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="proxyHostname" className="text-label">
+                        {intl.formatMessage(messages.proxyHostname)}
+                        <span className="label-required">*</span>
+                      </label>
+                      <div className="form-input">
+                        <div className="form-input-field">
+                          <Field
+                            id="proxyHostname"
+                            name="proxyHostname"
+                            type="text"
+                          />
+                        </div>
+                        {errors.proxyHostname && touched.proxyHostname && (
+                          <div className="error">{errors.proxyHostname}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="port" className="text-label">
+                        {intl.formatMessage(messages.proxyPort)}
+                        <span className="label-required">*</span>
+                      </label>
+                      <div className="form-input">
+                        <Field
+                          type="text"
+                          inputMode="numeric"
+                          id="proxyPort"
+                          name="proxyPort"
+                          className="short"
+                        />
+                        {errors.proxyPort && touched.proxyPort && (
+                          <div className="error">{errors.proxyPort}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="proxyUseSSL" className="checkbox-label">
+                        <span>{intl.formatMessage(messages.proxyUseSSL)}</span>
+                      </label>
+                      <div className="form-input">
+                        <Field
+                          type="checkbox"
+                          id="proxyUseSSL"
+                          name="proxyUseSSL"
+                          onChange={() => {
+                            setFieldValue('proxyUseSSL', !values.proxyUseSSL);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="proxyAuthUser" className="text-label">
+                        {intl.formatMessage(messages.proxyAuthUser)}
+                      </label>
+                      <div className="form-input">
+                        <div className="form-input-field">
+                          <Field
+                            id="proxyAuthUser"
+                            name="proxyAuthUser"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="proxyAuthPass" className="text-label">
+                        {intl.formatMessage(messages.proxyAuthPass)}
+                      </label>
+                      <div className="form-input">
+                        <div className="form-input-field">
+                          <SensitiveInput
+                            as="field"
+                            id="proxyAuthPass"
+                            name="proxyAuthPass"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label
+                        htmlFor="proxyBypassLocalAddresses"
+                        className="checkbox-label"
+                      >
+                        <span>
+                          {intl.formatMessage(
+                            messages.proxyBypassLocalAddresses
+                          )}
+                        </span>
+                      </label>
+                      <div className="form-input">
+                        <Field
+                          type="checkbox"
+                          id="proxyBypassLocalAddresses"
+                          name="proxyBypassLocalAddresses"
+                          onChange={() => {
+                            setFieldValue(
+                              'proxyBypassLocalAddresses',
+                              !values.proxyBypassLocalAddresses
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label
+                        htmlFor="proxyIgnoredAddresses"
+                        className="checkbox-label"
+                      >
+                        <span>
+                          {intl.formatMessage(messages.proxyIgnoredAddresses)}
+                        </span>
+                      </label>
+                      <div className="form-input">
+                        <div className="form-input-field">
+                          <CreatableInputOnly
+                            fieldName="proxyIgnoredAddresses"
+                            setFieldValue={setFieldValue}
+                            value={values.proxyIgnoredAddresses.map(
+                              (address) => ({
+                                label: address,
+                                value: address,
+                              })
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="actions">
+                      <div className="flex justify-end">
+                        <span className="ml-3 inline-flex rounded-md shadow-sm">
+                          <Button
+                            buttonType="primary"
+                            type="submit"
+                            disabled={isSubmitting || !isValid}
+                          >
+                            <SaveIcon />
+                            <span>
+                              {isSubmitting
+                                ? intl.formatMessage(globalMessages.saving)
+                                : intl.formatMessage(globalMessages.save)}
+                            </span>
+                          </Button>
+                        </span>
+                      </div>
+                    </div>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </div>
+        </>
+      )}
     </>
   );
 };

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { isIP, isIPv4 } from 'net';
 import NodeCache from 'node-cache';
 import { getSettings } from '../lib/settings';
 
@@ -96,10 +97,27 @@ class ExternalAPI {
     params: Record<string, unknown>,
     options: ExternalAPIOptions
   ) {
-    const proxySettings = getSettings().main.proxy;
-    const privateIPAddressRegexp = new RegExp(
-      /(^192\.168\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])$)|(^172\.([1][6-9]|[2][0-9]|[3][0-1])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])$)|(^10\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\.([0-9]|[0-9][0-9]|[0-2][0-5][0-5])$)/
-    );
+    // very much like Go's `net.IsPrivate`
+    const isPrivateIP = (ip: string): boolean => {
+      if (isIP(ip) === 0) {
+        return false;
+      }
+
+      let splitIP: number[];
+      if (isIPv4(ip)) {
+        splitIP = ip.split('.').map((v) => parseInt(v, 10));
+        return (
+          splitIP[0] === 10 ||
+          (splitIP[0] === 172 && (splitIP[1] & 240) === 16) ||
+          splitIP[0] === 192
+        );
+      } else {
+        splitIP = ip.split(':').map((v) => parseInt(v, 16));
+        return (isNaN(splitIP[0]) ? 0 : splitIP[0] & 254) === 252;
+      }
+    };
+
+    const proxySettings = getSettings().proxy;
 
     const useProxy =
       proxySettings.enabled &&
@@ -107,10 +125,7 @@ class ExternalAPI {
         (ignoredAddress) => this.baseUrl === ignoredAddress,
         this
       ) &&
-      !(
-        proxySettings.options.bypassLocalAddresses &&
-        privateIPAddressRegexp.test(this.baseUrl)
-      )
+      !(proxySettings.options.bypassLocalAddresses && isPrivateIP(this.baseUrl))
         ? true
         : false;
 

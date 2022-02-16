@@ -82,7 +82,7 @@ interface Quota {
   quotaDays?: number;
 }
 
-interface ProxySettings {
+export interface ProxySettings {
   enabled: boolean;
   options: {
     hostname: string;
@@ -114,7 +114,6 @@ export interface MainSettings {
   trustProxy: boolean;
   partialRequestsEnabled: boolean;
   locale: string;
-  proxy: ProxySettings;
 }
 
 interface PublicSettings {
@@ -271,6 +270,7 @@ interface AllSettings {
   tautulli: TautulliSettings;
   radarr: RadarrSettings[];
   sonarr: SonarrSettings[];
+  forwardProxy: ProxySettings;
   public: PublicSettings;
   notifications: NotificationSettings;
   jobs: Record<JobId, JobSettings>;
@@ -307,16 +307,6 @@ class Settings {
         trustProxy: false,
         partialRequestsEnabled: true,
         locale: 'en',
-        proxy: {
-          enabled: false,
-          options: {
-            hostname: '',
-            port: 8080,
-            useSSL: false,
-            bypassLocalAddresses: false,
-            ignoredAddresses: [],
-          },
-        },
       },
       plex: {
         name: '',
@@ -330,6 +320,16 @@ class Settings {
       sonarr: [],
       public: {
         initialized: false,
+      },
+      forwardProxy: {
+        enabled: false,
+        options: {
+          hostname: '',
+          port: 8080,
+          useSSL: false,
+          bypassLocalAddresses: false,
+          ignoredAddresses: [],
+        },
       },
       notifications: {
         agents: {
@@ -516,6 +516,14 @@ class Settings {
       emailEnabled: this.data.notifications.agents.email.enabled,
       newPlexLogin: this.data.main.newPlexLogin,
     };
+  }
+
+  set proxy(data: ProxySettings) {
+    this.data.forwardProxy = data;
+  }
+
+  get proxy() {
+    return this.data.forwardProxy;
   }
 
   get notifications(): NotificationSettings {

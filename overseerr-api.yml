@@ -133,6 +133,37 @@ components:
         defaultPermissions:
           type: number
           example: 32
+    ForwardProxySettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        options:
+          type: object
+          properties:
+            hostname:
+              type: string
+              example: '127.0.0.1'
+            port:
+              type: number
+              example: 8080
+            useSSL:
+              type: boolean
+              example: false
+            authUser:
+              type: string
+              nullable: true
+            authPass:
+              type: string
+              nullable: true
+            bypassLocalAddress:
+              type: boolean
+              example: false
+            ignoredAddresses:
+              type: array
+              items:
+                type: string
+                example: '127.0.0.1'
     PlexLibrary:
       type: object
       properties:
@@ -1876,6 +1907,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MainSettings'
+  /settings/proxy:
+    get:
+      summary: Get forward proxy settings
+      description: |
+        Retrieves forward proxy settings used for external API requests.
+
+        Requires the `ADMIN` permission.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForwardProxySettings'
+    post:
+      summary: Update forward proxy settings
+      description: |
+        Update forward proxy settings used for external API requests with the provided values.
+        Also returns the forward proxy settings in a JSON object.
+
+        Requires the `ADMIN` permission.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForwardProxySettings'
+      responses:
+        '200':
+          description: Values were successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForwardProxySettings'
   /settings/plex:
     get:
       summary: Get Plex settings

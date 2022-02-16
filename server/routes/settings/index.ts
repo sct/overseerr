@@ -77,6 +77,21 @@ settingsRoutes.post('/main/regenerate', (req, res, next) => {
   return res.status(200).json(filteredMainSettings(req.user, main));
 });
 
+settingsRoutes.get('/proxy', isAuthenticated(Permission.ADMIN), (_req, res) => {
+  const settings = getSettings();
+
+  return res.status(200).json(settings.proxy);
+});
+
+settingsRoutes.post('/proxy', isAuthenticated(Permission.ADMIN), (req, res) => {
+  const settings = getSettings();
+
+  settings.proxy = req.body;
+  settings.save();
+
+  return res.status(200).json(settings.proxy);
+});
+
 settingsRoutes.get('/plex', (_req, res) => {
   const settings = getSettings();
 
