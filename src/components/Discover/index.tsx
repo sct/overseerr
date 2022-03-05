@@ -2,6 +2,7 @@ import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import LazyHydrate from 'react-lazy-hydration';
 import useSWR from 'swr';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
@@ -82,39 +83,49 @@ const Discover: React.FC = () => {
         placeholder={<RequestCard.Placeholder />}
         emptyMessage={intl.formatMessage(messages.noRequests)}
       />
-      <MediaSlider
-        sliderKey="trending"
-        title={intl.formatMessage(messages.trending)}
-        url="/api/v1/discover/trending"
-        linkUrl="/discover/trending"
-      />
-      <MediaSlider
-        sliderKey="popular-movies"
-        title={intl.formatMessage(messages.popularmovies)}
-        url="/api/v1/discover/movies"
-        linkUrl="/discover/movies"
-      />
+      <LazyHydrate whenVisible>
+        <MediaSlider
+          sliderKey="trending"
+          title={intl.formatMessage(messages.trending)}
+          url="/api/v1/discover/trending"
+          linkUrl="/discover/trending"
+        />
+      </LazyHydrate>
+      <LazyHydrate whenVisible>
+        <MediaSlider
+          sliderKey="popular-movies"
+          title={intl.formatMessage(messages.popularmovies)}
+          url="/api/v1/discover/movies"
+          linkUrl="/discover/movies"
+        />
+      </LazyHydrate>
       <MovieGenreSlider />
-      <MediaSlider
-        sliderKey="upcoming"
-        title={intl.formatMessage(messages.upcoming)}
-        linkUrl="/discover/movies/upcoming"
-        url="/api/v1/discover/movies/upcoming"
-      />
+      <LazyHydrate whenVisible>
+        <MediaSlider
+          sliderKey="upcoming"
+          title={intl.formatMessage(messages.upcoming)}
+          linkUrl="/discover/movies/upcoming"
+          url="/api/v1/discover/movies/upcoming"
+        />
+      </LazyHydrate>
       <StudioSlider />
-      <MediaSlider
-        sliderKey="popular-tv"
-        title={intl.formatMessage(messages.populartv)}
-        url="/api/v1/discover/tv"
-        linkUrl="/discover/tv"
-      />
+      <LazyHydrate whenVisible>
+        <MediaSlider
+          sliderKey="popular-tv"
+          title={intl.formatMessage(messages.populartv)}
+          url="/api/v1/discover/tv"
+          linkUrl="/discover/tv"
+        />
+      </LazyHydrate>
       <TvGenreSlider />
-      <MediaSlider
-        sliderKey="upcoming-tv"
-        title={intl.formatMessage(messages.upcomingtv)}
-        url="/api/v1/discover/tv/upcoming"
-        linkUrl="/discover/tv/upcoming"
-      />
+      <LazyHydrate whenVisible>
+        <MediaSlider
+          sliderKey="upcoming-tv"
+          title={intl.formatMessage(messages.upcomingtv)}
+          url="/api/v1/discover/tv/upcoming"
+          linkUrl="/discover/tv/upcoming"
+        />
+      </LazyHydrate>
       <NetworkSlider />
     </>
   );
