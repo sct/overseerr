@@ -564,6 +564,8 @@ settingsRoutes.get('/about', async (req, res) => {
     totalMediaItems,
     totalRequests,
     tz: process.env.TZ,
+    configDirectory:
+      process.env.CONFIG_DIRECTORY ?? path.join(__dirname, '../../../config/'),
   } as SettingsAboutResponse);
 });
 

@@ -3041,7 +3041,10 @@ paths:
                   tz:
                     type: string
                     nullable: true
-                    example: Asia/Tokyo
+                    example: 'Asia/Tokyo'
+                  configDirectory:
+                    type: string
+                    example: '/app/config'
   /auth/me:
     get:
       summary: Get logged-in user

@@ -17,6 +17,7 @@ export interface SettingsAboutResponse {
   totalRequests: number;
   totalMediaItems: number;
   tz?: string;
+  configDirectory: string;
 }
 
 export interface PublicSettingsResponse {
