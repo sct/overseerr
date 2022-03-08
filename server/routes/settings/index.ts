@@ -26,6 +26,7 @@ import { plexFullScanner } from '../../lib/scanners/plex';
 import { getSettings, MainSettings } from '../../lib/settings';
 import logger from '../../logger';
 import { isAuthenticated } from '../../middleware/auth';
+import { appDataPath } from '../../utils/appDataVolume';
 import { getAppVersion } from '../../utils/appVersion';
 import notificationRoutes from './notifications';
 import radarrRoutes from './radarr';
@@ -564,8 +565,7 @@ settingsRoutes.get('/about', async (req, res) => {
     totalMediaItems,
     totalRequests,
     tz: process.env.TZ,
-    configDirectory:
-      process.env.CONFIG_DIRECTORY ?? path.join(__dirname, '../../../config/'),
+    configDirectory: appDataPath(),
   } as SettingsAboutResponse);
 });
 
