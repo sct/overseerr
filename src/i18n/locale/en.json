@@ -565,6 +565,7 @@
   "components.Settings.SettingsAbout.Releases.viewongithub": "View on GitHub",
   "components.Settings.SettingsAbout.about": "About",
   "components.Settings.SettingsAbout.betawarning": "This is BETA software. Features may be broken and/or unstable. Please report any issues on GitHub!",
+  "components.Settings.SettingsAbout.configDirectory": "Config Directory",
   "components.Settings.SettingsAbout.documentation": "Documentation",
   "components.Settings.SettingsAbout.gettingsupport": "Getting Support",
   "components.Settings.SettingsAbout.githubdiscussions": "GitHub Discussions",
