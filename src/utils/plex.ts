@@ -39,7 +39,7 @@ class PlexOAuth {
     if (!clientId) {
       const uuid = crypto.randomUUID && crypto.randomUUID();
       if (!uuid) {
-        throw new Error('Could not generate client id');
+        throw new Error('Could not generate client ID');
       }
 
       localStorage.setItem('overseerrPlexClientId', uuid);
