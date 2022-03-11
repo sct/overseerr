@@ -144,7 +144,7 @@
   "components.IssueDetails.play4konplex": "Odtwarzanie w 4K na platformie Plex",
   "components.ManageSlideOver.movie": "film",
   "components.IssueDetails.reopenissue": "Otwórz ponownie problem",
-  "components.MovieDetails.recommendations": "Zalecenia",
+  "components.MovieDetails.recommendations": "Rekomendacje",
   "components.PermissionEdit.autoapprove4kDescription": "Przyznaj automatyczne zatwierdzanie wszystkich próśb o media 4K.",
   "components.MovieDetails.watchtrailer": "Obejrzyj zwiastun",
   "components.NotificationTypeSelector.adminissuecommentDescription": "Otrzymuj powiadomienia, gdy inni użytkownicy skomentują problem.",
@@ -777,7 +777,7 @@
   "components.TvDetails.overviewunavailable": "Podsumowanie niedostępne.",
   "components.TvDetails.playonplex": "Odtwarzanie na Plex",
   "components.TvDetails.play4konplex": "Odtwarzanie w 4K na Plex",
-  "components.TvDetails.recommendations": "Rekommendacje",
+  "components.TvDetails.recommendations": "Rekomendacje",
   "components.TvDetails.seasons": "{seasonCount, plural, one {# Sezon} other {# Sezony}}",
   "components.TvDetails.showtype": "Typ serialu",
   "components.TvDetails.similar": "Podobne seriale",
@@ -961,7 +961,7 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.discordId": "Identyfikator użytkownika",
   "components.UserProfile.UserSettings.UserNotificationSettings.sendSilently": "Wyślij po cichu",
   "components.UserProfile.UserSettings.UserNotificationSettings.telegramsettingsfailed": "Nie udało się zapisać ustawień powiadomień telegram.",
-  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "<FindDiscordIdLink>Numer ID</FindDiscordIdLink> dla twojego konta użytkownika",
+  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "<FindDiscordIdLink>Wielocyfrowy numer ID</FindDiscordIdLink> powiązany z Twoim kontem użytkownika",
   "components.UserList.importfromplex": "Importuj użytkowników Plex",
   "i18n.available": "Dostępny",
   "components.UserList.sortDisplayName": "Wyświetlana nazwa",
@@ -1036,5 +1036,8 @@
   "components.Settings.validationUrlBaseTrailingSlash": "Baza adresu URL nie może kończyć się ukośnikiem",
   "components.UserProfile.recentlywatched": "Ostatnio oglądane",
   "i18n.import": "Importuj",
-  "i18n.importing": "Importowanie…"
+  "i18n.importing": "Importowanie…",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "ID użytkownika Discorda",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "<FindDiscordIdLink>Wielocyfrowy numer ID</FindDiscordIdLink> powiązany z Twoim kontem użytkownika Discord",
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Musisz podać poprawne ID użytkownika Discord"
 }
