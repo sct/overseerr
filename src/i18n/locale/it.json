@@ -484,7 +484,7 @@
   "components.PermissionEdit.autoapprove4kDescription": "Concede l'approvazione automatica per tutte le richieste 4K.",
   "components.Layout.UserDropdown.myprofile": "Profilo",
   "components.UserProfile.UserSettings.UserNotificationSettings.notificationsettings": "Impostazioni Notifiche",
-  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "<FindDiscordIdLink>ID utente</FindDiscordIdLink> del tuo account",
+  "components.UserProfile.UserSettings.UserNotificationSettings.discordIdTip": "Il <FindDiscordIdLink>numero ID a più cifre</FindDiscordIdLink> associato all'account utente",
   "components.UserProfile.UserSettings.UserNotificationSettings.discordId": "ID utente",
   "components.UserProfile.UserSettings.UserGeneralSettings.toastSettingsSuccess": "Impostazioni salvate con successo!",
   "components.UserProfile.UserSettings.UserGeneralSettings.toastSettingsFailure": "Qualcosa è andato storto nel salvare le impostazioni.",
@@ -1036,5 +1036,8 @@
   "components.Settings.tautulliSettingsDescription": "Opzionalmente, configura le impostazioni per il tuo server Tautulli. Overseerr recupera i dati della cronologia delle visualizzazioni per i tuoi media Plex da Tautulli.",
   "components.ManageSlideOver.playedby": "Riprodotto da",
   "components.Settings.validationUrlBaseTrailingSlash": "L'URL di base non deve terminare con una barra obliqua",
-  "components.Settings.Notifications.NotificationsPushbullet.channelTag": "Tag del canale"
+  "components.Settings.Notifications.NotificationsPushbullet.channelTag": "Tag del canale",
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "È necessario fornire un ID Utente Discord valido",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "ID Utente Discord",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Il <FindDiscordIdLink>numero ID a più cifre</FindDiscordIdLink> associato al tuo account utente Discord"
 }
