@@ -94,6 +94,7 @@ export interface MainSettings {
     tv: Quota;
   };
   hideAvailable: boolean;
+  hideRequested: boolean;
   localLogin: boolean;
   newPlexLogin: boolean;
   region: string;
@@ -111,6 +112,7 @@ interface FullPublicSettings extends PublicSettings {
   applicationTitle: string;
   applicationUrl: string;
   hideAvailable: boolean;
+  hideRequested: boolean;
   localLogin: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
@@ -287,6 +289,7 @@ class Settings {
           tv: {},
         },
         hideAvailable: false,
+        hideRequested: false,
         localLogin: true,
         newPlexLogin: true,
         region: '',
@@ -479,6 +482,7 @@ class Settings {
       applicationTitle: this.data.main.applicationTitle,
       applicationUrl: this.data.main.applicationUrl,
       hideAvailable: this.data.main.hideAvailable,
+      hideRequested: this.data.main.hideRequested,
       localLogin: this.data.main.localLogin,
       movie4kEnabled: this.data.radarr.some(
         (radarr) => radarr.is4k && radarr.isDefault

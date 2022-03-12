@@ -773,6 +773,7 @@
   "components.Settings.generalsettings": "General Settings",
   "components.Settings.generalsettingsDescription": "Configure global and default settings for Overseerr.",
   "components.Settings.hideAvailable": "Hide Available Media",
+  "components.Settings.hideRequested": "Hide Requested Media",
   "components.Settings.hostname": "Hostname or IP Address",
   "components.Settings.is4k": "4K",
   "components.Settings.librariesRemaining": "Libraries Remaining: {count}",

@@ -12,6 +12,7 @@ const defaultSettings = {
   applicationTitle: 'Overseerr',
   applicationUrl: '',
   hideAvailable: false,
+  hideRequested: false,
   localLogin: true,
   movie4kEnabled: false,
   series4kEnabled: false,

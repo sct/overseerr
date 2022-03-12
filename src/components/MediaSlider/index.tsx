@@ -55,12 +55,18 @@ const MediaSlider = ({
     [] as (MovieResult | TvResult | PersonResult)[]
   );
 
-  if (settings.currentSettings.hideAvailable) {
+  if (
+    settings.currentSettings.hideAvailable ||
+    settings.currentSettings.hideRequested
+  ) {
     titles = titles.filter(
       (i) =>
-        (i.mediaType === 'movie' || i.mediaType === 'tv') &&
-        i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
-        i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE
+        i.mediaType === 'person' ||
+        (i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
+          i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE &&
+          (!settings.currentSettings.hideRequested ||
+            (i.mediaInfo?.status !== MediaStatus.PENDING &&
+              i.mediaInfo?.status !== MediaStatus.PROCESSING)))
     );
   }
 

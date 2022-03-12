@@ -25,6 +25,7 @@ export interface PublicSettingsResponse {
   applicationTitle: string;
   applicationUrl: string;
   hideAvailable: boolean;
+  hideRequested: boolean;
   localLogin: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;

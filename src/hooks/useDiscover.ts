@@ -30,7 +30,7 @@ interface DiscoverResult<T, S> {
 const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
   endpoint: string,
   options?: Record<string, unknown>,
-  { hideAvailable = true } = {}
+  { hideAvailableOrRequested = true } = {}
 ): DiscoverResult<T, S> => {
   const settings = useSettings();
   const { data, error, size, setSize, isValidating } = useSWRInfinite<
@@ -71,12 +71,19 @@ const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
 
   let titles = (data ?? []).reduce((a, v) => [...a, ...v.results], [] as T[]);
 
-  if (settings.currentSettings.hideAvailable && hideAvailable) {
+  if (
+    hideAvailableOrRequested &&
+    (settings.currentSettings.hideAvailable ||
+      settings.currentSettings.hideRequested)
+  ) {
     titles = titles.filter(
       (i) =>
-        (i.mediaType === 'movie' || i.mediaType === 'tv') &&
-        i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
-        i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE
+        i.mediaType === 'person' ||
+        (i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
+          i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE &&
+          (!settings.currentSettings.hideRequested ||
+            (i.mediaInfo?.status !== MediaStatus.PENDING &&
+              i.mediaInfo?.status !== MediaStatus.PROCESSING)))
     );
   }
 

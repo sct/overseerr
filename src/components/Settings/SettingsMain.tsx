@@ -40,6 +40,7 @@ const messages = defineMessages({
   toastSettingsSuccess: 'Settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
   hideAvailable: 'Hide Available Media',
+  hideRequested: 'Hide Requested Media',
   csrfProtection: 'Enable CSRF Protection',
   csrfProtectionTip: 'Set external API access to read-only (requires HTTPS)',
   csrfProtectionHoverTip:
@@ -128,6 +129,7 @@ const SettingsMain = () => {
             applicationUrl: data?.applicationUrl,
             csrfProtection: data?.csrfProtection,
             hideAvailable: data?.hideAvailable,
+            hideRequested: data?.hideRequested,
             locale: data?.locale ?? 'en',
             region: data?.region,
             originalLanguage: data?.originalLanguage,
@@ -144,6 +146,7 @@ const SettingsMain = () => {
                 applicationUrl: values.applicationUrl,
                 csrfProtection: values.csrfProtection,
                 hideAvailable: values.hideAvailable,
+                hideRequested: values.hideRequested,
                 locale: values.locale,
                 region: values.region,
                 originalLanguage: values.originalLanguage,
@@ -398,8 +401,31 @@ const SettingsMain = () => {
                       type="checkbox"
                       id="hideAvailable"
                       name="hideAvailable"
+                      checked={values.hideAvailable || values.hideRequested}
+                      disabled={values.hideRequested}
+                      className={values.hideRequested ? 'opacity-50' : ''}
                       onChange={() => {
                         setFieldValue('hideAvailable', !values.hideAvailable);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="hideRequested" className="checkbox-label">
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.hideRequested)}
+                    </span>
+                    <Badge badgeType="warning">
+                      {intl.formatMessage(globalMessages.experimental)}
+                    </Badge>
+                  </label>
+                  <div className="form-input">
+                    <Field
+                      type="checkbox"
+                      id="hideRequested"
+                      name="hideRequested"
+                      onChange={() => {
+                        setFieldValue('hideRequested', !values.hideRequested);
                       }}
                     />
                   </div>
