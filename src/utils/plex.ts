@@ -34,12 +34,24 @@ class PlexOAuth {
         'Window is not defined. Are you calling this in the browser?'
       );
     }
+
+    let clientId = localStorage.getItem('overseerrPlexClientId');
+    if (!clientId) {
+      const uuid = crypto.randomUUID && crypto.randomUUID();
+      if (!uuid) {
+        throw new Error('Could not generate client ID');
+      }
+
+      localStorage.setItem('overseerrPlexClientId', uuid);
+      clientId = uuid;
+    }
+
     const browser = Bowser.getParser(window.navigator.userAgent);
     this.plexHeaders = {
       Accept: 'application/json',
       'X-Plex-Product': 'Overseerr',
       'X-Plex-Version': '2.0',
-      'X-Plex-Client-Identifier': '7f9de3ba-e12b-11ea-87d0-0242ac130003',
+      'X-Plex-Client-Identifier': clientId,
       'X-Plex-Model': 'Plex OAuth',
       'X-Plex-Platform': browser.getOSName(),
       'X-Plex-Platform-Version': browser.getOSVersion(),
