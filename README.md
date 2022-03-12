@@ -162,6 +162,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Nackophilz"><img src="https://avatars.githubusercontent.com/u/61667226?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nackophilz</b></sub></a><br /><a href="#translation-Nackophilz" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/schambers"><img src="https://avatars.githubusercontent.com/u/31563?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sean Chambers</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=schambers" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/deniscerri"><img src="https://avatars.githubusercontent.com/u/64997243?v=4?s=100" width="100px;" alt=""/><br /><sub><b>deniscerri</b></sub></a><br /><a href="#translation-deniscerri" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/tomgacz"><img src="https://avatars.githubusercontent.com/u/14138209?v=4?s=100" width="100px;" alt=""/><br /><sub><b>tomgacz</b></sub></a><br /><a href="#translation-tomgacz" title="Translation">🌍</a></td>
   </tr>
 </table>
 

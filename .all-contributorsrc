@@ -638,6 +638,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "tomgacz",
+      "name": "tomgacz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14138209?v=4",
+      "profile": "https://github.com/tomgacz",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
