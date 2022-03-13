@@ -9,7 +9,7 @@ jobs:
   test:
     name: Lint & Test Build
     runs-on: ubuntu-20.04
-    container: node:16.13-alpine
+    container: node:16.14-alpine
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -32,9 +32,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
