@@ -20,6 +20,19 @@ export interface PlexPin {
   code: string;
 }
 
+const uuidv4 = (): string => {
+  return ((1e7).toString() + -1e3 + -4e3 + -8e3 + -1e11).replace(
+    /[018]/g,
+    function (c) {
+      return (
+        parseInt(c) ^
+        (window.crypto.getRandomValues(new Uint8Array(1))[0] &
+          (15 >> (parseInt(c) / 4)))
+      ).toString(16);
+    }
+  );
+};
+
 class PlexOAuth {
   private plexHeaders?: PlexHeaders;
 
@@ -37,11 +50,7 @@ class PlexOAuth {
 
     let clientId = localStorage.getItem('overseerrPlexClientId');
     if (!clientId) {
-      const uuid = crypto.randomUUID && crypto.randomUUID();
-      if (!uuid) {
-        throw new Error('Could not generate client ID');
-      }
-
+      const uuid = uuidv4();
       localStorage.setItem('overseerrPlexClientId', uuid);
       clientId = uuid;
     }
