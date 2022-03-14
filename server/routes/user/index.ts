@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
-import { uniqWith } from 'lodash';
-import { getRepository, Not } from 'typeorm';
+import { findIndex, sortBy } from 'lodash';
+import { getRepository, In, Not } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
+import { MediaType } from '../../constants/media';
 import { UserType } from '../../constants/user';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
@@ -521,7 +522,6 @@ router.get<{ id: string }, UserWatchDataResponse>(
     }
 
     try {
-      const mediaRepository = getRepository(Media);
       const user = await getRepository(User).findOneOrFail({
         where: { id: Number(req.params.id) },
         select: ['id', 'plexId'],
@@ -532,33 +532,64 @@ router.get<{ id: string }, UserWatchDataResponse>(
       const watchStats = await tautulli.getUserWatchStats(user);
       const watchHistory = await tautulli.getUserWatchHistory(user);
 
-      const media = (
-        await Promise.all(
-          uniqWith(watchHistory, (recordA, recordB) =>
-            recordA.grandparent_rating_key && recordB.grandparent_rating_key
-              ? recordA.grandparent_rating_key ===
-                recordB.grandparent_rating_key
-              : recordA.parent_rating_key && recordB.parent_rating_key
-              ? recordA.parent_rating_key === recordB.parent_rating_key
-              : recordA.rating_key === recordB.rating_key
-          )
-            .slice(0, 20)
-            .map(
-              async (record) =>
-                await mediaRepository.findOne({
-                  where: {
-                    ratingKey:
-                      record.media_type === 'movie'
-                        ? record.rating_key
-                        : record.grandparent_rating_key,
-                  },
-                })
-            )
-        )
-      ).filter((media) => !!media) as Media[];
+      const recentlyWatched = sortBy(
+        await getRepository(Media).find({
+          where: [
+            {
+              mediaType: MediaType.MOVIE,
+              ratingKey: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'movie')
+                  .map((record) => record.rating_key)
+              ),
+            },
+            {
+              mediaType: MediaType.MOVIE,
+              ratingKey4k: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'movie')
+                  .map((record) => record.rating_key)
+              ),
+            },
+            {
+              mediaType: MediaType.TV,
+              ratingKey: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'episode')
+                  .map((record) => record.grandparent_rating_key)
+              ),
+            },
+            {
+              mediaType: MediaType.TV,
+              ratingKey4k: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'episode')
+                  .map((record) => record.grandparent_rating_key)
+              ),
+            },
+          ],
+        }),
+        [
+          (media) =>
+            findIndex(
+              watchHistory,
+              (record) =>
+                (!!media.ratingKey &&
+                  parseInt(media.ratingKey) ===
+                    (record.media_type === 'movie'
+                      ? record.rating_key
+                      : record.grandparent_rating_key)) ||
+                (!!media.ratingKey4k &&
+                  parseInt(media.ratingKey4k) ===
+                    (record.media_type === 'movie'
+                      ? record.rating_key
+                      : record.grandparent_rating_key))
+            ),
+        ]
+      );
 
       return res.status(200).json({
-        recentlyWatched: media,
+        recentlyWatched,
         playCount: watchStats.total_plays,
       });
     } catch (e) {

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import { uniqWith } from 'lodash';
 import { User } from '../entity/User';
 import { TautulliSettings } from '../lib/settings';
 import logger from '../logger';
@@ -231,23 +232,48 @@ class TautulliAPI {
   public async getUserWatchHistory(
     user: User
   ): Promise<TautulliHistoryRecord[]> {
+    let results: TautulliHistoryRecord[] = [];
+
     try {
       if (!user.plexId) {
         throw new Error('User does not have an associated Plex ID');
       }
 
-      return (
-        await this.axios.get<TautulliHistoryResponse>('/api/v2', {
-          params: {
-            cmd: 'get_history',
-            grouping: 1,
-            order_column: 'date',
-            order_dir: 'desc',
-            user_id: user.plexId,
-            length: 100,
-          },
-        })
-      ).data.response.data.data;
+      const take = 100;
+      let start = 0;
+
+      while (results.length < 20) {
+        const tautulliData = (
+          await this.axios.get<TautulliHistoryResponse>('/api/v2', {
+            params: {
+              cmd: 'get_history',
+              grouping: 1,
+              order_column: 'date',
+              order_dir: 'desc',
+              user_id: user.plexId,
+              media_type: 'movie,episode',
+              length: take,
+              start,
+            },
+          })
+        ).data.response.data.data;
+
+        if (!tautulliData.length) {
+          return results;
+        }
+
+        results = uniqWith(results.concat(tautulliData), (recordA, recordB) =>
+          recordA.grandparent_rating_key && recordB.grandparent_rating_key
+            ? recordA.grandparent_rating_key === recordB.grandparent_rating_key
+            : recordA.parent_rating_key && recordB.parent_rating_key
+            ? recordA.parent_rating_key === recordB.parent_rating_key
+            : recordA.rating_key === recordB.rating_key
+        );
+
+        start += take;
+      }
+
+      return results.slice(0, 20);
     } catch (e) {
       logger.error(
         'Something went wrong fetching user watch history from Tautulli',
