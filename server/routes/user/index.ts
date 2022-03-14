@@ -544,8 +544,24 @@ router.get<{ id: string }, UserWatchDataResponse>(
               ),
             },
             {
+              mediaType: MediaType.MOVIE,
+              ratingKey4k: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'movie')
+                  .map((record) => record.rating_key)
+              ),
+            },
+            {
               mediaType: MediaType.TV,
               ratingKey: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'episode')
+                  .map((record) => record.grandparent_rating_key)
+              ),
+            },
+            {
+              mediaType: MediaType.TV,
+              ratingKey4k: In(
                 watchHistory
                   .filter((record) => record.media_type === 'episode')
                   .map((record) => record.grandparent_rating_key)
