@@ -25,7 +25,7 @@ import { getAppVersion } from '@server/utils/appVersion';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
-import { merge, omit, set, sortBy } from 'lodash';
+import { escapeRegExp, merge, omit, set, sortBy } from 'lodash';
 import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import semver from 'semver';
@@ -344,6 +344,8 @@ settingsRoutes.get(
   (req, res, next) => {
     const pageSize = req.query.take ? Number(req.query.take) : 25;
     const skip = req.query.skip ? Number(req.query.skip) : 0;
+    const search = (req.query.search as string) ?? '';
+    const searchRegexp = new RegExp(escapeRegExp(search), 'i');
 
     let filter: string[] = [];
     switch (req.query.filter) {
@@ -391,8 +393,6 @@ settingsRoutes.get(
 
       return values;
     };
-
-    const searchRegexp = new RegExp(req.query.search as string, 'i');
 
     try {
       fs.readFileSync(logFile, 'utf-8')
