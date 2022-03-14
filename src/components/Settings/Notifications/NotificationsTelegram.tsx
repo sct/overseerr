@@ -169,7 +169,7 @@ const NotificationsTelegram: React.FC = () => {
                 {intl.formatMessage(messages.agentenabled)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
@@ -209,7 +209,7 @@ const NotificationsTelegram: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <SensitiveInput
                     as="field"
@@ -230,7 +230,7 @@ const NotificationsTelegram: React.FC = () => {
                   {intl.formatMessage(messages.botUsernameTip)}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field id="botUsername" name="botUsername" type="text" />
                 </div>
@@ -262,7 +262,7 @@ const NotificationsTelegram: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field id="chatId" name="chatId" type="text" />
                 </div>
@@ -278,7 +278,7 @@ const NotificationsTelegram: React.FC = () => {
                   {intl.formatMessage(messages.sendSilentlyTip)}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field type="checkbox" id="sendSilently" name="sendSilently" />
               </div>
             </div>

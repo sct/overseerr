@@ -227,7 +227,7 @@
     @apply mt-6 max-w-6xl sm:mt-5 sm:grid sm:grid-cols-3 sm:items-start sm:gap-4;
   }
 
-  .form-input {
+  .form-input-area {
     @apply text-sm text-white sm:col-span-2;
   }
 

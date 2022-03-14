@@ -144,7 +144,7 @@ const NotificationsPushbullet: React.FC = () => {
                 {intl.formatMessage(messages.agentEnabled)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
@@ -171,7 +171,7 @@ const NotificationsPushbullet: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <SensitiveInput
                     as="field"
@@ -189,7 +189,7 @@ const NotificationsPushbullet: React.FC = () => {
               <label htmlFor="channelTag" className="text-label">
                 {intl.formatMessage(messages.channelTag)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field id="channelTag" name="channelTag" type="text" />
                 </div>

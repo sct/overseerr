@@ -430,7 +430,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 <label htmlFor="preset" className="text-label">
                   {intl.formatMessage(messages.serverpreset)}
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <select
                       id="preset"
@@ -504,7 +504,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   {intl.formatMessage(messages.hostname)}
                   <span className="label-required">*</span>
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-gray-100 sm:text-sm">
                       {values.useSsl ? 'https://' : 'http://'}
@@ -527,7 +527,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                   {intl.formatMessage(messages.port)}
                   <span className="label-required">*</span>
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <Field
                     type="text"
                     inputMode="numeric"
@@ -544,7 +544,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                 <label htmlFor="ssl" className="checkbox-label">
                   {intl.formatMessage(messages.enablessl)}
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <Field
                     type="checkbox"
                     id="useSsl"
@@ -577,7 +577,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     {intl.formatMessage(messages.webAppUrlTip)}
                   </span>
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <Field
                       type="text"
@@ -790,7 +790,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       {intl.formatMessage(messages.hostname)}
                       <span className="label-required">*</span>
                     </label>
-                    <div className="form-input">
+                    <div className="form-input-area">
                       <div className="form-input-field">
                         <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-gray-100 sm:text-sm">
                           {values.tautulliUseSsl ? 'https://' : 'http://'}
@@ -813,7 +813,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       {intl.formatMessage(messages.port)}
                       <span className="label-required">*</span>
                     </label>
-                    <div className="form-input">
+                    <div className="form-input-area">
                       <Field
                         type="text"
                         inputMode="numeric"
@@ -830,7 +830,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     <label htmlFor="tautulliUseSsl" className="checkbox-label">
                       {intl.formatMessage(messages.enablessl)}
                     </label>
-                    <div className="form-input">
+                    <div className="form-input-area">
                       <Field
                         type="checkbox"
                         id="tautulliUseSsl"
@@ -848,7 +848,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     <label htmlFor="tautulliUrlBase" className="text-label">
                       {intl.formatMessage(messages.urlBase)}
                     </label>
-                    <div className="form-input">
+                    <div className="form-input-area">
                       <div className="form-input-field">
                         <Field
                           type="text"
@@ -867,7 +867,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                       {intl.formatMessage(messages.tautulliApiKey)}
                       <span className="label-required">*</span>
                     </label>
-                    <div className="form-input">
+                    <div className="form-input-area">
                       <div className="form-input-field">
                         <SensitiveInput
                           as="field"
@@ -885,7 +885,7 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
                     <label htmlFor="tautulliExternalUrl" className="text-label">
                       {intl.formatMessage(messages.externalUrl)}
                     </label>
-                    <div className="form-input">
+                    <div className="form-input-area">
                       <div className="form-input-field">
                         <Field
                           type="text"

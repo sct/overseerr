@@ -212,7 +212,7 @@ const UserGeneralSettings: React.FC = () => {
                 <label htmlFor="displayName" className="text-label">
                   {intl.formatMessage(messages.displayName)}
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <Field
                       id="displayName"
@@ -249,7 +249,7 @@ const UserGeneralSettings: React.FC = () => {
                     </span>
                   )}
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <Field id="discordId" name="discordId" type="text" />
                   </div>
@@ -262,7 +262,7 @@ const UserGeneralSettings: React.FC = () => {
                 <label htmlFor="locale" className="text-label">
                   {intl.formatMessage(messages.applanguage)}
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <Field as="select" id="locale" name="locale">
                       <option value="" lang={locale}>
@@ -295,7 +295,7 @@ const UserGeneralSettings: React.FC = () => {
                     {intl.formatMessage(messages.regionTip)}
                   </span>
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <RegionSelector
                       name="region"
@@ -313,7 +313,7 @@ const UserGeneralSettings: React.FC = () => {
                     {intl.formatMessage(messages.originallanguageTip)}
                   </span>
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <LanguageSelector
                       setFieldValue={setFieldValue}
@@ -333,7 +333,7 @@ const UserGeneralSettings: React.FC = () => {
                           {intl.formatMessage(messages.movierequestlimit)}
                         </span>
                       </label>
-                      <div className="form-input">
+                      <div className="form-input-area">
                         <div className="flex flex-col">
                           <div className="mb-4 flex items-center">
                             <input
@@ -373,7 +373,7 @@ const UserGeneralSettings: React.FC = () => {
                           {intl.formatMessage(messages.seriesrequestlimit)}
                         </span>
                       </label>
-                      <div className="form-input">
+                      <div className="form-input-area">
                         <div className="flex flex-col">
                           <div className="mb-4 flex items-center">
                             <input

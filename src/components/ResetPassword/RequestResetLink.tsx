@@ -110,7 +110,7 @@ const ResetPassword: React.FC = () => {
                               name="email"
                               type="text"
                               inputMode="email"
-                              className="form-input block w-full min-w-0 flex-1 rounded-md border border-gray-500 bg-gray-700 text-white transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                              className="form-input-area block w-full min-w-0 flex-1 rounded-md border border-gray-500 bg-gray-700 text-white transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                             />
                           </div>
                           {errors.email && touched.email && (

@@ -382,7 +382,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                         : messages.defaultserver
                     )}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field type="checkbox" id="isDefault" name="isDefault" />
                   </div>
                 </div>
@@ -390,7 +390,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="is4k" className="checkbox-label">
                     {intl.formatMessage(messages.server4k)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field type="checkbox" id="is4k" name="is4k" />
                   </div>
                 </div>
@@ -399,7 +399,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.servername)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         id="name"
@@ -421,7 +421,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.hostname)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <span className="protocol">
                         {values.ssl ? 'https://' : 'http://'}
@@ -448,7 +448,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.port)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       id="port"
                       name="port"
@@ -469,7 +469,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="ssl" className="checkbox-label">
                     {intl.formatMessage(messages.ssl)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="ssl"
@@ -486,7 +486,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.apiKey)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <SensitiveInput
                         as="field"
@@ -508,7 +508,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="baseUrl" className="text-label">
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         id="baseUrl"
@@ -531,7 +531,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.qualityprofile)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -569,7 +569,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.rootfolder)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -608,7 +608,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                     {intl.formatMessage(messages.languageprofile)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -652,7 +652,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="tags" className="text-label">
                     {intl.formatMessage(messages.tags)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Select<OptionType, true>
                       options={
                         isValidated
@@ -712,7 +712,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="activeAnimeProfileId" className="text-label">
                     {intl.formatMessage(messages.animequalityprofile)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -752,7 +752,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="activeAnimeRootFolder" className="text-label">
                     {intl.formatMessage(messages.animerootfolder)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -791,7 +791,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   >
                     {intl.formatMessage(messages.animelanguageprofile)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -835,7 +835,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="tags" className="text-label">
                     {intl.formatMessage(messages.animeTags)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Select<OptionType, true>
                       options={
                         isValidated
@@ -898,7 +898,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   >
                     {intl.formatMessage(messages.seasonfolders)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="enableSeasonFolders"
@@ -910,7 +910,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="externalUrl" className="text-label">
                     {intl.formatMessage(messages.externalUrl)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         id="externalUrl"
@@ -928,7 +928,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="syncEnabled" className="checkbox-label">
                     {intl.formatMessage(messages.syncEnabled)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="syncEnabled"
@@ -940,7 +940,7 @@ const SonarrModal: React.FC<SonarrModalProps> = ({
                   <label htmlFor="enableSearch" className="checkbox-label">
                     {intl.formatMessage(messages.enableSearch)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="enableSearch"
