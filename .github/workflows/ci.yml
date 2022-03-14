@@ -11,11 +11,12 @@ on:
 jobs:
   test:
     name: Lint & Test Build
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-20.04
-    container: node:16.13-alpine
+    container: node:16.14-alpine
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install dependencies
         env:
           HUSKY_SKIP_INSTALL: 1
@@ -27,12 +28,11 @@ jobs:
 
   build_and_push:
     name: Build & Publish Docker Images
-    needs: test
     if: github.ref == 'refs/heads/develop' && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx

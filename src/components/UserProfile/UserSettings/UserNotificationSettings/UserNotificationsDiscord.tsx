@@ -126,7 +126,7 @@ const UserNotificationsDiscord: React.FC = () => {
                   </span>
                 )}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field id="discordId" name="discordId" type="text" />
                 </div>

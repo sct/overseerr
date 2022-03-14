@@ -16,7 +16,7 @@ import 'country-flag-icons/3x2/flags.css';
 import { uniqBy } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RTRating } from '../../../server/api/rottentomatoes';
@@ -109,6 +109,10 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     [data]
   );
 
+  useEffect(() => {
+    setShowManager(router.query.manage == '1' ? true : false);
+  }, [router.query.manage]);
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -134,6 +138,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   }
 
   if (
+    settings.currentSettings.movie4kEnabled &&
     data.mediaInfo?.plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
       type: 'or',
@@ -254,7 +259,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
       <ManageSlideOver
         data={data}
         mediaType="movie"
-        onClose={() => setShowManager(false)}
+        onClose={() => {
+          setShowManager(false);
+          router.push({
+            pathname: router.pathname,
+            query: { movieId: router.query.movieId },
+          });
+        }}
         revalidate={() => revalidate()}
         show={showManager}
       />
@@ -284,7 +295,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             />
             {settings.currentSettings.movie4kEnabled &&
               hasPermission(
-                [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+                [
+                  Permission.MANAGE_REQUESTS,
+                  Permission.REQUEST_4K,
+                  Permission.REQUEST_4K_MOVIE,
+                ],
                 {
                   type: 'or',
                 }

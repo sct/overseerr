@@ -160,7 +160,7 @@ const NotificationsGotify: React.FC = () => {
                 {intl.formatMessage(messages.agentenabled)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
@@ -169,7 +169,7 @@ const NotificationsGotify: React.FC = () => {
                 {intl.formatMessage(messages.url)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field id="url" name="url" type="text" />
                 </div>
@@ -183,7 +183,7 @@ const NotificationsGotify: React.FC = () => {
                 {intl.formatMessage(messages.token)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field id="token" name="token" type="text" />
                 </div>

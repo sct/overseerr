@@ -18,7 +18,7 @@ const messages = defineMessages({
   importfromplex: 'Import Plex Users',
   importfromplexerror: 'Something went wrong while importing Plex users.',
   importedfromplex:
-    '<strong>{userCount}</strong> {userCount, plural, one {user} other {users}} Plex users imported successfully!',
+    '<strong>{userCount}</strong> Plex {userCount, plural, one {user} other {users}} imported successfully!',
   user: 'User',
   nouserstoimport: 'There are no Plex users to import.',
   newplexsigninenabled:

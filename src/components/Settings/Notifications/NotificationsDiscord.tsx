@@ -158,7 +158,7 @@ const NotificationsDiscord: React.FC = () => {
                 {intl.formatMessage(messages.agentenabled)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
@@ -183,7 +183,7 @@ const NotificationsDiscord: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="webhookUrl"
@@ -201,7 +201,7 @@ const NotificationsDiscord: React.FC = () => {
               <label htmlFor="botUsername" className="text-label">
                 {intl.formatMessage(messages.botUsername)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="botUsername"
@@ -219,7 +219,7 @@ const NotificationsDiscord: React.FC = () => {
               <label htmlFor="botAvatarUrl" className="text-label">
                 {intl.formatMessage(messages.botAvatarUrl)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="botAvatarUrl"
@@ -237,7 +237,7 @@ const NotificationsDiscord: React.FC = () => {
               <label htmlFor="enableMentions" className="checkbox-label">
                 {intl.formatMessage(messages.enableMentions)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field
                   type="checkbox"
                   id="enableMentions"

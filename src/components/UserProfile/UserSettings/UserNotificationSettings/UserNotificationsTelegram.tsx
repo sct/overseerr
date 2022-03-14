@@ -141,7 +141,7 @@ const UserTelegramSettings: React.FC = () => {
                   </span>
                 )}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="telegramChatId"
@@ -161,7 +161,7 @@ const UserTelegramSettings: React.FC = () => {
                   {intl.formatMessage(messages.sendSilentlyDescription)}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field
                   type="checkbox"
                   id="telegramSendSilently"

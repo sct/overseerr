@@ -146,7 +146,7 @@ const UserPushoverSettings: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="pushoverApplicationToken"
@@ -182,7 +182,7 @@ const UserPushoverSettings: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="pushoverUserKey"

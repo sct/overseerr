@@ -216,7 +216,7 @@ const SettingsJobs: React.FC = () => {
                 <label htmlFor="jobSchedule" className="text-label">
                   {intl.formatMessage(messages.editJobSchedulePrompt)}
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   {jobEditModal.job?.interval === 'short' ? (
                     <select
                       name="jobScheduleMinutes"

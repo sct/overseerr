@@ -177,7 +177,7 @@ const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
                     {intl.formatMessage(messages.problemseason)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -212,7 +212,7 @@ const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
                       {intl.formatMessage(messages.problemepisode)}
                       <span className="label-required">*</span>
                     </label>
-                    <div className="form-input">
+                    <div className="form-input-area">
                       <div className="form-input-field">
                         <Field
                           as="select"
