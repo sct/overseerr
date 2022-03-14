@@ -28,6 +28,10 @@ interface SearchOptions {
   language?: string;
 }
 
+interface SingleSearchOptions extends SearchOptions {
+  year?: number;
+}
+
 interface DiscoverMovieOptions {
   page?: number;
   includeAdult?: boolean;
@@ -103,6 +107,58 @@ class TheMovieDb extends ExternalAPI {
     try {
       const data = await this.get<TmdbSearchMultiResponse>('/search/multi', {
         params: { query, page, include_adult: includeAdult, language },
+      });
+
+      return data;
+    } catch (e) {
+      return {
+        page: 1,
+        results: [],
+        total_pages: 1,
+        total_results: 0,
+      };
+    }
+  };
+
+  public searchMovies = async ({
+    query,
+    page = 1,
+    includeAdult = false,
+    language = 'en',
+    year,
+  }: SingleSearchOptions): Promise<TmdbSearchMovieResponse> => {
+    try {
+      const data = await this.get<TmdbSearchMovieResponse>('/search/movie', {
+        params: { query, page, include_adult: includeAdult, language, year },
+      });
+
+      return data;
+    } catch (e) {
+      return {
+        page: 1,
+        results: [],
+        total_pages: 1,
+        total_results: 0,
+      };
+    }
+  };
+
+  public searchTvShows = async ({
+    query,
+    page = 1,
+    includeAdult = false,
+    language = 'en',
+    year,
+  }: SingleSearchOptions): Promise<TmdbSearchTvResponse> => {
+    try {
+      const data = await this.get<TmdbSearchTvResponse>('/search/tv', {
+        params: {
+          query,
+          page,
+          include_adult: includeAdult,
+          language,
+          first_air_date_year: year,
+        },
       });
 
       return data;

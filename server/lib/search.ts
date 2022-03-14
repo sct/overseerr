@@ -4,7 +4,9 @@ import {
   TmdbMovieResult,
   TmdbPersonDetails,
   TmdbPersonResult,
+  TmdbSearchMovieResponse,
   TmdbSearchMultiResponse,
+  TmdbSearchTvResponse,
   TmdbTvDetails,
   TmdbTvResult,
 } from '../api/themoviedb/interfaces';
@@ -13,14 +15,19 @@ import {
   mapPersonDetailsToResult,
   mapTvDetailsToResult,
 } from '../models/Search';
-import { isMovieDetails, isTvDetails } from '../utils/typeHelpers';
-
-type SearchProviderId = 'TMDb' | 'IMDb' | 'TVDB';
+import { isMovie, isMovieDetails, isTvDetails } from '../utils/typeHelpers';
 
 interface SearchProvider {
-  id: SearchProviderId;
   pattern: RegExp;
-  search: (id: string, language?: string) => Promise<TmdbSearchMultiResponse>;
+  search: ({
+    id,
+    language,
+    query,
+  }: {
+    id: string;
+    language?: string;
+    query?: string;
+  }) => Promise<TmdbSearchMultiResponse>;
 }
 
 const searchProviders: SearchProvider[] = [];
@@ -32,12 +39,8 @@ export const findSearchProvider = (
 };
 
 searchProviders.push({
-  id: 'TMDb',
   pattern: new RegExp(/(?<=tmdb:)\d+/),
-  search: async (
-    id: string,
-    language?: string
-  ): Promise<TmdbSearchMultiResponse> => {
+  search: async ({ id, language }) => {
     const tmdb = new TheMovieDb();
 
     const moviePromise = tmdb.getMovie({ movieId: parseInt(id), language });
@@ -85,12 +88,8 @@ searchProviders.push({
 });
 
 searchProviders.push({
-  id: 'IMDb',
   pattern: new RegExp(/(?<=imdb:)(tt|nm)\d+/),
-  search: async (
-    id: string,
-    language?: string
-  ): Promise<TmdbSearchMultiResponse> => {
+  search: async ({ id, language }) => {
     const tmdb = new TheMovieDb();
 
     const responses = await tmdb.getByExternalId({
@@ -127,12 +126,8 @@ searchProviders.push({
 });
 
 searchProviders.push({
-  id: 'TVDB',
   pattern: new RegExp(/(?<=tvdb:)\d+/),
-  search: async (
-    id: string,
-    language?: string
-  ): Promise<TmdbSearchMultiResponse> => {
+  search: async ({ id, language }) => {
     const tmdb = new TheMovieDb();
 
     const responses = await tmdb.getByExternalId({
@@ -158,6 +153,54 @@ searchProviders.push({
         media_type: 'person',
       })) as TmdbPersonResult[])
     );
+
+    return {
+      page: 1,
+      total_pages: 1,
+      total_results: results.length,
+      results,
+    };
+  },
+});
+
+searchProviders.push({
+  pattern: new RegExp(/(?<=year:)\d{4}/),
+  search: async ({ id: year, query }) => {
+    const tmdb = new TheMovieDb();
+
+    const moviesPromise = tmdb.searchMovies({
+      query: query?.replace(new RegExp(/year:\d{4}/), '') ?? '',
+      year: parseInt(year),
+    });
+    const tvShowsPromise = tmdb.searchTvShows({
+      query: query?.replace(new RegExp(/year:\d{4}/), '') ?? '',
+      year: parseInt(year),
+    });
+
+    const responses = await Promise.allSettled([moviesPromise, tvShowsPromise]);
+
+    const successfulResponses = responses.filter(
+      (r) => r.status === 'fulfilled'
+    ) as
+      | (
+          | PromiseFulfilledResult<TmdbSearchMovieResponse>
+          | PromiseFulfilledResult<TmdbSearchTvResponse>
+        )[];
+
+    const results: (TmdbMovieResult | TmdbTvResult)[] = [];
+
+    if (successfulResponses.length) {
+      successfulResponses.forEach((response) => {
+        response.value.results.forEach((result) =>
+          // set the media_type here since the search endpoints don't return it
+          results.push(
+            isMovie(result)
+              ? { ...result, media_type: 'movie' }
+              : { ...result, media_type: 'tv' }
+          )
+        );
+      });
+    }
 
     return {
       page: 1,

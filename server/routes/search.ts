@@ -18,10 +18,11 @@ searchRoutes.get('/', async (req, res, next) => {
       const [id] = queryString
         .toLowerCase()
         .match(searchProvider.pattern) as RegExpMatchArray;
-      results = await searchProvider.search(
+      results = await searchProvider.search({
         id,
-        req.locale ?? (req.query.language as string)
-      );
+        language: req.locale ?? (req.query.language as string),
+        query: queryString,
+      });
     } else {
       const tmdb = new TheMovieDb();
 
