@@ -354,7 +354,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         : messages.defaultserver
                     )}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field type="checkbox" id="isDefault" name="isDefault" />
                   </div>
                 </div>
@@ -362,7 +362,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   <label htmlFor="is4k" className="checkbox-label">
                     {intl.formatMessage(messages.server4k)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field type="checkbox" id="is4k" name="is4k" />
                   </div>
                 </div>
@@ -371,7 +371,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.servername)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         id="name"
@@ -393,7 +393,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.hostname)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <span className="protocol">
                         {values.ssl ? 'https://' : 'http://'}
@@ -420,7 +420,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.port)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       id="port"
                       name="port"
@@ -441,7 +441,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   <label htmlFor="ssl" className="checkbox-label">
                     {intl.formatMessage(messages.ssl)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="ssl"
@@ -458,7 +458,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.apiKey)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <SensitiveInput
                         as="field"
@@ -480,7 +480,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   <label htmlFor="baseUrl" className="text-label">
                     {intl.formatMessage(messages.baseUrl)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         id="baseUrl"
@@ -503,7 +503,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.qualityprofile)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -541,7 +541,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.rootfolder)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -577,7 +577,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                     {intl.formatMessage(messages.minimumAvailability)}
                     <span className="label-required">*</span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         as="select"
@@ -607,7 +607,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   <label htmlFor="tags" className="text-label">
                     {intl.formatMessage(messages.tags)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Select<OptionType, true>
                       options={
                         isValidated
@@ -664,7 +664,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   <label htmlFor="externalUrl" className="text-label">
                     {intl.formatMessage(messages.externalUrl)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         id="externalUrl"
@@ -682,7 +682,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   <label htmlFor="syncEnabled" className="checkbox-label">
                     {intl.formatMessage(messages.syncEnabled)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="syncEnabled"
@@ -694,7 +694,7 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                   <label htmlFor="enableSearch" className="checkbox-label">
                     {intl.formatMessage(messages.enableSearch)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="enableSearch"

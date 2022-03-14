@@ -237,7 +237,7 @@ const NotificationsEmail: React.FC = () => {
                 {intl.formatMessage(messages.agentenabled)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
@@ -245,7 +245,7 @@ const NotificationsEmail: React.FC = () => {
               <label htmlFor="senderName" className="text-label">
                 {intl.formatMessage(messages.senderName)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field id="senderName" name="senderName" type="text" />
                 </div>
@@ -256,7 +256,7 @@ const NotificationsEmail: React.FC = () => {
                 {intl.formatMessage(messages.emailsender)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="emailFrom"
@@ -275,7 +275,7 @@ const NotificationsEmail: React.FC = () => {
                 {intl.formatMessage(messages.smtpHost)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="smtpHost"
@@ -294,7 +294,7 @@ const NotificationsEmail: React.FC = () => {
                 {intl.formatMessage(messages.smtpPort)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field
                   id="smtpPort"
                   name="smtpPort"
@@ -315,7 +315,7 @@ const NotificationsEmail: React.FC = () => {
                   {intl.formatMessage(messages.encryptionTip)}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field as="select" id="encryption" name="encryption">
                     <option value="none">
@@ -338,7 +338,7 @@ const NotificationsEmail: React.FC = () => {
               <label htmlFor="allowSelfSigned" className="checkbox-label">
                 {intl.formatMessage(messages.allowselfsigned)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field
                   type="checkbox"
                   id="allowSelfSigned"
@@ -350,7 +350,7 @@ const NotificationsEmail: React.FC = () => {
               <label htmlFor="authUser" className="text-label">
                 {intl.formatMessage(messages.authUser)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field id="authUser" name="authUser" type="text" />
                 </div>
@@ -360,7 +360,7 @@ const NotificationsEmail: React.FC = () => {
               <label htmlFor="authPass" className="text-label">
                 {intl.formatMessage(messages.authPass)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <SensitiveInput
                     as="field"
@@ -385,7 +385,7 @@ const NotificationsEmail: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <SensitiveInput
                     as="field"
@@ -415,7 +415,7 @@ const NotificationsEmail: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <SensitiveInput
                     as="field"

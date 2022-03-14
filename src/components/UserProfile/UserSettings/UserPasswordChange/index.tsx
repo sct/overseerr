@@ -166,7 +166,7 @@ const UserPasswordChange: React.FC = () => {
                   <label htmlFor="currentPassword" className="text-label">
                     {intl.formatMessage(messages.currentpassword)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <SensitiveInput
                         as="field"
@@ -186,7 +186,7 @@ const UserPasswordChange: React.FC = () => {
                 <label htmlFor="newPassword" className="text-label">
                   {intl.formatMessage(messages.newpassword)}
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <SensitiveInput
                       as="field"
@@ -205,7 +205,7 @@ const UserPasswordChange: React.FC = () => {
                 <label htmlFor="confirmPassword" className="text-label">
                   {intl.formatMessage(messages.confirmpassword)}
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   <div className="form-input-field">
                     <SensitiveInput
                       as="field"

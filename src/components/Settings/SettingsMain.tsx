@@ -191,7 +191,7 @@ const SettingsMain: React.FC = () => {
                     <label htmlFor="apiKey" className="text-label">
                       {intl.formatMessage(messages.apikey)}
                     </label>
-                    <div className="form-input">
+                    <div className="form-input-area">
                       <div className="form-input-field">
                         <SensitiveInput
                           type="text"
@@ -221,7 +221,7 @@ const SettingsMain: React.FC = () => {
                   <label htmlFor="applicationTitle" className="text-label">
                     {intl.formatMessage(messages.applicationTitle)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         id="applicationTitle"
@@ -238,7 +238,7 @@ const SettingsMain: React.FC = () => {
                   <label htmlFor="applicationUrl" className="text-label">
                     {intl.formatMessage(messages.applicationurl)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field
                         id="applicationUrl"
@@ -259,7 +259,7 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(messages.trustProxyTip)}
                     </span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="trustProxy"
@@ -282,7 +282,7 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(messages.csrfProtectionTip)}
                     </span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="csrfProtection"
@@ -300,7 +300,7 @@ const SettingsMain: React.FC = () => {
                   <label htmlFor="locale" className="text-label">
                     {intl.formatMessage(messages.locale)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <Field as="select" id="locale" name="locale">
                         {(
@@ -327,7 +327,7 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(messages.regionTip)}
                     </span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <RegionSelector
                         value={values.region ?? ''}
@@ -344,7 +344,7 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(messages.originallanguageTip)}
                     </span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <div className="form-input-field">
                       <LanguageSelector
                         setFieldValue={setFieldValue}
@@ -362,7 +362,7 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(globalMessages.experimental)}
                     </Badge>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="hideAvailable"
@@ -382,7 +382,7 @@ const SettingsMain: React.FC = () => {
                       {intl.formatMessage(messages.partialRequestsEnabled)}
                     </span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="partialRequestsEnabled"

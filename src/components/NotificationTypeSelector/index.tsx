@@ -357,7 +357,7 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
           {intl.formatMessage(messages.notificationTypes)}
           {!user && <span className="label-required">*</span>}
         </span>
-        <div className="form-input">
+        <div className="form-input-area">
           <div className="max-w-lg">
             {availableTypes.map((type) => (
               <NotificationType
