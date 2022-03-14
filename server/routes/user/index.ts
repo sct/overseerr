@@ -559,15 +559,15 @@ router.get<{ id: string }, UserWatchDataResponse>(
               watchHistory,
               (record) =>
                 (!!media.ratingKey &&
-                  (record.media_type === 'movie'
-                    ? record.rating_key === parseInt(media.ratingKey)
-                    : record.grandparent_rating_key ===
-                      parseInt(media.ratingKey))) ||
+                  parseInt(media.ratingKey) ===
+                    (record.media_type === 'movie'
+                      ? record.rating_key
+                      : record.grandparent_rating_key)) ||
                 (!!media.ratingKey4k &&
-                  (record.media_type === 'movie'
-                    ? record.rating_key === parseInt(media.ratingKey4k)
-                    : record.grandparent_rating_key ===
-                      parseInt(media.ratingKey4k)))
+                  parseInt(media.ratingKey4k) ===
+                    (record.media_type === 'movie'
+                      ? record.rating_key
+                      : record.grandparent_rating_key))
             ),
         ]
       );
