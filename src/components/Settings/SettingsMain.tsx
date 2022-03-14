@@ -278,11 +278,11 @@ const SettingsMain: React.FC = () => {
                     <span className="mr-2">
                       {intl.formatMessage(messages.csrfProtection)}
                     </span>
-                    <Badge badgeType="primary" className="mr-2">
-                      {intl.formatMessage(globalMessages.restartRequired)}
-                    </Badge>
-                    <Badge badgeType="danger">
+                    <Badge badgeType="danger" className="mr-2">
                       {intl.formatMessage(globalMessages.advanced)}
+                    </Badge>
+                    <Badge badgeType="primary">
+                      {intl.formatMessage(globalMessages.restartRequired)}
                     </Badge>
                     <span className="label-tip">
                       {intl.formatMessage(messages.csrfProtectionTip)}
