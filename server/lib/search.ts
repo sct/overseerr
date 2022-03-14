@@ -164,16 +164,16 @@ searchProviders.push({
 });
 
 searchProviders.push({
-  pattern: new RegExp(/(?<=year:)\d+/),
+  pattern: new RegExp(/(?<=year:)\d{4}/),
   search: async ({ id: year, query }) => {
     const tmdb = new TheMovieDb();
 
     const moviesPromise = tmdb.searchMovies({
-      query: query?.replace(new RegExp(/year:\d+/), '') ?? '',
+      query: query?.replace(new RegExp(/year:\d{4}/), '') ?? '',
       year: parseInt(year),
     });
     const tvShowsPromise = tmdb.searchTvShows({
-      query: query?.replace(new RegExp(/year:\d+/), '') ?? '',
+      query: query?.replace(new RegExp(/year:\d{4}/), '') ?? '',
       year: parseInt(year),
     });
 
