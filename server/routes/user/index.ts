@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
 import { findIndex, sortBy } from 'lodash';
-import { getRepository, Not } from 'typeorm';
+import { getRepository, In, Not } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
 import { MediaType } from '../../constants/media';
@@ -532,23 +532,27 @@ router.get<{ id: string }, UserWatchDataResponse>(
       const watchStats = await tautulli.getUserWatchStats(user);
       const watchHistory = await tautulli.getUserWatchHistory(user);
 
-      const qb = getRepository(Media).createQueryBuilder('media');
       const recentlyWatched = sortBy(
-        await qb
-          .where(
-            '(media.mediaType = :movie AND (media.ratingKey IN (:...movieRatingKeys) OR media.ratingKey4k IN (:...movieRatingKeys))) OR (media.mediaType = :tv AND (media.ratingKey IN (:...tvRatingKeys) OR media.ratingKey4k IN (:...tvRatingKeys)))',
+        await getRepository(Media).find({
+          where: [
             {
-              movie: MediaType.MOVIE,
-              movieRatingKeys: watchHistory
-                .filter((record) => record.media_type === 'movie')
-                .map((record) => record.rating_key),
-              tv: MediaType.TV,
-              tvRatingKeys: watchHistory
-                .filter((record) => record.media_type === 'episode')
-                .map((record) => record.grandparent_rating_key),
-            }
-          )
-          .getMany(),
+              mediaType: MediaType.MOVIE,
+              ratingKey: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'movie')
+                  .map((record) => record.rating_key)
+              ),
+            },
+            {
+              mediaType: MediaType.TV,
+              ratingKey: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'episode')
+                  .map((record) => record.grandparent_rating_key)
+              ),
+            },
+          ],
+        }),
         [
           (media) =>
             findIndex(
