@@ -536,20 +536,15 @@ router.get<{ id: string }, UserWatchDataResponse>(
       const recentlyWatched = sortBy(
         await qb
           .where(
-            '(media.mediaType = :movie AND (media.ratingKey IN (:...ratingKeys) or media.ratingKey4k IN (:...ratingKeys)))',
+            '(media.mediaType = :movie AND (media.ratingKey IN (:...movieRatingKeys) OR media.ratingKey4k IN (:...movieRatingKeys))) OR (media.mediaType = :tv AND (media.ratingKey IN (:...tvRatingKeys) OR media.ratingKey4k IN (:...tvRatingKeys)))',
             {
               movie: MediaType.MOVIE,
-              ratingKeys: watchHistory
-                .filter((record) => record.media_type == 'movie')
+              movieRatingKeys: watchHistory
+                .filter((record) => record.media_type === 'movie')
                 .map((record) => record.rating_key),
-            }
-          )
-          .orWhere(
-            '(media.mediaType = :tv AND (media.ratingKey IN (:...ratingKeys) or media.ratingKey4k IN (:...ratingKeys)))',
-            {
               tv: MediaType.TV,
-              ratingKeys: watchHistory
-                .filter((record) => record.media_type == 'episode')
+              tvRatingKeys: watchHistory
+                .filter((record) => record.media_type === 'episode')
                 .map((record) => record.grandparent_rating_key),
             }
           )

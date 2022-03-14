@@ -251,6 +251,7 @@ class TautulliAPI {
               order_column: 'date',
               order_dir: 'desc',
               user_id: user.plexId,
+              media_type: 'movie,episode',
               length: take,
               start,
             },
