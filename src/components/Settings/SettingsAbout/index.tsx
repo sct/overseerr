@@ -24,6 +24,7 @@ const messages = defineMessages({
   gettingsupport: 'Getting Support',
   githubdiscussions: 'GitHub Discussions',
   timezone: 'Time Zone',
+  appDataPath: 'Data Directory',
   supportoverseerr: 'Support Overseerr',
   helppaycoffee: 'Help Pay for Coffee',
   documentation: 'Documentation',
@@ -142,6 +143,9 @@ const SettingsAbout: React.FC = () => {
           </List.Item>
           <List.Item title={intl.formatMessage(messages.totalrequests)}>
             {intl.formatNumber(data.totalRequests)}
+          </List.Item>
+          <List.Item title={intl.formatMessage(messages.appDataPath)}>
+            <code>{data.appDataPath}</code>
           </List.Item>
           {data.tz && (
             <List.Item title={intl.formatMessage(messages.timezone)}>

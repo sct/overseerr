@@ -3042,6 +3042,9 @@ paths:
                     type: string
                     nullable: true
                     example: Asia/Tokyo
+                  appDataPath:
+                    type: string
+                    example: /app/config
   /auth/me:
     get:
       summary: Get logged-in user
