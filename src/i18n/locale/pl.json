@@ -581,7 +581,7 @@
   "components.Settings.SettingsJobsCache.jobScheduleEditFailed": "Coś poszło nie tak podczas zapisywania zadania.",
   "components.Settings.SettingsJobsCache.jobsDescription": "Overseerr wykonuje pewne zadania konserwacyjne jako regularnie zaplanowane zadania, ale mogą być one również uruchamiane ręcznie poniżej. Ręczne uruchomienie zadania nie spowoduje zmiany jego harmonogramu.",
   "components.Settings.SettingsJobsCache.nextexecution": "Następne wykonanie",
-  "components.Settings.SettingsLogs.logsDescription": "Możesz również zobaczyć te logi bezpośrednio przez <code>stdout</code>, lub w <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Możesz również zobaczyć te logi bezpośrednio przez <code>stdout</code>, lub w <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsJobsCache.jobname": "Nazwa zadania",
   "components.Settings.SettingsJobsCache.jobScheduleEditSaved": "Zadanie edytowane pomyślnie!",
   "components.Settings.SettingsJobsCache.jobcancelled": "{jobname} anulowane.",
