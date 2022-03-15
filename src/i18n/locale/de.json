@@ -626,7 +626,7 @@
   "components.Settings.SettingsLogs.resumeLogs": "Fortsetzen",
   "components.Settings.SettingsLogs.pauseLogs": "Pause",
   "components.Settings.SettingsLogs.message": "Nachricht",
-  "components.Settings.SettingsLogs.logsDescription": "Du kannst diese Protokolle auch direkt über <code>stdout</code> oder in <code>{configDir} /logs/overseerr.log</code> anzeigen.",
+  "components.Settings.SettingsLogs.logsDescription": "Du kannst diese Protokolle auch direkt über <code>stdout</code> oder in <code>{appDataPath}/logs/overseerr.log</code> anzeigen.",
   "components.Settings.SettingsLogs.logs": "Protokolle",
   "components.Settings.SettingsLogs.logDetails": "Protokolldetails",
   "components.Settings.SettingsLogs.level": "Schweregrad",
