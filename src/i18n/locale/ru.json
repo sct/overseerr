@@ -825,7 +825,7 @@
   "components.Settings.serverLocal": "локальный",
   "components.Settings.scan": "Синхронизировать библиотеки",
   "components.Settings.regionTip": "Контент фильтруется по доступности в выбранном регионе",
-  "components.Settings.SettingsLogs.logsDescription": "Вы также можете просматривать эти логи напрямую через <code>stdout</code> или в <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Вы также можете просматривать эти логи напрямую через <code>stdout</code> или в <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.logs": "Логи",
   "components.Settings.SettingsLogs.logDetails": "Подробные сведения о логе",
   "components.Settings.SettingsLogs.copiedLogMessage": "Сообщение лога скопировано в буфер обмена.",

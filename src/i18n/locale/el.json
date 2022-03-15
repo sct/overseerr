@@ -353,7 +353,7 @@
   "components.Settings.SettingsLogs.resumeLogs": "Συνέχιση",
   "components.Settings.SettingsLogs.pauseLogs": "Παύση",
   "components.Settings.SettingsLogs.message": "Μήνυμα",
-  "components.Settings.SettingsLogs.logsDescription": "Μπορείτε επίσης να δείτε αυτά τα αρχεία καταγραφής απευθείας μέσω του <code> stdout </code> ή στο <code> {configDir} /logs/overseerr.log </code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Μπορείτε επίσης να δείτε αυτά τα αρχεία καταγραφής απευθείας μέσω του <code>stdout</code> ή στο <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.logs": "Αρχεία καταγραφής",
   "components.Settings.SettingsLogs.logDetails": "Λεπτομέρειες αρχείου καταγραφής",
   "components.Settings.SettingsLogs.level": "Σοβαρότητα",

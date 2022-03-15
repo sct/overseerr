@@ -609,7 +609,7 @@
   "components.Settings.SettingsLogs.resumeLogs": "Hervatten",
   "components.Settings.SettingsLogs.pauseLogs": "Pauze",
   "components.Settings.SettingsLogs.message": "Bericht",
-  "components.Settings.SettingsLogs.logsDescription": "Je kunt deze logs ook rechtstreeks bekijken via <code>stdout</code>, of in <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Je kunt deze logs ook rechtstreeks bekijken via <code>stdout</code>, of in <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.logs": "Logboeken",
   "components.Settings.SettingsLogs.level": "Ernst",
   "components.Settings.SettingsLogs.label": "Label",
@@ -1039,5 +1039,6 @@
   "components.Settings.validationUrlBaseLeadingSlash": "URL-basis moet met een schuine streep beginnen",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Gebruikers-ID Discord",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Het <FindDiscordIdLink>meercijferige ID-nummer</FindDiscordIdLink> van je Discord-account",
-  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Je moet een geldige gebruikers-ID van Discord opgeven"
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Je moet een geldige gebruikers-ID van Discord opgeven",
+  "components.Settings.SettingsAbout.appDataPath": "Gegevensmap"
 }

@@ -530,7 +530,7 @@
   "components.Settings.SettingsLogs.resumeLogs": "Fortsett",
   "components.Settings.SettingsLogs.pauseLogs": "Sett på pause",
   "components.Settings.SettingsLogs.message": "Rapport",
-  "components.Settings.SettingsLogs.logsDescription": "Du kan også se disse loggene direkte i <code>stdout</code>, eller i <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Du kan også se disse loggene direkte i <code>stdout</code>, eller i <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.logs": "Logger",
   "components.Settings.SettingsLogs.logDetails": "Logg-detaljer",
   "components.Settings.SettingsLogs.level": "Alvorlighetsgrad",

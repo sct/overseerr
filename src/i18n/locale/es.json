@@ -569,7 +569,7 @@
   "components.Settings.SettingsLogs.pauseLogs": "Pausar",
   "components.Settings.SettingsLogs.resumeLogs": "Reanudar",
   "components.Settings.SettingsLogs.message": "Mensaje",
-  "components.Settings.SettingsLogs.logsDescription": "Puede ver estos logs directamente via <code>stdout</code> o en <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Puede ver estos logs directamente via <code>stdout</code> o en <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.logs": "Logs",
   "components.Settings.SettingsLogs.level": "Severidad",
   "components.Settings.SettingsLogs.label": "Etiqueta",
