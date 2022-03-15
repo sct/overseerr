@@ -565,7 +565,7 @@ settingsRoutes.get('/about', async (req, res) => {
     totalMediaItems,
     totalRequests,
     tz: process.env.TZ,
-    configDirectory: appDataPath(),
+    appDataPath: appDataPath(),
   } as SettingsAboutResponse);
 });
 

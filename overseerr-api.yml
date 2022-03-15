@@ -3042,7 +3042,7 @@ paths:
                     type: string
                     nullable: true
                     example: 'Asia/Tokyo'
-                  configDirectory:
+                  appDataPath:
                     type: string
                     example: '/app/config'
   /auth/me:
