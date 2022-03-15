@@ -587,7 +587,7 @@
   "components.Settings.SettingsJobsCache.jobname": "Jobnavn",
   "components.Settings.SettingsJobsCache.jobs": "Jobs",
   "components.Settings.SettingsJobsCache.jobsDescription": "Overseerr udfører visse vedligeholdelsesopgaver som regelmæssige planlagte jobs men de kan også blive eksekveret manuelt nedenfor. En manuel eksekvering af et job vil ikke ændre på dens tidsplan.",
-  "components.Settings.SettingsLogs.logsDescription": "Du kan også se disse logs direkte fra <code>stdout</code> eller i <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Du kan også se disse logs direkte fra <code>stdout</code> eller i <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsUsers.userSettingsDescription": "Konfigurér globale- og standardbrugerindstillinger.",
   "components.Settings.SonarrModal.animeTags": "Anime Tags",
   "components.Settings.SonarrModal.animelanguageprofile": "Anime Sprogprofil",
