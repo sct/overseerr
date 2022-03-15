@@ -622,7 +622,7 @@
   "components.Settings.SettingsLogs.resumeLogs": "Återuppta",
   "components.Settings.SettingsLogs.pauseLogs": "Paus",
   "components.Settings.SettingsLogs.message": "Meddelande",
-  "components.Settings.SettingsLogs.logsDescription": "Du kan också läsa loggar direkt via <code>stdout</code> eller i <code>{configDir} /logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Du kan också läsa loggar direkt via <code>stdout</code> eller i <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.label": "Etikett",
   "components.Settings.SettingsLogs.logs": "Loggar",
   "components.Settings.SettingsLogs.level": "Allvarlighetsgrad",
