@@ -595,7 +595,7 @@
   "components.Settings.SettingsUsers.defaultPermissions": "Permisos per defecte",
   "components.Settings.SettingsLogs.showall": "Mostra tots els registres",
   "components.Settings.SettingsLogs.message": "Missatge",
-  "components.Settings.SettingsLogs.logsDescription": "També podeu veure aquests registres directament mitjançant <code>stdout</code> o a <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "També podeu veure aquests registres directament mitjançant <code>stdout</code> o a <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.logs": "Registres",
   "components.Settings.SettingsLogs.logDetails": "Detalls del registre",
   "components.Settings.SettingsLogs.level": "Gravetat",
