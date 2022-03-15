@@ -491,7 +491,7 @@
   "components.Settings.SettingsLogs.resumeLogs": "恢复",
   "components.Settings.SettingsLogs.pauseLogs": "暫停",
   "components.Settings.SettingsLogs.message": "消息",
-  "components.Settings.SettingsLogs.logsDescription": "你也可以直接查看这些日志，方法是借助 <code>stdout</code>, 或者打开 <code>{configDir}/logs/overseerr.log</code>。",
+  "components.Settings.SettingsLogs.logsDescription": "你也可以直接查看这些日志，方法是借助 <code>stdout</code>, 或者打开 <code>{appDataPath}/logs/overseerr.log</code>。",
   "components.Settings.SettingsLogs.logs": "日志",
   "components.Settings.SettingsLogs.logDetails": "日志详細信息",
   "components.Settings.SettingsLogs.level": "等級",
