@@ -635,7 +635,7 @@
   "components.Settings.SettingsLogs.time": "Horodatage",
   "components.Settings.SettingsLogs.resumeLogs": "Résumer",
   "components.Settings.SettingsLogs.message": "Message",
-  "components.Settings.SettingsLogs.logsDescription": "Vous pouvez également afficher ces journaux directement via <code>stdout</code>, ou dans <code>{configDir} /logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Vous pouvez également afficher ces journaux directement via <code>stdout</code>, ou dans <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.level": "Gravité",
   "components.Settings.SettingsLogs.label": "Étiquette",
   "components.Settings.SettingsLogs.extraData": "Données supplémentaires",
