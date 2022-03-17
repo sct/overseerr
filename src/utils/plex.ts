@@ -48,10 +48,10 @@ class PlexOAuth {
       );
     }
 
-    let clientId = localStorage.getItem('overseerrPlexClientId');
+    let clientId = localStorage.getItem('plex-client-id');
     if (!clientId) {
       const uuid = uuidv4();
-      localStorage.setItem('overseerrPlexClientId', uuid);
+      localStorage.setItem('plex-client-id', uuid);
       clientId = uuid;
     }
 
@@ -59,13 +59,13 @@ class PlexOAuth {
     this.plexHeaders = {
       Accept: 'application/json',
       'X-Plex-Product': 'Overseerr',
-      'X-Plex-Version': '2.0',
+      'X-Plex-Version': 'Plex OAuth',
       'X-Plex-Client-Identifier': clientId,
       'X-Plex-Model': 'Plex OAuth',
-      'X-Plex-Platform': browser.getOSName(),
-      'X-Plex-Platform-Version': browser.getOSVersion(),
-      'X-Plex-Device': browser.getBrowserName(),
-      'X-Plex-Device-Name': browser.getBrowserVersion(),
+      'X-Plex-Platform': browser.getBrowserName(),
+      'X-Plex-Platform-Version': browser.getBrowserVersion(),
+      'X-Plex-Device': browser.getOSName(),
+      'X-Plex-Device-Name': `${browser.getBrowserName()} (Overseerr)`,
       'X-Plex-Device-Screen-Resolution':
         window.screen.width + 'x' + window.screen.height,
       'X-Plex-Language': 'en',
