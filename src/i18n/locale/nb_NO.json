@@ -195,7 +195,7 @@
   "components.UserList.users": "Brukere",
   "components.UserList.importfromplexerror": "Noe gikk galt ved importering av brukere fra Plex.",
   "components.UserList.importfromplex": "Importer brukere fra Plex",
-  "components.UserList.importedfromplex": "<strong>{userCount}</strong> {userCount, plural, one {# new user} other {# newusers}} Plex users}} ble importert fra Plex!",
+  "components.UserList.importedfromplex": "<strong>{userCount}</strong> {userCount, plural, one {ny bruker} other {nye brukere}} ble importert fra Plex!",
   "components.Settings.menuUsers": "Brukere",
   "components.Settings.SettingsUsers.users": "Brukere",
   "components.Settings.SettingsUsers.userSettingsDescription": "Konfigurer globale og standard brukerinnstillinger.",
@@ -1039,5 +1039,6 @@
   "components.Settings.tautulliSettingsDescription": "Overseerr kan hente avspillingshistorikk for Plex fra Tautulli. Fyll inn innstilingene under for å etablere kommunikasjon med din Tautulli-tjener.",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Discord Bruker ID",
   "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Du må oppgi en gyldig Bruker ID for Discord",
-  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "<FindDiscordIdLink>ID-nummeret</FindDiscordIdLink> til din brukerkonto"
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "<FindDiscordIdLink>ID-nummeret</FindDiscordIdLink> til din brukerkonto",
+  "components.Settings.SettingsAbout.appDataPath": "Datakatalog"
 }

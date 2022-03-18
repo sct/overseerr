@@ -788,7 +788,7 @@
   "components.UserList.creating": "Tworzenie…",
   "components.UserList.deleteuser": "Usuń użytkownika",
   "components.UserList.displayName": "Wyświetlana nazwa",
-  "components.UserList.importedfromplex": "<strong>{userCount}</strong> {userCount, plural, one {użytkownik} other {użytkowników}} Plex został(o) zaimportowany(ch) pomyślnie!",
+  "components.UserList.importedfromplex": "<strong>{userCount}</strong> {userCount, plural, one {użytkownik Plex został zaimportowany} other {użytkowników Plex zostało zaimportowanych}} pomyślnie!",
   "components.UserList.localLoginDisabled": "Ustawienie <strong>Włącz Lokalne Logowanie</strong> jest obecnie wyłączone.",
   "components.UserList.localuser": "Użytkownik lokalny",
   "components.UserList.nouserstoimport": "Brak nowych użytkowników Plex do zaimportowania.",
@@ -1039,5 +1039,6 @@
   "i18n.importing": "Importowanie…",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "ID użytkownika Discorda",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "<FindDiscordIdLink>Wielocyfrowy numer ID</FindDiscordIdLink> powiązany z Twoim kontem użytkownika Discord",
-  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Musisz podać poprawne ID użytkownika Discord"
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Musisz podać poprawne ID użytkownika Discord",
+  "components.Settings.SettingsAbout.appDataPath": "Katalog danych"
 }
