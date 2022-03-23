@@ -1,5 +1,5 @@
 {
-  "components.RequestModal.requestseasons": "Zatraži {seasonCount} {seasonCount, plural, jednu {Season} više {Seasons}}",
+  "components.RequestModal.requestseasons": "Zatraži {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}",
   "components.Layout.Sidebar.dashboard": "Pronađi novo",
   "pages.returnHome": "Povratak na glavnu stranicu",
   "pages.oops": "Ups",
