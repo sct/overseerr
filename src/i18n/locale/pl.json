@@ -392,7 +392,7 @@
   "components.MovieDetails.releasedate": "{releaseCount, plural, one {Data wydania} other {Daty wydania}}",
   "components.MovieDetails.viewfullcrew": "Zobacz pełną obsadę",
   "components.PermissionEdit.autoapproveDescription": "Przyznaj automatyczne zatwierdzanie wszystkich próśb o multimedia inne niż 4K.",
-  "components.RequestButton.approve4krequests": "Zatwierdź {requestCount, plural, one {Prośba 4K} other {{requestCount} Prośby 4K }}",
+  "components.RequestButton.approve4krequests": "Zatwierdź {requestCount, plural, one {Prośba} other {{requestCount} Prośby}} 4K",
   "components.Settings.RadarrModal.minimumAvailability": "Minimalna dostępność",
   "components.RequestButton.decline4krequests": "Odrzuć {requestCount, plural, one {prośby 4K} other {{requestCount} próśb 4K}}",
   "components.NotificationTypeSelector.usermediafailedDescription": "Otrzymuj powiadomienia, gdy prośby o multimedia nie zostaną dodane do Radarr lub Sonarr.",
