@@ -66,7 +66,7 @@ mediaRoutes.get('/', async (req, res, next) => {
   try {
     const [media, mediaCount] = await mediaRepository.findAndCount({
       order: sortFilter,
-      where: {
+      where: statusFilter && {
         status: statusFilter,
       },
       take: pageSize,
