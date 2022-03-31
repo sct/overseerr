@@ -300,7 +300,7 @@
   "components.RequestButton.decline4krequests": "Lehne {requestCount, plural, one {4K Anfrage} other {{requestCount} 4K Anfragen}} ab",
   "components.RequestButton.approverequests": "Genehmige {requestCount, plural, one {Anfrage} other {{requestCount} Anfragen}}",
   "components.RequestButton.approve4krequests": "Genehmige {requestCount, plural, one {4K Anfrage} other {{requestCount} 4K Anfragen}}",
-  "components.UserList.creating": "Erstelle …",
+  "components.UserList.creating": "Erstelle…",
   "components.UserList.autogeneratepassword": "Passwort automatisch generieren",
   "components.UserList.validationpasswordminchars": "Passwort ist zu kurz; es sollte mindestens 8 Zeichen lang sein",
   "components.UserList.usercreatedsuccess": "Benutzer wurde erfolgreich erstellt!",
@@ -1036,5 +1036,9 @@
   "components.Settings.externalUrl": "Externe URL",
   "components.Settings.tautulliApiKey": "API-Schlüssel",
   "components.Settings.tautulliSettings": "Tautulli Einstellungen",
-  "components.Settings.validationUrl": "Die Angabe einer gültigen URL ist erforderlich"
+  "components.Settings.validationUrl": "Die Angabe einer gültigen URL ist erforderlich",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Discord User ID",
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Du musst eine gültige Discord User ID angeben",
+  "components.Settings.SettingsAbout.appDataPath": "Datenverzeichnis",
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Die <FindDiscordIdLink>mehrstellige ID-Nummer</FindDiscordIdLink> Deines Discord-Accounts"
 }
