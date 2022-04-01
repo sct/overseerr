@@ -58,7 +58,7 @@ const Setup: React.FC = () => {
   });
 
   return (
-    <div className="relative flex flex-col justify-center min-h-screen py-12 bg-gray-900">
+    <div className="relative flex min-h-screen flex-col justify-center bg-gray-900 py-12">
       <PageTitle title={intl.formatMessage(messages.setup)} />
       <ImageFader
         backgroundImages={
@@ -67,19 +67,19 @@ const Setup: React.FC = () => {
           ) ?? []
         }
       />
-      <div className="absolute z-50 top-4 right-4">
+      <div className="absolute top-4 right-4 z-50">
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
         <img
           src="/logo_stacked.svg"
-          className="max-w-full mb-10 sm:max-w-md sm:mx-auto"
+          className="mb-10 max-w-full sm:mx-auto sm:max-w-md"
           alt="Logo"
         />
         <AppDataWarning />
         <nav className="relative z-50">
           <ul
-            className="bg-gray-800 bg-opacity-50 border border-gray-600 divide-y divide-gray-600 rounded-md md:flex md:divide-y-0"
+            className="divide-y divide-gray-600 rounded-md border border-gray-600 bg-gray-800 bg-opacity-50 md:flex md:divide-y-0"
             style={{ backdropFilter: 'blur(5px)' }}
           >
             <SetupSteps
@@ -102,7 +102,7 @@ const Setup: React.FC = () => {
             />
           </ul>
         </nav>
-        <div className="w-full p-4 mt-10 text-white bg-gray-800 bg-opacity-50 border border-gray-600 rounded-md">
+        <div className="mt-10 w-full rounded-md border border-gray-600 bg-gray-800 bg-opacity-50 p-4 text-white">
           {currentStep === 1 && (
             <LoginWithPlex onComplete={() => setCurrentStep(2)} />
           )}
@@ -117,7 +117,7 @@ const Setup: React.FC = () => {
               </div>
               <div className="actions">
                 <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <span className="ml-3 inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       disabled={!plexSettingsComplete}
@@ -135,7 +135,7 @@ const Setup: React.FC = () => {
               <SettingsServices />
               <div className="actions">
                 <div className="flex justify-end">
-                  <span className="inline-flex ml-3 rounded-md shadow-sm">
+                  <span className="ml-3 inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       onClick={() => finishSetup()}

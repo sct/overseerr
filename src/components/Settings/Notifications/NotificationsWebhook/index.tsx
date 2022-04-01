@@ -74,9 +74,11 @@ const NotificationsWebhook: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/webhook'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/webhook');
 
   const NotificationsWebhookSchema = Yup.object().shape({
     webhookUrl: Yup.string()
@@ -224,7 +226,7 @@ const NotificationsWebhook: React.FC = () => {
                 {intl.formatMessage(messages.agentenabled)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
@@ -233,7 +235,7 @@ const NotificationsWebhook: React.FC = () => {
                 {intl.formatMessage(messages.webhookUrl)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="webhookUrl"
@@ -251,7 +253,7 @@ const NotificationsWebhook: React.FC = () => {
               <label htmlFor="authHeader" className="text-label">
                 {intl.formatMessage(messages.authheader)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field id="authHeader" name="authHeader" type="text" />
                 </div>
@@ -262,7 +264,7 @@ const NotificationsWebhook: React.FC = () => {
                 {intl.formatMessage(messages.customJson)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <JSONEditor
                     name="webhook-json-payload"
@@ -323,7 +325,7 @@ const NotificationsWebhook: React.FC = () => {
             />
             <div className="actions">
               <div className="flex justify-end">
-                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
                   <Button
                     buttonType="warning"
                     disabled={isSubmitting || !isValid || isTesting}
@@ -340,7 +342,7 @@ const NotificationsWebhook: React.FC = () => {
                     </span>
                   </Button>
                 </span>
-                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"

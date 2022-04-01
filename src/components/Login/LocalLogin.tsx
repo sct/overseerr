@@ -70,7 +70,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                 <label htmlFor="email" className="text-label">
                   {intl.formatMessage(messages.email)}
                 </label>
-                <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
+                <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
                   <div className="form-input-field">
                     <Field
                       id="email"
@@ -86,7 +86,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                 <label htmlFor="password" className="text-label">
                   {intl.formatMessage(messages.password)}
                 </label>
-                <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
+                <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
                   <div className="form-input-field">
                     <SensitiveInput
                       as="field"
@@ -101,12 +101,12 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                   )}
                 </div>
                 {loginError && (
-                  <div className="mt-1 mb-2 sm:mt-0 sm:col-span-2">
+                  <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
                     <div className="error">{loginError}</div>
                   </div>
                 )}
               </div>
-              <div className="pt-5 mt-8 border-t border-gray-700">
+              <div className="mt-8 border-t border-gray-700 pt-5">
                 <div className="flex flex-row-reverse justify-between">
                   <span className="inline-flex rounded-md shadow-sm">
                     <Button

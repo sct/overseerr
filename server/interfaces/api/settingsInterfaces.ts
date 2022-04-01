@@ -17,6 +17,7 @@ export interface SettingsAboutResponse {
   totalRequests: number;
   totalMediaItems: number;
   tz?: string;
+  appDataPath: string;
 }
 
 export interface PublicSettingsResponse {
@@ -35,6 +36,7 @@ export interface PublicSettingsResponse {
   enablePushRegistration: boolean;
   locale: string;
   emailEnabled: boolean;
+  newPlexLogin: boolean;
 }
 
 export interface CacheItem {

@@ -2,6 +2,7 @@ import { NotificationAgentKey } from '../../lib/settings';
 
 export interface UserSettingsGeneralResponse {
   username?: string;
+  discordId?: string;
   locale?: string;
   region?: string;
   originalLanguage?: string;

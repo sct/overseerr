@@ -39,6 +39,7 @@ interface EmbedBlock {
 }
 
 interface SlackBlockEmbed {
+  text: string;
   blocks: EmbedBlock[];
 }
 
@@ -201,6 +202,7 @@ class SlackAgent
     }
 
     return {
+      text: payload.event ?? payload.subject,
       blocks,
     };
   }

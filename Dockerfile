@@ -1,4 +1,4 @@
-FROM node:14.18-alpine AS BUILD_IMAGE
+FROM node:16.14-alpine AS BUILD_IMAGE
 
 WORKDIR /app
 
@@ -26,18 +26,18 @@ RUN yarn build
 # remove development dependencies
 RUN yarn install --production --ignore-scripts --prefer-offline
 
-RUN rm -rf src server
+RUN rm -rf src server .next/cache
 
 RUN touch config/DOCKER
 
 RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
 
 
-FROM node:14.18-alpine
+FROM node:16.14-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache tzdata tini
+RUN apk add --no-cache tzdata tini && rm -rf /tmp/*
 
 # copy from build image
 COPY --from=BUILD_IMAGE /app ./

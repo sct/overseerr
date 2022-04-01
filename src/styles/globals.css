@@ -14,7 +14,7 @@
   }
 
   code {
-    @apply px-2 py-1 bg-gray-800 rounded-md;
+    @apply rounded-md bg-gray-800 px-2 py-1;
   }
 
   input[type='search']::-webkit-search-cancel-button {
@@ -45,7 +45,7 @@
   }
 
   .plex-button {
-    @apply flex justify-center w-full px-4 py-2 text-sm font-medium text-center text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md disabled:opacity-50;
+    @apply flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-center text-sm font-medium text-white transition duration-150 ease-in-out disabled:opacity-50;
     background-color: #cc7b19;
   }
 
@@ -67,11 +67,11 @@
   }
 
   .slider-header {
-    @apply relative flex mt-6 mb-4;
+    @apply relative mt-6 mb-4 flex;
   }
 
   .slider-title {
-    @apply inline-flex items-center text-xl font-bold leading-7 text-gray-300 sm:text-2xl sm:leading-9 sm:truncate;
+    @apply inline-flex items-center text-xl font-bold leading-7 text-gray-300 sm:truncate sm:text-2xl sm:leading-9;
   }
 
   a.slider-title {
@@ -79,17 +79,17 @@
   }
 
   a.slider-title svg {
-    @apply w-6 h-6 ml-2;
+    @apply ml-2 h-6 w-6;
   }
 
   .media-page {
-    @apply relative px-4 -mx-4 bg-center bg-cover;
+    @apply relative -mx-4 bg-cover bg-center px-4;
     margin-top: calc(-4rem - env(safe-area-inset-top));
     padding-top: calc(4rem + env(safe-area-inset-top));
   }
 
   .media-page-bg-image {
-    @apply absolute inset-0 w-full h-full;
+    @apply absolute inset-0 h-full w-full;
     z-index: -10;
   }
 
@@ -98,7 +98,7 @@
   }
 
   .media-poster {
-    @apply w-32 overflow-hidden rounded shadow md:rounded-lg md:shadow-2xl md:w-44 xl:w-52 xl:mr-4;
+    @apply w-32 overflow-hidden rounded shadow md:w-44 md:rounded-lg md:shadow-2xl xl:mr-4 xl:w-52;
   }
 
   .media-status {
@@ -106,7 +106,7 @@
   }
 
   .media-title {
-    @apply flex flex-col flex-1 mt-4 text-center text-white xl:mr-4 xl:mt-0 xl:text-left;
+    @apply mt-4 flex flex-1 flex-col text-center text-white xl:mr-4 xl:mt-0 xl:text-left;
   }
 
   .media-title > h1 {
@@ -118,7 +118,7 @@
   }
 
   .media-attributes {
-    @apply flex flex-wrap items-center justify-center mt-1 space-x-1 text-xs text-gray-300 sm:text-sm xl:text-base xl:mt-0 xl:justify-start;
+    @apply mt-1 flex flex-wrap items-center justify-center space-x-1 text-xs text-gray-300 sm:text-sm xl:mt-0 xl:justify-start xl:text-base;
   }
 
   .media-attributes a {
@@ -126,7 +126,7 @@
   }
 
   .media-actions {
-    @apply relative flex flex-wrap items-center justify-center flex-shrink-0 mt-4 sm:justify-end sm:flex-nowrap xl:mt-0;
+    @apply relative mt-4 flex flex-shrink-0 flex-wrap items-center justify-center sm:flex-nowrap sm:justify-end xl:mt-0;
   }
 
   .media-actions > * {
@@ -154,45 +154,45 @@
   }
 
   ul.media-crew {
-    @apply grid grid-cols-2 gap-6 mt-6 sm:grid-cols-3;
+    @apply mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3;
   }
 
   ul.media-crew > li {
-    @apply flex flex-col col-span-1 font-bold text-gray-300;
+    @apply col-span-1 flex flex-col font-bold text-gray-300;
   }
 
   a.crew-name,
   .media-fact-value a,
   .media-fact-value button {
-    @apply font-normal text-gray-400 transition duration-300 hover:underline hover:text-gray-100;
+    @apply font-normal text-gray-400 transition duration-300 hover:text-gray-100 hover:underline;
   }
 
   .media-overview-right {
-    @apply w-full mt-8 lg:w-80 lg:mt-0;
+    @apply mt-8 w-full lg:mt-0 lg:w-80;
   }
 
   .media-facts {
-    @apply text-sm font-bold text-gray-300 bg-gray-900 border border-gray-700 rounded-lg shadow;
+    @apply rounded-lg border border-gray-700 bg-gray-900 text-sm font-bold text-gray-300 shadow;
   }
 
   .media-fact {
-    @apply flex justify-between px-4 py-2 border-b border-gray-700 last:border-b-0;
+    @apply flex justify-between border-b border-gray-700 px-4 py-2 last:border-b-0;
   }
 
   .media-fact-value {
-    @apply ml-2 text-sm font-normal text-right text-gray-400;
+    @apply ml-2 text-right text-sm font-normal text-gray-400;
   }
 
   .media-ratings {
-    @apply flex items-center justify-center px-4 py-2 font-medium border-b border-gray-700 last:border-b-0;
+    @apply flex items-center justify-center border-b border-gray-700 px-4 py-2 font-medium last:border-b-0;
   }
 
   .media-rating {
-    @apply flex items-center mr-4 last:mr-0;
+    @apply mr-4 flex items-center last:mr-0;
   }
 
   .error-message {
-    @apply relative top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center h-screen text-center text-gray-300;
+    @apply relative top-0 bottom-0 left-0 right-0 flex h-screen flex-col items-center justify-center text-center text-gray-300;
   }
 
   .heading {
@@ -200,15 +200,15 @@
   }
 
   .description {
-    @apply max-w-4xl mt-1 text-sm leading-5 text-gray-400;
+    @apply mt-1 max-w-4xl text-sm leading-5 text-gray-400;
   }
 
   img.avatar-sm {
-    @apply w-5 h-5 mr-1 transition duration-300 scale-100 rounded-full transform-gpu group-hover:scale-105;
+    @apply mr-1 h-5 w-5 scale-100 transform-gpu rounded-full transition duration-300 group-hover:scale-105;
   }
 
   .card-field {
-    @apply flex items-center py-0.5 sm:py-1 text-sm truncate;
+    @apply flex items-center truncate py-0.5 text-sm sm:py-1;
   }
 
   .card-field-name {
@@ -224,10 +224,10 @@
   }
 
   .form-row {
-    @apply max-w-6xl mt-6 sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start;
+    @apply mt-6 max-w-6xl sm:mt-5 sm:grid sm:grid-cols-3 sm:items-start sm:gap-4;
   }
 
-  .form-input {
+  .form-input-area {
     @apply text-sm text-white sm:col-span-2;
   }
 
@@ -236,12 +236,12 @@
   }
 
   .actions {
-    @apply pt-5 mt-8 text-white border-t border-gray-700;
+    @apply mt-8 border-t border-gray-700 pt-5 text-white;
   }
 
   label,
   .group-label {
-    @apply block mb-1 text-sm font-bold leading-5 text-gray-400;
+    @apply mb-1 block text-sm font-bold leading-5 text-gray-400;
   }
 
   label.checkbox-label {
@@ -272,14 +272,14 @@
   }
 
   input[type='checkbox'] {
-    @apply w-6 h-6 text-indigo-600 transition duration-150 ease-in-out rounded-md;
+    @apply h-6 w-6 rounded-md text-indigo-600 transition duration-150 ease-in-out;
   }
 
   input[type='text'],
   input[type='password'],
   select,
   textarea {
-    @apply flex-1 block w-full min-w-0 text-white transition duration-150 ease-in-out bg-gray-700 border border-gray-500 rounded-md sm:text-sm sm:leading-5;
+    @apply block w-full min-w-0 flex-1 rounded-md border border-gray-500 bg-gray-700 text-white transition duration-150 ease-in-out sm:text-sm sm:leading-5;
   }
 
   input.rounded-l-only,
@@ -307,37 +307,37 @@
   }
 
   button.input-action {
-    @apply relative inline-flex items-center px-3 sm:px-3.5 py-2 -ml-px text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-gray-500 hover:bg-indigo-500 active:bg-gray-100 active:text-gray-700 last:rounded-r-md;
+    @apply relative -ml-px inline-flex items-center border border-gray-500 bg-indigo-600 px-3 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out last:rounded-r-md hover:bg-indigo-500 active:bg-gray-100 active:text-gray-700 sm:px-3.5;
   }
 
   .button-md svg,
   button.input-action svg,
   .plex-button svg {
-    @apply w-5 h-5 ml-2 mr-2 first:ml-0 last:mr-0;
+    @apply ml-2 mr-2 h-5 w-5 first:ml-0 last:mr-0;
   }
 
   .button-sm svg {
-    @apply w-4 h-4 ml-1.5 mr-1.5 first:ml-0 last:mr-0;
+    @apply ml-1.5 mr-1.5 h-4 w-4 first:ml-0 last:mr-0;
   }
 
   .modal-icon {
-    @apply flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto text-white bg-gray-800 rounded-full ring-1 ring-gray-500 sm:mx-0 sm:h-10 sm:w-10;
+    @apply mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-800 text-white ring-1 ring-gray-500 sm:mx-0 sm:h-10 sm:w-10;
   }
 
   .modal-icon svg {
-    @apply w-6 h-6;
+    @apply h-6 w-6;
   }
 
   svg.icon-md {
-    @apply w-5 h-5;
+    @apply h-5 w-5;
   }
 
   svg.icon-sm {
-    @apply w-4 h-4;
+    @apply h-4 w-4;
   }
 
   .protocol {
-    @apply inline-flex items-center px-3 text-gray-100 bg-gray-600 border border-r-0 border-gray-500 cursor-default rounded-l-md sm:text-sm;
+    @apply inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-600 px-3 text-gray-100 sm:text-sm;
   }
 
   .error {
@@ -357,23 +357,23 @@
   }
 
   .react-select-container .react-select__control {
-    @apply text-white bg-gray-700 border border-gray-500 rounded-md hover:border-gray-500;
+    @apply rounded-md border border-gray-500 bg-gray-700 text-white hover:border-gray-500;
   }
 
   .react-select-container-dark .react-select__control {
-    @apply bg-gray-800 border border-gray-700;
+    @apply border border-gray-700 bg-gray-800;
   }
 
   .react-select-container .react-select__control--is-focused {
-    @apply text-white bg-gray-700 border border-gray-500 rounded-md shadow;
+    @apply rounded-md border border-gray-500 bg-gray-700 text-white shadow;
   }
 
   .react-select-container-dark .react-select__control--is-focused {
-    @apply bg-gray-800 border-gray-600;
+    @apply border-gray-600 bg-gray-800;
   }
 
   .react-select-container .react-select__menu {
-    @apply text-gray-300 bg-gray-700;
+    @apply bg-gray-700 text-gray-300;
   }
 
   .react-select-container-dark .react-select__menu {
@@ -381,7 +381,7 @@
   }
 
   .react-select-container .react-select__option--is-focused {
-    @apply text-white bg-gray-600;
+    @apply bg-gray-600 text-white;
   }
 
   .react-select-container-dark .react-select__option--is-focused {
@@ -401,7 +401,7 @@
   }
 
   .react-select-container .react-select__multi-value {
-    @apply bg-gray-800 border border-gray-500 rounded-md;
+    @apply rounded-md border border-gray-500 bg-gray-800;
   }
 
   .react-select-container .react-select__multi-value__label {
@@ -413,12 +413,16 @@
   }
 
   .react-select-container .react-select__input {
-    @apply text-base text-white border-none shadow-sm;
+    @apply border-none text-base shadow-sm ring-0;
   }
 
   .react-select-container .react-select__input input:focus {
-    @apply text-white border-none;
+    @apply border-none;
     box-shadow: none;
+  }
+
+  .react-select-container .react-select__input-container {
+    @apply text-white;
   }
 }
 
@@ -434,15 +438,6 @@
   /* Used for animating height */
   .extra-max-height {
     max-height: 100rem;
-  }
-
-  .hide-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */

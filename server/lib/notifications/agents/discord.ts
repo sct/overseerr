@@ -258,35 +258,37 @@ class DiscordAgent
     const userMentions: string[] = [];
 
     try {
-      if (payload.notifyUser) {
-        if (
-          payload.notifyUser.settings?.hasNotificationType(
-            NotificationAgentKey.DISCORD,
-            type
-          ) &&
-          payload.notifyUser.settings.discordId
-        ) {
-          userMentions.push(`<@${payload.notifyUser.settings.discordId}>`);
+      if (settings.options.enableMentions) {
+        if (payload.notifyUser) {
+          if (
+            payload.notifyUser.settings?.hasNotificationType(
+              NotificationAgentKey.DISCORD,
+              type
+            ) &&
+            payload.notifyUser.settings.discordId
+          ) {
+            userMentions.push(`<@${payload.notifyUser.settings.discordId}>`);
+          }
         }
-      }
 
-      if (payload.notifyAdmin) {
-        const userRepository = getRepository(User);
-        const users = await userRepository.find();
+        if (payload.notifyAdmin) {
+          const userRepository = getRepository(User);
+          const users = await userRepository.find();
 
-        userMentions.push(
-          ...users
-            .filter(
-              (user) =>
-                user.settings?.hasNotificationType(
-                  NotificationAgentKey.DISCORD,
-                  type
-                ) &&
-                user.settings.discordId &&
-                shouldSendAdminNotification(type, user, payload)
-            )
-            .map((user) => `<@${user.settings?.discordId}>`)
-        );
+          userMentions.push(
+            ...users
+              .filter(
+                (user) =>
+                  user.settings?.hasNotificationType(
+                    NotificationAgentKey.DISCORD,
+                    type
+                  ) &&
+                  user.settings.discordId &&
+                  shouldSendAdminNotification(type, user, payload)
+              )
+              .map((user) => `<@${user.settings?.discordId}>`)
+          );
+        }
       }
 
       await axios.post(settings.options.webhookUrl, {

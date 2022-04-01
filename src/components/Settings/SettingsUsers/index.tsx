@@ -33,9 +33,11 @@ const messages = defineMessages({
 const SettingsUsers: React.FC = () => {
   const { addToast } = useToasts();
   const intl = useIntl();
-  const { data, error, revalidate } = useSWR<MainSettings>(
-    '/api/v1/settings/main'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<MainSettings>('/api/v1/settings/main');
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -110,7 +112,7 @@ const SettingsUsers: React.FC = () => {
                       {intl.formatMessage(messages.localLoginTip)}
                     </span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="localLogin"
@@ -128,7 +130,7 @@ const SettingsUsers: React.FC = () => {
                       {intl.formatMessage(messages.newPlexLoginTip)}
                     </span>
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <Field
                       type="checkbox"
                       id="newPlexLogin"
@@ -143,7 +145,7 @@ const SettingsUsers: React.FC = () => {
                   <label htmlFor="applicationTitle" className="text-label">
                     {intl.formatMessage(messages.movieRequestLimitLabel)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <QuotaSelector
                       onChange={setFieldValue}
                       dayFieldName="movieQuotaDays"
@@ -158,7 +160,7 @@ const SettingsUsers: React.FC = () => {
                   <label htmlFor="applicationTitle" className="text-label">
                     {intl.formatMessage(messages.tvRequestLimitLabel)}
                   </label>
-                  <div className="form-input">
+                  <div className="form-input-area">
                     <QuotaSelector
                       onChange={setFieldValue}
                       dayFieldName="tvQuotaDays"
@@ -181,7 +183,7 @@ const SettingsUsers: React.FC = () => {
                         {intl.formatMessage(messages.defaultPermissionsTip)}
                       </span>
                     </span>
-                    <div className="form-input">
+                    <div className="form-input-area">
                       <div className="max-w-lg">
                         <PermissionEdit
                           currentPermission={values.defaultPermissions}
@@ -195,7 +197,7 @@ const SettingsUsers: React.FC = () => {
                 </div>
                 <div className="actions">
                   <div className="flex justify-end">
-                    <span className="inline-flex ml-3 rounded-md shadow-sm">
+                    <span className="ml-3 inline-flex rounded-md shadow-sm">
                       <Button
                         buttonType="primary"
                         type="submit"

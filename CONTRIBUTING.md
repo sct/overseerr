@@ -68,9 +68,9 @@ All help is welcome and greatly appreciated! If you would like to contribute to 
 
 - If you are taking on an existing bug or feature ticket, please comment on the [issue](https://github.com/sct/overseerr/issues) to avoid multiple people working on the same thing.
 - All commits **must** follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-  - It is okay to squash your pull request down into a single commit that fits this standard.
   - Pull requests with commits not following this standard will **not** be merged.
-- Please make meaningful commits, or squash them.
+- Please make meaningful commits, or squash them prior to opening a pull request.
+  - Do not squash commits once people have begun reviewing your changes.
 - Always rebase your commit to the latest `develop` branch. Do **not** merge `develop` into your branch.
 - It is your responsibility to keep your branch up-to-date. Your work will **not** be merged unless it is rebased off the latest `develop` branch.
 - You can create a "draft" pull request early to get feedback on your work.

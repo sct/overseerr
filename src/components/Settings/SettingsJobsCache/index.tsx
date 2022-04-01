@@ -77,10 +77,14 @@ interface Job {
 const SettingsJobs: React.FC = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
-  const { data, error, revalidate } = useSWR<Job[]>('/api/v1/settings/jobs', {
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<Job[]>('/api/v1/settings/jobs', {
     refreshInterval: 5000,
   });
-  const { data: cacheData, revalidate: cacheRevalidate } = useSWR<CacheItem[]>(
+  const { data: cacheData, mutate: cacheRevalidate } = useSWR<CacheItem[]>(
     '/api/v1/settings/cache',
     {
       refreshInterval: 10000,
@@ -208,11 +212,11 @@ const SettingsJobs: React.FC = () => {
         >
           <div className="section">
             <form>
-              <div className="pb-6 form-row">
+              <div className="form-row pb-6">
                 <label htmlFor="jobSchedule" className="text-label">
                   {intl.formatMessage(messages.editJobSchedulePrompt)}
                 </label>
-                <div className="form-input">
+                <div className="form-input-area">
                   {jobEditModal.job?.interval === 'short' ? (
                     <select
                       name="jobScheduleMinutes"
@@ -287,7 +291,7 @@ const SettingsJobs: React.FC = () => {
                         messages[job.id] ?? messages.unknownJob
                       )}
                     </span>
-                    {job.running && <Spinner className="w-5 h-5 ml-2" />}
+                    {job.running && <Spinner className="ml-2 h-5 w-5" />}
                   </div>
                 </Table.TD>
                 <Table.TD>
@@ -333,7 +337,7 @@ const SettingsJobs: React.FC = () => {
                     </Button>
                   ) : (
                     <Button buttonType="primary" onClick={() => runJob(job)}>
-                      <PlayIcon className="w-5 h-5 mr-1" />
+                      <PlayIcon className="mr-1 h-5 w-5" />
                       <span>{intl.formatMessage(messages.runnow)}</span>
                     </Button>
                   )}

@@ -19,6 +19,7 @@ interface PushbulletPayload {
   type: string;
   title: string;
   body: string;
+  channel_tag?: string;
 }
 
 class PushbulletAgent
@@ -116,11 +117,15 @@ class PushbulletAgent
       });
 
       try {
-        await axios.post(endpoint, notificationPayload, {
-          headers: {
-            'Access-Token': settings.options.accessToken,
-          },
-        });
+        await axios.post(
+          endpoint,
+          { ...notificationPayload, channel_tag: settings.options.channelTag },
+          {
+            headers: {
+              'Access-Token': settings.options.accessToken,
+            },
+          }
+        );
       } catch (e) {
         logger.error('Error sending Pushbullet notification', {
           label: 'Notifications',
@@ -188,8 +193,9 @@ class PushbulletAgent
           .map(async (user) => {
             if (
               user.settings?.pushbulletAccessToken &&
-              user.settings.pushbulletAccessToken !==
-                settings.options.accessToken
+              (settings.options.channelTag ||
+                user.settings.pushbulletAccessToken !==
+                  settings.options.accessToken)
             ) {
               logger.debug('Sending Pushbullet notification', {
                 label: 'Notifications',

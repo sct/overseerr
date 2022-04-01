@@ -55,6 +55,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/pt_PT.json');
     case 'ru':
       return import('../i18n/locale/ru.json');
+    case 'sq':
+      return import('../i18n/locale/sq.json');
     case 'sr':
       return import('../i18n/locale/sr.json');
     case 'sv':
@@ -169,6 +171,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     enablePushRegistration: false,
     locale: 'en',
     emailEnabled: false,
+    newPlexLogin: true,
   };
 
   if (ctx.res) {
@@ -193,7 +196,12 @@ CoreApp.getInitialProps = async (initialProps) => {
         // Attempt to get the user by running a request to the local api
         const response = await axios.get<User>(
           `http://localhost:${process.env.PORT || 5055}/api/v1/auth/me`,
-          { headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined }
+          {
+            headers:
+              ctx.req && ctx.req.headers.cookie
+                ? { cookie: ctx.req.headers.cookie }
+                : undefined,
+          }
         );
         user = response.data;
 

@@ -18,6 +18,7 @@ const messages = defineMessages({
   accessTokenTip:
     'Create a token from your <PushbulletSettingsLink>Account Settings</PushbulletSettingsLink>',
   validationAccessTokenRequired: 'You must provide an access token',
+  channelTag: 'Channel Tag',
   pushbulletSettingsSaved:
     'Pushbullet notification settings saved successfully!',
   pushbulletSettingsFailed: 'Pushbullet notification settings failed to save.',
@@ -31,9 +32,11 @@ const NotificationsPushbullet: React.FC = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/pushbullet'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/pushbullet');
 
   const NotificationsPushbulletSchema = Yup.object().shape({
     accessToken: Yup.string().when('enabled', {
@@ -55,6 +58,7 @@ const NotificationsPushbullet: React.FC = () => {
         enabled: data?.enabled,
         types: data?.types,
         accessToken: data?.options.accessToken,
+        channelTag: data.options.channelTag,
       }}
       validationSchema={NotificationsPushbulletSchema}
       onSubmit={async (values) => {
@@ -64,6 +68,7 @@ const NotificationsPushbullet: React.FC = () => {
             types: values.types,
             options: {
               accessToken: values.accessToken,
+              channelTag: values.channelTag,
             },
           });
           addToast(intl.formatMessage(messages.pushbulletSettingsSaved), {
@@ -108,6 +113,7 @@ const NotificationsPushbullet: React.FC = () => {
               types: values.types,
               options: {
                 accessToken: values.accessToken,
+                channelTag: values.channelTag,
               },
             });
 
@@ -138,7 +144,7 @@ const NotificationsPushbullet: React.FC = () => {
                 {intl.formatMessage(messages.agentEnabled)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
@@ -165,7 +171,7 @@ const NotificationsPushbullet: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <SensitiveInput
                     as="field"
@@ -177,6 +183,16 @@ const NotificationsPushbullet: React.FC = () => {
                 {errors.accessToken && touched.accessToken && (
                   <div className="error">{errors.accessToken}</div>
                 )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="channelTag" className="text-label">
+                {intl.formatMessage(messages.channelTag)}
+              </label>
+              <div className="form-input-area">
+                <div className="form-input-field">
+                  <Field id="channelTag" name="channelTag" type="text" />
+                </div>
               </div>
             </div>
             <NotificationTypeSelector
@@ -197,7 +213,7 @@ const NotificationsPushbullet: React.FC = () => {
             />
             <div className="actions">
               <div className="flex justify-end">
-                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
                   <Button
                     buttonType="warning"
                     disabled={isSubmitting || !isValid || isTesting}
@@ -214,7 +230,7 @@ const NotificationsPushbullet: React.FC = () => {
                     </span>
                   </Button>
                 </span>
-                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"

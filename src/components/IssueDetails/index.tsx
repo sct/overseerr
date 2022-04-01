@@ -80,7 +80,7 @@ const IssueDetails: React.FC = () => {
   const intl = useIntl();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { user: currentUser, hasPermission } = useUser();
-  const { data: issueData, revalidate: revalidateIssue } = useSWR<Issue>(
+  const { data: issueData, mutate: revalidateIssue } = useSWR<Issue>(
     `/api/v1/issue/${router.query.issueId}`
   );
   const { data, error } = useSWR<MovieDetails | TvDetails>(
@@ -262,9 +262,9 @@ const IssueDetails: React.FC = () => {
                       : `/users/${issueData.createdBy.id}`
                   }
                 >
-                  <a className="inline-flex items-center h-full ml-1 xl:ml-1.5 group">
+                  <a className="group ml-1 inline-flex h-full items-center xl:ml-1.5">
                     <img
-                      className="w-5 h-5 mr-0.5 transition duration-300 scale-100 rounded-full xl:w-6 xl:h-6 xl:mr-1 transform-gpu group-hover:scale-105"
+                      className="mr-0.5 h-5 w-5 scale-100 transform-gpu rounded-full transition duration-300 group-hover:scale-105 xl:mr-1 xl:h-6 xl:w-6"
                       src={issueData.createdBy.avatar}
                       alt=""
                     />
@@ -288,7 +288,7 @@ const IssueDetails: React.FC = () => {
           </span>
         </div>
       </div>
-      <div className="relative z-10 flex mt-6 text-gray-300">
+      <div className="relative z-10 mt-6 flex text-gray-300">
         <div className="flex-1 lg:pr-4">
           <IssueDescription
             description={firstComment.message}
@@ -351,7 +351,7 @@ const IssueDetails: React.FC = () => {
                 </span>
               </div>
             </div>
-            <div className="flex flex-col mt-4 mb-6 space-y-2">
+            <div className="mt-4 mb-6 flex flex-col space-y-2">
               {issueData?.media.plexUrl && (
                 <Button
                   as="a"
@@ -466,7 +466,7 @@ const IssueDetails: React.FC = () => {
                           )}
                           className="h-20"
                         />
-                        <div className="flex items-center justify-end mt-4 space-x-2">
+                        <div className="mt-4 flex items-center justify-end space-x-2">
                           {hasPermission(Permission.MANAGE_ISSUES) && (
                             <>
                               {issueData.status === IssueStatus.OPEN ? (
@@ -535,7 +535,7 @@ const IssueDetails: React.FC = () => {
             )}
           </div>
         </div>
-        <div className="hidden lg:block lg:pl-4 lg:w-80">
+        <div className="hidden lg:block lg:w-80 lg:pl-4">
           <div className="media-facts">
             <div className="media-fact">
               <span>{intl.formatMessage(messages.issuetype)}</span>
@@ -587,7 +587,7 @@ const IssueDetails: React.FC = () => {
               </span>
             </div>
           </div>
-          <div className="flex flex-col mt-4 mb-6 space-y-2">
+          <div className="mt-4 mb-6 flex flex-col space-y-2">
             {issueData?.media.plexUrl && (
               <Button
                 as="a"

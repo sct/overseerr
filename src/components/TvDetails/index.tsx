@@ -9,7 +9,7 @@ import { hasFlag } from 'country-flag-icons';
 import 'country-flag-icons/3x2/flags.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RTRating } from '../../../server/api/rottentomatoes';
@@ -80,15 +80,18 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   const intl = useIntl();
   const { locale } = useLocale();
   const [showRequestModal, setShowRequestModal] = useState(false);
-  const [showManager, setShowManager] = useState(false);
+  const [showManager, setShowManager] = useState(
+    router.query.manage == '1' ? true : false
+  );
   const [showIssueModal, setShowIssueModal] = useState(false);
 
-  const { data, error, revalidate } = useSWR<TvDetailsType>(
-    `/api/v1/tv/${router.query.tvId}`,
-    {
-      initialData: tv,
-    }
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<TvDetailsType>(`/api/v1/tv/${router.query.tvId}`, {
+    fallbackData: tv,
+  });
 
   const { data: ratingData } = useSWR<RTRating>(
     `/api/v1/tv/${router.query.tvId}/ratings`
@@ -98,6 +101,10 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     () => sortCrewPriority(data?.credits.crew ?? []),
     [data]
   );
+
+  useEffect(() => {
+    setShowManager(router.query.manage == '1' ? true : false);
+  }, [router.query.manage]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -109,7 +116,12 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   const mediaLinks: PlayButtonLink[] = [];
 
-  if (data.mediaInfo?.plexUrl) {
+  if (
+    data.mediaInfo?.plexUrl &&
+    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+      type: 'or',
+    })
+  ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: data.mediaInfo?.plexUrl,
@@ -118,6 +130,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   }
 
   if (
+    settings.currentSettings.series4kEnabled &&
     data.mediaInfo?.plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
       type: 'or',
@@ -155,7 +168,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   )?.rating;
   if (contentRating) {
     seriesAttributes.push(
-      <span className="p-0.5 py-0 border rounded-md">{contentRating}</span>
+      <span className="rounded-md border p-0.5 py-0">{contentRating}</span>
     );
   }
 
@@ -253,7 +266,13 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
       <ManageSlideOver
         data={data}
         mediaType="tv"
-        onClose={() => setShowManager(false)}
+        onClose={() => {
+          setShowManager(false);
+          router.push({
+            pathname: router.pathname,
+            query: { tvId: router.query.tvId },
+          });
+        }}
         revalidate={() => revalidate()}
         show={showManager}
       />
@@ -277,29 +296,30 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
             <StatusBadge
               status={data.mediaInfo?.status}
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
+              tmdbId={data.mediaInfo?.tmdbId}
+              mediaType="tv"
               plexUrl={data.mediaInfo?.plexUrl}
-              serviceUrl={
-                hasPermission(Permission.ADMIN)
-                  ? data.mediaInfo?.serviceUrl
-                  : undefined
-              }
             />
             {settings.currentSettings.series4kEnabled &&
-              hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
-                type: 'or',
-              }) && (
+              hasPermission(
+                [
+                  Permission.MANAGE_REQUESTS,
+                  Permission.REQUEST_4K,
+                  Permission.REQUEST_4K_TV,
+                ],
+                {
+                  type: 'or',
+                }
+              ) && (
                 <StatusBadge
                   status={data.mediaInfo?.status4k}
                   is4k
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0
                   }
+                  tmdbId={data.mediaInfo?.tmdbId}
+                  mediaType="tv"
                   plexUrl={data.mediaInfo?.plexUrl4k}
-                  serviceUrl={
-                    hasPermission(Permission.ADMIN)
-                      ? data.mediaInfo?.serviceUrl4k
-                      : undefined
-                  }
                 />
               )}
           </div>
@@ -357,7 +377,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 <ExclamationIcon className="w-5" />
               </Button>
             )}
-          {hasPermission(Permission.MANAGE_REQUESTS) && (
+          {hasPermission(Permission.MANAGE_REQUESTS) && data.mediaInfo && (
             <Button
               buttonType="default"
               className="relative ml-2 first:ml-0"
@@ -376,8 +396,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   ) ?? []
                 ).length > 0 && (
                   <>
-                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1" />
-                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1 animate-ping" />
+                    <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" />
+                    <div className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-red-600" />
                   </>
                 )}
             </Button>
@@ -419,11 +439,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     </li>
                   ))}
               </ul>
-              <div className="flex justify-end mt-4">
+              <div className="mt-4 flex justify-end">
                 <Link href={`/tv/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                    <ArrowCircleRightIcon className="inline-block w-5 h-5 ml-1.5" />
+                    <ArrowCircleRightIcon className="ml-1.5 inline-block h-5 w-5" />
                   </a>
                 </Link>
               </div>
@@ -439,9 +459,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 {ratingData?.criticsRating && !!ratingData?.criticsScore && (
                   <span className="media-rating">
                     {ratingData.criticsRating === 'Rotten' ? (
-                      <RTRotten className="w-6 mr-1" />
+                      <RTRotten className="mr-1 w-6" />
                     ) : (
-                      <RTFresh className="w-6 mr-1" />
+                      <RTFresh className="mr-1 w-6" />
                     )}
                     {ratingData.criticsScore}%
                   </span>
@@ -449,16 +469,16 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 {ratingData?.audienceRating && !!ratingData?.audienceScore && (
                   <span className="media-rating">
                     {ratingData.audienceRating === 'Spilled' ? (
-                      <RTAudRotten className="w-6 mr-1" />
+                      <RTAudRotten className="mr-1 w-6" />
                     ) : (
-                      <RTAudFresh className="w-6 mr-1" />
+                      <RTAudFresh className="mr-1 w-6" />
                     )}
                     {ratingData.audienceScore}%
                   </span>
                 )}
                 {!!data.voteCount && (
                   <span className="media-rating">
-                    <TmdbLogo className="w-6 mr-2" />
+                    <TmdbLogo className="mr-2 w-6" />
                     {data.voteAverage}/10
                   </span>
                 )}

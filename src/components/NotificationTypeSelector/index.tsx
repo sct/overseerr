@@ -7,32 +7,32 @@ import NotificationType from './NotificationType';
 
 const messages = defineMessages({
   notificationTypes: 'Notification Types',
-  mediarequested: 'Media Requested',
+  mediarequested: 'Request Pending Approval',
   mediarequestedDescription:
     'Send notifications when users submit new media requests which require approval.',
   usermediarequestedDescription:
     'Get notified when other users submit new media requests which require approval.',
-  mediaapproved: 'Media Approved',
+  mediaapproved: 'Request Approved',
   mediaapprovedDescription:
     'Send notifications when media requests are manually approved.',
   usermediaapprovedDescription:
     'Get notified when your media requests are approved.',
-  mediaAutoApproved: 'Media Automatically Approved',
+  mediaAutoApproved: 'Request Automatically Approved',
   mediaAutoApprovedDescription:
     'Send notifications when users submit new media requests which are automatically approved.',
   usermediaAutoApprovedDescription:
     'Get notified when other users submit new media requests which are automatically approved.',
-  mediaavailable: 'Media Available',
+  mediaavailable: 'Request Available',
   mediaavailableDescription:
     'Send notifications when media requests become available.',
   usermediaavailableDescription:
     'Get notified when your media requests become available.',
-  mediafailed: 'Media Failed',
+  mediafailed: 'Request Processing Failed',
   mediafailedDescription:
     'Send notifications when media requests fail to be added to Radarr or Sonarr.',
   usermediafailedDescription:
     'Get notified when media requests fail to be added to Radarr or Sonarr.',
-  mediadeclined: 'Media Declined',
+  mediadeclined: 'Request Declined',
   mediadeclinedDescription:
     'Send notifications when media requests are declined.',
   usermediadeclinedDescription:
@@ -357,7 +357,7 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
           {intl.formatMessage(messages.notificationTypes)}
           {!user && <span className="label-required">*</span>}
         </span>
-        <div className="form-input">
+        <div className="form-input-area">
           <div className="max-w-lg">
             {availableTypes.map((type) => (
               <NotificationType

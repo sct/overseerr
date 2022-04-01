@@ -4,6 +4,7 @@ import { Notification } from '../../lib/notifications';
 import { NotificationAgent } from '../../lib/notifications/agents/agent';
 import DiscordAgent from '../../lib/notifications/agents/discord';
 import EmailAgent from '../../lib/notifications/agents/email';
+import GotifyAgent from '../../lib/notifications/agents/gotify';
 import LunaSeaAgent from '../../lib/notifications/agents/lunasea';
 import PushbulletAgent from '../../lib/notifications/agents/pushbullet';
 import PushoverAgent from '../../lib/notifications/agents/pushover';
@@ -373,6 +374,48 @@ notificationRoutes.post('/lunasea/test', async (req, res, next) => {
     return next({
       status: 500,
       message: 'Failed to send web push notification.',
+    });
+  }
+});
+
+notificationRoutes.get('/gotify', (_req, res) => {
+  const settings = getSettings();
+
+  res.status(200).json(settings.notifications.agents.gotify);
+});
+
+notificationRoutes.post('/gotify', (req, rest) => {
+  const settings = getSettings();
+
+  settings.notifications.agents.gotify = req.body;
+  settings.save();
+
+  rest.status(200).json(settings.notifications.agents.gotify);
+});
+
+notificationRoutes.post('/gotify/test', async (req, rest, next) => {
+  if (!req.user) {
+    return next({
+      status: 500,
+      message: 'User information is missing from request',
+    });
+  }
+
+  const gotifyAgent = new GotifyAgent(req.body);
+  if (
+    await gotifyAgent.send(Notification.TEST_NOTIFICATION, {
+      notifyAdmin: false,
+      notifyUser: req.user,
+      subject: 'Test Notification',
+      message:
+        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
+    })
+  ) {
+    return rest.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send Gotify notification.',
     });
   }
 });

@@ -35,6 +35,15 @@ export interface PlexSettings {
   webAppUrl?: string;
 }
 
+export interface TautulliSettings {
+  hostname?: string;
+  port?: number;
+  useSsl?: boolean;
+  urlBase?: string;
+  apiKey?: string;
+  externalUrl?: string;
+}
+
 export interface DVRSettings {
   id: number;
   name: string;
@@ -113,6 +122,7 @@ interface FullPublicSettings extends PublicSettings {
   enablePushRegistration: boolean;
   locale: string;
   emailEnabled: boolean;
+  newPlexLogin: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -125,6 +135,7 @@ export interface NotificationAgentDiscord extends NotificationAgentConfig {
     botUsername?: string;
     botAvatarUrl?: string;
     webhookUrl: string;
+    enableMentions: boolean;
   };
 }
 
@@ -170,6 +181,7 @@ export interface NotificationAgentTelegram extends NotificationAgentConfig {
 export interface NotificationAgentPushbullet extends NotificationAgentConfig {
   options: {
     accessToken: string;
+    channelTag?: string;
   };
 }
 
@@ -188,9 +200,17 @@ export interface NotificationAgentWebhook extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentGotify extends NotificationAgentConfig {
+  options: {
+    url: string;
+    token: string;
+  };
+}
+
 export enum NotificationAgentKey {
   DISCORD = 'discord',
   EMAIL = 'email',
+  GOTIFY = 'gotify',
   PUSHBULLET = 'pushbullet',
   PUSHOVER = 'pushover',
   SLACK = 'slack',
@@ -202,6 +222,7 @@ export enum NotificationAgentKey {
 interface NotificationAgents {
   discord: NotificationAgentDiscord;
   email: NotificationAgentEmail;
+  gotify: NotificationAgentGotify;
   lunasea: NotificationAgentLunaSea;
   pushbullet: NotificationAgentPushbullet;
   pushover: NotificationAgentPushover;
@@ -233,6 +254,7 @@ interface AllSettings {
   vapidPrivate: string;
   main: MainSettings;
   plex: PlexSettings;
+  tautulli: TautulliSettings;
   radarr: RadarrSettings[];
   sonarr: SonarrSettings[];
   public: PublicSettings;
@@ -279,6 +301,7 @@ class Settings {
         useSsl: false,
         libraries: [],
       },
+      tautulli: {},
       radarr: [],
       sonarr: [],
       public: {
@@ -304,6 +327,7 @@ class Settings {
             types: 0,
             options: {
               webhookUrl: '',
+              enableMentions: true,
             },
           },
           lunasea: {
@@ -357,6 +381,14 @@ class Settings {
             enabled: false,
             options: {},
           },
+          gotify: {
+            enabled: false,
+            types: 0,
+            options: {
+              url: '',
+              token: '',
+            },
+          },
         },
       },
       jobs: {
@@ -405,6 +437,14 @@ class Settings {
     this.data.plex = data;
   }
 
+  get tautulli(): TautulliSettings {
+    return this.data.tautulli;
+  }
+
+  set tautulli(data: TautulliSettings) {
+    this.data.tautulli = data;
+  }
+
   get radarr(): RadarrSettings[] {
     return this.data.radarr;
   }
@@ -450,6 +490,7 @@ class Settings {
       enablePushRegistration: this.data.notifications.agents.webpush.enabled,
       locale: this.data.main.locale,
       emailEnabled: this.data.notifications.agents.email.enabled,
+      newPlexLogin: this.data.main.newPlexLogin,
     };
   }
 

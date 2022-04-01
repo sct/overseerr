@@ -1,5 +1,5 @@
 # Global code ownership
-*                               @sct
+*                               @sct @TheCatLady @danshilm
 
 # Documentation
 /.all-contributorsrc            @TheCatLady @samwiseg0 @danshilm
@@ -12,3 +12,4 @@
 
 # i18n locale files
 /src/i18n/locale/               @sct @TheCatLady
+/src/i18n/locale/en.json        @sct @TheCatLady @danshilm

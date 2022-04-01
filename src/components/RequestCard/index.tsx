@@ -41,7 +41,7 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
 
 const RequestCardPlaceholder: React.FC = () => {
   return (
-    <div className="relative p-4 bg-gray-700 rounded-xl w-72 sm:w-96 animate-pulse">
+    <div className="relative w-72 animate-pulse rounded-xl bg-gray-700 p-4 sm:w-96">
       <div className="w-20 sm:w-28">
         <div className="w-full" style={{ paddingBottom: '150%' }} />
       </div>
@@ -63,11 +63,11 @@ const RequestCardError: React.FC<RequestCardErrorProps> = ({ mediaId }) => {
   };
 
   return (
-    <div className="relative p-4 bg-gray-800 ring-1 ring-red-500 rounded-xl w-72 sm:w-96">
+    <div className="relative w-72 rounded-xl bg-gray-800 p-4 ring-1 ring-red-500 sm:w-96">
       <div className="w-20 sm:w-28">
         <div className="w-full" style={{ paddingBottom: '150%' }}>
-          <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full px-10">
-            <div className="w-full text-xs text-center text-gray-300 whitespace-normal sm:text-sm">
+          <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center px-10">
+            <div className="w-full whitespace-normal text-center text-xs text-gray-300 sm:text-sm">
               {intl.formatMessage(messages.mediaerror)}
             </div>
             {hasPermission(Permission.MANAGE_REQUESTS) && mediaId && (
@@ -112,9 +112,9 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
   const {
     data: requestData,
     error: requestError,
-    revalidate,
+    mutate: revalidate,
   } = useSWR<MediaRequest>(`/api/v1/request/${request.id}`, {
-    initialData: request,
+    fallbackData: request,
   });
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
@@ -185,7 +185,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex p-4 overflow-hidden text-gray-400 bg-gray-800 bg-center bg-cover shadow rounded-xl w-72 sm:w-96 ring-1 ring-gray-700">
+      <div className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 bg-cover bg-center p-4 text-gray-400 shadow ring-1 ring-gray-700 sm:w-96">
         {title.backdropPath && (
           <div className="absolute inset-0 z-0">
             <CachedImage
@@ -203,7 +203,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             />
           </div>
         )}
-        <div className="relative z-10 flex flex-col flex-1 min-w-0 pr-4">
+        <div className="relative z-10 flex min-w-0 flex-1 flex-col pr-4">
           <div className="hidden text-xs font-medium text-white sm:flex">
             {(isMovie(title) ? title.releaseDate : title.firstAirDate)?.slice(
               0,
@@ -217,7 +217,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                 : `/tv/${requestData.media.tmdbId}`
             }
           >
-            <a className="overflow-hidden text-base font-bold text-white sm:text-lg overflow-ellipsis whitespace-nowrap hover:underline">
+            <a className="overflow-hidden overflow-ellipsis whitespace-nowrap text-base font-bold text-white hover:underline sm:text-lg">
               {isMovie(title) ? title.title : title.name}
             </a>
           </Link>
@@ -227,13 +227,13 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
           ) && (
             <div className="card-field">
               <Link href={`/users/${requestData.requestedBy.id}`}>
-                <a className="flex items-center group">
+                <a className="group flex items-center">
                   <img
                     src={requestData.requestedBy.avatar}
                     alt=""
                     className="avatar-sm"
                   />
-                  <span className="font-semibold truncate group-hover:underline group-hover:text-white">
+                  <span className="truncate font-semibold group-hover:text-white group-hover:underline">
                     {requestData.requestedBy.displayName}
                   </span>
                 </a>
@@ -241,7 +241,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             </div>
           )}
           {!isMovie(title) && request.seasons.length > 0 && (
-            <div className="items-center my-0.5 sm:my-1 text-sm hidden sm:flex">
+            <div className="my-0.5 hidden items-center text-sm sm:my-1 sm:flex">
               <span className="mr-2 font-bold ">
                 {intl.formatMessage(messages.seasons, {
                   seasonCount:
@@ -257,7 +257,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   <Badge>{intl.formatMessage(globalMessages.all)}</Badge>
                 </span>
               ) : (
-                <div className="overflow-x-scroll hide-scrollbar">
+                <div className="hide-scrollbar overflow-x-scroll">
                   {request.seasons.map((season) => (
                     <span key={`season-${season.id}`} className="mr-2">
                       <Badge>{season.seasonNumber}</Badge>
@@ -267,17 +267,21 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
               )}
             </div>
           )}
-          <div className="flex items-center mt-2 text-sm sm:mt-1">
-            <span className="hidden mr-2 font-bold sm:block">
+          <div className="mt-2 flex items-center text-sm sm:mt-1">
+            <span className="mr-2 hidden font-bold sm:block">
               {intl.formatMessage(globalMessages.status)}
             </span>
-            {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
-              MediaStatus.UNKNOWN ||
-            requestData.status === MediaRequestStatus.DECLINED ? (
+            {requestData.status === MediaRequestStatus.DECLINED ? (
               <Badge badgeType="danger">
-                {requestData.status === MediaRequestStatus.DECLINED
-                  ? intl.formatMessage(globalMessages.declined)
-                  : intl.formatMessage(globalMessages.failed)}
+                {intl.formatMessage(globalMessages.declined)}
+              </Badge>
+            ) : requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
+              MediaStatus.UNKNOWN ? (
+              <Badge
+                badgeType="danger"
+                href={`/${requestData.type}/${requestData.media.tmdbId}?manage=1`}
+              >
+                {intl.formatMessage(globalMessages.failed)}
               </Badge>
             ) : (
               <StatusBadge
@@ -292,22 +296,15 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   ).length > 0
                 }
                 is4k={requestData.is4k}
+                tmdbId={requestData.media.tmdbId}
+                mediaType={requestData.type}
                 plexUrl={
-                  requestData.is4k
-                    ? requestData.media.plexUrl4k
-                    : requestData.media.plexUrl
-                }
-                serviceUrl={
-                  hasPermission(Permission.ADMIN)
-                    ? requestData.is4k
-                      ? requestData.media.serviceUrl4k
-                      : requestData.media.serviceUrl
-                    : undefined
+                  requestData.media[requestData.is4k ? 'plexUrl4k' : 'plexUrl']
                 }
               />
             )}
           </div>
-          <div className="flex items-end flex-1 space-x-2">
+          <div className="flex flex-1 items-end space-x-2">
             {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
               MediaStatus.UNKNOWN &&
               requestData.status !== MediaRequestStatus.DECLINED &&
@@ -322,7 +319,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                     className={isRetrying ? 'animate-spin' : ''}
                     style={{ marginRight: '0', animationDirection: 'reverse' }}
                   />
-                  <span className="hidden ml-1.5 sm:block">
+                  <span className="ml-1.5 hidden sm:block">
                     {intl.formatMessage(globalMessages.retry)}
                   </span>
                 </Button>
@@ -336,7 +333,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                     onClick={() => modifyRequest('approve')}
                   >
                     <CheckIcon style={{ marginRight: '0' }} />
-                    <span className="hidden ml-1.5 sm:block">
+                    <span className="ml-1.5 hidden sm:block">
                       {intl.formatMessage(globalMessages.approve)}
                     </span>
                   </Button>
@@ -346,7 +343,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                     onClick={() => modifyRequest('decline')}
                   >
                     <XIcon style={{ marginRight: '0' }} />
-                    <span className="hidden ml-1.5 sm:block">
+                    <span className="ml-1.5 hidden sm:block">
                       {intl.formatMessage(globalMessages.decline)}
                     </span>
                   </Button>
@@ -366,7 +363,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   }`}
                 >
                   <PencilIcon style={{ marginRight: '0' }} />
-                  <span className="hidden ml-1.5 sm:block">
+                  <span className="ml-1.5 hidden sm:block">
                     {intl.formatMessage(globalMessages.edit)}
                   </span>
                 </Button>
@@ -380,7 +377,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
                   onClick={() => deleteRequest()}
                 >
                   <XIcon style={{ marginRight: '0' }} />
-                  <span className="hidden ml-1.5 sm:block">
+                  <span className="ml-1.5 hidden sm:block">
                     {intl.formatMessage(globalMessages.cancel)}
                   </span>
                 </Button>
@@ -394,7 +391,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
               : `/tv/${requestData.media.tmdbId}`
           }
         >
-          <a className="flex-shrink-0 w-20 overflow-hidden transition duration-300 scale-100 rounded-md shadow-sm cursor-pointer sm:w-28 transform-gpu hover:scale-105 hover:shadow-md">
+          <a className="w-20 flex-shrink-0 scale-100 transform-gpu cursor-pointer overflow-hidden rounded-md shadow-sm transition duration-300 hover:scale-105 hover:shadow-md sm:w-28">
             <CachedImage
               src={
                 title.posterPath

@@ -57,7 +57,7 @@ const Release: React.FC<ReleaseProps> = ({
   const [isModalOpen, setModalOpen] = useState(false);
 
   return (
-    <div className="flex flex-col w-full px-4 py-2 space-y-3 bg-gray-800 rounded-md shadow-md sm:space-y-0 sm:space-x-3 sm:flex-row ring-1 ring-gray-700">
+    <div className="flex w-full flex-col space-y-3 rounded-md bg-gray-800 px-4 py-2 shadow-md ring-1 ring-gray-700 sm:flex-row sm:space-y-0 sm:space-x-3">
       <Transition
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
@@ -84,9 +84,9 @@ const Release: React.FC<ReleaseProps> = ({
           </div>
         </Modal>
       </Transition>
-      <div className="flex items-center justify-center flex-grow w-full space-x-2 truncate sm:justify-start">
-        <span className="text-lg font-bold truncate">
-          <span className="mr-2 text-xs font-normal whitespace-nowrap">
+      <div className="flex w-full flex-grow items-center justify-center space-x-2 truncate sm:justify-start">
+        <span className="truncate text-lg font-bold">
+          <span className="mr-2 whitespace-nowrap text-xs font-normal">
             <FormattedRelativeTime
               value={Math.floor(
                 (new Date(release.created_at).getTime() - Date.now()) / 1000
@@ -139,7 +139,7 @@ const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
   return (
     <div>
       <h3 className="heading">{intl.formatMessage(messages.releases)}</h3>
-      <div className="space-y-3 section">
+      <div className="section space-y-3">
         {data.map((release, index) => {
           return (
             <div key={`release-${release.id}`}>

@@ -1,8 +1,12 @@
 import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
-import { getRepository, Not } from 'typeorm';
+import { findIndex, sortBy } from 'lodash';
+import { getRepository, In, Not } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
+import TautulliAPI from '../../api/tautulli';
+import { MediaType } from '../../constants/media';
 import { UserType } from '../../constants/user';
+import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
 import { UserPushSubscription } from '../../entity/UserPushSubscription';
@@ -10,6 +14,7 @@ import {
   QuotaResponse,
   UserRequestsResponse,
   UserResultsResponse,
+  UserWatchDataResponse,
 } from '../../interfaces/api/userInterfaces';
 import { hasPermission, Permission } from '../../lib/permissions';
 import { getSettings } from '../../lib/settings';
@@ -400,6 +405,7 @@ router.post(
     try {
       const settings = getSettings();
       const userRepository = getRepository(User);
+      const body = req.body as { plexIds: string[] } | undefined;
 
       // taken from auth.ts
       const mainUser = await userRepository.findOneOrFail({
@@ -434,7 +440,7 @@ router.post(
               user.plexId = parseInt(account.id);
             }
             await userRepository.save(user);
-          } else {
+          } else if (!body || body.plexIds.includes(account.id)) {
             if (await mainPlexTv.checkUserAccess(parseInt(account.id))) {
               const newUser = new User({
                 plexUsername: account.username,
@@ -474,7 +480,8 @@ router.get<{ id: string }, QuotaResponse>(
       ) {
         return next({
           status: 403,
-          message: 'You do not have permission to access this endpoint.',
+          message:
+            "You do not have permission to view this user's request limits.",
         });
       }
 
@@ -487,6 +494,114 @@ router.get<{ id: string }, QuotaResponse>(
       return res.status(200).json(quotas);
     } catch (e) {
       next({ status: 404, message: e.message });
+    }
+  }
+);
+
+router.get<{ id: string }, UserWatchDataResponse>(
+  '/:id/watch_data',
+  async (req, res, next) => {
+    if (
+      Number(req.params.id) !== req.user?.id &&
+      !req.user?.hasPermission(Permission.ADMIN)
+    ) {
+      return next({
+        status: 403,
+        message:
+          "You do not have permission to view this user's recently watched media.",
+      });
+    }
+
+    const settings = getSettings().tautulli;
+
+    if (!settings.hostname || !settings.port || !settings.apiKey) {
+      return next({
+        status: 404,
+        message: 'Tautulli API not configured.',
+      });
+    }
+
+    try {
+      const user = await getRepository(User).findOneOrFail({
+        where: { id: Number(req.params.id) },
+        select: ['id', 'plexId'],
+      });
+
+      const tautulli = new TautulliAPI(settings);
+
+      const watchStats = await tautulli.getUserWatchStats(user);
+      const watchHistory = await tautulli.getUserWatchHistory(user);
+
+      const recentlyWatched = sortBy(
+        await getRepository(Media).find({
+          where: [
+            {
+              mediaType: MediaType.MOVIE,
+              ratingKey: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'movie')
+                  .map((record) => record.rating_key)
+              ),
+            },
+            {
+              mediaType: MediaType.MOVIE,
+              ratingKey4k: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'movie')
+                  .map((record) => record.rating_key)
+              ),
+            },
+            {
+              mediaType: MediaType.TV,
+              ratingKey: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'episode')
+                  .map((record) => record.grandparent_rating_key)
+              ),
+            },
+            {
+              mediaType: MediaType.TV,
+              ratingKey4k: In(
+                watchHistory
+                  .filter((record) => record.media_type === 'episode')
+                  .map((record) => record.grandparent_rating_key)
+              ),
+            },
+          ],
+        }),
+        [
+          (media) =>
+            findIndex(
+              watchHistory,
+              (record) =>
+                (!!media.ratingKey &&
+                  parseInt(media.ratingKey) ===
+                    (record.media_type === 'movie'
+                      ? record.rating_key
+                      : record.grandparent_rating_key)) ||
+                (!!media.ratingKey4k &&
+                  parseInt(media.ratingKey4k) ===
+                    (record.media_type === 'movie'
+                      ? record.rating_key
+                      : record.grandparent_rating_key))
+            ),
+        ]
+      );
+
+      return res.status(200).json({
+        recentlyWatched,
+        playCount: watchStats.total_plays,
+      });
+    } catch (e) {
+      logger.error('Something went wrong fetching user watch data', {
+        label: 'API',
+        errorMessage: e.message,
+        userId: req.params.id,
+      });
+      next({
+        status: 500,
+        message: 'Failed to fetch user watch data.',
+      });
     }
   }
 );
