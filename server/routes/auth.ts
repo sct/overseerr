@@ -210,30 +210,43 @@ authRoutes.post('/local', async (req, res, next) => {
     const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
     if (!user.plexId) {
-      const plexUsersResponse = await mainPlexTv.getUsers();
-      const account = plexUsersResponse.MediaContainer.User.find(
-        (account) =>
-          account.$.email &&
-          account.$.email.toLowerCase() === user.email.toLowerCase()
-      )?.$;
+      try {
+        const plexUsersResponse = await mainPlexTv.getUsers();
+        const account = plexUsersResponse.MediaContainer.User.find(
+          (account) =>
+            account.$.email &&
+            account.$.email.toLowerCase() === user.email.toLowerCase()
+        )?.$;
 
-      if (account) {
-        logger.info('Found matching Plex user; updating user with Plex data', {
+        if (
+          account &&
+          (await mainPlexTv.checkUserAccess(parseInt(account.id)))
+        ) {
+          logger.info(
+            'Found matching Plex user; updating user with Plex data',
+            {
+              label: 'API',
+              ip: req.ip,
+              email: body.email,
+              userId: user.id,
+              plexId: account.id,
+              plexUsername: account.username,
+            }
+          );
+
+          user.plexId = parseInt(account.id);
+          user.avatar = account.thumb;
+          user.email = account.email;
+          user.plexUsername = account.username;
+          user.userType = UserType.PLEX;
+
+          await userRepository.save(user);
+        }
+      } catch (e) {
+        logger.error('Something went wrong fetching Plex users', {
           label: 'API',
-          ip: req.ip,
-          email: body.email,
-          userId: user.id,
-          plexId: account.id,
-          plexUsername: account.username,
+          errorMessage: e.message,
         });
-
-        user.plexId = parseInt(account.id);
-        user.avatar = account.thumb;
-        user.email = account.email;
-        user.plexUsername = account.username;
-        user.userType = UserType.PLEX;
-
-        await userRepository.save(user);
       }
     }
 
