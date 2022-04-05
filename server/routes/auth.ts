@@ -217,7 +217,7 @@ authRoutes.post('/local', async (req, res, next) => {
           account.$.email.toLowerCase() === user.email.toLowerCase()
       )?.$;
 
-      if (account) {
+      if (account && (await mainPlexTv.checkUserAccess(parseInt(account.id)))) {
         logger.info('Found matching Plex user; updating user with Plex data', {
           label: 'API',
           ip: req.ip,
