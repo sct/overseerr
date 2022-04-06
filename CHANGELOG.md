@@ -1,3 +1,10 @@
+## [1.29.1](https://github.com/sct/overseerr/compare/v1.29.0...v1.29.1) (2022-04-06)
+
+
+### Bug Fixes
+
+* **auth:** resolve local/password authentication issues ([#2677](https://github.com/sct/overseerr/issues/2677)) ([b75fc7b](https://github.com/sct/overseerr/commit/b75fc7b2384ce760432620faaa92277dcd42b8e1))
+
 # [1.29.0](https://github.com/sct/overseerr/compare/v1.28.0...v1.29.0) (2022-04-01)
 
 
