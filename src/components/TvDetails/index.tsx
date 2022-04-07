@@ -424,8 +424,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   ) ?? []
                 ).length > 0 && (
                   <>
-                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1" />
-                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1 animate-ping" />
+                    <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" />
+                    <div className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-red-600" />
                   </>
                 )}
             </Button>
@@ -467,7 +467,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     </li>
                   ))}
               </ul>
-              <div className="flex justify-end mt-4">
+              <div className="mt-4 flex justify-end">
                 <Link href={`/tv/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
@@ -487,9 +487,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 {ratingData?.criticsRating && !!ratingData?.criticsScore && (
                   <span className="media-rating">
                     {ratingData.criticsRating === 'Rotten' ? (
-                      <RTRotten className="w-6 mr-1" />
+                      <RTRotten className="mr-1 w-6" />
                     ) : (
-                      <RTFresh className="w-6 mr-1" />
+                      <RTFresh className="mr-1 w-6" />
                     )}
                     {ratingData.criticsScore}%
                   </span>
@@ -497,16 +497,16 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 {ratingData?.audienceRating && !!ratingData?.audienceScore && (
                   <span className="media-rating">
                     {ratingData.audienceRating === 'Spilled' ? (
-                      <RTAudRotten className="w-6 mr-1" />
+                      <RTAudRotten className="mr-1 w-6" />
                     ) : (
-                      <RTAudFresh className="w-6 mr-1" />
+                      <RTAudFresh className="mr-1 w-6" />
                     )}
                     {ratingData.audienceScore}%
                   </span>
                 )}
                 {!!data.voteCount && (
                   <span className="media-rating">
-                    <TmdbLogo className="w-6 mr-2" />
+                    <TmdbLogo className="mr-2 w-6" />
                     {data.voteAverage}/10
                   </span>
                 )}
