@@ -112,6 +112,39 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   useEffect(() => {
     setShowManager(router.query.manage == '1' ? true : false);
   }, [router.query.manage]);
+  const [deviceUrl, setDeviceUrl] = useState(data?.mediaInfo?.plexUrl);
+  const [deviceUrl4k, setDeviceUrl4k] = useState(data?.mediaInfo?.plexUrl4k);
+
+  useEffect(() => {
+    if (data) {
+      if (
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+      ) {
+        if (data.mediaInfo?.ratingKey) {
+          setDeviceUrl(data.mediaInfo?.iOSPlexUrl);
+        }
+        if (data.mediaInfo?.ratingKey4k) {
+          setDeviceUrl4k(data.mediaInfo?.iOSPlexUrl4k);
+        }
+      } else {
+        if (data.mediaInfo?.ratingKey) {
+          setDeviceUrl(data.mediaInfo?.plexUrl);
+        }
+        if (data.mediaInfo?.ratingKey4k) {
+          setDeviceUrl4k(data.mediaInfo?.plexUrl4k);
+        }
+      }
+    }
+  }, [
+    data,
+    data?.mediaInfo?.iOSPlexUrl,
+    data?.mediaInfo?.iOSPlexUrl4k,
+    data?.mediaInfo?.plexUrl,
+    data?.mediaInfo?.plexUrl4k,
+    data?.mediaInfo?.ratingKey,
+    data?.mediaInfo?.ratingKey4k,
+  ]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -125,32 +158,31 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const mediaLinks: PlayButtonLink[] = [];
 
   if (
-    data.mediaInfo?.plexUrl &&
+    deviceUrl &&
     hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
       type: 'or',
     })
   ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
-      url: data.mediaInfo?.plexUrl,
+      url: deviceUrl,
       svg: <PlayIcon />,
     });
   }
 
   if (
     settings.currentSettings.movie4kEnabled &&
-    data.mediaInfo?.plexUrl4k &&
+    deviceUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
       type: 'or',
     })
   ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
-      url: data.mediaInfo?.plexUrl4k,
+      url: deviceUrl4k,
       svg: <PlayIcon />,
     });
   }
-
   const trailerUrl = data.relatedVideos
     ?.filter((r) => r.type === 'Trailer')
     .sort((a, b) => a.size - b.size)
@@ -387,8 +419,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   ) ?? []
                 ).length > 0 && (
                   <>
-                    <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" />
-                    <div className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-red-600" />
+                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1" />
+                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1 animate-ping" />
                   </>
                 )}
             </Button>
@@ -416,7 +448,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   </li>
                 ))}
               </ul>
-              <div className="mt-4 flex justify-end">
+              <div className="flex justify-end mt-4">
                 <Link href={`/movie/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
@@ -432,7 +464,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <div className="mb-6">
               <Link href={`/collection/${data.collection.id}`}>
                 <a>
-                  <div className="group relative z-0 scale-100 transform-gpu cursor-pointer overflow-hidden rounded-lg bg-gray-800 bg-cover bg-center shadow-md ring-1 ring-gray-700 transition duration-300 hover:scale-105 hover:ring-gray-500">
+                  <div className="relative z-0 overflow-hidden transition duration-300 scale-100 bg-gray-800 bg-center bg-cover rounded-lg shadow-md cursor-pointer group transform-gpu ring-1 ring-gray-700 hover:scale-105 hover:ring-gray-500">
                     <div className="absolute inset-0 z-0">
                       <CachedImage
                         src={`https://image.tmdb.org/t/p/w1440_and_h320_multi_faces/${data.collection.backdropPath}`}
@@ -448,7 +480,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                         }}
                       />
                     </div>
-                    <div className="relative z-10 flex h-14 items-center justify-between p-4 text-gray-200 transition duration-300 group-hover:text-white">
+                    <div className="relative z-10 flex items-center justify-between p-4 text-gray-200 transition duration-300 h-14 group-hover:text-white">
                       <div>{data.collection.name}</div>
                       <Button buttonSize="sm">
                         {intl.formatMessage(globalMessages.view)}
@@ -468,9 +500,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   <>
                     <span className="media-rating">
                       {ratingData.criticsRating === 'Rotten' ? (
-                        <RTRotten className="mr-1 w-6" />
+                        <RTRotten className="w-6 mr-1" />
                       ) : (
-                        <RTFresh className="mr-1 w-6" />
+                        <RTFresh className="w-6 mr-1" />
                       )}
                       {ratingData.criticsScore}%
                     </span>
@@ -480,9 +512,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                   <>
                     <span className="media-rating">
                       {ratingData.audienceRating === 'Spilled' ? (
-                        <RTAudRotten className="mr-1 w-6" />
+                        <RTAudRotten className="w-6 mr-1" />
                       ) : (
-                        <RTAudFresh className="mr-1 w-6" />
+                        <RTAudFresh className="w-6 mr-1" />
                       )}
                       {ratingData.audienceScore}%
                     </span>
@@ -491,7 +523,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 {!!data.voteCount && (
                   <>
                     <span className="media-rating">
-                      <TmdbLogo className="mr-2 w-6" />
+                      <TmdbLogo className="w-6 mr-2" />
                       {data.voteAverage}/10
                     </span>
                   </>
@@ -524,14 +556,14 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     >
                       {r.type === 3 ? (
                         // Theatrical
-                        <TicketIcon className="h-4 w-4" />
+                        <TicketIcon className="w-4 h-4" />
                       ) : r.type === 4 ? (
                         // Digital
-                        <CloudIcon className="h-4 w-4" />
+                        <CloudIcon className="w-4 h-4" />
                       ) : (
                         // Physical
                         <svg
-                          className="h-4 w-4"
+                          className="w-4 h-4"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
                         >
@@ -682,9 +714,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                             : messages.showless
                         )}
                         {!showMoreStudios ? (
-                          <ChevronDoubleDownIcon className="ml-1 h-4 w-4" />
+                          <ChevronDoubleDownIcon className="w-4 h-4 ml-1" />
                         ) : (
-                          <ChevronDoubleUpIcon className="ml-1 h-4 w-4" />
+                          <ChevronDoubleUpIcon className="w-4 h-4 ml-1" />
                         )}
                       </span>
                     </button>

@@ -105,6 +105,39 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   useEffect(() => {
     setShowManager(router.query.manage == '1' ? true : false);
   }, [router.query.manage]);
+  const [deviceUrl, setDeviceUrl] = useState(data?.mediaInfo?.plexUrl);
+  const [deviceUrl4k, setDeviceUrl4k] = useState(data?.mediaInfo?.plexUrl4k);
+
+  useEffect(() => {
+    if (data) {
+      if (
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+      ) {
+        if (data.mediaInfo?.ratingKey) {
+          setDeviceUrl(data.mediaInfo?.iOSPlexUrl);
+        }
+        if (data.mediaInfo?.ratingKey4k) {
+          setDeviceUrl4k(data.mediaInfo?.iOSPlexUrl4k);
+        }
+      } else {
+        if (data.mediaInfo?.ratingKey) {
+          setDeviceUrl(data.mediaInfo?.plexUrl);
+        }
+        if (data.mediaInfo?.ratingKey4k) {
+          setDeviceUrl4k(data.mediaInfo?.plexUrl4k);
+        }
+      }
+    }
+  }, [
+    data,
+    data?.mediaInfo?.iOSPlexUrl,
+    data?.mediaInfo?.iOSPlexUrl4k,
+    data?.mediaInfo?.plexUrl,
+    data?.mediaInfo?.plexUrl4k,
+    data?.mediaInfo?.ratingKey,
+    data?.mediaInfo?.ratingKey4k,
+  ]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -116,29 +149,24 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   const mediaLinks: PlayButtonLink[] = [];
 
-  if (
-    data.mediaInfo?.plexUrl &&
-    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
-      type: 'or',
-    })
-  ) {
+  if (deviceUrl) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
-      url: data.mediaInfo?.plexUrl,
+      url: deviceUrl,
       svg: <PlayIcon />,
     });
   }
 
   if (
     settings.currentSettings.series4kEnabled &&
-    data.mediaInfo?.plexUrl4k &&
+    deviceUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
       type: 'or',
     })
   ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
-      url: data.mediaInfo?.plexUrl4k,
+      url: deviceUrl4k,
       svg: <PlayIcon />,
     });
   }
@@ -396,8 +424,8 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                   ) ?? []
                 ).length > 0 && (
                   <>
-                    <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" />
-                    <div className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-red-600" />
+                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1" />
+                    <div className="absolute w-3 h-3 bg-red-600 rounded-full -right-1 -top-1 animate-ping" />
                   </>
                 )}
             </Button>
@@ -439,7 +467,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                     </li>
                   ))}
               </ul>
-              <div className="mt-4 flex justify-end">
+              <div className="flex justify-end mt-4">
                 <Link href={`/tv/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
@@ -459,9 +487,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 {ratingData?.criticsRating && !!ratingData?.criticsScore && (
                   <span className="media-rating">
                     {ratingData.criticsRating === 'Rotten' ? (
-                      <RTRotten className="mr-1 w-6" />
+                      <RTRotten className="w-6 mr-1" />
                     ) : (
-                      <RTFresh className="mr-1 w-6" />
+                      <RTFresh className="w-6 mr-1" />
                     )}
                     {ratingData.criticsScore}%
                   </span>
@@ -469,16 +497,16 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 {ratingData?.audienceRating && !!ratingData?.audienceScore && (
                   <span className="media-rating">
                     {ratingData.audienceRating === 'Spilled' ? (
-                      <RTAudRotten className="mr-1 w-6" />
+                      <RTAudRotten className="w-6 mr-1" />
                     ) : (
-                      <RTAudFresh className="mr-1 w-6" />
+                      <RTAudFresh className="w-6 mr-1" />
                     )}
                     {ratingData.audienceScore}%
                   </span>
                 )}
                 {!!data.voteCount && (
                   <span className="media-rating">
-                    <TmdbLogo className="mr-2 w-6" />
+                    <TmdbLogo className="w-6 mr-2" />
                     {data.voteAverage}/10
                   </span>
                 )}
