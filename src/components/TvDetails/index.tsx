@@ -105,8 +105,9 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
   useEffect(() => {
     setShowManager(router.query.manage == '1' ? true : false);
   }, [router.query.manage]);
-  const [deviceUrl, setDeviceUrl] = useState(data?.mediaInfo?.plexUrl);
-  const [deviceUrl4k, setDeviceUrl4k] = useState(data?.mediaInfo?.plexUrl4k);
+
+  const [plexUrl, setPlexUrl] = useState(data?.mediaInfo?.plexUrl);
+  const [plexUrl4k, setPlexUrl4k] = useState(data?.mediaInfo?.plexUrl4k);
 
   useEffect(() => {
     if (data) {
@@ -114,19 +115,11 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
         /iPad|iPhone|iPod/.test(navigator.userAgent) ||
         (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
       ) {
-        if (data.mediaInfo?.ratingKey) {
-          setDeviceUrl(data.mediaInfo?.iOSPlexUrl);
-        }
-        if (data.mediaInfo?.ratingKey4k) {
-          setDeviceUrl4k(data.mediaInfo?.iOSPlexUrl4k);
-        }
+        setPlexUrl(data.mediaInfo?.iOSPlexUrl);
+        setPlexUrl4k(data.mediaInfo?.iOSPlexUrl4k);
       } else {
-        if (data.mediaInfo?.ratingKey) {
-          setDeviceUrl(data.mediaInfo?.plexUrl);
-        }
-        if (data.mediaInfo?.ratingKey4k) {
-          setDeviceUrl4k(data.mediaInfo?.plexUrl4k);
-        }
+        setPlexUrl(data.mediaInfo?.plexUrl);
+        setPlexUrl4k(data.mediaInfo?.plexUrl4k);
       }
     }
   }, [
@@ -135,8 +128,6 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     data?.mediaInfo?.iOSPlexUrl4k,
     data?.mediaInfo?.plexUrl,
     data?.mediaInfo?.plexUrl4k,
-    data?.mediaInfo?.ratingKey,
-    data?.mediaInfo?.ratingKey4k,
   ]);
 
   if (!data && !error) {
@@ -149,24 +140,24 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   const mediaLinks: PlayButtonLink[] = [];
 
-  if (deviceUrl) {
+  if (plexUrl) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
-      url: deviceUrl,
+      url: plexUrl,
       svg: <PlayIcon />,
     });
   }
 
   if (
     settings.currentSettings.series4kEnabled &&
-    deviceUrl4k &&
+    plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
       type: 'or',
     })
   ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
-      url: deviceUrl4k,
+      url: plexUrl4k,
       svg: <PlayIcon />,
     });
   }

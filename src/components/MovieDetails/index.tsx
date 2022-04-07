@@ -112,8 +112,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   useEffect(() => {
     setShowManager(router.query.manage == '1' ? true : false);
   }, [router.query.manage]);
-  const [deviceUrl, setDeviceUrl] = useState(data?.mediaInfo?.plexUrl);
-  const [deviceUrl4k, setDeviceUrl4k] = useState(data?.mediaInfo?.plexUrl4k);
+
+  const [plexUrl, setPlexUrl] = useState(data?.mediaInfo?.plexUrl);
+  const [plexUrl4k, setPlexUrl4k] = useState(data?.mediaInfo?.plexUrl4k);
 
   useEffect(() => {
     if (data) {
@@ -121,13 +122,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         /iPad|iPhone|iPod/.test(navigator.userAgent) ||
         (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
       ) {
-        setDeviceUrl(data.mediaInfo?.iOSPlexUrl);
-
-        setDeviceUrl4k(data.mediaInfo?.iOSPlexUrl4k);
+        setPlexUrl(data.mediaInfo?.iOSPlexUrl);
+        setPlexUrl4k(data.mediaInfo?.iOSPlexUrl4k);
       } else {
-        setDeviceUrl(data.mediaInfo?.plexUrl);
-
-        setDeviceUrl4k(data.mediaInfo?.plexUrl4k);
+        setPlexUrl(data.mediaInfo?.plexUrl);
+        setPlexUrl4k(data.mediaInfo?.plexUrl4k);
       }
     }
   }, [
@@ -150,28 +149,28 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const mediaLinks: PlayButtonLink[] = [];
 
   if (
-    deviceUrl &&
+    plexUrl &&
     hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
       type: 'or',
     })
   ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
-      url: deviceUrl,
+      url: plexUrl,
       svg: <PlayIcon />,
     });
   }
 
   if (
     settings.currentSettings.movie4kEnabled &&
-    deviceUrl4k &&
+    plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
       type: 'or',
     })
   ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
-      url: deviceUrl4k,
+      url: plexUrl4k,
       svg: <PlayIcon />,
     });
   }
