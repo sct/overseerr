@@ -121,19 +121,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         /iPad|iPhone|iPod/.test(navigator.userAgent) ||
         (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
       ) {
-        if (data.mediaInfo?.ratingKey) {
-          setDeviceUrl(data.mediaInfo?.iOSPlexUrl);
-        }
-        if (data.mediaInfo?.ratingKey4k) {
-          setDeviceUrl4k(data.mediaInfo?.iOSPlexUrl4k);
-        }
+        setDeviceUrl(data.mediaInfo?.iOSPlexUrl);
+
+        setDeviceUrl4k(data.mediaInfo?.iOSPlexUrl4k);
       } else {
-        if (data.mediaInfo?.ratingKey) {
-          setDeviceUrl(data.mediaInfo?.plexUrl);
-        }
-        if (data.mediaInfo?.ratingKey4k) {
-          setDeviceUrl4k(data.mediaInfo?.plexUrl4k);
-        }
+        setDeviceUrl(data.mediaInfo?.plexUrl);
+
+        setDeviceUrl4k(data.mediaInfo?.plexUrl4k);
       }
     }
   }, [
@@ -142,8 +136,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     data?.mediaInfo?.iOSPlexUrl4k,
     data?.mediaInfo?.plexUrl,
     data?.mediaInfo?.plexUrl4k,
-    data?.mediaInfo?.ratingKey,
-    data?.mediaInfo?.ratingKey4k,
   ]);
 
   if (!data && !error) {
