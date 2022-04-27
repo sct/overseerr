@@ -43,7 +43,10 @@ const NotificationsDiscord: React.FC = () => {
   const NotificationsDiscordSchema = Yup.object().shape({
     botAvatarUrl: Yup.string()
       .nullable()
-      .url(intl.formatMessage(messages.validationUrl)),
+      .matches(
+        /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/,
+        intl.formatMessage(messages.validationUrl)
+      ),
     webhookUrl: Yup.string()
       .when('enabled', {
         is: true,
@@ -52,7 +55,10 @@ const NotificationsDiscord: React.FC = () => {
           .required(intl.formatMessage(messages.validationUrl)),
         otherwise: Yup.string().nullable(),
       })
-      .url(intl.formatMessage(messages.validationUrl)),
+      .matches(
+        /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/,
+        intl.formatMessage(messages.validationUrl)
+      ),
   });
 
   if (!data && !error) {

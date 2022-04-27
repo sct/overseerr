@@ -132,7 +132,10 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
       intl.formatMessage(messages.validationMinimumAvailabilityRequired)
     ),
     externalUrl: Yup.string()
-      .url(intl.formatMessage(messages.validationApplicationUrl))
+      .matches(
+        /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/,
+        intl.formatMessage(messages.validationApplicationUrl)
+      )
       .test(
         'no-trailing-slash',
         intl.formatMessage(messages.validationApplicationUrlTrailingSlash),

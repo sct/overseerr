@@ -142,7 +142,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
       .required(intl.formatMessage(messages.validationPortRequired)),
     webAppUrl: Yup.string()
       .nullable()
-      .url(intl.formatMessage(messages.validationUrl)),
+      .matches(
+        /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/,
+        intl.formatMessage(messages.validationUrl)
+      ),
   });
 
   const TautulliSettingsSchema = Yup.object().shape(
@@ -188,7 +191,10 @@ const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
         otherwise: Yup.string().nullable(),
       }),
       tautulliExternalUrl: Yup.string()
-        .url(intl.formatMessage(messages.validationUrl))
+        .matches(
+          /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/,
+          intl.formatMessage(messages.validationUrl)
+        )
         .test(
           'no-trailing-slash',
           intl.formatMessage(messages.validationUrlTrailingSlash),

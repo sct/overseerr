@@ -44,7 +44,10 @@ const NotificationsSlack: React.FC = () => {
           .required(intl.formatMessage(messages.validationWebhookUrl)),
         otherwise: Yup.string().nullable(),
       })
-      .url(intl.formatMessage(messages.validationWebhookUrl)),
+      .matches(
+        /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/,
+        intl.formatMessage(messages.validationWebhookUrl)
+      ),
   });
 
   if (!data && !error) {
