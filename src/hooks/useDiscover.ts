@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { MediaStatus } from '../../server/constants/media';
 import useSettings from './useSettings';
@@ -65,9 +66,13 @@ const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
       typeof data[size - 1] === 'undefined' &&
       isValidating);
 
-  const fetchMore = () => {
-    setSize(size + 1);
-  };
+  const fetchMore = useCallback(() => {
+    if (!!data && (data[data?.length - 1]?.totalResults ?? 0) > 40) {
+      setSize((size) => {
+        return size + 1;
+      });
+    }
+  }, [data, setSize]);
 
   let titles = (data ?? []).reduce((a, v) => [...a, ...v.results], [] as T[]);
 
