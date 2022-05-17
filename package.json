@@ -69,7 +69,7 @@
     "reflect-metadata": "^0.1.13",
     "secure-random-password": "^0.2.3",
     "semver": "^7.3.5",
-    "sqlite3": "^5.0.2",
+    "sqlite3": "^5.0.8",
     "swagger-ui-express": "^4.3.0",
     "swr": "^1.2.2",
     "typeorm": "0.2.45",
