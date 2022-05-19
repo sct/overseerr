@@ -6,6 +6,7 @@ interface OverrideStatus {
   server: string | null;
   profile: number | null;
   rootFolder: string | null;
+  languageProfile: number | null;
 }
 
 const useRequestOverride = (request: MediaRequest): OverrideStatus => {
@@ -18,6 +19,7 @@ const useRequestOverride = (request: MediaRequest): OverrideStatus => {
       server: null,
       profile: null,
       rootFolder: null,
+      languageProfile: null,
     };
   }
 
@@ -39,6 +41,11 @@ const useRequestOverride = (request: MediaRequest): OverrideStatus => {
     rootFolder:
       defaultServer?.activeDirectory !== request.rootFolder
         ? request.rootFolder
+        : null,
+    languageProfile:
+      request.type === 'tv' &&
+      defaultServer?.activeLanguageProfileId !== request.languageProfileId
+        ? request.languageProfileId
         : null,
   };
 };
