@@ -211,7 +211,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
             </div>
           </div>
         )}
-        {(server || profile !== null || rootFolder) && (
+        {(server || profile || rootFolder || languageProfile) && (
           <>
             <div className="mt-4 mb-1 text-sm">
               {intl.formatMessage(messages.requestoverrides)}
@@ -225,12 +225,12 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                   <span>{server}</span>
                 </li>
               )}
-              {profile !== null && (
+              {profile && (
                 <li className="flex justify-between px-1 py-2">
                   <span className="font-bold">
                     {intl.formatMessage(messages.profilechanged)}
                   </span>
-                  <span>ID {profile}</span>
+                  <span>{profile}</span>
                 </li>
               )}
               {rootFolder && (
@@ -246,7 +246,7 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
                   <span className="mr-2 font-bold">
                     {intl.formatMessage(messages.languageprofile)}
                   </span>
-                  <span>ID {languageProfile}</span>
+                  <span>{languageProfile}</span>
                 </li>
               )}
             </ul>
