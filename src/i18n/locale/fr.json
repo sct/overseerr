@@ -224,7 +224,7 @@
   "components.Settings.SettingsAbout.Releases.currentversion": "Actuelle",
   "components.UserList.importfromplexerror": "Une erreur s'est produite durant l'importation des utilisateurs de Plex.",
   "components.UserList.importfromplex": "Importer les utilisateurs de Plex",
-  "components.UserList.importedfromplex": "<strong>{userCount}</strong> {userCount, plural, one {user} autres {users}} importé(s) depuis Plex avec succès !",
+  "components.UserList.importedfromplex": "<strong>{userCount}</strong> {userCount, plural, one {utilisateur} other {utilisateurs}} importé(s) depuis Plex avec succès !",
   "components.TvDetails.viewfullcrew": "Voir l'équipe complète de la série",
   "components.TvDetails.TvCrew.fullseriescrew": "Équipe complète de la série",
   "components.PersonDetails.crewmember": "Équipe",
@@ -635,7 +635,7 @@
   "components.Settings.SettingsLogs.time": "Horodatage",
   "components.Settings.SettingsLogs.resumeLogs": "Résumer",
   "components.Settings.SettingsLogs.message": "Message",
-  "components.Settings.SettingsLogs.logsDescription": "Vous pouvez également afficher ces journaux directement via <code>stdout</code>, ou dans <code>{configDir} /logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Vous pouvez également afficher ces journaux directement via <code>stdout</code>, ou dans <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.level": "Gravité",
   "components.Settings.SettingsLogs.label": "Étiquette",
   "components.Settings.SettingsLogs.extraData": "Données supplémentaires",
@@ -856,7 +856,7 @@
   "components.MovieDetails.streamingproviders": "Actuellement diffusé sur",
   "components.Settings.Notifications.NotificationsSlack.webhookUrlTip": "Créer une <WebhookLink>Webhook entrant</WebhookLink> intégration",
   "components.StatusBadge.status": "{status}",
-  "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "Toutes les {jobScheduleHours, plural, one {hour} other {{jobScheduleHours} hours}}",
+  "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "Toutes les {jobScheduleHours, plural, one {heure} other {{jobScheduleHours} heures}}",
   "components.IssueDetails.IssueComment.areyousuredelete": "Êtes-vous sûr de vouloir supprimer ce commentaire ?",
   "components.IssueDetails.IssueComment.postedby": "Posté {relativeTime} par {username}",
   "components.IssueDetails.IssueComment.postedbyedited": "Posté {relativeTime} par {username} (Edité)",
@@ -1029,7 +1029,7 @@
   "components.UserProfile.recentlywatched": "Vu récemment",
   "components.ManageSlideOver.opentautulli": "Ouvrir dans Tautulli",
   "components.ManageSlideOver.pastdays": "{days, number} derniers jours",
-  "components.ManageSlideOver.plays": "<strong>{playCount, number}</strong> {playCount, plural, one {play} autres {plays}}",
+  "components.ManageSlideOver.plays": "<strong>{playCount, number}</strong> {playCount, plural, one {play} other {plays}}",
   "components.Settings.Notifications.NotificationsPushbullet.channelTag": "Balise de chaîne",
   "components.ManageSlideOver.alltime": "Tout le temps",
   "components.ManageSlideOver.manageModalMedia": "Média(s)",
@@ -1039,5 +1039,6 @@
   "components.UserList.newplexsigninenabled": "L'option <strong>Autoriser nouvelle connexion Plex</strong> est actuellement activée. Les utilisateurs Plex disposant d'un accès à la librairie n'ont pas besoin d'être importés pour pouvoir ce connecter.",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "ID utilisateur Discord",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Le <FindDiscordIdLink>numéro d'identification à plusieurs chiffres</FindDiscordIdLink> est associé avec votre compte Discord",
-  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Vous devez fournir un ID utilisateur Discord valide"
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Vous devez fournir un ID utilisateur Discord valide",
+  "components.Settings.SettingsAbout.appDataPath": "Répertoire de données"
 }

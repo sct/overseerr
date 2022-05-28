@@ -635,7 +635,7 @@
   "components.Settings.SettingsLogs.level": "Ashpërsia",
   "components.Settings.SettingsLogs.logDetails": "Detajet e regjistrit",
   "components.Settings.SettingsLogs.logs": "Regjistrat",
-  "components.Settings.SettingsLogs.logsDescription": "Ju gjithashtu mund t'i shikoni këto regjistra direkt nëpërmjet <code>stdout</code>, ose në <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Ju gjithashtu mund t'i shikoni këto regjistra direkt nëpërmjet <code>stdout</code>, ose në <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.pauseLogs": "Ndalo",
   "components.Settings.SettingsLogs.resumeLogs": "Rinis",
   "components.Settings.SettingsLogs.showall": "Shfaq të gjitha regjistrat",

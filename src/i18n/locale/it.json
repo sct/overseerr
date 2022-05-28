@@ -625,7 +625,7 @@
   "components.Settings.SettingsLogs.resumeLogs": "Riprendi",
   "components.Settings.SettingsLogs.pauseLogs": "Pausa",
   "components.Settings.SettingsLogs.message": "Messaggio",
-  "components.Settings.SettingsLogs.logsDescription": "Puoi anche visualizzare questi registri direttamente tramite <code>stdout</code>, o in <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Puoi anche visualizzare questi registri direttamente tramite <code>stdout</code>, o in <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.level": "Gravità",
   "components.Settings.SettingsLogs.label": "Etichetta",
   "components.Settings.SettingsLogs.filterWarn": "Attenzione",

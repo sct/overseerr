@@ -392,7 +392,7 @@
   "components.MovieDetails.releasedate": "{releaseCount, plural, one {Data wydania} other {Daty wydania}}",
   "components.MovieDetails.viewfullcrew": "Zobacz pełną obsadę",
   "components.PermissionEdit.autoapproveDescription": "Przyznaj automatyczne zatwierdzanie wszystkich próśb o multimedia inne niż 4K.",
-  "components.RequestButton.approve4krequests": "Zatwierdź {requestCount, plural, one {Prośba 4K} other {{requestCount} Prośby 4K }}",
+  "components.RequestButton.approve4krequests": "Zatwierdź {requestCount, plural, one {Prośba} other {{requestCount} Prośby}} 4K",
   "components.Settings.RadarrModal.minimumAvailability": "Minimalna dostępność",
   "components.RequestButton.decline4krequests": "Odrzuć {requestCount, plural, one {prośby 4K} other {{requestCount} próśb 4K}}",
   "components.NotificationTypeSelector.usermediafailedDescription": "Otrzymuj powiadomienia, gdy prośby o multimedia nie zostaną dodane do Radarr lub Sonarr.",
@@ -581,7 +581,7 @@
   "components.Settings.SettingsJobsCache.jobScheduleEditFailed": "Coś poszło nie tak podczas zapisywania zadania.",
   "components.Settings.SettingsJobsCache.jobsDescription": "Overseerr wykonuje pewne zadania konserwacyjne jako regularnie zaplanowane zadania, ale mogą być one również uruchamiane ręcznie poniżej. Ręczne uruchomienie zadania nie spowoduje zmiany jego harmonogramu.",
   "components.Settings.SettingsJobsCache.nextexecution": "Następne wykonanie",
-  "components.Settings.SettingsLogs.logsDescription": "Możesz również zobaczyć te logi bezpośrednio przez <code>stdout</code>, lub w <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Możesz również zobaczyć te logi bezpośrednio przez <code>stdout</code>, lub w <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsJobsCache.jobname": "Nazwa zadania",
   "components.Settings.SettingsJobsCache.jobScheduleEditSaved": "Zadanie edytowane pomyślnie!",
   "components.Settings.SettingsJobsCache.jobcancelled": "{jobname} anulowane.",
@@ -788,7 +788,7 @@
   "components.UserList.creating": "Tworzenie…",
   "components.UserList.deleteuser": "Usuń użytkownika",
   "components.UserList.displayName": "Wyświetlana nazwa",
-  "components.UserList.importedfromplex": "<strong>{userCount}</strong> {userCount, plural, one {użytkownik} other {użytkowników}} Plex został(o) zaimportowany(ch) pomyślnie!",
+  "components.UserList.importedfromplex": "<strong>{userCount}</strong> {userCount, plural, one {użytkownik Plex został zaimportowany} other {użytkowników Plex zostało zaimportowanych}} pomyślnie!",
   "components.UserList.localLoginDisabled": "Ustawienie <strong>Włącz Lokalne Logowanie</strong> jest obecnie wyłączone.",
   "components.UserList.localuser": "Użytkownik lokalny",
   "components.UserList.nouserstoimport": "Brak nowych użytkowników Plex do zaimportowania.",
@@ -1039,5 +1039,6 @@
   "i18n.importing": "Importowanie…",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "ID użytkownika Discorda",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "<FindDiscordIdLink>Wielocyfrowy numer ID</FindDiscordIdLink> powiązany z Twoim kontem użytkownika Discord",
-  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Musisz podać poprawne ID użytkownika Discord"
+  "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Musisz podać poprawne ID użytkownika Discord",
+  "components.Settings.SettingsAbout.appDataPath": "Katalog danych"
 }

@@ -627,7 +627,7 @@
   "components.Settings.SettingsLogs.resumeLogs": "Resumir",
   "components.Settings.SettingsLogs.pauseLogs": "Pausar",
   "components.Settings.SettingsLogs.message": "Mensagem",
-  "components.Settings.SettingsLogs.logsDescription": "Você pode ver esses logs diretamente via <code>stdout</code>, ou em <code>{configDir}/logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Você pode ver esses logs diretamente via <code>stdout</code>, ou em <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.logs": "Logs",
   "components.Settings.SettingsLogs.level": "Severidade",
   "components.Settings.SettingsLogs.label": "Rótulo",
@@ -1039,5 +1039,6 @@
   "i18n.import": "Importar",
   "components.ManageSlideOver.alltime": "Desde Início",
   "components.ManageSlideOver.playedby": "Reproduzido por",
-  "components.Settings.Notifications.NotificationsPushbullet.channelTag": "Tag do Canal"
+  "components.Settings.Notifications.NotificationsPushbullet.channelTag": "Tag do Canal",
+  "components.Settings.SettingsAbout.appDataPath": "Configurações"
 }

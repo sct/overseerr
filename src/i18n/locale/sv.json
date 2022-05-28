@@ -238,7 +238,7 @@
   "i18n.requested": "Begärd",
   "i18n.request": "Begäran",
   "i18n.failed": "Misslyckades",
-  "components.UserList.importedfromplex": "<strong>{userCount}</strong> {userCount, plural, en {user} andra {användare}} Plex-användare importerades framgångsrikt!",
+  "components.UserList.importedfromplex": "<strong>{userCount}</strong> Plex {userCount, plural, one {user} other {users}} importerades framgångsrikt!",
   "components.TvDetails.viewfullcrew": "Visa hela rollistan",
   "components.TvDetails.firstAirDate": "Första sändningsdatum",
   "components.TvDetails.TvCrew.fullseriescrew": "Hela rollistan",
@@ -622,7 +622,7 @@
   "components.Settings.SettingsLogs.resumeLogs": "Återuppta",
   "components.Settings.SettingsLogs.pauseLogs": "Paus",
   "components.Settings.SettingsLogs.message": "Meddelande",
-  "components.Settings.SettingsLogs.logsDescription": "Du kan också läsa loggar direkt via <code>stdout</code> eller i <code>{configDir} /logs/overseerr.log</code>.",
+  "components.Settings.SettingsLogs.logsDescription": "Du kan också läsa loggar direkt via <code>stdout</code> eller i <code>{appDataPath}/logs/overseerr.log</code>.",
   "components.Settings.SettingsLogs.label": "Etikett",
   "components.Settings.SettingsLogs.logs": "Loggar",
   "components.Settings.SettingsLogs.level": "Allvarlighetsgrad",
@@ -1039,5 +1039,6 @@
   "components.Settings.validationUrlTrailingSlash": "URL får inte sluta med ett snedstreck",
   "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Du måste ange ett giltigt Discord användar-ID",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Discord användar-ID",
-  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Det <FindDiscordIdLink>flersiffriga ID-numret</FindDiscordIdLink> som är kopplat till ditt Discord-användarkonto"
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Det <FindDiscordIdLink>flersiffriga ID-numret</FindDiscordIdLink> som är kopplat till ditt Discord-användarkonto",
+  "components.Settings.SettingsAbout.appDataPath": "Datakatalog"
 }

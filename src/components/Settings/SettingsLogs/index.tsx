@@ -31,7 +31,7 @@ import Transition from '../../Transition';
 const messages = defineMessages({
   logs: 'Logs',
   logsDescription:
-    'You can also view these logs directly via <code>stdout</code>, or in <code>{configDir}/logs/overseerr.log</code>.',
+    'You can also view these logs directly via <code>stdout</code>, or in <code>{appDataPath}/logs/overseerr.log</code>.',
   time: 'Timestamp',
   level: 'Severity',
   label: 'Label',
@@ -235,7 +235,7 @@ const SettingsLogs: React.FC = () => {
             code: function code(msg) {
               return <code className="bg-opacity-50">{msg}</code>;
             },
-            configDir: appData ? appData.appDataPath : '/app/config',
+            appDataPath: appData ? appData.appDataPath : '/app/config',
           })}
         </p>
         <div className="mt-2 flex flex-grow flex-row sm:flex-grow-0 sm:justify-end">
