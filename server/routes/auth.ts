@@ -7,6 +7,15 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
 import { Router } from 'express';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  createJwtSchema,
+  getOIDCRedirectUrl,
+  type WellKnownConfiguration,
+} from '@server/utils/oidc';
+import { randomBytes } from 'crypto';
+import decodeJwt from 'jwt-decode';
+import type { InferType } from 'yup';
 
 const authRoutes = Router();
 
@@ -402,6 +411,147 @@ authRoutes.post('/reset-password/:guid', async (req, res, next) => {
   });
 
   return res.status(200).json({ status: 'ok' });
+});
+
+authRoutes.get('/oidc-login', async (req, res, next) => {
+  const state = randomBytes(32).toString('hex');
+  const redirectUrl = getOIDCRedirectUrl(req, state);
+
+  res.cookie('oidc-state', state, {
+    maxAge: 60000,
+    httpOnly: true,
+    secure: true,
+  });
+  return res.redirect(redirectUrl);
+});
+
+authRoutes.get('/oidc-callback', async (req, res, next) => {
+  const settings = getSettings();
+  const { oidcDomain, oidcClientId, oidcClientSecret } = settings.main;
+
+  if (!settings.main.oidcLogin) {
+    return res.status(500).json({ error: 'OIDC sign-in is disabled.' });
+  }
+  const cookieState = req.cookies['oidc-state'];
+  const url = new URL(req.url, `http://${req.hostname}`);
+  const state = url.searchParams.get('state');
+
+  try {
+    // Check that the request belongs to the correct state
+    if (state && cookieState === state) {
+      res.clearCookie('oidc-state');
+    } else {
+      logger.info('Failed OIDC login attempt', {
+        cause: 'Invalid state',
+        ip: req.ip,
+        state: state,
+        cookieState: cookieState,
+      });
+      return res.redirect('/login');
+    }
+
+    // Check that a code as been issued
+    const code = url.searchParams.get('code');
+    if (!code) {
+      logger.info('Failed OIDC login attempt', {
+        cause: 'Invalid code',
+        ip: req.ip,
+        code: code,
+      });
+      return res.redirect('/login');
+    }
+
+    // Fetch the oidc configuration blob
+    const wellKnownInfo: WellKnownConfiguration = await fetch(
+      new URL(
+        '/.well-known/openid-configuration',
+        `https://${oidcDomain}`
+      ).toString(),
+      {
+        headers: new Headers([['Content-Type', 'application/json']]),
+      }
+    ).then((r) => r.json());
+
+    // Fetch the token data
+    const callbackUrl = new URL(
+      '/api/v1/auth/oidc-callback',
+      `http://${req.headers.host}`
+    );
+    const response = await fetch(wellKnownInfo.token_endpoint, {
+      method: 'POST',
+      headers: new Headers([['Content-Type', 'application/json']]),
+      body: JSON.stringify({
+        client_cecret: oidcClientSecret,
+        grant_type: 'authorization_code',
+        redirect_uri: callbackUrl,
+        client_id: oidcClientId,
+        code,
+      }),
+    });
+
+    // Check that the response is valid
+    const body = (await response.json()) as
+      | { id_token: string; error: never }
+      | { error: string };
+    if (body.error) {
+      logger.info('Failed OIDC login attempt', {
+        cause: 'Invalid token response',
+        ip: req.ip,
+        body: body,
+      });
+      return res.redirect('/login');
+    }
+
+    // Validate that the token response is valid and not manipulated
+    const { id_token: idToken } = body as Extract<
+      typeof body,
+      { id_token: string }
+    >;
+    try {
+      const decoded = decodeJwt(idToken);
+      const jwtSchema = createJwtSchema({
+        oidcClientId: oidcClientId,
+        oidcDomain: oidcDomain,
+      });
+      await jwtSchema.validate(decoded);
+    } catch {
+      logger.info('Failed OIDC login attempt', {
+        cause: 'Invalid jwt',
+        ip: req.ip,
+        idToken: idToken,
+      });
+      return res.redirect('/login');
+    }
+
+    // Map email to user
+    const decoded: InferType<ReturnType<typeof createJwtSchema>> =
+      decodeJwt(idToken);
+    const userRepository = getRepository(User);
+    const user = await userRepository.findOne({
+      where: { email: decoded.email },
+    });
+    if (!user) {
+      logger.info('Failed OIDC login attempt', {
+        cause: 'User not found',
+        ip: req.ip,
+        email: decoded.email,
+      });
+      return res.redirect('/login');
+    }
+
+    // Set logged in session and return
+    if (req.session) {
+      req.session.userId = user.id;
+    }
+    return res.redirect('/');
+  } catch (error) {
+    logger.error('Failed OIDC login attempt', {
+      cause: 'Unknown error',
+      ip: req.ip,
+      errorMessage: error.message,
+    });
+    return res.redirect('/login');
+  }
 });
 
 export default authRoutes;

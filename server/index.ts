@@ -157,12 +157,12 @@ app
     );
     const apiDocs = YAML.load(API_SPEC_PATH);
     server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
-    server.use(
-      OpenApiValidator.middleware({
-        apiSpec: API_SPEC_PATH,
-        validateRequests: true,
-      })
-    );
+    // server.use(
+    //   OpenApiValidator.middleware({
+    //     apiSpec: API_SPEC_PATH,
+    //     validateRequests: true,
+    //   })
+    // );
     /**
      * This is a workaround to convert dates to strings before they are validated by
      * OpenAPI validator. Otherwise, they are treated as objects instead of strings

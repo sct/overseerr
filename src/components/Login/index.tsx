@@ -3,6 +3,7 @@ import ImageFader from '@app/components/Common/ImageFader';
 import PageTitle from '@app/components/Common/PageTitle';
 import LanguagePicker from '@app/components/Layout/LanguagePicker';
 import LocalLogin from '@app/components/Login/LocalLogin';
+import OIDCLoginButton from '@app/components/Login/OIDCLoginButton';
 import PlexLoginButton from '@app/components/PlexLoginButton';
 import useSettings from '@app/hooks/useSettings';
 import { useUser } from '@app/hooks/useUser';
@@ -19,6 +20,7 @@ const messages = defineMessages({
   signinheader: 'Sign in to continue',
   signinwithplex: 'Use your Plex account',
   signinwithoverseerr: 'Use your {applicationTitle} account',
+  signinwithoidc: 'Use your {oidcName} account',
 });
 
 const Login = () => {
@@ -142,9 +144,7 @@ const Login = () => {
                     <div>
                       <button
                         className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700 focus:outline-none ${
-                          openIndexes.includes(1)
-                            ? 'text-indigo-500'
-                            : 'sm:rounded-b-lg'
+                          openIndexes.includes(1) ? 'text-indigo-500' : ''
                         }`}
                         onClick={() => handleClick(1)}
                       >
@@ -160,6 +160,30 @@ const Login = () => {
                       </AccordionContent>
                     </div>
                   )}
+                  {settings.currentSettings.oidcLogin ? (
+                    <>
+                      <button
+                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700 focus:outline-none ${
+                          openIndexes.includes(2)
+                            ? 'text-indigo-500'
+                            : 'sm:rounded-b-lg'
+                        }`}
+                        onClick={() => handleClick(2)}
+                      >
+                        {intl.formatMessage(messages.signinwithoidc, {
+                          oidcName: settings.currentSettings.oidcName,
+                        })}
+                      </button>
+                      <AccordionContent isOpen={openIndexes.includes(2)}>
+                        <div className="px-10 py-8">
+                          <OIDCLoginButton
+                            revalidate={revalidate}
+                            oidcName={settings.currentSettings.oidcName}
+                          />
+                        </div>
+                      </AccordionContent>
+                    </>
+                  ) : null}
                 </>
               )}
             </Accordion>
