@@ -1,14 +1,28 @@
-import React from 'react';
+import { LoginIcon } from '@heroicons/react/outline';
+import React, { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import globalMessages from '../../i18n/globalMessages';
+import OIDCAuth from '../../utils/oidc';
+
+const messages = defineMessages({
+  signinwithoidc: 'Sign In With {provider}',
+});
 
 type Props = {
   revalidate: () => void;
   oidcName: string;
 };
 
+const oidcAuth = new OIDCAuth();
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function OIDCLoginButton({ revalidate, oidcName }: Props) {
-  const handleClick = () => {
-    window.location.pathname = '/api/v1/auth/oidc-login';
+  const intl = useIntl();
+  const [loading, setLoading] = useState(false);
+  const handleClick = async () => {
+    setLoading(true);
+    await oidcAuth.preparePopup();
+    setLoading(false);
   };
 
   return (
@@ -17,7 +31,14 @@ function OIDCLoginButton({ revalidate, oidcName }: Props) {
         className="plex-button bg-indigo-500 hover:bg-indigo-600"
         onClick={handleClick}
       >
-        Login with {oidcName}
+        <LoginIcon />
+        <span>
+          {loading
+            ? intl.formatMessage(globalMessages.loading)
+            : intl.formatMessage(messages.signinwithoidc, {
+                provider: oidcName,
+              })}
+        </span>
       </button>
     </span>
   );
