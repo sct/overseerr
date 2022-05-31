@@ -3465,7 +3465,7 @@ paths:
           required: true
           schema:
             type: string
-            example: '0sJj7IUW2h6aB3U6o-flioB0ARc7nW2E3PFItYd6xPKf5'
+            example: '123456789'
         - in: query
           name: state
           required: true
@@ -3491,7 +3491,7 @@ paths:
             Set-Cookie:
               schema:
                 type: string
-                example: 'token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+                example: 'oidc-state=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
   /user:
     get:
       summary: Get all users
