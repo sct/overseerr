@@ -12,6 +12,7 @@ import { Field, Form, Formik } from 'formik';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
+import * as yup from 'yup';
 
 const messages = defineMessages({
   users: 'Users',
@@ -37,7 +38,36 @@ const messages = defineMessages({
   oidcDomain: 'OIDC Domain',
 });
 
-const SettingsUsers = () => {
+const validationSchema = yup.object().shape({
+  oidcLogin: yup.boolean(),
+  oidcClientId: yup.string().when('oidcLogin', {
+    is: true,
+    then: yup.string().required(),
+  }),
+  oidcClientSecret: yup.string().when('oidcLogin', {
+    is: true,
+    then: yup.string().required(),
+  }),
+  oidcDomain: yup.string().when('oidcLogin', {
+    is: true,
+    then: yup
+      .string()
+      .required()
+      .test({
+        message: 'Must be a valid domain',
+        test: (val) => {
+          return (
+            !!val &&
+            /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/.test(
+              val
+            )
+          );
+        },
+      }),
+  }),
+});
+
+const SettingsUsers: React.FC = () => {
   const { addToast } = useToasts();
   const intl = useIntl();
   const {
@@ -80,6 +110,7 @@ const SettingsUsers = () => {
             tvQuotaDays: data?.defaultQuotas.tv.quotaDays ?? 7,
             defaultPermissions: data?.defaultPermissions ?? 0,
           }}
+          validationSchema={validationSchema}
           enableReinitialize
           onSubmit={async (values) => {
             try {
@@ -119,7 +150,7 @@ const SettingsUsers = () => {
             }
           }}
         >
-          {({ isSubmitting, values, setFieldValue }) => {
+          {({ isSubmitting, values, setFieldValue, errors, touched }) => {
             return (
               <Form className="section">
                 <div className="form-row">
@@ -203,6 +234,9 @@ const SettingsUsers = () => {
                             type="text"
                           />
                         </div>
+                        {errors.oidcDomain && touched.oidcDomain && (
+                          <div className="error">{errors.oidcDomain}</div>
+                        )}
                       </div>
                     </div>
                     <div className="form-row">
@@ -217,6 +251,9 @@ const SettingsUsers = () => {
                             type="text"
                           />
                         </div>
+                        {errors.oidcClientId && touched.oidcDomain && (
+                          <div className="error">{errors.oidcClientId}</div>
+                        )}
                       </div>
                     </div>
                     <div className="form-row">
@@ -236,6 +273,12 @@ const SettingsUsers = () => {
                             autoComplete="off"
                           />
                         </div>
+                        {errors.oidcClientSecret &&
+                          touched.oidcClientSecret && (
+                            <div className="error">
+                              {errors.oidcClientSecret}
+                            </div>
+                          )}
                       </div>
                     </div>
                   </>
