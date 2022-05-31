@@ -14,6 +14,7 @@ import {
   type WellKnownConfiguration,
 } from '@server/utils/oidc';
 import { randomBytes } from 'crypto';
+import gravatarUrl from 'gravatar-url';
 import decodeJwt from 'jwt-decode';
 import type { InferType } from 'yup';
 
@@ -523,20 +524,39 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
       return res.redirect('/login');
     }
 
-    // Map email to user
+    // Check that email is verified and map email to user
     const decoded: InferType<ReturnType<typeof createJwtSchema>> =
       decodeJwt(idToken);
-    const userRepository = getRepository(User);
-    const user = await userRepository.findOne({
-      where: { email: decoded.email },
-    });
-    if (!user) {
+
+    if (!decoded.email_verified) {
       logger.info('Failed OIDC login attempt', {
-        cause: 'User not found',
+        cause: 'Email not verified',
         ip: req.ip,
         email: decoded.email,
       });
-      return res.redirect('/login');
+    }
+
+    const userRepository = getRepository(User);
+    let user = await userRepository.findOne({
+      where: { email: decoded.email },
+    });
+
+    // Create user if it doesn't exist
+    if (!user) {
+      logger.info(`Creating user for ${decoded.email}`, {
+        ip: req.ip,
+        email: decoded.email,
+      });
+      const avatar = gravatarUrl(decoded.email, { default: 'mm', size: 200 });
+      user = new User({
+        avatar: avatar,
+        username: decoded.email,
+        email: decoded.email,
+        permissions: settings.main.defaultPermissions,
+        plexToken: '',
+        userType: UserType.LOCAL,
+      });
+      await userRepository.save(user);
     }
 
     // Set logged in session and return
