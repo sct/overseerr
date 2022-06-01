@@ -514,6 +514,7 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
         oidcClientId: oidcClientId,
         oidcDomain: oidcDomain,
       });
+
       await jwtSchema.validate(decoded);
     } catch {
       logger.info('Failed OIDC login attempt', {
@@ -534,6 +535,7 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
         ip: req.ip,
         email: decoded.email,
       });
+      return res.redirect('/login');
     }
 
     const userRepository = getRepository(User);
