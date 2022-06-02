@@ -1,8 +1,8 @@
 import { uniqWith } from 'lodash';
-import { getRepository } from 'typeorm';
 import type { SonarrSeries } from '../../../api/servarr/sonarr';
 import SonarrAPI from '../../../api/servarr/sonarr';
 import type { TmdbTvDetails } from '../../../api/themoviedb/interfaces';
+import dataSource from '../../../datasource';
 import Media from '../../../entity/Media';
 import type { SonarrSettings } from '../../settings';
 import { getSettings } from '../../settings';
@@ -84,7 +84,7 @@ class SonarrScanner
 
   private async processSonarrSeries(sonarrSeries: SonarrSeries) {
     try {
-      const mediaRepository = getRepository(Media);
+      const mediaRepository = dataSource.getRepository(Media);
       const server4k = this.enable4kShow && this.currentServer.is4k;
       const processableSeasons: ProcessableSeason[] = [];
       let tvShow: TmdbTvDetails;

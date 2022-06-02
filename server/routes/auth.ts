@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
 import PlexTvAPI from '../api/plextv';
 import { UserType } from '../constants/user';
+import dataSource from '../datasource';
 import { User } from '../entity/User';
 import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
@@ -11,7 +11,7 @@ import { isAuthenticated } from '../middleware/auth';
 const authRoutes = Router();
 
 authRoutes.get('/me', isAuthenticated(), async (req, res) => {
-  const userRepository = getRepository(User);
+  const userRepository = dataSource.getRepository(User);
   if (!req.user) {
     return res.status(500).json({
       status: 500,
@@ -27,7 +27,7 @@ authRoutes.get('/me', isAuthenticated(), async (req, res) => {
 
 authRoutes.post('/plex', async (req, res, next) => {
   const settings = getSettings();
-  const userRepository = getRepository(User);
+  const userRepository = dataSource.getRepository(User);
   const body = req.body as { authToken?: string };
 
   if (!body.authToken) {
@@ -65,7 +65,7 @@ authRoutes.post('/plex', async (req, res, next) => {
     } else {
       const mainUser = await userRepository.findOneOrFail({
         select: ['id', 'plexToken', 'plexId'],
-        order: { id: 'ASC' },
+        where: { id: 1 },
       });
       const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
@@ -173,7 +173,7 @@ authRoutes.post('/plex', async (req, res, next) => {
 
 authRoutes.post('/local', async (req, res, next) => {
   const settings = getSettings();
-  const userRepository = getRepository(User);
+  const userRepository = dataSource.getRepository(User);
   const body = req.body as { email?: string; password?: string };
 
   if (!settings.main.localLogin) {
@@ -205,7 +205,7 @@ authRoutes.post('/local', async (req, res, next) => {
 
     const mainUser = await userRepository.findOneOrFail({
       select: ['id', 'plexToken', 'plexId'],
-      order: { id: 'ASC' },
+      where: { id: 1 },
     });
     const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
@@ -310,7 +310,7 @@ authRoutes.post('/logout', (req, res, next) => {
 });
 
 authRoutes.post('/reset-password', async (req, res, next) => {
-  const userRepository = getRepository(User);
+  const userRepository = dataSource.getRepository(User);
   const body = req.body as { email?: string };
 
   if (!body.email) {
@@ -345,7 +345,7 @@ authRoutes.post('/reset-password', async (req, res, next) => {
 });
 
 authRoutes.post('/reset-password/:guid', async (req, res, next) => {
-  const userRepository = getRepository(User);
+  const userRepository = dataSource.getRepository(User);
 
   if (!req.body.password || req.body.password?.length < 8) {
     logger.warn('Failed password reset attempt using invalid new password', {

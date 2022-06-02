@@ -1,4 +1,7 @@
-const devConfig = {
+import 'reflect-metadata';
+import { DataSource, DataSourceOptions } from 'typeorm';
+
+const devConfig: DataSourceOptions = {
   type: 'sqlite',
   database: process.env.CONFIG_DIRECTORY
     ? `${process.env.CONFIG_DIRECTORY}/db/db.sqlite3`
@@ -10,31 +13,24 @@ const devConfig = {
   entities: ['server/entity/**/*.ts'],
   migrations: ['server/migration/**/*.ts'],
   subscribers: ['server/subscriber/**/*.ts'],
-  cli: {
-    entitiesDir: 'server/entity',
-    migrationsDir: 'server/migration',
-  },
 };
 
-const prodConfig = {
+const prodConfig: DataSourceOptions = {
   type: 'sqlite',
   database: process.env.CONFIG_DIRECTORY
     ? `${process.env.CONFIG_DIRECTORY}/db/db.sqlite3`
     : 'config/db/db.sqlite3',
   synchronize: false,
+  migrationsRun: false,
   logging: false,
   enableWAL: true,
   entities: ['dist/entity/**/*.js'],
   migrations: ['dist/migration/**/*.js'],
-  migrationsRun: false,
   subscribers: ['dist/subscriber/**/*.js'],
-  cli: {
-    entitiesDir: 'dist/entity',
-    migrationsDir: 'dist/migration',
-  },
 };
 
-const finalConfig =
-  process.env.NODE_ENV !== 'production' ? devConfig : prodConfig;
+const dataSource = new DataSource(
+  process.env.NODE_ENV !== 'production' ? devConfig : prodConfig
+);
 
-module.exports = finalConfig;
+export default dataSource;

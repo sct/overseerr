@@ -10,9 +10,9 @@ import session from 'express-session';
 import next from 'next';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
-import { createConnection, getRepository } from 'typeorm';
 import YAML from 'yamljs';
 import PlexAPI from './api/plexapi';
+import dataSource from './datasource';
 import { Session } from './entity/Session';
 import { User } from './entity/User';
 import { startJobs } from './job/schedule';
@@ -43,7 +43,7 @@ const handle = app.getRequestHandler();
 app
   .prepare()
   .then(async () => {
-    const dbConnection = await createConnection();
+    const dbConnection = await dataSource.initialize();
 
     // Run migrations in production
     if (process.env.NODE_ENV === 'production') {
@@ -61,10 +61,10 @@ app
       settings.plex.libraries.length > 1 &&
       !settings.plex.libraries[0].type
     ) {
-      const userRepository = getRepository(User);
+      const userRepository = dataSource.getRepository(User);
       const admin = await userRepository.findOne({
         select: ['id', 'plexToken'],
-        order: { id: 'ASC' },
+        where: { id: 1 },
       });
 
       if (admin) {
@@ -136,7 +136,7 @@ app
     }
 
     // Set up sessions
-    const sessionRespository = getRepository(Session);
+    const sessionRespository = dataSource.getRepository(Session);
     server.use(
       '/api',
       session({

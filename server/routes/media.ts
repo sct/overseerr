@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import type { FindOneOptions, FindOperator } from 'typeorm';
-import { getRepository, In } from 'typeorm';
 import TautulliAPI from '../api/tautulli';
 import { MediaStatus, MediaType } from '../constants/media';
+import dataSource from '../datasource';
 import Media from '../entity/Media';
 import { User } from '../entity/User';
 import type {
@@ -17,13 +17,12 @@ import { isAuthenticated } from '../middleware/auth';
 const mediaRoutes = Router();
 
 mediaRoutes.get('/', async (req, res, next) => {
-  const mediaRepository = getRepository(Media);
+  const mediaRepository = dataSource.getRepository(Media);
 
   const pageSize = req.query.take ? Number(req.query.take) : 20;
   const skip = req.query.skip ? Number(req.query.skip) : 0;
 
-  let statusFilter: MediaStatus | FindOperator<MediaStatus> | undefined =
-    undefined;
+  let statusFilter = undefined;
 
   switch (req.query.filter) {
     case 'available':
@@ -97,7 +96,7 @@ mediaRoutes.post<
   '/:id/:status',
   isAuthenticated(Permission.MANAGE_REQUESTS),
   async (req, res, next) => {
-    const mediaRepository = getRepository(Media);
+    const mediaRepository = dataSource.getRepository(Media);
 
     const media = await mediaRepository.findOne({
       where: { id: Number(req.params.id) },
@@ -149,10 +148,10 @@ mediaRoutes.delete(
   isAuthenticated(Permission.MANAGE_REQUESTS),
   async (req, res, next) => {
     try {
-      const mediaRepository = getRepository(Media);
+      const mediaRepository = dataSource.getRepository(Media);
 
       const media = await mediaRepository.findOneOrFail({
-        where: { id: req.params.id },
+        where: { id: Number(req.params.id) },
       });
 
       await mediaRepository.remove(media);
@@ -181,7 +180,7 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
       });
     }
 
-    const media = await getRepository(Media).findOne({
+    const media = await dataSource.getRepository(Media).findOne({
       where: { id: Number(req.params.id) },
     });
 
@@ -191,7 +190,7 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
 
     try {
       const tautulli = new TautulliAPI(settings);
-      const userRepository = getRepository(User);
+      const userRepository = dataSource.getRepository(User);
 
       const response: MediaWatchDataResponse = {};
 

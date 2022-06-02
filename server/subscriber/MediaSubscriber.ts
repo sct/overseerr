@@ -1,8 +1,14 @@
 import { truncate } from 'lodash';
-import type { EntitySubscriberInterface, UpdateEvent } from 'typeorm';
-import { EventSubscriber, getRepository, Not } from 'typeorm';
+import {
+  EntitySubscriberInterface,
+  EventSubscriber,
+  In,
+  Not,
+  UpdateEvent,
+} from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
+import dataSource from '../datasource';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import Season from '../entity/Season';
@@ -21,10 +27,12 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       dbEntity[is4k ? 'status4k' : 'status'] !== MediaStatus.AVAILABLE
     ) {
       if (entity.mediaType === MediaType.MOVIE) {
-        const requestRepository = getRepository(MediaRequest);
+        const requestRepository = dataSource.getRepository(MediaRequest);
         const relatedRequests = await requestRepository.find({
           where: {
-            media: entity,
+            media: {
+              id: entity.id,
+            },
             is4k,
             status: Not(MediaRequestStatus.DECLINED),
           },
@@ -76,7 +84,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
     dbEntity: Media,
     is4k: boolean
   ) {
-    const seasonRepository = getRepository(Season);
+    const seasonRepository = dataSource.getRepository(Season);
     const newAvailableSeasons = entity.seasons
       .filter(
         (season) =>
@@ -84,7 +92,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       )
       .map((season) => season.seasonNumber);
     const oldSeasonIds = dbEntity.seasons.map((season) => season.id);
-    const oldSeasons = await seasonRepository.findByIds(oldSeasonIds);
+    const oldSeasons = await seasonRepository.findBy({ id: In(oldSeasonIds) });
     const oldAvailableSeasons = oldSeasons
       .filter(
         (season) =>
@@ -98,13 +106,15 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
     if (changedSeasons.length > 0) {
       const tmdb = new TheMovieDb();
-      const requestRepository = getRepository(MediaRequest);
+      const requestRepository = dataSource.getRepository(MediaRequest);
       const processedSeasons: number[] = [];
 
       for (const changedSeasonNumber of changedSeasons) {
         const requests = await requestRepository.find({
           where: {
-            media: entity,
+            media: {
+              id: entity.id,
+            },
             is4k,
             status: Not(MediaRequestStatus.DECLINED),
           },
@@ -164,10 +174,10 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
   }
 
   private async updateChildRequestStatus(event: Media, is4k: boolean) {
-    const requestRepository = getRepository(MediaRequest);
+    const requestRepository = dataSource.getRepository(MediaRequest);
 
     const requests = await requestRepository.find({
-      where: { media: event.id },
+      where: { media: { id: event.id } },
     });
 
     for (const request of requests) {

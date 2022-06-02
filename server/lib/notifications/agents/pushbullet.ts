@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { getRepository } from 'typeorm';
 import {
   hasNotificationType,
   Notification,
   shouldSendAdminNotification,
 } from '..';
 import { IssueStatus, IssueTypeName } from '../../../constants/issue';
+import dataSource from '../../../datasource';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
 import type { NotificationAgentPushbullet } from '../../settings';
@@ -176,7 +176,7 @@ class PushbulletAgent
     }
 
     if (payload.notifyAdmin) {
-      const userRepository = getRepository(User);
+      const userRepository = dataSource.getRepository(User);
       const users = await userRepository.find();
 
       await Promise.all(

@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
 import { findIndex, sortBy } from 'lodash';
-import { getRepository, In, Not } from 'typeorm';
+import { In } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
 import { MediaType } from '../../constants/media';
 import { UserType } from '../../constants/user';
+import dataSource from '../../datasource';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
@@ -28,7 +29,7 @@ router.get('/', async (req, res, next) => {
   try {
     const pageSize = req.query.take ? Number(req.query.take) : 10;
     const skip = req.query.skip ? Number(req.query.skip) : 0;
-    let query = getRepository(User).createQueryBuilder('user');
+    let query = dataSource.getRepository(User).createQueryBuilder('user');
 
     switch (req.query.sort) {
       case 'updated':
@@ -85,7 +86,7 @@ router.post(
       const settings = getSettings();
 
       const body = req.body;
-      const userRepository = getRepository(User);
+      const userRepository = dataSource.getRepository(User);
 
       const existingUser = await userRepository
         .createQueryBuilder('user')
@@ -146,7 +147,8 @@ router.post<
   }
 >('/registerPushSubscription', async (req, res, next) => {
   try {
-    const userPushSubRepository = getRepository(UserPushSubscription);
+    const userPushSubRepository =
+      dataSource.getRepository(UserPushSubscription);
 
     const existingSubs = await userPushSubRepository.find({
       where: { auth: req.body.auth },
@@ -180,7 +182,7 @@ router.post<
 
 router.get<{ id: string }>('/:id', async (req, res, next) => {
   try {
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
 
     const user = await userRepository.findOneOrFail({
       where: { id: Number(req.params.id) },
@@ -203,7 +205,7 @@ router.get<{ id: string }, UserRequestsResponse>(
     const skip = req.query.skip ? Number(req.query.skip) : 0;
 
     try {
-      const user = await getRepository(User).findOne({
+      const user = await dataSource.getRepository(User).findOne({
         where: { id: Number(req.params.id) },
       });
 
@@ -224,7 +226,8 @@ router.get<{ id: string }, UserRequestsResponse>(
         });
       }
 
-      const [requests, requestCount] = await getRepository(MediaRequest)
+      const [requests, requestCount] = await dataSource
+        .getRepository(MediaRequest)
         .createQueryBuilder('request')
         .leftJoinAndSelect('request.media', 'media')
         .leftJoinAndSelect('request.seasons', 'seasons')
@@ -275,10 +278,14 @@ router.put<
       });
     }
 
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
 
-    const users = await userRepository.findByIds(req.body.ids, {
-      ...(!isOwner ? { id: Not(1) } : {}),
+    const users: User[] = await userRepository.find({
+      where: {
+        id: In(
+          isOwner ? req.body.ids : req.body.ids.filter((id) => Number(id) !== 1)
+        ),
+      },
     });
 
     const updatedUsers = await Promise.all(
@@ -301,7 +308,7 @@ router.put<{ id: string }>(
   isAuthenticated(Permission.MANAGE_USERS),
   async (req, res, next) => {
     try {
-      const userRepository = getRepository(User);
+      const userRepository = dataSource.getRepository(User);
 
       const user = await userRepository.findOneOrFail({
         where: { id: Number(req.params.id) },
@@ -341,7 +348,7 @@ router.delete<{ id: string }>(
   isAuthenticated(Permission.MANAGE_USERS),
   async (req, res, next) => {
     try {
-      const userRepository = getRepository(User);
+      const userRepository = dataSource.getRepository(User);
 
       const user = await userRepository.findOne({
         where: { id: Number(req.params.id) },
@@ -366,7 +373,7 @@ router.delete<{ id: string }>(
         });
       }
 
-      const requestRepository = getRepository(MediaRequest);
+      const requestRepository = dataSource.getRepository(MediaRequest);
 
       /**
        * Requests are usually deleted through a cascade constraint. Those however, do
@@ -399,13 +406,13 @@ router.post(
   async (req, res, next) => {
     try {
       const settings = getSettings();
-      const userRepository = getRepository(User);
+      const userRepository = dataSource.getRepository(User);
       const body = req.body as { plexIds: string[] } | undefined;
 
       // taken from auth.ts
       const mainUser = await userRepository.findOneOrFail({
         select: ['id', 'plexToken'],
-        order: { id: 'ASC' },
+        where: { id: 1 },
       });
       const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
@@ -464,7 +471,7 @@ router.get<{ id: string }, QuotaResponse>(
   '/:id/quota',
   async (req, res, next) => {
     try {
-      const userRepository = getRepository(User);
+      const userRepository = dataSource.getRepository(User);
 
       if (
         Number(req.params.id) !== req.user?.id &&
@@ -517,7 +524,7 @@ router.get<{ id: string }, UserWatchDataResponse>(
     }
 
     try {
-      const user = await getRepository(User).findOneOrFail({
+      const user = await dataSource.getRepository(User).findOneOrFail({
         where: { id: Number(req.params.id) },
         select: ['id', 'plexId'],
       });
@@ -528,7 +535,7 @@ router.get<{ id: string }, UserWatchDataResponse>(
       const watchHistory = await tautulli.getUserWatchHistory(user);
 
       const recentlyWatched = sortBy(
-        await getRepository(Media).find({
+        await dataSource.getRepository(Media).find({
           where: [
             {
               mediaType: MediaType.MOVIE,

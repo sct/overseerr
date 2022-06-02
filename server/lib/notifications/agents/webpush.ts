@@ -1,8 +1,8 @@
-import { getRepository } from 'typeorm';
 import webpush from 'web-push';
 import { Notification, shouldSendAdminNotification } from '..';
 import { IssueType, IssueTypeName } from '../../../constants/issue';
 import { MediaType } from '../../../constants/media';
+import dataSource from '../../../datasource';
 import { User } from '../../../entity/User';
 import { UserPushSubscription } from '../../../entity/UserPushSubscription';
 import logger from '../../../logger';
@@ -139,8 +139,9 @@ class WebPushAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    const userRepository = getRepository(User);
-    const userPushSubRepository = getRepository(UserPushSubscription);
+    const userRepository = dataSource.getRepository(User);
+    const userPushSubRepository =
+      dataSource.getRepository(UserPushSubscription);
     const settings = getSettings();
 
     const pushSubs: UserPushSubscription[] = [];
@@ -158,7 +159,7 @@ class WebPushAgent
         true)
     ) {
       const notifySubs = await userPushSubRepository.find({
-        where: { user: payload.notifyUser.id },
+        where: { user: { id: payload.notifyUser.id } },
       });
 
       pushSubs.push(...notifySubs);

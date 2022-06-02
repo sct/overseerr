@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
 import { IssueStatus, IssueType } from '../constants/issue';
+import dataSource from '../datasource';
 import Issue from '../entity/Issue';
 import IssueComment from '../entity/IssueComment';
 import Media from '../entity/Media';
@@ -49,7 +49,8 @@ issueRoutes.get<Record<string, string>, IssueResultsResponse>(
         statusFilter = [IssueStatus.OPEN, IssueStatus.RESOLVED];
     }
 
-    let query = getRepository(Issue)
+    let query = dataSource
+      .getRepository(Issue)
       .createQueryBuilder('issue')
       .leftJoinAndSelect('issue.createdBy', 'createdBy')
       .leftJoinAndSelect('issue.media', 'media')
@@ -115,8 +116,8 @@ issueRoutes.post<
       return next({ status: 500, message: 'User missing from request.' });
     }
 
-    const issueRepository = getRepository(Issue);
-    const mediaRepository = getRepository(Media);
+    const issueRepository = dataSource.getRepository(Issue);
+    const mediaRepository = dataSource.getRepository(Media);
 
     const media = await mediaRepository.findOne({
       where: { id: req.body.mediaId },
@@ -147,7 +148,7 @@ issueRoutes.post<
 );
 
 issueRoutes.get('/count', async (req, res, next) => {
-  const issueRepository = getRepository(Issue);
+  const issueRepository = dataSource.getRepository(Issue);
 
   try {
     const query = issueRepository.createQueryBuilder('issue');
@@ -219,7 +220,7 @@ issueRoutes.get<{ issueId: string }>(
     { type: 'or' }
   ),
   async (req, res, next) => {
-    const issueRepository = getRepository(Issue);
+    const issueRepository = dataSource.getRepository(Issue);
     // Satisfy typescript here. User is set, we assure you!
     if (!req.user) {
       return next({ status: 500, message: 'User missing from request.' });
@@ -265,7 +266,7 @@ issueRoutes.post<{ issueId: string }, Issue, { message: string }>(
     type: 'or',
   }),
   async (req, res, next) => {
-    const issueRepository = getRepository(Issue);
+    const issueRepository = dataSource.getRepository(Issue);
     // Satisfy typescript here. User is set, we assure you!
     if (!req.user) {
       return next({ status: 500, message: 'User missing from request.' });
@@ -310,7 +311,7 @@ issueRoutes.post<{ issueId: string; status: string }, Issue>(
   '/:issueId/:status',
   isAuthenticated(Permission.MANAGE_ISSUES),
   async (req, res, next) => {
-    const issueRepository = getRepository(Issue);
+    const issueRepository = dataSource.getRepository(Issue);
     // Satisfy typescript here. User is set, we assure you!
     if (!req.user) {
       return next({ status: 500, message: 'User missing from request.' });
@@ -360,7 +361,7 @@ issueRoutes.delete(
     type: 'or',
   }),
   async (req, res, next) => {
-    const issueRepository = getRepository(Issue);
+    const issueRepository = dataSource.getRepository(Issue);
 
     try {
       const issue = await issueRepository.findOneOrFail({

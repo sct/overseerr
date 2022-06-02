@@ -5,11 +5,11 @@ import { merge, omit, set, sortBy } from 'lodash';
 import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import semver from 'semver';
-import { getRepository } from 'typeorm';
 import { URL } from 'url';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
+import dataSource from '../../datasource';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
@@ -89,12 +89,12 @@ settingsRoutes.get('/plex', (_req, res) => {
 });
 
 settingsRoutes.post('/plex', async (req, res, next) => {
-  const userRepository = getRepository(User);
+  const userRepository = dataSource.getRepository(User);
   const settings = getSettings();
   try {
     const admin = await userRepository.findOneOrFail({
       select: ['id', 'plexToken'],
-      order: { id: 'ASC' },
+      where: { id: 1 },
     });
 
     Object.assign(settings.plex, req.body);
@@ -126,11 +126,11 @@ settingsRoutes.post('/plex', async (req, res, next) => {
 });
 
 settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
-  const userRepository = getRepository(User);
+  const userRepository = dataSource.getRepository(User);
   try {
     const admin = await userRepository.findOneOrFail({
       select: ['id', 'plexToken'],
-      order: { id: 'ASC' },
+      where: { id: 1 },
     });
     const plexTvClient = admin.plexToken
       ? new PlexTvAPI(admin.plexToken)
@@ -206,10 +206,10 @@ settingsRoutes.get('/plex/library', async (req, res) => {
   const settings = getSettings();
 
   if (req.query.sync) {
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
     const admin = await userRepository.findOneOrFail({
       select: ['id', 'plexToken'],
-      order: { id: 'ASC' },
+      where: { id: 1 },
     });
     const plexapi = new PlexAPI({ plexToken: admin.plexToken });
 
@@ -279,13 +279,13 @@ settingsRoutes.get(
   '/plex/users',
   isAuthenticated(Permission.MANAGE_USERS),
   async (req, res, next) => {
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
     const qb = userRepository.createQueryBuilder('user');
 
     try {
       const admin = await userRepository.findOneOrFail({
         select: ['id', 'plexToken'],
-        order: { id: 'ASC' },
+        where: { id: 1 },
       });
       const plexApi = new PlexTvAPI(admin.plexToken ?? '');
       const plexUsers = (await plexApi.getUsers()).MediaContainer.User.map(
@@ -556,8 +556,8 @@ settingsRoutes.post(
 );
 
 settingsRoutes.get('/about', async (req, res) => {
-  const mediaRepository = getRepository(Media);
-  const mediaRequestRepository = getRepository(MediaRequest);
+  const mediaRepository = dataSource.getRepository(Media);
+  const mediaRequestRepository = dataSource.getRepository(MediaRequest);
 
   const totalMediaItems = await mediaRepository.count();
   const totalRequests = await mediaRequestRepository.count();

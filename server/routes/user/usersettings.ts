@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
 import { canMakePermissionsChange } from '.';
+import dataSource from '../../datasource';
 import { User } from '../../entity/User';
 import { UserSettings } from '../../entity/UserSettings';
 import type {
@@ -38,7 +38,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
     const {
       main: { defaultQuotas },
     } = getSettings();
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
 
     try {
       const user = await userRepository.findOne({
@@ -75,7 +75,7 @@ userSettingsRoutes.post<
   UserSettingsGeneralResponse,
   UserSettingsGeneralResponse
 >('/main', isOwnProfileOrAdmin(), async (req, res, next) => {
-  const userRepository = getRepository(User);
+  const userRepository = dataSource.getRepository(User);
 
   try {
     const user = await userRepository.findOne({
@@ -140,7 +140,7 @@ userSettingsRoutes.get<{ id: string }, { hasPassword: boolean }>(
   '/password',
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
 
     try {
       const user = await userRepository.findOne({
@@ -164,7 +164,7 @@ userSettingsRoutes.post<
   null,
   { currentPassword?: string; newPassword: string }
 >('/password', isOwnProfileOrAdmin(), async (req, res, next) => {
-  const userRepository = getRepository(User);
+  const userRepository = dataSource.getRepository(User);
 
   try {
     const user = await userRepository.findOne({
@@ -241,7 +241,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
   '/notifications',
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
     const settings = getSettings()?.notifications.agents;
 
     try {
@@ -283,7 +283,7 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
   '/notifications',
   isOwnProfileOrAdmin(),
   async (req, res, next) => {
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
 
     try {
       const user = await userRepository.findOne({
@@ -352,7 +352,7 @@ userSettingsRoutes.get<{ id: string }, { permissions?: number }>(
   '/permissions',
   isAuthenticated(Permission.MANAGE_USERS),
   async (req, res, next) => {
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
 
     try {
       const user = await userRepository.findOne({
@@ -378,7 +378,7 @@ userSettingsRoutes.post<
   '/permissions',
   isAuthenticated(Permission.MANAGE_USERS),
   async (req, res, next) => {
-    const userRepository = getRepository(User);
+    const userRepository = dataSource.getRepository(User);
 
     try {
       const user = await userRepository.findOne({

@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
   In,
   Index,
   OneToMany,
@@ -15,6 +14,7 @@ import SonarrAPI from '../api/servarr/sonarr';
 import { MediaStatus, MediaType } from '../constants/media';
 import type { DownloadingItem } from '../lib/downloadtracker';
 import downloadTracker from '../lib/downloadtracker';
+import dataSource from '../datasource';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
 import Issue from './Issue';
@@ -26,7 +26,7 @@ class Media {
   public static async getRelatedMedia(
     tmdbIds: number | number[]
   ): Promise<Media[]> {
-    const mediaRepository = getRepository(Media);
+    const mediaRepository = dataSource.getRepository(Media);
 
     try {
       let finalIds: number[];
@@ -37,7 +37,7 @@ class Media {
       }
 
       const media = await mediaRepository.find({
-        tmdbId: In(finalIds),
+        where: { tmdbId: In(finalIds) },
       });
 
       return media;
@@ -51,7 +51,7 @@ class Media {
     id: number,
     mediaType: MediaType
   ): Promise<Media | undefined> {
-    const mediaRepository = getRepository(Media);
+    const mediaRepository = dataSource.getRepository(Media);
 
     try {
       const media = await mediaRepository.findOne({
@@ -59,7 +59,7 @@ class Media {
         relations: ['requests', 'issues'],
       });
 
-      return media;
+      return media ?? undefined;
     } catch (e) {
       logger.error(e.message);
       return undefined;

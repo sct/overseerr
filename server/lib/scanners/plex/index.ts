@@ -1,9 +1,9 @@
 import { uniqWith } from 'lodash';
-import { getRepository } from 'typeorm';
 import animeList from '../../../api/animelist';
 import type { PlexLibraryItem, PlexMetadata } from '../../../api/plexapi';
 import PlexAPI from '../../../api/plexapi';
 import type { TmdbTvDetails } from '../../../api/themoviedb/interfaces';
+import dataSource from '../../../datasource';
 import { User } from '../../../entity/User';
 import cacheManager from '../../cache';
 import type { Library } from '../../settings';
@@ -60,10 +60,10 @@ class PlexScanner
     const settings = getSettings();
     const sessionId = this.startRun();
     try {
-      const userRepository = getRepository(User);
+      const userRepository = dataSource.getRepository(User);
       const admin = await userRepository.findOne({
         select: ['id', 'plexToken'],
-        order: { id: 'ASC' },
+        where: { id: 1 },
       });
 
       if (!admin) {
@@ -144,7 +144,9 @@ class PlexScanner
         'info'
       );
     } catch (e) {
-      this.log('Scan interrupted', 'error', { errorMessage: e.message });
+      this.log('Scan interrupted', 'error', {
+        errorMessage: e.message,
+      });
     } finally {
       this.endRun(sessionId);
     }
