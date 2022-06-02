@@ -233,7 +233,7 @@ requestRoutes.post('/', async (req, res, next) => {
 
     let media = await mediaRepository.findOne({
       where: { tmdbId: req.body.mediaId, mediaType: req.body.mediaType },
-      relations: ['requests'],
+      relations: { requests: true },
     });
 
     if (!media) {
@@ -529,7 +529,7 @@ requestRoutes.get('/:requestId', async (req, res, next) => {
   try {
     const request = await requestRepository.findOneOrFail({
       where: { id: Number(req.params.requestId) },
-      relations: ['requestedBy', 'modifiedBy'],
+      relations: { requestedBy: true, modifiedBy: true },
     });
 
     if (
@@ -631,7 +631,7 @@ requestRoutes.put<{ requestId: string }>(
         // Get existing media so we can work with all the requests
         const media = await mediaRepository.findOneOrFail({
           where: { tmdbId: request.media.tmdbId, mediaType: MediaType.TV },
-          relations: ['requests'],
+          relations: { requests: true },
         });
 
         // Get all requested seasons that are not part of this request we are editing
@@ -701,7 +701,7 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
   try {
     const request = await requestRepository.findOneOrFail({
       where: { id: Number(req.params.requestId) },
-      relations: ['requestedBy', 'modifiedBy'],
+      relations: { requestedBy: true, modifiedBy: true },
     });
 
     if (
@@ -738,7 +738,7 @@ requestRoutes.post<{
     try {
       const request = await requestRepository.findOneOrFail({
         where: { id: Number(req.params.requestId) },
-        relations: ['requestedBy', 'modifiedBy'],
+        relations: { requestedBy: true, modifiedBy: true },
       });
 
       await request.updateParentStatus();
@@ -766,7 +766,7 @@ requestRoutes.post<{
     try {
       const request = await requestRepository.findOneOrFail({
         where: { id: Number(req.params.requestId) },
-        relations: ['requestedBy', 'modifiedBy'],
+        relations: { requestedBy: true, modifiedBy: true },
       });
 
       let newStatus: MediaRequestStatus;

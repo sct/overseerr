@@ -206,7 +206,7 @@ export class MediaRequest {
     const mediaRepository = dataSource.getRepository(Media);
     const media = await mediaRepository.findOne({
       where: { id: this.media.id },
-      relations: ['requests'],
+      relations: { requests: true },
     });
     if (!media) {
       logger.error('Media data not found', {
@@ -271,7 +271,7 @@ export class MediaRequest {
     const mediaRepository = dataSource.getRepository(Media);
     const fullMedia = await mediaRepository.findOneOrFail({
       where: { id: this.media.id },
-      relations: ['requests'],
+      relations: { requests: true },
     });
 
     if (
@@ -542,7 +542,7 @@ export class MediaRequest {
 
         const media = await mediaRepository.findOne({
           where: { id: this.media.id },
-          relations: ['requests'],
+          relations: { requests: true },
         });
 
         if (!media) {
@@ -669,7 +669,7 @@ export class MediaRequest {
             // We grab media again here to make sure we have the latest version of it
             const media = await mediaRepository.findOne({
               where: { id: this.media.id },
-              relations: ['requests'],
+              relations: { requests: true },
             });
 
             if (!media) {

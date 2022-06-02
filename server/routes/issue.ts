@@ -366,7 +366,7 @@ issueRoutes.delete(
     try {
       const issue = await issueRepository.findOneOrFail({
         where: { id: Number(req.params.issueId) },
-        relations: ['createdBy'],
+        relations: { createdBy: true },
       });
 
       if (

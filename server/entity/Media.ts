@@ -56,7 +56,7 @@ class Media {
     try {
       const media = await mediaRepository.findOne({
         where: { tmdbId: id, mediaType },
-        relations: ['requests', 'issues'],
+        relations: { requests: true, issues: true },
       });
 
       return media ?? undefined;

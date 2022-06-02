@@ -63,7 +63,7 @@ app
     ) {
       const userRepository = dataSource.getRepository(User);
       const admin = await userRepository.findOne({
-        select: ['id', 'plexToken'],
+        select: { id: true, plexToken: true },
         where: { id: 1 },
       });
 

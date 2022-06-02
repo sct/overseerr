@@ -64,7 +64,7 @@ authRoutes.post('/plex', async (req, res, next) => {
       await userRepository.save(user);
     } else {
       const mainUser = await userRepository.findOneOrFail({
-        select: ['id', 'plexToken', 'plexId'],
+        select: { id: true, plexToken: true, plexId: true },
         where: { id: 1 },
       });
       const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
@@ -204,7 +204,7 @@ authRoutes.post('/local', async (req, res, next) => {
     }
 
     const mainUser = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken', 'plexId'],
+      select: { id: true, plexToken: true, plexId: true },
       where: { id: 1 },
     });
     const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');

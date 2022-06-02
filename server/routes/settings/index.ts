@@ -93,7 +93,7 @@ settingsRoutes.post('/plex', async (req, res, next) => {
   const settings = getSettings();
   try {
     const admin = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken'],
+      select: { id: true, plexToken: true },
       where: { id: 1 },
     });
 
@@ -129,7 +129,7 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
   const userRepository = dataSource.getRepository(User);
   try {
     const admin = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken'],
+      select: { id: true, plexToken: true },
       where: { id: 1 },
     });
     const plexTvClient = admin.plexToken
@@ -208,7 +208,7 @@ settingsRoutes.get('/plex/library', async (req, res) => {
   if (req.query.sync) {
     const userRepository = dataSource.getRepository(User);
     const admin = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken'],
+      select: { id: true, plexToken: true },
       where: { id: 1 },
     });
     const plexapi = new PlexAPI({ plexToken: admin.plexToken });
@@ -284,7 +284,7 @@ settingsRoutes.get(
 
     try {
       const admin = await userRepository.findOneOrFail({
-        select: ['id', 'plexToken'],
+        select: { id: true, plexToken: true },
         where: { id: 1 },
       });
       const plexApi = new PlexTvAPI(admin.plexToken ?? '');

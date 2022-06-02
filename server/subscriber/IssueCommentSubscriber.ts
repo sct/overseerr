@@ -31,7 +31,7 @@ export class IssueCommentSubscriber
       const issue = (
         await dataSource.getRepository(IssueComment).findOneOrFail({
           where: { id: entity.id },
-          relations: ['issue'],
+          relations: { issue: true },
         })
       ).issue;
 

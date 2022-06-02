@@ -352,7 +352,7 @@ router.delete<{ id: string }>(
 
       const user = await userRepository.findOne({
         where: { id: Number(req.params.id) },
-        relations: ['requests'],
+        relations: { requests: true },
       });
 
       if (!user) {
@@ -411,7 +411,7 @@ router.post(
 
       // taken from auth.ts
       const mainUser = await userRepository.findOneOrFail({
-        select: ['id', 'plexToken'],
+        select: { id: true, plexToken: true },
         where: { id: 1 },
       });
       const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
