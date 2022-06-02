@@ -526,7 +526,7 @@ router.get<{ id: string }, UserWatchDataResponse>(
     try {
       const user = await dataSource.getRepository(User).findOneOrFail({
         where: { id: Number(req.params.id) },
-        select: ['id', 'plexId'],
+        select: { id: true, plexId: true },
       });
 
       const tautulli = new TautulliAPI(settings);
