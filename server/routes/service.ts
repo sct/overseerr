@@ -194,7 +194,9 @@ serviceRoutes.get<{ tmdbId: string }>(
         language: req.locale ?? (req.query.language as string),
       });
 
-      const response = await sonarr.getSeriesByTitle(tv.name);
+      const response = await sonarr.getSeriesByTitle(
+        tv.original_language === 'en' ? tv.original_name : tv.name
+      );
 
       return res.status(200).json(response);
     } catch (e) {
