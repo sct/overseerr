@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
 import {
   MediaRequestStatus,
@@ -131,6 +131,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
       } else {
         await axios.delete(`/api/v1/request/${editRequest.id}`);
       }
+      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
 
       addToast(
         <span>
@@ -209,6 +210,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
             ),
         ...overrideParams,
       });
+      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
 
       if (response.data) {
         if (onComplete) {

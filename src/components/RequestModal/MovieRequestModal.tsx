@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { MediaStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
@@ -95,6 +95,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
         is4k,
         ...overrideParams,
       });
+      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
 
       if (response.data) {
         if (onComplete) {
@@ -140,6 +141,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       const response = await axios.delete<MediaRequest>(
         `/api/v1/request/${editRequest?.id}`
       );
+      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
 
       if (response.status === 204) {
         if (onComplete) {
@@ -178,6 +180,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
       if (alsoApproveRequest) {
         await axios.post(`/api/v1/request/${editRequest?.id}/approve`);
       }
+      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
 
       addToast(
         <span>
