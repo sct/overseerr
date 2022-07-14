@@ -46,7 +46,7 @@ const UserNotificationsDiscord: React.FC = () => {
           .required(intl.formatMessage(messages.validationDiscordId)),
         otherwise: Yup.string().nullable(),
       })
-      .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
+      .matches(/^\d{17,18,19}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
   if (!data && !error) {
