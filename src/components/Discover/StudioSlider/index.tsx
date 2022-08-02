@@ -27,12 +27,6 @@ const studios: Studio[] = [
     url: '/discover/movies/studio/127928',
   },
   {
-    name: '20th Century Fox',
-    image:
-      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/qZCc1lty5FzX30aOCVRBLzaVmcp.png',
-    url: '/discover/movies/studio/25',
-  },
-  {
     name: 'Sony Pictures',
     image:
       'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/GagSvqWlyPdkFHMfQ3pNq6ix9P.png',
