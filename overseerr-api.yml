@@ -3170,8 +3170,8 @@ paths:
           name: guid
           required: true
           schema:
-            type: number
-            example: 1
+            type: string
+            example: '9afef5a7-ec89-4d5f-9397-261e96970b50'
       responses:
         '200':
           description: OK
@@ -5562,6 +5562,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Issue'
+
+  /issue/count:
+    get:
+      summary: Gets issue counts
+      description: |
+        Returns the number of open and closed issues, as well as the number of issues of each type.
+      tags:
+        - issue
+      responses:
+        '200':
+          description: Issue counts returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  video:
+                    type: number
+                  audio:
+                    type: number
+                  subtitles:
+                    type: number
+                  others:
+                    type: number
+                  open:
+                    type: number
+                  closed:
+                    type: number
   /issue/{issueId}:
     get:
       summary: Get issue
