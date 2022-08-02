@@ -106,6 +106,30 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
     setShowManager(router.query.manage == '1' ? true : false);
   }, [router.query.manage]);
 
+  const [plexUrl, setPlexUrl] = useState(data?.mediaInfo?.plexUrl);
+  const [plexUrl4k, setPlexUrl4k] = useState(data?.mediaInfo?.plexUrl4k);
+
+  useEffect(() => {
+    if (data) {
+      if (
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+      ) {
+        setPlexUrl(data.mediaInfo?.iOSPlexUrl);
+        setPlexUrl4k(data.mediaInfo?.iOSPlexUrl4k);
+      } else {
+        setPlexUrl(data.mediaInfo?.plexUrl);
+        setPlexUrl4k(data.mediaInfo?.plexUrl4k);
+      }
+    }
+  }, [
+    data,
+    data?.mediaInfo?.iOSPlexUrl,
+    data?.mediaInfo?.iOSPlexUrl4k,
+    data?.mediaInfo?.plexUrl,
+    data?.mediaInfo?.plexUrl4k,
+  ]);
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -116,29 +140,24 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
 
   const mediaLinks: PlayButtonLink[] = [];
 
-  if (
-    data.mediaInfo?.plexUrl &&
-    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
-      type: 'or',
-    })
-  ) {
+  if (plexUrl) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
-      url: data.mediaInfo?.plexUrl,
+      url: plexUrl,
       svg: <PlayIcon />,
     });
   }
 
   if (
     settings.currentSettings.series4kEnabled &&
-    data.mediaInfo?.plexUrl4k &&
+    plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
       type: 'or',
     })
   ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.play4konplex),
-      url: data.mediaInfo?.plexUrl4k,
+      url: plexUrl4k,
       svg: <PlayIcon />,
     });
   }
