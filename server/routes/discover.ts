@@ -1,10 +1,15 @@
 import { Router } from 'express';
 import { sortBy } from 'lodash';
+import { getRepository } from 'typeorm';
+import PlexTvAPI from '../api/plextv';
 import TheMovieDb from '../api/themoviedb';
 import { MediaType } from '../constants/media';
 import Media from '../entity/Media';
-import type { User } from '../entity/User';
-import type { GenreSliderItem } from '../interfaces/api/discoverInterfaces';
+import { User } from '../entity/User';
+import type {
+  GenreSliderItem,
+  WatchlistItem,
+} from '../interfaces/api/discoverInterfaces';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
 import { mapProductionCompany } from '../models/Movie';
@@ -701,6 +706,31 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
         message: 'Unable to retrieve series genre slider.',
       });
     }
+  }
+);
+
+discoverRoutes.get<never, WatchlistItem[]>(
+  '/watchlist',
+  async (req, res, next) => {
+    const userRepository = getRepository(User);
+
+    const activeUser = await userRepository.findOne({
+      where: { id: req.user?.id },
+      select: ['id', 'plexToken'],
+    });
+
+    if (!activeUser?.plexToken) {
+      return next({
+        status: 500,
+        message: 'Must be a Plex account to use watchlist feature.',
+      });
+    }
+
+    const plexTV = new PlexTvAPI(activeUser?.plexToken);
+
+    const watchlist = await plexTV.getWatchlist();
+
+    return res.json(watchlist);
   }
 );
 

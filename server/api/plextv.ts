@@ -1,9 +1,9 @@
-import type { AxiosInstance } from 'axios';
-import axios from 'axios';
 import xml2js from 'xml2js';
 import type { PlexDevice } from '../interfaces/api/plexInterfaces';
+import cacheManager from '../lib/cache';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
+import ExternalAPI from './externalapi';
 
 interface PlexAccountResponse {
   user: PlexUser;
@@ -112,20 +112,52 @@ interface UsersResponse {
   };
 }
 
-class PlexTvAPI {
+interface WatchlistResponse {
+  MediaContainer: {
+    Metadata: {
+      ratingKey: string;
+    }[];
+  };
+}
+
+interface MetadataResponse {
+  MediaContainer: {
+    Metadata: {
+      ratingKey: string;
+      type: 'movie' | 'tv';
+      title: string;
+      Guid: {
+        id: `imdb://tt${number}` | `tmdb://${number}` | `tvdb://${number}`;
+      }[];
+    }[];
+  };
+}
+
+export interface PlexWatchlistItem {
+  ratingKey: string;
+  tmdbId: number;
+  type: 'movie' | 'tv';
+  title: string;
+}
+
+class PlexTvAPI extends ExternalAPI {
   private authToken: string;
-  private axios: AxiosInstance;
 
   constructor(authToken: string) {
+    super(
+      'https://plex.tv',
+      {},
+      {
+        headers: {
+          'X-Plex-Token': authToken,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        nodeCache: cacheManager.getCache('plextv').data,
+      }
+    );
+
     this.authToken = authToken;
-    this.axios = axios.create({
-      baseURL: 'https://plex.tv',
-      headers: {
-        'X-Plex-Token': this.authToken,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
   }
 
   public async getDevices(): Promise<PlexDevice[]> {
@@ -252,6 +284,53 @@ class PlexTvAPI {
       response.data
     )) as UsersResponse;
     return parsedXml;
+  }
+
+  public async getWatchlist(): Promise<PlexWatchlistItem[]> {
+    try {
+      const response = await this.axios.get<WatchlistResponse>(
+        '/library/sections/watchlist/all',
+        {
+          baseURL: 'https://metadata.provider.plex.tv',
+        }
+      );
+
+      const watchlistDetails = await Promise.all(
+        response.data.MediaContainer.Metadata.map(async (watchlistItem) => {
+          const detailedResponse = await this.getRolling<MetadataResponse>(
+            `/library/metadata/${watchlistItem.ratingKey}`,
+            {
+              baseURL: 'https://metadata.provider.plex.tv',
+            }
+          );
+
+          const metadata = detailedResponse.MediaContainer.Metadata[0];
+
+          const tmdbString = metadata.Guid.find((guid) =>
+            guid.id.startsWith('tmdb')
+          );
+
+          return {
+            ratingKey: metadata.ratingKey,
+            // This should always be set? But I guess it also cannot be?
+            // We will filter out the 0's afterwards
+            tmdbId: tmdbString ? Number(tmdbString.id.split('//')[1]) : 0,
+            title: metadata.title,
+            type: metadata.type,
+          };
+        })
+      );
+
+      const filteredList = watchlistDetails.filter((detail) => detail.tmdbId);
+
+      return filteredList;
+    } catch (e) {
+      logger.error('Failed to retrieve watchlist items', {
+        label: 'Plex.TV Metadata API',
+        errorMessage: e.message,
+      });
+      return [];
+    }
   }
 }
 

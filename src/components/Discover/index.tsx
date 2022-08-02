@@ -2,6 +2,7 @@ import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
+import { WatchlistItem } from '../../../server/interfaces/api/discoverInterfaces';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
 import { Permission, useUser } from '../../hooks/useUser';
@@ -43,6 +44,12 @@ const Discover = () => {
         revalidateOnMount: true,
       }
     );
+
+  const { data: watchlistItems, error: watchlistError } = useSWR<
+    WatchlistItem[]
+  >('/api/v1/discover/watchlist', {
+    revalidateOnMount: true,
+  });
 
   return (
     <>
@@ -93,6 +100,31 @@ const Discover = () => {
         placeholder={<RequestCard.Placeholder />}
         emptyMessage={intl.formatMessage(messages.noRequests)}
       />
+      <div className="slider-header">
+        <div className="slider-title">
+          <span>Plex Watchlist</span>
+        </div>
+      </div>
+      {!(
+        !!watchlistItems &&
+        !watchlistError &&
+        watchlistItems.length === 0
+      ) && (
+        <Slider
+          sliderKey="watchlist"
+          isLoading={!watchlistItems && !watchlistError}
+          isEmpty={
+            !!watchlistItems && !watchlistError && watchlistItems.length === 0
+          }
+          items={watchlistItems?.map((item) => (
+            <TmdbTitleCard
+              key={`watchlist-slider-item-${item.ratingKey}`}
+              tmdbId={item.tmdbId}
+              type={item.type}
+            />
+          ))}
+        />
+      )}
       <MediaSlider
         sliderKey="trending"
         title={intl.formatMessage(messages.trending)}

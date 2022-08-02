@@ -3,3 +3,10 @@ export interface GenreSliderItem {
   name: string;
   backdrops: string[];
 }
+
+export interface WatchlistItem {
+  ratingKey: string;
+  tmdbId: number;
+  type: 'movie' | 'tv';
+  title: string;
+}
