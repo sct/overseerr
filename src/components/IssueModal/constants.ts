@@ -4,7 +4,7 @@ import { IssueType } from '../../../server/constants/issue';
 const messages = defineMessages({
   issueAudio: 'Audio',
   issueVideo: 'Video',
-  issueSubtitles: 'Subtitles',
+  issueSubtitles: 'Subtitle',
   issueOther: 'Other',
 });
 

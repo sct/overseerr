@@ -620,6 +620,60 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "schambers",
+      "name": "Sean Chambers",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31563?v=4",
+      "profile": "https://github.com/schambers",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "deniscerri",
+      "name": "deniscerri",
+      "avatar_url": "https://avatars.githubusercontent.com/u/64997243?v=4",
+      "profile": "https://github.com/deniscerri",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "tomgacz",
+      "name": "tomgacz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14138209?v=4",
+      "profile": "https://github.com/tomgacz",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "Andersborrits",
+      "name": "Andersborrits",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29452218?v=4",
+      "profile": "https://github.com/Andersborrits",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "Maxentr",
+      "name": "Maxent",
+      "avatar_url": "https://avatars.githubusercontent.com/u/67283154?v=4",
+      "profile": "http://maxentrouault.fr",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "sambartik",
+      "name": "Samuel Bartík",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63553146?v=4",
+      "profile": "https://github.com/sambartik",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",

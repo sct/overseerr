@@ -51,7 +51,11 @@ const RequestList: React.FC = () => {
   const pageIndex = page - 1;
   const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
-  const { data, error, revalidate } = useSWR<RequestResultsResponse>(
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<RequestResultsResponse>(
     `/api/v1/request?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&filter=${currentFilter}&sort=${currentSort}${
@@ -108,7 +112,7 @@ const RequestList: React.FC = () => {
           router.query.userId ? user?.displayName : '',
         ]}
       />
-      <div className="flex flex-col justify-between mb-4 lg:items-end lg:flex-row">
+      <div className="mb-4 flex flex-col justify-between lg:flex-row lg:items-end">
         <Header
           subtext={
             router.query.userId ? (
@@ -122,10 +126,10 @@ const RequestList: React.FC = () => {
         >
           {intl.formatMessage(messages.requests)}
         </Header>
-        <div className="flex flex-col flex-grow mt-2 sm:flex-row lg:flex-grow-0">
-          <div className="flex flex-grow mb-2 sm:mb-0 sm:mr-2 lg:flex-grow-0">
-            <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
-              <FilterIcon className="w-6 h-6" />
+        <div className="mt-2 flex flex-grow flex-col sm:flex-row lg:flex-grow-0">
+          <div className="mb-2 flex flex-grow sm:mb-0 sm:mr-2 lg:flex-grow-0">
+            <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-sm text-gray-100">
+              <FilterIcon className="h-6 w-6" />
             </span>
             <select
               id="filter"
@@ -162,9 +166,9 @@ const RequestList: React.FC = () => {
               </option>
             </select>
           </div>
-          <div className="flex flex-grow mb-2 sm:mb-0 lg:flex-grow-0">
-            <span className="inline-flex items-center px-3 text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default sm:text-sm rounded-l-md">
-              <SortDescendingIcon className="w-6 h-6" />
+          <div className="mb-2 flex flex-grow sm:mb-0 lg:flex-grow-0">
+            <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-gray-100 sm:text-sm">
+              <SortDescendingIcon className="h-6 w-6" />
             </span>
             <select
               id="sort"
@@ -203,7 +207,7 @@ const RequestList: React.FC = () => {
       })}
 
       {data.results.length === 0 && (
-        <div className="flex flex-col items-center justify-center w-full py-24 text-white">
+        <div className="flex w-full flex-col items-center justify-center py-24 text-white">
           <span className="text-2xl text-gray-400">
             {intl.formatMessage(globalMessages.noresults)}
           </span>
@@ -221,7 +225,7 @@ const RequestList: React.FC = () => {
       )}
       <div className="actions">
         <nav
-          className="flex flex-col items-center mb-3 space-y-3 sm:space-y-0 sm:flex-row"
+          className="mb-3 flex flex-col items-center space-y-3 sm:flex-row sm:space-y-0"
           aria-label="Pagination"
         >
           <div className="hidden lg:flex lg:flex-1">
@@ -241,7 +245,7 @@ const RequestList: React.FC = () => {
             </p>
           </div>
           <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
-            <span className="items-center -mt-3 text-sm truncate sm:mt-0">
+            <span className="-mt-3 items-center truncate text-sm sm:mt-0">
               {intl.formatMessage(globalMessages.resultsperpage, {
                 pageSize: (
                   <select
@@ -259,7 +263,7 @@ const RequestList: React.FC = () => {
                         .then(() => window.scrollTo(0, 0));
                     }}
                     value={currentPageSize}
-                    className="inline short"
+                    className="short inline"
                   >
                     <option value="5">5</option>
                     <option value="10">10</option>
@@ -271,7 +275,7 @@ const RequestList: React.FC = () => {
               })}
             </span>
           </div>
-          <div className="flex justify-center flex-auto space-x-2 sm:justify-end sm:flex-1">
+          <div className="flex flex-auto justify-center space-x-2 sm:flex-1 sm:justify-end">
             <Button
               disabled={!hasPrevPage}
               onClick={() => updateQueryParams('page', (page - 1).toString())}

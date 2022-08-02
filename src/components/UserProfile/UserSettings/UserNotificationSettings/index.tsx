@@ -35,7 +35,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.email),
       content: (
         <span className="flex items-center">
-          <MailIcon className="h-4 mr-2" />
+          <MailIcon className="mr-2 h-4" />
           {intl.formatMessage(messages.email)}
         </span>
       ),
@@ -47,7 +47,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       text: intl.formatMessage(messages.webpush),
       content: (
         <span className="flex items-center">
-          <CloudIcon className="h-4 mr-2" />
+          <CloudIcon className="mr-2 h-4" />
           {intl.formatMessage(messages.webpush)}
         </span>
       ),
@@ -59,18 +59,19 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       text: 'Discord',
       content: (
         <span className="flex items-center">
-          <DiscordLogo className="h-4 mr-2" />
+          <DiscordLogo className="mr-2 h-4" />
           Discord
         </span>
       ),
       route: '/settings/notifications/discord',
       regex: /\/settings\/notifications\/discord/,
+      hidden: !data?.discordEnabled,
     },
     {
       text: 'Pushbullet',
       content: (
         <span className="flex items-center">
-          <PushbulletLogo className="h-4 mr-2" />
+          <PushbulletLogo className="mr-2 h-4" />
           Pushbullet
         </span>
       ),
@@ -81,7 +82,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       text: 'Pushover',
       content: (
         <span className="flex items-center">
-          <PushoverLogo className="h-4 mr-2" />
+          <PushoverLogo className="mr-2 h-4" />
           Pushover
         </span>
       ),
@@ -92,7 +93,7 @@ const UserNotificationSettings: React.FC = ({ children }) => {
       text: 'Telegram',
       content: (
         <span className="flex items-center">
-          <TelegramLogo className="h-4 mr-2" />
+          <TelegramLogo className="mr-2 h-4" />
           Telegram
         </span>
       ),

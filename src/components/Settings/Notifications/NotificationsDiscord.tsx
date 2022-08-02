@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
+import useSettings from '../../../hooks/useSettings';
 import globalMessages from '../../../i18n/globalMessages';
 import Button from '../../Common/Button';
 import LoadingSpinner from '../../Common/LoadingSpinner';
@@ -25,15 +26,19 @@ const messages = defineMessages({
   toastDiscordTestFailed: 'Discord test notification failed to send.',
   validationUrl: 'You must provide a valid URL',
   validationTypes: 'You must select at least one notification type',
+  enableMentions: 'Enable Mentions',
 });
 
 const NotificationsDiscord: React.FC = () => {
   const intl = useIntl();
+  const settings = useSettings();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
-  const { data, error, revalidate } = useSWR(
-    '/api/v1/settings/notifications/discord'
-  );
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR('/api/v1/settings/notifications/discord');
 
   const NotificationsDiscordSchema = Yup.object().shape({
     botAvatarUrl: Yup.string()
@@ -62,6 +67,7 @@ const NotificationsDiscord: React.FC = () => {
         botUsername: data?.options.botUsername,
         botAvatarUrl: data?.options.botAvatarUrl,
         webhookUrl: data.options.webhookUrl,
+        enableMentions: data?.options.enableMentions,
       }}
       validationSchema={NotificationsDiscordSchema}
       onSubmit={async (values) => {
@@ -73,6 +79,7 @@ const NotificationsDiscord: React.FC = () => {
               botUsername: values.botUsername,
               botAvatarUrl: values.botAvatarUrl,
               webhookUrl: values.webhookUrl,
+              enableMentions: values.enableMentions,
             },
           });
 
@@ -120,6 +127,7 @@ const NotificationsDiscord: React.FC = () => {
                 botUsername: values.botUsername,
                 botAvatarUrl: values.botAvatarUrl,
                 webhookUrl: values.webhookUrl,
+                enableMentions: values.enableMentions,
               },
             });
 
@@ -150,7 +158,7 @@ const NotificationsDiscord: React.FC = () => {
                 {intl.formatMessage(messages.agentenabled)}
                 <span className="label-required">*</span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
               </div>
             </div>
@@ -175,7 +183,7 @@ const NotificationsDiscord: React.FC = () => {
                   })}
                 </span>
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="webhookUrl"
@@ -193,9 +201,14 @@ const NotificationsDiscord: React.FC = () => {
               <label htmlFor="botUsername" className="text-label">
                 {intl.formatMessage(messages.botUsername)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
-                  <Field id="botUsername" name="botUsername" type="text" />
+                  <Field
+                    id="botUsername"
+                    name="botUsername"
+                    type="text"
+                    placeholder={settings.currentSettings.applicationTitle}
+                  />
                 </div>
                 {errors.botUsername && touched.botUsername && (
                   <div className="error">{errors.botUsername}</div>
@@ -206,7 +219,7 @@ const NotificationsDiscord: React.FC = () => {
               <label htmlFor="botAvatarUrl" className="text-label">
                 {intl.formatMessage(messages.botAvatarUrl)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     id="botAvatarUrl"
@@ -218,6 +231,18 @@ const NotificationsDiscord: React.FC = () => {
                 {errors.botAvatarUrl && touched.botAvatarUrl && (
                   <div className="error">{errors.botAvatarUrl}</div>
                 )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="enableMentions" className="checkbox-label">
+                {intl.formatMessage(messages.enableMentions)}
+              </label>
+              <div className="form-input-area">
+                <Field
+                  type="checkbox"
+                  id="enableMentions"
+                  name="enableMentions"
+                />
               </div>
             </div>
             <NotificationTypeSelector
@@ -238,7 +263,7 @@ const NotificationsDiscord: React.FC = () => {
             />
             <div className="actions">
               <div className="flex justify-end">
-                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
                   <Button
                     buttonType="warning"
                     disabled={isSubmitting || !isValid || isTesting}
@@ -255,7 +280,7 @@ const NotificationsDiscord: React.FC = () => {
                     </span>
                   </Button>
                 </span>
-                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"

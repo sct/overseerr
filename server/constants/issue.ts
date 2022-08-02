@@ -10,9 +10,9 @@ export enum IssueStatus {
   RESOLVED = 2,
 }
 
-export const IssueTypeNames = {
+export const IssueTypeName = {
   [IssueType.AUDIO]: 'Audio',
   [IssueType.VIDEO]: 'Video',
-  [IssueType.SUBTITLES]: 'Subtitles',
+  [IssueType.SUBTITLES]: 'Subtitle',
   [IssueType.OTHER]: 'Other',
 };

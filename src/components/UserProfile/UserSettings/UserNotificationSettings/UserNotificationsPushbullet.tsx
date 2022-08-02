@@ -29,7 +29,11 @@ const UserPushbulletSettings: React.FC = () => {
   const { addToast } = useToasts();
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.userId) });
-  const { data, error, revalidate } = useSWR<UserSettingsNotificationsResponse>(
+  const {
+    data,
+    error,
+    mutate: revalidate,
+  } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
   );
 
@@ -119,7 +123,7 @@ const UserPushbulletSettings: React.FC = () => {
                   </span>
                 )}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <SensitiveInput
                     as="field"
@@ -149,7 +153,7 @@ const UserPushbulletSettings: React.FC = () => {
             />
             <div className="actions">
               <div className="flex justify-end">
-                <span className="inline-flex ml-3 rounded-md shadow-sm">
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
                   <Button
                     buttonType="primary"
                     type="submit"

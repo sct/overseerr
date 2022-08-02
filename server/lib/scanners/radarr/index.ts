@@ -73,7 +73,7 @@ class RadarrScanner
   }
 
   private async processRadarrMovie(radarrMovie: RadarrMovie): Promise<void> {
-    if (!radarrMovie.monitored && !radarrMovie.downloaded) {
+    if (!radarrMovie.monitored && !radarrMovie.hasFile) {
       this.log(
         'Title is unmonitored and has not been downloaded. Skipping item.',
         'debug',
@@ -92,7 +92,7 @@ class RadarrScanner
         externalServiceId: radarrMovie.id,
         externalServiceSlug: radarrMovie.titleSlug,
         title: radarrMovie.title,
-        processing: !radarrMovie.downloaded,
+        processing: !radarrMovie.hasFile,
       });
     } catch (e) {
       this.log('Failed to process Radarr media', 'error', {

@@ -51,6 +51,12 @@ const networks: Network[] = [
     url: '/discover/tv/network/49',
   },
   {
+    name: 'Discovery+',
+    image:
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/1D1bS3Dyw4ScYnFWTlBOvJXC3nb.png',
+    url: '/discover/tv/network/4353',
+  },
+  {
     name: 'ABC',
     image:
       'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/ndAvF4JLsliGreX87jAc9GdjmJY.png',
@@ -103,6 +109,12 @@ const networks: Network[] = [
     image:
       'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/nm8d7P7MJNiBLdgIzUK0gkuEA4r.png',
     url: '/discover/tv/network/16',
+  },
+  {
+    name: 'Paramount+',
+    image:
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/fi83B1oztoS47xxcemFdPMhIzK.png',
+    url: '/discover/tv/network/4330',
   },
   {
     name: 'BBC One',

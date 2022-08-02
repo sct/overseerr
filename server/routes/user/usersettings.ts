@@ -51,6 +51,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
 
       return res.status(200).json({
         username: user.username,
+        discordId: user.settings?.discordId,
         locale: user.settings?.locale,
         region: user.settings?.region,
         originalLanguage: user.settings?.originalLanguage,
@@ -109,11 +110,13 @@ userSettingsRoutes.post<
     if (!user.settings) {
       user.settings = new UserSettings({
         user: req.user,
+        discordId: req.body.discordId,
         locale: req.body.locale,
         region: req.body.region,
         originalLanguage: req.body.originalLanguage,
       });
     } else {
+      user.settings.discordId = req.body.discordId;
       user.settings.locale = req.body.locale;
       user.settings.region = req.body.region;
       user.settings.originalLanguage = req.body.originalLanguage;
@@ -123,8 +126,9 @@ userSettingsRoutes.post<
 
     return res.status(200).json({
       username: user.username,
-      region: user.settings.region,
+      discordId: user.settings.discordId,
       locale: user.settings.locale,
+      region: user.settings.region,
       originalLanguage: user.settings.originalLanguage,
     });
   } catch (e) {
@@ -252,10 +256,12 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
       return res.status(200).json({
         emailEnabled: settings?.email.enabled,
         pgpKey: user.settings?.pgpKey,
-        discordEnabled: settings?.discord.enabled,
-        discordEnabledTypes: settings?.discord.enabled
-          ? settings?.discord.types
-          : 0,
+        discordEnabled:
+          settings?.discord.enabled && settings.discord.options.enableMentions,
+        discordEnabledTypes:
+          settings?.discord.enabled && settings.discord.options.enableMentions
+            ? settings.discord.types
+            : 0,
         discordId: user.settings?.discordId,
         pushbulletAccessToken: user.settings?.pushbulletAccessToken,
         pushoverApplicationToken: user.settings?.pushoverApplicationToken,

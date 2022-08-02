@@ -22,6 +22,7 @@ const defaultSettings = {
   enablePushRegistration: false,
   locale: 'en',
   emailEnabled: false,
+  newPlexLogin: true,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({
@@ -34,7 +35,7 @@ export const SettingsProvider: React.FC<SettingsContextProps> = ({
 }) => {
   const { data, error } = useSWR<PublicSettingsResponse>(
     '/api/v1/settings/public',
-    { initialData: currentSettings }
+    { fallbackData: currentSettings }
   );
 
   let newSettings = defaultSettings;

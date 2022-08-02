@@ -1,10 +1,13 @@
 import axios from 'axios';
 import { getRepository } from 'typeorm';
-import { hasNotificationType, Notification } from '..';
-import { MediaType } from '../../../constants/media';
+import {
+  hasNotificationType,
+  Notification,
+  shouldSendAdminNotification,
+} from '..';
+import { IssueStatus, IssueTypeName } from '../../../constants/issue';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
-import { Permission } from '../../permissions';
 import {
   getSettings,
   NotificationAgentKey,
@@ -16,6 +19,7 @@ interface PushbulletPayload {
   type: string;
   title: string;
   body: string;
+  channel_tag?: string;
 }
 
 class PushbulletAgent
@@ -40,94 +44,55 @@ class PushbulletAgent
     type: Notification,
     payload: NotificationPayload
   ): PushbulletPayload {
-    let messageTitle = '';
-    let message = '';
+    const title = payload.event
+      ? `${payload.event} - ${payload.subject}`
+      : payload.subject;
+    let body = payload.message ?? '';
 
-    const title = payload.subject;
-    const plot = payload.message;
-    const username = payload.request?.requestedBy.displayName;
+    if (payload.request) {
+      body += `\n\nRequested By: ${payload.request.requestedBy.displayName}`;
 
-    switch (type) {
-      case Notification.MEDIA_PENDING:
-        messageTitle = `New ${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request`;
-        message += `${title}`;
-        if (plot) {
-          message += `\n\n${plot}`;
-        }
-        message += `\n\nRequested By: ${username}`;
-        message += `\nStatus: Pending Approval`;
-        break;
-      case Notification.MEDIA_APPROVED:
-        messageTitle = `${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request Approved`;
-        message += `${title}`;
-        if (plot) {
-          message += `\n\n${plot}`;
-        }
-        message += `\n\nRequested By: ${username}`;
-        message += `\nStatus: Processing`;
-        break;
-      case Notification.MEDIA_AUTO_APPROVED:
-        messageTitle = `${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request Automatically Approved`;
-        message += `${title}`;
-        if (plot) {
-          message += `\n\n${plot}`;
-        }
-        message += `\n\nRequested By: ${username}`;
-        message += `\nStatus: Processing`;
-        break;
-      case Notification.MEDIA_AVAILABLE:
-        messageTitle = `${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Now Available`;
-        message += `${title}`;
-        if (plot) {
-          message += `\n\n${plot}`;
-        }
-        message += `\n\nRequested By: ${username}`;
-        message += `\nStatus: Available`;
-        break;
-      case Notification.MEDIA_DECLINED:
-        messageTitle = `${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request Declined`;
-        message += `${title}`;
-        if (plot) {
-          message += `\n\n${plot}`;
-        }
-        message += `\n\nRequested By: ${username}`;
-        message += `\nStatus: Declined`;
-        break;
-      case Notification.MEDIA_FAILED:
-        messageTitle = `Failed ${
-          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
-        } Request`;
-        message += `${title}`;
-        if (plot) {
-          message += `\n\n${plot}`;
-        }
-        message += `\n\nRequested By: ${username}`;
-        message += `\nStatus: Failed`;
-        break;
-      case Notification.TEST_NOTIFICATION:
-        messageTitle = 'Test Notification';
-        message += `${plot}`;
-        break;
+      let status = '';
+      switch (type) {
+        case Notification.MEDIA_PENDING:
+          status = 'Pending Approval';
+          break;
+        case Notification.MEDIA_APPROVED:
+        case Notification.MEDIA_AUTO_APPROVED:
+          status = 'Processing';
+          break;
+        case Notification.MEDIA_AVAILABLE:
+          status = 'Available';
+          break;
+        case Notification.MEDIA_DECLINED:
+          status = 'Declined';
+          break;
+        case Notification.MEDIA_FAILED:
+          status = 'Failed';
+          break;
+      }
+
+      if (status) {
+        body += `\nRequest Status: ${status}`;
+      }
+    } else if (payload.comment) {
+      body += `\n\nComment from ${payload.comment.user.displayName}:\n${payload.comment.message}`;
+    } else if (payload.issue) {
+      body += `\n\nReported By: ${payload.issue.createdBy.displayName}`;
+      body += `\nIssue Type: ${IssueTypeName[payload.issue.issueType]}`;
+      body += `\nIssue Status: ${
+        payload.issue.status === IssueStatus.OPEN ? 'Open' : 'Resolved'
+      }`;
     }
 
     for (const extra of payload.extra ?? []) {
-      message += `\n${extra.name}: ${extra.value}`;
+      body += `\n${extra.name}: ${extra.value}`;
     }
 
     return {
       type: 'note',
-      title: messageTitle,
-      body: message,
+      title,
+      body,
     };
   }
 
@@ -152,11 +117,15 @@ class PushbulletAgent
       });
 
       try {
-        await axios.post(endpoint, notificationPayload, {
-          headers: {
-            'Access-Token': settings.options.accessToken,
-          },
-        });
+        await axios.post(
+          endpoint,
+          { ...notificationPayload, channel_tag: settings.options.channelTag },
+          {
+            headers: {
+              'Access-Token': settings.options.accessToken,
+            },
+          }
+        );
       } catch (e) {
         logger.error('Error sending Pushbullet notification', {
           label: 'Notifications',
@@ -171,7 +140,6 @@ class PushbulletAgent
     }
 
     if (payload.notifyUser) {
-      // Send notification to the user who submitted the request
       if (
         payload.notifyUser.settings?.hasNotificationType(
           NotificationAgentKey.PUSHBULLET,
@@ -207,8 +175,9 @@ class PushbulletAgent
           return false;
         }
       }
-    } else {
-      // Send notifications to all users with the Manage Requests permission
+    }
+
+    if (payload.notifyAdmin) {
       const userRepository = getRepository(User);
       const users = await userRepository.find();
 
@@ -216,20 +185,17 @@ class PushbulletAgent
         users
           .filter(
             (user) =>
-              user.hasPermission(Permission.MANAGE_REQUESTS) &&
               user.settings?.hasNotificationType(
                 NotificationAgentKey.PUSHBULLET,
                 type
-              ) &&
-              // Check if it's the user's own auto-approved request
-              (type !== Notification.MEDIA_AUTO_APPROVED ||
-                user.id !== payload.request?.requestedBy.id)
+              ) && shouldSendAdminNotification(type, user, payload)
           )
           .map(async (user) => {
             if (
               user.settings?.pushbulletAccessToken &&
-              user.settings.pushbulletAccessToken !==
-                settings.options.accessToken
+              (settings.options.channelTag ||
+                user.settings.pushbulletAccessToken !==
+                  settings.options.accessToken)
             ) {
               logger.debug('Sending Pushbullet notification', {
                 label: 'Notifications',

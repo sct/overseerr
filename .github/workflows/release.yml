@@ -6,46 +6,29 @@ on:
       - master
 
 jobs:
-  test:
-    name: Lint & Test Build
-    runs-on: ubuntu-20.04
-    container: node:14.18-alpine
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.4
-      - name: Install dependencies
-        env:
-          HUSKY_SKIP_INSTALL: 1
-        run: yarn
-      - name: Lint
-        run: yarn lint
-      - name: Build
-        run: yarn build
-
   semantic-release:
     name: Tag and release latest version
-    needs: test
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
+        uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1.3.0
+        uses: docker/setup-buildx-action@v1
       - name: Log in to Docker Hub
-        uses: docker/login-action@v1.9.0
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v1.9.0
+        uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -72,7 +55,7 @@ jobs:
           - armhf
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Switch to master branch
@@ -89,7 +72,7 @@ jobs:
             echo ::set-output name=RELEASE::edge
           fi
       - name: Set Up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
+        uses: docker/setup-qemu-action@v1
         with:
           image: tonistiigi/binfmt@sha256:df15403e06a03c2f461c1f7938b171fda34a5849eb63a70e2a2109ed5a778bde
       - name: Build Snap Package
@@ -103,7 +86,7 @@ jobs:
           name: overseerr-snap-package-${{ matrix.architecture }}
           path: ${{ steps.build.outputs.snap }}
       - name: Review Snap Package
-        uses: diddlesnaps/snapcraft-review-tools-action@v1.3.0
+        uses: diddlesnaps/snapcraft-review-tools-action@v1
         with:
           snap: ${{ steps.build.outputs.snap }}
       - name: Publish Snap Package
@@ -120,7 +103,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status
-        uses: technote-space/workflow-conclusion-action@v2.1.6
+        uses: technote-space/workflow-conclusion-action@v2
       - name: Combine Job Status
         id: status
         run: |

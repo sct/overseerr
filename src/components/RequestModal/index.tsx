@@ -1,13 +1,14 @@
 import React from 'react';
-import MovieRequestModal from './MovieRequestModal';
 import type { MediaStatus } from '../../../server/constants/media';
-import TvRequestModal from './TvRequestModal';
-import Transition from '../Transition';
 import { MediaRequest } from '../../../server/entity/MediaRequest';
+import Transition from '../Transition';
+import CollectionRequestModal from './CollectionRequestModal';
+import MovieRequestModal from './MovieRequestModal';
+import TvRequestModal from './TvRequestModal';
 
 interface RequestModalProps {
   show: boolean;
-  type: 'movie' | 'tv';
+  type: 'movie' | 'tv' | 'collection';
   tmdbId: number;
   is4k?: boolean;
   editRequest?: MediaRequest;
@@ -26,29 +27,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
   onUpdating,
   onCancel,
 }) => {
-  if (type === 'tv') {
-    return (
-      <Transition
-        enter="transition opacity-0 duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition opacity-100 duration-300"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-        show={show}
-      >
-        <TvRequestModal
-          onComplete={onComplete}
-          onCancel={onCancel}
-          tmdbId={tmdbId}
-          onUpdating={onUpdating}
-          is4k={is4k}
-          editRequest={editRequest}
-        />
-      </Transition>
-    );
-  }
-
   return (
     <Transition
       enter="transition opacity-0 duration-300"
@@ -59,14 +37,33 @@ const RequestModal: React.FC<RequestModalProps> = ({
       leaveTo="opacity-0"
       show={show}
     >
-      <MovieRequestModal
-        onComplete={onComplete}
-        onCancel={onCancel}
-        tmdbId={tmdbId}
-        onUpdating={onUpdating}
-        is4k={is4k}
-        editRequest={editRequest}
-      />
+      {type === 'movie' ? (
+        <MovieRequestModal
+          onComplete={onComplete}
+          onCancel={onCancel}
+          tmdbId={tmdbId}
+          onUpdating={onUpdating}
+          is4k={is4k}
+          editRequest={editRequest}
+        />
+      ) : type === 'tv' ? (
+        <TvRequestModal
+          onComplete={onComplete}
+          onCancel={onCancel}
+          tmdbId={tmdbId}
+          onUpdating={onUpdating}
+          is4k={is4k}
+          editRequest={editRequest}
+        />
+      ) : (
+        <CollectionRequestModal
+          onComplete={onComplete}
+          onCancel={onCancel}
+          tmdbId={tmdbId}
+          onUpdating={onUpdating}
+          is4k={is4k}
+        />
+      )}
     </Transition>
   );
 };

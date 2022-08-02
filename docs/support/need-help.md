@@ -19,6 +19,11 @@ Please try to include as much information as possible. A vague statement like "i
 
 Try to answer the following questions:
 
+- What version of Overseerr are you running? (You can find this in Settings → About → Version.)
+- How did you install Overseerr? Are you using the official Docker or snap images, or images published by a third-party?
+- How are you accessing Overseerr?
+  - Are you accessing Overseerr through your reverse proxy or via a local IP address?
+  - What browser are you using? What browser extensions are enabled?
 - What were you trying to do, and how did you attempt it?
   - What command did you enter?
   - What did you click on?
