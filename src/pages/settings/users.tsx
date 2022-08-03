@@ -1,5 +1,5 @@
 import React from 'react';
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import SettingsLayout from '../../components/Settings/SettingsLayout';
 import SettingsUsers from '../../components/Settings/SettingsUsers';
 import { Permission } from '../../hooks/useUser';

@@ -1,4 +1,4 @@
-import { User } from '../../entity/User';
+import type { User } from '../../entity/User';
 import logger from '../../logger';
 import { Permission } from '../permissions';
 import type { NotificationAgent, NotificationPayload } from './agents/agent';

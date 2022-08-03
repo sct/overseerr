@@ -2,16 +2,12 @@ import { PlayIcon, StopIcon, TrashIcon } from '@heroicons/react/outline';
 import { PencilIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import React, { useState } from 'react';
-import {
-  defineMessages,
-  FormattedRelativeTime,
-  MessageDescriptor,
-  useIntl,
-} from 'react-intl';
+import type { MessageDescriptor } from 'react-intl';
+import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
-import { JobId } from '../../../../server/lib/settings';
+import type { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
+import type { JobId } from '../../../../server/lib/settings';
 import Spinner from '../../../assets/spinner.svg';
 import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';

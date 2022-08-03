@@ -1,6 +1,6 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
-import {
+import type {
   MovieResult,
   PersonResult,
   TvResult,

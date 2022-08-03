@@ -1,5 +1,5 @@
 import React from 'react';
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import DiscoverTv from '../../../components/Discover/DiscoverTv';
 
 const DiscoverTvPage: NextPage = () => {

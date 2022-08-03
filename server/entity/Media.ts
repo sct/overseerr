@@ -13,7 +13,8 @@ import {
 import RadarrAPI from '../api/servarr/radarr';
 import SonarrAPI from '../api/servarr/sonarr';
 import { MediaStatus, MediaType } from '../constants/media';
-import downloadTracker, { DownloadingItem } from '../lib/downloadtracker';
+import type { DownloadingItem } from '../lib/downloadtracker';
+import downloadTracker from '../lib/downloadtracker';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
 import Issue from './Issue';

@@ -1,11 +1,13 @@
-import React, { MouseEvent, ReactNode, useRef } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
+import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useIntl } from 'react-intl';
 import useClickOutside from '../../../hooks/useClickOutside';
 import { useLockBodyScroll } from '../../../hooks/useLockBodyScroll';
 import globalMessages from '../../../i18n/globalMessages';
 import Transition from '../../Transition';
-import Button, { ButtonType } from '../Button';
+import type { ButtonType } from '../Button';
+import Button from '../Button';
 import CachedImage from '../CachedImage';
 import LoadingSpinner from '../LoadingSpinner';
 

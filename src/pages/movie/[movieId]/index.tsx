@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import React from 'react';
 import type { MovieDetails as MovieDetailsType } from '../../../../server/models/Movie';
 import MovieDetails from '../../../components/MovieDetails';

@@ -1,5 +1,5 @@
 import TheMovieDb from '../api/themoviedb';
-import {
+import type {
   TmdbMovieDetails,
   TmdbMovieResult,
   TmdbPersonDetails,

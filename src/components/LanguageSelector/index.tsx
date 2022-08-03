@@ -1,9 +1,10 @@
 import { sortBy } from 'lodash';
 import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import Select, { CSSObjectWithLabel } from 'react-select';
+import type { CSSObjectWithLabel } from 'react-select';
+import Select from 'react-select';
 import useSWR from 'swr';
-import { Language } from '../../../server/lib/settings';
+import type { Language } from '../../../server/lib/settings';
 import globalMessages from '../../i18n/globalMessages';
 
 const messages = defineMessages({

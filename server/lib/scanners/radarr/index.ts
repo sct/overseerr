@@ -1,7 +1,10 @@
 import { uniqWith } from 'lodash';
-import RadarrAPI, { RadarrMovie } from '../../../api/servarr/radarr';
-import { getSettings, RadarrSettings } from '../../settings';
-import BaseScanner, { RunnableScanner, StatusBase } from '../baseScanner';
+import type { RadarrMovie } from '../../../api/servarr/radarr';
+import RadarrAPI from '../../../api/servarr/radarr';
+import type { RadarrSettings } from '../../settings';
+import { getSettings } from '../../settings';
+import type { RunnableScanner, StatusBase } from '../baseScanner';
+import BaseScanner from '../baseScanner';
 
 type SyncStatus = StatusBase & {
   currentServer: RadarrSettings;

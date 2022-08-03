@@ -1,4 +1,4 @@
-import { EmailOptions } from 'email-templates';
+import type { EmailOptions } from 'email-templates';
 import path from 'path';
 import { getRepository } from 'typeorm';
 import { Notification, shouldSendAdminNotification } from '..';
@@ -7,12 +7,10 @@ import { MediaType } from '../../../constants/media';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
 import PreparedEmail from '../../email';
-import {
-  getSettings,
-  NotificationAgentEmail,
-  NotificationAgentKey,
-} from '../../settings';
-import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import type { NotificationAgentEmail } from '../../settings';
+import { getSettings, NotificationAgentKey } from '../../settings';
+import type { NotificationAgent, NotificationPayload } from './agent';
+import { BaseAgent } from './agent';
 
 class EmailAgent
   extends BaseAgent<NotificationAgentEmail>

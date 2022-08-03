@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import type React from 'react';
+import { useEffect } from 'react';
 import useSettings from '../../hooks/useSettings';
 import { useUser } from '../../hooks/useUser';
 

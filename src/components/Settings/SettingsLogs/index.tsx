@@ -13,7 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import {
+import type {
   LogMessage,
   LogsResultsResponse,
 } from '../../../../server/interfaces/api/settingsInterfaces';

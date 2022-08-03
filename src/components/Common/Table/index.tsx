@@ -1,4 +1,5 @@
-import React, { AllHTMLAttributes } from 'react';
+import type { AllHTMLAttributes } from 'react';
+import React from 'react';
 import { withProperties } from '../../../utils/typeHelpers';
 
 const TBody: React.FC = ({ children }) => {

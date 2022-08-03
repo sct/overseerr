@@ -4,13 +4,13 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import {
+import type {
   QuotaResponse,
   UserRequestsResponse,
   UserWatchDataResponse,
 } from '../../../server/interfaces/api/userInterfaces';
-import { MovieDetails } from '../../../server/models/Movie';
-import { TvDetails } from '../../../server/models/Tv';
+import type { MovieDetails } from '../../../server/models/Movie';
+import type { TvDetails } from '../../../server/models/Tv';
 import { Permission, UserType, useUser } from '../../hooks/useUser';
 import Error from '../../pages/_error';
 import ImageFader from '../Common/ImageFader';

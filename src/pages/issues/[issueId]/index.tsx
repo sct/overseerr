@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import React from 'react';
 import IssueDetails from '../../../components/IssueDetails';
 import useRouteGuard from '../../../hooks/useRouteGuard';

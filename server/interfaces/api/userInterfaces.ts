@@ -1,7 +1,7 @@
-import Media from '../../entity/Media';
-import { MediaRequest } from '../../entity/MediaRequest';
+import type Media from '../../entity/Media';
+import type { MediaRequest } from '../../entity/MediaRequest';
 import type { User } from '../../entity/User';
-import { PaginatedResponse } from './common';
+import type { PaginatedResponse } from './common';
 
 export interface UserResultsResponse extends PaginatedResponse {
   results: User[];

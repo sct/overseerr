@@ -7,7 +7,7 @@ import type {
   TmdbTvResult,
 } from '../api/themoviedb/interfaces';
 import { MediaType as MainMediaType } from '../constants/media';
-import Media from '../entity/Media';
+import type Media from '../entity/Media';
 
 export type MediaType = 'tv' | 'movie' | 'person';
 

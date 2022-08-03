@@ -1,4 +1,4 @@
-import { PersonCreditCast, PersonCreditCrew } from '../../models/Person';
+import type { PersonCreditCast, PersonCreditCrew } from '../../models/Person';
 
 export interface PersonCombinedCreditsResponse {
   id: number;

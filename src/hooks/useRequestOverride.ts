@@ -1,6 +1,6 @@
 import useSWR from 'swr';
-import { MediaRequest } from '../../server/entity/MediaRequest';
-import {
+import type { MediaRequest } from '../../server/entity/MediaRequest';
+import type {
   ServiceCommonServer,
   ServiceCommonServerWithDetails,
 } from '../../server/interfaces/api/serviceInterfaces';

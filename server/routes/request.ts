@@ -6,7 +6,7 @@ import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import SeasonRequest from '../entity/SeasonRequest';
 import { User } from '../entity/User';
-import { RequestResultsResponse } from '../interfaces/api/requestInterfaces';
+import type { RequestResultsResponse } from '../interfaces/api/requestInterfaces';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
 import { isAuthenticated } from '../middleware/auth';

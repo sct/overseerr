@@ -5,7 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NotificationAgentTypes } from '../interfaces/api/userSettingsInterfaces';
+import type { NotificationAgentTypes } from '../interfaces/api/userSettingsInterfaces';
 import { hasNotificationType, Notification } from '../lib/notifications';
 import { NotificationAgentKey } from '../lib/settings';
 import { User } from './User';

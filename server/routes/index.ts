@@ -1,8 +1,11 @@
 import { Router } from 'express';
 import GithubAPI from '../api/github';
 import TheMovieDb from '../api/themoviedb';
-import { TmdbMovieResult, TmdbTvResult } from '../api/themoviedb/interfaces';
-import { StatusResponse } from '../interfaces/api/settingsInterfaces';
+import type {
+  TmdbMovieResult,
+  TmdbTvResult,
+} from '../api/themoviedb/interfaces';
+import type { StatusResponse } from '../interfaces/api/settingsInterfaces';
 import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';

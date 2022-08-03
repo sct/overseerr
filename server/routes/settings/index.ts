@@ -13,17 +13,19 @@ import TautulliAPI from '../../api/tautulli';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
-import { PlexConnection } from '../../interfaces/api/plexInterfaces';
-import {
+import type { PlexConnection } from '../../interfaces/api/plexInterfaces';
+import type {
   LogMessage,
   LogsResultsResponse,
   SettingsAboutResponse,
 } from '../../interfaces/api/settingsInterfaces';
 import { scheduledJobs } from '../../job/schedule';
-import cacheManager, { AvailableCacheIds } from '../../lib/cache';
+import type { AvailableCacheIds } from '../../lib/cache';
+import cacheManager from '../../lib/cache';
 import { Permission } from '../../lib/permissions';
 import { plexFullScanner } from '../../lib/scanners/plex';
-import { getSettings, MainSettings } from '../../lib/settings';
+import type { MainSettings } from '../../lib/settings';
+import { getSettings } from '../../lib/settings';
 import logger from '../../logger';
 import { isAuthenticated } from '../../middleware/auth';
 import { appDataPath } from '../../utils/appDataVolume';

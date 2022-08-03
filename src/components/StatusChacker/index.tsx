@@ -2,7 +2,7 @@ import { SparklesIcon } from '@heroicons/react/outline';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { StatusResponse } from '../../../server/interfaces/api/settingsInterfaces';
+import type { StatusResponse } from '../../../server/interfaces/api/settingsInterfaces';
 import Modal from '../Common/Modal';
 import Transition from '../Transition';
 

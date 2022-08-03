@@ -10,9 +10,9 @@ import {
   MediaRequestStatus,
   MediaStatus,
 } from '../../../server/constants/media';
-import { MediaWatchDataResponse } from '../../../server/interfaces/api/mediaInterfaces';
-import { MovieDetails } from '../../../server/models/Movie';
-import { TvDetails } from '../../../server/models/Tv';
+import type { MediaWatchDataResponse } from '../../../server/interfaces/api/mediaInterfaces';
+import type { MovieDetails } from '../../../server/models/Movie';
+import type { TvDetails } from '../../../server/models/Tv';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';

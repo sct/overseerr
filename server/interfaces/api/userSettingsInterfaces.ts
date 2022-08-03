@@ -1,4 +1,4 @@
-import { NotificationAgentKey } from '../../lib/settings';
+import type { NotificationAgentKey } from '../../lib/settings';
 
 export interface UserSettingsGeneralResponse {
   username?: string;

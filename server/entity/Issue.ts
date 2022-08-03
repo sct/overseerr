@@ -7,7 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IssueStatus, IssueType } from '../constants/issue';
+import type { IssueType } from '../constants/issue';
+import { IssueStatus } from '../constants/issue';
 import IssueComment from './IssueComment';
 import Media from './Media';
 import { User } from './User';

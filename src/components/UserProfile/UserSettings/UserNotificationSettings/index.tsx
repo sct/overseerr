@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import type { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import DiscordLogo from '../../../../assets/extlogos/discord.svg';
 import PushbulletLogo from '../../../../assets/extlogos/pushbullet.svg';
 import PushoverLogo from '../../../../assets/extlogos/pushover.svg';
@@ -13,7 +13,8 @@ import globalMessages from '../../../../i18n/globalMessages';
 import Error from '../../../../pages/_error';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
 import PageTitle from '../../../Common/PageTitle';
-import SettingsTabs, { SettingsRoute } from '../../../Common/SettingsTabs';
+import type { SettingsRoute } from '../../../Common/SettingsTabs';
+import SettingsTabs from '../../../Common/SettingsTabs';
 
 const messages = defineMessages({
   notifications: 'Notifications',

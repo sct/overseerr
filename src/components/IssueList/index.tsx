@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { IssueResultsResponse } from '../../../server/interfaces/api/issueInterfaces';
+import type { IssueResultsResponse } from '../../../server/interfaces/api/issueInterfaces';
 import Button from '../../components/Common/Button';
 import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
 import globalMessages from '../../i18n/globalMessages';

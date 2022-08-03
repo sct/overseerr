@@ -13,11 +13,10 @@ import {
   RelationCount,
   UpdateDateColumn,
 } from 'typeorm';
-import RadarrAPI, { RadarrMovieOptions } from '../api/servarr/radarr';
-import SonarrAPI, {
-  AddSeriesOptions,
-  SonarrSeries,
-} from '../api/servarr/sonarr';
+import type { RadarrMovieOptions } from '../api/servarr/radarr';
+import RadarrAPI from '../api/servarr/radarr';
+import type { AddSeriesOptions, SonarrSeries } from '../api/servarr/sonarr';
+import SonarrAPI from '../api/servarr/sonarr';
 import TheMovieDb from '../api/themoviedb';
 import { ANIME_KEYWORD_ID } from '../api/themoviedb/constants';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { MediaStatus } from '../../../server/constants/media';
-import { MediaRequest } from '../../../server/entity/MediaRequest';
+import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import Transition from '../Transition';
 import CollectionRequestModal from './CollectionRequestModal';
 import MovieRequestModal from './MovieRequestModal';
