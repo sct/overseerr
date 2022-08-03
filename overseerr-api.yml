@@ -3170,8 +3170,8 @@ paths:
           name: guid
           required: true
           schema:
-            type: number
-            example: 1
+            type: string
+            example: '9afef5a7-ec89-4d5f-9397-261e96970b50'
       responses:
         '200':
           description: OK
