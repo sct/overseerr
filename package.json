@@ -134,7 +134,7 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.3.5",
     "nodemon": "^2.0.15",
-    "postcss": "^8.4.8",
+    "postcss": "^8.4.14",
     "prettier": "^2.7.1",
     "prettier-plugin-organize-imports": "^3.0.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
