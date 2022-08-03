@@ -286,11 +286,18 @@ class PlexTvAPI extends ExternalAPI {
     return parsedXml;
   }
 
-  public async getWatchlist(): Promise<PlexWatchlistItem[]> {
+  public async getWatchlist({
+    offset = 0,
+    size = 20,
+  }: { offset?: number; size?: number } = {}): Promise<PlexWatchlistItem[]> {
     try {
       const response = await this.axios.get<WatchlistResponse>(
         '/library/sections/watchlist/all',
         {
+          params: {
+            'X-Plex-Container-Start': offset,
+            'X-Plex-Container-Size': size,
+          },
           baseURL: 'https://metadata.provider.plex.tv',
         }
       );

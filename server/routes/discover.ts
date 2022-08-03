@@ -709,29 +709,24 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   }
 );
 
-discoverRoutes.get<never, WatchlistItem[]>(
-  '/watchlist',
-  async (req, res, next) => {
-    const userRepository = getRepository(User);
+discoverRoutes.get<never, WatchlistItem[]>('/watchlist', async (req, res) => {
+  const userRepository = getRepository(User);
 
-    const activeUser = await userRepository.findOne({
-      where: { id: req.user?.id },
-      select: ['id', 'plexToken'],
-    });
+  const activeUser = await userRepository.findOne({
+    where: { id: req.user?.id },
+    select: ['id', 'plexToken'],
+  });
 
-    if (!activeUser?.plexToken) {
-      return next({
-        status: 500,
-        message: 'Must be a Plex account to use watchlist feature.',
-      });
-    }
-
-    const plexTV = new PlexTvAPI(activeUser?.plexToken);
-
-    const watchlist = await plexTV.getWatchlist();
-
-    return res.json(watchlist);
+  if (!activeUser?.plexToken) {
+    // We will just return an empty array if the user has no plex token
+    return res.json([]);
   }
-);
+
+  const plexTV = new PlexTvAPI(activeUser?.plexToken);
+
+  const watchlist = await plexTV.getWatchlist();
+
+  return res.json(watchlist);
+});
 
 export default discoverRoutes;
