@@ -1,4 +1,5 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * A hook to help with debouncing state

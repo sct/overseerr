@@ -7,7 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import type { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import { useUser } from '../../../../hooks/useUser';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
@@ -46,7 +46,7 @@ const UserNotificationsDiscord: React.FC = () => {
           .required(intl.formatMessage(messages.validationDiscordId)),
         otherwise: Yup.string().nullable(),
       })
-      .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
+      .matches(/^\d{17,19}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
   if (!data && !error) {

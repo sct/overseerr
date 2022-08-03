@@ -1,7 +1,7 @@
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { GenreSliderItem } from '../../../../server/interfaces/api/discoverInterfaces';
+import type { GenreSliderItem } from '../../../../server/interfaces/api/discoverInterfaces';
 import Error from '../../../pages/_error';
 import Header from '../../Common/Header';
 import LoadingSpinner from '../../Common/LoadingSpinner';

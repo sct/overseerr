@@ -1,5 +1,6 @@
 import React from 'react';
-import { hasNotificationType, NotificationItem } from '..';
+import type { NotificationItem } from '..';
+import { hasNotificationType } from '..';
 
 interface NotificationTypeProps {
   option: NotificationItem;

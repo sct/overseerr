@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import React from 'react';
 import NotificationsEmail from '../../../components/Settings/Notifications/NotificationsEmail';
 import SettingsLayout from '../../../components/Settings/SettingsLayout';

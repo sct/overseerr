@@ -1,4 +1,5 @@
-import { defineMessages, MessageDescriptor } from 'react-intl';
+import type { MessageDescriptor } from 'react-intl';
+import { defineMessages } from 'react-intl';
 import { IssueType } from '../../../server/constants/issue';
 
 const messages = defineMessages({

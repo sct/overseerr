@@ -8,12 +8,10 @@ import {
 import { IssueStatus, IssueTypeName } from '../../../constants/issue';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
-import {
-  getSettings,
-  NotificationAgentKey,
-  NotificationAgentTelegram,
-} from '../../settings';
-import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import type { NotificationAgentTelegram } from '../../settings';
+import { getSettings, NotificationAgentKey } from '../../settings';
+import type { NotificationAgent, NotificationPayload } from './agent';
+import { BaseAgent } from './agent';
 
 interface TelegramMessagePayload {
   text: string;

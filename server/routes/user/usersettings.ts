@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import { canMakePermissionsChange } from '.';
 import { User } from '../../entity/User';
 import { UserSettings } from '../../entity/UserSettings';
-import {
+import type {
   UserSettingsGeneralResponse,
   UserSettingsNotificationsResponse,
 } from '../../interfaces/api/userSettingsInterfaces';

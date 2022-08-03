@@ -8,17 +8,18 @@ import {
   MediaRequestStatus,
   MediaStatus,
 } from '../../../server/constants/media';
-import { MediaRequest } from '../../../server/entity/MediaRequest';
-import { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
+import type { MediaRequest } from '../../../server/entity/MediaRequest';
+import type { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
 import { Permission } from '../../../server/lib/permissions';
-import { Collection } from '../../../server/models/Collection';
+import type { Collection } from '../../../server/models/Collection';
 import { useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
 import Badge from '../Common/Badge';
 import CachedImage from '../Common/CachedImage';
 import Modal from '../Common/Modal';
-import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
+import type { RequestOverrides } from './AdvancedRequester';
+import AdvancedRequester from './AdvancedRequester';
 import QuotaDisplay from './QuotaDisplay';
 
 const messages = defineMessages({

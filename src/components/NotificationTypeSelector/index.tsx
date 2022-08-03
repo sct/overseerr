@@ -2,7 +2,8 @@ import { sortBy } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSettings from '../../hooks/useSettings';
-import { Permission, User, useUser } from '../../hooks/useUser';
+import type { User } from '../../hooks/useUser';
+import { Permission, useUser } from '../../hooks/useUser';
 import NotificationType from './NotificationType';
 
 const messages = defineMessages({

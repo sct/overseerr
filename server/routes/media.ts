@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { FindOneOptions, FindOperator, getRepository, In } from 'typeorm';
+import type { FindOneOptions, FindOperator } from 'typeorm';
+import { getRepository, In } from 'typeorm';
 import TautulliAPI from '../api/tautulli';
 import { MediaStatus, MediaType } from '../constants/media';
 import Media from '../entity/Media';
 import { User } from '../entity/User';
-import {
+import type {
   MediaResultsResponse,
   MediaWatchDataResponse,
 } from '../interfaces/api/mediaInterfaces';

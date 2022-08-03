@@ -1,7 +1,9 @@
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Permission, User } from '../../hooks/useUser';
-import PermissionOption, { PermissionItem } from '../PermissionOption';
+import type { User } from '../../hooks/useUser';
+import { Permission } from '../../hooks/useUser';
+import type { PermissionItem } from '../PermissionOption';
+import PermissionOption from '../PermissionOption';
 
 export const messages = defineMessages({
   admin: 'Admin',

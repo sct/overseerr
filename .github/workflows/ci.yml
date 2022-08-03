@@ -23,6 +23,8 @@ jobs:
         run: yarn
       - name: Lint
         run: yarn lint
+      - name: Formatting
+        run: yarn format:check
       - name: Build
         run: yarn build
 

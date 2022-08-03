@@ -7,11 +7,9 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import {
-  availableLanguages,
-  AvailableLocale,
-} from '../../../../context/LanguageContext';
+import type { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import type { AvailableLocale } from '../../../../context/LanguageContext';
+import { availableLanguages } from '../../../../context/LanguageContext';
 import useLocale from '../../../../hooks/useLocale';
 import useSettings from '../../../../hooks/useSettings';
 import { Permission, UserType, useUser } from '../../../../hooks/useUser';
@@ -80,7 +78,7 @@ const UserGeneralSettings: React.FC = () => {
   const UserGeneralSettingsSchema = Yup.object().shape({
     discordId: Yup.string()
       .nullable()
-      .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
+      .matches(/^\d{17,19}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
   useEffect(() => {

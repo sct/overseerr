@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { User } from '../../entity/User';
+import type { User } from '../../entity/User';
 import { Notification } from '../../lib/notifications';
-import { NotificationAgent } from '../../lib/notifications/agents/agent';
+import type { NotificationAgent } from '../../lib/notifications/agents/agent';
 import DiscordAgent from '../../lib/notifications/agents/discord';
 import EmailAgent from '../../lib/notifications/agents/email';
 import GotifyAgent from '../../lib/notifications/agents/gotify';

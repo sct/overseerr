@@ -1,5 +1,5 @@
 import React from 'react';
-import { ToastContainerProps } from 'react-toast-notifications';
+import type { ToastContainerProps } from 'react-toast-notifications';
 
 const ToastContainer: React.FC<ToastContainerProps> = ({
   hasToasts,

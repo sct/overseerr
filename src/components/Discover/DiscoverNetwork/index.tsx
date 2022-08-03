@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import globalMessages from '../../../i18n/globalMessages';
 import useDiscover from '../../../hooks/useDiscover';
 import Error from '../../../pages/_error';
-import { TvNetwork } from '../../../../server/models/common';
+import type { TvNetwork } from '../../../../server/models/common';
 
 const messages = defineMessages({
   networkSeries: '{network} Series',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import UpcomingMovies from '../../../components/Discover/Upcoming';
 
 const UpcomingMoviesPage: NextPage = () => {

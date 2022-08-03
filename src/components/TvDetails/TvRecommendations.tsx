@@ -4,7 +4,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { TvResult } from '../../../server/models/Search';
-import { TvDetails } from '../../../server/models/Tv';
+import type { TvDetails } from '../../../server/models/Tv';
 import useDiscover from '../../hooks/useDiscover';
 import Error from '../../pages/_error';
 import Header from '../Common/Header';

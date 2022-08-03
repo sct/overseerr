@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import RadarrAPI from '../../api/servarr/radarr';
-import { getSettings, RadarrSettings } from '../../lib/settings';
+import type { RadarrSettings } from '../../lib/settings';
+import { getSettings } from '../../lib/settings';
 import logger from '../../logger';
 
 const radarrRoutes = Router();

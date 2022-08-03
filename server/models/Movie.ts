@@ -3,19 +3,21 @@ import type {
   TmdbMovieReleaseResult,
   TmdbProductionCompany,
 } from '../api/themoviedb/interfaces';
-import Media from '../entity/Media';
-import {
+import type Media from '../entity/Media';
+import type {
   Cast,
   Crew,
   ExternalIds,
   Genre,
+  ProductionCompany,
+  WatchProviders,
+} from './common';
+import {
   mapCast,
   mapCrew,
   mapExternalIds,
   mapVideos,
   mapWatchProviders,
-  ProductionCompany,
-  WatchProviders,
 } from './common';
 
 export interface Video {

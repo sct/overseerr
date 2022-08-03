@@ -1,7 +1,8 @@
 import React from 'react';
 import { hasPermission } from '../../../server/lib/permissions';
 import useSettings from '../../hooks/useSettings';
-import { Permission, User } from '../../hooks/useUser';
+import type { User } from '../../hooks/useUser';
+import { Permission } from '../../hooks/useUser';
 
 export interface PermissionItem {
   id: string;

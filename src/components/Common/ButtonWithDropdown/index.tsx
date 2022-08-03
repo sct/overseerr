@@ -1,11 +1,10 @@
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import React, {
+import type {
   AnchorHTMLAttributes,
   ButtonHTMLAttributes,
   ReactNode,
-  useRef,
-  useState,
 } from 'react';
+import React, { useRef, useState } from 'react';
 import useClickOutside from '../../../hooks/useClickOutside';
 import { withProperties } from '../../../utils/typeHelpers';
 import Transition from '../../Transition';

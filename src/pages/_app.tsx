@@ -1,11 +1,12 @@
 import axios from 'axios';
-import App, { AppInitialProps, AppProps } from 'next/app';
+import type { AppInitialProps, AppProps } from 'next/app';
+import App from 'next/app';
 import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 import { ToastProvider } from 'react-toast-notifications';
 import { SWRConfig } from 'swr';
-import { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
+import type { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
 import Layout from '../components/Layout';
 import LoadingBar from '../components/LoadingBar';
 import PWAHeader from '../components/PWAHeader';
@@ -14,10 +15,11 @@ import StatusChecker from '../components/StatusChacker';
 import Toast from '../components/Toast';
 import ToastContainer from '../components/ToastContainer';
 import { InteractionProvider } from '../context/InteractionContext';
-import { AvailableLocale, LanguageContext } from '../context/LanguageContext';
+import type { AvailableLocale } from '../context/LanguageContext';
+import { LanguageContext } from '../context/LanguageContext';
 import { SettingsProvider } from '../context/SettingsContext';
 import { UserContext } from '../context/UserContext';
-import { User } from '../hooks/useUser';
+import type { User } from '../hooks/useUser';
 import '../styles/globals.css';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,5 +1,6 @@
 import NodePlexAPI from 'plex-api';
-import { getSettings, Library, PlexSettings } from '../lib/settings';
+import type { Library, PlexSettings } from '../lib/settings';
+import { getSettings } from '../lib/settings';
 import logger from '../logger';
 
 export interface PlexLibraryItem {
@@ -130,7 +131,6 @@ class PlexAPI {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public async getStatus() {
     return await this.plexClient.query('/');
   }

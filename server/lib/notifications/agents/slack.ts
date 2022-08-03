@@ -2,8 +2,10 @@ import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
 import { IssueStatus, IssueTypeName } from '../../../constants/issue';
 import logger from '../../../logger';
-import { getSettings, NotificationAgentSlack } from '../../settings';
-import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import type { NotificationAgentSlack } from '../../settings';
+import { getSettings } from '../../settings';
+import type { NotificationAgent, NotificationPayload } from './agent';
+import { BaseAgent } from './agent';
 
 interface EmbedField {
   type: 'plain_text' | 'mrkdwn';
