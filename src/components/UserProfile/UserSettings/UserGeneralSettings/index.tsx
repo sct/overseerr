@@ -80,7 +80,7 @@ const UserGeneralSettings: React.FC = () => {
   const UserGeneralSettingsSchema = Yup.object().shape({
     discordId: Yup.string()
       .nullable()
-      .matches(/^\d{17,18}$/, intl.formatMessage(messages.validationDiscordId)),
+      .matches(/^\d{17,19}$/, intl.formatMessage(messages.validationDiscordId)),
   });
 
   useEffect(() => {
