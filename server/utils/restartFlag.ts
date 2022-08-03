@@ -1,4 +1,5 @@
-import { getSettings, MainSettings } from '../lib/settings';
+import type { MainSettings } from '../lib/settings';
+import { getSettings } from '../lib/settings';
 
 class RestartFlag {
   private settings: MainSettings;
