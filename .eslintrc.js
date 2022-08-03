@@ -30,7 +30,14 @@ module.exports = {
     'formatjs/no-offset': 'error',
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/array-type': ['error', { default: 'array' }],
     'jsx-a11y/no-onchange': 'off',
+    '@typescript-eslint/consistent-type-imports': [
+      'error',
+      {
+        prefer: 'type-imports',
+      },
+    ],
   },
   overrides: [
     {
