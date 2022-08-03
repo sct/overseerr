@@ -21,10 +21,10 @@ const studios: Studio[] = [
     url: '/discover/movies/studio/2',
   },
   {
-    name: '20th Century Fox',
+    name: '20th Century Studios',
     image:
-      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/qZCc1lty5FzX30aOCVRBLzaVmcp.png',
-    url: '/discover/movies/studio/25',
+      'https://image.tmdb.org/t/p/w780_filter(duotone,ffffff,bababa)/h0rjX5vjW5r8yEnUBStFarjcLT4.png',
+    url: '/discover/movies/studio/127928',
   },
   {
     name: 'Sony Pictures',
