@@ -11,8 +11,8 @@ import {
   MediaRequestStatus,
   MediaStatus,
 } from '../../../server/constants/media';
-import Media from '../../../server/entity/Media';
-import { MediaRequest } from '../../../server/entity/MediaRequest';
+import type Media from '../../../server/entity/Media';
+import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import useSettings from '../../hooks/useSettings';
 import { Permission, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';

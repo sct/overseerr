@@ -2,7 +2,7 @@ import { Router } from 'express';
 import RadarrAPI from '../api/servarr/radarr';
 import SonarrAPI from '../api/servarr/sonarr';
 import TheMovieDb from '../api/themoviedb';
-import {
+import type {
   ServiceCommonServer,
   ServiceCommonServerWithDetails,
 } from '../interfaces/api/serviceInterfaces';

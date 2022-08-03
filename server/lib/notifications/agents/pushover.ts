@@ -8,12 +8,10 @@ import {
 import { IssueStatus, IssueTypeName } from '../../../constants/issue';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
-import {
-  getSettings,
-  NotificationAgentKey,
-  NotificationAgentPushover,
-} from '../../settings';
-import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import type { NotificationAgentPushover } from '../../settings';
+import { getSettings, NotificationAgentKey } from '../../settings';
+import type { NotificationAgent, NotificationPayload } from './agent';
+import { BaseAgent } from './agent';
 
 interface PushoverPayload {
   token: string;

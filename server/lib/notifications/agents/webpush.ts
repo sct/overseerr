@@ -6,12 +6,10 @@ import { MediaType } from '../../../constants/media';
 import { User } from '../../../entity/User';
 import { UserPushSubscription } from '../../../entity/UserPushSubscription';
 import logger from '../../../logger';
-import {
-  getSettings,
-  NotificationAgentConfig,
-  NotificationAgentKey,
-} from '../../settings';
-import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import type { NotificationAgentConfig } from '../../settings';
+import { getSettings, NotificationAgentKey } from '../../settings';
+import type { NotificationAgent, NotificationPayload } from './agent';
+import { BaseAgent } from './agent';
 
 interface PushNotificationPayload {
   notificationType: string;

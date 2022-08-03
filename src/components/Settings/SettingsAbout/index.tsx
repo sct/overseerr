@@ -2,7 +2,7 @@ import { InformationCircleIcon } from '@heroicons/react/solid';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import {
+import type {
   SettingsAboutResponse,
   StatusResponse,
 } from '../../../../server/interfaces/api/settingsInterfaces';

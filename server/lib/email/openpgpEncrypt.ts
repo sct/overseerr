@@ -1,6 +1,7 @@
 import { randomBytes } from 'crypto';
 import * as openpgp from 'openpgp';
-import { Transform, TransformCallback } from 'stream';
+import type { TransformCallback } from 'stream';
+import { Transform } from 'stream';
 import logger from '../../logger';
 
 interface EncryptorOptions {

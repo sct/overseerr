@@ -1,11 +1,6 @@
 import { truncate } from 'lodash';
-import {
-  EntitySubscriberInterface,
-  EventSubscriber,
-  getRepository,
-  Not,
-  UpdateEvent,
-} from 'typeorm';
+import type { EntitySubscriberInterface, UpdateEvent } from 'typeorm';
+import { EventSubscriber, getRepository, Not } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
 import Media from '../entity/Media';

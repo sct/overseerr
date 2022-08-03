@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import React from 'react';
 import type { TvDetails as TvDetailsType } from '../../../../server/models/Tv';
 import TvDetails from '../../../components/TvDetails';

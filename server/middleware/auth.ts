@@ -1,6 +1,6 @@
 import { getRepository } from 'typeorm';
 import { User } from '../entity/User';
-import { Permission, PermissionCheckOptions } from '../lib/permissions';
+import type { Permission, PermissionCheckOptions } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 
 export const checkUser: Middleware = async (req, _res, next) => {

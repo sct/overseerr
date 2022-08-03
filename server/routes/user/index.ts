@@ -10,7 +10,7 @@ import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
 import { UserPushSubscription } from '../../entity/UserPushSubscription';
-import {
+import type {
   QuotaResponse,
   UserRequestsResponse,
   UserResultsResponse,

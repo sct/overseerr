@@ -4,7 +4,7 @@ import { IssueStatus, IssueType } from '../constants/issue';
 import Issue from '../entity/Issue';
 import IssueComment from '../entity/IssueComment';
 import Media from '../entity/Media';
-import { IssueResultsResponse } from '../interfaces/api/issueInterfaces';
+import type { IssueResultsResponse } from '../interfaces/api/issueInterfaces';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
 import { isAuthenticated } from '../middleware/auth';

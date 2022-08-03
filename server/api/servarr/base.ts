@@ -1,5 +1,6 @@
-import cacheManager, { AvailableCacheIds } from '../../lib/cache';
-import { DVRSettings } from '../../lib/settings';
+import type { AvailableCacheIds } from '../../lib/cache';
+import cacheManager from '../../lib/cache';
+import type { DVRSettings } from '../../lib/settings';
 import ExternalAPI from '../externalapi';
 
 export interface SystemStatus {

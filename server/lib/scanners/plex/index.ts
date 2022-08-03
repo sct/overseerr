@@ -1,17 +1,20 @@
 import { uniqWith } from 'lodash';
 import { getRepository } from 'typeorm';
 import animeList from '../../../api/animelist';
-import PlexAPI, { PlexLibraryItem, PlexMetadata } from '../../../api/plexapi';
-import { TmdbTvDetails } from '../../../api/themoviedb/interfaces';
+import type { PlexLibraryItem, PlexMetadata } from '../../../api/plexapi';
+import PlexAPI from '../../../api/plexapi';
+import type { TmdbTvDetails } from '../../../api/themoviedb/interfaces';
 import { User } from '../../../entity/User';
 import cacheManager from '../../cache';
-import { getSettings, Library } from '../../settings';
-import BaseScanner, {
+import type { Library } from '../../settings';
+import { getSettings } from '../../settings';
+import type {
   MediaIds,
   ProcessableSeason,
   RunnableScanner,
   StatusBase,
 } from '../baseScanner';
+import BaseScanner from '../baseScanner';
 
 const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);

@@ -10,7 +10,8 @@ import SlackLogo from '../../assets/extlogos/slack.svg';
 import TelegramLogo from '../../assets/extlogos/telegram.svg';
 import globalMessages from '../../i18n/globalMessages';
 import PageTitle from '../Common/PageTitle';
-import SettingsTabs, { SettingsRoute } from '../Common/SettingsTabs';
+import type { SettingsRoute } from '../Common/SettingsTabs';
+import SettingsTabs from '../Common/SettingsTabs';
 
 const messages = defineMessages({
   notifications: 'Notifications',

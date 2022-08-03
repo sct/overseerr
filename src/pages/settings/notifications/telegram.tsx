@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import React from 'react';
 import NotificationsTelegram from '../../../components/Settings/Notifications/NotificationsTelegram';
 import SettingsLayout from '../../../components/Settings/SettingsLayout';

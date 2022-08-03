@@ -8,7 +8,7 @@ import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { StatusResponse } from '../../../../server/interfaces/api/settingsInterfaces';
+import type { StatusResponse } from '../../../../server/interfaces/api/settingsInterfaces';
 
 const messages = defineMessages({
   streamdevelop: 'Overseerr Develop',

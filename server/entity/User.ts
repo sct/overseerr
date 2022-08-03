@@ -18,13 +18,10 @@ import {
 } from 'typeorm';
 import { MediaRequestStatus, MediaType } from '../constants/media';
 import { UserType } from '../constants/user';
-import { QuotaResponse } from '../interfaces/api/userInterfaces';
+import type { QuotaResponse } from '../interfaces/api/userInterfaces';
 import PreparedEmail from '../lib/email';
-import {
-  hasPermission,
-  Permission,
-  PermissionCheckOptions,
-} from '../lib/permissions';
+import type { PermissionCheckOptions } from '../lib/permissions';
+import { hasPermission, Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
 import Issue from './Issue';

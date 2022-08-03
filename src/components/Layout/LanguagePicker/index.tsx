@@ -1,10 +1,8 @@
 import { TranslateIcon } from '@heroicons/react/solid';
 import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import {
-  availableLanguages,
-  AvailableLocale,
-} from '../../../context/LanguageContext';
+import type { AvailableLocale } from '../../../context/LanguageContext';
+import { availableLanguages } from '../../../context/LanguageContext';
 import useClickOutside from '../../../hooks/useClickOutside';
 import useLocale from '../../../hooks/useLocale';
 import Transition from '../../Transition';

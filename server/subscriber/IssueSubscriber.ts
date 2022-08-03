@@ -1,10 +1,10 @@
 import { sortBy } from 'lodash';
-import {
+import type {
   EntitySubscriberInterface,
-  EventSubscriber,
   InsertEvent,
   UpdateEvent,
 } from 'typeorm';
+import { EventSubscriber } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
 import { IssueStatus, IssueType, IssueTypeName } from '../constants/issue';
 import { MediaType } from '../constants/media';

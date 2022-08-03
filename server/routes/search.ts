@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
-import { TmdbSearchMultiResponse } from '../api/themoviedb/interfaces';
+import type { TmdbSearchMultiResponse } from '../api/themoviedb/interfaces';
 import Media from '../entity/Media';
 import { findSearchProvider } from '../lib/search';
 import logger from '../logger';

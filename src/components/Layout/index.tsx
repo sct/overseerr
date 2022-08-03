@@ -2,7 +2,7 @@ import { MenuAlt2Icon } from '@heroicons/react/outline';
 import { ArrowLeftIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { AvailableLocale } from '../../context/LanguageContext';
+import type { AvailableLocale } from '../../context/LanguageContext';
 import useLocale from '../../hooks/useLocale';
 import useSettings from '../../hooks/useSettings';
 import { useUser } from '../../hooks/useUser';

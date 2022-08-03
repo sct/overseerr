@@ -1,6 +1,7 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import rateLimit from 'axios-rate-limit';
-import NodeCache from 'node-cache';
+import type NodeCache from 'node-cache';
 
 // 5 minute default TTL (in seconds)
 const DEFAULT_TTL = 300;

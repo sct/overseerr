@@ -12,7 +12,8 @@ import type {
   ServiceCommonServerWithDetails,
 } from '../../../../server/interfaces/api/serviceInterfaces';
 import type { UserResultsResponse } from '../../../../server/interfaces/api/userInterfaces';
-import { Permission, User, useUser } from '../../../hooks/useUser';
+import type { User } from '../../../hooks/useUser';
+import { Permission, useUser } from '../../../hooks/useUser';
 import globalMessages from '../../../i18n/globalMessages';
 import { formatBytes } from '../../../utils/numberHelpers';
 import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';

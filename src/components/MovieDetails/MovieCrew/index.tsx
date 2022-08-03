@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { MovieDetails } from '../../../../server/models/Movie';
+import type { MovieDetails } from '../../../../server/models/Movie';
 import Error from '../../../pages/_error';
 import Header from '../../Common/Header';
 import LoadingSpinner from '../../Common/LoadingSpinner';

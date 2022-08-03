@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, MutableRefObject } from 'react';
+import type { MutableRefObject } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { debounce } from 'lodash';
 
 const IS_SCROLLING_CHECK_THROTTLE = 200;

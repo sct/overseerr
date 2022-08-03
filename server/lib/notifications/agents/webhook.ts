@@ -4,8 +4,10 @@ import { hasNotificationType, Notification } from '..';
 import { IssueStatus, IssueType } from '../../../constants/issue';
 import { MediaStatus } from '../../../constants/media';
 import logger from '../../../logger';
-import { getSettings, NotificationAgentWebhook } from '../../settings';
-import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
+import type { NotificationAgentWebhook } from '../../settings';
+import { getSettings } from '../../settings';
+import type { NotificationAgent, NotificationPayload } from './agent';
+import { BaseAgent } from './agent';
 
 type KeyMapFunction = (
   payload: NotificationPayload,

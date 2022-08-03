@@ -1,6 +1,7 @@
-import axios, { AxiosInstance } from 'axios';
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
 import xml2js from 'xml2js';
-import { PlexDevice } from '../interfaces/api/plexInterfaces';
+import type { PlexDevice } from '../interfaces/api/plexInterfaces';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
 

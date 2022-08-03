@@ -3,7 +3,7 @@ import type {
   TmdbPersonCreditCrew,
   TmdbPersonDetails,
 } from '../api/themoviedb/interfaces';
-import Media from '../entity/Media';
+import type Media from '../entity/Media';
 
 export interface PersonDetails {
   id: number;

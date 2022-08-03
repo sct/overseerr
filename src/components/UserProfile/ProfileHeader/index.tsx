@@ -2,7 +2,8 @@ import { CogIcon, UserIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Permission, User, useUser } from '../../../hooks/useUser';
+import type { User } from '../../../hooks/useUser';
+import { Permission, useUser } from '../../../hooks/useUser';
 import Button from '../../Common/Button';
 
 const messages = defineMessages({

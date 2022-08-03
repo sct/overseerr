@@ -1,8 +1,6 @@
 import { useContext } from 'react';
-import {
-  LanguageContext,
-  LanguageContextProps,
-} from '../context/LanguageContext';
+import type { LanguageContextProps } from '../context/LanguageContext';
+import { LanguageContext } from '../context/LanguageContext';
 
 const useLocale = (): Omit<LanguageContextProps, 'children'> => {
   const languageContext = useContext(LanguageContext);

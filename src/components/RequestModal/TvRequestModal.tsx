@@ -9,18 +9,19 @@ import {
   MediaRequestStatus,
   MediaStatus,
 } from '../../../server/constants/media';
-import { MediaRequest } from '../../../server/entity/MediaRequest';
-import SeasonRequest from '../../../server/entity/SeasonRequest';
-import { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
+import type { MediaRequest } from '../../../server/entity/MediaRequest';
+import type SeasonRequest from '../../../server/entity/SeasonRequest';
+import type { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
 import { Permission } from '../../../server/lib/permissions';
-import { TvDetails } from '../../../server/models/Tv';
+import type { TvDetails } from '../../../server/models/Tv';
 import useSettings from '../../hooks/useSettings';
 import { useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
 import Badge from '../Common/Badge';
 import Modal from '../Common/Modal';
-import AdvancedRequester, { RequestOverrides } from './AdvancedRequester';
+import type { RequestOverrides } from './AdvancedRequester';
+import AdvancedRequester from './AdvancedRequester';
 import QuotaDisplay from './QuotaDisplay';
 import SearchByNameModal from './SearchByNameModal';
 

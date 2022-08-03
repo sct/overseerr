@@ -20,7 +20,8 @@ import type { UserResultsResponse } from '../../../server/interfaces/api/userInt
 import { hasPermission } from '../../../server/lib/permissions';
 import useSettings from '../../hooks/useSettings';
 import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
-import { Permission, User, UserType, useUser } from '../../hooks/useUser';
+import type { User } from '../../hooks/useUser';
+import { Permission, UserType, useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
 import Badge from '../Common/Badge';

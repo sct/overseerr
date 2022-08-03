@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import React from 'react';
 import SettingsAbout from '../../components/Settings/SettingsAbout';
 import SettingsLayout from '../../components/Settings/SettingsLayout';

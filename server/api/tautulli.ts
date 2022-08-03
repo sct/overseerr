@@ -1,7 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
 import { uniqWith } from 'lodash';
-import { User } from '../entity/User';
-import { TautulliSettings } from '../lib/settings';
+import type { User } from '../entity/User';
+import type { TautulliSettings } from '../lib/settings';
 import logger from '../logger';
 
 export interface TautulliHistoryRecord {

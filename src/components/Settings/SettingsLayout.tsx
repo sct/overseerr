@@ -2,7 +2,8 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import globalMessages from '../../i18n/globalMessages';
 import PageTitle from '../Common/PageTitle';
-import SettingsTabs, { SettingsRoute } from '../Common/SettingsTabs';
+import type { SettingsRoute } from '../Common/SettingsTabs';
+import SettingsTabs from '../Common/SettingsTabs';
 
 const messages = defineMessages({
   menuGeneralSettings: 'General',

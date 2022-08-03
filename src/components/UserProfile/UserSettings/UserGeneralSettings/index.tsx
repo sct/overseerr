@@ -7,11 +7,9 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import {
-  availableLanguages,
-  AvailableLocale,
-} from '../../../../context/LanguageContext';
+import type { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
+import type { AvailableLocale } from '../../../../context/LanguageContext';
+import { availableLanguages } from '../../../../context/LanguageContext';
 import useLocale from '../../../../hooks/useLocale';
 import useSettings from '../../../../hooks/useSettings';
 import { Permission, UserType, useUser } from '../../../../hooks/useUser';
