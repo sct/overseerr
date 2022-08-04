@@ -53,6 +53,7 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   'plex-recently-added-scan': 'Plex Recently Added Scan',
   'plex-full-scan': 'Plex Full Library Scan',
   'plex-watchlist-sync': 'Plex Watchlist Sync',
+  'availability-sync': 'Media availability sync',
   'radarr-scan': 'Radarr Scan',
   'sonarr-scan': 'Sonarr Scan',
   'download-sync': 'Download Sync',
@@ -97,8 +98,8 @@ type JobModalState = {
 type JobModalAction =
   | { type: 'set'; hours?: number; minutes?: number; seconds?: number }
   | {
-      type: 'close';
-    }
+    type: 'close';
+  }
   | { type: 'open'; job?: Job };
 
 const jobModalReducer = (
@@ -416,7 +417,7 @@ const SettingsJobs = () => {
                       value={Math.floor(
                         (new Date(job.nextExecutionTime).getTime() -
                           Date.now()) /
-                          1000
+                        1000
                       )}
                       updateIntervalInSeconds={1}
                       numeric="auto"
