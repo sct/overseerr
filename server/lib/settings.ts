@@ -246,7 +246,8 @@ export type JobId =
   | 'radarr-scan'
   | 'sonarr-scan'
   | 'download-sync'
-  | 'download-sync-reset';
+  | 'download-sync-reset'
+  | 'availability-sync';
 
 interface AllSettings {
   clientId: string;
@@ -403,6 +404,9 @@ class Settings {
         },
         'sonarr-scan': {
           schedule: '0 30 4 * * *',
+        },
+        'availability-sync': {
+          schedule: '0 0 5 * * *',
         },
         'download-sync': {
           schedule: '0 * * * * *',

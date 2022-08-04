@@ -6,6 +6,7 @@ import { sonarrScanner } from '../lib/scanners/sonarr';
 import type { JobId } from '../lib/settings';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
+import availabilitySync from '../lib/availabilitySync';
 
 interface ScheduledJob {
   id: JobId;
@@ -80,6 +81,22 @@ export const startJobs = (): void => {
     }),
     running: () => sonarrScanner.status().running,
     cancelFn: () => sonarrScanner.cancel(),
+  });
+
+  // Checks if media is still available in plex/sonarr/radarr libs
+  scheduledJobs.push({
+    id: 'availability-sync',
+    name: 'Update availability',
+    type: 'process',
+    interval: 'long',
+    job: schedule.scheduleJob(jobs['availability-sync'].schedule, () => {
+      logger.info('Starting scheduled job: Update availability', {
+        label: 'Jobs',
+      });
+      availabilitySync.run();
+    }),
+    running: () => availabilitySync.running,
+    cancelFn: () => availabilitySync.cancel(),
   });
 
   // Run download sync every minute
