@@ -625,6 +625,7 @@
   "components.Settings.SettingsAbout.totalrequests": "Total Requests",
   "components.Settings.SettingsAbout.uptodate": "Up to Date",
   "components.Settings.SettingsAbout.version": "Version",
+  "components.Settings.SettingsJobsCache.availability-sync": "Media availability sync",
   "components.Settings.SettingsJobsCache.cache": "Cache",
   "components.Settings.SettingsJobsCache.cacheDescription": "Overseerr caches requests to external API endpoints to optimize performance and avoid making unnecessary API calls.",
   "components.Settings.SettingsJobsCache.cacheflushed": "{cachename} cache flushed.",
