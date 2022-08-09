@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Bowser from 'bowser';
+import config from '../../config/settings.json';
 
 interface PlexHeaders extends Record<string, string> {
   Accept: string;
@@ -54,11 +55,11 @@ class PlexOAuth {
       localStorage.setItem('plex-client-id', uuid);
       clientId = uuid;
     }
-
+    const applicationTitle = config.main.applicationTitle;
     const browser = Bowser.getParser(window.navigator.userAgent);
     this.plexHeaders = {
       Accept: 'application/json',
-      'X-Plex-Product': 'Overseerr',
+      'X-Plex-Product': applicationTitle,
       'X-Plex-Version': 'Plex OAuth',
       'X-Plex-Client-Identifier': clientId,
       'X-Plex-Model': 'Plex OAuth',
