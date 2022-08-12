@@ -111,6 +111,123 @@ docker-compose up -d
 {% endtab %}
 {% endtabs %}
 
+## Podman
+
+Installation via Podman is similar to the installation process for Docker.
+
+Make sure you have a functional Podman installation before you start - consult the Podman documentation or that of your distribution for more help with this.
+
+{% hint style="warning" %}
+Be sure to replace `/path/to/appdata/config` in the below examples with a valid host directory path. If this volume mount is not configured correctly, your Overseerr settings/data will not be persisted when the container is recreated (e.g., when updating the image or rebooting your machine).
+
+The `TZ` environment variable value should also be set to the [TZ database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) of your time zone!
+{% endhint %}
+
+{% tabs %}
+{% tab title="Podman CLI" %}
+
+For details on the Podman CLI, please [review the official `podman run` documentation](https://docs.podman.io/en/latest/markdown/podman-run.1.html/).
+
+**Installation:**
+
+```bash
+podman run -d \
+  --name overseerr \
+  -e LOG_LEVEL=debug \
+  -e TZ=Asia/Tokyo \
+  -p 5055:5055 \
+  -v /path/to/appdata/config:/app/config \
+  --restart unless-stopped \
+  sctx/overseerr
+```
+
+To run the container as a specific user/group, you may optionally add `--user=[ user | user:group | uid | uid:gid | user:gid | uid:group ]` to the above command.
+
+{% hint style="info" %}
+
+If you are using SELinux, you may find Overseerr is unable to write to its config and data directory out of the box (with errors like `Error: EACCES: permission denied, mkdir '/app/config/logs/'` in the logs). To get around this, append `:Z` to the volume mount. It will end up looking like this:  `-v /path/to/appdata/config:/app/config:Z`. Make sure you understand [the implications of doing this](https://stackoverflow.com/questions/35218194/what-is-z-flag-in-docker-containers-volumes-from-option).
+
+{% endhint %}
+
+**Updating:**
+
+Stop and remove the existing container:
+
+```bash
+podman stop overseerr && podman rm overseerr
+```
+
+Pull the latest image:
+
+```bash
+podman pull sctx/overseerr
+```
+
+Finally, run the container with the same parameters originally used to create the container:
+
+```bash
+podman run -d ...
+```
+
+{% endtab %}
+
+{% tab title="Docker Compose (podman-docker)" %}
+
+On most platforms, installing `podman-compose` allows you to use docker-compose with a Podman installation the same way you would with Docker. If you run into trouble, search for "podman-docker" and the name of your distribution.
+
+For details on how to use Docker Compose, please [review the official Compose documentation](https://docs.docker.com/compose/reference/).
+
+**Installation:**
+
+Define the `overseerr` service in your `docker-compose.yml` as follows:
+
+```yaml
+---
+version: '3'
+
+services:
+  overseerr:
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Asia/Tokyo
+    ports:
+      - 5055:5055
+    volumes:
+      - /path/to/appdata/config:/app/config
+    restart: unless-stopped
+```
+
+Then, start all services defined in the your Compose file:
+
+```bash
+docker-compose up -d
+```
+
+{% hint style="info" %}
+
+If you are using SELinux, you may find Overseerr is unable to write to its config and data directory out of the box (with errors like `Error: EACCES: permission denied, mkdir '/app/config/logs/'` in the logs). To get around this, append `:Z` to the volume definition. It will end up looking like this:  `- /path/to/appdata/config:/app/config:Z`. Make sure you understand [the implications of doing this](https://stackoverflow.com/questions/35218194/what-is-z-flag-in-docker-containers-volumes-from-option).
+
+{% endhint %}
+
+**Updating:**
+
+Pull the latest image:
+
+```bash
+docker-compose pull overseerr
+```
+
+Then, restart all services defined in the Compose file:
+
+```bash
+docker-compose up -d
+```
+
+{% endtab %}
+{% endtabs %}
+
 ## Unraid
 
 1. Ensure you have the **Community Applications** plugin installed.
