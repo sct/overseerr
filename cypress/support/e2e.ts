@@ -1,5 +1,7 @@
 import './commands';
 
 before(() => {
-  cy.exec('yarn cypress:prepare');
+  if (Cypress.env('SEED_DATABASE')) {
+    cy.exec('yarn cypress:prepare');
+  }
 });

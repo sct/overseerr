@@ -149,7 +149,7 @@ const Slider: React.FC<SliderProps> = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative" data-testid="media-slider">
       <div className="absolute right-0 -mt-10 flex text-gray-400">
         <button
           className={`${
