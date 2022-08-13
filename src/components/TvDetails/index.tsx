@@ -343,7 +343,7 @@ const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
                 />
               )}
           </div>
-          <h1>
+          <h1 data-testid="media-title">
             {data.name}{' '}
             {data.firstAirDate && (
               <span className="media-year">
