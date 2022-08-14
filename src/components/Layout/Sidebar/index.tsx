@@ -37,6 +37,7 @@ interface SidebarLinkProps {
   as?: string;
   requiredPermission?: Permission | Permission[];
   permissionType?: 'and' | 'or';
+  dataTestId?: string;
 }
 
 const SidebarLinks: SidebarLinkProps[] = [
@@ -72,6 +73,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     svgIcon: <UsersIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/users/,
     requiredPermission: Permission.MANAGE_USERS,
+    dataTestId: 'sidebar-menu-users',
   },
   {
     href: '/settings',
@@ -168,6 +170,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                                     : 'hover:bg-gray-700 focus:bg-gray-700'
                                 }
                               `}
+                              data-testid={`${sidebarLink.dataTestId}-mobile`}
                             >
                               {sidebarLink.svgIcon}
                               {intl.formatMessage(
@@ -229,6 +232,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
                                     : 'hover:bg-gray-700 focus:bg-gray-700'
                                 }
                               `}
+                        data-testid={sidebarLink.dataTestId}
                       >
                         {sidebarLink.svgIcon}
                         {intl.formatMessage(messages[sidebarLink.messagesKey])}

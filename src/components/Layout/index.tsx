@@ -68,6 +68,7 @@ const Layout: React.FC = ({ children }) => {
             } transition duration-300 focus:outline-none lg:hidden`}
             aria-label="Open sidebar"
             onClick={() => setSidebarOpen(true)}
+            data-testid="sidebar-toggle"
           >
             <MenuAlt2Icon className="h-6 w-6" />
           </button>

@@ -141,6 +141,7 @@ const Modal: React.FC<ModalProps> = ({
                 <span
                   className="truncate text-lg font-bold leading-6"
                   id="modal-headline"
+                  data-testid="modal-title"
                 >
                   {title}
                 </span>
@@ -160,6 +161,7 @@ const Modal: React.FC<ModalProps> = ({
                   onClick={onOk}
                   className="ml-3"
                   disabled={okDisabled}
+                  data-testid="modal-ok-button"
                 >
                   {okText ? okText : 'Ok'}
                 </Button>
@@ -170,6 +172,7 @@ const Modal: React.FC<ModalProps> = ({
                   onClick={onSecondary}
                   className="ml-3"
                   disabled={secondaryDisabled}
+                  data-testid="modal-secondary-button"
                 >
                   {secondaryText}
                 </Button>
@@ -189,6 +192,7 @@ const Modal: React.FC<ModalProps> = ({
                   buttonType={cancelButtonType}
                   onClick={onCancel}
                   className="ml-3 sm:ml-0"
+                  data-testid="modal-cancel-button"
                 >
                   {cancelText
                     ? cancelText
