@@ -12,4 +12,4 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           build: yarn build
-          start: yarn cypress:prepare && yarn start
+          start: yarn cypress:prepare, yarn start
