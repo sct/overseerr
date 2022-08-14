@@ -15,7 +15,13 @@ const prepareDb = async () => {
   const dbConnection = await createConnection();
 
   await dbConnection.dropDatabase();
-  await dbConnection.synchronize();
+
+  // Run migrations in production
+  if (process.env.WITH_MIGRATIONS === 'true') {
+    await dbConnection.runMigrations();
+  } else {
+    await dbConnection.synchronize();
+  }
 
   const userRepository = getRepository(User);
 

@@ -56,3 +56,5 @@ config/db/db.sqlite3-journal
 
 # Cypress
 cypress.env.json
+cypress/videos
+cypress/screenshots
