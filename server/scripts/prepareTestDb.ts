@@ -1,8 +1,17 @@
 import { createConnection, getRepository } from 'typeorm';
+import { copyFileSync } from 'fs';
 import { UserType } from '../constants/user';
 import { User } from '../entity/User';
+import path from 'path';
 
 const prepareDb = async () => {
+  // Copy over test settings.json
+  copyFileSync(
+    path.join(__dirname, '../../cypress/config/settings.cypress.json'),
+    path.join(__dirname, '../../config/settings.json')
+  );
+
+  // Connect to DB and seed test data
   const dbConnection = await createConnection();
 
   await dbConnection.dropDatabase();
