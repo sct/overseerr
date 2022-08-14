@@ -557,7 +557,7 @@ const UserList: React.FC = () => {
         </thead>
         <Table.TBody>
           {data?.results.map((user) => (
-            <tr key={`user-list-${user.id}`}>
+            <tr key={`user-list-${user.id}`} data-testid="user-list-row">
               <Table.TD>
                 {isUserPermsEditable(user.id) && (
                   <input

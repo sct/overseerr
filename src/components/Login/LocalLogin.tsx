@@ -77,6 +77,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       name="email"
                       type="text"
                       inputMode="email"
+                      data-testid="email"
                     />
                   </div>
                   {errors.email && touched.email && (
@@ -94,6 +95,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       name="password"
                       type="password"
                       autoComplete="current-password"
+                      data-testid="password"
                     />
                   </div>
                   {errors.password && touched.password && (
@@ -113,6 +115,7 @@ const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
                       buttonType="primary"
                       type="submit"
                       disabled={isSubmitting || !isValid}
+                      data-testid="local-signin-button"
                     >
                       <LoginIcon />
                       <span>

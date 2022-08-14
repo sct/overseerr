@@ -340,7 +340,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 />
               )}
           </div>
-          <h1>
+          <h1 data-testid="media-title">
             {data.title}{' '}
             {data.releaseDate && (
               <span className="media-year">

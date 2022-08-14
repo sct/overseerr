@@ -15,7 +15,10 @@
     "migration:run": "ts-node --project server/tsconfig.json ./node_modules/typeorm/cli.js migration:run",
     "format": "prettier --loglevel warn --write --cache .",
     "format:check": "prettier --check --cache .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "cypress:open": "cypress open",
+    "cypress:prepare": "ts-node --files server/scripts/prepareTestDb.ts",
+    "cypress:build": "yarn build && yarn cypress:prepare"
   },
   "repository": {
     "type": "git",
@@ -121,6 +124,7 @@
     "babel-plugin-react-intl-auto": "^3.3.0",
     "commitizen": "^4.2.4",
     "copyfiles": "^2.4.1",
+    "cypress": "^10.4.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.21.0",
     "eslint-config-next": "^12.2.3",

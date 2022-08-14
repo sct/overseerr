@@ -78,7 +78,10 @@ const TitleCard: React.FC<TitleCardProps> = ({
   );
 
   return (
-    <div className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}>
+    <div
+      className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}
+      data-testid="title-card"
+    >
       <RequestModal
         tmdbId={id}
         show={showRequestModal}
@@ -212,6 +215,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
                           WebkitBoxOrient: 'vertical',
                           wordBreak: 'break-word',
                         }}
+                        data-testid="title-card-title"
                       >
                         {title}
                       </h1>

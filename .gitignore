@@ -53,3 +53,8 @@ config/db/db.sqlite3-journal
 
 # VS Code
 .vscode/launch.json
+
+# Cypress
+cypress.env.json
+cypress/videos
+cypress/screenshots
