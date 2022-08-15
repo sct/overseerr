@@ -12,4 +12,8 @@ export default defineConfig({
     USER_EMAIL: 'friend@seerr.dev',
     USER_PASSWORD: 'test1234',
   },
+  retries: {
+    runMode: 2,
+    openMode: 0,
+  },
 });
