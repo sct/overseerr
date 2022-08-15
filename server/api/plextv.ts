@@ -114,6 +114,7 @@ interface UsersResponse {
 
 interface WatchlistResponse {
   MediaContainer: {
+    totalSize: number;
     Metadata: {
       ratingKey: string;
     }[];
@@ -289,7 +290,12 @@ class PlexTvAPI extends ExternalAPI {
   public async getWatchlist({
     offset = 0,
     size = 20,
-  }: { offset?: number; size?: number } = {}): Promise<PlexWatchlistItem[]> {
+  }: { offset?: number; size?: number } = {}): Promise<{
+    offset: number;
+    size: number;
+    totalSize: number;
+    items: PlexWatchlistItem[];
+  }> {
     try {
       const response = await this.axios.get<WatchlistResponse>(
         '/library/sections/watchlist/all',
@@ -330,13 +336,23 @@ class PlexTvAPI extends ExternalAPI {
 
       const filteredList = watchlistDetails.filter((detail) => detail.tmdbId);
 
-      return filteredList;
+      return {
+        offset,
+        size,
+        totalSize: response.data.MediaContainer.totalSize,
+        items: filteredList,
+      };
     } catch (e) {
       logger.error('Failed to retrieve watchlist items', {
         label: 'Plex.TV Metadata API',
         errorMessage: e.message,
       });
-      return [];
+      return {
+        offset,
+        size,
+        totalSize: 0,
+        items: [],
+      };
     }
   }
 }

@@ -709,8 +709,19 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   }
 );
 
-discoverRoutes.get<never, WatchlistItem[]>('/watchlist', async (req, res) => {
+discoverRoutes.get<
+  { page?: number },
+  {
+    page: number;
+    totalPages: number;
+    totalResults: number;
+    results: WatchlistItem[];
+  }
+>('/watchlist', async (req, res) => {
   const userRepository = getRepository(User);
+  const itemsPerPage = 20;
+  const page = req.params.page ?? 1;
+  const offset = (page - 1) * itemsPerPage;
 
   const activeUser = await userRepository.findOne({
     where: { id: req.user?.id },
@@ -719,14 +730,29 @@ discoverRoutes.get<never, WatchlistItem[]>('/watchlist', async (req, res) => {
 
   if (!activeUser?.plexToken) {
     // We will just return an empty array if the user has no plex token
-    return res.json([]);
+    return res.json({
+      page: 1,
+      totalPages: 1,
+      totalResults: 0,
+      results: [],
+    });
   }
 
   const plexTV = new PlexTvAPI(activeUser?.plexToken);
 
-  const watchlist = await plexTV.getWatchlist();
+  const watchlist = await plexTV.getWatchlist({ offset });
 
-  return res.json(watchlist);
+  return res.json({
+    page,
+    totalPages: Math.ceil(watchlist.size / itemsPerPage),
+    totalResults: watchlist.size,
+    results: watchlist.items.map((item) => ({
+      ratingKey: item.ratingKey,
+      title: item.title,
+      mediaType: item.type,
+      tmdbId: item.tmdbId,
+    })),
+  });
 });
 
 export default discoverRoutes;

@@ -26,6 +26,7 @@ const messages = defineMessages({
   noRequests: 'No requests.',
   upcoming: 'Upcoming Movies',
   trending: 'Trending',
+  plexwatchlist: 'Plex Watchlist',
 });
 
 const Discover = () => {
@@ -45,9 +46,12 @@ const Discover = () => {
       }
     );
 
-  const { data: watchlistItems, error: watchlistError } = useSWR<
-    WatchlistItem[]
-  >('/api/v1/discover/watchlist', {
+  const { data: watchlistItems, error: watchlistError } = useSWR<{
+    page: number;
+    totalPages: number;
+    totalResults: number;
+    results: WatchlistItem[];
+  }>('/api/v1/discover/watchlist', {
     revalidateOnMount: true,
   });
 
@@ -101,26 +105,31 @@ const Discover = () => {
         emptyMessage={intl.formatMessage(messages.noRequests)}
       />
       <div className="slider-header">
-        <div className="slider-title">
-          <span>Plex Watchlist</span>
-        </div>
+        <Link href="/discover/watchlist">
+          <a className="slider-title">
+            <span>{intl.formatMessage(messages.plexwatchlist)}</span>
+            <ArrowCircleRightIcon />
+          </a>
+        </Link>
       </div>
       {!(
         !!watchlistItems &&
         !watchlistError &&
-        watchlistItems.length === 0
+        watchlistItems.results.length === 0
       ) && (
         <Slider
           sliderKey="watchlist"
           isLoading={!watchlistItems && !watchlistError}
           isEmpty={
-            !!watchlistItems && !watchlistError && watchlistItems.length === 0
+            !!watchlistItems &&
+            !watchlistError &&
+            watchlistItems.results.length === 0
           }
-          items={watchlistItems?.map((item) => (
+          items={watchlistItems?.results.map((item) => (
             <TmdbTitleCard
               key={`watchlist-slider-item-${item.ratingKey}`}
               tmdbId={item.tmdbId}
-              type={item.type}
+              type={item.mediaType}
             />
           ))}
         />

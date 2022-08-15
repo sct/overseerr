@@ -7,6 +7,6 @@ export interface GenreSliderItem {
 export interface WatchlistItem {
   ratingKey: string;
   tmdbId: number;
-  type: 'movie' | 'tv';
+  mediaType: 'movie' | 'tv';
   title: string;
 }
