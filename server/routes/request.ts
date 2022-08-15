@@ -11,7 +11,10 @@ import {
 } from '../entity/MediaRequest';
 import SeasonRequest from '../entity/SeasonRequest';
 import { User } from '../entity/User';
-import type { RequestResultsResponse } from '../interfaces/api/requestInterfaces';
+import type {
+  MediaRequestBody,
+  RequestResultsResponse,
+} from '../interfaces/api/requestInterfaces';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
 import { isAuthenticated } from '../middleware/auth';
@@ -150,20 +153,6 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
     }
   }
 );
-
-export type MediaRequestBody = {
-  mediaType: MediaType;
-  mediaId: number;
-  tvdbId?: number;
-  seasons?: number[] | 'all';
-  is4k?: boolean;
-  serverId?: number;
-  profileId?: number;
-  rootFolder?: string;
-  languageProfileId?: number;
-  userId?: number;
-  tags?: number[];
-};
 
 requestRoutes.post<never, MediaRequest, MediaRequestBody>(
   '/',
