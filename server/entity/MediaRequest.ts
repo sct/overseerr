@@ -21,14 +21,308 @@ import { ANIME_KEYWORD_ID } from '../api/themoviedb/constants';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
 import { getRepository } from '../datasource';
 import notificationManager, { Notification } from '../lib/notifications';
+import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
+import type { MediaRequestBody } from '../routes/request';
 import Media from './Media';
 import SeasonRequest from './SeasonRequest';
 import { User } from './User';
 
+export class RequestPermissionError extends Error {}
+export class QuotaRestrictedError extends Error {}
+export class DuplicateMediaRequestError extends Error {}
+export class NoSeasonsAvailableError extends Error {}
+
 @Entity()
 export class MediaRequest {
+  public static async request(
+    requestBody: MediaRequestBody,
+    user: User
+  ): Promise<MediaRequest> {
+    const tmdb = new TheMovieDb();
+    const mediaRepository = getRepository(Media);
+    const requestRepository = getRepository(MediaRequest);
+    const userRepository = getRepository(User);
+
+    let requestUser = user;
+
+    if (
+      requestBody.userId &&
+      !requestUser.hasPermission([
+        Permission.MANAGE_USERS,
+        Permission.MANAGE_REQUESTS,
+      ])
+    ) {
+      throw new RequestPermissionError(
+        'You do not have permission to modify the request user.'
+      );
+    } else if (requestBody.userId) {
+      requestUser = await userRepository.findOneOrFail({
+        where: { id: requestBody.userId },
+      });
+    }
+
+    if (!requestUser) {
+      throw new Error('User missing from request context.');
+    }
+
+    if (
+      requestBody.mediaType === MediaType.MOVIE &&
+      !requestUser.hasPermission(
+        requestBody.is4k
+          ? [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE]
+          : [Permission.REQUEST, Permission.REQUEST_MOVIE],
+        {
+          type: 'or',
+        }
+      )
+    ) {
+      throw new RequestPermissionError(
+        `You do not have permission to make ${
+          requestBody.is4k ? '4K ' : ''
+        }movie requests.`
+      );
+    } else if (
+      requestBody.mediaType === MediaType.TV &&
+      !requestUser.hasPermission(
+        requestBody.is4k
+          ? [Permission.REQUEST_4K, Permission.REQUEST_4K_TV]
+          : [Permission.REQUEST, Permission.REQUEST_TV],
+        {
+          type: 'or',
+        }
+      )
+    ) {
+      throw new RequestPermissionError(
+        `You do not have permission to make ${
+          requestBody.is4k ? '4K ' : ''
+        }series requests.`
+      );
+    }
+
+    const quotas = await requestUser.getQuota();
+
+    if (requestBody.mediaType === MediaType.MOVIE && quotas.movie.restricted) {
+      throw new QuotaRestrictedError('Movie Quota exceeded.');
+    } else if (requestBody.mediaType === MediaType.TV && quotas.tv.restricted) {
+      throw new QuotaRestrictedError('Series Quota exceeded.');
+    }
+
+    const tmdbMedia =
+      requestBody.mediaType === MediaType.MOVIE
+        ? await tmdb.getMovie({ movieId: requestBody.mediaId })
+        : await tmdb.getTvShow({ tvId: requestBody.mediaId });
+
+    let media = await mediaRepository.findOne({
+      where: {
+        tmdbId: requestBody.mediaId,
+        mediaType: requestBody.mediaType,
+      },
+      relations: ['requests'],
+    });
+
+    if (!media) {
+      media = new Media({
+        tmdbId: tmdbMedia.id,
+        tvdbId: requestBody.tvdbId ?? tmdbMedia.external_ids.tvdb_id,
+        status: !requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
+        status4k: requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
+        mediaType: requestBody.mediaType,
+      });
+    } else {
+      if (media.status === MediaStatus.UNKNOWN && !requestBody.is4k) {
+        media.status = MediaStatus.PENDING;
+      }
+
+      if (media.status4k === MediaStatus.UNKNOWN && requestBody.is4k) {
+        media.status4k = MediaStatus.PENDING;
+      }
+    }
+
+    if (requestBody.mediaType === MediaType.MOVIE) {
+      const existing = await requestRepository
+        .createQueryBuilder('request')
+        .leftJoin('request.media', 'media')
+        .where('request.is4k = :is4k', { is4k: requestBody.is4k })
+        .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
+        .andWhere('media.mediaType = :mediaType', {
+          mediaType: MediaType.MOVIE,
+        })
+        .andWhere('request.status != :requestStatus', {
+          requestStatus: MediaRequestStatus.DECLINED,
+        })
+        .getOne();
+
+      if (existing) {
+        logger.warn('Duplicate request for media blocked', {
+          tmdbId: tmdbMedia.id,
+          mediaType: requestBody.mediaType,
+          is4k: requestBody.is4k,
+          label: 'Media Request',
+        });
+
+        throw new DuplicateMediaRequestError(
+          'Request for this media already exists.'
+        );
+      }
+
+      await mediaRepository.save(media);
+
+      const request = new MediaRequest({
+        type: MediaType.MOVIE,
+        media,
+        requestedBy: requestUser,
+        // If the user is an admin or has the "auto approve" permission, automatically approve the request
+        status: user.hasPermission(
+          [
+            requestBody.is4k
+              ? Permission.AUTO_APPROVE_4K
+              : Permission.AUTO_APPROVE,
+            requestBody.is4k
+              ? Permission.AUTO_APPROVE_4K_MOVIE
+              : Permission.AUTO_APPROVE_MOVIE,
+            Permission.MANAGE_REQUESTS,
+          ],
+          { type: 'or' }
+        )
+          ? MediaRequestStatus.APPROVED
+          : MediaRequestStatus.PENDING,
+        modifiedBy: user.hasPermission(
+          [
+            requestBody.is4k
+              ? Permission.AUTO_APPROVE_4K
+              : Permission.AUTO_APPROVE,
+            requestBody.is4k
+              ? Permission.AUTO_APPROVE_4K_MOVIE
+              : Permission.AUTO_APPROVE_MOVIE,
+            Permission.MANAGE_REQUESTS,
+          ],
+          { type: 'or' }
+        )
+          ? user
+          : undefined,
+        is4k: requestBody.is4k,
+        serverId: requestBody.serverId,
+        profileId: requestBody.profileId,
+        rootFolder: requestBody.rootFolder,
+        tags: requestBody.tags,
+      });
+
+      await requestRepository.save(request);
+      return request;
+    } else {
+      const tmdbMediaShow = tmdbMedia as Awaited<
+        ReturnType<typeof tmdb.getTvShow>
+      >;
+      const requestedSeasons =
+        requestBody.seasons === 'all'
+          ? tmdbMediaShow.seasons
+              .map((season) => season.season_number)
+              .filter((sn) => sn > 0)
+          : (requestBody.seasons as number[]);
+      let existingSeasons: number[] = [];
+
+      // We need to check existing requests on this title to make sure we don't double up on seasons that were
+      // already requested. In the case they were, we just throw out any duplicates but still approve the request.
+      // (Unless there are no seasons, in which case we abort)
+      if (media.requests) {
+        existingSeasons = media.requests
+          .filter(
+            (request) =>
+              request.is4k === requestBody.is4k &&
+              request.status !== MediaRequestStatus.DECLINED
+          )
+          .reduce((seasons, request) => {
+            const combinedSeasons = request.seasons.map(
+              (season) => season.seasonNumber
+            );
+
+            return [...seasons, ...combinedSeasons];
+          }, [] as number[]);
+      }
+
+      const finalSeasons = requestedSeasons.filter(
+        (rs) => !existingSeasons.includes(rs)
+      );
+
+      if (finalSeasons.length === 0) {
+        throw new NoSeasonsAvailableError('No seasons available to request');
+      } else if (
+        quotas.tv.limit &&
+        finalSeasons.length > (quotas.tv.remaining ?? 0)
+      ) {
+        throw new QuotaRestrictedError('Series Quota exceeded.');
+      }
+
+      await mediaRepository.save(media);
+
+      const request = new MediaRequest({
+        type: MediaType.TV,
+        media,
+        requestedBy: requestUser,
+        // If the user is an admin or has the "auto approve" permission, automatically approve the request
+        status: user.hasPermission(
+          [
+            requestBody.is4k
+              ? Permission.AUTO_APPROVE_4K
+              : Permission.AUTO_APPROVE,
+            requestBody.is4k
+              ? Permission.AUTO_APPROVE_4K_TV
+              : Permission.AUTO_APPROVE_TV,
+            Permission.MANAGE_REQUESTS,
+          ],
+          { type: 'or' }
+        )
+          ? MediaRequestStatus.APPROVED
+          : MediaRequestStatus.PENDING,
+        modifiedBy: user.hasPermission(
+          [
+            requestBody.is4k
+              ? Permission.AUTO_APPROVE_4K
+              : Permission.AUTO_APPROVE,
+            requestBody.is4k
+              ? Permission.AUTO_APPROVE_4K_TV
+              : Permission.AUTO_APPROVE_TV,
+            Permission.MANAGE_REQUESTS,
+          ],
+          { type: 'or' }
+        )
+          ? user
+          : undefined,
+        is4k: requestBody.is4k,
+        serverId: requestBody.serverId,
+        profileId: requestBody.profileId,
+        rootFolder: requestBody.rootFolder,
+        languageProfileId: requestBody.languageProfileId,
+        tags: requestBody.tags,
+        seasons: finalSeasons.map(
+          (sn) =>
+            new SeasonRequest({
+              seasonNumber: sn,
+              status: user.hasPermission(
+                [
+                  requestBody.is4k
+                    ? Permission.AUTO_APPROVE_4K
+                    : Permission.AUTO_APPROVE,
+                  requestBody.is4k
+                    ? Permission.AUTO_APPROVE_4K_TV
+                    : Permission.AUTO_APPROVE_TV,
+                  Permission.MANAGE_REQUESTS,
+                ],
+                { type: 'or' }
+              )
+                ? MediaRequestStatus.APPROVED
+                : MediaRequestStatus.PENDING,
+            })
+        ),
+      });
+
+      await requestRepository.save(request);
+      return request;
+    }
+  }
+
   @PrimaryGeneratedColumn()
   public id: number;
 

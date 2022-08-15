@@ -125,7 +125,7 @@ interface MetadataResponse {
   MediaContainer: {
     Metadata: {
       ratingKey: string;
-      type: 'movie' | 'tv';
+      type: 'movie' | 'show';
       title: string;
       Guid: {
         id: `imdb://tt${number}` | `tmdb://${number}` | `tvdb://${number}`;
@@ -137,7 +137,8 @@ interface MetadataResponse {
 export interface PlexWatchlistItem {
   ratingKey: string;
   tmdbId: number;
-  type: 'movie' | 'tv';
+  tvdbId?: number;
+  type: 'movie' | 'show';
   title: string;
 }
 
@@ -322,12 +323,18 @@ class PlexTvAPI extends ExternalAPI {
           const tmdbString = metadata.Guid.find((guid) =>
             guid.id.startsWith('tmdb')
           );
+          const tvdbString = metadata.Guid.find((guid) =>
+            guid.id.startsWith('tvdb')
+          );
 
           return {
             ratingKey: metadata.ratingKey,
             // This should always be set? But I guess it also cannot be?
             // We will filter out the 0's afterwards
             tmdbId: tmdbString ? Number(tmdbString.id.split('//')[1]) : 0,
+            tvdbId: tvdbString
+              ? Number(tvdbString.id.split('//')[1])
+              : undefined,
             title: metadata.title,
             type: metadata.type,
           };
