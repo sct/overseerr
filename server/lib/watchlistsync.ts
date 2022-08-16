@@ -30,10 +30,15 @@ class WatchlistSync {
 
   private async syncUserWatchlist(user: User) {
     if (!user.plexToken) {
-      logger.debug('Skipping user watchlist sync for user without plex token', {
+      logger.warn('Skipping user watchlist sync for user without plex token', {
         label: 'Plex Watchlist Sync',
         userId: user.id,
       });
+      return;
+    }
+
+    // Skip sync if user settings have it disabled
+    if (!user.settings?.watchlistSync) {
       return;
     }
 

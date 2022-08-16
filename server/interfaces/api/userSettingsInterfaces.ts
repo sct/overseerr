@@ -14,6 +14,7 @@ export interface UserSettingsGeneralResponse {
   globalMovieQuotaLimit?: number;
   globalTvQuotaLimit?: number;
   globalTvQuotaDays?: number;
+  watchlistSync?: boolean;
 }
 
 export type NotificationAgentTypes = Record<NotificationAgentKey, number>;
