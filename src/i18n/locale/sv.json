@@ -242,9 +242,7 @@
   "components.TvDetails.viewfullcrew": "Visa hela rollistan",
   "components.TvDetails.firstAirDate": "Första sändningsdatum",
   "components.TvDetails.TvCrew.fullseriescrew": "Hela rollistan",
-  "components.StatusChacker.reloadOverseerr": "Ladda om",
   "components.StatusChacker.newversionavailable": "Applikationsuppdatering",
-  "components.StatusChacker.newversionDescription": "Overseerr har uppdateras! Klicka på knappen nedan för att ladda om sidan.",
   "components.StatusBadge.status4k": "4K {status}",
   "components.Settings.SettingsAbout.documentation": "Dokumentation",
   "components.Settings.Notifications.validationChatIdRequired": "Du måste ange ett giltigt chatt-ID",
@@ -304,7 +302,6 @@
   "components.UserList.bulkedit": "Mass-redigering",
   "components.PermissionEdit.usersDescription": "Bevilja behörighet att hantera användare. Användare med denna behörighet kan inte ändra användare med eller bevilja administratörsbehörighet.",
   "components.PermissionEdit.users": "Hantera Användare",
-  "components.PermissionEdit.settingsDescription": "Ge tillstånd att ändra globala inställningar. En användare måste ha denna behörighet för att ge den till andra.",
   "components.PermissionEdit.settings": "Hantera Inställningar",
   "components.PermissionEdit.requestDescription": "Ge tillstånd att skicka förfrågningar för icke-4K-media.",
   "components.PermissionEdit.request4kTvDescription": "Bevilja tillstånd att skicka förfrågningar för 4K-serien.",
@@ -1040,5 +1037,6 @@
   "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Du måste ange ett giltigt Discord användar-ID",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Discord användar-ID",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Det <FindDiscordIdLink>flersiffriga ID-numret</FindDiscordIdLink> som är kopplat till ditt Discord-användarkonto",
-  "components.Settings.SettingsAbout.appDataPath": "Datakatalog"
+  "components.Settings.SettingsAbout.appDataPath": "Datakatalog",
+  "components.RequestBlock.languageprofile": "Språkprofil"
 }
