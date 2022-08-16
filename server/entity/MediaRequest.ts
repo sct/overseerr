@@ -242,6 +242,22 @@ export class MediaRequest {
           }, [] as number[]);
       }
 
+      // We should also check seasons that are available/partially available but don't have existing requests
+      if (media.seasons) {
+        existingSeasons = [
+          ...existingSeasons,
+          ...media.seasons
+            .filter(
+              (season) =>
+                season[requestBody.is4k ? 'status4k' : 'status'] ===
+                  MediaStatus.AVAILABLE ||
+                season[requestBody.is4k ? 'status4k' : 'status'] ===
+                  MediaStatus.PARTIALLY_AVAILABLE
+            )
+            .map((season) => season.seasonNumber),
+        ];
+      }
+
       const finalSeasons = requestedSeasons.filter(
         (rs) => !existingSeasons.includes(rs)
       );
