@@ -252,9 +252,7 @@
   "components.Settings.Notifications.senderName": "Absendername",
   "components.Settings.Notifications.chatId": "Chat-ID",
   "components.Settings.Notifications.botAPI": "Bot-Autorisierungstoken",
-  "components.StatusChacker.reloadOverseerr": "Overseerr neu laden",
   "components.StatusChacker.newversionavailable": "Anwendungsaktualisierung",
-  "components.StatusChacker.newversionDescription": "Overseerr wurde aktualisiert! Bitte klicke auf die Schaltfläche unten, um die Seite neu zu laden.",
   "components.Settings.SettingsAbout.documentation": "Dokumentation",
   "components.NotificationTypeSelector.mediarequestedDescription": "Sende Benachrichtigungen, wenn neue Medien angefordert wurden und auf Genehmigung warten.",
   "components.NotificationTypeSelector.mediarequested": "Anfrage in Bearbeitung",
@@ -376,7 +374,6 @@
   "components.Settings.SonarrModal.toastSonarrTestFailure": "Verbindung zu Sonarr fehlgeschlagen.",
   "components.PermissionEdit.usersDescription": "Gewähre Berechtigung zum Verwalten von Benutzern. Benutzer mit dieser Berechtigung können Benutzer mit Adminrechten nicht bearbeiten oder Adminrechte erteilen.",
   "components.PermissionEdit.users": "Benutzer verwalten",
-  "components.PermissionEdit.settingsDescription": "Gewähre Berechtigung um globale Einstellungen zu ändern. Ein Benutzer muss über diese Berechtigung verfügen, um sie anderen Benutzern erteilen zu können.",
   "components.PermissionEdit.settings": "Einstellungen verwalten",
   "components.PermissionEdit.requestDescription": "Berechtigt, nicht-4K Inhalte anzufragen.",
   "components.PermissionEdit.request4kTvDescription": "Berechtigt, Serien in 4K anzufragen.",
@@ -1040,5 +1037,6 @@
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Discord User ID",
   "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Du musst eine gültige Discord User ID angeben",
   "components.Settings.SettingsAbout.appDataPath": "Datenverzeichnis",
-  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Die <FindDiscordIdLink>mehrstellige ID-Nummer</FindDiscordIdLink> Deines Discord-Accounts"
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Die <FindDiscordIdLink>mehrstellige ID-Nummer</FindDiscordIdLink> Deines Discord-Accounts",
+  "components.RequestBlock.languageprofile": "Sprachprofil"
 }
