@@ -701,6 +701,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Fhd-pro",
+      "name": "Fhd-pro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/82862079?v=4",
+      "profile": "https://github.com/Fhd-pro",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
