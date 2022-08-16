@@ -108,12 +108,12 @@ export const startJobs = (): void => {
   // Checks if media is still available in plex/sonarr/radarr libs
   scheduledJobs.push({
     id: 'availability-sync',
-    name: 'Update availability',
+    name: 'Media Availability Sync',
     type: 'process',
     interval: 'long',
     cronSchedule: jobs['availability-sync'].schedule,
     job: schedule.scheduleJob(jobs['availability-sync'].schedule, () => {
-      logger.info('Starting scheduled job: Update availability', { label: 'Jobs' });
+      logger.info('Starting scheduled job: Media Availability Sync', { label: 'Jobs' });
       availabilitySync.run();
     }),
     running: () => availabilitySync.running,

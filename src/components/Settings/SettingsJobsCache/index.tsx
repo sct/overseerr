@@ -53,7 +53,7 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   'plex-recently-added-scan': 'Plex Recently Added Scan',
   'plex-full-scan': 'Plex Full Library Scan',
   'plex-watchlist-sync': 'Plex Watchlist Sync',
-  'availability-sync': 'Media availability sync',
+  'availability-sync': 'Media Availability Sync',
   'radarr-scan': 'Radarr Scan',
   'sonarr-scan': 'Sonarr Scan',
   'download-sync': 'Download Sync',
