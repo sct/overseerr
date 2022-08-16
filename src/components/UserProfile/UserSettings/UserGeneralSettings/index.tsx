@@ -49,8 +49,12 @@ const messages = defineMessages({
   discordIdTip:
     'The <FindDiscordIdLink>multi-digit ID number</FindDiscordIdLink> associated with your Discord user account',
   validationDiscordId: 'You must provide a valid Discord user ID',
-  plexwatchlistsync: 'Plex Watchlist Auto-Request',
-  plexwatchlistsynctip: 'Automatically request Plex watchlist items.',
+  plexwatchlistsyncmovies: 'Auto-Request Movies',
+  plexwatchlistsyncmoviestip:
+    'Automatically request movies on your Plex watchlist',
+  plexwatchlistsyncseries: 'Auto-Request Series',
+  plexwatchlistsyncseriestip:
+    'Automatically request series on your Plex watchlist',
 });
 
 const UserGeneralSettings = () => {
@@ -124,7 +128,8 @@ const UserGeneralSettings = () => {
           movieQuotaDays: data?.movieQuotaDays,
           tvQuotaLimit: data?.tvQuotaLimit,
           tvQuotaDays: data?.tvQuotaDays,
-          watchlistSync: false,
+          watchlistSyncMovies: data?.watchlistSyncMovies,
+          watchlistSyncTv: data?.watchlistSyncTv,
         }}
         validationSchema={UserGeneralSettingsSchema}
         enableReinitialize
@@ -142,6 +147,8 @@ const UserGeneralSettings = () => {
               movieQuotaDays: movieQuotaEnabled ? values.movieQuotaDays : null,
               tvQuotaLimit: tvQuotaEnabled ? values.tvQuotaLimit : null,
               tvQuotaDays: tvQuotaEnabled ? values.tvQuotaDays : null,
+              watchlistSyncMovies: values.watchlistSyncMovies,
+              watchlistSyncTv: values.watchlistSyncTv,
             });
 
             if (currentUser?.id === user?.id && setLocale) {
@@ -412,24 +419,65 @@ const UserGeneralSettings = () => {
                     </div>
                   </>
                 )}
-              <div className="form-row">
-                <label htmlFor="watchlistSync" className="checkbox-label">
-                  <span>{intl.formatMessage(messages.plexwatchlistsync)}</span>
-                  <span className="label-tip">
-                    {intl.formatMessage(messages.plexwatchlistsynctip)}
-                  </span>
-                </label>
-                <div className="form-input-area">
-                  <Field
-                    type="checkbox"
-                    id="watchlistSync"
-                    name="watchlistSync"
-                    onChange={() => {
-                      setFieldValue('watchlistSync', !values.watchlistSync);
-                    }}
-                  />
+              {hasPermission(
+                [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_MOVIE],
+                { type: 'or' }
+              ) && (
+                <div className="form-row">
+                  <label
+                    htmlFor="watchlistSyncMovies"
+                    className="checkbox-label"
+                  >
+                    <span>
+                      {intl.formatMessage(messages.plexwatchlistsyncmovies)}
+                    </span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.plexwatchlistsyncmoviestip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="watchlistSyncMovies"
+                      name="watchlistSyncMovies"
+                      onChange={() => {
+                        setFieldValue(
+                          'watchlistSyncMovies',
+                          !values.watchlistSyncMovies
+                        );
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
+              {hasPermission(
+                [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_TV],
+                { type: 'or' }
+              ) && (
+                <div className="form-row">
+                  <label htmlFor="watchlistSyncTv" className="checkbox-label">
+                    <span>
+                      {intl.formatMessage(messages.plexwatchlistsyncseries)}
+                    </span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.plexwatchlistsyncseriestip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="watchlistSyncTv"
+                      name="watchlistSyncTv"
+                      onChange={() => {
+                        setFieldValue(
+                          'watchlistSyncTv',
+                          !values.watchlistSyncTv
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="ml-3 inline-flex rounded-md shadow-sm">

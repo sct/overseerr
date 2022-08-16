@@ -12,6 +12,7 @@ import {
   QuotaRestrictedError,
   RequestPermissionError,
 } from '../entity/MediaRequest';
+import { Permission } from './permissions';
 
 class WatchlistSync {
   public async syncWatchlist() {
@@ -37,8 +38,24 @@ class WatchlistSync {
       return;
     }
 
-    // Skip sync if user settings have it disabled
-    if (!user.settings?.watchlistSync) {
+    if (
+      !user.hasPermission(
+        [
+          Permission.AUTO_REQUEST,
+          Permission.AUTO_REQUEST_MOVIE,
+          Permission.AUTO_APPROVE_TV,
+        ],
+        { type: 'or' }
+      )
+    ) {
+      return;
+    }
+
+    if (
+      !user.settings?.watchlistSyncMovies &&
+      !user.settings?.watchlistSyncTv
+    ) {
+      // Skip sync if user settings have it disabled
       return;
     }
 
@@ -72,6 +89,25 @@ class WatchlistSync {
 
           if (mediaItem.type === 'show' && !mediaItem.tvdbId) {
             throw new Error('Missing TVDB ID from Plex Metadata');
+          }
+
+          // Check if they have auto-request permissons and watchlist sync
+          // enabled for the media type
+          if (
+            ((!user.hasPermission(
+              [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_MOVIE],
+              { type: 'or' }
+            ) ||
+              !user.settings?.watchlistSyncMovies) &&
+              mediaItem.type === 'movie') ||
+            ((!user.hasPermission(
+              [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_TV],
+              { type: 'or' }
+            ) ||
+              !user.settings?.watchlistSyncTv) &&
+              mediaItem.type === 'show')
+          ) {
+            return;
           }
 
           await MediaRequest.request(
