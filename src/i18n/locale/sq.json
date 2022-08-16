@@ -248,7 +248,6 @@
   "components.PermissionEdit.requestDescription": "Jep leje për të paraqitur kërkesat për media jo-4K.",
   "components.PermissionEdit.requestTv": "Kërko Serialin",
   "components.PermissionEdit.requestTvDescription": "Jep leje për të paraqitur kërkesa për seri jo-4K.",
-  "components.PermissionEdit.settings": "Menaxho Cilësimet",
   "components.PermissionEdit.settingsDescription": "Jep leje për të modifikuar cilësimet globale. Një përdorues duhet ta ketë këtë leje për t'ua dhënë të tjerëve.",
   "components.PermissionEdit.users": "Menaxho Përdoruesit",
   "components.PermissionEdit.usersDescription": "Jep leje për të menaxhuar përdoruesit. Përdoruesit me këtë leje nuk mund të modifikojnë ose të japin privilegjin e administratorit.",
@@ -689,9 +688,7 @@
   "components.Setup.welcome": "Mirë se vini në Overseerr",
   "components.StatusBadge.status": "{status}",
   "components.StatusBadge.status4k": "{status} 4K",
-  "components.StatusChacker.newversionDescription": "Overseerr është përditësuar! Ju lutemi, klikoni butonin më poshtë për të ringarkuar faqen.",
   "components.StatusChacker.newversionavailable": "Përditësimi i aplikacionit",
-  "components.StatusChacker.reloadOverseerr": "Ringarko",
   "components.TvDetails.TvCast.fullseriescast": "Kast i plotë i serisë",
   "components.TvDetails.TvCrew.fullseriescrew": "Ekuipazhi i plotë i serisë",
   "components.TvDetails.anime": "Anime",
@@ -1039,5 +1036,6 @@
   "i18n.next": "Tjetra",
   "i18n.experimental": "Eksperimentale",
   "i18n.noresults": "S'ka rezultate.",
-  "i18n.notrequested": "Nuk është Kerkuar"
+  "i18n.notrequested": "Nuk është Kerkuar",
+  "components.Settings.SettingsAbout.appDataPath": "Direktoria e të dhënave"
 }
