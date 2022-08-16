@@ -588,7 +588,10 @@ const UserList = () => {
                   </Link>
                   <div className="ml-4">
                     <Link href={`/users/${user.id}`}>
-                      <a className="text-base font-bold leading-5 transition duration-300 hover:underline">
+                      <a
+                        className="text-base font-bold leading-5 transition duration-300 hover:underline"
+                        data-testid="user-list-username-link"
+                      >
                         {user.displayName}
                       </a>
                     </Link>
