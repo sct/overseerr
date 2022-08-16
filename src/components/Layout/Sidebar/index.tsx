@@ -81,6 +81,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     svgIcon: <CogIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/settings/,
     requiredPermission: Permission.ADMIN,
+    dataTestId: 'sidebar-menu-settings',
   },
 ];
 
