@@ -25,6 +25,8 @@ import '../styles/globals.css';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
   switch (locale) {
+    case 'ar':
+      return import('../i18n/locale/ar.json');
     case 'ca':
       return import('../i18n/locale/ca.json');
     case 'cs':
@@ -39,12 +41,14 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/es.json');
     case 'fr':
       return import('../i18n/locale/fr.json');
+    case 'hu':
+      return import('../i18n/locale/hu.json');
     case 'it':
       return import('../i18n/locale/it.json');
     case 'ja':
       return import('../i18n/locale/ja.json');
-    case 'hu':
-      return import('../i18n/locale/hu.json');
+    case 'lt':
+      return import('../i18n/locale/lt.json');
     case 'nb-NO':
       return import('../i18n/locale/nb_NO.json');
     case 'nl':

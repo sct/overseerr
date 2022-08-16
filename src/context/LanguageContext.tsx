@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import React from 'react';
 
 export type AvailableLocale =
+  | 'ar'
   | 'ca'
   | 'cs'
   | 'da'
@@ -9,10 +10,11 @@ export type AvailableLocale =
   | 'en'
   | 'el'
   | 'es'
-  | 'it'
-  | 'ja'
   | 'fr'
   | 'hu'
+  | 'it'
+  | 'ja'
+  | 'lt'
   | 'nb-NO'
   | 'nl'
   | 'pl'
@@ -63,6 +65,10 @@ export const availableLanguages: AvailableLanguageObject = {
     code: 'it',
     display: 'Italiano',
   },
+  lt: {
+    code: 'lt',
+    display: 'Lietuvių',
+  },
   hu: {
     code: 'hu',
     display: 'Magyar',
@@ -106,6 +112,10 @@ export const availableLanguages: AvailableLanguageObject = {
   sr: {
     code: 'sr',
     display: 'српски језик',
+  },
+  ar: {
+    code: 'ar',
+    display: 'العربية',
   },
   ja: {
     code: 'ja',
