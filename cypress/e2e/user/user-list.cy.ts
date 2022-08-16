@@ -15,7 +15,7 @@ describe('User List', () => {
     cy.get('[data-testid=sidebar-toggle]').click();
     cy.get('[data-testid=sidebar-menu-users-mobile]').click();
 
-    cy.get('[data-testid=page-header').should('contain', 'User List');
+    cy.get('[data-testid=page-header]').should('contain', 'User List');
   });
 
   it('can find the admin user and friend user in the user list', () => {
@@ -30,7 +30,7 @@ describe('User List', () => {
 
     cy.contains('Create Local User').click();
 
-    cy.get('[data-testid=modal-title').should('contain', 'Create Local User');
+    cy.get('[data-testid=modal-title]').should('contain', 'Create Local User');
 
     cy.get('#displayName').type(testUser.displayName);
     cy.get('#email').type(testUser.emailAddress);
@@ -38,7 +38,7 @@ describe('User List', () => {
 
     cy.intercept('/api/v1/user?take=10&skip=0&sort=displayname').as('user');
 
-    cy.get('[data-testid=modal-ok-button').click();
+    cy.get('[data-testid=modal-ok-button]').click();
 
     cy.wait('@user');
     // Wait a little longer for the user list to fully re-render
@@ -58,7 +58,7 @@ describe('User List', () => {
 
     cy.intercept('/api/v1/user?take=10&skip=0&sort=displayname').as('user');
 
-    cy.get('[data-testid=modal-ok-button').should('contain', 'Delete').click();
+    cy.get('[data-testid=modal-ok-button]').should('contain', 'Delete').click();
 
     cy.wait('@user');
     cy.wait(1000);

@@ -7,7 +7,7 @@ import useRouteGuard from '../../../hooks/useRouteGuard';
 import { Permission } from '../../../hooks/useUser';
 
 const NotificationsWebPushPage: NextPage = () => {
-  useRouteGuard(Permission.MANAGE_SETTINGS);
+  useRouteGuard(Permission.ADMIN);
   return (
     <SettingsLayout>
       <SettingsNotifications>

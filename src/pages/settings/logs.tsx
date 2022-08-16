@@ -6,7 +6,7 @@ import useRouteGuard from '../../hooks/useRouteGuard';
 import { Permission } from '../../hooks/useUser';
 
 const SettingsLogsPage: NextPage = () => {
-  useRouteGuard(Permission.MANAGE_SETTINGS);
+  useRouteGuard(Permission.ADMIN);
   return (
     <SettingsLayout>
       <SettingsLogs />

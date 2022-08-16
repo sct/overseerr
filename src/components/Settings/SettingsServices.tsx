@@ -43,6 +43,7 @@ const messages = defineMessages({
     'A 4K {serverType} server must be marked as default in order to enable users to submit 4K {mediaType} requests.',
   mediaTypeMovie: 'movie',
   mediaTypeSeries: 'series',
+  deleteServer: 'Delete {serverType} Server',
 });
 
 interface ServerInstanceProps {
@@ -256,7 +257,7 @@ const SettingsServices: React.FC = () => {
         leaveTo="opacity-0"
       >
         <Modal
-          okText="Delete"
+          okText={intl.formatMessage(globalMessages.delete)}
           okButtonType="danger"
           onOk={() => deleteServer()}
           onCancel={() =>
@@ -266,7 +267,10 @@ const SettingsServices: React.FC = () => {
               type: 'radarr',
             })
           }
-          title="Delete Server"
+          title={intl.formatMessage(messages.deleteServer, {
+            serverType:
+              deleteServerModal.type === 'radarr' ? 'Radarr' : 'Sonarr',
+          })}
           iconSvg={<TrashIcon />}
         >
           {intl.formatMessage(messages.deleteserverconfirm)}

@@ -67,14 +67,9 @@ const PermissionOption: React.FC<PermissionOptionProps> = ({
   }
 
   if (
-    // Non-Admin users cannot modify the Admin permission
-    (actingUser &&
-      !hasPermission(Permission.ADMIN, actingUser.permissions) &&
-      option.permission === Permission.ADMIN) ||
-    // Users without the Manage Settings permission cannot modify/grant that permission
-    (actingUser &&
-      !hasPermission(Permission.MANAGE_SETTINGS, actingUser.permissions) &&
-      option.permission === Permission.MANAGE_SETTINGS)
+    // Only the owner can modify the Admin permission
+    actingUser?.id !== 1 &&
+    option.permission === Permission.ADMIN
   ) {
     disabled = true;
   }

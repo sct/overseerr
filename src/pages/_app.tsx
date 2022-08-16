@@ -11,7 +11,7 @@ import Layout from '../components/Layout';
 import LoadingBar from '../components/LoadingBar';
 import PWAHeader from '../components/PWAHeader';
 import ServiceWorkerSetup from '../components/ServiceWorkerSetup';
-import StatusChecker from '../components/StatusChacker';
+import StatusChecker from '../components/StatusChecker';
 import Toast from '../components/Toast';
 import ToastContainer from '../components/ToastContainer';
 import { InteractionProvider } from '../context/InteractionContext';

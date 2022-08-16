@@ -41,8 +41,7 @@ const messages = defineMessages({
   toastSettingsFailure: 'Something went wrong while saving settings.',
   hideAvailable: 'Hide Available Media',
   csrfProtection: 'Enable CSRF Protection',
-  csrfProtectionTip:
-    'Set external API access to read-only (requires HTTPS, and Overseerr must be reloaded for changes to take effect)',
+  csrfProtectionTip: 'Set external API access to read-only (requires HTTPS)',
   csrfProtectionHoverTip:
     'Do NOT enable this setting unless you understand what you are doing!',
   cacheImages: 'Enable Image Caching',
@@ -50,7 +49,7 @@ const messages = defineMessages({
     'Optimize and store all images locally (consumes a significant amount of disk space)',
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
-    'Allow Overseerr to correctly register client IP addresses behind a proxy (Overseerr must be reloaded for changes to take effect)',
+    'Allow Overseerr to correctly register client IP addresses behind a proxy',
   validationApplicationTitle: 'You must provide an application title',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
@@ -151,6 +150,7 @@ const SettingsMain: React.FC = () => {
                 trustProxy: values.trustProxy,
               });
               mutate('/api/v1/settings/public');
+              mutate('/api/v1/status');
 
               if (setLocale) {
                 setLocale(
@@ -252,7 +252,12 @@ const SettingsMain: React.FC = () => {
                 </div>
                 <div className="form-row">
                   <label htmlFor="trustProxy" className="checkbox-label">
-                    <span>{intl.formatMessage(messages.trustProxy)}</span>
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.trustProxy)}
+                    </span>
+                    <Badge badgeType="primary">
+                      {intl.formatMessage(globalMessages.restartRequired)}
+                    </Badge>
                     <span className="label-tip">
                       {intl.formatMessage(messages.trustProxyTip)}
                     </span>
@@ -273,8 +278,11 @@ const SettingsMain: React.FC = () => {
                     <span className="mr-2">
                       {intl.formatMessage(messages.csrfProtection)}
                     </span>
-                    <Badge badgeType="danger">
+                    <Badge badgeType="danger" className="mr-2">
                       {intl.formatMessage(globalMessages.advanced)}
+                    </Badge>
+                    <Badge badgeType="primary">
+                      {intl.formatMessage(globalMessages.restartRequired)}
                     </Badge>
                     <span className="label-tip">
                       {intl.formatMessage(messages.csrfProtectionTip)}

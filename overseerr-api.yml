@@ -1793,14 +1793,14 @@ components:
 paths:
   /status:
     get:
-      summary: Get Overseerr version
-      description: Returns the current Overseerr version in a JSON object.
+      summary: Get Overseerr status
+      description: Returns the current Overseerr status in a JSON object.
       security: []
       tags:
         - public
       responses:
         '200':
-          description: Returned version
+          description: Returned status
           content:
             application/json:
               schema:
@@ -1811,6 +1811,12 @@ paths:
                     example: 1.0.0
                   commitTag:
                     type: string
+                  updateAvailable:
+                    type: boolean
+                  commitsBehind:
+                    type: number
+                  restartRequired:
+                    type: boolean
   /status/appdata:
     get:
       summary: Get application data volume status
