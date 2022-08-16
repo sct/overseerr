@@ -223,9 +223,7 @@
   "components.TvDetails.network": "{networkCount, plural, one {Netwerk} other {Netwerken}}",
   "components.TvDetails.firstAirDate": "Datum eerste uitzending",
   "components.TvDetails.anime": "Anime",
-  "components.StatusChacker.reloadOverseerr": "Herladen",
   "components.StatusChacker.newversionavailable": "Toepassingsupdate",
-  "components.StatusChacker.newversionDescription": "Overseerr is geüpdatet! Klik op de onderstaande knop om de pagina opnieuw te laden.",
   "components.Settings.toastSettingsSuccess": "Instellingen succesvol opgeslagen!",
   "components.Settings.toastSettingsFailure": "Er ging iets mis bij het opslaan van de instellingen.",
   "components.Settings.toastApiKeySuccess": "Nieuwe API-sleutel succesvol gegenereerd!",
@@ -368,7 +366,6 @@
   "components.Settings.csrfProtection": "CSRF-bescherming inschakelen",
   "components.PermissionEdit.usersDescription": "Toestemming geven om gebruikers te beheren. Gebruikers met deze toestemming kunnen gebruikers met beheerdersrechten niet wijzigen of die rechten verlenen.",
   "components.PermissionEdit.users": "Gebruikers beheren",
-  "components.PermissionEdit.settingsDescription": "Toestemming geven om algemene instellingen te wijzigen. Een gebruiker heeft deze machtiging nodig om ze aan anderen te verlenen.",
   "components.PermissionEdit.settings": "Instellingen beheren",
   "components.PermissionEdit.requestDescription": "Toestemming geven om niet-4K-media aan te vragen.",
   "components.PermissionEdit.request4kTvDescription": "Toestemming geven om series in 4K aan te vragen.",
@@ -1040,5 +1037,6 @@
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Gebruikers-ID Discord",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Het <FindDiscordIdLink>meercijferige ID-nummer</FindDiscordIdLink> van je Discord-account",
   "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Je moet een geldige gebruikers-ID van Discord opgeven",
-  "components.Settings.SettingsAbout.appDataPath": "Gegevensmap"
+  "components.Settings.SettingsAbout.appDataPath": "Gegevensmap",
+  "components.RequestBlock.languageprofile": "Taalprofiel"
 }

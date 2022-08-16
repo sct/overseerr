@@ -300,7 +300,6 @@
   "components.PersonDetails.birthdate": "Født {birthdate}",
   "components.PersonDetails.alsoknownas": "Også kjent som: {names}",
   "components.PermissionEdit.viewrequests": "Vis Forespørsler",
-  "components.PermissionEdit.settingsDescription": "Gi tilgang til å endre globale innstillinger. En bruker må ha denne tilgangen for å kunne gi den til andre brukere.",
   "components.PermissionEdit.settings": "Administrer Innstillinger",
   "components.PermissionEdit.requestDescription": "Gi tilgang til å forespørre medie som ikke er i 4K.",
   "components.PermissionEdit.request4kTvDescription": "Gi tilgang til å forespørre serier i 4K.",
@@ -727,7 +726,6 @@
   "components.NotificationTypeSelector.userissuecreatedDescription": "Bli varslet når andre brukere rapporterer avvik.",
   "components.PermissionEdit.createissuesDescription": "Gi tillatelse til å rapportere avvik.",
   "components.RequestModal.requestmovies4k": "Forespør {count} {count, plural, one {Film} other {Filmer}} i 4K",
-  "components.StatusChacker.reloadOverseerr": "Last på nytt",
   "components.UserList.email": "E-postadresse",
   "components.UserList.validationpasswordminchars": "Passordet er for kort; det må bestå av minimum 8 tegn",
   "i18n.status": "Status",
@@ -762,7 +760,6 @@
   "i18n.next": "Neste",
   "components.Settings.SettingsJobsCache.editJobSchedule": "Endre Oppgave",
   "components.Settings.SettingsJobsCache.editJobSchedulePrompt": "Frekvens",
-  "components.StatusChacker.newversionavailable": "Programvare-oppdatering",
   "components.TvDetails.firstAirDate": "Første gang sendt",
   "i18n.deleting": "Sletter…",
   "components.UserProfile.UserSettings.UserNotificationSettings.emailsettingssaved": "Innstillingene for E-post ble lagret!",
@@ -879,7 +876,6 @@
   "components.TvDetails.productioncountries": "Produksjonsland",
   "components.TvDetails.seasons": "{seasonCount, plural, one {# Sesong} other {# Sesonger}}",
   "components.TvDetails.originaltitle": "Originaltittel",
-  "components.StatusChacker.newversionDescription": "Overseerr har blitt oppdatert! Vennligst trykk på knappen under for å laste siden på nytt.",
   "components.TvDetails.anime": "Animasjon",
   "components.TvDetails.play4konplex": "Spill av i 4K med Plex",
   "components.UserList.localuser": "Lokal bruker",
@@ -1040,5 +1036,6 @@
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "Discord Bruker ID",
   "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Du må oppgi en gyldig Bruker ID for Discord",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "<FindDiscordIdLink>ID-nummeret</FindDiscordIdLink> til din brukerkonto",
-  "components.Settings.SettingsAbout.appDataPath": "Datakatalog"
+  "components.Settings.SettingsAbout.appDataPath": "Datakatalog",
+  "components.RequestBlock.languageprofile": "Språkprofil"
 }
