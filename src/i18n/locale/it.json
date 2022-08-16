@@ -252,9 +252,7 @@
   "components.Settings.Notifications.senderName": "Nome del mittente",
   "components.Settings.Notifications.chatId": "ID chat",
   "components.Settings.Notifications.botAPI": "Token di autorizzazione bot",
-  "components.StatusChacker.reloadOverseerr": "Ricarica",
   "components.StatusChacker.newversionavailable": "Aggiornamento Applicazione",
-  "components.StatusChacker.newversionDescription": "Overseerr è stato aggiornato! Premi il pulsante qui sotto per ricaricare la pagina.",
   "components.Settings.SettingsAbout.documentation": "Documentazione",
   "components.NotificationTypeSelector.mediarequestedDescription": "Invia notifiche quando gli utenti presentano nuove richieste di media che richiedono approvazione.",
   "components.NotificationTypeSelector.mediarequested": "Richiesta in attesa di approvazione",
@@ -340,7 +338,6 @@
   "components.UserList.bulkedit": "Modifica collettiva",
   "components.UserList.userssaved": "Permessi salvati con successo!",
   "components.PermissionEdit.users": "Gestisci gli utenti",
-  "components.PermissionEdit.settings": "Gestisci le impostazioni",
   "components.PermissionEdit.request4kTv": "Richiedi serie in 4K",
   "components.PermissionEdit.request4kMovies": "Rechiedi film in 4K",
   "components.PermissionEdit.managerequests": "Gestisci Richieste",
@@ -439,7 +436,6 @@
   "components.PermissionEdit.viewrequests": "Visualizza le richieste",
   "components.PermissionEdit.usersDescription": "Concede il permesso di gestire gli utenti. Gli utenti con questo permesso non possono modificare gli utenti con privilegio di Amministratore, o concederlo.",
   "components.PermissionEdit.requestDescription": "Concedere l'autorizzazione per richiedere media non 4K.",
-  "components.PermissionEdit.settingsDescription": "Permette di modificare le impostazioni globali. Un utente deve avere questa autorizzazione per poterla concedere ad altri.",
   "components.PermissionEdit.request4kTvDescription": "Concede l'autorizzazione per richiedere serie in 4K.",
   "components.PermissionEdit.request4kMoviesDescription": "Concede l'autorizzazione per richiedere film in 4K.",
   "components.PermissionEdit.request4kDescription": "Concede l'autorizzazione per richiedere media in 4K.",
@@ -1039,5 +1035,7 @@
   "components.Settings.Notifications.NotificationsPushbullet.channelTag": "Tag del canale",
   "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "È necessario fornire un ID Utente Discord valido",
   "components.UserProfile.UserSettings.UserGeneralSettings.discordId": "ID Utente Discord",
-  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Il <FindDiscordIdLink>numero ID a più cifre</FindDiscordIdLink> associato al tuo account utente Discord"
+  "components.UserProfile.UserSettings.UserGeneralSettings.discordIdTip": "Il <FindDiscordIdLink>numero ID a più cifre</FindDiscordIdLink> associato al tuo account utente Discord",
+  "components.Settings.SettingsAbout.appDataPath": "Cartella applicazione",
+  "components.RequestBlock.languageprofile": "Lingua Profilo"
 }
