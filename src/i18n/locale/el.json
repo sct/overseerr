@@ -1,6 +1,5 @@
 {
   "components.PermissionEdit.users": "Διαχείριση Χρηστών",
-  "components.PermissionEdit.settingsDescription": "Εκχώρηση άδειας για τροποποίηση των ρυθμίσεων Overseerr. Ένας χρήστης χρειάζεται να έχει αυτό το δικαίωμα για να το εκχωρήσει σε άλλους.",
   "components.PermissionEdit.settings": "Διαχείριση Ρυθμίσεων",
   "components.PermissionEdit.requestTvDescription": "Εκχώρηση άδειας για αιτήματα που δεν είναι 4K σειρές.",
   "components.PermissionEdit.requestTv": "Αιτήματα για Σειρές",
@@ -636,9 +635,7 @@
   "components.TvDetails.anime": "Anime",
   "components.TvDetails.TvCrew.fullseriescrew": "Όλο το Πλήρωμα της Σειράς",
   "components.TvDetails.TvCast.fullseriescast": "Όλοι οι Ηθοποιοί της Σειράς",
-  "components.StatusChacker.reloadOverseerr": "Επαναφόρτωση",
   "components.StatusChacker.newversionavailable": "Ενημέρωση εφαρμογής",
-  "components.StatusChacker.newversionDescription": "Το Overseerr έχει ενημερωθεί! Κάνε κλικ στο παρακάτω κουμπί για να φορτώσει ξανά η σελίδα.",
   "components.StatusBadge.status4k": "4K {status}",
   "components.Setup.welcome": "Καλώς ήρθες στο Overseerr",
   "components.Setup.tip": "Συμβουλή",
