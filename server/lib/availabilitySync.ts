@@ -299,9 +299,7 @@ class AvailabilitySync {
     });
 
     if (!admin) {
-      logger.warning(
-        'No plex admin configured. Availability sync will not be ran'
-      );
+      logger.warning('No admin configured. Availability sync skipped.');
       return;
     }
 

@@ -566,7 +566,6 @@
   "components.Settings.SettingsJobsCache.radarr-scan": "Radarr-scan",
   "components.Settings.SettingsJobsCache.plex-recently-added-scan": "Plex recent toegevoegde scan",
   "components.Settings.SettingsJobsCache.plex-full-scan": "Plex volledige bibliotheekscan",
-  "components.Settings.SettingsJobsCache.availability-sync": "Volledige beschikbaarheidsscan",
   "components.Settings.Notifications.validationUrl": "Je moet een geldige URL opgeven",
   "components.Settings.Notifications.botAvatarUrl": "URL bot-avatar",
   "components.RequestList.RequestItem.requested": "Aangevraagd",
