@@ -5,7 +5,7 @@ Cypress.Commands.add('login', (email, password) => {
     [email, password],
     () => {
       cy.visit('/login');
-      cy.contains('Use your Overseerr account').click();
+      cy.contains(/^Use your .+ password$/).click();
 
       cy.get('[data-testid=email]').type(email);
       cy.get('[data-testid=password]').type(password);
