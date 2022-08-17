@@ -9,7 +9,7 @@ import { URL } from 'url';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
-import dataSource from '../../datasource';
+import { getRepository } from '../../datasource';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
@@ -89,7 +89,7 @@ settingsRoutes.get('/plex', (_req, res) => {
 });
 
 settingsRoutes.post('/plex', async (req, res, next) => {
-  const userRepository = dataSource.getRepository(User);
+  const userRepository = getRepository(User);
   const settings = getSettings();
   try {
     const admin = await userRepository.findOneOrFail({
@@ -126,7 +126,7 @@ settingsRoutes.post('/plex', async (req, res, next) => {
 });
 
 settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
-  const userRepository = dataSource.getRepository(User);
+  const userRepository = getRepository(User);
   try {
     const admin = await userRepository.findOneOrFail({
       select: { id: true, plexToken: true },
@@ -206,7 +206,7 @@ settingsRoutes.get('/plex/library', async (req, res) => {
   const settings = getSettings();
 
   if (req.query.sync) {
-    const userRepository = dataSource.getRepository(User);
+    const userRepository = getRepository(User);
     const admin = await userRepository.findOneOrFail({
       select: { id: true, plexToken: true },
       where: { id: 1 },
@@ -279,7 +279,7 @@ settingsRoutes.get(
   '/plex/users',
   isAuthenticated(Permission.MANAGE_USERS),
   async (req, res, next) => {
-    const userRepository = dataSource.getRepository(User);
+    const userRepository = getRepository(User);
     const qb = userRepository.createQueryBuilder('user');
 
     try {
@@ -556,8 +556,8 @@ settingsRoutes.post(
 );
 
 settingsRoutes.get('/about', async (req, res) => {
-  const mediaRepository = dataSource.getRepository(Media);
-  const mediaRequestRepository = dataSource.getRepository(MediaRequest);
+  const mediaRepository = getRepository(Media);
+  const mediaRequestRepository = getRepository(MediaRequest);
 
   const totalMediaItems = await mediaRepository.count();
   const totalRequests = await mediaRequestRepository.count();

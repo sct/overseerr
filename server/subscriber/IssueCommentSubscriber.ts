@@ -1,13 +1,10 @@
 import { sortBy } from 'lodash';
-import {
-  EntitySubscriberInterface,
-  EventSubscriber,
-  InsertEvent,
-} from 'typeorm';
+import type { EntitySubscriberInterface, InsertEvent } from 'typeorm';
+import { EventSubscriber } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
 import { IssueType, IssueTypeName } from '../constants/issue';
 import { MediaType } from '../constants/media';
-import dataSource from '../datasource';
+import { getRepository } from '../datasource';
 import IssueComment from '../entity/IssueComment';
 import Media from '../entity/Media';
 import notificationManager, { Notification } from '../lib/notifications';
@@ -29,13 +26,13 @@ export class IssueCommentSubscriber
 
     try {
       const issue = (
-        await dataSource.getRepository(IssueComment).findOneOrFail({
+        await getRepository(IssueComment).findOneOrFail({
           where: { id: entity.id },
           relations: { issue: true },
         })
       ).issue;
 
-      const media = await dataSource.getRepository(Media).findOneOrFail({
+      const media = await getRepository(Media).findOneOrFail({
         where: { id: issue.media.id },
       });
 

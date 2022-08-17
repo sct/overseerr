@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import TheMovieDb from '../api/themoviedb';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
-import dataSource from '../datasource';
+import { getRepository } from '../datasource';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import SeasonRequest from '../entity/SeasonRequest';
@@ -83,8 +83,7 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
           sortFilter = 'request.id';
       }
 
-      let query = dataSource
-        .getRepository(MediaRequest)
+      let query = getRepository(MediaRequest)
         .createQueryBuilder('request')
         .leftJoinAndSelect('request.media', 'media')
         .leftJoinAndSelect('request.seasons', 'seasons')
@@ -145,9 +144,9 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
 
 requestRoutes.post('/', async (req, res, next) => {
   const tmdb = new TheMovieDb();
-  const mediaRepository = dataSource.getRepository(Media);
-  const requestRepository = dataSource.getRepository(MediaRequest);
-  const userRepository = dataSource.getRepository(User);
+  const mediaRepository = getRepository(Media);
+  const requestRepository = getRepository(MediaRequest);
+  const userRepository = getRepository(User);
 
   try {
     let requestUser = req.user;
@@ -441,7 +440,7 @@ requestRoutes.post('/', async (req, res, next) => {
 });
 
 requestRoutes.get('/count', async (_req, res, next) => {
-  const requestRepository = dataSource.getRepository(MediaRequest);
+  const requestRepository = getRepository(MediaRequest);
 
   try {
     const query = requestRepository
@@ -524,7 +523,7 @@ requestRoutes.get('/count', async (_req, res, next) => {
 });
 
 requestRoutes.get('/:requestId', async (req, res, next) => {
-  const requestRepository = dataSource.getRepository(MediaRequest);
+  const requestRepository = getRepository(MediaRequest);
 
   try {
     const request = await requestRepository.findOneOrFail({
@@ -558,8 +557,8 @@ requestRoutes.get('/:requestId', async (req, res, next) => {
 requestRoutes.put<{ requestId: string }>(
   '/:requestId',
   async (req, res, next) => {
-    const requestRepository = dataSource.getRepository(MediaRequest);
-    const userRepository = dataSource.getRepository(User);
+    const requestRepository = getRepository(MediaRequest);
+    const userRepository = getRepository(User);
     try {
       const request = await requestRepository.findOne({
         where: {
@@ -612,7 +611,7 @@ requestRoutes.put<{ requestId: string }>(
 
         requestRepository.save(request);
       } else if (req.body.mediaType === MediaType.TV) {
-        const mediaRepository = dataSource.getRepository(Media);
+        const mediaRepository = getRepository(Media);
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;
         request.rootFolder = req.body.rootFolder;
@@ -696,7 +695,7 @@ requestRoutes.put<{ requestId: string }>(
 );
 
 requestRoutes.delete('/:requestId', async (req, res, next) => {
-  const requestRepository = dataSource.getRepository(MediaRequest);
+  const requestRepository = getRepository(MediaRequest);
 
   try {
     const request = await requestRepository.findOneOrFail({
@@ -733,7 +732,7 @@ requestRoutes.post<{
   '/:requestId/retry',
   isAuthenticated(Permission.MANAGE_REQUESTS),
   async (req, res, next) => {
-    const requestRepository = dataSource.getRepository(MediaRequest);
+    const requestRepository = getRepository(MediaRequest);
 
     try {
       const request = await requestRepository.findOneOrFail({
@@ -761,7 +760,7 @@ requestRoutes.post<{
   '/:requestId/:status',
   isAuthenticated(Permission.MANAGE_REQUESTS),
   async (req, res, next) => {
-    const requestRepository = dataSource.getRepository(MediaRequest);
+    const requestRepository = getRepository(MediaRequest);
 
     try {
       const request = await requestRepository.findOneOrFail({

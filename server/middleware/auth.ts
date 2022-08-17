@@ -1,4 +1,4 @@
-import dataSource from '../datasource';
+import { getRepository } from '../datasource';
 import { User } from '../entity/User';
 import type { Permission, PermissionCheckOptions } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
@@ -8,7 +8,7 @@ export const checkUser: Middleware = async (req, _res, next) => {
   let user: User | undefined | null;
 
   if (req.header('X-API-Key') === settings.main.apiKey) {
-    const userRepository = dataSource.getRepository(User);
+    const userRepository = getRepository(User);
 
     let userId = 1; // Work on original administrator account
 
@@ -19,7 +19,7 @@ export const checkUser: Middleware = async (req, _res, next) => {
 
     user = await userRepository.findOne({ where: { id: userId } });
   } else if (req.session?.userId) {
-    const userRepository = dataSource.getRepository(User);
+    const userRepository = getRepository(User);
 
     user = await userRepository.findOne({
       where: { id: req.session.userId },

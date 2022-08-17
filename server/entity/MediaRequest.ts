@@ -19,7 +19,7 @@ import SonarrAPI from '../api/servarr/sonarr';
 import TheMovieDb from '../api/themoviedb';
 import { ANIME_KEYWORD_ID } from '../api/themoviedb/constants';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
-import dataSource from '../datasource';
+import { getRepository } from '../datasource';
 import notificationManager, { Notification } from '../lib/notifications';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
@@ -132,7 +132,7 @@ export class MediaRequest {
   @AfterInsert()
   public async notifyNewRequest(): Promise<void> {
     if (this.status === MediaRequestStatus.PENDING) {
-      const mediaRepository = dataSource.getRepository(Media);
+      const mediaRepository = getRepository(Media);
       const media = await mediaRepository.findOne({
         where: { id: this.media.id },
       });
@@ -161,7 +161,7 @@ export class MediaRequest {
       this.status === MediaRequestStatus.APPROVED ||
       this.status === MediaRequestStatus.DECLINED
     ) {
-      const mediaRepository = dataSource.getRepository(Media);
+      const mediaRepository = getRepository(Media);
       const media = await mediaRepository.findOne({
         where: { id: this.media.id },
       });
@@ -203,7 +203,7 @@ export class MediaRequest {
   @AfterUpdate()
   @AfterInsert()
   public async updateParentStatus(): Promise<void> {
-    const mediaRepository = dataSource.getRepository(Media);
+    const mediaRepository = getRepository(Media);
     const media = await mediaRepository.findOne({
       where: { id: this.media.id },
       relations: { requests: true },
@@ -216,7 +216,7 @@ export class MediaRequest {
       });
       return;
     }
-    const seasonRequestRepository = dataSource.getRepository(SeasonRequest);
+    const seasonRequestRepository = getRepository(SeasonRequest);
     if (
       this.status === MediaRequestStatus.APPROVED &&
       // Do not update the status if the item is already partially available or available
@@ -268,7 +268,7 @@ export class MediaRequest {
 
   @AfterRemove()
   public async handleRemoveParentUpdate(): Promise<void> {
-    const mediaRepository = dataSource.getRepository(Media);
+    const mediaRepository = getRepository(Media);
     const fullMedia = await mediaRepository.findOneOrFail({
       where: { id: this.media.id },
       relations: { requests: true },
@@ -297,7 +297,7 @@ export class MediaRequest {
       this.type === MediaType.MOVIE
     ) {
       try {
-        const mediaRepository = dataSource.getRepository(Media);
+        const mediaRepository = getRepository(Media);
         const settings = getSettings();
         if (settings.radarr.length === 0 && !settings.radarr[0]) {
           logger.info(
@@ -488,7 +488,7 @@ export class MediaRequest {
       this.type === MediaType.TV
     ) {
       try {
-        const mediaRepository = dataSource.getRepository(Media);
+        const mediaRepository = getRepository(Media);
         const settings = getSettings();
         if (settings.sonarr.length === 0 && !settings.sonarr[0]) {
           logger.warn(
@@ -564,7 +564,7 @@ export class MediaRequest {
         const tvdbId = series.external_ids.tvdb_id ?? media.tvdbId;
 
         if (!tvdbId) {
-          const requestRepository = dataSource.getRepository(MediaRequest);
+          const requestRepository = getRepository(MediaRequest);
           await mediaRepository.remove(media);
           await requestRepository.remove(this);
           throw new Error('TVDB ID not found');

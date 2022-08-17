@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import TheMovieDb from '../../api/themoviedb';
 import { MediaStatus, MediaType } from '../../constants/media';
-import dataSource from '../../datasource';
+import { getRepository } from '../../datasource';
 import Media from '../../entity/Media';
 import Season from '../../entity/Season';
 import logger from '../../logger';
@@ -80,7 +80,7 @@ class BaseScanner<T> {
   }
 
   private async getExisting(tmdbId: number, mediaType: MediaType) {
-    const mediaRepository = dataSource.getRepository(Media);
+    const mediaRepository = getRepository(Media);
 
     const existing = await mediaRepository.findOne({
       where: { tmdbId: tmdbId, mediaType },
@@ -102,7 +102,7 @@ class BaseScanner<T> {
       title = 'Unknown Title',
     }: ProcessOptions = {}
   ): Promise<void> {
-    const mediaRepository = dataSource.getRepository(Media);
+    const mediaRepository = getRepository(Media);
 
     await this.asyncLock.dispatch(tmdbId, async () => {
       const existing = await this.getExisting(tmdbId, MediaType.MOVIE);
@@ -233,7 +233,7 @@ class BaseScanner<T> {
       title = 'Unknown Title',
     }: ProcessOptions = {}
   ): Promise<void> {
-    const mediaRepository = dataSource.getRepository(Media);
+    const mediaRepository = getRepository(Media);
 
     await this.asyncLock.dispatch(tmdbId, async () => {
       const media = await this.getExisting(tmdbId, MediaType.TV);

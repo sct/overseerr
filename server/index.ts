@@ -12,7 +12,7 @@ import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import PlexAPI from './api/plexapi';
-import dataSource from './datasource';
+import dataSource, { getRepository } from './datasource';
 import { Session } from './entity/Session';
 import { User } from './entity/User';
 import { startJobs } from './job/schedule';
@@ -61,7 +61,7 @@ app
       settings.plex.libraries.length > 1 &&
       !settings.plex.libraries[0].type
     ) {
-      const userRepository = dataSource.getRepository(User);
+      const userRepository = getRepository(User);
       const admin = await userRepository.findOne({
         select: { id: true, plexToken: true },
         where: { id: 1 },
@@ -136,7 +136,7 @@ app
     }
 
     // Set up sessions
-    const sessionRespository = dataSource.getRepository(Session);
+    const sessionRespository = getRepository(Session);
     server.use(
       '/api',
       session({

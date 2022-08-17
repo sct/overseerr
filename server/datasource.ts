@@ -1,5 +1,6 @@
 import 'reflect-metadata';
-import { DataSource, DataSourceOptions } from 'typeorm';
+import type { DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 const devConfig: DataSourceOptions = {
   type: 'sqlite',
@@ -32,5 +33,7 @@ const prodConfig: DataSourceOptions = {
 const dataSource = new DataSource(
   process.env.NODE_ENV !== 'production' ? devConfig : prodConfig
 );
+
+export const getRepository = dataSource.getRepository;
 
 export default dataSource;

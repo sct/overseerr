@@ -16,7 +16,7 @@ import {
 } from 'typeorm';
 import { MediaRequestStatus, MediaType } from '../constants/media';
 import { UserType } from '../constants/user';
-import dataSource from '../datasource';
+import { getRepository } from '../datasource';
 import type { QuotaResponse } from '../interfaces/api/userInterfaces';
 import PreparedEmail from '../lib/email';
 import type { PermissionCheckOptions } from '../lib/permissions';
@@ -237,7 +237,7 @@ export class User {
     const {
       main: { defaultQuotas },
     } = getSettings();
-    const requestRepository = dataSource.getRepository(MediaRequest);
+    const requestRepository = getRepository(MediaRequest);
     const canBypass = this.hasPermission([Permission.MANAGE_USERS], {
       type: 'or',
     });

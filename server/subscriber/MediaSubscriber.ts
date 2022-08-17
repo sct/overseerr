@@ -1,14 +1,9 @@
 import { truncate } from 'lodash';
-import {
-  EntitySubscriberInterface,
-  EventSubscriber,
-  In,
-  Not,
-  UpdateEvent,
-} from 'typeorm';
+import type { EntitySubscriberInterface, UpdateEvent } from 'typeorm';
+import { EventSubscriber, In, Not } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
-import dataSource from '../datasource';
+import { getRepository } from '../datasource';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import Season from '../entity/Season';
@@ -27,7 +22,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       dbEntity[is4k ? 'status4k' : 'status'] !== MediaStatus.AVAILABLE
     ) {
       if (entity.mediaType === MediaType.MOVIE) {
-        const requestRepository = dataSource.getRepository(MediaRequest);
+        const requestRepository = getRepository(MediaRequest);
         const relatedRequests = await requestRepository.find({
           where: {
             media: {
@@ -84,7 +79,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
     dbEntity: Media,
     is4k: boolean
   ) {
-    const seasonRepository = dataSource.getRepository(Season);
+    const seasonRepository = getRepository(Season);
     const newAvailableSeasons = entity.seasons
       .filter(
         (season) =>
@@ -106,7 +101,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
     if (changedSeasons.length > 0) {
       const tmdb = new TheMovieDb();
-      const requestRepository = dataSource.getRepository(MediaRequest);
+      const requestRepository = getRepository(MediaRequest);
       const processedSeasons: number[] = [];
 
       for (const changedSeasonNumber of changedSeasons) {
@@ -174,7 +169,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
   }
 
   private async updateChildRequestStatus(event: Media, is4k: boolean) {
-    const requestRepository = dataSource.getRepository(MediaRequest);
+    const requestRepository = getRepository(MediaRequest);
 
     const requests = await requestRepository.find({
       where: { media: { id: event.id } },

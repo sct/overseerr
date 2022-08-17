@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import dataSource from '../datasource';
+import { getRepository } from '../datasource';
 import IssueComment from '../entity/IssueComment';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
@@ -20,7 +20,7 @@ issueCommentRoutes.get<{ commentId: string }, IssueComment>(
     }
   ),
   async (req, res, next) => {
-    const issueCommentRepository = dataSource.getRepository(IssueComment);
+    const issueCommentRepository = getRepository(IssueComment);
 
     try {
       const comment = await issueCommentRepository.findOneOrFail({
@@ -61,7 +61,7 @@ issueCommentRoutes.put<
     type: 'or',
   }),
   async (req, res, next) => {
-    const issueCommentRepository = dataSource.getRepository(IssueComment);
+    const issueCommentRepository = getRepository(IssueComment);
 
     try {
       const comment = await issueCommentRepository.findOneOrFail({
@@ -96,7 +96,7 @@ issueCommentRoutes.delete<{ commentId: string }, IssueComment>(
     type: 'or',
   }),
   async (req, res, next) => {
-    const issueCommentRepository = dataSource.getRepository(IssueComment);
+    const issueCommentRepository = getRepository(IssueComment);
 
     try {
       const comment = await issueCommentRepository.findOneOrFail({

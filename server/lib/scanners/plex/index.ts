@@ -3,7 +3,7 @@ import animeList from '../../../api/animelist';
 import type { PlexLibraryItem, PlexMetadata } from '../../../api/plexapi';
 import PlexAPI from '../../../api/plexapi';
 import type { TmdbTvDetails } from '../../../api/themoviedb/interfaces';
-import dataSource from '../../../datasource';
+import { getRepository } from '../../../datasource';
 import { User } from '../../../entity/User';
 import cacheManager from '../../cache';
 import type { Library } from '../../settings';
@@ -60,7 +60,7 @@ class PlexScanner
     const settings = getSettings();
     const sessionId = this.startRun();
     try {
-      const userRepository = dataSource.getRepository(User);
+      const userRepository = getRepository(User);
       const admin = await userRepository.findOne({
         select: { id: true, plexToken: true },
         where: { id: 1 },

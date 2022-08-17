@@ -3,7 +3,7 @@ import path from 'path';
 import { Notification, shouldSendAdminNotification } from '..';
 import { IssueType, IssueTypeName } from '../../../constants/issue';
 import { MediaType } from '../../../constants/media';
-import dataSource from '../../../datasource';
+import { getRepository } from '../../../datasource';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
 import PreparedEmail from '../../email';
@@ -236,7 +236,7 @@ class EmailAgent
     }
 
     if (payload.notifyAdmin) {
-      const userRepository = dataSource.getRepository(User);
+      const userRepository = getRepository(User);
       const users = await userRepository.find();
 
       await Promise.all(

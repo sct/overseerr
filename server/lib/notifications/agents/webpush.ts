@@ -2,7 +2,7 @@ import webpush from 'web-push';
 import { Notification, shouldSendAdminNotification } from '..';
 import { IssueType, IssueTypeName } from '../../../constants/issue';
 import { MediaType } from '../../../constants/media';
-import dataSource from '../../../datasource';
+import { getRepository } from '../../../datasource';
 import { User } from '../../../entity/User';
 import { UserPushSubscription } from '../../../entity/UserPushSubscription';
 import logger from '../../../logger';
@@ -139,9 +139,8 @@ class WebPushAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    const userRepository = dataSource.getRepository(User);
-    const userPushSubRepository =
-      dataSource.getRepository(UserPushSubscription);
+    const userRepository = getRepository(User);
+    const userPushSubRepository = getRepository(UserPushSubscription);
     const settings = getSettings();
 
     const pushSubs: UserPushSubscription[] = [];
