@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import type { DataSourceOptions } from 'typeorm';
+import type { DataSourceOptions, EntityTarget, Repository } from 'typeorm';
 import { DataSource } from 'typeorm';
 
 const devConfig: DataSourceOptions = {
@@ -34,6 +34,10 @@ const dataSource = new DataSource(
   process.env.NODE_ENV !== 'production' ? devConfig : prodConfig
 );
 
-export const getRepository = dataSource.getRepository;
+export const getRepository = <Entity>(
+  target: EntityTarget<Entity>
+): Repository<Entity> => {
+  return dataSource.getRepository(target);
+};
 
 export default dataSource;
