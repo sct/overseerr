@@ -5,5 +5,11 @@
     "group:allNonMajor",
     "docker:disableMajor",
     "helpers:disableTypesNodeMajor"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": "github-actions",
+      "groupName": "github-actions"
+    }
   ]
 }
