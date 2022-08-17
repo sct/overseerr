@@ -26,7 +26,9 @@ class WatchlistSync {
       },
     });
 
-    Promise.all(users.map((user) => this.syncUserWatchlist(user)));
+    for (const user of users) {
+      await this.syncUserWatchlist(user);
+    }
   }
 
   private async syncUserWatchlist(user: User) {

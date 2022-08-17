@@ -249,10 +249,8 @@ export class MediaRequest {
           ...media.seasons
             .filter(
               (season) =>
-                season[requestBody.is4k ? 'status4k' : 'status'] ===
-                  MediaStatus.AVAILABLE ||
-                season[requestBody.is4k ? 'status4k' : 'status'] ===
-                  MediaStatus.PARTIALLY_AVAILABLE
+                season[requestBody.is4k ? 'status4k' : 'status'] !==
+                MediaStatus.UNKNOWN
             )
             .map((season) => season.seasonNumber),
         ];
