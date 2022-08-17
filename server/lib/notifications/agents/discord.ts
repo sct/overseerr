@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { getRepository } from 'typeorm';
 import {
   hasNotificationType,
   Notification,
   shouldSendAdminNotification,
 } from '..';
 import { IssueStatus, IssueTypeName } from '../../../constants/issue';
+import { getRepository } from '../../../datasource';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
 import type { NotificationAgentDiscord } from '../../settings';

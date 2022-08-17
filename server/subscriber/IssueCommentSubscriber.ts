@@ -1,9 +1,10 @@
 import { sortBy } from 'lodash';
 import type { EntitySubscriberInterface, InsertEvent } from 'typeorm';
-import { EventSubscriber, getRepository } from 'typeorm';
+import { EventSubscriber } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
 import { IssueType, IssueTypeName } from '../constants/issue';
 import { MediaType } from '../constants/media';
+import { getRepository } from '../datasource';
 import IssueComment from '../entity/IssueComment';
 import Media from '../entity/Media';
 import notificationManager, { Notification } from '../lib/notifications';
@@ -27,7 +28,7 @@ export class IssueCommentSubscriber
       const issue = (
         await getRepository(IssueComment).findOneOrFail({
           where: { id: entity.id },
-          relations: ['issue'],
+          relations: { issue: true },
         })
       ).issue;
 

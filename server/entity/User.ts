@@ -7,8 +7,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
-  MoreThan,
   Not,
   OneToMany,
   OneToOne,
@@ -18,12 +16,14 @@ import {
 } from 'typeorm';
 import { MediaRequestStatus, MediaType } from '../constants/media';
 import { UserType } from '../constants/user';
+import { getRepository } from '../datasource';
 import type { QuotaResponse } from '../interfaces/api/userInterfaces';
 import PreparedEmail from '../lib/email';
 import type { PermissionCheckOptions } from '../lib/permissions';
 import { hasPermission, Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
+import { AfterDate } from '../utils/dateHelpers';
 import Issue from './Issue';
 import { MediaRequest } from './MediaRequest';
 import SeasonRequest from './SeasonRequest';
@@ -252,13 +252,14 @@ export class User {
     if (movieQuotaDays) {
       movieDate.setDate(movieDate.getDate() - movieQuotaDays);
     }
-    const movieQuotaStartDate = movieDate.toJSON();
 
     const movieQuotaUsed = movieQuotaLimit
       ? await requestRepository.count({
           where: {
-            requestedBy: this,
-            createdAt: MoreThan(movieQuotaStartDate),
+            requestedBy: {
+              id: this.id,
+            },
+            createdAt: AfterDate(movieDate),
             type: MediaType.MOVIE,
             status: Not(MediaRequestStatus.DECLINED),
           },

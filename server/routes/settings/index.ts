@@ -5,11 +5,11 @@ import { merge, omit, set, sortBy } from 'lodash';
 import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import semver from 'semver';
-import { getRepository } from 'typeorm';
 import { URL } from 'url';
 import PlexAPI from '../../api/plexapi';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
+import { getRepository } from '../../datasource';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
@@ -93,8 +93,8 @@ settingsRoutes.post('/plex', async (req, res, next) => {
   const settings = getSettings();
   try {
     const admin = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken'],
-      order: { id: 'ASC' },
+      select: { id: true, plexToken: true },
+      where: { id: 1 },
     });
 
     Object.assign(settings.plex, req.body);
@@ -129,8 +129,8 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
   const userRepository = getRepository(User);
   try {
     const admin = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken'],
-      order: { id: 'ASC' },
+      select: { id: true, plexToken: true },
+      where: { id: 1 },
     });
     const plexTvClient = admin.plexToken
       ? new PlexTvAPI(admin.plexToken)
@@ -208,8 +208,8 @@ settingsRoutes.get('/plex/library', async (req, res) => {
   if (req.query.sync) {
     const userRepository = getRepository(User);
     const admin = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken'],
-      order: { id: 'ASC' },
+      select: { id: true, plexToken: true },
+      where: { id: 1 },
     });
     const plexapi = new PlexAPI({ plexToken: admin.plexToken });
 
@@ -284,8 +284,8 @@ settingsRoutes.get(
 
     try {
       const admin = await userRepository.findOneOrFail({
-        select: ['id', 'plexToken'],
-        order: { id: 'ASC' },
+        select: { id: true, plexToken: true },
+        where: { id: 1 },
       });
       const plexApi = new PlexTvAPI(admin.plexToken ?? '');
       const plexUsers = (await plexApi.getUsers()).MediaContainer.User.map(

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
+import { getRepository } from '../datasource';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import SeasonRequest from '../entity/SeasonRequest';
@@ -232,7 +232,7 @@ requestRoutes.post('/', async (req, res, next) => {
 
     let media = await mediaRepository.findOne({
       where: { tmdbId: req.body.mediaId, mediaType: req.body.mediaType },
-      relations: ['requests'],
+      relations: { requests: true },
     });
 
     if (!media) {
@@ -528,7 +528,7 @@ requestRoutes.get('/:requestId', async (req, res, next) => {
   try {
     const request = await requestRepository.findOneOrFail({
       where: { id: Number(req.params.requestId) },
-      relations: ['requestedBy', 'modifiedBy'],
+      relations: { requestedBy: true, modifiedBy: true },
     });
 
     if (
@@ -560,9 +560,11 @@ requestRoutes.put<{ requestId: string }>(
     const requestRepository = getRepository(MediaRequest);
     const userRepository = getRepository(User);
     try {
-      const request = await requestRepository.findOne(
-        Number(req.params.requestId)
-      );
+      const request = await requestRepository.findOne({
+        where: {
+          id: Number(req.params.requestId),
+        },
+      });
 
       if (!request) {
         return next({ status: 404, message: 'Request not found.' });
@@ -628,7 +630,7 @@ requestRoutes.put<{ requestId: string }>(
         // Get existing media so we can work with all the requests
         const media = await mediaRepository.findOneOrFail({
           where: { tmdbId: request.media.tmdbId, mediaType: MediaType.TV },
-          relations: ['requests'],
+          relations: { requests: true },
         });
 
         // Get all requested seasons that are not part of this request we are editing
@@ -698,7 +700,7 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
   try {
     const request = await requestRepository.findOneOrFail({
       where: { id: Number(req.params.requestId) },
-      relations: ['requestedBy', 'modifiedBy'],
+      relations: { requestedBy: true, modifiedBy: true },
     });
 
     if (
@@ -735,7 +737,7 @@ requestRoutes.post<{
     try {
       const request = await requestRepository.findOneOrFail({
         where: { id: Number(req.params.requestId) },
-        relations: ['requestedBy', 'modifiedBy'],
+        relations: { requestedBy: true, modifiedBy: true },
       });
 
       await request.updateParentStatus();
@@ -763,7 +765,7 @@ requestRoutes.post<{
     try {
       const request = await requestRepository.findOneOrFail({
         where: { id: Number(req.params.requestId) },
-        relations: ['requestedBy', 'modifiedBy'],
+        relations: { requestedBy: true, modifiedBy: true },
       });
 
       let newStatus: MediaRequestStatus;

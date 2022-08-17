@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
   In,
   Index,
   OneToMany,
@@ -15,6 +14,7 @@ import SonarrAPI from '../api/servarr/sonarr';
 import { MediaStatus, MediaType } from '../constants/media';
 import type { DownloadingItem } from '../lib/downloadtracker';
 import downloadTracker from '../lib/downloadtracker';
+import { getRepository } from '../datasource';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
 import Issue from './Issue';
@@ -37,7 +37,7 @@ class Media {
       }
 
       const media = await mediaRepository.find({
-        tmdbId: In(finalIds),
+        where: { tmdbId: In(finalIds) },
       });
 
       return media;
@@ -56,10 +56,10 @@ class Media {
     try {
       const media = await mediaRepository.findOne({
         where: { tmdbId: id, mediaType },
-        relations: ['requests', 'issues'],
+        relations: { requests: true, issues: true },
       });
 
-      return media;
+      return media ?? undefined;
     } catch (e) {
       logger.error(e.message);
       return undefined;

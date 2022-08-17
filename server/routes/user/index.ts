@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
 import { findIndex, sortBy } from 'lodash';
-import { getRepository, In, Not } from 'typeorm';
+import { In } from 'typeorm';
 import PlexTvAPI from '../../api/plextv';
 import TautulliAPI from '../../api/tautulli';
 import { MediaType } from '../../constants/media';
 import { UserType } from '../../constants/user';
+import { getRepository } from '../../datasource';
 import Media from '../../entity/Media';
 import { MediaRequest } from '../../entity/MediaRequest';
 import { User } from '../../entity/User';
@@ -277,8 +278,12 @@ router.put<
 
     const userRepository = getRepository(User);
 
-    const users = await userRepository.findByIds(req.body.ids, {
-      ...(!isOwner ? { id: Not(1) } : {}),
+    const users: User[] = await userRepository.find({
+      where: {
+        id: In(
+          isOwner ? req.body.ids : req.body.ids.filter((id) => Number(id) !== 1)
+        ),
+      },
     });
 
     const updatedUsers = await Promise.all(
@@ -345,7 +350,7 @@ router.delete<{ id: string }>(
 
       const user = await userRepository.findOne({
         where: { id: Number(req.params.id) },
-        relations: ['requests'],
+        relations: { requests: true },
       });
 
       if (!user) {
@@ -404,8 +409,8 @@ router.post(
 
       // taken from auth.ts
       const mainUser = await userRepository.findOneOrFail({
-        select: ['id', 'plexToken'],
-        order: { id: 'ASC' },
+        select: { id: true, plexToken: true },
+        where: { id: 1 },
       });
       const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
@@ -519,7 +524,7 @@ router.get<{ id: string }, UserWatchDataResponse>(
     try {
       const user = await getRepository(User).findOneOrFail({
         where: { id: Number(req.params.id) },
-        select: ['id', 'plexId'],
+        select: { id: true, plexId: true },
       });
 
       const tautulli = new TautulliAPI(settings);

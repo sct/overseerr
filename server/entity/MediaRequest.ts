@@ -6,7 +6,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -20,6 +19,7 @@ import SonarrAPI from '../api/servarr/sonarr';
 import TheMovieDb from '../api/themoviedb';
 import { ANIME_KEYWORD_ID } from '../api/themoviedb/constants';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
+import { getRepository } from '../datasource';
 import notificationManager, { Notification } from '../lib/notifications';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
@@ -206,7 +206,7 @@ export class MediaRequest {
     const mediaRepository = getRepository(Media);
     const media = await mediaRepository.findOne({
       where: { id: this.media.id },
-      relations: ['requests'],
+      relations: { requests: true },
     });
     if (!media) {
       logger.error('Media data not found', {
@@ -271,7 +271,7 @@ export class MediaRequest {
     const mediaRepository = getRepository(Media);
     const fullMedia = await mediaRepository.findOneOrFail({
       where: { id: this.media.id },
-      relations: ['requests'],
+      relations: { requests: true },
     });
 
     if (
@@ -542,7 +542,7 @@ export class MediaRequest {
 
         const media = await mediaRepository.findOne({
           where: { id: this.media.id },
-          relations: ['requests'],
+          relations: { requests: true },
         });
 
         if (!media) {
@@ -669,7 +669,7 @@ export class MediaRequest {
             // We grab media again here to make sure we have the latest version of it
             const media = await mediaRepository.findOne({
               where: { id: this.media.id },
-              relations: ['requests'],
+              relations: { requests: true },
             });
 
             if (!media) {

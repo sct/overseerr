@@ -1,8 +1,9 @@
 import { truncate } from 'lodash';
 import type { EntitySubscriberInterface, UpdateEvent } from 'typeorm';
-import { EventSubscriber, getRepository, Not } from 'typeorm';
+import { EventSubscriber, In, Not } from 'typeorm';
 import TheMovieDb from '../api/themoviedb';
 import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
+import { getRepository } from '../datasource';
 import Media from '../entity/Media';
 import { MediaRequest } from '../entity/MediaRequest';
 import Season from '../entity/Season';
@@ -24,7 +25,9 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
         const requestRepository = getRepository(MediaRequest);
         const relatedRequests = await requestRepository.find({
           where: {
-            media: entity,
+            media: {
+              id: entity.id,
+            },
             is4k,
             status: Not(MediaRequestStatus.DECLINED),
           },
@@ -84,7 +87,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       )
       .map((season) => season.seasonNumber);
     const oldSeasonIds = dbEntity.seasons.map((season) => season.id);
-    const oldSeasons = await seasonRepository.findByIds(oldSeasonIds);
+    const oldSeasons = await seasonRepository.findBy({ id: In(oldSeasonIds) });
     const oldAvailableSeasons = oldSeasons
       .filter(
         (season) =>
@@ -104,7 +107,9 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       for (const changedSeasonNumber of changedSeasons) {
         const requests = await requestRepository.find({
           where: {
-            media: entity,
+            media: {
+              id: entity.id,
+            },
             is4k,
             status: Not(MediaRequestStatus.DECLINED),
           },
@@ -167,7 +172,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
     const requestRepository = getRepository(MediaRequest);
 
     const requests = await requestRepository.find({
-      where: { media: event.id },
+      where: { media: { id: event.id } },
     });
 
     for (const request of requests) {

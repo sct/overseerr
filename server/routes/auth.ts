@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
 import PlexTvAPI from '../api/plextv';
 import { UserType } from '../constants/user';
+import { getRepository } from '../datasource';
 import { User } from '../entity/User';
 import { Permission } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
@@ -64,8 +64,8 @@ authRoutes.post('/plex', async (req, res, next) => {
       await userRepository.save(user);
     } else {
       const mainUser = await userRepository.findOneOrFail({
-        select: ['id', 'plexToken', 'plexId'],
-        order: { id: 'ASC' },
+        select: { id: true, plexToken: true, plexId: true },
+        where: { id: 1 },
       });
       const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
@@ -204,8 +204,8 @@ authRoutes.post('/local', async (req, res, next) => {
     }
 
     const mainUser = await userRepository.findOneOrFail({
-      select: ['id', 'plexToken', 'plexId'],
-      order: { id: 'ASC' },
+      select: { id: true, plexToken: true, plexId: true },
+      where: { id: 1 },
     });
     const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 

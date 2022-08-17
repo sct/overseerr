@@ -1,11 +1,11 @@
-import { getRepository } from 'typeorm';
+import { getRepository } from '../datasource';
 import { User } from '../entity/User';
 import type { Permission, PermissionCheckOptions } from '../lib/permissions';
 import { getSettings } from '../lib/settings';
 
 export const checkUser: Middleware = async (req, _res, next) => {
   const settings = getSettings();
-  let user: User | undefined;
+  let user: User | undefined | null;
 
   if (req.header('X-API-Key') === settings.main.apiKey) {
     const userRepository = getRepository(User);

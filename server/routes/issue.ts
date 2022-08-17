@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
 import { IssueStatus, IssueType } from '../constants/issue';
+import { getRepository } from '../datasource';
 import Issue from '../entity/Issue';
 import IssueComment from '../entity/IssueComment';
 import Media from '../entity/Media';
@@ -365,7 +365,7 @@ issueRoutes.delete(
     try {
       const issue = await issueRepository.findOneOrFail({
         where: { id: Number(req.params.issueId) },
-        relations: ['createdBy'],
+        relations: { createdBy: true },
       });
 
       if (

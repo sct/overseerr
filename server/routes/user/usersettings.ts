@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
 import { canMakePermissionsChange } from '.';
+import { getRepository } from '../../datasource';
 import { User } from '../../entity/User';
 import { UserSettings } from '../../entity/UserSettings';
 import type {

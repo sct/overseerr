@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import type { FindOneOptions, FindOperator } from 'typeorm';
-import { getRepository, In } from 'typeorm';
+import type { FindOneOptions } from 'typeorm';
+import { In } from 'typeorm';
 import TautulliAPI from '../api/tautulli';
 import { MediaStatus, MediaType } from '../constants/media';
+import { getRepository } from '../datasource';
 import Media from '../entity/Media';
 import { User } from '../entity/User';
 import type {
@@ -22,8 +23,7 @@ mediaRoutes.get('/', async (req, res, next) => {
   const pageSize = req.query.take ? Number(req.query.take) : 20;
   const skip = req.query.skip ? Number(req.query.skip) : 0;
 
-  let statusFilter: MediaStatus | FindOperator<MediaStatus> | undefined =
-    undefined;
+  let statusFilter = undefined;
 
   switch (req.query.filter) {
     case 'available':
@@ -152,7 +152,7 @@ mediaRoutes.delete(
       const mediaRepository = getRepository(Media);
 
       const media = await mediaRepository.findOneOrFail({
-        where: { id: req.params.id },
+        where: { id: Number(req.params.id) },
       });
 
       await mediaRepository.remove(media);

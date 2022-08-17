@@ -1,8 +1,8 @@
 import { uniqWith } from 'lodash';
-import { getRepository } from 'typeorm';
 import type { SonarrSeries } from '../../../api/servarr/sonarr';
 import SonarrAPI from '../../../api/servarr/sonarr';
 import type { TmdbTvDetails } from '../../../api/themoviedb/interfaces';
+import { getRepository } from '../../../datasource';
 import Media from '../../../entity/Media';
 import type { SonarrSettings } from '../../settings';
 import { getSettings } from '../../settings';

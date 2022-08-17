@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
-import { getRepository } from 'typeorm';
 import TheMovieDb from '../../api/themoviedb';
 import { MediaStatus, MediaType } from '../../constants/media';
+import { getRepository } from '../../datasource';
 import Media from '../../entity/Media';
 import Season from '../../entity/Season';
 import logger from '../../logger';

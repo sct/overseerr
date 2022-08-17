@@ -1,9 +1,9 @@
 import type { EmailOptions } from 'email-templates';
 import path from 'path';
-import { getRepository } from 'typeorm';
 import { Notification, shouldSendAdminNotification } from '..';
 import { IssueType, IssueTypeName } from '../../../constants/issue';
 import { MediaType } from '../../../constants/media';
+import { getRepository } from '../../../datasource';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
 import PreparedEmail from '../../email';

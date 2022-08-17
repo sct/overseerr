@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository } from '../datasource';
 import IssueComment from '../entity/IssueComment';
 import { Permission } from '../lib/permissions';
 import logger from '../logger';
