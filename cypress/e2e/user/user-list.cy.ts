@@ -28,9 +28,9 @@ describe('User List', () => {
   it('can create a local user', () => {
     cy.visit('/users');
 
-    cy.contains('Create Local User').click();
+    cy.contains('Create User').click();
 
-    cy.get('[data-testid=modal-title]').should('contain', 'Create Local User');
+    cy.get('[data-testid=modal-title]').should('contain', 'Create User');
 
     cy.get('#displayName').type(testUser.displayName);
     cy.get('#email').type(testUser.emailAddress);
