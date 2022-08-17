@@ -34,11 +34,16 @@ export class QuotaRestrictedError extends Error {}
 export class DuplicateMediaRequestError extends Error {}
 export class NoSeasonsAvailableError extends Error {}
 
+type MediaRequestOptions = {
+  isAutoRequest?: boolean;
+};
+
 @Entity()
 export class MediaRequest {
   public static async request(
     requestBody: MediaRequestBody,
-    user: User
+    user: User,
+    options: MediaRequestOptions = {}
   ): Promise<MediaRequest> {
     const tmdb = new TheMovieDb();
     const mediaRepository = getRepository(Media);
@@ -140,21 +145,23 @@ export class MediaRequest {
       }
     }
 
-    if (requestBody.mediaType === MediaType.MOVIE) {
-      const existing = await requestRepository
-        .createQueryBuilder('request')
-        .leftJoin('request.media', 'media')
-        .where('request.is4k = :is4k', { is4k: requestBody.is4k })
-        .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
-        .andWhere('media.mediaType = :mediaType', {
-          mediaType: MediaType.MOVIE,
-        })
-        .andWhere('request.status != :requestStatus', {
-          requestStatus: MediaRequestStatus.DECLINED,
-        })
-        .getOne();
+    const existing = await requestRepository
+      .createQueryBuilder('request')
+      .leftJoin('request.media', 'media')
+      .leftJoinAndSelect('request.requestedBy', 'user')
+      .where('request.is4k = :is4k', { is4k: requestBody.is4k })
+      .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
+      .andWhere('media.mediaType = :mediaType', {
+        mediaType: requestBody.mediaType,
+      })
+      .getMany();
 
-      if (existing) {
+    if (existing && existing.length > 0) {
+      // If there is an existing movie request that isn't declined, don't allow a new one.
+      if (
+        requestBody.mediaType === MediaType.MOVIE &&
+        existing[0].status !== MediaRequestStatus.DECLINED
+      ) {
         logger.warn('Duplicate request for media blocked', {
           tmdbId: tmdbMedia.id,
           mediaType: requestBody.mediaType,
@@ -167,6 +174,20 @@ export class MediaRequest {
         );
       }
 
+      // If an existing auto-request for this media exists from the same user,
+      // don't allow a new one.
+      if (
+        existing.find(
+          (r) => r.requestedBy.id === requestUser.id && r.isAutoRequest
+        )
+      ) {
+        throw new DuplicateMediaRequestError(
+          'Auto-request for this media and user already exists.'
+        );
+      }
+    }
+
+    if (requestBody.mediaType === MediaType.MOVIE) {
       await mediaRepository.save(media);
 
       const request = new MediaRequest({
@@ -207,6 +228,7 @@ export class MediaRequest {
         profileId: requestBody.profileId,
         rootFolder: requestBody.rootFolder,
         tags: requestBody.tags,
+        isAutoRequest: options.isAutoRequest ?? false,
       });
 
       await requestRepository.save(request);
@@ -330,6 +352,7 @@ export class MediaRequest {
                 : MediaRequestStatus.PENDING,
             })
         ),
+        isAutoRequest: options.isAutoRequest ?? false,
       });
 
       await requestRepository.save(request);
@@ -426,6 +449,9 @@ export class MediaRequest {
     },
   })
   public tags?: number[];
+
+  @Column({ default: false })
+  public isAutoRequest: boolean;
 
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);

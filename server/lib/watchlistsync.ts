@@ -121,7 +121,8 @@ class WatchlistSync {
               tvdbId: mediaItem.tvdbId,
               is4k: false,
             },
-            user
+            user,
+            { isAutoRequest: true }
           );
         } catch (e) {
           if (!(e instanceof Error)) {
