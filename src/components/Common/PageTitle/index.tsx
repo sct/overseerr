@@ -9,12 +9,13 @@ interface PageTitleProps {
 const PageTitle = ({ title }: PageTitleProps) => {
   const settings = useSettings();
 
+  const titleText = `${
+    Array.isArray(title) ? title.filter(Boolean).join(' - ') : title
+  } - ${settings.currentSettings.applicationTitle}`;
+
   return (
     <Head>
-      <title>
-        {Array.isArray(title) ? title.filter(Boolean).join(' - ') : title} -{' '}
-        {settings.currentSettings.applicationTitle}
-      </title>
+      <title>{titleText}</title>
     </Head>
   );
 };
