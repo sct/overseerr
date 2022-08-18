@@ -102,10 +102,8 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
                   <span className="mr-2 hidden font-bold sm:block">
                     {intl.formatMessage(globalMessages.status)}
                   </span>
-                  {requestData.media[
-                    requestData.is4k ? 'status4k' : 'status'
-                  ] === MediaStatus.UNKNOWN ||
-                  requestData.status === MediaRequestStatus.DECLINED ? (
+                  {requestData.status === MediaRequestStatus.DECLINED ||
+                  requestData.status === MediaRequestStatus.FAILED ? (
                     <Badge badgeType="danger">
                       {requestData.status === MediaRequestStatus.DECLINED
                         ? intl.formatMessage(globalMessages.declined)

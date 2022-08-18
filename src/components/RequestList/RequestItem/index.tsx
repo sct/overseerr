@@ -106,9 +106,8 @@ const RequestItemError = ({
                 <span className="card-field-name">
                   {intl.formatMessage(globalMessages.status)}
                 </span>
-                {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
-                  MediaStatus.UNKNOWN ||
-                requestData.status === MediaRequestStatus.DECLINED ? (
+                {requestData.status === MediaRequestStatus.DECLINED ||
+                requestData.status === MediaRequestStatus.FAILED ? (
                   <Badge badgeType="danger">
                     {requestData.status === MediaRequestStatus.DECLINED
                       ? intl.formatMessage(globalMessages.declined)
