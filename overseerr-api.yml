@@ -4430,7 +4430,16 @@ paths:
           schema:
             type: string
             nullable: true
-            enum: [all, approved, available, pending, processing, unavailable, failed]
+            enum:
+              [
+                all,
+                approved,
+                available,
+                pending,
+                processing,
+                unavailable,
+                failed,
+              ]
         - in: query
           name: sort
           schema:
