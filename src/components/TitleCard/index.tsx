@@ -15,6 +15,7 @@ import CachedImage from '../Common/CachedImage';
 import RequestModal from '../RequestModal';
 import Transition from '../Transition';
 import Placeholder from './Placeholder';
+import ErrorCard from './ErrorCard';
 
 interface TitleCardProps {
   id: number;
@@ -266,4 +267,4 @@ const TitleCard = ({
   );
 };
 
-export default withProperties(TitleCard, { Placeholder });
+export default withProperties(TitleCard, { Placeholder, ErrorCard });

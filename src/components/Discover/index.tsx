@@ -61,7 +61,9 @@ const Discover = () => {
             items={media?.results?.map((item) => (
               <TmdbTitleCard
                 key={`media-slider-item-${item.id}`}
+                id={item.id}
                 tmdbId={item.tmdbId}
+                tvdbId={item.tvdbId}
                 type={item.mediaType}
               />
             ))}

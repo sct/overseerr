@@ -42,6 +42,45 @@ describe('Discover', () => {
     clickFirstTitleCardInSlider('Upcoming Series');
   });
 
+  it('displays error for media with invalid TMDb ID', () => {
+    cy.intercept('GET', '/api/v1/media?*', {
+      pageInfo: { pages: 1, pageSize: 20, results: 1, page: 1 },
+      results: [
+        {
+          downloadStatus: [],
+          downloadStatus4k: [],
+          id: 1922,
+          mediaType: 'movie',
+          tmdbId: 998814,
+          tvdbId: null,
+          imdbId: null,
+          status: 5,
+          status4k: 1,
+          createdAt: '2022-08-18T18:11:13.000Z',
+          updatedAt: '2022-08-18T18:11:13.000Z',
+          lastSeasonChange: '2022-08-18T18:11:13.000Z',
+          mediaAddedAt: '2022-08-16T03:56:41.000Z',
+          serviceId: null,
+          serviceId4k: null,
+          externalServiceId: null,
+          externalServiceId4k: null,
+          externalServiceSlug: null,
+          externalServiceSlug4k: null,
+          ratingKey: null,
+          ratingKey4k: null,
+          seasons: [],
+        },
+      ],
+    });
+
+    cy.contains('.slider-header', 'Recently Added')
+      .next('[data-testid=media-slider]')
+      .find('[data-testid=title-card]')
+      .first()
+      .find('[data-testid=title-card-title]')
+      .contains('Movie Not Found');
+  });
+
   it('displays error for request with invalid TMDb ID', () => {
     cy.intercept('GET', '/api/v1/request?*', {
       pageInfo: { pages: 1, pageSize: 10, results: 1, page: 1 },
