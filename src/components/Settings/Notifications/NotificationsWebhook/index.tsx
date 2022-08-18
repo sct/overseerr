@@ -70,7 +70,7 @@ const messages = defineMessages({
   validationTypes: 'You must select at least one notification type',
 });
 
-const NotificationsWebhook: React.FC = () => {
+const NotificationsWebhook = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
@@ -244,9 +244,11 @@ const NotificationsWebhook: React.FC = () => {
                     inputMode="url"
                   />
                 </div>
-                {errors.webhookUrl && touched.webhookUrl && (
-                  <div className="error">{errors.webhookUrl}</div>
-                )}
+                {errors.webhookUrl &&
+                  touched.webhookUrl &&
+                  typeof errors.webhookUrl === 'string' && (
+                    <div className="error">{errors.webhookUrl}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -273,9 +275,11 @@ const NotificationsWebhook: React.FC = () => {
                     onBlur={() => setFieldTouched('jsonPayload')}
                   />
                 </div>
-                {errors.jsonPayload && touched.jsonPayload && (
-                  <div className="error">{errors.jsonPayload}</div>
-                )}
+                {errors.jsonPayload &&
+                  touched.jsonPayload &&
+                  typeof errors.jsonPayload === 'string' && (
+                    <div className="error">{errors.jsonPayload}</div>
+                  )}
                 <div className="mt-2">
                   <Button
                     buttonSize="sm"

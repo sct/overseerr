@@ -34,7 +34,7 @@ interface RequestBlockProps {
   onUpdate?: () => void;
 }
 
-const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
+const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
   const { user } = useUser();
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
@@ -177,6 +177,11 @@ const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
               {request.status === MediaRequestStatus.PENDING && (
                 <Badge badgeType="warning">
                   {intl.formatMessage(globalMessages.pending)}
+                </Badge>
+              )}
+              {request.status === MediaRequestStatus.FAILED && (
+                <Badge badgeType="danger">
+                  {intl.formatMessage(globalMessages.failed)}
                 </Badge>
               )}
             </div>

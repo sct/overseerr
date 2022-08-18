@@ -10,7 +10,7 @@ const messages = defineMessages({
   returnHome: 'Return Home',
 });
 
-const Custom404: React.FC = () => {
+const Custom404 = () => {
   const intl = useIntl();
 
   return (

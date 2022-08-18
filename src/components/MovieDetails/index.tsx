@@ -80,7 +80,7 @@ interface MovieDetailsProps {
   movie?: MovieDetailsType;
 }
 
-const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
+const MovieDetails = ({ movie }: MovieDetailsProps) => {
   const settings = useSettings();
   const { user, hasPermission } = useUser();
   const router = useRouter();

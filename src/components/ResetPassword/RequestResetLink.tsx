@@ -21,7 +21,7 @@ const messages = defineMessages({
     'A password reset link will be sent to the provided email address if it is associated with a valid user.',
 });
 
-const ResetPassword: React.FC = () => {
+const ResetPassword = () => {
   const intl = useIntl();
   const [hasSubmitted, setSubmitted] = useState(false);
 
@@ -113,9 +113,11 @@ const ResetPassword: React.FC = () => {
                               className="form-input-area block w-full min-w-0 flex-1 rounded-md border border-gray-500 bg-gray-700 text-white transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                             />
                           </div>
-                          {errors.email && touched.email && (
-                            <div className="error">{errors.email}</div>
-                          )}
+                          {errors.email &&
+                            touched.email &&
+                            typeof errors.email === 'string' && (
+                              <div className="error">{errors.email}</div>
+                            )}
                         </div>
                       </div>
                       <div className="mt-4 border-t border-gray-700 pt-5">

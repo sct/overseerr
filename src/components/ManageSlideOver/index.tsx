@@ -115,9 +115,9 @@ const ManageSlideOver: React.FC<
       <>
         {intl.formatMessage(messages.plays, {
           playCount,
-          strong: function strong(msg) {
-            return <strong className="text-2xl font-semibold">{msg}</strong>;
-          },
+          strong: (msg: React.ReactNode) => (
+            <strong className="text-2xl font-semibold">{msg}</strong>
+          ),
         })}
       </>
     );

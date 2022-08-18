@@ -17,7 +17,7 @@ interface RequestModalProps {
   onUpdating?: (isUpdating: boolean) => void;
 }
 
-const RequestModal: React.FC<RequestModalProps> = ({
+const RequestModal = ({
   type,
   show,
   tmdbId,
@@ -26,7 +26,7 @@ const RequestModal: React.FC<RequestModalProps> = ({
   onComplete,
   onUpdating,
   onCancel,
-}) => {
+}: RequestModalProps) => {
   return (
     <Transition
       enter="transition opacity-0 duration-300"

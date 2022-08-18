@@ -8,7 +8,7 @@ const messages = defineMessages({
   searchPlaceholder: 'Search Movies & TV',
 });
 
-const SearchInput: React.FC = () => {
+const SearchInput = () => {
   const intl = useIntl();
   const { searchValue, setSearchValue, setIsOpen, clear } = useSearchInput();
   return (

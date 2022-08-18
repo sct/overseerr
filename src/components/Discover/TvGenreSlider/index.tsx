@@ -12,7 +12,7 @@ const messages = defineMessages({
   tvgenres: 'Series Genres',
 });
 
-const TvGenreSlider: React.FC = () => {
+const TvGenreSlider = () => {
   const intl = useIntl();
   const { data, error } = useSWR<GenreSliderItem[]>(
     `/api/v1/discover/genreslider/tv`,

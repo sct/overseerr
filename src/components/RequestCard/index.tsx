@@ -12,10 +12,7 @@ import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
-import {
-  MediaRequestStatus,
-  MediaStatus,
-} from '../../../server/constants/media';
+import { MediaRequestStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { MovieDetails } from '../../../server/models/Movie';
 import type { TvDetails } from '../../../server/models/Tv';
@@ -39,7 +36,7 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
 };
 
-const RequestCardPlaceholder: React.FC = () => {
+const RequestCardPlaceholder = () => {
   return (
     <div className="relative w-72 animate-pulse rounded-xl bg-gray-700 p-4 sm:w-96">
       <div className="w-20 sm:w-28">
@@ -53,7 +50,7 @@ interface RequestCardErrorProps {
   mediaId?: number;
 }
 
-const RequestCardError: React.FC<RequestCardErrorProps> = ({ mediaId }) => {
+const RequestCardError = ({ mediaId }: RequestCardErrorProps) => {
   const { hasPermission } = useUser();
   const intl = useIntl();
 
@@ -93,7 +90,7 @@ interface RequestCardProps {
   onTitleData?: (requestId: number, title: MovieDetails | TvDetails) => void;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
+const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });
@@ -275,8 +272,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
               <Badge badgeType="danger">
                 {intl.formatMessage(globalMessages.declined)}
               </Badge>
-            ) : requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
-              MediaStatus.UNKNOWN ? (
+            ) : requestData.status === MediaRequestStatus.FAILED ? (
               <Badge
                 badgeType="danger"
                 href={`/${requestData.type}/${requestData.media.tmdbId}?manage=1`}
@@ -305,9 +301,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
             )}
           </div>
           <div className="flex flex-1 items-end space-x-2">
-            {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
-              MediaStatus.UNKNOWN &&
-              requestData.status !== MediaRequestStatus.DECLINED &&
+            {requestData.status === MediaRequestStatus.FAILED &&
               hasPermission(Permission.MANAGE_REQUESTS) && (
                 <Button
                   buttonType="primary"

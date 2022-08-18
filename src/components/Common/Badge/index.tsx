@@ -5,14 +5,15 @@ interface BadgeProps {
   badgeType?: 'default' | 'primary' | 'danger' | 'warning' | 'success';
   className?: string;
   href?: string;
+  children: React.ReactNode;
 }
 
-const Badge: React.FC<BadgeProps> = ({
+const Badge = ({
   badgeType = 'default',
   className,
   href,
   children,
-}) => {
+}: BadgeProps) => {
   const badgeStyle = [
     'px-2 inline-flex text-xs leading-5 font-semibold rounded-full whitespace-nowrap',
   ];

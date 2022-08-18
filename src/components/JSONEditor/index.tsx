@@ -10,12 +10,7 @@ interface JSONEditorProps extends HTMLAttributes<HTMLDivElement> {
   onUpdate: (value: string) => void;
 }
 
-const JSONEditor: React.FC<JSONEditorProps> = ({
-  name,
-  value,
-  onUpdate,
-  onBlur,
-}) => {
+const JSONEditor = ({ name, value, onUpdate, onBlur }: JSONEditorProps) => {
   return (
     <div className="w-full overflow-hidden rounded-md">
       <AceEditor

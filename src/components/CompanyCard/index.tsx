@@ -7,7 +7,7 @@ interface CompanyCardProps {
   url: string;
 }
 
-const CompanyCard: React.FC<CompanyCardProps> = ({ image, url, name }) => {
+const CompanyCard = ({ image, url, name }: CompanyCardProps) => {
   const [isHovered, setHovered] = useState(false);
 
   return (

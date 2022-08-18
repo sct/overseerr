@@ -21,14 +21,14 @@ enum Direction {
   LEFT,
 }
 
-const Slider: React.FC<SliderProps> = ({
+const Slider = ({
   sliderKey,
   items,
   isLoading,
   isEmpty,
   emptyMessage,
   placeholder = <TitleCard.Placeholder />,
-}) => {
+}: SliderProps) => {
   const intl = useIntl();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollPos, setScrollPos] = useState({ isStart: true, isEnd: false });

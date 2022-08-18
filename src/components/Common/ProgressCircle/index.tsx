@@ -6,11 +6,11 @@ interface ProgressCircleProps {
   useHeatLevel?: boolean;
 }
 
-const ProgressCircle: React.FC<ProgressCircleProps> = ({
+const ProgressCircle = ({
   className,
   progress = 0,
   useHeatLevel,
-}) => {
+}: ProgressCircleProps) => {
   const ref = useRef<SVGCircleElement>(null);
 
   let color = '';

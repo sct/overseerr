@@ -91,11 +91,7 @@ interface RadarrModalProps {
   onSave: () => void;
 }
 
-const RadarrModal: React.FC<RadarrModalProps> = ({
-  onClose,
-  radarr,
-  onSave,
-}) => {
+const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
   const intl = useIntl();
   const initialLoad = useRef(false);
   const { addToast } = useToasts();
@@ -383,9 +379,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         }}
                       />
                     </div>
-                    {errors.name && touched.name && (
-                      <div className="error">{errors.name}</div>
-                    )}
+                    {errors.name &&
+                      touched.name &&
+                      typeof errors.name === 'string' && (
+                        <div className="error">{errors.name}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
@@ -410,9 +408,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         className="rounded-r-only"
                       />
                     </div>
-                    {errors.hostname && touched.hostname && (
-                      <div className="error">{errors.hostname}</div>
-                    )}
+                    {errors.hostname &&
+                      touched.hostname &&
+                      typeof errors.hostname === 'string' && (
+                        <div className="error">{errors.hostname}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
@@ -432,9 +432,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         setFieldValue('port', e.target.value);
                       }}
                     />
-                    {errors.port && touched.port && (
-                      <div className="error">{errors.port}</div>
-                    )}
+                    {errors.port &&
+                      touched.port &&
+                      typeof errors.port === 'string' && (
+                        <div className="error">{errors.port}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
@@ -471,9 +473,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         }}
                       />
                     </div>
-                    {errors.apiKey && touched.apiKey && (
-                      <div className="error">{errors.apiKey}</div>
-                    )}
+                    {errors.apiKey &&
+                      touched.apiKey &&
+                      typeof errors.apiKey === 'string' && (
+                        <div className="error">{errors.apiKey}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
@@ -493,9 +497,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         }}
                       />
                     </div>
-                    {errors.baseUrl && touched.baseUrl && (
-                      <div className="error">{errors.baseUrl}</div>
-                    )}
+                    {errors.baseUrl &&
+                      touched.baseUrl &&
+                      typeof errors.baseUrl === 'string' && (
+                        <div className="error">{errors.baseUrl}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
@@ -531,9 +537,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           ))}
                       </Field>
                     </div>
-                    {errors.activeProfileId && touched.activeProfileId && (
-                      <div className="error">{errors.activeProfileId}</div>
-                    )}
+                    {errors.activeProfileId &&
+                      touched.activeProfileId &&
+                      typeof errors.activeProfileId === 'string' && (
+                        <div className="error">{errors.activeProfileId}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
@@ -567,9 +575,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                           ))}
                       </Field>
                     </div>
-                    {errors.rootFolder && touched.rootFolder && (
-                      <div className="error">{errors.rootFolder}</div>
-                    )}
+                    {errors.rootFolder &&
+                      touched.rootFolder &&
+                      typeof errors.rootFolder === 'string' && (
+                        <div className="error">{errors.rootFolder}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
@@ -673,9 +683,11 @@ const RadarrModal: React.FC<RadarrModalProps> = ({
                         inputMode="url"
                       />
                     </div>
-                    {errors.externalUrl && touched.externalUrl && (
-                      <div className="error">{errors.externalUrl}</div>
-                    )}
+                    {errors.externalUrl &&
+                      touched.externalUrl &&
+                      typeof errors.externalUrl === 'string' && (
+                        <div className="error">{errors.externalUrl}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">

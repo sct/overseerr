@@ -1,10 +1,7 @@
 import React from 'react';
 import type { ToastContainerProps } from 'react-toast-notifications';
 
-const ToastContainer: React.FC<ToastContainerProps> = ({
-  hasToasts,
-  ...props
-}) => {
+const ToastContainer = ({ hasToasts, ...props }: ToastContainerProps) => {
   return (
     <div
       id="toast-container"

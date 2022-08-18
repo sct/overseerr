@@ -5,6 +5,7 @@ import { useUser } from '../hooks/useUser';
 
 interface UserContextProps {
   initialUser: User;
+  children?: React.ReactNode;
 }
 
 /**
@@ -12,10 +13,7 @@ interface UserContextProps {
  * cache on server side render. It also will handle redirecting the user to
  * the login page if their session ever becomes invalid.
  */
-export const UserContext: React.FC<UserContextProps> = ({
-  initialUser,
-  children,
-}) => {
+export const UserContext = ({ initialUser, children }: UserContextProps) => {
   const { user, error, revalidate } = useUser({ initialData: initialUser });
   const router = useRouter();
   const routing = useRef(false);

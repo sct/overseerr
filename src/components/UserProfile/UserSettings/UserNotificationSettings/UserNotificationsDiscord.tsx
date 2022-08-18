@@ -23,7 +23,7 @@ const messages = defineMessages({
   validationDiscordId: 'You must provide a valid user ID',
 });
 
-const UserNotificationsDiscord: React.FC = () => {
+const UserNotificationsDiscord = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -111,17 +111,15 @@ const UserNotificationsDiscord: React.FC = () => {
                 {currentUser?.id === user?.id && (
                   <span className="label-tip">
                     {intl.formatMessage(messages.discordIdTip, {
-                      FindDiscordIdLink: function FindDiscordIdLink(msg) {
-                        return (
-                          <a
-                            href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {msg}
-                          </a>
-                        );
-                      },
+                      FindDiscordIdLink: (msg: React.ReactNode) => (
+                        <a
+                          href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      ),
                     })}
                   </span>
                 )}
@@ -130,9 +128,11 @@ const UserNotificationsDiscord: React.FC = () => {
                 <div className="form-input-field">
                   <Field id="discordId" name="discordId" type="text" />
                 </div>
-                {errors.discordId && touched.discordId && (
-                  <div className="error">{errors.discordId}</div>
-                )}
+                {errors.discordId &&
+                  touched.discordId &&
+                  typeof errors.discordId === 'string' && (
+                    <div className="error">{errors.discordId}</div>
+                  )}
               </div>
             </div>
             <NotificationTypeSelector

@@ -11,7 +11,7 @@ const messages = defineMessages({
   discovermovies: 'Popular Movies',
 });
 
-const DiscoverMovies: React.FC = () => {
+const DiscoverMovies = () => {
   const intl = useIntl();
 
   const {

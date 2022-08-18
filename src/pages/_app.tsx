@@ -21,6 +21,7 @@ import { SettingsProvider } from '../context/SettingsContext';
 import { UserContext } from '../context/UserContext';
 import type { User } from '../hooks/useUser';
 import '../styles/globals.css';
+import { polyfillIntl } from '../utils/polyfillIntl';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
@@ -241,6 +242,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     : currentSettings.locale;
 
   const messages = await loadLocaleData(locale as AvailableLocale);
+  await polyfillIntl(locale);
 
   return { ...appInitialProps, user, messages, locale, currentSettings };
 };

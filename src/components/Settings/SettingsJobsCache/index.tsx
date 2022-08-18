@@ -70,7 +70,7 @@ interface Job {
   running: boolean;
 }
 
-const SettingsJobs: React.FC = () => {
+const SettingsJobs = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const {

@@ -55,11 +55,11 @@ interface CreateIssueModalProps {
   onCancel?: () => void;
 }
 
-const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
+const CreateIssueModal = ({
   onCancel,
   mediaType,
   tmdbId,
-}) => {
+}: CreateIssueModalProps) => {
   const intl = useIntl();
   const settings = useSettings();
   const { hasPermission } = useUser();
@@ -118,9 +118,7 @@ const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
                 <div>
                   {intl.formatMessage(messages.toastSuccessCreate, {
                     title: isMovie(data) ? data.title : data.name,
-                    strong: function strong(msg) {
-                      return <strong>{msg}</strong>;
-                    },
+                    strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
                   })}
                 </div>
                 <Link href={`/issues/${newIssue.data.id}`}>
@@ -315,9 +313,11 @@ const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
                 className="h-28"
                 placeholder={intl.formatMessage(messages.providedetail)}
               />
-              {errors.message && touched.message && (
-                <div className="error">{errors.message}</div>
-              )}
+              {errors.message &&
+                touched.message &&
+                typeof errors.message === 'string' && (
+                  <div className="error">{errors.message}</div>
+                )}
             </div>
           </Modal>
         );

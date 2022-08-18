@@ -17,11 +17,11 @@ interface PlexLoginButtonProps {
   onError?: (message: string) => void;
 }
 
-const PlexLoginButton: React.FC<PlexLoginButtonProps> = ({
+const PlexLoginButton = ({
   onAuthToken,
   onError,
   isProcessing,
-}) => {
+}: PlexLoginButtonProps) => {
   const intl = useIntl();
   const [loading, setLoading] = useState(false);
 

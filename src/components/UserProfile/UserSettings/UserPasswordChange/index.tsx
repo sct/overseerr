@@ -39,7 +39,7 @@ const messages = defineMessages({
     "You do not have permission to modify this user's password.",
 });
 
-const UserPasswordChange: React.FC = () => {
+const UserPasswordChange = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -176,9 +176,11 @@ const UserPasswordChange: React.FC = () => {
                         autoComplete="current-password"
                       />
                     </div>
-                    {errors.currentPassword && touched.currentPassword && (
-                      <div className="error">{errors.currentPassword}</div>
-                    )}
+                    {errors.currentPassword &&
+                      touched.currentPassword &&
+                      typeof errors.currentPassword === 'string' && (
+                        <div className="error">{errors.currentPassword}</div>
+                      )}
                   </div>
                 </div>
               )}
@@ -196,9 +198,11 @@ const UserPasswordChange: React.FC = () => {
                       autoComplete="new-password"
                     />
                   </div>
-                  {errors.newPassword && touched.newPassword && (
-                    <div className="error">{errors.newPassword}</div>
-                  )}
+                  {errors.newPassword &&
+                    touched.newPassword &&
+                    typeof errors.newPassword === 'string' && (
+                      <div className="error">{errors.newPassword}</div>
+                    )}
                 </div>
               </div>
               <div className="form-row">
@@ -215,9 +219,11 @@ const UserPasswordChange: React.FC = () => {
                       autoComplete="new-password"
                     />
                   </div>
-                  {errors.confirmPassword && touched.confirmPassword && (
-                    <div className="error">{errors.confirmPassword}</div>
-                  )}
+                  {errors.confirmPassword &&
+                    touched.confirmPassword &&
+                    typeof errors.confirmPassword === 'string' && (
+                      <div className="error">{errors.confirmPassword}</div>
+                    )}
                 </div>
               </div>
               <div className="actions">

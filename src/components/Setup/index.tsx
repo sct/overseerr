@@ -28,7 +28,7 @@ const messages = defineMessages({
     'Scanning will run in the background. You can continue the setup process in the meantime.',
 });
 
-const Setup: React.FC = () => {
+const Setup = () => {
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);

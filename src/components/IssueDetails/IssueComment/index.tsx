@@ -30,12 +30,12 @@ interface IssueCommentProps {
   onUpdate?: () => void;
 }
 
-const IssueComment: React.FC<IssueCommentProps> = ({
+const IssueComment = ({
   comment,
   isReversed = false,
   isActiveUser = false,
   onUpdate,
-}) => {
+}: IssueCommentProps) => {
   const intl = useIntl();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -195,9 +195,11 @@ const IssueComment: React.FC<IssueCommentProps> = ({
                         name="newMessage"
                         className="h-24"
                       />
-                      {errors.newMessage && touched.newMessage && (
-                        <div className="error">{errors.newMessage}</div>
-                      )}
+                      {errors.newMessage &&
+                        touched.newMessage &&
+                        typeof errors.newMessage === 'string' && (
+                          <div className="error">{errors.newMessage}</div>
+                        )}
                       <div className="mt-4 flex items-center justify-end space-x-2">
                         <Button
                           type="button"

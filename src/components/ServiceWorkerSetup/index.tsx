@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
 import axios from 'axios';
-import type React from 'react';
 import { useEffect } from 'react';
 import useSettings from '../../hooks/useSettings';
 import { useUser } from '../../hooks/useUser';
 
-const ServiceWorkerSetup: React.FC = () => {
+const ServiceWorkerSetup = () => {
   const { currentSettings } = useSettings();
   const { user } = useUser();
   useEffect(() => {

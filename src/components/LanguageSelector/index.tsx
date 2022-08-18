@@ -34,12 +34,12 @@ interface LanguageSelectorProps {
   isUserSettings?: boolean;
 }
 
-const LanguageSelector: React.FC<LanguageSelectorProps> = ({
+const LanguageSelector = ({
   value,
   setFieldValue,
   serverValue,
   isUserSettings = false,
-}) => {
+}: LanguageSelectorProps) => {
   const intl = useIntl();
   const { data: languages } = useSWR<Language[]>('/api/v1/languages');
 

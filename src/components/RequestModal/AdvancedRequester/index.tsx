@@ -56,14 +56,14 @@ interface AdvancedRequesterProps {
   onChange: (overrides: RequestOverrides) => void;
 }
 
-const AdvancedRequester: React.FC<AdvancedRequesterProps> = ({
+const AdvancedRequester = ({
   type,
   is4k = false,
   isAnime = false,
   defaultOverrides,
   requestUser,
   onChange,
-}) => {
+}: AdvancedRequesterProps) => {
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const { data, error } = useSWR<ServiceCommonServer[]>(

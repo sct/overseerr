@@ -14,7 +14,7 @@ const messages = defineMessages({
   studioMovies: '{studio} Movies',
 });
 
-const DiscoverMovieStudio: React.FC = () => {
+const DiscoverMovieStudio = () => {
   const router = useRouter();
   const intl = useIntl();
 

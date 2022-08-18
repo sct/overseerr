@@ -64,14 +64,14 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   editRequest?: MediaRequest;
 }
 
-const TvRequestModal: React.FC<RequestModalProps> = ({
+const TvRequestModal = ({
   onCancel,
   onComplete,
   tmdbId,
   onUpdating,
   editRequest,
   is4k = false,
-}) => {
+}: RequestModalProps) => {
   const settings = useSettings();
   const { addToast } = useToasts();
   const editingSeasons: number[] = (editRequest?.seasons ?? []).map(
@@ -142,16 +142,12 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
                   : messages.requestedited,
                 {
                   title: data?.name,
-                  strong: function strong(msg) {
-                    return <strong>{msg}</strong>;
-                  },
+                  strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
                 }
               )
             : intl.formatMessage(messages.requestcancelled, {
                 title: data?.name,
-                strong: function strong(msg) {
-                  return <strong>{msg}</strong>;
-                },
+                strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
               })}
         </span>,
         {
@@ -220,9 +216,7 @@ const TvRequestModal: React.FC<RequestModalProps> = ({
           <span>
             {intl.formatMessage(messages.requestSuccess, {
               title: data?.name,
-              strong: function strong(msg) {
-                return <strong>{msg}</strong>;
-              },
+              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             })}
           </span>,
           { appearance: 'success', autoDismiss: true }

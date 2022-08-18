@@ -23,7 +23,11 @@ const messages = defineMessages({
   webpush: 'Web Push',
 });
 
-const SettingsNotifications: React.FC = ({ children }) => {
+type SettingsNotificationsProps = {
+  children: React.ReactNode;
+};
+
+const SettingsNotifications = ({ children }: SettingsNotificationsProps) => {
   const intl = useIntl();
 
   const settingsRoutes: SettingsRoute[] = [

@@ -22,7 +22,7 @@ const messages = defineMessages({
   unauthorizedDescription: 'You cannot modify your own permissions.',
 });
 
-const UserPermissions: React.FC = () => {
+const UserPermissions = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();

@@ -18,10 +18,7 @@ interface ProfileHeaderProps {
   isSettingsPage?: boolean;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({
-  user,
-  isSettingsPage,
-}) => {
+const ProfileHeader = ({ user, isSettingsPage }: ProfileHeaderProps) => {
   const intl = useIntl();
   const { user: loggedInUser, hasPermission } = useUser();
 

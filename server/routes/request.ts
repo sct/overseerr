@@ -40,11 +40,15 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
             MediaRequestStatus.APPROVED,
           ];
           break;
+        case 'failed':
+          statusFilter = [MediaRequestStatus.FAILED];
+          break;
         default:
           statusFilter = [
             MediaRequestStatus.PENDING,
             MediaRequestStatus.APPROVED,
             MediaRequestStatus.DECLINED,
+            MediaRequestStatus.FAILED,
           ];
       }
 

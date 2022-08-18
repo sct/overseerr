@@ -6,14 +6,15 @@ interface ConfirmButtonProps {
   onClick: () => void;
   confirmText: React.ReactNode;
   className?: string;
+  children: React.ReactNode;
 }
 
-const ConfirmButton: React.FC<ConfirmButtonProps> = ({
+const ConfirmButton = ({
   onClick,
   children,
   confirmText,
   className,
-}) => {
+}: ConfirmButtonProps) => {
   const ref = useRef(null);
   useClickOutside(ref, () => setIsClicked(false));
   const [isClicked, setIsClicked] = useState(false);

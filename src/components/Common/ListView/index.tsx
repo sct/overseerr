@@ -18,13 +18,13 @@ interface ListViewProps {
   onScrollBottom: () => void;
 }
 
-const ListView: React.FC<ListViewProps> = ({
+const ListView = ({
   items,
   isEmpty,
   isLoading,
   onScrollBottom,
   isReachingEnd,
-}) => {
+}: ListViewProps) => {
   const intl = useIntl();
   useVerticalScroll(onScrollBottom, !isLoading && !isEmpty && !isReachingEnd);
   return (

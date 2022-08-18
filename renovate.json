@@ -8,8 +8,14 @@
   ],
   "packageRules": [
     {
-      "matchManagers": "github-actions",
-      "groupName": "github-actions"
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "groupSlug": "github-actions"
+    },
+    {
+      "matchPackageNames": ["node"],
+      "groupName": "Node.js",
+      "groupSlug": "node"
     }
   ]
 }

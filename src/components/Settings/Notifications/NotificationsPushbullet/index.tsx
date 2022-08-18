@@ -28,7 +28,7 @@ const messages = defineMessages({
   validationTypes: 'You must select at least one notification type',
 });
 
-const NotificationsPushbullet: React.FC = () => {
+const NotificationsPushbullet = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
@@ -154,20 +154,16 @@ const NotificationsPushbullet: React.FC = () => {
                 <span className="label-required">*</span>
                 <span className="label-tip">
                   {intl.formatMessage(messages.accessTokenTip, {
-                    PushbulletSettingsLink: function PushbulletSettingsLink(
-                      msg
-                    ) {
-                      return (
-                        <a
-                          href="https://www.pushbullet.com/#settings/account"
-                          className="text-white transition duration-300 hover:underline"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
+                    PushbulletSettingsLink: (msg: React.ReactNode) => (
+                      <a
+                        href="https://www.pushbullet.com/#settings/account"
+                        className="text-white transition duration-300 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    ),
                   })}
                 </span>
               </label>
@@ -180,9 +176,11 @@ const NotificationsPushbullet: React.FC = () => {
                     autoComplete="one-time-code"
                   />
                 </div>
-                {errors.accessToken && touched.accessToken && (
-                  <div className="error">{errors.accessToken}</div>
-                )}
+                {errors.accessToken &&
+                  touched.accessToken &&
+                  typeof errors.accessToken === 'string' && (
+                    <div className="error">{errors.accessToken}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">

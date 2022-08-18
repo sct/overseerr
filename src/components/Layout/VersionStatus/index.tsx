@@ -22,7 +22,7 @@ interface VersionStatusProps {
   onClick?: () => void;
 }
 
-const VersionStatus: React.FC<VersionStatusProps> = ({ onClick }) => {
+const VersionStatus = ({ onClick }: VersionStatusProps) => {
   const intl = useIntl();
   const { data } = useSWR<StatusResponse>('/api/v1/status', {
     refreshInterval: 60 * 1000,

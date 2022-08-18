@@ -10,7 +10,11 @@ import SearchInput from './SearchInput';
 import Sidebar from './Sidebar';
 import UserDropdown from './UserDropdown';
 
-const Layout: React.FC = ({ children }) => {
+type LayoutProps = {
+  children: React.ReactNode;
+};
+
+const Layout = ({ children }: LayoutProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useUser();

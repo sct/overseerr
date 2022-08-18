@@ -13,7 +13,7 @@ const messages = defineMessages({
   languageSeries: '{language} Series',
 });
 
-const DiscoverTvLanguage: React.FC = () => {
+const DiscoverTvLanguage = () => {
   const router = useRouter();
   const intl = useIntl();
 

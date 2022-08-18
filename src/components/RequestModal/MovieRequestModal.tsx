@@ -45,14 +45,14 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpdating?: (isUpdating: boolean) => void;
 }
 
-const MovieRequestModal: React.FC<RequestModalProps> = ({
+const MovieRequestModal = ({
   onCancel,
   onComplete,
   tmdbId,
   onUpdating,
   editRequest,
   is4k = false,
-}) => {
+}: RequestModalProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);
@@ -116,9 +116,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           <span>
             {intl.formatMessage(messages.requestSuccess, {
               title: data?.title,
-              strong: function strong(msg) {
-                return <strong>{msg}</strong>;
-              },
+              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             })}
           </span>,
           { appearance: 'success', autoDismiss: true }
@@ -151,9 +149,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
           <span>
             {intl.formatMessage(messages.requestCancel, {
               title: data?.title,
-              strong: function strong(msg) {
-                return <strong>{msg}</strong>;
-              },
+              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             })}
           </span>,
           { appearance: 'success', autoDismiss: true }
@@ -190,9 +186,7 @@ const MovieRequestModal: React.FC<RequestModalProps> = ({
               : messages.requestedited,
             {
               title: data?.title,
-              strong: function strong(msg) {
-                return <strong>{msg}</strong>;
-              },
+              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             }
           )}
         </span>,

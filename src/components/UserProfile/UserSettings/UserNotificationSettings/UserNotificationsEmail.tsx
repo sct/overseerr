@@ -28,7 +28,7 @@ const messages = defineMessages({
   validationPgpPublicKey: 'You must provide a valid PGP public key',
 });
 
-const UserEmailSettings: React.FC = () => {
+const UserEmailSettings = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -126,9 +126,11 @@ const UserEmailSettings: React.FC = () => {
                     className="font-mono text-xs"
                   />
                 </div>
-                {errors.pgpKey && touched.pgpKey && (
-                  <div className="error">{errors.pgpKey}</div>
-                )}
+                {errors.pgpKey &&
+                  touched.pgpKey &&
+                  typeof errors.pgpKey === 'string' && (
+                    <div className="error">{errors.pgpKey}</div>
+                  )}
               </div>
             </div>
             <NotificationTypeSelector

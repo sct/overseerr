@@ -33,11 +33,12 @@ enum Filter {
   PROCESSING = 'processing',
   AVAILABLE = 'available',
   UNAVAILABLE = 'unavailable',
+  FAILED = 'failed',
 }
 
 type Sort = 'added' | 'modified';
 
-const RequestList: React.FC = () => {
+const RequestList = () => {
   const router = useRouter();
   const intl = useIntl();
   const { user } = useUser({
@@ -158,6 +159,9 @@ const RequestList: React.FC = () => {
               <option value="processing">
                 {intl.formatMessage(globalMessages.processing)}
               </option>
+              <option value="failed">
+                {intl.formatMessage(globalMessages.failed)}
+              </option>
               <option value="available">
                 {intl.formatMessage(globalMessages.available)}
               </option>
@@ -238,9 +242,9 @@ const RequestList: React.FC = () => {
                       ? pageIndex * currentPageSize + data.results.length
                       : (pageIndex + 1) * currentPageSize,
                   total: data.pageInfo.results,
-                  strong: function strong(msg) {
-                    return <span className="font-medium">{msg}</span>;
-                  },
+                  strong: (msg: React.ReactNode) => (
+                    <span className="font-medium">{msg}</span>
+                  ),
                 })}
             </p>
           </div>

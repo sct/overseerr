@@ -17,14 +17,14 @@ interface ExternalLinkBlockProps {
   plexUrl?: string;
 }
 
-const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
+const ExternalLinkBlock = ({
   mediaType,
   tmdbId,
   tvdbId,
   imdbId,
   rtUrl,
   plexUrl,
-}) => {
+}: ExternalLinkBlockProps) => {
   const { locale } = useLocale();
 
   return (
