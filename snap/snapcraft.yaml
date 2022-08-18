@@ -16,7 +16,7 @@ architectures:
 parts:
   overseerr:
     plugin: nodejs
-    nodejs-version: '16.16.0'
+    nodejs-version: '16.17.0'
     nodejs-package-manager: 'yarn'
     nodejs-yarn-version: v1.22.17
     build-packages:
