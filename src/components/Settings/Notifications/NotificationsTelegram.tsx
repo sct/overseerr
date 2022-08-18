@@ -34,7 +34,7 @@ const messages = defineMessages({
   sendSilentlyTip: 'Send notifications with no sound',
 });
 
-const NotificationsTelegram: React.FC = () => {
+const NotificationsTelegram = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);

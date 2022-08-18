@@ -35,13 +35,13 @@ interface QuotaDisplayProps {
   overLimit?: number;
 }
 
-const QuotaDisplay: React.FC<QuotaDisplayProps> = ({
+const QuotaDisplay = ({
   quota,
   mediaType,
   userOverride,
   remaining,
   overLimit,
-}) => {
+}: QuotaDisplayProps) => {
   const intl = useIntl();
   const [showDetails, setShowDetails] = useState(false);
   return (

@@ -14,7 +14,7 @@ const messages = defineMessages({
   fullseriescrew: 'Full Series Crew',
 });
 
-const TvCrew: React.FC = () => {
+const TvCrew = () => {
   const router = useRouter();
   const intl = useIntl();
   const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${router.query.tvId}`);

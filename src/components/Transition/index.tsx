@@ -27,7 +27,7 @@ function useIsInitialRender() {
   return isInitialRender.current;
 }
 
-const CSSTransition: React.FC<CSSTransitionProps> = ({
+const CSSTransition = ({
   show,
   enter = '',
   enterFrom = '',
@@ -37,7 +37,7 @@ const CSSTransition: React.FC<CSSTransitionProps> = ({
   leaveTo = '',
   appear,
   children,
-}) => {
+}: CSSTransitionProps) => {
   const enterClasses = enter.split(' ').filter((s) => s.length);
   const enterFromClasses = enterFrom.split(' ').filter((s) => s.length);
   const enterToClasses = enterTo.split(' ').filter((s) => s.length);
@@ -87,11 +87,7 @@ const CSSTransition: React.FC<CSSTransitionProps> = ({
   );
 };
 
-const Transition: React.FC<CSSTransitionProps> = ({
-  show,
-  appear,
-  ...rest
-}) => {
+const Transition = ({ show, appear, ...rest }: CSSTransitionProps) => {
   const { parent } = useContext(TransitionContext);
   const isInitialRender = useIsInitialRender();
   const isChild = show === undefined;

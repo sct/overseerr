@@ -37,7 +37,7 @@ enum Filter {
 
 type Sort = 'added' | 'modified';
 
-const RequestList: React.FC = () => {
+const RequestList = () => {
   const router = useRouter();
   const intl = useIntl();
   const { user } = useUser({

@@ -11,7 +11,7 @@ const messages = defineMessages({
   upcomingmovies: 'Upcoming Movies',
 });
 
-const UpcomingMovies: React.FC = () => {
+const UpcomingMovies = () => {
   const intl = useIntl();
 
   const {

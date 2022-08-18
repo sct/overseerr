@@ -51,7 +51,7 @@ const messages = defineMessages({
 
 type Filter = 'debug' | 'info' | 'warn' | 'error';
 
-const SettingsLogs: React.FC = () => {
+const SettingsLogs = () => {
   const router = useRouter();
   const intl = useIntl();
   const { addToast } = useToasts();

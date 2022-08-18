@@ -32,7 +32,7 @@ enum Filter {
 
 type Sort = 'added' | 'modified';
 
-const IssueList: React.FC = () => {
+const IssueList = () => {
   const intl = useIntl();
   const router = useRouter();
   const [currentFilter, setCurrentFilter] = useState<Filter>(Filter.OPEN);

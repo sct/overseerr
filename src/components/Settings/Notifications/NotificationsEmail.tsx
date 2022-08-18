@@ -46,7 +46,7 @@ const messages = defineMessages({
   validationPgpPassword: 'You must provide a PGP password',
 });
 
-export function OpenPgpLink(msg: string): JSX.Element {
+export function OpenPgpLink(msg: React.ReactNode) {
   return (
     <a href="https://www.openpgp.org/" target="_blank" rel="noreferrer">
       {msg}
@@ -54,7 +54,7 @@ export function OpenPgpLink(msg: string): JSX.Element {
   );
 }
 
-const NotificationsEmail: React.FC = () => {
+const NotificationsEmail = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);

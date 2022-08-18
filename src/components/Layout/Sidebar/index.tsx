@@ -85,7 +85,7 @@ const SidebarLinks: SidebarLinkProps[] = [
   },
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({ open, setClosed }) => {
+const Sidebar = ({ open, setClosed }: SidebarProps) => {
   const navRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const intl = useIntl();

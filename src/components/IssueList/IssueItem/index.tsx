@@ -36,7 +36,7 @@ interface IssueItemProps {
   issue: Issue;
 }
 
-const IssueItem: React.FC<IssueItemProps> = ({ issue }) => {
+const IssueItem = ({ issue }: IssueItemProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
   const { ref, inView } = useInView({

@@ -99,11 +99,7 @@ interface SonarrModalProps {
   onSave: () => void;
 }
 
-const SonarrModal: React.FC<SonarrModalProps> = ({
-  onClose,
-  sonarr,
-  onSave,
-}) => {
+const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
   const intl = useIntl();
   const initialLoad = useRef(false);
   const { addToast } = useToasts();

@@ -10,7 +10,7 @@ interface AlertProps {
   type?: 'warning' | 'info' | 'error';
 }
 
-const Alert: React.FC<AlertProps> = ({ title, children, type }) => {
+const Alert = ({ title, children, type }: AlertProps) => {
   let design = {
     bgColor: 'bg-yellow-600',
     titleColor: 'text-yellow-100',

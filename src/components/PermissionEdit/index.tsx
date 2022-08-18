@@ -70,12 +70,12 @@ interface PermissionEditProps {
   onUpdate: (newPermissions: number) => void;
 }
 
-export const PermissionEdit: React.FC<PermissionEditProps> = ({
+export const PermissionEdit = ({
   actingUser,
   currentUser,
   currentPermission,
   onUpdate,
-}) => {
+}: PermissionEditProps) => {
   const intl = useIntl();
 
   const permissionList: PermissionItem[] = [

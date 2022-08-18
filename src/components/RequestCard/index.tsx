@@ -39,7 +39,7 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
 };
 
-const RequestCardPlaceholder: React.FC = () => {
+const RequestCardPlaceholder = () => {
   return (
     <div className="relative w-72 animate-pulse rounded-xl bg-gray-700 p-4 sm:w-96">
       <div className="w-20 sm:w-28">
@@ -53,7 +53,7 @@ interface RequestCardErrorProps {
   mediaId?: number;
 }
 
-const RequestCardError: React.FC<RequestCardErrorProps> = ({ mediaId }) => {
+const RequestCardError = ({ mediaId }: RequestCardErrorProps) => {
   const { hasPermission } = useUser();
   const intl = useIntl();
 
@@ -93,7 +93,7 @@ interface RequestCardProps {
   onTitleData?: (requestId: number, title: MovieDetails | TvDetails) => void;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({ request, onTitleData }) => {
+const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });

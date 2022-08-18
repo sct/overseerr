@@ -45,14 +45,14 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpdating?: (isUpdating: boolean) => void;
 }
 
-const MovieRequestModal: React.FC<RequestModalProps> = ({
+const MovieRequestModal = ({
   onCancel,
   onComplete,
   tmdbId,
   onUpdating,
   editRequest,
   is4k = false,
-}) => {
+}: RequestModalProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);

@@ -74,7 +74,7 @@ interface TvDetailsProps {
   tv?: TvDetailsType;
 }
 
-const TvDetails: React.FC<TvDetailsProps> = ({ tv }) => {
+const TvDetails = ({ tv }: TvDetailsProps) => {
   const settings = useSettings();
   const { user, hasPermission } = useUser();
   const router = useRouter();

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const SmallLoadingSpinner: React.FC = () => {
+export const SmallLoadingSpinner = () => {
   return (
     <div className="inset-0 flex h-full w-full items-center justify-center text-gray-200">
       <svg
@@ -29,7 +29,7 @@ export const SmallLoadingSpinner: React.FC = () => {
   );
 };
 
-const LoadingSpinner: React.FC = () => {
+const LoadingSpinner = () => {
   return (
     <div className="inset-0 flex h-64 items-center justify-center text-gray-200">
       <svg

@@ -20,7 +20,7 @@ const messages = defineMessages({
   webpushsettingsfailed: 'Web push notification settings failed to save.',
 });
 
-const UserWebPushSettings: React.FC = () => {
+const UserWebPushSettings = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();

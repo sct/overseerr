@@ -23,7 +23,7 @@ const messages = defineMessages({
   validationDiscordId: 'You must provide a valid user ID',
 });
 
-const UserNotificationsDiscord: React.FC = () => {
+const UserNotificationsDiscord = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();

@@ -30,12 +30,12 @@ interface IssueCommentProps {
   onUpdate?: () => void;
 }
 
-const IssueComment: React.FC<IssueCommentProps> = ({
+const IssueComment = ({
   comment,
   isReversed = false,
   isActiveUser = false,
   onUpdate,
-}) => {
+}: IssueCommentProps) => {
   const intl = useIntl();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);

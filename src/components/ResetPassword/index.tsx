@@ -25,7 +25,7 @@ const messages = defineMessages({
   resetpasswordsuccessmessage: 'Password reset successfully!',
 });
 
-const ResetPassword: React.FC = () => {
+const ResetPassword = () => {
   const intl = useIntl();
   const router = useRouter();
   const [hasSubmitted, setSubmitted] = useState(false);

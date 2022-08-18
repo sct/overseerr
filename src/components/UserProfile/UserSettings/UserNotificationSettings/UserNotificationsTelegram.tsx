@@ -25,7 +25,7 @@ const messages = defineMessages({
   validationTelegramChatId: 'You must provide a valid chat ID',
 });
 
-const UserTelegramSettings: React.FC = () => {
+const UserTelegramSettings = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -112,31 +112,25 @@ const UserTelegramSettings: React.FC = () => {
                 {data?.telegramBotUsername && (
                   <span className="label-tip">
                     {intl.formatMessage(messages.telegramChatIdTipLong, {
-                      TelegramBotLink: function TelegramBotLink(msg) {
-                        return (
-                          <a
-                            href={`https://telegram.me/${data.telegramBotUsername}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {msg}
-                          </a>
-                        );
-                      },
-                      GetIdBotLink: function GetIdBotLink(msg) {
-                        return (
-                          <a
-                            href="https://telegram.me/get_id_bot"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {msg}
-                          </a>
-                        );
-                      },
-                      code: function code(msg) {
-                        return <code>{msg}</code>;
-                      },
+                      TelegramBotLink: (msg: React.ReactNode) => (
+                        <a
+                          href={`https://telegram.me/${data.telegramBotUsername}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      ),
+                      GetIdBotLink: (msg: React.ReactNode) => (
+                        <a
+                          href="https://telegram.me/get_id_bot"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      ),
+                      code: (msg: React.ReactNode) => <code>{msg}</code>,
                     })}
                   </span>
                 )}

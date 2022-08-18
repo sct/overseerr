@@ -21,7 +21,7 @@ const messages = defineMessages({
     'In order to receive web push notifications, Overseerr must be served over HTTPS.',
 });
 
-const NotificationsWebPush: React.FC = () => {
+const NotificationsWebPush = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);

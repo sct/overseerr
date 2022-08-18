@@ -11,13 +11,13 @@ interface PersonCardProps {
   canExpand?: boolean;
 }
 
-const PersonCard: React.FC<PersonCardProps> = ({
+const PersonCard = ({
   personId,
   name,
   subName,
   profilePath,
   canExpand = false,
-}) => {
+}: PersonCardProps) => {
   const [isHovered, setHovered] = useState(false);
 
   return (

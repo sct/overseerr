@@ -15,7 +15,7 @@ const messages = defineMessages({
   similar: 'Similar Titles',
 });
 
-const MovieSimilar: React.FC = () => {
+const MovieSimilar = () => {
   const router = useRouter();
   const intl = useIntl();
   const { data: movieData } = useSWR<MovieDetails>(

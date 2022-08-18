@@ -107,7 +107,7 @@ interface SettingsPlexProps {
   onComplete?: () => void;
 }
 
-const SettingsPlex: React.FC<SettingsPlexProps> = ({ onComplete }) => {
+const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isRefreshingPresets, setIsRefreshingPresets] = useState(false);
   const [availableServers, setAvailableServers] = useState<PlexDevice[] | null>(

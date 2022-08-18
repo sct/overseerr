@@ -31,9 +31,7 @@ interface CollectionDetailsProps {
   collection?: Collection;
 }
 
-const CollectionDetails: React.FC<CollectionDetailsProps> = ({
-  collection,
-}) => {
+const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   const intl = useIntl();
   const router = useRouter();
   const settings = useSettings();

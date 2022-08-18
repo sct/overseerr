@@ -57,7 +57,7 @@ const messages = defineMessages({
   locale: 'Display Language',
 });
 
-const SettingsMain: React.FC = () => {
+const SettingsMain = () => {
   const { addToast } = useToasts();
   const { user: currentUser, hasPermission: userHasPermission } = useUser();
   const intl = useIntl();

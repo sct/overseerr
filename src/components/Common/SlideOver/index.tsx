@@ -12,13 +12,13 @@ interface SlideOverProps {
   onClose: () => void;
 }
 
-const SlideOver: React.FC<SlideOverProps> = ({
+const SlideOver = ({
   show = false,
   title,
   subText,
   onClose,
   children,
-}) => {
+}: SlideOverProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const slideoverRef = useRef(null);
   useLockBodyScroll(show);

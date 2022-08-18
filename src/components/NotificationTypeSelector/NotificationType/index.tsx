@@ -9,12 +9,12 @@ interface NotificationTypeProps {
   onUpdate: (newTypes: number) => void;
 }
 
-const NotificationType: React.FC<NotificationTypeProps> = ({
+const NotificationType = ({
   option,
   currentTypes,
   onUpdate,
   parent,
-}) => {
+}: NotificationTypeProps) => {
   return (
     <>
       <div

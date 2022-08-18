@@ -25,10 +25,7 @@ const messages = defineMessages({
     'The <strong>Enable New Plex Sign-In</strong> setting is currently enabled. Plex users with library access do not need to be imported in order to sign in.',
 });
 
-const PlexImportModal: React.FC<PlexImportProps> = ({
-  onCancel,
-  onComplete,
-}) => {
+const PlexImportModal = ({ onCancel, onComplete }: PlexImportProps) => {
   const intl = useIntl();
   const settings = useSettings();
   const { addToast } = useToasts();

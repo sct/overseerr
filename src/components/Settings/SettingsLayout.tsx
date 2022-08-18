@@ -16,7 +16,7 @@ const messages = defineMessages({
   menuAbout: 'About',
 });
 
-const SettingsLayout: React.FC = ({ children }) => {
+const SettingsLayout = ({ children }) => {
   const intl = useIntl();
 
   const settingsRoutes: SettingsRoute[] = [

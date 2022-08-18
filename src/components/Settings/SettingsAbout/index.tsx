@@ -37,7 +37,7 @@ const messages = defineMessages({
     'You are running the <code>develop</code> branch of Overseerr, which is only recommended for those contributing to development or assisting with bleeding-edge testing.',
 });
 
-const SettingsAbout: React.FC = () => {
+const SettingsAbout = () => {
   const intl = useIntl();
   const { data, error } = useSWR<SettingsAboutResponse>(
     '/api/v1/settings/about'

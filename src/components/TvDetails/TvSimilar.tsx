@@ -15,7 +15,7 @@ const messages = defineMessages({
   similar: 'Similar Series',
 });
 
-const TvSimilar: React.FC = () => {
+const TvSimilar = () => {
   const router = useRouter();
   const intl = useIntl();
   const { data: tvData } = useSWR<TvDetails>(`/api/v1/tv/${router.query.tvId}`);

@@ -24,7 +24,7 @@ interface SearchByNameModalProps {
   tmdbId: number;
 }
 
-const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
+const SearchByNameModal = ({
   setTvdbId,
   tvdbId,
   loading,
@@ -32,7 +32,7 @@ const SearchByNameModal: React.FC<SearchByNameModalProps> = ({
   closeModal,
   modalTitle,
   tmdbId,
-}) => {
+}: SearchByNameModalProps) => {
   const intl = useIntl();
   const { data, error } = useSWR<SonarrSeries[]>(
     `/api/v1/service/sonarr/lookup/${tmdbId}`

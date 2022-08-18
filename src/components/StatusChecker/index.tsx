@@ -19,7 +19,7 @@ const messages = defineMessages({
     'Please restart the server to apply the updated settings.',
 });
 
-const StatusChecker: React.FC = () => {
+const StatusChecker = () => {
   const intl = useIntl();
   const settings = useSettings();
   const { hasPermission } = useUser();

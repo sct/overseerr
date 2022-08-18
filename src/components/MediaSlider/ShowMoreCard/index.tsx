@@ -12,7 +12,7 @@ interface ShowMoreCardProps {
   posters: (string | undefined)[];
 }
 
-const ShowMoreCard: React.FC<ShowMoreCardProps> = ({ url, posters }) => {
+const ShowMoreCard = ({ url, posters }: ShowMoreCardProps) => {
   const intl = useIntl();
   const [isHovered, setHovered] = useState(false);
   return (

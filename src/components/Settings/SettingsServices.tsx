@@ -60,7 +60,7 @@ interface ServerInstanceProps {
   onDelete: () => void;
 }
 
-const ServerInstance: React.FC<ServerInstanceProps> = ({
+const ServerInstance = ({
   name,
   hostname,
   port,
@@ -72,7 +72,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
   externalUrl,
   onEdit,
   onDelete,
-}) => {
+}: ServerInstanceProps) => {
   const intl = useIntl();
 
   const internalUrl =
@@ -161,7 +161,7 @@ const ServerInstance: React.FC<ServerInstanceProps> = ({
   );
 };
 
-const SettingsServices: React.FC = () => {
+const SettingsServices = () => {
   const intl = useIntl();
   const {
     data: radarrData,

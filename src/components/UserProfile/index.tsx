@@ -37,7 +37,7 @@ const messages = defineMessages({
 
 type MediaTitle = MovieDetails | TvDetails;
 
-const UserProfile: React.FC = () => {
+const UserProfile = () => {
   const intl = useIntl();
   const router = useRouter();
   const { user, error } = useUser({

@@ -39,7 +39,7 @@ const messages = defineMessages({
     "You do not have permission to modify this user's password.",
 });
 
-const UserPasswordChange: React.FC = () => {
+const UserPasswordChange = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();

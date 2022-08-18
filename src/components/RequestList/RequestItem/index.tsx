@@ -50,10 +50,10 @@ interface RequestItemErroProps {
   revalidateList: () => void;
 }
 
-const RequestItemError: React.FC<RequestItemErroProps> = ({
+const RequestItemError = ({
   mediaId,
   revalidateList,
-}) => {
+}: RequestItemErroProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
 
@@ -88,10 +88,7 @@ interface RequestItemProps {
   revalidateList: () => void;
 }
 
-const RequestItem: React.FC<RequestItemProps> = ({
-  request,
-  revalidateList,
-}) => {
+const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });

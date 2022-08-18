@@ -6,7 +6,7 @@ interface PageTitleProps {
   title: string | (string | undefined)[];
 }
 
-const PageTitle: React.FC<PageTitleProps> = ({ title }) => {
+const PageTitle = ({ title }: PageTitleProps) => {
   const settings = useSettings();
 
   return (

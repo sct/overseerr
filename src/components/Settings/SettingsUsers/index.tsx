@@ -30,7 +30,7 @@ const messages = defineMessages({
   defaultPermissionsTip: 'Initial permissions assigned to new users',
 });
 
-const SettingsUsers: React.FC = () => {
+const SettingsUsers = () => {
   const { addToast } = useToasts();
   const intl = useIntl();
   const {

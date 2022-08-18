@@ -21,7 +21,7 @@ const messages = defineMessages({
     'A password reset link will be sent to the provided email address if it is associated with a valid user.',
 });
 
-const ResetPassword: React.FC = () => {
+const ResetPassword = () => {
   const intl = useIntl();
   const [hasSubmitted, setSubmitted] = useState(false);
 

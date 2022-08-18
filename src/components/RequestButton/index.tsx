@@ -54,14 +54,14 @@ interface RequestButtonProps {
   is4kShowComplete?: boolean;
 }
 
-const RequestButton: React.FC<RequestButtonProps> = ({
+const RequestButton = ({
   tmdbId,
   onUpdate,
   media,
   mediaType,
   isShowComplete = false,
   is4kShowComplete = false,
-}) => {
+}: RequestButtonProps) => {
   const intl = useIntl();
   const settings = useSettings();
   const { user, hasPermission } = useUser();

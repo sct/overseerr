@@ -35,7 +35,7 @@ interface ModalProps {
   backdrop?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({
+const Modal = ({
   title,
   onCancel,
   onOk,
@@ -58,7 +58,7 @@ const Modal: React.FC<ModalProps> = ({
   tertiaryText,
   onTertiary,
   backdrop,
-}) => {
+}: ModalProps) => {
   const intl = useIntl();
   const modalRef = useRef<HTMLDivElement>(null);
   useClickOutside(modalRef, () => {

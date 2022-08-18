@@ -28,7 +28,7 @@ const messages = defineMessages({
   validationPgpPublicKey: 'You must provide a valid PGP public key',
 });
 
-const UserEmailSettings: React.FC = () => {
+const UserEmailSettings = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();

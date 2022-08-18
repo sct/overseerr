@@ -24,7 +24,7 @@ interface LocalLoginProps {
   revalidate: () => void;
 }
 
-const LocalLogin: React.FC<LocalLoginProps> = ({ revalidate }) => {
+const LocalLogin = ({ revalidate }: LocalLoginProps) => {
   const intl = useIntl();
   const settings = useSettings();
   const [loginError, setLoginError] = useState<string | null>(null);

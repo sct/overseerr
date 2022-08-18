@@ -76,7 +76,7 @@ const studios: Studio[] = [
   },
 ];
 
-const StudioSlider: React.FC = () => {
+const StudioSlider = () => {
   const intl = useIntl();
 
   return (

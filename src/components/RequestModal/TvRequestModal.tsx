@@ -64,14 +64,14 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   editRequest?: MediaRequest;
 }
 
-const TvRequestModal: React.FC<RequestModalProps> = ({
+const TvRequestModal = ({
   onCancel,
   onComplete,
   tmdbId,
   onUpdating,
   editRequest,
   is4k = false,
-}) => {
+}: RequestModalProps) => {
   const settings = useSettings();
   const { addToast } = useToasts();
   const editingSeasons: number[] = (editRequest?.seasons ?? []).map(

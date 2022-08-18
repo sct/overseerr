@@ -81,7 +81,7 @@ const messages = defineMessages({
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 
-const UserList: React.FC = () => {
+const UserList = () => {
   const intl = useIntl();
   const router = useRouter();
   const settings = useSettings();

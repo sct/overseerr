@@ -16,7 +16,7 @@ interface IssueBlockProps {
   issue: Issue;
 }
 
-const IssueBlock: React.FC<IssueBlockProps> = ({ issue }) => {
+const IssueBlock = ({ issue }: IssueBlockProps) => {
   const { user } = useUser();
   const intl = useIntl();
   const issueOption = issueOptions.find(

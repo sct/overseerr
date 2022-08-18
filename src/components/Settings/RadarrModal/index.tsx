@@ -91,11 +91,7 @@ interface RadarrModalProps {
   onSave: () => void;
 }
 
-const RadarrModal: React.FC<RadarrModalProps> = ({
-  onClose,
-  radarr,
-  onSave,
-}) => {
+const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
   const intl = useIntl();
   const initialLoad = useRef(false);
   const { addToast } = useToasts();

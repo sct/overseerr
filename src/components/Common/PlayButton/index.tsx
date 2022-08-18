@@ -12,7 +12,7 @@ export interface PlayButtonLink {
   svg: ReactNode;
 }
 
-const PlayButton: React.FC<PlayButtonProps> = ({ links }) => {
+const PlayButton = ({ links }: PlayButtonProps) => {
   if (!links || !links.length) {
     return null;
   }

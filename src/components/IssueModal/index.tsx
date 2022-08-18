@@ -10,12 +10,7 @@ interface IssueModalProps {
   issueId?: never;
 }
 
-const IssueModal: React.FC<IssueModalProps> = ({
-  show,
-  mediaType,
-  onCancel,
-  tmdbId,
-}) => (
+const IssueModal = ({ show, mediaType, onCancel, tmdbId }: IssueModalProps) => (
   <Transition
     enter="transition opacity-0 duration-300"
     enterFrom="opacity-0"

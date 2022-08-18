@@ -24,7 +24,7 @@ const messages = defineMessages({
   validationPushbulletAccessToken: 'You must provide an access token',
 });
 
-const UserPushbulletSettings: React.FC = () => {
+const UserPushbulletSettings = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -105,20 +105,16 @@ const UserPushbulletSettings: React.FC = () => {
                 {data?.pushbulletAccessToken && (
                   <span className="label-tip">
                     {intl.formatMessage(messages.pushbulletAccessTokenTip, {
-                      PushbulletSettingsLink: function PushbulletSettingsLink(
-                        msg
-                      ) {
-                        return (
-                          <a
-                            href="https://www.pushbullet.com/#settings/account"
-                            className="text-white transition duration-300 hover:underline"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {msg}
-                          </a>
-                        );
-                      },
+                      PushbulletSettingsLink: (msg: React.ReactNode) => (
+                        <a
+                          href="https://www.pushbullet.com/#settings/account"
+                          className="text-white transition duration-300 hover:underline"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {msg}
+                        </a>
+                      ),
                     })}
                   </span>
                 )}

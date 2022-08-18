@@ -55,11 +55,11 @@ interface CreateIssueModalProps {
   onCancel?: () => void;
 }
 
-const CreateIssueModal: React.FC<CreateIssueModalProps> = ({
+const CreateIssueModal = ({
   onCancel,
   mediaType,
   tmdbId,
-}) => {
+}: CreateIssueModalProps) => {
   const intl = useIntl();
   const settings = useSettings();
   const { hasPermission } = useUser();

@@ -24,7 +24,7 @@ const messages = defineMessages({
     "You do not have permission to modify this user's settings.",
 });
 
-const UserSettings: React.FC = ({ children }) => {
+const UserSettings = ({ children }) => {
   const router = useRouter();
   const settings = useSettings();
   const { user: currentUser } = useUser();

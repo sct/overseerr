@@ -6,7 +6,7 @@ interface ListItemProps {
   className?: string;
 }
 
-const ListItem: React.FC<ListItemProps> = ({ title, className, children }) => {
+const ListItem = ({ title, className, children }: ListItemProps) => {
   return (
     <div>
       <div className="max-w-6xl py-4 sm:grid sm:grid-cols-3 sm:gap-4">
@@ -24,7 +24,7 @@ interface ListProps {
   subTitle?: string;
 }
 
-const List: React.FC<ListProps> = ({ title, subTitle, children }) => {
+const List = ({ title, subTitle, children }: ListProps) => {
   return (
     <>
       <div>

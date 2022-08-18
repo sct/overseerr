@@ -51,7 +51,7 @@ const messages = defineMessages({
   validationDiscordId: 'You must provide a valid Discord user ID',
 });
 
-const UserGeneralSettings: React.FC = () => {
+const UserGeneralSettings = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const { locale, setLocale } = useLocale();

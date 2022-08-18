@@ -2,17 +2,17 @@ import type { AllHTMLAttributes } from 'react';
 import React from 'react';
 import { withProperties } from '../../../utils/typeHelpers';
 
-const TBody: React.FC = ({ children }) => {
+const TBody = ({ children }) => {
   return (
     <tbody className="divide-y divide-gray-700 bg-gray-800">{children}</tbody>
   );
 };
 
-const TH: React.FC<AllHTMLAttributes<HTMLTableHeaderCellElement>> = ({
+const TH = ({
   children,
   className,
   ...props
-}) => {
+}: AllHTMLAttributes<HTMLTableHeaderCellElement>) => {
   const style = [
     'px-4 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider truncate',
   ];
@@ -33,13 +33,13 @@ interface TDProps extends AllHTMLAttributes<HTMLTableCellElement> {
   noPadding?: boolean;
 }
 
-const TD: React.FC<TDProps> = ({
+const TD = ({
   children,
   alignText = 'left',
   noPadding,
   className,
   ...props
-}) => {
+}: TDProps) => {
   const style = ['text-sm leading-5 text-white'];
 
   switch (alignText) {
@@ -69,7 +69,7 @@ const TD: React.FC<TDProps> = ({
   );
 };
 
-const Table: React.FC = ({ children }) => {
+const Table = ({ children }) => {
   return (
     <div className="flex flex-col">
       <div className="my-2 -mx-4 overflow-x-auto md:mx-0 lg:mx-0">

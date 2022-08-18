@@ -74,7 +74,7 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
 };
 
-const IssueDetails: React.FC = () => {
+const IssueDetails = () => {
   const { addToast } = useToasts();
   const router = useRouter();
   const intl = useIntl();

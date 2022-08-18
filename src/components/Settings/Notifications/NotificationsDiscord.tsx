@@ -29,7 +29,7 @@ const messages = defineMessages({
   enableMentions: 'Enable Mentions',
 });
 
-const NotificationsDiscord: React.FC = () => {
+const NotificationsDiscord = () => {
   const intl = useIntl();
   const settings = useSettings();
   const { addToast, removeToast } = useToasts();

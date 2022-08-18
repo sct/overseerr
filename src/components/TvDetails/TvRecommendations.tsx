@@ -15,7 +15,7 @@ const messages = defineMessages({
   recommendations: 'Recommendations',
 });
 
-const TvRecommendations: React.FC = () => {
+const TvRecommendations = () => {
   const router = useRouter();
   const intl = useIntl();
   const { data: tvData } = useSWR<TvDetails>(`/api/v1/tv/${router.query.tvId}`);
