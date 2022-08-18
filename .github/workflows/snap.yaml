@@ -6,36 +6,36 @@ on:
       - '*'
 
 jobs:
-  jobs:
-    name: Job Check
-    runs-on: ubuntu-20.04
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-        with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
+  # jobs:
+  #   name: Job Check
+  #   runs-on: ubuntu-20.04
+  #   if: "!contains(github.event.head_commit.message, '[skip ci]')"
+  #   steps:
+  #     - name: Cancel Previous Runs
+  #       uses: styfle/cancel-workflow-action@0.9.1
+  #       with:
+  #         access_token: ${{ secrets.GITHUB_TOKEN }}
 
-  test:
-    name: Lint & Test Build
-    needs: jobs
-    runs-on: ubuntu-20.04
-    container: node:16.16-alpine
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install dependencies
-        env:
-          HUSKY_SKIP_INSTALL: 1
-        run: yarn
-      - name: Lint
-        run: yarn lint
-      - name: Build
-        run: yarn build
+  # test:
+  #   name: Lint & Test Build
+  #   needs: jobs
+  #   runs-on: ubuntu-20.04
+  #   container: node:16.16-alpine
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Install dependencies
+  #       env:
+  #         HUSKY_SKIP_INSTALL: 1
+  #       run: yarn
+  #     - name: Lint
+  #       run: yarn lint
+  #     - name: Build
+  #       run: yarn build
 
   build-snap:
     name: Build Snap Package (${{ matrix.architecture }})
-    needs: test
+    # needs: test
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
