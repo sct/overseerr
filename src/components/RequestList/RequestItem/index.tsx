@@ -12,10 +12,7 @@ import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import {
-  MediaRequestStatus,
-  MediaStatus,
-} from '../../../../server/constants/media';
+import { MediaRequestStatus } from '../../../../server/constants/media';
 import type { MediaRequest } from '../../../../server/entity/MediaRequest';
 import type { MovieDetails } from '../../../../server/models/Movie';
 import type { TvDetails } from '../../../../server/models/Tv';
@@ -273,9 +270,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                 <Badge badgeType="danger">
                   {intl.formatMessage(globalMessages.declined)}
                 </Badge>
-              ) : requestData.media[
-                  requestData.is4k ? 'status4k' : 'status'
-                ] === MediaStatus.UNKNOWN ? (
+              ) : requestData.status === MediaRequestStatus.FAILED ? (
                 <Badge
                   badgeType="danger"
                   href={`/${requestData.type}/${requestData.media.tmdbId}?manage=1`}
@@ -402,9 +397,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
           </div>
         </div>
         <div className="z-10 mt-4 flex w-full flex-col justify-center space-y-2 pl-4 pr-4 xl:mt-0 xl:w-96 xl:items-end xl:pl-0">
-          {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
-            MediaStatus.UNKNOWN &&
-            requestData.status !== MediaRequestStatus.DECLINED &&
+          {requestData.status === MediaRequestStatus.FAILED &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
               <Button
                 className="w-full"
