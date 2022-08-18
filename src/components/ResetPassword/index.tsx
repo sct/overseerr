@@ -129,9 +129,11 @@ const ResetPassword = () => {
                               className="form-input-area block w-full min-w-0 flex-1 rounded-md border border-gray-500 bg-gray-700 text-white transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                             />
                           </div>
-                          {errors.password && touched.password && (
-                            <div className="error">{errors.password}</div>
-                          )}
+                          {errors.password &&
+                            touched.password &&
+                            typeof errors.password === 'string' && (
+                              <div className="error">{errors.password}</div>
+                            )}
                         </div>
                         <label
                           htmlFor="confirmPassword"

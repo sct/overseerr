@@ -185,9 +185,11 @@ const UserPushoverSettings = () => {
                     type="text"
                   />
                 </div>
-                {errors.pushoverUserKey && touched.pushoverUserKey && (
-                  <div className="error">{errors.pushoverUserKey}</div>
-                )}
+                {errors.pushoverUserKey &&
+                  touched.pushoverUserKey &&
+                  typeof errors.pushoverUserKey === 'string' && (
+                    <div className="error">{errors.pushoverUserKey}</div>
+                  )}
               </div>
             </div>
             <NotificationTypeSelector

@@ -141,16 +141,12 @@ const TvRequestModal = ({
                   : messages.requestedited,
                 {
                   title: data?.name,
-                  strong: function strong(msg) {
-                    return <strong>{msg}</strong>;
-                  },
+                  strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
                 }
               )
             : intl.formatMessage(messages.requestcancelled, {
                 title: data?.name,
-                strong: function strong(msg) {
-                  return <strong>{msg}</strong>;
-                },
+                strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
               })}
         </span>,
         {
@@ -218,9 +214,7 @@ const TvRequestModal = ({
           <span>
             {intl.formatMessage(messages.requestSuccess, {
               title: data?.name,
-              strong: function strong(msg) {
-                return <strong>{msg}</strong>;
-              },
+              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             })}
           </span>,
           { appearance: 'success', autoDismiss: true }

@@ -8,6 +8,7 @@ import React from 'react';
 interface AlertProps {
   title?: React.ReactNode;
   type?: 'warning' | 'info' | 'error';
+  children?: React.ReactNode;
 }
 
 const Alert = ({ title, children, type }: AlertProps) => {

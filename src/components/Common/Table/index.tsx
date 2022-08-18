@@ -1,8 +1,11 @@
-import type { AllHTMLAttributes } from 'react';
 import React from 'react';
 import { withProperties } from '../../../utils/typeHelpers';
 
-const TBody = ({ children }) => {
+type TBodyProps = {
+  children: React.ReactNode;
+};
+
+const TBody = ({ children }: TBodyProps) => {
   return (
     <tbody className="divide-y divide-gray-700 bg-gray-800">{children}</tbody>
   );
@@ -12,7 +15,7 @@ const TH = ({
   children,
   className,
   ...props
-}: AllHTMLAttributes<HTMLTableHeaderCellElement>) => {
+}: React.ComponentPropsWithoutRef<'th'>) => {
   const style = [
     'px-4 py-3 bg-gray-500 text-left text-xs leading-4 font-medium text-gray-200 uppercase tracking-wider truncate',
   ];
@@ -28,10 +31,10 @@ const TH = ({
   );
 };
 
-interface TDProps extends AllHTMLAttributes<HTMLTableCellElement> {
+type TDProps = {
   alignText?: 'left' | 'center' | 'right';
   noPadding?: boolean;
-}
+};
 
 const TD = ({
   children,
@@ -39,7 +42,7 @@ const TD = ({
   noPadding,
   className,
   ...props
-}: TDProps) => {
+}: TDProps & React.ComponentPropsWithoutRef<'td'>) => {
   const style = ['text-sm leading-5 text-white'];
 
   switch (alignText) {
@@ -69,7 +72,11 @@ const TD = ({
   );
 };
 
-const Table = ({ children }) => {
+type TableProps = {
+  children: React.ReactNode;
+};
+
+const Table = ({ children }: TableProps) => {
   return (
     <div className="flex flex-col">
       <div className="my-2 -mx-4 overflow-x-auto md:mx-0 lg:mx-0">

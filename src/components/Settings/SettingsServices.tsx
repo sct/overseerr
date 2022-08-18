@@ -294,13 +294,11 @@ const SettingsServices = () => {
                 <Alert
                   title={intl.formatMessage(messages.noDefaultNon4kServer, {
                     serverType: 'Radarr',
-                    strong: function strong(msg) {
-                      return (
-                        <strong className="font-semibold text-white">
-                          {msg}
-                        </strong>
-                      );
-                    },
+                    strong: (msg: React.ReactNode) => (
+                      <strong className="font-semibold text-white">
+                        {msg}
+                      </strong>
+                    ),
                   })}
                 />
               ) : (
@@ -384,13 +382,11 @@ const SettingsServices = () => {
                 <Alert
                   title={intl.formatMessage(messages.noDefaultNon4kServer, {
                     serverType: 'Sonarr',
-                    strong: function strong(msg) {
-                      return (
-                        <strong className="font-semibold text-white">
-                          {msg}
-                        </strong>
-                      );
-                    },
+                    strong: (msg: React.ReactNode) => (
+                      <strong className="font-semibold text-white">
+                        {msg}
+                      </strong>
+                    ),
                   })}
                 />
               ) : (

@@ -88,9 +88,9 @@ const SettingsAbout = () => {
           {data.version.startsWith('develop-') && (
             <Alert
               title={intl.formatMessage(messages.runningDevelop, {
-                code: function code(msg) {
-                  return <code className="bg-opacity-50">{msg}</code>;
-                },
+                code: (msg: React.ReactNode) => (
+                  <code className="bg-opacity-50">{msg}</code>
+                ),
               })}
             />
           )}

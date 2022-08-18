@@ -179,33 +179,29 @@ const NotificationsTelegram = () => {
                 <span className="label-required">*</span>
                 <span className="label-tip">
                   {intl.formatMessage(messages.botApiTip, {
-                    CreateBotLink: function CreateBotLink(msg) {
-                      return (
-                        <a
-                          href="https://core.telegram.org/bots#6-botfather"
-                          className="text-white transition duration-300 hover:underline"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
-                    GetIdBotLink: function GetIdBotLink(msg) {
-                      return (
-                        <a
-                          href="https://telegram.me/get_id_bot"
-                          className="text-white transition duration-300 hover:underline"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
-                    code: function code(msg) {
-                      return <code className="bg-opacity-50">{msg}</code>;
-                    },
+                    CreateBotLink: (msg: React.ReactNode) => (
+                      <a
+                        href="https://core.telegram.org/bots#6-botfather"
+                        className="text-white transition duration-300 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    ),
+                    GetIdBotLink: (msg: React.ReactNode) => (
+                      <a
+                        href="https://telegram.me/get_id_bot"
+                        className="text-white transition duration-300 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    ),
+                    code: (msg: React.ReactNode) => (
+                      <code className="bg-opacity-50">{msg}</code>
+                    ),
                   })}
                 </span>
               </label>
@@ -218,9 +214,11 @@ const NotificationsTelegram = () => {
                     autoComplete="one-time-code"
                   />
                 </div>
-                {errors.botAPI && touched.botAPI && (
-                  <div className="error">{errors.botAPI}</div>
-                )}
+                {errors.botAPI &&
+                  touched.botAPI &&
+                  typeof errors.botAPI === 'string' && (
+                    <div className="error">{errors.botAPI}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -234,9 +232,11 @@ const NotificationsTelegram = () => {
                 <div className="form-input-field">
                   <Field id="botUsername" name="botUsername" type="text" />
                 </div>
-                {errors.botUsername && touched.botUsername && (
-                  <div className="error">{errors.botUsername}</div>
-                )}
+                {errors.botUsername &&
+                  touched.botUsername &&
+                  typeof errors.botUsername === 'string' && (
+                    <div className="error">{errors.botUsername}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -245,20 +245,16 @@ const NotificationsTelegram = () => {
                 <span className="label-required">*</span>
                 <span className="label-tip">
                   {intl.formatMessage(messages.chatIdTip, {
-                    GetIdBotLink: function GetIdBotLink(msg) {
-                      return (
-                        <a
-                          href="https://telegram.me/get_id_bot"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
-                    code: function code(msg) {
-                      return <code>{msg}</code>;
-                    },
+                    GetIdBotLink: (msg: React.ReactNode) => (
+                      <a
+                        href="https://telegram.me/get_id_bot"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    ),
+                    code: (msg: React.ReactNode) => <code>{msg}</code>,
                   })}
                 </span>
               </label>
@@ -266,9 +262,11 @@ const NotificationsTelegram = () => {
                 <div className="form-input-field">
                   <Field id="chatId" name="chatId" type="text" />
                 </div>
-                {errors.chatId && touched.chatId && (
-                  <div className="error">{errors.chatId}</div>
-                )}
+                {errors.chatId &&
+                  touched.chatId &&
+                  typeof errors.chatId === 'string' && (
+                    <div className="error">{errors.chatId}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">

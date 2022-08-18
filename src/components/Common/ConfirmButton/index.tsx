@@ -6,6 +6,7 @@ interface ConfirmButtonProps {
   onClick: () => void;
   confirmText: React.ReactNode;
   className?: string;
+  children: React.ReactNode;
 }
 
 const ConfirmButton = ({

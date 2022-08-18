@@ -3,6 +3,7 @@ import React from 'react';
 interface HeaderProps {
   extraMargin?: number;
   subtext?: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const Header = ({ children, extraMargin = 0, subtext }: HeaderProps) => {

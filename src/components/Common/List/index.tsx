@@ -4,6 +4,7 @@ import { withProperties } from '../../../utils/typeHelpers';
 interface ListItemProps {
   title: string;
   className?: string;
+  children: React.ReactNode;
 }
 
 const ListItem = ({ title, className, children }: ListItemProps) => {
@@ -22,6 +23,7 @@ const ListItem = ({ title, className, children }: ListItemProps) => {
 interface ListProps {
   title: string;
   subTitle?: string;
+  children: React.ReactNode;
 }
 
 const List = ({ title, subTitle, children }: ListProps) => {

@@ -11,6 +11,7 @@ interface CSSTransitionProps {
   leaveFrom?: string;
   leaveTo?: string;
   appear?: boolean;
+  children?: React.ReactNode;
 }
 
 const TransitionContext = React.createContext<{

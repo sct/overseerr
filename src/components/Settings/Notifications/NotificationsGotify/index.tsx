@@ -173,9 +173,11 @@ const NotificationsGotify = () => {
                 <div className="form-input-field">
                   <Field id="url" name="url" type="text" />
                 </div>
-                {errors.url && touched.url && (
-                  <div className="error">{errors.url}</div>
-                )}
+                {errors.url &&
+                  touched.url &&
+                  typeof errors.url === 'string' && (
+                    <div className="error">{errors.url}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -187,9 +189,11 @@ const NotificationsGotify = () => {
                 <div className="form-input-field">
                   <Field id="token" name="token" type="text" />
                 </div>
-                {errors.token && touched.token && (
-                  <div className="error">{errors.token}</div>
-                )}
+                {errors.token &&
+                  touched.token &&
+                  typeof errors.token === 'string' && (
+                    <div className="error">{errors.token}</div>
+                  )}
               </div>
             </div>
             <NotificationTypeSelector

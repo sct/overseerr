@@ -126,9 +126,11 @@ const UserEmailSettings = () => {
                     className="font-mono text-xs"
                   />
                 </div>
-                {errors.pgpKey && touched.pgpKey && (
-                  <div className="error">{errors.pgpKey}</div>
-                )}
+                {errors.pgpKey &&
+                  touched.pgpKey &&
+                  typeof errors.pgpKey === 'string' && (
+                    <div className="error">{errors.pgpKey}</div>
+                  )}
               </div>
             </div>
             <NotificationTypeSelector

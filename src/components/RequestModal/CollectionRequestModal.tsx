@@ -221,9 +221,7 @@ const CollectionRequestModal = ({
         <span>
           {intl.formatMessage(messages.requestSuccess, {
             title: data?.name,
-            strong: function strong(msg) {
-              return <strong>{msg}</strong>;
-            },
+            strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
           })}
         </span>,
         { appearance: 'success', autoDismiss: true }

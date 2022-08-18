@@ -172,19 +172,16 @@ const NotificationsPushover = () => {
                 <span className="label-required">*</span>
                 <span className="label-tip">
                   {intl.formatMessage(messages.accessTokenTip, {
-                    ApplicationRegistrationLink:
-                      function ApplicationRegistrationLink(msg) {
-                        return (
-                          <a
-                            href="https://pushover.net/api#registration"
-                            className="text-white transition duration-300 hover:underline"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {msg}
-                          </a>
-                        );
-                      },
+                    ApplicationRegistrationLink: (msg: React.ReactNode) => (
+                      <a
+                        href="https://pushover.net/api#registration"
+                        className="text-white transition duration-300 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    ),
                   })}
                 </span>
               </label>
@@ -192,9 +189,11 @@ const NotificationsPushover = () => {
                 <div className="form-input-field">
                   <Field id="accessToken" name="accessToken" type="text" />
                 </div>
-                {errors.accessToken && touched.accessToken && (
-                  <div className="error">{errors.accessToken}</div>
-                )}
+                {errors.accessToken &&
+                  touched.accessToken &&
+                  typeof errors.accessToken === 'string' && (
+                    <div className="error">{errors.accessToken}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -203,18 +202,16 @@ const NotificationsPushover = () => {
                 <span className="label-required">*</span>
                 <span className="label-tip">
                   {intl.formatMessage(messages.userTokenTip, {
-                    UsersGroupsLink: function UsersGroupsLink(msg) {
-                      return (
-                        <a
-                          href="https://pushover.net/api#identifiers"
-                          className="text-white transition duration-300 hover:underline"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
+                    UsersGroupsLink: (msg: React.ReactNode) => (
+                      <a
+                        href="https://pushover.net/api#identifiers"
+                        className="text-white transition duration-300 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    ),
                   })}
                 </span>
               </label>
@@ -222,9 +219,11 @@ const NotificationsPushover = () => {
                 <div className="form-input-field">
                   <Field id="userToken" name="userToken" type="text" />
                 </div>
-                {errors.userToken && touched.userToken && (
-                  <div className="error">{errors.userToken}</div>
-                )}
+                {errors.userToken &&
+                  touched.userToken &&
+                  typeof errors.userToken === 'string' && (
+                    <div className="error">{errors.userToken}</div>
+                  )}
               </div>
             </div>
             <NotificationTypeSelector

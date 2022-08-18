@@ -265,9 +265,11 @@ const NotificationsEmail = () => {
                     inputMode="email"
                   />
                 </div>
-                {errors.emailFrom && touched.emailFrom && (
-                  <div className="error">{errors.emailFrom}</div>
-                )}
+                {errors.emailFrom &&
+                  touched.emailFrom &&
+                  typeof errors.emailFrom === 'string' && (
+                    <div className="error">{errors.emailFrom}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -284,9 +286,11 @@ const NotificationsEmail = () => {
                     inputMode="url"
                   />
                 </div>
-                {errors.smtpHost && touched.smtpHost && (
-                  <div className="error">{errors.smtpHost}</div>
-                )}
+                {errors.smtpHost &&
+                  touched.smtpHost &&
+                  typeof errors.smtpHost === 'string' && (
+                    <div className="error">{errors.smtpHost}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -302,9 +306,11 @@ const NotificationsEmail = () => {
                   inputMode="numeric"
                   className="short"
                 />
-                {errors.smtpPort && touched.smtpPort && (
-                  <div className="error">{errors.smtpPort}</div>
-                )}
+                {errors.smtpPort &&
+                  touched.smtpPort &&
+                  typeof errors.smtpPort === 'string' && (
+                    <div className="error">{errors.smtpPort}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -396,9 +402,11 @@ const NotificationsEmail = () => {
                     className="font-mono text-xs"
                   />
                 </div>
-                {errors.pgpPrivateKey && touched.pgpPrivateKey && (
-                  <div className="error">{errors.pgpPrivateKey}</div>
-                )}
+                {errors.pgpPrivateKey &&
+                  touched.pgpPrivateKey &&
+                  typeof errors.pgpPrivateKey === 'string' && (
+                    <div className="error">{errors.pgpPrivateKey}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -424,9 +432,11 @@ const NotificationsEmail = () => {
                     autoComplete="one-time-code"
                   />
                 </div>
-                {errors.pgpPassword && touched.pgpPassword && (
-                  <div className="error">{errors.pgpPassword}</div>
-                )}
+                {errors.pgpPassword &&
+                  touched.pgpPassword &&
+                  typeof errors.pgpPassword === 'string' && (
+                    <div className="error">{errors.pgpPassword}</div>
+                  )}
               </div>
             </div>
             <div className="actions">

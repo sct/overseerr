@@ -344,18 +344,16 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
           <div className="section">
             <Alert
               title={intl.formatMessage(messages.settingUpPlexDescription, {
-                RegisterPlexTVLink: function RegisterPlexTVLink(msg) {
-                  return (
-                    <a
-                      href="https://plex.tv"
-                      className="text-white transition duration-300 hover:underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {msg}
-                    </a>
-                  );
-                },
+                RegisterPlexTVLink: (msg: React.ReactNode) => (
+                  <a
+                    href="https://plex.tv"
+                    className="text-white transition duration-300 hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {msg}
+                  </a>
+                ),
               })}
               type="info"
             />
@@ -517,9 +515,11 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
                       className="rounded-r-only"
                     />
                   </div>
-                  {errors.hostname && touched.hostname && (
-                    <div className="error">{errors.hostname}</div>
-                  )}
+                  {errors.hostname &&
+                    touched.hostname &&
+                    typeof errors.hostname === 'string' && (
+                      <div className="error">{errors.hostname}</div>
+                    )}
                 </div>
               </div>
               <div className="form-row">
@@ -535,9 +535,11 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
                     name="port"
                     className="short"
                   />
-                  {errors.port && touched.port && (
-                    <div className="error">{errors.port}</div>
-                  )}
+                  {errors.port &&
+                    touched.port &&
+                    typeof errors.port === 'string' && (
+                      <div className="error">{errors.port}</div>
+                    )}
                 </div>
               </div>
               <div className="form-row">
@@ -558,17 +560,15 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
               <div className="form-row">
                 <label htmlFor="webAppUrl" className="text-label">
                   {intl.formatMessage(messages.webAppUrl, {
-                    WebAppLink: function WebAppLink(msg) {
-                      return (
-                        <a
-                          href="https://support.plex.tv/articles/200288666-opening-plex-web-app/"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
+                    WebAppLink: (msg: React.ReactNode) => (
+                      <a
+                        href="https://support.plex.tv/articles/200288666-opening-plex-web-app/"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    ),
                   })}
                   <Badge badgeType="danger" className="ml-2">
                     {intl.formatMessage(globalMessages.advanced)}
@@ -587,9 +587,11 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
                       placeholder="https://app.plex.tv/desktop"
                     />
                   </div>
-                  {errors.webAppUrl && touched.webAppUrl && (
-                    <div className="error">{errors.webAppUrl}</div>
-                  )}
+                  {errors.webAppUrl &&
+                    touched.webAppUrl &&
+                    typeof errors.webAppUrl === 'string' && (
+                      <div className="error">{errors.webAppUrl}</div>
+                    )}
                 </div>
               </div>
               <div className="actions">
@@ -803,9 +805,11 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
                           className="rounded-r-only"
                         />
                       </div>
-                      {errors.tautulliHostname && touched.tautulliHostname && (
-                        <div className="error">{errors.tautulliHostname}</div>
-                      )}
+                      {errors.tautulliHostname &&
+                        touched.tautulliHostname &&
+                        typeof errors.tautulliHostname === 'string' && (
+                          <div className="error">{errors.tautulliHostname}</div>
+                        )}
                     </div>
                   </div>
                   <div className="form-row">
@@ -821,9 +825,11 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
                         name="tautulliPort"
                         className="short"
                       />
-                      {errors.tautulliPort && touched.tautulliPort && (
-                        <div className="error">{errors.tautulliPort}</div>
-                      )}
+                      {errors.tautulliPort &&
+                        touched.tautulliPort &&
+                        typeof errors.tautulliPort === 'string' && (
+                          <div className="error">{errors.tautulliPort}</div>
+                        )}
                     </div>
                   </div>
                   <div className="form-row">
@@ -857,9 +863,11 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
                           name="tautulliUrlBase"
                         />
                       </div>
-                      {errors.tautulliUrlBase && touched.tautulliUrlBase && (
-                        <div className="error">{errors.tautulliUrlBase}</div>
-                      )}
+                      {errors.tautulliUrlBase &&
+                        touched.tautulliUrlBase &&
+                        typeof errors.tautulliUrlBase === 'string' && (
+                          <div className="error">{errors.tautulliUrlBase}</div>
+                        )}
                     </div>
                   </div>
                   <div className="form-row">
@@ -876,9 +884,11 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
                           autoComplete="one-time-code"
                         />
                       </div>
-                      {errors.tautulliApiKey && touched.tautulliApiKey && (
-                        <div className="error">{errors.tautulliApiKey}</div>
-                      )}
+                      {errors.tautulliApiKey &&
+                        touched.tautulliApiKey &&
+                        typeof errors.tautulliApiKey === 'string' && (
+                          <div className="error">{errors.tautulliApiKey}</div>
+                        )}
                     </div>
                   </div>
                   <div className="form-row">

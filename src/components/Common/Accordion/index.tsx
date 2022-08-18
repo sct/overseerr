@@ -16,7 +16,15 @@ export interface AccordionChildProps {
   AccordionContent: any;
 }
 
-export const AccordionContent = ({ isOpen, children }: { isOpen: boolean }) => {
+type AccordionContentProps = {
+  isOpen: boolean;
+  children: React.ReactNode;
+};
+
+export const AccordionContent = ({
+  isOpen,
+  children,
+}: AccordionContentProps) => {
   return <AnimateHeight height={isOpen ? 'auto' : 0}>{children}</AnimateHeight>;
 };
 

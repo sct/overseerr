@@ -195,9 +195,11 @@ const IssueComment = ({
                         name="newMessage"
                         className="h-24"
                       />
-                      {errors.newMessage && touched.newMessage && (
-                        <div className="error">{errors.newMessage}</div>
-                      )}
+                      {errors.newMessage &&
+                        touched.newMessage &&
+                        typeof errors.newMessage === 'string' && (
+                          <div className="error">{errors.newMessage}</div>
+                        )}
                       <div className="mt-4 flex items-center justify-end space-x-2">
                         <Button
                           type="button"

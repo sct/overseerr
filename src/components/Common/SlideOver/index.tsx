@@ -10,6 +10,7 @@ interface SlideOverProps {
   title: React.ReactNode;
   subText?: string;
   onClose: () => void;
+  children: React.ReactNode;
 }
 
 const SlideOver = ({

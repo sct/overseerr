@@ -79,9 +79,7 @@ const QuotaDisplay = ({
                   type: intl.formatMessage(
                     mediaType === 'movie' ? messages.movie : messages.season
                   ),
-                  strong: function strong(msg) {
-                    return <span className="font-bold">{msg}</span>;
-                  },
+                  strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
                 })}
           </div>
         </div>
@@ -103,9 +101,7 @@ const QuotaDisplay = ({
                   : messages.requiredquota,
                 {
                   seasons: overLimit,
-                  strong: function strong(msg) {
-                    return <span className="font-bold">{msg}</span>;
-                  },
+                  strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
                 }
               )}
             </div>
@@ -124,9 +120,7 @@ const QuotaDisplay = ({
                     : messages.seasonlimit,
                   { limit: quota?.limit }
                 ),
-                strong: function strong(msg) {
-                  return <span className="font-bold">{msg}</span>;
-                },
+                strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
               }
             )}
           </div>
@@ -134,19 +128,15 @@ const QuotaDisplay = ({
             {intl.formatMessage(
               userOverride ? messages.quotaLinkUser : messages.quotaLink,
               {
-                ProfileLink: function ProfileLink(msg) {
-                  return (
-                    <Link
-                      href={
-                        userOverride ? `/users/${userOverride}` : '/profile'
-                      }
-                    >
-                      <a className="text-white transition duration-300 hover:underline">
-                        {msg}
-                      </a>
-                    </Link>
-                  );
-                },
+                ProfileLink: (msg: React.ReactNode) => (
+                  <Link
+                    href={userOverride ? `/users/${userOverride}` : '/profile'}
+                  >
+                    <a className="text-white transition duration-300 hover:underline">
+                      {msg}
+                    </a>
+                  </Link>
+                ),
               }
             )}
           </div>

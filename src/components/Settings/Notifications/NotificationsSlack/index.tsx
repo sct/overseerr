@@ -150,18 +150,16 @@ const NotificationsSlack = () => {
                 <span className="label-required">*</span>
                 <span className="label-tip">
                   {intl.formatMessage(messages.webhookUrlTip, {
-                    WebhookLink: function WebhookLink(msg) {
-                      return (
-                        <a
-                          href="https://my.slack.com/services/new/incoming-webhook/"
-                          className="text-white transition duration-300 hover:underline"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
+                    WebhookLink: (msg: React.ReactNode) => (
+                      <a
+                        href="https://my.slack.com/services/new/incoming-webhook/"
+                        className="text-white transition duration-300 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    ),
                   })}
                 </span>
               </label>
@@ -174,9 +172,11 @@ const NotificationsSlack = () => {
                     inputMode="url"
                   />
                 </div>
-                {errors.webhookUrl && touched.webhookUrl && (
-                  <div className="error">{errors.webhookUrl}</div>
-                )}
+                {errors.webhookUrl &&
+                  touched.webhookUrl &&
+                  typeof errors.webhookUrl === 'string' && (
+                    <div className="error">{errors.webhookUrl}</div>
+                  )}
               </div>
             </div>
             <NotificationTypeSelector

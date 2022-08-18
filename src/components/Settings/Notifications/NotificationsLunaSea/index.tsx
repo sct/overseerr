@@ -155,18 +155,16 @@ const NotificationsLunaSea = () => {
                 <span className="label-required">*</span>
                 <span className="label-tip">
                   {intl.formatMessage(messages.webhookUrlTip, {
-                    LunaSeaLink: function LunaSeaLink(msg) {
-                      return (
-                        <a
-                          href="https://docs.lunasea.app/lunasea/notifications/overseerr"
-                          className="text-white transition duration-300 hover:underline"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {msg}
-                        </a>
-                      );
-                    },
+                    LunaSeaLink: (msg: React.ReactNode) => (
+                      <a
+                        href="https://docs.lunasea.app/lunasea/notifications/overseerr"
+                        className="text-white transition duration-300 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {msg}
+                      </a>
+                    ),
                   })}
                 </span>
               </label>
@@ -179,9 +177,11 @@ const NotificationsLunaSea = () => {
                     inputMode="url"
                   />
                 </div>
-                {errors.webhookUrl && touched.webhookUrl && (
-                  <div className="error">{errors.webhookUrl}</div>
-                )}
+                {errors.webhookUrl &&
+                  touched.webhookUrl &&
+                  typeof errors.webhookUrl === 'string' && (
+                    <div className="error">{errors.webhookUrl}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -189,9 +189,9 @@ const NotificationsLunaSea = () => {
                 {intl.formatMessage(messages.profileName)}
                 <span className="label-tip">
                   {intl.formatMessage(messages.profileNameTip, {
-                    code: function code(msg) {
-                      return <code className="bg-opacity-50">{msg}</code>;
-                    },
+                    code: (msg: React.ReactNode) => (
+                      <code className="bg-opacity-50">{msg}</code>
+                    ),
                   })}
                 </span>
               </label>

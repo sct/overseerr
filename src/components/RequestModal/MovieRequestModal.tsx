@@ -115,9 +115,7 @@ const MovieRequestModal = ({
           <span>
             {intl.formatMessage(messages.requestSuccess, {
               title: data?.title,
-              strong: function strong(msg) {
-                return <strong>{msg}</strong>;
-              },
+              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             })}
           </span>,
           { appearance: 'success', autoDismiss: true }
@@ -149,9 +147,7 @@ const MovieRequestModal = ({
           <span>
             {intl.formatMessage(messages.requestCancel, {
               title: data?.title,
-              strong: function strong(msg) {
-                return <strong>{msg}</strong>;
-              },
+              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             })}
           </span>,
           { appearance: 'success', autoDismiss: true }
@@ -187,9 +183,7 @@ const MovieRequestModal = ({
               : messages.requestedited,
             {
               title: data?.title,
-              strong: function strong(msg) {
-                return <strong>{msg}</strong>;
-              },
+              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             }
           )}
         </span>,

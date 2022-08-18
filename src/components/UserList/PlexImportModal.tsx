@@ -59,9 +59,7 @@ const PlexImportModal = ({ onCancel, onComplete }: PlexImportProps) => {
       addToast(
         intl.formatMessage(messages.importedfromplex, {
           userCount: createdUsers.length,
-          strong: function strong(msg) {
-            return <strong>{msg}</strong>;
-          },
+          strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
         }),
         {
           autoDismiss: true,
@@ -122,11 +120,9 @@ const PlexImportModal = ({ onCancel, onComplete }: PlexImportProps) => {
           {settings.currentSettings.newPlexLogin && (
             <Alert
               title={intl.formatMessage(messages.newplexsigninenabled, {
-                strong: function strong(msg) {
-                  return (
-                    <strong className="font-semibold text-white">{msg}</strong>
-                  );
-                },
+                strong: (msg: React.ReactNode) => (
+                  <strong className="font-semibold text-white">{msg}</strong>
+                ),
               })}
               type="info"
             />

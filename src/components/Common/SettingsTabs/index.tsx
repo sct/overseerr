@@ -15,6 +15,16 @@ export interface SettingsRoute {
   hidden?: boolean;
 }
 
+type SettingsLinkProps = {
+  tabType: 'default' | 'button';
+  currentPath: string;
+  route: string;
+  regex: RegExp;
+  hidden?: boolean;
+  isMobile?: boolean;
+  children: React.ReactNode;
+};
+
 const SettingsLink = ({
   children,
   tabType,
@@ -23,14 +33,7 @@ const SettingsLink = ({
   regex,
   hidden = false,
   isMobile = false,
-}: {
-  tabType: 'default' | 'button';
-  currentPath: string;
-  route: string;
-  regex: RegExp;
-  hidden?: boolean;
-  isMobile?: boolean;
-}) => {
+}: SettingsLinkProps) => {
   if (hidden) {
     return null;
   }

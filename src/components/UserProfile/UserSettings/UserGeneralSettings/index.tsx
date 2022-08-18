@@ -221,9 +221,11 @@ const UserGeneralSettings = () => {
                       }
                     />
                   </div>
-                  {errors.displayName && touched.displayName && (
-                    <div className="error">{errors.displayName}</div>
-                  )}
+                  {errors.displayName &&
+                    touched.displayName &&
+                    typeof errors.displayName === 'string' && (
+                      <div className="error">{errors.displayName}</div>
+                    )}
                 </div>
               </div>
               <div className="form-row">
@@ -232,17 +234,15 @@ const UserGeneralSettings = () => {
                   {currentUser?.id === user?.id && (
                     <span className="label-tip">
                       {intl.formatMessage(messages.discordIdTip, {
-                        FindDiscordIdLink: function FindDiscordIdLink(msg) {
-                          return (
-                            <a
-                              href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {msg}
-                            </a>
-                          );
-                        },
+                        FindDiscordIdLink: (msg: React.ReactNode) => (
+                          <a
+                            href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {msg}
+                          </a>
+                        ),
                       })}
                     </span>
                   )}
@@ -251,9 +251,11 @@ const UserGeneralSettings = () => {
                   <div className="form-input-field">
                     <Field id="discordId" name="discordId" type="text" />
                   </div>
-                  {errors.discordId && touched.discordId && (
-                    <div className="error">{errors.discordId}</div>
-                  )}
+                  {errors.discordId &&
+                    touched.discordId &&
+                    typeof errors.discordId === 'string' && (
+                      <div className="error">{errors.discordId}</div>
+                    )}
                 </div>
               </div>
               <div className="form-row">

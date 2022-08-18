@@ -143,9 +143,11 @@ const UserTelegramSettings = () => {
                     type="text"
                   />
                 </div>
-                {errors.telegramChatId && touched.telegramChatId && (
-                  <div className="error">{errors.telegramChatId}</div>
-                )}
+                {errors.telegramChatId &&
+                  touched.telegramChatId &&
+                  typeof errors.telegramChatId === 'string' && (
+                    <div className="error">{errors.telegramChatId}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">

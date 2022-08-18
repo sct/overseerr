@@ -238,9 +238,9 @@ const RequestList = () => {
                       ? pageIndex * currentPageSize + data.results.length
                       : (pageIndex + 1) * currentPageSize,
                   total: data.pageInfo.results,
-                  strong: function strong(msg) {
-                    return <span className="font-medium">{msg}</span>;
-                  },
+                  strong: (msg: React.ReactNode) => (
+                    <span className="font-medium">{msg}</span>
+                  ),
                 })}
             </p>
           </div>

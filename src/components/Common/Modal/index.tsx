@@ -33,6 +33,7 @@ interface ModalProps {
   iconSvg?: ReactNode;
   loading?: boolean;
   backdrop?: string;
+  children?: ReactNode;
 }
 
 const Modal = ({

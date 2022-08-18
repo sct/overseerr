@@ -2,7 +2,7 @@ import React from 'react';
 import useInteraction from '../hooks/useInteraction';
 
 interface InteractionContextProps {
-  isTouch: boolean;
+  isTouch?: boolean;
   children?: React.ReactNode;
 }
 

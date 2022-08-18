@@ -80,9 +80,11 @@ const LocalLogin = ({ revalidate }: LocalLoginProps) => {
                       data-testid="email"
                     />
                   </div>
-                  {errors.email && touched.email && (
-                    <div className="error">{errors.email}</div>
-                  )}
+                  {errors.email &&
+                    touched.email &&
+                    typeof errors.email === 'string' && (
+                      <div className="error">{errors.email}</div>
+                    )}
                 </div>
                 <label htmlFor="password" className="text-label">
                   {intl.formatMessage(messages.password)}
@@ -98,9 +100,11 @@ const LocalLogin = ({ revalidate }: LocalLoginProps) => {
                       data-testid="password"
                     />
                   </div>
-                  {errors.password && touched.password && (
-                    <div className="error">{errors.password}</div>
-                  )}
+                  {errors.password &&
+                    touched.password &&
+                    typeof errors.password === 'string' && (
+                      <div className="error">{errors.password}</div>
+                    )}
                 </div>
                 {loginError && (
                   <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">

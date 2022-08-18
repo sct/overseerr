@@ -227,9 +227,11 @@ const SettingsMain = () => {
                         type="text"
                       />
                     </div>
-                    {errors.applicationTitle && touched.applicationTitle && (
-                      <div className="error">{errors.applicationTitle}</div>
-                    )}
+                    {errors.applicationTitle &&
+                      touched.applicationTitle &&
+                      typeof errors.applicationTitle === 'string' && (
+                        <div className="error">{errors.applicationTitle}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
@@ -245,9 +247,11 @@ const SettingsMain = () => {
                         inputMode="url"
                       />
                     </div>
-                    {errors.applicationUrl && touched.applicationUrl && (
-                      <div className="error">{errors.applicationUrl}</div>
-                    )}
+                    {errors.applicationUrl &&
+                      touched.applicationUrl &&
+                      typeof errors.applicationUrl === 'string' && (
+                        <div className="error">{errors.applicationUrl}</div>
+                      )}
                   </div>
                 </div>
                 <div className="form-row">
