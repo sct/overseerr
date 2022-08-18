@@ -63,6 +63,7 @@ parts:
       snapcraftctl set-grade "$GRADE"
     build-environment:
       - PATH: '$SNAPCRAFT_PART_BUILD/node_modules/.bin:$SNAPCRAFT_PART_BUILD/../npm/bin:$PATH'
+      - CYPRESS_INSTALL_BINARY: '0'
     override-build: |
       set -e
       # Set COMMIT_TAG before the build begins
