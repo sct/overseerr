@@ -1,50 +1,41 @@
-name: Overseerr Release
+name: Publish Snap
 
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
-  semantic-release:
-    name: Tag and release latest version
+  jobs:
+    name: Job Check
     runs-on: ubuntu-20.04
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+
+  test:
+    name: Lint & Test Build
+    needs: jobs
+    runs-on: ubuntu-20.04
+    container: node:16.16-alpine
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/checkout@v2
       - name: Install dependencies
-        run: yarn
-      - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: npx semantic-release
+          HUSKY_SKIP_INSTALL: 1
+        run: yarn
+      - name: Lint
+        run: yarn lint
+      - name: Build
+        run: yarn build
 
   build-snap:
     name: Build Snap Package (${{ matrix.architecture }})
-    needs: semantic-release
+    needs: test
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -55,24 +46,18 @@ jobs:
           - armhf
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Switch to master branch
-        run: git checkout master
-      - name: Pull latest changes
-        run: git pull
+        uses: actions/checkout@v2
       - name: Prepare
         id: prepare
         run: |
-          git fetch --prune --tags
+          git fetch --prune --unshallow --tags
           if [[ $GITHUB_REF == refs/tags/* || $GITHUB_REF == refs/heads/master ]]; then
             echo ::set-output name=RELEASE::stable
           else
             echo ::set-output name=RELEASE::edge
           fi
       - name: Set Up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v1
         with:
           image: tonistiigi/binfmt@sha256:df15403e06a03c2f461c1f7938b171fda34a5849eb63a70e2a2109ed5a778bde
       - name: Build Snap Package
@@ -81,7 +66,7 @@ jobs:
         with:
           architecture: ${{ matrix.architecture }}
       - name: Upload Snap Package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: overseerr-snap-package-${{ matrix.architecture }}
           path: ${{ steps.build.outputs.snap }}
@@ -98,12 +83,12 @@ jobs:
 
   discord:
     name: Send Discord Notification
-    needs: semantic-release
-    if: always()
+    needs: build-snap
+    if: always() && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status
-        uses: technote-space/workflow-conclusion-action@v3
+        uses: technote-space/workflow-conclusion-action@v2
       - name: Combine Job Status
         id: status
         run: |
