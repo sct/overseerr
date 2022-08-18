@@ -112,7 +112,7 @@
     "@types/node-schedule": "2.1.0",
     "@types/nodemailer": "6.4.5",
     "@types/react": "17.0.45",
-    "@types/react-dom": "17.0.17",
+    "@types/react-dom": "18.0.6",
     "@types/react-transition-group": "4.4.5",
     "@types/secure-random-password": "0.2.1",
     "@types/semver": "7.3.12",
