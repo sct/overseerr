@@ -34,7 +34,7 @@ interface RequestBlockProps {
   onUpdate?: () => void;
 }
 
-const RequestBlock: React.FC<RequestBlockProps> = ({ request, onUpdate }) => {
+const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
   const { user } = useUser();
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);

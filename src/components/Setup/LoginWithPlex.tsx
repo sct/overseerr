@@ -13,7 +13,7 @@ interface LoginWithPlexProps {
   onComplete: () => void;
 }
 
-const LoginWithPlex: React.FC<LoginWithPlexProps> = ({ onComplete }) => {
+const LoginWithPlex = ({ onComplete }: LoginWithPlexProps) => {
   const intl = useIntl();
   const [authToken, setAuthToken] = useState<string | undefined>(undefined);
   const { user, revalidate } = useUser();

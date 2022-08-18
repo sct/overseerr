@@ -14,7 +14,7 @@ const messages = defineMessages({
   fullcrew: 'Full Crew',
 });
 
-const MovieCrew: React.FC = () => {
+const MovieCrew = () => {
   const router = useRouter();
   const intl = useIntl();
   const { data, error } = useSWR<MovieDetails>(

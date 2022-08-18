@@ -4,9 +4,10 @@ import { withProperties } from '../../../utils/typeHelpers';
 interface ListItemProps {
   title: string;
   className?: string;
+  children: React.ReactNode;
 }
 
-const ListItem: React.FC<ListItemProps> = ({ title, className, children }) => {
+const ListItem = ({ title, className, children }: ListItemProps) => {
   return (
     <div>
       <div className="max-w-6xl py-4 sm:grid sm:grid-cols-3 sm:gap-4">
@@ -22,9 +23,10 @@ const ListItem: React.FC<ListItemProps> = ({ title, className, children }) => {
 interface ListProps {
   title: string;
   subTitle?: string;
+  children: React.ReactNode;
 }
 
-const List: React.FC<ListProps> = ({ title, subTitle, children }) => {
+const List = ({ title, subTitle, children }: ListProps) => {
   return (
     <>
       <div>

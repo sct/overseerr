@@ -14,7 +14,7 @@ const messages = defineMessages({
   fullcast: 'Full Cast',
 });
 
-const MovieCast: React.FC = () => {
+const MovieCast = () => {
   const router = useRouter();
   const intl = useIntl();
   const { data, error } = useSWR<MovieDetails>(

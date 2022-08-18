@@ -22,13 +22,13 @@ interface IssueDescriptionProps {
   onDelete: () => void;
 }
 
-const IssueDescription: React.FC<IssueDescriptionProps> = ({
+const IssueDescription = ({
   description,
   belongsToUser,
   commentCount,
   onEdit,
   onDelete,
-}) => {
+}: IssueDescriptionProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
   const [isEditing, setIsEditing] = useState(false);

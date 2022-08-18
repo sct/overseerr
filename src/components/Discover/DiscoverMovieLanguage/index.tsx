@@ -13,7 +13,7 @@ const messages = defineMessages({
   languageMovies: '{language} Movies',
 });
 
-const DiscoverMovieLanguage: React.FC = () => {
+const DiscoverMovieLanguage = () => {
   const router = useRouter();
   const intl = useIntl();
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import Search from '../components/Search';
 
-const SearchPage: React.FC = () => {
+const SearchPage = () => {
   return <Search />;
 };
 

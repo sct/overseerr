@@ -51,7 +51,7 @@ const messages = defineMessages({
 
 type Filter = 'debug' | 'info' | 'warn' | 'error';
 
-const SettingsLogs: React.FC = () => {
+const SettingsLogs = () => {
   const router = useRouter();
   const intl = useIntl();
   const { addToast } = useToasts();
@@ -232,9 +232,9 @@ const SettingsLogs: React.FC = () => {
         <h3 className="heading">{intl.formatMessage(messages.logs)}</h3>
         <p className="description">
           {intl.formatMessage(messages.logsDescription, {
-            code: function code(msg) {
-              return <code className="bg-opacity-50">{msg}</code>;
-            },
+            code: (msg: React.ReactNode) => (
+              <code className="bg-opacity-50">{msg}</code>
+            ),
             appDataPath: appData ? appData.appDataPath : '/app/config',
           })}
         </p>
@@ -388,9 +388,9 @@ const SettingsLogs: React.FC = () => {
                                 data.results.length
                               : (pageIndex + 1) * currentPageSize,
                           total: data.pageInfo.results,
-                          strong: function strong(msg) {
-                            return <span className="font-medium">{msg}</span>;
-                          },
+                          strong: (msg: React.ReactNode) => (
+                            <span className="font-medium">{msg}</span>
+                          ),
                         })}
                     </p>
                   </div>

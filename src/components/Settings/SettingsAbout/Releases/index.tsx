@@ -48,11 +48,7 @@ interface ReleaseProps {
   currentVersion: string;
 }
 
-const Release: React.FC<ReleaseProps> = ({
-  currentVersion,
-  release,
-  isLatest,
-}) => {
+const Release = ({ currentVersion, release, isLatest }: ReleaseProps) => {
   const intl = useIntl();
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -120,7 +116,7 @@ interface ReleasesProps {
   currentVersion: string;
 }
 
-const Releases: React.FC<ReleasesProps> = ({ currentVersion }) => {
+const Releases = ({ currentVersion }: ReleasesProps) => {
   const intl = useIntl();
   const { data, error } = useSWR<GitHubRelease[]>(REPO_RELEASE_API);
 

@@ -15,7 +15,7 @@ const messages = defineMessages({
   recommendations: 'Recommendations',
 });
 
-const MovieRecommendations: React.FC = () => {
+const MovieRecommendations = () => {
   const intl = useIntl();
   const router = useRouter();
   const { data: movieData } = useSWR<MovieDetails>(

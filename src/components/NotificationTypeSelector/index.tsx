@@ -125,13 +125,13 @@ interface NotificationTypeSelectorProps {
   error?: string;
 }
 
-const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
+const NotificationTypeSelector = ({
   user,
   enabledTypes = ALL_NOTIFICATIONS,
   currentTypes,
   onUpdate,
   error,
-}) => {
+}: NotificationTypeSelectorProps) => {
   const intl = useIntl();
   const settings = useSettings();
   const { hasPermission } = useUser({ id: user?.id });

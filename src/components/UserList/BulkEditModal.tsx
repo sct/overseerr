@@ -23,13 +23,13 @@ const messages = defineMessages({
   edituser: 'Edit User Permissions',
 });
 
-const BulkEditModal: React.FC<BulkEditProps> = ({
+const BulkEditModal = ({
   selectedUserIds,
   users,
   onCancel,
   onComplete,
   onSaving,
-}) => {
+}: BulkEditProps) => {
   const { user: currentUser } = useUser();
   const intl = useIntl();
   const { addToast } = useToasts();

@@ -27,7 +27,7 @@ const messages = defineMessages({
   trending: 'Trending',
 });
 
-const Discover: React.FC = () => {
+const Discover = () => {
   const intl = useIntl();
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(

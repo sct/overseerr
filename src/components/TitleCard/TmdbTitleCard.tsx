@@ -14,7 +14,7 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
 };
 
-const TmdbTitleCard: React.FC<TmdbTitleCardProps> = ({ tmdbId, type }) => {
+const TmdbTitleCard = ({ tmdbId, type }: TmdbTitleCardProps) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });

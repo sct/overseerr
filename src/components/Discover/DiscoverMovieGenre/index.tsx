@@ -13,7 +13,7 @@ const messages = defineMessages({
   genreMovies: '{genre} Movies',
 });
 
-const DiscoverMovieGenre: React.FC = () => {
+const DiscoverMovieGenre = () => {
   const router = useRouter();
   const intl = useIntl();
 

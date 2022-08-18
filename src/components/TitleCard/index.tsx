@@ -29,7 +29,7 @@ interface TitleCardProps {
   inProgress?: boolean;
 }
 
-const TitleCard: React.FC<TitleCardProps> = ({
+const TitleCard = ({
   id,
   image,
   summary,
@@ -39,7 +39,7 @@ const TitleCard: React.FC<TitleCardProps> = ({
   mediaType,
   inProgress = false,
   canExpand = false,
-}) => {
+}: TitleCardProps) => {
   const isTouch = useIsTouch();
   const intl = useIntl();
   const { hasPermission } = useUser();

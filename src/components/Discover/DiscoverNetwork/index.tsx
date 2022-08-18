@@ -14,7 +14,7 @@ const messages = defineMessages({
   networkSeries: '{network} Series',
 });
 
-const DiscoverTvNetwork: React.FC = () => {
+const DiscoverTvNetwork = () => {
   const router = useRouter();
   const intl = useIntl();
 

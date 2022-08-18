@@ -21,12 +21,12 @@ interface RegionSelectorProps {
   onChange?: (fieldName: string, region: string) => void;
 }
 
-const RegionSelector: React.FC<RegionSelectorProps> = ({
+const RegionSelector = ({
   name,
   value,
   isUserSetting = false,
   onChange,
-}) => {
+}: RegionSelectorProps) => {
   const { currentSettings } = useSettings();
   const intl = useIntl();
   const { data: regions } = useSWR<Region[]>('/api/v1/regions');

@@ -13,7 +13,7 @@ const messages = defineMessages({
   moviegenres: 'Movie Genres',
 });
 
-const MovieGenreList: React.FC = () => {
+const MovieGenreList = () => {
   const intl = useIntl();
   const { data, error } = useSWR<GenreSliderItem[]>(
     `/api/v1/discover/genreslider/movie`

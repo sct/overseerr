@@ -12,10 +12,7 @@ interface CustomFieldProps extends React.ComponentProps<typeof Field> {
 
 type SensitiveInputProps = CustomInputProps | CustomFieldProps;
 
-const SensitiveInput: React.FC<SensitiveInputProps> = ({
-  as = 'input',
-  ...props
-}) => {
+const SensitiveInput = ({ as = 'input', ...props }: SensitiveInputProps) => {
   const [isHidden, setHidden] = useState(true);
   const Component = as === 'input' ? 'input' : Field;
   const componentProps =

@@ -81,7 +81,7 @@ const messages = defineMessages({
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 
-const UserList: React.FC = () => {
+const UserList = () => {
   const intl = useIntl();
   const router = useRouter();
   const settings = useSettings();
@@ -325,13 +325,11 @@ const UserList: React.FC = () => {
                 {!settings.currentSettings.localLogin && (
                   <Alert
                     title={intl.formatMessage(messages.localLoginDisabled, {
-                      strong: function strong(msg) {
-                        return (
-                          <strong className="font-semibold text-white">
-                            {msg}
-                          </strong>
-                        );
-                      },
+                      strong: (msg: React.ReactNode) => (
+                        <strong className="font-semibold text-white">
+                          {msg}
+                        </strong>
+                      ),
                     })}
                     type="warning"
                   />
@@ -374,9 +372,11 @@ const UserList: React.FC = () => {
                           inputMode="email"
                         />
                       </div>
-                      {errors.email && touched.email && (
-                        <div className="error">{errors.email}</div>
-                      )}
+                      {errors.email &&
+                        touched.email &&
+                        typeof errors.email === 'string' && (
+                          <div className="error">{errors.email}</div>
+                        )}
                     </div>
                   </div>
                   <div
@@ -422,9 +422,11 @@ const UserList: React.FC = () => {
                           disabled={values.genpassword}
                         />
                       </div>
-                      {errors.password && touched.password && (
-                        <div className="error">{errors.password}</div>
-                      )}
+                      {errors.password &&
+                        touched.password &&
+                        typeof errors.password === 'string' && (
+                          <div className="error">{errors.password}</div>
+                        )}
                     </div>
                   </div>
                 </Form>
@@ -680,9 +682,9 @@ const UserList: React.FC = () => {
                             ? pageIndex * currentPageSize + data.results.length
                             : (pageIndex + 1) * currentPageSize,
                         total: data.pageInfo.results,
-                        strong: function strong(msg) {
-                          return <span className="font-medium">{msg}</span>;
-                        },
+                        strong: (msg: React.ReactNode) => (
+                          <span className="font-medium">{msg}</span>
+                        ),
                       })}
                   </p>
                 </div>

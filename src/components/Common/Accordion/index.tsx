@@ -16,19 +16,24 @@ export interface AccordionChildProps {
   AccordionContent: any;
 }
 
-export const AccordionContent: React.FC<{ isOpen: boolean }> = ({
+type AccordionContentProps = {
+  isOpen: boolean;
+  children: React.ReactNode;
+};
+
+export const AccordionContent = ({
   isOpen,
   children,
-}) => {
+}: AccordionContentProps) => {
   return <AnimateHeight height={isOpen ? 'auto' : 0}>{children}</AnimateHeight>;
 };
 
-const Accordion: React.FC<AccordionProps> = ({
+const Accordion = ({
   single,
   atLeastOne,
   initialOpenIndexes,
   children,
-}) => {
+}: AccordionProps) => {
   const initialState = initialOpenIndexes || (atLeastOne && [0]) || [];
   const [openIndexes, setOpenIndexes] = useState<number[]>(initialState);
 

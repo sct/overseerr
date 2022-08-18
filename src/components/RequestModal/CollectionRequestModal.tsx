@@ -42,13 +42,13 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpdating?: (isUpdating: boolean) => void;
 }
 
-const CollectionRequestModal: React.FC<RequestModalProps> = ({
+const CollectionRequestModal = ({
   onCancel,
   onComplete,
   tmdbId,
   onUpdating,
   is4k = false,
-}) => {
+}: RequestModalProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);
@@ -221,9 +221,7 @@ const CollectionRequestModal: React.FC<RequestModalProps> = ({
         <span>
           {intl.formatMessage(messages.requestSuccess, {
             title: data?.name,
-            strong: function strong(msg) {
-              return <strong>{msg}</strong>;
-            },
+            strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
           })}
         </span>,
         { appearance: 'success', autoDismiss: true }

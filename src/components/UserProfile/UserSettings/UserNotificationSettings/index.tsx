@@ -23,7 +23,13 @@ const messages = defineMessages({
   webpush: 'Web Push',
 });
 
-const UserNotificationSettings: React.FC = ({ children }) => {
+type UserNotificationSettingsProps = {
+  children: React.ReactNode;
+};
+
+const UserNotificationSettings = ({
+  children,
+}: UserNotificationSettingsProps) => {
   const intl = useIntl();
   const router = useRouter();
   const { user } = useUser({ id: Number(router.query.userId) });

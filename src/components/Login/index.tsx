@@ -21,7 +21,7 @@ const messages = defineMessages({
   signinwithoverseerr: 'Use your {applicationTitle} account',
 });
 
-const Login: React.FC = () => {
+const Login = () => {
   const intl = useIntl();
   const [error, setError] = useState('');
   const [isProcessing, setProcessing] = useState(false);

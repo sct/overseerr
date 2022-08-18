@@ -142,7 +142,7 @@ const networks: Network[] = [
   },
 ];
 
-const NetworkSlider: React.FC = () => {
+const NetworkSlider = () => {
   const intl = useIntl();
 
   return (

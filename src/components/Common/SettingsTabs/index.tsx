@@ -15,14 +15,17 @@ export interface SettingsRoute {
   hidden?: boolean;
 }
 
-const SettingsLink: React.FC<{
+type SettingsLinkProps = {
   tabType: 'default' | 'button';
   currentPath: string;
   route: string;
   regex: RegExp;
   hidden?: boolean;
   isMobile?: boolean;
-}> = ({
+  children: React.ReactNode;
+};
+
+const SettingsLink = ({
   children,
   tabType,
   currentPath,
@@ -30,7 +33,7 @@ const SettingsLink: React.FC<{
   regex,
   hidden = false,
   isMobile = false,
-}) => {
+}: SettingsLinkProps) => {
   if (hidden) {
     return null;
   }
@@ -66,10 +69,13 @@ const SettingsLink: React.FC<{
   );
 };
 
-const SettingsTabs: React.FC<{
+const SettingsTabs = ({
+  tabType = 'default',
+  settingsRoutes,
+}: {
   tabType?: 'default' | 'button';
   settingsRoutes: SettingsRoute[];
-}> = ({ tabType = 'default', settingsRoutes }) => {
+}) => {
   const router = useRouter();
   const { user: currentUser } = useUser();
 

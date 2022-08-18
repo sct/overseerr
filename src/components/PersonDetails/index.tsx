@@ -24,7 +24,7 @@ const messages = defineMessages({
   ascharacter: 'as {character}',
 });
 
-const PersonDetails: React.FC = () => {
+const PersonDetails = () => {
   const intl = useIntl();
   const router = useRouter();
   const { data, error } = useSWR<PersonDetailsType>(

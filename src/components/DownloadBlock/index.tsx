@@ -12,10 +12,7 @@ interface DownloadBlockProps {
   is4k?: boolean;
 }
 
-const DownloadBlock: React.FC<DownloadBlockProps> = ({
-  downloadItem,
-  is4k = false,
-}) => {
+const DownloadBlock = ({ downloadItem, is4k = false }: DownloadBlockProps) => {
   const intl = useIntl();
 
   return (

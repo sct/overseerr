@@ -13,11 +13,11 @@ interface DropdownItemProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   buttonType?: 'primary' | 'ghost';
 }
 
-const DropdownItem: React.FC<DropdownItemProps> = ({
+const DropdownItem = ({
   children,
   buttonType = 'primary',
   ...props
-}) => {
+}: DropdownItemProps) => {
   let styleClass = 'button-md text-white';
 
   switch (buttonType) {
@@ -46,14 +46,14 @@ interface ButtonWithDropdownProps
   buttonType?: 'primary' | 'ghost';
 }
 
-const ButtonWithDropdown: React.FC<ButtonWithDropdownProps> = ({
+const ButtonWithDropdown = ({
   text,
   children,
   dropdownIcon,
   className,
   buttonType = 'primary',
   ...props
-}) => {
+}: ButtonWithDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   useClickOutside(buttonRef, () => setIsOpen(false));

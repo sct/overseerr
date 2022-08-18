@@ -11,7 +11,7 @@ const messages = defineMessages({
   displaylanguage: 'Display Language',
 });
 
-const LanguagePicker: React.FC = () => {
+const LanguagePicker = () => {
   const intl = useIntl();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { locale, setLocale } = useLocale();

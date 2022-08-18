@@ -22,7 +22,7 @@ interface StatusBadgeProps {
   mediaType?: 'movie' | 'tv';
 }
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({
+const StatusBadge = ({
   status,
   is4k = false,
   inProgress = false,
@@ -30,7 +30,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   serviceUrl,
   tmdbId,
   mediaType,
-}) => {
+}: StatusBadgeProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
   const settings = useSettings();

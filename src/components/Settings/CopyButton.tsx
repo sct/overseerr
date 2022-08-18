@@ -8,7 +8,7 @@ const messages = defineMessages({
   copied: 'Copied API key to clipboard.',
 });
 
-const CopyButton: React.FC<{ textToCopy: string }> = ({ textToCopy }) => {
+const CopyButton = ({ textToCopy }: { textToCopy: string }) => {
   const intl = useIntl();
   const [isCopied, setCopied] = useClipboard(textToCopy, {
     successDuration: 1000,

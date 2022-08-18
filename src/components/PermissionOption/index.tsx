@@ -27,14 +27,14 @@ interface PermissionOptionProps {
   onUpdate: (newPermissions: number) => void;
 }
 
-const PermissionOption: React.FC<PermissionOptionProps> = ({
+const PermissionOption = ({
   option,
   actingUser,
   currentUser,
   currentPermission,
   onUpdate,
   parent,
-}) => {
+}: PermissionOptionProps) => {
   const settings = useSettings();
 
   const autoApprovePermissions = [

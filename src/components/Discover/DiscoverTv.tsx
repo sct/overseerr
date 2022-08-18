@@ -11,7 +11,7 @@ const messages = defineMessages({
   discovertv: 'Popular Series',
 });
 
-const DiscoverTv: React.FC = () => {
+const DiscoverTv = () => {
   const intl = useIntl();
 
   const {

@@ -17,7 +17,7 @@ const messages = defineMessages({
   searchresults: 'Search Results',
 });
 
-const Search: React.FC = () => {
+const Search = () => {
   const intl = useIntl();
   const router = useRouter();
 

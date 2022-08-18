@@ -29,13 +29,13 @@ interface MediaSliderProps {
   hideWhenEmpty?: boolean;
 }
 
-const MediaSlider: React.FC<MediaSliderProps> = ({
+const MediaSlider = ({
   title,
   url,
   linkUrl,
   sliderKey,
   hideWhenEmpty = false,
-}) => {
+}: MediaSliderProps) => {
   const settings = useSettings();
   const { data, error, setSize, size } = useSWRInfinite<MixedResult>(
     (pageIndex: number, previousPageData: MixedResult | null) => {

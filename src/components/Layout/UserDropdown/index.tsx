@@ -14,7 +14,7 @@ const messages = defineMessages({
   signout: 'Sign Out',
 });
 
-const UserDropdown: React.FC = () => {
+const UserDropdown = () => {
   const intl = useIntl();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, revalidate } = useUser();

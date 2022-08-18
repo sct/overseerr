@@ -15,7 +15,7 @@ const messages = defineMessages({
   trending: 'Trending',
 });
 
-const Trending: React.FC = () => {
+const Trending = () => {
   const intl = useIntl();
   const {
     isLoadingInitialData,

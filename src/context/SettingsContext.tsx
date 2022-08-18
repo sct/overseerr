@@ -4,6 +4,7 @@ import type { PublicSettingsResponse } from '../../server/interfaces/api/setting
 
 export interface SettingsContextProps {
   currentSettings: PublicSettingsResponse;
+  children?: React.ReactNode;
 }
 
 const defaultSettings = {
@@ -29,10 +30,10 @@ export const SettingsContext = React.createContext<SettingsContextProps>({
   currentSettings: defaultSettings,
 });
 
-export const SettingsProvider: React.FC<SettingsContextProps> = ({
+export const SettingsProvider = ({
   children,
   currentSettings,
-}) => {
+}: SettingsContextProps) => {
   const { data, error } = useSWR<PublicSettingsResponse>(
     '/api/v1/settings/public',
     { fallbackData: currentSettings }
