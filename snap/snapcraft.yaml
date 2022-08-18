@@ -8,6 +8,11 @@ description: >
 base: core18
 confinement: strict
 
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+
 parts:
   overseerr:
     plugin: nodejs
@@ -37,7 +42,7 @@ parts:
       VERSION='v'$(cat package.json | grep 'version' | head -1 | sed 's/.*"\(.*\)"\,/\1/')
       if [ "$VERSION" = "v0.1.0" ]; then
         SNAP_VERSION=$COMMIT_SHORT
-        GRADE=devel
+        GRADE=stable
       else
         SNAP_VERSION=$VERSION
         GRADE=stable
@@ -77,7 +82,7 @@ parts:
     prime: [.next, ./*]
 
 apps:
-  deamon:
+  daemon:
     command: /bin/sh -c "cd $SNAP && node dist/index.js"
     daemon: simple
     restart-condition: on-failure
