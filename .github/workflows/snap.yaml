@@ -1,9 +1,9 @@
 name: Publish Snap
 
 on:
-  pull_request:
+  push:
     branches:
-      - '*'
+      - develop
 
 jobs:
   jobs:
