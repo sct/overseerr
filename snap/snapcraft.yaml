@@ -37,6 +37,8 @@ parts:
       snapcraftctl pull
       # Get information to determine snap grade and version
       git config --global --add safe.directory /data/parts/overseerr/src
+      #setup yarn.rc
+      echo "--install.frozen-lockfile\n--install.network-timeout 1000000" > .yarnrc
       BRANCH=$(git rev-parse --abbrev-ref HEAD)
       COMMIT=$(git rev-parse HEAD)
       COMMIT_SHORT=$(git rev-parse --short HEAD)
