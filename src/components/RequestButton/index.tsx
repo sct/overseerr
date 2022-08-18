@@ -142,23 +142,6 @@ const RequestButton = ({
     }
 
     if (
-      active4kRequest &&
-      (active4kRequest.requestedBy.id === user?.id ||
-        (active4kRequests?.length === 1 &&
-          hasPermission(Permission.MANAGE_REQUESTS)))
-    ) {
-      buttons.push({
-        id: 'active-4k-request',
-        text: intl.formatMessage(messages.viewrequest4k),
-        action: () => {
-          setEditRequest(true);
-          setShowRequest4kModal(true);
-        },
-        svg: <InformationCircleIcon />,
-      });
-    }
-
-    if (
       activeRequest &&
       hasPermission(Permission.MANAGE_REQUESTS) &&
       mediaType === 'movie'
@@ -209,6 +192,23 @@ const RequestButton = ({
           svg: <XIcon />,
         }
       );
+    }
+
+    if (
+      active4kRequest &&
+      (active4kRequest.requestedBy.id === user?.id ||
+        (active4kRequests?.length === 1 &&
+          hasPermission(Permission.MANAGE_REQUESTS)))
+    ) {
+      buttons.push({
+        id: 'active-4k-request',
+        text: intl.formatMessage(messages.viewrequest4k),
+        action: () => {
+          setEditRequest(true);
+          setShowRequest4kModal(true);
+        },
+        svg: <InformationCircleIcon />,
+      });
     }
 
     if (
