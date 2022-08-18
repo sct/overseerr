@@ -22,6 +22,7 @@ import { withProperties } from '../../utils/typeHelpers';
 import Badge from '../Common/Badge';
 import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
+import { recentlyAddedApi, recentRequestsApi } from '../Discover';
 import RequestModal from '../RequestModal';
 import StatusBadge from '../StatusBadge';
 
@@ -58,7 +59,8 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
 
   const deleteRequest = async () => {
     await axios.delete(`/api/v1/media/${requestData?.media.id}`);
-    mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+    mutate(recentlyAddedApi);
+    mutate(recentRequestsApi);
   };
 
   return (
@@ -211,7 +213,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
 
   const deleteRequest = async () => {
     await axios.delete(`/api/v1/request/${request.id}`);
-    mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+    mutate(recentRequestsApi);
   };
 
   const retryRequest = async () => {

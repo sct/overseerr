@@ -20,6 +20,7 @@ import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
 import Badge from '../Common/Badge';
 import Modal from '../Common/Modal';
+import { recentRequestsApi } from '../Discover';
 import type { RequestOverrides } from './AdvancedRequester';
 import AdvancedRequester from './AdvancedRequester';
 import QuotaDisplay from './QuotaDisplay';
@@ -131,7 +132,7 @@ const TvRequestModal = ({
       } else {
         await axios.delete(`/api/v1/request/${editRequest.id}`);
       }
-      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+      mutate(recentRequestsApi);
 
       addToast(
         <span>
@@ -206,7 +207,7 @@ const TvRequestModal = ({
             ),
         ...overrideParams,
       });
-      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+      mutate(recentRequestsApi);
 
       if (response.data) {
         if (onComplete) {
