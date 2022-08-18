@@ -1,4 +1,4 @@
-import { getRepository, Not } from 'typeorm';
+import { Not } from 'typeorm';
 import PlexTvAPI from '../api/plextv';
 import { User } from '../entity/User';
 import Media from '../entity/Media';
@@ -13,6 +13,7 @@ import {
   RequestPermissionError,
 } from '../entity/MediaRequest';
 import { Permission } from './permissions';
+import { getRepository } from '../datasource';
 
 class WatchlistSync {
   public async syncWatchlist() {
@@ -20,7 +21,7 @@ class WatchlistSync {
 
     // Get users who actually have plex tokens
     const users = await userRepository.find({
-      select: ['id', 'plexToken', 'permissions'],
+      select: { id: true, plexToken: true, permissions: true },
       where: {
         plexToken: Not(''),
       },
