@@ -28,7 +28,7 @@ import StatusBadge from '../StatusBadge';
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   failedretry: 'Something went wrong while retrying the request.',
-  mediaerror: 'Failed to Retrieve {mediaType} Data',
+  mediaerror: '{mediaType} Not Found',
   tmdbid: 'TMDb ID',
   tvdbid: 'TVDB ID',
   deleterequest: 'Delete Request',
@@ -62,11 +62,17 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
   };
 
   return (
-    <div className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 p-4 text-gray-400 shadow ring-1 ring-red-500 sm:w-96">
+    <div
+      className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 p-4 text-gray-400 shadow ring-1 ring-red-500 sm:w-96"
+      data-testid="request-card"
+    >
       <div className="w-20 sm:w-28">
         <div className="w-full" style={{ paddingBottom: '150%' }}>
           <div className="absolute inset-0 z-10 flex min-w-0 flex-1 flex-col p-4">
-            <div className="whitespace-normal text-base font-bold text-white sm:text-lg">
+            <div
+              className="whitespace-normal text-base font-bold text-white sm:text-lg"
+              data-testid="request-card-title"
+            >
               {intl.formatMessage(messages.mediaerror, {
                 mediaType: intl.formatMessage(
                   requestData?.type
@@ -263,7 +269,10 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 bg-cover bg-center p-4 text-gray-400 shadow ring-1 ring-gray-700 sm:w-96">
+      <div
+        className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 bg-cover bg-center p-4 text-gray-400 shadow ring-1 ring-gray-700 sm:w-96"
+        data-testid="request-card"
+      >
         {title.backdropPath && (
           <div className="absolute inset-0 z-0">
             <CachedImage
@@ -281,7 +290,10 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
             />
           </div>
         )}
-        <div className="relative z-10 flex min-w-0 flex-1 flex-col pr-4">
+        <div
+          className="relative z-10 flex min-w-0 flex-1 flex-col pr-4"
+          data-testid="request-card-title"
+        >
           <div className="hidden text-xs font-medium text-white sm:flex">
             {(isMovie(title) ? title.releaseDate : title.firstAirDate)?.slice(
               0,

@@ -32,7 +32,7 @@ const messages = defineMessages({
   requesteddate: 'Requested',
   modified: 'Modified',
   modifieduserdate: '{date} by {user}',
-  mediaerror: 'Failed to Retrieve {mediaType} Data',
+  mediaerror: '{mediaType} Not Found',
   editrequest: 'Edit Request',
   deleterequest: 'Delete Request',
   cancelRequest: 'Cancel Request',
