@@ -12,10 +12,7 @@ import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
-import {
-  MediaRequestStatus,
-  MediaStatus,
-} from '../../../server/constants/media';
+import { MediaRequestStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import type { MovieDetails } from '../../../server/models/Movie';
 import type { TvDetails } from '../../../server/models/Tv';
@@ -275,8 +272,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
               <Badge badgeType="danger">
                 {intl.formatMessage(globalMessages.declined)}
               </Badge>
-            ) : requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
-              MediaStatus.UNKNOWN ? (
+            ) : requestData.status === MediaRequestStatus.FAILED ? (
               <Badge
                 badgeType="danger"
                 href={`/${requestData.type}/${requestData.media.tmdbId}?manage=1`}
@@ -305,9 +301,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
             )}
           </div>
           <div className="flex flex-1 items-end space-x-2">
-            {requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
-              MediaStatus.UNKNOWN &&
-              requestData.status !== MediaRequestStatus.DECLINED &&
+            {requestData.status === MediaRequestStatus.FAILED &&
               hasPermission(Permission.MANAGE_REQUESTS) && (
                 <Button
                   buttonType="primary"

@@ -451,10 +451,13 @@ export class MediaRequest {
             await mediaRepository.save(media);
           })
           .catch(async () => {
-            media[this.is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
-            await mediaRepository.save(media);
+            const requestRepository = getRepository(MediaRequest);
+
+            this.status = MediaRequestStatus.FAILED;
+            requestRepository.save(this);
+
             logger.warn(
-              'Something went wrong sending movie request to Radarr, marking status as UNKNOWN',
+              'Something went wrong sending movie request to Radarr, marking status as FAILED',
               {
                 label: 'Media Request',
                 requestId: this.id,
@@ -684,10 +687,13 @@ export class MediaRequest {
             await mediaRepository.save(media);
           })
           .catch(async () => {
-            media[this.is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
-            await mediaRepository.save(media);
+            const requestRepository = getRepository(MediaRequest);
+
+            this.status = MediaRequestStatus.FAILED;
+            requestRepository.save(this);
+
             logger.warn(
-              'Something went wrong sending series request to Sonarr, marking status as UNKNOWN',
+              'Something went wrong sending series request to Sonarr, marking status as FAILED',
               {
                 label: 'Media Request',
                 requestId: this.id,

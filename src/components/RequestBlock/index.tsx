@@ -179,6 +179,11 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
                   {intl.formatMessage(globalMessages.pending)}
                 </Badge>
               )}
+              {request.status === MediaRequestStatus.FAILED && (
+                <Badge badgeType="danger">
+                  {intl.formatMessage(globalMessages.failed)}
+                </Badge>
+              )}
             </div>
           </div>
           <div className="mt-2 flex items-center text-sm leading-5 sm:mt-0">
