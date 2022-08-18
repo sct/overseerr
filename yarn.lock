@@ -1692,7 +1692,7 @@
     "@formatjs/ecma402-abstract" "1.11.8"
     tslib "2.4.0"
 
-"@formatjs/intl-displaynames@6.0.3", "@formatjs/intl-displaynames@^6.0.3":
+"@formatjs/intl-displaynames@6.0.3":
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-displaynames/-/intl-displaynames-6.0.3.tgz#e648a91bccd9fb21519090eaafece3be9d15f480"
   integrity sha512-Mxh6W1VOlmiEvO/QPBrBQHlXrIn5VxjJWyyEI0V7ZHNGl0ee8AjSlq7vIJG8GodRJqGUuutF6N3OB/6qFv0YWg==
@@ -1717,7 +1717,7 @@
     "@formatjs/intl-localematcher" "0.2.28"
     tslib "2.4.0"
 
-"@formatjs/intl-locale@^3.0.3":
+"@formatjs/intl-locale@3.0.3":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-locale/-/intl-locale-3.0.3.tgz#ae112831c06209d1d7286b36e7b824a5e84ddd63"
   integrity sha512-AZrh8z/GaR+4ogy9LR1lKouXwXWKRK4TDtwFv6SIFIJgF9SQ6l4gdJ1/k13susw6NMAQiKdtG9IdhEtKXsp+6w==
@@ -1741,7 +1741,7 @@
     "@formatjs/ecma402-abstract" "1.4.0"
     tslib "^2.0.1"
 
-"@formatjs/intl-pluralrules@^5.0.3":
+"@formatjs/intl-pluralrules@5.0.3":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-pluralrules/-/intl-pluralrules-5.0.3.tgz#78d76da83470495e3e4d82df8cd6250578c1685c"
   integrity sha512-av3ks022vDE1dbCUAqwYc8bnGRcAPKK6C7ZRINNjjQn43ZQVX1AXc7PY2RqO/GXzkixsSWfHFZjSgzzbhbd21A==
