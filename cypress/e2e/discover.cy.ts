@@ -177,6 +177,8 @@ describe('Discover', () => {
       'getWatchlist'
     );
 
+    cy.visit('/');
+
     cy.wait('@getWatchlist');
 
     // Wait for one of the watchlist movies to resolve
