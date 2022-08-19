@@ -19,26 +19,40 @@ const clickFirstTitleCardInSlider = (sliderTitle: string): void => {
 describe('Discover', () => {
   beforeEach(() => {
     cy.login(Cypress.env('ADMIN_EMAIL'), Cypress.env('ADMIN_PASSWORD'));
-    cy.visit('/');
   });
 
   it('loads a trending item', () => {
+    cy.intercept('/api/v1/discover/trending*').as('getTrending');
+    cy.visit('/');
+    cy.wait('@getTrending');
     clickFirstTitleCardInSlider('Trending');
   });
 
   it('loads popular movies', () => {
+    cy.intercept('/api/v1/discover/movies*').as('getPopularMovies');
+    cy.visit('/');
+    cy.wait('@getPopularMovies');
     clickFirstTitleCardInSlider('Popular Movies');
   });
 
   it('loads upcoming movies', () => {
+    cy.intercept('/api/v1/discover/movies/upcoming*').as('getUpcomingMovies');
+    cy.visit('/');
+    cy.wait('@getUpcomingMovies');
     clickFirstTitleCardInSlider('Upcoming Movies');
   });
 
   it('loads popular series', () => {
+    cy.intercept('/api/v1/discover/tv*').as('getPopularTv');
+    cy.visit('/');
+    cy.wait('@getPopularTv');
     clickFirstTitleCardInSlider('Popular Series');
   });
 
   it('loads upcoming series', () => {
+    cy.intercept('/api/v1/discover/tv/upcoming*').as('getUpcomingSeries');
+    cy.visit('/');
+    cy.wait('@getUpcomingSeries');
     clickFirstTitleCardInSlider('Upcoming Series');
   });
 
@@ -71,8 +85,10 @@ describe('Discover', () => {
           seasons: [],
         },
       ],
-    });
+    }).as('getMedia');
 
+    cy.visit('/');
+    cy.wait('@getMedia');
     cy.contains('.slider-header', 'Recently Added')
       .next('[data-testid=media-slider]')
       .find('[data-testid=title-card]')
@@ -144,8 +160,10 @@ describe('Discover', () => {
           seasonCount: 0,
         },
       ],
-    });
+    }).as('getRequests');
 
+    cy.visit('/');
+    cy.wait('@getRequests');
     cy.contains('.slider-header', 'Recent Requests')
       .next('[data-testid=media-slider]')
       .find('[data-testid=request-card]')
