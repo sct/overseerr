@@ -6,12 +6,14 @@ describe('Pull To Refresh', () => {
   });
 
   it('reloads the current page', () => {
+    cy.wait(500);
+
     cy.intercept({
       method: 'GET',
-      url: '/api/v1/status',
+      url: '/api/v1/*',
     }).as('apiCall');
 
-    cy.get('#pull-to-refresh').swipe('bottom', [0, 200]);
+    cy.get('#pull-to-refresh').swipe('bottom', [190, 400]);
 
     cy.wait('@apiCall').then((interception) => {
       assert.isNotNull(
