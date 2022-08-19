@@ -252,6 +252,8 @@
   "components.PermissionEdit.usersDescription": "Grant permission to manage users. Users with this permission cannot modify users with or grant the Admin privilege.",
   "components.PermissionEdit.viewissues": "View Issues",
   "components.PermissionEdit.viewissuesDescription": "Grant permission to view media issues reported by other users.",
+  "components.PermissionEdit.viewrecent": "View Recently Added",
+  "components.PermissionEdit.viewrecentDescription": "Grant permission to view the list of recently added media.",
   "components.PermissionEdit.viewrequests": "View Requests",
   "components.PermissionEdit.viewrequestsDescription": "Grant permission to view media requests submitted by other users.",
   "components.PersonDetails.alsoknownas": "Also Known As: {names}",
