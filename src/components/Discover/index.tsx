@@ -15,11 +15,6 @@ import NetworkSlider from './NetworkSlider';
 import StudioSlider from './StudioSlider';
 import TvGenreSlider from './TvGenreSlider';
 
-export const recentlyAddedApi =
-  '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded';
-export const recentRequestsApi =
-  '/api/v1/request?filter=all&take=10&sort=modified&skip=0';
-
 const messages = defineMessages({
   discover: 'Discover',
   recentrequests: 'Recent Requests',
@@ -37,14 +32,17 @@ const Discover = () => {
   const { hasPermission } = useUser();
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
-    recentlyAddedApi,
+    '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded',
     { revalidateOnMount: true }
   );
 
   const { data: requests, error: requestError } =
-    useSWR<RequestResultsResponse>(recentRequestsApi, {
-      revalidateOnMount: true,
-    });
+    useSWR<RequestResultsResponse>(
+      '/api/v1/request?filter=all&take=10&sort=modified&skip=0',
+      {
+        revalidateOnMount: true,
+      }
+    );
 
   return (
     <>

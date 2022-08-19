@@ -5,7 +5,6 @@ import Button from '../Common/Button';
 import { CheckIcon, TrashIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { mutate } from 'swr';
-import { recentlyAddedApi, recentRequestsApi } from '../Discover';
 
 interface ErrorCardProps {
   id: number;
@@ -27,8 +26,8 @@ const Error = ({ id, tmdbId, tvdbId, type, canExpand }: ErrorCardProps) => {
 
   const deleteMedia = async () => {
     await axios.delete(`/api/v1/media/${id}`);
-    mutate(recentlyAddedApi);
-    mutate(recentRequestsApi);
+    mutate('/api/v1/media?filter=allavailable&take=20&sort=mediaAdded');
+    mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
   };
 
   return (

@@ -13,7 +13,6 @@ import { useUser } from '../../hooks/useUser';
 import globalMessages from '../../i18n/globalMessages';
 import Alert from '../Common/Alert';
 import Modal from '../Common/Modal';
-import { recentRequestsApi } from '../Discover';
 import type { RequestOverrides } from './AdvancedRequester';
 import AdvancedRequester from './AdvancedRequester';
 import QuotaDisplay from './QuotaDisplay';
@@ -96,7 +95,7 @@ const MovieRequestModal = ({
         is4k,
         ...overrideParams,
       });
-      mutate(recentRequestsApi);
+      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
 
       if (response.data) {
         if (onComplete) {
@@ -140,7 +139,7 @@ const MovieRequestModal = ({
       const response = await axios.delete<MediaRequest>(
         `/api/v1/request/${editRequest?.id}`
       );
-      mutate(recentRequestsApi);
+      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
 
       if (response.status === 204) {
         if (onComplete) {
@@ -177,7 +176,7 @@ const MovieRequestModal = ({
       if (alsoApproveRequest) {
         await axios.post(`/api/v1/request/${editRequest?.id}/approve`);
       }
-      mutate(recentRequestsApi);
+      mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
 
       addToast(
         <span>
