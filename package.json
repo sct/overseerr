@@ -72,7 +72,7 @@
     "react-intersection-observer": "9.4.0",
     "react-intl": "6.0.5",
     "react-markdown": "8.0.3",
-    "react-popper-tooltip": "^4.4.2",
+    "react-popper-tooltip": "4.4.2",
     "react-select": "5.4.0",
     "react-spring": "9.5.2",
     "react-toast-notifications": "2.5.1",
