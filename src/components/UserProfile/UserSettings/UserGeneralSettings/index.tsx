@@ -422,45 +422,51 @@ const UserGeneralSettings = () => {
               {hasPermission(
                 [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_MOVIE],
                 { type: 'or' }
-              ) && (
-                <div className="form-row">
-                  <label
-                    htmlFor="watchlistSyncMovies"
-                    className="checkbox-label"
-                  >
-                    <span>
-                      {intl.formatMessage(messages.plexwatchlistsyncmovies)}
-                    </span>
-                    <span className="label-tip">
-                      {intl.formatMessage(messages.plexwatchlistsyncmoviestip, {
-                        PlexWatchlistSupportLink: (msg: React.ReactNode) => (
-                          <a
-                            href="https://support.plex.tv/articles/universal-watchlist/"
-                            className="text-white transition duration-300 hover:underline"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {msg}
-                          </a>
-                        ),
-                      })}
-                    </span>
-                  </label>
-                  <div className="form-input-area">
-                    <Field
-                      type="checkbox"
-                      id="watchlistSyncMovies"
-                      name="watchlistSyncMovies"
-                      onChange={() => {
-                        setFieldValue(
-                          'watchlistSyncMovies',
-                          !values.watchlistSyncMovies
-                        );
-                      }}
-                    />
+              ) &&
+                user?.userType === UserType.PLEX && (
+                  <div className="form-row">
+                    <label
+                      htmlFor="watchlistSyncMovies"
+                      className="checkbox-label"
+                    >
+                      <span>
+                        {intl.formatMessage(messages.plexwatchlistsyncmovies)}
+                      </span>
+                      <span className="label-tip">
+                        {intl.formatMessage(
+                          messages.plexwatchlistsyncmoviestip,
+                          {
+                            PlexWatchlistSupportLink: (
+                              msg: React.ReactNode
+                            ) => (
+                              <a
+                                href="https://support.plex.tv/articles/universal-watchlist/"
+                                className="text-white transition duration-300 hover:underline"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {msg}
+                              </a>
+                            ),
+                          }
+                        )}
+                      </span>
+                    </label>
+                    <div className="form-input-area">
+                      <Field
+                        type="checkbox"
+                        id="watchlistSyncMovies"
+                        name="watchlistSyncMovies"
+                        onChange={() => {
+                          setFieldValue(
+                            'watchlistSyncMovies',
+                            !values.watchlistSyncMovies
+                          );
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
               {hasPermission(
                 [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_TV],
                 { type: 'or' }
