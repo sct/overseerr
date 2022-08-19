@@ -2,7 +2,6 @@ import { DownloadIcon } from '@heroicons/react/outline';
 import { uniq } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';

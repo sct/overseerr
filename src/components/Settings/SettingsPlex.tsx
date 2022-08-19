@@ -3,7 +3,6 @@ import { RefreshIcon, SearchIcon, XIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import { orderBy } from 'lodash';
-
 import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';

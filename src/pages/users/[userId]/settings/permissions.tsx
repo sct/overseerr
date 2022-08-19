@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-
 import UserSettings from '../../../../components/UserProfile/UserSettings';
 import UserPermissions from '../../../../components/UserProfile/UserSettings/UserPermissions';
 import useRouteGuard from '../../../../hooks/useRouteGuard';

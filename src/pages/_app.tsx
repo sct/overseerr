@@ -2,7 +2,6 @@ import axios from 'axios';
 import type { AppInitialProps, AppProps } from 'next/app';
 import App from 'next/app';
 import Head from 'next/head';
-
 import { useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 import { ToastProvider } from 'react-toast-notifications';

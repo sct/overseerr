@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-
 import type { Permission } from '../../../../server/lib/permissions';
 import { hasPermission } from '../../../../server/lib/permissions';
 import { useUser } from '../../../hooks/useUser';

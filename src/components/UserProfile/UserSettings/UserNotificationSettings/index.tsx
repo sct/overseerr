@@ -1,6 +1,5 @@
 import { CloudIcon, MailIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';

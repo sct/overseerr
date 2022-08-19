@@ -1,5 +1,4 @@
 import { InformationCircleIcon } from '@heroicons/react/solid';
-
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type {

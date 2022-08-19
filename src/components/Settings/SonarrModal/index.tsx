@@ -1,7 +1,6 @@
 import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
-
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import type { OnChangeValue } from 'react-select';

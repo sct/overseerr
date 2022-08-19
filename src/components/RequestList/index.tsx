@@ -6,7 +6,6 @@ import {
 } from '@heroicons/react/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';

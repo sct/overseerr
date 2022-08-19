@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-
 import IssueList from '../../components/IssueList';
 import useRouteGuard from '../../hooks/useRouteGuard';
 import { Permission } from '../../hooks/useUser';

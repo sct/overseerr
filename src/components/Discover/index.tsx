@@ -1,6 +1,5 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
-
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';

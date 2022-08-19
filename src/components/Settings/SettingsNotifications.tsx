@@ -1,5 +1,4 @@
 import { CloudIcon, LightningBoltIcon, MailIcon } from '@heroicons/react/solid';
-
 import { defineMessages, useIntl } from 'react-intl';
 import DiscordLogo from '../../assets/extlogos/discord.svg';
 import GotifyLogo from '../../assets/extlogos/gotify.svg';
