@@ -855,7 +855,7 @@
   "components.UserList.createlocaluser": "Create Local User",
   "components.UserList.creating": "Creating…",
   "components.UserList.deleteconfirm": "Are you sure you want to delete this user? All of their request data will be permanently removed.",
-  "components.UserList.deleteuser": "Delete User",
+  "components.UserList.deleteuser": "Delete {username}",
   "components.UserList.displayName": "Display Name",
   "components.UserList.edituser": "Edit User Permissions",
   "components.UserList.email": "Email Address",
