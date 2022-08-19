@@ -1,7 +1,6 @@
 import React from 'react';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
-
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { GenreSliderItem } from '../../../../server/interfaces/api/discoverInterfaces';

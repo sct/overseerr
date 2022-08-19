@@ -1,6 +1,5 @@
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import { Field } from 'formik';
-
 import { useState } from 'react';
 
 interface CustomInputProps extends React.ComponentProps<'input'> {

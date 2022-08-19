@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-
 import NotificationsEmail from '../../../components/Settings/Notifications/NotificationsEmail';
 import SettingsLayout from '../../../components/Settings/SettingsLayout';
 import SettingsNotifications from '../../../components/Settings/SettingsNotifications';

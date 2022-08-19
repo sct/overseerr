@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-
 import SettingsLayout from '../../components/Settings/SettingsLayout';
 import SettingsLogs from '../../components/Settings/SettingsLogs';
 import useRouteGuard from '../../hooks/useRouteGuard';

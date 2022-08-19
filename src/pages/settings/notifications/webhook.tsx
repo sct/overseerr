@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-
 import NotificationsWebhook from '../../../components/Settings/Notifications/NotificationsWebhook';
 import SettingsLayout from '../../../components/Settings/SettingsLayout';
 import SettingsNotifications from '../../../components/Settings/SettingsNotifications';

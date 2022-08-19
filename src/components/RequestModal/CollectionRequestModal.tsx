@@ -1,6 +1,5 @@
 import { DownloadIcon } from '@heroicons/react/outline';
 import axios from 'axios';
-
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';

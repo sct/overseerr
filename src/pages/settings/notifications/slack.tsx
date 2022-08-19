@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-
 import NotificationsSlack from '../../../components/Settings/Notifications/NotificationsSlack';
 import SettingsLayout from '../../../components/Settings/SettingsLayout';
 import SettingsNotifications from '../../../components/Settings/SettingsNotifications';

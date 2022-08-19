@@ -4,7 +4,6 @@ import { ArrowCircleRightIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import Link from 'next/link';
-
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';

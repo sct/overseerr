@@ -1,6 +1,5 @@
 import { XCircleIcon } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
-
 import { defineMessages, useIntl } from 'react-intl';
 import useSearchInput from '../../../hooks/useSearchInput';
 

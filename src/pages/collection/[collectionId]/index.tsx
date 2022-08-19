@@ -1,6 +1,5 @@
 import axios from 'axios';
 import type { GetServerSideProps, NextPage } from 'next';
-
 import type { Collection } from '../../../../server/models/Collection';
 import CollectionDetails from '../../../components/CollectionDetails';
 

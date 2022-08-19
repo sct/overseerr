@@ -1,5 +1,4 @@
 import { DownloadIcon } from '@heroicons/react/outline';
-
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { SonarrSeries } from '../../../../server/api/servarr/sonarr';

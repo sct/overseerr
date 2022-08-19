@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { XIcon } from '@heroicons/react/outline';
-
 import { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useLockBodyScroll } from '../../../hooks/useLockBodyScroll';

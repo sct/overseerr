@@ -5,7 +5,6 @@ import {
   SortDescendingIcon,
 } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
