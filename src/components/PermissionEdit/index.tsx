@@ -52,13 +52,13 @@ export const messages = defineMessages({
     'Grant permission to modify advanced media request options.',
   autorequest: 'Auto-Request',
   autorequestDescription:
-    'Grant permission to use Plex Watchlist Sync to automatically request media.',
+    'Grant permission to automatically submit requests for non-4K media via Plex Watchlist.',
   autorequestMovies: 'Auto-Request Movies',
   autorequestMoviesDescription:
-    'Grant permission to use Plex Watchlist Sync to automatically request movies.',
+    'Grant permission to automatically submit requests for non-4K movies via Plex Watchlist.',
   autorequestSeries: 'Auto-Request Series',
   autorequestSeriesDescription:
-    'Grant permission to use Plex Watchlist Sync to automatically request series.',
+    'Grant permission to automatically submit requests for non-4K series via Plex Watchlist.',
   viewrequests: 'View Requests',
   viewrequestsDescription:
     'Grant permission to view media requests submitted by other users.',
