@@ -1,4 +1,3 @@
-import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { GenreSliderItem } from '../../../../server/interfaces/api/discoverInterfaces';

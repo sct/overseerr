@@ -9,7 +9,8 @@ import {
 } from '@heroicons/react/solid';
 import copy from 'copy-to-clipboard';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';

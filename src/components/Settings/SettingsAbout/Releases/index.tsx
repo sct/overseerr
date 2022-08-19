@@ -1,5 +1,5 @@
 import { DocumentTextIcon } from '@heroicons/react/outline';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import useSWR from 'swr';

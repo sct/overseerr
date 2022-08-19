@@ -1,10 +1,6 @@
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import type {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  ReactNode,
-} from 'react';
-import React, { useRef, useState } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
+import { useRef, useState } from 'react';
 import useClickOutside from '../../../hooks/useClickOutside';
 import { withProperties } from '../../../utils/typeHelpers';
 import Transition from '../../Transition';
@@ -41,8 +37,8 @@ const DropdownItem = ({
 
 interface ButtonWithDropdownProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
-  text: ReactNode;
-  dropdownIcon?: ReactNode;
+  text: React.ReactNode;
+  dropdownIcon?: React.ReactNode;
   buttonType?: 'primary' | 'ghost';
 }
 

@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';

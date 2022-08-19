@@ -1,5 +1,5 @@
 import { RefreshIcon, SparklesIcon } from '@heroicons/react/outline';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { StatusResponse } from '../../../server/interfaces/api/settingsInterfaces';

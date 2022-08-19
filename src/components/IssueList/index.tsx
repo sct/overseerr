@@ -5,7 +5,8 @@ import {
   SortDescendingIcon,
 } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { IssueResultsResponse } from '../../../server/interfaces/api/issueInterfaces';

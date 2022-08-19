@@ -1,7 +1,7 @@
 import { PlayIcon, StopIcon, TrashIcon } from '@heroicons/react/outline';
 import { PencilIcon } from '@heroicons/react/solid';
 import axios from 'axios';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { MessageDescriptor } from 'react-intl';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';

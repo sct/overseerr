@@ -1,7 +1,7 @@
 import { XCircleIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import useSettings from '../../hooks/useSettings';

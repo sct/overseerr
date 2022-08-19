@@ -1,5 +1,5 @@
 import { TranslateIcon } from '@heroicons/react/solid';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import type { AvailableLocale } from '../../../context/LanguageContext';
 import { availableLanguages } from '../../../context/LanguageContext';

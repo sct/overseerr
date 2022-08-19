@@ -1,4 +1,3 @@
-import React from 'react';
 import type { MovieResult } from '../../../server/models/Search';
 import ListView from '../Common/ListView';
 import { defineMessages, useIntl } from 'react-intl';

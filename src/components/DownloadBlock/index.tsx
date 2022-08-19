@@ -1,4 +1,3 @@
-import React from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import type { DownloadingItem } from '../../../server/lib/downloadtracker';
 import Badge from '../Common/Badge';

@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import React from 'react';
+
 import NotificationsGotify from '../../../components/Settings/Notifications/NotificationsGotify';
 import SettingsLayout from '../../../components/Settings/SettingsLayout';
 import SettingsNotifications from '../../../components/Settings/SettingsNotifications';

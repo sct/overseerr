@@ -5,7 +5,7 @@ import {
   ServerIcon,
 } from '@heroicons/react/outline';
 import Link from 'next/link';
-import React from 'react';
+
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { StatusResponse } from '../../../../server/interfaces/api/settingsInterfaces';

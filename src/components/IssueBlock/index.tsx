@@ -5,7 +5,7 @@ import {
   UserIcon,
 } from '@heroicons/react/solid';
 import Link from 'next/link';
-import React from 'react';
+
 import { useIntl } from 'react-intl';
 import type Issue from '../../../server/entity/Issue';
 import { useUser } from '../../hooks/useUser';

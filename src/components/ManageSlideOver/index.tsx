@@ -2,7 +2,7 @@ import { ServerIcon, ViewListIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon, DocumentRemoveIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
-import React from 'react';
+
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import { IssueStatus } from '../../../server/constants/issue';

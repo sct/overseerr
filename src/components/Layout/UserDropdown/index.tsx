@@ -2,7 +2,7 @@ import { LogoutIcon } from '@heroicons/react/outline';
 import { CogIcon, UserIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useClickOutside from '../../../hooks/useClickOutside';
 import { useUser } from '../../../hooks/useUser';

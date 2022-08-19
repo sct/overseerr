@@ -1,7 +1,8 @@
 import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import Select from 'react-select';
 import { useToasts } from 'react-toast-notifications';

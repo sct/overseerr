@@ -1,4 +1,3 @@
-import React from 'react';
 import { withProperties } from '../../../utils/typeHelpers';
 
 interface ListItemProps {

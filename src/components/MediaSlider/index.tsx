@@ -1,6 +1,6 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { MediaStatus } from '../../../server/constants/media';
 import type {

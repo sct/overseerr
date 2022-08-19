@@ -1,4 +1,3 @@
-import React from 'react';
 import type { NextPage } from 'next';
 import SettingsLayout from '../../components/Settings/SettingsLayout';
 import SettingsMain from '../../components/Settings/SettingsMain';

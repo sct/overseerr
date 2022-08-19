@@ -1,5 +1,4 @@
 import { CheckIcon } from '@heroicons/react/solid';
-import React from 'react';
 
 interface CurrentStep {
   stepNumber: number;

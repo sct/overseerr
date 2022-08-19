@@ -1,6 +1,7 @@
 import { InboxInIcon } from '@heroicons/react/solid';
 import axios from 'axios';
-import React, { useState } from 'react';
+
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';

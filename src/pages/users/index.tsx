@@ -1,4 +1,3 @@
-import React from 'react';
 import type { NextPage } from 'next';
 import UserList from '../../components/UserList';
 import useRouteGuard from '../../hooks/useRouteGuard';

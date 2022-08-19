@@ -1,4 +1,3 @@
-import React from 'react';
 import { hasPermission } from '../../../server/lib/permissions';
 import useSettings from '../../hooks/useSettings';
 import type { User } from '../../hooks/useUser';

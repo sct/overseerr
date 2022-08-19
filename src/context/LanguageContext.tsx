@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import React from 'react';
 
 export type AvailableLocale =
@@ -133,7 +132,7 @@ export const availableLanguages: AvailableLanguageObject = {
 
 export interface LanguageContextProps {
   locale: AvailableLocale;
-  children: (locale: string) => ReactNode;
+  children: (locale: string) => React.ReactNode;
   setLocale?: React.Dispatch<React.SetStateAction<AvailableLocale>>;
 }
 

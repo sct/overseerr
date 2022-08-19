@@ -1,5 +1,5 @@
-import type { MouseEvent, ReactNode } from 'react';
-import React, { useRef } from 'react';
+import type { MouseEvent } from 'react';
+import { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useIntl } from 'react-intl';
 import useClickOutside from '../../../hooks/useClickOutside';
@@ -30,10 +30,10 @@ interface ModalProps {
   tertiaryButtonType?: ButtonType;
   disableScrollLock?: boolean;
   backgroundClickable?: boolean;
-  iconSvg?: ReactNode;
+  iconSvg?: React.ReactNode;
   loading?: boolean;
   backdrop?: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 const Modal = ({

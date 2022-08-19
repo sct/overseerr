@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react';
-import React from 'react';
 import ButtonWithDropdown from '../ButtonWithDropdown';
 
 interface PlayButtonProps {
@@ -9,7 +7,7 @@ interface PlayButtonProps {
 export interface PlayButtonLink {
   text: string;
   url: string;
-  svg: ReactNode;
+  svg: React.ReactNode;
 }
 
 const PlayButton = ({ links }: PlayButtonProps) => {

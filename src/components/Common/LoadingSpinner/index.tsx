@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const SmallLoadingSpinner = () => {
   return (
     <div className="inset-0 flex h-full w-full items-center justify-center text-gray-200">

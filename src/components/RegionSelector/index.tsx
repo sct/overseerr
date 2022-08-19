@@ -3,7 +3,7 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { hasFlag } from 'country-flag-icons';
 import 'country-flag-icons/3x2/flags.css';
 import { sortBy } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { Region } from '../../../server/lib/settings';
