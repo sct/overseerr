@@ -16,7 +16,8 @@ import 'country-flag-icons/3x2/flags.css';
 import { uniqBy } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo, useState } from 'react';
+import type React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type { RTRating } from '../../../server/api/rottentomatoes';
@@ -40,6 +41,7 @@ import LoadingSpinner from '../Common/LoadingSpinner';
 import PageTitle from '../Common/PageTitle';
 import type { PlayButtonLink } from '../Common/PlayButton';
 import PlayButton from '../Common/PlayButton';
+import Tooltip from '../Common/Tooltip';
 import ExternalLinkBlock from '../ExternalLinkBlock';
 import IssueModal from '../IssueModal';
 import ManageSlideOver from '../ManageSlideOver';
@@ -74,6 +76,9 @@ const messages = defineMessages({
   streamingproviders: 'Currently Streaming On',
   productioncountries:
     'Production {countryCount, plural, one {Country} other {Countries}}',
+  theatricalrelease: 'Theatrical Release',
+  digitalrelease: 'Digital Release',
+  physicalrelease: 'Physical Release',
 });
 
 interface MovieDetailsProps {
@@ -548,22 +553,36 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                     >
                       {r.type === 3 ? (
                         // Theatrical
-                        <TicketIcon className="h-4 w-4" />
+                        <Tooltip
+                          content={intl.formatMessage(
+                            messages.theatricalrelease
+                          )}
+                        >
+                          <TicketIcon className="h-4 w-4" />
+                        </Tooltip>
                       ) : r.type === 4 ? (
                         // Digital
-                        <CloudIcon className="h-4 w-4" />
+                        <Tooltip
+                          content={intl.formatMessage(messages.digitalrelease)}
+                        >
+                          <CloudIcon className="h-4 w-4" />
+                        </Tooltip>
                       ) : (
                         // Physical
-                        <svg
-                          className="h-4 w-4"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
+                        <Tooltip
+                          content={intl.formatMessage(messages.physicalrelease)}
                         >
-                          <path
-                            d="m12 2c-5.5242 0-10 4.4758-10 10 0 5.5242 4.4758 10 10 10 5.5242 0 10-4.4758 10-10 0-5.5242-4.4758-10-10-10zm0 18.065c-4.4476 0-8.0645-3.6169-8.0645-8.0645 0-4.4476 3.6169-8.0645 8.0645-8.0645 4.4476 0 8.0645 3.6169 8.0645 8.0645 0 4.4476-3.6169 8.0645-8.0645 8.0645zm0-14.516c-3.5565 0-6.4516 2.8952-6.4516 6.4516h1.2903c0-2.8468 2.3145-5.1613 5.1613-5.1613zm0 2.9032c-1.9597 0-3.5484 1.5887-3.5484 3.5484s1.5887 3.5484 3.5484 3.5484 3.5484-1.5887 3.5484-3.5484-1.5887-3.5484-3.5484-3.5484zm0 4.8387c-0.71371 0-1.2903-0.57661-1.2903-1.2903s0.57661-1.2903 1.2903-1.2903 1.2903 0.57661 1.2903 1.2903-0.57661 1.2903-1.2903 1.2903z"
-                            fill="currentColor"
-                          />
-                        </svg>
+                          <svg
+                            className="h-4 w-4"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="m12 2c-5.5242 0-10 4.4758-10 10 0 5.5242 4.4758 10 10 10 5.5242 0 10-4.4758 10-10 0-5.5242-4.4758-10-10-10zm0 18.065c-4.4476 0-8.0645-3.6169-8.0645-8.0645 0-4.4476 3.6169-8.0645 8.0645-8.0645 4.4476 0 8.0645 3.6169 8.0645 8.0645 0 4.4476-3.6169 8.0645-8.0645 8.0645zm0-14.516c-3.5565 0-6.4516 2.8952-6.4516 6.4516h1.2903c0-2.8468 2.3145-5.1613 5.1613-5.1613zm0 2.9032c-1.9597 0-3.5484 1.5887-3.5484 3.5484s1.5887 3.5484 3.5484 3.5484 3.5484-1.5887 3.5484-3.5484-1.5887-3.5484-3.5484-3.5484zm0 4.8387c-0.71371 0-1.2903-0.57661-1.2903-1.2903s0.57661-1.2903 1.2903-1.2903 1.2903 0.57661 1.2903 1.2903-0.57661 1.2903-1.2903 1.2903z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </Tooltip>
                       )}
                       <span className="ml-1.5">
                         {intl.formatDate(r.release_date, {
