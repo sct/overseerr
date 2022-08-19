@@ -5,7 +5,8 @@ import {
   XIcon,
 } from '@heroicons/react/solid';
 import axios from 'axios';
-import React, { useMemo, useState } from 'react';
+
+import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import {
   MediaRequestStatus,

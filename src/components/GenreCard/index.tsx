@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { withProperties } from '../../utils/typeHelpers';
 import CachedImage from '../Common/CachedImage';
 

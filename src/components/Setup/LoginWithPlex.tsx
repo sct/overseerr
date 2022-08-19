@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useUser } from '../../hooks/useUser';
 import PlexLoginButton from '../PlexLoginButton';

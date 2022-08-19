@@ -1,4 +1,3 @@
-import React from 'react';
 import type { MediaStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';
 import Transition from '../Transition';

@@ -27,7 +27,7 @@ class PGPEncryptor extends Transform {
 
   // just save the whole message
   _transform = (
-    chunk: any,
+    chunk: Uint8Array,
     _encoding: BufferEncoding,
     callback: TransformCallback
   ): void => {
@@ -185,6 +185,9 @@ class PGPEncryptor extends Transform {
 }
 
 export const openpgpEncrypt = (options: EncryptorOptions) => {
+  // Disabling this line because I don't want to fix it but I am tired
+  // of seeing the lint warning
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (mail: any, callback: () => unknown): void {
     if (!options.encryptionKeys.length) {
       setImmediate(callback);

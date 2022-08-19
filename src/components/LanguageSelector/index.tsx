@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import type { CSSObjectWithLabel } from 'react-select';
 import Select from 'react-select';

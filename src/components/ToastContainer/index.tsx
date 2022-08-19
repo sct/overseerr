@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ToastContainerProps } from 'react-toast-notifications';
 
 const ToastContainer = ({ hasToasts, ...props }: ToastContainerProps) => {

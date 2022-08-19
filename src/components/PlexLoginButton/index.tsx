@@ -1,5 +1,5 @@
 import { LoginIcon } from '@heroicons/react/outline';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import globalMessages from '../../i18n/globalMessages';
 import PlexOAuth from '../../utils/plex';

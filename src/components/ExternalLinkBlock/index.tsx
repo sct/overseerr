@@ -1,4 +1,3 @@
-import React from 'react';
 import { MediaType } from '../../../server/constants/media';
 import ImdbLogo from '../../assets/services/imdb.svg';
 import PlexLogo from '../../assets/services/plex.svg';

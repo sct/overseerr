@@ -1,5 +1,4 @@
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
-import React from 'react';
 
 interface LibraryItemProps {
   isEnabled?: boolean;

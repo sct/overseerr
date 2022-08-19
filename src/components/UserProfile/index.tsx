@@ -1,7 +1,7 @@
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import type {

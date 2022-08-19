@@ -1,6 +1,6 @@
 import { EyeIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
-import React from 'react';
+
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import useSWR from 'swr';

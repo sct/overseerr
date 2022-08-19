@@ -1,5 +1,5 @@
 import { ClipboardCopyIcon } from '@heroicons/react/solid';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useClipboard from 'react-use-clipboard';

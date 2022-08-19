@@ -1,6 +1,7 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/solid';
 import axios from 'axios';
-import React, { useState } from 'react';
+
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR, { mutate } from 'swr';
 import type {

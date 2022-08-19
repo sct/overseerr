@@ -1,7 +1,7 @@
 import { Menu, Transition } from '@headlessui/react';
 import { DotsVerticalIcon } from '@heroicons/react/solid';
 import { Field, Form, Formik } from 'formik';
-import React, { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import { Permission, useUser } from '../../../hooks/useUser';

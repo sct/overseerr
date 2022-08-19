@@ -3,7 +3,7 @@ import { Listbox, Transition } from '@headlessui/react';
 import { AdjustmentsIcon } from '@heroicons/react/outline';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { isEqual } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import Select from 'react-select';
 import useSWR from 'swr';

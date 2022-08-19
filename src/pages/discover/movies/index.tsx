@@ -1,4 +1,3 @@
-import React from 'react';
 import type { NextPage } from 'next';
 import DiscoverMovies from '../../../components/Discover/DiscoverMovies';
 

@@ -1,6 +1,6 @@
 import { UserCircleIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CachedImage from '../Common/CachedImage';
 
 interface PersonCardProps {

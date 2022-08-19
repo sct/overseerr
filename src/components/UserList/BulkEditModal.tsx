@@ -1,6 +1,6 @@
 import { PencilIcon } from '@heroicons/react/solid';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import type { User } from '../../hooks/useUser';

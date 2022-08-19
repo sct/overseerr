@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import React from 'react';
+
 import RequestList from '../../../components/RequestList';
 import useRouteGuard from '../../../hooks/useRouteGuard';
 import { Permission } from '../../../hooks/useUser';

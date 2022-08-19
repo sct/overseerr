@@ -1,7 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 import { debounce } from 'lodash';
-import type { ReactNode } from 'react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useSpring } from 'react-spring';
 import globalMessages from '../../i18n/globalMessages';
@@ -13,7 +12,7 @@ interface SliderProps {
   isLoading: boolean;
   isEmpty: boolean;
   emptyMessage?: string;
-  placeholder?: ReactNode;
+  placeholder?: React.ReactNode;
 }
 
 enum Direction {

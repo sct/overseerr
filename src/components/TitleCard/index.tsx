@@ -1,7 +1,7 @@
 import { DownloadIcon } from '@heroicons/react/outline';
 import { BellIcon, CheckIcon, ClockIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { MediaStatus } from '../../../server/constants/media';
 import type { MediaType } from '../../../server/models/Search';

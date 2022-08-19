@@ -1,4 +1,3 @@
-import React from 'react';
 import type { NextPage } from 'next';
 import DiscoverTvGenre from '../../../../../components/Discover/DiscoverTvGenre';
 

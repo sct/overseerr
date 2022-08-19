@@ -1,6 +1,6 @@
 import { groupBy } from 'lodash';
 import { useRouter } from 'next/router';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import TruncateMarkup from 'react-truncate-markup';
 import useSWR from 'swr';

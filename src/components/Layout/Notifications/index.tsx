@@ -1,5 +1,4 @@
 import { BellIcon } from '@heroicons/react/outline';
-import React from 'react';
 
 const Notifications = () => {
   return (

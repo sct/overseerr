@@ -11,7 +11,7 @@ interface GotifyPayload {
   title: string;
   message: string;
   priority: number;
-  extras: any;
+  extras: Record<string, unknown>;
 }
 
 class GotifyAgent

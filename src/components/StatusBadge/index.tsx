@@ -1,4 +1,3 @@
-import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { MediaStatus } from '../../../server/constants/media';
 import Spinner from '../../assets/spinner.svg';

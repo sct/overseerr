@@ -8,8 +8,7 @@ import {
 } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { ReactNode } from 'react';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useClickOutside from '../../../hooks/useClickOutside';
 import { Permission, useUser } from '../../../hooks/useUser';
@@ -31,7 +30,7 @@ interface SidebarProps {
 
 interface SidebarLinkProps {
   href: string;
-  svgIcon: ReactNode;
+  svgIcon: React.ReactNode;
   messagesKey: keyof typeof messages;
   activeRegExp: RegExp;
   as?: string;

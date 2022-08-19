@@ -9,7 +9,7 @@ import {
 } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { MediaRequestStatus } from '../../../server/constants/media';
 import type { MediaRequest } from '../../../server/entity/MediaRequest';

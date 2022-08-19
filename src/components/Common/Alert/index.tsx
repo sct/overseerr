@@ -3,7 +3,6 @@ import {
   InformationCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/solid';
-import React from 'react';
 
 interface AlertProps {
   title?: React.ReactNode;

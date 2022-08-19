@@ -1,6 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
-import React, { useState } from 'react';
+
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import type { QuotaStatus } from '../../../../server/interfaces/api/userInterfaces';
 import ProgressCircle from '../../Common/ProgressCircle';
