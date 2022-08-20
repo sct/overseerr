@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-import React from 'react';
 import RequestList from '../../components/RequestList';
 
 const UserRequestsPage: NextPage = () => {
