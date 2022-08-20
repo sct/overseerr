@@ -14,7 +14,7 @@ const LOCAL_PATH = process.env.CONFIG_DIRECTORY
 
 const mappingRegexp = new RegExp(/;[0-9]+-([0-9]+)/g);
 
-// Anime-List xml files are community maintained mappings that Hama agent uses to map AniDB IDs to TVDB/TMDb IDs
+// Anime-List xml files are community maintained mappings that Hama agent uses to map AniDB IDs to TVDB/TMDB IDs
 // https://github.com/Anime-Lists/anime-lists/
 
 interface AnimeMapping {

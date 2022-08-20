@@ -29,8 +29,8 @@ const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   failedretry: 'Something went wrong while retrying the request.',
   mediaerror: '{mediaType} Not Found',
-  tmdbid: 'TMDb ID',
-  tvdbid: 'TVDB ID',
+  tmdbid: 'TMDB ID',
+  tvdbid: 'TheTVDB ID',
   deleterequest: 'Delete Request',
 });
 
