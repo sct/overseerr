@@ -56,7 +56,7 @@ describe('Discover', () => {
     clickFirstTitleCardInSlider('Upcoming Series');
   });
 
-  it('displays error for media with invalid TMDb ID', () => {
+  it('displays error for media with invalid TMDB ID', () => {
     cy.intercept('GET', '/api/v1/media?*', {
       pageInfo: { pages: 1, pageSize: 20, results: 1, page: 1 },
       results: [
@@ -97,7 +97,7 @@ describe('Discover', () => {
       .contains('Movie Not Found');
   });
 
-  it('displays error for request with invalid TMDb ID', () => {
+  it('displays error for request with invalid TMDB ID', () => {
     cy.intercept('GET', '/api/v1/request?*', {
       pageInfo: { pages: 1, pageSize: 10, results: 1, page: 1 },
       results: [

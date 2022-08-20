@@ -15,8 +15,8 @@ interface ErrorCardProps {
 
 const messages = defineMessages({
   mediaerror: '{mediaType} Not Found',
-  tmdbid: 'TMDb ID',
-  tvdbid: 'TVDB ID',
+  tmdbid: 'TMDB ID',
+  tvdbid: 'TheTVDB ID',
   cleardata: 'Clear Data',
 });
 

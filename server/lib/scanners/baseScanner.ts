@@ -210,7 +210,7 @@ class BaseScanner<T> {
   }
 
   /**
-   * processShow takes a TMDb ID and an array of ProcessableSeasons, which
+   * processShow takes a TMDB ID and an array of ProcessableSeasons, which
    * should include the total episodes a sesaon has + the total available
    * episodes that each season currently has. Unlike processMovie, this method
    * does not take an `is4k` option. We handle both the 4k _and_ non 4k status

@@ -5342,7 +5342,7 @@ paths:
                   $ref: '#/components/schemas/SonarrSeries'
   /regions:
     get:
-      summary: Regions supported by TMDb
+      summary: Regions supported by TMDB
       description: Returns a list of regions in a JSON object.
       tags:
         - tmdb
@@ -5364,7 +5364,7 @@ paths:
                       example: United States of America
   /languages:
     get:
-      summary: Languages supported by TMDb
+      summary: Languages supported by TMDB
       description: Returns a list of languages in a JSON object.
       tags:
         - tmdb
@@ -5429,7 +5429,7 @@ paths:
                 $ref: '#/components/schemas/ProductionCompany'
   /genres/movie:
     get:
-      summary: Get list of official TMDb movie genres
+      summary: Get list of official TMDB movie genres
       description: Returns a list of genres in a JSON array.
       tags:
         - tmdb
@@ -5457,7 +5457,7 @@ paths:
                       example: Family
   /genres/tv:
     get:
-      summary: Get list of official TMDb movie genres
+      summary: Get list of official TMDB movie genres
       description: Returns a list of genres in a JSON array.
       tags:
         - tmdb

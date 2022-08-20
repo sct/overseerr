@@ -36,8 +36,8 @@ const messages = defineMessages({
   editrequest: 'Edit Request',
   deleterequest: 'Delete Request',
   cancelRequest: 'Cancel Request',
-  tmdbid: 'TMDb ID',
-  tvdbid: 'TVDB ID',
+  tmdbid: 'TMDB ID',
+  tvdbid: 'TheTVDB ID',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {

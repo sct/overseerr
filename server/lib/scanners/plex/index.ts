@@ -374,7 +374,7 @@ class PlexScanner
         }
       });
 
-      // If we got an IMDb ID, but no TMDb ID, lookup the TMDb ID with the IMDb ID
+      // If we got an IMDb ID, but no TMDB ID, lookup the TMDB ID with the IMDb ID
       if (mediaIds.imdbId && !mediaIds.tmdbId) {
         const tmdbMedia = await this.tmdb.getMediaByImdbId({
           imdbId: mediaIds.imdbId,
@@ -395,7 +395,7 @@ class PlexScanner
         });
         mediaIds.tmdbId = tmdbMedia.id;
       }
-      // Check if the agent is TMDb
+      // Check if the agent is TMDB
     } else if (plexitem.guid.match(tmdbRegex)) {
       const tmdbMatch = plexitem.guid.match(tmdbRegex);
       if (tmdbMatch) {
@@ -414,7 +414,7 @@ class PlexScanner
         mediaIds.tvdbId = Number(matchedtvdb[1]);
         mediaIds.tmdbId = show.id;
       }
-      // Check if the agent (for shows) is TMDb
+      // Check if the agent (for shows) is TMDB
     } else if (plexitem.guid.match(tmdbShowRegex)) {
       const matchedtmdb = plexitem.guid.match(tmdbShowRegex);
       if (matchedtmdb) {
@@ -489,10 +489,10 @@ class PlexScanner
     }
 
     if (!mediaIds.tmdbId) {
-      throw new Error('Unable to find TMDb ID');
+      throw new Error('Unable to find TMDB ID');
     }
 
-    // We check above if we have the TMDb ID, so we can safely assert the type below
+    // We check above if we have the TMDB ID, so we can safely assert the type below
     return mediaIds as MediaIds;
   }
 
