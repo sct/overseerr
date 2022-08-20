@@ -3,6 +3,7 @@ import RTAudRotten from '@app/assets/rt_aud_rotten.svg';
 import RTFresh from '@app/assets/rt_fresh.svg';
 import RTRotten from '@app/assets/rt_rotten.svg';
 import TmdbLogo from '@app/assets/tmdb_logo.svg';
+import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
@@ -19,12 +20,14 @@ import RequestButton from '@app/components/RequestButton';
 import RequestModal from '@app/components/RequestModal';
 import Slider from '@app/components/Slider';
 import StatusBadge from '@app/components/StatusBadge';
+import Season from '@app/components/TvDetails/Season';
 import useLocale from '@app/hooks/useLocale';
 import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
+import { Disclosure, Transition } from '@headlessui/react';
 import {
   ArrowCircleRightIcon,
   CogIcon,
@@ -32,10 +35,11 @@ import {
   FilmIcon,
   PlayIcon,
 } from '@heroicons/react/outline';
+import { ChevronUpIcon } from '@heroicons/react/solid';
 import type { RTRating } from '@server/api/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { IssueStatus } from '@server/constants/issue';
-import { MediaStatus } from '@server/constants/media';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type { Crew } from '@server/models/common';
 import type { TvDetails as TvDetailsType } from '@server/models/Tv';
 import { hasFlag } from 'country-flag-icons';
@@ -71,6 +75,11 @@ const messages = defineMessages({
     'Production {countryCount, plural, one {Country} other {Countries}}',
   reportissue: 'Report an Issue',
   manageseries: 'Manage Series',
+  airedrelative: 'Aired {relativeTime}',
+  latestepisode: 'Latest Episode',
+  seasonstitle: 'Seasons',
+  episodeCount: '{episodeCount, plural, one {# Episode} other {# Episodes}}',
+  seasonnumber: 'Season {seasonNumber}',
 });
 
 interface TvDetailsProps {
@@ -476,6 +485,101 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               </div>
             </>
           )}
+          <h2 className="py-4">{intl.formatMessage(messages.seasonstitle)}</h2>
+          <div className="flex w-full flex-col space-y-2">
+            {data.seasons
+              .slice()
+              .reverse()
+              .filter((season) => season.seasonNumber !== 0)
+              .map((season) => {
+                const mSeason = (data.mediaInfo?.seasons ?? []).find(
+                  (s) =>
+                    season.seasonNumber === s.seasonNumber &&
+                    s.status !== MediaStatus.UNKNOWN
+                );
+                const request = (data.mediaInfo?.requests ?? []).find(
+                  (r) =>
+                    !!r.seasons.find(
+                      (s) => s.seasonNumber === season.seasonNumber
+                    )
+                );
+
+                return (
+                  <Disclosure key={`season-discoslure-${season.seasonNumber}`}>
+                    {({ open }) => (
+                      <>
+                        <Disclosure.Button className="flex w-full items-center justify-between space-x-2 rounded-md bg-gray-800 px-4 py-2 text-gray-200">
+                          <div className="flex flex-1 items-center space-x-2 text-lg">
+                            <span>
+                              {intl.formatMessage(messages.seasonnumber, {
+                                seasonNumber: season.seasonNumber,
+                              })}
+                            </span>
+                            <Badge badgeType="dark">
+                              {intl.formatMessage(messages.episodeCount, {
+                                episodeCount: season.episodeCount,
+                              })}
+                            </Badge>
+                          </div>
+                          {((!mSeason &&
+                            request?.status === MediaRequestStatus.APPROVED) ||
+                            mSeason?.status === MediaStatus.PROCESSING) && (
+                            <Badge badgeType="primary">
+                              {intl.formatMessage(globalMessages.requested)}
+                            </Badge>
+                          )}
+                          {mSeason && (
+                            <StatusBadge
+                              mediaType="tv"
+                              status={mSeason?.status}
+                            />
+                          )}
+                          {mSeason &&
+                            settings.currentSettings.series4kEnabled &&
+                            hasPermission(
+                              [
+                                Permission.MANAGE_REQUESTS,
+                                Permission.REQUEST_4K,
+                                Permission.REQUEST_4K_TV,
+                              ],
+                              {
+                                type: 'or',
+                              }
+                            ) && (
+                              <StatusBadge
+                                status={data.mediaInfo?.status4k}
+                                is4k
+                                mediaType="tv"
+                              />
+                            )}
+                          <ChevronUpIcon
+                            className={`${
+                              open ? 'rotate-180 transform' : ''
+                            } h-5 w-5 text-gray-500`}
+                          />
+                        </Disclosure.Button>
+                        <Transition
+                          show={open}
+                          enter="transition duration-100 ease-out"
+                          enterFrom="transform scale-95 opacity-0"
+                          enterTo="transform scale-100 opacity-100"
+                          leave="transition duration-75 ease-out"
+                          leaveFrom="transform scale-100 opacity-100"
+                          leaveTo="transform scale-95 opacity-0"
+                        >
+                          <Disclosure.Panel className="my-2 w-full rounded-md border border-gray-700 px-4 py-2">
+                            <Season
+                              tvId={data.id}
+                              seasonNumber={season.seasonNumber}
+                            />
+                          </Disclosure.Panel>
+                        </Transition>
+                      </>
+                    )}
+                  </Disclosure>
+                );
+              })}
+          </div>
         </div>
         <div className="media-overview-right">
           <div className="media-facts">
