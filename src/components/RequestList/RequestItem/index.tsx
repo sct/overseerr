@@ -32,50 +32,229 @@ const messages = defineMessages({
   requesteddate: 'Requested',
   modified: 'Modified',
   modifieduserdate: '{date} by {user}',
-  mediaerror: 'The associated title for this request is no longer available.',
+  mediaerror: '{mediaType} Not Found',
   editrequest: 'Edit Request',
   deleterequest: 'Delete Request',
   cancelRequest: 'Cancel Request',
+  tmdbid: 'TMDb ID',
+  tvdbid: 'TVDB ID',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
 };
 
-interface RequestItemErroProps {
-  mediaId?: number;
+interface RequestItemErrorProps {
+  requestData?: MediaRequest;
   revalidateList: () => void;
 }
 
 const RequestItemError = ({
-  mediaId,
+  requestData,
   revalidateList,
-}: RequestItemErroProps) => {
+}: RequestItemErrorProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
 
   const deleteRequest = async () => {
-    await axios.delete(`/api/v1/media/${mediaId}`);
+    await axios.delete(`/api/v1/media/${requestData?.media.id}`);
     revalidateList();
   };
 
   return (
-    <div className="flex h-64 w-full flex-col items-center justify-center rounded-xl bg-gray-800 px-10 ring-1 ring-red-500 lg:flex-row xl:h-28">
-      <span className="text-center text-sm text-gray-300 lg:text-left">
-        {intl.formatMessage(messages.mediaerror)}
-      </span>
-      {hasPermission(Permission.MANAGE_REQUESTS) && mediaId && (
-        <div className="mt-4 lg:ml-4 lg:mt-0">
+    <div className="flex h-64 w-full flex-col justify-center rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-red-500 xl:h-28 xl:flex-row">
+      <div className="flex w-full flex-col justify-between overflow-hidden sm:flex-row">
+        <div className="flex w-full flex-col justify-center overflow-hidden pl-4 pr-4 sm:pr-0 xl:w-7/12 2xl:w-2/3">
+          <div className="flex text-lg font-bold text-white xl:text-xl">
+            {intl.formatMessage(messages.mediaerror, {
+              mediaType: intl.formatMessage(
+                requestData?.type
+                  ? requestData?.type === 'movie'
+                    ? globalMessages.movie
+                    : globalMessages.tvshow
+                  : globalMessages.request
+              ),
+            })}
+          </div>
+          {requestData && hasPermission(Permission.MANAGE_REQUESTS) && (
+            <>
+              <div className="card-field">
+                <span className="card-field-name">
+                  {intl.formatMessage(messages.tmdbid)}
+                </span>
+                <span className="flex truncate text-sm text-gray-300">
+                  {requestData.media.tmdbId}
+                </span>
+              </div>
+              {requestData.media.tvdbId && (
+                <div className="card-field">
+                  <span className="card-field-name">
+                    {intl.formatMessage(messages.tvdbid)}
+                  </span>
+                  <span className="flex truncate text-sm text-gray-300">
+                    {requestData?.media.tvdbId}
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+        <div className="mt-4 ml-4 flex w-full flex-col justify-center overflow-hidden pr-4 text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">
+          {requestData && (
+            <>
+              <div className="card-field">
+                <span className="card-field-name">
+                  {intl.formatMessage(globalMessages.status)}
+                </span>
+                {requestData.status === MediaRequestStatus.DECLINED ||
+                requestData.status === MediaRequestStatus.FAILED ? (
+                  <Badge badgeType="danger">
+                    {requestData.status === MediaRequestStatus.DECLINED
+                      ? intl.formatMessage(globalMessages.declined)
+                      : intl.formatMessage(globalMessages.failed)}
+                  </Badge>
+                ) : (
+                  <StatusBadge
+                    status={
+                      requestData.media[
+                        requestData.is4k ? 'status4k' : 'status'
+                      ]
+                    }
+                    inProgress={
+                      (
+                        requestData.media[
+                          requestData.is4k
+                            ? 'downloadStatus4k'
+                            : 'downloadStatus'
+                        ] ?? []
+                      ).length > 0
+                    }
+                    is4k={requestData.is4k}
+                    plexUrl={
+                      requestData.is4k
+                        ? requestData.media.plexUrl4k
+                        : requestData.media.plexUrl
+                    }
+                    serviceUrl={
+                      hasPermission(Permission.ADMIN)
+                        ? requestData.is4k
+                          ? requestData.media.serviceUrl4k
+                          : requestData.media.serviceUrl
+                        : undefined
+                    }
+                  />
+                )}
+              </div>
+              <div className="card-field">
+                {hasPermission(
+                  [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+                  { type: 'or' }
+                ) ? (
+                  <>
+                    <span className="card-field-name">
+                      {intl.formatMessage(messages.requested)}
+                    </span>
+                    <span className="flex truncate text-sm text-gray-300">
+                      {intl.formatMessage(messages.modifieduserdate, {
+                        date: (
+                          <FormattedRelativeTime
+                            value={Math.floor(
+                              (new Date(requestData.createdAt).getTime() -
+                                Date.now()) /
+                                1000
+                            )}
+                            updateIntervalInSeconds={1}
+                            numeric="auto"
+                          />
+                        ),
+                        user: (
+                          <Link href={`/users/${requestData.requestedBy.id}`}>
+                            <a className="group flex items-center truncate">
+                              <img
+                                src={requestData.requestedBy.avatar}
+                                alt=""
+                                className="avatar-sm ml-1.5"
+                              />
+                              <span className="truncate text-sm group-hover:underline">
+                                {requestData.requestedBy.displayName}
+                              </span>
+                            </a>
+                          </Link>
+                        ),
+                      })}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="card-field-name">
+                      {intl.formatMessage(messages.requesteddate)}
+                    </span>
+                    <span className="flex truncate text-sm text-gray-300">
+                      <FormattedRelativeTime
+                        value={Math.floor(
+                          (new Date(requestData.createdAt).getTime() -
+                            Date.now()) /
+                            1000
+                        )}
+                        updateIntervalInSeconds={1}
+                        numeric="auto"
+                      />
+                    </span>
+                  </>
+                )}
+              </div>
+              {requestData.modifiedBy && (
+                <div className="card-field">
+                  <span className="card-field-name">
+                    {intl.formatMessage(messages.modified)}
+                  </span>
+                  <span className="flex truncate text-sm text-gray-300">
+                    {intl.formatMessage(messages.modifieduserdate, {
+                      date: (
+                        <FormattedRelativeTime
+                          value={Math.floor(
+                            (new Date(requestData.updatedAt).getTime() -
+                              Date.now()) /
+                              1000
+                          )}
+                          updateIntervalInSeconds={1}
+                          numeric="auto"
+                        />
+                      ),
+                      user: (
+                        <Link href={`/users/${requestData.modifiedBy.id}`}>
+                          <a className="group flex items-center truncate">
+                            <img
+                              src={requestData.modifiedBy.avatar}
+                              alt=""
+                              className="avatar-sm ml-1.5"
+                            />
+                            <span className="truncate text-sm group-hover:underline">
+                              {requestData.modifiedBy.displayName}
+                            </span>
+                          </a>
+                        </Link>
+                      ),
+                    })}
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+      <div className="z-10 mt-4 flex w-full flex-col justify-center pl-4 pr-4 xl:mt-0 xl:w-96 xl:items-end xl:pl-0">
+        {hasPermission(Permission.MANAGE_REQUESTS) && requestData?.media.id && (
           <Button
+            className="w-full"
             buttonType="danger"
-            buttonSize="sm"
             onClick={() => deleteRequest()}
           >
             <TrashIcon />
             <span>{intl.formatMessage(messages.deleterequest)}</span>
           </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
@@ -151,7 +330,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   if (!title || !requestData) {
     return (
       <RequestItemError
-        mediaId={requestData?.media.id}
+        requestData={requestData}
         revalidateList={revalidateList}
       />
     );

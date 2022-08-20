@@ -28,7 +28,9 @@ import StatusBadge from '../StatusBadge';
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   failedretry: 'Something went wrong while retrying the request.',
-  mediaerror: 'The associated title for this request is no longer available.',
+  mediaerror: '{mediaType} Not Found',
+  tmdbid: 'TMDb ID',
+  tvdbid: 'TVDB ID',
   deleterequest: 'Delete Request',
 });
 
@@ -47,37 +49,123 @@ const RequestCardPlaceholder = () => {
 };
 
 interface RequestCardErrorProps {
-  mediaId?: number;
+  requestData?: MediaRequest;
 }
 
-const RequestCardError = ({ mediaId }: RequestCardErrorProps) => {
+const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
   const { hasPermission } = useUser();
   const intl = useIntl();
 
   const deleteRequest = async () => {
-    await axios.delete(`/api/v1/media/${mediaId}`);
+    await axios.delete(`/api/v1/media/${requestData?.media.id}`);
+    mutate('/api/v1/media?filter=allavailable&take=20&sort=mediaAdded');
     mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
   };
 
   return (
-    <div className="relative w-72 rounded-xl bg-gray-800 p-4 ring-1 ring-red-500 sm:w-96">
+    <div
+      className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 p-4 text-gray-400 shadow ring-1 ring-red-500 sm:w-96"
+      data-testid="request-card"
+    >
       <div className="w-20 sm:w-28">
         <div className="w-full" style={{ paddingBottom: '150%' }}>
-          <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center px-10">
-            <div className="w-full whitespace-normal text-center text-xs text-gray-300 sm:text-sm">
-              {intl.formatMessage(messages.mediaerror)}
+          <div className="absolute inset-0 z-10 flex min-w-0 flex-1 flex-col p-4">
+            <div
+              className="whitespace-normal text-base font-bold text-white sm:text-lg"
+              data-testid="request-card-title"
+            >
+              {intl.formatMessage(messages.mediaerror, {
+                mediaType: intl.formatMessage(
+                  requestData?.type
+                    ? requestData?.type === 'movie'
+                      ? globalMessages.movie
+                      : globalMessages.tvshow
+                    : globalMessages.request
+                ),
+              })}
             </div>
-            {hasPermission(Permission.MANAGE_REQUESTS) && mediaId && (
-              <Button
-                buttonType="danger"
-                buttonSize="sm"
-                className="mt-4"
-                onClick={() => deleteRequest()}
-              >
-                <TrashIcon />
-                <span>{intl.formatMessage(messages.deleterequest)}</span>
-              </Button>
+            {requestData && (
+              <>
+                {hasPermission(
+                  [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+                  { type: 'or' }
+                ) && (
+                  <div className="card-field !hidden sm:!block">
+                    <Link href={`/users/${requestData.requestedBy.id}`}>
+                      <a className="group flex items-center">
+                        <img
+                          src={requestData.requestedBy.avatar}
+                          alt=""
+                          className="avatar-sm"
+                        />
+                        <span className="truncate group-hover:underline">
+                          {requestData.requestedBy.displayName}
+                        </span>
+                      </a>
+                    </Link>
+                  </div>
+                )}
+                <div className="mt-2 flex items-center text-sm sm:mt-1">
+                  <span className="mr-2 hidden font-bold sm:block">
+                    {intl.formatMessage(globalMessages.status)}
+                  </span>
+                  {requestData.status === MediaRequestStatus.DECLINED ||
+                  requestData.status === MediaRequestStatus.FAILED ? (
+                    <Badge badgeType="danger">
+                      {requestData.status === MediaRequestStatus.DECLINED
+                        ? intl.formatMessage(globalMessages.declined)
+                        : intl.formatMessage(globalMessages.failed)}
+                    </Badge>
+                  ) : (
+                    <StatusBadge
+                      status={
+                        requestData.media[
+                          requestData.is4k ? 'status4k' : 'status'
+                        ]
+                      }
+                      inProgress={
+                        (
+                          requestData.media[
+                            requestData.is4k
+                              ? 'downloadStatus4k'
+                              : 'downloadStatus'
+                          ] ?? []
+                        ).length > 0
+                      }
+                      is4k={requestData.is4k}
+                      plexUrl={
+                        requestData.is4k
+                          ? requestData.media.plexUrl4k
+                          : requestData.media.plexUrl
+                      }
+                      serviceUrl={
+                        hasPermission(Permission.ADMIN)
+                          ? requestData.is4k
+                            ? requestData.media.serviceUrl4k
+                            : requestData.media.serviceUrl
+                          : undefined
+                      }
+                    />
+                  )}
+                </div>
+              </>
             )}
+            <div className="flex flex-1 items-end space-x-2">
+              {hasPermission(Permission.MANAGE_REQUESTS) &&
+                requestData?.media.id && (
+                  <Button
+                    buttonType="danger"
+                    buttonSize="sm"
+                    className="mt-4"
+                    onClick={() => deleteRequest()}
+                  >
+                    <TrashIcon style={{ marginRight: '0' }} />
+                    <span className="ml-1.5 hidden sm:block">
+                      {intl.formatMessage(messages.deleterequest)}
+                    </span>
+                  </Button>
+                )}
+            </div>
           </div>
         </div>
       </div>
@@ -165,7 +253,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
   }
 
   if (!title || !requestData) {
-    return <RequestCardError mediaId={requestData?.media.id} />;
+    return <RequestCardError requestData={requestData} />;
   }
 
   return (
@@ -182,7 +270,10 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 bg-cover bg-center p-4 text-gray-400 shadow ring-1 ring-gray-700 sm:w-96">
+      <div
+        className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 bg-cover bg-center p-4 text-gray-400 shadow ring-1 ring-gray-700 sm:w-96"
+        data-testid="request-card"
+      >
         {title.backdropPath && (
           <div className="absolute inset-0 z-0">
             <CachedImage
@@ -200,7 +291,10 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
             />
           </div>
         )}
-        <div className="relative z-10 flex min-w-0 flex-1 flex-col pr-4">
+        <div
+          className="relative z-10 flex min-w-0 flex-1 flex-col pr-4"
+          data-testid="request-card-title"
+        >
           <div className="hidden text-xs font-medium text-white sm:flex">
             {(isMovie(title) ? title.releaseDate : title.firstAirDate)?.slice(
               0,

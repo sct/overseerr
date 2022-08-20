@@ -39,7 +39,9 @@ const Discover = () => {
   const { data: requests, error: requestError } =
     useSWR<RequestResultsResponse>(
       '/api/v1/request?filter=all&take=10&sort=modified&skip=0',
-      { revalidateOnMount: true }
+      {
+        revalidateOnMount: true,
+      }
     );
 
   return (
@@ -61,7 +63,9 @@ const Discover = () => {
             items={media?.results?.map((item) => (
               <TmdbTitleCard
                 key={`media-slider-item-${item.id}`}
+                id={item.id}
                 tmdbId={item.tmdbId}
+                tvdbId={item.tvdbId}
                 type={item.mediaType}
               />
             ))}
