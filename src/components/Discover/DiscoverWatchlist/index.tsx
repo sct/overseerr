@@ -1,4 +1,3 @@
-import React from 'react';
 import ListView from '../../Common/ListView';
 import { defineMessages, useIntl } from 'react-intl';
 import Header from '../../Common/Header';

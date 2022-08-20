@@ -127,6 +127,7 @@ const Discover = () => {
           }
           items={watchlistItems?.results.map((item) => (
             <TmdbTitleCard
+              id={item.tmdbId}
               key={`watchlist-slider-item-${item.ratingKey}`}
               tmdbId={item.tmdbId}
               type={item.mediaType}

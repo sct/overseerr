@@ -42,6 +42,7 @@ const ListView = ({
           return (
             <li key={`${title.ratingKey}-${index}`}>
               <TmdbTitleCard
+                id={title.tmdbId}
                 tmdbId={title.tmdbId}
                 type={title.mediaType}
                 canExpand
