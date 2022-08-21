@@ -7,7 +7,7 @@ import Error from '../../../pages/_error';
 import type { WatchlistItem } from '../../../../server/interfaces/api/discoverInterfaces';
 
 const messages = defineMessages({
-  discoverwatchlist: 'Plex Watchlist',
+  discoverwatchlist: 'Your Plex Watchlist',
 });
 
 const DiscoverWatchlist = () => {

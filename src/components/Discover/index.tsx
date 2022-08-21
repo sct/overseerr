@@ -5,7 +5,7 @@ import useSWR from 'swr';
 import type { WatchlistItem } from '../../../server/interfaces/api/discoverInterfaces';
 import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
 import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
-import { Permission, useUser } from '../../hooks/useUser';
+import { Permission, UserType, useUser } from '../../hooks/useUser';
 import PageTitle from '../Common/PageTitle';
 import MediaSlider from '../MediaSlider';
 import RequestCard from '../RequestCard';
@@ -26,12 +26,12 @@ const messages = defineMessages({
   noRequests: 'No requests.',
   upcoming: 'Upcoming Movies',
   trending: 'Trending',
-  plexwatchlist: 'Plex Watchlist',
+  plexwatchlist: 'Your Plex Watchlist',
 });
 
 const Discover = () => {
   const intl = useIntl();
-  const { hasPermission } = useUser();
+  const { user, hasPermission } = useUser();
 
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
     '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded',
@@ -51,7 +51,7 @@ const Discover = () => {
     totalPages: number;
     totalResults: number;
     results: WatchlistItem[];
-  }>('/api/v1/discover/watchlist', {
+  }>(user?.userType === UserType.PLEX ? '/api/v1/discover/watchlist' : null, {
     revalidateOnMount: true,
   });
 
@@ -104,36 +104,38 @@ const Discover = () => {
         placeholder={<RequestCard.Placeholder />}
         emptyMessage={intl.formatMessage(messages.noRequests)}
       />
-      <div className="slider-header">
-        <Link href="/discover/watchlist">
-          <a className="slider-title">
-            <span>{intl.formatMessage(messages.plexwatchlist)}</span>
-            <ArrowCircleRightIcon />
-          </a>
-        </Link>
-      </div>
       {!(
         !!watchlistItems &&
         !watchlistError &&
         watchlistItems.results.length === 0
       ) && (
-        <Slider
-          sliderKey="watchlist"
-          isLoading={!watchlistItems && !watchlistError}
-          isEmpty={
-            !!watchlistItems &&
-            !watchlistError &&
-            watchlistItems.results.length === 0
-          }
-          items={watchlistItems?.results.map((item) => (
-            <TmdbTitleCard
-              id={item.tmdbId}
-              key={`watchlist-slider-item-${item.ratingKey}`}
-              tmdbId={item.tmdbId}
-              type={item.mediaType}
-            />
-          ))}
-        />
+        <>
+          <div className="slider-header">
+            <Link href="/discover/watchlist">
+              <a className="slider-title">
+                <span>{intl.formatMessage(messages.plexwatchlist)}</span>
+                <ArrowCircleRightIcon />
+              </a>
+            </Link>
+          </div>
+          <Slider
+            sliderKey="watchlist"
+            isLoading={!watchlistItems && !watchlistError}
+            isEmpty={
+              !!watchlistItems &&
+              !watchlistError &&
+              watchlistItems.results.length === 0
+            }
+            items={watchlistItems?.results.map((item) => (
+              <TmdbTitleCard
+                id={item.tmdbId}
+                key={`watchlist-slider-item-${item.ratingKey}`}
+                tmdbId={item.tmdbId}
+                type={item.mediaType}
+              />
+            ))}
+          />
+        </>
       )}
       <MediaSlider
         sliderKey="trending"
