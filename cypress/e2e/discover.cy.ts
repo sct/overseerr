@@ -173,9 +173,9 @@ describe('Discover', () => {
   });
 
   it('loads plex watchlist', () => {
-    cy.intercept('/api/v1/discover/watchlist', { fixture: 'watchlist' }).as(
-      'getWatchlist'
-    );
+    cy.intercept('/api/v1/discover/watchlist', {
+      fixture: 'watchlist.json',
+    }).as('getWatchlist');
     // Wait for one of the watchlist movies to resolve
     cy.intercept('/api/v1/movie/361743').as('getTmdbMovie');
 
@@ -183,7 +183,7 @@ describe('Discover', () => {
 
     cy.wait('@getWatchlist');
 
-    const sliderHeader = cy.contains('.slider-header', 'Plex Watchlist');
+    const sliderHeader = cy.contains('.slider-header', 'Your Plex Watchlist');
 
     sliderHeader.scrollIntoView();
 
@@ -203,7 +203,6 @@ describe('Discover', () => {
           .next('[data-testid=media-slider]')
           .find('[data-testid=title-card]')
           .first()
-          .click()
           .click();
         cy.get('[data-testid=media-title]').should('contain', text);
       });

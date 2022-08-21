@@ -38,6 +38,7 @@ const UserDropdown = () => {
           aria-label="User menu"
           aria-haspopup="true"
           onClick={() => setDropdownOpen(true)}
+          data-testid="user-menu"
         >
           <img
             className="h-8 w-8 rounded-full object-cover sm:h-10 sm:w-10"
@@ -76,6 +77,7 @@ const UserDropdown = () => {
                   }
                 }}
                 onClick={() => setDropdownOpen(false)}
+                data-testid="user-menu-profile"
               >
                 <UserIcon className="mr-2 inline h-5 w-5" />
                 <span>{intl.formatMessage(messages.myprofile)}</span>
@@ -92,6 +94,7 @@ const UserDropdown = () => {
                   }
                 }}
                 onClick={() => setDropdownOpen(false)}
+                data-testid="user-menu-settings"
               >
                 <CogIcon className="mr-2 inline h-5 w-5" />
                 <span>{intl.formatMessage(messages.settings)}</span>

@@ -2,6 +2,7 @@ import { UserType } from '@server/constants/user';
 import dataSource, { getRepository } from '@server/datasource';
 import { User } from '@server/entity/User';
 import { copyFileSync } from 'fs';
+import gravatarUrl from 'gravatar-url';
 import path from 'path';
 
 const prepareDb = async () => {
@@ -27,9 +28,17 @@ const prepareDb = async () => {
 
   const userRepository = getRepository(User);
 
+  const admin = await userRepository.findOne({
+    select: { id: true, plexId: true },
+    where: { id: 1 },
+  });
+
   // Create the admin user
-  const user = new User();
-  user.plexId = 1;
+  const user =
+    (await userRepository.findOne({
+      where: { email: 'admin@seerr.dev' },
+    })) ?? new User();
+  user.plexId = admin?.plexId ?? 1;
   user.plexToken = '1234';
   user.plexUsername = 'admin';
   user.username = 'admin';
@@ -37,12 +46,15 @@ const prepareDb = async () => {
   user.userType = UserType.PLEX;
   await user.setPassword('test1234');
   user.permissions = 2;
-  user.avatar = 'https://plex.tv/assets/images/avatar/default.png';
+  user.avatar = gravatarUrl('admin@seerr.dev', { default: 'mm', size: 200 });
   await userRepository.save(user);
 
   // Create the other user
-  const otherUser = new User();
-  otherUser.plexId = 1;
+  const otherUser =
+    (await userRepository.findOne({
+      where: { email: 'friend@seerr.dev' },
+    })) ?? new User();
+  otherUser.plexId = admin?.plexId ?? 1;
   otherUser.plexToken = '1234';
   otherUser.plexUsername = 'friend';
   otherUser.username = 'friend';
@@ -50,7 +62,10 @@ const prepareDb = async () => {
   otherUser.userType = UserType.PLEX;
   await otherUser.setPassword('test1234');
   otherUser.permissions = 32;
-  otherUser.avatar = 'https://plex.tv/assets/images/avatar/default.png';
+  otherUser.avatar = gravatarUrl('friend@seerr.dev', {
+    default: 'mm',
+    size: 200,
+  });
   await userRepository.save(otherUser);
 };
 
