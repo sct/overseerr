@@ -5,6 +5,7 @@ import {
   shouldSendAdminNotification,
 } from '..';
 import { IssueStatus, IssueTypeName } from '../../../constants/issue';
+import { MediaStatus } from '../../../constants/media';
 import { getRepository } from '../../../datasource';
 import { User } from '../../../entity/User';
 import logger from '../../../logger';
@@ -52,6 +53,12 @@ class PushbulletAgent
 
       let status = '';
       switch (type) {
+        case Notification.MEDIA_AUTO_REQUESTED:
+          status =
+            payload.media?.status === MediaStatus.PENDING
+              ? 'Pending Approval'
+              : 'Processing';
+          break;
         case Notification.MEDIA_PENDING:
           status = 'Pending Approval';
           break;
@@ -104,6 +111,7 @@ class PushbulletAgent
 
     // Send system notification
     if (
+      payload.notifySystem &&
       hasNotificationType(type, settings.types ?? 0) &&
       settings.enabled &&
       settings.options.accessToken

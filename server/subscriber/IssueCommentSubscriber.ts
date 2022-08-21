@@ -69,6 +69,7 @@ export class IssueCommentSubscriber
           media,
           image,
           notifyAdmin: true,
+          notifySystem: true,
           notifyUser:
             !issue.createdBy.hasPermission(Permission.MANAGE_ISSUES) &&
             issue.createdBy.id !== entity.user.id

@@ -480,6 +480,10 @@ export class MediaRequest {
       }
 
       this.sendNotification(media, Notification.MEDIA_PENDING);
+
+      if (this.isAutoRequest) {
+        this.sendNotification(media, Notification.MEDIA_AUTO_REQUESTED);
+      }
     }
   }
 
@@ -524,6 +528,14 @@ export class MediaRequest {
             : Notification.MEDIA_APPROVED
           : Notification.MEDIA_DECLINED
       );
+
+      if (
+        this.status === MediaRequestStatus.APPROVED &&
+        autoApproved &&
+        this.isAutoRequest
+      ) {
+        this.sendNotification(media, Notification.MEDIA_AUTO_REQUESTED);
+      }
     }
   }
 
@@ -1062,6 +1074,7 @@ export class MediaRequest {
       const mediaType = this.type === MediaType.MOVIE ? 'Movie' : 'Series';
       let event: string | undefined;
       let notifyAdmin = true;
+      let notifySystem = true;
 
       switch (type) {
         case Notification.MEDIA_APPROVED:
@@ -1074,6 +1087,13 @@ export class MediaRequest {
           break;
         case Notification.MEDIA_PENDING:
           event = `New ${this.is4k ? '4K ' : ''}${mediaType} Request`;
+          break;
+        case Notification.MEDIA_AUTO_REQUESTED:
+          event = `${
+            this.is4k ? '4K ' : ''
+          }${mediaType} Request Automatically Submitted`;
+          notifyAdmin = false;
+          notifySystem = false;
           break;
         case Notification.MEDIA_AUTO_APPROVED:
           event = `${
@@ -1091,6 +1111,7 @@ export class MediaRequest {
           media,
           request: this,
           notifyAdmin,
+          notifySystem,
           notifyUser: notifyAdmin ? undefined : this.requestedBy,
           event,
           subject: `${movie.title}${
@@ -1109,6 +1130,7 @@ export class MediaRequest {
           media,
           request: this,
           notifyAdmin,
+          notifySystem,
           notifyUser: notifyAdmin ? undefined : this.requestedBy,
           event,
           subject: `${tv.name}${

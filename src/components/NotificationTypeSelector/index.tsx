@@ -60,6 +60,9 @@ const messages = defineMessages({
     'Get notified when issues you reported are reopened.',
   adminissuereopenedDescription:
     'Get notified when issues are reopened by other users.',
+  mediaautorequested: 'Request Automatically Submitted',
+  mediaautorequestedDescription:
+    'Get notified when new media requests are automatically submitted for items on your Plex Watchlist.',
 });
 
 export const hasNotificationType = (
@@ -101,6 +104,7 @@ export enum Notification {
   ISSUE_COMMENT = 512,
   ISSUE_RESOLVED = 1024,
   ISSUE_REOPENED = 2048,
+  MEDIA_AUTO_REQUESTED = 4096,
 }
 
 export const ALL_NOTIFICATIONS = Object.values(Notification)
@@ -191,6 +195,25 @@ const NotificationTypeSelector = ({
             ))));
 
     const types: NotificationItem[] = [
+      {
+        id: 'media-auto-requested',
+        name: intl.formatMessage(messages.mediaautorequested),
+        description: intl.formatMessage(messages.mediaautorequestedDescription),
+        value: Notification.MEDIA_AUTO_REQUESTED,
+        hidden:
+          !user ||
+          (!user.settings?.watchlistSyncMovies &&
+            !user.settings?.watchlistSyncTv) ||
+          !hasPermission(
+            [
+              Permission.AUTO_REQUEST,
+              Permission.AUTO_REQUEST_MOVIE,
+              Permission.AUTO_REQUEST_TV,
+            ],
+            { type: 'or' }
+          ),
+        hasNotifyUser: true,
+      },
       {
         id: 'media-requested',
         name: intl.formatMessage(messages.mediarequested),

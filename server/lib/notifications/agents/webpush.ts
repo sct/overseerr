@@ -57,6 +57,11 @@ class WebPushAgent
       case Notification.TEST_NOTIFICATION:
         message = payload.message;
         break;
+      case Notification.MEDIA_AUTO_REQUESTED:
+        message = `Automatically submitted a new ${
+          is4k ? '4K ' : ''
+        }${mediaType} request.`;
+        break;
       case Notification.MEDIA_APPROVED:
         message = `Your ${
           is4k ? '4K ' : ''

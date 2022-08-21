@@ -31,6 +31,8 @@ export interface UserSettings {
   originalLanguage?: string;
   locale?: string;
   notificationTypes: Partial<NotificationAgentTypes>;
+  watchlistSyncMovies?: boolean;
+  watchlistSyncTv?: boolean;
 }
 
 interface UserHookResponse {

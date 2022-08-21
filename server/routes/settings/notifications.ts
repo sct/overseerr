@@ -18,6 +18,7 @@ const notificationRoutes = Router();
 
 const sendTestNotification = async (agent: NotificationAgent, user: User) =>
   await agent.send(Notification.TEST_NOTIFICATION, {
+    notifySystem: true,
     notifyAdmin: false,
     notifyUser: user,
     subject: 'Test Notification',
@@ -247,7 +248,7 @@ notificationRoutes.post('/webpush/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
@@ -363,7 +364,7 @@ notificationRoutes.post('/lunasea/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
@@ -384,34 +385,26 @@ notificationRoutes.get('/gotify', (_req, res) => {
   res.status(200).json(settings.notifications.agents.gotify);
 });
 
-notificationRoutes.post('/gotify', (req, rest) => {
+notificationRoutes.post('/gotify', (req, res) => {
   const settings = getSettings();
 
   settings.notifications.agents.gotify = req.body;
   settings.save();
 
-  rest.status(200).json(settings.notifications.agents.gotify);
+  res.status(200).json(settings.notifications.agents.gotify);
 });
 
-notificationRoutes.post('/gotify/test', async (req, rest, next) => {
+notificationRoutes.post('/gotify/test', async (req, res, next) => {
   if (!req.user) {
     return next({
       status: 500,
-      message: 'User information is missing from request',
+      message: 'User information is missing from the request.',
     });
   }
 
   const gotifyAgent = new GotifyAgent(req.body);
-  if (
-    await gotifyAgent.send(Notification.TEST_NOTIFICATION, {
-      notifyAdmin: false,
-      notifyUser: req.user,
-      subject: 'Test Notification',
-      message:
-        'This is a test notification! Check check, 1, 2, 3. Are we coming in clear?',
-    })
-  ) {
-    return rest.status(204).send();
+  if (await sendTestNotification(gotifyAgent, req.user)) {
+    return res.status(204).send();
   } else {
     return next({
       status: 500,
