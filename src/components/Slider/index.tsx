@@ -10,7 +10,7 @@ interface SliderProps {
   sliderKey: string;
   items?: JSX.Element[];
   isLoading: boolean;
-  isEmpty: boolean;
+  isEmpty?: boolean;
   emptyMessage?: string;
   placeholder?: React.ReactNode;
 }
@@ -24,7 +24,7 @@ const Slider = ({
   sliderKey,
   items,
   isLoading,
-  isEmpty,
+  isEmpty = false,
   emptyMessage,
   placeholder = <TitleCard.Placeholder />,
 }: SliderProps) => {

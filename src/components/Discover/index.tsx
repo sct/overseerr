@@ -104,11 +104,7 @@ const Discover = () => {
         placeholder={<RequestCard.Placeholder />}
         emptyMessage={intl.formatMessage(messages.noRequests)}
       />
-      {!(
-        !!watchlistItems &&
-        !watchlistError &&
-        watchlistItems.results.length === 0
-      ) && (
+      {(!watchlistItems || !!watchlistItems.results.length) && !watchlistError && (
         <>
           <div className="slider-header">
             <Link href="/discover/watchlist">
@@ -121,11 +117,6 @@ const Discover = () => {
           <Slider
             sliderKey="watchlist"
             isLoading={!watchlistItems && !watchlistError}
-            isEmpty={
-              !!watchlistItems &&
-              !watchlistError &&
-              watchlistItems.results.length === 0
-            }
             items={watchlistItems?.results.map((item) => (
               <TmdbTitleCard
                 id={item.tmdbId}
