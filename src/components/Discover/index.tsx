@@ -72,7 +72,6 @@ const Discover = () => {
             <Slider
               sliderKey="media"
               isLoading={!media}
-              isEmpty={!!media && media.results.length === 0}
               items={(media?.results ?? []).map((item) => (
                 <TmdbTitleCard
                   key={`media-slider-item-${item.id}`}
@@ -98,7 +97,6 @@ const Discover = () => {
           <Slider
             sliderKey="requests"
             isLoading={!requests}
-            isEmpty={!!requests && requests.results.length === 0}
             items={(requests?.results ?? []).map((request) => (
               <RequestCard
                 key={`request-slider-item-${request.id}`}
