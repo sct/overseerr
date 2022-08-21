@@ -1,11 +1,11 @@
+import Transition from '@/components/Transition';
+import type { AvailableLocale } from '@/context/LanguageContext';
+import { availableLanguages } from '@/context/LanguageContext';
+import useClickOutside from '@/hooks/useClickOutside';
+import useLocale from '@/hooks/useLocale';
 import { TranslateIcon } from '@heroicons/react/solid';
 import { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import type { AvailableLocale } from '../../../context/LanguageContext';
-import { availableLanguages } from '../../../context/LanguageContext';
-import useClickOutside from '../../../hooks/useClickOutside';
-import useLocale from '../../../hooks/useLocale';
-import Transition from '../../Transition';
 
 const messages = defineMessages({
   displaylanguage: 'Display Language',

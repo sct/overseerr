@@ -1,7 +1,7 @@
-import { hasPermission } from '../../../server/lib/permissions';
-import useSettings from '../../hooks/useSettings';
-import type { User } from '../../hooks/useUser';
-import { Permission } from '../../hooks/useUser';
+import useSettings from '@/hooks/useSettings';
+import type { User } from '@/hooks/useUser';
+import { Permission } from '@/hooks/useUser';
+import { hasPermission } from '@server/lib/permissions';
 
 export interface PermissionItem {
   id: string;

@@ -1,5 +1,5 @@
+import PersonDetails from '@/components/PersonDetails';
 import type { NextPage } from 'next';
-import PersonDetails from '../../../components/PersonDetails';
 
 const MoviePage: NextPage = () => {
   return <PersonDetails />;

@@ -1,5 +1,15 @@
+import Alert from '@/components/Common/Alert';
+import Badge from '@/components/Common/Badge';
+import Button from '@/components/Common/Button';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import PageTitle from '@/components/Common/PageTitle';
+import SensitiveInput from '@/components/Common/SensitiveInput';
+import LibraryItem from '@/components/Settings/LibraryItem';
+import globalMessages from '@/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
 import { RefreshIcon, SearchIcon, XIcon } from '@heroicons/react/solid';
+import type { PlexDevice } from '@server/interfaces/api/plexInterfaces';
+import type { PlexSettings, TautulliSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import { orderBy } from 'lodash';
@@ -8,19 +18,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import type { PlexDevice } from '../../../server/interfaces/api/plexInterfaces';
-import type {
-  PlexSettings,
-  TautulliSettings,
-} from '../../../server/lib/settings';
-import globalMessages from '../../i18n/globalMessages';
-import Alert from '../Common/Alert';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import PageTitle from '../Common/PageTitle';
-import SensitiveInput from '../Common/SensitiveInput';
-import LibraryItem from './LibraryItem';
 
 const messages = defineMessages({
   plex: 'Plex',

@@ -1,4 +1,9 @@
+import Modal from '@/components/Common/Modal';
+import SensitiveInput from '@/components/Common/SensitiveInput';
+import Transition from '@/components/Transition';
+import globalMessages from '@/i18n/globalMessages';
 import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
+import type { RadarrSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -6,11 +11,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import Select from 'react-select';
 import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
-import type { RadarrSettings } from '../../../../server/lib/settings';
-import globalMessages from '../../../i18n/globalMessages';
-import Modal from '../../Common/Modal';
-import SensitiveInput from '../../Common/SensitiveInput';
-import Transition from '../../Transition';
 
 type OptionType = {
   value: number;

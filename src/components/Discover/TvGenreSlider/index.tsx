@@ -1,12 +1,12 @@
+import { genreColorMap } from '@/components/Discover/constants';
+import GenreCard from '@/components/GenreCard';
+import Slider from '@/components/Slider';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
+import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
 import Link from 'next/link';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { GenreSliderItem } from '../../../../server/interfaces/api/discoverInterfaces';
-import GenreCard from '../../GenreCard';
-import Slider from '../../Slider';
-import { genreColorMap } from '../constants';
 
 const messages = defineMessages({
   tvgenres: 'Series Genres',

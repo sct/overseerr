@@ -1,14 +1,14 @@
+import Header from '@/components/Common/Header';
+import ListView from '@/components/Common/ListView';
+import PageTitle from '@/components/Common/PageTitle';
+import useDiscover from '@/hooks/useDiscover';
+import Error from '@/pages/_error';
+import type { TvResult } from '@server/models/Search';
+import type { TvDetails } from '@server/models/Tv';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { TvResult } from '../../../server/models/Search';
-import type { TvDetails } from '../../../server/models/Tv';
-import useDiscover from '../../hooks/useDiscover';
-import Error from '../../pages/_error';
-import Header from '../Common/Header';
-import ListView from '../Common/ListView';
-import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   similar: 'Similar Series',

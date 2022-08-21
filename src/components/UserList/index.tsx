@@ -1,3 +1,20 @@
+import Alert from '@/components/Common/Alert';
+import Badge from '@/components/Common/Badge';
+import Button from '@/components/Common/Button';
+import Header from '@/components/Common/Header';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import Modal from '@/components/Common/Modal';
+import PageTitle from '@/components/Common/PageTitle';
+import SensitiveInput from '@/components/Common/SensitiveInput';
+import Table from '@/components/Common/Table';
+import Transition from '@/components/Transition';
+import BulkEditModal from '@/components/UserList/BulkEditModal';
+import PlexImportModal from '@/components/UserList/PlexImportModal';
+import useSettings from '@/hooks/useSettings';
+import { useUpdateQueryParams } from '@/hooks/useUpdateQueryParams';
+import type { User } from '@/hooks/useUser';
+import { Permission, UserType, useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
 import { TrashIcon } from '@heroicons/react/outline';
 import {
   ChevronLeftIcon,
@@ -7,6 +24,8 @@ import {
   SortDescendingIcon,
   UserAddIcon,
 } from '@heroicons/react/solid';
+import type { UserResultsResponse } from '@server/interfaces/api/userInterfaces';
+import { hasPermission } from '@server/lib/permissions';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -16,25 +35,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
-import { hasPermission } from '../../../server/lib/permissions';
-import useSettings from '../../hooks/useSettings';
-import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
-import type { User } from '../../hooks/useUser';
-import { Permission, UserType, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Alert from '../Common/Alert';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import Header from '../Common/Header';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import Modal from '../Common/Modal';
-import PageTitle from '../Common/PageTitle';
-import SensitiveInput from '../Common/SensitiveInput';
-import Table from '../Common/Table';
-import Transition from '../Transition';
-import BulkEditModal from './BulkEditModal';
-import PlexImportModal from './PlexImportModal';
 
 const messages = defineMessages({
   users: 'Users',

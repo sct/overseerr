@@ -1,3 +1,9 @@
+import Badge from '@/components/Common/Badge';
+import Button from '@/components/Common/Button';
+import RequestModal from '@/components/RequestModal';
+import useRequestOverride from '@/hooks/useRequestOverride';
+import { useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
 import {
   CalendarIcon,
   CheckIcon,
@@ -7,18 +13,12 @@ import {
   UserIcon,
   XIcon,
 } from '@heroicons/react/solid';
+import { MediaRequestStatus } from '@server/constants/media';
+import type { MediaRequest } from '@server/entity/MediaRequest';
 import axios from 'axios';
 import Link from 'next/link';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { MediaRequestStatus } from '../../../server/constants/media';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import useRequestOverride from '../../hooks/useRequestOverride';
-import { useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import RequestModal from '../RequestModal';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',

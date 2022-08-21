@@ -1,5 +1,5 @@
+import UpcomingMovies from '@/components/Discover/Upcoming';
 import type { NextPage } from 'next';
-import UpcomingMovies from '../../../components/Discover/Upcoming';
 
 const UpcomingMoviesPage: NextPage = () => {
   return <UpcomingMovies />;

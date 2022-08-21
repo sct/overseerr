@@ -1,3 +1,4 @@
+import Transition from '@/components/Transition';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -6,7 +7,6 @@ import {
 } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/solid';
 import type { ToastProps } from 'react-toast-notifications';
-import Transition from '../Transition';
 
 const Toast = ({
   appearance,

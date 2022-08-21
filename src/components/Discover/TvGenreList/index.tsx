@@ -1,12 +1,12 @@
+import Header from '@/components/Common/Header';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import PageTitle from '@/components/Common/PageTitle';
+import { genreColorMap } from '@/components/Discover/constants';
+import GenreCard from '@/components/GenreCard';
+import Error from '@/pages/_error';
+import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { GenreSliderItem } from '../../../../server/interfaces/api/discoverInterfaces';
-import Error from '../../../pages/_error';
-import Header from '../../Common/Header';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import PageTitle from '../../Common/PageTitle';
-import GenreCard from '../../GenreCard';
-import { genreColorMap } from '../constants';
 
 const messages = defineMessages({
   seriesgenres: 'Series Genres',

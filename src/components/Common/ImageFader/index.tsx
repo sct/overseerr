@@ -1,6 +1,6 @@
+import CachedImage from '@/components/Common/CachedImage';
 import type { ForwardRefRenderFunction, HTMLAttributes } from 'react';
 import React, { useEffect, useState } from 'react';
-import CachedImage from '../CachedImage';
 
 interface ImageFaderProps extends HTMLAttributes<HTMLDivElement> {
   backgroundImages: string[];

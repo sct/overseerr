@@ -1,19 +1,19 @@
+import Ellipsis from '@/assets/ellipsis.svg';
+import CachedImage from '@/components/Common/CachedImage';
+import ImageFader from '@/components/Common/ImageFader';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import PageTitle from '@/components/Common/PageTitle';
+import TitleCard from '@/components/TitleCard';
+import globalMessages from '@/i18n/globalMessages';
+import Error from '@/pages/_error';
+import type { PersonCombinedCreditsResponse } from '@server/interfaces/api/personInterfaces';
+import type { PersonDetails as PersonDetailsType } from '@server/models/Person';
 import { groupBy } from 'lodash';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import TruncateMarkup from 'react-truncate-markup';
 import useSWR from 'swr';
-import type { PersonCombinedCreditsResponse } from '../../../server/interfaces/api/personInterfaces';
-import type { PersonDetails as PersonDetailsType } from '../../../server/models/Person';
-import Ellipsis from '../../assets/ellipsis.svg';
-import globalMessages from '../../i18n/globalMessages';
-import Error from '../../pages/_error';
-import CachedImage from '../Common/CachedImage';
-import ImageFader from '../Common/ImageFader';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import PageTitle from '../Common/PageTitle';
-import TitleCard from '../TitleCard';
 
 const messages = defineMessages({
   birthdate: 'Born {birthdate}',

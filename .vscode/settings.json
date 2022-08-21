@@ -15,5 +15,6 @@
       "database": "./config/db/db.sqlite3"
     }
   ],
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }

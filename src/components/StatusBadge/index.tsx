@@ -1,10 +1,10 @@
+import Spinner from '@/assets/spinner.svg';
+import Badge from '@/components/Common/Badge';
+import useSettings from '@/hooks/useSettings';
+import { Permission, useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
+import { MediaStatus } from '@server/constants/media';
 import { defineMessages, useIntl } from 'react-intl';
-import { MediaStatus } from '../../../server/constants/media';
-import Spinner from '../../assets/spinner.svg';
-import useSettings from '../../hooks/useSettings';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Badge from '../Common/Badge';
 
 const messages = defineMessages({
   status: '{status}',

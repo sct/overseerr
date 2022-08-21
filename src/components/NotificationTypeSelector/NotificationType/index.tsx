@@ -1,5 +1,5 @@
-import type { NotificationItem } from '..';
-import { hasNotificationType } from '..';
+import type { NotificationItem } from '@/components/NotificationTypeSelector';
+import { hasNotificationType } from '@/components/NotificationTypeSelector';
 
 interface NotificationTypeProps {
   option: NotificationItem;

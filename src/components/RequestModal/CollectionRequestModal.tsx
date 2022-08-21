@@ -1,26 +1,23 @@
+import Alert from '@/components/Common/Alert';
+import Badge from '@/components/Common/Badge';
+import CachedImage from '@/components/Common/CachedImage';
+import Modal from '@/components/Common/Modal';
+import type { RequestOverrides } from '@/components/RequestModal/AdvancedRequester';
+import AdvancedRequester from '@/components/RequestModal/AdvancedRequester';
+import QuotaDisplay from '@/components/RequestModal/QuotaDisplay';
+import { useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
 import { DownloadIcon } from '@heroicons/react/outline';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
+import type { MediaRequest } from '@server/entity/MediaRequest';
+import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
+import { Permission } from '@server/lib/permissions';
+import type { Collection } from '@server/models/Collection';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import {
-  MediaRequestStatus,
-  MediaStatus,
-} from '../../../server/constants/media';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import type { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
-import { Permission } from '../../../server/lib/permissions';
-import type { Collection } from '../../../server/models/Collection';
-import { useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Alert from '../Common/Alert';
-import Badge from '../Common/Badge';
-import CachedImage from '../Common/CachedImage';
-import Modal from '../Common/Modal';
-import type { RequestOverrides } from './AdvancedRequester';
-import AdvancedRequester from './AdvancedRequester';
-import QuotaDisplay from './QuotaDisplay';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',

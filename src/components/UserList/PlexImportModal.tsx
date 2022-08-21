@@ -1,13 +1,13 @@
+import Alert from '@/components/Common/Alert';
+import Modal from '@/components/Common/Modal';
+import useSettings from '@/hooks/useSettings';
+import globalMessages from '@/i18n/globalMessages';
 import { InboxInIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import useSettings from '../../hooks/useSettings';
-import globalMessages from '../../i18n/globalMessages';
-import Alert from '../Common/Alert';
-import Modal from '../Common/Modal';
 
 interface PlexImportProps {
   onCancel?: () => void;

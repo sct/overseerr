@@ -1,23 +1,20 @@
+import ButtonWithDropdown from '@/components/Common/ButtonWithDropdown';
+import RequestModal from '@/components/RequestModal';
+import useSettings from '@/hooks/useSettings';
+import { Permission, useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
 import { DownloadIcon } from '@heroicons/react/outline';
 import {
   CheckIcon,
   InformationCircleIcon,
   XIcon,
 } from '@heroicons/react/solid';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
+import type Media from '@server/entity/Media';
+import type { MediaRequest } from '@server/entity/MediaRequest';
 import axios from 'axios';
 import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import {
-  MediaRequestStatus,
-  MediaStatus,
-} from '../../../server/constants/media';
-import type Media from '../../../server/entity/Media';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import useSettings from '../../hooks/useSettings';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import ButtonWithDropdown from '../Common/ButtonWithDropdown';
-import RequestModal from '../RequestModal';
 
 const messages = defineMessages({
   viewrequest: 'View Request',

@@ -1,19 +1,19 @@
+import AppDataWarning from '@/components/AppDataWarning';
+import Badge from '@/components/Common/Badge';
+import Button from '@/components/Common/Button';
+import ImageFader from '@/components/Common/ImageFader';
+import PageTitle from '@/components/Common/PageTitle';
+import LanguagePicker from '@/components/Layout/LanguagePicker';
+import SettingsPlex from '@/components/Settings/SettingsPlex';
+import SettingsServices from '@/components/Settings/SettingsServices';
+import LoginWithPlex from '@/components/Setup/LoginWithPlex';
+import SetupSteps from '@/components/Setup/SetupSteps';
+import useLocale from '@/hooks/useLocale';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR, { mutate } from 'swr';
-import useLocale from '../../hooks/useLocale';
-import AppDataWarning from '../AppDataWarning';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import ImageFader from '../Common/ImageFader';
-import PageTitle from '../Common/PageTitle';
-import LanguagePicker from '../Layout/LanguagePicker';
-import SettingsPlex from '../Settings/SettingsPlex';
-import SettingsServices from '../Settings/SettingsServices';
-import LoginWithPlex from './LoginWithPlex';
-import SetupSteps from './SetupSteps';
 
 const messages = defineMessages({
   setup: 'Setup',

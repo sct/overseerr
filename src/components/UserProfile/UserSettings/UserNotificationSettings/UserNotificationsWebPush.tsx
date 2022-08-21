@@ -1,18 +1,18 @@
+import Button from '@/components/Common/Button';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import NotificationTypeSelector, {
+  ALL_NOTIFICATIONS,
+} from '@/components/NotificationTypeSelector';
+import { useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
+import type { UserSettingsNotificationsResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
-import type { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import { useUser } from '../../../../hooks/useUser';
-import globalMessages from '../../../../i18n/globalMessages';
-import Button from '../../../Common/Button';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import NotificationTypeSelector, {
-  ALL_NOTIFICATIONS,
-} from '../../../NotificationTypeSelector';
 
 const messages = defineMessages({
   webpushsettingssaved: 'Web push notification settings saved successfully!',

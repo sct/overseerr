@@ -1,7 +1,7 @@
+import type { User } from '@/hooks/useUser';
+import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/dist/client/router';
 import { useEffect, useRef } from 'react';
-import type { User } from '../hooks/useUser';
-import { useUser } from '../hooks/useUser';
 
 interface UserContextProps {
   initialUser: User;

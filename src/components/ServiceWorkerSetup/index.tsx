@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
+import useSettings from '@/hooks/useSettings';
+import { useUser } from '@/hooks/useUser';
 import axios from 'axios';
 import { useEffect } from 'react';
-import useSettings from '../../hooks/useSettings';
-import { useUser } from '../../hooks/useUser';
 
 const ServiceWorkerSetup = () => {
   const { currentSettings } = useSettings();

@@ -1,18 +1,18 @@
+import Alert from '@/components/Common/Alert';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import PageTitle from '@/components/Common/PageTitle';
+import type { SettingsRoute } from '@/components/Common/SettingsTabs';
+import SettingsTabs from '@/components/Common/SettingsTabs';
+import ProfileHeader from '@/components/UserProfile/ProfileHeader';
+import useSettings from '@/hooks/useSettings';
+import { useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
+import Error from '@/pages/_error';
+import type { UserSettingsNotificationsResponse } from '@server/interfaces/api/userSettingsInterfaces';
+import { hasPermission, Permission } from '@server/lib/permissions';
 import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { UserSettingsNotificationsResponse } from '../../../../server/interfaces/api/userSettingsInterfaces';
-import { hasPermission, Permission } from '../../../../server/lib/permissions';
-import useSettings from '../../../hooks/useSettings';
-import { useUser } from '../../../hooks/useUser';
-import globalMessages from '../../../i18n/globalMessages';
-import Error from '../../../pages/_error';
-import Alert from '../../Common/Alert';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import PageTitle from '../../Common/PageTitle';
-import type { SettingsRoute } from '../../Common/SettingsTabs';
-import SettingsTabs from '../../Common/SettingsTabs';
-import ProfileHeader from '../ProfileHeader';
 
 const messages = defineMessages({
   menuGeneralSettings: 'General',

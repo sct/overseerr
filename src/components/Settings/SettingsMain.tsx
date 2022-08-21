@@ -1,26 +1,26 @@
+import Badge from '@/components/Common/Badge';
+import Button from '@/components/Common/Button';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import PageTitle from '@/components/Common/PageTitle';
+import SensitiveInput from '@/components/Common/SensitiveInput';
+import LanguageSelector from '@/components/LanguageSelector';
+import RegionSelector from '@/components/RegionSelector';
+import CopyButton from '@/components/Settings/CopyButton';
+import type { AvailableLocale } from '@/context/LanguageContext';
+import { availableLanguages } from '@/context/LanguageContext';
+import useLocale from '@/hooks/useLocale';
+import { Permission, useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
 import { RefreshIcon } from '@heroicons/react/solid';
+import type { UserSettingsGeneralResponse } from '@server/interfaces/api/userSettingsInterfaces';
+import type { MainSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
-import type { UserSettingsGeneralResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
-import type { MainSettings } from '../../../server/lib/settings';
-import type { AvailableLocale } from '../../context/LanguageContext';
-import { availableLanguages } from '../../context/LanguageContext';
-import useLocale from '../../hooks/useLocale';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import PageTitle from '../Common/PageTitle';
-import SensitiveInput from '../Common/SensitiveInput';
-import LanguageSelector from '../LanguageSelector';
-import RegionSelector from '../RegionSelector';
-import CopyButton from './CopyButton';
 
 const messages = defineMessages({
   general: 'General',

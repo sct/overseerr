@@ -1,23 +1,23 @@
+import Spinner from '@/assets/spinner.svg';
+import Badge from '@/components/Common/Badge';
+import Button from '@/components/Common/Button';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import Modal from '@/components/Common/Modal';
+import PageTitle from '@/components/Common/PageTitle';
+import Table from '@/components/Common/Table';
+import Transition from '@/components/Transition';
+import globalMessages from '@/i18n/globalMessages';
+import { formatBytes } from '@/utils/numberHelpers';
 import { PlayIcon, StopIcon, TrashIcon } from '@heroicons/react/outline';
 import { PencilIcon } from '@heroicons/react/solid';
+import type { CacheItem } from '@server/interfaces/api/settingsInterfaces';
+import type { JobId } from '@server/lib/settings';
 import axios from 'axios';
 import { useState } from 'react';
 import type { MessageDescriptor } from 'react-intl';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import type { CacheItem } from '../../../../server/interfaces/api/settingsInterfaces';
-import type { JobId } from '../../../../server/lib/settings';
-import Spinner from '../../../assets/spinner.svg';
-import globalMessages from '../../../i18n/globalMessages';
-import { formatBytes } from '../../../utils/numberHelpers';
-import Badge from '../../Common/Badge';
-import Button from '../../Common/Button';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import Modal from '../../Common/Modal';
-import PageTitle from '../../Common/PageTitle';
-import Table from '../../Common/Table';
-import Transition from '../../Transition';
 
 const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   jobsandcache: 'Jobs & Cache',

@@ -1,3 +1,19 @@
+import Layout from '@/components/Layout';
+import LoadingBar from '@/components/LoadingBar';
+import PWAHeader from '@/components/PWAHeader';
+import ServiceWorkerSetup from '@/components/ServiceWorkerSetup';
+import StatusChecker from '@/components/StatusChecker';
+import Toast from '@/components/Toast';
+import ToastContainer from '@/components/ToastContainer';
+import { InteractionProvider } from '@/context/InteractionContext';
+import type { AvailableLocale } from '@/context/LanguageContext';
+import { LanguageContext } from '@/context/LanguageContext';
+import { SettingsProvider } from '@/context/SettingsContext';
+import { UserContext } from '@/context/UserContext';
+import type { User } from '@/hooks/useUser';
+import '@/styles/globals.css';
+import { polyfillIntl } from '@/utils/polyfillIntl';
+import type { PublicSettingsResponse } from '@server/interfaces/api/settingsInterfaces';
 import axios from 'axios';
 import type { AppInitialProps, AppProps } from 'next/app';
 import App from 'next/app';
@@ -6,22 +22,6 @@ import { useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 import { ToastProvider } from 'react-toast-notifications';
 import { SWRConfig } from 'swr';
-import type { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
-import Layout from '../components/Layout';
-import LoadingBar from '../components/LoadingBar';
-import PWAHeader from '../components/PWAHeader';
-import ServiceWorkerSetup from '../components/ServiceWorkerSetup';
-import StatusChecker from '../components/StatusChecker';
-import Toast from '../components/Toast';
-import ToastContainer from '../components/ToastContainer';
-import { InteractionProvider } from '../context/InteractionContext';
-import type { AvailableLocale } from '../context/LanguageContext';
-import { LanguageContext } from '../context/LanguageContext';
-import { SettingsProvider } from '../context/SettingsContext';
-import { UserContext } from '../context/UserContext';
-import type { User } from '../hooks/useUser';
-import '../styles/globals.css';
-import { polyfillIntl } from '../utils/polyfillIntl';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loadLocaleData = (locale: AvailableLocale): Promise<any> => {

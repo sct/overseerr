@@ -1,5 +1,5 @@
+import useSettings from '@/hooks/useSettings';
 import Head from 'next/head';
-import useSettings from '../../../hooks/useSettings';
 
 interface PageTitleProps {
   title: string | (string | undefined)[];

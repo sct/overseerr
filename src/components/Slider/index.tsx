@@ -1,10 +1,10 @@
+import TitleCard from '@/components/TitleCard';
+import globalMessages from '@/i18n/globalMessages';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 import { debounce } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useSpring } from 'react-spring';
-import globalMessages from '../../i18n/globalMessages';
-import TitleCard from '../TitleCard';
 
 interface SliderProps {
   sliderKey: string;

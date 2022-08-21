@@ -1,3 +1,7 @@
+import Button from '@/components/Common/Button';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import NotificationTypeSelector from '@/components/NotificationTypeSelector';
+import globalMessages from '@/i18n/globalMessages';
 import { BeakerIcon, SaveIcon } from '@heroicons/react/outline';
 import { QuestionMarkCircleIcon, RefreshIcon } from '@heroicons/react/solid';
 import axios from 'axios';
@@ -9,10 +13,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import globalMessages from '../../../../i18n/globalMessages';
-import Button from '../../../Common/Button';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import NotificationTypeSelector from '../../../NotificationTypeSelector';
 
 const JSONEditor = dynamic(() => import('../../../JSONEditor'), { ssr: false });
 

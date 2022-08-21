@@ -1,6 +1,16 @@
+import Button from '@/components/Common/Button';
+import Modal from '@/components/Common/Modal';
+import { issueOptions } from '@/components/IssueModal/constants';
+import useSettings from '@/hooks/useSettings';
+import { Permission, useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
 import { RadioGroup } from '@headlessui/react';
 import { ExclamationIcon } from '@heroicons/react/outline';
 import { ArrowCircleRightIcon } from '@heroicons/react/solid';
+import { MediaStatus } from '@server/constants/media';
+import type Issue from '@server/entity/Issue';
+import type { MovieDetails } from '@server/models/Movie';
+import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import Link from 'next/link';
@@ -8,16 +18,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import { MediaStatus } from '../../../../server/constants/media';
-import type Issue from '../../../../server/entity/Issue';
-import type { MovieDetails } from '../../../../server/models/Movie';
-import type { TvDetails } from '../../../../server/models/Tv';
-import useSettings from '../../../hooks/useSettings';
-import { Permission, useUser } from '../../../hooks/useUser';
-import globalMessages from '../../../i18n/globalMessages';
-import Button from '../../Common/Button';
-import Modal from '../../Common/Modal';
-import { issueOptions } from '../constants';
 
 const messages = defineMessages({
   validationMessageRequired: 'You must provide a description',

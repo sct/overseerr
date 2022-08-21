@@ -1,5 +1,5 @@
+import MovieCrew from '@/components/MovieDetails/MovieCrew';
 import type { NextPage } from 'next';
-import MovieCrew from '../../../components/MovieDetails/MovieCrew';
 
 const MovieCrewPage: NextPage = () => {
   return <MovieCrew />;

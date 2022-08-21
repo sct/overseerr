@@ -1,9 +1,9 @@
+import Button from '@/components/Common/Button';
+import type { User } from '@/hooks/useUser';
+import { Permission, useUser } from '@/hooks/useUser';
 import { CogIcon, UserIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
-import type { User } from '../../../hooks/useUser';
-import { Permission, useUser } from '../../../hooks/useUser';
-import Button from '../../Common/Button';
 
 const messages = defineMessages({
   settings: 'Edit Settings',

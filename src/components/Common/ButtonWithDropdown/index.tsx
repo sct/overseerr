@@ -1,9 +1,9 @@
+import Transition from '@/components/Transition';
+import useClickOutside from '@/hooks/useClickOutside';
+import { withProperties } from '@/utils/typeHelpers';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import { useRef, useState } from 'react';
-import useClickOutside from '../../../hooks/useClickOutside';
-import { withProperties } from '../../../utils/typeHelpers';
-import Transition from '../../Transition';
 
 interface DropdownItemProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   buttonType?: 'primary' | 'ghost';

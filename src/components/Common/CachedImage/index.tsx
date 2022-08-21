@@ -1,6 +1,6 @@
+import useSettings from '@/hooks/useSettings';
 import type { ImageProps } from 'next/image';
 import Image from 'next/image';
-import useSettings from '../../../hooks/useSettings';
 
 /**
  * The CachedImage component should be used wherever

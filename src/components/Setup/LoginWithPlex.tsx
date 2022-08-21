@@ -1,8 +1,8 @@
+import PlexLoginButton from '@/components/PlexLoginButton';
+import { useUser } from '@/hooks/useUser';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useUser } from '../../hooks/useUser';
-import PlexLoginButton from '../PlexLoginButton';
 
 const messages = defineMessages({
   welcome: 'Welcome to Overseerr',

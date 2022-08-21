@@ -1,3 +1,11 @@
+import Alert from '@/components/Common/Alert';
+import Button from '@/components/Common/Button';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import PageTitle from '@/components/Common/PageTitle';
+import PermissionEdit from '@/components/PermissionEdit';
+import { useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
+import Error from '@/pages/_error';
 import { SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
@@ -5,14 +13,6 @@ import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import { useUser } from '../../../../hooks/useUser';
-import globalMessages from '../../../../i18n/globalMessages';
-import Error from '../../../../pages/_error';
-import Alert from '../../../Common/Alert';
-import Button from '../../../Common/Button';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import PageTitle from '../../../Common/PageTitle';
-import PermissionEdit from '../../../PermissionEdit';
 
 const messages = defineMessages({
   toastSettingsSuccess: 'Permissions saved successfully!',

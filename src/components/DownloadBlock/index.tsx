@@ -1,6 +1,6 @@
+import Badge from '@/components/Common/Badge';
+import type { DownloadingItem } from '@server/lib/downloadtracker';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
-import type { DownloadingItem } from '../../../server/lib/downloadtracker';
-import Badge from '../Common/Badge';
 
 const messages = defineMessages({
   estimatedtime: 'Estimated {time}',

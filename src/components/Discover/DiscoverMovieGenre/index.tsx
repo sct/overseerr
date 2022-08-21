@@ -1,12 +1,12 @@
+import Header from '@/components/Common/Header';
+import ListView from '@/components/Common/ListView';
+import PageTitle from '@/components/Common/PageTitle';
+import useDiscover from '@/hooks/useDiscover';
+import globalMessages from '@/i18n/globalMessages';
+import Error from '@/pages/_error';
+import type { MovieResult } from '@server/models/Search';
 import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
-import type { MovieResult } from '../../../../server/models/Search';
-import useDiscover from '../../../hooks/useDiscover';
-import globalMessages from '../../../i18n/globalMessages';
-import Error from '../../../pages/_error';
-import Header from '../../Common/Header';
-import ListView from '../../Common/ListView';
-import PageTitle from '../../Common/PageTitle';
 
 const messages = defineMessages({
   genreMovies: '{genre} Movies',

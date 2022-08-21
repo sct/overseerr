@@ -1,5 +1,5 @@
+import TvRecommendations from '@/components/TvDetails/TvRecommendations';
 import type { NextPage } from 'next';
-import TvRecommendations from '../../../components/TvDetails/TvRecommendations';
 
 const TvRecommendationsPage: NextPage = () => {
   return <TvRecommendations />;

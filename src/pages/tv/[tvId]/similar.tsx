@@ -1,5 +1,5 @@
+import TvSimilar from '@/components/TvDetails/TvSimilar';
 import type { NextPage } from 'next';
-import TvSimilar from '../../../components/TvDetails/TvSimilar';
 
 const TvSimilarPage: NextPage = () => {
   return <TvSimilar />;

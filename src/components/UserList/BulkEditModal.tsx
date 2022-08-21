@@ -1,13 +1,13 @@
+import Modal from '@/components/Common/Modal';
+import PermissionEdit from '@/components/PermissionEdit';
+import type { User } from '@/hooks/useUser';
+import { useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
 import { PencilIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import type { User } from '../../hooks/useUser';
-import { useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Modal from '../Common/Modal';
-import PermissionEdit from '../PermissionEdit';
 
 interface BulkEditProps {
   selectedUserIds: number[];

@@ -1,24 +1,24 @@
+import ButtonWithDropdown from '@/components/Common/ButtonWithDropdown';
+import CachedImage from '@/components/Common/CachedImage';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import PageTitle from '@/components/Common/PageTitle';
+import RequestModal from '@/components/RequestModal';
+import Slider from '@/components/Slider';
+import StatusBadge from '@/components/StatusBadge';
+import TitleCard from '@/components/TitleCard';
+import useSettings from '@/hooks/useSettings';
+import { Permission, useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
+import Error from '@/pages/_error';
 import { DownloadIcon } from '@heroicons/react/outline';
+import { MediaStatus } from '@server/constants/media';
+import type { Collection } from '@server/models/Collection';
 import { uniq } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { MediaStatus } from '../../../server/constants/media';
-import type { Collection } from '../../../server/models/Collection';
-import useSettings from '../../hooks/useSettings';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Error from '../../pages/_error';
-import ButtonWithDropdown from '../Common/ButtonWithDropdown';
-import CachedImage from '../Common/CachedImage';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import PageTitle from '../Common/PageTitle';
-import RequestModal from '../RequestModal';
-import Slider from '../Slider';
-import StatusBadge from '../StatusBadge';
-import TitleCard from '../TitleCard';
 
 const messages = defineMessages({
   overview: 'Overview',

@@ -1,6 +1,6 @@
+import Button from '@/components/Common/Button';
+import useClickOutside from '@/hooks/useClickOutside';
 import { useRef, useState } from 'react';
-import useClickOutside from '../../../hooks/useClickOutside';
-import Button from '../Button';
 
 interface ConfirmButtonProps {
   onClick: () => void;

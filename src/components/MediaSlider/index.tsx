@@ -1,18 +1,18 @@
+import ShowMoreCard from '@/components/MediaSlider/ShowMoreCard';
+import PersonCard from '@/components/PersonCard';
+import Slider from '@/components/Slider';
+import TitleCard from '@/components/TitleCard';
+import useSettings from '@/hooks/useSettings';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
-import Link from 'next/link';
-import { useEffect } from 'react';
-import useSWRInfinite from 'swr/infinite';
-import { MediaStatus } from '../../../server/constants/media';
+import { MediaStatus } from '@server/constants/media';
 import type {
   MovieResult,
   PersonResult,
   TvResult,
-} from '../../../server/models/Search';
-import useSettings from '../../hooks/useSettings';
-import PersonCard from '../PersonCard';
-import Slider from '../Slider';
-import TitleCard from '../TitleCard';
-import ShowMoreCard from './ShowMoreCard';
+} from '@server/models/Search';
+import Link from 'next/link';
+import { useEffect } from 'react';
+import useSWRInfinite from 'swr/infinite';
 
 interface MixedResult {
   page: number;

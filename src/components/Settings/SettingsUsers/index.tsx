@@ -1,16 +1,16 @@
+import Button from '@/components/Common/Button';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
+import PageTitle from '@/components/Common/PageTitle';
+import PermissionEdit from '@/components/PermissionEdit';
+import QuotaSelector from '@/components/QuotaSelector';
+import globalMessages from '@/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
+import type { MainSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
-import type { MainSettings } from '../../../../server/lib/settings';
-import globalMessages from '../../../i18n/globalMessages';
-import Button from '../../Common/Button';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import PageTitle from '../../Common/PageTitle';
-import PermissionEdit from '../../PermissionEdit';
-import QuotaSelector from '../../QuotaSelector';
 
 const messages = defineMessages({
   users: 'Users',

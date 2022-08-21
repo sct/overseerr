@@ -4,10 +4,10 @@ import {
   CodeIcon,
   ServerIcon,
 } from '@heroicons/react/outline';
+import type { StatusResponse } from '@server/interfaces/api/settingsInterfaces';
 import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { StatusResponse } from '../../../../server/interfaces/api/settingsInterfaces';
 
 const messages = defineMessages({
   streamdevelop: 'Overseerr Develop',

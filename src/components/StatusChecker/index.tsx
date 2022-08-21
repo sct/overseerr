@@ -1,13 +1,13 @@
+import Modal from '@/components/Common/Modal';
+import Transition from '@/components/Transition';
+import useSettings from '@/hooks/useSettings';
+import { Permission, useUser } from '@/hooks/useUser';
+import globalMessages from '@/i18n/globalMessages';
 import { RefreshIcon, SparklesIcon } from '@heroicons/react/outline';
+import type { StatusResponse } from '@server/interfaces/api/settingsInterfaces';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { StatusResponse } from '../../../server/interfaces/api/settingsInterfaces';
-import useSettings from '../../hooks/useSettings';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Modal from '../Common/Modal';
-import Transition from '../Transition';
 
 const messages = defineMessages({
   appUpdated: '{applicationTitle} Updated',

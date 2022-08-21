@@ -1,5 +1,5 @@
+import RequestResetLink from '@/components/ResetPassword/RequestResetLink';
 import type { NextPage } from 'next';
-import RequestResetLink from '../../components/ResetPassword/RequestResetLink';
 
 const RequestResetLinkPage: NextPage = () => {
   return <RequestResetLink />;
