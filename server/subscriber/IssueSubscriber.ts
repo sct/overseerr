@@ -84,6 +84,7 @@ export class IssueSubscriber implements EntitySubscriberInterface<Issue> {
         image,
         extra,
         notifyAdmin: true,
+        notifySystem: true,
         notifyUser:
           !entity.createdBy.hasPermission(Permission.MANAGE_ISSUES) &&
           (type === Notification.ISSUE_RESOLVED ||

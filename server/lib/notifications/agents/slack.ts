@@ -225,7 +225,10 @@ class SlackAgent
   ): Promise<boolean> {
     const settings = this.getSettings();
 
-    if (!hasNotificationType(type, settings.types ?? 0)) {
+    if (
+      !payload.notifySystem ||
+      !hasNotificationType(type, settings.types ?? 0)
+    ) {
       return true;
     }
 

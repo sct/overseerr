@@ -9,6 +9,7 @@ import type { NotificationAgentConfig } from '../../settings';
 export interface NotificationPayload {
   event?: string;
   subject: string;
+  notifySystem: boolean;
   notifyAdmin: boolean;
   notifyUser?: User;
   media?: Media;

@@ -45,6 +45,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
                 {
                   event: `${is4k ? '4K ' : ''}Movie Request Now Available`,
                   notifyAdmin: false,
+                  notifySystem: true,
                   notifyUser: request.requestedBy,
                   subject: `${movie.title}${
                     movie.release_date
@@ -143,6 +144,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
                 omission: '…',
               }),
               notifyAdmin: false,
+              notifySystem: true,
               notifyUser: request.requestedBy,
               image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
               media: entity,

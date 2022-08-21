@@ -1,4 +1,3 @@
-import { Not } from 'typeorm';
 import PlexTvAPI from '../api/plextv';
 import { User } from '../entity/User';
 import Media from '../entity/Media';
@@ -20,12 +19,12 @@ class WatchlistSync {
     const userRepository = getRepository(User);
 
     // Get users who actually have plex tokens
-    const users = await userRepository.find({
-      select: { id: true, plexToken: true, permissions: true },
-      where: {
-        plexToken: Not(''),
-      },
-    });
+    const users = await userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.plexToken')
+      .leftJoinAndSelect('user.settings', 'settings')
+      .where("user.plexToken != ''")
+      .getMany();
 
     for (const user of users) {
       await this.syncUserWatchlist(user);
@@ -36,7 +35,7 @@ class WatchlistSync {
     if (!user.plexToken) {
       logger.warn('Skipping user watchlist sync for user without plex token', {
         label: 'Plex Watchlist Sync',
-        userId: user.id,
+        user: user.displayName,
       });
       return;
     }
