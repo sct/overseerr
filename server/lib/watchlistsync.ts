@@ -23,6 +23,7 @@ class WatchlistSync {
       .createQueryBuilder('user')
       .addSelect('user.plexToken')
       .leftJoinAndSelect('user.settings', 'settings')
+      .where("user.plexToken != ''")
       .getMany();
 
     for (const user of users) {
