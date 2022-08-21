@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon -e ts --watch server --watch overseerr-api.yml -e .json,.ts,.yml -x ts-node --files --project server/tsconfig.json server/index.ts",
+    "dev": "nodemon -e ts --watch server --watch overseerr-api.yml -e .json,.ts,.yml -x ts-node -r tsconfig-paths/register --files --project server/tsconfig.json server/index.ts",
     "build:server": "tsc --project server/tsconfig.json && copyfiles -u 2 server/templates/**/*.{html,pug} dist/templates",
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
@@ -139,6 +139,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-formatjs": "4.1.0",
     "eslint-plugin-jsx-a11y": "6.6.1",
+    "eslint-plugin-no-relative-import-paths": "^1.4.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.30.1",
     "eslint-plugin-react-hooks": "4.6.0",
@@ -154,6 +155,7 @@
     "semantic-release-docker-buildx": "1.0.1",
     "tailwindcss": "3.1.8",
     "ts-node": "10.9.1",
+    "tsconfig-paths": "^4.1.0",
     "typescript": "4.7.4"
   },
   "resolutions": {

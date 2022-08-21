@@ -1,15 +1,15 @@
-import { useIntl } from 'react-intl';
-import type { WatchlistItem } from '../../../../server/interfaces/api/discoverInterfaces';
+import PersonCard from '@/components/PersonCard';
+import TitleCard from '@/components/TitleCard';
+import TmdbTitleCard from '@/components/TitleCard/TmdbTitleCard';
+import useVerticalScroll from '@/hooks/useVerticalScroll';
+import globalMessages from '@/i18n/globalMessages';
+import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
 import type {
   MovieResult,
   PersonResult,
   TvResult,
-} from '../../../../server/models/Search';
-import useVerticalScroll from '../../../hooks/useVerticalScroll';
-import globalMessages from '../../../i18n/globalMessages';
-import PersonCard from '../../PersonCard';
-import TitleCard from '../../TitleCard';
-import TmdbTitleCard from '../../TitleCard/TmdbTitleCard';
+} from '@server/models/Search';
+import { useIntl } from 'react-intl';
 
 type ListViewProps = {
   items?: (TvResult | MovieResult | PersonResult)[];

@@ -1,7 +1,7 @@
-import { getRepository } from '../datasource';
-import { User } from '../entity/User';
-import type { Permission, PermissionCheckOptions } from '../lib/permissions';
-import { getSettings } from '../lib/settings';
+import { getRepository } from '@/datasource';
+import { User } from '@/entity/User';
+import type { Permission, PermissionCheckOptions } from '@/lib/permissions';
+import { getSettings } from '@/lib/settings';
 
 export const checkUser: Middleware = async (req, _res, next) => {
   const settings = getSettings();
