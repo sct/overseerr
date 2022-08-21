@@ -1,15 +1,15 @@
 import { useRouter } from 'next/router';
+import { defineMessages, useIntl } from 'react-intl';
 import type {
-  TvResult,
   MovieResult,
   PersonResult,
+  TvResult,
 } from '../../../server/models/Search';
-import ListView from '../Common/ListView';
-import { defineMessages, useIntl } from 'react-intl';
-import Header from '../Common/Header';
-import PageTitle from '../Common/PageTitle';
-import Error from '../../pages/_error';
 import useDiscover from '../../hooks/useDiscover';
+import Error from '../../pages/_error';
+import Header from '../Common/Header';
+import ListView from '../Common/ListView';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   search: 'Search',

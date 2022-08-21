@@ -12,9 +12,9 @@ import {
 import RadarrAPI from '../api/servarr/radarr';
 import SonarrAPI from '../api/servarr/sonarr';
 import { MediaStatus, MediaType } from '../constants/media';
+import { getRepository } from '../datasource';
 import type { DownloadingItem } from '../lib/downloadtracker';
 import downloadTracker from '../lib/downloadtracker';
-import { getRepository } from '../datasource';
 import { getSettings } from '../lib/settings';
 import logger from '../logger';
 import Issue from './Issue';

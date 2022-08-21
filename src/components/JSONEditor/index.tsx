@@ -1,7 +1,7 @@
-import type { HTMLAttributes } from 'react';
-import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/theme-dracula';
+import type { HTMLAttributes } from 'react';
+import AceEditor from 'react-ace';
 
 interface JSONEditorProps extends HTMLAttributes<HTMLDivElement> {
   name: string;

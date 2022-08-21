@@ -1,7 +1,7 @@
 import axios from 'axios';
-import xml2js from 'xml2js';
 import fs, { promises as fsp } from 'fs';
 import path from 'path';
+import xml2js from 'xml2js';
 import logger from '../logger';
 
 const UPDATE_INTERVAL_MSEC = 24 * 3600 * 1000; // how often to download new mapping in milliseconds

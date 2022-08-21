@@ -14,8 +14,8 @@ import Button from '../Common/Button';
 import CachedImage from '../Common/CachedImage';
 import RequestModal from '../RequestModal';
 import Transition from '../Transition';
-import Placeholder from './Placeholder';
 import ErrorCard from './ErrorCard';
+import Placeholder from './Placeholder';
 
 interface TitleCardProps {
   id: number;

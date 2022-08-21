@@ -1,10 +1,10 @@
-import type { MovieResult } from '../../../server/models/Search';
-import ListView from '../Common/ListView';
 import { defineMessages, useIntl } from 'react-intl';
-import Header from '../Common/Header';
-import PageTitle from '../Common/PageTitle';
+import type { MovieResult } from '../../../server/models/Search';
 import useDiscover from '../../hooks/useDiscover';
 import Error from '../../pages/_error';
+import Header from '../Common/Header';
+import ListView from '../Common/ListView';
+import PageTitle from '../Common/PageTitle';
 
 const messages = defineMessages({
   discovermovies: 'Popular Movies',
