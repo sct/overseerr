@@ -171,4 +171,41 @@ describe('Discover', () => {
       .find('[data-testid=request-card-title]')
       .contains('Movie Not Found');
   });
+
+  it('loads plex watchlist', () => {
+    cy.intercept('/api/v1/discover/watchlist', { fixture: 'watchlist' }).as(
+      'getWatchlist'
+    );
+    // Wait for one of the watchlist movies to resolve
+    cy.intercept('/api/v1/movie/361743').as('getTmdbMovie');
+
+    cy.visit('/');
+
+    cy.wait('@getWatchlist');
+
+    const sliderHeader = cy.contains('.slider-header', 'Plex Watchlist');
+
+    sliderHeader.scrollIntoView();
+
+    cy.wait('@getTmdbMovie');
+    // Wait a little longer to make sure the movie component reloaded
+    cy.wait(500);
+
+    sliderHeader
+      .next('[data-testid=media-slider]')
+      .find('[data-testid=title-card]')
+      .first()
+      .trigger('mouseover')
+      .find('[data-testid=title-card-title]')
+      .invoke('text')
+      .then((text) => {
+        cy.contains('.slider-header', 'Plex Watchlist')
+          .next('[data-testid=media-slider]')
+          .find('[data-testid=title-card]')
+          .first()
+          .click()
+          .click();
+        cy.get('[data-testid=media-title]').should('contain', text);
+      });
+  });
 });

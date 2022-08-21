@@ -57,6 +57,12 @@ export class UserSettings {
   @Column({ nullable: true })
   public telegramSendSilently?: boolean;
 
+  @Column({ nullable: true })
+  public watchlistSyncMovies?: boolean;
+
+  @Column({ nullable: true })
+  public watchlistSyncTv?: boolean;
+
   @Column({
     type: 'text',
     nullable: true,

@@ -4403,6 +4403,46 @@ paths:
                     name:
                       type: string
                       example: Genre Name
+  /discover/watchlist:
+    get:
+      summary: Get the Plex watchlist.
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: Watchlist data returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                  totalPages:
+                    type: number
+                  totalResults:
+                    type: number
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        tmdbId:
+                          type: number
+                          example: 1
+                        ratingKey:
+                          type: string
+                        type:
+                          type: string
+                        title:
+                          type: string
   /request:
     get:
       summary: Get all requests

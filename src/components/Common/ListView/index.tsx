@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl';
+import type { WatchlistItem } from '../../../../server/interfaces/api/discoverInterfaces';
 import type {
   MovieResult,
   PersonResult,
@@ -8,14 +9,16 @@ import useVerticalScroll from '../../../hooks/useVerticalScroll';
 import globalMessages from '../../../i18n/globalMessages';
 import PersonCard from '../../PersonCard';
 import TitleCard from '../../TitleCard';
+import TmdbTitleCard from '../../TitleCard/TmdbTitleCard';
 
-interface ListViewProps {
+type ListViewProps = {
   items?: (TvResult | MovieResult | PersonResult)[];
+  plexItems?: WatchlistItem[];
   isEmpty?: boolean;
   isLoading?: boolean;
   isReachingEnd?: boolean;
   onScrollBottom: () => void;
-}
+};
 
 const ListView = ({
   items,
@@ -23,6 +26,7 @@ const ListView = ({
   isLoading,
   onScrollBottom,
   isReachingEnd,
+  plexItems,
 }: ListViewProps) => {
   const intl = useIntl();
   useVerticalScroll(onScrollBottom, !isLoading && !isEmpty && !isReachingEnd);
@@ -34,6 +38,18 @@ const ListView = ({
         </div>
       )}
       <ul className="cards-vertical">
+        {plexItems?.map((title, index) => {
+          return (
+            <li key={`${title.ratingKey}-${index}`}>
+              <TmdbTitleCard
+                id={title.tmdbId}
+                tmdbId={title.tmdbId}
+                type={title.mediaType}
+                canExpand
+              />
+            </li>
+          );
+        })}
         {items?.map((title, index) => {
           let titleCard: React.ReactNode;
 

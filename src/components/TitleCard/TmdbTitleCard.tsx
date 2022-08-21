@@ -10,13 +10,20 @@ export interface TmdbTitleCardProps {
   tmdbId: number;
   tvdbId?: number;
   type: 'movie' | 'tv';
+  canExpand?: boolean;
 }
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
   return (movie as MovieDetails).title !== undefined;
 };
 
-const TmdbTitleCard = ({ id, tmdbId, tvdbId, type }: TmdbTitleCardProps) => {
+const TmdbTitleCard = ({
+  id,
+  tmdbId,
+  tvdbId,
+  type,
+  canExpand,
+}: TmdbTitleCardProps) => {
   const { hasPermission } = useUser();
 
   const { ref, inView } = useInView({
@@ -31,7 +38,7 @@ const TmdbTitleCard = ({ id, tmdbId, tvdbId, type }: TmdbTitleCardProps) => {
   if (!title && !error) {
     return (
       <div ref={ref}>
-        <TitleCard.Placeholder />
+        <TitleCard.Placeholder canExpand={canExpand} />
       </div>
     );
   }
@@ -57,6 +64,7 @@ const TmdbTitleCard = ({ id, tmdbId, tvdbId, type }: TmdbTitleCardProps) => {
       userScore={title.voteAverage}
       year={title.releaseDate}
       mediaType={'movie'}
+      canExpand={canExpand}
     />
   ) : (
     <TitleCard
@@ -68,6 +76,7 @@ const TmdbTitleCard = ({ id, tmdbId, tvdbId, type }: TmdbTitleCardProps) => {
       userScore={title.voteAverage}
       year={title.firstAirDate}
       mediaType={'tv'}
+      canExpand={canExpand}
     />
   );
 };

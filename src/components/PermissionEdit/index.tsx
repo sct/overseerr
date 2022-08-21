@@ -50,6 +50,15 @@ export const messages = defineMessages({
   advancedrequest: 'Advanced Requests',
   advancedrequestDescription:
     'Grant permission to modify advanced media request options.',
+  autorequest: 'Auto-Request',
+  autorequestDescription:
+    'Grant permission to automatically submit requests for non-4K media via Plex Watchlist.',
+  autorequestMovies: 'Auto-Request Movies',
+  autorequestMoviesDescription:
+    'Grant permission to automatically submit requests for non-4K movies via Plex Watchlist.',
+  autorequestSeries: 'Auto-Request Series',
+  autorequestSeriesDescription:
+    'Grant permission to automatically submit requests for non-4K series via Plex Watchlist.',
   viewrequests: 'View Requests',
   viewrequestsDescription:
     'Grant permission to view media requests submitted by other users.',
@@ -167,6 +176,43 @@ export const PermissionEdit = ({
             messages.autoapproveSeriesDescription
           ),
           permission: Permission.AUTO_APPROVE_TV,
+          requires: [
+            {
+              permissions: [Permission.REQUEST, Permission.REQUEST_TV],
+              type: 'or',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'autorequest',
+      name: intl.formatMessage(messages.autorequest),
+      description: intl.formatMessage(messages.autorequestDescription),
+      permission: Permission.AUTO_REQUEST,
+      requires: [{ permissions: [Permission.REQUEST] }],
+      children: [
+        {
+          id: 'autorequestmovies',
+          name: intl.formatMessage(messages.autorequestMovies),
+          description: intl.formatMessage(
+            messages.autorequestMoviesDescription
+          ),
+          permission: Permission.AUTO_REQUEST_MOVIE,
+          requires: [
+            {
+              permissions: [Permission.REQUEST, Permission.REQUEST_MOVIE],
+              type: 'or',
+            },
+          ],
+        },
+        {
+          id: 'autorequesttv',
+          name: intl.formatMessage(messages.autorequestSeries),
+          description: intl.formatMessage(
+            messages.autorequestSeriesDescription
+          ),
+          permission: Permission.AUTO_REQUEST_TV,
           requires: [
             {
               permissions: [Permission.REQUEST, Permission.REQUEST_TV],

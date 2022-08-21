@@ -14,7 +14,9 @@ const prepareDb = async () => {
   // Connect to DB and seed test data
   const dbConnection = await dataSource.initialize();
 
-  await dbConnection.dropDatabase();
+  if (process.env.PRESERVE_DB !== 'true') {
+    await dbConnection.dropDatabase();
+  }
 
   // Run migrations in production
   if (process.env.WITH_MIGRATIONS === 'true') {
@@ -41,9 +43,11 @@ const prepareDb = async () => {
   // Create the other user
   const otherUser = new User();
   otherUser.plexId = 1;
+  otherUser.plexToken = '1234';
+  otherUser.plexUsername = 'friend';
   otherUser.username = 'friend';
   otherUser.email = 'friend@seerr.dev';
-  otherUser.userType = UserType.LOCAL;
+  otherUser.userType = UserType.PLEX;
   await otherUser.setPassword('test1234');
   otherUser.permissions = 32;
   otherUser.avatar = 'https://plex.tv/assets/images/avatar/default.png';

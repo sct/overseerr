@@ -5,6 +5,7 @@ import { radarrScanner } from '../lib/scanners/radarr';
 import { sonarrScanner } from '../lib/scanners/sonarr';
 import type { JobId } from '../lib/settings';
 import { getSettings } from '../lib/settings';
+import watchlistSync from '../lib/watchlistsync';
 import logger from '../logger';
 
 interface ScheduledJob {
@@ -52,6 +53,20 @@ export const startJobs = (): void => {
     }),
     running: () => plexFullScanner.status().running,
     cancelFn: () => plexFullScanner.cancel(),
+  });
+
+  // Run watchlist sync every 5 minutes
+  scheduledJobs.push({
+    id: 'plex-watchlist-sync',
+    name: 'Plex Watchlist Sync',
+    type: 'process',
+    interval: 'long',
+    job: schedule.scheduleJob(jobs['plex-watchlist-sync'].schedule, () => {
+      logger.info('Starting scheduled job: Plex Watchlist Sync', {
+        label: 'Jobs',
+      });
+      watchlistSync.syncWatchlist();
+    }),
   });
 
   // Run full radarr scan every 24 hours

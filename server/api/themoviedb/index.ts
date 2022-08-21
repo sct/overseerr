@@ -94,7 +94,7 @@ class TheMovieDb extends ExternalAPI {
         nodeCache: cacheManager.getCache('tmdb').data,
         rateLimit: {
           maxRequests: 20,
-          maxRPS: 1,
+          maxRPS: 50,
         },
       }
     );
