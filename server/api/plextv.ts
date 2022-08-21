@@ -115,7 +115,7 @@ interface UsersResponse {
 interface WatchlistResponse {
   MediaContainer: {
     totalSize: number;
-    Metadata: {
+    Metadata?: {
       ratingKey: string;
     }[];
   };
@@ -310,35 +310,37 @@ class PlexTvAPI extends ExternalAPI {
       );
 
       const watchlistDetails = await Promise.all(
-        response.data.MediaContainer.Metadata.map(async (watchlistItem) => {
-          const detailedResponse = await this.getRolling<MetadataResponse>(
-            `/library/metadata/${watchlistItem.ratingKey}`,
-            {
-              baseURL: 'https://metadata.provider.plex.tv',
-            }
-          );
+        (response.data.MediaContainer.Metadata ?? []).map(
+          async (watchlistItem) => {
+            const detailedResponse = await this.getRolling<MetadataResponse>(
+              `/library/metadata/${watchlistItem.ratingKey}`,
+              {
+                baseURL: 'https://metadata.provider.plex.tv',
+              }
+            );
 
-          const metadata = detailedResponse.MediaContainer.Metadata[0];
+            const metadata = detailedResponse.MediaContainer.Metadata[0];
 
-          const tmdbString = metadata.Guid.find((guid) =>
-            guid.id.startsWith('tmdb')
-          );
-          const tvdbString = metadata.Guid.find((guid) =>
-            guid.id.startsWith('tvdb')
-          );
+            const tmdbString = metadata.Guid.find((guid) =>
+              guid.id.startsWith('tmdb')
+            );
+            const tvdbString = metadata.Guid.find((guid) =>
+              guid.id.startsWith('tvdb')
+            );
 
-          return {
-            ratingKey: metadata.ratingKey,
-            // This should always be set? But I guess it also cannot be?
-            // We will filter out the 0's afterwards
-            tmdbId: tmdbString ? Number(tmdbString.id.split('//')[1]) : 0,
-            tvdbId: tvdbString
-              ? Number(tvdbString.id.split('//')[1])
-              : undefined,
-            title: metadata.title,
-            type: metadata.type,
-          };
-        })
+            return {
+              ratingKey: metadata.ratingKey,
+              // This should always be set? But I guess it also cannot be?
+              // We will filter out the 0's afterwards
+              tmdbId: tmdbString ? Number(tmdbString.id.split('//')[1]) : 0,
+              tvdbId: tvdbString
+                ? Number(tvdbString.id.split('//')[1])
+                : undefined,
+              title: metadata.title,
+              type: metadata.type,
+            };
+          }
+        )
       );
 
       const filteredList = watchlistDetails.filter((detail) => detail.tmdbId);
