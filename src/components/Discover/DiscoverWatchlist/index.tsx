@@ -2,16 +2,25 @@ import Header from '@app/components/Common/Header';
 import ListView from '@app/components/Common/ListView';
 import PageTitle from '@app/components/Common/PageTitle';
 import useDiscover from '@app/hooks/useDiscover';
+import { useUser } from '@app/hooks/useUser';
 import Error from '@app/pages/_error';
 import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   discoverwatchlist: 'Your Plex Watchlist',
+  watchlist: 'Plex Watchlist',
 });
 
 const DiscoverWatchlist = () => {
   const intl = useIntl();
+  const router = useRouter();
+  const { user } = useUser({
+    id: Number(router.query.userId),
+  });
+  const { user: currentUser } = useUser();
 
   const {
     isLoadingInitialData,
@@ -21,19 +30,43 @@ const DiscoverWatchlist = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<WatchlistItem>('/api/v1/discover/watchlist');
+  } = useDiscover<WatchlistItem>(
+    `/api/v1/${
+      router.pathname.startsWith('/profile')
+        ? `user/${currentUser?.id}`
+        : router.query.userId
+        ? `user/${router.query.userId}`
+        : 'discover'
+    }/watchlist`
+  );
 
   if (error) {
     return <Error statusCode={500} />;
   }
 
-  const title = intl.formatMessage(messages.discoverwatchlist);
+  const title = intl.formatMessage(
+    router.query.userId ? messages.watchlist : messages.discoverwatchlist
+  );
 
   return (
     <>
-      <PageTitle title={title} />
+      <PageTitle
+        title={[title, router.query.userId ? user?.displayName : '']}
+      />
       <div className="mt-1 mb-5">
-        <Header>{title}</Header>
+        <Header
+          subtext={
+            router.query.userId ? (
+              <Link href={`/users/${user?.id}`}>
+                <a className="hover:underline">{user?.displayName}</a>
+              </Link>
+            ) : (
+              ''
+            )
+          }
+        >
+          {title}
+        </Header>
       </div>
       <ListView
         plexItems={titles}

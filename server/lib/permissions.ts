@@ -25,6 +25,7 @@ export enum Permission {
   AUTO_REQUEST_MOVIE = 16777216,
   AUTO_REQUEST_TV = 33554432,
   RECENT_VIEW = 67108864,
+  WATCHLIST_VIEW = 134217728,
 }
 
 export interface PermissionCheckOptions {

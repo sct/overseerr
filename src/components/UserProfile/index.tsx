@@ -9,6 +9,7 @@ import ProfileHeader from '@app/components/UserProfile/ProfileHeader';
 import { Permission, UserType, useUser } from '@app/hooks/useUser';
 import Error from '@app/pages/_error';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
+import type { WatchlistResponse } from '@server/interfaces/api/discoverInterfaces';
 import type {
   QuotaResponse,
   UserRequestsResponse,
@@ -33,6 +34,7 @@ const messages = defineMessages({
   movierequests: 'Movie Requests',
   seriesrequest: 'Series Requests',
   recentlywatched: 'Recently Watched',
+  plexwatchlist: 'Plex Watchlist',
 });
 
 type MediaTitle = MovieDetails | TvDetails;
@@ -74,6 +76,16 @@ const UserProfile = () => {
       ? `/api/v1/user/${user.id}/watch_data`
       : null
   );
+  const { data: watchlistItems, error: watchlistError } =
+    useSWR<WatchlistResponse>(
+      user?.id === currentUser?.id ||
+        currentHasPermission(Permission.WATCHLIST_VIEW)
+        ? `/api/v1/user/${user?.id}/watchlist`
+        : null,
+      {
+        revalidateOnMount: true,
+      }
+    );
 
   const updateAvailableTitles = useCallback(
     (requestId: number, mediaTitle: MediaTitle) => {
@@ -274,6 +286,36 @@ const UserProfile = () => {
             ))}
             placeholder={<RequestCard.Placeholder />}
             emptyMessage={intl.formatMessage(messages.norequests)}
+          />
+        </>
+      )}
+      {(!watchlistItems || !!watchlistItems.results.length) && !watchlistError && (
+        <>
+          <div className="slider-header">
+            <Link
+              href={
+                user.id === currentUser?.id
+                  ? '/profile/watchlist'
+                  : `/users/${user?.id}/watchlist`
+              }
+            >
+              <a className="slider-title">
+                <span>{intl.formatMessage(messages.plexwatchlist)}</span>
+                <ArrowCircleRightIcon />
+              </a>
+            </Link>
+          </div>
+          <Slider
+            sliderKey="watchlist"
+            isLoading={!watchlistItems && !watchlistError}
+            items={watchlistItems?.results.map((item) => (
+              <TmdbTitleCard
+                id={item.tmdbId}
+                key={`watchlist-slider-item-${item.ratingKey}`}
+                tmdbId={item.tmdbId}
+                type={item.mediaType}
+              />
+            ))}
           />
         </>
       )}

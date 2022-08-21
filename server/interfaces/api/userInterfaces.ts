@@ -23,6 +23,7 @@ export interface QuotaResponse {
   movie: QuotaStatus;
   tv: QuotaStatus;
 }
+
 export interface UserWatchDataResponse {
   recentlyWatched: Media[];
   playCount: number;
