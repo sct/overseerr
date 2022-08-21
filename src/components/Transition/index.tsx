@@ -1,5 +1,5 @@
+import React, { useContext, useEffect, useRef } from 'react';
 import { CSSTransition as ReactCSSTransition } from 'react-transition-group';
-import React, { useRef, useEffect, useContext } from 'react';
 
 interface CSSTransitionProps {
   show?: boolean;

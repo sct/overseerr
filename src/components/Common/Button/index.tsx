@@ -1,5 +1,5 @@
-import React from 'react';
 import type { ForwardedRef } from 'react';
+import React from 'react';
 
 export type ButtonType =
   | 'default'

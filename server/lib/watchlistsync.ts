@@ -1,9 +1,7 @@
 import PlexTvAPI from '../api/plextv';
-import { User } from '../entity/User';
+import { MediaStatus, MediaType } from '../constants/media';
+import { getRepository } from '../datasource';
 import Media from '../entity/Media';
-import logger from '../logger';
-import { MediaType } from '../constants/media';
-import { MediaStatus } from '../constants/media';
 import {
   DuplicateMediaRequestError,
   MediaRequest,
@@ -11,8 +9,9 @@ import {
   QuotaRestrictedError,
   RequestPermissionError,
 } from '../entity/MediaRequest';
+import { User } from '../entity/User';
+import logger from '../logger';
 import { Permission } from './permissions';
-import { getRepository } from '../datasource';
 
 class WatchlistSync {
   public async syncWatchlist() {

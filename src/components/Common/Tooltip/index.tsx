@@ -1,5 +1,5 @@
-import { usePopperTooltip } from 'react-popper-tooltip';
 import type { Config } from 'react-popper-tooltip';
+import { usePopperTooltip } from 'react-popper-tooltip';
 
 type TooltipProps = {
   content: React.ReactNode;

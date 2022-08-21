@@ -1,8 +1,8 @@
 import { copyFileSync } from 'fs';
-import { UserType } from '../constants/user';
-import { User } from '../entity/User';
 import path from 'path';
+import { UserType } from '../constants/user';
 import dataSource, { getRepository } from '../datasource';
+import { User } from '../entity/User';
 
 const prepareDb = async () => {
   // Copy over test settings.json

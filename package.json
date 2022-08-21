@@ -180,10 +180,6 @@
       "@commitlint/config-conventional"
     ]
   },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
   "release": {
     "plugins": [
       "@semantic-release/commit-analyzer",

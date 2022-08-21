@@ -1,6 +1,6 @@
-import type { PaginatedResponse } from './common';
-import type { MediaRequest } from '../../entity/MediaRequest';
 import type { MediaType } from '../../constants/media';
+import type { MediaRequest } from '../../entity/MediaRequest';
+import type { PaginatedResponse } from './common';
 
 export interface RequestResultsResponse extends PaginatedResponse {
   results: MediaRequest[];

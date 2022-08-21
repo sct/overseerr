@@ -1,10 +1,10 @@
-import ListView from '../../Common/ListView';
 import { defineMessages, useIntl } from 'react-intl';
-import Header from '../../Common/Header';
-import PageTitle from '../../Common/PageTitle';
+import type { WatchlistItem } from '../../../../server/interfaces/api/discoverInterfaces';
 import useDiscover from '../../../hooks/useDiscover';
 import Error from '../../../pages/_error';
-import type { WatchlistItem } from '../../../../server/interfaces/api/discoverInterfaces';
+import Header from '../../Common/Header';
+import ListView from '../../Common/ListView';
+import PageTitle from '../../Common/PageTitle';
 
 const messages = defineMessages({
   discoverwatchlist: 'Your Plex Watchlist',
