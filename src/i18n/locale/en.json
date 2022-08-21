@@ -197,6 +197,8 @@
   "components.NotificationTypeSelector.mediaAutoApprovedDescription": "Send notifications when users submit new media requests which are automatically approved.",
   "components.NotificationTypeSelector.mediaapproved": "Request Approved",
   "components.NotificationTypeSelector.mediaapprovedDescription": "Send notifications when media requests are manually approved.",
+  "components.NotificationTypeSelector.mediaautorequested": "Request Automatically Submitted",
+  "components.NotificationTypeSelector.mediaautorequestedDescription": "Get notified when new media requests are automatically submitted for items on your Plex Watchlist.",
   "components.NotificationTypeSelector.mediaavailable": "Request Available",
   "components.NotificationTypeSelector.mediaavailableDescription": "Send notifications when media requests become available.",
   "components.NotificationTypeSelector.mediadeclined": "Request Declined",
