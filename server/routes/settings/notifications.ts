@@ -1,18 +1,18 @@
+import type { User } from '@server/entity/User';
+import { Notification } from '@server/lib/notifications';
+import type { NotificationAgent } from '@server/lib/notifications/agents/agent';
+import DiscordAgent from '@server/lib/notifications/agents/discord';
+import EmailAgent from '@server/lib/notifications/agents/email';
+import GotifyAgent from '@server/lib/notifications/agents/gotify';
+import LunaSeaAgent from '@server/lib/notifications/agents/lunasea';
+import PushbulletAgent from '@server/lib/notifications/agents/pushbullet';
+import PushoverAgent from '@server/lib/notifications/agents/pushover';
+import SlackAgent from '@server/lib/notifications/agents/slack';
+import TelegramAgent from '@server/lib/notifications/agents/telegram';
+import WebhookAgent from '@server/lib/notifications/agents/webhook';
+import WebPushAgent from '@server/lib/notifications/agents/webpush';
+import { getSettings } from '@server/lib/settings';
 import { Router } from 'express';
-import type { User } from '../../entity/User';
-import { Notification } from '../../lib/notifications';
-import type { NotificationAgent } from '../../lib/notifications/agents/agent';
-import DiscordAgent from '../../lib/notifications/agents/discord';
-import EmailAgent from '../../lib/notifications/agents/email';
-import GotifyAgent from '../../lib/notifications/agents/gotify';
-import LunaSeaAgent from '../../lib/notifications/agents/lunasea';
-import PushbulletAgent from '../../lib/notifications/agents/pushbullet';
-import PushoverAgent from '../../lib/notifications/agents/pushover';
-import SlackAgent from '../../lib/notifications/agents/slack';
-import TelegramAgent from '../../lib/notifications/agents/telegram';
-import WebhookAgent from '../../lib/notifications/agents/webhook';
-import WebPushAgent from '../../lib/notifications/agents/webpush';
-import { getSettings } from '../../lib/settings';
 
 const notificationRoutes = Router();
 

@@ -1,20 +1,20 @@
-import { uniqWith } from 'lodash';
-import animeList from '../../../api/animelist';
-import type { PlexLibraryItem, PlexMetadata } from '../../../api/plexapi';
-import PlexAPI from '../../../api/plexapi';
-import type { TmdbTvDetails } from '../../../api/themoviedb/interfaces';
-import { getRepository } from '../../../datasource';
-import { User } from '../../../entity/User';
-import cacheManager from '../../cache';
-import type { Library } from '../../settings';
-import { getSettings } from '../../settings';
+import animeList from '@server/api/animelist';
+import type { PlexLibraryItem, PlexMetadata } from '@server/api/plexapi';
+import PlexAPI from '@server/api/plexapi';
+import type { TmdbTvDetails } from '@server/api/themoviedb/interfaces';
+import { getRepository } from '@server/datasource';
+import { User } from '@server/entity/User';
+import cacheManager from '@server/lib/cache';
 import type {
   MediaIds,
   ProcessableSeason,
   RunnableScanner,
   StatusBase,
-} from '../baseScanner';
-import BaseScanner from '../baseScanner';
+} from '@server/lib/scanners/baseScanner';
+import BaseScanner from '@server/lib/scanners/baseScanner';
+import type { Library } from '@server/lib/settings';
+import { getSettings } from '@server/lib/settings';
+import { uniqWith } from 'lodash';
 
 const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);

@@ -1,7 +1,7 @@
+import type { Library, PlexSettings } from '@server/lib/settings';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
 import NodePlexAPI from 'plex-api';
-import type { Library, PlexSettings } from '../lib/settings';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
 
 export interface PlexLibraryItem {
   ratingKey: string;

@@ -1,7 +1,7 @@
+import type { TmdbCollection } from '@server/api/themoviedb/interfaces';
+import { MediaType } from '@server/constants/media';
+import type Media from '@server/entity/Media';
 import { sortBy } from 'lodash';
-import type { TmdbCollection } from '../api/themoviedb/interfaces';
-import { MediaType } from '../constants/media';
-import type Media from '../entity/Media';
 import type { MovieResult } from './Search';
 import { mapMovieResult } from './Search';
 

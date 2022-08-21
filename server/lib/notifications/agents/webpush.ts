@@ -1,13 +1,13 @@
+import { IssueType, IssueTypeName } from '@server/constants/issue';
+import { MediaType } from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import { User } from '@server/entity/User';
+import { UserPushSubscription } from '@server/entity/UserPushSubscription';
+import type { NotificationAgentConfig } from '@server/lib/settings';
+import { getSettings, NotificationAgentKey } from '@server/lib/settings';
+import logger from '@server/logger';
 import webpush from 'web-push';
 import { Notification, shouldSendAdminNotification } from '..';
-import { IssueType, IssueTypeName } from '../../../constants/issue';
-import { MediaType } from '../../../constants/media';
-import { getRepository } from '../../../datasource';
-import { User } from '../../../entity/User';
-import { UserPushSubscription } from '../../../entity/UserPushSubscription';
-import logger from '../../../logger';
-import type { NotificationAgentConfig } from '../../settings';
-import { getSettings, NotificationAgentKey } from '../../settings';
 import type { NotificationAgent, NotificationPayload } from './agent';
 import { BaseAgent } from './agent';
 

@@ -1,5 +1,5 @@
-import type { QualityProfile, RootFolder, Tag } from '../../api/servarr/base';
-import type { LanguageProfile } from '../../api/servarr/sonarr';
+import type { QualityProfile, RootFolder, Tag } from '@server/api/servarr/base';
+import type { LanguageProfile } from '@server/api/servarr/sonarr';
 
 export interface ServiceCommonServer {
   id: number;

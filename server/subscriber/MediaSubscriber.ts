@@ -1,14 +1,18 @@
+import TheMovieDb from '@server/api/themoviedb';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+  MediaType,
+} from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
+import { MediaRequest } from '@server/entity/MediaRequest';
+import Season from '@server/entity/Season';
+import notificationManager, { Notification } from '@server/lib/notifications';
+import logger from '@server/logger';
 import { truncate } from 'lodash';
 import type { EntitySubscriberInterface, UpdateEvent } from 'typeorm';
 import { EventSubscriber, In, Not } from 'typeorm';
-import TheMovieDb from '../api/themoviedb';
-import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
-import { getRepository } from '../datasource';
-import Media from '../entity/Media';
-import { MediaRequest } from '../entity/MediaRequest';
-import Season from '../entity/Season';
-import notificationManager, { Notification } from '../lib/notifications';
-import logger from '../logger';
 
 @EventSubscriber()
 export class MediaSubscriber implements EntitySubscriberInterface<Media> {

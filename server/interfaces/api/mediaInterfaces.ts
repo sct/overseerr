@@ -1,5 +1,5 @@
-import type Media from '../../entity/Media';
-import type { User } from '../../entity/User';
+import type Media from '@server/entity/Media';
+import type { User } from '@server/entity/User';
 import type { PaginatedResponse } from './common';
 
 export interface MediaResultsResponse extends PaginatedResponse {

@@ -1,12 +1,12 @@
+import TheMovieDb from '@server/api/themoviedb';
+import { MediaStatus, MediaType } from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
+import Season from '@server/entity/Season';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
+import AsyncLock from '@server/utils/asyncLock';
 import { randomUUID } from 'crypto';
-import TheMovieDb from '../../api/themoviedb';
-import { MediaStatus, MediaType } from '../../constants/media';
-import { getRepository } from '../../datasource';
-import Media from '../../entity/Media';
-import Season from '../../entity/Season';
-import logger from '../../logger';
-import AsyncLock from '../../utils/asyncLock';
-import { getSettings } from '../settings';
 
 // Default scan rates (can be overidden)
 const BUNDLE_SIZE = 20;

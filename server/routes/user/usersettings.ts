@@ -1,16 +1,16 @@
-import { Router } from 'express';
-import { canMakePermissionsChange } from '.';
-import { getRepository } from '../../datasource';
-import { User } from '../../entity/User';
-import { UserSettings } from '../../entity/UserSettings';
+import { getRepository } from '@server/datasource';
+import { User } from '@server/entity/User';
+import { UserSettings } from '@server/entity/UserSettings';
 import type {
   UserSettingsGeneralResponse,
   UserSettingsNotificationsResponse,
-} from '../../interfaces/api/userSettingsInterfaces';
-import { Permission } from '../../lib/permissions';
-import { getSettings } from '../../lib/settings';
-import logger from '../../logger';
-import { isAuthenticated } from '../../middleware/auth';
+} from '@server/interfaces/api/userSettingsInterfaces';
+import { Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
+import { Router } from 'express';
+import { canMakePermissionsChange } from '.';
 
 const isOwnProfileOrAdmin = (): Middleware => {
   const authMiddleware: Middleware = (req, res, next) => {

@@ -1,12 +1,12 @@
+import PlexTvAPI from '@server/api/plextv';
+import { UserType } from '@server/constants/user';
+import { getRepository } from '@server/datasource';
+import { User } from '@server/entity/User';
+import { Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
 import { Router } from 'express';
-import PlexTvAPI from '../api/plextv';
-import { UserType } from '../constants/user';
-import { getRepository } from '../datasource';
-import { User } from '../entity/User';
-import { Permission } from '../lib/permissions';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
-import { isAuthenticated } from '../middleware/auth';
 
 const authRoutes = Router();
 

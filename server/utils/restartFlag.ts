@@ -1,5 +1,5 @@
-import type { MainSettings } from '../lib/settings';
-import { getSettings } from '../lib/settings';
+import type { MainSettings } from '@server/lib/settings';
+import { getSettings } from '@server/lib/settings';
 
 class RestartFlag {
   private settings: MainSettings;

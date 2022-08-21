@@ -1,23 +1,27 @@
-import { Router } from 'express';
-import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
-import { getRepository } from '../datasource';
-import Media from '../entity/Media';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+  MediaType,
+} from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
 import {
   DuplicateMediaRequestError,
   MediaRequest,
   NoSeasonsAvailableError,
   QuotaRestrictedError,
   RequestPermissionError,
-} from '../entity/MediaRequest';
-import SeasonRequest from '../entity/SeasonRequest';
-import { User } from '../entity/User';
+} from '@server/entity/MediaRequest';
+import SeasonRequest from '@server/entity/SeasonRequest';
+import { User } from '@server/entity/User';
 import type {
   MediaRequestBody,
   RequestResultsResponse,
-} from '../interfaces/api/requestInterfaces';
-import { Permission } from '../lib/permissions';
-import logger from '../logger';
-import { isAuthenticated } from '../middleware/auth';
+} from '@server/interfaces/api/requestInterfaces';
+import { Permission } from '@server/lib/permissions';
+import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
+import { Router } from 'express';
 
 const requestRoutes = Router();
 

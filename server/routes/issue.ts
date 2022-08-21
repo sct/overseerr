@@ -1,13 +1,13 @@
+import { IssueStatus, IssueType } from '@server/constants/issue';
+import { getRepository } from '@server/datasource';
+import Issue from '@server/entity/Issue';
+import IssueComment from '@server/entity/IssueComment';
+import Media from '@server/entity/Media';
+import type { IssueResultsResponse } from '@server/interfaces/api/issueInterfaces';
+import { Permission } from '@server/lib/permissions';
+import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
 import { Router } from 'express';
-import { IssueStatus, IssueType } from '../constants/issue';
-import { getRepository } from '../datasource';
-import Issue from '../entity/Issue';
-import IssueComment from '../entity/IssueComment';
-import Media from '../entity/Media';
-import type { IssueResultsResponse } from '../interfaces/api/issueInterfaces';
-import { Permission } from '../lib/permissions';
-import logger from '../logger';
-import { isAuthenticated } from '../middleware/auth';
 
 const issueRoutes = Router();
 

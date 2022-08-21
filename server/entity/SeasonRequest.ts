@@ -1,3 +1,4 @@
+import { MediaRequestStatus } from '@server/constants/media';
 import {
   Column,
   CreateDateColumn,
@@ -6,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { MediaRequestStatus } from '../constants/media';
 import { MediaRequest } from './MediaRequest';
 
 @Entity()

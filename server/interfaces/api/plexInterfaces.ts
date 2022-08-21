@@ -1,4 +1,4 @@
-import type { PlexSettings } from '../../lib/settings';
+import type { PlexSettings } from '@server/lib/settings';
 
 export interface PlexStatus {
   settings: PlexSettings;

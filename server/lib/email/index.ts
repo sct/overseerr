@@ -1,8 +1,8 @@
+import type { NotificationAgentEmail } from '@server/lib/settings';
+import { getSettings } from '@server/lib/settings';
 import Email from 'email-templates';
 import nodemailer from 'nodemailer';
 import { URL } from 'url';
-import type { NotificationAgentEmail } from '../settings';
-import { getSettings } from '../settings';
 import { openpgpEncrypt } from './openpgpEncrypt';
 
 class PreparedEmail extends Email {

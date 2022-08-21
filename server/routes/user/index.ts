@@ -1,26 +1,26 @@
-import { Router } from 'express';
-import gravatarUrl from 'gravatar-url';
-import { findIndex, sortBy } from 'lodash';
-import { In } from 'typeorm';
-import PlexTvAPI from '../../api/plextv';
-import TautulliAPI from '../../api/tautulli';
-import { MediaType } from '../../constants/media';
-import { UserType } from '../../constants/user';
-import { getRepository } from '../../datasource';
-import Media from '../../entity/Media';
-import { MediaRequest } from '../../entity/MediaRequest';
-import { User } from '../../entity/User';
-import { UserPushSubscription } from '../../entity/UserPushSubscription';
+import PlexTvAPI from '@server/api/plextv';
+import TautulliAPI from '@server/api/tautulli';
+import { MediaType } from '@server/constants/media';
+import { UserType } from '@server/constants/user';
+import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
+import { MediaRequest } from '@server/entity/MediaRequest';
+import { User } from '@server/entity/User';
+import { UserPushSubscription } from '@server/entity/UserPushSubscription';
 import type {
   QuotaResponse,
   UserRequestsResponse,
   UserResultsResponse,
   UserWatchDataResponse,
-} from '../../interfaces/api/userInterfaces';
-import { hasPermission, Permission } from '../../lib/permissions';
-import { getSettings } from '../../lib/settings';
-import logger from '../../logger';
-import { isAuthenticated } from '../../middleware/auth';
+} from '@server/interfaces/api/userInterfaces';
+import { hasPermission, Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
+import { Router } from 'express';
+import gravatarUrl from 'gravatar-url';
+import { findIndex, sortBy } from 'lodash';
+import { In } from 'typeorm';
 import userSettingsRoutes from './usersettings';
 
 const router = Router();

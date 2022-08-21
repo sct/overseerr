@@ -1,6 +1,6 @@
-import type { User } from '../../entity/User';
-import logger from '../../logger';
-import { Permission } from '../permissions';
+import type { User } from '@server/entity/User';
+import { Permission } from '@server/lib/permissions';
+import logger from '@server/logger';
 import type { NotificationAgent, NotificationPayload } from './agents/agent';
 
 export enum Notification {
