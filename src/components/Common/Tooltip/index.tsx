@@ -4,7 +4,7 @@ import { usePopperTooltip } from 'react-popper-tooltip';
 
 type TooltipProps = {
   content: React.ReactNode;
-  children: React.ReactNode;
+  children: React.ReactElement;
   tooltipConfig?: Partial<Config>;
 };
 
@@ -17,14 +17,9 @@ const Tooltip = ({ children, content, tooltipConfig }: TooltipProps) => {
       ...tooltipConfig,
     });
 
-  // Ensure there is only one child
-  const child = React.Children.only(children);
-
   return (
     <>
-      {React.isValidElement(child)
-        ? React.cloneElement(child, { ref: setTriggerRef })
-        : null}
+      {React.cloneElement(children, { ref: setTriggerRef })}
       {visible && (
         <div
           ref={setTooltipRef}
