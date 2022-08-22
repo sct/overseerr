@@ -1,10 +1,10 @@
-import SearchInput from '@/components/Layout/SearchInput';
-import Sidebar from '@/components/Layout/Sidebar';
-import UserDropdown from '@/components/Layout/UserDropdown';
-import type { AvailableLocale } from '@/context/LanguageContext';
-import useLocale from '@/hooks/useLocale';
-import useSettings from '@/hooks/useSettings';
-import { useUser } from '@/hooks/useUser';
+import SearchInput from '@app/components/Layout/SearchInput';
+import Sidebar from '@app/components/Layout/Sidebar';
+import UserDropdown from '@app/components/Layout/UserDropdown';
+import type { AvailableLocale } from '@app/context/LanguageContext';
+import useLocale from '@app/hooks/useLocale';
+import useSettings from '@app/hooks/useSettings';
+import { useUser } from '@app/hooks/useUser';
 import { MenuAlt2Icon } from '@heroicons/react/outline';
 import { ArrowLeftIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';

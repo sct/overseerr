@@ -1,7 +1,7 @@
-import UserSettings from '@/components/UserProfile/UserSettings';
-import UserGeneralSettings from '@/components/UserProfile/UserSettings/UserGeneralSettings';
-import useRouteGuard from '@/hooks/useRouteGuard';
-import { Permission } from '@/hooks/useUser';
+import UserSettings from '@app/components/UserProfile/UserSettings';
+import UserGeneralSettings from '@app/components/UserProfile/UserSettings/UserGeneralSettings';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
 
 const UserSettingsMainPage: NextPage = () => {

@@ -1,8 +1,8 @@
-import Modal from '@/components/Common/Modal';
-import PermissionEdit from '@/components/PermissionEdit';
-import type { User } from '@/hooks/useUser';
-import { useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import Modal from '@app/components/Common/Modal';
+import PermissionEdit from '@app/components/PermissionEdit';
+import type { User } from '@app/hooks/useUser';
+import { useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { PencilIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useEffect, useState } from 'react';

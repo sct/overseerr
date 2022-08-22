@@ -1,20 +1,20 @@
-import Alert from '@/components/Common/Alert';
-import Badge from '@/components/Common/Badge';
-import Button from '@/components/Common/Button';
-import Header from '@/components/Common/Header';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import Modal from '@/components/Common/Modal';
-import PageTitle from '@/components/Common/PageTitle';
-import SensitiveInput from '@/components/Common/SensitiveInput';
-import Table from '@/components/Common/Table';
-import Transition from '@/components/Transition';
-import BulkEditModal from '@/components/UserList/BulkEditModal';
-import PlexImportModal from '@/components/UserList/PlexImportModal';
-import useSettings from '@/hooks/useSettings';
-import { useUpdateQueryParams } from '@/hooks/useUpdateQueryParams';
-import type { User } from '@/hooks/useUser';
-import { Permission, UserType, useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import Alert from '@app/components/Common/Alert';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import Header from '@app/components/Common/Header';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import PageTitle from '@app/components/Common/PageTitle';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import Table from '@app/components/Common/Table';
+import Transition from '@app/components/Transition';
+import BulkEditModal from '@app/components/UserList/BulkEditModal';
+import PlexImportModal from '@app/components/UserList/PlexImportModal';
+import useSettings from '@app/hooks/useSettings';
+import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
+import type { User } from '@app/hooks/useUser';
+import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { TrashIcon } from '@heroicons/react/outline';
 import {
   ChevronLeftIcon,

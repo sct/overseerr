@@ -1,7 +1,7 @@
-import SettingsLayout from '@/components/Settings/SettingsLayout';
-import SettingsUsers from '@/components/Settings/SettingsUsers';
-import useRouteGuard from '@/hooks/useRouteGuard';
-import { Permission } from '@/hooks/useUser';
+import SettingsLayout from '@app/components/Settings/SettingsLayout';
+import SettingsUsers from '@app/components/Settings/SettingsUsers';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
 
 const SettingsUsersPage: NextPage = () => {

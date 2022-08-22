@@ -1,11 +1,11 @@
-import Badge from '@/components/Common/Badge';
-import Button from '@/components/Common/Button';
-import CachedImage from '@/components/Common/CachedImage';
-import ConfirmButton from '@/components/Common/ConfirmButton';
-import RequestModal from '@/components/RequestModal';
-import StatusBadge from '@/components/StatusBadge';
-import { Permission, useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import CachedImage from '@app/components/Common/CachedImage';
+import ConfirmButton from '@app/components/Common/ConfirmButton';
+import RequestModal from '@app/components/RequestModal';
+import StatusBadge from '@app/components/StatusBadge';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import {
   CheckIcon,
   PencilIcon,

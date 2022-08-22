@@ -1,7 +1,7 @@
-import Button from '@/components/Common/Button';
-import Modal from '@/components/Common/Modal';
-import Transition from '@/components/Transition';
-import { Permission, useUser } from '@/hooks/useUser';
+import Button from '@app/components/Common/Button';
+import Modal from '@app/components/Common/Modal';
+import Transition from '@app/components/Transition';
+import { Permission, useUser } from '@app/hooks/useUser';
 import { Menu } from '@headlessui/react';
 import { ExclamationIcon } from '@heroicons/react/outline';
 import { DotsVerticalIcon } from '@heroicons/react/solid';

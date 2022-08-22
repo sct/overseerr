@@ -1,6 +1,6 @@
-import Transition from '@/components/Transition';
-import useClickOutside from '@/hooks/useClickOutside';
-import { withProperties } from '@/utils/typeHelpers';
+import Transition from '@app/components/Transition';
+import useClickOutside from '@app/hooks/useClickOutside';
+import { withProperties } from '@app/utils/typeHelpers';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import { useRef, useState } from 'react';

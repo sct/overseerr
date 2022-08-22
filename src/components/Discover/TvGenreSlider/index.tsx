@@ -1,6 +1,6 @@
-import { genreColorMap } from '@/components/Discover/constants';
-import GenreCard from '@/components/GenreCard';
-import Slider from '@/components/Slider';
+import { genreColorMap } from '@app/components/Discover/constants';
+import GenreCard from '@app/components/GenreCard';
+import Slider from '@app/components/Slider';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
 import Link from 'next/link';

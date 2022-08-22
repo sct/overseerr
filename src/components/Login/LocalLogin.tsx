@@ -1,6 +1,6 @@
-import Button from '@/components/Common/Button';
-import SensitiveInput from '@/components/Common/SensitiveInput';
-import useSettings from '@/hooks/useSettings';
+import Button from '@app/components/Common/Button';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import useSettings from '@app/hooks/useSettings';
 import { LoginIcon, SupportIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';

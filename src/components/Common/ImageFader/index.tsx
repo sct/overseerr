@@ -1,4 +1,4 @@
-import CachedImage from '@/components/Common/CachedImage';
+import CachedImage from '@app/components/Common/CachedImage';
 import type { ForwardRefRenderFunction, HTMLAttributes } from 'react';
 import React, { useEffect, useState } from 'react';
 

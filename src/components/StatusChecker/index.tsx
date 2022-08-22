@@ -1,8 +1,8 @@
-import Modal from '@/components/Common/Modal';
-import Transition from '@/components/Transition';
-import useSettings from '@/hooks/useSettings';
-import { Permission, useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import Modal from '@app/components/Common/Modal';
+import Transition from '@app/components/Transition';
+import useSettings from '@app/hooks/useSettings';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { RefreshIcon, SparklesIcon } from '@heroicons/react/outline';
 import type { StatusResponse } from '@server/interfaces/api/settingsInterfaces';
 import { useEffect, useState } from 'react';

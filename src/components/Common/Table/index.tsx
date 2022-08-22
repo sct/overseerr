@@ -1,4 +1,4 @@
-import { withProperties } from '@/utils/typeHelpers';
+import { withProperties } from '@app/utils/typeHelpers';
 
 type TBodyProps = {
   children: React.ReactNode;

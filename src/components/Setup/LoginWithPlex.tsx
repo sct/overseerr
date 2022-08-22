@@ -1,5 +1,5 @@
-import PlexLoginButton from '@/components/PlexLoginButton';
-import { useUser } from '@/hooks/useUser';
+import PlexLoginButton from '@app/components/PlexLoginButton';
+import { useUser } from '@app/hooks/useUser';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

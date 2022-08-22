@@ -1,9 +1,9 @@
-import Button from '@/components/Common/Button';
-import Modal from '@/components/Common/Modal';
-import { issueOptions } from '@/components/IssueModal/constants';
-import useSettings from '@/hooks/useSettings';
-import { Permission, useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import Button from '@app/components/Common/Button';
+import Modal from '@app/components/Common/Modal';
+import { issueOptions } from '@app/components/IssueModal/constants';
+import useSettings from '@app/hooks/useSettings';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { RadioGroup } from '@headlessui/react';
 import { ExclamationIcon } from '@heroicons/react/outline';
 import { ArrowCircleRightIcon } from '@heroicons/react/solid';

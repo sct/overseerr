@@ -1,7 +1,7 @@
-import Modal from '@/components/Common/Modal';
-import SensitiveInput from '@/components/Common/SensitiveInput';
-import Transition from '@/components/Transition';
-import globalMessages from '@/i18n/globalMessages';
+import Modal from '@app/components/Common/Modal';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import Transition from '@app/components/Transition';
+import globalMessages from '@app/i18n/globalMessages';
 import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
 import type { SonarrSettings } from '@server/lib/settings';
 import axios from 'axios';

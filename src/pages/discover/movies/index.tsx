@@ -1,4 +1,4 @@
-import DiscoverMovies from '@/components/Discover/DiscoverMovies';
+import DiscoverMovies from '@app/components/Discover/DiscoverMovies';
 import type { NextPage } from 'next';
 
 const DiscoverMoviesPage: NextPage = () => {

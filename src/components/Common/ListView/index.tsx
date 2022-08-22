@@ -1,8 +1,8 @@
-import PersonCard from '@/components/PersonCard';
-import TitleCard from '@/components/TitleCard';
-import TmdbTitleCard from '@/components/TitleCard/TmdbTitleCard';
-import useVerticalScroll from '@/hooks/useVerticalScroll';
-import globalMessages from '@/i18n/globalMessages';
+import PersonCard from '@app/components/PersonCard';
+import TitleCard from '@app/components/TitleCard';
+import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
+import useVerticalScroll from '@app/hooks/useVerticalScroll';
+import globalMessages from '@app/i18n/globalMessages';
 import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
 import type {
   MovieResult,

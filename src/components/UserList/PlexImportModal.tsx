@@ -1,7 +1,7 @@
-import Alert from '@/components/Common/Alert';
-import Modal from '@/components/Common/Modal';
-import useSettings from '@/hooks/useSettings';
-import globalMessages from '@/i18n/globalMessages';
+import Alert from '@app/components/Common/Alert';
+import Modal from '@app/components/Common/Modal';
+import useSettings from '@app/hooks/useSettings';
+import globalMessages from '@app/i18n/globalMessages';
 import { InboxInIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useState } from 'react';

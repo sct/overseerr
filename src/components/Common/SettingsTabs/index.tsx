@@ -1,4 +1,4 @@
-import { useUser } from '@/hooks/useUser';
+import { useUser } from '@app/hooks/useUser';
 import type { Permission } from '@server/lib/permissions';
 import { hasPermission } from '@server/lib/permissions';
 import Link from 'next/link';

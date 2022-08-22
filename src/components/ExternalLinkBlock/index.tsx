@@ -1,10 +1,10 @@
-import ImdbLogo from '@/assets/services/imdb.svg';
-import PlexLogo from '@/assets/services/plex.svg';
-import RTLogo from '@/assets/services/rt.svg';
-import TmdbLogo from '@/assets/services/tmdb.svg';
-import TraktLogo from '@/assets/services/trakt.svg';
-import TvdbLogo from '@/assets/services/tvdb.svg';
-import useLocale from '@/hooks/useLocale';
+import ImdbLogo from '@app/assets/services/imdb.svg';
+import PlexLogo from '@app/assets/services/plex.svg';
+import RTLogo from '@app/assets/services/rt.svg';
+import TmdbLogo from '@app/assets/services/tmdb.svg';
+import TraktLogo from '@app/assets/services/trakt.svg';
+import TvdbLogo from '@app/assets/services/tvdb.svg';
+import useLocale from '@app/hooks/useLocale';
 import { MediaType } from '@server/constants/media';
 
 interface ExternalLinkBlockProps {

@@ -1,6 +1,6 @@
-import Transition from '@/components/Transition';
-import useClickOutside from '@/hooks/useClickOutside';
-import { useUser } from '@/hooks/useUser';
+import Transition from '@app/components/Transition';
+import useClickOutside from '@app/hooks/useClickOutside';
+import { useUser } from '@app/hooks/useUser';
 import { LogoutIcon } from '@heroicons/react/outline';
 import { CogIcon, UserIcon } from '@heroicons/react/solid';
 import axios from 'axios';

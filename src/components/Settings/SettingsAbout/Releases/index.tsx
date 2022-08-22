@@ -1,9 +1,9 @@
-import Badge from '@/components/Common/Badge';
-import Button from '@/components/Common/Button';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import Modal from '@/components/Common/Modal';
-import Transition from '@/components/Transition';
-import globalMessages from '@/i18n/globalMessages';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import Transition from '@app/components/Transition';
+import globalMessages from '@app/i18n/globalMessages';
 import { DocumentTextIcon } from '@heroicons/react/outline';
 import { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';

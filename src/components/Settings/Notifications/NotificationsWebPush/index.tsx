@@ -1,7 +1,7 @@
-import Alert from '@/components/Common/Alert';
-import Button from '@/components/Common/Button';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import globalMessages from '@/i18n/globalMessages';
+import Alert from '@app/components/Common/Alert';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import globalMessages from '@app/i18n/globalMessages';
 import { BeakerIcon, SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';

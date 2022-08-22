@@ -1,4 +1,4 @@
-import Alert from '@/components/Common/Alert';
+import Alert from '@app/components/Common/Alert';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 

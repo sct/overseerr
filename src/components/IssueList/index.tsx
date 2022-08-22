@@ -1,10 +1,10 @@
-import Button from '@/components/Common/Button';
-import Header from '@/components/Common/Header';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import PageTitle from '@/components/Common/PageTitle';
-import IssueItem from '@/components/IssueList/IssueItem';
-import { useUpdateQueryParams } from '@/hooks/useUpdateQueryParams';
-import globalMessages from '@/i18n/globalMessages';
+import Button from '@app/components/Common/Button';
+import Header from '@app/components/Common/Header';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import IssueItem from '@app/components/IssueList/IssueItem';
+import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
+import globalMessages from '@app/i18n/globalMessages';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,

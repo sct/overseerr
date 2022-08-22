@@ -1,13 +1,13 @@
-import Badge from '@/components/Common/Badge';
-import Button from '@/components/Common/Button';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import Modal from '@/components/Common/Modal';
-import PageTitle from '@/components/Common/PageTitle';
-import Table from '@/components/Common/Table';
-import Transition from '@/components/Transition';
-import { useUpdateQueryParams } from '@/hooks/useUpdateQueryParams';
-import globalMessages from '@/i18n/globalMessages';
-import Error from '@/pages/_error';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import PageTitle from '@app/components/Common/PageTitle';
+import Table from '@app/components/Common/Table';
+import Transition from '@app/components/Transition';
+import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
+import globalMessages from '@app/i18n/globalMessages';
+import Error from '@app/pages/_error';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,

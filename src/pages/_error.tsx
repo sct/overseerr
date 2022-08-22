@@ -1,5 +1,5 @@
-import PageTitle from '@/components/Common/PageTitle';
-import type { Undefinable } from '@/utils/typeHelpers';
+import PageTitle from '@app/components/Common/PageTitle';
+import type { Undefinable } from '@app/utils/typeHelpers';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import type { NextPage } from 'next';
 import Link from 'next/link';

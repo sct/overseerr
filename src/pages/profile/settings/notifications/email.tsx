@@ -1,6 +1,6 @@
-import UserSettings from '@/components/UserProfile/UserSettings';
-import UserNotificationSettings from '@/components/UserProfile/UserSettings/UserNotificationSettings';
-import UserNotificationsEmail from '@/components/UserProfile/UserSettings/UserNotificationSettings/UserNotificationsEmail';
+import UserSettings from '@app/components/UserProfile/UserSettings';
+import UserNotificationSettings from '@app/components/UserProfile/UserSettings/UserNotificationSettings';
+import UserNotificationsEmail from '@app/components/UserProfile/UserSettings/UserNotificationSettings/UserNotificationsEmail';
 import type { NextPage } from 'next';
 
 const NotificationsPage: NextPage = () => {

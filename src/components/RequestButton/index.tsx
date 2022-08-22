@@ -1,8 +1,8 @@
-import ButtonWithDropdown from '@/components/Common/ButtonWithDropdown';
-import RequestModal from '@/components/RequestModal';
-import useSettings from '@/hooks/useSettings';
-import { Permission, useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import ButtonWithDropdown from '@app/components/Common/ButtonWithDropdown';
+import RequestModal from '@app/components/RequestModal';
+import useSettings from '@app/hooks/useSettings';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { DownloadIcon } from '@heroicons/react/outline';
 import {
   CheckIcon,

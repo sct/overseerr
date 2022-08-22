@@ -1,7 +1,7 @@
-import PageTitle from '@/components/Common/PageTitle';
-import type { SettingsRoute } from '@/components/Common/SettingsTabs';
-import SettingsTabs from '@/components/Common/SettingsTabs';
-import globalMessages from '@/i18n/globalMessages';
+import PageTitle from '@app/components/Common/PageTitle';
+import type { SettingsRoute } from '@app/components/Common/SettingsTabs';
+import SettingsTabs from '@app/components/Common/SettingsTabs';
+import globalMessages from '@app/i18n/globalMessages';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({

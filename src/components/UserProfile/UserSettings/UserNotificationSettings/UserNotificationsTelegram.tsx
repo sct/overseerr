@@ -1,8 +1,8 @@
-import Button from '@/components/Common/Button';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import NotificationTypeSelector from '@/components/NotificationTypeSelector';
-import { useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import NotificationTypeSelector from '@app/components/NotificationTypeSelector';
+import { useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
 import type { UserSettingsNotificationsResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import axios from 'axios';

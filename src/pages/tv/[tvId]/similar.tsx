@@ -1,4 +1,4 @@
-import TvSimilar from '@/components/TvDetails/TvSimilar';
+import TvSimilar from '@app/components/TvDetails/TvSimilar';
 import type { NextPage } from 'next';
 
 const TvSimilarPage: NextPage = () => {

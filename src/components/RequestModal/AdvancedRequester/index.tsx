@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { SmallLoadingSpinner } from '@/components/Common/LoadingSpinner';
-import type { User } from '@/hooks/useUser';
-import { Permission, useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
-import { formatBytes } from '@/utils/numberHelpers';
+import { SmallLoadingSpinner } from '@app/components/Common/LoadingSpinner';
+import type { User } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import { formatBytes } from '@app/utils/numberHelpers';
 import { Listbox, Transition } from '@headlessui/react';
 import { AdjustmentsIcon } from '@heroicons/react/outline';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';

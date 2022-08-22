@@ -1,4 +1,4 @@
-import useSearchInput from '@/hooks/useSearchInput';
+import useSearchInput from '@app/hooks/useSearchInput';
 import { XCircleIcon } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
 import { defineMessages, useIntl } from 'react-intl';

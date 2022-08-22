@@ -1,7 +1,7 @@
-import VersionStatus from '@/components/Layout/VersionStatus';
-import Transition from '@/components/Transition';
-import useClickOutside from '@/hooks/useClickOutside';
-import { Permission, useUser } from '@/hooks/useUser';
+import VersionStatus from '@app/components/Layout/VersionStatus';
+import Transition from '@app/components/Transition';
+import useClickOutside from '@app/hooks/useClickOutside';
+import { Permission, useUser } from '@app/hooks/useUser';
 import {
   ClockIcon,
   CogIcon,

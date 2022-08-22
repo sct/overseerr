@@ -1,8 +1,8 @@
-import ShowMoreCard from '@/components/MediaSlider/ShowMoreCard';
-import PersonCard from '@/components/PersonCard';
-import Slider from '@/components/Slider';
-import TitleCard from '@/components/TitleCard';
-import useSettings from '@/hooks/useSettings';
+import ShowMoreCard from '@app/components/MediaSlider/ShowMoreCard';
+import PersonCard from '@app/components/PersonCard';
+import Slider from '@app/components/Slider';
+import TitleCard from '@app/components/TitleCard';
+import useSettings from '@app/hooks/useSettings';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import { MediaStatus } from '@server/constants/media';
 import type {

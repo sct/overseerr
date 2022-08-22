@@ -1,4 +1,4 @@
-import TvCrew from '@/components/TvDetails/TvCrew';
+import TvCrew from '@app/components/TvDetails/TvCrew';
 import type { NextPage } from 'next';
 
 const TvCrewPage: NextPage = () => {

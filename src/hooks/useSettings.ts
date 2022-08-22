@@ -1,5 +1,5 @@
-import type { SettingsContextProps } from '@/context/SettingsContext';
-import { SettingsContext } from '@/context/SettingsContext';
+import type { SettingsContextProps } from '@app/context/SettingsContext';
+import { SettingsContext } from '@app/context/SettingsContext';
 import { useContext } from 'react';
 
 const useSettings = (): SettingsContextProps => {

@@ -1,4 +1,4 @@
-import TvDetails from '@/components/TvDetails';
+import TvDetails from '@app/components/TvDetails';
 import type { TvDetails as TvDetailsType } from '@server/models/Tv';
 import axios from 'axios';
 import type { NextPage } from 'next';

@@ -1,4 +1,4 @@
-import Transition from '@/components/Transition';
+import Transition from '@app/components/Transition';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,

@@ -1,7 +1,7 @@
-import Button from '@/components/Common/Button';
-import ImageFader from '@/components/Common/ImageFader';
-import PageTitle from '@/components/Common/PageTitle';
-import LanguagePicker from '@/components/Layout/LanguagePicker';
+import Button from '@app/components/Common/Button';
+import ImageFader from '@app/components/Common/ImageFader';
+import PageTitle from '@app/components/Common/PageTitle';
+import LanguagePicker from '@app/components/Layout/LanguagePicker';
 import { ArrowLeftIcon, MailIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';

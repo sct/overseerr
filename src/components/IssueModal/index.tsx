@@ -1,5 +1,5 @@
-import CreateIssueModal from '@/components/IssueModal/CreateIssueModal';
-import Transition from '@/components/Transition';
+import CreateIssueModal from '@app/components/IssueModal/CreateIssueModal';
+import Transition from '@app/components/Transition';
 
 interface IssueModalProps {
   show?: boolean;

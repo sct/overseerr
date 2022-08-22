@@ -1,9 +1,9 @@
-import Badge from '@/components/Common/Badge';
-import Button from '@/components/Common/Button';
-import CachedImage from '@/components/Common/CachedImage';
-import { issueOptions } from '@/components/IssueModal/constants';
-import { Permission, useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import CachedImage from '@app/components/Common/CachedImage';
+import { issueOptions } from '@app/components/IssueModal/constants';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { EyeIcon } from '@heroicons/react/solid';
 import { IssueStatus } from '@server/constants/issue';
 import { MediaType } from '@server/constants/media';

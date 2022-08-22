@@ -1,9 +1,9 @@
-import Button from '@/components/Common/Button';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import PageTitle from '@/components/Common/PageTitle';
-import PermissionEdit from '@/components/PermissionEdit';
-import QuotaSelector from '@/components/QuotaSelector';
-import globalMessages from '@/i18n/globalMessages';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import PermissionEdit from '@app/components/PermissionEdit';
+import QuotaSelector from '@app/components/QuotaSelector';
+import globalMessages from '@app/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
 import type { MainSettings } from '@server/lib/settings';
 import axios from 'axios';

@@ -1,8 +1,8 @@
-import NotificationsEmail from '@/components/Settings/Notifications/NotificationsEmail';
-import SettingsLayout from '@/components/Settings/SettingsLayout';
-import SettingsNotifications from '@/components/Settings/SettingsNotifications';
-import useRouteGuard from '@/hooks/useRouteGuard';
-import { Permission } from '@/hooks/useUser';
+import NotificationsEmail from '@app/components/Settings/Notifications/NotificationsEmail';
+import SettingsLayout from '@app/components/Settings/SettingsLayout';
+import SettingsNotifications from '@app/components/Settings/SettingsNotifications';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
 
 const NotificationsPage: NextPage = () => {

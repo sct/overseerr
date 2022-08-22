@@ -1,4 +1,4 @@
-import globalMessages from '@/i18n/globalMessages';
+import globalMessages from '@app/i18n/globalMessages';
 import type { Language } from '@server/lib/settings';
 import { sortBy } from 'lodash';
 import { useMemo } from 'react';

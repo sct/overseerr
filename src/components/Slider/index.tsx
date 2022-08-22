@@ -1,5 +1,5 @@
-import TitleCard from '@/components/TitleCard';
-import globalMessages from '@/i18n/globalMessages';
+import TitleCard from '@app/components/TitleCard';
+import globalMessages from '@app/i18n/globalMessages';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 import { debounce } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';

@@ -1,4 +1,4 @@
-import { InteractionContext } from '@/context/InteractionContext';
+import { InteractionContext } from '@app/context/InteractionContext';
 import { useContext } from 'react';
 
 export const useIsTouch = (): boolean => {

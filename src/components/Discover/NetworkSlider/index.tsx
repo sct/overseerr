@@ -1,5 +1,5 @@
-import CompanyCard from '@/components/CompanyCard';
-import Slider from '@/components/Slider';
+import CompanyCard from '@app/components/CompanyCard';
+import Slider from '@app/components/Slider';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({

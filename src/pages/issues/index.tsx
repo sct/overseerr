@@ -1,6 +1,6 @@
-import IssueList from '@/components/IssueList';
-import useRouteGuard from '@/hooks/useRouteGuard';
-import { Permission } from '@/hooks/useUser';
+import IssueList from '@app/components/IssueList';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
 
 const IssuePage: NextPage = () => {

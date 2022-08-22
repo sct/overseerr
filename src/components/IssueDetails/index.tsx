@@ -1,16 +1,16 @@
-import Badge from '@/components/Common/Badge';
-import Button from '@/components/Common/Button';
-import CachedImage from '@/components/Common/CachedImage';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import Modal from '@/components/Common/Modal';
-import PageTitle from '@/components/Common/PageTitle';
-import IssueComment from '@/components/IssueDetails/IssueComment';
-import IssueDescription from '@/components/IssueDetails/IssueDescription';
-import { issueOptions } from '@/components/IssueModal/constants';
-import Transition from '@/components/Transition';
-import { Permission, useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
-import Error from '@/pages/_error';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import CachedImage from '@app/components/Common/CachedImage';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import PageTitle from '@app/components/Common/PageTitle';
+import IssueComment from '@app/components/IssueDetails/IssueComment';
+import IssueDescription from '@app/components/IssueDetails/IssueDescription';
+import { issueOptions } from '@app/components/IssueModal/constants';
+import Transition from '@app/components/Transition';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import Error from '@app/pages/_error';
 import {
   ChatIcon,
   CheckCircleIcon,

@@ -1,13 +1,13 @@
-import ImageFader from '@/components/Common/ImageFader';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import PageTitle from '@/components/Common/PageTitle';
-import ProgressCircle from '@/components/Common/ProgressCircle';
-import RequestCard from '@/components/RequestCard';
-import Slider from '@/components/Slider';
-import TmdbTitleCard from '@/components/TitleCard/TmdbTitleCard';
-import ProfileHeader from '@/components/UserProfile/ProfileHeader';
-import { Permission, UserType, useUser } from '@/hooks/useUser';
-import Error from '@/pages/_error';
+import ImageFader from '@app/components/Common/ImageFader';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import ProgressCircle from '@app/components/Common/ProgressCircle';
+import RequestCard from '@app/components/RequestCard';
+import Slider from '@app/components/Slider';
+import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
+import ProfileHeader from '@app/components/UserProfile/ProfileHeader';
+import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import Error from '@app/pages/_error';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import type {
   QuotaResponse,

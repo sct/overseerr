@@ -1,9 +1,9 @@
-import Badge from '@/components/Common/Badge';
-import Button from '@/components/Common/Button';
-import RequestModal from '@/components/RequestModal';
-import useRequestOverride from '@/hooks/useRequestOverride';
-import { useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import RequestModal from '@app/components/RequestModal';
+import useRequestOverride from '@app/hooks/useRequestOverride';
+import { useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import {
   CalendarIcon,
   CheckIcon,

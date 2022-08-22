@@ -1,4 +1,4 @@
-import Search from '@/components/Search';
+import Search from '@app/components/Search';
 
 const SearchPage = () => {
   return <Search />;

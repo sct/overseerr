@@ -1,13 +1,13 @@
-import Badge from '@/components/Common/Badge';
-import Button from '@/components/Common/Button';
-import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import SensitiveInput from '@/components/Common/SensitiveInput';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
 import NotificationTypeSelector, {
   ALL_NOTIFICATIONS,
-} from '@/components/NotificationTypeSelector';
-import { OpenPgpLink } from '@/components/Settings/Notifications/NotificationsEmail';
-import { useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+} from '@app/components/NotificationTypeSelector';
+import { OpenPgpLink } from '@app/components/Settings/Notifications/NotificationsEmail';
+import { useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
 import type { UserSettingsNotificationsResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import axios from 'axios';

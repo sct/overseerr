@@ -1,4 +1,4 @@
-import Badge from '@/components/Common/Badge';
+import Badge from '@app/components/Common/Badge';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 

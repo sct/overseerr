@@ -1,8 +1,8 @@
-import Spinner from '@/assets/spinner.svg';
-import Badge from '@/components/Common/Badge';
-import useSettings from '@/hooks/useSettings';
-import { Permission, useUser } from '@/hooks/useUser';
-import globalMessages from '@/i18n/globalMessages';
+import Spinner from '@app/assets/spinner.svg';
+import Badge from '@app/components/Common/Badge';
+import useSettings from '@app/hooks/useSettings';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { MediaStatus } from '@server/constants/media';
 import { defineMessages, useIntl } from 'react-intl';
 

@@ -1,7 +1,7 @@
-import Alert from '@/components/Common/Alert';
-import { SmallLoadingSpinner } from '@/components/Common/LoadingSpinner';
-import Modal from '@/components/Common/Modal';
-import globalMessages from '@/i18n/globalMessages';
+import Alert from '@app/components/Common/Alert';
+import { SmallLoadingSpinner } from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import globalMessages from '@app/i18n/globalMessages';
 import { DownloadIcon } from '@heroicons/react/outline';
 import type { SonarrSeries } from '@server/api/servarr/sonarr';
 import { defineMessages, useIntl } from 'react-intl';

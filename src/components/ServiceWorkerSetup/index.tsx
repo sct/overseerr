@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import useSettings from '@/hooks/useSettings';
-import { useUser } from '@/hooks/useUser';
+import useSettings from '@app/hooks/useSettings';
+import { useUser } from '@app/hooks/useUser';
 import axios from 'axios';
 import { useEffect } from 'react';
 

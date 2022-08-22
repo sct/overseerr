@@ -1,4 +1,4 @@
-import DiscoverMovieLanguage from '@/components/Discover/DiscoverMovieLanguage';
+import DiscoverMovieLanguage from '@app/components/Discover/DiscoverMovieLanguage';
 import type { NextPage } from 'next';
 
 const DiscoverMovieLanguagePage: NextPage = () => {

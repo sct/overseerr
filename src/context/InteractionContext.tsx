@@ -1,4 +1,4 @@
-import useInteraction from '@/hooks/useInteraction';
+import useInteraction from '@app/hooks/useInteraction';
 import React from 'react';
 
 interface InteractionContextProps {

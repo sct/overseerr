@@ -1,4 +1,4 @@
-import useSettings from '@/hooks/useSettings';
+import useSettings from '@app/hooks/useSettings';
 import Head from 'next/head';
 
 interface PageTitleProps {

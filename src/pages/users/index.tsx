@@ -1,6 +1,6 @@
-import UserList from '@/components/UserList';
-import useRouteGuard from '@/hooks/useRouteGuard';
-import { Permission } from '@/hooks/useUser';
+import UserList from '@app/components/UserList';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
 
 const UsersPage: NextPage = () => {

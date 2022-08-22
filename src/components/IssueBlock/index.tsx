@@ -1,6 +1,6 @@
-import Button from '@/components/Common/Button';
-import { issueOptions } from '@/components/IssueModal/constants';
-import { useUser } from '@/hooks/useUser';
+import Button from '@app/components/Common/Button';
+import { issueOptions } from '@app/components/IssueModal/constants';
+import { useUser } from '@app/hooks/useUser';
 import {
   CalendarIcon,
   ExclamationIcon,

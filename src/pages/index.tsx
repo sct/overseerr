@@ -1,4 +1,4 @@
-import Discover from '@/components/Discover';
+import Discover from '@app/components/Discover';
 import type { NextPage } from 'next';
 
 const Index: NextPage = () => {

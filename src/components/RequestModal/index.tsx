@@ -1,7 +1,7 @@
-import CollectionRequestModal from '@/components/RequestModal/CollectionRequestModal';
-import MovieRequestModal from '@/components/RequestModal/MovieRequestModal';
-import TvRequestModal from '@/components/RequestModal/TvRequestModal';
-import Transition from '@/components/Transition';
+import CollectionRequestModal from '@app/components/RequestModal/CollectionRequestModal';
+import MovieRequestModal from '@app/components/RequestModal/MovieRequestModal';
+import TvRequestModal from '@app/components/RequestModal/TvRequestModal';
+import Transition from '@app/components/Transition';
 import type { MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 

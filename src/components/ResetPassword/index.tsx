@@ -1,8 +1,8 @@
-import Button from '@/components/Common/Button';
-import ImageFader from '@/components/Common/ImageFader';
-import SensitiveInput from '@/components/Common/SensitiveInput';
-import LanguagePicker from '@/components/Layout/LanguagePicker';
-import globalMessages from '@/i18n/globalMessages';
+import Button from '@app/components/Common/Button';
+import ImageFader from '@app/components/Common/ImageFader';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import LanguagePicker from '@app/components/Layout/LanguagePicker';
+import globalMessages from '@app/i18n/globalMessages';
 import { SupportIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Form, Formik } from 'formik';

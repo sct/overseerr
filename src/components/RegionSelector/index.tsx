@@ -1,4 +1,4 @@
-import useSettings from '@/hooks/useSettings';
+import useSettings from '@app/hooks/useSettings';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import type { Region } from '@server/lib/settings';
