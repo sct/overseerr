@@ -72,6 +72,9 @@ export const messages = defineMessages({
   viewrecent: 'View Recently Added',
   viewrecentDescription:
     'Grant permission to view the list of recently added media.',
+  viewwatchlists: 'View Plex Watchlists',
+  viewwatchlistsDescription:
+    "Grant permission to view other users' Plex Watchlists.",
 });
 
 interface PermissionEditProps {
@@ -125,6 +128,12 @@ export const PermissionEdit = ({
           name: intl.formatMessage(messages.viewrecent),
           description: intl.formatMessage(messages.viewrecentDescription),
           permission: Permission.RECENT_VIEW,
+        },
+        {
+          id: 'viewwatchlists',
+          name: intl.formatMessage(messages.viewwatchlists),
+          description: intl.formatMessage(messages.viewwatchlistsDescription),
+          permission: Permission.WATCHLIST_VIEW,
         },
       ],
     },

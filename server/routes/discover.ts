@@ -6,7 +6,7 @@ import Media from '@server/entity/Media';
 import { User } from '@server/entity/User';
 import type {
   GenreSliderItem,
-  WatchlistItem,
+  WatchlistResponse,
 } from '@server/interfaces/api/discoverInterfaces';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
@@ -713,50 +713,45 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   }
 );
 
-discoverRoutes.get<
-  { page?: number },
-  {
-    page: number;
-    totalPages: number;
-    totalResults: number;
-    results: WatchlistItem[];
-  }
->('/watchlist', async (req, res) => {
-  const userRepository = getRepository(User);
-  const itemsPerPage = 20;
-  const page = req.params.page ?? 1;
-  const offset = (page - 1) * itemsPerPage;
+discoverRoutes.get<{ page?: number }, WatchlistResponse>(
+  '/watchlist',
+  async (req, res) => {
+    const userRepository = getRepository(User);
+    const itemsPerPage = 20;
+    const page = req.params.page ?? 1;
+    const offset = (page - 1) * itemsPerPage;
 
-  const activeUser = await userRepository.findOne({
-    where: { id: req.user?.id },
-    select: ['id', 'plexToken'],
-  });
+    const activeUser = await userRepository.findOne({
+      where: { id: req.user?.id },
+      select: ['id', 'plexToken'],
+    });
 
-  if (!activeUser?.plexToken) {
-    // We will just return an empty array if the user has no plex token
+    if (!activeUser?.plexToken) {
+      // We will just return an empty array if the user has no Plex token
+      return res.json({
+        page: 1,
+        totalPages: 1,
+        totalResults: 0,
+        results: [],
+      });
+    }
+
+    const plexTV = new PlexTvAPI(activeUser.plexToken);
+
+    const watchlist = await plexTV.getWatchlist({ offset });
+
     return res.json({
-      page: 1,
-      totalPages: 1,
-      totalResults: 0,
-      results: [],
+      page,
+      totalPages: Math.ceil(watchlist.size / itemsPerPage),
+      totalResults: watchlist.size,
+      results: watchlist.items.map((item) => ({
+        ratingKey: item.ratingKey,
+        title: item.title,
+        mediaType: item.type === 'show' ? 'tv' : 'movie',
+        tmdbId: item.tmdbId,
+      })),
     });
   }
-
-  const plexTV = new PlexTvAPI(activeUser?.plexToken);
-
-  const watchlist = await plexTV.getWatchlist({ offset });
-
-  return res.json({
-    page,
-    totalPages: Math.ceil(watchlist.size / itemsPerPage),
-    totalResults: watchlist.size,
-    results: watchlist.items.map((item) => ({
-      ratingKey: item.ratingKey,
-      title: item.title,
-      mediaType: item.type === 'show' ? 'tv' : 'movie',
-      tmdbId: item.tmdbId,
-    })),
-  });
-});
+);
 
 export default discoverRoutes;

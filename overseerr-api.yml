@@ -3512,6 +3512,53 @@ paths:
                       restricted:
                         type: boolean
                         example: false
+  /user/{userId}/watchlist:
+    get:
+      summary: Get user by ID
+      description: |
+        Retrieves a user's Plex Watchlist in a JSON object.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: Watchlist data returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                  totalPages:
+                    type: number
+                  totalResults:
+                    type: number
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        tmdbId:
+                          type: number
+                          example: 1
+                        ratingKey:
+                          type: string
+                        type:
+                          type: string
+                        title:
+                          type: string
   /user/{userId}/settings/main:
     get:
       summary: Get general settings for a user

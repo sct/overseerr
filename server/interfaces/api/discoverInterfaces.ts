@@ -10,3 +10,10 @@ export interface WatchlistItem {
   mediaType: 'movie' | 'tv';
   title: string;
 }
+
+export interface WatchlistResponse {
+  page: number;
+  totalPages: number;
+  totalResults: number;
+  results: WatchlistItem[];
+}
