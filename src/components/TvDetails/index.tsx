@@ -80,6 +80,7 @@ const messages = defineMessages({
   seasonstitle: 'Seasons',
   episodeCount: '{episodeCount, plural, one {# Episode} other {# Episodes}}',
   seasonnumber: 'Season {seasonNumber}',
+  status4k: '4K {status}',
 });
 
 interface TvDetailsProps {
@@ -492,16 +493,39 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               .reverse()
               .filter((season) => season.seasonNumber !== 0)
               .map((season) => {
+                const show4k =
+                  settings.currentSettings.series4kEnabled &&
+                  hasPermission(
+                    [
+                      Permission.MANAGE_REQUESTS,
+                      Permission.REQUEST_4K,
+                      Permission.REQUEST_4K_TV,
+                    ],
+                    {
+                      type: 'or',
+                    }
+                  );
                 const mSeason = (data.mediaInfo?.seasons ?? []).find(
                   (s) =>
                     season.seasonNumber === s.seasonNumber &&
                     s.status !== MediaStatus.UNKNOWN
                 );
+                const mSeason4k = (data.mediaInfo?.seasons ?? []).find(
+                  (s) =>
+                    season.seasonNumber === s.seasonNumber &&
+                    s.status4k !== MediaStatus.UNKNOWN
+                );
                 const request = (data.mediaInfo?.requests ?? []).find(
                   (r) =>
                     !!r.seasons.find(
                       (s) => s.seasonNumber === season.seasonNumber
-                    )
+                    ) && !r.is4k
+                );
+                const request4k = (data.mediaInfo?.requests ?? []).find(
+                  (r) =>
+                    !!r.seasons.find(
+                      (s) => s.seasonNumber === season.seasonNumber
+                    ) && r.is4k
                 );
 
                 return (
@@ -528,30 +552,49 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                               {intl.formatMessage(globalMessages.requested)}
                             </Badge>
                           )}
+                          {((!mSeason &&
+                            request?.status === MediaRequestStatus.PENDING) ||
+                            mSeason?.status === MediaStatus.PENDING) && (
+                            <Badge badgeType="warning">
+                              {intl.formatMessage(globalMessages.pending)}
+                            </Badge>
+                          )}
                           {mSeason && (
                             <StatusBadge
                               mediaType="tv"
                               status={mSeason?.status}
                             />
                           )}
-                          {mSeason &&
-                            settings.currentSettings.series4kEnabled &&
-                            hasPermission(
-                              [
-                                Permission.MANAGE_REQUESTS,
-                                Permission.REQUEST_4K,
-                                Permission.REQUEST_4K_TV,
-                              ],
-                              {
-                                type: 'or',
-                              }
-                            ) && (
-                              <StatusBadge
-                                status={data.mediaInfo?.status4k}
-                                is4k
-                                mediaType="tv"
-                              />
-                            )}
+                          {((!mSeason4k &&
+                            request4k?.status ===
+                              MediaRequestStatus.APPROVED) ||
+                            mSeason4k?.status4k === MediaStatus.PROCESSING) && (
+                            <Badge badgeType="primary">
+                              {intl.formatMessage(messages.status4k, {
+                                status: intl.formatMessage(
+                                  globalMessages.requested
+                                ),
+                              })}
+                            </Badge>
+                          )}
+                          {((!mSeason4k &&
+                            request4k?.status === MediaRequestStatus.PENDING) ||
+                            mSeason?.status4k === MediaStatus.PENDING) && (
+                            <Badge badgeType="warning">
+                              {intl.formatMessage(messages.status4k, {
+                                status: intl.formatMessage(
+                                  globalMessages.pending
+                                ),
+                              })}
+                            </Badge>
+                          )}
+                          {mSeason4k && show4k && (
+                            <StatusBadge
+                              status={data.mediaInfo?.status4k}
+                              is4k
+                              mediaType="tv"
+                            />
+                          )}
                           <ChevronUpIcon
                             className={`${
                               open ? 'rotate-180 transform' : ''
