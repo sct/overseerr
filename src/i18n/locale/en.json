@@ -862,7 +862,7 @@
   "components.TvDetails.episodeRuntime": "Episode Runtime",
   "components.TvDetails.episodeRuntimeMinutes": "{runtime} minutes",
   "components.TvDetails.firstAirDate": "First Air Date",
-  "components.TvDetails.managemovie": "Manage Movie",
+  "components.TvDetails.manageseries": "Manage Series",
   "components.TvDetails.network": "{networkCount, plural, one {Network} other {Networks}}",
   "components.TvDetails.nextAirDate": "Next Air Date",
   "components.TvDetails.originallanguage": "Original Language",
