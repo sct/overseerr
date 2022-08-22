@@ -133,6 +133,7 @@ const SettingsMain = () => {
             originalLanguage: data?.originalLanguage,
             partialRequestsEnabled: data?.partialRequestsEnabled,
             trustProxy: data?.trustProxy,
+            cacheImages: data?.cacheImages,
           }}
           enableReinitialize
           validationSchema={MainSettingsSchema}
@@ -148,6 +149,7 @@ const SettingsMain = () => {
                 originalLanguage: values.originalLanguage,
                 partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
+                cacheImages: values.cacheImages,
               });
               mutate('/api/v1/settings/public');
               mutate('/api/v1/status');
@@ -304,6 +306,27 @@ const SettingsMain = () => {
                         }}
                       />
                     </Tooltip>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="csrfProtection" className="checkbox-label">
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.cacheImages)}
+                    </span>
+                    <SettingsBadge badgeType="experimental" />
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.cacheImagesTip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="cacheImages"
+                      name="cacheImages"
+                      onChange={() => {
+                        setFieldValue('cacheImages', !values.cacheImages);
+                      }}
+                    />
                   </div>
                 </div>
                 <div className="form-row">
