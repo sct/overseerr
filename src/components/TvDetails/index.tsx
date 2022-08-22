@@ -70,7 +70,7 @@ const messages = defineMessages({
   productioncountries:
     'Production {countryCount, plural, one {Country} other {Countries}}',
   reportissue: 'Report an Issue',
-  managemovie: 'Manage Movie',
+  manageseries: 'Manage Series',
 });
 
 interface TvDetailsProps {
@@ -403,7 +403,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               </Tooltip>
             )}
           {hasPermission(Permission.MANAGE_REQUESTS) && data.mediaInfo && (
-            <Tooltip content={intl.formatMessage(messages.managemovie)}>
+            <Tooltip content={intl.formatMessage(messages.manageseries)}>
               <Button
                 buttonType="default"
                 onClick={() => setShowManager(true)}
