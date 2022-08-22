@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon -e ts --watch server --watch overseerr-api.yml -e .json,.ts,.yml -x ts-node -r tsconfig-paths/register --files --project server/tsconfig.json server/index.ts",
-    "build:server": "tsc --project server/tsconfig.json && copyfiles -u 2 server/templates/**/*.{html,pug} dist/templates",
+    "build:server": "tsc --project server/tsconfig.json && copyfiles -u 2 server/templates/**/*.{html,pug} dist/templates && tsc-alias -p server/tsconfig.json",
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
     "lint": "eslint \"./server/**/*.{ts,tsx}\" \"./src/**/*.{ts,tsx}\" --cache",
@@ -155,6 +155,7 @@
     "semantic-release-docker-buildx": "1.0.1",
     "tailwindcss": "3.1.8",
     "ts-node": "10.9.1",
+    "tsc-alias": "^1.7.0",
     "tsconfig-paths": "^4.1.0",
     "typescript": "4.7.4"
   },
