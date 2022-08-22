@@ -4,6 +4,7 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import Modal from '@app/components/Common/Modal';
 import PageTitle from '@app/components/Common/PageTitle';
 import Table from '@app/components/Common/Table';
+import Tooltip from '@app/components/Common/Tooltip';
 import Transition from '@app/components/Transition';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
 import globalMessages from '@app/i18n/globalMessages';
@@ -47,6 +48,7 @@ const messages = defineMessages({
   logDetails: 'Log Details',
   extraData: 'Additional Data',
   copiedLogMessage: 'Copied log message to clipboard.',
+  viewdetails: 'View Details',
 });
 
 type Filter = 'debug' | 'info' | 'warn' | 'error';
@@ -327,23 +329,31 @@ const SettingsLogs = () => {
                   <Table.TD className="text-gray-300">{row.message}</Table.TD>
                   <Table.TD className="-m-1 flex flex-wrap items-center justify-end">
                     {row.data && (
+                      <Tooltip
+                        content={intl.formatMessage(messages.viewdetails)}
+                      >
+                        <Button
+                          buttonType="primary"
+                          buttonSize="sm"
+                          onClick={() => setActiveLog(row)}
+                          className="m-1"
+                        >
+                          <DocumentSearchIcon className="icon-md" />
+                        </Button>
+                      </Tooltip>
+                    )}
+                    <Tooltip
+                      content={intl.formatMessage(messages.copyToClipboard)}
+                    >
                       <Button
                         buttonType="primary"
                         buttonSize="sm"
-                        onClick={() => setActiveLog(row)}
+                        onClick={() => copyLogString(row)}
                         className="m-1"
                       >
-                        <DocumentSearchIcon className="icon-md" />
+                        <ClipboardCopyIcon className="icon-md" />
                       </Button>
-                    )}
-                    <Button
-                      buttonType="primary"
-                      buttonSize="sm"
-                      onClick={() => copyLogString(row)}
-                      className="m-1"
-                    >
-                      <ClipboardCopyIcon className="icon-md" />
-                    </Button>
+                    </Tooltip>
                   </Table.TD>
                 </tr>
               );

@@ -9,6 +9,7 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import type { PlayButtonLink } from '@app/components/Common/PlayButton';
 import PlayButton from '@app/components/Common/PlayButton';
+import Tooltip from '@app/components/Common/Tooltip';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import IssueModal from '@app/components/IssueModal';
 import ManageSlideOver from '@app/components/ManageSlideOver';
@@ -68,6 +69,8 @@ const messages = defineMessages({
   streamingproviders: 'Currently Streaming On',
   productioncountries:
     'Production {countryCount, plural, one {Country} other {Countries}}',
+  reportissue: 'Report an Issue',
+  managemovie: 'Manage Movie',
 });
 
 interface TvDetailsProps {
@@ -389,38 +392,42 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                 type: 'or',
               }
             ) && (
-              <Button
-                buttonType="warning"
-                className="ml-2 first:ml-0"
-                onClick={() => setShowIssueModal(true)}
-              >
-                <ExclamationIcon className="w-5" />
-              </Button>
+              <Tooltip content={intl.formatMessage(messages.reportissue)}>
+                <Button
+                  buttonType="warning"
+                  onClick={() => setShowIssueModal(true)}
+                  className="ml-2 first:ml-0"
+                >
+                  <ExclamationIcon />
+                </Button>
+              </Tooltip>
             )}
           {hasPermission(Permission.MANAGE_REQUESTS) && data.mediaInfo && (
-            <Button
-              buttonType="default"
-              className="relative ml-2 first:ml-0"
-              onClick={() => setShowManager(true)}
-            >
-              <CogIcon className="!mr-0" />
-              {hasPermission(
-                [Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES],
-                {
-                  type: 'or',
-                }
-              ) &&
-                (
-                  data.mediaInfo?.issues.filter(
-                    (issue) => issue.status === IssueStatus.OPEN
-                  ) ?? []
-                ).length > 0 && (
-                  <>
-                    <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" />
-                    <div className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-red-600" />
-                  </>
-                )}
-            </Button>
+            <Tooltip content={intl.formatMessage(messages.managemovie)}>
+              <Button
+                buttonType="default"
+                onClick={() => setShowManager(true)}
+                className="relative ml-2 first:ml-0"
+              >
+                <CogIcon className="!mr-0" />
+                {hasPermission(
+                  [Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES],
+                  {
+                    type: 'or',
+                  }
+                ) &&
+                  (
+                    data.mediaInfo?.issues.filter(
+                      (issue) => issue.status === IssueStatus.OPEN
+                    ) ?? []
+                  ).length > 0 && (
+                    <>
+                      <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" />
+                      <div className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-red-600" />
+                    </>
+                  )}
+              </Button>
+            </Tooltip>
           )}
         </div>
       </div>

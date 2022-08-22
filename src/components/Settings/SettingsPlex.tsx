@@ -5,6 +5,7 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import LibraryItem from '@app/components/Settings/LibraryItem';
+import SettingsBadge from '@app/components/Settings/SettingsBadge';
 import globalMessages from '@app/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
 import { RefreshIcon, SearchIcon, XIcon } from '@heroicons/react/solid';
@@ -567,9 +568,7 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
                       </a>
                     ),
                   })}
-                  <Badge badgeType="danger" className="ml-2">
-                    {intl.formatMessage(globalMessages.advanced)}
-                  </Badge>
+                  <SettingsBadge badgeType="advanced" className="ml-2" />
                   <span className="label-tip">
                     {intl.formatMessage(messages.webAppUrlTip)}
                   </span>
