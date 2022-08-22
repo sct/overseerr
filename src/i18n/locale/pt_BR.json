@@ -1056,5 +1056,10 @@
   "components.TitleCard.mediaerror": "{mediaType} Não Encontrado",
   "components.TitleCard.tmdbid": "ID do TMDB",
   "components.TitleCard.tvdbid": "ID do TheTVDB",
-  "components.TitleCard.cleardata": "Limpar Dados"
+  "components.TitleCard.cleardata": "Limpar Dados",
+  "components.PermissionEdit.autorequest": "Solicitar Automaticamente",
+  "components.PermissionEdit.autorequestMovies": "Solicitar Filmes Automaticamente",
+  "components.PermissionEdit.autorequestSeries": "Solicitar Séries Automaticamente",
+  "components.UserProfile.UserSettings.UserGeneralSettings.plexwatchlistsyncmovies": "Solicitar Filmes Automaticamente",
+  "components.UserProfile.UserSettings.UserGeneralSettings.plexwatchlistsyncseries": "Solicitar Séries Automaticamente"
 }
