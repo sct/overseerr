@@ -612,7 +612,12 @@ router.get<{ id: string; page?: number }, WatchlistResponse>(
   async (req, res, next) => {
     if (
       Number(req.params.id) !== req.user?.id &&
-      !req.user?.hasPermission(Permission.WATCHLIST_VIEW)
+      !req.user?.hasPermission(
+        [Permission.MANAGE_REQUESTS, Permission.WATCHLIST_VIEW],
+        {
+          type: 'or',
+        }
+      )
     ) {
       return next({
         status: 403,
