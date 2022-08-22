@@ -1,11 +1,12 @@
-import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
+import Tooltip from '@app/components/Common/Tooltip';
 import LanguageSelector from '@app/components/LanguageSelector';
 import RegionSelector from '@app/components/RegionSelector';
 import CopyButton from '@app/components/Settings/CopyButton';
+import SettingsBadge from '@app/components/Settings/SettingsBadge';
 import type { AvailableLocale } from '@app/context/LanguageContext';
 import { availableLanguages } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
@@ -258,9 +259,7 @@ const SettingsMain = () => {
                     <span className="mr-2">
                       {intl.formatMessage(messages.trustProxy)}
                     </span>
-                    <Badge badgeType="primary">
-                      {intl.formatMessage(globalMessages.restartRequired)}
-                    </Badge>
+                    <SettingsBadge badgeType="restartRequired" />
                     <span className="label-tip">
                       {intl.formatMessage(messages.trustProxyTip)}
                     </span>
@@ -281,28 +280,30 @@ const SettingsMain = () => {
                     <span className="mr-2">
                       {intl.formatMessage(messages.csrfProtection)}
                     </span>
-                    <Badge badgeType="danger" className="mr-2">
-                      {intl.formatMessage(globalMessages.advanced)}
-                    </Badge>
-                    <Badge badgeType="primary">
-                      {intl.formatMessage(globalMessages.restartRequired)}
-                    </Badge>
+                    <SettingsBadge badgeType="advanced" className="mr-2" />
+                    <SettingsBadge badgeType="restartRequired" />
                     <span className="label-tip">
                       {intl.formatMessage(messages.csrfProtectionTip)}
                     </span>
                   </label>
                   <div className="form-input-area">
-                    <Field
-                      type="checkbox"
-                      id="csrfProtection"
-                      name="csrfProtection"
-                      title={intl.formatMessage(
+                    <Tooltip
+                      content={intl.formatMessage(
                         messages.csrfProtectionHoverTip
                       )}
-                      onChange={() => {
-                        setFieldValue('csrfProtection', !values.csrfProtection);
-                      }}
-                    />
+                    >
+                      <Field
+                        type="checkbox"
+                        id="csrfProtection"
+                        name="csrfProtection"
+                        onChange={() => {
+                          setFieldValue(
+                            'csrfProtection',
+                            !values.csrfProtection
+                          );
+                        }}
+                      />
+                    </Tooltip>
                   </div>
                 </div>
                 <div className="form-row">
@@ -367,9 +368,7 @@ const SettingsMain = () => {
                     <span className="mr-2">
                       {intl.formatMessage(messages.hideAvailable)}
                     </span>
-                    <Badge badgeType="warning">
-                      {intl.formatMessage(globalMessages.experimental)}
-                    </Badge>
+                    <SettingsBadge badgeType="experimental" />
                   </label>
                   <div className="form-input-area">
                     <Field

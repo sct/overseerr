@@ -78,6 +78,8 @@ const messages = defineMessages({
   theatricalrelease: 'Theatrical Release',
   digitalrelease: 'Digital Release',
   physicalrelease: 'Physical Release',
+  reportissue: 'Report an Issue',
+  managemovie: 'Manage Movie',
 });
 
 interface MovieDetailsProps {
@@ -388,38 +390,43 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                 type: 'or',
               }
             ) && (
-              <Button
-                buttonType="warning"
+              <Tooltip
+                content={intl.formatMessage(messages.reportissue)}
                 className="ml-2 first:ml-0"
-                onClick={() => setShowIssueModal(true)}
               >
-                <ExclamationIcon />
-              </Button>
+                <Button
+                  buttonType="warning"
+                  onClick={() => setShowIssueModal(true)}
+                >
+                  <ExclamationIcon />
+                </Button>
+              </Tooltip>
             )}
           {hasPermission(Permission.MANAGE_REQUESTS) && data.mediaInfo && (
-            <Button
-              buttonType="default"
+            <Tooltip
+              content={intl.formatMessage(messages.managemovie)}
               className="relative ml-2 first:ml-0"
-              onClick={() => setShowManager(true)}
             >
-              <CogIcon className="!mr-0" />
-              {hasPermission(
-                [Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES],
-                {
-                  type: 'or',
-                }
-              ) &&
-                (
-                  data.mediaInfo?.issues.filter(
-                    (issue) => issue.status === IssueStatus.OPEN
-                  ) ?? []
-                ).length > 0 && (
-                  <>
-                    <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" />
-                    <div className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-red-600" />
-                  </>
-                )}
-            </Button>
+              <Button buttonType="default" onClick={() => setShowManager(true)}>
+                <CogIcon className="!mr-0" />
+                {hasPermission(
+                  [Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES],
+                  {
+                    type: 'or',
+                  }
+                ) &&
+                  (
+                    data.mediaInfo?.issues.filter(
+                      (issue) => issue.status === IssueStatus.OPEN
+                    ) ?? []
+                  ).length > 0 && (
+                    <>
+                      <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" />
+                      <div className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-red-600" />
+                    </>
+                  )}
+              </Button>
+            </Tooltip>
           )}
         </div>
       </div>

@@ -1,7 +1,7 @@
-import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
+import SettingsBadge from '@app/components/Settings/SettingsBadge';
 import globalMessages from '@app/i18n/globalMessages';
 import { BeakerIcon, SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
@@ -382,9 +382,7 @@ const NotificationsEmail = () => {
                 <span className="mr-2">
                   {intl.formatMessage(messages.pgpPrivateKey)}
                 </span>
-                <Badge badgeType="danger">
-                  {intl.formatMessage(globalMessages.advanced)}
-                </Badge>
+                <SettingsBadge badgeType="advanced" />
                 <span className="label-tip">
                   {intl.formatMessage(messages.pgpPrivateKeyTip, {
                     OpenPgpLink: OpenPgpLink,
@@ -414,9 +412,7 @@ const NotificationsEmail = () => {
                 <span className="mr-2">
                   {intl.formatMessage(messages.pgpPassword)}
                 </span>
-                <Badge badgeType="danger">
-                  {intl.formatMessage(globalMessages.advanced)}
-                </Badge>
+                <SettingsBadge badgeType="advanced" />
                 <span className="label-tip">
                   {intl.formatMessage(messages.pgpPasswordTip, {
                     OpenPgpLink: OpenPgpLink,

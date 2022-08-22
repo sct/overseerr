@@ -1,4 +1,3 @@
-import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
@@ -6,6 +5,7 @@ import NotificationTypeSelector, {
   ALL_NOTIFICATIONS,
 } from '@app/components/NotificationTypeSelector';
 import { OpenPgpLink } from '@app/components/Settings/Notifications/NotificationsEmail';
+import SettingsBadge from '@app/components/Settings/SettingsBadge';
 import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
@@ -105,9 +105,7 @@ const UserEmailSettings = () => {
                 <span className="mr-2">
                   {intl.formatMessage(messages.pgpPublicKey)}
                 </span>
-                <Badge badgeType="danger">
-                  {intl.formatMessage(globalMessages.advanced)}
-                </Badge>
+                <SettingsBadge badgeType="advanced" />
                 <span className="label-tip">
                   {intl.formatMessage(messages.pgpPublicKeyTip, {
                     OpenPgpLink: OpenPgpLink,
