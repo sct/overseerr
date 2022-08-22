@@ -20,7 +20,7 @@
     "typecheck:client": "tsc --noEmit",
     "prepare": "husky install",
     "cypress:open": "cypress open",
-    "cypress:prepare": "ts-node --files server/scripts/prepareTestDb.ts",
+    "cypress:prepare": "ts-node -r tsconfig-paths/register --files server/scripts/prepareTestDb.ts",
     "cypress:build": "yarn build && yarn cypress:prepare"
   },
   "repository": {
