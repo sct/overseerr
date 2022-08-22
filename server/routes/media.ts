@@ -1,19 +1,19 @@
-import { Router } from 'express';
-import type { FindOneOptions } from 'typeorm';
-import { In } from 'typeorm';
-import TautulliAPI from '../api/tautulli';
-import { MediaStatus, MediaType } from '../constants/media';
-import { getRepository } from '../datasource';
-import Media from '../entity/Media';
-import { User } from '../entity/User';
+import TautulliAPI from '@server/api/tautulli';
+import { MediaStatus, MediaType } from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
+import { User } from '@server/entity/User';
 import type {
   MediaResultsResponse,
   MediaWatchDataResponse,
-} from '../interfaces/api/mediaInterfaces';
-import { Permission } from '../lib/permissions';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
-import { isAuthenticated } from '../middleware/auth';
+} from '@server/interfaces/api/mediaInterfaces';
+import { Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
+import { Router } from 'express';
+import type { FindOneOptions } from 'typeorm';
+import { In } from 'typeorm';
 
 const mediaRoutes = Router();
 

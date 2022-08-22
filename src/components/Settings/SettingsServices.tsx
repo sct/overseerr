@@ -1,24 +1,21 @@
+import RadarrLogo from '@app/assets/services/radarr.svg';
+import SonarrLogo from '@app/assets/services/sonarr.svg';
+import Alert from '@app/components/Common/Alert';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import PageTitle from '@app/components/Common/PageTitle';
+import RadarrModal from '@app/components/Settings/RadarrModal';
+import SonarrModal from '@app/components/Settings/SonarrModal';
+import Transition from '@app/components/Transition';
+import globalMessages from '@app/i18n/globalMessages';
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/solid';
+import type { RadarrSettings, SonarrSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR, { mutate } from 'swr';
-import type {
-  RadarrSettings,
-  SonarrSettings,
-} from '../../../server/lib/settings';
-import RadarrLogo from '../../assets/services/radarr.svg';
-import SonarrLogo from '../../assets/services/sonarr.svg';
-import globalMessages from '../../i18n/globalMessages';
-import Alert from '../Common/Alert';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import Modal from '../Common/Modal';
-import PageTitle from '../Common/PageTitle';
-import Transition from '../Transition';
-import RadarrModal from './RadarrModal';
-import SonarrModal from './SonarrModal';
 
 const messages = defineMessages({
   services: 'Services',

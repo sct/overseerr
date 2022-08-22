@@ -1,4 +1,4 @@
-import type { Crew } from '../../server/models/common';
+import type { Crew } from '@server/models/common';
 const priorityJobs = [
   'Director',
   'Creator',

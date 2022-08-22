@@ -1,3 +1,8 @@
+import Button from '@app/components/Common/Button';
+import ImageFader from '@app/components/Common/ImageFader';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import LanguagePicker from '@app/components/Layout/LanguagePicker';
+import globalMessages from '@app/i18n/globalMessages';
 import { SupportIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
@@ -6,11 +11,6 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
-import globalMessages from '../../i18n/globalMessages';
-import Button from '../Common/Button';
-import ImageFader from '../Common/ImageFader';
-import SensitiveInput from '../Common/SensitiveInput';
-import LanguagePicker from '../Layout/LanguagePicker';
 
 const messages = defineMessages({
   passwordreset: 'Password Reset',

@@ -1,6 +1,6 @@
+import type { PublicSettingsResponse } from '@server/interfaces/api/settingsInterfaces';
 import React from 'react';
 import useSWR from 'swr';
-import type { PublicSettingsResponse } from '../../server/interfaces/api/settingsInterfaces';
 
 export interface SettingsContextProps {
   currentSettings: PublicSettingsResponse;

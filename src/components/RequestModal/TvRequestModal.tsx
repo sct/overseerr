@@ -1,29 +1,26 @@
+import Alert from '@app/components/Common/Alert';
+import Badge from '@app/components/Common/Badge';
+import Modal from '@app/components/Common/Modal';
+import type { RequestOverrides } from '@app/components/RequestModal/AdvancedRequester';
+import AdvancedRequester from '@app/components/RequestModal/AdvancedRequester';
+import QuotaDisplay from '@app/components/RequestModal/QuotaDisplay';
+import SearchByNameModal from '@app/components/RequestModal/SearchByNameModal';
+import useSettings from '@app/hooks/useSettings';
+import { useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { DownloadIcon } from '@heroicons/react/outline';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
+import type { MediaRequest } from '@server/entity/MediaRequest';
+import type SeasonRequest from '@server/entity/SeasonRequest';
+import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
+import { Permission } from '@server/lib/permissions';
+import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
-import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
-import {
-  MediaRequestStatus,
-  MediaStatus,
-} from '../../../server/constants/media';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import type SeasonRequest from '../../../server/entity/SeasonRequest';
-import type { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
-import { Permission } from '../../../server/lib/permissions';
-import type { TvDetails } from '../../../server/models/Tv';
-import useSettings from '../../hooks/useSettings';
-import { useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Alert from '../Common/Alert';
-import Badge from '../Common/Badge';
-import Modal from '../Common/Modal';
-import type { RequestOverrides } from './AdvancedRequester';
-import AdvancedRequester from './AdvancedRequester';
-import QuotaDisplay from './QuotaDisplay';
-import SearchByNameModal from './SearchByNameModal';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',

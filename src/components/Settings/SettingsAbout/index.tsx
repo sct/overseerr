@@ -1,18 +1,18 @@
+import Alert from '@app/components/Common/Alert';
+import Badge from '@app/components/Common/Badge';
+import List from '@app/components/Common/List';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import Releases from '@app/components/Settings/SettingsAbout/Releases';
+import globalMessages from '@app/i18n/globalMessages';
+import Error from '@app/pages/_error';
 import { InformationCircleIcon } from '@heroicons/react/solid';
-import { defineMessages, useIntl } from 'react-intl';
-import useSWR from 'swr';
 import type {
   SettingsAboutResponse,
   StatusResponse,
-} from '../../../../server/interfaces/api/settingsInterfaces';
-import globalMessages from '../../../i18n/globalMessages';
-import Error from '../../../pages/_error';
-import Alert from '../../Common/Alert';
-import Badge from '../../Common/Badge';
-import List from '../../Common/List';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import PageTitle from '../../Common/PageTitle';
-import Releases from './Releases';
+} from '@server/interfaces/api/settingsInterfaces';
+import { defineMessages, useIntl } from 'react-intl';
+import useSWR from 'swr';
 
 const messages = defineMessages({
   about: 'About',

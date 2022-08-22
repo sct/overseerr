@@ -1,16 +1,16 @@
-import PlexTvAPI from '../api/plextv';
-import { MediaStatus, MediaType } from '../constants/media';
-import { getRepository } from '../datasource';
-import Media from '../entity/Media';
+import PlexTvAPI from '@server/api/plextv';
+import { MediaStatus, MediaType } from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
 import {
   DuplicateMediaRequestError,
   MediaRequest,
   NoSeasonsAvailableError,
   QuotaRestrictedError,
   RequestPermissionError,
-} from '../entity/MediaRequest';
-import { User } from '../entity/User';
-import logger from '../logger';
+} from '@server/entity/MediaRequest';
+import { User } from '@server/entity/User';
+import logger from '@server/logger';
 import { Permission } from './permissions';
 
 class WatchlistSync {

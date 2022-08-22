@@ -1,3 +1,7 @@
+import Alert from '@app/components/Common/Alert';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import globalMessages from '@app/i18n/globalMessages';
 import { BeakerIcon, SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -5,10 +9,6 @@ import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
-import globalMessages from '../../../../i18n/globalMessages';
-import Alert from '../../../Common/Alert';
-import Button from '../../../Common/Button';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
 
 const messages = defineMessages({
   agentenabled: 'Enable Agent',

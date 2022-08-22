@@ -1,12 +1,12 @@
+import downloadTracker from '@server/lib/downloadtracker';
+import { plexFullScanner, plexRecentScanner } from '@server/lib/scanners/plex';
+import { radarrScanner } from '@server/lib/scanners/radarr';
+import { sonarrScanner } from '@server/lib/scanners/sonarr';
+import type { JobId } from '@server/lib/settings';
+import { getSettings } from '@server/lib/settings';
+import watchlistSync from '@server/lib/watchlistsync';
+import logger from '@server/logger';
 import schedule from 'node-schedule';
-import downloadTracker from '../lib/downloadtracker';
-import { plexFullScanner, plexRecentScanner } from '../lib/scanners/plex';
-import { radarrScanner } from '../lib/scanners/radarr';
-import { sonarrScanner } from '../lib/scanners/sonarr';
-import type { JobId } from '../lib/settings';
-import { getSettings } from '../lib/settings';
-import watchlistSync from '../lib/watchlistsync';
-import logger from '../logger';
 
 interface ScheduledJob {
   id: JobId;

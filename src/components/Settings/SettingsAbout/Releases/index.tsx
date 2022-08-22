@@ -1,14 +1,14 @@
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import Transition from '@app/components/Transition';
+import globalMessages from '@app/i18n/globalMessages';
 import { DocumentTextIcon } from '@heroicons/react/outline';
 import { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import useSWR from 'swr';
-import globalMessages from '../../../../i18n/globalMessages';
-import Badge from '../../../Common/Badge';
-import Button from '../../../Common/Button';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import Modal from '../../../Common/Modal';
-import Transition from '../../../Transition';
 
 const messages = defineMessages({
   releases: 'Releases',

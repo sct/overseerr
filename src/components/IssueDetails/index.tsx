@@ -1,3 +1,16 @@
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import CachedImage from '@app/components/Common/CachedImage';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import PageTitle from '@app/components/Common/PageTitle';
+import IssueComment from '@app/components/IssueDetails/IssueComment';
+import IssueDescription from '@app/components/IssueDetails/IssueDescription';
+import { issueOptions } from '@app/components/IssueModal/constants';
+import Transition from '@app/components/Transition';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import Error from '@app/pages/_error';
 import {
   ChatIcon,
   CheckCircleIcon,
@@ -6,6 +19,11 @@ import {
   ServerIcon,
 } from '@heroicons/react/outline';
 import { RefreshIcon } from '@heroicons/react/solid';
+import { IssueStatus } from '@server/constants/issue';
+import { MediaType } from '@server/constants/media';
+import type Issue from '@server/entity/Issue';
+import type { MovieDetails } from '@server/models/Movie';
+import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -15,24 +33,6 @@ import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import { IssueStatus } from '../../../server/constants/issue';
-import { MediaType } from '../../../server/constants/media';
-import type Issue from '../../../server/entity/Issue';
-import type { MovieDetails } from '../../../server/models/Movie';
-import type { TvDetails } from '../../../server/models/Tv';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Error from '../../pages/_error';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import CachedImage from '../Common/CachedImage';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import Modal from '../Common/Modal';
-import PageTitle from '../Common/PageTitle';
-import { issueOptions } from '../IssueModal/constants';
-import Transition from '../Transition';
-import IssueComment from './IssueComment';
-import IssueDescription from './IssueDescription';
 
 const messages = defineMessages({
   openedby: '#{issueId} opened {relativeTime} by {username}',

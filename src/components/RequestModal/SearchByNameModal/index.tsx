@@ -1,11 +1,11 @@
+import Alert from '@app/components/Common/Alert';
+import { SmallLoadingSpinner } from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import globalMessages from '@app/i18n/globalMessages';
 import { DownloadIcon } from '@heroicons/react/outline';
+import type { SonarrSeries } from '@server/api/servarr/sonarr';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { SonarrSeries } from '../../../../server/api/servarr/sonarr';
-import globalMessages from '../../../i18n/globalMessages';
-import Alert from '../../Common/Alert';
-import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
-import Modal from '../../Common/Modal';
 
 const messages = defineMessages({
   notvdbiddescription:

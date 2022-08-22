@@ -1,9 +1,9 @@
-import type { MediaStatus } from '../../../server/constants/media';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import Transition from '../Transition';
-import CollectionRequestModal from './CollectionRequestModal';
-import MovieRequestModal from './MovieRequestModal';
-import TvRequestModal from './TvRequestModal';
+import CollectionRequestModal from '@app/components/RequestModal/CollectionRequestModal';
+import MovieRequestModal from '@app/components/RequestModal/MovieRequestModal';
+import TvRequestModal from '@app/components/RequestModal/TvRequestModal';
+import Transition from '@app/components/Transition';
+import type { MediaStatus } from '@server/constants/media';
+import type { MediaRequest } from '@server/entity/MediaRequest';
 
 interface RequestModalProps {
   show: boolean;

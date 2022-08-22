@@ -1,9 +1,9 @@
+import Button from '@app/components/Common/Button';
+import globalMessages from '@app/i18n/globalMessages';
 import { CheckIcon, TrashIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { defineMessages, useIntl } from 'react-intl';
 import { mutate } from 'swr';
-import globalMessages from '../../i18n/globalMessages';
-import Button from '../Common/Button';
 
 interface ErrorCardProps {
   id: number;

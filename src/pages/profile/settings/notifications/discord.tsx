@@ -1,7 +1,7 @@
+import UserSettings from '@app/components/UserProfile/UserSettings';
+import UserNotificationSettings from '@app/components/UserProfile/UserSettings/UserNotificationSettings';
+import UserNotificationsDiscord from '@app/components/UserProfile/UserSettings/UserNotificationSettings/UserNotificationsDiscord';
 import type { NextPage } from 'next';
-import UserSettings from '../../../../components/UserProfile/UserSettings';
-import UserNotificationSettings from '../../../../components/UserProfile/UserSettings/UserNotificationSettings';
-import UserNotificationsDiscord from '../../../../components/UserProfile/UserSettings/UserNotificationSettings/UserNotificationsDiscord';
 
 const NotificationsPage: NextPage = () => {
   return (

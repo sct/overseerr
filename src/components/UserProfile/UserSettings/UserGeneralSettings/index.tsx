@@ -1,4 +1,19 @@
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import LanguageSelector from '@app/components/LanguageSelector';
+import QuotaSelector from '@app/components/QuotaSelector';
+import RegionSelector from '@app/components/RegionSelector';
+import type { AvailableLocale } from '@app/context/LanguageContext';
+import { availableLanguages } from '@app/context/LanguageContext';
+import useLocale from '@app/hooks/useLocale';
+import useSettings from '@app/hooks/useSettings';
+import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import Error from '@app/pages/_error';
 import { SaveIcon } from '@heroicons/react/outline';
+import type { UserSettingsGeneralResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
@@ -7,21 +22,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import type { UserSettingsGeneralResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import type { AvailableLocale } from '../../../../context/LanguageContext';
-import { availableLanguages } from '../../../../context/LanguageContext';
-import useLocale from '../../../../hooks/useLocale';
-import useSettings from '../../../../hooks/useSettings';
-import { Permission, UserType, useUser } from '../../../../hooks/useUser';
-import globalMessages from '../../../../i18n/globalMessages';
-import Error from '../../../../pages/_error';
-import Badge from '../../../Common/Badge';
-import Button from '../../../Common/Button';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import PageTitle from '../../../Common/PageTitle';
-import LanguageSelector from '../../../LanguageSelector';
-import QuotaSelector from '../../../QuotaSelector';
-import RegionSelector from '../../../RegionSelector';
 
 const messages = defineMessages({
   general: 'General',

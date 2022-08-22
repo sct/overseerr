@@ -1,5 +1,5 @@
+import MovieRecommendations from '@app/components/MovieDetails/MovieRecommendations';
 import type { NextPage } from 'next';
-import MovieRecommendations from '../../../components/MovieDetails/MovieRecommendations';
 
 const MovieRecommendationsPage: NextPage = () => {
   return <MovieRecommendations />;

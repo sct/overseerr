@@ -1,21 +1,21 @@
+import Button from '@app/components/Common/Button';
+import Header from '@app/components/Common/Header';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import IssueItem from '@app/components/IssueList/IssueItem';
+import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
+import globalMessages from '@app/i18n/globalMessages';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   FilterIcon,
   SortDescendingIcon,
 } from '@heroicons/react/solid';
+import type { IssueResultsResponse } from '@server/interfaces/api/issueInterfaces';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { IssueResultsResponse } from '../../../server/interfaces/api/issueInterfaces';
-import Button from '../../components/Common/Button';
-import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
-import globalMessages from '../../i18n/globalMessages';
-import Header from '../Common/Header';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import PageTitle from '../Common/PageTitle';
-import IssueItem from './IssueItem';
 
 const messages = defineMessages({
   issues: 'Issues',

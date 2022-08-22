@@ -1,26 +1,23 @@
+import Button from '@app/components/Common/Button';
+import ConfirmButton from '@app/components/Common/ConfirmButton';
+import SlideOver from '@app/components/Common/SlideOver';
+import DownloadBlock from '@app/components/DownloadBlock';
+import IssueBlock from '@app/components/IssueBlock';
+import RequestBlock from '@app/components/RequestBlock';
+import useSettings from '@app/hooks/useSettings';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { ServerIcon, ViewListIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon, DocumentRemoveIcon } from '@heroicons/react/solid';
+import { IssueStatus } from '@server/constants/issue';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
+import type { MediaWatchDataResponse } from '@server/interfaces/api/mediaInterfaces';
+import type { MovieDetails } from '@server/models/Movie';
+import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import { IssueStatus } from '../../../server/constants/issue';
-import {
-  MediaRequestStatus,
-  MediaStatus,
-} from '../../../server/constants/media';
-import type { MediaWatchDataResponse } from '../../../server/interfaces/api/mediaInterfaces';
-import type { MovieDetails } from '../../../server/models/Movie';
-import type { TvDetails } from '../../../server/models/Tv';
-import useSettings from '../../hooks/useSettings';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Button from '../Common/Button';
-import ConfirmButton from '../Common/ConfirmButton';
-import SlideOver from '../Common/SlideOver';
-import DownloadBlock from '../DownloadBlock';
-import IssueBlock from '../IssueBlock';
-import RequestBlock from '../RequestBlock';
 
 const messages = defineMessages({
   manageModalTitle: 'Manage {mediaType}',

@@ -1,5 +1,5 @@
+import DiscoverNetwork from '@app/components/Discover/DiscoverNetwork';
 import type { NextPage } from 'next';
-import DiscoverNetwork from '../../../../../components/Discover/DiscoverNetwork';
 
 const DiscoverTvNetworkPage: NextPage = () => {
   return <DiscoverNetwork />;

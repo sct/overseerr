@@ -1,5 +1,5 @@
+import DiscoverTvGenre from '@app/components/Discover/DiscoverTvGenre';
 import type { NextPage } from 'next';
-import DiscoverTvGenre from '../../../../../components/Discover/DiscoverTvGenre';
 
 const DiscoverTvGenrePage: NextPage = () => {
   return <DiscoverTvGenre />;

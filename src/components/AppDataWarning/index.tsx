@@ -1,6 +1,6 @@
+import Alert from '@app/components/Common/Alert';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import Alert from '../Common/Alert';
 
 const messages = defineMessages({
   dockerVolumeMissingDescription:

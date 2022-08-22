@@ -1,15 +1,15 @@
+import type { ButtonType } from '@app/components/Common/Button';
+import Button from '@app/components/Common/Button';
+import CachedImage from '@app/components/Common/CachedImage';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Transition from '@app/components/Transition';
+import useClickOutside from '@app/hooks/useClickOutside';
+import { useLockBodyScroll } from '@app/hooks/useLockBodyScroll';
+import globalMessages from '@app/i18n/globalMessages';
 import type { MouseEvent } from 'react';
 import { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useIntl } from 'react-intl';
-import useClickOutside from '../../../hooks/useClickOutside';
-import { useLockBodyScroll } from '../../../hooks/useLockBodyScroll';
-import globalMessages from '../../../i18n/globalMessages';
-import Transition from '../../Transition';
-import type { ButtonType } from '../Button';
-import Button from '../Button';
-import CachedImage from '../CachedImage';
-import LoadingSpinner from '../LoadingSpinner';
 
 interface ModalProps {
   title?: string;

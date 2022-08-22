@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { SmallLoadingSpinner } from '@app/components/Common/LoadingSpinner';
+import type { User } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import { formatBytes } from '@app/utils/numberHelpers';
 import { Listbox, Transition } from '@headlessui/react';
 import { AdjustmentsIcon } from '@heroicons/react/outline';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
+import type {
+  ServiceCommonServer,
+  ServiceCommonServerWithDetails,
+} from '@server/interfaces/api/serviceInterfaces';
+import type { UserResultsResponse } from '@server/interfaces/api/userInterfaces';
 import { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import Select from 'react-select';
 import useSWR from 'swr';
-import type {
-  ServiceCommonServer,
-  ServiceCommonServerWithDetails,
-} from '../../../../server/interfaces/api/serviceInterfaces';
-import type { UserResultsResponse } from '../../../../server/interfaces/api/userInterfaces';
-import type { User } from '../../../hooks/useUser';
-import { Permission, useUser } from '../../../hooks/useUser';
-import globalMessages from '../../../i18n/globalMessages';
-import { formatBytes } from '../../../utils/numberHelpers';
-import { SmallLoadingSpinner } from '../../Common/LoadingSpinner';
 
 type OptionType = {
   value: number;

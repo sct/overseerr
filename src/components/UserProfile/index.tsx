@@ -1,26 +1,26 @@
+import ImageFader from '@app/components/Common/ImageFader';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import ProgressCircle from '@app/components/Common/ProgressCircle';
+import RequestCard from '@app/components/RequestCard';
+import Slider from '@app/components/Slider';
+import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
+import ProfileHeader from '@app/components/UserProfile/ProfileHeader';
+import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import Error from '@app/pages/_error';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
+import type {
+  QuotaResponse,
+  UserRequestsResponse,
+  UserWatchDataResponse,
+} from '@server/interfaces/api/userInterfaces';
+import type { MovieDetails } from '@server/models/Movie';
+import type { TvDetails } from '@server/models/Tv';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type {
-  QuotaResponse,
-  UserRequestsResponse,
-  UserWatchDataResponse,
-} from '../../../server/interfaces/api/userInterfaces';
-import type { MovieDetails } from '../../../server/models/Movie';
-import type { TvDetails } from '../../../server/models/Tv';
-import { Permission, UserType, useUser } from '../../hooks/useUser';
-import Error from '../../pages/_error';
-import ImageFader from '../Common/ImageFader';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import PageTitle from '../Common/PageTitle';
-import ProgressCircle from '../Common/ProgressCircle';
-import RequestCard from '../RequestCard';
-import Slider from '../Slider';
-import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
-import ProfileHeader from './ProfileHeader';
 
 const messages = defineMessages({
   recentrequests: 'Recent Requests',

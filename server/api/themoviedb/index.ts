@@ -1,6 +1,6 @@
+import ExternalAPI from '@server/api/externalapi';
+import cacheManager from '@server/lib/cache';
 import { sortBy } from 'lodash';
-import cacheManager from '../../lib/cache';
-import ExternalAPI from '../externalapi';
 import type {
   TmdbCollection,
   TmdbExternalIdResponse,

@@ -1,5 +1,5 @@
+import useInteraction from '@app/hooks/useInteraction';
 import React from 'react';
-import useInteraction from '../hooks/useInteraction';
 
 interface InteractionContextProps {
   isTouch?: boolean;

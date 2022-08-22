@@ -1,8 +1,8 @@
+import PageTitle from '@app/components/Common/PageTitle';
+import type { SettingsRoute } from '@app/components/Common/SettingsTabs';
+import SettingsTabs from '@app/components/Common/SettingsTabs';
+import globalMessages from '@app/i18n/globalMessages';
 import { defineMessages, useIntl } from 'react-intl';
-import globalMessages from '../../i18n/globalMessages';
-import PageTitle from '../Common/PageTitle';
-import type { SettingsRoute } from '../Common/SettingsTabs';
-import SettingsTabs from '../Common/SettingsTabs';
 
 const messages = defineMessages({
   menuGeneralSettings: 'General',

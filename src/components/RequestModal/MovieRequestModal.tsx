@@ -1,21 +1,21 @@
+import Alert from '@app/components/Common/Alert';
+import Modal from '@app/components/Common/Modal';
+import type { RequestOverrides } from '@app/components/RequestModal/AdvancedRequester';
+import AdvancedRequester from '@app/components/RequestModal/AdvancedRequester';
+import QuotaDisplay from '@app/components/RequestModal/QuotaDisplay';
+import { useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { DownloadIcon } from '@heroicons/react/outline';
+import { MediaStatus } from '@server/constants/media';
+import type { MediaRequest } from '@server/entity/MediaRequest';
+import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
+import { Permission } from '@server/lib/permissions';
+import type { MovieDetails } from '@server/models/Movie';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
-import { MediaStatus } from '../../../server/constants/media';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import type { QuotaResponse } from '../../../server/interfaces/api/userInterfaces';
-import { Permission } from '../../../server/lib/permissions';
-import type { MovieDetails } from '../../../server/models/Movie';
-import { useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Alert from '../Common/Alert';
-import Modal from '../Common/Modal';
-import type { RequestOverrides } from './AdvancedRequester';
-import AdvancedRequester from './AdvancedRequester';
-import QuotaDisplay from './QuotaDisplay';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',

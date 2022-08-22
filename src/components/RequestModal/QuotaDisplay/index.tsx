@@ -1,9 +1,9 @@
+import ProgressCircle from '@app/components/Common/ProgressCircle';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid';
+import type { QuotaStatus } from '@server/interfaces/api/userInterfaces';
 import Link from 'next/link';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import type { QuotaStatus } from '../../../../server/interfaces/api/userInterfaces';
-import ProgressCircle from '../../Common/ProgressCircle';
 
 const messages = defineMessages({
   requestsremaining:

@@ -1,4 +1,4 @@
-import ButtonWithDropdown from '../ButtonWithDropdown';
+import ButtonWithDropdown from '@app/components/Common/ButtonWithDropdown';
 
 interface PlayButtonProps {
   links: PlayButtonLink[];

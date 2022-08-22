@@ -1,6 +1,11 @@
+import Button from '@app/components/Common/Button';
+import Modal from '@app/components/Common/Modal';
+import Transition from '@app/components/Transition';
+import { Permission, useUser } from '@app/hooks/useUser';
 import { Menu } from '@headlessui/react';
 import { ExclamationIcon } from '@heroicons/react/outline';
 import { DotsVerticalIcon } from '@heroicons/react/solid';
+import type { default as IssueCommentType } from '@server/entity/IssueComment';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -8,11 +13,6 @@ import { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import * as Yup from 'yup';
-import type { default as IssueCommentType } from '../../../../server/entity/IssueComment';
-import { Permission, useUser } from '../../../hooks/useUser';
-import Button from '../../Common/Button';
-import Modal from '../../Common/Modal';
-import Transition from '../../Transition';
 
 const messages = defineMessages({
   postedby: 'Posted {relativeTime} by {username}',

@@ -1,3 +1,6 @@
+import Button from '@app/components/Common/Button';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import useSettings from '@app/hooks/useSettings';
 import { LoginIcon, SupportIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -5,9 +8,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
-import useSettings from '../../hooks/useSettings';
-import Button from '../Common/Button';
-import SensitiveInput from '../Common/SensitiveInput';
 
 const messages = defineMessages({
   email: 'Email Address',

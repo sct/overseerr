@@ -1,21 +1,22 @@
-import { Router } from 'express';
-import GithubAPI from '../api/github';
-import TheMovieDb from '../api/themoviedb';
+import GithubAPI from '@server/api/github';
+import TheMovieDb from '@server/api/themoviedb';
 import type {
   TmdbMovieResult,
   TmdbTvResult,
-} from '../api/themoviedb/interfaces';
-import type { StatusResponse } from '../interfaces/api/settingsInterfaces';
-import { Permission } from '../lib/permissions';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
-import { checkUser, isAuthenticated } from '../middleware/auth';
-import { mapProductionCompany } from '../models/Movie';
-import { mapNetwork } from '../models/Tv';
-import { appDataPath, appDataStatus } from '../utils/appDataVolume';
-import { getAppVersion, getCommitTag } from '../utils/appVersion';
-import restartFlag from '../utils/restartFlag';
-import { isPerson } from '../utils/typeHelpers';
+} from '@server/api/themoviedb/interfaces';
+import type { StatusResponse } from '@server/interfaces/api/settingsInterfaces';
+import { Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
+import { checkUser, isAuthenticated } from '@server/middleware/auth';
+import { mapProductionCompany } from '@server/models/Movie';
+import { mapNetwork } from '@server/models/Tv';
+import settingsRoutes from '@server/routes/settings';
+import { appDataPath, appDataStatus } from '@server/utils/appDataVolume';
+import { getAppVersion, getCommitTag } from '@server/utils/appVersion';
+import restartFlag from '@server/utils/restartFlag';
+import { isPerson } from '@server/utils/typeHelpers';
+import { Router } from 'express';
 import authRoutes from './auth';
 import collectionRoutes from './collection';
 import discoverRoutes, { createTmdbWithRegionLanguage } from './discover';
@@ -27,7 +28,6 @@ import personRoutes from './person';
 import requestRoutes from './request';
 import searchRoutes from './search';
 import serviceRoutes from './service';
-import settingsRoutes from './settings';
 import tvRoutes from './tv';
 import user from './user';
 

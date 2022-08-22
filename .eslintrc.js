@@ -38,6 +38,10 @@ module.exports = {
         prefer: 'type-imports',
       },
     ],
+    'no-relative-import-paths/no-relative-import-paths': [
+      'error',
+      { allowSameFolder: true },
+    ],
   },
   overrides: [
     {
@@ -47,7 +51,7 @@ module.exports = {
       },
     },
   ],
-  plugins: ['jsx-a11y', 'react-hooks', 'formatjs'],
+  plugins: ['jsx-a11y', 'react-hooks', 'formatjs', 'no-relative-import-paths'],
   settings: {
     react: {
       pragma: 'React',

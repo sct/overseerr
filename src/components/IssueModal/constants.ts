@@ -1,6 +1,6 @@
+import { IssueType } from '@server/constants/issue';
 import type { MessageDescriptor } from 'react-intl';
 import { defineMessages } from 'react-intl';
-import { IssueType } from '../../../server/constants/issue';
 
 const messages = defineMessages({
   issueAudio: 'Audio',

@@ -1,10 +1,10 @@
+import NotificationType from '@app/components/NotificationTypeSelector/NotificationType';
+import useSettings from '@app/hooks/useSettings';
+import type { User } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
 import { sortBy } from 'lodash';
 import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import useSettings from '../../hooks/useSettings';
-import type { User } from '../../hooks/useUser';
-import { Permission, useUser } from '../../hooks/useUser';
-import NotificationType from './NotificationType';
 
 const messages = defineMessages({
   notificationTypes: 'Notification Types',

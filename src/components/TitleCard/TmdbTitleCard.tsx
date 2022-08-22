@@ -1,9 +1,9 @@
+import TitleCard from '@app/components/TitleCard';
+import { Permission, useUser } from '@app/hooks/useUser';
+import type { MovieDetails } from '@server/models/Movie';
+import type { TvDetails } from '@server/models/Tv';
 import { useInView } from 'react-intersection-observer';
 import useSWR from 'swr';
-import TitleCard from '.';
-import type { MovieDetails } from '../../../server/models/Movie';
-import type { TvDetails } from '../../../server/models/Tv';
-import { Permission, useUser } from '../../hooks/useUser';
 
 export interface TmdbTitleCardProps {
   id: number;

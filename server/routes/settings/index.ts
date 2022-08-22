@@ -1,3 +1,27 @@
+import PlexAPI from '@server/api/plexapi';
+import PlexTvAPI from '@server/api/plextv';
+import TautulliAPI from '@server/api/tautulli';
+import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
+import { MediaRequest } from '@server/entity/MediaRequest';
+import { User } from '@server/entity/User';
+import type { PlexConnection } from '@server/interfaces/api/plexInterfaces';
+import type {
+  LogMessage,
+  LogsResultsResponse,
+  SettingsAboutResponse,
+} from '@server/interfaces/api/settingsInterfaces';
+import { scheduledJobs } from '@server/job/schedule';
+import type { AvailableCacheIds } from '@server/lib/cache';
+import cacheManager from '@server/lib/cache';
+import { Permission } from '@server/lib/permissions';
+import { plexFullScanner } from '@server/lib/scanners/plex';
+import type { MainSettings } from '@server/lib/settings';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
+import { appDataPath } from '@server/utils/appDataVolume';
+import { getAppVersion } from '@server/utils/appVersion';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
@@ -6,30 +30,6 @@ import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import semver from 'semver';
 import { URL } from 'url';
-import PlexAPI from '../../api/plexapi';
-import PlexTvAPI from '../../api/plextv';
-import TautulliAPI from '../../api/tautulli';
-import { getRepository } from '../../datasource';
-import Media from '../../entity/Media';
-import { MediaRequest } from '../../entity/MediaRequest';
-import { User } from '../../entity/User';
-import type { PlexConnection } from '../../interfaces/api/plexInterfaces';
-import type {
-  LogMessage,
-  LogsResultsResponse,
-  SettingsAboutResponse,
-} from '../../interfaces/api/settingsInterfaces';
-import { scheduledJobs } from '../../job/schedule';
-import type { AvailableCacheIds } from '../../lib/cache';
-import cacheManager from '../../lib/cache';
-import { Permission } from '../../lib/permissions';
-import { plexFullScanner } from '../../lib/scanners/plex';
-import type { MainSettings } from '../../lib/settings';
-import { getSettings } from '../../lib/settings';
-import logger from '../../logger';
-import { isAuthenticated } from '../../middleware/auth';
-import { appDataPath } from '../../utils/appDataVolume';
-import { getAppVersion } from '../../utils/appVersion';
 import notificationRoutes from './notifications';
 import radarrRoutes from './radarr';
 import sonarrRoutes from './sonarr';

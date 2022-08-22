@@ -1,3 +1,11 @@
+import RadarrAPI from '@server/api/servarr/radarr';
+import SonarrAPI from '@server/api/servarr/sonarr';
+import { MediaStatus, MediaType } from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import type { DownloadingItem } from '@server/lib/downloadtracker';
+import downloadTracker from '@server/lib/downloadtracker';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
 import {
   AfterLoad,
   Column,
@@ -9,14 +17,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import RadarrAPI from '../api/servarr/radarr';
-import SonarrAPI from '../api/servarr/sonarr';
-import { MediaStatus, MediaType } from '../constants/media';
-import { getRepository } from '../datasource';
-import type { DownloadingItem } from '../lib/downloadtracker';
-import downloadTracker from '../lib/downloadtracker';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
 import Issue from './Issue';
 import { MediaRequest } from './MediaRequest';
 import Season from './Season';

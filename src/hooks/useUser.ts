@@ -1,9 +1,9 @@
+import { UserType } from '@server/constants/user';
+import type { PermissionCheckOptions } from '@server/lib/permissions';
+import { hasPermission, Permission } from '@server/lib/permissions';
+import type { NotificationAgentKey } from '@server/lib/settings';
 import useSWR from 'swr';
 import type { MutatorCallback } from 'swr/dist/types';
-import { UserType } from '../../server/constants/user';
-import type { PermissionCheckOptions } from '../../server/lib/permissions';
-import { hasPermission, Permission } from '../../server/lib/permissions';
-import type { NotificationAgentKey } from '../../server/lib/settings';
 
 export { Permission, UserType };
 export type { PermissionCheckOptions };

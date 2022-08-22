@@ -1,7 +1,7 @@
+import CachedImage from '@app/components/Common/CachedImage';
+import { withProperties } from '@app/utils/typeHelpers';
 import Link from 'next/link';
 import { useState } from 'react';
-import { withProperties } from '../../utils/typeHelpers';
-import CachedImage from '../Common/CachedImage';
 
 interface GenreCardProps {
   name: string;

@@ -1,3 +1,20 @@
+import Alert from '@app/components/Common/Alert';
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import Header from '@app/components/Common/Header';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import PageTitle from '@app/components/Common/PageTitle';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import Table from '@app/components/Common/Table';
+import Transition from '@app/components/Transition';
+import BulkEditModal from '@app/components/UserList/BulkEditModal';
+import PlexImportModal from '@app/components/UserList/PlexImportModal';
+import useSettings from '@app/hooks/useSettings';
+import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
+import type { User } from '@app/hooks/useUser';
+import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { TrashIcon } from '@heroicons/react/outline';
 import {
   ChevronLeftIcon,
@@ -7,6 +24,8 @@ import {
   SortDescendingIcon,
   UserAddIcon,
 } from '@heroicons/react/solid';
+import type { UserResultsResponse } from '@server/interfaces/api/userInterfaces';
+import { hasPermission } from '@server/lib/permissions';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -16,25 +35,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import type { UserResultsResponse } from '../../../server/interfaces/api/userInterfaces';
-import { hasPermission } from '../../../server/lib/permissions';
-import useSettings from '../../hooks/useSettings';
-import { useUpdateQueryParams } from '../../hooks/useUpdateQueryParams';
-import type { User } from '../../hooks/useUser';
-import { Permission, UserType, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Alert from '../Common/Alert';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import Header from '../Common/Header';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import Modal from '../Common/Modal';
-import PageTitle from '../Common/PageTitle';
-import SensitiveInput from '../Common/SensitiveInput';
-import Table from '../Common/Table';
-import Transition from '../Transition';
-import BulkEditModal from './BulkEditModal';
-import PlexImportModal from './PlexImportModal';
 
 const messages = defineMessages({
   users: 'Users',

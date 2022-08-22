@@ -1,3 +1,11 @@
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import CachedImage from '@app/components/Common/CachedImage';
+import RequestModal from '@app/components/RequestModal';
+import StatusBadge from '@app/components/StatusBadge';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import { withProperties } from '@app/utils/typeHelpers';
 import {
   CheckIcon,
   PencilIcon,
@@ -5,6 +13,10 @@ import {
   TrashIcon,
   XIcon,
 } from '@heroicons/react/solid';
+import { MediaRequestStatus } from '@server/constants/media';
+import type { MediaRequest } from '@server/entity/MediaRequest';
+import type { MovieDetails } from '@server/models/Movie';
+import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -12,18 +24,6 @@ import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
-import { MediaRequestStatus } from '../../../server/constants/media';
-import type { MediaRequest } from '../../../server/entity/MediaRequest';
-import type { MovieDetails } from '../../../server/models/Movie';
-import type { TvDetails } from '../../../server/models/Tv';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import { withProperties } from '../../utils/typeHelpers';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import CachedImage from '../Common/CachedImage';
-import RequestModal from '../RequestModal';
-import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',

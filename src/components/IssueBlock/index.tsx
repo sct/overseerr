@@ -1,15 +1,15 @@
+import Button from '@app/components/Common/Button';
+import { issueOptions } from '@app/components/IssueModal/constants';
+import { useUser } from '@app/hooks/useUser';
 import {
   CalendarIcon,
   ExclamationIcon,
   EyeIcon,
   UserIcon,
 } from '@heroicons/react/solid';
+import type Issue from '@server/entity/Issue';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
-import type Issue from '../../../server/entity/Issue';
-import { useUser } from '../../hooks/useUser';
-import Button from '../Common/Button';
-import { issueOptions } from '../IssueModal/constants';
 
 interface IssueBlockProps {
   issue: Issue;

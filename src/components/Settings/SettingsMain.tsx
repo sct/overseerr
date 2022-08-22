@@ -1,26 +1,26 @@
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import LanguageSelector from '@app/components/LanguageSelector';
+import RegionSelector from '@app/components/RegionSelector';
+import CopyButton from '@app/components/Settings/CopyButton';
+import type { AvailableLocale } from '@app/context/LanguageContext';
+import { availableLanguages } from '@app/context/LanguageContext';
+import useLocale from '@app/hooks/useLocale';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
 import { RefreshIcon } from '@heroicons/react/solid';
+import type { UserSettingsGeneralResponse } from '@server/interfaces/api/userSettingsInterfaces';
+import type { MainSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
-import type { UserSettingsGeneralResponse } from '../../../server/interfaces/api/userSettingsInterfaces';
-import type { MainSettings } from '../../../server/lib/settings';
-import type { AvailableLocale } from '../../context/LanguageContext';
-import { availableLanguages } from '../../context/LanguageContext';
-import useLocale from '../../hooks/useLocale';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Badge from '../Common/Badge';
-import Button from '../Common/Button';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import PageTitle from '../Common/PageTitle';
-import SensitiveInput from '../Common/SensitiveInput';
-import LanguageSelector from '../LanguageSelector';
-import RegionSelector from '../RegionSelector';
-import CopyButton from './CopyButton';
 
 const messages = defineMessages({
   general: 'General',

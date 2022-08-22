@@ -1,5 +1,5 @@
+import Discover from '@app/components/Discover';
 import type { NextPage } from 'next';
-import Discover from '../components/Discover';
 
 const Index: NextPage = () => {
   return <Discover />;

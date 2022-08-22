@@ -1,3 +1,7 @@
+import VersionStatus from '@app/components/Layout/VersionStatus';
+import Transition from '@app/components/Transition';
+import useClickOutside from '@app/hooks/useClickOutside';
+import { Permission, useUser } from '@app/hooks/useUser';
 import {
   ClockIcon,
   CogIcon,
@@ -10,10 +14,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import useClickOutside from '../../../hooks/useClickOutside';
-import { Permission, useUser } from '../../../hooks/useUser';
-import Transition from '../../Transition';
-import VersionStatus from '../VersionStatus';
 
 const messages = defineMessages({
   dashboard: 'Discover',

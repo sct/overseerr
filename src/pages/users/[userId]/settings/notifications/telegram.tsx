@@ -1,9 +1,9 @@
+import UserSettings from '@app/components/UserProfile/UserSettings';
+import UserNotificationSettings from '@app/components/UserProfile/UserSettings/UserNotificationSettings';
+import UserNotificationsTelegram from '@app/components/UserProfile/UserSettings/UserNotificationSettings/UserNotificationsTelegram';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
-import UserSettings from '../../../../../components/UserProfile/UserSettings';
-import UserNotificationSettings from '../../../../../components/UserProfile/UserSettings/UserNotificationSettings';
-import UserNotificationsTelegram from '../../../../../components/UserProfile/UserSettings/UserNotificationSettings/UserNotificationsTelegram';
-import useRouteGuard from '../../../../../hooks/useRouteGuard';
-import { Permission } from '../../../../../hooks/useUser';
 
 const NotificationsPage: NextPage = () => {
   useRouteGuard(Permission.MANAGE_USERS);

@@ -1,3 +1,11 @@
+import Alert from '@app/components/Common/Alert';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import Error from '@app/pages/_error';
 import { SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
@@ -6,14 +14,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import { Permission, useUser } from '../../../../hooks/useUser';
-import globalMessages from '../../../../i18n/globalMessages';
-import Error from '../../../../pages/_error';
-import Alert from '../../../Common/Alert';
-import Button from '../../../Common/Button';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import PageTitle from '../../../Common/PageTitle';
-import SensitiveInput from '../../../Common/SensitiveInput';
 
 const messages = defineMessages({
   password: 'Password',

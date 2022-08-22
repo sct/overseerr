@@ -1,7 +1,7 @@
+import MovieDetails from '@app/components/MovieDetails';
+import type { MovieDetails as MovieDetailsType } from '@server/models/Movie';
 import axios from 'axios';
 import type { NextPage } from 'next';
-import type { MovieDetails as MovieDetailsType } from '../../../../server/models/Movie';
-import MovieDetails from '../../../components/MovieDetails';
 
 interface MoviePageProps {
   movie?: MovieDetailsType;

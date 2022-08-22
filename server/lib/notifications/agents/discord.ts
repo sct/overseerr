@@ -1,15 +1,15 @@
+import { IssueStatus, IssueTypeName } from '@server/constants/issue';
+import { getRepository } from '@server/datasource';
+import { User } from '@server/entity/User';
+import type { NotificationAgentDiscord } from '@server/lib/settings';
+import { getSettings, NotificationAgentKey } from '@server/lib/settings';
+import logger from '@server/logger';
 import axios from 'axios';
 import {
   hasNotificationType,
   Notification,
   shouldSendAdminNotification,
 } from '..';
-import { IssueStatus, IssueTypeName } from '../../../constants/issue';
-import { getRepository } from '../../../datasource';
-import { User } from '../../../entity/User';
-import logger from '../../../logger';
-import type { NotificationAgentDiscord } from '../../settings';
-import { getSettings, NotificationAgentKey } from '../../settings';
 import type { NotificationAgent, NotificationPayload } from './agent';
 import { BaseAgent } from './agent';
 

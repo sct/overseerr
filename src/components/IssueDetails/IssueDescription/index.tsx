@@ -1,12 +1,12 @@
+import Button from '@app/components/Common/Button';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { Menu, Transition } from '@headlessui/react';
 import { DotsVerticalIcon } from '@heroicons/react/solid';
 import { Field, Form, Formik } from 'formik';
 import { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
-import { Permission, useUser } from '../../../hooks/useUser';
-import globalMessages from '../../../i18n/globalMessages';
-import Button from '../../Common/Button';
 
 const messages = defineMessages({
   description: 'Description',

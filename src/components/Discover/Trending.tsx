@@ -1,14 +1,14 @@
-import { defineMessages, useIntl } from 'react-intl';
+import Header from '@app/components/Common/Header';
+import ListView from '@app/components/Common/ListView';
+import PageTitle from '@app/components/Common/PageTitle';
+import useDiscover from '@app/hooks/useDiscover';
+import Error from '@app/pages/_error';
 import type {
   MovieResult,
   PersonResult,
   TvResult,
-} from '../../../server/models/Search';
-import useDiscover from '../../hooks/useDiscover';
-import Error from '../../pages/_error';
-import Header from '../Common/Header';
-import ListView from '../Common/ListView';
-import PageTitle from '../Common/PageTitle';
+} from '@server/models/Search';
+import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   trending: 'Trending',

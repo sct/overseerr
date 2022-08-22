@@ -1,7 +1,7 @@
+import RequestList from '@app/components/RequestList';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
-import RequestList from '../../../components/RequestList';
-import useRouteGuard from '../../../hooks/useRouteGuard';
-import { Permission } from '../../../hooks/useUser';
 
 const UserRequestsPage: NextPage = () => {
   useRouteGuard([Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW], {

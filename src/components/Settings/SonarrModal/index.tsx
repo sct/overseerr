@@ -1,4 +1,9 @@
+import Modal from '@app/components/Common/Modal';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import Transition from '@app/components/Transition';
+import globalMessages from '@app/i18n/globalMessages';
 import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
+import type { SonarrSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -7,11 +12,6 @@ import type { OnChangeValue } from 'react-select';
 import Select from 'react-select';
 import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
-import type { SonarrSettings } from '../../../../server/lib/settings';
-import globalMessages from '../../../i18n/globalMessages';
-import Modal from '../../Common/Modal';
-import SensitiveInput from '../../Common/SensitiveInput';
-import Transition from '../../Transition';
 
 type OptionType = {
   value: number;

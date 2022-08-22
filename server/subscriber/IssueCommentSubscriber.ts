@@ -1,15 +1,15 @@
+import TheMovieDb from '@server/api/themoviedb';
+import { IssueType, IssueTypeName } from '@server/constants/issue';
+import { MediaType } from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import IssueComment from '@server/entity/IssueComment';
+import Media from '@server/entity/Media';
+import notificationManager, { Notification } from '@server/lib/notifications';
+import { Permission } from '@server/lib/permissions';
+import logger from '@server/logger';
 import { sortBy } from 'lodash';
 import type { EntitySubscriberInterface, InsertEvent } from 'typeorm';
 import { EventSubscriber } from 'typeorm';
-import TheMovieDb from '../api/themoviedb';
-import { IssueType, IssueTypeName } from '../constants/issue';
-import { MediaType } from '../constants/media';
-import { getRepository } from '../datasource';
-import IssueComment from '../entity/IssueComment';
-import Media from '../entity/Media';
-import notificationManager, { Notification } from '../lib/notifications';
-import { Permission } from '../lib/permissions';
-import logger from '../logger';
 
 @EventSubscriber()
 export class IssueCommentSubscriber

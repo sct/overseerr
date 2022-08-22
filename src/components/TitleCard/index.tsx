@@ -1,21 +1,21 @@
+import Spinner from '@app/assets/spinner.svg';
+import Button from '@app/components/Common/Button';
+import CachedImage from '@app/components/Common/CachedImage';
+import RequestModal from '@app/components/RequestModal';
+import ErrorCard from '@app/components/TitleCard/ErrorCard';
+import Placeholder from '@app/components/TitleCard/Placeholder';
+import Transition from '@app/components/Transition';
+import { useIsTouch } from '@app/hooks/useIsTouch';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import { withProperties } from '@app/utils/typeHelpers';
 import { DownloadIcon } from '@heroicons/react/outline';
 import { BellIcon, CheckIcon, ClockIcon } from '@heroicons/react/solid';
+import { MediaStatus } from '@server/constants/media';
+import type { MediaType } from '@server/models/Search';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { MediaStatus } from '../../../server/constants/media';
-import type { MediaType } from '../../../server/models/Search';
-import Spinner from '../../assets/spinner.svg';
-import { useIsTouch } from '../../hooks/useIsTouch';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import { withProperties } from '../../utils/typeHelpers';
-import Button from '../Common/Button';
-import CachedImage from '../Common/CachedImage';
-import RequestModal from '../RequestModal';
-import Transition from '../Transition';
-import ErrorCard from './ErrorCard';
-import Placeholder from './Placeholder';
 
 interface TitleCardProps {
   id: number;

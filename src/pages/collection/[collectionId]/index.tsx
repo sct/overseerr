@@ -1,7 +1,7 @@
+import CollectionDetails from '@app/components/CollectionDetails';
+import type { Collection } from '@server/models/Collection';
 import axios from 'axios';
 import type { GetServerSideProps, NextPage } from 'next';
-import type { Collection } from '../../../../server/models/Collection';
-import CollectionDetails from '../../../components/CollectionDetails';
 
 interface CollectionPageProps {
   collection?: Collection;

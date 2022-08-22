@@ -1,4 +1,15 @@
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import NotificationTypeSelector, {
+  ALL_NOTIFICATIONS,
+} from '@app/components/NotificationTypeSelector';
+import { OpenPgpLink } from '@app/components/Settings/Notifications/NotificationsEmail';
+import { useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
+import type { UserSettingsNotificationsResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
@@ -6,17 +17,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import type { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
-import { useUser } from '../../../../hooks/useUser';
-import globalMessages from '../../../../i18n/globalMessages';
-import Badge from '../../../Common/Badge';
-import Button from '../../../Common/Button';
-import LoadingSpinner from '../../../Common/LoadingSpinner';
-import SensitiveInput from '../../../Common/SensitiveInput';
-import NotificationTypeSelector, {
-  ALL_NOTIFICATIONS,
-} from '../../../NotificationTypeSelector';
-import { OpenPgpLink } from '../../../Settings/Notifications/NotificationsEmail';
 
 const messages = defineMessages({
   emailsettingssaved: 'Email notification settings saved successfully!',

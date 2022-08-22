@@ -1,20 +1,20 @@
+import PageTitle from '@app/components/Common/PageTitle';
+import MovieGenreSlider from '@app/components/Discover/MovieGenreSlider';
+import NetworkSlider from '@app/components/Discover/NetworkSlider';
+import StudioSlider from '@app/components/Discover/StudioSlider';
+import TvGenreSlider from '@app/components/Discover/TvGenreSlider';
+import MediaSlider from '@app/components/MediaSlider';
+import RequestCard from '@app/components/RequestCard';
+import Slider from '@app/components/Slider';
+import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
+import { Permission, UserType, useUser } from '@app/hooks/useUser';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
+import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
+import type { MediaResultsResponse } from '@server/interfaces/api/mediaInterfaces';
+import type { RequestResultsResponse } from '@server/interfaces/api/requestInterfaces';
 import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { WatchlistItem } from '../../../server/interfaces/api/discoverInterfaces';
-import type { MediaResultsResponse } from '../../../server/interfaces/api/mediaInterfaces';
-import type { RequestResultsResponse } from '../../../server/interfaces/api/requestInterfaces';
-import { Permission, UserType, useUser } from '../../hooks/useUser';
-import PageTitle from '../Common/PageTitle';
-import MediaSlider from '../MediaSlider';
-import RequestCard from '../RequestCard';
-import Slider from '../Slider';
-import TmdbTitleCard from '../TitleCard/TmdbTitleCard';
-import MovieGenreSlider from './MovieGenreSlider';
-import NetworkSlider from './NetworkSlider';
-import StudioSlider from './StudioSlider';
-import TvGenreSlider from './TvGenreSlider';
 
 const messages = defineMessages({
   discover: 'Discover',

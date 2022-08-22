@@ -1,3 +1,7 @@
+import Button from '@app/components/Common/Button';
+import ImageFader from '@app/components/Common/ImageFader';
+import PageTitle from '@app/components/Common/PageTitle';
+import LanguagePicker from '@app/components/Layout/LanguagePicker';
 import { ArrowLeftIcon, MailIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -5,10 +9,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
-import Button from '../Common/Button';
-import ImageFader from '../Common/ImageFader';
-import PageTitle from '../Common/PageTitle';
-import LanguagePicker from '../Layout/LanguagePicker';
 
 const messages = defineMessages({
   passwordreset: 'Password Reset',

@@ -1,9 +1,9 @@
+import NotificationsWebPush from '@app/components/Settings/Notifications/NotificationsWebPush';
+import SettingsLayout from '@app/components/Settings/SettingsLayout';
+import SettingsNotifications from '@app/components/Settings/SettingsNotifications';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
-import NotificationsWebPush from '../../../components/Settings/Notifications/NotificationsWebPush';
-import SettingsLayout from '../../../components/Settings/SettingsLayout';
-import SettingsNotifications from '../../../components/Settings/SettingsNotifications';
-import useRouteGuard from '../../../hooks/useRouteGuard';
-import { Permission } from '../../../hooks/useUser';
 
 const NotificationsWebPushPage: NextPage = () => {
   useRouteGuard(Permission.ADMIN);

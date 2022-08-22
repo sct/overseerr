@@ -1,8 +1,8 @@
+import type { PlexDevice } from '@server/interfaces/api/plexInterfaces';
+import cacheManager from '@server/lib/cache';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
 import xml2js from 'xml2js';
-import type { PlexDevice } from '../interfaces/api/plexInterfaces';
-import cacheManager from '../lib/cache';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
 import ExternalAPI from './externalapi';
 
 interface PlexAccountResponse {

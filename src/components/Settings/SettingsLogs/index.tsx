@@ -1,3 +1,13 @@
+import Badge from '@app/components/Common/Badge';
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import Modal from '@app/components/Common/Modal';
+import PageTitle from '@app/components/Common/PageTitle';
+import Table from '@app/components/Common/Table';
+import Transition from '@app/components/Transition';
+import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
+import globalMessages from '@app/i18n/globalMessages';
+import Error from '@app/pages/_error';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -7,26 +17,16 @@ import {
   PauseIcon,
   PlayIcon,
 } from '@heroicons/react/solid';
+import type {
+  LogMessage,
+  LogsResultsResponse,
+} from '@server/interfaces/api/settingsInterfaces';
 import copy from 'copy-to-clipboard';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
-import type {
-  LogMessage,
-  LogsResultsResponse,
-} from '../../../../server/interfaces/api/settingsInterfaces';
-import { useUpdateQueryParams } from '../../../hooks/useUpdateQueryParams';
-import globalMessages from '../../../i18n/globalMessages';
-import Error from '../../../pages/_error';
-import Badge from '../../Common/Badge';
-import Button from '../../Common/Button';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import Modal from '../../Common/Modal';
-import PageTitle from '../../Common/PageTitle';
-import Table from '../../Common/Table';
-import Transition from '../../Transition';
 
 const messages = defineMessages({
   logs: 'Logs',

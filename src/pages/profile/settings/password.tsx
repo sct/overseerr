@@ -1,6 +1,6 @@
+import UserSettings from '@app/components/UserProfile/UserSettings';
+import UserPasswordChange from '@app/components/UserProfile/UserSettings/UserPasswordChange';
 import type { NextPage } from 'next';
-import UserSettings from '../../../components/UserProfile/UserSettings';
-import UserPasswordChange from '../../../components/UserProfile/UserSettings/UserPasswordChange';
 
 const UserPassswordPage: NextPage = () => {
   return (

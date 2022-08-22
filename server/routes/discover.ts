@@ -1,21 +1,25 @@
-import { Router } from 'express';
-import { sortBy } from 'lodash';
-import PlexTvAPI from '../api/plextv';
-import TheMovieDb from '../api/themoviedb';
-import { MediaType } from '../constants/media';
-import { getRepository } from '../datasource';
-import Media from '../entity/Media';
-import { User } from '../entity/User';
+import PlexTvAPI from '@server/api/plextv';
+import TheMovieDb from '@server/api/themoviedb';
+import { MediaType } from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
+import { User } from '@server/entity/User';
 import type {
   GenreSliderItem,
   WatchlistItem,
-} from '../interfaces/api/discoverInterfaces';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
-import { mapProductionCompany } from '../models/Movie';
-import { mapMovieResult, mapPersonResult, mapTvResult } from '../models/Search';
-import { mapNetwork } from '../models/Tv';
-import { isMovie, isPerson } from '../utils/typeHelpers';
+} from '@server/interfaces/api/discoverInterfaces';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
+import { mapProductionCompany } from '@server/models/Movie';
+import {
+  mapMovieResult,
+  mapPersonResult,
+  mapTvResult,
+} from '@server/models/Search';
+import { mapNetwork } from '@server/models/Tv';
+import { isMovie, isPerson } from '@server/utils/typeHelpers';
+import { Router } from 'express';
+import { sortBy } from 'lodash';
 
 export const createTmdbWithRegionLanguage = (user?: User): TheMovieDb => {
   const settings = getSettings();

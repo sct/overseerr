@@ -1,5 +1,5 @@
+import DiscoverTvUpcoming from '@app/components/Discover/DiscoverTvUpcoming';
 import type { NextPage } from 'next';
-import DiscoverTvUpcoming from '../../../components/Discover/DiscoverTvUpcoming';
 
 const DiscoverTvPage: NextPage = () => {
   return <DiscoverTvUpcoming />;

@@ -1,5 +1,5 @@
+import Trending from '@app/components/Discover/Trending';
 import type { NextPage } from 'next';
-import Trending from '../../components/Discover/Trending';
 
 const TrendingPage: NextPage = () => {
   return <Trending />;

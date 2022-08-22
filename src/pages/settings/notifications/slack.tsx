@@ -1,9 +1,9 @@
+import NotificationsSlack from '@app/components/Settings/Notifications/NotificationsSlack';
+import SettingsLayout from '@app/components/Settings/SettingsLayout';
+import SettingsNotifications from '@app/components/Settings/SettingsNotifications';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
-import NotificationsSlack from '../../../components/Settings/Notifications/NotificationsSlack';
-import SettingsLayout from '../../../components/Settings/SettingsLayout';
-import SettingsNotifications from '../../../components/Settings/SettingsNotifications';
-import useRouteGuard from '../../../hooks/useRouteGuard';
-import { Permission } from '../../../hooks/useUser';
 
 const NotificationsSlackPage: NextPage = () => {
   useRouteGuard(Permission.ADMIN);

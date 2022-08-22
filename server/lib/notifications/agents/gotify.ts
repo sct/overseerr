@@ -1,9 +1,9 @@
+import { IssueStatus, IssueTypeName } from '@server/constants/issue';
+import type { NotificationAgentGotify } from '@server/lib/settings';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
-import { IssueStatus, IssueTypeName } from '../../../constants/issue';
-import logger from '../../../logger';
-import type { NotificationAgentGotify } from '../../settings';
-import { getSettings } from '../../settings';
 import type { NotificationAgent, NotificationPayload } from './agent';
 import { BaseAgent } from './agent';
 

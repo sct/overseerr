@@ -1,18 +1,18 @@
+import Accordion from '@app/components/Common/Accordion';
+import ImageFader from '@app/components/Common/ImageFader';
+import PageTitle from '@app/components/Common/PageTitle';
+import LanguagePicker from '@app/components/Layout/LanguagePicker';
+import LocalLogin from '@app/components/Login/LocalLogin';
+import PlexLoginButton from '@app/components/PlexLoginButton';
+import Transition from '@app/components/Transition';
+import useSettings from '@app/hooks/useSettings';
+import { useUser } from '@app/hooks/useUser';
 import { XCircleIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import useSettings from '../../hooks/useSettings';
-import { useUser } from '../../hooks/useUser';
-import Accordion from '../Common/Accordion';
-import ImageFader from '../Common/ImageFader';
-import PageTitle from '../Common/PageTitle';
-import LanguagePicker from '../Layout/LanguagePicker';
-import PlexLoginButton from '../PlexLoginButton';
-import Transition from '../Transition';
-import LocalLogin from './LocalLogin';
 
 const messages = defineMessages({
   signin: 'Sign In',

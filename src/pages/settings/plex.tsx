@@ -1,8 +1,8 @@
+import SettingsLayout from '@app/components/Settings/SettingsLayout';
+import SettingsPlex from '@app/components/Settings/SettingsPlex';
+import useRouteGuard from '@app/hooks/useRouteGuard';
+import { Permission } from '@app/hooks/useUser';
 import type { NextPage } from 'next';
-import SettingsLayout from '../../components/Settings/SettingsLayout';
-import SettingsPlex from '../../components/Settings/SettingsPlex';
-import useRouteGuard from '../../hooks/useRouteGuard';
-import { Permission } from '../../hooks/useUser';
 
 const PlexSettingsPage: NextPage = () => {
   useRouteGuard(Permission.ADMIN);

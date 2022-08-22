@@ -1,3 +1,29 @@
+import RTAudFresh from '@app/assets/rt_aud_fresh.svg';
+import RTAudRotten from '@app/assets/rt_aud_rotten.svg';
+import RTFresh from '@app/assets/rt_fresh.svg';
+import RTRotten from '@app/assets/rt_rotten.svg';
+import TmdbLogo from '@app/assets/tmdb_logo.svg';
+import Button from '@app/components/Common/Button';
+import CachedImage from '@app/components/Common/CachedImage';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import PageTitle from '@app/components/Common/PageTitle';
+import type { PlayButtonLink } from '@app/components/Common/PlayButton';
+import PlayButton from '@app/components/Common/PlayButton';
+import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
+import IssueModal from '@app/components/IssueModal';
+import ManageSlideOver from '@app/components/ManageSlideOver';
+import MediaSlider from '@app/components/MediaSlider';
+import PersonCard from '@app/components/PersonCard';
+import RequestButton from '@app/components/RequestButton';
+import RequestModal from '@app/components/RequestModal';
+import Slider from '@app/components/Slider';
+import StatusBadge from '@app/components/StatusBadge';
+import useLocale from '@app/hooks/useLocale';
+import useSettings from '@app/hooks/useSettings';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import Error from '@app/pages/_error';
+import { sortCrewPriority } from '@app/utils/creditHelpers';
 import {
   ArrowCircleRightIcon,
   CogIcon,
@@ -5,6 +31,12 @@ import {
   FilmIcon,
   PlayIcon,
 } from '@heroicons/react/outline';
+import type { RTRating } from '@server/api/rottentomatoes';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
+import { IssueStatus } from '@server/constants/issue';
+import { MediaStatus } from '@server/constants/media';
+import type { Crew } from '@server/models/common';
+import type { TvDetails as TvDetailsType } from '@server/models/Tv';
 import { hasFlag } from 'country-flag-icons';
 import 'country-flag-icons/3x2/flags.css';
 import Link from 'next/link';
@@ -12,38 +44,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
-import type { RTRating } from '../../../server/api/rottentomatoes';
-import { ANIME_KEYWORD_ID } from '../../../server/api/themoviedb/constants';
-import { IssueStatus } from '../../../server/constants/issue';
-import { MediaStatus } from '../../../server/constants/media';
-import type { Crew } from '../../../server/models/common';
-import type { TvDetails as TvDetailsType } from '../../../server/models/Tv';
-import RTAudFresh from '../../assets/rt_aud_fresh.svg';
-import RTAudRotten from '../../assets/rt_aud_rotten.svg';
-import RTFresh from '../../assets/rt_fresh.svg';
-import RTRotten from '../../assets/rt_rotten.svg';
-import TmdbLogo from '../../assets/tmdb_logo.svg';
-import useLocale from '../../hooks/useLocale';
-import useSettings from '../../hooks/useSettings';
-import { Permission, useUser } from '../../hooks/useUser';
-import globalMessages from '../../i18n/globalMessages';
-import Error from '../../pages/_error';
-import { sortCrewPriority } from '../../utils/creditHelpers';
-import Button from '../Common/Button';
-import CachedImage from '../Common/CachedImage';
-import LoadingSpinner from '../Common/LoadingSpinner';
-import PageTitle from '../Common/PageTitle';
-import type { PlayButtonLink } from '../Common/PlayButton';
-import PlayButton from '../Common/PlayButton';
-import ExternalLinkBlock from '../ExternalLinkBlock';
-import IssueModal from '../IssueModal';
-import ManageSlideOver from '../ManageSlideOver';
-import MediaSlider from '../MediaSlider';
-import PersonCard from '../PersonCard';
-import RequestButton from '../RequestButton';
-import RequestModal from '../RequestModal';
-import Slider from '../Slider';
-import StatusBadge from '../StatusBadge';
 
 const messages = defineMessages({
   firstAirDate: 'First Air Date',

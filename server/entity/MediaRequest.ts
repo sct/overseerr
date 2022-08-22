@@ -1,3 +1,23 @@
+import type { RadarrMovieOptions } from '@server/api/servarr/radarr';
+import RadarrAPI from '@server/api/servarr/radarr';
+import type {
+  AddSeriesOptions,
+  SonarrSeries,
+} from '@server/api/servarr/sonarr';
+import SonarrAPI from '@server/api/servarr/sonarr';
+import TheMovieDb from '@server/api/themoviedb';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+  MediaType,
+} from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import type { MediaRequestBody } from '@server/interfaces/api/requestInterfaces';
+import notificationManager, { Notification } from '@server/lib/notifications';
+import { Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
 import { isEqual, truncate } from 'lodash';
 import {
   AfterInsert,
@@ -12,19 +32,6 @@ import {
   RelationCount,
   UpdateDateColumn,
 } from 'typeorm';
-import type { RadarrMovieOptions } from '../api/servarr/radarr';
-import RadarrAPI from '../api/servarr/radarr';
-import type { AddSeriesOptions, SonarrSeries } from '../api/servarr/sonarr';
-import SonarrAPI from '../api/servarr/sonarr';
-import TheMovieDb from '../api/themoviedb';
-import { ANIME_KEYWORD_ID } from '../api/themoviedb/constants';
-import { MediaRequestStatus, MediaStatus, MediaType } from '../constants/media';
-import { getRepository } from '../datasource';
-import type { MediaRequestBody } from '../interfaces/api/requestInterfaces';
-import notificationManager, { Notification } from '../lib/notifications';
-import { Permission } from '../lib/permissions';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
 import Media from './Media';
 import SeasonRequest from './SeasonRequest';
 import { User } from './User';
