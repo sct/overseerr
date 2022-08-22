@@ -390,24 +390,23 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                 type: 'or',
               }
             ) && (
-              <Tooltip
-                content={intl.formatMessage(messages.reportissue)}
-                className="ml-2 first:ml-0"
-              >
+              <Tooltip content={intl.formatMessage(messages.reportissue)}>
                 <Button
                   buttonType="warning"
                   onClick={() => setShowIssueModal(true)}
+                  className="ml-2 first:ml-0"
                 >
                   <ExclamationIcon />
                 </Button>
               </Tooltip>
             )}
           {hasPermission(Permission.MANAGE_REQUESTS) && data.mediaInfo && (
-            <Tooltip
-              content={intl.formatMessage(messages.managemovie)}
-              className="relative ml-2 first:ml-0"
-            >
-              <Button buttonType="default" onClick={() => setShowManager(true)}>
+            <Tooltip content={intl.formatMessage(messages.managemovie)}>
+              <Button
+                buttonType="default"
+                onClick={() => setShowManager(true)}
+                className="relative ml-2 first:ml-0"
+              >
                 <CogIcon className="!mr-0" />
                 {hasPermission(
                   [Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES],

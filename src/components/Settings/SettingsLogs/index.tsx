@@ -331,12 +331,12 @@ const SettingsLogs = () => {
                     {row.data && (
                       <Tooltip
                         content={intl.formatMessage(messages.viewdetails)}
-                        className="m-1"
                       >
                         <Button
                           buttonType="primary"
                           buttonSize="sm"
                           onClick={() => setActiveLog(row)}
+                          className="m-1"
                         >
                           <DocumentSearchIcon className="icon-md" />
                         </Button>
@@ -344,7 +344,6 @@ const SettingsLogs = () => {
                     )}
                     <Tooltip
                       content={intl.formatMessage(messages.copyToClipboard)}
-                      className="m-1"
                     >
                       <Button
                         buttonType="primary"
