@@ -70,7 +70,7 @@ const ExternalLinkBlock = ({
       )}
       {rtUrl && (
         <a
-          href={`${rtUrl}`}
+          href={rtUrl}
           className="w-14 opacity-50 transition duration-300 hover:opacity-100"
           target="_blank"
           rel="noreferrer"

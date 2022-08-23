@@ -63,9 +63,10 @@ const StatusBadge = ({
         : settings.currentSettings.series4kEnabled))
   ) {
     mediaLink = plexUrl;
-  } else if (hasPermission(Permission.MANAGE_REQUESTS)) {
-    mediaLink =
-      mediaType && tmdbId ? `/${mediaType}/${tmdbId}?manage=1` : serviceUrl;
+  } else if (hasPermission(Permission.MANAGE_REQUESTS) && mediaType && tmdbId) {
+    mediaLink = `/${mediaType}/${tmdbId}?manage=1`;
+  } else if (hasPermission(Permission.ADMIN)) {
+    mediaLink = serviceUrl;
   }
 
   switch (status) {

@@ -184,11 +184,11 @@
   }
 
   .media-ratings {
-    @apply flex items-center justify-center border-b border-gray-700 px-4 py-2 font-medium last:border-b-0;
+    @apply flex items-center justify-center space-x-5 border-b border-gray-700 px-4 py-2 font-medium last:border-b-0;
   }
 
   .media-rating {
-    @apply mr-4 flex items-center last:mr-0;
+    @apply flex items-center space-x-1;
   }
 
   .error-message {
