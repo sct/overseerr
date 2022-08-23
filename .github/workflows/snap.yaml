@@ -29,7 +29,7 @@ jobs:
           - armhf
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Prepare
         id: prepare
         run: |
@@ -40,16 +40,14 @@ jobs:
             echo ::set-output name=RELEASE::edge
           fi
       - name: Set Up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          image: tonistiigi/binfmt@sha256:df15403e06a03c2f461c1f7938b171fda34a5849eb63a70e2a2109ed5a778bde
+        uses: docker/setup-qemu-action@v2
       - name: Build Snap Package
         uses: diddlesnaps/snapcraft-multiarch-action@v1
         id: build
         with:
           architecture: ${{ matrix.architecture }}
       - name: Upload Snap Package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: overseerr-snap-package-${{ matrix.architecture }}
           path: ${{ steps.build.outputs.snap }}
@@ -71,7 +69,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Get Build Job Status
-        uses: technote-space/workflow-conclusion-action@v2
+        uses: technote-space/workflow-conclusion-action@v3
       - name: Combine Job Status
         id: status
         run: |
