@@ -125,6 +125,9 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
     <SWRConfig
       value={{
         fetcher: (url) => axios.get(url).then((res) => res.data),
+        fallback: {
+          '/api/v1/auth/me': user,
+        },
       }}
     >
       <LanguageContext.Provider value={{ locale: currentLocale, setLocale }}>
