@@ -1,6 +1,6 @@
 describe('User Profile', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('ADMIN_EMAIL'), Cypress.env('ADMIN_PASSWORD'));
+    cy.loginAsAdmin();
   });
 
   it('opens user profile page from the home page', () => {

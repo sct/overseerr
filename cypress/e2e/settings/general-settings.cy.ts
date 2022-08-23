@@ -1,6 +1,6 @@
 describe('General Settings', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('ADMIN_EMAIL'), Cypress.env('ADMIN_PASSWORD'));
+    cy.loginAsAdmin();
   });
 
   it('opens the settings page from the home page', () => {
