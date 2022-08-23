@@ -75,8 +75,6 @@ const messages = defineMessages({
     'Production {countryCount, plural, one {Country} other {Countries}}',
   reportissue: 'Report an Issue',
   manageseries: 'Manage Series',
-  airedrelative: 'Aired {relativeTime}',
-  latestepisode: 'Latest Episode',
   seasonstitle: 'Seasons',
   episodeCount: '{episodeCount, plural, one {# Episode} other {# Episodes}}',
   seasonnumber: 'Season {seasonNumber}',
