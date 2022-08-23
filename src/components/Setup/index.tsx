@@ -63,7 +63,7 @@ const Setup = () => {
       <ImageFader
         backgroundImages={
           backdrops?.map(
-            (backdrop) => `https://www.themoviedb.org/t/p/original${backdrop}`
+            (backdrop) => `https://image.tmdb.org/t/p/original${backdrop}`
           ) ?? []
         }
       />
