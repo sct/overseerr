@@ -2,7 +2,6 @@ import Infinity from '@app/assets/infinity.svg';
 import { SmallLoadingSpinner } from '@app/components/Common/LoadingSpinner';
 import ProgressCircle from '@app/components/Common/ProgressCircle';
 import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
-import { Suspense } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
@@ -17,12 +16,18 @@ type MiniQuotaDisplayProps = {
 
 const MiniQuotaDisplay = ({ userId }: MiniQuotaDisplayProps) => {
   const intl = useIntl();
-  const { data } = useSWR<QuotaResponse>(`/api/v1/user/${userId}/quota`, {
-    suspense: true,
-  });
+  const { data, error } = useSWR<QuotaResponse>(`/api/v1/user/${userId}/quota`);
+
+  if (error) {
+    return null;
+  }
+
+  if (!data && !error) {
+    return <SmallLoadingSpinner />;
+  }
 
   return (
-    <Suspense fallback={<SmallLoadingSpinner />}>
+    <>
       {((data?.movie.limit ?? 0) !== 0 || (data?.tv.limit ?? 0) !== 0) && (
         <div className="flex">
           <div className="flex basis-1/2 flex-col space-y-2">
@@ -41,8 +46,8 @@ const MiniQuotaDisplay = ({ userId }: MiniQuotaDisplayProps) => {
                     )}
                     useHeatLevel
                   />
-                  <span className="text-lg font-bold tracking-widest">
-                    {data?.movie.remaining}/{data?.movie.limit}
+                  <span className="text-lg font-bold">
+                    {data?.movie.remaining} / {data?.movie.limit}
                   </span>
                 </>
               ) : (
@@ -67,8 +72,8 @@ const MiniQuotaDisplay = ({ userId }: MiniQuotaDisplayProps) => {
                     )}
                     useHeatLevel
                   />
-                  <span className="text-lg font-bold tracking-widest text-gray-200">
-                    {data?.tv.remaining}/{data?.tv.limit}
+                  <span className="text-lg font-bold text-gray-200">
+                    {data?.tv.remaining} / {data?.tv.limit}
                   </span>
                 </>
               ) : (
@@ -81,7 +86,7 @@ const MiniQuotaDisplay = ({ userId }: MiniQuotaDisplayProps) => {
           </div>
         </div>
       )}
-    </Suspense>
+    </>
   );
 };
 
