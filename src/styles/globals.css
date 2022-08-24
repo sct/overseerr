@@ -36,8 +36,8 @@
   }
 
   .slideover {
-    padding-top: calc(1.5rem + env(safe-area-inset-top));
-    padding-bottom: 1.5rem;
+    padding-top: calc(1rem + env(safe-area-inset-top)) !important;
+    padding-bottom: calc(1rem + env(safe-area-inset-top)) !important;
   }
 
   .sidebar-close-button {

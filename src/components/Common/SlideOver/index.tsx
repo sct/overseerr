@@ -67,12 +67,12 @@ const SlideOver = ({
             >
               {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
               <div
-                className="h-full w-screen max-w-md p-2 sm:p-4"
+                className="slideover h-full w-screen max-w-md p-2 sm:p-4"
                 ref={slideoverRef}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="hide-scrollbar flex h-full flex-col overflow-y-scroll rounded-lg bg-gray-800 bg-opacity-80 shadow-xl ring-1 ring-gray-700 backdrop-blur">
-                  <header className="slideover space-y-1 border-b border-gray-700 px-4">
+                  <header className="space-y-1 border-b border-gray-700 py-4 px-4">
                     <div className="flex items-center justify-between space-x-3">
                       <h2 className="bg-gradient-to-br from-indigo-400 to-purple-400 bg-clip-text text-2xl font-bold leading-7 text-transparent">
                         {title}
