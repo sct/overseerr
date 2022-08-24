@@ -1,7 +1,7 @@
 import CollectionRequestModal from '@app/components/RequestModal/CollectionRequestModal';
 import MovieRequestModal from '@app/components/RequestModal/MovieRequestModal';
 import TvRequestModal from '@app/components/RequestModal/TvRequestModal';
-import Transition from '@app/components/Transition';
+import { Transition } from '@headlessui/react';
 import type { MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 
@@ -28,6 +28,7 @@ const RequestModal = ({
 }: RequestModalProps) => {
   return (
     <Transition
+      as="div"
       enter="transition opacity-0 duration-300"
       enterFrom="opacity-0"
       enterTo="opacity-100"

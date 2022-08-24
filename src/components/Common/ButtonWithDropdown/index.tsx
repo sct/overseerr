@@ -1,9 +1,9 @@
-import Transition from '@app/components/Transition';
 import useClickOutside from '@app/hooks/useClickOutside';
 import { withProperties } from '@app/utils/typeHelpers';
+import { Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 
 interface DropdownItemProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   buttonType?: 'primary' | 'ghost';
@@ -99,6 +99,7 @@ const ButtonWithDropdown = ({
             {dropdownIcon ? dropdownIcon : <ChevronDownIcon />}
           </button>
           <Transition
+            as={Fragment}
             show={isOpen}
             enter="transition ease-out duration-100 opacity-0"
             enterFrom="transform opacity-0 scale-95"

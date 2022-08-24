@@ -1,7 +1,7 @@
 import Modal from '@app/components/Common/Modal';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
-import Transition from '@app/components/Transition';
 import globalMessages from '@app/i18n/globalMessages';
+import { Transition } from '@headlessui/react';
 import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
 import type { RadarrSettings } from '@server/lib/settings';
 import axios from 'axios';
@@ -212,6 +212,7 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
 
   return (
     <Transition
+      as="div"
       appear
       show
       enter="transition ease-in-out duration-300 transform opacity-0"

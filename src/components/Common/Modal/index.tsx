@@ -2,12 +2,12 @@ import type { ButtonType } from '@app/components/Common/Button';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
-import Transition from '@app/components/Transition';
 import useClickOutside from '@app/hooks/useClickOutside';
 import { useLockBodyScroll } from '@app/hooks/useLockBodyScroll';
 import globalMessages from '@app/i18n/globalMessages';
+import { Transition } from '@headlessui/react';
 import type { MouseEvent } from 'react';
-import { useRef } from 'react';
+import { Fragment, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useIntl } from 'react-intl';
 
@@ -49,7 +49,6 @@ const Modal = ({
   disableScrollLock,
   backgroundClickable = true,
   iconSvg,
-  loading = false,
   secondaryButtonType = 'default',
   secondaryDisabled = false,
   onSecondary,
@@ -81,27 +80,27 @@ const Modal = ({
         }
       }}
     >
-      <Transition
+      <Transition.Child
+        as={Fragment}
         enter="transition opacity-0 duration-300 transform scale-75"
         enterFrom="opacity-0 scale-75"
         enterTo="opacity-100 scale-100"
         leave="transition opacity-100 duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        show={loading}
       >
         <div style={{ position: 'absolute' }}>
           <LoadingSpinner />
         </div>
-      </Transition>
-      <Transition
+      </Transition.Child>
+      <Transition.Child
+        as={Fragment}
         enter="transition opacity-0 duration-300 transform scale-75"
         enterFrom="opacity-0 scale-75"
         enterTo="opacity-100 scale-100"
         leave="transition opacity-100 duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        show={!loading}
       >
         <div
           className="relative inline-block w-full transform overflow-auto bg-gray-700 px-4 pt-5 pb-4 text-left align-bottom shadow-xl ring-1 ring-gray-500 transition-all sm:my-8 sm:max-w-3xl sm:rounded-lg sm:align-middle"
@@ -207,7 +206,7 @@ const Modal = ({
             </div>
           )}
         </div>
-      </Transition>
+      </Transition.Child>
     </div>,
     document.body
   );

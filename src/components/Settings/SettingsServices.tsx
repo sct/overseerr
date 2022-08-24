@@ -8,12 +8,12 @@ import Modal from '@app/components/Common/Modal';
 import PageTitle from '@app/components/Common/PageTitle';
 import RadarrModal from '@app/components/Settings/RadarrModal';
 import SonarrModal from '@app/components/Settings/SonarrModal';
-import Transition from '@app/components/Transition';
 import globalMessages from '@app/i18n/globalMessages';
+import { Transition } from '@headlessui/react';
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/solid';
 import type { RadarrSettings, SonarrSettings } from '@server/lib/settings';
 import axios from 'axios';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR, { mutate } from 'swr';
 
@@ -245,6 +245,7 @@ const SettingsServices = () => {
         />
       )}
       <Transition
+        as={Fragment}
         show={deleteServerModal.open}
         enter="transition ease-in-out duration-300 transform opacity-0"
         enterFrom="opacity-0"
