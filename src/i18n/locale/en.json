@@ -860,7 +860,7 @@
   "components.TitleCard.mediaerror": "{mediaType} Not Found",
   "components.TitleCard.tmdbid": "TMDB ID",
   "components.TitleCard.tvdbid": "TheTVDB ID",
-  "components.TvDetails.Season.somethingwentwrong": "Something went wrong loading this season.",
+  "components.TvDetails.Season.somethingwentwrong": "Something went wrong while retrieving season data.",
   "components.TvDetails.TvCast.fullseriescast": "Full Series Cast",
   "components.TvDetails.TvCrew.fullseriescrew": "Full Series Crew",
   "components.TvDetails.anime": "Anime",

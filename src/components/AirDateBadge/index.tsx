@@ -1,5 +1,4 @@
 import Badge from '@app/components/Common/Badge';
-import { selectUnit } from '@formatjs/intl-utils';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -12,21 +11,51 @@ type AirDateBadgeProps = {
 };
 
 const AirDateBadge = ({ airDate }: AirDateBadgeProps) => {
+  const WEEK = 1000 * 60 * 60 * 24 * 8;
   const intl = useIntl();
-  const alreadyAired = new Date(airDate).getTime() < new Date().getTime();
-  const { value, unit } = selectUnit(Math.floor(new Date(airDate).getTime()));
+  const dAirDate = new Date(airDate);
+  const nowDate = new Date();
+  const alreadyAired = dAirDate.getTime() < nowDate.getTime();
+
+  const compareWeek = new Date(
+    alreadyAired ? Date.now() - WEEK : Date.now() + WEEK
+  );
+
+  let showRelative = false;
+
+  if (
+    (alreadyAired && dAirDate.getTime() > compareWeek.getTime()) ||
+    (!alreadyAired && dAirDate.getTime() < compareWeek.getTime())
+  ) {
+    showRelative = true;
+  }
 
   return (
-    <Badge badgeType="light">
-      {intl.formatMessage(
-        alreadyAired ? messages.airedrelative : messages.airsrelative,
-        {
-          relativeTime: (
-            <FormattedRelativeTime value={value} numeric="auto" unit={unit} />
-          ),
-        }
+    <div className="flex items-center space-x-2">
+      <Badge badgeType="light">
+        {intl.formatDate(dAirDate, {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
+      </Badge>
+      {showRelative && (
+        <Badge badgeType="light">
+          {intl.formatMessage(
+            alreadyAired ? messages.airedrelative : messages.airsrelative,
+            {
+              relativeTime: (
+                <FormattedRelativeTime
+                  value={(dAirDate.getTime() - Date.now()) / 1000}
+                  numeric="auto"
+                  updateIntervalInSeconds={1}
+                />
+              ),
+            }
+          )}
+        </Badge>
       )}
-    </Badge>
+    </div>
   );
 };
 

@@ -530,7 +530,13 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                   <Disclosure key={`season-discoslure-${season.seasonNumber}`}>
                     {({ open }) => (
                       <>
-                        <Disclosure.Button className="flex w-full items-center justify-between space-x-2 rounded-md bg-gray-800 px-4 py-2 text-gray-200">
+                        <Disclosure.Button
+                          className={`mt-2 flex w-full items-center justify-between border-gray-700 bg-gray-800 px-4 py-2 text-gray-200 ${
+                            open
+                              ? 'rounded-t-md border-t border-l border-r'
+                              : 'rounded-md border'
+                          }`}
+                        >
                           <div className="flex flex-1 items-center space-x-2 text-lg">
                             <span>
                               {intl.formatMessage(messages.seasonnumber, {
@@ -602,13 +608,15 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                         <Transition
                           show={open}
                           enter="transition duration-100 ease-out"
-                          enterFrom="transform scale-95 opacity-0"
-                          enterTo="transform scale-100 opacity-100"
+                          enterFrom="transform opacity-0"
+                          enterTo="transform opacity-100"
                           leave="transition duration-75 ease-out"
-                          leaveFrom="transform scale-100 opacity-100"
-                          leaveTo="transform scale-95 opacity-0"
+                          leaveFrom="transform opacity-100"
+                          leaveTo="transform opacity-0"
+                          // Not sure why this transition is adding a margin without this here
+                          style={{ margin: '0px' }}
                         >
-                          <Disclosure.Panel className="my-2 w-full rounded-md border border-gray-700 px-4 py-2">
+                          <Disclosure.Panel className="w-full rounded-b-md border-b border-l border-r border-gray-700 px-4 pb-2">
                             <Season
                               tvId={data.id}
                               seasonNumber={season.seasonNumber}

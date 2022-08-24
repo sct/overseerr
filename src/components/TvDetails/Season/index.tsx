@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
 const messages = defineMessages({
-  somethingwentwrong: 'Something went wrong loading this season.',
+  somethingwentwrong: 'Something went wrong while retrieving season data.',
 });
 
 type SeasonProps = {
@@ -28,14 +28,14 @@ const Season = ({ seasonNumber, tvId }: SeasonProps) => {
   }
 
   return (
-    <div className="flex flex-col space-y-4 py-2">
+    <div className="flex flex-col space-y-4 divide-y divide-gray-700 py-2">
       {data.episodes
         .slice()
         .reverse()
         .map((episode) => {
           return (
             <div
-              className="flex flex-col space-y-4 border-b border-b-gray-700 pb-4 last:border-b-0 xl:flex-row xl:space-y-0 xl:space-x-4"
+              className="flex flex-col space-y-4 py-4 last:border-b-0 xl:flex-row xl:space-y-0 xl:space-x-4"
               key={`season-${seasonNumber}-episode-${episode.episodeNumber}`}
             >
               <div className="flex-1">
