@@ -6,7 +6,7 @@ const visitUserEditPage = (email: string): void => {
 
 describe('Auto Request Settings', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('ADMIN_EMAIL'), Cypress.env('ADMIN_PASSWORD'));
+    cy.loginAsAdmin();
   });
 
   it('should not see watchlist sync settings on an account without permissions', () => {

@@ -3,6 +3,7 @@ import RTAudRotten from '@app/assets/rt_aud_rotten.svg';
 import RTFresh from '@app/assets/rt_fresh.svg';
 import RTRotten from '@app/assets/rt_rotten.svg';
 import TmdbLogo from '@app/assets/tmdb_logo.svg';
+import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
@@ -19,12 +20,14 @@ import RequestButton from '@app/components/RequestButton';
 import RequestModal from '@app/components/RequestModal';
 import Slider from '@app/components/Slider';
 import StatusBadge from '@app/components/StatusBadge';
+import Season from '@app/components/TvDetails/Season';
 import useLocale from '@app/hooks/useLocale';
 import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
+import { Disclosure, Transition } from '@headlessui/react';
 import {
   ArrowCircleRightIcon,
   CogIcon,
@@ -32,10 +35,11 @@ import {
   FilmIcon,
   PlayIcon,
 } from '@heroicons/react/outline';
+import { ChevronUpIcon } from '@heroicons/react/solid';
 import type { RTRating } from '@server/api/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { IssueStatus } from '@server/constants/issue';
-import { MediaStatus } from '@server/constants/media';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type { Crew } from '@server/models/common';
 import type { TvDetails as TvDetailsType } from '@server/models/Tv';
 import { hasFlag } from 'country-flag-icons';
@@ -71,6 +75,10 @@ const messages = defineMessages({
     'Production {countryCount, plural, one {Country} other {Countries}}',
   reportissue: 'Report an Issue',
   manageseries: 'Manage Series',
+  seasonstitle: 'Seasons',
+  episodeCount: '{episodeCount, plural, one {# Episode} other {# Episodes}}',
+  seasonnumber: 'Season {seasonNumber}',
+  status4k: '4K {status}',
 });
 
 interface TvDetailsProps {
@@ -476,6 +484,174 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               </div>
             </>
           )}
+          <h2 className="py-4">{intl.formatMessage(messages.seasonstitle)}</h2>
+          <div className="flex w-full flex-col space-y-2">
+            {data.seasons
+              .slice()
+              .reverse()
+              .filter((season) => season.seasonNumber !== 0)
+              .map((season) => {
+                const show4k =
+                  settings.currentSettings.series4kEnabled &&
+                  hasPermission(
+                    [
+                      Permission.MANAGE_REQUESTS,
+                      Permission.REQUEST_4K,
+                      Permission.REQUEST_4K_TV,
+                    ],
+                    {
+                      type: 'or',
+                    }
+                  );
+                const mSeason = (data.mediaInfo?.seasons ?? []).find(
+                  (s) =>
+                    season.seasonNumber === s.seasonNumber &&
+                    s.status !== MediaStatus.UNKNOWN
+                );
+                const mSeason4k = (data.mediaInfo?.seasons ?? []).find(
+                  (s) =>
+                    season.seasonNumber === s.seasonNumber &&
+                    s.status4k !== MediaStatus.UNKNOWN
+                );
+                const request = (data.mediaInfo?.requests ?? []).find(
+                  (r) =>
+                    !!r.seasons.find(
+                      (s) => s.seasonNumber === season.seasonNumber
+                    ) && !r.is4k
+                );
+                const request4k = (data.mediaInfo?.requests ?? []).find(
+                  (r) =>
+                    !!r.seasons.find(
+                      (s) => s.seasonNumber === season.seasonNumber
+                    ) && r.is4k
+                );
+
+                return (
+                  <Disclosure key={`season-discoslure-${season.seasonNumber}`}>
+                    {({ open }) => (
+                      <>
+                        <Disclosure.Button
+                          className={`mt-2 flex w-full items-center justify-between border-gray-700 bg-gray-800 px-4 py-2 text-gray-200 ${
+                            open
+                              ? 'rounded-t-md border-t border-l border-r'
+                              : 'rounded-md border'
+                          }`}
+                        >
+                          <div className="flex flex-1 items-center space-x-2 text-lg">
+                            <span>
+                              {intl.formatMessage(messages.seasonnumber, {
+                                seasonNumber: season.seasonNumber,
+                              })}
+                            </span>
+                            <Badge badgeType="dark">
+                              {intl.formatMessage(messages.episodeCount, {
+                                episodeCount: season.episodeCount,
+                              })}
+                            </Badge>
+                          </div>
+                          {((!mSeason &&
+                            request?.status === MediaRequestStatus.APPROVED) ||
+                            mSeason?.status === MediaStatus.PROCESSING) && (
+                            <Badge badgeType="primary">
+                              {intl.formatMessage(globalMessages.requested)}
+                            </Badge>
+                          )}
+                          {((!mSeason &&
+                            request?.status === MediaRequestStatus.PENDING) ||
+                            mSeason?.status === MediaStatus.PENDING) && (
+                            <Badge badgeType="warning">
+                              {intl.formatMessage(globalMessages.pending)}
+                            </Badge>
+                          )}
+                          {mSeason?.status ===
+                            MediaStatus.PARTIALLY_AVAILABLE && (
+                            <Badge badgeType="success">
+                              {intl.formatMessage(
+                                globalMessages.partiallyavailable
+                              )}
+                            </Badge>
+                          )}
+                          {mSeason?.status === MediaStatus.AVAILABLE && (
+                            <Badge badgeType="success">
+                              {intl.formatMessage(globalMessages.available)}
+                            </Badge>
+                          )}
+                          {((!mSeason4k &&
+                            request4k?.status ===
+                              MediaRequestStatus.APPROVED) ||
+                            mSeason4k?.status4k === MediaStatus.PROCESSING) &&
+                            show4k && (
+                              <Badge badgeType="primary">
+                                {intl.formatMessage(messages.status4k, {
+                                  status: intl.formatMessage(
+                                    globalMessages.requested
+                                  ),
+                                })}
+                              </Badge>
+                            )}
+                          {((!mSeason4k &&
+                            request4k?.status === MediaRequestStatus.PENDING) ||
+                            mSeason?.status4k === MediaStatus.PENDING) &&
+                            show4k && (
+                              <Badge badgeType="warning">
+                                {intl.formatMessage(messages.status4k, {
+                                  status: intl.formatMessage(
+                                    globalMessages.pending
+                                  ),
+                                })}
+                              </Badge>
+                            )}
+                          {mSeason4k?.status4k ===
+                            MediaStatus.PARTIALLY_AVAILABLE &&
+                            show4k && (
+                              <Badge badgeType="success">
+                                {intl.formatMessage(messages.status4k, {
+                                  status: intl.formatMessage(
+                                    globalMessages.partiallyavailable
+                                  ),
+                                })}
+                              </Badge>
+                            )}
+                          {mSeason4k?.status4k === MediaStatus.AVAILABLE &&
+                            show4k && (
+                              <Badge badgeType="success">
+                                {intl.formatMessage(messages.status4k, {
+                                  status: intl.formatMessage(
+                                    globalMessages.available
+                                  ),
+                                })}
+                              </Badge>
+                            )}
+                          <ChevronUpIcon
+                            className={`${
+                              open ? 'rotate-180 transform' : ''
+                            } h-5 w-5 text-gray-500`}
+                          />
+                        </Disclosure.Button>
+                        <Transition
+                          show={open}
+                          enter="transition duration-100 ease-out"
+                          enterFrom="transform opacity-0"
+                          enterTo="transform opacity-100"
+                          leave="transition duration-75 ease-out"
+                          leaveFrom="transform opacity-100"
+                          leaveTo="transform opacity-0"
+                          // Not sure why this transition is adding a margin without this here
+                          style={{ margin: '0px' }}
+                        >
+                          <Disclosure.Panel className="w-full rounded-b-md border-b border-l border-r border-gray-700 px-4 pb-2">
+                            <Season
+                              tvId={data.id}
+                              seasonNumber={season.seasonNumber}
+                            />
+                          </Disclosure.Panel>
+                        </Transition>
+                      </>
+                    )}
+                  </Disclosure>
+                );
+              })}
+          </div>
         </div>
         <div className="media-overview-right">
           <div className="media-facts">

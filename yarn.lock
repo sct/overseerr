@@ -1750,6 +1750,13 @@
     "@formatjs/intl-localematcher" "0.2.28"
     tslib "2.4.0"
 
+"@formatjs/intl-utils@^3.8.4":
+  version "3.8.4"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-utils/-/intl-utils-3.8.4.tgz#291baac91001db428fc3275c515a3e40fbe95945"
+  integrity sha512-j5C6NyfKevIxsfLK8KwO1C0vvP7k1+h4A9cFpc+cr6mEwCc1sPkr17dzh0Ke6k9U5pQccAQoXdcNBl3IYa4+ZQ==
+  dependencies:
+    emojis-list "^3.0.0"
+
 "@formatjs/intl@2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@formatjs/intl/-/intl-2.3.1.tgz#eccd6d03e4db18c256181f235b1d0a7f7aaebf5a"
@@ -5434,6 +5441,11 @@ emoji-regex@^9.2.2:
   version "9.2.2"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-9.2.2.tgz#840c8803b0d8047f4ff0cf963176b32d4ef3ed72"
   integrity sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==
+
+emojis-list@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
+  integrity sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==
 
 enabled@2.0.x:
   version "2.0.0"

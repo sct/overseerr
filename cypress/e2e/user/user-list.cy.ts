@@ -6,7 +6,7 @@ const testUser = {
 
 describe('User List', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('ADMIN_EMAIL'), Cypress.env('ADMIN_PASSWORD'));
+    cy.loginAsAdmin();
   });
 
   it('opens the user list from the home page', () => {

@@ -1,6 +1,6 @@
 describe('Movie Details', () => {
   it('loads a movie page', () => {
-    cy.login(Cypress.env('ADMIN_EMAIL'), Cypress.env('ADMIN_PASSWORD'));
+    cy.loginAsAdmin();
     // Try to load minions: rise of gru
     cy.visit('/movie/438148');
 

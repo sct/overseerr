@@ -1,7 +1,14 @@
 import Link from 'next/link';
 
 interface BadgeProps {
-  badgeType?: 'default' | 'primary' | 'danger' | 'warning' | 'success';
+  badgeType?:
+    | 'default'
+    | 'primary'
+    | 'danger'
+    | 'warning'
+    | 'success'
+    | 'dark'
+    | 'light';
   className?: string;
   href?: string;
   children: React.ReactNode;
@@ -40,6 +47,18 @@ const Badge = ({
       badgeStyle.push('bg-green-500 !text-green-100');
       if (href) {
         badgeStyle.push('hover:bg-green-400');
+      }
+      break;
+    case 'dark':
+      badgeStyle.push('bg-gray-900 !text-gray-400');
+      if (href) {
+        badgeStyle.push('hover:bg-gray-800');
+      }
+      break;
+    case 'light':
+      badgeStyle.push('bg-gray-700 !text-gray-300');
+      if (href) {
+        badgeStyle.push('hover:bg-gray-600');
       }
       break;
     default:

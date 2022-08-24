@@ -18,7 +18,7 @@ const clickFirstTitleCardInSlider = (sliderTitle: string): void => {
 
 describe('Discover', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('ADMIN_EMAIL'), Cypress.env('ADMIN_PASSWORD'));
+    cy.loginAsAdmin();
   });
 
   it('loads a trending item', () => {
