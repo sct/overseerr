@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import Transition from '@app/components/Transition';
 import { useLockBodyScroll } from '@app/hooks/useLockBodyScroll';
+import { Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 interface SlideOverProps {
@@ -34,6 +34,7 @@ const SlideOver = ({
 
   return ReactDOM.createPortal(
     <Transition
+      as={Fragment}
       show={show}
       appear
       enter="opacity-0 transition ease-in-out duration-300"
@@ -54,9 +55,8 @@ const SlideOver = ({
         }}
       >
         <div className="absolute inset-0 overflow-hidden">
-          <section className="absolute inset-y-0 right-0 flex max-w-full pl-10">
-            <Transition
-              show={show}
+          <section className="absolute inset-y-0 right-0 flex max-w-full">
+            <Transition.Child
               appear
               enter="transform transition ease-in-out duration-500 sm:duration-700"
               enterFrom="translate-x-full"
@@ -67,20 +67,20 @@ const SlideOver = ({
             >
               {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
               <div
-                className="w-screen max-w-md"
+                className="h-full w-screen max-w-md p-2 sm:p-4"
                 ref={slideoverRef}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex h-full flex-col overflow-y-scroll bg-gray-700 shadow-xl">
-                  <header className="slideover space-y-1 bg-indigo-600 px-4">
+                <div className="hide-scrollbar flex h-full flex-col overflow-y-scroll rounded-lg bg-gray-800 bg-opacity-80 shadow-xl ring-1 ring-gray-700 backdrop-blur">
+                  <header className="slideover space-y-1 border-b border-gray-700 px-4">
                     <div className="flex items-center justify-between space-x-3">
-                      <h2 className="text-lg font-bold leading-7 text-white">
+                      <h2 className="bg-gradient-to-br from-indigo-400 to-purple-400 bg-clip-text text-2xl font-bold leading-7 text-transparent">
                         {title}
                       </h2>
                       <div className="flex h-7 items-center">
                         <button
                           aria-label="Close panel"
-                          className="text-indigo-200 transition duration-150 ease-in-out hover:text-white"
+                          className="text-gray-200 transition duration-150 ease-in-out hover:text-white"
                           onClick={() => onClose()}
                         >
                           <XIcon className="h-6 w-6" />
@@ -89,9 +89,7 @@ const SlideOver = ({
                     </div>
                     {subText && (
                       <div>
-                        <p className="text-sm leading-5 text-indigo-300">
-                          {subText}
-                        </p>
+                        <p className="leading-5 text-gray-300">{subText}</p>
                       </div>
                     )}
                   </header>
@@ -100,7 +98,7 @@ const SlideOver = ({
                   </div>
                 </div>
               </div>
-            </Transition>
+            </Transition.Child>
           </section>
         </div>
       </div>
