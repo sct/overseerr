@@ -183,7 +183,7 @@ const UserList = () => {
         autoDismiss: true,
         appearance: 'success',
       });
-      setDeleteModal({ isOpen: false });
+      setDeleteModal({ isOpen: false, user: deleteModal.user });
     } catch (e) {
       addToast(intl.formatMessage(messages.userdeleteerror), {
         autoDismiss: true,
@@ -246,9 +246,11 @@ const UserList = () => {
           }
           okDisabled={isDeleting}
           okButtonType="danger"
-          onCancel={() => setDeleteModal({ isOpen: false })}
+          onCancel={() =>
+            setDeleteModal({ isOpen: false, user: deleteModal.user })
+          }
           title={intl.formatMessage(messages.deleteuser, {
-            username: `${deleteModal.user?.username}`,
+            username: `${deleteModal.user?.displayName}`,
           })}
           iconSvg={<TrashIcon />}
         >
