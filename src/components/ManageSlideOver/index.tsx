@@ -210,77 +210,81 @@ const ManageSlideOver = ({
         {hasPermission(Permission.ADMIN) &&
           (data.mediaInfo?.serviceUrl ||
             data.mediaInfo?.tautulliUrl ||
-            !!watchData?.data?.playCount) && (
+            watchData?.data) && (
             <>
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalMedia)}
               </h3>
               <div className="space-y-2">
-                {!!watchData?.data && (
+                {(watchData?.data || data.mediaInfo?.tautulliUrl) && (
                   <div>
-                    <div
-                      className={`grid grid-cols-1 divide-y divide-gray-700 overflow-hidden border border-gray-700 text-sm text-gray-300 shadow ${
-                        data.mediaInfo?.tautulliUrl
-                          ? 'rounded-t-md'
-                          : 'rounded-md'
-                      }`}
-                    >
-                      <div className="grid grid-cols-3 divide-x divide-gray-700">
-                        <div className="px-4 py-3">
-                          <div className="font-bold">
-                            {intl.formatMessage(messages.pastdays, { days: 7 })}
+                    {!!watchData?.data && (
+                      <div
+                        className={`grid grid-cols-1 divide-y divide-gray-700 overflow-hidden border-gray-700 text-sm text-gray-300 shadow ${
+                          data.mediaInfo?.tautulliUrl
+                            ? 'rounded-t-md border-x border-t'
+                            : 'rounded-md border'
+                        }`}
+                      >
+                        <div className="grid grid-cols-3 divide-x divide-gray-700">
+                          <div className="px-4 py-3">
+                            <div className="font-bold">
+                              {intl.formatMessage(messages.pastdays, {
+                                days: 7,
+                              })}
+                            </div>
+                            <div className="text-white">
+                              {styledPlayCount(watchData.data.playCount7Days)}
+                            </div>
                           </div>
-                          <div className="text-white">
-                            {styledPlayCount(watchData.data.playCount7Days)}
+                          <div className="px-4 py-3">
+                            <div className="font-bold">
+                              {intl.formatMessage(messages.pastdays, {
+                                days: 30,
+                              })}
+                            </div>
+                            <div className="text-white">
+                              {styledPlayCount(watchData.data.playCount30Days)}
+                            </div>
+                          </div>
+                          <div className="px-4 py-3">
+                            <div className="font-bold">
+                              {intl.formatMessage(messages.alltime)}
+                            </div>
+                            <div className="text-white">
+                              {styledPlayCount(watchData.data.playCount)}
+                            </div>
                           </div>
                         </div>
-                        <div className="px-4 py-3">
-                          <div className="font-bold">
-                            {intl.formatMessage(messages.pastdays, {
-                              days: 30,
-                            })}
+                        {!!watchData.data.users.length && (
+                          <div className="flex flex-row space-x-2 px-4 pt-3 pb-2">
+                            <span className="shrink-0 font-bold leading-8">
+                              {intl.formatMessage(messages.playedby)}
+                            </span>
+                            <span className="flex flex-row flex-wrap">
+                              {watchData.data.users.map((user) => (
+                                <Link
+                                  href={
+                                    currentUser?.id === user.id
+                                      ? '/profile'
+                                      : `/users/${user.id}`
+                                  }
+                                  key={`watch-user-${user.id}`}
+                                >
+                                  <a className="z-0 mb-1 -mr-2 shrink-0 hover:z-50">
+                                    <img
+                                      src={user.avatar}
+                                      alt={user.displayName}
+                                      className="h-8 w-8 scale-100 transform-gpu rounded-full object-cover ring-1 ring-gray-500 transition duration-300 hover:scale-105"
+                                    />
+                                  </a>
+                                </Link>
+                              ))}
+                            </span>
                           </div>
-                          <div className="text-white">
-                            {styledPlayCount(watchData.data.playCount30Days)}
-                          </div>
-                        </div>
-                        <div className="px-4 py-3">
-                          <div className="font-bold">
-                            {intl.formatMessage(messages.alltime)}
-                          </div>
-                          <div className="text-white">
-                            {styledPlayCount(watchData.data.playCount)}
-                          </div>
-                        </div>
+                        )}
                       </div>
-                      {!!watchData.data.users.length && (
-                        <div className="flex flex-row space-x-2 px-4 pt-3 pb-2">
-                          <span className="shrink-0 font-bold leading-8">
-                            {intl.formatMessage(messages.playedby)}
-                          </span>
-                          <span className="flex flex-row flex-wrap">
-                            {watchData.data.users.map((user) => (
-                              <Link
-                                href={
-                                  currentUser?.id === user.id
-                                    ? '/profile'
-                                    : `/users/${user.id}`
-                                }
-                                key={`watch-user-${user.id}`}
-                              >
-                                <a className="z-0 mb-1 -mr-2 shrink-0 hover:z-50">
-                                  <img
-                                    src={user.avatar}
-                                    alt={user.displayName}
-                                    className="h-8 w-8 scale-100 transform-gpu rounded-full object-cover ring-1 ring-gray-500 transition duration-300 hover:scale-105"
-                                  />
-                                </a>
-                              </Link>
-                            ))}
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                    )}
                     {data.mediaInfo?.tautulliUrl && (
                       <a
                         href={data.mediaInfo.tautulliUrl}
@@ -290,7 +294,7 @@ const ManageSlideOver = ({
                         <Button
                           buttonType="ghost"
                           className={`w-full ${
-                            watchData.data.playCount ? 'rounded-t-none' : ''
+                            watchData?.data ? 'rounded-t-none' : ''
                           }`}
                         >
                           <ViewListIcon />
@@ -302,7 +306,7 @@ const ManageSlideOver = ({
                     )}
                   </div>
                 )}
-                {data?.mediaInfo?.serviceUrl && (
+                {data.mediaInfo?.serviceUrl && (
                   <a
                     href={data?.mediaInfo?.serviceUrl}
                     target="_blank"
@@ -325,77 +329,83 @@ const ManageSlideOver = ({
         {hasPermission(Permission.ADMIN) &&
           (data.mediaInfo?.serviceUrl4k ||
             data.mediaInfo?.tautulliUrl4k ||
-            !!watchData?.data4k?.playCount) && (
+            watchData?.data4k) && (
             <div>
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalMedia4k)}
               </h3>
               <div className="space-y-2">
-                {!!watchData?.data4k && (
+                {(watchData?.data4k || data.mediaInfo?.tautulliUrl4k) && (
                   <div>
-                    <div
-                      className={`grid grid-cols-1 divide-y divide-gray-700 overflow-hidden border border-gray-700 text-sm text-gray-300 shadow ${
-                        data.mediaInfo?.tautulliUrl4k
-                          ? 'rounded-t-md'
-                          : 'rounded-md'
-                      }`}
-                    >
-                      <div className="grid grid-cols-3 divide-x divide-gray-700">
-                        <div className="px-4 py-3">
-                          <div className="font-bold">
-                            {intl.formatMessage(messages.pastdays, { days: 7 })}
+                    {watchData?.data4k && (
+                      <div
+                        className={`grid grid-cols-1 divide-y divide-gray-700 overflow-hidden border-gray-700 text-sm text-gray-300 shadow ${
+                          data.mediaInfo?.tautulliUrl4k
+                            ? 'rounded-t-md border-x border-t'
+                            : 'rounded-md border'
+                        }`}
+                      >
+                        <div className="grid grid-cols-3 divide-x divide-gray-700">
+                          <div className="px-4 py-3">
+                            <div className="font-bold">
+                              {intl.formatMessage(messages.pastdays, {
+                                days: 7,
+                              })}
+                            </div>
+                            <div className="text-white">
+                              {styledPlayCount(watchData.data4k.playCount7Days)}
+                            </div>
                           </div>
-                          <div className="text-white">
-                            {styledPlayCount(watchData.data4k.playCount7Days)}
+                          <div className="px-4 py-3">
+                            <div className="font-bold">
+                              {intl.formatMessage(messages.pastdays, {
+                                days: 30,
+                              })}
+                            </div>
+                            <div className="text-white">
+                              {styledPlayCount(
+                                watchData.data4k.playCount30Days
+                              )}
+                            </div>
+                          </div>
+                          <div className="px-4 py-3">
+                            <div className="font-bold">
+                              {intl.formatMessage(messages.alltime)}
+                            </div>
+                            <div className="text-white">
+                              {styledPlayCount(watchData.data4k.playCount)}
+                            </div>
                           </div>
                         </div>
-                        <div className="px-4 py-3">
-                          <div className="font-bold">
-                            {intl.formatMessage(messages.pastdays, {
-                              days: 30,
-                            })}
+                        {!!watchData.data4k.users.length && (
+                          <div className="flex flex-row space-x-2 px-4 pt-3 pb-2">
+                            <span className="shrink-0 font-bold leading-8">
+                              {intl.formatMessage(messages.playedby)}
+                            </span>
+                            <span className="flex flex-row flex-wrap">
+                              {watchData.data4k.users.map((user) => (
+                                <Link
+                                  href={
+                                    currentUser?.id === user.id
+                                      ? '/profile'
+                                      : `/users/${user.id}`
+                                  }
+                                  key={`watch-user-${user.id}`}
+                                >
+                                  <a className="z-0 mb-1 -mr-2 shrink-0 hover:z-50">
+                                    <img
+                                      src={user.avatar}
+                                      alt={user.displayName}
+                                      className="h-8 w-8 scale-100 transform-gpu rounded-full object-cover ring-1 ring-gray-500 transition duration-300 hover:scale-105"
+                                    />
+                                  </a>
+                                </Link>
+                              ))}
+                            </span>
                           </div>
-                          <div className="text-white">
-                            {styledPlayCount(watchData.data4k.playCount30Days)}
-                          </div>
-                        </div>
-                        <div className="px-4 py-3">
-                          <div className="font-bold">
-                            {intl.formatMessage(messages.alltime)}
-                          </div>
-                          <div className="text-white">
-                            {styledPlayCount(watchData.data4k.playCount)}
-                          </div>
-                        </div>
+                        )}
                       </div>
-                      {!!watchData.data4k.users.length && (
-                        <div className="flex flex-row space-x-2 px-4 pt-3 pb-2">
-                          <span className="shrink-0 font-bold leading-8">
-                            {intl.formatMessage(messages.playedby)}
-                          </span>
-                          <span className="flex flex-row flex-wrap">
-                            {watchData.data4k.users.map((user) => (
-                              <Link
-                                href={
-                                  currentUser?.id === user.id
-                                    ? '/profile'
-                                    : `/users/${user.id}`
-                                }
-                                key={`watch-user-${user.id}`}
-                              >
-                                <a className="z-0 mb-1 -mr-2 shrink-0 hover:z-50">
-                                  <img
-                                    src={user.avatar}
-                                    alt={user.displayName}
-                                    className="h-8 w-8 scale-100 transform-gpu rounded-full object-cover ring-1 ring-gray-500 transition duration-300 hover:scale-105"
-                                  />
-                                </a>
-                              </Link>
-                            ))}
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                    )}
                     {data.mediaInfo?.tautulliUrl4k && (
                       <a
                         href={data.mediaInfo.tautulliUrl4k}
@@ -405,7 +415,7 @@ const ManageSlideOver = ({
                         <Button
                           buttonType="ghost"
                           className={`w-full ${
-                            watchData.data4k.playCount ? 'rounded-t-none' : ''
+                            watchData?.data4k ? 'rounded-t-none' : ''
                           }`}
                         >
                           <ViewListIcon />
