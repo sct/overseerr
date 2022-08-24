@@ -294,36 +294,42 @@ const UserProfile = () => {
           />
         </>
       )}
-      {(!watchlistItems || !!watchlistItems.results.length) && !watchlistError && (
-        <>
-          <div className="slider-header">
-            <Link
-              href={
-                user.id === currentUser?.id
-                  ? '/profile/watchlist'
-                  : `/users/${user?.id}/watchlist`
-              }
-            >
-              <a className="slider-title">
-                <span>{intl.formatMessage(messages.plexwatchlist)}</span>
-                <ArrowCircleRightIcon />
-              </a>
-            </Link>
-          </div>
-          <Slider
-            sliderKey="watchlist"
-            isLoading={!watchlistItems && !watchlistError}
-            items={watchlistItems?.results.map((item) => (
-              <TmdbTitleCard
-                id={item.tmdbId}
-                key={`watchlist-slider-item-${item.ratingKey}`}
-                tmdbId={item.tmdbId}
-                type={item.mediaType}
-              />
-            ))}
-          />
-        </>
-      )}
+      {(user.id === currentUser?.id ||
+        currentHasPermission(
+          [Permission.MANAGE_REQUESTS, Permission.WATCHLIST_VIEW],
+          { type: 'or' }
+        )) &&
+        (!watchlistItems || !!watchlistItems.results.length) &&
+        !watchlistError && (
+          <>
+            <div className="slider-header">
+              <Link
+                href={
+                  user.id === currentUser?.id
+                    ? '/profile/watchlist'
+                    : `/users/${user?.id}/watchlist`
+                }
+              >
+                <a className="slider-title">
+                  <span>{intl.formatMessage(messages.plexwatchlist)}</span>
+                  <ArrowCircleRightIcon />
+                </a>
+              </Link>
+            </div>
+            <Slider
+              sliderKey="watchlist"
+              isLoading={!watchlistItems && !watchlistError}
+              items={watchlistItems?.results.map((item) => (
+                <TmdbTitleCard
+                  id={item.tmdbId}
+                  key={`watchlist-slider-item-${item.ratingKey}`}
+                  tmdbId={item.tmdbId}
+                  type={item.mediaType}
+                />
+              ))}
+            />
+          </>
+        )}
       {(user.id === currentUser?.id ||
         currentHasPermission(Permission.ADMIN)) &&
         !!watchData?.recentlyWatched.length && (
