@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import React from 'react';
 
 interface BadgeProps {
   badgeType?:
@@ -14,12 +15,10 @@ interface BadgeProps {
   children: React.ReactNode;
 }
 
-const Badge = ({
-  badgeType = 'default',
-  className,
-  href,
-  children,
-}: BadgeProps) => {
+const Badge = (
+  { badgeType = 'default', className, href, children }: BadgeProps,
+  ref?: React.Ref<HTMLElement>
+) => {
   const badgeStyle = [
     'px-2 inline-flex text-xs leading-5 font-semibold rounded-full whitespace-nowrap',
   ];
@@ -79,6 +78,7 @@ const Badge = ({
         target="_blank"
         rel="noopener noreferrer"
         className={badgeStyle.join(' ')}
+        ref={ref as React.Ref<HTMLAnchorElement>}
       >
         {children}
       </a>
@@ -86,12 +86,24 @@ const Badge = ({
   } else if (href) {
     return (
       <Link href={href}>
-        <a className={badgeStyle.join(' ')}>{children}</a>
+        <a
+          className={badgeStyle.join(' ')}
+          ref={ref as React.Ref<HTMLAnchorElement>}
+        >
+          {children}
+        </a>
       </Link>
     );
   } else {
-    return <span className={badgeStyle.join(' ')}>{children}</span>;
+    return (
+      <span
+        className={badgeStyle.join(' ')}
+        ref={ref as React.Ref<HTMLSpanElement>}
+      >
+        {children}
+      </span>
+    );
   }
 };
 
-export default Badge;
+export default React.forwardRef(Badge) as typeof Badge;

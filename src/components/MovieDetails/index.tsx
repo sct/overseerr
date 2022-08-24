@@ -80,6 +80,9 @@ const messages = defineMessages({
   physicalrelease: 'Physical Release',
   reportissue: 'Report an Issue',
   managemovie: 'Manage Movie',
+  rtcriticsscore: 'Rotten Tomatoes Tomatometer',
+  rtaudiencescore: 'Rotten Tomatoes Audience Score',
+  tmdbuserscore: 'TMDB User Score',
 });
 
 interface MovieDetailsProps {
@@ -322,6 +325,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="movie"
               plexUrl={data.mediaInfo?.plexUrl}
+              serviceUrl={data.mediaInfo?.serviceUrl}
             />
             {settings.currentSettings.movie4kEnabled &&
               hasPermission(
@@ -343,6 +347,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                   tmdbId={data.mediaInfo?.tmdbId}
                   mediaType="movie"
                   plexUrl={data.mediaInfo?.plexUrl4k}
+                  serviceUrl={data.mediaInfo?.serviceUrl4k}
                 />
               )}
           </div>
@@ -499,36 +504,55 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
               (ratingData?.audienceRating && !!ratingData?.audienceScore)) && (
               <div className="media-ratings">
                 {ratingData?.criticsRating && !!ratingData?.criticsScore && (
-                  <>
-                    <span className="media-rating">
+                  <Tooltip
+                    content={intl.formatMessage(messages.rtcriticsscore)}
+                  >
+                    <a
+                      href={ratingData.url}
+                      className="media-rating"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {ratingData.criticsRating === 'Rotten' ? (
-                        <RTRotten className="mr-1 w-6" />
+                        <RTRotten className="w-6" />
                       ) : (
-                        <RTFresh className="mr-1 w-6" />
+                        <RTFresh className="w-6" />
                       )}
-                      {ratingData.criticsScore}%
-                    </span>
-                  </>
+                      <span>{ratingData.criticsScore}%</span>
+                    </a>
+                  </Tooltip>
                 )}
                 {ratingData?.audienceRating && !!ratingData?.audienceScore && (
-                  <>
-                    <span className="media-rating">
+                  <Tooltip
+                    content={intl.formatMessage(messages.rtaudiencescore)}
+                  >
+                    <a
+                      href={ratingData.url}
+                      className="media-rating"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {ratingData.audienceRating === 'Spilled' ? (
-                        <RTAudRotten className="mr-1 w-6" />
+                        <RTAudRotten className="w-6" />
                       ) : (
-                        <RTAudFresh className="mr-1 w-6" />
+                        <RTAudFresh className="w-6" />
                       )}
-                      {ratingData.audienceScore}%
-                    </span>
-                  </>
+                      <span>{ratingData.audienceScore}%</span>
+                    </a>
+                  </Tooltip>
                 )}
                 {!!data.voteCount && (
-                  <>
-                    <span className="media-rating">
-                      <TmdbLogo className="mr-2 w-6" />
-                      {data.voteAverage}/10
-                    </span>
-                  </>
+                  <Tooltip content={intl.formatMessage(messages.tmdbuserscore)}>
+                    <a
+                      href={`https://www.themoviedb.org/movie/${data.id}?language=${locale}`}
+                      className="media-rating"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <TmdbLogo className="mr-1 w-6" />
+                      <span>{Math.round(data.voteAverage * 10)}%</span>
+                    </a>
+                  </Tooltip>
                 )}
               </div>
             )}

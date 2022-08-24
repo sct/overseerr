@@ -79,6 +79,9 @@ const messages = defineMessages({
   episodeCount: '{episodeCount, plural, one {# Episode} other {# Episodes}}',
   seasonnumber: 'Season {seasonNumber}',
   status4k: '4K {status}',
+  rtcriticsscore: 'Rotten Tomatoes Tomatometer',
+  rtaudiencescore: 'Rotten Tomatoes Audience Score',
+  tmdbuserscore: 'TMDB User Score',
 });
 
 interface TvDetailsProps {
@@ -330,6 +333,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="tv"
               plexUrl={data.mediaInfo?.plexUrl}
+              serviceUrl={data.mediaInfo?.serviceUrl}
             />
             {settings.currentSettings.series4kEnabled &&
               hasPermission(
@@ -351,6 +355,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                   tmdbId={data.mediaInfo?.tmdbId}
                   mediaType="tv"
                   plexUrl={data.mediaInfo?.plexUrl4k}
+                  serviceUrl={data.mediaInfo?.serviceUrl4k}
                 />
               )}
           </div>
@@ -660,30 +665,55 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               (ratingData?.audienceRating && !!ratingData?.audienceScore)) && (
               <div className="media-ratings">
                 {ratingData?.criticsRating && !!ratingData?.criticsScore && (
-                  <span className="media-rating">
-                    {ratingData.criticsRating === 'Rotten' ? (
-                      <RTRotten className="mr-1 w-6" />
-                    ) : (
-                      <RTFresh className="mr-1 w-6" />
-                    )}
-                    {ratingData.criticsScore}%
-                  </span>
+                  <Tooltip
+                    content={intl.formatMessage(messages.rtcriticsscore)}
+                  >
+                    <a
+                      href={ratingData.url}
+                      className="media-rating"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {ratingData.criticsRating === 'Rotten' ? (
+                        <RTRotten className="mr-1 w-6" />
+                      ) : (
+                        <RTFresh className="mr-1 w-6" />
+                      )}
+                      <span>{ratingData.criticsScore}%</span>
+                    </a>
+                  </Tooltip>
                 )}
                 {ratingData?.audienceRating && !!ratingData?.audienceScore && (
-                  <span className="media-rating">
-                    {ratingData.audienceRating === 'Spilled' ? (
-                      <RTAudRotten className="mr-1 w-6" />
-                    ) : (
-                      <RTAudFresh className="mr-1 w-6" />
-                    )}
-                    {ratingData.audienceScore}%
-                  </span>
+                  <Tooltip
+                    content={intl.formatMessage(messages.rtaudiencescore)}
+                  >
+                    <a
+                      href={ratingData.url}
+                      className="media-rating"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {ratingData.audienceRating === 'Spilled' ? (
+                        <RTAudRotten className="mr-1 w-6" />
+                      ) : (
+                        <RTAudFresh className="mr-1 w-6" />
+                      )}
+                      <span>{ratingData.audienceScore}%</span>
+                    </a>
+                  </Tooltip>
                 )}
                 {!!data.voteCount && (
-                  <span className="media-rating">
-                    <TmdbLogo className="mr-2 w-6" />
-                    {data.voteAverage}/10
-                  </span>
+                  <Tooltip content={intl.formatMessage(messages.tmdbuserscore)}>
+                    <a
+                      href={`https://www.themoviedb.org/tv/${data.id}?language=${locale}`}
+                      className="media-rating"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <TmdbLogo className="mr-1 w-6" />
+                      <span>{Math.round(data.voteAverage * 10)}%</span>
+                    </a>
+                  </Tooltip>
                 )}
               </div>
             )}

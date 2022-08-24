@@ -1,6 +1,7 @@
 import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
+import Tooltip from '@app/components/Common/Tooltip';
 import RequestModal from '@app/components/RequestModal';
 import StatusBadge from '@app/components/StatusBadge';
 import { Permission, useUser } from '@app/hooks/useUser';
@@ -31,6 +32,10 @@ const messages = defineMessages({
   mediaerror: '{mediaType} Not Found',
   tmdbid: 'TMDB ID',
   tvdbid: 'TheTVDB ID',
+  approverequest: 'Approve Request',
+  declinerequest: 'Decline Request',
+  editrequest: 'Edit Request',
+  cancelrequest: 'Cancel Request',
   deleterequest: 'Delete Request',
 });
 
@@ -139,11 +144,9 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
                           : requestData.media.plexUrl
                       }
                       serviceUrl={
-                        hasPermission(Permission.ADMIN)
-                          ? requestData.is4k
-                            ? requestData.media.serviceUrl4k
-                            : requestData.media.serviceUrl
-                          : undefined
+                        requestData.is4k
+                          ? requestData.media.serviceUrl4k
+                          : requestData.media.serviceUrl
                       }
                     />
                   )}
@@ -153,17 +156,29 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
             <div className="flex flex-1 items-end space-x-2">
               {hasPermission(Permission.MANAGE_REQUESTS) &&
                 requestData?.media.id && (
-                  <Button
-                    buttonType="danger"
-                    buttonSize="sm"
-                    className="mt-4"
-                    onClick={() => deleteRequest()}
-                  >
-                    <TrashIcon style={{ marginRight: '0' }} />
-                    <span className="ml-1.5 hidden sm:block">
-                      {intl.formatMessage(messages.deleterequest)}
-                    </span>
-                  </Button>
+                  <>
+                    <Button
+                      buttonType="danger"
+                      buttonSize="sm"
+                      className="mt-4 hidden sm:block"
+                      onClick={() => deleteRequest()}
+                    >
+                      <TrashIcon />
+                      <span>{intl.formatMessage(globalMessages.delete)}</span>
+                    </Button>
+                    <Tooltip
+                      content={intl.formatMessage(messages.deleterequest)}
+                    >
+                      <Button
+                        buttonType="danger"
+                        buttonSize="sm"
+                        className="mt-4 sm:hidden"
+                        onClick={() => deleteRequest()}
+                      >
+                        <TrashIcon />
+                      </Button>
+                    </Tooltip>
+                  </>
                 )}
             </div>
           </div>
@@ -389,7 +404,14 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                 tmdbId={requestData.media.tmdbId}
                 mediaType={requestData.type}
                 plexUrl={
-                  requestData.media[requestData.is4k ? 'plexUrl4k' : 'plexUrl']
+                  requestData.is4k
+                    ? requestData.media.plexUrl4k
+                    : requestData.media.plexUrl
+                }
+                serviceUrl={
+                  requestData.is4k
+                    ? requestData.media.serviceUrl4k
+                    : requestData.media.serviceUrl
                 }
               />
             )}
@@ -415,26 +437,52 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
             {requestData.status === MediaRequestStatus.PENDING &&
               hasPermission(Permission.MANAGE_REQUESTS) && (
                 <>
-                  <Button
-                    buttonType="success"
-                    buttonSize="sm"
-                    onClick={() => modifyRequest('approve')}
-                  >
-                    <CheckIcon style={{ marginRight: '0' }} />
-                    <span className="ml-1.5 hidden sm:block">
-                      {intl.formatMessage(globalMessages.approve)}
-                    </span>
-                  </Button>
-                  <Button
-                    buttonType="danger"
-                    buttonSize="sm"
-                    onClick={() => modifyRequest('decline')}
-                  >
-                    <XIcon style={{ marginRight: '0' }} />
-                    <span className="ml-1.5 hidden sm:block">
-                      {intl.formatMessage(globalMessages.decline)}
-                    </span>
-                  </Button>
+                  <div>
+                    <Button
+                      buttonType="success"
+                      buttonSize="sm"
+                      className="hidden sm:block"
+                      onClick={() => modifyRequest('approve')}
+                    >
+                      <CheckIcon />
+                      <span>{intl.formatMessage(globalMessages.approve)}</span>
+                    </Button>
+                    <Tooltip
+                      content={intl.formatMessage(messages.approverequest)}
+                    >
+                      <Button
+                        buttonType="success"
+                        buttonSize="sm"
+                        className="sm:hidden"
+                        onClick={() => modifyRequest('approve')}
+                      >
+                        <CheckIcon />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                  <div>
+                    <Button
+                      buttonType="danger"
+                      buttonSize="sm"
+                      className="hidden sm:block"
+                      onClick={() => modifyRequest('decline')}
+                    >
+                      <XIcon />
+                      <span>{intl.formatMessage(globalMessages.decline)}</span>
+                    </Button>
+                    <Tooltip
+                      content={intl.formatMessage(messages.declinerequest)}
+                    >
+                      <Button
+                        buttonType="danger"
+                        buttonSize="sm"
+                        className="sm:hidden"
+                        onClick={() => modifyRequest('decline')}
+                      >
+                        <XIcon />
+                      </Button>
+                    </Tooltip>
+                  </div>
                 </>
               )}
             {requestData.status === MediaRequestStatus.PENDING &&
@@ -442,33 +490,54 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
               requestData.requestedBy.id === user?.id &&
               (requestData.type === 'tv' ||
                 hasPermission(Permission.REQUEST_ADVANCED)) && (
-                <Button
-                  buttonType="primary"
-                  buttonSize="sm"
-                  onClick={() => setShowEditModal(true)}
-                  className={`${
-                    hasPermission(Permission.MANAGE_REQUESTS) ? 'sm:hidden' : ''
-                  }`}
-                >
-                  <PencilIcon style={{ marginRight: '0' }} />
-                  <span className="ml-1.5 hidden sm:block">
-                    {intl.formatMessage(globalMessages.edit)}
-                  </span>
-                </Button>
+                <div>
+                  {!hasPermission(Permission.MANAGE_REQUESTS) && (
+                    <Button
+                      buttonType="primary"
+                      buttonSize="sm"
+                      className="hidden sm:block"
+                      onClick={() => setShowEditModal(true)}
+                    >
+                      <PencilIcon />
+                      <span>{intl.formatMessage(globalMessages.edit)}</span>
+                    </Button>
+                  )}
+                  <Tooltip content={intl.formatMessage(messages.editrequest)}>
+                    <Button
+                      buttonType="primary"
+                      buttonSize="sm"
+                      className="sm:hidden"
+                      onClick={() => setShowEditModal(true)}
+                    >
+                      <PencilIcon />
+                    </Button>
+                  </Tooltip>
+                </div>
               )}
             {requestData.status === MediaRequestStatus.PENDING &&
               !hasPermission(Permission.MANAGE_REQUESTS) &&
               requestData.requestedBy.id === user?.id && (
-                <Button
-                  buttonType="danger"
-                  buttonSize="sm"
-                  onClick={() => deleteRequest()}
-                >
-                  <XIcon style={{ marginRight: '0' }} />
-                  <span className="ml-1.5 hidden sm:block">
-                    {intl.formatMessage(globalMessages.cancel)}
-                  </span>
-                </Button>
+                <div>
+                  <Button
+                    buttonType="danger"
+                    buttonSize="sm"
+                    className="hidden sm:block"
+                    onClick={() => deleteRequest()}
+                  >
+                    <XIcon />
+                    <span>{intl.formatMessage(globalMessages.cancel)}</span>
+                  </Button>
+                  <Tooltip content={intl.formatMessage(messages.cancelrequest)}>
+                    <Button
+                      buttonType="danger"
+                      buttonSize="sm"
+                      className="sm:hidden"
+                      onClick={() => deleteRequest()}
+                    >
+                      <XIcon />
+                    </Button>
+                  </Tooltip>
+                </div>
               )}
           </div>
         </div>

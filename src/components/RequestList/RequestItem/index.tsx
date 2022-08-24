@@ -136,11 +136,9 @@ const RequestItemError = ({
                         : requestData.media.plexUrl
                     }
                     serviceUrl={
-                      hasPermission(Permission.ADMIN)
-                        ? requestData.is4k
-                          ? requestData.media.serviceUrl4k
-                          : requestData.media.serviceUrl
-                        : undefined
+                      requestData.is4k
+                        ? requestData.media.serviceUrl4k
+                        : requestData.media.serviceUrl
                     }
                   />
                 )}
@@ -472,9 +470,14 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   tmdbId={requestData.media.tmdbId}
                   mediaType={requestData.type}
                   plexUrl={
-                    requestData.media[
-                      requestData.is4k ? 'plexUrl4k' : 'plexUrl'
-                    ]
+                    requestData.is4k
+                      ? requestData.media.plexUrl4k
+                      : requestData.media.plexUrl
+                  }
+                  serviceUrl={
+                    requestData.is4k
+                      ? requestData.media.serviceUrl4k
+                      : requestData.media.serviceUrl
                   }
                 />
               )}
