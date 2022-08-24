@@ -137,11 +137,11 @@ const ManageSlideOver = ({
       <div className="space-y-6">
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
           (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
-          <div>
+          <>
             <h3 className="mb-2 text-xl font-bold">
               {intl.formatMessage(messages.downloadstatus)}
             </h3>
-            <div className="overflow-hidden rounded-md bg-gray-600 shadow">
+            <div className="overflow-hidden rounded-md border border-gray-700 shadow">
               <ul>
                 {data.mediaInfo?.downloadStatus?.map((status, index) => (
                   <li
@@ -161,7 +161,7 @@ const ManageSlideOver = ({
                 ))}
               </ul>
             </div>
-          </div>
+          </>
         )}
         {hasPermission([Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES], {
           type: 'or',
@@ -171,7 +171,7 @@ const ManageSlideOver = ({
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalIssues)}
               </h3>
-              <div className="overflow-hidden rounded-md bg-gray-600 shadow">
+              <div className="overflow-hidden rounded-md border border-gray-700 shadow">
                 <ul>
                   {openIssues.map((issue) => (
                     <li
@@ -186,11 +186,11 @@ const ManageSlideOver = ({
             </>
           )}
         {requests.length > 0 && (
-          <div>
+          <>
             <h3 className="mb-2 text-xl font-bold">
               {intl.formatMessage(messages.manageModalRequests)}
             </h3>
-            <div className="overflow-hidden rounded-md bg-gray-600 shadow">
+            <div className="overflow-hidden rounded-md border border-gray-700 shadow">
               <ul>
                 {requests.map((request) => (
                   <li
@@ -205,13 +205,13 @@ const ManageSlideOver = ({
                 ))}
               </ul>
             </div>
-          </div>
+          </>
         )}
         {hasPermission(Permission.ADMIN) &&
           (data.mediaInfo?.serviceUrl ||
             data.mediaInfo?.tautulliUrl ||
             !!watchData?.data?.playCount) && (
-            <div>
+            <>
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalMedia)}
               </h3>
@@ -219,13 +219,13 @@ const ManageSlideOver = ({
                 {!!watchData?.data && (
                   <div>
                     <div
-                      className={`grid grid-cols-1 divide-y divide-gray-500 overflow-hidden bg-gray-600 text-sm text-gray-300 shadow ${
+                      className={`grid grid-cols-1 divide-y divide-gray-700 overflow-hidden border border-gray-700 text-sm text-gray-300 shadow ${
                         data.mediaInfo?.tautulliUrl
                           ? 'rounded-t-md'
                           : 'rounded-md'
                       }`}
                     >
-                      <div className="grid grid-cols-3 divide-x divide-gray-500">
+                      <div className="grid grid-cols-3 divide-x divide-gray-700">
                         <div className="px-4 py-3">
                           <div className="font-bold">
                             {intl.formatMessage(messages.pastdays, { days: 7 })}
@@ -320,7 +320,7 @@ const ManageSlideOver = ({
                   </a>
                 )}
               </div>
-            </div>
+            </>
           )}
         {hasPermission(Permission.ADMIN) &&
           (data.mediaInfo?.serviceUrl4k ||
@@ -334,13 +334,13 @@ const ManageSlideOver = ({
                 {!!watchData?.data4k && (
                   <div>
                     <div
-                      className={`grid grid-cols-1 divide-y divide-gray-500 overflow-hidden bg-gray-600 text-sm text-gray-300 shadow ${
+                      className={`grid grid-cols-1 divide-y divide-gray-700 overflow-hidden border border-gray-700 text-sm text-gray-300 shadow ${
                         data.mediaInfo?.tautulliUrl4k
                           ? 'rounded-t-md'
                           : 'rounded-md'
                       }`}
                     >
-                      <div className="grid grid-cols-3 divide-x divide-gray-500">
+                      <div className="grid grid-cols-3 divide-x divide-gray-700">
                         <div className="px-4 py-3">
                           <div className="font-bold">
                             {intl.formatMessage(messages.pastdays, { days: 7 })}
@@ -487,7 +487,7 @@ const ManageSlideOver = ({
                     {intl.formatMessage(messages.manageModalClearMedia)}
                   </span>
                 </ConfirmButton>
-                <div className="mt-1 text-xs text-gray-400">
+                <div className="mt-2 text-xs text-gray-400">
                   {intl.formatMessage(messages.manageModalClearMediaWarning, {
                     mediaType: intl.formatMessage(
                       mediaType === 'movie' ? messages.movie : messages.tvshow
