@@ -28,7 +28,7 @@ import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -174,7 +174,7 @@ const IssueDetails = () => {
     >
       <PageTitle title={[intl.formatMessage(messages.issuepagetitle), title]} />
       <Transition
-        as={Fragment}
+        as="div"
         enter="transition opacity-0 duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"

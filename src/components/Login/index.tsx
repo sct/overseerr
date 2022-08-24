@@ -10,7 +10,7 @@ import { Transition } from '@headlessui/react';
 import { XCircleIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
@@ -93,7 +93,7 @@ const Login = () => {
         >
           <>
             <Transition
-              as={Fragment}
+              as="div"
               show={!!error}
               enter="opacity-0 transition duration-300"
               enterFrom="opacity-0"

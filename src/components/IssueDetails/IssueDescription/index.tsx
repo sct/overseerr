@@ -4,7 +4,7 @@ import globalMessages from '@app/i18n/globalMessages';
 import { Menu, Transition } from '@headlessui/react';
 import { DotsVerticalIcon } from '@heroicons/react/solid';
 import { Field, Form, Formik } from 'formik';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 
@@ -52,7 +52,7 @@ const IssueDescription = ({
 
                 <Transition
                   show={open}
-                  as={Fragment}
+                  as="div"
                   enter="transition ease-out duration-100"
                   enterFrom="transform opacity-0 scale-95"
                   enterTo="transform opacity-100 scale-100"

@@ -4,7 +4,7 @@ import useClickOutside from '@app/hooks/useClickOutside';
 import useLocale from '@app/hooks/useLocale';
 import { Transition } from '@headlessui/react';
 import { TranslateIcon } from '@heroicons/react/solid';
-import { Fragment, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -32,7 +32,7 @@ const LanguagePicker = () => {
         </button>
       </div>
       <Transition
-        as={Fragment}
+        as="div"
         show={isDropdownOpen}
         enter="transition ease-out duration-100 opacity-0"
         enterFrom="transform opacity-0 scale-95"
