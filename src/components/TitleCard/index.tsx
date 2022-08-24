@@ -4,17 +4,17 @@ import CachedImage from '@app/components/Common/CachedImage';
 import RequestModal from '@app/components/RequestModal';
 import ErrorCard from '@app/components/TitleCard/ErrorCard';
 import Placeholder from '@app/components/TitleCard/Placeholder';
-import Transition from '@app/components/Transition';
 import { useIsTouch } from '@app/hooks/useIsTouch';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { withProperties } from '@app/utils/typeHelpers';
+import { Transition } from '@headlessui/react';
 import { DownloadIcon } from '@heroicons/react/outline';
 import { BellIcon, CheckIcon, ClockIcon } from '@heroicons/react/solid';
 import { MediaStatus } from '@server/constants/media';
 import type { MediaType } from '@server/models/Search';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 interface TitleCardProps {
@@ -163,6 +163,7 @@ const TitleCard = ({
             </div>
           </div>
           <Transition
+            as={Fragment}
             show={isUpdating}
             enter="transition ease-in-out duration-300 transform opacity-0"
             enterFrom="opacity-0"
@@ -177,6 +178,7 @@ const TitleCard = ({
           </Transition>
 
           <Transition
+            as={Fragment}
             show={!image || showDetail || showRequestModal}
             enter="transition transform opacity-0"
             enterFrom="opacity-0"

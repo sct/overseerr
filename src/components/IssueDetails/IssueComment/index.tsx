@@ -1,15 +1,14 @@
 import Button from '@app/components/Common/Button';
 import Modal from '@app/components/Common/Modal';
-import Transition from '@app/components/Transition';
 import { Permission, useUser } from '@app/hooks/useUser';
-import { Menu } from '@headlessui/react';
+import { Menu, Transition } from '@headlessui/react';
 import { ExclamationIcon } from '@heroicons/react/outline';
 import { DotsVerticalIcon } from '@heroicons/react/solid';
 import type { default as IssueCommentType } from '@server/entity/IssueComment';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import * as Yup from 'yup';
@@ -66,6 +65,7 @@ const IssueComment = ({
       } mt-4 space-x-4`}
     >
       <Transition
+        as={Fragment}
         enter="transition opacity-0 duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -114,6 +114,7 @@ const IssueComment = ({
                   </div>
 
                   <Transition
+                    as={Fragment}
                     show={open}
                     enter="transition ease-out duration-100"
                     enterFrom="transform opacity-0 scale-95"

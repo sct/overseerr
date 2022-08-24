@@ -2,8 +2,8 @@ import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import Modal from '@app/components/Common/Modal';
-import Transition from '@app/components/Transition';
 import globalMessages from '@app/i18n/globalMessages';
+import { Transition } from '@headlessui/react';
 import { DocumentTextIcon } from '@heroicons/react/outline';
 import { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
@@ -55,6 +55,7 @@ const Release = ({ currentVersion, release, isLatest }: ReleaseProps) => {
   return (
     <div className="flex w-full flex-col space-y-3 rounded-md bg-gray-800 px-4 py-2 shadow-md ring-1 ring-gray-700 sm:flex-row sm:space-y-0 sm:space-x-3">
       <Transition
+        as="div"
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"

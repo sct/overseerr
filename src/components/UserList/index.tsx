@@ -7,7 +7,6 @@ import Modal from '@app/components/Common/Modal';
 import PageTitle from '@app/components/Common/PageTitle';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import Table from '@app/components/Common/Table';
-import Transition from '@app/components/Transition';
 import BulkEditModal from '@app/components/UserList/BulkEditModal';
 import PlexImportModal from '@app/components/UserList/PlexImportModal';
 import useSettings from '@app/hooks/useSettings';
@@ -15,6 +14,7 @@ import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
 import type { User } from '@app/hooks/useUser';
 import { Permission, UserType, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
+import { Transition } from '@headlessui/react';
 import { TrashIcon } from '@heroicons/react/outline';
 import {
   ChevronLeftIcon,
@@ -228,6 +228,7 @@ const UserList = () => {
     <>
       <PageTitle title={intl.formatMessage(messages.users)} />
       <Transition
+        as="div"
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -256,6 +257,7 @@ const UserList = () => {
       </Transition>
 
       <Transition
+        as="div"
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -439,6 +441,7 @@ const UserList = () => {
       </Transition>
 
       <Transition
+        as="div"
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -459,6 +462,7 @@ const UserList = () => {
       </Transition>
 
       <Transition
+        as="div"
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"

@@ -7,10 +7,10 @@ import PageTitle from '@app/components/Common/PageTitle';
 import IssueComment from '@app/components/IssueDetails/IssueComment';
 import IssueDescription from '@app/components/IssueDetails/IssueDescription';
 import { issueOptions } from '@app/components/IssueModal/constants';
-import Transition from '@app/components/Transition';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
+import { Transition } from '@headlessui/react';
 import {
   ChatIcon,
   CheckCircleIcon,
@@ -28,7 +28,7 @@ import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -174,6 +174,7 @@ const IssueDetails = () => {
     >
       <PageTitle title={[intl.formatMessage(messages.issuepagetitle), title]} />
       <Transition
+        as={Fragment}
         enter="transition opacity-0 duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"

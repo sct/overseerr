@@ -5,9 +5,9 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import Modal from '@app/components/Common/Modal';
 import PageTitle from '@app/components/Common/PageTitle';
 import Table from '@app/components/Common/Table';
-import Transition from '@app/components/Transition';
 import globalMessages from '@app/i18n/globalMessages';
 import { formatBytes } from '@app/utils/numberHelpers';
+import { Transition } from '@headlessui/react';
 import { PlayIcon, StopIcon, TrashIcon } from '@heroicons/react/outline';
 import { PencilIcon } from '@heroicons/react/solid';
 import type { CacheItem } from '@server/interfaces/api/settingsInterfaces';
@@ -187,6 +187,7 @@ const SettingsJobs = () => {
         ]}
       />
       <Transition
+        as="div"
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
