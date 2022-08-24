@@ -1,7 +1,7 @@
 import MiniQuotaDisplay from '@app/components/Layout/UserDropdown/MiniQuotaDisplay';
 import { useUser } from '@app/hooks/useUser';
 import { Menu, Transition } from '@headlessui/react';
-import { LogoutIcon } from '@heroicons/react/outline';
+import { ClockIcon, LogoutIcon } from '@heroicons/react/outline';
 import { CogIcon, UserIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import type { LinkProps } from 'next/link';
@@ -12,6 +12,7 @@ import { defineMessages, useIntl } from 'react-intl';
 const messages = defineMessages({
   myprofile: 'Profile',
   settings: 'Settings',
+  requests: 'Requests',
   signout: 'Sign Out',
 });
 
@@ -98,6 +99,22 @@ const UserDropdown = () => {
                   >
                     <UserIcon className="mr-2 inline h-5 w-5" />
                     <span>{intl.formatMessage(messages.myprofile)}</span>
+                  </ForwardedLink>
+                )}
+              </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <ForwardedLink
+                    href={`/users/${user?.id}/requests?filter=all`}
+                    className={`flex items-center rounded px-4 py-2 text-sm font-medium text-gray-200 transition duration-150 ease-in-out ${
+                      active
+                        ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white'
+                        : ''
+                    }`}
+                    data-testid="user-menu-settings"
+                  >
+                    <ClockIcon className="mr-2 inline h-5 w-5" />
+                    <span>{intl.formatMessage(messages.requests)}</span>
                   </ForwardedLink>
                 )}
               </Menu.Item>

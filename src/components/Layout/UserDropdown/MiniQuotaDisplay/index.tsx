@@ -23,13 +23,13 @@ const MiniQuotaDisplay = ({ userId }: MiniQuotaDisplayProps) => {
 
   return (
     <Suspense fallback={<SmallLoadingSpinner />}>
-      {(data?.movie.limit ?? 0) !== 0 && (data?.tv.limit ?? 0) !== 0 && (
+      {((data?.movie.limit ?? 0) !== 0 || (data?.tv.limit ?? 0) !== 0) && (
         <div className="flex">
-          <div className="flex basis-1/2 flex-col space-y-1">
+          <div className="flex basis-1/2 flex-col space-y-2">
             <div className="text-sm text-gray-200">
               {intl.formatMessage(messages.movierequests)}
             </div>
-            <div className="flex h-full items-center space-x-2">
+            <div className="flex h-full items-center space-x-2 text-gray-200">
               {data?.movie.limit ?? 0 > 0 ? (
                 <>
                   <ProgressCircle
@@ -41,22 +41,23 @@ const MiniQuotaDisplay = ({ userId }: MiniQuotaDisplayProps) => {
                     )}
                     useHeatLevel
                   />
-                  <span className="text-lg font-bold text-gray-200">
+                  <span className="text-lg font-bold tracking-widest">
                     {data?.movie.remaining}/{data?.movie.limit}
                   </span>
                 </>
               ) : (
-                <span className="text-sm text-gray-200">
-                  <Infinity className="h-8" />
-                </span>
+                <>
+                  <Infinity className="w-7" />
+                  <span className="font-bold">Unlimited</span>
+                </>
               )}
             </div>
           </div>
-          <div className="flex basis-1/2 flex-col space-y-1">
+          <div className="flex basis-1/2 flex-col space-y-2">
             <div className="text-sm text-gray-200">
               {intl.formatMessage(messages.seriesrequests)}
             </div>
-            <div className="flex h-full items-center space-x-2">
+            <div className="flex h-full items-center space-x-2 text-gray-200">
               {data?.tv.limit ?? 0 > 0 ? (
                 <>
                   <ProgressCircle
@@ -66,14 +67,15 @@ const MiniQuotaDisplay = ({ userId }: MiniQuotaDisplayProps) => {
                     )}
                     useHeatLevel
                   />
-                  <span className="text-lg font-bold text-gray-200">
+                  <span className="text-lg font-bold tracking-widest text-gray-200">
                     {data?.tv.remaining}/{data?.tv.limit}
                   </span>
                 </>
               ) : (
-                <span className="text-sm text-gray-200">
-                  <Infinity className="h-8" />
-                </span>
+                <>
+                  <Infinity className="w-7" />
+                  <span className="font-bold">Unlimited</span>
+                </>
               )}
             </div>
           </div>
