@@ -28,22 +28,22 @@ const Season = ({ seasonNumber, tvId }: SeasonProps) => {
   }
 
   return (
-    <div className="flex flex-col space-y-4 divide-y divide-gray-700 py-2">
+    <div className="flex flex-col justify-center divide-y divide-gray-700">
       {data.episodes
         .slice()
         .reverse()
         .map((episode) => {
           return (
             <div
-              className="flex flex-col space-y-4 py-4 last:border-b-0 xl:flex-row xl:space-y-0 xl:space-x-4"
+              className="flex flex-col space-y-4 py-4 xl:flex-row xl:space-y-4 xl:space-x-4"
               key={`season-${seasonNumber}-episode-${episode.episodeNumber}`}
             >
               <div className="flex-1">
-                <div className="flex items-center space-x-2">
+                <div className="flex flex-col space-y-2 xl:flex-row xl:items-center xl:space-y-0 xl:space-x-2">
                   <h3 className="text-lg">{episode.name}</h3>
                   <AirDateBadge airDate={episode.airDate} />
                 </div>
-                <p>{episode.overview}</p>
+                {episode.overview && <p>{episode.overview}</p>}
               </div>
               {episode.stillPath && (
                 <img
