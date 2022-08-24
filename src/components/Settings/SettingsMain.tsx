@@ -415,9 +415,7 @@ const SettingsMain = () => {
                     <span className="mr-2">
                       {intl.formatMessage(messages.hideRequested)}
                     </span>
-                    <Badge badgeType="warning">
-                      {intl.formatMessage(globalMessages.experimental)}
-                    </Badge>
+                    <SettingsBadge badgeType="experimental" />
                   </label>
                   <div className="form-input">
                     <Field
