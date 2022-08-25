@@ -1,6 +1,6 @@
 {
   "components.AirDateBadge.airedrelative": "Aired {relativeTime}",
-  "components.AirDateBadge.airsrelative": "Airs {relativeTime}",
+  "components.AirDateBadge.airsrelative": "Airing {relativeTime}",
   "components.AppDataWarning.dockerVolumeMissingDescription": "The <code>{appDataPath}</code> volume mount was not configured properly. All data will be cleared when the container is stopped or restarted.",
   "components.CollectionDetails.numberofmovies": "{count} Movies",
   "components.CollectionDetails.overview": "Overview",

@@ -137,7 +137,7 @@ const ManageSlideOver = ({
       <div className="space-y-6">
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
           (data?.mediaInfo?.downloadStatus4k ?? []).length > 0) && (
-          <>
+          <div>
             <h3 className="mb-2 text-xl font-bold">
               {intl.formatMessage(messages.downloadstatus)}
             </h3>
@@ -161,13 +161,13 @@ const ManageSlideOver = ({
                 ))}
               </ul>
             </div>
-          </>
+          </div>
         )}
         {hasPermission([Permission.MANAGE_ISSUES, Permission.VIEW_ISSUES], {
           type: 'or',
         }) &&
           openIssues.length > 0 && (
-            <>
+            <div>
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalIssues)}
               </h3>
@@ -183,10 +183,10 @@ const ManageSlideOver = ({
                   ))}
                 </ul>
               </div>
-            </>
+            </div>
           )}
         {requests.length > 0 && (
-          <>
+          <div>
             <h3 className="mb-2 text-xl font-bold">
               {intl.formatMessage(messages.manageModalRequests)}
             </h3>
@@ -205,13 +205,13 @@ const ManageSlideOver = ({
                 ))}
               </ul>
             </div>
-          </>
+          </div>
         )}
         {hasPermission(Permission.ADMIN) &&
           (data.mediaInfo?.serviceUrl ||
             data.mediaInfo?.tautulliUrl ||
             watchData?.data) && (
-            <>
+            <div>
               <h3 className="mb-2 text-xl font-bold">
                 {intl.formatMessage(messages.manageModalMedia)}
               </h3>
@@ -324,7 +324,7 @@ const ManageSlideOver = ({
                   </a>
                 )}
               </div>
-            </>
+            </div>
           )}
         {hasPermission(Permission.ADMIN) &&
           (data.mediaInfo?.serviceUrl4k ||

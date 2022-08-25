@@ -3,7 +3,7 @@ import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   airedrelative: 'Aired {relativeTime}',
-  airsrelative: 'Airs {relativeTime}',
+  airsrelative: 'Airing {relativeTime}',
 });
 
 type AirDateBadgeProps = {
