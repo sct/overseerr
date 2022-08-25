@@ -536,7 +536,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                     {({ open }) => (
                       <>
                         <Disclosure.Button
-                          className={`mt-2 flex w-full items-center justify-between border-gray-700 bg-gray-800 px-4 py-2 text-gray-200 ${
+                          className={`mt-2 flex w-full items-center justify-between space-x-2 border-gray-700 bg-gray-800 px-4 py-2 text-gray-200 ${
                             open
                               ? 'rounded-t-md border-t border-l border-r'
                               : 'rounded-md border'
@@ -630,7 +630,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                           <ChevronUpIcon
                             className={`${
                               open ? 'rotate-180 transform' : ''
-                            } h-5 w-5 text-gray-500`}
+                            } h-6 w-6 text-gray-500`}
                           />
                         </Disclosure.Button>
                         <Transition
