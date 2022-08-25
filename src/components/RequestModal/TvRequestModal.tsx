@@ -359,7 +359,7 @@ const TvRequestModal = ({
 
   const isOwner = editRequest && editRequest.requestedBy.id === user?.id;
 
-  return !data?.externalIds.tvdbId && searchModal.show ? (
+  return data && !data?.externalIds.tvdbId && searchModal.show ? (
     <SearchByNameModal
       tvdbId={tvdbId}
       setTvdbId={setTvdbId}
