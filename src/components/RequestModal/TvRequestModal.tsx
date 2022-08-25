@@ -359,12 +359,12 @@ const TvRequestModal = ({
 
   const isOwner = editRequest && editRequest.requestedBy.id === user?.id;
 
-  return !data?.externalIds.tvdbId && searchModal.show ? (
+  return data && !data.externalIds.tvdbId && searchModal.show ? (
     <SearchByNameModal
       tvdbId={tvdbId}
       setTvdbId={setTvdbId}
       closeModal={() => setSearchModal({ show: false })}
-      loading={!data && !error}
+      loading={!error}
       onCancel={onCancel}
       modalTitle={intl.formatMessage(
         is4k ? messages.request4ktitle : messages.requesttitle,

@@ -7,7 +7,7 @@ import { useLockBodyScroll } from '@app/hooks/useLockBodyScroll';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
 import type { MouseEvent } from 'react';
-import { Fragment, useRef } from 'react';
+import React, { Fragment, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useIntl } from 'react-intl';
 
@@ -36,81 +36,89 @@ interface ModalProps {
   children?: React.ReactNode;
 }
 
-const Modal = ({
-  title,
-  onCancel,
-  onOk,
-  cancelText,
-  okText,
-  okDisabled = false,
-  cancelButtonType = 'default',
-  okButtonType = 'primary',
-  children,
-  disableScrollLock,
-  backgroundClickable = true,
-  iconSvg,
-  secondaryButtonType = 'default',
-  secondaryDisabled = false,
-  onSecondary,
-  secondaryText,
-  tertiaryButtonType = 'default',
-  tertiaryDisabled = false,
-  tertiaryText,
-  onTertiary,
-  backdrop,
-}: ModalProps) => {
-  const intl = useIntl();
-  const modalRef = useRef<HTMLDivElement>(null);
-  useClickOutside(modalRef, () => {
-    typeof onCancel === 'function' && backgroundClickable
-      ? onCancel()
-      : undefined;
-  });
-  useLockBodyScroll(true, disableScrollLock);
+const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
+  (
+    {
+      title,
+      onCancel,
+      onOk,
+      cancelText,
+      okText,
+      okDisabled = false,
+      cancelButtonType = 'default',
+      okButtonType = 'primary',
+      children,
+      disableScrollLock,
+      backgroundClickable = true,
+      iconSvg,
+      secondaryButtonType = 'default',
+      secondaryDisabled = false,
+      onSecondary,
+      secondaryText,
+      tertiaryButtonType = 'default',
+      tertiaryDisabled = false,
+      tertiaryText,
+      loading = false,
+      onTertiary,
+      backdrop,
+    },
+    parentRef
+  ) => {
+    const intl = useIntl();
+    const modalRef = useRef<HTMLDivElement>(null);
+    useClickOutside(modalRef, () => {
+      typeof onCancel === 'function' && backgroundClickable
+        ? onCancel()
+        : undefined;
+    });
+    useLockBodyScroll(true, disableScrollLock);
 
-  return ReactDOM.createPortal(
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
-      className="fixed top-0 bottom-0 left-0 right-0 z-50 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-70"
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          typeof onCancel === 'function' && backgroundClickable
-            ? onCancel()
-            : undefined;
-        }
-      }}
-    >
+    return ReactDOM.createPortal(
       <Transition.Child
-        as={Fragment}
-        enter="transition opacity-0 duration-300 transform scale-75"
-        enterFrom="opacity-0 scale-75"
-        enterTo="opacity-100 scale-100"
+        appear
+        as="div"
+        className="fixed top-0 bottom-0 left-0 right-0 z-50 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-70"
+        enter="transition opacity-0 duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
         leave="transition opacity-100 duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
+        ref={parentRef}
       >
-        <div style={{ position: 'absolute' }}>
-          <LoadingSpinner />
-        </div>
-      </Transition.Child>
-      <Transition.Child
-        as={Fragment}
-        enter="transition opacity-0 duration-300 transform scale-75"
-        enterFrom="opacity-0 scale-75"
-        enterTo="opacity-100 scale-100"
-        leave="transition opacity-100 duration-300"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
-        <div
-          className="relative inline-block w-full transform overflow-auto bg-gray-700 px-4 pt-5 pb-4 text-left align-bottom shadow-xl ring-1 ring-gray-500 transition-all sm:my-8 sm:max-w-3xl sm:rounded-lg sm:align-middle"
+        <Transition
+          appear
+          as={Fragment}
+          enter="transition opacity-0 duration-300 transform scale-75"
+          enterFrom="opacity-0 scale-75"
+          enterTo="opacity-100 scale-100"
+          leave="transition opacity-100 duration-300"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+          show={loading}
+        >
+          <div style={{ position: 'absolute' }}>
+            <LoadingSpinner />
+          </div>
+        </Transition>
+        <Transition
+          className="hide-scrollbar relative inline-block w-full transform overflow-auto bg-gray-700 px-4 pt-5 pb-4 text-left align-bottom shadow-xl ring-1 ring-gray-500 transition-all sm:my-8 sm:max-w-3xl sm:rounded-lg sm:align-middle"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
-          ref={modalRef}
           style={{
             maxHeight: 'calc(100% - env(safe-area-inset-top) * 2)',
           }}
+          appear
+          as="div"
+          enter="transition opacity-0 duration-300 transform scale-75"
+          enterFrom="opacity-0 scale-75"
+          enterTo="opacity-100 scale-100"
+          leave="transition opacity-100 duration-300"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+          show={!loading}
+          ref={modalRef}
         >
           {backdrop && (
             <div className="absolute top-0 left-0 right-0 z-0 h-64 max-h-full w-full">
@@ -205,11 +213,13 @@ const Modal = ({
               )}
             </div>
           )}
-        </div>
-      </Transition.Child>
-    </div>,
-    document.body
-  );
-};
+        </Transition>
+      </Transition.Child>,
+      document.body
+    );
+  }
+);
+
+Modal.displayName = 'Modal';
 
 export default Modal;
