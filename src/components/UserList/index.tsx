@@ -48,7 +48,7 @@ const messages = defineMessages({
   owner: 'Owner',
   admin: 'Admin',
   plexuser: 'Plex User',
-  deleteuser: 'Delete {username}',
+  deleteuser: 'Delete User',
   userdeleted: 'User deleted successfully!',
   userdeleteerror: 'Something went wrong while deleting the user.',
   deleteconfirm:
@@ -248,9 +248,8 @@ const UserList = () => {
           onCancel={() =>
             setDeleteModal({ isOpen: false, user: deleteModal.user })
           }
-          title={intl.formatMessage(messages.deleteuser, {
-            username: `${deleteModal.user?.displayName}`,
-          })}
+          title={intl.formatMessage(messages.deleteuser)}
+          subTitle={deleteModal.user?.displayName}
         >
           {intl.formatMessage(messages.deleteconfirm)}
         </Modal>
