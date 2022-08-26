@@ -54,10 +54,7 @@ describe('User List', () => {
       .contains('Delete')
       .click();
 
-    cy.get('[data-testid=modal-title]').should(
-      'contain',
-      `Delete ${testUser.displayName}`
-    );
+    cy.get('[data-testid=modal-title]').should('contain', `Delete User`);
 
     cy.intercept('/api/v1/user?take=10&skip=0&sort=displayname').as('user');
 
