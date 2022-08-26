@@ -41,7 +41,9 @@ RUN apk add --no-cache tzdata tini && rm -rf /tmp/*
 
 # copy from build image
 COPY --from=BUILD_IMAGE /app ./
+RUN chown node:node /app/config -R
 
+USER node
 ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "yarn", "start" ]
 
