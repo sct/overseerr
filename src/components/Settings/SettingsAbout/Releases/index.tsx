@@ -5,10 +5,17 @@ import Modal from '@app/components/Common/Modal';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
 import { DocumentTextIcon } from '@heroicons/react/outline';
-import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import { Fragment, useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
-import ReactMarkdown from 'react-markdown';
 import useSWR from 'swr';
+
+// dyanmic is having trouble extracting the props for react-markdown here so we are just ignoring it since its really
+// only children we are using
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ReactMarkdown = dynamic<any>(() => import('react-markdown'), {
+  ssr: false,
+});
 
 const messages = defineMessages({
   releases: 'Releases',
@@ -55,7 +62,7 @@ const Release = ({ currentVersion, release, isLatest }: ReleaseProps) => {
   return (
     <div className="flex w-full flex-col space-y-3 rounded-md bg-gray-800 px-4 py-2 shadow-md ring-1 ring-gray-700 sm:flex-row sm:space-y-0 sm:space-x-3">
       <Transition
-        as="div"
+        as={Fragment}
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -66,7 +73,6 @@ const Release = ({ currentVersion, release, isLatest }: ReleaseProps) => {
       >
         <Modal
           onCancel={() => setModalOpen(false)}
-          iconSvg={<DocumentTextIcon />}
           title={intl.formatMessage(messages.versionChangelog, {
             version: release.name,
           })}

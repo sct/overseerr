@@ -24,7 +24,7 @@ import type {
 } from '@server/interfaces/api/settingsInterfaces';
 import copy from 'copy-to-clipboard';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
@@ -138,7 +138,7 @@ const SettingsLogs = () => {
         ]}
       />
       <Transition
-        as="div"
+        as={Fragment}
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -150,7 +150,6 @@ const SettingsLogs = () => {
       >
         <Modal
           title={intl.formatMessage(messages.logDetails)}
-          iconSvg={<DocumentSearchIcon />}
           onCancel={() => setActiveLog({ log: activeLog.log, isOpen: false })}
           cancelText={intl.formatMessage(globalMessages.close)}
           onOk={() =>

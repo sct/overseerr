@@ -269,7 +269,6 @@ const SettingsServices = () => {
             serverType:
               deleteServerModal.type === 'radarr' ? 'Radarr' : 'Sonarr',
           })}
-          iconSvg={<TrashIcon />}
         >
           {intl.formatMessage(messages.deleteserverconfirm)}
         </Modal>

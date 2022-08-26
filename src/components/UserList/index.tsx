@@ -15,7 +15,6 @@ import type { User } from '@app/hooks/useUser';
 import { Permission, UserType, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
-import { TrashIcon } from '@heroicons/react/outline';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -252,7 +251,6 @@ const UserList = () => {
           title={intl.formatMessage(messages.deleteuser, {
             username: `${deleteModal.user?.displayName}`,
           })}
-          iconSvg={<TrashIcon />}
         >
           {intl.formatMessage(messages.deleteconfirm)}
         </Modal>
@@ -317,7 +315,6 @@ const UserList = () => {
             return (
               <Modal
                 title={intl.formatMessage(messages.createlocaluser)}
-                iconSvg={<UserAddIcon />}
                 onOk={() => handleSubmit()}
                 okText={
                   isSubmitting

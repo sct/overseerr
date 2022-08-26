@@ -5,7 +5,6 @@ import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { RadioGroup } from '@headlessui/react';
-import { ExclamationIcon } from '@heroicons/react/outline';
 import { ArrowCircleRightIcon } from '@heroicons/react/solid';
 import { MediaStatus } from '@server/constants/media';
 import type Issue from '@server/entity/Issue';
@@ -150,7 +149,6 @@ const CreateIssueModal = ({
           <Modal
             backgroundClickable
             onCancel={onCancel}
-            iconSvg={<ExclamationIcon />}
             title={intl.formatMessage(messages.reportissue)}
             cancelText={intl.formatMessage(globalMessages.close)}
             onOk={() => handleSubmit()}

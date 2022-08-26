@@ -2,7 +2,6 @@ import Modal from '@app/components/Common/Modal';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
-import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
 import type { SonarrSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
@@ -369,7 +368,6 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                       values.is4k ? messages.edit4ksonarr : messages.editsonarr
                     )
               }
-              iconSvg={!sonarr ? <PlusIcon /> : <PencilIcon />}
             >
               <div className="mb-6">
                 <div className="form-row">

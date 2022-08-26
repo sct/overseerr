@@ -3,7 +3,6 @@ import PermissionEdit from '@app/components/PermissionEdit';
 import type { User } from '@app/hooks/useUser';
 import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
-import { PencilIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -86,7 +85,6 @@ const BulkEditModal = ({
   return (
     <Modal
       title={intl.formatMessage(messages.edituser)}
-      iconSvg={<PencilIcon />}
       onOk={() => {
         updateUsers();
       }}

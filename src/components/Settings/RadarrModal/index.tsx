@@ -2,7 +2,6 @@ import Modal from '@app/components/Common/Modal';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
-import { PencilIcon, PlusIcon } from '@heroicons/react/solid';
 import type { RadarrSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
@@ -340,7 +339,6 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                       values.is4k ? messages.edit4kradarr : messages.editradarr
                     )
               }
-              iconSvg={!radarr ? <PlusIcon /> : <PencilIcon />}
             >
               <div className="mb-6">
                 <div className="form-row">

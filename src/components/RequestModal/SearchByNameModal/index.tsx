@@ -2,7 +2,6 @@ import Alert from '@app/components/Common/Alert';
 import { SmallLoadingSpinner } from '@app/components/Common/LoadingSpinner';
 import Modal from '@app/components/Common/Modal';
 import globalMessages from '@app/i18n/globalMessages';
-import { DownloadIcon } from '@heroicons/react/outline';
 import type { SonarrSeries } from '@server/api/servarr/sonarr';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
@@ -20,6 +19,7 @@ interface SearchByNameModalProps {
   onCancel?: () => void;
   closeModal: () => void;
   modalTitle: string;
+  modalSubTitle: string;
   tmdbId: number;
 }
 
@@ -30,6 +30,7 @@ const SearchByNameModal = ({
   onCancel,
   closeModal,
   modalTitle,
+  modalSubTitle,
   tmdbId,
 }: SearchByNameModalProps) => {
   const intl = useIntl();
@@ -48,10 +49,10 @@ const SearchByNameModal = ({
       onCancel={onCancel}
       onOk={closeModal}
       title={modalTitle}
+      subTitle={modalSubTitle}
       okText={intl.formatMessage(globalMessages.next)}
       okDisabled={!tvdbId}
       okButtonType="primary"
-      iconSvg={<DownloadIcon />}
     >
       <Alert
         title={intl.formatMessage(messages.notvdbiddescription)}
