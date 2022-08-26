@@ -60,7 +60,10 @@ const SettingsLogs = () => {
   const [currentFilter, setCurrentFilter] = useState<Filter>('debug');
   const [currentPageSize, setCurrentPageSize] = useState(25);
   const [refreshInterval, setRefreshInterval] = useState(5000);
-  const [activeLog, setActiveLog] = useState<LogMessage | null>(null);
+  const [activeLog, setActiveLog] = useState<{
+    isOpen: boolean;
+    log?: LogMessage;
+  }>({ isOpen: false });
 
   const page = router.query.page ? Number(router.query.page) : 1;
   const pageIndex = page - 1;
@@ -143,14 +146,16 @@ const SettingsLogs = () => {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         appear
-        show={!!activeLog}
+        show={activeLog.isOpen}
       >
         <Modal
           title={intl.formatMessage(messages.logDetails)}
           iconSvg={<DocumentSearchIcon />}
-          onCancel={() => setActiveLog(null)}
+          onCancel={() => setActiveLog({ log: activeLog.log, isOpen: false })}
           cancelText={intl.formatMessage(globalMessages.close)}
-          onOk={() => (activeLog ? copyLogString(activeLog) : undefined)}
+          onOk={() =>
+            activeLog.log ? copyLogString(activeLog.log) : undefined
+          }
           okText={intl.formatMessage(messages.copyToClipboard)}
           okButtonType="primary"
         >
@@ -162,7 +167,7 @@ const SettingsLogs = () => {
                 </div>
                 <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex max-w-lg items-center">
-                    {intl.formatDate(activeLog.timestamp, {
+                    {intl.formatDate(activeLog.log?.timestamp, {
                       year: 'numeric',
                       month: 'short',
                       day: '2-digit',
@@ -181,16 +186,16 @@ const SettingsLogs = () => {
                   <div className="flex max-w-lg items-center">
                     <Badge
                       badgeType={
-                        activeLog.level === 'error'
+                        activeLog.log?.level === 'error'
                           ? 'danger'
-                          : activeLog.level === 'warn'
+                          : activeLog.log?.level === 'warn'
                           ? 'warning'
-                          : activeLog.level === 'info'
+                          : activeLog.log?.level === 'info'
                           ? 'success'
                           : 'default'
                       }
                     >
-                      {activeLog.level.toUpperCase()}
+                      {activeLog.log?.level.toUpperCase()}
                     </Badge>
                   </div>
                 </div>
@@ -201,7 +206,7 @@ const SettingsLogs = () => {
                 </div>
                 <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex max-w-lg items-center">
-                    {activeLog.label}
+                    {activeLog.log?.label}
                   </div>
                 </div>
               </div>
@@ -211,18 +216,18 @@ const SettingsLogs = () => {
                 </div>
                 <div className="col-span-2 mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex max-w-lg items-center">
-                    {activeLog.message}
+                    {activeLog.log?.message}
                   </div>
                 </div>
               </div>
-              {activeLog.data && (
+              {activeLog.log?.data && (
                 <div className="form-row">
                   <div className="text-label">
                     {intl.formatMessage(messages.extraData)}
                   </div>
                   <div className="col-span-2 mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                     <code className="block max-h-64 w-full overflow-auto whitespace-pre bg-gray-800 px-6 py-4 ring-1 ring-gray-700">
-                      {JSON.stringify(activeLog.data, null, ' ')}
+                      {JSON.stringify(activeLog.log?.data, null, ' ')}
                     </code>
                   </div>
                 </div>
@@ -336,7 +341,9 @@ const SettingsLogs = () => {
                         <Button
                           buttonType="primary"
                           buttonSize="sm"
-                          onClick={() => setActiveLog(row)}
+                          onClick={() =>
+                            setActiveLog({ log: row, isOpen: true })
+                          }
                           className="m-1"
                         >
                           <DocumentSearchIcon className="icon-md" />
