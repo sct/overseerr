@@ -23,10 +23,11 @@ const messages = defineMessages({
   populartv: 'Popular Series',
   upcomingtv: 'Upcoming Series',
   recentlyAdded: 'Recently Added',
-  noRequests: 'No requests.',
   upcoming: 'Upcoming Movies',
   trending: 'Trending',
   plexwatchlist: 'Your Plex Watchlist',
+  emptywatchlist:
+    'Media added to your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink> will appear here.',
 });
 
 const Discover = () => {
@@ -104,34 +105,51 @@ const Discover = () => {
               />
             ))}
             placeholder={<RequestCard.Placeholder />}
-            emptyMessage={intl.formatMessage(messages.noRequests)}
           />
         </>
       )}
-      {(!watchlistItems || !!watchlistItems.results.length) && !watchlistError && (
-        <>
-          <div className="slider-header">
-            <Link href="/discover/watchlist">
-              <a className="slider-title">
-                <span>{intl.formatMessage(messages.plexwatchlist)}</span>
-                <ArrowCircleRightIcon />
-              </a>
-            </Link>
-          </div>
-          <Slider
-            sliderKey="watchlist"
-            isLoading={!watchlistItems && !watchlistError}
-            items={watchlistItems?.results.map((item) => (
-              <TmdbTitleCard
-                id={item.tmdbId}
-                key={`watchlist-slider-item-${item.ratingKey}`}
-                tmdbId={item.tmdbId}
-                type={item.mediaType}
-              />
-            ))}
-          />
-        </>
-      )}
+      {user?.userType === UserType.PLEX &&
+        (!watchlistItems ||
+          !!watchlistItems.results.length ||
+          user.settings?.watchlistSyncMovies ||
+          user.settings?.watchlistSyncTv) &&
+        !watchlistError && (
+          <>
+            <div className="slider-header">
+              <Link href="/discover/watchlist">
+                <a className="slider-title">
+                  <span>{intl.formatMessage(messages.plexwatchlist)}</span>
+                  <ArrowCircleRightIcon />
+                </a>
+              </Link>
+            </div>
+            <Slider
+              sliderKey="watchlist"
+              isLoading={!watchlistItems}
+              isEmpty={!!watchlistItems && watchlistItems.results.length === 0}
+              emptyMessage={intl.formatMessage(messages.emptywatchlist, {
+                PlexWatchlistSupportLink: (msg: React.ReactNode) => (
+                  <a
+                    href="https://support.plex.tv/articles/universal-watchlist/"
+                    className="text-white transition duration-300 hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {msg}
+                  </a>
+                ),
+              })}
+              items={watchlistItems?.results.map((item) => (
+                <TmdbTitleCard
+                  id={item.tmdbId}
+                  key={`watchlist-slider-item-${item.ratingKey}`}
+                  tmdbId={item.tmdbId}
+                  type={item.mediaType}
+                />
+              ))}
+            />
+          </>
+        )}
       <MediaSlider
         sliderKey="trending"
         title={intl.formatMessage(messages.trending)}
