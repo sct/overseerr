@@ -150,21 +150,13 @@ const CreateIssueModal = ({
             backgroundClickable
             onCancel={onCancel}
             title={intl.formatMessage(messages.reportissue)}
+            subTitle={data && isMovie(data) ? data?.title : data?.name}
             cancelText={intl.formatMessage(globalMessages.close)}
             onOk={() => handleSubmit()}
             okText={intl.formatMessage(messages.submitissue)}
             loading={!data && !error}
             backdrop={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data?.backdropPath}`}
           >
-            {data && (
-              <div className="flex items-center">
-                <span className="mr-1 font-semibold">
-                  {intl.formatMessage(messages.issomethingwrong, {
-                    title: isMovie(data) ? data.title : data.name,
-                  })}
-                </span>
-              </div>
-            )}
             {mediaType === 'tv' && data && !isMovie(data) && (
               <>
                 <div className="form-row">
@@ -262,7 +254,7 @@ const CreateIssueModal = ({
                           ? 'rounded-bl-md rounded-br-md'
                           : '',
                         checked
-                          ? 'z-10 border-indigo-500 bg-indigo-600'
+                          ? 'z-10 border border-indigo-500 bg-indigo-400 bg-opacity-20'
                           : 'border-gray-500',
                         'relative flex cursor-pointer border p-4 focus:outline-none'
                       )
@@ -273,7 +265,7 @@ const CreateIssueModal = ({
                         <span
                           className={`${
                             checked
-                              ? 'border-transparent bg-indigo-800'
+                              ? 'border-transparent bg-indigo-600'
                               : 'border-gray-300 bg-white'
                           } ${
                             active ? 'ring-2 ring-indigo-300 ring-offset-2' : ''

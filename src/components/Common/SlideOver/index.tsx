@@ -89,7 +89,9 @@ const SlideOver = ({
                     </div>
                     {subText && (
                       <div>
-                        <p className="leading-5 text-gray-300">{subText}</p>
+                        <p className="font-semibold leading-5 text-gray-300">
+                          {subText}
+                        </p>
                       </div>
                     )}
                   </header>

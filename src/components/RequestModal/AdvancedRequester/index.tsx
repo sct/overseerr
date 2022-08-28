@@ -281,7 +281,7 @@ const AdvancedRequester = ({
 
   return (
     <>
-      <div className="mt-4 mb-2 flex items-center font-bold tracking-wider">
+      <div className="mt-4 mb-2 flex items-center text-lg font-bold tracking-wider">
         <AdjustmentsIcon className="mr-1.5 h-5 w-5" />
         {intl.formatMessage(messages.advancedoptions)}
       </div>
