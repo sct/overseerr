@@ -5,7 +5,6 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { formatBytes } from '@app/utils/numberHelpers';
 import { Listbox, Transition } from '@headlessui/react';
-import { AdjustmentsIcon } from '@heroicons/react/outline';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import type {
   ServiceCommonServer,
@@ -281,8 +280,7 @@ const AdvancedRequester = ({
 
   return (
     <>
-      <div className="mt-4 mb-2 flex items-center text-lg font-bold tracking-wider">
-        <AdjustmentsIcon className="mr-1.5 h-5 w-5" />
+      <div className="mt-4 mb-2 flex items-center text-lg font-semibold">
         {intl.formatMessage(messages.advancedoptions)}
       </div>
       <div className="rounded-md">
