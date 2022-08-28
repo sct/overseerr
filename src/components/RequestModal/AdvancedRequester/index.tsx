@@ -11,8 +11,9 @@ import type {
   ServiceCommonServerWithDetails,
 } from '@server/interfaces/api/serviceInterfaces';
 import type { UserResultsResponse } from '@server/interfaces/api/userInterfaces';
+import { hasPermission } from '@server/lib/permissions';
 import { isEqual } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import Select from 'react-select';
 import useSWR from 'swr';
@@ -64,7 +65,7 @@ const AdvancedRequester = ({
   onChange,
 }: AdvancedRequesterProps) => {
   const intl = useIntl();
-  const { user, hasPermission } = useUser();
+  const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const { data, error } = useSWR<ServiceCommonServer[]>(
     `/api/v1/service/${type === 'movie' ? 'radarr' : 'sonarr'}`,
     {
@@ -113,16 +114,41 @@ const AdvancedRequester = ({
   );
 
   const { data: userData } = useSWR<UserResultsResponse>(
-    hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS])
+    currentHasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS])
       ? '/api/v1/user?take=1000&sort=displayname'
       : null
   );
+  const filteredUserData = useMemo(
+    () =>
+      userData?.results.filter((user) =>
+        hasPermission(
+          is4k
+            ? [
+                Permission.REQUEST_4K,
+                type === 'movie'
+                  ? Permission.REQUEST_4K_MOVIE
+                  : Permission.REQUEST_4K_TV,
+              ]
+            : [
+                Permission.REQUEST,
+                type === 'movie'
+                  ? Permission.REQUEST_MOVIE
+                  : Permission.REQUEST_TV,
+              ],
+          user.permissions,
+          { type: 'or' }
+        )
+      ),
+    [userData?.results]
+  );
 
   useEffect(() => {
-    if (userData?.results && !requestUser) {
-      setSelectedUser(userData.results.find((u) => u.id === user?.id) ?? null);
+    if (filteredUserData && !requestUser) {
+      setSelectedUser(
+        filteredUserData.find((u) => u.id === currentUser?.id) ?? null
+      );
     }
-  }, [userData?.results]);
+  }, [filteredUserData]);
 
   useEffect(() => {
     let defaultServer = data?.find(
@@ -273,7 +299,7 @@ const AdvancedRequester = ({
             serverData.rootFolders.length < 2 &&
             (serverData.languageProfiles ?? []).length < 2 &&
             !serverData.tags?.length)))) &&
-    (!selectedUser || (userData?.results ?? []).length < 2)
+    (!selectedUser || (filteredUserData ?? []).length < 2)
   ) {
     return null;
   }
@@ -512,9 +538,12 @@ const AdvancedRequester = ({
               />
             </div>
           )}
-        {hasPermission([Permission.MANAGE_REQUESTS, Permission.MANAGE_USERS]) &&
+        {currentHasPermission([
+          Permission.MANAGE_REQUESTS,
+          Permission.MANAGE_USERS,
+        ]) &&
           selectedUser &&
-          (userData?.results ?? []).length > 1 && (
+          (filteredUserData ?? []).length > 1 && (
             <Listbox
               as="div"
               value={selectedUser}
@@ -565,7 +594,7 @@ const AdvancedRequester = ({
                         static
                         className="shadow-xs max-h-60 overflow-auto rounded-md py-1 text-base leading-6 focus:outline-none sm:text-sm sm:leading-5"
                       >
-                        {userData?.results.map((user) => (
+                        {filteredUserData?.map((user) => (
                           <Listbox.Option key={user.id} value={user}>
                             {({ selected, active }) => (
                               <div
