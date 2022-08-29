@@ -51,22 +51,22 @@ function Button<P extends ElementTypes = 'button'>(
   switch (buttonType) {
     case 'primary':
       buttonStyle.push(
-        'text-white bg-indigo-600 border-indigo-600 hover:bg-indigo-500 hover:border-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 active:border-indigo-700'
+        'text-white border border-indigo-500 bg-indigo-600 bg-opacity-80 hover:bg-opacity-100 hover:border-indigo-500 focus:border-indigo-700 focus:ring-indigo active:bg-opacity-100 active:border-indigo-700'
       );
       break;
     case 'danger':
       buttonStyle.push(
-        'text-white bg-red-600 border-red-600 hover:bg-red-500 hover:border-red-500 focus:border-red-700 focus:ring-red active:bg-red-700 active:border-red-700'
+        'text-white bg-red-600 bg-opacity-80 border-red-500 hover:bg-opacity-100 hover:border-red-500 focus:border-red-700 focus:ring-red active:bg-red-700 active:border-red-700'
       );
       break;
     case 'warning':
       buttonStyle.push(
-        'text-yellow-300 border border-yellow-500 backdrop-blur bg-yellow-400 bg-opacity-20 hover:bg-opacity-40 hover:border-yellow-400 focus:border-yellow-700 focus:ring-yellow active:bg-opacity-40 active:border-yellow-700'
+        'text-white border border-yellow-500 backdrop-blur bg-yellow-500 bg-opacity-80 hover:bg-opacity-100 hover:border-yellow-400 focus:border-yellow-700 focus:ring-yellow active:bg-opacity-100 active:border-yellow-700'
       );
       break;
     case 'success':
       buttonStyle.push(
-        'text-white bg-green-500 border-green-500 hover:bg-green-400 hover:border-green-400 focus:border-green-700 focus:ring-green active:bg-green-700 active:border-green-700'
+        'text-white bg-green-500 bg-opacity-80 border-green-500 hover:bg-opacity-100 hover:border-green-400 focus:border-green-700 focus:ring-green active:bg-opacity-100 active:border-green-700'
       );
       break;
     case 'ghost':

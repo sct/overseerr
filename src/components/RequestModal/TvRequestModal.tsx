@@ -29,8 +29,8 @@ const messages = defineMessages({
   edit: 'Edit Request',
   approve: 'Approve Request',
   cancel: 'Cancel Request',
-  pendingrequest: 'Pending Request for {title}',
-  pending4krequest: 'Pending 4K Request for {title}',
+  pendingrequest: 'Pending Request',
+  pending4krequest: 'Pending 4K Request',
   requestfrom: "{username}'s request is pending approval.",
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',

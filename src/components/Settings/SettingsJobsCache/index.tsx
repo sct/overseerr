@@ -323,13 +323,13 @@ const SettingsJobs = () => {
                         setJobEditModal({ isOpen: true, job: job })
                       }
                     >
-                      <PencilIcon />
-                      {intl.formatMessage(globalMessages.edit)}
+                      <PencilIcon className="mr-1 h-5 w-5" />
+                      <span>{intl.formatMessage(globalMessages.edit)}</span>
                     </Button>
                   )}
                   {job.running ? (
                     <Button buttonType="danger" onClick={() => cancelJob(job)}>
-                      <StopIcon />
+                      <StopIcon className="mr-1 h-5 w-5" />
                       <span>{intl.formatMessage(messages.canceljob)}</span>
                     </Button>
                   ) : (
