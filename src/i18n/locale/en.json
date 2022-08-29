@@ -91,7 +91,6 @@
   "components.IssueModal.CreateIssueModal.allseasons": "All Seasons",
   "components.IssueModal.CreateIssueModal.episode": "Episode {episodeNumber}",
   "components.IssueModal.CreateIssueModal.extras": "Extras",
-  "components.IssueModal.CreateIssueModal.issomethingwrong": "Is there a problem with {title}?",
   "components.IssueModal.CreateIssueModal.problemepisode": "Affected Episode",
   "components.IssueModal.CreateIssueModal.problemseason": "Affected Season",
   "components.IssueModal.CreateIssueModal.providedetail": "Please provide a detailed explanation of the issue you encountered.",
