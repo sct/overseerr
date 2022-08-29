@@ -2,7 +2,6 @@ import Alert from '@app/components/Common/Alert';
 import Modal from '@app/components/Common/Modal';
 import useSettings from '@app/hooks/useSettings';
 import globalMessages from '@app/i18n/globalMessages';
-import { InboxInIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -105,7 +104,6 @@ const PlexImportModal = ({ onCancel, onComplete }: PlexImportProps) => {
     <Modal
       loading={!data && !error}
       title={intl.formatMessage(messages.importfromplex)}
-      iconSvg={<InboxInIcon />}
       onOk={() => {
         importUsers();
       }}

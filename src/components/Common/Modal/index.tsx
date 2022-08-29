@@ -13,6 +13,7 @@ import { useIntl } from 'react-intl';
 
 interface ModalProps {
   title?: string;
+  subTitle?: string;
   onCancel?: (e?: MouseEvent<HTMLElement>) => void;
   onOk?: (e?: MouseEvent<HTMLButtonElement>) => void;
   onSecondary?: (e?: MouseEvent<HTMLButtonElement>) => void;
@@ -30,7 +31,6 @@ interface ModalProps {
   tertiaryButtonType?: ButtonType;
   disableScrollLock?: boolean;
   backgroundClickable?: boolean;
-  iconSvg?: React.ReactNode;
   loading?: boolean;
   backdrop?: string;
   children?: React.ReactNode;
@@ -40,6 +40,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
   (
     {
       title,
+      subTitle,
       onCancel,
       onOk,
       cancelText,
@@ -50,7 +51,6 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
       children,
       disableScrollLock,
       backgroundClickable = true,
-      iconSvg,
       secondaryButtonType = 'default',
       secondaryDisabled = false,
       onSecondary,
@@ -67,9 +67,9 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     const intl = useIntl();
     const modalRef = useRef<HTMLDivElement>(null);
     useClickOutside(modalRef, () => {
-      typeof onCancel === 'function' && backgroundClickable
-        ? onCancel()
-        : undefined;
+      if (onCancel && backgroundClickable) {
+        onCancel();
+      }
     });
     useLockBodyScroll(true, disableScrollLock);
 
@@ -102,7 +102,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           </div>
         </Transition>
         <Transition
-          className="hide-scrollbar relative inline-block w-full transform overflow-auto bg-gray-700 px-4 pt-5 pb-4 text-left align-bottom shadow-xl ring-1 ring-gray-500 transition-all sm:my-8 sm:max-w-3xl sm:rounded-lg sm:align-middle"
+          className="hide-scrollbar relative inline-block w-full transform overflow-auto bg-gray-800 px-4 pt-4 pb-4 text-left align-bottom shadow-xl ring-1 ring-gray-700 transition-all sm:my-8 sm:max-w-3xl sm:rounded-lg sm:align-middle"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
@@ -133,26 +133,36 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
                 className="absolute inset-0"
                 style={{
                   backgroundImage:
-                    'linear-gradient(180deg, rgba(55, 65, 81, 0.85) 0%, rgba(55, 65, 81, 1) 100%)',
+                    'linear-gradient(180deg, rgba(31, 41, 55, 0.75) 0%, rgba(31, 41, 55, 1) 100%)',
                 }}
               />
             </div>
           )}
-          <div className="relative overflow-x-hidden p-0.5 sm:flex sm:items-center">
-            {iconSvg && <div className="modal-icon">{iconSvg}</div>}
+          <div className="relative -mx-4 overflow-x-hidden px-4 pt-0.5 sm:flex sm:items-center">
             <div
-              className={`mt-3 truncate text-center text-white sm:mt-0 sm:text-left ${
-                iconSvg ? 'sm:ml-4' : 'sm:mb-4'
-              }`}
+              className={`mt-3 truncate text-center text-white sm:mt-0 sm:text-left`}
             >
-              {title && (
-                <span
-                  className="truncate text-lg font-bold leading-6"
-                  id="modal-headline"
-                  data-testid="modal-title"
-                >
-                  {title}
-                </span>
+              {(title || subTitle) && (
+                <div className="flex flex-col space-y-1">
+                  {title && (
+                    <span
+                      className="text-overseerr truncate pb-0.5 text-2xl font-bold leading-6"
+                      id="modal-headline"
+                      data-testid="modal-title"
+                    >
+                      {title}
+                    </span>
+                  )}
+                  {subTitle && (
+                    <span
+                      className="truncate text-lg font-semibold leading-6 text-gray-200"
+                      id="modal-headline"
+                      data-testid="modal-title"
+                    >
+                      {subTitle}
+                    </span>
+                  )}
+                </div>
               )}
             </div>
           </div>

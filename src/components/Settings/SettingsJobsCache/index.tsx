@@ -13,7 +13,7 @@ import { PencilIcon } from '@heroicons/react/solid';
 import type { CacheItem } from '@server/interfaces/api/settingsInterfaces';
 import type { JobId } from '@server/lib/settings';
 import axios from 'axios';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import type { MessageDescriptor } from 'react-intl';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -187,7 +187,7 @@ const SettingsJobs = () => {
         ]}
       />
       <Transition
-        as="div"
+        as={Fragment}
         enter="opacity-0 transition duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -203,7 +203,6 @@ const SettingsJobs = () => {
               ? intl.formatMessage(globalMessages.saving)
               : intl.formatMessage(globalMessages.save)
           }
-          iconSvg={<PencilIcon />}
           onCancel={() => setJobEditModal({ isOpen: false })}
           okDisabled={isSaving}
           onOk={() => scheduleJob()}
@@ -325,7 +324,7 @@ const SettingsJobs = () => {
                       }
                     >
                       <PencilIcon />
-                      {intl.formatMessage(globalMessages.edit)}
+                      <span>{intl.formatMessage(globalMessages.edit)}</span>
                     </Button>
                   )}
                   {job.running ? (
@@ -335,7 +334,7 @@ const SettingsJobs = () => {
                     </Button>
                   ) : (
                     <Button buttonType="primary" onClick={() => runJob(job)}>
-                      <PlayIcon className="mr-1 h-5 w-5" />
+                      <PlayIcon />
                       <span>{intl.formatMessage(messages.runnow)}</span>
                     </Button>
                   )}

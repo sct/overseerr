@@ -154,7 +154,7 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
                 </Tooltip>
                 <Tooltip content={intl.formatMessage(messages.edit)}>
                   <Button
-                    buttonType="primary"
+                    buttonType="warning"
                     onClick={() => setShowEditModal(true)}
                     disabled={isUpdating}
                   >

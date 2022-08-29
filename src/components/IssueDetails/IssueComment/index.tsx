@@ -2,7 +2,6 @@ import Button from '@app/components/Common/Button';
 import Modal from '@app/components/Common/Modal';
 import { Permission, useUser } from '@app/hooks/useUser';
 import { Menu, Transition } from '@headlessui/react';
-import { ExclamationIcon } from '@heroicons/react/outline';
 import { DotsVerticalIcon } from '@heroicons/react/solid';
 import type { default as IssueCommentType } from '@server/entity/IssueComment';
 import axios from 'axios';
@@ -65,7 +64,7 @@ const IssueComment = ({
       } mt-4 space-x-4`}
     >
       <Transition
-        as="div"
+        as={Fragment}
         enter="transition opacity-0 duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -80,7 +79,6 @@ const IssueComment = ({
           onOk={() => deleteComment()}
           okText={intl.formatMessage(messages.delete)}
           okButtonType="danger"
-          iconSvg={<ExclamationIcon />}
         >
           {intl.formatMessage(messages.areyousuredelete)}
         </Modal>

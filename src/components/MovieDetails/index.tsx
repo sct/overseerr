@@ -408,7 +408,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
           {hasPermission(Permission.MANAGE_REQUESTS) && data.mediaInfo && (
             <Tooltip content={intl.formatMessage(messages.managemovie)}>
               <Button
-                buttonType="default"
+                buttonType="ghost"
                 onClick={() => setShowManager(true)}
                 className="relative ml-2 first:ml-0"
               >

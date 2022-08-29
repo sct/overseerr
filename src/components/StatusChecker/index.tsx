@@ -3,9 +3,8 @@ import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
-import { RefreshIcon, SparklesIcon } from '@heroicons/react/outline';
 import type { StatusResponse } from '@server/interfaces/api/settingsInterfaces';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
@@ -44,7 +43,7 @@ const StatusChecker = () => {
 
   return (
     <Transition
-      as="div"
+      as={Fragment}
       enter="opacity-0 transition duration-300"
       enterFrom="opacity-0"
       enterTo="opacity-100"
@@ -60,7 +59,6 @@ const StatusChecker = () => {
     >
       {hasPermission(Permission.ADMIN) && data.restartRequired ? (
         <Modal
-          iconSvg={<RefreshIcon />}
           title={intl.formatMessage(messages.restartRequired)}
           backgroundClickable={false}
           onOk={() => {
@@ -75,7 +73,6 @@ const StatusChecker = () => {
         </Modal>
       ) : (
         <Modal
-          iconSvg={<SparklesIcon />}
           title={intl.formatMessage(messages.appUpdated, {
             applicationTitle: settings.currentSettings.applicationTitle,
           })}

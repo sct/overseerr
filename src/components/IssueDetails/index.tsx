@@ -14,7 +14,6 @@ import { Transition } from '@headlessui/react';
 import {
   ChatIcon,
   CheckCircleIcon,
-  ExclamationIcon,
   PlayIcon,
   ServerIcon,
 } from '@heroicons/react/outline';
@@ -189,7 +188,6 @@ const IssueDetails = () => {
           onOk={() => deleteIssue()}
           okText={intl.formatMessage(messages.deleteissue)}
           okButtonType="danger"
-          iconSvg={<ExclamationIcon />}
         >
           {intl.formatMessage(messages.deleteissueconfirm)}
         </Modal>

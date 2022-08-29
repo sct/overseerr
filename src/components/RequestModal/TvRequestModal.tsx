@@ -8,7 +8,6 @@ import SearchByNameModal from '@app/components/RequestModal/SearchByNameModal';
 import useSettings from '@app/hooks/useSettings';
 import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
-import { DownloadIcon } from '@heroicons/react/outline';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
@@ -25,13 +24,13 @@ import useSWR, { mutate } from 'swr';
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
-  requesttitle: 'Request {title}',
-  request4ktitle: 'Request {title} in 4K',
+  requestseriestitle: 'Request Series',
+  requestseries4ktitle: 'Request Series in 4K',
   edit: 'Edit Request',
   approve: 'Approve Request',
   cancel: 'Cancel Request',
-  pendingrequest: 'Pending Request for {title}',
-  pending4krequest: 'Pending 4K Request for {title}',
+  pendingrequest: 'Pending Request',
+  pending4krequest: 'Pending 4K Request',
   requestfrom: "{username}'s request is pending approval.",
   requestseasons:
     'Request {seasonCount} {seasonCount, plural, one {Season} other {Seasons}}',
@@ -367,9 +366,9 @@ const TvRequestModal = ({
       loading={!error}
       onCancel={onCancel}
       modalTitle={intl.formatMessage(
-        is4k ? messages.request4ktitle : messages.requesttitle,
-        { title: data?.name }
+        is4k ? messages.requestseries4ktitle : messages.requestseriestitle
       )}
+      modalSubTitle={data.name}
       tmdbId={tmdbId}
     />
   ) : (
@@ -390,10 +389,10 @@ const TvRequestModal = ({
             ? messages.pending4krequest
             : messages.pendingrequest
           : is4k
-          ? messages.request4ktitle
-          : messages.requesttitle,
-        { title: data?.name }
+          ? messages.requestseries4ktitle
+          : messages.requestseriestitle
       )}
+      subTitle={data?.name}
       okText={
         editRequest
           ? selectedSeasons.length === 0
@@ -444,7 +443,6 @@ const TvRequestModal = ({
           ? intl.formatMessage(globalMessages.back)
           : intl.formatMessage(globalMessages.cancel)
       }
-      iconSvg={<DownloadIcon />}
       backdrop={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data?.backdropPath}`}
     >
       {editRequest
@@ -502,12 +500,12 @@ const TvRequestModal = ({
       <div className="flex flex-col">
         <div className="-mx-4 sm:mx-0">
           <div className="inline-block min-w-full py-2 align-middle">
-            <div className="overflow-hidden shadow sm:rounded-lg">
+            <div className="overflow-hidden border border-gray-700 shadow backdrop-blur sm:rounded-lg">
               <table className="min-w-full">
                 <thead>
                   <tr>
                     <th
-                      className={`w-16 bg-gray-500 px-4 py-3 ${
+                      className={`w-16 bg-gray-700 bg-opacity-80 px-4 py-3 ${
                         !settings.currentSettings.partialRequestsEnabled &&
                         'hidden'
                       }`}
@@ -544,18 +542,18 @@ const TvRequestModal = ({
                         ></span>
                       </span>
                     </th>
-                    <th className="bg-gray-500 px-1 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
+                    <th className="bg-gray-700 bg-opacity-80 px-1 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
                       {intl.formatMessage(messages.season)}
                     </th>
-                    <th className="bg-gray-500 px-5 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
+                    <th className="bg-gray-700 bg-opacity-80 px-5 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
                       {intl.formatMessage(messages.numberofepisodes)}
                     </th>
-                    <th className="bg-gray-500 px-2 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
+                    <th className="bg-gray-700 bg-opacity-80 px-2 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
                       {intl.formatMessage(globalMessages.status)}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-700 bg-gray-600">
+                <tbody className="divide-y divide-gray-700">
                   {data?.seasons
                     .filter((season) => season.seasonNumber !== 0)
                     .map((season) => {
@@ -614,7 +612,7 @@ const TvRequestModal = ({
                                     )) ||
                                   isSelectedSeason(season.seasonNumber)
                                     ? 'bg-indigo-500'
-                                    : 'bg-gray-800'
+                                    : 'bg-gray-700'
                                 } absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out`}
                               ></span>
                               <span

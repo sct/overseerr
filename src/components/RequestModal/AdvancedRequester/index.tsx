@@ -5,7 +5,6 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { formatBytes } from '@app/utils/numberHelpers';
 import { Listbox, Transition } from '@headlessui/react';
-import { AdjustmentsIcon } from '@heroicons/react/outline';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import type {
   ServiceCommonServer,
@@ -281,11 +280,10 @@ const AdvancedRequester = ({
 
   return (
     <>
-      <div className="mt-4 mb-2 flex items-center font-bold tracking-wider">
-        <AdjustmentsIcon className="mr-1.5 h-5 w-5" />
+      <div className="mt-4 mb-2 flex items-center text-lg font-semibold">
         {intl.formatMessage(messages.advancedoptions)}
       </div>
-      <div className="rounded-md bg-gray-600 p-4 shadow">
+      <div className="rounded-md">
         {!!data && selectedServer !== null && (
           <div className="flex flex-col md:flex-row">
             {data.filter((server) => server.is4k === is4k).length > 1 && (
@@ -561,7 +559,7 @@ const AdvancedRequester = ({
                       leave="transition ease-in duration-100"
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0"
-                      className="mt-1 w-full rounded-md bg-gray-800 shadow-lg"
+                      className="mt-1 w-full rounded-md border border-gray-700 bg-gray-800 shadow-lg"
                     >
                       <Listbox.Options
                         static

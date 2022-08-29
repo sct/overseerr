@@ -74,7 +74,7 @@ const SlideOver = ({
                 <div className="hide-scrollbar flex h-full flex-col overflow-y-scroll rounded-lg bg-gray-800 bg-opacity-80 shadow-xl ring-1 ring-gray-700 backdrop-blur">
                   <header className="space-y-1 border-b border-gray-700 py-4 px-4">
                     <div className="flex items-center justify-between space-x-3">
-                      <h2 className="bg-gradient-to-br from-indigo-400 to-purple-400 bg-clip-text text-2xl font-bold leading-7 text-transparent">
+                      <h2 className="text-overseerr text-2xl font-bold leading-7">
                         {title}
                       </h2>
                       <div className="flex h-7 items-center">
@@ -89,7 +89,9 @@ const SlideOver = ({
                     </div>
                     {subText && (
                       <div>
-                        <p className="leading-5 text-gray-300">{subText}</p>
+                        <p className="font-semibold leading-5 text-gray-300">
+                          {subText}
+                        </p>
                       </div>
                     )}
                   </header>

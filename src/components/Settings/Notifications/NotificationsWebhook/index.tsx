@@ -14,7 +14,9 @@ import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 
-const JSONEditor = dynamic(() => import('../../../JSONEditor'), { ssr: false });
+const JSONEditor = dynamic(() => import('@app/components/JSONEditor'), {
+  ssr: false,
+});
 
 const defaultPayload = {
   notification_type: '{{notification_type}}',
