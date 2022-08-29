@@ -11,7 +11,7 @@ interface SliderProps {
   items?: JSX.Element[];
   isLoading: boolean;
   isEmpty?: boolean;
-  emptyMessage?: string | React.ReactNode;
+  emptyMessage?: React.ReactNode;
   placeholder?: React.ReactNode;
 }
 
