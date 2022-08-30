@@ -358,18 +358,18 @@ const TvRequestModal = ({
 
   const isOwner = editRequest && editRequest.requestedBy.id === user?.id;
 
-  return data && !data.externalIds.tvdbId && searchModal.show ? (
+  return data && !error && !data.externalIds.tvdbId && searchModal.show ? (
     <SearchByNameModal
       tvdbId={tvdbId}
       setTvdbId={setTvdbId}
       closeModal={() => setSearchModal({ show: false })}
-      loading={!error}
       onCancel={onCancel}
       modalTitle={intl.formatMessage(
         is4k ? messages.requestseries4ktitle : messages.requestseriestitle
       )}
       modalSubTitle={data.name}
       tmdbId={tmdbId}
+      backdrop={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${data?.backdropPath}`}
     />
   ) : (
     <Modal
