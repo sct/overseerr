@@ -239,7 +239,9 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     seasonCount <=
     (
       data.mediaInfo?.seasons.filter(
-        (season) => season.status === MediaStatus.AVAILABLE
+        (season) =>
+          season.status === MediaStatus.AVAILABLE ||
+          season.status === MediaStatus.PARTIALLY_AVAILABLE
       ) ?? []
     ).length;
 
@@ -247,7 +249,9 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     seasonCount <=
     (
       data.mediaInfo?.seasons.filter(
-        (season) => season.status4k === MediaStatus.AVAILABLE
+        (season) =>
+          season.status4k === MediaStatus.AVAILABLE ||
+          season.status4k === MediaStatus.PARTIALLY_AVAILABLE
       ) ?? []
     ).length;
 
