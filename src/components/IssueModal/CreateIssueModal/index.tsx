@@ -20,7 +20,6 @@ import * as Yup from 'yup';
 
 const messages = defineMessages({
   validationMessageRequired: 'You must provide a description',
-  issomethingwrong: 'Is there a problem with {title}?',
   whatswrong: "What's wrong?",
   providedetail:
     'Please provide a detailed explanation of the issue you encountered.',

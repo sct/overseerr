@@ -11,7 +11,7 @@ interface SliderProps {
   items?: JSX.Element[];
   isLoading: boolean;
   isEmpty?: boolean;
-  emptyMessage?: string;
+  emptyMessage?: React.ReactNode;
   placeholder?: React.ReactNode;
 }
 
@@ -192,7 +192,7 @@ const Slider = ({
             </div>
           ))}
         {isEmpty && (
-          <div className="mt-16 mb-16 text-center text-white">
+          <div className="mt-16 mb-16 text-center font-medium text-gray-400">
             {emptyMessage
               ? emptyMessage
               : intl.formatMessage(globalMessages.noresults)}
