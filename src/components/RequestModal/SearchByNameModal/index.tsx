@@ -1,5 +1,4 @@
 import Alert from '@app/components/Common/Alert';
-import { SmallLoadingSpinner } from '@app/components/Common/LoadingSpinner';
 import Modal from '@app/components/Common/Modal';
 import globalMessages from '@app/i18n/globalMessages';
 import type { SonarrSeries } from '@server/api/servarr/sonarr';
@@ -8,30 +7,30 @@ import useSWR from 'swr';
 
 const messages = defineMessages({
   notvdbiddescription:
-    "We couldn't automatically match your request. Please select the correct match from the list below.",
-  nosummary: 'No summary for this title was found.',
+    'We were unable to automatically match this series. Please select the correct match below.',
+  nomatches: 'We were unable to find a match for this series.',
 });
 
 interface SearchByNameModalProps {
   setTvdbId: (id: number) => void;
   tvdbId: number | undefined;
-  loading: boolean;
   onCancel?: () => void;
   closeModal: () => void;
   modalTitle: string;
   modalSubTitle: string;
   tmdbId: number;
+  backdrop?: string;
 }
 
 const SearchByNameModal = ({
   setTvdbId,
   tvdbId,
-  loading,
   onCancel,
   closeModal,
   modalTitle,
   modalSubTitle,
   tmdbId,
+  backdrop,
 }: SearchByNameModalProps) => {
   const intl = useIntl();
   const { data, error } = useSWR<SonarrSeries[]>(
@@ -42,9 +41,25 @@ const SearchByNameModal = ({
     setTvdbId(tvdbId);
   };
 
+  if ((data ?? []).length === 0 || error) {
+    return (
+      <Modal
+        loading={!data && !error}
+        backgroundClickable
+        onOk={onCancel}
+        title={modalTitle}
+        subTitle={modalSubTitle}
+        okText={intl.formatMessage(globalMessages.close)}
+        okButtonType="primary"
+        backdrop={backdrop}
+      >
+        <Alert title={intl.formatMessage(messages.nomatches)} type="info" />
+      </Modal>
+    );
+  }
+
   return (
     <Modal
-      loading={loading && !error}
       backgroundClickable
       onCancel={onCancel}
       onOk={closeModal}
@@ -53,12 +68,12 @@ const SearchByNameModal = ({
       okText={intl.formatMessage(globalMessages.next)}
       okDisabled={!tvdbId}
       okButtonType="primary"
+      backdrop={backdrop}
     >
       <Alert
         title={intl.formatMessage(messages.notvdbiddescription)}
         type="info"
       />
-      {!data && !error && <SmallLoadingSpinner />}
       <div className="grid grid-cols-1 gap-4 pb-2 md:grid-cols-2">
         {data?.slice(0, 6).map((item) => (
           <button
@@ -67,7 +82,7 @@ const SearchByNameModal = ({
             onClick={() => handleClick(item.tvdbId)}
           >
             <div
-              className={`flex h-40 w-full items-center overflow-hidden rounded-xl bg-gray-600 p-2 shadow transition ${
+              className={`flex h-40 w-full items-center overflow-hidden rounded-xl border border-gray-700 bg-gray-700 bg-opacity-20 p-2 shadow backdrop-blur transition ${
                 tvdbId === item.tvdbId ? 'ring ring-indigo-500' : ''
               } `}
             >
@@ -82,12 +97,35 @@ const SearchByNameModal = ({
                 />
               </div>
               <div className="flex-grow self-start p-3 text-left">
-                <div className="text-grey-200 text-sm font-medium">
+                <div className="text-sm font-medium leading-tight">
+                  {item.year}
+                </div>
+                <div
+                  className="text-grey-200 text-xl font-bold leading-tight"
+                  style={{
+                    WebkitLineClamp: 1,
+                    display: '-webkit-box',
+                    overflow: 'hidden',
+                    WebkitBoxOrient: 'vertical',
+                    wordBreak: 'break-word',
+                  }}
+                >
                   {item.title}
                 </div>
-                <div className="h-24 overflow-hidden text-sm text-gray-400">
-                  {item.overview ?? intl.formatMessage(messages.nosummary)}
-                </div>
+                {item.overview && (
+                  <div
+                    className="whitespace-normal text-xs text-gray-400"
+                    style={{
+                      WebkitLineClamp: 5,
+                      display: '-webkit-box',
+                      overflow: 'hidden',
+                      WebkitBoxOrient: 'vertical',
+                      wordBreak: 'break-word',
+                    }}
+                  >
+                    {item.overview}
+                  </div>
+                )}
               </div>
             </div>
           </button>
