@@ -12,7 +12,7 @@ import PlexImportModal from '@app/components/UserList/PlexImportModal';
 import useSettings from '@app/hooks/useSettings';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
 import type { User } from '@app/hooks/useUser';
-import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
 import {
@@ -621,7 +621,7 @@ const UserList = () => {
                 )}
               </Table.TD>
               <Table.TD>
-                {user.userType === UserType.PLEX ? (
+                {user.isPlexUser ? (
                   <Badge badgeType="warning">
                     {intl.formatMessage(messages.plexuser)}
                   </Badge>

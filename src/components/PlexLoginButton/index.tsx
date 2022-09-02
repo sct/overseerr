@@ -15,12 +15,14 @@ interface PlexLoginButtonProps {
   onAuthToken: (authToken: string) => void;
   isProcessing?: boolean;
   onError?: (message: string) => void;
+  textOverride?: string;
 }
 
 const PlexLoginButton = ({
   onAuthToken,
   onError,
   isProcessing,
+  textOverride,
 }: PlexLoginButtonProps) => {
   const intl = useIntl();
   const [loading, setLoading] = useState(false);
@@ -55,6 +57,8 @@ const PlexLoginButton = ({
             ? intl.formatMessage(globalMessages.loading)
             : isProcessing
             ? intl.formatMessage(messages.signingin)
+            : textOverride
+            ? textOverride
             : intl.formatMessage(messages.signinwithplex)}
         </span>
       </button>

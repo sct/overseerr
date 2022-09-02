@@ -61,10 +61,6 @@ components:
         plexUsername:
           type: string
           readOnly: true
-        userType:
-          type: integer
-          example: 1
-          readOnly: true
         permissions:
           type: number
           example: 0
@@ -82,6 +78,14 @@ components:
         requestCount:
           type: number
           example: 5
+          readOnly: true
+        isPlexUser:
+          type: boolean
+          example: false
+          readOnly: true
+        isLocalUser:
+          type: boolean
+          example: true
           readOnly: true
       required:
         - id

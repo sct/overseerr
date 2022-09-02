@@ -1,5 +1,4 @@
 import PlexTvAPI from '@server/api/plextv';
-import { UserType } from '@server/constants/user';
 import { getRepository } from '@server/datasource';
 import { User } from '@server/entity/User';
 import { Permission } from '@server/lib/permissions';
@@ -7,6 +6,7 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
 import { Router } from 'express';
+import gravatarUrl from 'gravatar-url';
 
 const authRoutes = Router();
 
@@ -41,14 +41,21 @@ authRoutes.post('/plex', async (req, res, next) => {
     const plextv = new PlexTvAPI(body.authToken);
     const account = await plextv.getUser();
 
-    // Next let's see if the user already exists
-    let user = await userRepository
-      .createQueryBuilder('user')
-      .where('user.plexId = :id', { id: account.id })
-      .orWhere('user.email = :email', {
-        email: account.email.toLowerCase(),
-      })
-      .getOne();
+    let user: User | null;
+
+    // If we are already logged in, we should just get the currently logged in user
+    // otherwise we will try to match to an existing users email or plex ID
+    if (req.user) {
+      user = await userRepository.findOneBy({ id: req.user.id });
+    } else {
+      user = await userRepository
+        .createQueryBuilder('user')
+        .where('user.plexId = :id', { id: account.id })
+        .orWhere('user.email = :email', {
+          email: account.email.toLowerCase(),
+        })
+        .getOne();
+    }
 
     if (!user && !(await userRepository.count())) {
       user = new User({
@@ -58,7 +65,6 @@ authRoutes.post('/plex', async (req, res, next) => {
         plexToken: account.authToken,
         permissions: Permission.ADMIN,
         avatar: account.thumb,
-        userType: UserType.PLEX,
       });
 
       await userRepository.save(user);
@@ -71,12 +77,13 @@ authRoutes.post('/plex', async (req, res, next) => {
 
       if (
         account.id === mainUser.plexId ||
+        (user && user.id === 1 && !user.plexId) ||
         (await mainPlexTv.checkUserAccess(account.id))
       ) {
         if (user) {
           if (!user.plexId) {
             logger.info(
-              'Found matching Plex user; updating user with Plex data',
+              'Found matching Plex user; updating user with Plex data. Notice: Emails are no longer synced.',
               {
                 label: 'API',
                 ip: req.ip,
@@ -91,9 +98,7 @@ authRoutes.post('/plex', async (req, res, next) => {
           user.plexToken = body.authToken;
           user.plexId = account.id;
           user.avatar = account.thumb;
-          user.email = account.email;
           user.plexUsername = account.username;
-          user.userType = UserType.PLEX;
 
           await userRepository.save(user);
         } else if (!settings.main.newPlexLogin) {
@@ -129,7 +134,6 @@ authRoutes.post('/plex', async (req, res, next) => {
             plexToken: account.authToken,
             permissions: settings.main.defaultPermissions,
             avatar: account.thumb,
-            userType: UserType.PLEX,
           });
 
           await userRepository.save(user);
@@ -184,13 +188,22 @@ authRoutes.post('/local', async (req, res, next) => {
     });
   }
   try {
-    const user = await userRepository
+    let user = await userRepository
       .createQueryBuilder('user')
       .select(['user.id', 'user.email', 'user.password', 'user.plexId'])
       .where('user.email = :email', { email: body.email.toLowerCase() })
       .getOne();
 
-    if (!user || !(await user.passwordMatch(body.password))) {
+    if (!user && !(await userRepository.count())) {
+      const avatar = gravatarUrl(body.email, { default: 'mm', size: 200 });
+      user = new User({
+        email: body.email,
+        permissions: Permission.ADMIN,
+        avatar,
+      });
+      await user.setPassword(body.password);
+      await userRepository.save(user);
+    } else if (!user || !(await user.passwordMatch(body.password))) {
       logger.warn('Failed sign-in attempt using invalid Overseerr password', {
         label: 'API',
         ip: req.ip,
@@ -203,19 +216,19 @@ authRoutes.post('/local', async (req, res, next) => {
       });
     }
 
-    const mainUser = await userRepository.findOneOrFail({
+    const mainUser = await userRepository.findOne({
       select: { id: true, plexToken: true, plexId: true },
       where: { id: 1 },
     });
-    const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
+    const mainPlexTv = new PlexTvAPI(mainUser?.plexToken ?? '');
 
-    if (!user.plexId) {
+    if (!user.plexId && mainUser?.isPlexUser) {
       try {
         const plexUsersResponse = await mainPlexTv.getUsers();
         const account = plexUsersResponse.MediaContainer.User.find(
           (account) =>
             account.$.email &&
-            account.$.email.toLowerCase() === user.email.toLowerCase()
+            account.$.email.toLowerCase() === user?.email.toLowerCase()
         )?.$;
 
         if (
@@ -238,7 +251,6 @@ authRoutes.post('/local', async (req, res, next) => {
           user.avatar = account.thumb;
           user.email = account.email;
           user.plexUsername = account.username;
-          user.userType = UserType.PLEX;
 
           await userRepository.save(user);
         }
@@ -251,6 +263,7 @@ authRoutes.post('/local', async (req, res, next) => {
     }
 
     if (
+      mainUser?.isPlexUser &&
       user.plexId &&
       user.plexId !== mainUser.plexId &&
       !(await mainPlexTv.checkUserAccess(user.plexId))

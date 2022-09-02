@@ -7,7 +7,7 @@ import MediaSlider from '@app/components/MediaSlider';
 import RequestCard from '@app/components/RequestCard';
 import Slider from '@app/components/Slider';
 import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
-import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
 import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
 import type { MediaResultsResponse } from '@server/interfaces/api/mediaInterfaces';
@@ -52,7 +52,7 @@ const Discover = () => {
     totalPages: number;
     totalResults: number;
     results: WatchlistItem[];
-  }>(user?.userType === UserType.PLEX ? '/api/v1/discover/watchlist' : null, {
+  }>(user?.isPlexUser ? '/api/v1/discover/watchlist' : null, {
     revalidateOnMount: true,
   });
 
@@ -108,7 +108,7 @@ const Discover = () => {
           />
         </>
       )}
-      {user?.userType === UserType.PLEX &&
+      {user?.isPlexUser &&
         (!watchlistItems ||
           !!watchlistItems.results.length ||
           user.settings?.watchlistSyncMovies ||

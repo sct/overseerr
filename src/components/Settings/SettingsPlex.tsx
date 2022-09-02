@@ -6,6 +6,8 @@ import PageTitle from '@app/components/Common/PageTitle';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import LibraryItem from '@app/components/Settings/LibraryItem';
 import SettingsBadge from '@app/components/Settings/SettingsBadge';
+import LoginWithPlex from '@app/components/Setup/LoginWithPlex';
+import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { SaveIcon } from '@heroicons/react/outline';
 import { RefreshIcon, SearchIcon, XIcon } from '@heroicons/react/solid';
@@ -106,6 +108,7 @@ interface SettingsPlexProps {
 }
 
 const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
+  const { user } = useUser();
   const [isSyncing, setIsSyncing] = useState(false);
   const [isRefreshingPresets, setIsRefreshingPresets] = useState(false);
   const [availableServers, setAvailableServers] = useState<PlexDevice[] | null>(
@@ -115,7 +118,11 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
     data,
     error,
     mutate: revalidate,
-  } = useSWR<PlexSettings>('/api/v1/settings/plex');
+  } = useSWR<
+    PlexSettings & {
+      plexAvailable: boolean;
+    }
+  >('/api/v1/settings/plex');
   const { data: dataTautulli, mutate: revalidateTautulli } =
     useSWR<TautulliSettings>('/api/v1/settings/tautulli');
   const { data: dataSync, mutate: revalidateSync } = useSWR<SyncStatus>(
@@ -325,7 +332,8 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
   if ((!data || !dataTautulli) && !error) {
     return <LoadingSpinner />;
   }
-  return (
+
+  const TitleContent = () => (
     <>
       <PageTitle
         title={[
@@ -338,7 +346,7 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
         <p className="description">
           {intl.formatMessage(messages.plexsettingsDescription)}
         </p>
-        {!!onComplete && (
+        {!!onComplete && data?.plexAvailable && (
           <div className="section">
             <Alert
               title={intl.formatMessage(messages.settingUpPlexDescription, {
@@ -358,6 +366,39 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
           </div>
         )}
       </div>
+    </>
+  );
+
+  if (!data?.plexAvailable && user?.id !== 1) {
+    return (
+      <>
+        <TitleContent />
+        <Alert type="info">
+          The owner account must first link their Plex server to be able to
+          access these settings.
+        </Alert>
+      </>
+    );
+  }
+
+  if (!data?.plexAvailable) {
+    return (
+      <>
+        <TitleContent />
+        <Alert type="info">
+          You must connect your Plex account to continue configuring a Plex
+          Media Server.
+        </Alert>
+        <div className="mx-auto mt-8 max-w-xl">
+          <LoginWithPlex onComplete={() => revalidate()} />
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <TitleContent />
       <Formik
         initialValues={{
           hostname: data?.ip,

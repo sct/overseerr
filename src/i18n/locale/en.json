@@ -861,7 +861,7 @@
   "components.Setup.continue": "Continue",
   "components.Setup.finish": "Finish Setup",
   "components.Setup.finishing": "Finishing…",
-  "components.Setup.loginwithplex": "Sign in with Plex",
+  "components.Setup.loginwithplex": "Create Admin Account",
   "components.Setup.scanbackground": "Scanning will run in the background. You can continue the setup process in the meantime.",
   "components.Setup.setup": "Setup",
   "components.Setup.signinMessage": "Get started by signing in with your Plex account",
