@@ -9,7 +9,7 @@ import type { AvailableLocale } from '@app/context/LanguageContext';
 import { availableLanguages } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
 import useSettings from '@app/hooks/useSettings';
-import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { ArrowDownOnSquareIcon } from '@heroicons/react/24/outline';
@@ -190,7 +190,7 @@ const UserGeneralSettings = () => {
                 </label>
                 <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
                   <div className="flex max-w-lg items-center">
-                    {user?.userType === UserType.PLEX ? (
+                    {user?.isPlexUser ? (
                       <Badge badgeType="warning">
                         {intl.formatMessage(messages.plexuser)}
                       </Badge>
@@ -423,7 +423,7 @@ const UserGeneralSettings = () => {
                 [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_MOVIE],
                 { type: 'or' }
               ) &&
-                user?.userType === UserType.PLEX && (
+                user?.isPlexUser && (
                   <div className="form-row">
                     <label
                       htmlFor="watchlistSyncMovies"
@@ -471,7 +471,7 @@ const UserGeneralSettings = () => {
                 [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_TV],
                 { type: 'or' }
               ) &&
-                user?.userType === UserType.PLEX && (
+                user?.isPlexUser && (
                   <div className="form-row">
                     <label htmlFor="watchlistSyncTv" className="checkbox-label">
                       <span>

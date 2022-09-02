@@ -5,8 +5,7 @@ import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  welcome: 'Welcome to Overseerr',
-  signinMessage: 'Get started by signing in with your Plex account',
+  signinwithplex: 'Sign In with Plex',
 });
 
 interface LoginWithPlexProps {
@@ -45,14 +44,11 @@ const LoginWithPlex = ({ onComplete }: LoginWithPlexProps) => {
 
   return (
     <form>
-      <div className="mb-2 flex justify-center text-xl font-bold">
-        {intl.formatMessage(messages.welcome)}
-      </div>
-      <div className="mb-2 flex justify-center pb-6 text-sm">
-        {intl.formatMessage(messages.signinMessage)}
-      </div>
       <div className="flex items-center justify-center">
-        <PlexLoginButton onAuthToken={(authToken) => setAuthToken(authToken)} />
+        <PlexLoginButton
+          onAuthToken={(authToken) => setAuthToken(authToken)}
+          textOverride={intl.formatMessage(messages.signinwithplex)}
+        />
       </div>
     </form>
   );

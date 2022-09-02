@@ -17,7 +17,7 @@ import cacheManager from '@server/lib/cache';
 import ImageProxy from '@server/lib/imageproxy';
 import { Permission } from '@server/lib/permissions';
 import { plexFullScanner } from '@server/lib/scanners/plex';
-import type { JobId, MainSettings } from '@server/lib/settings';
+import type { MainSettings, PlexSetings, JobId } from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
@@ -85,10 +85,25 @@ settingsRoutes.post('/main/regenerate', (req, res, next) => {
   return res.status(200).json(filteredMainSettings(req.user, main));
 });
 
-settingsRoutes.get('/plex', (_req, res) => {
-  const settings = getSettings();
+type PlexSettingsResponse = PlexSettings & {
+  plexAvailable: boolean;
+};
 
-  res.status(200).json(settings.plex);
+settingsRoutes.get<never, PlexSettingsResponse>('/plex', async (_req, res) => {
+  const settings = getSettings();
+  const userRepository = getRepository(User);
+
+  const admin = await userRepository.findOneOrFail({
+    select: { id: true, plexToken: true },
+    where: { id: 1 },
+  });
+
+  const settingsResponse: PlexSettingsResponse = {
+    ...settings.plex,
+    plexAvailable: !!admin.plexToken,
+  };
+
+  res.status(200).json(settingsResponse);
 });
 
 settingsRoutes.post('/plex', async (req, res, next) => {
@@ -99,6 +114,12 @@ settingsRoutes.post('/plex', async (req, res, next) => {
       select: { id: true, plexToken: true },
       where: { id: 1 },
     });
+
+    if (!admin.plexToken) {
+      throw new Error(
+        'The administrator must have their account connected to Plex to be able to set up a Plex server.'
+      );
+    }
 
     Object.assign(settings.plex, req.body);
 

@@ -1,5 +1,4 @@
 import { MediaRequestStatus, MediaType } from '@server/constants/media';
-import { UserType } from '@server/constants/user';
 import { getRepository } from '@server/datasource';
 import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import PreparedEmail from '@server/lib/email';
@@ -35,13 +34,21 @@ export class User {
   public static filterMany(
     users: User[],
     showFiltered?: boolean
-  ): Partial<User>[] {
+  ): Omit<User, keyof typeof User.filteredFields>[] {
     return users.map((u) => u.filter(showFiltered));
   }
 
-  static readonly filteredFields: string[] = ['email', 'plexId'];
+  // Fields that show only be shown to admins in user API responses
+  static readonly filteredFields: (keyof User)[] = ['email', 'plexId'];
+
+  // Fields that should never be shown in API responses
+  static readonly secureFields: (keyof User)[] = ['password'];
 
   public displayName: string;
+
+  public isPlexUser: boolean;
+
+  public isLocalUser: boolean;
 
   @PrimaryGeneratedColumn()
   public id: number;
@@ -61,7 +68,7 @@ export class User {
   @Column({ nullable: true })
   public username?: string;
 
-  @Column({ nullable: true, select: false })
+  @Column({ nullable: true })
   public password?: string;
 
   @Column({ nullable: true, select: false })
@@ -70,10 +77,7 @@ export class User {
   @Column({ type: 'date', nullable: true })
   public recoveryLinkExpirationDate?: Date | null;
 
-  @Column({ type: 'integer', default: UserType.PLEX })
-  public userType: UserType;
-
-  @Column({ nullable: true, select: true })
+  @Column({ nullable: true })
   public plexId?: number;
 
   @Column({ nullable: true, select: false })
@@ -126,13 +130,17 @@ export class User {
     Object.assign(this, init);
   }
 
-  public filter(showFiltered?: boolean): Partial<User> {
-    const filtered: Partial<User> = Object.assign(
-      {},
-      ...(Object.keys(this) as (keyof User)[])
-        .filter((k) => showFiltered || !User.filteredFields.includes(k))
-        .map((k) => ({ [k]: this[k] }))
-    );
+  public filter(
+    showFiltered?: boolean
+  ): Omit<User, keyof typeof User.filteredFields> {
+    const filtered: Omit<User, keyof typeof User.filteredFields> =
+      Object.assign(
+        {},
+        ...(Object.keys(this) as (keyof User)[])
+          .filter((k) => showFiltered || !User.filteredFields.includes(k))
+          .filter((k) => !User.secureFields.includes(k))
+          .map((k) => ({ [k]: this[k] }))
+      );
 
     return filtered;
   }
@@ -229,8 +237,10 @@ export class User {
   }
 
   @AfterLoad()
-  public setDisplayName(): void {
+  public setLocalProperties(): void {
     this.displayName = this.username || this.plexUsername || this.email;
+    this.isPlexUser = !!this.plexId;
+    this.isLocalUser = !!this.password;
   }
 
   public async getQuota(): Promise<QuotaResponse> {

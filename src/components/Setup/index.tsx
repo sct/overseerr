@@ -1,12 +1,11 @@
 import AppDataWarning from '@app/components/AppDataWarning';
-import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import ImageFader from '@app/components/Common/ImageFader';
 import PageTitle from '@app/components/Common/PageTitle';
 import LanguagePicker from '@app/components/Layout/LanguagePicker';
-import SettingsPlex from '@app/components/Settings/SettingsPlex';
 import SettingsServices from '@app/components/Settings/SettingsServices';
-import LoginWithPlex from '@app/components/Setup/LoginWithPlex';
+import ConfigureMediaServers from '@app/components/Setup/ConfigureMediaServers';
+import CreateAccount from '@app/components/Setup/CreateAccount';
 import SetupSteps from '@app/components/Setup/SetupSteps';
 import useLocale from '@app/hooks/useLocale';
 import axios from 'axios';
@@ -20,8 +19,8 @@ const messages = defineMessages({
   finish: 'Finish Setup',
   finishing: 'Finishing…',
   continue: 'Continue',
-  loginwithplex: 'Sign in with Plex',
-  configureplex: 'Configure Plex',
+  loginwithplex: 'Create Admin Account',
+  configuremediaserver: 'Configure Media Server',
   configureservices: 'Configure Services',
   tip: 'Tip',
   scanbackground:
@@ -32,7 +31,6 @@ const Setup = () => {
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [plexSettingsComplete, setPlexSettingsComplete] = useState(false);
   const router = useRouter();
   const { locale } = useLocale();
 
@@ -70,7 +68,7 @@ const Setup = () => {
       <div className="absolute top-4 right-4 z-50">
         <LanguagePicker />
       </div>
-      <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
+      <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-7xl">
         <img
           src="/logo_stacked.svg"
           className="mb-10 max-w-full sm:mx-auto sm:max-w-md"
@@ -90,7 +88,7 @@ const Setup = () => {
             />
             <SetupSteps
               stepNumber={2}
-              description={intl.formatMessage(messages.configureplex)}
+              description={intl.formatMessage(messages.configuremediaserver)}
               active={currentStep === 2}
               completed={currentStep > 2}
             />
@@ -104,31 +102,10 @@ const Setup = () => {
         </nav>
         <div className="mt-10 w-full rounded-md border border-gray-600 bg-gray-800 bg-opacity-50 p-4 text-white">
           {currentStep === 1 && (
-            <LoginWithPlex onComplete={() => setCurrentStep(2)} />
+            <CreateAccount onComplete={() => setCurrentStep(2)} />
           )}
           {currentStep === 2 && (
-            <div>
-              <SettingsPlex onComplete={() => setPlexSettingsComplete(true)} />
-              <div className="mt-4 text-sm text-gray-500">
-                <span className="mr-2">
-                  <Badge>{intl.formatMessage(messages.tip)}</Badge>
-                </span>
-                {intl.formatMessage(messages.scanbackground)}
-              </div>
-              <div className="actions">
-                <div className="flex justify-end">
-                  <span className="ml-3 inline-flex rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      disabled={!plexSettingsComplete}
-                      onClick={() => setCurrentStep(3)}
-                    >
-                      {intl.formatMessage(messages.continue)}
-                    </Button>
-                  </span>
-                </div>
-              </div>
-            </div>
+            <ConfigureMediaServers onComplete={() => setCurrentStep(3)} />
           )}
           {currentStep === 3 && (
             <div>
