@@ -1,18 +1,10 @@
+import { RefreshIcon } from '@heroicons/react/outline';
 import Router from 'next/router';
 import PR from 'pulltorefreshjs';
 import { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { RefreshIcon } from '@heroicons/react/outline';
-import { defineMessages, useIntl } from 'react-intl';
-
-const messages = defineMessages({
-  reload: 'Reload',
-  reloading: 'Reloading',
-});
 
 const PullToRefresh: React.FC = () => {
-  const intl = useIntl();
-
   useEffect(() => {
     PR.init({
       mainElement: '#pull-to-refresh',
@@ -20,45 +12,23 @@ const PullToRefresh: React.FC = () => {
         Router.reload();
       },
       iconArrow: ReactDOMServer.renderToString(
-        <div className="z-50 flex items-center justify-center">
-          <RefreshIcon className="z-50 h-10 w-10 text-white" />
-        </div>
+        <RefreshIcon className="z-50 m-auto h-9 w-9 rounded-full border-4 border-gray-800 bg-gray-800 text-indigo-500 ring-1 ring-gray-700" />
       ),
       iconRefreshing: ReactDOMServer.renderToString(
-        <div className="z-50 flex items-center justify-center">
-          <RefreshIcon
-            className="z-50 h-10 w-10 animate-spin text-white"
-            style={{ animationDirection: 'reverse' }}
-          />
-        </div>
+        <RefreshIcon
+          className="z-50 m-auto h-9 w-9 animate-spin rounded-full border-4 border-gray-800 bg-gray-800 text-indigo-500 ring-1 ring-gray-700"
+          style={{ animationDirection: 'reverse' }}
+        />
       ),
-      instructionsPullToRefresh: ReactDOMServer.renderToString(
-        <div>
-          <p className="z-50 text-white">
-            {intl.formatMessage(messages.reload)}
-          </p>
-        </div>
-      ),
-      instructionsReleaseToRefresh: ReactDOMServer.renderToString(
-        <div>
-          <p className="z-50 text-white">
-            {intl.formatMessage(messages.reload)}
-          </p>
-        </div>
-      ),
-      instructionsRefreshing: ReactDOMServer.renderToString(
-        <div>
-          <p className="z-50 text-white">
-            {intl.formatMessage(messages.reloading)}
-          </p>
-        </div>
-      ),
-      distReload: 90,
+      instructionsPullToRefresh: ReactDOMServer.renderToString(<div />),
+      instructionsReleaseToRefresh: ReactDOMServer.renderToString(<div />),
+      instructionsRefreshing: ReactDOMServer.renderToString(<div />),
+      distReload: 55,
     });
     return () => {
       PR.destroyAll();
     };
-  }, [intl]);
+  }, []);
 
   return <div id="pull-to-refresh"></div>;
 };

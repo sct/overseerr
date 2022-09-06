@@ -286,8 +286,6 @@
   "components.PersonDetails.lifespan": "{birthdate} – {deathdate}",
   "components.PlexLoginButton.signingin": "Signing In…",
   "components.PlexLoginButton.signinwithplex": "Sign In",
-  "components.PullToRefresh.reload": "Reload",
-  "components.PullToRefresh.reloading": "Reloading",
   "components.QuotaSelector.days": "{count, plural, one {day} other {days}}",
   "components.QuotaSelector.movieRequests": "{quotaLimit} <quotaUnits>{movies} per {quotaDays} {days}</quotaUnits>",
   "components.QuotaSelector.movies": "{count, plural, one {movie} other {movies}}",

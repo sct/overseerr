@@ -457,9 +457,19 @@
 
 .ptr--ptr {
   box-shadow: initial !important;
-  margin-top: 20px !important;
+  position: absolute !important;
+  z-index: 30 !important;
 }
 
 .ptr--refresh {
   overflow: visible !important;
+  z-index: 30 !important;
+}
+
+.ptr--pull {
+  z-index: 30 !important;
+}
+
+.ptr--ptr .ptr--box {
+  margin-bottom: -13px !important;
 }
