@@ -5,6 +5,7 @@ import Modal from '@app/components/Common/Modal';
 import PageTitle from '@app/components/Common/PageTitle';
 import Table from '@app/components/Common/Table';
 import Tooltip from '@app/components/Common/Tooltip';
+import useDebouncedState from '@app/hooks/useDebouncedState';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
@@ -322,69 +323,69 @@ const SettingsLogs = () => {
               </tr>
             ) : (
               data.results.map((row: LogMessage, index: number) => {
-              return (
-                <tr key={`log-list-${index}`}>
-                  <Table.TD className="text-gray-300">
-                    {intl.formatDate(row.timestamp, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: '2-digit',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      second: 'numeric',
-                    })}
-                  </Table.TD>
-                  <Table.TD className="text-gray-300">
-                    <Badge
-                      badgeType={
-                        row.level === 'error'
-                          ? 'danger'
-                          : row.level === 'warn'
-                          ? 'warning'
-                          ? 'success'
-                          : row.level === 'info'
-                          : 'default'
-                      }
-                    >
-                      {row.level.toUpperCase()}
-                    </Badge>
-                  </Table.TD>
-                  <Table.TD className="text-gray-300">
-                    {row.label ?? ''}
-                  </Table.TD>
-                  <Table.TD className="text-gray-300">{row.message}</Table.TD>
-                  <Table.TD className="-m-1 flex flex-wrap items-center justify-end">
-                    {row.data && (
+                return (
+                  <tr key={`log-list-${index}`}>
+                    <Table.TD className="text-gray-300">
+                      {intl.formatDate(row.timestamp, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        second: 'numeric',
+                      })}
+                    </Table.TD>
+                    <Table.TD className="text-gray-300">
+                      <Badge
+                        badgeType={
+                          row.level === 'error'
+                            ? 'danger'
+                            : row.level === 'warn'
+                            ? 'warning'
+                            : row.level === 'info'
+                            ? 'success'
+                            : 'default'
+                        }
+                      >
+                        {row.level.toUpperCase()}
+                      </Badge>
+                    </Table.TD>
+                    <Table.TD className="text-gray-300">
+                      {row.label ?? ''}
+                    </Table.TD>
+                    <Table.TD className="text-gray-300">{row.message}</Table.TD>
+                    <Table.TD className="-m-1 flex flex-wrap items-center justify-end">
+                      {row.data && (
+                        <Tooltip
+                          content={intl.formatMessage(messages.viewdetails)}
+                        >
+                          <Button
+                            buttonSize="sm"
+                            buttonType="primary"
+                            onClick={() =>
+                              setActiveLog({ log: row, isOpen: true })
+                            }
+                            className="m-1"
+                          >
+                            <DocumentSearchIcon className="icon-md" />
+                          </Button>
+                        </Tooltip>
+                      )}
                       <Tooltip
-                        content={intl.formatMessage(messages.viewdetails)}
+                        content={intl.formatMessage(messages.copyToClipboard)}
                       >
                         <Button
-                          buttonSize="sm"
                           buttonType="primary"
-                          onClick={() =>
-                            setActiveLog({ log: row, isOpen: true })
-                          }
+                          buttonSize="sm"
+                          onClick={() => copyLogString(row)}
                           className="m-1"
                         >
-                          <DocumentSearchIcon className="icon-md" />
+                          <ClipboardCopyIcon className="icon-md" />
                         </Button>
                       </Tooltip>
-                    )}
-                    <Tooltip
-                      content={intl.formatMessage(messages.copyToClipboard)}
-                    >
-                      <Button
-                        buttonType="primary"
-                        buttonSize="sm"
-                        onClick={() => copyLogString(row)}
-                        className="m-1"
-                      >
-                        <ClipboardCopyIcon className="icon-md" />
-                      </Button>
-                    </Tooltip>
-                  </Table.TD>
-                </tr>
-              );
+                    </Table.TD>
+                  </tr>
+                );
               })
             )}
 
@@ -426,7 +427,7 @@ const SettingsLogs = () => {
                               ? pageIndex * currentPageSize +
                                 (data?.results.length ?? 0)
                               : (pageIndex + 1) * currentPageSize,
-                          total: data.pageInfo.results,
+                          total: data?.pageInfo.results ?? 0,
                           strong: (msg: React.ReactNode) => (
                             <span className="font-medium">{msg}</span>
                           ),
