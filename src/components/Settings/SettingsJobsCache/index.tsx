@@ -221,7 +221,7 @@ const SettingsJobs = () => {
                 <label className="text-label">
                   {intl.formatMessage(messages.editJobScheduleCurrent)}
                 </label>
-                <div className="mt-2 mb-1 form-input">
+                <div className="form-input-area mt-2 mb-1">
                   {jobEditModal.job?.cronSchedule}
                 </div>
               </div>
